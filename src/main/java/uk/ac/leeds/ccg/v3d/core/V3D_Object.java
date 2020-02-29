@@ -13,17 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.vector.memory;
+package uk.ac.leeds.ccg.v3d.core;
 
-import uk.ac.leeds.ccg.generic.memory.Generic_MemoryManager;
+import java.io.Serializable;
 
 /**
- * A class to be extended so as to handle OutOfMemoryErrors.
+ * Vector Object
  *
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class Vector_MemoryManager extends Generic_MemoryManager
-        implements Vector_Memory {
+public class V3D_Object implements Serializable {
+
+    public V3D_Environment e;
+
+    /**
+     * @param e What {@link e} is set to.
+     */
+    public V3D_Object(V3D_Environment e) {
+        this.e = e;
+    }
 
 }

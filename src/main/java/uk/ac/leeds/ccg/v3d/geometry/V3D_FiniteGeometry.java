@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2020 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.vector.core;
 
-import java.io.Serializable;
+package uk.ac.leeds.ccg.v3d.geometry;
+
 
 /**
- * Vector Object
- *
+ * V3D_FiniteGeometry
+ * 
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
-public class Vector_Object implements Serializable {
+public interface V3D_FiniteGeometry {
 
-    public Vector_Environment e;
-
-    /**
-     * @param e What {@link e} is set to.
-     */
-    public Vector_Object(Vector_Environment e) {
-        this.e = e;
-    }
-
+    public abstract V3D_Envelope getEnvelope3D();
 }

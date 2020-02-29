@@ -13,22 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.vector.core;
+package uk.ac.leeds.ccg.v3d.core;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
+import uk.ac.leeds.ccg.generic.memory.Generic_MemoryManager;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
-import uk.ac.leeds.ccg.grids.core.Grids_Environment;
-import uk.ac.leeds.ccg.vector.io.Vector_Files;
-import uk.ac.leeds.ccg.vector.memory.Vector_Memory;
-import uk.ac.leeds.ccg.vector.memory.Vector_MemoryManager;
-import uk.ac.leeds.ccg.vector.projection.Vector_OSGBtoLatLon;
+import uk.ac.leeds.ccg.v3d.io.V3D_Files;
 
 /**
  * Vector Environment.
@@ -36,44 +32,32 @@ import uk.ac.leeds.ccg.vector.projection.Vector_OSGBtoLatLon;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Vector_Environment extends Vector_MemoryManager
-        implements Vector_Memory {
+public class V3D_Environment extends Generic_MemoryManager {
 
     private static final long serialVersionUID = 1L;
     
-    public Vector_Files files;
-
-    /**
-     * Generic Environment
-     */
-    public final Generic_Environment env;
-
-    /**
-     * Grids Environment
-     */
-    public final Grids_Environment ge;
+    public Generic_Environment env;
+    
+    public V3D_Files files;
 
     /**
      * MathBigDecimal
      */
     public Math_BigDecimal bd;
 
-    protected Vector_OSGBtoLatLon OSGBtoLatLon;
-
-    public Vector_Environment(Grids_Environment e) throws IOException, 
+    public V3D_Environment(Generic_Environment e) throws IOException, 
             Exception {
         this(e, e.files.getDir());
     }
     
-    public Vector_Environment(Grids_Environment e, Generic_Path dir)
+    public V3D_Environment(Generic_Environment e, Generic_Path dir)
             throws IOException, Exception {
         super();
-        this.ge = e;
-        this.env = ge.env;
+        this.env = e;
         bd = new Math_BigDecimal();
         initMemoryReserve(Default_Memory_Threshold, env);
-        files = new Vector_Files(new Generic_Defaults(Paths.get(dir.toString(),
-                Vector_Strings.s_vector)));
+        files = new V3D_Files(new Generic_Defaults(Paths.get(dir.toString(),
+                V3D_Strings.s_v3d)));
     }
             
     public BigDecimal getRounded_BigDecimal(BigDecimal toRoundBigDecimal,
@@ -83,13 +67,6 @@ public class Vector_Environment extends Vector_MemoryManager
         r = r.setScale(scale);
         r = r.add(toRoundToBigDecimal);
         return r;
-    }
-
-    public Vector_OSGBtoLatLon getOSGBtoLatLon() {
-        if (OSGBtoLatLon == null) {
-            OSGBtoLatLon = new Vector_OSGBtoLatLon();
-        }
-        return OSGBtoLatLon;
     }
 
     @Override

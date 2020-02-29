@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.vector.io;
+package uk.ac.leeds.ccg.v3d.io;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.generic.io.Generic_Files;
-import uk.ac.leeds.ccg.grids.io.Grids_Files;
-import uk.ac.leeds.ccg.vector.core.Vector_Strings;
+import uk.ac.leeds.ccg.v3d.core.V3D_Strings;
 
 /**
  * Vector Files.
@@ -28,18 +27,16 @@ import uk.ac.leeds.ccg.vector.core.Vector_Strings;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class Vector_Files extends Generic_Files {
-
-    protected final Grids_Files gf;
+public class V3D_Files extends Generic_Files {
 
     /**
      * Creates a new instance.
      *
      * @throws IOException If encountered.
      */
-    public Vector_Files() throws IOException {
+    public V3D_Files() throws IOException {
         this(new Generic_Defaults(Paths.get(System.getProperty("user.home"),
-                Vector_Strings.s_vector)));
+                V3D_Strings.s_v3d)));
     }
 
     /**
@@ -48,10 +45,8 @@ public class Vector_Files extends Generic_Files {
      * @param d This contains details of the directory which will be used.
      * @throws IOException If encountered.
      */
-    public Vector_Files(Generic_Defaults d) throws IOException {
+    public V3D_Files(Generic_Defaults d) throws IOException {
         super(d);
-        gf = new Grids_Files(new Generic_Defaults(Paths.get(
-                d.getDir().toString(), Vector_Strings.s_vector)));
     }
 
 }

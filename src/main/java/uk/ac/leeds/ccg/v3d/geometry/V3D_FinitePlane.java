@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2020 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.vector.data;
 
-import uk.ac.leeds.ccg.generic.core.Generic_Environment;
+package uk.ac.leeds.ccg.v3d.geometry;
+
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- *
- * @author geoagdt
+ * V3D_FinitePlane
+ * 
+ * @author Andy Turner
+ * @version 1.0
  */
-public class Vector_GeoJSON {
+public class V3D_FinitePlane extends V3D_Plane 
+        implements V3D_FiniteGeometry {
+
+    public V3D_FinitePlane(V3D_Environment e, V3D_Point a, 
+            V3D_Point b, V3D_Point c) {
+        super(e, a, b, c);
+    }
     
-    Generic_Environment e;
-    
-    
-    
+    @Override
+    public V3D_Envelope getEnvelope3D() {
+        return new V3D_Envelope(a, b, c);
+    }
+
 }

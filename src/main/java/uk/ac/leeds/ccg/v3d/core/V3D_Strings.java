@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.vector.memory;
+package uk.ac.leeds.ccg.v3d.core;
 
-import uk.ac.leeds.ccg.generic.memory.Generic_Memory;
+import uk.ac.leeds.ccg.generic.core.Generic_Strings;
 
 /**
- *
- * @author Andy Turner
- * @version 1.0.0
+ * For commonly referred to Strings.
  */
-public interface Vector_Memory extends Generic_Memory {
-
+public class V3D_Strings extends Generic_Strings {
+    
+    public static String s_v3d = "v3d";
+    
 }

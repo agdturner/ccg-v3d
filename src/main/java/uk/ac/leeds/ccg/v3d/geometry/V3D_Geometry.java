@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2020 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.vector.visualisation;
+package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.awt.Graphics;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.core.V3D_Object;
 
 /**
+ * For 3D geometrical objects.
+ * 
+ * @author Andy Turner
+ * @version 1.0.0
  */
-public class Vector_OverlayComponent_Network2D extends Vector_OverlayComponent {
+public abstract class V3D_Geometry extends V3D_Object {
 
-    public Vector_RenderNetwork2D RenderNetwork2D;
-
-    public Vector_OverlayComponent_Network2D(
-            Vector_RenderNetwork2D r) {
-        this.RenderNetwork2D = r;
+    public V3D_Geometry(V3D_Environment e) {
+        super(e);
     }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        if (_BufferedImage != null) {
-            g.drawImage(_BufferedImage, 0, 0, this);
-        }
-        RenderNetwork2D.draw(g);
-    }
-
+    
 }
-

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2020 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.vector.core;
+package uk.ac.leeds.ccg.v3d.geometry;
 
-import uk.ac.leeds.ccg.generic.core.Generic_Strings;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * For commonly referred to Strings.
+ * V3D_Plane
+ * 
+ * @author Andy Turner
+ * @version 1.0
  */
-public class Vector_Strings extends Generic_Strings {
+public class V3D_Plane extends V3D_Geometry {
     
-    public static String s_Vector = "Vector";
-    public static String s_vector = "vector";
-    
+    public final V3D_Point a;
+    public final V3D_Point b;
+    public final V3D_Point c;
+
+    public V3D_Plane(V3D_Environment e, V3D_Point a, 
+            V3D_Point b, V3D_Point c) {
+        super(e);
+        this.a = a;
+        this.b = b;
+        this.c = c;        
+    }
 }
