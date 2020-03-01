@@ -17,17 +17,18 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 /**
  * Class for a line segment in 3D represented by two Point3D instances, one is
  * designated a start point and the other an end point. In this way a line
  * segment explicitly has a direction. Two instances are regarded as equal if
  * their start and end points are the same.
- * 
+ *
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_LineSegment extends V3D_Geometry 
+public class V3D_LineSegment extends V3D_Geometry
         implements V3D_FiniteGeometry {
 
     public V3D_Point start;
@@ -54,8 +55,31 @@ public class V3D_LineSegment extends V3D_Geometry
 
     @Override
     public String toString() {
-        return "LineSegment3D(start=" + start.toString() + ", end=" 
-                + end.toString() + ")";
+        return this.getClass().getSimpleName() + "(start=" + start.toString()
+                + ", end=" + end.toString() + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof V3D_LineSegment) {
+            V3D_LineSegment l = (V3D_LineSegment) o;
+            if (hashCode() == l.hashCode()) {
+                if (l.start.equals(start)) {
+                    if (l.end.equals(end)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + Objects.hashCode(this.start);
+        hash = 31 * hash + Objects.hashCode(this.end);
+        return hash;
     }
 
     /**
@@ -88,9 +112,10 @@ public class V3D_LineSegment extends V3D_Geometry
     }
 
     /**
-     * Treat this as the first vector and {@code l} as the second vector. So the 
-     * resulting vector starts at {@link #start} and is in the direction given 
-     * by the right hand rule.   
+     * Treat this as the first vector and {@code l} as the second vector. So the
+     * resulting vector starts at {@link #start} and is in the direction given
+     * by the right hand rule.
+     *
      * @param l V3D_LineSegment
      * @return BigDecimal
      */
@@ -104,19 +129,19 @@ public class V3D_LineSegment extends V3D_Geometry
         BigDecimal dx = ay.multiply(bz).subtract(bz.multiply(ay));
         BigDecimal dy = az.multiply(bx).subtract(bx.multiply(az));
         BigDecimal dz = ax.multiply(by).subtract(by.multiply(ax));
-        V3D_Point newEnd = new V3D_Point(e, start.x.add(dx), 
-                start.y.add(dy), start.z.add(dz)); 
+        V3D_Point newEnd = new V3D_Point(e, start.x.add(dx),
+                start.y.add(dy), start.z.add(dz));
         return new V3D_LineSegment(start, newEnd);
     }
-    
-    public boolean getIntersects(BigDecimal xMin, BigDecimal yMin, 
+
+    public boolean getIntersects(BigDecimal xMin, BigDecimal yMin,
             BigDecimal xMax, BigDecimal yMax, BigDecimal zMin,
-                BigDecimal zMax, BigDecimal t, int scale) {
+            BigDecimal zMax, BigDecimal t, int scale) {
         return false; // @Todo
     }
-    
+
     /**
-     * 
+     *
      * @param p A point to test for intersection within the specified tolerance.
      * @param t The tolerance.
      * @param scale The scale.

@@ -27,7 +27,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Point extends V3D_Geometry 
+public class V3D_Point extends V3D_Geometry
         implements V3D_FiniteGeometry {
 
     /**
@@ -66,12 +66,13 @@ public class V3D_Point extends V3D_Geometry
         super(ve);
         this.x = new BigDecimal(x.toString());
         this.y = new BigDecimal(y.toString());
+        this.z = new BigDecimal(z.toString());
     }
 
     @Override
     public String toString() {
-        return "Point3D(x=" + x.toString() + ", y=" + y.toString() + ", z=" 
-                + z.toString() + ")";
+        return this.getClass().getSimpleName() + "(x=" + x.toString()
+                + ", y=" + y.toString() + ", z=" + z.toString() + ")";
     }
 
     @Override
@@ -104,7 +105,7 @@ public class V3D_Point extends V3D_Geometry
      * @param l Line
      * @param scale scale
      * @param t tolerance
-     * @return {@code true} if this is within {@code t} distance of {@code l}. 
+     * @return {@code true} if this is within {@code t} distance of {@code l}.
      */
     public boolean getIntersects(V3D_LineSegment l, BigDecimal t, int scale) {
         return l.getIntersects(this, t, scale);
@@ -126,7 +127,7 @@ public class V3D_Point extends V3D_Geometry
         BigDecimal dx = this.x.subtract(p.x);
         BigDecimal dy = this.y.subtract(p.y);
         BigDecimal dz = this.z.subtract(p.z);
-        return Math_BigDecimal.sqrt(dx.pow(2).add(dy.pow(2)).add(dz.pow(2)), 
+        return Math_BigDecimal.sqrt(dx.pow(2).add(dy.pow(2)).add(dz.pow(2)),
                 scale, rm);
     }
 
