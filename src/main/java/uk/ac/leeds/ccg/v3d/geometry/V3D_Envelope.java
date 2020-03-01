@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2020 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -24,8 +25,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Envelope extends V3D_Geometry
-        implements V3D_FiniteGeometry {
+public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
     /**
      * The minimum x-coordinate.
@@ -320,4 +320,33 @@ public class V3D_Envelope extends V3D_Geometry
     public V3D_Envelope getEnvelope3D() {
         return this;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof V3D_Envelope) {
+            V3D_Envelope en = (V3D_Envelope) o;
+            if( this.xMin.compareTo(en.xMin) == 0 &&
+                this.xMax.compareTo(en.xMax) == 0 &&
+                this.yMin.compareTo(en.yMin) == 0 &&
+                this.yMax.compareTo(en.yMax) == 0 &&
+                this.zMin.compareTo(en.zMin) == 0 &&
+                this.zMax.compareTo(en.zMax) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 43 * hash + Objects.hashCode(this.xMin);
+        hash = 43 * hash + Objects.hashCode(this.xMax);
+        hash = 43 * hash + Objects.hashCode(this.yMin);
+        hash = 43 * hash + Objects.hashCode(this.yMax);
+        hash = 43 * hash + Objects.hashCode(this.zMin);
+        hash = 43 * hash + Objects.hashCode(this.zMax);
+        return hash;
+    }
+    
 }

@@ -79,12 +79,10 @@ public class V3D_Point extends V3D_Geometry
     public boolean equals(Object o) {
         if (o instanceof V3D_Point) {
             V3D_Point p = (V3D_Point) o;
-            if (hashCode() == p.hashCode()) {
-                if (p.x.compareTo(x) == 0) {
-                    if (p.y.compareTo(y) == 0) {
-                        if (p.z.compareTo(z) == 0) {
-                            return true;
-                        }
+            if (p.x.compareTo(x) == 0) {
+                if (p.y.compareTo(y) == 0) {
+                    if (p.z.compareTo(z) == 0) {
+                        return true;
                     }
                 }
             }

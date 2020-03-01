@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -95,31 +96,23 @@ public class V3D_Plane extends V3D_Geometry {
         //                         i                 j                   k
         pq = new V3D_Vector(p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
         pr = new V3D_Vector(p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
-//        BigDecimal d = ab.x.multiply(ac.y.multiply(c.z).subtract(ac.z.multiply(c.y)))
-//                .subtract(ac.x.multiply(ab.y.multiply(c.z).subtract(ab.z.multiply(c.y))))
-//                .add(c.x.multiply(ab.y.multiply(ac.z).subtract(ab.z.multiply(ac.y))));
-//        BigDecimal d = a.x.multiply(b.y.multiply(c.z).subtract(b.z.multiply(c.y)))
-//                .subtract(b.x.multiply(a.y.multiply(c.z).subtract(a.z.multiply(c.y))))
-//                .add(c.x.multiply(a.y.multiply(b.z).subtract(a.z.multiply(b.y))));
-//        if (d.compareTo(BigDecimal.ZERO) == 0) {
-//            throw new Exception("The three points do not define a plane, but are "
-//                    + "collinear (they might all be the same point!");
-//        }
         /**
          * The normal perpendicular vector = n.
          */
-        V3D_Vector n = new V3D_Vector(
-                pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz)),
-                (pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz))).negate(),
-                pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy))
-        );
+        a = pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz));
+        b = pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz)).negate();
+        c = pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy));
+        //V3D_Vector n = new V3D_Vector(a, b, c);
         this.p = p;
         this.q = q;
         this.r = r;
-        this.a = n.dx;
-        this.b = n.dy;
-        this.c = n.dz;
-
+        // Check for collinearity
+        if (a.compareTo(BigDecimal.ZERO) == 0 && 
+                b.compareTo(BigDecimal.ZERO) == 0 &&
+                c.compareTo(BigDecimal.ZERO) == 0) {
+            throw new Exception("The three points do not define a plane, but are "
+                    + "collinear (they might all be the same point!");
+        }
     }
 
     @Override
@@ -128,27 +121,14 @@ public class V3D_Plane extends V3D_Geometry {
                 + ", q=" + q.toString() + ", r=" + r.toString() + ")";
     }
 
-    public boolean isOnPlane(V3D_Point pt) {
-        // True if
+    /**
+     * @param pt The point to test if it is on the plane.
+     * @return {@code true} If {@code pt} is on the plane. 
+     */
+    public boolean intersects(V3D_Point pt) {
         BigDecimal d = a.multiply(p.x.subtract(pt.x)).add(b.multiply(p.y
                 .subtract(pt.y))).add(c.multiply(p.z.subtract(pt.z)));
-        if (d.compareTo(BigDecimal.ZERO) == 0) {
-            return true;
-        }
-        return false;
-//        // Is the determinant ab ac p = 0?
-//        //     |ab   ac   p  |
-//        // det |ab.x ac.x p.x| = p.x*det|ab.y ac.y|- p.y*det|ab.x ac.x| + p.z*det|ab.x ac.x|
-//        //     |ab.y ac.y p.y|          |ab.z ac.z|         |ab.z ac.z|          |ab.y ac.y|
-//        //     |ab.z ac.z p.z|
-//        // 
-//        // = p.x*((ab.y*(ac.z))-((ab.z*(ac.y))))
-//        //   -(p.y*((ab.x*(ac.z))-((ab.z*(ac.x)))))
-//        //   +(p.z*((ab.x*(ac.y))-((ab.y*(ac.x)))))
-//        BigDecimal d = p.x.multiply((ab.y.multiply(ac.z)).subtract((ab.z.multiply(ac.y))))
-//           .subtract(p.y.multiply((ab.x.multiply(ac.z)).subtract((ab.z.multiply(ac.x)))))
-//           .add(p.z.multiply((ab.x.multiply(ac.y)).subtract((ab.y.multiply(ac.x)))));
-//        return d.compareTo(BigDecimal.ZERO) == 0;
+        return d.compareTo(BigDecimal.ZERO) == 0;
         // Alternative:
         // p.x = l*(ab.x)+m*(ac.x) ---1
         // p.y = l*(ab.y)+m*(ac.y) ---2
@@ -164,54 +144,37 @@ public class V3D_Plane extends V3D_Geometry {
         // l = (p.x-((((p.x/ab.x)-(p.y))/((ac.x/ab.x)-(ac.z))*(ac.x)))/(ab.x)
         // Check with 3:
         // 0 = ((((p.x-(p.x/ab.x)-p.y/((ac.x/ab.x)-ac.z)(ac.x))/ab.x)*(ab.z))+((p.x/ab.x)-p.y/((ac.x/ab.x)-ac.z)*(ac.z)))-p.z
-//        BigDecimal c = ((((p.x.subtract(p.x / ab.x).subtract(p.y) / ((ac.x / ab.x).subtract(ac.z))(ac.x))/ab.x)*(ab.z))+((p.x / ab.x)-p.y / ((ac.x / ab.x) - ac.z) * (ac.z)
-//        )).subtract(p.z);
     }
 
+    /**
+     * @param l The line segment to test if it is on the plane.
+     * @return {@code true} If {@code pt} is on the plane. 
+     */
     public boolean isOnPlane(V3D_LineSegment l) {
-        if (isOnPlane(l.start) && isOnPlane(l.end)) {
-            return true;
-        }
-        return false;
-//        /**
-//         * The equation for the plane is: oc = oa + (lambda * ab) + (mu * ac)
-//         */
-//        // Move l to a
-//        V3D_Point la = new V3D_Point(e, a.x.subtract(l.start.x), a.y.subtract(l.start.y),
-//                l.start.z);
-//        V3D_Point lal = new V3D_Point(e, la.x.add(l.start.x), la.y.add(l.start.y),
-//                la.z.add(l.start.z));
-//        // Is the determinant ab ac lal 0?
-//        //     |ab   ac   lal  |
-//        // det |ab.x ac.x lal.x| = ab.x*det|ac.y lal.y|- ac.x*det|ab.y lal.y| + lal.x*det|ab.y ac.y|
-//        //     |ab.y ac.y lal.y|           |ac.z lal.z|          |ab.z lal.z|            |ab.z ac.z|
-//        //     |ab.z ac.z lal.z|
-//        // 
-//        // =  ab.x*((ac.y*(lal.z))-(ac.y*(lal.y))))
-//        //   -(ac.x*((ab.y*(lal.z))-(ab.z*(lal.y))))
-//        //   +(lal.x*((ab.y*(ac.z))-(ab.z*(ac.y))))
-//        BigDecimal d = ab.x.multiply((ac.y.multiply(lal.z)).subtract((ac.y.multiply(lal.y))))
-//                .subtract(ac.x.multiply((ab.y.multiply(lal.z)).subtract(ab.z.multiply(lal.y))))
-//                .add(lal.x.multiply((ab.y.multiply(ac.z)).subtract(ab.z.multiply(ac.y))));
-//
-//        if (d.compareTo(BigDecimal.ZERO) == 0) {
-//            return true;
-//        }
-//        return false;
+        return V3D_Plane.this.intersects(l.start) && V3D_Plane.this.intersects(l.end);
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Plane) {
             V3D_Plane pl = (V3D_Plane) o;
-            if (isOnPlane(pl.p)) {
-                if (isOnPlane(pl.q)) {
-                    if (isOnPlane(pl.r)) {
+            if (V3D_Plane.this.intersects(pl.p)) {
+                if (V3D_Plane.this.intersects(pl.q)) {
+                    if (V3D_Plane.this.intersects(pl.r)) {
                         return true;
                     }
                 }
             }
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 47 * hash + Objects.hashCode(this.p);
+        hash = 47 * hash + Objects.hashCode(this.q);
+        hash = 47 * hash + Objects.hashCode(this.r);
+        return hash;
     }
 }
