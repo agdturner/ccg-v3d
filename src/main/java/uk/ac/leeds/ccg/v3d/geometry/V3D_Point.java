@@ -56,14 +56,14 @@ public class V3D_Point extends V3D_Geometry
     }
 
     /**
-     * @param ve What {@link #e} is set to.
+     * @param e What {@link #e} is set to.
      * @param x What {@link #x} is set to.
      * @param y What {@link #y} is set to.
      * @param z What {@link #z} is set to.
      */
-    public V3D_Point(V3D_Environment ve, BigDecimal x, BigDecimal y,
+    public V3D_Point(V3D_Environment e, BigDecimal x, BigDecimal y,
             BigDecimal z) {
-        super(ve);
+        super(e);
         this.x = new BigDecimal(x.toString());
         this.y = new BigDecimal(y.toString());
         this.z = new BigDecimal(z.toString());
