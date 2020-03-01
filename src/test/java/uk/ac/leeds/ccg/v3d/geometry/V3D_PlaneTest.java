@@ -66,7 +66,7 @@ public class V3D_PlaneTest {
         V3D_Point y = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(1));
         V3D_Point z = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
         V3D_Plane instance = new V3D_Plane(e, x, y, z);
-        String expResult = "V3D_Plane(a=V3D_Point(x=1, y=1, z=0), b=V3D_Point(x=1, y=1, z=1), c=V3D_Point(x=1, y=0, z=0))";
+        String expResult = "V3D_Plane(p=V3D_Point(x=1, y=1, z=0), q=V3D_Point(x=1, y=1, z=1), r=V3D_Point(x=1, y=0, z=0))";
         String result = instance.toString();
         assertEquals(expResult, result);
     }
@@ -77,7 +77,7 @@ public class V3D_PlaneTest {
     @Test
     public void testIsOnPlane_V3D_Point() throws Exception {
         System.out.println("isOnPlane");
-        V3D_Point p = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(1));
+        V3D_Point p = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
         V3D_Point x = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(0));
         V3D_Point y = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(1));
         V3D_Point z = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
@@ -85,6 +85,16 @@ public class V3D_PlaneTest {
         boolean expResult = true;
         boolean result = instance.isOnPlane(p);
         assertEquals(expResult, result);
+        // Test2
+        p = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(1));
+        x = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(0));
+        y = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(1));
+        z = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
+        instance = new V3D_Plane(e, x, y, z);
+        expResult = true;
+        result = instance.isOnPlane(p);
+        assertEquals(expResult, result);
+        
     }
 
     /**

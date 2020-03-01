@@ -16,25 +16,24 @@
 
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import java.math.BigDecimal;
 
 /**
- * V3D_FinitePlane
+ * V3D_Vector
  * 
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_FinitePlane extends V3D_Plane 
-        implements V3D_FiniteGeometry {
+public class V3D_Vector {
 
-    public V3D_FinitePlane(V3D_Environment e, V3D_Point a, 
-            V3D_Point b, V3D_Point c) throws Exception {
-        super(e, a, b, c);
+    public BigDecimal dx;
+    public BigDecimal dy;
+    public BigDecimal dz;
+    
+    public V3D_Vector(BigDecimal dx, BigDecimal dy, BigDecimal dz) {
+        this.dx = dx;
+        this.dy = dy;
+        this.dz = dz;
     }
     
-    @Override
-    public V3D_Envelope getEnvelope3D() {
-        return new V3D_Envelope(p, q, r);
-    }
-
 }
