@@ -28,7 +28,7 @@ public class V3D_FinitePlane extends V3D_Plane
         implements V3D_FiniteGeometry {
 
     public V3D_FinitePlane(V3D_Environment e, V3D_Point a, 
-            V3D_Point b, V3D_Point c) {
+            V3D_Point b, V3D_Point c) throws Exception {
         super(e, a, b, c);
     }
     
