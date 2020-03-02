@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
@@ -111,19 +112,23 @@ public class V3D_Plane extends V3D_Geometry {
                 + ", q=" + q.toString() + ", r=" + r.toString() + ")";
     }
 
+    /**
+     * @return {@link #n}
+     */
     public V3D_Vector getNormalVector() {
         return n;
     }
 
-//    /**
-//     * @param pl The plane to test for intersection with this.
-//     * @return {@code true} If this and {@code pl} intersect.
-//     */
-//    public boolean intersects(V3D_Plane pl) {
-//        BigDecimal d = n.dx.multiply(p.x.subtract(pt.x)).add(n.dy.multiply(p.y
-//                .subtract(pt.y))).add(n.dz.multiply(p.z.subtract(pt.z)));
-//        return d.compareTo(BigDecimal.ZERO) == 0;
-//    }
+    /**
+     * @param pl The plane to test for intersection with this.
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} If this and {@code pl} intersect.
+     */
+    public boolean intersects(V3D_Plane pl, int scale, RoundingMode rm) {
+        // If the normal vectors are parallel, the two planes are either identical or parallel.
+        return !pl.n.isParallel(n, scale, rm);
+    }
 
     /**
      * @param pt The point to test if it is on the plane.

@@ -16,6 +16,8 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
  * V3D_Vector
@@ -25,20 +27,36 @@ import java.math.BigDecimal;
  */
 public class V3D_Vector {
 
-    public BigDecimal dx;
-    public BigDecimal dy;
-    public BigDecimal dz;
+    /**
+     * The change in x.
+     */
+    public final BigDecimal dx;
+
+    /**
+     * The change in y.
+     */
+    public final BigDecimal dy;
+
+    /**
+     * The change in z.
+     */
+    public final BigDecimal dz;
+
+    /**
+     * For storing the magnitude.
+     */
+    public BigDecimal magnitude;
 
     public V3D_Vector(BigDecimal dx, BigDecimal dy, BigDecimal dz) {
         this.dx = dx;
         this.dy = dy;
         this.dz = dz;
     }
-    
+
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "(dx=" +dx+ ",dy=" +dy+ "dz=" 
-                +dz+ ")";
+        return this.getClass().getSimpleName() + "(dx=" + dx + ",dy=" + dy + "dz="
+                + dz + ")";
     }
 
     /**
@@ -51,6 +69,67 @@ public class V3D_Vector {
     public BigDecimal getDotProduct(V3D_Vector v) {
         return (v.dx.multiply(this.dx)).add(v.dy.multiply(this.dy))
                 .add(v.dz.multiply(this.dz));
+    }
+
+    /**
+     * Test if this is orthogonal to {@code v}.
+     *
+     * @param v The
+     * @return {@code true} if this and {@code v} are orthogonal.
+     */
+    public boolean isOrthogonal(V3D_Vector v) {
+        if (getDotProduct(v).compareTo(BigDecimal.ZERO) == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get the magnitude of the vector at the given scale.
+     *
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #magnitude} initialised with {@code scale} and {@code rm}.
+     */
+    public BigDecimal getMagnitude(int scale, RoundingMode rm) {
+        if (magnitude == null) {
+            return initMagnitude(scale, rm);
+        }
+        if (magnitude.scale() > scale) {
+            return magnitude.setScale(scale);
+        } else {
+            return initMagnitude(scale, rm);
+        }
+    }
+
+    /**
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #magnitude} initialised with {@code scale} and {@code rm}.
+     */
+    protected BigDecimal initMagnitude(int scale, RoundingMode rm) {
+        magnitude = Math_BigDecimal.sqrt(dx.multiply(dx).add(dy.multiply(dy))
+                .add(dz.multiply(dz)), scale, rm);
+        return magnitude;
+    }
+
+    /**
+     * Test if this is parallel to {@code v}.
+     *
+     * @param v The
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if this and {@code v} are orthogonal.
+     */
+    public boolean isParallel(V3D_Vector v, int scale, RoundingMode rm) {
+        BigDecimal t = BigDecimal.ONE.scaleByPowerOfTen(scale);
+        BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dx, dx, scale,
+                rm);
+        if (c.multiply(dy).subtract(v.dy).compareTo(t) == -1
+                && c.multiply(dz).subtract(v.dz).compareTo(t) == -1) {
+            return true;
+        }
+        return false;
     }
 
     /**
