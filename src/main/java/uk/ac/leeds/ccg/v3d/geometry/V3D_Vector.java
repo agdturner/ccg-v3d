@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
@@ -47,10 +48,25 @@ public class V3D_Vector {
      */
     public BigDecimal magnitude;
 
+    /**
+     * @param dx What {@link #dx} is set to.
+     * @param dy What {@link #dy} is set to.
+     * @param dz What {@link #dz} is set to. 
+     */
     public V3D_Vector(BigDecimal dx, BigDecimal dy, BigDecimal dz) {
         this.dx = dx;
         this.dy = dy;
         this.dz = dz;
+    }
+
+    /**
+     * Creates a vector from the origin to {@code p}
+     * @param p the point to which the vector starting at the origin goes.
+     */
+    public V3D_Vector(V3D_Point p) {
+        this.dx = p.x;
+        this.dy = p.y;
+        this.dz = p.z;
     }
 
     @Override
@@ -59,6 +75,27 @@ public class V3D_Vector {
                 + dz + ")";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof V3D_Vector) {
+            V3D_Vector v = (V3D_Vector) o;
+            if (dx.compareTo(v.dx) == 0 && dy.compareTo(v.dy) == 0 
+                    && dz.compareTo(v.dz) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 23 * hash + Objects.hashCode(this.dx);
+        hash = 23 * hash + Objects.hashCode(this.dy);
+        hash = 23 * hash + Objects.hashCode(this.dz);
+        return hash;
+    }
+    
     /**
      * Calculate and return the
      * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
@@ -78,10 +115,7 @@ public class V3D_Vector {
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isOrthogonal(V3D_Vector v) {
-        if (getDotProduct(v).compareTo(BigDecimal.ZERO) == 0) {
-            return true;
-        }
-        return false;
+        return getDotProduct(v).compareTo(BigDecimal.ZERO) == 0;
     }
 
     /**
@@ -125,11 +159,8 @@ public class V3D_Vector {
         BigDecimal t = BigDecimal.ONE.scaleByPowerOfTen(scale);
         BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dx, dx, scale,
                 rm);
-        if (c.multiply(dy).subtract(v.dy).compareTo(t) == -1
-                && c.multiply(dz).subtract(v.dz).compareTo(t) == -1) {
-            return true;
-        }
-        return false;
+        return c.multiply(dy).subtract(v.dy).compareTo(t) == -1
+                && c.multiply(dz).subtract(v.dz).compareTo(t) == -1;
     }
 
     /**

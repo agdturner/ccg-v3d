@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -179,6 +180,89 @@ public class V3D_PlaneTest extends V3D_Test {
         expResult = true;
         result = instance.equals(o);
         assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getNormalVector method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetNormalVector() {
+        System.out.println("getNormalVector");
+        V3D_Plane instance = getPlane(P0P1P0, P1P1P1, P1P0P0);
+        V3D_Vector expResult = new V3D_Vector(P1P1N1);
+        V3D_Vector result = instance.getNormalVector();
+        assertEquals(expResult, result);
+        // Test 2
+        instance = getPlane(P0P0P0, P0P1P1, P0N1P0);
+        expResult = new V3D_Vector(P1P1N1);
+        result = instance.getNormalVector();
+        assertEquals(expResult, result);
+        // Test 3
+        instance = getPlane(P0P0P0, P0P1P1, P0N1P0);
+        expResult = new V3D_Vector(P1P1N1);
+        result = instance.getNormalVector();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of intersects method, of class V3D_Plane.
+     */
+    @Test
+    public void testIntersects_3args() {
+        System.out.println("intersects");
+        V3D_Plane pl = null;
+        int scale = 0;
+        RoundingMode rm = null;
+        V3D_Plane instance = null;
+        boolean expResult = false;
+        boolean result = instance.intersects(pl, scale, rm);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of intersects method, of class V3D_Plane.
+     */
+    @Test
+    public void testIntersects_V3D_Point() {
+        System.out.println("intersects");
+        V3D_Point pt = null;
+        V3D_Plane instance = null;
+        boolean expResult = false;
+        boolean result = instance.intersects(pt);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of isOnPlane method, of class V3D_Plane.
+     */
+    @Test
+    public void testIsOnPlane() {
+        System.out.println("isOnPlane");
+        V3D_LineSegment l = null;
+        V3D_Plane instance = null;
+        boolean expResult = false;
+        boolean result = instance.isOnPlane(l);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of hashCode method, of class V3D_Plane.
+     */
+    @Test
+    public void testHashCode() {
+        System.out.println("hashCode");
+        V3D_Plane instance = null;
+        int expResult = 0;
+        int result = instance.hashCode();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
     
