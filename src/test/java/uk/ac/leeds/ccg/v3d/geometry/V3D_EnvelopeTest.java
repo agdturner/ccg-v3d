@@ -26,29 +26,29 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * V3D_EnvelopeTest
- * 
+ *
  * @author Andy Turner
  * @version 1.0
  */
 public class V3D_EnvelopeTest {
-    
+
     public static V3D_Environment e;
 
     public V3D_EnvelopeTest() {
     }
-    
+
     @BeforeAll
     public static void setUpClass() {
     }
-    
+
     @AfterAll
     public static void tearDownClass() {
     }
-    
+
     @BeforeEach
     public void setUp() {
     }
-    
+
     @AfterEach
     public void tearDown() {
     }
@@ -59,12 +59,13 @@ public class V3D_EnvelopeTest {
     @Test
     public void testToString() {
         System.out.println("toString");
-        V3D_Envelope instance = null;
-        String expResult = "";
+        BigDecimal x = BigDecimal.ZERO;
+        BigDecimal y = BigDecimal.ZERO;
+        BigDecimal z = BigDecimal.ZERO;
+        V3D_Envelope instance = new V3D_Envelope(e, x, y, z);
+        String expResult = "V3D_Envelope(xMin=0, xMax=0,yMin=0, yMax=0,zMin=0, zMax=0)";
         String result = instance.toString();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -73,13 +74,19 @@ public class V3D_EnvelopeTest {
     @Test
     public void testEnvelope() {
         System.out.println("envelope");
-        V3D_Envelope e = null;
-        V3D_Envelope instance = null;
-        V3D_Envelope expResult = null;
-        V3D_Envelope result = instance.envelope(e);
+        BigDecimal x = BigDecimal.ZERO;
+        BigDecimal y = BigDecimal.ZERO;
+        BigDecimal z = BigDecimal.ZERO;
+        V3D_Point p1 = new V3D_Point(e, x, y, z);
+        V3D_Envelope e1 = new V3D_Envelope(e, x, y, z);
+         x = BigDecimal.ONE;
+         y = BigDecimal.ONE;
+         z = BigDecimal.ONE;
+        V3D_Point p2 = new V3D_Point(e, x, y, z);
+        V3D_Envelope instance = new V3D_Envelope(e, x, y, z);
+        V3D_Envelope expResult = new V3D_Envelope(p1, p2);
+        V3D_Envelope result = instance.envelope(e1);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -88,13 +95,19 @@ public class V3D_EnvelopeTest {
     @Test
     public void testGetIntersects_V3D_Envelope() {
         System.out.println("getIntersects");
-        V3D_Envelope e = null;
-        V3D_Envelope instance = null;
-        boolean expResult = false;
-        boolean result = instance.getIntersects(e);
+        BigDecimal x = BigDecimal.ZERO;
+        BigDecimal y = BigDecimal.ZERO;
+        BigDecimal z = BigDecimal.ZERO;
+        V3D_Point p1 = new V3D_Point(e, x, y, z);
+         x = BigDecimal.ONE;
+         y = BigDecimal.ONE;
+         z = BigDecimal.ONE;
+        V3D_Point p2 = new V3D_Point(e, x, y, z);
+        V3D_Envelope instance = new V3D_Envelope(e, x, y, z);
+        V3D_Envelope en = new V3D_Envelope(p1, p2);
+        boolean expResult = true;
+        boolean result = instance.getIntersects(en);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -103,13 +116,20 @@ public class V3D_EnvelopeTest {
     @Test
     public void testGetIntersectsFailFast() {
         System.out.println("getIntersectsFailFast");
-        V3D_LineSegment l = null;
-        V3D_Envelope instance = null;
-        int expResult = 0;
+        BigDecimal x = BigDecimal.ZERO;
+        BigDecimal y = BigDecimal.ZERO;
+        BigDecimal z = BigDecimal.ZERO;
+        V3D_Point p1 = new V3D_Point(e, x, y, z);
+         x = BigDecimal.ONE;
+         y = BigDecimal.ONE;
+         z = BigDecimal.ONE;
+        V3D_Point p2 = new V3D_Point(e, x, y, z);
+        V3D_Envelope instance = new V3D_Envelope(e, x, y, z);
+        V3D_Envelope en = new V3D_Envelope(p1, p2);
+        V3D_LineSegment l = new V3D_LineSegment(p1, p2);
+        int expResult = 1;
         int result = instance.getIntersectsFailFast(l);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -118,10 +138,18 @@ public class V3D_EnvelopeTest {
     @Test
     public void testGetIntersects_3args_1() {
         System.out.println("getIntersects");
-        V3D_LineSegment l = null;
+        BigDecimal x = BigDecimal.ZERO;
+        BigDecimal y = BigDecimal.ZERO;
+        BigDecimal z = BigDecimal.ZERO;
+        V3D_Point p1 = new V3D_Point(e, x, y, z);
+         x = BigDecimal.ONE;
+         y = BigDecimal.ONE;
+         z = BigDecimal.ONE;
+        V3D_Point p2 = new V3D_Point(e, x, y, z);
+        V3D_Envelope instance = new V3D_Envelope(e, x, y, z);
+        V3D_LineSegment l = new V3D_LineSegment(p1, p2);
         BigDecimal t = null;
         int scale = 0;
-        V3D_Envelope instance = null;
         boolean expResult = false;
         boolean result = instance.getIntersects(l, t, scale);
         assertEquals(expResult, result);
@@ -135,13 +163,18 @@ public class V3D_EnvelopeTest {
     @Test
     public void testGetIntersects_V3D_Point() {
         System.out.println("getIntersects");
-        V3D_Point p = null;
-        V3D_Envelope instance = null;
-        boolean expResult = false;
-        boolean result = instance.getIntersects(p);
+        BigDecimal x = BigDecimal.ZERO;
+        BigDecimal y = BigDecimal.ZERO;
+        BigDecimal z = BigDecimal.ZERO;
+        V3D_Point p1 = new V3D_Point(e, x, y, z);
+         x = BigDecimal.ONE;
+         y = BigDecimal.ONE;
+         z = BigDecimal.ONE;
+        V3D_Point p2 = new V3D_Point(e, x, y, z);
+        V3D_Envelope instance = new V3D_Envelope(p1, p2);
+        boolean expResult = true;
+        boolean result = instance.getIntersects(p1);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -149,16 +182,18 @@ public class V3D_EnvelopeTest {
      */
     @Test
     public void testGetIntersects_3args_2() {
-        System.out.println("getIntersects");
-        BigDecimal x = null;
-        BigDecimal y = null;
-        BigDecimal z = null;
-        V3D_Envelope instance = null;
-        boolean expResult = false;
+        BigDecimal x = BigDecimal.ZERO;
+        BigDecimal y = BigDecimal.ZERO;
+        BigDecimal z = BigDecimal.ZERO;
+        V3D_Point p1 = new V3D_Point(e, x, y, z);
+         x = BigDecimal.ONE;
+         y = BigDecimal.ONE;
+         z = BigDecimal.ONE;
+        V3D_Point p2 = new V3D_Point(e, x, y, z);
+        V3D_Envelope instance = new V3D_Envelope(p1, p2);
+        boolean expResult = true;
         boolean result = instance.getIntersects(x, y, z);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -167,12 +202,18 @@ public class V3D_EnvelopeTest {
     @Test
     public void testGetEnvelope3D() {
         System.out.println("getEnvelope3D");
-        V3D_Envelope instance = null;
-        V3D_Envelope expResult = null;
+        BigDecimal x = BigDecimal.ZERO;
+        BigDecimal y = BigDecimal.ZERO;
+        BigDecimal z = BigDecimal.ZERO;
+        V3D_Point p1 = new V3D_Point(e, x, y, z);
+         x = BigDecimal.ONE;
+         y = BigDecimal.ONE;
+         z = BigDecimal.ONE;
+        V3D_Point p2 = new V3D_Point(e, x, y, z);
+        V3D_Envelope instance = new V3D_Envelope(p1, p2);
+        V3D_Envelope expResult = new V3D_Envelope(p1, p2);
         V3D_Envelope result = instance.getEnvelope3D();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -181,27 +222,19 @@ public class V3D_EnvelopeTest {
     @Test
     public void testEquals() {
         System.out.println("equals");
-        Object o = null;
-        V3D_Envelope instance = null;
-        boolean expResult = false;
+        BigDecimal x = BigDecimal.ZERO;
+        BigDecimal y = BigDecimal.ZERO;
+        BigDecimal z = BigDecimal.ZERO;
+        V3D_Point p1 = new V3D_Point(e, x, y, z);
+         x = BigDecimal.ONE;
+         y = BigDecimal.ONE;
+         z = BigDecimal.ONE;
+        V3D_Point p2 = new V3D_Point(e, x, y, z);
+        V3D_Envelope instance = new V3D_Envelope(p1, p2);
+        Object o = new V3D_Envelope(p1, p2);
+        boolean expResult = true;
         boolean result = instance.equals(o);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
-    /**
-     * Test of hashCode method, of class V3D_Envelope.
-     */
-    @Test
-    public void testHashCode() {
-        System.out.println("hashCode");
-        V3D_Envelope instance = null;
-        int expResult = 0;
-        int result = instance.hashCode();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-    
 }

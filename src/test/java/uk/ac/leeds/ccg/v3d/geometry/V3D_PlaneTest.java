@@ -35,7 +35,10 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 public class V3D_PlaneTest {
     
     public static V3D_Environment e;
-    
+    public static final BigDecimal ZERO = BigDecimal.ZERO;
+    public static final BigDecimal ONE = BigDecimal.valueOf(1);
+    public static final BigDecimal TWO = BigDecimal.valueOf(2);
+        
     public V3D_PlaneTest() {
     }
     
@@ -60,56 +63,91 @@ public class V3D_PlaneTest {
      * Test of toString method, of class V3D_Plane.
      */
     @Test
-    public void testToString() throws Exception {
+    public void testToString() {
         System.out.println("toString");
-        V3D_Point x = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(0));
-        V3D_Point y = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(1));
-        V3D_Point z = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
-        V3D_Plane instance = new V3D_Plane(e, x, y, z);
-        String expResult = "V3D_Plane(p=V3D_Point(x=1, y=1, z=0), q=V3D_Point(x=1, y=1, z=1), r=V3D_Point(x=1, y=0, z=0))";
+        //BigDecimal x0 = ZERO;
+        BigDecimal y0 = ZERO;
+        BigDecimal z0 = ZERO;
+        BigDecimal x1 = ONE;
+        BigDecimal y1 = ONE;
+        BigDecimal z1 = ONE;
+        V3D_Point p = new V3D_Point(e, x1, y1, z0);
+        V3D_Point q = new V3D_Point(e, x1, y1, z1);
+        V3D_Point r = new V3D_Point(e, x1, y0, z0);
+        V3D_Plane instance = getPlane(p, q, r);
+        String expResult = "V3D_Plane(p=V3D_Point(x=1, y=1, z=0), "
+                + "q=V3D_Point(x=1, y=1, z=1), r=V3D_Point(x=1, y=0, z=0))";
         String result = instance.toString();
         assertEquals(expResult, result);
     }
 
     /**
-     * Test of isOnPlane method, of class V3D_Plane.
+     * Basic method to get a plane defined by {@code p}, {@code q} and {@code r}.
+     * @param p A point.
+     * @param q A point.
+     * @param r A point.
+     * @return A plan or null if the points {@code p}, {@code q} and {@code r} 
+     * are collinear.
      */
-    @Test
-    public void testIsOnPlane_V3D_Point() throws Exception {
-        System.out.println("isOnPlane");
-        V3D_Point p = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
-        V3D_Point x = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(0));
-        V3D_Point y = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(1));
-        V3D_Point z = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
-        V3D_Plane instance = new V3D_Plane(e, x, y, z);
-        boolean expResult = true;
-        boolean result = instance.intersects(p);
-        assertEquals(expResult, result);
-        // Test2
-        p = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(1));
-        x = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(0));
-        y = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(1));
-        z = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
-        instance = new V3D_Plane(e, x, y, z);
-        expResult = true;
-        result = instance.intersects(p);
-        assertEquals(expResult, result);
-        
+    public V3D_Plane getPlane(V3D_Point p, V3D_Point q, V3D_Point r) {        
+        try {
+            return new V3D_Plane(e, p, q, r);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
+        }
+        return null;
     }
 
     /**
      * Test of isOnPlane method, of class V3D_Plane.
      */
     @Test
-    public void testIsOnPlane_V3D_LineSegment() throws Exception {
+    public void testIsOnPlane_V3D_Point() {
         System.out.println("isOnPlane");
-        V3D_Point start = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(1));
-        V3D_Point end = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(2));
+        BigDecimal y0 = ZERO;
+        BigDecimal z0 = ZERO;
+        BigDecimal x1 = ONE;
+        BigDecimal y1 = ONE;
+        BigDecimal z1 = ONE;
+        V3D_Point pt = new V3D_Point(e, x1, y0, z0);
+        V3D_Point p = new V3D_Point(e, x1, y1, z0);
+        V3D_Point q = new V3D_Point(e, x1, y1, z1);
+        V3D_Point r = new V3D_Point(e, x1, y0, z0);
+        V3D_Plane instance = getPlane(p, q, r);
+        boolean expResult = true;
+        boolean result = instance.intersects(pt);
+        assertEquals(expResult, result);
+        // Test2
+        pt = new V3D_Point(e, x1, y0, z1);
+        p = new V3D_Point(e, x1, y1, z0);
+        q = new V3D_Point(e, x1, y1, z1);
+        r = new V3D_Point(e, x1, y0, z0);
+        instance = getPlane(p, q, r);
+        expResult = true;
+        result = instance.intersects(pt);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of isOnPlane method, of class V3D_Plane.
+     */
+    @Test
+    public void testIsOnPlane_V3D_LineSegment() {
+        System.out.println("isOnPlane");
+        //BigDecimal x0 = ZERO;
+        BigDecimal y0 = ZERO;
+        BigDecimal z0 = ZERO;
+        BigDecimal x1 = ONE;
+        BigDecimal y1 = ONE;
+        BigDecimal z1 = ONE;
+        BigDecimal z2 = TWO;
+        V3D_Point start = new V3D_Point(e, x1, y0, z1);
+        V3D_Point end = new V3D_Point(e, x1, y0, z2);
         V3D_LineSegment l = new V3D_LineSegment(start, end);
-        V3D_Point x = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(0));
-        V3D_Point y = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(1));
-        V3D_Point z = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
-        V3D_Plane instance = new V3D_Plane(e, x, y, z);
+        V3D_Point p = new V3D_Point(e, x1, y1, z0);
+        V3D_Point q = new V3D_Point(e, x1, y1, z1);
+        V3D_Point r = new V3D_Point(e, x1, y0, z0);
+        V3D_Plane instance = getPlane(p, q, r);
         boolean expResult = true;
         boolean result = instance.isOnPlane(l);
         assertEquals(expResult, result);
@@ -119,16 +157,22 @@ public class V3D_PlaneTest {
      * Test of equals method, of class V3D_Plane.
      */
     @Test
-    public void testEquals() throws Exception {
+    public void testEquals() {
         System.out.println("equals");
-        V3D_Point x = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(0));
-        V3D_Point y = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(1));
-        V3D_Point z = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
-        Object o = new V3D_Plane(e, x, y, z);
-        V3D_Point x1 = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(0));
-        V3D_Point y1 = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(1), BigDecimal.valueOf(1));
-        V3D_Point z1 = new V3D_Point(e, BigDecimal.valueOf(1), BigDecimal.valueOf(0), BigDecimal.valueOf(0));
-        V3D_Plane instance = new V3D_Plane(e, x1, y1, z1);
+        BigDecimal x0 = ZERO;
+        BigDecimal y0 = ZERO;
+        BigDecimal z0 = ZERO;
+        BigDecimal x1 = ONE;
+        BigDecimal y1 = ONE;
+        BigDecimal z1 = ONE;
+        V3D_Point p = new V3D_Point(e, x0, y1, z0);
+        V3D_Point q = new V3D_Point(e, x1, y1, z1);
+        V3D_Point r = new V3D_Point(e, x1, y0, z0);
+        Object o = getPlane(p, q, r);
+        p = new V3D_Point(e, x1, y1, z0);
+        q = new V3D_Point(e, x1, y1, z1);
+        r = new V3D_Point(e, x1, y0, z0);
+        V3D_Plane instance = getPlane(p, q, r);
         boolean expResult = true;
         boolean result = instance.equals(o);
         assertEquals(expResult, result);

@@ -130,32 +130,36 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public V3D_Envelope(V3D_Point[] g) {
         super(g[0].e);
-        V3D_Envelope e = g[0].getEnvelope3D();
-        xMin = e.xMin;
-        xMax = e.xMin;
-        yMin = e.yMin;
-        yMax = e.yMax;
-        zMin = e.zMin;
-        zMax = e.zMax;
+        V3D_Envelope en = g[0].getEnvelope3D();
+        xMin = en.xMin;
+        xMax = en.xMin;
+        yMin = en.yMin;
+        yMax = en.yMax;
+        zMin = en.zMin;
+        zMax = en.zMax;
         for (int i = 1; i < g.length; i++) {
-            e = g[i].getEnvelope3D();
-            xMin = xMin.min(e.xMin);
-            xMax = xMax.max(e.xMax);
-            yMin = yMin.min(e.yMin);
-            yMax = yMax.max(e.yMax);
-            zMin = zMin.min(e.zMin);
-            zMax = zMax.max(e.zMax);
+            en = g[i].getEnvelope3D();
+            xMin = xMin.min(en.xMin);
+            xMax = xMax.max(en.xMax);
+            yMin = yMin.min(en.yMin);
+            yMax = yMax.max(en.yMax);
+            zMin = zMin.min(en.zMin);
+            zMax = zMax.max(en.zMax);
         }
     }
 
     @Override
     public String toString() {
-        return this.getClass().getName() + "(" + super.toString()
-                + "xMin=" + xMin.toString() + ", xMax=" + xMax.toString() + ","
+        return this.getClass().getSimpleName()
+                + "(xMin=" + xMin.toString() + ", xMax=" + xMax.toString() + ","
                 + "yMin=" + yMin.toString() + ", yMax=" + yMax.toString() + ","
                 + "zMin=" + zMin.toString() + ", zMax=" + zMax.toString() + ")";
     }
 
+    /**
+     * @param e The V3D_Envelope for this to envelop
+     * @return The possibly expanded envelope which is this.
+     */
     public V3D_Envelope envelope(V3D_Envelope e) {
         V3D_Envelope r = new V3D_Envelope(e.e);
         r.xMin = e.xMin.min(this.xMin);
@@ -267,7 +271,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * A quick test for intersection between this and {@code l}.
      *
      * @param l A line segment to test for intersection.
-     * @return 0 if no, 1 if yes, 2 if maybe.
+     * @return -1 if no, 1 if yes, 0 if maybe.
      */
     public int getIntersectsFailFast(V3D_LineSegment l) {
         V3D_Envelope le = l.getEnvelope3D();
@@ -278,9 +282,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             if (getIntersects(l.end)) {
                 return 1;
             }
-            return 2;
-        } else {
             return 0;
+        } else {
+            return -1;
         }
     }
 
@@ -299,9 +303,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return {@code true} if this intersects with {@code p}
      */
     public boolean getIntersects(V3D_Point p) {
-        return p.x.compareTo(xMin) != -1 && p.x.compareTo(xMax) != 1
-                && p.y.compareTo(yMin) != -1 && p.y.compareTo(yMax) != 1
-                && p.z.compareTo(zMin) != -1 && p.z.compareTo(zMax) != 1;
+        return getIntersects(p.x, p.y, p.z);
     }
 
     /**
