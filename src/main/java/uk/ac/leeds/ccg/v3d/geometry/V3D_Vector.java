@@ -51,7 +51,7 @@ public class V3D_Vector {
     /**
      * @param dx What {@link #dx} is set to.
      * @param dy What {@link #dy} is set to.
-     * @param dz What {@link #dz} is set to. 
+     * @param dz What {@link #dz} is set to.
      */
     public V3D_Vector(BigDecimal dx, BigDecimal dy, BigDecimal dz) {
         this.dx = dx;
@@ -61,6 +61,7 @@ public class V3D_Vector {
 
     /**
      * Creates a vector from the origin to {@code p}
+     *
      * @param p the point to which the vector starting at the origin goes.
      */
     public V3D_Vector(V3D_Point p) {
@@ -71,15 +72,15 @@ public class V3D_Vector {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "(dx=" + dx + ",dy=" + dy + "dz="
-                + dz + ")";
+        return this.getClass().getSimpleName() + "(dx=" + dx + ", dy=" + dy
+                + ", dz=" + dz + ")";
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Vector) {
             V3D_Vector v = (V3D_Vector) o;
-            if (dx.compareTo(v.dx) == 0 && dy.compareTo(v.dy) == 0 
+            if (dx.compareTo(v.dx) == 0 && dy.compareTo(v.dy) == 0
                     && dz.compareTo(v.dz) == 0) {
                 return true;
             }
@@ -95,7 +96,7 @@ public class V3D_Vector {
         hash = 23 * hash + Objects.hashCode(this.dz);
         return hash;
     }
-    
+
     /**
      * Calculate and return the
      * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.

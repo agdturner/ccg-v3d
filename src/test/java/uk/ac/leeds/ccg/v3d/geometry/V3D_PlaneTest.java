@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -194,12 +195,12 @@ public class V3D_PlaneTest extends V3D_Test {
         assertEquals(expResult, result);
         // Test 2
         instance = getPlane(P0P0P0, P0P1P1, P0N1P0);
-        expResult = new V3D_Vector(P1P1N1);
+        expResult = new V3D_Vector(P1P0P0);
         result = instance.getNormalVector();
         assertEquals(expResult, result);
         // Test 3
-        instance = getPlane(P0P0P0, P0P1P1, P0N1P0);
-        expResult = new V3D_Vector(P1P1N1);
+        instance = getPlane(P0P0P0, P1P1P1, P0N1N1);
+        expResult = new V3D_Vector(P0P1N1);
         result = instance.getNormalVector();
         assertEquals(expResult, result);
     }
@@ -210,15 +211,30 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIntersects_3args() {
         System.out.println("intersects");
-        V3D_Plane pl = null;
-        int scale = 0;
-        RoundingMode rm = null;
-        V3D_Plane instance = null;
-        boolean expResult = false;
+        V3D_Plane pl = getPlane(P0P0P0, P1P0P0, N1P0P1);
+        int scale = 1;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Plane instance = getPlane(P0P0P0, P1P0P0, N1P0P1);
+        boolean expResult = true;
         boolean result = instance.intersects(pl, scale, rm);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Test 2
+        scale = 1;
+        rm = RoundingMode.HALF_UP;
+        instance = getPlane(N1N1N1, P0N1N1, new V3D_Point(e, 
+                BigDecimal.valueOf(-2), N1, P0));
+        expResult = false;
+        result = instance.intersects(pl, scale, rm);
+        assertEquals(expResult, result);
+        // Test 2
+        scale = 0;
+        rm = RoundingMode.HALF_UP;
+        instance = getPlane(N1N1N1, P0N1N1, new V3D_Point(e, 
+                BigDecimal.valueOf(-2), N1, P0));
+        expResult = true;
+        result = instance.intersects(pl, scale, rm);
+        assertEquals(expResult, result);
+        
     }
 
     /**
@@ -227,13 +243,11 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIntersects_V3D_Point() {
         System.out.println("intersects");
-        V3D_Point pt = null;
-        V3D_Plane instance = null;
-        boolean expResult = false;
+        V3D_Point pt = P0P0P0;
+        V3D_Plane instance = getPlane(P0P0P0, P1P0P0, N1P0P1);
+        boolean expResult = true;
         boolean result = instance.intersects(pt);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -242,13 +256,11 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsOnPlane() {
         System.out.println("isOnPlane");
-        V3D_LineSegment l = null;
-        V3D_Plane instance = null;
-        boolean expResult = false;
+        V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P0P0);
+        V3D_Plane instance = getPlane(P0P0P0, P1P0P0, N1P0P1);
+        boolean expResult = true;
         boolean result = instance.isOnPlane(l);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -257,13 +269,6 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testHashCode() {
         System.out.println("hashCode");
-        V3D_Plane instance = null;
-        int expResult = 0;
-        int result = instance.hashCode();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertTrue(true); // Not really a test - method does not need testing.
     }
-
-    
 }

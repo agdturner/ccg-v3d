@@ -126,8 +126,13 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} If this and {@code pl} intersect.
      */
     public boolean intersects(V3D_Plane pl, int scale, RoundingMode rm) {
-        // If the normal vectors are parallel, the two planes are either identical or parallel.
-        return !pl.n.isParallel(n, scale, rm);
+        /** If the normal vectors are parallel, the two planes are either 
+         * identical or parallel.
+         */
+        if (pl.n.isParallel(n, scale, rm)) {
+            return this.equals(pl);
+        }
+        return true;
     }
 
     /**
