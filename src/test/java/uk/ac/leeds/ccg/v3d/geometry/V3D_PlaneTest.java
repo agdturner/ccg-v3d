@@ -28,33 +28,29 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * V3D_PlaneTest
- * 
+ *
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_PlaneTest {
-    
-    public static V3D_Environment e;
-    public static final BigDecimal ZERO = BigDecimal.ZERO;
-    public static final BigDecimal ONE = BigDecimal.valueOf(1);
-    public static final BigDecimal TWO = BigDecimal.valueOf(2);
-        
-    public V3D_PlaneTest() {
+public class V3D_PlaneTest extends V3D_Test {
+
+    public V3D_PlaneTest() throws Exception {
+        super(new V3D_Environment(new Generic_Environment(
+                new Generic_Defaults())));
     }
-    
+
     @BeforeAll
-    public static void setUpClass() throws Exception {
-        e = new V3D_Environment(new Generic_Environment(new Generic_Defaults()));
+    public static void setUpClass() {
     }
-    
+
     @AfterAll
     public static void tearDownClass() {
     }
-    
+
     @BeforeEach
     public void setUp() {
     }
-    
+
     @AfterEach
     public void tearDown() {
     }
@@ -82,14 +78,16 @@ public class V3D_PlaneTest {
     }
 
     /**
-     * Basic method to get a plane defined by {@code p}, {@code q} and {@code r}.
+     * Basic method to get a plane defined by {@code p}, {@code q} and
+     * {@code r}.
+     *
      * @param p A point.
      * @param q A point.
      * @param r A point.
-     * @return A plan or null if the points {@code p}, {@code q} and {@code r} 
+     * @return A plan or null if the points {@code p}, {@code q} and {@code r}
      * are collinear.
      */
-    public V3D_Plane getPlane(V3D_Point p, V3D_Point q, V3D_Point r) {        
+    public V3D_Plane getPlane(V3D_Point p, V3D_Point q, V3D_Point r) {
         try {
             return new V3D_Plane(e, p, q, r);
         } catch (Exception ex) {
@@ -165,17 +163,64 @@ public class V3D_PlaneTest {
         BigDecimal x1 = ONE;
         BigDecimal y1 = ONE;
         BigDecimal z1 = ONE;
+        BigDecimal x2 = TWO;
+        BigDecimal y2 = TWO;
+        BigDecimal z2 = TWO;
         V3D_Point p = new V3D_Point(e, x0, y1, z0);
         V3D_Point q = new V3D_Point(e, x1, y1, z1);
         V3D_Point r = new V3D_Point(e, x1, y0, z0);
         Object o = getPlane(p, q, r);
-        p = new V3D_Point(e, x1, y1, z0);
+        p = new V3D_Point(e, x0, y1, z0);
         q = new V3D_Point(e, x1, y1, z1);
         r = new V3D_Point(e, x1, y0, z0);
         V3D_Plane instance = getPlane(p, q, r);
         boolean expResult = true;
         boolean result = instance.equals(o);
         assertEquals(expResult, result);
+        // Test 2
+        p = new V3D_Point(e, x1, y1, z0);
+        q = new V3D_Point(e, x1, y1, z1);
+        r = new V3D_Point(e, x1, y0, z0);
+        instance = getPlane(p, q, r);
+        expResult = false;
+        result = instance.equals(o);
+        assertEquals(expResult, result);
+        // Test 3
+        p = new V3D_Point(e, x1, y1, z1);
+        q = new V3D_Point(e, x1, y0, z0);
+        r = new V3D_Point(e, x0, y1, z0);
+        instance = getPlane(p, q, r);
+        expResult = true;
+        result = instance.equals(o);
+        assertEquals(expResult, result);
+        // Test 4
+        p = new V3D_Point(e, x1, y0, z0);
+        q = new V3D_Point(e, x0, y1, z0);
+        r = new V3D_Point(e, x1, y1, z1);
+        instance = getPlane(p, q, r);
+        expResult = true;
+        result = instance.equals(o);
+        assertEquals(expResult, result);
+        // Test 4
+        p = new V3D_Point(e, x1, y0, z0);
+        q = new V3D_Point(e, x0, y1, z0);
+        r = new V3D_Point(e, x1, y1, z1);
+        instance = getPlane(p, q, r);
+        expResult = true;
+        result = instance.equals(o);
+        assertEquals(expResult, result);
+        // Test 5
+        p = new V3D_Point(e, x0, y0, z0);
+        q = new V3D_Point(e, x1, y0, z0);
+        r = new V3D_Point(e, x0, y1, z0);
+        o = getPlane(p, q, r);
+        p = new V3D_Point(e, x0, y0, z0);
+        q = new V3D_Point(e, x2, y0, z0);
+        r = new V3D_Point(e, x0, y2, z0);
+        instance = getPlane(p, q, r);
+        expResult = true;
+        result = instance.equals(o);
+        assertEquals(expResult, result);
     }
-    
+
 }

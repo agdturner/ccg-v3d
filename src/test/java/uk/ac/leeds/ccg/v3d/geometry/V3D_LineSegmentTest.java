@@ -33,16 +33,15 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_LineSegmentTest {
+public class V3D_LineSegmentTest extends V3D_Test {
     
-    public static V3D_Environment e;
-    
-    public V3D_LineSegmentTest() {
+    public V3D_LineSegmentTest() throws Exception {
+        super(new V3D_Environment(new Generic_Environment(
+                new Generic_Defaults())));
     }
     
     @BeforeAll
-    public static void setUpClass() throws Exception {
-        e = new V3D_Environment(new Generic_Environment(new Generic_Defaults()));
+    public static void setUpClass() {
     }
     
     @AfterAll

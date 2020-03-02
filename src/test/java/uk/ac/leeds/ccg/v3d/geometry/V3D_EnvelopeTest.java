@@ -22,6 +22,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import uk.ac.leeds.ccg.generic.core.Generic_Environment;
+import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -30,11 +32,11 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_EnvelopeTest {
+public class V3D_EnvelopeTest extends V3D_Test {
 
-    public static V3D_Environment e;
-
-    public V3D_EnvelopeTest() {
+    public V3D_EnvelopeTest() throws Exception {
+        super(new V3D_Environment(new Generic_Environment(
+                new Generic_Defaults())));
     }
 
     @BeforeAll
