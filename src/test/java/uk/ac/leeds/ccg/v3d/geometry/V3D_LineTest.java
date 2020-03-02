@@ -28,29 +28,29 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * V3D_LineTest
- * 
+ *
  * @author Andy Turner
  * @version 1.0
  */
 public class V3D_LineTest extends V3D_Test {
-    
+
     public V3D_LineTest() throws Exception {
         super(new V3D_Environment(new Generic_Environment(
                 new Generic_Defaults())));
     }
-    
+
     @BeforeAll
     public static void setUpClass() {
     }
-    
+
     @AfterAll
     public static void tearDownClass() {
     }
-    
+
     @BeforeEach
     public void setUp() {
     }
-    
+
     @AfterEach
     public void tearDown() {
     }
@@ -61,12 +61,28 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        V3D_Line instance = null;
-        String expResult = "";
+        V3D_Line instance = getLine(P0P0P0, P1P0P0);
+        String expResult = "V3D_Line(p=V3D_Point(x=0, y=0, z=0), "
+                + "q=V3D_Point(x=1, y=0, z=0))";
         String result = instance.toString();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Basic method to get a line defined by {@code p} and {@code q}.
+     *
+     * @param p A point.
+     * @param q A point.
+     * @return A line or null if the points {@code p} and {@code q} are
+     * coincident.
+     */
+    public V3D_Line getLine(V3D_Point p, V3D_Point q) {
+        try {
+            return new V3D_Line(p, q);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
+        }
+        return null;
     }
 
     /**
@@ -75,13 +91,21 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testEquals() {
         System.out.println("equals");
-        Object o = null;
-        V3D_Line instance = null;
-        boolean expResult = false;
+        Object o = getLine(P0P0P0, P1P0P0);
+        V3D_Line instance = getLine(P0P0P0, P1P0P0);
+        boolean expResult = true;
         boolean result = instance.equals(o);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Test 2
+        instance = getLine(P0P0P0, N1P0P0);
+        expResult = true;
+        result = instance.equals(o);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = getLine(P0P0P0, N1P1P0);
+        expResult = false;
+        result = instance.equals(o);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -90,13 +114,26 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testGetDotProduct() {
         System.out.println("getDotProduct");
-        V3D_Line l = null;
-        V3D_Line instance = null;
-        BigDecimal expResult = null;
+        V3D_Line l = getLine(P0P0P0, P1P0P0);
+        V3D_Line instance = getLine(P0P0P0, P0P1P0);
+        BigDecimal expResult = BigDecimal.ZERO;
         BigDecimal result = instance.getDotProduct(l);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Test 2
+        instance = getLine(P0P0P0, P0P0P1);
+        expResult = BigDecimal.ZERO;
+        result = instance.getDotProduct(l);
+        assertEquals(expResult, result);
+        // Test 3
+        instance = getLine(P0P0P0, P1P0P0);
+        expResult = BigDecimal.ONE;
+        result = instance.getDotProduct(l);
+        assertEquals(expResult, result);
+        // Test 4
+        instance = getLine(P0P0P0, P1P1P1);
+        expResult = BigDecimal.ONE;
+        result = instance.getDotProduct(l);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -105,13 +142,15 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testIsOnLine() {
         System.out.println("isOnLine");
-        V3D_Point pt = null;
-        V3D_Line instance = null;
-        boolean expResult = false;
-        boolean result = instance.isOnLine(pt);
+        V3D_Line instance = getLine(P0P0P0, P1P0P0);
+        boolean expResult = true;
+        boolean result = instance.isOnLine(N1P0P0);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Test 2
+        instance = getLine(P0P0P0, P1P0P0);
+        expResult = false;
+        result = instance.isOnLine(N1P1P0);
+        assertEquals(expResult, result);
     }
-    
+
 }

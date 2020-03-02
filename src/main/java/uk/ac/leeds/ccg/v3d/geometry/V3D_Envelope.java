@@ -161,14 +161,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return The possibly expanded envelope which is this.
      */
     public V3D_Envelope envelope(V3D_Envelope e) {
-        V3D_Envelope r = new V3D_Envelope(e.e);
-        r.xMin = e.xMin.min(this.xMin);
-        r.xMax = e.xMax.max(this.xMax);
-        r.yMin = e.yMin.min(this.yMin);
-        r.yMax = e.yMax.max(this.yMax);
-        r.zMin = e.zMin.min(this.zMin);
-        r.zMax = e.zMax.max(this.zMax);
-        return r;
+        xMin = e.xMin.min(xMin);
+        xMax = e.xMax.max(xMax);
+        yMin = e.yMin.min(yMin);
+        yMax = e.yMax.max(yMax);
+        zMin = e.zMin.min(zMin);
+        zMax = e.zMax.max(zMax);
+        return this;
     }
 
     /**
@@ -290,12 +289,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
     /**
      * @param l A line segment to test for intersection.
-     * @param t The tolerance.
      * @param scale scale
      * @return {@code true} if this intersects with {@code l}.
      */
-    public boolean getIntersects(V3D_LineSegment l, BigDecimal t, int scale) {
-        return l.getIntersects(xMin, yMin, xMax, yMax, zMax, zMin, t, scale);
+    public boolean getIntersects(V3D_LineSegment l, int scale) {
+        return l.getIntersects(xMin, yMin, xMax, yMax, zMax, zMin, scale);
     }
 
     /**

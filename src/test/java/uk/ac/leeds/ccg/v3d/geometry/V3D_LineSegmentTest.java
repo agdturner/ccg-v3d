@@ -62,12 +62,11 @@ public class V3D_LineSegmentTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        V3D_Point start = new V3D_Point(e, BigDecimal.valueOf(0),
-                        BigDecimal.valueOf(0), BigDecimal.valueOf(0));
-        V3D_Point end = new V3D_Point(e, BigDecimal.valueOf(1),
-                        BigDecimal.valueOf(1), BigDecimal.valueOf(1));
+        V3D_Point start = new V3D_Point(e, P0, P0, P0);
+        V3D_Point end = new V3D_Point(e, P1, P1, P1);
         V3D_LineSegment instance = new V3D_LineSegment(start, end);
-        String expResult = "Vector_LineSegment3D()";
+        String expResult = "V3D_LineSegment(start=V3D_Point(x=0, y=0, z=0), "
+                + "end=V3D_Point(x=1, y=1, z=1))";
         String result = instance.toString();
         assertEquals(expResult, result);
     }

@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,17 +60,8 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        //BigDecimal x0 = ZERO;
-        BigDecimal y0 = ZERO;
-        BigDecimal z0 = ZERO;
-        BigDecimal x1 = ONE;
-        BigDecimal y1 = ONE;
-        BigDecimal z1 = ONE;
-        V3D_Point p = new V3D_Point(e, x1, y1, z0);
-        V3D_Point q = new V3D_Point(e, x1, y1, z1);
-        V3D_Point r = new V3D_Point(e, x1, y0, z0);
-        V3D_Plane instance = getPlane(p, q, r);
-        String expResult = "V3D_Plane(p=V3D_Point(x=1, y=1, z=0), "
+        V3D_Plane instance = getPlane(P0P0P0, P1P1P1, P1P0P0);
+        String expResult = "V3D_Plane(p=V3D_Point(x=0, y=0, z=0), "
                 + "q=V3D_Point(x=1, y=1, z=1), r=V3D_Point(x=1, y=0, z=0))";
         String result = instance.toString();
         assertEquals(expResult, result);
@@ -84,8 +74,8 @@ public class V3D_PlaneTest extends V3D_Test {
      * @param p A point.
      * @param q A point.
      * @param r A point.
-     * @return A plan or null if the points {@code p}, {@code q} and {@code r}
-     * are collinear.
+     * @return A plane or null if the points {@code p}, {@code q} and {@code r}
+     * are collinear or coincident.
      */
     public V3D_Plane getPlane(V3D_Point p, V3D_Point q, V3D_Point r) {
         try {
@@ -102,25 +92,14 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsOnPlane_V3D_Point() {
         System.out.println("isOnPlane");
-        BigDecimal y0 = ZERO;
-        BigDecimal z0 = ZERO;
-        BigDecimal x1 = ONE;
-        BigDecimal y1 = ONE;
-        BigDecimal z1 = ONE;
-        V3D_Point pt = new V3D_Point(e, x1, y0, z0);
-        V3D_Point p = new V3D_Point(e, x1, y1, z0);
-        V3D_Point q = new V3D_Point(e, x1, y1, z1);
-        V3D_Point r = new V3D_Point(e, x1, y0, z0);
-        V3D_Plane instance = getPlane(p, q, r);
+        V3D_Point pt = P1P0P0;
+        V3D_Plane instance = getPlane(P1P1P0, P1P1P1, P1P0P0);
         boolean expResult = true;
         boolean result = instance.intersects(pt);
         assertEquals(expResult, result);
         // Test2
-        pt = new V3D_Point(e, x1, y0, z1);
-        p = new V3D_Point(e, x1, y1, z0);
-        q = new V3D_Point(e, x1, y1, z1);
-        r = new V3D_Point(e, x1, y0, z0);
-        instance = getPlane(p, q, r);
+        pt = P1P0P1;
+        instance = getPlane(P1P1P0, P1P1P1, P1P0P0);
         expResult = true;
         result = instance.intersects(pt);
         assertEquals(expResult, result);
@@ -132,22 +111,32 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsOnPlane_V3D_LineSegment() {
         System.out.println("isOnPlane");
-        //BigDecimal x0 = ZERO;
-        BigDecimal y0 = ZERO;
-        BigDecimal z0 = ZERO;
-        BigDecimal x1 = ONE;
-        BigDecimal y1 = ONE;
-        BigDecimal z1 = ONE;
-        BigDecimal z2 = TWO;
-        V3D_Point start = new V3D_Point(e, x1, y0, z1);
-        V3D_Point end = new V3D_Point(e, x1, y0, z2);
-        V3D_LineSegment l = new V3D_LineSegment(start, end);
-        V3D_Point p = new V3D_Point(e, x1, y1, z0);
-        V3D_Point q = new V3D_Point(e, x1, y1, z1);
-        V3D_Point r = new V3D_Point(e, x1, y0, z0);
-        V3D_Plane instance = getPlane(p, q, r);
-        boolean expResult = true;
+        V3D_Point end = new V3D_Point(e, P0, P0, P2);
+        V3D_LineSegment l = new V3D_LineSegment(P1P0P1, end);
+        V3D_Plane instance = getPlane(P1P1P0, P1P1P1, P1P0P0);
+        boolean expResult = false;
         boolean result = instance.isOnPlane(l);
+        assertEquals(expResult, result);
+        // Test 2
+        end = new V3D_Point(e, P1, P0, P2);
+        l = new V3D_LineSegment(P1P0P1, end);
+        instance = getPlane(P1P1P0, P1P1P1, P1P0P0);
+        expResult = true;
+        result = instance.isOnPlane(l);
+        assertEquals(expResult, result);
+        // Test 3
+        end = new V3D_Point(e, P1, P0, P2);
+        l = new V3D_LineSegment(P1P0P1, end);
+        instance = getPlane(P1P1P0, P1P1P1, P1P0P0);
+        expResult = true;
+        result = instance.isOnPlane(l);
+        assertEquals(expResult, result);
+        // Test 4
+        end = new V3D_Point(e, P1, P10, P10);
+        l = new V3D_LineSegment(P1N1N1, end);
+        instance = getPlane(P1P1P0, P1P1P1, P1P0P0);
+        expResult = true;
+        result = instance.isOnPlane(l);
         assertEquals(expResult, result);
     }
 
@@ -157,70 +146,40 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testEquals() {
         System.out.println("equals");
-        BigDecimal x0 = ZERO;
-        BigDecimal y0 = ZERO;
-        BigDecimal z0 = ZERO;
-        BigDecimal x1 = ONE;
-        BigDecimal y1 = ONE;
-        BigDecimal z1 = ONE;
-        BigDecimal x2 = TWO;
-        BigDecimal y2 = TWO;
-        BigDecimal z2 = TWO;
-        V3D_Point p = new V3D_Point(e, x0, y1, z0);
-        V3D_Point q = new V3D_Point(e, x1, y1, z1);
-        V3D_Point r = new V3D_Point(e, x1, y0, z0);
-        Object o = getPlane(p, q, r);
-        p = new V3D_Point(e, x0, y1, z0);
-        q = new V3D_Point(e, x1, y1, z1);
-        r = new V3D_Point(e, x1, y0, z0);
-        V3D_Plane instance = getPlane(p, q, r);
+        Object o = getPlane(P0P1P0, P1P1P1, P1P0P0);
+        V3D_Plane instance = getPlane(P0P1P0, P1P1P1, P1P0P0);
         boolean expResult = true;
         boolean result = instance.equals(o);
         assertEquals(expResult, result);
         // Test 2
-        p = new V3D_Point(e, x1, y1, z0);
-        q = new V3D_Point(e, x1, y1, z1);
-        r = new V3D_Point(e, x1, y0, z0);
-        instance = getPlane(p, q, r);
+        instance = getPlane(P1P1P0, P1P1P1, P1P0P0);
         expResult = false;
         result = instance.equals(o);
         assertEquals(expResult, result);
         // Test 3
-        p = new V3D_Point(e, x1, y1, z1);
-        q = new V3D_Point(e, x1, y0, z0);
-        r = new V3D_Point(e, x0, y1, z0);
-        instance = getPlane(p, q, r);
+        instance = getPlane(P1P1P1, P1P0P0, P0P1P0);
         expResult = true;
         result = instance.equals(o);
         assertEquals(expResult, result);
         // Test 4
-        p = new V3D_Point(e, x1, y0, z0);
-        q = new V3D_Point(e, x0, y1, z0);
-        r = new V3D_Point(e, x1, y1, z1);
-        instance = getPlane(p, q, r);
+        instance = getPlane(P1P0P0, P0P1P0, P1P1P1);
         expResult = true;
         result = instance.equals(o);
         assertEquals(expResult, result);
         // Test 4
-        p = new V3D_Point(e, x1, y0, z0);
-        q = new V3D_Point(e, x0, y1, z0);
-        r = new V3D_Point(e, x1, y1, z1);
-        instance = getPlane(p, q, r);
+        instance = getPlane(P1P0P0, P0P1P0, P1P1P1);
         expResult = true;
         result = instance.equals(o);
         assertEquals(expResult, result);
         // Test 5
-        p = new V3D_Point(e, x0, y0, z0);
-        q = new V3D_Point(e, x1, y0, z0);
-        r = new V3D_Point(e, x0, y1, z0);
-        o = getPlane(p, q, r);
-        p = new V3D_Point(e, x0, y0, z0);
-        q = new V3D_Point(e, x2, y0, z0);
-        r = new V3D_Point(e, x0, y2, z0);
-        instance = getPlane(p, q, r);
+        o = getPlane(P0P0P0, P1P0P0, P0P1P0);
+        V3D_Point q = new V3D_Point(e, P2, P0, P0);
+        V3D_Point r = new V3D_Point(e, P0, P2, P0);
+        instance = getPlane(P0P0P0, q, r);
         expResult = true;
         result = instance.equals(o);
         assertEquals(expResult, result);
     }
 
+    
 }

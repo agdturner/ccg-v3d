@@ -61,11 +61,9 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        BigDecimal x = BigDecimal.ZERO;
-        BigDecimal y = BigDecimal.ZERO;
-        BigDecimal z = BigDecimal.ZERO;
-        V3D_Envelope instance = new V3D_Envelope(e, x, y, z);
-        String expResult = "V3D_Envelope(xMin=0, xMax=0,yMin=0, yMax=0,zMin=0, zMax=0)";
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P0P0P0);
+        String expResult = "V3D_Envelope(xMin=0, xMax=0,yMin=0, yMax=0,zMin=0,"
+                + " zMax=0)";
         String result = instance.toString();
         assertEquals(expResult, result);
     }
@@ -76,17 +74,9 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testEnvelope() {
         System.out.println("envelope");
-        BigDecimal x = BigDecimal.ZERO;
-        BigDecimal y = BigDecimal.ZERO;
-        BigDecimal z = BigDecimal.ZERO;
-        V3D_Point p1 = new V3D_Point(e, x, y, z);
-        V3D_Envelope e1 = new V3D_Envelope(e, x, y, z);
-         x = BigDecimal.ONE;
-         y = BigDecimal.ONE;
-         z = BigDecimal.ONE;
-        V3D_Point p2 = new V3D_Point(e, x, y, z);
-        V3D_Envelope instance = new V3D_Envelope(e, x, y, z);
-        V3D_Envelope expResult = new V3D_Envelope(p1, p2);
+        V3D_Envelope e1 = new V3D_Envelope(P0P0P0, P0P0P0);
+        V3D_Envelope instance = new V3D_Envelope(P1P1P1, P1P1P1);
+        V3D_Envelope expResult = new V3D_Envelope(P0P0P0, P1P1P1);
         V3D_Envelope result = instance.envelope(e1);
         assertEquals(expResult, result);
     }
@@ -97,18 +87,10 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testGetIntersects_V3D_Envelope() {
         System.out.println("getIntersects");
-        BigDecimal x = BigDecimal.ZERO;
-        BigDecimal y = BigDecimal.ZERO;
-        BigDecimal z = BigDecimal.ZERO;
-        V3D_Point p1 = new V3D_Point(e, x, y, z);
-         x = BigDecimal.ONE;
-         y = BigDecimal.ONE;
-         z = BigDecimal.ONE;
-        V3D_Point p2 = new V3D_Point(e, x, y, z);
-        V3D_Envelope instance = new V3D_Envelope(e, x, y, z);
-        V3D_Envelope en = new V3D_Envelope(p1, p2);
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P0P0P0);
+        V3D_Envelope e000111 = new V3D_Envelope(P0P0P0, P1P1P1);
         boolean expResult = true;
-        boolean result = instance.getIntersects(en);
+        boolean result = instance.getIntersects(e000111);
         assertEquals(expResult, result);
     }
 
@@ -118,17 +100,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testGetIntersectsFailFast() {
         System.out.println("getIntersectsFailFast");
-        BigDecimal x = BigDecimal.ZERO;
-        BigDecimal y = BigDecimal.ZERO;
-        BigDecimal z = BigDecimal.ZERO;
-        V3D_Point p1 = new V3D_Point(e, x, y, z);
-         x = BigDecimal.ONE;
-         y = BigDecimal.ONE;
-         z = BigDecimal.ONE;
-        V3D_Point p2 = new V3D_Point(e, x, y, z);
-        V3D_Envelope instance = new V3D_Envelope(e, x, y, z);
-        V3D_Envelope en = new V3D_Envelope(p1, p2);
-        V3D_LineSegment l = new V3D_LineSegment(p1, p2);
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P0P0P0);
+        V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
         int expResult = 1;
         int result = instance.getIntersectsFailFast(l);
         assertEquals(expResult, result);
@@ -140,23 +113,12 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testGetIntersects_3args_1() {
         System.out.println("getIntersects");
-        BigDecimal x = BigDecimal.ZERO;
-        BigDecimal y = BigDecimal.ZERO;
-        BigDecimal z = BigDecimal.ZERO;
-        V3D_Point p1 = new V3D_Point(e, x, y, z);
-         x = BigDecimal.ONE;
-         y = BigDecimal.ONE;
-         z = BigDecimal.ONE;
-        V3D_Point p2 = new V3D_Point(e, x, y, z);
-        V3D_Envelope instance = new V3D_Envelope(e, x, y, z);
-        V3D_LineSegment l = new V3D_LineSegment(p1, p2);
-        BigDecimal t = null;
+        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
+        V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
         int scale = 0;
-        boolean expResult = false;
-        boolean result = instance.getIntersects(l, t, scale);
+        boolean expResult = true;
+        boolean result = instance.getIntersects(l, scale);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -165,17 +127,9 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testGetIntersects_V3D_Point() {
         System.out.println("getIntersects");
-        BigDecimal x = BigDecimal.ZERO;
-        BigDecimal y = BigDecimal.ZERO;
-        BigDecimal z = BigDecimal.ZERO;
-        V3D_Point p1 = new V3D_Point(e, x, y, z);
-         x = BigDecimal.ONE;
-         y = BigDecimal.ONE;
-         z = BigDecimal.ONE;
-        V3D_Point p2 = new V3D_Point(e, x, y, z);
-        V3D_Envelope instance = new V3D_Envelope(p1, p2);
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
         boolean expResult = true;
-        boolean result = instance.getIntersects(p1);
+        boolean result = instance.getIntersects(P0P0P0);
         assertEquals(expResult, result);
     }
 
@@ -184,17 +138,9 @@ public class V3D_EnvelopeTest extends V3D_Test {
      */
     @Test
     public void testGetIntersects_3args_2() {
-        BigDecimal x = BigDecimal.ZERO;
-        BigDecimal y = BigDecimal.ZERO;
-        BigDecimal z = BigDecimal.ZERO;
-        V3D_Point p1 = new V3D_Point(e, x, y, z);
-         x = BigDecimal.ONE;
-         y = BigDecimal.ONE;
-         z = BigDecimal.ONE;
-        V3D_Point p2 = new V3D_Point(e, x, y, z);
-        V3D_Envelope instance = new V3D_Envelope(p1, p2);
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
         boolean expResult = true;
-        boolean result = instance.getIntersects(x, y, z);
+        boolean result = instance.getIntersects(P0, P0, P0);
         assertEquals(expResult, result);
     }
 
@@ -212,8 +158,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
          y = BigDecimal.ONE;
          z = BigDecimal.ONE;
         V3D_Point p2 = new V3D_Point(e, x, y, z);
-        V3D_Envelope instance = new V3D_Envelope(p1, p2);
-        V3D_Envelope expResult = new V3D_Envelope(p1, p2);
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
+        V3D_Envelope expResult = new V3D_Envelope(P0P0P0, P1P1P1);
         V3D_Envelope result = instance.getEnvelope3D();
         assertEquals(expResult, result);
     }
@@ -224,16 +170,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testEquals() {
         System.out.println("equals");
-        BigDecimal x = BigDecimal.ZERO;
-        BigDecimal y = BigDecimal.ZERO;
-        BigDecimal z = BigDecimal.ZERO;
-        V3D_Point p1 = new V3D_Point(e, x, y, z);
-         x = BigDecimal.ONE;
-         y = BigDecimal.ONE;
-         z = BigDecimal.ONE;
-        V3D_Point p2 = new V3D_Point(e, x, y, z);
-        V3D_Envelope instance = new V3D_Envelope(p1, p2);
-        Object o = new V3D_Envelope(p1, p2);
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
+        Object o = new V3D_Envelope(P0P0P0, P1P1P1);
         boolean expResult = true;
         boolean result = instance.equals(o);
         assertEquals(expResult, result);

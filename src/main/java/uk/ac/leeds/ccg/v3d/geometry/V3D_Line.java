@@ -16,24 +16,54 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Objects;
+import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
- * Class for a line in 3D represented by two points {@link #p} and {@link #q} 
- * and the following parametric equations:
+ * Class for a line in 3D represented by two points {@link #p} and {@link #q}
+ * and the following equations:
  * <ul>
- * <li>x = p.x + t*(q.x-(p.x))</li>
- * <li>y = p.y + t*(p.y-(p.y))</li>
- * <li>z = p.z + t*(q.z-(p.z))</li>
+ * <li>Vector Form:
+ * <ul>
+ * <li>(x,y,z)=(x0,y0,z0)+t(a,b,c)</li>
+ * <li>Where t describes a particular point on the line.</li>
  * </ul>
+ * </li>
+ * <li>Parametric Form:
+ * <ul>
+ * <li>x = x0 + ta</li>
+ * <li>y = y0 + tb</li>
+ * <li>z = z0 + tc</li>
+ * </ul>
+ * <li>Symmetric Form:
+ * <ul>
+ * <li>(x−x0)/a = (y−y0)/b = (z−z0) / c</li>
+ * <li>Where it is assumed that a,b, and c are all nonzero.</li>
+ * </ul>
+ * </ul>
+ *
  * The line is infinite.
- * 
+ *
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Line extends V3D_Geometry  {
+public class V3D_Line extends V3D_Geometry {
 
+    /**
+     * A point defining the line.
+     */
     public V3D_Point p;
+
+    /**
+     * A point defining the line.
+     */
     public V3D_Point q;
+
+    /**
+     * The direction vector from p in the direction of q.
+     */
+    public V3D_Vector pq;
 
     /**
      * @param p What {@link #p} is set to.
@@ -42,12 +72,14 @@ public class V3D_Line extends V3D_Geometry  {
      */
     public V3D_Line(V3D_Point p, V3D_Point q) throws Exception {
         super(p.e);
-        if(p.equals(q)) {
+        if (p.equals(q)) {
             throw new Exception("The inputs p and q are the same point and do "
                     + "not define a line.");
         }
         this.p = new V3D_Point(p);
         this.q = new V3D_Point(q);
+        pq = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
+                q.z.subtract(p.z));
     }
 
     /**
@@ -69,13 +101,19 @@ public class V3D_Line extends V3D_Geometry  {
     public boolean equals(Object o) {
         if (o instanceof V3D_Line) {
             V3D_Line l = (V3D_Line) o;
-                if (this.isOnLine(l.p)) {
-                    if (this.isOnLine(l.q)) {
-                        return true;
-                    }
-                }
+            if (this.isOnLine(l.p) && this.isOnLine(l.q)) {
+                return true;
+            }
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + Objects.hashCode(this.p);
+        hash = 17 * hash + Objects.hashCode(this.q);
+        return hash;
     }
 
     /**
@@ -112,13 +150,42 @@ public class V3D_Line extends V3D_Geometry  {
 //                p.y.add(dy), p.z.add(dz));
 //        return new V3D_Line(p, newEnd);
 //    }
-
     /**
      *
-     * @param pt A point to test for intersection within the specified tolerance.
+     * @param pt A point to test for intersection within the specified
+     * tolerance.
      * @return {@code true} if p is on the line.
      */
     public boolean isOnLine(V3D_Point pt) {
-        return false;
+        V3D_Vector ppt = new V3D_Vector(pt.x.subtract(p.x), pt.y.subtract(p.y),
+                pt.z.subtract(p.z));
+        V3D_Vector cp = pq.getCrossProduct(ppt);
+//        BigDecimal scalar = ppt.getDotProduct(pq);
+//        BigDecimal magnitude = Math_BigDecimal.sqrt(
+//                pq.dx.pow(2).add(pq.dy.pow(2).add(pq.dz.pow(2))), scale, rm);
+//        V3D_Point up = new V3D_Point(e, pq.dx.multiply(magnitude), 
+//                pq.dy.multiply(magnitude), pq.dz.multiply(magnitude));
+//        
+//        V3D_Vector u = new V3D_Vector(pt, up);
+//        // Is ppt a scalar product of pq?
+//        BigDecimal t = pt.x.divide(pq.dx);
+//        if (pt.y.divide(pq.dy).compareTo(t) == 0 &&
+//            pt.z.divide(pq.dz).compareTo(t) == 0) {
+//            return true;
+//        }
+//        return false;
+        return cp.dx.compareTo(BigDecimal.ZERO) == 0
+                && cp.dy.compareTo(BigDecimal.ZERO) == 0
+                && cp.dz.compareTo(BigDecimal.ZERO) == 0;
     }
+
+//    /**
+//     * Calculate and return the closest distance from pt to the line.
+//     * @param pt
+//     * @return 
+//     */
+//    public BigDecimal getDistance(V3D_Point pt) {
+//        
+//        
+//    }
 }

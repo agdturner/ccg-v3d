@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * You may obtain xxx copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -26,16 +26,16 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * non-collinear V3D_Vectors {@link #pq} and {@link #pr}. The equation of the
  * plane is:
  * <ul>
- * <li>a*(x-x0) + b*(y-y0) + c*(z-z0 = 0</li>
+ * <li>xxx*(x-x0) + yyy*(y-y0) + zzz*(z-z0 = 0</li>
  * </ul>
  * where:
  * <ul>
  * <li>x, y, and z are any of the coordinates in {@link #p}, {@link #q} and
  * {@link #r}</li>
  * <li>x0, y0 and z0 represents any other point in the plane</li>
- * <li>{@code a = pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz))}</li>
- * <li>{@code b = (pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz))).negate()}</li>
- * <li>{@code c = pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy))}</li>
+ * <li>{@code xxx = pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz))}</li>
+ * <li>{@code yyy = (pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz))).negate()}</li>
+ * <li>{@code zzz = pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy))}</li>
  * </ul>
  *
  * @author Andy Turner
@@ -69,19 +69,9 @@ public class V3D_Plane extends V3D_Geometry {
     public final V3D_Vector pr;
 
     /**
-     * The normal perpendicular vector x.
+     * The normal vector.
      */
-    public BigDecimal a;
-
-    /**
-     * The normal perpendicular vector y.
-     */
-    public BigDecimal b;
-    
-    /**
-     * The normal perpendicular vector z.
-     */
-    public BigDecimal c;
+    public V3D_Vector n;
 
     /**
      * @param e V3D_Environment
@@ -99,17 +89,17 @@ public class V3D_Plane extends V3D_Geometry {
         /**
          * The normal perpendicular vector = n.
          */
-        a = pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz));
-        b = pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz)).negate();
-        c = pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy));
-        //V3D_Vector n = new V3D_Vector(a, b, c);
+        n = new V3D_Vector(pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz)),
+                pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz)).negate(),
+                pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy))
+        );
         this.p = p;
         this.q = q;
         this.r = r;
         // Check for collinearity
-        if (a.compareTo(BigDecimal.ZERO) == 0 && 
-                b.compareTo(BigDecimal.ZERO) == 0 &&
-                c.compareTo(BigDecimal.ZERO) == 0) {
+        if (n.dx.compareTo(BigDecimal.ZERO) == 0
+                && n.dy.compareTo(BigDecimal.ZERO) == 0
+                && n.dz.compareTo(BigDecimal.ZERO) == 0) {
             throw new Exception("The three points do not define a plane, but are "
                     + "collinear (they might all be the same point!");
         }
@@ -121,13 +111,27 @@ public class V3D_Plane extends V3D_Geometry {
                 + ", q=" + q.toString() + ", r=" + r.toString() + ")";
     }
 
+    public V3D_Vector getNormalVector() {
+        return n;
+    }
+
+//    /**
+//     * @param pl The plane to test for intersection with this.
+//     * @return {@code true} If this and {@code pl} intersect.
+//     */
+//    public boolean intersects(V3D_Plane pl) {
+//        BigDecimal d = n.dx.multiply(p.x.subtract(pt.x)).add(n.dy.multiply(p.y
+//                .subtract(pt.y))).add(n.dz.multiply(p.z.subtract(pt.z)));
+//        return d.compareTo(BigDecimal.ZERO) == 0;
+//    }
+
     /**
      * @param pt The point to test if it is on the plane.
-     * @return {@code true} If {@code pt} is on the plane. 
+     * @return {@code true} If {@code pt} is on the plane.
      */
     public boolean intersects(V3D_Point pt) {
-        BigDecimal d = a.multiply(p.x.subtract(pt.x)).add(b.multiply(p.y
-                .subtract(pt.y))).add(c.multiply(p.z.subtract(pt.z)));
+        BigDecimal d = n.dx.multiply(p.x.subtract(pt.x)).add(n.dy.multiply(p.y
+                .subtract(pt.y))).add(n.dz.multiply(p.z.subtract(pt.z)));
         return d.compareTo(BigDecimal.ZERO) == 0;
         // Alternative:
         // p.x = l*(ab.x)+m*(ac.x) ---1
@@ -148,19 +152,19 @@ public class V3D_Plane extends V3D_Geometry {
 
     /**
      * @param l The line segment to test if it is on the plane.
-     * @return {@code true} If {@code pt} is on the plane. 
+     * @return {@code true} If {@code pt} is on the plane.
      */
     public boolean isOnPlane(V3D_LineSegment l) {
-        return V3D_Plane.this.intersects(l.start) && V3D_Plane.this.intersects(l.end);
+        return intersects(l.start) && intersects(l.end);
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Plane) {
             V3D_Plane pl = (V3D_Plane) o;
-            if (V3D_Plane.this.intersects(pl.p)) {
-                if (V3D_Plane.this.intersects(pl.q)) {
-                    if (V3D_Plane.this.intersects(pl.r)) {
+            if (intersects(pl.p)) {
+                if (intersects(pl.q)) {
+                    if (intersects(pl.r)) {
                         return true;
                     }
                 }

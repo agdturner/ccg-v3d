@@ -102,11 +102,10 @@ public class V3D_Point extends V3D_Geometry
     /**
      * @param l Line
      * @param scale scale
-     * @param t tolerance
      * @return {@code true} if this is within {@code t} distance of {@code l}.
      */
-    public boolean getIntersects(V3D_LineSegment l, BigDecimal t, int scale) {
-        return l.getIntersects(this, t, scale);
+    public boolean getIntersects(V3D_LineSegment l, int scale) {
+        return l.getIntersects(this, scale);
     }
 
     /**

@@ -136,18 +136,16 @@ public class V3D_LineSegment extends V3D_Geometry
 
     public boolean getIntersects(BigDecimal xMin, BigDecimal yMin,
             BigDecimal xMax, BigDecimal yMax, BigDecimal zMin,
-            BigDecimal zMax, BigDecimal t, int scale) {
+            BigDecimal zMax, int scale) {
         return false; // @Todo
     }
 
     /**
-     *
      * @param p A point to test for intersection within the specified tolerance.
-     * @param t The tolerance.
      * @param scale The scale.
      * @return true if p is within t of this given scale.
      */
-    public boolean getIntersects(V3D_Point p, BigDecimal t, int scale) {
+    public boolean getIntersects(V3D_Point p, int scale) {
         return false;
     }
 }
