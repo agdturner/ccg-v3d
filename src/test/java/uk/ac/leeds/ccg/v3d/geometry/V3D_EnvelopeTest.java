@@ -111,7 +111,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
      * Test of getIntersects method, of class V3D_Envelope.
      */
     @Test
-    public void testGetIntersects_3args_1() {
+    public void testGetIntersects_3args_1() throws Exception {
         System.out.println("getIntersects");
         V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
         V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
@@ -175,6 +175,44 @@ public class V3D_EnvelopeTest extends V3D_Test {
         boolean expResult = true;
         boolean result = instance.equals(o);
         assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getIntersects method, of class V3D_Envelope.
+     */
+    @Test
+    public void testGetIntersects_V3D_LineSegment_int() throws Exception {
+        System.out.println("getIntersects");
+        V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
+        int scale = 1;
+        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
+        boolean expResult = true;
+        boolean result = instance.getIntersects(l, scale);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getIntersects method, of class V3D_Envelope.
+     */
+    @Test
+    public void testGetIntersects_3args() {
+        System.out.println("getIntersects");
+        BigDecimal x = P0;
+        BigDecimal y = P0;
+        BigDecimal z = P0;
+        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
+        boolean expResult = true;
+        boolean result = instance.getIntersects(x, y, z);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of hashCode method, of class V3D_Envelope.
+     */
+    @Test
+    public void testHashCode() {
+        System.out.println("hashCode");
+        assertTrue(true); // None test.
     }
 
 }

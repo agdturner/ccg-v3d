@@ -292,8 +292,39 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param scale scale
      * @return {@code true} if this intersects with {@code l}.
      */
-    public boolean getIntersects(V3D_LineSegment l, int scale) {
-        return l.getIntersects(xMin, yMin, xMax, yMax, zMax, zMin, scale);
+    public boolean getIntersects(V3D_LineSegment l, int scale) throws Exception {
+        /**
+         * Check if the start or end of l is within this.
+         */
+        if (getIntersects(l.start)) {
+            return true;
+        }
+        if (getIntersects(l.end)) {
+            return true;
+        }        
+        /**
+         * Check if l intersects any of the finite planes which defines the
+         * faces of the box.
+         */
+        V3D_Point p0p0p0 = new V3D_Point(e, xMin, yMin, zMin);
+        V3D_Point p0p0p1 = new V3D_Point(e, xMin, yMin, zMax);
+        V3D_Point p0p1p0 = new V3D_Point(e, xMin, yMax, zMin);
+        V3D_Point p0p1p1 = new V3D_Point(e, xMin, yMax, zMax);
+        V3D_Point p1p0p0 = new V3D_Point(e, xMax, yMin, zMin);
+        V3D_Point p1p0p1 = new V3D_Point(e, xMax, yMin, zMax);
+        V3D_Point p1p1p0 = new V3D_Point(e, xMax, yMax, zMin);
+        V3D_Point p1p1p1 = new V3D_Point(e, xMax, yMax, zMax);
+        V3D_FinitePlane x0 = new V3D_FinitePlane(e, p0p0p0, p0p0p1, p0p1p1);
+        V3D_FinitePlane x1 = new V3D_FinitePlane(e, p1p0p0, p1p0p1, p1p1p1);
+        V3D_FinitePlane y0 = new V3D_FinitePlane(e, p0p0p0, p1p0p0, p1p0p1);
+        V3D_FinitePlane y1 = new V3D_FinitePlane(e, p0p1p0, p1p1p0, p1p1p1);
+        V3D_FinitePlane z0 = new V3D_FinitePlane(e, p0p0p0, p1p0p0, p1p1p0);
+        V3D_FinitePlane z1 = new V3D_FinitePlane(e, p0p0p1, p1p0p1, p1p1p1);
+//        if(l.getIntersects(x0) ||
+//                l.getIntersects(x1)) {
+//            return true;
+//        }
+        return false;
     }
 
     /**

@@ -66,6 +66,14 @@ public class V3D_Line extends V3D_Geometry {
     public V3D_Vector pq;
 
     /**
+     * The unit normal vector. If the line was moved to the origin, then this is 
+     * the vector describing the direction of length 1. The scale of n gives the
+     * precision. Only if the direction aligns with an axis is this 100% 
+     * accurate.
+     */
+    public V3D_Vector n;
+
+    /**
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @throws java.lang.Exception If p and q are coincident.
@@ -188,4 +196,12 @@ public class V3D_Line extends V3D_Geometry {
 //        
 //        
 //    }
+    
+    /**
+     * @param pl
+     * @return {@code true} if this intersects {@pl}. 
+     */
+    public boolean getIntersects(V3D_Plane pl) {
+        throw new UnsupportedOperationException();
+    }
 }

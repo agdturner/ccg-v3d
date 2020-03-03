@@ -179,4 +179,17 @@ public class V3D_Vector {
                 dx.multiply(v.dy).subtract(v.dx.multiply(dy)));
     }
 
+    /**
+     * Scales the vector by the magnitude so that it has length 1
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return this scaled by the magnitude.
+     */
+    public V3D_Vector getUnitVector(int scale, RoundingMode rm) {
+        BigDecimal m = getMagnitude(scale + 2, rm);
+        return new V3D_Vector(
+                Math_BigDecimal.divideRoundIfNecessary(dx, m, scale, rm),
+                Math_BigDecimal.divideRoundIfNecessary(dy, m, scale, rm),
+                Math_BigDecimal.divideRoundIfNecessary(dz, m, scale, rm));
+    }
 }

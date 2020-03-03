@@ -184,24 +184,24 @@ public class V3D_PlaneTest extends V3D_Test {
     }
 
     /**
-     * Test of getNormalVector method, of class V3D_Plane.
+     * Test of getNPerp method, of class V3D_Plane.
      */
     @Test
     public void testGetNormalVector() {
         System.out.println("getNormalVector");
         V3D_Plane instance = getPlane(P0P1P0, P1P1P1, P1P0P0);
         V3D_Vector expResult = new V3D_Vector(P1P1N1);
-        V3D_Vector result = instance.getNormalVector();
+        V3D_Vector result = instance.getNPerp();
         assertEquals(expResult, result);
         // Test 2
         instance = getPlane(P0P0P0, P0P1P1, P0N1P0);
         expResult = new V3D_Vector(P1P0P0);
-        result = instance.getNormalVector();
+        result = instance.getNPerp();
         assertEquals(expResult, result);
         // Test 3
         instance = getPlane(P0P0P0, P1P1P1, P0N1N1);
         expResult = new V3D_Vector(P0P1N1);
-        result = instance.getNormalVector();
+        result = instance.getNPerp();
         assertEquals(expResult, result);
     }
 

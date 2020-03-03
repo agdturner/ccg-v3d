@@ -134,10 +134,13 @@ public class V3D_LineSegment extends V3D_Geometry
         return new V3D_LineSegment(start, newEnd);
     }
 
-    public boolean getIntersects(BigDecimal xMin, BigDecimal yMin,
-            BigDecimal xMax, BigDecimal yMax, BigDecimal zMin,
-            BigDecimal zMax, int scale) {
-        return false; // @Todo
+    /**
+     * @param en The envelope to test.
+     * @param scale The scale for the precision of the test.
+     * @return {@code true} if this intersects with {@code en}.
+     */
+    public boolean getIntersects(V3D_Envelope en, int scale) throws Exception {
+        return en.getIntersects(this, scale);
     }
 
     /**

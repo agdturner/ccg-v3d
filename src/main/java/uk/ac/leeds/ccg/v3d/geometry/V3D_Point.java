@@ -100,12 +100,20 @@ public class V3D_Point extends V3D_Geometry
     }
 
     /**
-     * @param l Line
+     * @param l The line to test for intersection with this.
      * @param scale scale
      * @return {@code true} if this is within {@code t} distance of {@code l}.
      */
     public boolean getIntersects(V3D_LineSegment l, int scale) {
         return l.getIntersects(this, scale);
+    }
+    
+    /**
+     * @param env The envelope to test.
+     * @return {@code true} if this is within {@code env}.
+     */
+    public boolean getIntersects(V3D_Envelope env) {
+        return env.getIntersects(this);
     }
 
     /**
