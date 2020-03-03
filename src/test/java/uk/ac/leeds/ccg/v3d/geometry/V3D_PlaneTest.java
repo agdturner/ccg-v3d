@@ -207,17 +207,18 @@ public class V3D_PlaneTest extends V3D_Test {
         // Test 3
         scale = 0;
         rm = RoundingMode.HALF_UP;
+        pl = getPlane(P0P0P0, P1P0P0, N1P0P1);
         instance = getPlane(N1N1N1, P0N1N1, new V3D_Point(e,
                 BigDecimal.valueOf(-2), N1, P0));
         System.out.println("pl.getNPerp()=" + pl.getNormalVector());
         System.out.println("instance.getNPerp()=" + instance.getNormalVector());
-        expResult = false; // Really these planes do intersect! 
+        expResult = false; 
         result = instance.intersects(pl, scale, rm);
         assertEquals(expResult, result);
         // Test 4
         scale = 2;
         rm = RoundingMode.HALF_UP;
-        expResult = false; // Really these planes do intersect! 
+        expResult = false;
         result = instance.intersects(pl, scale, rm);
         assertEquals(expResult, result);
     }
@@ -300,7 +301,7 @@ public class V3D_PlaneTest extends V3D_Test {
         // Test 8
         instance = getPlane(P0P0P0, P1P0P0, N1P0P1); // X = 0
         expResult = new V3D_Vector(P0N1P0); // This is the other normal than for
-        result = instance.getNormalVector();       // test 7 due to the right hand rule  
+        result = instance.getNormalVector();// test 7 due to the right hand rule  
         assertEquals(expResult, result);    // and the orientation.
         instance = getPlane(P0P1P0, P1P1P1, P1P0P0);
         expResult = new V3D_Vector(P1P1N1);
@@ -324,15 +325,13 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIntersects_3args_1() {
         System.out.println("intersects");
-        V3D_Plane pl = null;
-        int scale = 0;
-        RoundingMode rm = null;
-        V3D_Plane instance = null;
-        boolean expResult = false;
+        V3D_Plane pl = getPlane(P1P0P0, P0P1P0, N1P0P0); // Z = 0 plane
+        int scale = 1;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Plane instance = getPlane(P1P0P1, P0P0P1, N1P0N1); // Y = 0 plane
+        boolean expResult = true;
         boolean result = instance.intersects(pl, scale, rm);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -341,14 +340,12 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIntersects_3args_2() {
         System.out.println("intersects");
-        V3D_Line l = null;
-        int scale = 0;
-        RoundingMode rm = null;
-        V3D_Plane instance = null;
-        boolean expResult = false;
+        V3D_Line l = new V3D_Line(P0P0P0, P0P1P0); // X axis
+        int scale = 1;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Plane instance = getPlane(P1P0P1, P0P0P1, N1P0N1); // Y = 0 plane
+        boolean expResult = true;
         boolean result = instance.intersects(l, scale, rm);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 }

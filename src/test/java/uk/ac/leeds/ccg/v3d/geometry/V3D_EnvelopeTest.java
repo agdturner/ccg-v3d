@@ -111,7 +111,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
      * Test of getIntersects method, of class V3D_Envelope.
      */
     @Test
-    public void testGetIntersects_3args_1() throws Exception {
+    public void testGetIntersects_3args_1() {
         System.out.println("getIntersects");
         V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
         V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
