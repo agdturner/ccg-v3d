@@ -88,7 +88,7 @@ public class V3D_Plane extends V3D_Geometry {
         pq = new V3D_Vector(p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
         pr = new V3D_Vector(p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
         /**
-         * The normal perpendicular vector = n.
+         * Calculate the normal perpendicular vector.
          */
         nPerp = new V3D_Vector(pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz)),
                 pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz)).negate(),
@@ -126,7 +126,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} If this and {@code pl} intersect.
      */
     public boolean intersects(V3D_Plane pl, int scale, RoundingMode rm) {
-        /** If the normal vectors are parallel, the two planes are either 
+        /**
+         * If the normal vectors are parallel, the two planes are either 
          * identical or parallel.
          */
         if (pl.nPerp.isParallel(nPerp, scale, rm)) {

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
+import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -532,13 +533,61 @@ public class V3D_VectorTest extends V3D_Test {
     public void testGetMagnitude() {
         System.out.println("getMagnitude");
         int scale = 0;
-        RoundingMode rm = null;
-        V3D_Vector instance = null;
-        BigDecimal expResult = null;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Vector instance = new V3D_Vector(P0P0P0);
+        BigDecimal expResult = P0;
         BigDecimal result = instance.getMagnitude(scale, rm);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Test 2
+        scale = 1;
+        result = instance.getMagnitude(scale, rm);
+        assertEquals(expResult, result);
+        // Test 3
+        scale = 1;
+        instance = new V3D_Vector(P1P1P0);
+        expResult = Math_BigDecimal.sqrt(P2, scale, rm);
+        result = instance.getMagnitude(scale, rm);
+        assertEquals(expResult, result);
+        // Test 4
+        scale = 2;
+        expResult = Math_BigDecimal.sqrt(P2, scale, rm);
+        result = instance.getMagnitude(scale, rm);
+        assertEquals(expResult, result);
+        // Test 5
+        scale = 10;
+        expResult = Math_BigDecimal.sqrt(P2, scale, rm);
+        result = instance.getMagnitude(scale, rm);
+        assertEquals(expResult, result);
+        // Test 6
+        scale = 1;
+        instance = new V3D_Vector(P1P1P1);
+        expResult = Math_BigDecimal.sqrt(P3, scale, rm);
+        result = instance.getMagnitude(scale, rm);
+        assertEquals(expResult, result);
+        // Test 7
+        scale = 8;
+        instance = new V3D_Vector(P1P1P1);
+        expResult = Math_BigDecimal.sqrt(P3, scale, rm);
+        result = instance.getMagnitude(scale, rm);
+        assertEquals(expResult, result);
+        // Test 8
+        scale = 100;
+        instance = new V3D_Vector(P10, P10, P10);
+        expResult = Math_BigDecimal.sqrt(BigDecimal.valueOf(300), scale, rm);
+        result = instance.getMagnitude(scale, rm);
+        assertEquals(expResult, result);
+        // Test 9
+        instance = new V3D_Vector(P3, P4, N4);
+        expResult = Math_BigDecimal.sqrt(BigDecimal.valueOf(41), scale, rm);
+        result = instance.getMagnitude(scale, rm);
+        assertEquals(expResult, result);
+        // Test 10
+        instance = new V3D_Vector(P7, P8, N4);
+        expResult = Math_BigDecimal.sqrt((P7.pow(2).add(P8.pow(2).add(
+                N4.pow(2)))), scale, rm);
+        result = instance.getMagnitude(scale, rm);
+        assertEquals(expResult, result);
+
     }
 
     /**
@@ -547,14 +596,7 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testInitMagnitude() {
         System.out.println("initMagnitude");
-        int scale = 0;
-        RoundingMode rm = null;
-        V3D_Vector instance = null;
-        BigDecimal expResult = null;
-        BigDecimal result = instance.initMagnitude(scale, rm);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertTrue(true); // No need to test.
     }
 
     /**
@@ -563,15 +605,43 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testIsParallel() {
         System.out.println("isParallel");
-        V3D_Vector v = null;
+        V3D_Vector v = new V3D_Vector(P0P0P0);
         int scale = 0;
-        RoundingMode rm = null;
-        V3D_Vector instance = null;
-        boolean expResult = false;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Vector instance = new V3D_Vector(P1P1P1);
+        boolean expResult = true;
         boolean result = instance.isParallel(v, scale, rm);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Test 2
+        scale = 1;
+        result = instance.isParallel(v, scale, rm);
+        assertEquals(expResult, result);
+        // Test 3
+        v = new V3D_Vector(N1N1N1);
+        scale = 0;
+        instance = new V3D_Vector(P1P1P1);
+        expResult = true;
+        result = instance.isParallel(v, scale, rm);
+        assertEquals(expResult, result);
+        // Test 4
+        scale = 5;
+        expResult = true;
+        result = instance.isParallel(v, scale, rm);
+        assertEquals(expResult, result);
+        // Test 5
+        v = new V3D_Vector(P1P0P0);
+        scale = 10;
+        instance = new V3D_Vector(P0P1P1);
+        expResult = false;
+        result = instance.isParallel(v, scale, rm);
+        assertEquals(expResult, result);
+        // Test 6
+        v = new V3D_Vector(P0,P0,P10000);
+        scale = 1;
+        instance = new V3D_Vector(P0,P0,P10001);
+        expResult = false;
+        result = instance.isParallel(v, scale, rm);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -580,13 +650,23 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testGetCrossProduct() {
         System.out.println("getCrossProduct");
-        V3D_Vector v = null;
-        V3D_Vector instance = null;
-        V3D_Vector expResult = null;
+        V3D_Vector v = new V3D_Vector(P1P1P1);
+        V3D_Vector instance = new V3D_Vector(N1N1N1);
+        V3D_Vector expResult = new V3D_Vector(P0P0P0);
         V3D_Vector result = instance.getCrossProduct(v);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Test 2
+        v = new V3D_Vector(P1P1P1);
+        instance = new V3D_Vector(P1P1P0);
+        expResult = new V3D_Vector(P1N1P0);
+        result = instance.getCrossProduct(v);
+        assertEquals(expResult, result);
+        // Test 3
+        v = new V3D_Vector(P1P1P0);
+        instance = new V3D_Vector(P1P1P1);
+        expResult = new V3D_Vector(N1P1P0);
+        result = instance.getCrossProduct(v);
+        assertEquals(expResult, result);
     }
 
 }

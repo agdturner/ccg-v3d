@@ -157,11 +157,28 @@ public class V3D_Vector {
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isParallel(V3D_Vector v, int scale, RoundingMode rm) {
-        BigDecimal t = BigDecimal.ONE.scaleByPowerOfTen(scale);
-        BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dx, dx, scale,
-                rm);
-        return c.multiply(dy).subtract(v.dy).compareTo(t) == -1
-                && c.multiply(dz).subtract(v.dz).compareTo(t) == -1;
+        BigDecimal t = BigDecimal.ONE.scaleByPowerOfTen(-scale);
+        if (dx.compareTo(BigDecimal.ZERO) != 0) {
+            BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dx, dx,
+                    scale, rm);
+            return c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1
+                    && c.multiply(dz).subtract(v.dz).abs().compareTo(t) == -1;
+        } else {
+            if (dy.compareTo(BigDecimal.ZERO) != 0) {
+                BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dy, dy,
+                        scale, rm);
+                return c.multiply(dx).subtract(v.dx).abs().compareTo(t) == -1
+                        && c.multiply(dz).subtract(v.dz).abs().compareTo(t) == -1;
+            } else {
+                if (dz.compareTo(BigDecimal.ZERO) != 0) {
+                    BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dz,
+                            dz, scale, rm);
+                    return c.multiply(dx).subtract(v.dx).abs().compareTo(t) == -1
+                            && c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1;
+                }
+                return true;
+            }
+        }
     }
 
     /**
@@ -181,6 +198,7 @@ public class V3D_Vector {
 
     /**
      * Scales the vector by the magnitude so that it has length 1
+     *
      * @param scale The scale for the precision of the result.
      * @param rm The RoundingMode for any rounding.
      * @return this scaled by the magnitude.
