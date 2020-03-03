@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
  * Class for a line segment in 3D represented by two Point3D instances, one is
@@ -28,35 +29,40 @@ import java.util.Objects;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_LineSegment extends V3D_Geometry
+public class V3D_LineSegment extends V3D_Line
         implements V3D_FiniteGeometry {
 
-    public V3D_Point start;
-    public V3D_Point end;
+    /**
+     * For storing the unit vector. Only if the direction aligns with an axis is
+     * this precise. Otherwise the precision is given by
+     * {@link #unitVectorScale}.
+     */
+    public V3D_Vector unitVector;
 
     /**
-     * @param start What {@link #start} is set to.
-     * @param end What {@link #end} is set to.
+     * For storing the scale at which the {@link #unitVector} is precise given
+     * {@link #unitVectorRoundingMode}.
+     */
+    public int unitVectorScale;
+
+    /**
+     * Used for calculating the {@link #unitVector} if necessary.
+     */
+    public RoundingMode unitVectorRoundingMode;
+
+    /**
+     * @param start What {@link #p} is set to.
+     * @param end What {@link #q} is set to.
      */
     public V3D_LineSegment(V3D_Point start, V3D_Point end) {
-        super(start.e);
-        this.start = new V3D_Point(start);
-        this.end = new V3D_Point(end);
+        super(start, end);
     }
 
     /**
      * @param l Vector_LineSegment3D
      */
-    public V3D_LineSegment(V3D_LineSegment l) {
-        super(l.e);
-        this.start = l.start;
-        this.end = l.end;
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "(start=" + start.toString()
-                + ", end=" + end.toString() + ")";
+    public V3D_LineSegment(V3D_Line l) {
+        super(l);
     }
 
     @Override
@@ -64,8 +70,8 @@ public class V3D_LineSegment extends V3D_Geometry
         if (o instanceof V3D_LineSegment) {
             V3D_LineSegment l = (V3D_LineSegment) o;
             if (hashCode() == l.hashCode()) {
-                if (l.start.equals(start)) {
-                    if (l.end.equals(end)) {
+                if (l.p.equals(p)) {
+                    if (l.q.equals(q)) {
                         return true;
                     }
                 }
@@ -77,18 +83,71 @@ public class V3D_LineSegment extends V3D_Geometry
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + Objects.hashCode(this.start);
-        hash = 31 * hash + Objects.hashCode(this.end);
+        hash = 31 * hash + Objects.hashCode(this.p);
+        hash = 31 * hash + Objects.hashCode(this.q);
         return hash;
     }
 
+    /**
+     * For getting the unit vector of this line to {@code scale} precision using
+     * {@code rm} if necessary.
+     *
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return The unit vector of this line to {@code scale} precision using
+     * {@code rm} if necessary.
+     */
+    public V3D_Vector getUnitVector(int scale, RoundingMode rm) {
+        if (unitVector == null) {
+            return initUnitVector(scale, rm);
+        } else {
+            if (scale > unitVectorScale) {
+                return initUnitVector(scale, rm);
+            } else {
+                if (unitVectorRoundingMode.equals(rm)) {
+                    return new V3D_Vector(unitVector.dx.setScale(scale),
+                            unitVector.dy.setScale(scale),
+                            unitVector.dz.setScale(scale));
+                } else {
+                    if (scale < unitVectorScale) {
+                        return new V3D_Vector(unitVector.dx.setScale(scale),
+                                unitVector.dy.setScale(scale),
+                                unitVector.dz.setScale(scale));
+                    } else {
+                        return initUnitVector(scale, rm);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * For initialising and returning the unit vector of this line to
+     * {@code scale} precision using {@code rm} if necessary.
+     *
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return The unit vector of this line to {@code scale} precision using
+     * {@code rm} if necessary.
+     */
+    public V3D_Vector initUnitVector(int scale, RoundingMode rm) {
+        if (unitVector == null) {
+            BigDecimal distance = getLength(scale + 2, rm);
+            unitVector = new V3D_Vector(
+            Math_BigDecimal.divideRoundIfNecessary(pq.dx, distance, scale, rm),
+            Math_BigDecimal.divideRoundIfNecessary(pq.dy, distance, scale, rm),
+            Math_BigDecimal.divideRoundIfNecessary(pq.dz, distance, scale, rm));
+        }
+        return unitVector;
+    }
+    
     /**
      * @param scale The scale for the precision of the result.
      * @param rm The RoundingMode for any rounding.
      * @return The length of this as a BigDecimal
      */
     public BigDecimal getLength(int scale, RoundingMode rm) {
-        return start.getDistance(end, scale, rm);
+        return p.getDistance(q, scale, rm);
     }
 
     /**
@@ -96,48 +155,14 @@ public class V3D_LineSegment extends V3D_Geometry
      */
     @Override
     public V3D_Envelope getEnvelope3D() {
-        return new V3D_Envelope(start, end);
-    }
-
-    /**
-     * Calculate and return the
-     * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
-     *
-     * @param l V3D_LineSegment
-     * @return dot product
-     */
-    public BigDecimal getDotProduct(V3D_LineSegment l) {
-        return (l.end.x.multiply(this.end.x)).add(l.end.y.multiply(this.end.y))
-                .add(l.end.z.multiply(this.end.z));
-    }
-
-    /**
-     * Treat this as the first vector and {@code l} as the second vector. So the
-     * resulting vector starts at {@link #start} and is in the direction given
-     * by the right hand rule.
-     *
-     * @param l V3D_LineSegment
-     * @return BigDecimal
-     */
-    public V3D_LineSegment getCrossProduct(V3D_LineSegment l) {
-        BigDecimal ax = end.x.subtract(start.x);
-        BigDecimal ay = end.y.subtract(start.y);
-        BigDecimal az = end.z.subtract(start.z);
-        BigDecimal bx = l.end.x.subtract(l.start.x);
-        BigDecimal by = l.end.y.subtract(l.start.y);
-        BigDecimal bz = l.end.z.subtract(l.start.z);
-        BigDecimal dx = ay.multiply(bz).subtract(bz.multiply(ay));
-        BigDecimal dy = az.multiply(bx).subtract(bx.multiply(az));
-        BigDecimal dz = ax.multiply(by).subtract(by.multiply(ax));
-        V3D_Point newEnd = new V3D_Point(e, start.x.add(dx),
-                start.y.add(dy), start.z.add(dz));
-        return new V3D_LineSegment(start, newEnd);
+        return new V3D_Envelope(p, q);
     }
 
     /**
      * @param en The envelope to test.
      * @param scale The scale for the precision of the test.
      * @return {@code true} if this intersects with {@code en}.
+     * @throws java.lang.Exception
      */
     public boolean getIntersects(V3D_Envelope en, int scale) throws Exception {
         return en.getIntersects(this, scale);

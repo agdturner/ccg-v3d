@@ -609,7 +609,7 @@ public class V3D_VectorTest extends V3D_Test {
         int scale = 0;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector instance = new V3D_Vector(P1P1P1);
-        boolean expResult = true;
+        boolean expResult = false;
         boolean result = instance.isParallel(v, scale, rm);
         assertEquals(expResult, result);
         // Test 2
@@ -636,9 +636,29 @@ public class V3D_VectorTest extends V3D_Test {
         result = instance.isParallel(v, scale, rm);
         assertEquals(expResult, result);
         // Test 6
-        v = new V3D_Vector(P0,P0,P10000);
+        scale = -3;
+        v = new V3D_Vector(P0, P1, P10000);
+        instance = new V3D_Vector(P0, P1, P10001);
+        expResult = true;
+        result = instance.isParallel(v, scale, rm);
+        assertEquals(expResult, result);
+        // Test 7
+        scale = -2;
+        expResult = true;
+        result = instance.isParallel(v, scale, rm);
+        assertEquals(expResult, result);
+        // Test 8
+        scale = -1;
+        expResult = true;
+        result = instance.isParallel(v, scale, rm);
+        assertEquals(expResult, result);
+        // Test 9
+        scale = 0;
+        expResult = false;
+        result = instance.isParallel(v, scale, rm);
+        assertEquals(expResult, result);
+        // Test 7
         scale = 1;
-        instance = new V3D_Vector(P0,P0,P10001);
         expResult = false;
         result = instance.isParallel(v, scale, rm);
         assertEquals(expResult, result);

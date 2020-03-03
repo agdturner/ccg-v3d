@@ -158,25 +158,65 @@ public class V3D_Vector {
      */
     public boolean isParallel(V3D_Vector v, int scale, RoundingMode rm) {
         BigDecimal t = BigDecimal.ONE.scaleByPowerOfTen(-scale);
-        if (dx.compareTo(BigDecimal.ZERO) != 0) {
-            BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dx, dx,
-                    scale, rm);
-            return c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1
-                    && c.multiply(dz).subtract(v.dz).abs().compareTo(t) == -1;
-        } else {
-            if (dy.compareTo(BigDecimal.ZERO) != 0) {
-                BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dy, dy,
-                        scale, rm);
-                return c.multiply(dx).subtract(v.dx).abs().compareTo(t) == -1
-                        && c.multiply(dz).subtract(v.dz).abs().compareTo(t) == -1;
+        if (dx.compareTo(BigDecimal.ZERO) == 0 &&
+            dy.compareTo(BigDecimal.ZERO) == 0 &&
+            dz.compareTo(BigDecimal.ZERO) == 0) {
+            return false;        
+        }
+        if (v.dx.compareTo(BigDecimal.ZERO) == 0 &&
+            v.dy.compareTo(BigDecimal.ZERO) == 0 &&
+            v.dz.compareTo(BigDecimal.ZERO) == 0) {
+            return false;        
+        }
+        if (dx.compareTo(BigDecimal.ZERO) == 0
+                && v.dx.compareTo(BigDecimal.ZERO) != 0) {
+            return false;
+        }
+        if (dy.compareTo(BigDecimal.ZERO) == 0
+                && v.dy.compareTo(BigDecimal.ZERO) != 0) {
+            return false;
+        }
+        if (dz.compareTo(BigDecimal.ZERO) == 0
+                && v.dz.compareTo(BigDecimal.ZERO) != 0) {
+            return false;
+        }
+        if (dx.compareTo(BigDecimal.ZERO) == 0
+                && v.dx.compareTo(BigDecimal.ZERO) == 0) {
+            if (dy.compareTo(BigDecimal.ZERO) == 0
+                    && v.dy.compareTo(BigDecimal.ZERO) == 0) {
+                return !(dz.compareTo(BigDecimal.ZERO) == 0
+                        || v.dz.compareTo(BigDecimal.ZERO) == 0);
             } else {
-                if (dz.compareTo(BigDecimal.ZERO) != 0) {
-                    BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dz,
-                            dz, scale, rm);
-                    return c.multiply(dx).subtract(v.dx).abs().compareTo(t) == -1
-                            && c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1;
+                if (dz.compareTo(BigDecimal.ZERO) == 0
+                        && v.dz.compareTo(BigDecimal.ZERO) == 0) {
+                    return true;
+                } else {
+                    BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dy,
+                            dy, scale, rm);
+                    return c.multiply(dz).subtract(v.dz).abs().compareTo(t) == -1;
                 }
-                return true;
+            }
+        } else {
+            if (dy.compareTo(BigDecimal.ZERO) == 0
+                    && v.dy.compareTo(BigDecimal.ZERO) == 0) {
+                if (dz.compareTo(BigDecimal.ZERO) == 0
+                        && v.dz.compareTo(BigDecimal.ZERO) == 0) {
+                    return true;
+                } else {
+                    BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dx,
+                            dx, scale, rm);
+                    return c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1;
+                }
+            } else {
+                BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dx, dx,
+                        scale, rm);
+                if (dz.compareTo(BigDecimal.ZERO) == 0
+                        && v.dz.compareTo(BigDecimal.ZERO) == 0) {
+                    return c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1;
+                } else {
+                    return c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1
+                            && c.multiply(dz).subtract(v.dz).abs().compareTo(t) == -1;
+                }
             }
         }
     }

@@ -275,10 +275,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     public int getIntersectsFailFast(V3D_LineSegment l) {
         V3D_Envelope le = l.getEnvelope3D();
         if (le.getIntersects(getEnvelope3D())) {
-            if (getIntersects(l.start)) {
+            if (getIntersects(l.p)) {
                 return 1;
             }
-            if (getIntersects(l.end)) {
+            if (getIntersects(l.q)) {
                 return 1;
             }
             return 0;
@@ -292,14 +292,14 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param scale scale
      * @return {@code true} if this intersects with {@code l}.
      */
-    public boolean getIntersects(V3D_LineSegment l, int scale) throws Exception {
+    public boolean getIntersects(V3D_LineSegment l, int scale) {
         /**
          * Check if the start or end of l is within this.
          */
-        if (getIntersects(l.start)) {
+        if (getIntersects(l.p)) {
             return true;
         }
-        if (getIntersects(l.end)) {
+        if (getIntersects(l.q)) {
             return true;
         }        
         /**
@@ -324,7 +324,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 //                l.getIntersects(x1)) {
 //            return true;
 //        }
-        return false;
+//        return false;
+        throw new UnsupportedOperationException();
     }
 
     /**

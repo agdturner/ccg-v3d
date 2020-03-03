@@ -184,28 +184,6 @@ public class V3D_PlaneTest extends V3D_Test {
     }
 
     /**
-     * Test of getNPerp method, of class V3D_Plane.
-     */
-    @Test
-    public void testGetNormalVector() {
-        System.out.println("getNormalVector");
-        V3D_Plane instance = getPlane(P0P1P0, P1P1P1, P1P0P0);
-        V3D_Vector expResult = new V3D_Vector(P1P1N1);
-        V3D_Vector result = instance.getNPerp();
-        assertEquals(expResult, result);
-        // Test 2
-        instance = getPlane(P0P0P0, P0P1P1, P0N1P0);
-        expResult = new V3D_Vector(P1P0P0);
-        result = instance.getNPerp();
-        assertEquals(expResult, result);
-        // Test 3
-        instance = getPlane(P0P0P0, P1P1P1, P0N1N1);
-        expResult = new V3D_Vector(P0P1N1);
-        result = instance.getNPerp();
-        assertEquals(expResult, result);
-    }
-
-    /**
      * Test of intersects method, of class V3D_Plane.
      */
     @Test
@@ -221,7 +199,7 @@ public class V3D_PlaneTest extends V3D_Test {
         // Test 2
         scale = 1;
         rm = RoundingMode.HALF_UP;
-        instance = getPlane(N1N1N1, P0N1N1, new V3D_Point(e, 
+        instance = getPlane(N1N1N1, P0N1N1, new V3D_Point(e,
                 BigDecimal.valueOf(-2), N1, P0));
         expResult = false;
         result = instance.intersects(pl, scale, rm);
@@ -229,10 +207,10 @@ public class V3D_PlaneTest extends V3D_Test {
         // Test 3
         scale = 0;
         rm = RoundingMode.HALF_UP;
-        instance = getPlane(N1N1N1, P0N1N1, new V3D_Point(e, 
+        instance = getPlane(N1N1N1, P0N1N1, new V3D_Point(e,
                 BigDecimal.valueOf(-2), N1, P0));
-        System.out.println("pl.getNPerp()=" + pl.getNPerp());
-        System.out.println("instance.getNPerp()=" + instance.getNPerp());
+        System.out.println("pl.getNPerp()=" + pl.getNormalVector());
+        System.out.println("instance.getNPerp()=" + instance.getNormalVector());
         expResult = false; // Really these planes do intersect! 
         result = instance.intersects(pl, scale, rm);
         assertEquals(expResult, result);
@@ -241,7 +219,7 @@ public class V3D_PlaneTest extends V3D_Test {
         rm = RoundingMode.HALF_UP;
         expResult = false; // Really these planes do intersect! 
         result = instance.intersects(pl, scale, rm);
-        assertEquals(expResult, result);        
+        assertEquals(expResult, result);
     }
 
     /**
@@ -280,50 +258,64 @@ public class V3D_PlaneTest extends V3D_Test {
     }
 
     /**
-     * Test of getNPerp method, of class V3D_Plane.
+     * Test of getNormalVector method, of class V3D_Plane.
      */
     @Test
-    public void testGetNPerp() {
-        System.out.println("getNPerp");
+    public void testGetNormalVector() {
+        System.out.println("getNormalVector");
         V3D_Plane instance = getPlane(P0P0P0, P1P0P0, P0P1P0); // Z = 0
         V3D_Vector expResult = new V3D_Vector(P0P0P1);
-        V3D_Vector result = instance.getNPerp();
+        V3D_Vector result = instance.getNormalVector();
         assertEquals(expResult, result);
         // Test 2
         instance = getPlane(P0P0N1, P1P0N1, P0P1N1); // Z = -1
         expResult = new V3D_Vector(P0P0P1);
-        result = instance.getNPerp();
+        result = instance.getNormalVector();
         assertEquals(expResult, result);
         // Test 3
         instance = getPlane(P0P0P1, P1P0P1, P0P1P1); // Z = 1
         expResult = new V3D_Vector(P0P0P1);
-        result = instance.getNPerp();
+        result = instance.getNormalVector();
         assertEquals(expResult, result);
         // Test 4
         instance = getPlane(P1P0P1, P0P1P1, P0P0P1); // Z = 1
         expResult = new V3D_Vector(P0P0P1);
-        result = instance.getNPerp();
+        result = instance.getNormalVector();
         assertEquals(expResult, result);
         // Test 5
         instance = getPlane(P0P1P1, P0P0P1, P1P0P1); // Z = 1
         expResult = new V3D_Vector(P0P0P1);
-        result = instance.getNPerp();
+        result = instance.getNormalVector();
         assertEquals(expResult, result);
         // Test 6
         instance = getPlane(P0P0P0, P0P1P0, P0P0N1); // Y = 0
         expResult = new V3D_Vector(N1P0P0);
-        result = instance.getNPerp();
+        result = instance.getNormalVector();
         assertEquals(expResult, result);
         // Test 7
         instance = getPlane(P0P0P0, P1P0P0, P0P0N1); // X = 0
         expResult = new V3D_Vector(P0P1P0);
-        result = instance.getNPerp();
+        result = instance.getNormalVector();
         assertEquals(expResult, result);
         // Test 8
         instance = getPlane(P0P0P0, P1P0P0, N1P0P1); // X = 0
         expResult = new V3D_Vector(P0N1P0); // This is the other normal than for
-        result = instance.getNPerp();       // test 7 due to the right hand rule  
+        result = instance.getNormalVector();       // test 7 due to the right hand rule  
         assertEquals(expResult, result);    // and the orientation.
+        instance = getPlane(P0P1P0, P1P1P1, P1P0P0);
+        expResult = new V3D_Vector(P1P1N1);
+        result = instance.getNormalVector();
+        assertEquals(expResult, result);
+        // Test 2
+        instance = getPlane(P0P0P0, P0P1P1, P0N1P0);
+        expResult = new V3D_Vector(P1P0P0);
+        result = instance.getNormalVector();
+        assertEquals(expResult, result);
+        // Test 3
+        instance = getPlane(P0P0P0, P1P1P1, P0N1N1);
+        expResult = new V3D_Vector(P0P1N1);
+        result = instance.getNormalVector();
+        assertEquals(expResult, result);
     }
 
     /**

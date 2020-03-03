@@ -109,47 +109,19 @@ public class V3D_LineTest extends V3D_Test {
     }
 
     /**
-     * Test of getDotProduct method, of class V3D_Line.
-     */
-    @Test
-    public void testGetDotProduct() {
-        System.out.println("getDotProduct");
-        V3D_Line l = getLine(P0P0P0, P1P0P0);
-        V3D_Line instance = getLine(P0P0P0, P0P1P0);
-        BigDecimal expResult = BigDecimal.ZERO;
-        BigDecimal result = instance.getDotProduct(l);
-        assertEquals(expResult, result);
-        // Test 2
-        instance = getLine(P0P0P0, P0P0P1);
-        expResult = BigDecimal.ZERO;
-        result = instance.getDotProduct(l);
-        assertEquals(expResult, result);
-        // Test 3
-        instance = getLine(P0P0P0, P1P0P0);
-        expResult = BigDecimal.ONE;
-        result = instance.getDotProduct(l);
-        assertEquals(expResult, result);
-        // Test 4
-        instance = getLine(P0P0P0, P1P1P1);
-        expResult = BigDecimal.ONE;
-        result = instance.getDotProduct(l);
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of isOnLine method, of class V3D_Line.
+     * Test of getIntersects method, of class V3D_Line.
      */
     @Test
     public void testIsOnLine() {
         System.out.println("isOnLine");
         V3D_Line instance = getLine(P0P0P0, P1P0P0);
         boolean expResult = true;
-        boolean result = instance.isOnLine(N1P0P0);
+        boolean result = instance.getIntersects(N1P0P0);
         assertEquals(expResult, result);
         // Test 2
         instance = getLine(P0P0P0, P1P0P0);
         expResult = false;
-        result = instance.isOnLine(N1P1P0);
+        result = instance.getIntersects(N1P1P0);
         assertEquals(expResult, result);
     }
 
