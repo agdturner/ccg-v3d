@@ -348,4 +348,34 @@ public class V3D_PlaneTest extends V3D_Test {
         boolean result = instance.intersects(l, scale, rm);
         assertEquals(expResult, result);
     }
+
+    /**
+     * Test of isParallel method, of class V3D_Plane.
+     */
+    @Test
+    public void testIsParallel_3args_1() {
+        System.out.println("isParallel");
+        V3D_Plane p = getPlane(P1P1P0, P1N1P0, N1P1P0);
+        int scale = 1;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Plane instance = getPlane(P1P1P1, P1N1P1, N1P1P1);
+        boolean expResult = true;
+        boolean result = instance.isParallel(p, scale, rm);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of isParallel method, of class V3D_Plane.
+     */
+    @Test
+    public void testIsParallel_3args_2() {
+        System.out.println("isParallel");
+        V3D_Line l = new V3D_Line(P1P1P0, P1N1P0);
+        int scale = 1;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Plane instance = getPlane(P1P1P1, P1N1P1, N1P1P1);
+        boolean expResult = true;
+        boolean result = instance.isParallel(l, scale, rm);
+        assertEquals(expResult, result);
+    }
 }

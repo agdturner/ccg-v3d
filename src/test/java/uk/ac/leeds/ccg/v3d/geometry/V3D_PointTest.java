@@ -121,7 +121,7 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("getIntersects"); 
         V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
         V3D_Point instance = P1P1P1;
-        boolean expResult = false;
+        boolean expResult = true;
         boolean result = instance.getIntersects(l);
         assertEquals(expResult, result);
     }

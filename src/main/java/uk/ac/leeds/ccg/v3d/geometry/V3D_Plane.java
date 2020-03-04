@@ -125,12 +125,12 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} If this and {@code pl} intersect.
      */
     public boolean intersects(V3D_Plane pl, int scale, RoundingMode rm) {
-        /**
-         * If the normal vectors are parallel, the two planes are either 
-         * identical or parallel.
-         */
-        if (pl.normalVector.isParallel(normalVector, scale, rm)) {
-            return this.equals(pl);
+        if (this.isParallel(pl, scale, rm)) {
+            if (this.equals(pl)) {
+                return true;
+            } else {
+                return false;
+            }
         }
         return true;
     }
@@ -142,14 +142,12 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} If this and {@code l} intersect.
      */
     public boolean intersects(V3D_Line l, int scale, RoundingMode rm) {
-        /** If the normal vectors are parallel, the two planes are either 
-         * identical or parallel.
-         */
-//        if (l.isParallel(normalVector, scale, rm)) {
-//            return this.equals(l);
-//        }
-//        return true;
-        throw new UnsupportedOperationException();
+        if(isParallel(l, scale, rm)) {
+            if (!isOnPlane(l)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -181,8 +179,28 @@ public class V3D_Plane extends V3D_Geometry {
      * @param l The line segment to test if it is on the plane.
      * @return {@code true} If {@code pt} is on the plane.
      */
-    public boolean isOnPlane(V3D_LineSegment l) {
+    public boolean isOnPlane(V3D_Line l) {
         return intersects(l.p) && intersects(l.q);
+    }
+
+    /**
+     * @param p The plane to test if it is parallel to this.
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if this is parallel to p given scale and rm.
+     */
+    public boolean isParallel(V3D_Plane p, int scale, RoundingMode rm) {
+        return p.getNormalVector().isParallel(getNormalVector(), scale, rm);
+    }
+
+    /**
+     * @param l The line to test if it is parallel to this.
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if this is parallel to p given scale and rm.
+     */
+    public boolean isParallel(V3D_Line l, int scale, RoundingMode rm) {
+        return l.pq.isParallel(this.pq, scale, rm);
     }
 
     @Override
