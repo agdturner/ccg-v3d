@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
@@ -26,17 +25,17 @@ import uk.ac.leeds.ccg.math.Math_BigDecimal;
  * and the following equations:
  * <ul>
  * <li>{@code r(t) = <x(t),y(t),z(t)>}</li>
- * <li>{@code v = ⟨dx,dy,dz⟩}</li> This is the vector from p to q.
- * <li>{@code q = ⟨q.x,q.y,q.z⟩</li>
+ * <li>{@code v = <dx,dy,dz>} - This is the vector from p to q.</li>
+ * <li>{@code q = <q.x,q.y,q.z>}</li>
  * <li>{@code r(t) = tv+q = <t(dx)+q.x, t(dy)+q.y, t(dz)+q.z>}</li>
- * <li>{@code x(t) = t(dx)+q.x</li>
- * <li>{@code y(t) = t(dy)+q.y</li>
- * <li>{@code z(t) = t(dz)+q.z</li>
- * <li>{@code t = x(t)−q.x(dx)</li>
- * <li>{@code t = y(t)−q.y(dy)</li>
- * <li>{@code t = z(t)−q.z(dz)</li>
- * <li>{@code x(t)−q.x(dx) = y(t)−q.y(dy) = z(t)−q.z(dz)</li>
- * <li>{@code r(t) = t(pq)+b = <p.x+(pq.dx)t, p.y+(pq.y)t, p.z+(pq.z)t></li>
+ * <li>{@code x(t) = t(dx)+q.x}</li>
+ * <li>{@code y(t) = t(dy)+q.y}</li>
+ * <li>{@code z(t) = t(dz)+q.z}</li>
+ * <li>{@code t = x(t)−q.x(dx)}</li>
+ * <li>{@code t = y(t)−q.y(dy)}</li>
+ * <li>{@code t = z(t)−q.z(dz)}</li>
+ * <li>{@code x(t)−q.x(dx) = y(t)−q.y(dy) = z(t)−q.z(dz)}</li>
+ * <li>{@code r(t) = t(pq)+b = <p.x+(pq.dx)t, p.y+(pq.y)t, p.z+(pq.z)t>}</li>
  * </ul>
  * The line is infinite.
  *
@@ -127,13 +126,14 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
+     * @param l The line to test this with to see if they are parallel.
      * @return {@code true} If this and {@code l} are parallel.
-     * @throws java.lang.Exception This should not happen as .
      */
-    public boolean isParallel(V3D_Line l, int scale, RoundingMode rm) throws Exception {
-        V3D_LineSegment tls = new V3D_LineSegment(p, q);
-        V3D_Vector u = tls.getUnitVector(scale, rm);
-        throw new UnsupportedOperationException();
+    public boolean isParallel(V3D_Line l) {
+        V3D_Vector v = pq.getCrossProduct(l.pq);
+        return v.dx.compareTo(BigDecimal.ZERO) == 0 
+                && v.dy.compareTo(BigDecimal.ZERO) == 0
+                && v.dz.compareTo(BigDecimal.ZERO) == 0;
     }
 
     /**

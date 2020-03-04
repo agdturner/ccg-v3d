@@ -141,13 +141,11 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testGetIntersects_V3D_Point() {
         System.out.println("getIntersects");
-        V3D_Point pt = null;
-        V3D_Line instance = null;
-        boolean expResult = false;
+        V3D_Point pt = P0P0P0;
+        V3D_Line instance = new V3D_Line(N1N1N1, P1P1P1);
+        boolean expResult = true;
         boolean result = instance.getIntersects(pt);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -157,11 +155,9 @@ public class V3D_LineTest extends V3D_Test {
     public void testIsParallel() throws Exception {
         System.out.println("isParallel");
         V3D_Line l = new V3D_Line(P0N1N1, P1P0P0);
-        int scale = 0;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line instance = getLine(N1N1N1, P1P1P1);
         boolean expResult = true;
-        boolean result = instance.isParallel(l, scale, rm);
+        boolean result = instance.isParallel(l);
         assertEquals(expResult, result);
     }
 
