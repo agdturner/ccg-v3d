@@ -174,6 +174,10 @@ public class V3D_LineSegment extends V3D_Line
      * @return true if p is within t of this given scale.
      */
     public boolean getIntersects(V3D_Point p, int scale) {
+        boolean ei = getEnvelope3D().getIntersects(p.getEnvelope3D());
+        if (ei) {
+            return super.getIntersects(p);
+        }
         return false;
     }
 }
