@@ -132,12 +132,7 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testHashCode() {
         System.out.println("hashCode");
-        V3D_Line instance = null;
-        int expResult = 0;
-        int result = instance.hashCode();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertTrue(true);  // No test!
     }
 
     /**
@@ -191,15 +186,14 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testGetIntersects_V3D_Line() {
         System.out.println("getIntersects");
-//        V3D_Line l = getLine(N1N1N1, P1P1P1);
-//        int scale = 1;
-//        RoundingMode rm = RoundingMode.HALF_UP;
-//        V3D_Line instance = getLine(P1N1N1, N1P1P1);
-//        V3D_Geometry expResult = P0P0P0;
-//        boolean result = instance.getIntersects(l);
-//        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // If there is an intersection then it inersects!
+        V3D_Line l = getLine(N1N1N1, P1P1P1);
+        int scale = 1;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Line instance = getLine(P1N1N1, N1P1P1);
+        boolean expResult = true;
+        boolean result = instance.getIntersects(l, scale, rm);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -275,7 +269,14 @@ public class V3D_LineTest extends V3D_Test {
         instance = getLine(P0P0P0, N1P1P1);
         expResult = P0P0P0;
         result = instance.getIntersection(l, scale, rm);
-        assertEquals(expResult, result);        
+        assertEquals(expResult, result);
+        // Test 10
+        l = getLine(N1N1N1, P1P1P1);
+        scale = 1;
+        expResult = getLine(N1N1N1, P1P1P1);
+        instance = getLine(new V3D_Point(e, N3,N3, N3), new V3D_Point(e, N4,N4, N4));
+        result = instance.getIntersection(l, scale, rm);
+        assertEquals(expResult, result);
     }
 
     /**

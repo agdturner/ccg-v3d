@@ -139,7 +139,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param l The line to test for intersection with this.
      * @param scale The scale for the precision of the result.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} If this and {@code pl} intersect.
+     * @return {@code true} If this and {@code l} intersect.
      */
     public boolean intersects(V3D_Line l, int scale, RoundingMode rm) {
         /** If the normal vectors are parallel, the two planes are either 

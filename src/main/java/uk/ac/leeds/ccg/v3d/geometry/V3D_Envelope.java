@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
@@ -292,7 +293,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param scale scale
      * @return {@code true} if this intersects with {@code l}.
      */
-    public boolean getIntersects(V3D_LineSegment l, int scale) {
+    public boolean getIntersects(V3D_LineSegment l, int scale, RoundingMode rm) {
         /**
          * Check if the start or end of l is within this.
          */

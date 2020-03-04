@@ -134,13 +134,13 @@ public class V3D_LineSegment extends V3D_Line
         if (unitVector == null) {
             BigDecimal distance = getLength(scale + 2, rm);
             unitVector = new V3D_Vector(
-            Math_BigDecimal.divideRoundIfNecessary(pq.dx, distance, scale, rm),
-            Math_BigDecimal.divideRoundIfNecessary(pq.dy, distance, scale, rm),
-            Math_BigDecimal.divideRoundIfNecessary(pq.dz, distance, scale, rm));
+                    Math_BigDecimal.divideRoundIfNecessary(pq.dx, distance, scale, rm),
+                    Math_BigDecimal.divideRoundIfNecessary(pq.dy, distance, scale, rm),
+                    Math_BigDecimal.divideRoundIfNecessary(pq.dz, distance, scale, rm));
         }
         return unitVector;
     }
-    
+
     /**
      * @param scale The scale for the precision of the result.
      * @param rm The RoundingMode for any rounding.
@@ -160,23 +160,37 @@ public class V3D_LineSegment extends V3D_Line
 
     /**
      * @param en The envelope to test.
-     * @param scale The scale for the precision of the test.
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code en}.
-     * @throws java.lang.Exception
      */
-    public boolean getIntersects(V3D_Envelope en, int scale) throws Exception {
-        return en.getIntersects(this, scale);
+    public boolean getIntersects(V3D_Envelope en, int scale, RoundingMode rm) {
+        return en.getIntersects(this, scale, rm);
     }
 
     /**
      * @param p A point to test for intersection within the specified tolerance.
-     * @param scale The scale.
      * @return true if p is within t of this given scale.
      */
-    public boolean getIntersects(V3D_Point p, int scale) {
+    @Override
+    public boolean getIntersects(V3D_Point p) {
         boolean ei = getEnvelope3D().getIntersects(p.getEnvelope3D());
         if (ei) {
             return super.getIntersects(p);
+        }
+        return false;
+    }
+
+    /**
+     * @param l A line to test for intersection within the specified tolerance.
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return true if p is within t of this given scale.
+     */
+    public boolean getIntersects(V3D_LineSegment l, int scale, RoundingMode rm) {
+        boolean ei = getEnvelope3D().getIntersects(l.getEnvelope3D());
+        if (ei) {
+            return super.getIntersects(l, scale, rm);
         }
         return false;
     }

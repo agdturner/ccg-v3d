@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -116,8 +117,9 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
         V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
         int scale = 0;
+        RoundingMode rm = RoundingMode.HALF_UP;
         boolean expResult = true;
-        boolean result = instance.getIntersects(l, scale);
+        boolean result = instance.getIntersects(l, scale, rm);
         assertEquals(expResult, result);
     }
 
@@ -185,9 +187,10 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("getIntersects");
         V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
         int scale = 1;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
         boolean expResult = true;
-        boolean result = instance.getIntersects(l, scale);
+        boolean result = instance.getIntersects(l, scale, rm);
         assertEquals(expResult, result);
     }
 

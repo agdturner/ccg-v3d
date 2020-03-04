@@ -146,25 +146,27 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * @param l
-     * @return {@code true} if this intersects {
-     * @pl}.
+     * This computes the intersection and tests if it is {@code null}
+     *
+     * @param l The line to test if it intersects with this.
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} If this and {@code l} intersect.
      */
-    public boolean getIntersects(V3D_Line l) {
-        throw new UnsupportedOperationException();
+    public boolean getIntersects(V3D_Line l, int scale, RoundingMode rm) {
+        return this.getIntersection(l, scale, rm) != null;
     }
 
     /**
      * if this and l are the same then return this.
      *
-     * @param l
-     * @param scale
-     * @param rm
-     * @return
+     * @param l The line to get intersection with this.
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} If this and {@code l} intersect.
      */
     public V3D_Geometry getIntersection(V3D_Line l, int scale, RoundingMode rm) {
         BigDecimal epsilon = BigDecimal.ONE.scaleByPowerOfTen(-scale);
-        //if (getIntersects(l)) {
         if (getIntersects(l.p)) {
             if (getIntersects(l.q)) {
                 return this;
