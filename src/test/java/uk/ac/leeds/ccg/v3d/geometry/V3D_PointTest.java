@@ -114,15 +114,15 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
-     * Test of getIntersects method, of class V3D_Point.
+     * Test of isIntersectedBy method, of class V3D_Point.
      */
     @Test
-    public void testGetIntersects() {
-        System.out.println("getIntersects"); 
+    public void testIsIntersectedBy() {
+        System.out.println("isIntersectedBy"); 
         V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
         V3D_Point instance = P1P1P1;
         boolean expResult = true;
-        boolean result = instance.getIntersects(l);
+        boolean result = instance.isIntersectedBy(l);
         assertEquals(expResult, result);
     }
 

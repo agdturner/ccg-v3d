@@ -110,19 +110,19 @@ public class V3D_LineTest extends V3D_Test {
     }
 
     /**
-     * Test of getIntersects method, of class V3D_Line.
+     * Test of isIntersectedBy method, of class V3D_Line.
      */
     @Test
     public void testIsOnLine() {
         System.out.println("isOnLine");
         V3D_Line instance = getLine(P0P0P0, P1P0P0);
         boolean expResult = true;
-        boolean result = instance.getIntersects(N1P0P0);
+        boolean result = instance.isIntersectedBy(N1P0P0);
         assertEquals(expResult, result);
         // Test 2
         instance = getLine(P0P0P0, P1P0P0);
         expResult = false;
-        result = instance.getIntersects(N1P1P0);
+        result = instance.isIntersectedBy(N1P1P0);
         assertEquals(expResult, result);
     }
 
@@ -136,15 +136,15 @@ public class V3D_LineTest extends V3D_Test {
     }
 
     /**
-     * Test of getIntersects method, of class V3D_Line.
+     * Test of isIntersectedBy method, of class V3D_Line.
      */
     @Test
-    public void testGetIntersects_V3D_Point() {
-        System.out.println("getIntersects");
+    public void testIsIntersectedBy_V3D_Point() {
+        System.out.println("isIntersectedBy");
         V3D_Point pt = P0P0P0;
         V3D_Line instance = new V3D_Line(N1N1N1, P1P1P1);
         boolean expResult = true;
-        boolean result = instance.getIntersects(pt);
+        boolean result = instance.isIntersectedBy(pt);
         assertEquals(expResult, result);
     }
 
@@ -162,33 +162,33 @@ public class V3D_LineTest extends V3D_Test {
     }
 
     /**
-     * Test of getIntersects method, of class V3D_Line.
+     * Test of isIntersectedBy method, of class V3D_Line.
      */
     @Test
-    public void testGetIntersects_V3D_Plane() {
-        System.out.println("getIntersects");
+    public void testIsIntersectedBy_V3D_Plane() {
+        System.out.println("isIntersectedBy");
         int scale = 1;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane pl = new V3D_Plane(e, P0N1N1, P1N1N1, P0P0N1);
         V3D_Line instance = new V3D_Line(N1N1N1, P1P1P1);
         boolean expResult = true;
-        boolean result = instance.getIntersects(pl, scale, rm);
+        boolean result = instance.isIntersectedBy(pl, scale, rm);
         assertEquals(expResult, result);
     }
 
     /**
-     * Test of getIntersects method, of class V3D_Line.
+     * Test of isIntersectedBy method, of class V3D_Line.
      */
     @Test
-    public void testGetIntersects_V3D_Line() {
-        System.out.println("getIntersects");
+    public void testIsIntersectedBy_V3D_Line() {
+        System.out.println("isIntersectedBy");
         // If there is an intersection then it inersects!
         V3D_Line l = getLine(N1N1N1, P1P1P1);
         int scale = 1;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line instance = getLine(P1N1N1, N1P1P1);
         boolean expResult = true;
-        boolean result = instance.getIntersects(l, scale, rm);
+        boolean result = instance.isIntersectedBy(l, scale, rm);
         assertEquals(expResult, result);
     }
 

@@ -97,13 +97,13 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Point pt = P1P0P0;
         V3D_Plane instance = getPlane(P1P1P0, P1P1P1, P1P0P0);
         boolean expResult = true;
-        boolean result = instance.intersects(pt);
+        boolean result = instance.isIntersectedBy(pt);
         assertEquals(expResult, result);
         // Test2
         pt = P1P0P1;
         instance = getPlane(P1P1P0, P1P1P1, P1P0P0);
         expResult = true;
-        result = instance.intersects(pt);
+        result = instance.isIntersectedBy(pt);
         assertEquals(expResult, result);
     }
 
@@ -184,7 +184,7 @@ public class V3D_PlaneTest extends V3D_Test {
     }
 
     /**
-     * Test of intersects method, of class V3D_Plane.
+     * Test of isIntersectedBy method, of class V3D_Plane.
      */
     @Test
     public void testIntersects_3args() {
@@ -194,7 +194,7 @@ public class V3D_PlaneTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane instance = getPlane(P0P0P0, P1P0P0, N1P0P1);
         boolean expResult = true;
-        boolean result = instance.intersects(pl, scale, rm);
+        boolean result = instance.isIntersectedBy(pl, scale, rm);
         assertEquals(expResult, result);
         // Test 2
         scale = 1;
@@ -202,7 +202,7 @@ public class V3D_PlaneTest extends V3D_Test {
         instance = getPlane(N1N1N1, P0N1N1, new V3D_Point(e,
                 BigDecimal.valueOf(-2), N1, P0));
         expResult = false;
-        result = instance.intersects(pl, scale, rm);
+        result = instance.isIntersectedBy(pl, scale, rm);
         assertEquals(expResult, result);
         // Test 3
         scale = 0;
@@ -213,18 +213,18 @@ public class V3D_PlaneTest extends V3D_Test {
         System.out.println("pl.getNPerp()=" + pl.getNormalVector());
         System.out.println("instance.getNPerp()=" + instance.getNormalVector());
         expResult = false; 
-        result = instance.intersects(pl, scale, rm);
+        result = instance.isIntersectedBy(pl, scale, rm);
         assertEquals(expResult, result);
         // Test 4
         scale = 2;
         rm = RoundingMode.HALF_UP;
         expResult = false;
-        result = instance.intersects(pl, scale, rm);
+        result = instance.isIntersectedBy(pl, scale, rm);
         assertEquals(expResult, result);
     }
 
     /**
-     * Test of intersects method, of class V3D_Plane.
+     * Test of isIntersectedBy method, of class V3D_Plane.
      */
     @Test
     public void testIntersects_V3D_Point() {
@@ -232,7 +232,7 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Point pt = P0P0P0;
         V3D_Plane instance = getPlane(P0P0P0, P1P0P0, N1P0P1);
         boolean expResult = true;
-        boolean result = instance.intersects(pt);
+        boolean result = instance.isIntersectedBy(pt);
         assertEquals(expResult, result);
     }
 
@@ -320,7 +320,7 @@ public class V3D_PlaneTest extends V3D_Test {
     }
 
     /**
-     * Test of intersects method, of class V3D_Plane.
+     * Test of isIntersectedBy method, of class V3D_Plane.
      */
     @Test
     public void testIntersects_3args_1() {
@@ -330,12 +330,12 @@ public class V3D_PlaneTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane instance = getPlane(P1P0P1, P0P0P1, N1P0N1); // Y = 0 plane
         boolean expResult = true;
-        boolean result = instance.intersects(pl, scale, rm);
+        boolean result = instance.isIntersectedBy(pl, scale, rm);
         assertEquals(expResult, result);
     }
 
     /**
-     * Test of intersects method, of class V3D_Plane.
+     * Test of isIntersectedBy method, of class V3D_Plane.
      */
     @Test
     public void testIntersects_3args_2() {
@@ -345,7 +345,7 @@ public class V3D_PlaneTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane instance = getPlane(P1P0P1, P0P0P1, N1P0N1); // Y = 0 plane
         boolean expResult = true;
-        boolean result = instance.intersects(l, scale, rm);
+        boolean result = instance.isIntersectedBy(l, scale, rm);
         assertEquals(expResult, result);
     }
 

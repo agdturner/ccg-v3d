@@ -177,54 +177,54 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param e The Vector_Envelope2D to test for intersection.
      * @return {@code true} if this intersects with {@code e}.
      */
-    public boolean getIntersects(V3D_Envelope e) {
+    public boolean isIntersectedBy(V3D_Envelope e) {
         // Does this contain any corners of e
-        boolean r = getIntersects(e.xMin, e.yMin, e.zMax);
+        boolean r = isIntersectedBy(e.xMin, e.yMin, e.zMax);
         if (r) {
             return r;
         }
-        r = getIntersects(e.xMin, e.yMax, e.zMax);
+        r = isIntersectedBy(e.xMin, e.yMax, e.zMax);
         if (r) {
             return r;
         }
-        r = getIntersects(e.xMax, e.yMin, e.zMax);
+        r = isIntersectedBy(e.xMax, e.yMin, e.zMax);
         if (r) {
             return r;
         }
-        r = getIntersects(e.xMax, e.yMax, e.zMax);
+        r = isIntersectedBy(e.xMax, e.yMax, e.zMax);
         if (r) {
             return r;
         }
-        r = getIntersects(e.xMin, e.yMin, e.zMin);
+        r = isIntersectedBy(e.xMin, e.yMin, e.zMin);
         if (r) {
             return r;
         }
-        r = getIntersects(e.xMin, e.yMax, e.zMin);
+        r = isIntersectedBy(e.xMin, e.yMax, e.zMin);
         if (r) {
             return r;
         }
-        r = getIntersects(e.xMax, e.yMin, e.zMin);
+        r = isIntersectedBy(e.xMax, e.yMin, e.zMin);
         if (r) {
             return r;
         }
-        r = getIntersects(e.xMax, e.yMax, e.zMin);
+        r = isIntersectedBy(e.xMax, e.yMax, e.zMin);
         if (r) {
             return r;
         }
         // Does e contain any corners of this
-        r = e.getIntersects(xMax, yMax, zMax);
+        r = e.isIntersectedBy(xMax, yMax, zMax);
         if (r) {
             return r;
         }
-        r = e.getIntersects(xMin, yMax, zMax);
+        r = e.isIntersectedBy(xMin, yMax, zMax);
         if (r) {
             return r;
         }
-        r = e.getIntersects(xMax, yMin, zMax);
+        r = e.isIntersectedBy(xMax, yMin, zMax);
         if (r) {
             return r;
         }
-        r = e.getIntersects(xMax, yMax, zMax);
+        r = e.isIntersectedBy(xMax, yMax, zMax);
         if (r) {
             return r;
         }
@@ -268,73 +268,54 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * A quick test for intersection between this and {@code l}.
-     *
-     * @param l A line segment to test for intersection.
-     * @return -1 if no, 1 if yes, 0 if maybe.
-     */
-    public int getIntersectsFailFast(V3D_LineSegment l) {
-        V3D_Envelope le = l.getEnvelope3D();
-        if (le.getIntersects(getEnvelope3D())) {
-            if (getIntersects(l.p)) {
-                return 1;
-            }
-            if (getIntersects(l.q)) {
-                return 1;
-            }
-            return 0;
-        } else {
-            return -1;
-        }
-    }
-
-    /**
      * @param l A line segment to test for intersection.
      * @param scale scale
      * @return {@code true} if this intersects with {@code l}.
      */
-    public boolean getIntersects(V3D_LineSegment l, int scale, RoundingMode rm) {
-        /**
-         * Check if the start or end of l is within this.
-         */
-        if (getIntersects(l.p)) {
-            return true;
-        }
-        if (getIntersects(l.q)) {
-            return true;
-        }        
-        /**
-         * Check if l intersects any of the finite planes which defines the
-         * faces of the box.
-         */
-        V3D_Point p0p0p0 = new V3D_Point(e, xMin, yMin, zMin);
-        V3D_Point p0p0p1 = new V3D_Point(e, xMin, yMin, zMax);
-        V3D_Point p0p1p0 = new V3D_Point(e, xMin, yMax, zMin);
-        V3D_Point p0p1p1 = new V3D_Point(e, xMin, yMax, zMax);
-        V3D_Point p1p0p0 = new V3D_Point(e, xMax, yMin, zMin);
-        V3D_Point p1p0p1 = new V3D_Point(e, xMax, yMin, zMax);
-        V3D_Point p1p1p0 = new V3D_Point(e, xMax, yMax, zMin);
-        V3D_Point p1p1p1 = new V3D_Point(e, xMax, yMax, zMax);
-        V3D_FinitePlane x0 = new V3D_FinitePlane(e, p0p0p0, p0p0p1, p0p1p1);
-        V3D_FinitePlane x1 = new V3D_FinitePlane(e, p1p0p0, p1p0p1, p1p1p1);
-        V3D_FinitePlane y0 = new V3D_FinitePlane(e, p0p0p0, p1p0p0, p1p0p1);
-        V3D_FinitePlane y1 = new V3D_FinitePlane(e, p0p1p0, p1p1p0, p1p1p1);
-        V3D_FinitePlane z0 = new V3D_FinitePlane(e, p0p0p0, p1p0p0, p1p1p0);
-        V3D_FinitePlane z1 = new V3D_FinitePlane(e, p0p0p1, p1p0p1, p1p1p1);
-//        if(l.getIntersects(x0) ||
-//                l.getIntersects(x1)) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int scale, RoundingMode rm) {
+        V3D_Envelope le = l.getEnvelope3D();
+        if (le.isIntersectedBy(getEnvelope3D())) {
+            if (isIntersectedBy(l.p)) {
+                return true;
+            }
+            if (isIntersectedBy(l.q)) {
+                return true;
+            }
+            /**
+             * Check if l intersects any of the finite planes which defines the
+             * faces of the box.
+             */
+            V3D_Point p0p0p0 = new V3D_Point(e, xMin, yMin, zMin);
+            V3D_Point p0p0p1 = new V3D_Point(e, xMin, yMin, zMax);
+            V3D_Point p0p1p0 = new V3D_Point(e, xMin, yMax, zMin);
+            V3D_Point p0p1p1 = new V3D_Point(e, xMin, yMax, zMax);
+            V3D_Point p1p0p0 = new V3D_Point(e, xMax, yMin, zMin);
+            V3D_Point p1p0p1 = new V3D_Point(e, xMax, yMin, zMax);
+            V3D_Point p1p1p0 = new V3D_Point(e, xMax, yMax, zMin);
+            V3D_Point p1p1p1 = new V3D_Point(e, xMax, yMax, zMax);
+            V3D_FinitePlane x0 = new V3D_FinitePlane(e, p0p0p0, p0p0p1, p0p1p1);
+            V3D_FinitePlane x1 = new V3D_FinitePlane(e, p1p0p0, p1p0p1, p1p1p1);
+            V3D_FinitePlane y0 = new V3D_FinitePlane(e, p0p0p0, p1p0p0, p1p0p1);
+            V3D_FinitePlane y1 = new V3D_FinitePlane(e, p0p1p0, p1p1p0, p1p1p1);
+            V3D_FinitePlane z0 = new V3D_FinitePlane(e, p0p0p0, p1p0p0, p1p1p0);
+            V3D_FinitePlane z1 = new V3D_FinitePlane(e, p0p0p1, p1p0p1, p1p1p1);
+//        if(l.isIntersectedBy(x0) ||
+//                l.isIntersectedBy(x1)) {
 //            return true;
 //        }
 //        return false;
-        throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
+        } else {
+            return false;
+        }
     }
 
     /**
      * @param p The point to test for intersection.
      * @return {@code true} if this intersects with {@code p}
      */
-    public boolean getIntersects(V3D_Point p) {
-        return getIntersects(p.x, p.y, p.z);
+    public boolean isIntersectedBy(V3D_Point p) {
+        return isIntersectedBy(p.x, p.y, p.z);
     }
 
     /**
@@ -343,7 +324,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z The z-coordinate of the point to test for intersection.
      * @return {@code true} if this intersects with {@code p}
      */
-    public boolean getIntersects(BigDecimal x, BigDecimal y, BigDecimal z) {
+    public boolean isIntersectedBy(BigDecimal x, BigDecimal y, BigDecimal z) {
         return x.compareTo(xMin) != -1 && x.compareTo(xMax) != 1
                 && y.compareTo(yMin) != -1 && y.compareTo(yMax) != 1
                 && z.compareTo(zMin) != -1 && z.compareTo(zMax) != 1;
@@ -353,17 +334,17 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     public V3D_Envelope getEnvelope3D() {
         return this;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Envelope) {
             V3D_Envelope en = (V3D_Envelope) o;
-            if( this.xMin.compareTo(en.xMin) == 0 &&
-                this.xMax.compareTo(en.xMax) == 0 &&
-                this.yMin.compareTo(en.yMin) == 0 &&
-                this.yMax.compareTo(en.yMax) == 0 &&
-                this.zMin.compareTo(en.zMin) == 0 &&
-                this.zMax.compareTo(en.zMax) == 0) {
+            if (this.xMin.compareTo(en.xMin) == 0
+                    && this.xMax.compareTo(en.xMax) == 0
+                    && this.yMin.compareTo(en.yMin) == 0
+                    && this.yMax.compareTo(en.yMax) == 0
+                    && this.zMin.compareTo(en.zMin) == 0
+                    && this.zMax.compareTo(en.zMax) == 0) {
                 return true;
             }
         }
@@ -381,5 +362,5 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         hash = 43 * hash + Objects.hashCode(this.zMax);
         return hash;
     }
-    
+
 }

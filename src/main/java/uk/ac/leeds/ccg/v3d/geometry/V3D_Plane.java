@@ -124,7 +124,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} If this and {@code pl} intersect.
      */
-    public boolean intersects(V3D_Plane pl, int scale, RoundingMode rm) {
+    public boolean isIntersectedBy(V3D_Plane pl, int scale, RoundingMode rm) {
         if (this.isParallel(pl, scale, rm)) {
             if (this.equals(pl)) {
                 return true;
@@ -141,7 +141,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} If this and {@code l} intersect.
      */
-    public boolean intersects(V3D_Line l, int scale, RoundingMode rm) {
+    public boolean isIntersectedBy(V3D_Line l, int scale, RoundingMode rm) {
         if(isParallel(l, scale, rm)) {
             if (!isOnPlane(l)) {
                 return false;
@@ -154,7 +154,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param pt The point to test if it is on the plane.
      * @return {@code true} If {@code pt} is on the plane.
      */
-    public boolean intersects(V3D_Point pt) {
+    public boolean isIntersectedBy(V3D_Point pt) {
         BigDecimal d = normalVector.dx.multiply(p.x.subtract(pt.x)).add(normalVector.dy.multiply(p.y
                 .subtract(pt.y))).add(normalVector.dz.multiply(p.z.subtract(pt.z)));
         return d.compareTo(BigDecimal.ZERO) == 0;
@@ -180,7 +180,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} If {@code pt} is on the plane.
      */
     public boolean isOnPlane(V3D_Line l) {
-        return intersects(l.p) && intersects(l.q);
+        return V3D_Plane.this.isIntersectedBy(l.p) && V3D_Plane.this.isIntersectedBy(l.q);
     }
 
     /**
@@ -207,9 +207,9 @@ public class V3D_Plane extends V3D_Geometry {
     public boolean equals(Object o) {
         if (o instanceof V3D_Plane) {
             V3D_Plane pl = (V3D_Plane) o;
-            if (intersects(pl.p)) {
-                if (intersects(pl.q)) {
-                    if (intersects(pl.r)) {
+            if (V3D_Plane.this.isIntersectedBy(pl.p)) {
+                if (V3D_Plane.this.isIntersectedBy(pl.q)) {
+                    if (V3D_Plane.this.isIntersectedBy(pl.r)) {
                         return true;
                     }
                 }

@@ -164,8 +164,8 @@ public class V3D_LineSegment extends V3D_Line
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code en}.
      */
-    public boolean getIntersects(V3D_Envelope en, int scale, RoundingMode rm) {
-        return en.getIntersects(this, scale, rm);
+    public boolean isIntersectedBy(V3D_Envelope en, int scale, RoundingMode rm) {
+        return en.isIntersectedBy(this, scale, rm);
     }
 
     /**
@@ -173,10 +173,10 @@ public class V3D_LineSegment extends V3D_Line
      * @return true if p is within t of this given scale.
      */
     @Override
-    public boolean getIntersects(V3D_Point p) {
-        boolean ei = getEnvelope3D().getIntersects(p.getEnvelope3D());
+    public boolean isIntersectedBy(V3D_Point p) {
+        boolean ei = getEnvelope3D().isIntersectedBy(p.getEnvelope3D());
         if (ei) {
-            return super.getIntersects(p);
+            return super.isIntersectedBy(p);
         }
         return false;
     }
@@ -187,10 +187,10 @@ public class V3D_LineSegment extends V3D_Line
      * @param rm The RoundingMode for any rounding.
      * @return true if p is within t of this given scale.
      */
-    public boolean getIntersects(V3D_LineSegment l, int scale, RoundingMode rm) {
-        boolean ei = getEnvelope3D().getIntersects(l.getEnvelope3D());
+    public boolean isIntersectedBy(V3D_LineSegment l, int scale, RoundingMode rm) {
+        boolean ei = getEnvelope3D().isIntersectedBy(l.getEnvelope3D());
         if (ei) {
-            return super.getIntersects(l, scale, rm);
+            return super.isIntersectedBy(l, scale, rm);
         }
         return false;
     }
