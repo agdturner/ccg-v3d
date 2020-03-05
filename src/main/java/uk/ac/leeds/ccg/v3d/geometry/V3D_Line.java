@@ -131,18 +131,19 @@ public class V3D_Line extends V3D_Geometry {
      */
     public boolean isParallel(V3D_Line l) {
         V3D_Vector v = pq.getCrossProduct(l.pq);
-        return v.dx.compareTo(BigDecimal.ZERO) == 0 
+        return v.dx.compareTo(BigDecimal.ZERO) == 0
                 && v.dy.compareTo(BigDecimal.ZERO) == 0
                 && v.dz.compareTo(BigDecimal.ZERO) == 0;
     }
 
     /**
-     * @param pl
-     * @return {@code true} if this intersects {
-     * @pl}.
+     * @param pl Plane to test for intersection with this.
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if this intersects {@code pl}.
      */
-    public boolean getIntersects(V3D_Plane pl) {
-        throw new UnsupportedOperationException();
+    public boolean getIntersects(V3D_Plane pl, int scale, RoundingMode rm) {
+        return pl.intersects(this, scale, rm);
     }
 
     /**
@@ -356,7 +357,18 @@ public class V3D_Line extends V3D_Geometry {
         }
     }
 
-    public V3D_Geometry getIntersection(V3D_Plane pl) {
+    /**
+     * @param pl The plane to get intersection with this.
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return The intersection of this and pl.
+     */
+    public V3D_Geometry getIntersection(V3D_Plane pl, int scale, RoundingMode rm) {
+        if (pl.isParallel(this, scale, rm)) {
+            if (pl.isOnPlane(this)) {
+                return this;
+            }
+        }
         throw new UnsupportedOperationException();
     }
 

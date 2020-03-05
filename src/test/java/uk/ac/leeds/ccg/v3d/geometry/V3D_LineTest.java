@@ -167,13 +167,13 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testGetIntersects_V3D_Plane() {
         System.out.println("getIntersects");
-//        V3D_Plane pl = null;
-//        V3D_Line instance = null;
-//        boolean expResult = false;
-//        boolean result = instance.getIntersects(pl);
-//        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        int scale = 1;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Plane pl = new V3D_Plane(e, P0N1N1, P1N1N1, P0P0N1);
+        V3D_Line instance = new V3D_Line(N1N1N1, P1P1P1);
+        boolean expResult = true;
+        boolean result = instance.getIntersects(pl, scale, rm);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -281,13 +281,13 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_Plane() {
         System.out.println("getIntersection");
-//        V3D_Plane pl = null;
-//        V3D_Line instance = null;
-//        V3D_Geometry expResult = null;
-//        V3D_Geometry result = instance.getIntersection(pl);
-//        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        int scale = 1;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Plane pl = new V3D_Plane(e, N1N1P0, P1P1P0, N1P1P0);
+        V3D_Line instance = new V3D_Line(new V3D_Point(N1N1N1), new V3D_Point(P1P1P1));
+        V3D_Geometry expResult = P0P0P0;
+        V3D_Geometry result = instance.getIntersection(pl, scale, rm);
+        assertEquals(expResult, result);
     }
 
 }
