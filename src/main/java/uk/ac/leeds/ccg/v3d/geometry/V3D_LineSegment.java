@@ -142,6 +142,16 @@ public class V3D_LineSegment extends V3D_Line
     }
 
     /**
+     * @param s The scaler value to multiply each coordinate of this by.
+     * @return this multiplied by scalar
+     */
+    public V3D_LineSegment multiply(BigDecimal s) {
+        return new V3D_LineSegment(
+                new V3D_Point(e, p.x.multiply(s), p.y.multiply(s), p.z.multiply(s)),
+                new V3D_Point(e, q.x.multiply(s), q.y.multiply(s), q.z.multiply(s)));
+    }
+
+    /**
      * @param scale The scale for the precision of the result.
      * @param rm The RoundingMode for any rounding.
      * @return The length of this as a BigDecimal

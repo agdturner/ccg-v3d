@@ -24,17 +24,64 @@ import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.generic.memory.Generic_MemoryManager;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 import uk.ac.leeds.ccg.v3d.io.V3D_Files;
 
 /**
- * Vector Environment.
+ * V3D_Environment
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class V3D_Environment extends Generic_MemoryManager {
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * The origin at {@code <0,0,0>}.
+     */
+    public final V3D_Point origin;
+
+    /**
+     * The x axis.
+     */
+    public final V3D_Line xAxis;
+   
+    /**
+     * The y axis.
+     */
+    public final V3D_Line yAxis;
+
+    /**
+     * The z axis.
+     */
+    public final V3D_Line zAxis;
+
+    /**
+     * Unit vector based at the origin in the x axis direction. 
+     */
+    public final V3D_Vector i;
+
+    /**
+     * Unit vector based at the origin in the y axis direction. 
+     */
+    public final V3D_Vector j;
+
+    /**
+     * Unit vector based at the origin in the z axis direction. 
+     */
+    public final V3D_Vector k;
+    
+    /**
+     * For code brevity.
+     */
+    public final BigDecimal P0 = BigDecimal.ZERO;
+    public final BigDecimal P1 = BigDecimal.ONE;
+    public final BigDecimal P2 = BigDecimal.valueOf(2);
+    public final BigDecimal P3 = BigDecimal.valueOf(3);
+    public final BigDecimal N1 = BigDecimal.ONE.negate();
     
     public Generic_Environment env;
     
@@ -54,6 +101,13 @@ public class V3D_Environment extends Generic_MemoryManager {
             throws IOException, Exception {
         super();
         this.env = e;
+        origin = new V3D_Point(this, P0, P0, P0);
+        xAxis = new V3D_Line(origin, new V3D_Point(this, P1, P0, P0));
+        yAxis = new V3D_Line(origin, new V3D_Point(this, P0, P1, P0));
+        zAxis = new V3D_Line(origin, new V3D_Point(this, P0, P0, P1));
+        i = new V3D_Vector(new V3D_Point(this, P1, P0, P0));
+        j = new V3D_Vector(new V3D_Point(this, P0, P1, P0));
+        k = new V3D_Vector(new V3D_Point(this, P0, P0, P1));
         bd = new Math_BigDecimal();
         initMemoryReserve(Default_Memory_Threshold, env);
         files = new V3D_Files(new Generic_Defaults(Paths.get(dir.toString(),

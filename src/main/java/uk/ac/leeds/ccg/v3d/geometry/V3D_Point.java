@@ -100,13 +100,38 @@ public class V3D_Point extends V3D_Geometry
     }
 
     /**
+     * @param s The scalar value to multiply each coordinate of this by.
+     * @return this multiplied by scalar
+     */
+    public V3D_Point multiply(BigDecimal s) {
+        return new V3D_Point(e, x.multiply(s), y.multiply(s), z.multiply(s));
+    }
+    
+    /**
+     * @param v The vector to add.
+     * @return a new point which is this shifted by v.
+     */
+    public V3D_Point add(V3D_Vector v) {
+        return new V3D_Point(e, x.add(v.dx), y.add(v.dy), z.add(v.dz));
+    }
+    
+    /**
+     * @param v The vector to multiply by.
+     * @return a new point which is this multiplied by v.
+     */
+    public V3D_Point multiply(V3D_Vector v) {
+        return new V3D_Point(e, x.multiply(v.dx), y.multiply(v.dy), z.multiply(v.dz));
+    }
+    
+
+    /**
      * @param l The line to test for intersection with this.
      * @return {@code true} if this is within {@code t} distance of {@code l}.
      */
     public boolean isIntersectedBy(V3D_LineSegment l) {
         return l.isIntersectedBy(this);
     }
-    
+
     /**
      * @param env The envelope to test.
      * @return {@code true} if this is within {@code env}.

@@ -98,6 +98,30 @@ public class V3D_Vector {
     }
 
     /**
+     * @param s The scalar value to multiply this by.
+     * @return Scaled vector.
+     */
+    public V3D_Vector multiply(BigDecimal s) {
+        return new V3D_Vector(dx.multiply(s), dy.multiply(s), dz.multiply(s));
+    }
+    
+    /**
+     * @param v The vector to add.
+     * @return A new vector which is this add {@code v}.
+     */
+    public V3D_Vector add(V3D_Vector v) {
+        return new V3D_Vector(dx.add(v.dx), dy.add(v.dy), dz.add(v.dz));
+    }
+    
+    /**
+     * @param v The vector to subtract.
+     * @return A new vector which is this subtract {@code v}.
+     */
+    public V3D_Vector subtract(V3D_Vector v) {
+        return new V3D_Vector(dx.subtract(v.dx), dy.subtract(v.dy), dz.subtract(v.dz));
+    }
+    
+    /**
      * Calculate and return the
      * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
      *
