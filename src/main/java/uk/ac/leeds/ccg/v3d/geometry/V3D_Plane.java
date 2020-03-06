@@ -210,13 +210,51 @@ public class V3D_Plane extends V3D_Geometry {
         // Get any non zero elements of v?
         if (v.dx.compareTo(BigDecimal.ZERO) == 0) {
             if (v.dy.compareTo(BigDecimal.ZERO) == 0) {
+                /**
+                 * normalVector.dx(x(t)−p.x)+normalVector.dy(y(t)−p.y)+normalVector.dz(z(t)−p.z)
+                     */
+                    // where:
+                    // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
+                    // pl.normalVector.dx = d; pl.normalVector.dy = e; pl.normalVector.dz = f
+                    // a(x−p.x) + b(y−p.y) + c(z−p.z) = 0
+                    // x = p.x + ((- b(y−p.y) - c(z−p.z)) / a)                     --- 1
+                    // y = p.y + ((- a(x−p.x) - c(z−p.z)) / b)                     --- 2
+                    // z = p.z + ((- a(x−p.x) - b(y−p.y)) / c)                     --- 3
+                    // x = pl.p.x + ((- pl.b(y − pl.p.y) - pl.c(z − pl.p.z)) / d)  --- 4
+                    // y = pl.p.y + ((- pl.a(x − pl.p.x) - pl.c(z − pl.p.z)) / e)  --- 5
+                    // z = pl.p.z + ((- pl.a(x − pl.p.x) - pl.b(y − pl.p.y)) / f)  --- 6
+                    // Let:
+                    // p.x = k; p.y = l; p.z = m
+                    // x = k + ((b(l - y) - c(z − m)) / a)   --- 1t
+                    // y = l + ((a(k - x) - c(z − l)) / b)   --- 2t
+                    // z = m + ((a(k - x) - b(y − m)) / c)   --- 3t
+                    // Let:
+                    // pl.p.x = k; pl.p.y = l; pl.p.z = m
+                    // x = k + ((e(l - y) - f(z - m)) / d)   --- 1p
+                    // y = l + ((d(k - x) - f(z - l)) / e)   --- 2p
+                    // z = m + ((d(k - x) - e(y - m)) / f)   --- 3p
+                if (normalVector.dx.compareTo(e.P0) == 0) {
+                    pl.b
+                } else if (normalVector.dy.compareTo(e.P0) == 0) {
+                    // y = l + ((- a(x − k) - c(z − l)) / b)
+                    BigDecimal y = p.y;
+                    // x = k + ((e(l - y) - f(z - m)) / d)
+                    // z = m + ((- d(x - k) - e(y - m)) / f)
+                    BigDecimal x = p.x.add(
+                            Math_BigDecimal.divideRoundIfNecessary(
+                            (pl.normalVector.dy.multiply(p.y.subtract(y))).subtract(pl.normalVector.dz.multiply(z.subtract(pl.p.z))),
+                            pl.normalVector.dx,scale, rm));
+                } else {
+                    return e.zAxis;
+                }
+                    BigDecimal x = p.x
                 BigDecimal numerator = p.z.subtract(p.y)
                         .subtract(normalVector.dz.multiply(p.z))
                         .subtract(p.y.multiply(normalVector.dy));
                 BigDecimal denominator = normalVector.dy.subtract(normalVector.dz);
                 if (denominator.compareTo(e.P0) == 0) {
                     // Case 1: The z axis
-                    return e.zAxis;
+                    
                 } else {
                     // y = (p.y - c(z−p.z)) / b   --- 1          
                     // z = (p.z - b(y−p.y)) / c   --- 2
@@ -324,41 +362,56 @@ public class V3D_Plane extends V3D_Geometry {
                     // z = pl.p.z + ((- pl.a(x − pl.p.x) - pl.b(y − pl.p.y)) / pl.c)   --- 6
                     // Let:
                     // p.x = k; p.y = l; p.z = m
-                    // x = k + ((- b(y − l) - c(z − m)) / a)      --- 1t
-                    // y = l + ((- a(x − k) - c(z − l)) / b)      --- 2t
-                    // z = m + ((- a(x − k) - b(y − m)) / c)      --- 3t
+                    // x = k + ((b(l - y) - c(z − m)) / a)   --- 1t
+                    // y = l + ((a(k - x) - c(z − l)) / b)   --- 2t
+                    // z = m + ((a(k - x) - b(y − m)) / c)   --- 3t
                     // Let:
                     // pl.p.x = k; pl.p.y = l; pl.p.z = m
-                    // x = k + ((- e(y - l) - f(z - m)) / d)       --- 1p
-                    // y = l + ((- d(x - k) - f(z - l)) / e)       --- 2p
-                    // z = m + ((- d(x - k) - e(y - m)) / f)       --- 3p
+                    // x = k + ((e(l - y) - f(z - m)) / d)   --- 1p
+                    // y = l + ((d(k - x) - f(z - l)) / e)   --- 2p
+                    // z = m + ((d(k - x) - e(y - m)) / f)   --- 3p
                     // sub 1t into 2p:
-                    // y = l + ((- d((k + ((- b(y − l) - c(z − m)) / a)) - k) - f(z - l)) / e)
-                    // ey - el = - d(k + ((- b(y − l) - c(z − m)) / a)) + dk - fz + fl
-                    // ey = - d(k + ((- b(y − l) - c(z − m)) / a)) + dk - fz + fl + el
-                    // ey = - dk - d((- b(y − l) - c(z − m)) / a) + dk - fz + fl + el
-                    // ey = - db(y - l)/a - cd(z-m)/a - fz + fl + el
-                    // ey + dby/a - dbl = - cd(z-m)/a - fz + fl + el
-                    // y(e +db/a) = dbl - cd(z-m)/a - fz + fl + el
-                    // y ito z      // y = (dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)
+                    // y = l + ((a(k - (k + ((b(l - y) - c(z − m)) / a))) - c(z − l)) / b)
+                    
+                    
+                    start here
+                    // y = l + ((- d((k + ((b(l - y) - c(z − m)) / a)) - k) - f(z - l)) / e)
+                    // ey - el = - d(k + ((b(l - y) - c(z − m)) / a)) + dk - fz + fl
+                    // ey = - d(k + ((b(l - y) - c(z − m)) / a)) + dk - fz + fl + el
+                    // ey = - dk - d((b(l - y) - c(z − m)) / a) + dk - fz + fl + el
+                    // ey = - db(l - y)/a + cd(z - m)/a - fz + fl + el
+                    // ey = dby/a - dbl/a + cd(z - m)/a - fz + fl + el
+                    // ey - dby/a = - dbl/a + cd(z - m)/a - fz + fl + el
+                    // y(e - db/a) = dbl - cd(z-m)/a - fz + fl + el
+                    // y = (dbl - cd(z-m)/a - fz + fl + el) / (e - db/a)
+                    // y = (dbl - cd(z-m)/a - fz + fl + el) / (e + db/a)                                *** y ito z
                     // Substitute into 3p
-                    // z = m + ((- d(x - k) - e(y - m)) / f)
-                    // z = m + ((- d(x - k) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - m)) / f)
-                    // zf - mf = - d(x - k) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - m)
-                    // zf - mf = - d(x - k) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - m)
-                    // zf = - d(x - k) - e((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) + em + mf
-                    // zf = dk - dx - e(dbl - cd(z-m)/a - fz + fl + el) / (e +db/a) + em + mf
-                    // Let: e/(e + db/a) = g
-                    // zf = dk - dx - g(dbl - cd(z-m)/a - fz + fl + el) + em + mf
-                    // zf = dk - dx - gdbl - gcd(z-m)/a - gfz + gfl + gel + em + mf
-                    // zf = dk - dx - gdbl - gcdz/a + gm/a - gfz + gfl + gel + em + mf
-                    // zf + gcdz/a + gfz = dk - dx - gdbl + gm/a + gfl + gel + em + mf
-                    // z(f + gcd/a + gf) = dk - dx - gdbl + gm/a + gfl + gel + em + mf
-                    // z ito x      // z = (dk - dx - gdbl + gm/a + gfl + gel + em + mf) / (f + gcd/a + gf)
-                    // z(f + gcd/a + gf) = dk - dx - gdbl + gm/a + gfl + gel + em + mf
-                    // x ito z      // x = (dk - z(f + gcd/a + gf) - gdbl + gm/a + gfl + gel + em + mf) / d
+                    // z = m + ((d(k - x) - e(y - m)) / f)
+                    // z = m + ((d(k - x) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e + db/a)) - m)) / f)
+                    // zf - mf = d(k - x) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e + db/a)) - m)
+                    // zf = mf + d(k - x) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e + db/a)) - m)
+                    // Let: t = (e + db/a)
+                    // zf = mf + d(k - x) - e(((dbl - cd(z-m)/a - fz + fl + el) / t) - m)
+                    // zf = mf + d(k - x) - e(((dbl - cd(z-m)/a - fz + fl + el) / t) - m)
+                    // zf = mf + d(k - x) - e(((dbl - cd(z-m)/a - fz + fl + el) / t) - m)
+                    // zf = mf + d(k - x) - edbl/t - ecdz/at -ecdm/at - fz/t + fl/t + el/t - em
+                    // zf + fz/t + ecdz/at = mf + d(k - x) - edbl/t -ecdm/at + fl/t + el/t - em
+                    // z(f + f/t + ecd/at) = mf + d(k - x) - edbl/t -ecdm/at + fl/t + el/t - em
+                    // z = (mf + d(k - x) - edbl/t -ecdm/at + fl/t + el/t - em) / (f + f/t + ecd/at)     *** z ito x
+                    // z(f + f/t + ecd/at) = mf + d(k - x) - edbl/t -ecdm/at + fl/t + el/t - em
+                    // z(f + f/t + ecd/at) = mf + dk - dx - edbl/t -ecdm/at + fl/t + el/t - em
+                    // dx = mf + dk - edbl/t -ecdm/at + fl/t + el/t - em - z(f + f/t + ecd/at)
+                    // x = (mf + dk - edbl/t -ecdm/at + fl/t + el/t - em - z(f + f/t + ecd/at)) / d      *** x ito z
                     // Substitute x ito z and y ito z into 3P
-                    // z = m + ((- d(x - k) - e(y - m)) / f)
+                    // z = m + ((d(k - x) - e(y - m)) / f)
+                    // z = m + ((d(k - ((mf + dk - edbl/t -ecdm/at + fl/t + el/t - em - z(f + f/t + ecd/at)) / d)) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e + db/a)) - m)) / f)
+
+
+
+
+
+
+
                     // z = m + ((- d(((dk - z(f + gcd/a + gf) - gdbl + gm/a + gfl + gel + em + mf) / d) - k) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - m)) / f)
                     // z - m = ((- d(((dk - z(f + gcd/a + gf) - gdbl + gm/a + gfl + gel + em + mf) / d) - k) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - m)) / f)
                     // z - m = ((- d(((dk - z(f + gcd/a + gf) - gdbl + gm/a + gfl + gel + em + mf) / d) - k) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - m)) / f)

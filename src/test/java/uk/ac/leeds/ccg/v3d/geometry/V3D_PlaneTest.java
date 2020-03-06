@@ -395,10 +395,14 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Plane pl = getPlane(P0P0P0, e.yAxis.q, e.zAxis.q); // x = 0
         int scale = 1;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Plane instance = getPlane(P0P0P0, e.yAxis.q.multiply(P2), e.zAxis.q); // x = 0
-        V3D_Geometry expResult = getPlane(P0P0P0, e.yAxis.q.multiply(P3), e.zAxis.q);
-        V3D_Geometry result = instance.getIntersection(pl, scale, rm);
-        assertEquals(expResult, result);
+        V3D_Plane instance;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
+//        // Test 1
+//        instance = getPlane(P0P0P0, e.yAxis.q.multiply(P2), e.zAxis.q); // x = 0
+//        expResult = getPlane(P0P0P0, e.yAxis.q.multiply(P3), e.zAxis.q);
+//        result = instance.getIntersection(pl, scale, rm);
+//        assertEquals(expResult, result);
         // Test 2
          instance = getPlane(e.xAxis.q, P0P0P0, e.zAxis.q); // y = 0
          expResult = e.zAxis;
