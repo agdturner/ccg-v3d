@@ -306,9 +306,12 @@ public class V3D_Plane extends V3D_Geometry {
                     // Case 6
                     return null;
                 } else {
-                    // Case 7
-                    // This is where the two equations of the plane are equal.
-                    // normalVector.dx(x(t)−p.x)+normalVector.dy(y(t)−p.y)+normalVector.dz(z(t)−p.z)
+                    /**
+                     * Case 7: Neither plane aligns with any axis and they are not
+                     * orthogonal.
+                     *
+                     * normalVector.dx(x(t)−p.x)+normalVector.dy(y(t)−p.y)+normalVector.dz(z(t)−p.z)
+                     */
                     // where:
                     // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
                     // pl.normalVector.dx = d; pl.normalVector.dy = e; pl.normalVector.dz = f
