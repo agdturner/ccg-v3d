@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -25,25 +24,25 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * V3D_Plane - for representing infinite flat 2D planes in 3D. The plane is
- * defined by three points {@link #p}, {@link #q} and {@link #r} from which an
- * equation of the plane is derived. The derivation is by creating two
- * non-collinear V3D_Vectors {@link #pq} and {@link #pr}. The equation of the
- * plane is:
+ * defined by three points {@link #p}, {@link #q} and {@link #r} that are not
+ * collinear, or from any point on the plane and a normal vector that is
+ * perpendicular to the plane. From three points that are not collinear an
+ * equation of the plane can be derived by creating two V3D_Vectors {@link #pq}
+ * and {@link #pr}. The equation of the plane is:
  * <ul>
- * <li>xxx*(x-x0) + yyy*(y-y0) + zzz*(z-z0 = 0</li>
+ * <li>A*(x-x0) + B*(y-y0) + C*(z-z0) = 0</li>
  * </ul>
  * where:
  * <ul>
  * <li>x, y, and z are any of the coordinates in {@link #p}, {@link #q} and
  * {@link #r}</li>
  * <li>x0, y0 and z0 represents any other point in the plane</li>
- * <li>{@code xxx = pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz))} -
- * which is the dx of the normal vector that is perpendicular to the plane.</li>
- * <li>{@code yyy = (pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz))).negate()}
- * - which is the dy of the normal vector that is perpendicular to the
- * plane.</li>
- * <li>{@code zzz = pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy))} -
- * which is the dx of the normal vector that is perpendicular to the plane.</li>
+ * <li>{@code A = pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz))} - which
+ * is the dx of the normal vector (that is perpendicular to the plane).</li>
+ * <li>{@code B = (pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz))).negate()}
+ * - which is the dy of the normal vector.</li>
+ * <li>{@code C = pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy))} - which
+ * is the dz of the normal vector.</li>
  * </ul>
  *
  * <ol>
@@ -212,49 +211,49 @@ public class V3D_Plane extends V3D_Geometry {
             if (v.dy.compareTo(BigDecimal.ZERO) == 0) {
                 /**
                  * normalVector.dx(x(t)−p.x)+normalVector.dy(y(t)−p.y)+normalVector.dz(z(t)−p.z)
-                     */
-                    // where:
-                    // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
-                    // pl.normalVector.dx = d; pl.normalVector.dy = e; pl.normalVector.dz = f
-                    // a(x−p.x) + b(y−p.y) + c(z−p.z) = 0
-                    // x = p.x + ((- b(y−p.y) - c(z−p.z)) / a)                     --- 1
-                    // y = p.y + ((- a(x−p.x) - c(z−p.z)) / b)                     --- 2
-                    // z = p.z + ((- a(x−p.x) - b(y−p.y)) / c)                     --- 3
-                    // x = pl.p.x + ((- pl.b(y − pl.p.y) - pl.c(z − pl.p.z)) / d)  --- 4
-                    // y = pl.p.y + ((- pl.a(x − pl.p.x) - pl.c(z − pl.p.z)) / e)  --- 5
-                    // z = pl.p.z + ((- pl.a(x − pl.p.x) - pl.b(y − pl.p.y)) / f)  --- 6
-                    // Let:
-                    // p.x = k; p.y = l; p.z = m
-                    // x = k + ((b(l - y) - c(z − m)) / a)   --- 1t
-                    // y = l + ((a(k - x) - c(z − l)) / b)   --- 2t
-                    // z = m + ((a(k - x) - b(y − m)) / c)   --- 3t
-                    // Let:
-                    // pl.p.x = k; pl.p.y = l; pl.p.z = m
-                    // x = k + ((e(l - y) - f(z - m)) / d)   --- 1p
-                    // y = l + ((d(k - x) - f(z - l)) / e)   --- 2p
-                    // z = m + ((d(k - x) - e(y - m)) / f)   --- 3p
+                 */
+                // where:
+                // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
+                // pl.normalVector.dx = d; pl.normalVector.dy = e; pl.normalVector.dz = f
+                // a(x−p.x) + b(y−p.y) + c(z−p.z) = 0
+                // x = p.x + ((- b(y−p.y) - c(z−p.z)) / a)                     --- 1
+                // y = p.y + ((- a(x−p.x) - c(z−p.z)) / b)                     --- 2
+                // z = p.z + ((- a(x−p.x) - b(y−p.y)) / c)                     --- 3
+                // x = pl.p.x + ((- pl.b(y − pl.p.y) - pl.c(z − pl.p.z)) / d)  --- 4
+                // y = pl.p.y + ((- pl.a(x − pl.p.x) - pl.c(z − pl.p.z)) / e)  --- 5
+                // z = pl.p.z + ((- pl.a(x − pl.p.x) - pl.b(y − pl.p.y)) / f)  --- 6
+                // Let:
+                // p.x = k; p.y = l; p.z = m
+                // x = k + ((b(l - y) - c(z − m)) / a)   --- 1t
+                // y = l + ((a(k - x) - c(z − l)) / b)   --- 2t
+                // z = m + ((a(k - x) - b(y − m)) / c)   --- 3t
+                // Let:
+                // pl.p.x = k; pl.p.y = l; pl.p.z = m
+                // x = k + ((e(l - y) - f(z - m)) / d)   --- 1p
+                // y = l + ((d(k - x) - f(z - l)) / e)   --- 2p
+                // z = m + ((d(k - x) - e(y - m)) / f)   --- 3p
                 if (normalVector.dx.compareTo(e.P0) == 0) {
-                    pl.b
+                    //pl.b
                 } else if (normalVector.dy.compareTo(e.P0) == 0) {
-                    // y = l + ((- a(x − k) - c(z − l)) / b)
+//                    // y = l + ((- a(x − k) - c(z − l)) / b)
                     BigDecimal y = p.y;
-                    // x = k + ((e(l - y) - f(z - m)) / d)
-                    // z = m + ((- d(x - k) - e(y - m)) / f)
-                    BigDecimal x = p.x.add(
-                            Math_BigDecimal.divideRoundIfNecessary(
-                            (pl.normalVector.dy.multiply(p.y.subtract(y))).subtract(pl.normalVector.dz.multiply(z.subtract(pl.p.z))),
-                            pl.normalVector.dx,scale, rm));
+//                    // x = k + ((e(l - y) - f(z - m)) / d)
+//                    // z = m + ((- d(x - k) - e(y - m)) / f)
+//                    BigDecimal x = p.x.add(
+//                            Math_BigDecimal.divideRoundIfNecessary(
+//                                    (pl.normalVector.dy.multiply(p.y.subtract(y))).subtract(pl.normalVector.dz.multiply(z.subtract(pl.p.z))),
+//                                    pl.normalVector.dx, scale, rm));
                 } else {
                     return e.zAxis;
                 }
-                    BigDecimal x = p.x
+                //BigDecimal x = p.x
                 BigDecimal numerator = p.z.subtract(p.y)
                         .subtract(normalVector.dz.multiply(p.z))
                         .subtract(p.y.multiply(normalVector.dy));
                 BigDecimal denominator = normalVector.dy.subtract(normalVector.dz);
                 if (denominator.compareTo(e.P0) == 0) {
                     // Case 1: The z axis
-                    
+                    return null;
                 } else {
                     // y = (p.y - c(z−p.z)) / b   --- 1          
                     // z = (p.z - b(y−p.y)) / c   --- 2
@@ -345,141 +344,171 @@ public class V3D_Plane extends V3D_Geometry {
                     return null;
                 } else {
                     /**
-                     * Case 7: Neither plane aligns with any axis and they are not
-                     * orthogonal.
+                     * Case 7: Neither plane aligns with any axis and they are
+                     * not orthogonal.
                      *
                      * normalVector.dx(x(t)−p.x)+normalVector.dy(y(t)−p.y)+normalVector.dz(z(t)−p.z)
                      */
                     // where:
                     // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
                     // pl.normalVector.dx = d; pl.normalVector.dy = e; pl.normalVector.dz = f
-                    // a(x−p.x) + b(y−p.y) + c(z−p.z) = 0
-                    // x = p.x + ((- b(y−p.y) - c(z−p.z)) / a)                     --- 1
-                    // y = p.y + ((- a(x−p.x) - c(z−p.z)) / b)                     --- 2
-                    // z = p.z + ((- a(x−p.x) - b(y−p.y)) / c)                     --- 3
-                    // x = pl.p.x + ((- pl.b(y − pl.p.y) - pl.c(z − pl.p.z)) / pl.a)   --- 4
-                    // y = pl.p.y + ((- pl.a(x − pl.p.x) - pl.c(z − pl.p.z)) / pl.b)   --- 5
-                    // z = pl.p.z + ((- pl.a(x − pl.p.x) - pl.b(y − pl.p.y)) / pl.c)   --- 6
+                    // a(x−p.x)+b(y−p.y)+c(z−p.z) = 0
+                    // x = p.x+((b(p.y−y)+c(p.z−z))/a)                    --- 1
+                    // y = p.y+((a(p.x−x)+c(p.z−z))/b)                    --- 2
+                    // z = p.z+((a(p.x−x)+b(p.y−y))/c)                    --- 3
+                    // x = pl.p.x+((pl.b(pl.p.y−y)+pl.c(pl.p.z−z))/pl.a)  --- 4
+                    // y = pl.p.y+((pl.a(pl.p.x−x)+pl.c(pl.p.z−z))/pl.b)  --- 5
+                    // z = pl.p.z+((pl.a(pl.p.x−x)+pl.b(pl.p.y−y))/pl.c)  --- 6
                     // Let:
-                    // p.x = k; p.y = l; p.z = m
-                    // x = k + ((b(l - y) - c(z − m)) / a)   --- 1t
-                    // y = l + ((a(k - x) - c(z − l)) / b)   --- 2t
-                    // z = m + ((a(k - x) - b(y − m)) / c)   --- 3t
+                    // p.x = g; p.y = h; p.z = i
+                    // x = g+((b(h−y)+c(i−z))/a)                    --- 1p
+                    // y = h+((a(g−x)+c(i−z))/b)                    --- 2p
+                    // z = i+((a(g−x)+b(h−y))/c)                    --- 3p
                     // Let:
-                    // pl.p.x = k; pl.p.y = l; pl.p.z = m
-                    // x = k + ((e(l - y) - f(z - m)) / d)   --- 1p
-                    // y = l + ((d(k - x) - f(z - l)) / e)   --- 2p
-                    // z = m + ((d(k - x) - e(y - m)) / f)   --- 3p
-                    // sub 1t into 2p:
-                    // y = l + ((a(k - (k + ((b(l - y) - c(z − m)) / a))) - c(z − l)) / b)
-                    
-                    
-                    start here
-                    // y = l + ((- d((k + ((b(l - y) - c(z − m)) / a)) - k) - f(z - l)) / e)
-                    // ey - el = - d(k + ((b(l - y) - c(z − m)) / a)) + dk - fz + fl
-                    // ey = - d(k + ((b(l - y) - c(z − m)) / a)) + dk - fz + fl + el
-                    // ey = - dk - d((b(l - y) - c(z − m)) / a) + dk - fz + fl + el
-                    // ey = - db(l - y)/a + cd(z - m)/a - fz + fl + el
-                    // ey = dby/a - dbl/a + cd(z - m)/a - fz + fl + el
-                    // ey - dby/a = - dbl/a + cd(z - m)/a - fz + fl + el
-                    // y(e - db/a) = dbl - cd(z-m)/a - fz + fl + el
-                    // y = (dbl - cd(z-m)/a - fz + fl + el) / (e - db/a)
-                    // y = (dbl - cd(z-m)/a - fz + fl + el) / (e + db/a)                                *** y ito z
-                    // Substitute into 3p
-                    // z = m + ((d(k - x) - e(y - m)) / f)
-                    // z = m + ((d(k - x) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e + db/a)) - m)) / f)
-                    // zf - mf = d(k - x) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e + db/a)) - m)
-                    // zf = mf + d(k - x) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e + db/a)) - m)
-                    // Let: t = (e + db/a)
-                    // zf = mf + d(k - x) - e(((dbl - cd(z-m)/a - fz + fl + el) / t) - m)
-                    // zf = mf + d(k - x) - e(((dbl - cd(z-m)/a - fz + fl + el) / t) - m)
-                    // zf = mf + d(k - x) - e(((dbl - cd(z-m)/a - fz + fl + el) / t) - m)
-                    // zf = mf + d(k - x) - edbl/t - ecdz/at -ecdm/at - fz/t + fl/t + el/t - em
-                    // zf + fz/t + ecdz/at = mf + d(k - x) - edbl/t -ecdm/at + fl/t + el/t - em
-                    // z(f + f/t + ecd/at) = mf + d(k - x) - edbl/t -ecdm/at + fl/t + el/t - em
-                    // z = (mf + d(k - x) - edbl/t -ecdm/at + fl/t + el/t - em) / (f + f/t + ecd/at)     *** z ito x
-                    // z(f + f/t + ecd/at) = mf + d(k - x) - edbl/t -ecdm/at + fl/t + el/t - em
-                    // z(f + f/t + ecd/at) = mf + dk - dx - edbl/t -ecdm/at + fl/t + el/t - em
-                    // dx = mf + dk - edbl/t -ecdm/at + fl/t + el/t - em - z(f + f/t + ecd/at)
-                    // x = (mf + dk - edbl/t -ecdm/at + fl/t + el/t - em - z(f + f/t + ecd/at)) / d      *** x ito z
-                    // Substitute x ito z and y ito z into 3P
-                    // z = m + ((d(k - x) - e(y - m)) / f)
-                    // z = m + ((d(k - ((mf + dk - edbl/t -ecdm/at + fl/t + el/t - em - z(f + f/t + ecd/at)) / d)) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e + db/a)) - m)) / f)
-
-
-
-
-
-
-
-                    // z = m + ((- d(((dk - z(f + gcd/a + gf) - gdbl + gm/a + gfl + gel + em + mf) / d) - k) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - m)) / f)
-                    // z - m = ((- d(((dk - z(f + gcd/a + gf) - gdbl + gm/a + gfl + gel + em + mf) / d) - k) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - m)) / f)
-                    // z - m = ((- d(((dk - z(f + gcd/a + gf) - gdbl + gm/a + gfl + gel + em + mf) / d) - k) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - m)) / f)
-                    // zf - mf = - d(((dk - z(f + gcd/a + gf) - gdbl + gm/a + gfl + gel + em + mf) / d) - k) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - m)
-                    // zf - mf = - d((((dk - z(f + gcd/a + gf) - gdbl + gm/a + gfl + gel + em + mf) / d) - k) - e(((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - m))
-                    // zf - mf = - d((((dk - z(f + gcd/a + gf) - gdbl + gm/a + gfl + gel + em + mf) / d) - k)
-                    //        - e(((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - m))                    
-                    // zf = ed((dbl - cd(z-m)/a - fz + fl + el) / (e +db/a)) - edm 
-                    //        + z(f + gcd/a + gf) + gdbl - gm/a - gfl - gel - em
-                    // Let: ed/(e + db/a) = h
-                    // zf = hdbl - hcd(z-m)/a - hfz + hfl + hel - edm 
-                    //        + z(f + gcd/a + gf) + gdbl - gm/a - gfl - gel - em
-                    // zf - z(f + gcd/a + gf) = hdbl - zf - zgcd/a - zgf - hfz + hfl + hel - edm + gdbl - gm/a - gfl - gel - em
-                    // z2f - z(f + gcd/a + gf) + zgcd/a + zgf + hfz = hdbl + hfl + hel - edm + gdbl - gm/a - gfl - gel - em
-                    // z(2f - (f + gcd/a + gf) + gcd/a + gf + hf) = hdbl + hfl + hel - edm + gdbl - gm/a - gfl - gel - em
-                    // z(f + hf) = hdbl + hfl + hel - edm + gdbl - gm/a - gfl - gel - em
-                    // z = (hdbl + hfl + hel - edm + gdbl - gm/a - gfl - gel - em) / (f + fh)
-                    // Recall: h = ed/(e + db/a; g = e/(e + db/a)
-                    // h = eda/(ea + db)
-                    // g = ea/(ea + db)
-                    // So, h = dg
-                    // z = (dgdbl + dgfl + dgel - edm + gdbl - gm/a - gfl - gel - em) / (f + fdg)
-                    // z = (d(gl(db + f + e + b) - em) - g(m/a - l(f - e)) - em) / (f + fdg)
+                    // pl.p.x = j; pl.p.y = k; pl.p.z = l
+                    // x = j+((e(k−y)+f(l−z))/d)                    --- 1pl
+                    // y = k+((d(j−x)+f(l−z))/e)                    --- 2pl
+                    // z = l+((d(j−x)+e(k−y))/f)                    --- 3pl
+                    // Stage 1: express each coordinate in terms of another
+                    // sub 1p into 2pl:
+                    // y = k+((d(j−(g+((b(h−y)+c(i−z))/a)))+f(l−z))/e)
+                    // ey-ek = d(j−(g+((b(h−y)+c(i−z))/a)))+f(l−z)
+                    // ey-ek = d(j−(g+((b(h−y)+c(i−z))/a)))+fl−fz
+                    // ey-ek = dj−dg-dbh/a+dby/a-dci/a+dcz/a+fl−fz                    
+                    // ey-dby/a = dj−dg-dbh/a-dci/a+dcz/a+fl−fz+ek
+                    // y = (dj−dg-dbh/a-dci/a+dcz/a+fl−fz+ek)/(e-db/a)  ---12 y ito z
+                    // ey-dby/a = dj−dg-dbh/a-dci/a+dcz/a+fl−fz+ek
+                    // ey-dby/a-dj_dg+dbh/a+dci/a-fl-ek = z(dc/a-f)
+                    // z = (ey-dby/a-dj_dg+dbh/a+dci/a-fl-ek)/(dc/a-f)  ---12 z ito y                    
+                    // sub 1p into 3pl
+                    // z = l+((d(j−(g+((b(h−y)+c(i−z))/a)))+e(k−y))/f)
+                    // fz-fl = d(j−(g+((b(h−y)+c(i−z))/a)))+ek−ey
+                    // fz-dcz/a = dj−dg-dbh/a+dby/a-dci/a+ek−ey+fl
+                    // z = (dj−dg-dbh/a+dby/a-dci/a+ek−ey+fl)/(f-dc/a)  ---13 z ito y 
+                    // fz-dcz/a = dj−dg-dbh/a+dby/a-dci/a+ek−ey+fl
+                    // fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl= dby/a−ey
+                    // y = (fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e)  ---13 y ito z
+                    // sub 2p into 1pl:
+                    // x = j+((e(k−(h+((a(g−x)+c(i−z))/b)))+f(l−z))/d)
+                    // dx-dj = e(k−(h+((a(g−x)+c(i−z))/b)))+fl−fz
+                    // dx-dj = ek−eh-eag/b+eax/b-eci/b+ecz/b+fl−fz
+                    // x = (ek−eh-eag/b-eci/b+ecz/b+fl−fz-dj)/(d-ea/b)  ---21 x ito z    
+                    // dx-dj = ek−eh-eag/b+eax/b-eci/b+ecz/b+fl−fz
+                    // z = (dx-dj-ek+eh+eag/b-eax/b+eci/b-fl)/(ec/b−f)  ---21 z ito x
+                    // sub 2p into 3pl
+                    // z = l+((d(j−x)+e(k−(h+((a(g−x)+c(i−z))/b))))/f)
+                    // fz-fl = dj−dx+ek−eh-eag/b+eax/b-eci/b+ecz/b
+                    // z = (dj−dx+ek−eh-eag/b+eax/b-eci/b+fl)/(f-ec/b)  ---23 z ito x
+                    // fz-fl = dj−dx+ek−eh-eag/b+eax/b-eci/b+ecz/b
+                    // x = (fz-fl-dj-ek+eh+eag/b+eci/b-ecz/b)/(ea/b-d)  ---23 x ito z
+                    // sub 3p into 1pl
+                    // x = j+((e(k−y)+f(l−(i+((a(g−x)+b(h−y))/c))))/d)
+                    // dx-dj = ek−ey+f(l−(i+((a(g−x)+b(h−y))/c)))                    
+                    // dx-dj = ek−ey+fl−fi+fag/c−fax/c+fbh/c−fby/c
+                    // x = (dj+ek−ey+fl−fi+fag/c+fbh/c−fby/c)/(d+fa/c)
+                    // x = (ek−ey+fl-fi-fag/c-fbh/c+fb)/c+dj)/(d-fa/c)  ---31 x ito y
+                    // dx-dj = ek−ey+fl−fi+fag/c−fax/c+fbh/c−fby/c                    
+                    // y = (ek+fl−fi+fag/c−fax/c+fbh/c-dx+dj)/(e+fb/c)  ---31 y ito x 
+                    // sub 3p into 2pl
+                    // y = k+((d(j−x)+f(l−(i+((a(g−x)+b(h−y))/c))))/e)
+                    // ey-ek = dj−dx+fl−fi-fag/c+fax/c-fbh/c+fby/c
+                    // y = (ek+dj−dx+fl−fi-fag/c+fax/c-fbh/c)/(e-fb/c)  ---32 y ito x
+                    // ey-ek = dj−dx+fl−fi-fag/c+fax/c-fbh/c+fby/c
+                    // x = (ey-ek-dj-fl+fi+fag/c+fbh/c-fby/c)/(fa/c−d)  ---32 x ito y
+                    // Stage 2: Are any denominators 0?
                     BigDecimal a = normalVector.dx;
                     BigDecimal b = normalVector.dy;
                     BigDecimal c = normalVector.dz;
                     BigDecimal d = pl.normalVector.dx;
                     BigDecimal e = pl.normalVector.dy;
                     BigDecimal f = pl.normalVector.dz;
-                    BigDecimal k = p.x;
-                    BigDecimal l = p.y;
-                    BigDecimal m = p.z;
-                    BigDecimal ea = e.multiply(a);
-                    BigDecimal em = e.multiply(m);
+                    BigDecimal denom12yitoz = e.subtract(Math_BigDecimal.divideRoundIfNecessary(d.multiply(b), a, scale, rm));
+                    BigDecimal denom12zitoy = Math_BigDecimal.divideRoundIfNecessary(d.multiply(c), a, scale, rm).subtract(f);
+                    BigDecimal denom13zitoy = f.subtract(Math_BigDecimal.divideRoundIfNecessary(d.multiply(c), a, scale, rm));
+                    BigDecimal denom13yitoz = Math_BigDecimal.divideRoundIfNecessary(d.multiply(b), a, scale, rm).subtract(e);
+                    BigDecimal denom21xitoz = d.subtract(Math_BigDecimal.divideRoundIfNecessary(e.multiply(a), b, scale, rm));
+                    BigDecimal denom21zitox = Math_BigDecimal.divideRoundIfNecessary(e.multiply(c), b, scale, rm).subtract(f);
+                    BigDecimal denom23zitox = f.subtract(Math_BigDecimal.divideRoundIfNecessary(e.multiply(c), b, scale, rm));
+                    BigDecimal denom23xitoz = Math_BigDecimal.divideRoundIfNecessary(e.multiply(a), b, scale, rm).subtract(d);
+                    BigDecimal denom31xitoy = d.subtract(Math_BigDecimal.divideRoundIfNecessary(f.multiply(a), c, scale, rm));
+                    BigDecimal denom31yitox = e.add(Math_BigDecimal.divideRoundIfNecessary(f.multiply(b), c, scale, rm));
+                    BigDecimal denom32yitox = e.subtract(Math_BigDecimal.divideRoundIfNecessary(f.multiply(b), c, scale, rm));
+                    BigDecimal denom32xitoy = Math_BigDecimal.divideRoundIfNecessary(f.multiply(a), c, scale, rm).subtract(d);
+                    // Solve for z
+                    // Let; n = v.dx; o = v.dy; p = v.dz
+                    // x(t) = x + v.dx 
+                    // y(t) = y(0) + v.dy 
+                    // z-p = z(0)
+                    // z = (ey-dby/a-dj_dg+dbh/a+dci/a-fl-ek)/(dc/a-f)  ---12 z ito y                    
+                    // z-p = (ey-dby/a-dj_dg+dbh/a+dci/a-fl-ek)/(dc/a-f)
+                    // y = (fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e)  ---13 y ito z
+                    // z-p = (e((fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e))-db((fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e))/a-dj-dg+dbh/a+dci/a-fl-ek)/(dc/a-f)
+                    // (z-p)(dc/a-f) = e((fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e))-db((fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e))/a-dj-dg+dbh/a+dci/a-fl-ek
+                    // (efz-edcz/a-edj+edg+edbh/a+edci/a-eek-efl)/(db/a-e) = -dbfz/(db-ae)+dbdcz/(adb-aae)+ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek
+                    // efz/(db/a-e)-edcz/(db-ae)-edj/(db/a-e)+edg/(db/a-e)+edbh/(db-ae)+edci/(db-ae)-eek/(db/a-e)-efl/db/a-e) = -dbfz/(db-ae)+dbdcz/(adb-aae)+ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek
+                    // efz/(db/a-e)-edcz/(db-ae)+dbfz/(db-ae)-dbdcz/(adb-aae) = ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek+edj/(db/a-e)-edg/(db/a-e)-edbh/(db-ae)-edci/(db-ae)+eek/(db/a-e)+efl/db/a-e)
+                    // z(ef/(db/a-e)-edc/(db-ae)+dbf/(db-ae)-dbdc/(adb-aae)) = ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek+edj/(db/a-e)-edg/(db/a-e)-edbh/(db-ae)-edci/(db-ae)+eek/(db/a-e)+efl/db/a-e)
+                    // z = num/den
+                    // den = ef/(db/a-e)-edc/(db-ae)+dbf/(db-ae)-dbdc/(adb-aae);
+                    // num = ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek+edj/(db/a-e)-edg/(db/a-e)-edbh/(db-ae)-edci/(db-ae)+eek/(db/a-e)+efl/db/a-e)
+                    // Let: q = db-ae; r = db/a-e; s=adb-aae
                     BigDecimal db = d.multiply(b);
-                    BigDecimal g = Math_BigDecimal.divideRoundIfNecessary(ea, ea.add(db), scale, rm);
+                    BigDecimal dc = d.multiply(c);
+                    BigDecimal ea = e.multiply(a);
+                    BigDecimal ef = e.multiply(f);            
+                    BigDecimal q = db.subtract(a.multiply(e));
+                    BigDecimal db_div_a = Math_BigDecimal.divideRoundIfNecessary(db, a, scale, rm); 
+                    BigDecimal dc_div_a = Math_BigDecimal.divideRoundIfNecessary(dc, a, scale, rm); 
+                    BigDecimal r = db_div_a.subtract(e);
+                    BigDecimal s = db.multiply(a).subtract(a.multiply(ea));
+                    BigDecimal den = Math_BigDecimal.divideRoundIfNecessary(ef, r, scale, rm)   
+                            .subtract(Math_BigDecimal.divideRoundIfNecessary(e.multiply(dc), q, scale, rm))
+                            .add(Math_BigDecimal.divideRoundIfNecessary(db.multiply(f), q, scale, rm))
+                            .subtract(Math_BigDecimal.divideRoundIfNecessary(d.multiply(db.multiply(c)), s, scale, rm));
+                    BigDecimal g = p.x;
+                    BigDecimal h = p.y;
+                    BigDecimal i = p.z;
+                    BigDecimal j = pl.p.x;
+                    BigDecimal k = pl.p.y;
+                    BigDecimal l = pl.p.z;                    
+                    BigDecimal ek = e.multiply(k);
+                    BigDecimal ci = c.multiply(i);
                     BigDecimal dg = d.multiply(g);
-                    // z = (d(gl(db + f + e + b) - em) - g(m/a - l(f - e)) - em) / (f + fdg)
-                    // z = (dgl(db + f + e + b) - dem - g(m/a - l(f - e)) - em) / f(1 + dg)
-                    BigDecimal num = dg.multiply(l).multiply(db.add(f.add(e.add(b))))
-                            .subtract(d.multiply(e).multiply(m))
-                            .subtract(g.multiply(Math_BigDecimal.divideRoundIfNecessary(m, a, scale, rm)
-                                    .subtract(l.multiply(f.subtract(e))))
-                                    .subtract(em));
-                    BigDecimal den = f.multiply(this.e.P1.add(dg));
-                    BigDecimal z;
-                    if (den.compareTo(this.e.P0) == 0) {
-                        // Another case...
-                        return null;
-                    } else {
-                        z = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
-                    }
-                    // Now we have z let us get x and y
-                    // x = (dk - z(f + gcd/a + gf) - gdbl + gm/a + gfl + gel + em + mf) / d
-                    BigDecimal x = Math_BigDecimal.divideRoundIfNecessary(
-                            d.multiply(k).subtract(z.multiply(f.add(dg.multiply(c)).add(g.multiply(f))))
-                                    .subtract(dg.multiply(b.multiply(l)))
-                                    .add(Math_BigDecimal.divideRoundIfNecessary(g.multiply(m), a, scale, rm))
-                                    .add(g.multiply(f.multiply(l)))
-                                    .add(g.multiply(e.multiply(l)))
-                                    .add(em).add(m.multiply(f)), d, scale, rm);
-                    //
-                    // y = l + ((- a(x − k) - c(z − l)) / b)
-                    // y = l + ((a(k - x) - c(z − l)) / b)
-                    BigDecimal y = l.add(Math_BigDecimal.divideRoundIfNecessary(
-                            a.multiply(k.subtract(x)).subtract(c.multiply(z.subtract(l))), b, scale, rm));
-                    V3D_Point rq = new V3D_Point(this.e, x, y, z);
-                    return new V3D_Line(rq, rq.add(v));
+                    BigDecimal dbh = db.multiply(h);
+                    BigDecimal dbh_sub_dci = dbh.subtract(d.multiply(ci));
+                    BigDecimal fl = f.multiply(l);
+                    BigDecimal bh = b.multiply(h);
+                    BigDecimal dj = d.multiply(j);
+                    BigDecimal num = d.multiply(j.subtract(dg).add(ek).add(fl))
+                            .subtract(Math_BigDecimal.divideRoundIfNecessary(e.multiply(dbh_sub_dci), q, scale, rm))
+                            .subtract(Math_BigDecimal.divideRoundIfNecessary(d.multiply(dbh_sub_dci), s, scale, rm))
+                            .subtract(dj.subtract(dg))
+                            .add(Math_BigDecimal.divideRoundIfNecessary(d.multiply(bh.add(ci)), a, scale, rm))
+                            .subtract(fl.subtract(ek))
+                            .add(Math_BigDecimal.divideRoundIfNecessary(e.multiply(dj.subtract(dg).add(ek).add(fl)), r, scale, rm));
+                    BigDecimal z = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
+                    // y = (dj−dg-dbh/a-dci/a+dcz/a+fl−fz+ek)/(e-db/a)  ---12 y ito z
+                    // y = num/den
+                    num = dj.subtract(dg).subtract(db_div_a.multiply(h))
+                            .subtract(dc_div_a.multiply(i))
+                            .add(dc_div_a.multiply(z)).add(fl).subtract(f.multiply(z)).add(ek);
+                    den = e.subtract(db_div_a);
+                    BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
+                    // x = (ek−eh-eag/b-eci/b+ecz/b+fl−fz-dj)/(d-ea/b)  ---21 x ito z
+                    
+                    BigDecimal e_div_b = Math_BigDecimal.divideRoundIfNecessary(e, b, scale, rm);;
+                    num = ek.subtract(e.multiply(h))
+                            .subtract(g.multiply(a).multiply(e_div_b))
+                            .subtract(ci.multiply(e_div_b))
+                            .add(dc_div_a.multiply(z))
+                            .add(c.multiply(z).multiply(e_div_b))
+                            .add(fl)
+                            .subtract(f.multiply(z))
+                            .subtract(dj);
+                    den = d.subtract(a.multiply(e_div_b));                    
+                    BigDecimal x = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
+                    V3D_Point aPoint = new V3D_Point(this.e, x, y, z);
+                    return new V3D_Line(aPoint, aPoint.multiply(v));
                 }
             }
         }

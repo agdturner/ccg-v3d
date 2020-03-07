@@ -403,11 +403,11 @@ public class V3D_PlaneTest extends V3D_Test {
 //        expResult = getPlane(P0P0P0, e.yAxis.q.multiply(P3), e.zAxis.q);
 //        result = instance.getIntersection(pl, scale, rm);
 //        assertEquals(expResult, result);
-        // Test 2
-         instance = getPlane(e.xAxis.q, P0P0P0, e.zAxis.q); // y = 0
-         expResult = e.zAxis;
-         result = instance.getIntersection(pl, scale, rm);
-        assertEquals(expResult, result);
+//        // Test 2
+//         instance = getPlane(e.xAxis.q, P0P0P0, e.zAxis.q); // y = 0
+//         expResult = e.zAxis;
+//         result = instance.getIntersection(pl, scale, rm);
+//        assertEquals(expResult, result);
 //        // Test 3
 //         instance = getPlane(e.xAxis.q, e.yAxis.q, P0P0P0); // z = 0
 //         expResult = e.yAxis;
