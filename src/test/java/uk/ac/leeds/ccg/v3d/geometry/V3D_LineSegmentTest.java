@@ -137,7 +137,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
         BigDecimal magnitude = Math_BigDecimal.sqrt(P2, scale + 2, rm);
-        V3D_Vector expResult = new V3D_Vector(
+        V3D_Vector expResult = new V3D_Vector(e, 
                 Math_BigDecimal.divideRoundIfNecessary(instance.pq.dx, magnitude, scale, rm),
                 instance.pq.dy.divide(magnitude, scale, rm),
                 instance.pq.dz.divide(magnitude, scale, rm));
@@ -146,7 +146,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         // Test 2
         instance = new V3D_LineSegment(P0P0P0, P1P1P1);
         magnitude = Math_BigDecimal.sqrt(P3, scale + 2, rm);
-        expResult = new V3D_Vector(
+        expResult = new V3D_Vector(e, 
                 Math_BigDecimal.divideRoundIfNecessary(instance.pq.dx, magnitude, scale, rm),
                 instance.pq.dy.divide(magnitude, scale, rm),
                 instance.pq.dz.divide(magnitude, scale, rm));
@@ -165,7 +165,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
         BigDecimal magnitude = Math_BigDecimal.sqrt(P2, scale + 2, rm);
-        V3D_Vector expResult = new V3D_Vector(
+        V3D_Vector expResult = new V3D_Vector(e, 
                 Math_BigDecimal.divideRoundIfNecessary(instance.pq.dx, magnitude, scale, rm),
                 instance.pq.dy.divide(magnitude, scale, rm),
                 instance.pq.dz.divide(magnitude, scale, rm));
@@ -174,7 +174,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         // Test 2
         instance = new V3D_LineSegment(P0P0P0, P1P1P1);
         magnitude = Math_BigDecimal.sqrt(P3, scale + 2, rm);
-        expResult = new V3D_Vector(
+        expResult = new V3D_Vector(e, 
                 Math_BigDecimal.divideRoundIfNecessary(instance.pq.dx, magnitude, scale, rm),
                 instance.pq.dy.divide(magnitude, scale, rm),
                 instance.pq.dz.divide(magnitude, scale, rm));

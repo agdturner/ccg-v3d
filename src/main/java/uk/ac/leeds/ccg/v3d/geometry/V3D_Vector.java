@@ -19,6 +19,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.core.V3D_Object;
 
 /**
  * V3D_Vector
@@ -26,7 +28,7 @@ import uk.ac.leeds.ccg.math.Math_BigDecimal;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Vector {
+public class V3D_Vector extends V3D_Object {
 
     /**
      * The change in x.
@@ -49,11 +51,13 @@ public class V3D_Vector {
     public BigDecimal magnitude;
 
     /**
+     * @param e V3D_Environment
      * @param dx What {@link #dx} is set to.
      * @param dy What {@link #dy} is set to.
      * @param dz What {@link #dz} is set to.
      */
-    public V3D_Vector(BigDecimal dx, BigDecimal dy, BigDecimal dz) {
+    public V3D_Vector(V3D_Environment e, BigDecimal dx, BigDecimal dy, BigDecimal dz) {
+        super(e);
         this.dx = dx;
         this.dy = dy;
         this.dz = dz;
@@ -65,9 +69,23 @@ public class V3D_Vector {
      * @param p the point to which the vector starting at the origin goes.
      */
     public V3D_Vector(V3D_Point p) {
+        super(p.e);
         this.dx = p.x;
         this.dy = p.y;
         this.dz = p.z;
+    }
+
+    /**
+     * Creates a vector from {@code p} to {@code q}
+     *
+     * @param p the point where the vector starts.
+     * @param q the point where the vector ends.
+     */
+    public V3D_Vector(V3D_Point p, V3D_Point q) {
+        super(p.e);
+        this.dx = q.x.subtract(p.x);
+        this.dy = q.y.subtract(p.y);
+        this.dz = q.z.subtract(p.z);
     }
 
     @Override
@@ -102,7 +120,7 @@ public class V3D_Vector {
      * @return Scaled vector.
      */
     public V3D_Vector multiply(BigDecimal s) {
-        return new V3D_Vector(dx.multiply(s), dy.multiply(s), dz.multiply(s));
+        return new V3D_Vector(e, dx.multiply(s), dy.multiply(s), dz.multiply(s));
     }
     
     /**
@@ -110,7 +128,7 @@ public class V3D_Vector {
      * @return A new vector which is this add {@code v}.
      */
     public V3D_Vector add(V3D_Vector v) {
-        return new V3D_Vector(dx.add(v.dx), dy.add(v.dy), dz.add(v.dz));
+        return new V3D_Vector(e, dx.add(v.dx), dy.add(v.dy), dz.add(v.dz));
     }
     
     /**
@@ -118,7 +136,7 @@ public class V3D_Vector {
      * @return A new vector which is this subtract {@code v}.
      */
     public V3D_Vector subtract(V3D_Vector v) {
-        return new V3D_Vector(dx.subtract(v.dx), dy.subtract(v.dy), dz.subtract(v.dz));
+        return new V3D_Vector(e, dx.subtract(v.dx), dy.subtract(v.dy), dz.subtract(v.dz));
     }
     
     /**
@@ -255,7 +273,7 @@ public class V3D_Vector {
      * @return V3D_Vector
      */
     public V3D_Vector getCrossProduct(V3D_Vector v) {
-        return new V3D_Vector(dy.multiply(v.dz).subtract(v.dy.multiply(dz)),
+        return new V3D_Vector(e, dy.multiply(v.dz).subtract(v.dy.multiply(dz)),
                 dz.multiply(v.dx).subtract(v.dz.multiply(dx)),
                 dx.multiply(v.dy).subtract(v.dx.multiply(dy)));
     }
@@ -269,7 +287,7 @@ public class V3D_Vector {
      */
     public V3D_Vector getUnitVector(int scale, RoundingMode rm) {
         BigDecimal m = getMagnitude(scale + 2, rm);
-        return new V3D_Vector(
+        return new V3D_Vector(e,
                 Math_BigDecimal.divideRoundIfNecessary(dx, m, scale, rm),
                 Math_BigDecimal.divideRoundIfNecessary(dy, m, scale, rm),
                 Math_BigDecimal.divideRoundIfNecessary(dz, m, scale, rm));

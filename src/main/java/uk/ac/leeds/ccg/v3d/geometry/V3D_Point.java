@@ -100,44 +100,11 @@ public class V3D_Point extends V3D_Geometry
     }
 
     /**
-     * @param s The scalar value to multiply each coordinate of this by.
-     * @return this multiplied by scalar
-     */
-    public V3D_Point multiply(BigDecimal s) {
-        return new V3D_Point(e, x.multiply(s), y.multiply(s), z.multiply(s));
-    }
-    
-    /**
-     * @param v The vector to add.
+     * @param v The vector to apply.
      * @return a new point which is this shifted by v.
      */
-    public V3D_Point add(V3D_Vector v) {
+    public V3D_Point apply(V3D_Vector v) {
         return new V3D_Point(e, x.add(v.dx), y.add(v.dy), z.add(v.dz));
-    }
-    
-    /**
-     * @param v The vector to multiply by.
-     * @return a new point which is this multiplied by v.
-     */
-    public V3D_Point multiply(V3D_Vector v) {
-        return new V3D_Point(e, x.multiply(v.dx), y.multiply(v.dy), z.multiply(v.dz));
-    }
-    
-
-    /**
-     * @param l The line to test for intersection with this.
-     * @return {@code true} if this is within {@code t} distance of {@code l}.
-     */
-    public boolean isIntersectedBy(V3D_LineSegment l) {
-        return l.isIntersectedBy(this);
-    }
-
-    /**
-     * @param env The envelope to test.
-     * @return {@code true} if this is within {@code env}.
-     */
-    public boolean isIntersectedBy(V3D_Envelope env) {
-        return env.isIntersectedBy(this);
     }
 
     /**
@@ -158,6 +125,27 @@ public class V3D_Point extends V3D_Geometry
         BigDecimal dz = this.z.subtract(p.z);
         return Math_BigDecimal.sqrt(dx.pow(2).add(dy.pow(2)).add(dz.pow(2)),
                 scale, rm);
+    }
+
+    /**
+     * Get the distance between this and {@code l}.
+     *
+     * @param l A line.
+     * @param scale The scale. A positive value gives the number of decimal
+     * places. A negative value rounds to the left of the decimal point.
+     * @param rm The RoundingMode for the calculation.
+     * @return The distance from {@code p} to this.
+     */
+    public BigDecimal getDistance(V3D_Line l, int scale, RoundingMode rm) {
+        if (l.isIntersectedBy(this)) {
+            return BigDecimal.ZERO;
+        }
+        l.p.getDistance(l.q, scale, rm);
+        V3D_Vector pqu = l.pq.getUnitVector(scale, rm);
+        V3D_Vector v = new V3D_Vector(this, l.p);
+        BigDecimal v_dot_pqu = v.getDotProduct(pqu);
+        V3D_Point p = l.q.apply(pqu.multiply(v_dot_pqu));
+        return p.getDistance(this, scale, rm);
     }
 
     @Override

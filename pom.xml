@@ -59,6 +59,11 @@
             <artifactId>agdt-java-math</artifactId>
             <version>${agdt-java-math.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ch.obermuhlner</groupId>
+            <artifactId>big-math</artifactId>
+            <version>2.3.0</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.ojalgo/ojalgo -->
         <dependency>
             <groupId>org.ojalgo</groupId>

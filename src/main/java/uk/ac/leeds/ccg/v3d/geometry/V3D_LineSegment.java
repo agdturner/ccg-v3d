@@ -105,12 +105,12 @@ public class V3D_LineSegment extends V3D_Line
                 return initUnitVector(scale, rm);
             } else {
                 if (unitVectorRoundingMode.equals(rm)) {
-                    return new V3D_Vector(unitVector.dx.setScale(scale),
+                    return new V3D_Vector(e, unitVector.dx.setScale(scale),
                             unitVector.dy.setScale(scale),
                             unitVector.dz.setScale(scale));
                 } else {
                     if (scale < unitVectorScale) {
-                        return new V3D_Vector(unitVector.dx.setScale(scale),
+                        return new V3D_Vector(e, unitVector.dx.setScale(scale),
                                 unitVector.dy.setScale(scale),
                                 unitVector.dz.setScale(scale));
                     } else {
@@ -133,7 +133,7 @@ public class V3D_LineSegment extends V3D_Line
     public V3D_Vector initUnitVector(int scale, RoundingMode rm) {
         if (unitVector == null) {
             BigDecimal distance = getLength(scale + 2, rm);
-            unitVector = new V3D_Vector(
+            unitVector = new V3D_Vector(e,
                     Math_BigDecimal.divideRoundIfNecessary(pq.dx, distance, scale, rm),
                     Math_BigDecimal.divideRoundIfNecessary(pq.dy, distance, scale, rm),
                     Math_BigDecimal.divideRoundIfNecessary(pq.dz, distance, scale, rm));

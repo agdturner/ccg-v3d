@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
@@ -31,6 +30,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * and {@link #pr}. The equation of the plane is:
  * <ul>
  * <li>A*(x-x0) + B*(y-y0) + C*(z-z0) = 0</li>
+ * <li>A*(x) + B*(y) + C*(z) - D = 0      where D = -(A*x0 + B*y0 + C*z0)</li>
  * </ul>
  * where:
  * <ul>
@@ -101,12 +101,13 @@ public class V3D_Plane extends V3D_Geometry {
     public V3D_Plane(V3D_Environment e, V3D_Point p, V3D_Point q, V3D_Point r) {
         super(e);
         //                         i                 j                   k
-        pq = new V3D_Vector(p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
-        pr = new V3D_Vector(p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
+        pq = new V3D_Vector(e, p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
+        pr = new V3D_Vector(e, p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
         /**
          * Calculate the normal perpendicular vector.
          */
-        normalVector = new V3D_Vector(pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz)),
+        normalVector = new V3D_Vector(e, 
+                pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz)),
                 pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz)).negate(),
                 pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy)));
         this.p = p;
@@ -195,6 +196,15 @@ public class V3D_Plane extends V3D_Geometry {
         return isIntersectedBy(l.p) && isIntersectedBy(l.q);
     }
 
+    public V3D_Geometry getIntersection(V3D_Line l, int scale, RoundingMode rm) {
+        if (this.isParallel(l, scale, rm)) {
+            if (isOnPlane(l)) {
+                return this;
+            }
+        }        
+        throw new UnsupportedOperationException();
+    }
+
     public V3D_Geometry getIntersection(V3D_Plane pl, int scale, RoundingMode rm) {
         if (isParallel(pl, scale, rm)) {
             if (pl.equals(this)) {
@@ -239,7 +249,7 @@ public class V3D_Plane extends V3D_Geometry {
                     BigDecimal y = p.y;
 //                    // x = k + ((e(l - y) - f(z - m)) / d)
 //                    // z = m + ((- d(x - k) - e(y - m)) / f)
-//                    BigDecimal x = p.x.add(
+//                    BigDecimal x = p.x.apply(
 //                            Math_BigDecimal.divideRoundIfNecessary(
 //                                    (pl.normalVector.dy.multiply(p.y.subtract(y))).subtract(pl.normalVector.dz.multiply(z.subtract(pl.p.z))),
 //                                    pl.normalVector.dx, scale, rm));
@@ -422,18 +432,31 @@ public class V3D_Plane extends V3D_Geometry {
                     BigDecimal d = pl.normalVector.dx;
                     BigDecimal e = pl.normalVector.dy;
                     BigDecimal f = pl.normalVector.dz;
-                    BigDecimal denom12yitoz = e.subtract(Math_BigDecimal.divideRoundIfNecessary(d.multiply(b), a, scale, rm));
-                    BigDecimal denom12zitoy = Math_BigDecimal.divideRoundIfNecessary(d.multiply(c), a, scale, rm).subtract(f);
-                    BigDecimal denom13zitoy = f.subtract(Math_BigDecimal.divideRoundIfNecessary(d.multiply(c), a, scale, rm));
-                    BigDecimal denom13yitoz = Math_BigDecimal.divideRoundIfNecessary(d.multiply(b), a, scale, rm).subtract(e);
-                    BigDecimal denom21xitoz = d.subtract(Math_BigDecimal.divideRoundIfNecessary(e.multiply(a), b, scale, rm));
-                    BigDecimal denom21zitox = Math_BigDecimal.divideRoundIfNecessary(e.multiply(c), b, scale, rm).subtract(f);
-                    BigDecimal denom23zitox = f.subtract(Math_BigDecimal.divideRoundIfNecessary(e.multiply(c), b, scale, rm));
-                    BigDecimal denom23xitoz = Math_BigDecimal.divideRoundIfNecessary(e.multiply(a), b, scale, rm).subtract(d);
-                    BigDecimal denom31xitoy = d.subtract(Math_BigDecimal.divideRoundIfNecessary(f.multiply(a), c, scale, rm));
-                    BigDecimal denom31yitox = e.add(Math_BigDecimal.divideRoundIfNecessary(f.multiply(b), c, scale, rm));
-                    BigDecimal denom32yitox = e.subtract(Math_BigDecimal.divideRoundIfNecessary(f.multiply(b), c, scale, rm));
-                    BigDecimal denom32xitoy = Math_BigDecimal.divideRoundIfNecessary(f.multiply(a), c, scale, rm).subtract(d);
+                    BigDecimal db = d.multiply(b);
+                    BigDecimal dc = d.multiply(c);
+                    BigDecimal ea = e.multiply(a);
+                    BigDecimal ec = e.multiply(c);
+                    BigDecimal ef = e.multiply(f);
+                    BigDecimal fa = f.multiply(a);
+                    BigDecimal fb = f.multiply(b);
+                    BigDecimal db_div_a = Math_BigDecimal.divideRoundIfNecessary(db, a, scale, rm); 
+                    BigDecimal dc_div_a = Math_BigDecimal.divideRoundIfNecessary(dc, a, scale, rm);
+                    BigDecimal ea_div_b = Math_BigDecimal.divideRoundIfNecessary(ea, b, scale, rm); 
+                    BigDecimal ec_div_b = Math_BigDecimal.divideRoundIfNecessary(ec, b, scale, rm); 
+                    BigDecimal fa_div_c = Math_BigDecimal.divideRoundIfNecessary(fa, c, scale, rm);
+                    BigDecimal fb_div_c = Math_BigDecimal.divideRoundIfNecessary(fb, c, scale, rm);
+                    BigDecimal denom12yitoz = e.subtract(db_div_a);
+                    BigDecimal denom12zitoy = dc_div_a.subtract(f);
+                    BigDecimal denom13zitoy = f.subtract(dc_div_a);
+                    BigDecimal denom13yitoz = db_div_a.subtract(e);
+                    BigDecimal denom21xitoz = d.subtract(ea_div_b);
+                    BigDecimal denom21zitox = ec_div_b.subtract(f);
+                    BigDecimal denom23zitox = f.subtract(ec_div_b);
+                    BigDecimal denom23xitoz = ea_div_b.subtract(d);
+                    BigDecimal denom31xitoy = d.subtract(fa_div_c);
+                    BigDecimal denom31yitox = e.add(fb_div_c);
+                    BigDecimal denom32yitox = e.subtract(fb_div_c);
+                    BigDecimal denom32xitoy = fa_div_c.subtract(d);
                     // Solve for z
                     // Let; n = v.dx; o = v.dy; p = v.dz
                     // x(t) = x + v.dx 
@@ -452,13 +475,7 @@ public class V3D_Plane extends V3D_Geometry {
                     // den = ef/(db/a-e)-edc/(db-ae)+dbf/(db-ae)-dbdc/(adb-aae);
                     // num = ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek+edj/(db/a-e)-edg/(db/a-e)-edbh/(db-ae)-edci/(db-ae)+eek/(db/a-e)+efl/db/a-e)
                     // Let: q = db-ae; r = db/a-e; s=adb-aae
-                    BigDecimal db = d.multiply(b);
-                    BigDecimal dc = d.multiply(c);
-                    BigDecimal ea = e.multiply(a);
-                    BigDecimal ef = e.multiply(f);            
                     BigDecimal q = db.subtract(a.multiply(e));
-                    BigDecimal db_div_a = Math_BigDecimal.divideRoundIfNecessary(db, a, scale, rm); 
-                    BigDecimal dc_div_a = Math_BigDecimal.divideRoundIfNecessary(dc, a, scale, rm); 
                     BigDecimal r = db_div_a.subtract(e);
                     BigDecimal s = db.multiply(a).subtract(a.multiply(ea));
                     BigDecimal den = Math_BigDecimal.divideRoundIfNecessary(ef, r, scale, rm)   
@@ -495,7 +512,6 @@ public class V3D_Plane extends V3D_Geometry {
                     den = e.subtract(db_div_a);
                     BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
                     // x = (ek−eh-eag/b-eci/b+ecz/b+fl−fz-dj)/(d-ea/b)  ---21 x ito z
-                    
                     BigDecimal e_div_b = Math_BigDecimal.divideRoundIfNecessary(e, b, scale, rm);;
                     num = ek.subtract(e.multiply(h))
                             .subtract(g.multiply(a).multiply(e_div_b))
@@ -508,7 +524,7 @@ public class V3D_Plane extends V3D_Geometry {
                     den = d.subtract(a.multiply(e_div_b));                    
                     BigDecimal x = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
                     V3D_Point aPoint = new V3D_Point(this.e, x, y, z);
-                    return new V3D_Line(aPoint, aPoint.multiply(v));
+                    return new V3D_Line(aPoint, aPoint.apply(v));
                 }
             }
         }

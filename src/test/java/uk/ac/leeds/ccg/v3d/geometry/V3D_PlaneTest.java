@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
+import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -354,6 +355,12 @@ public class V3D_PlaneTest extends V3D_Test {
         boolean expResult = true;
         boolean result = instance.isIntersectedBy(l, scale, rm);
         assertEquals(expResult, result);
+        // Test 2
+        l = new V3D_Line(N1N1N1, P1P1P1);
+        instance = new V3D_Plane(e, P0N1N1, P1N1N1, P0P0N1);
+        expResult = true;
+        result = instance.isIntersectedBy(l, scale, rm);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -390,7 +397,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Plane.
      */
     @Test
-    public void testGetIntersection() {
+    public void testGetIntersection_3args_2() {
         System.out.println("getIntersection");
         V3D_Plane pl = getPlane(P0P0P0, e.yAxis.q, e.zAxis.q); // x = 0
         int scale = 1;
@@ -424,6 +431,39 @@ public class V3D_PlaneTest extends V3D_Test {
 //         result = instance.getIntersection(pl, scale, rm);
 //        assertEquals(expResult, result);
         
+        // Test y
+        // x+2y+z−1=0       --- 1
+        // 2x+3y−2z+2=0     --- 2
+        // Choose one of A,B,C that is not 0. Without loss of generality, 
+        // assume that's C. You can choose (a+1,b,c+μ) and (a,b+1,c+ν). To have 
+        // them on the plane, just plug them into the equation:
+        // A(a+1)+Bb+C(c+μ)+D=0
+        // Aa+Bb+Cc+D+A+Cμ=0
+        // μ=−A/C
+        // ν=−B/C
+        // From 1:
+        // If x=0, y=0, then z=1 (0,0,1)
+        // If y=0, z=0 then x=1 (1,0,0)
+        // If x=0, z=0 then y=0.5 (0,0.5,0)
+        // From 2:
+        // If x=0, y=0, then z=1 (0,0,1)
+        // If y=0, z=0 then x=-1 (-1,0,0)
+        // If x=0, z=0 then y=-2/3 (0,-2/3,0)
+        scale = 10;
+        pl = getPlane(P0P0P1, P1P0P0, new V3D_Point(e, P0, BigDecimal.valueOf(0.5), P0));
+        instance = getPlane(P0P0P1, N1P0P0, new V3D_Point(e, P0, Math_BigDecimal.divideRoundIfNecessary(N2, P3, scale, rm), P0));
+        // (−7,4,0)+(7,−4,1)t.
+        V3D_Point p = new V3D_Point(e, N7, P4, P0);
+        V3D_Vector v = new V3D_Vector(e, P7, N4, P1);
+         expResult = new V3D_Line(p, p.apply(v));
+         result = instance.getIntersection(pl, scale, rm);
+         if (result.equals(expResult)) {
+             assertTrue(true);
+         } else {
+            assertFalse(false);             
+         }
+        
+        
         // Test x
         V3D_Point P2P3P5 = new V3D_Point(e, P2, P3, P5);
         V3D_Point P7P11P13 = new V3D_Point(e, P7, BigDecimal.valueOf(11), BigDecimal.valueOf(13));
@@ -433,6 +473,22 @@ public class V3D_PlaneTest extends V3D_Test {
         instance = getPlane(N2N3N5, P1P1P1, N7N11N13);
          expResult = e.yAxis;
          result = instance.getIntersection(pl, scale, rm);
+        assertEquals(expResult, result);
+        
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetIntersection_3args_1() {
+        System.out.println("getIntersection");
+        V3D_Line l = new V3D_Line(new V3D_Point(N1N1N1), new V3D_Point(P1P1P1));
+        int scale = 1;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Plane instance = new V3D_Plane(e, N1N1P0, P1P1P0, N1P1P0);
+        V3D_Geometry expResult = P0P0P0;
+        V3D_Geometry result = instance.getIntersection(l, scale, rm);
         assertEquals(expResult, result);
     }
 }

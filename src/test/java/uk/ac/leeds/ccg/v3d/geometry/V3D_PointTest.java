@@ -114,19 +114,6 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_Point.
-     */
-    @Test
-    public void testIsIntersectedBy() {
-        System.out.println("isIntersectedBy"); 
-        V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
-        V3D_Point instance = P1P1P1;
-        boolean expResult = true;
-        boolean result = instance.isIntersectedBy(l);
-        assertEquals(expResult, result);
-    }
-
-    /**
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
@@ -157,6 +144,68 @@ public class V3D_PointTest extends V3D_Test {
         V3D_Envelope expResult = new V3D_Envelope(P0P0P0, P1P1P1);
         V3D_Envelope result = P0P0P0.getEnvelope3D();
         result.envelope(P1P1P1.getEnvelope3D());
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of hashCode method, of class V3D_Point.
+     */
+    @Test
+    public void testHashCode() {
+        // No test.
+    }
+
+    /**
+     * Test of apply method, of class V3D_Point.
+     */
+    @Test
+    public void testApply() {
+        System.out.println("apply");
+        V3D_Vector v = new V3D_Vector(e, P1, P1, P1);
+        V3D_Point instance = P0P0P0;
+        V3D_Point expResult = P1P1P1;
+        V3D_Point result = instance.apply(v);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Point.
+     */
+    @Test
+    public void testGetDistance_3args_1() {
+        System.out.println("getDistance");
+        V3D_Point p = P0P0P0;
+        int scale = 0;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Point instance = P1P0P0;
+        BigDecimal expResult = P1;
+        BigDecimal result = instance.getDistance(p, scale, rm);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = new V3D_Point(e, P3, P4, P0);
+        expResult = P5;
+        result = instance.getDistance(p, scale, rm);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Point.
+     */
+    @Test
+    public void testGetDistance_3args_2() {
+        System.out.println("getDistance");
+        V3D_Line l = new V3D_Line(P0P0P0,P0P0P1);
+        int scale = 0;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Point instance = P0P1P0;
+        BigDecimal expResult = P1;
+        BigDecimal result = instance.getDistance(l, scale, rm);
+        assertEquals(expResult, result);
+        // Test 1
+        l = new V3D_Line(P0P0P0, P1N1P0);
+        instance = new V3D_Point(e, P3, P4, P0);
+        expResult = P5;
+        result = instance.getDistance(l, scale, rm);
         assertEquals(expResult, result);
     }
 

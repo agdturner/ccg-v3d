@@ -572,17 +572,17 @@ public class V3D_VectorTest extends V3D_Test {
         assertEquals(expResult, result);
         // Test 8
         scale = 100;
-        instance = new V3D_Vector(P10, P10, P10);
+        instance = new V3D_Vector(e, P10, P10, P10);
         expResult = Math_BigDecimal.sqrt(BigDecimal.valueOf(300), scale, rm);
         result = instance.getMagnitude(scale, rm);
         assertEquals(expResult, result);
         // Test 9
-        instance = new V3D_Vector(P3, P4, N4);
+        instance = new V3D_Vector(e, P3, P4, N4);
         expResult = Math_BigDecimal.sqrt(BigDecimal.valueOf(41), scale, rm);
         result = instance.getMagnitude(scale, rm);
         assertEquals(expResult, result);
         // Test 10
-        instance = new V3D_Vector(P7, P8, N4);
+        instance = new V3D_Vector(e, P7, P8, N4);
         expResult = Math_BigDecimal.sqrt((P7.pow(2).add(P8.pow(2).add(
                 N4.pow(2)))), scale, rm);
         result = instance.getMagnitude(scale, rm);
@@ -637,8 +637,8 @@ public class V3D_VectorTest extends V3D_Test {
         assertEquals(expResult, result);
         // Test 6
         scale = -3;
-        v = new V3D_Vector(P0, P1, P10000);
-        instance = new V3D_Vector(P0, P1, P10001);
+        v = new V3D_Vector(e, P0, P1, P10000);
+        instance = new V3D_Vector(e, P0, P1, P10001);
         expResult = true;
         result = instance.isParallel(v, scale, rm);
         assertEquals(expResult, result);

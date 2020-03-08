@@ -72,7 +72,7 @@ public class V3D_Line extends V3D_Geometry {
         }
         this.p = new V3D_Point(p);
         this.q = new V3D_Point(q);
-        pq = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
+        pq = new V3D_Vector(e, q.x.subtract(p.x), q.y.subtract(p.y),
                 q.z.subtract(p.z));
     }
 
@@ -117,8 +117,8 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if p is on the line.
      */
     public boolean isIntersectedBy(V3D_Point pt) {
-        V3D_Vector ppt = new V3D_Vector(pt.x.subtract(p.x), pt.y.subtract(p.y),
-                pt.z.subtract(p.z));
+        V3D_Vector ppt = new V3D_Vector(e, pt.x.subtract(p.x),
+                pt.y.subtract(p.y), pt.z.subtract(p.z));
         V3D_Vector cp = pq.getCrossProduct(ppt);
         return cp.dx.compareTo(BigDecimal.ZERO) == 0
                 && cp.dy.compareTo(BigDecimal.ZERO) == 0
@@ -134,16 +134,6 @@ public class V3D_Line extends V3D_Geometry {
         return v.dx.compareTo(BigDecimal.ZERO) == 0
                 && v.dy.compareTo(BigDecimal.ZERO) == 0
                 && v.dz.compareTo(BigDecimal.ZERO) == 0;
-    }
-
-    /**
-     * @param pl Plane to test for intersection with this.
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this isIntersectedBy {@code pl}.
-     */
-    public boolean isIntersectedBy(V3D_Plane pl, int scale, RoundingMode rm) {
-        return pl.isIntersectedBy(this, scale, rm);
     }
 
     /**
@@ -355,21 +345,6 @@ public class V3D_Line extends V3D_Geometry {
                 }
             }
         }
-    }
-
-    /**
-     * @param pl The plane to get intersection with this.
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
-     * @return The intersection of this and pl.
-     */
-    public V3D_Geometry getIntersection(V3D_Plane pl, int scale, RoundingMode rm) {
-        if (pl.isParallel(this, scale, rm)) {
-            if (pl.isOnPlane(this)) {
-                return this;
-            }
-        }
-        throw new UnsupportedOperationException();
     }
 
 }
