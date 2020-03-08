@@ -431,6 +431,45 @@ public class V3D_PlaneTest extends V3D_Test {
 //         result = instance.getIntersection(pl, scale, rm);
 //        assertEquals(expResult, result);
         
+        // Test z
+        // x+2y+z−1=0       --- 1
+        // 2x+5y−2z+2=0     --- 2
+        // Choose one of A,B,C that is not 0. Without loss of generality, 
+        // assume that's C. You can choose (a+1,b,c+μ) and (a,b+1,c+ν). To have 
+        // them on the plane, just plug them into the equation:
+        // A(a+1)+Bb+C(c+μ)+D=0
+        // Aa+Bb+Cc+D+A+Cμ=0
+        // μ=−A/C
+        // ν=−B/C
+        // From 1:
+        // If x=0, y=0, then z=1 (0,0,1)
+        // If y=0, z=0 then x=1 (1,0,0)
+        // If x=0, z=0 then y=0.5 (0,0.5,0)
+        // From 2:
+        // If x=0, y=0, then z=1 (0,0,1)
+        // If y=0, z=0 then x=-1 (-1,0,0)
+        // If x=0, z=0 then y=-2/5 (0,-2/5,0)
+        scale = 10;
+        pl = getPlane(P0P0P1, P1P0P0, new V3D_Point(e, P0, BigDecimal.valueOf(0.5), P0));
+        instance = getPlane(P0P0P1, N1P0P0, new V3D_Point(e, P0, Math_BigDecimal.divideRoundIfNecessary(N2, P5, scale, rm), P0));
+        // x+2y+z−1=0       --- 1
+        // 2x+5y−2z+2=0     --- 2
+        // x=1-2y-t
+        // y=4t-4
+        // x==1-2(4t-4)-t
+        // x==9-9t
+        // (9,−4,0)+(-9,4,1)t.
+        V3D_Point p = new V3D_Point(e, P9, N4, P0);
+        V3D_Vector v = new V3D_Vector(e, N9, P4, P1);
+         expResult = new V3D_Line(p, p.apply(v));
+         result = instance.getIntersection(pl, scale, rm);
+         if (result.equals(expResult)) {
+             assertTrue(true);
+         } else {
+            assertFalse(false);             
+         }
+
+
         // Test y
         // x+2y+z−1=0       --- 1
         // 2x+3y−2z+2=0     --- 2
@@ -453,8 +492,8 @@ public class V3D_PlaneTest extends V3D_Test {
         pl = getPlane(P0P0P1, P1P0P0, new V3D_Point(e, P0, BigDecimal.valueOf(0.5), P0));
         instance = getPlane(P0P0P1, N1P0P0, new V3D_Point(e, P0, Math_BigDecimal.divideRoundIfNecessary(N2, P3, scale, rm), P0));
         // (−7,4,0)+(7,−4,1)t.
-        V3D_Point p = new V3D_Point(e, N7, P4, P0);
-        V3D_Vector v = new V3D_Vector(e, P7, N4, P1);
+        p = new V3D_Point(e, N7, P4, P0);
+        v = new V3D_Vector(e, P7, N4, P1);
          expResult = new V3D_Line(p, p.apply(v));
          result = instance.getIntersection(pl, scale, rm);
          if (result.equals(expResult)) {
