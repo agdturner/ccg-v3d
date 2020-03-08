@@ -73,7 +73,12 @@ public class V3D_Environment extends Generic_MemoryManager {
      * Unit vector based at the origin in the z axis direction. 
      */
     public final V3D_Vector k;
-    
+
+    /**
+     * Zero vector.
+     */
+    public final V3D_Vector zeroVector;
+
     /**
      * For code brevity.
      */
@@ -112,6 +117,7 @@ public class V3D_Environment extends Generic_MemoryManager {
         initMemoryReserve(Default_Memory_Threshold, env);
         files = new V3D_Files(new Generic_Defaults(Paths.get(dir.toString(),
                 V3D_Strings.s_v3d)));
+        zeroVector = new V3D_Vector(this, P0, P0, P0);
     }
             
     public BigDecimal getRounded_BigDecimal(BigDecimal toRoundBigDecimal,

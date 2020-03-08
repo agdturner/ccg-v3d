@@ -30,7 +30,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * and {@link #pr}. The equation of the plane is:
  * <ul>
  * <li>A*(x-x0) + B*(y-y0) + C*(z-z0) = 0</li>
- * <li>A*(x) + B*(y) + C*(z) - D = 0      where D = -(A*x0 + B*y0 + C*z0)</li>
+ * <li>A*(x) + B*(y) + C*(z) - D = 0 where D = -(A*x0 + B*y0 + C*z0)</li>
  * </ul>
  * where:
  * <ul>
@@ -106,7 +106,7 @@ public class V3D_Plane extends V3D_Geometry {
         /**
          * Calculate the normal perpendicular vector.
          */
-        normalVector = new V3D_Vector(e, 
+        normalVector = new V3D_Vector(e,
                 pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz)),
                 pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz)).negate(),
                 pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy)));
@@ -201,24 +201,39 @@ public class V3D_Plane extends V3D_Geometry {
             if (isOnPlane(l)) {
                 return this;
             }
-        }        
+        }
         throw new UnsupportedOperationException();
     }
 
     public V3D_Geometry getIntersection(V3D_Plane pl, int scale, RoundingMode rm) {
-        if (isParallel(pl, scale, rm)) {
+        // Calculate the cross product of the normal vectors.
+        V3D_Vector v = normalVector.getCrossProduct(pl.normalVector);
+        if (v.isZeroVector()) {
+            // The planes are parallel.
             if (pl.equals(this)) {
+                // The planes are the same.
                 return this;
             }
+            // There is no intersection.
             return null;
         }
-        // Calculate the line of intersection.
-        // The cross product of the normal vectors gives the vector defining the 
-        // line.
-        V3D_Vector v = normalVector.getCrossProduct(pl.normalVector);
-        // Get any non zero elements of v?
+        // Calculate the line of intersection, where v is the line vector.
+        // What to do depends on which elements of v are non-zero.
         if (v.dx.compareTo(BigDecimal.ZERO) == 0) {
             if (v.dy.compareTo(BigDecimal.ZERO) == 0) {
+                BigDecimal z = Math_BigDecimal.divideRoundIfNecessary(
+                        pl.normalVector.dx.multiply(pl.p.x.subtract(pl.q.x)).add(
+                                normalVector.dy.multiply(pl.p.y.subtract(pl.q.x))),
+                        v.dz, scale, rm).add(pl.p.z);
+                V3D_Point pt;
+                if (normalVector.dx.compareTo(e.P0) == 0) {
+                    pt = new V3D_Point(e, pl.p.x, p.y, z);
+                } else {
+                    pt = new V3D_Point(e, p.x, p.y, z);
+                }
+                return new V3D_Line(pt, pt.apply(v));
+                // The intersection is at z=?
+
                 /**
                  * normalVector.dx(x(t)−p.x)+normalVector.dy(y(t)−p.y)+normalVector.dz(z(t)−p.z)
                  */
@@ -242,62 +257,71 @@ public class V3D_Plane extends V3D_Geometry {
                 // x = k + ((e(l - y) - f(z - m)) / d)   --- 1p
                 // y = l + ((d(k - x) - f(z - l)) / e)   --- 2p
                 // z = m + ((d(k - x) - e(y - m)) / f)   --- 3p
-                if (normalVector.dx.compareTo(e.P0) == 0) {
-                    //pl.b
-                } else if (normalVector.dy.compareTo(e.P0) == 0) {
-//                    // y = l + ((- a(x − k) - c(z − l)) / b)
-                    BigDecimal y = p.y;
-//                    // x = k + ((e(l - y) - f(z - m)) / d)
-//                    // z = m + ((- d(x - k) - e(y - m)) / f)
-//                    BigDecimal x = p.x.apply(
-//                            Math_BigDecimal.divideRoundIfNecessary(
-//                                    (pl.normalVector.dy.multiply(p.y.subtract(y))).subtract(pl.normalVector.dz.multiply(z.subtract(pl.p.z))),
-//                                    pl.normalVector.dx, scale, rm));
-                } else {
-                    return e.zAxis;
-                }
-                //BigDecimal x = p.x
-                BigDecimal numerator = p.z.subtract(p.y)
-                        .subtract(normalVector.dz.multiply(p.z))
-                        .subtract(p.y.multiply(normalVector.dy));
-                BigDecimal denominator = normalVector.dy.subtract(normalVector.dz);
-                if (denominator.compareTo(e.P0) == 0) {
-                    // Case 1: The z axis
-                    return null;
-                } else {
-                    // y = (p.y - c(z−p.z)) / b   --- 1          
-                    // z = (p.z - b(y−p.y)) / c   --- 2
-                    // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
-                    // Let:
-                    // p.x = k; p.y = l; p.z = m
-                    // y = (l - c(z - m)) / b
-                    // z = (m - b(y - l)) / b
-                    // z = (m - b(((l - c(z - m)) / b) - l)) / b
-                    // bz = m - b(((l - c(z - m)) / b) - l)
-                    // bz = m - (l - c(z - m)) - lb
-                    // bz = m - l + cz - cm - lb
-                    // bz - cz = m - l -cm - lb
-                    // z(b - c) = m - l -cm - lb
-                    // z = (m - l -cm - lb) / (b - c)
-                    BigDecimal z = Math_BigDecimal.divideRoundIfNecessary(
-                            numerator, denominator, scale + 2, rm); // scale + 2 sensible?
-                    // Substitute into 1
-                    // y = (p.y - c(z−p.z)) / b   --- 1
-                    if (normalVector.dy.compareTo(e.P0) == 0) {
-                        // Another case to deal with
-                        return null;
-                    } else {
-                        BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(
-                                p.y.subtract(normalVector.dz.multiply(z.subtract(p.z))),
-                                normalVector.dy, scale, rm);
-                        return new V3D_Line(new V3D_Point(e, p.x, y, z),
-                                new V3D_Point(e, p.x.multiply(e.N1), y.add(v.dy), z.add(v.dz)));
-                    }
-                }
+//                if (normalVector.dx.compareTo(e.P0) == 0) {
+//                    //pl.b
+//                } else if (normalVector.dy.compareTo(e.P0) == 0) {
+////                    // y = l + ((- a(x − k) - c(z − l)) / b)
+//                    BigDecimal y = p.y;
+////                    // x = k + ((e(l - y) - f(z - m)) / d)
+////                    // z = m + ((- d(x - k) - e(y - m)) / f)
+////                    BigDecimal x = p.x.apply(
+////                            Math_BigDecimal.divideRoundIfNecessary(
+////                                    (pl.normalVector.dy.multiply(p.y.subtract(y))).subtract(pl.normalVector.dz.multiply(z.subtract(pl.p.z))),
+////                                    pl.normalVector.dx, scale, rm));
+//                } else {
+//                    return e.zAxis;
+//                }
+//                //BigDecimal x = p.x
+//                BigDecimal numerator = p.z.subtract(p.y)
+//                        .subtract(normalVector.dz.multiply(p.z))
+//                        .subtract(p.y.multiply(normalVector.dy));
+//                BigDecimal denominator = normalVector.dy.subtract(normalVector.dz);
+//                if (denominator.compareTo(e.P0) == 0) {
+//                    // Case 1: The z axis
+//                    return null;
+//                } else {
+//                    // y = (p.y - c(z−p.z)) / b   --- 1          
+//                    // z = (p.z - b(y−p.y)) / c   --- 2
+//                    // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
+//                    // Let:
+//                    // p.x = k; p.y = l; p.z = m
+//                    // y = (l - c(z - m)) / b
+//                    // z = (m - b(y - l)) / b
+//                    // z = (m - b(((l - c(z - m)) / b) - l)) / b
+//                    // bz = m - b(((l - c(z - m)) / b) - l)
+//                    // bz = m - (l - c(z - m)) - lb
+//                    // bz = m - l + cz - cm - lb
+//                    // bz - cz = m - l -cm - lb
+//                    // z(b - c) = m - l -cm - lb
+//                    // z = (m - l -cm - lb) / (b - c)
+//                    BigDecimal z = Math_BigDecimal.divideRoundIfNecessary(
+//                            numerator, denominator, scale + 2, rm); // scale + 2 sensible?
+//                    // Substitute into 1
+//                    // y = (p.y - c(z−p.z)) / b   --- 1
+//                    if (normalVector.dy.compareTo(e.P0) == 0) {
+//                        // Another case to deal with
+//                        return null;
+//                    } else {
+//                        BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(
+//                                p.y.subtract(normalVector.dz.multiply(z.subtract(p.z))),
+//                                normalVector.dy, scale, rm);
+//                        return new V3D_Line(new V3D_Point(e, p.x, y, z),
+//                                new V3D_Point(e, p.x.multiply(e.N1), y.add(v.dy), z.add(v.dz)));
+//                    }
+//                }
             } else {
                 if (v.dz.compareTo(BigDecimal.ZERO) == 0) {
-                    // Case 2: The y axis
-                    return e.yAxis;
+                    BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(
+                            normalVector.dx.multiply(p.x.subtract(q.x)).add(
+                                    normalVector.dz.multiply(p.z.subtract(q.x))),
+                            v.dy, scale, rm).add(p.y);
+                    V3D_Point pt;
+                    if (normalVector.dx.compareTo(e.P0) == 0) {
+                        pt = new V3D_Point(e, pl.p.x, y, p.z);
+                    } else {
+                        pt = new V3D_Point(e, p.x, y, pl.p.z);
+                    }
+                    return new V3D_Line(pt, pt.apply(v));
                 } else {
                     // Case 3
                     // y = (p.y - c(z−p.z)) / b   --- 1          
@@ -342,8 +366,25 @@ public class V3D_Plane extends V3D_Geometry {
         } else {
             if (v.dy.compareTo(BigDecimal.ZERO) == 0) {
                 if (v.dz.compareTo(BigDecimal.ZERO) == 0) {
-                    // Case 4: The x axis
-                    return e.xAxis;
+                    BigDecimal x = Math_BigDecimal.divideRoundIfNecessary(
+                            pl.normalVector.dy.multiply(pl.p.y.subtract(pl.q.y)).add(
+                                    normalVector.dz.multiply(pl.p.z.subtract(pl.q.y))),
+                            v.dx, scale, rm).add(pl.p.x);
+                    V3D_Point pt;
+                    if (normalVector.dy.compareTo(e.P0) == 0) {
+                        if (normalVector.dz.compareTo(e.P0) == 0) {
+                            pt = new V3D_Point(e, x, p.y, pl.p.z);
+                        } else {
+                            pt = new V3D_Point(e, x, pl.p.y, p.z);
+                        }
+                    } else {
+                        if (normalVector.dz.compareTo(e.P0) == 0) {
+                            pt = new V3D_Point(e, x, p.y, pl.p.z);
+                        } else {
+                            pt = new V3D_Point(e, x, p.y, pl.p.z);
+                        }
+                    }
+                    return new V3D_Line(pt, pt.apply(v));
                 } else {
                     // Case 5
                     return null;
@@ -351,7 +392,17 @@ public class V3D_Plane extends V3D_Geometry {
             } else {
                 if (v.dz.compareTo(BigDecimal.ZERO) == 0) {
                     // Case 6
-                    return null;
+                    BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(
+                            normalVector.dx.multiply(p.x.subtract(q.x)).add(
+                                    normalVector.dz.multiply(p.z.subtract(q.x))),
+                            v.dy, scale, rm).add(p.y);
+                    V3D_Point pt;
+                    if (p.x.compareTo(e.P0) == 0) {
+                        pt = new V3D_Point(e, p.x, y, pl.p.z); // x=1 z=0
+                    } else {
+                        pt = new V3D_Point(e, pl.p.x, y, p.z);
+                    }
+                    return new V3D_Line(pt, pt.apply(v));
                 } else {
                     /**
                      * Case 7: Neither plane aligns with any axis and they are
@@ -363,6 +414,7 @@ public class V3D_Plane extends V3D_Geometry {
                     // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
                     // pl.normalVector.dx = d; pl.normalVector.dy = e; pl.normalVector.dz = f
                     // a(x−p.x)+b(y−p.y)+c(z−p.z) = 0
+                    // x = (ap.x-by+bp.y-cz+cp.z)/a
                     // x = p.x+((b(p.y−y)+c(p.z−z))/a)                    --- 1
                     // y = p.y+((a(p.x−x)+c(p.z−z))/b)                    --- 2
                     // z = p.z+((a(p.x−x)+b(p.y−y))/c)                    --- 3
@@ -439,10 +491,10 @@ public class V3D_Plane extends V3D_Geometry {
                     BigDecimal ef = e.multiply(f);
                     BigDecimal fa = f.multiply(a);
                     BigDecimal fb = f.multiply(b);
-                    BigDecimal db_div_a = Math_BigDecimal.divideRoundIfNecessary(db, a, scale, rm); 
+                    BigDecimal db_div_a = Math_BigDecimal.divideRoundIfNecessary(db, a, scale, rm);
                     BigDecimal dc_div_a = Math_BigDecimal.divideRoundIfNecessary(dc, a, scale, rm);
-                    BigDecimal ea_div_b = Math_BigDecimal.divideRoundIfNecessary(ea, b, scale, rm); 
-                    BigDecimal ec_div_b = Math_BigDecimal.divideRoundIfNecessary(ec, b, scale, rm); 
+                    BigDecimal ea_div_b = Math_BigDecimal.divideRoundIfNecessary(ea, b, scale, rm);
+                    BigDecimal ec_div_b = Math_BigDecimal.divideRoundIfNecessary(ec, b, scale, rm);
                     BigDecimal fa_div_c = Math_BigDecimal.divideRoundIfNecessary(fa, c, scale, rm);
                     BigDecimal fb_div_c = Math_BigDecimal.divideRoundIfNecessary(fb, c, scale, rm);
                     BigDecimal denom12yitoz = e.subtract(db_div_a);
@@ -478,7 +530,7 @@ public class V3D_Plane extends V3D_Geometry {
                     BigDecimal q = db.subtract(a.multiply(e));
                     BigDecimal r = db_div_a.subtract(e);
                     BigDecimal s = db.multiply(a).subtract(a.multiply(ea));
-                    BigDecimal den = Math_BigDecimal.divideRoundIfNecessary(ef, r, scale, rm)   
+                    BigDecimal den = Math_BigDecimal.divideRoundIfNecessary(ef, r, scale, rm)
                             .subtract(Math_BigDecimal.divideRoundIfNecessary(e.multiply(dc), q, scale, rm))
                             .add(Math_BigDecimal.divideRoundIfNecessary(db.multiply(f), q, scale, rm))
                             .subtract(Math_BigDecimal.divideRoundIfNecessary(d.multiply(db.multiply(c)), s, scale, rm));
@@ -487,7 +539,7 @@ public class V3D_Plane extends V3D_Geometry {
                     BigDecimal i = p.z;
                     BigDecimal j = pl.p.x;
                     BigDecimal k = pl.p.y;
-                    BigDecimal l = pl.p.z;                    
+                    BigDecimal l = pl.p.z;
                     BigDecimal ek = e.multiply(k);
                     BigDecimal ci = c.multiply(i);
                     BigDecimal dg = d.multiply(g);
@@ -512,7 +564,7 @@ public class V3D_Plane extends V3D_Geometry {
                     den = e.subtract(db_div_a);
                     BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
                     // x = (ek−eh-eag/b-eci/b+ecz/b+fl−fz-dj)/(d-ea/b)  ---21 x ito z
-                    BigDecimal e_div_b = Math_BigDecimal.divideRoundIfNecessary(e, b, scale, rm);;
+                    BigDecimal e_div_b = Math_BigDecimal.divideRoundIfNecessary(e, b, scale, rm);
                     num = ek.subtract(e.multiply(h))
                             .subtract(g.multiply(a).multiply(e_div_b))
                             .subtract(ci.multiply(e_div_b))
@@ -521,7 +573,7 @@ public class V3D_Plane extends V3D_Geometry {
                             .add(fl)
                             .subtract(f.multiply(z))
                             .subtract(dj);
-                    den = d.subtract(a.multiply(e_div_b));                    
+                    den = d.subtract(a.multiply(e_div_b));
                     BigDecimal x = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
                     V3D_Point aPoint = new V3D_Point(this.e, x, y, z);
                     return new V3D_Line(aPoint, aPoint.apply(v));

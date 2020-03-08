@@ -116,6 +116,13 @@ public class V3D_Vector extends V3D_Object {
     }
 
     /**
+     * @return {@code true} if {@code this.equals(e.zeroVector)) 
+     */
+    public boolean isZeroVector() {
+        return this.equals(e.zeroVector);
+    }
+    
+    /**
      * @param s The scalar value to multiply this by.
      * @return Scaled vector.
      */
