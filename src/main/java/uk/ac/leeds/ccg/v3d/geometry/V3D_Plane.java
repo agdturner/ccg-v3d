@@ -229,7 +229,7 @@ public class V3D_Plane extends V3D_Geometry {
                 if (normalVector.dx.compareTo(e.P0) == 0) {
                     pt = new V3D_Point(e, pl.p.x, p.y, z);
                 } else {
-                    pt = new V3D_Point(e, p.x, p.y, z);
+                    pt = new V3D_Point(e, p.x, pl.p.y, z);
                 }
                 return new V3D_Line(pt, pt.apply(v));
                 // The intersection is at z=?
