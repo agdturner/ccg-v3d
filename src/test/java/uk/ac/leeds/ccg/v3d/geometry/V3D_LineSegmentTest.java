@@ -15,7 +15,9 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
@@ -82,7 +84,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         int scale = 2;
         RoundingMode rm = RoundingMode.HALF_EVEN;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
-        BigDecimal expResult = Math_BigDecimal.sqrt(P2, scale, rm);
+        BigDecimal expResult = Math_BigDecimal.sqrt(P2.toBigDecimal(), scale, rm);
         BigDecimal result = instance.getLength(scale, rm);
         assertEquals(expResult, result);
     }
@@ -94,7 +96,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
     public void testGetEnvelope3D() {
         System.out.println("getEnvelope3D");
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
-        V3D_Envelope expResult = new V3D_Envelope(P0P0P0, P1P1P0);
+        V3D_Envelope expResult = new V3D_Envelope(e, P0P0P0, P1P1P0);
         V3D_Envelope result = instance.getEnvelope3D();
         assertEquals(expResult, result);
     }
@@ -136,20 +138,19 @@ public class V3D_LineSegmentTest extends V3D_Test {
         int scale = 1;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
-        BigDecimal magnitude = Math_BigDecimal.sqrt(P2, scale + 2, rm);
-        V3D_Vector expResult = new V3D_Vector(e, 
-                Math_BigDecimal.divideRoundIfNecessary(instance.pq.dx, magnitude, scale, rm),
-                instance.pq.dy.divide(magnitude, scale, rm),
-                instance.pq.dz.divide(magnitude, scale, rm));
+        BigRational magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(
+                P2.toBigDecimal(), scale + 2, rm));
+        V3D_Vector expResult = new V3D_Vector(e, instance.pq.dx.divide(magnitude),
+                instance.pq.dy.divide(magnitude),
+                instance.pq.dz.divide(magnitude));
         V3D_Vector result = instance.getUnitVector(scale, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_LineSegment(P0P0P0, P1P1P1);
-        magnitude = Math_BigDecimal.sqrt(P3, scale + 2, rm);
-        expResult = new V3D_Vector(e, 
-                Math_BigDecimal.divideRoundIfNecessary(instance.pq.dx, magnitude, scale, rm),
-                instance.pq.dy.divide(magnitude, scale, rm),
-                instance.pq.dz.divide(magnitude, scale, rm));
+        magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(P3.toBigDecimal(), scale + 2, rm));
+        expResult = new V3D_Vector(e, instance.pq.dx.divide(magnitude),
+                instance.pq.dy.divide(magnitude), 
+                instance.pq.dz.divide(magnitude));
         result = instance.getUnitVector(scale, rm);
         assertEquals(expResult, result);
 
@@ -164,20 +165,22 @@ public class V3D_LineSegmentTest extends V3D_Test {
         int scale = 1;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
-        BigDecimal magnitude = Math_BigDecimal.sqrt(P2, scale + 2, rm);
+        BigRational magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(
+                P2.toBigDecimal(), scale + 2, rm));
         V3D_Vector expResult = new V3D_Vector(e, 
-                Math_BigDecimal.divideRoundIfNecessary(instance.pq.dx, magnitude, scale, rm),
-                instance.pq.dy.divide(magnitude, scale, rm),
-                instance.pq.dz.divide(magnitude, scale, rm));
+                instance.pq.dx.divide(magnitude),
+                instance.pq.dy.divide(magnitude),
+                instance.pq.dz.divide(magnitude));
         V3D_Vector result = instance.initUnitVector(scale, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_LineSegment(P0P0P0, P1P1P1);
-        magnitude = Math_BigDecimal.sqrt(P3, scale + 2, rm);
+        magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(P3.toBigDecimal(), 
+                scale + 2, rm));
         expResult = new V3D_Vector(e, 
-                Math_BigDecimal.divideRoundIfNecessary(instance.pq.dx, magnitude, scale, rm),
-                instance.pq.dy.divide(magnitude, scale, rm),
-                instance.pq.dz.divide(magnitude, scale, rm));
+                instance.pq.dx.divide(magnitude),
+                instance.pq.dy.divide(magnitude),
+                instance.pq.dz.divide(magnitude));
         result = instance.initUnitVector(scale, rm);
         assertEquals(expResult, result);
     }
@@ -188,7 +191,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Envelope_int() {
         System.out.println("isIntersectedBy");
-        V3D_Envelope en = new V3D_Envelope(P0P0P0, P1P1P1);
+        V3D_Envelope en = new V3D_Envelope(e, P0P0P0, P1P1P1);
         int scale = 0;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, N1N1N1);
@@ -196,7 +199,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         boolean result = instance.isIntersectedBy(en, scale, rm);
         assertEquals(expResult, result);
         // Test 2
-        en = new V3D_Envelope(N1P0P0, P1P1P1);
+        en = new V3D_Envelope(e, N1P0P0, P1P1P1);
         instance = new V3D_LineSegment(P0P0P0, N1N1N1);
         expResult = true;
         result = instance.isIntersectedBy(en, scale, rm);

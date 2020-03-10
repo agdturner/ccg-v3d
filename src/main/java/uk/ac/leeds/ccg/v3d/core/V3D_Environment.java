@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2020 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.core;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -82,11 +83,11 @@ public class V3D_Environment extends Generic_MemoryManager {
     /**
      * For code brevity.
      */
-    public final BigDecimal P0 = BigDecimal.ZERO;
-    public final BigDecimal P1 = BigDecimal.ONE;
-    public final BigDecimal P2 = BigDecimal.valueOf(2);
-    public final BigDecimal P3 = BigDecimal.valueOf(3);
-    public final BigDecimal N1 = BigDecimal.ONE.negate();
+    public final BigRational P0 = BigRational.ZERO;
+    public final BigRational P1 = BigRational.ONE;
+    public final BigRational P2 = BigRational.valueOf(2);
+    public final BigRational P3 = BigRational.valueOf(3);
+    public final BigRational N1 = BigRational.ONE.negate();
     
     public Generic_Environment env;
     

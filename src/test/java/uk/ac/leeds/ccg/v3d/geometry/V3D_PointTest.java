@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import org.hamcrest.Matchers;
@@ -36,6 +37,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @version 1.0
  */
 public class V3D_PointTest extends V3D_Test {
+
+    private static final long serialVersionUID = 1L;
 
     public V3D_PointTest() throws Exception {
         super(new V3D_Environment(new Generic_Environment(
@@ -64,9 +67,9 @@ public class V3D_PointTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        BigDecimal x = P0;
-        BigDecimal y = P0;
-        BigDecimal z = P0;
+        BigRational x = e.P0;
+        BigRational y = e.P0;
+        BigRational z = e.P0;
         V3D_Point instance = new V3D_Point(e, x, y, z);
         String expResult = "V3D_Point(x=0, y=0, z=0)";
         String result = instance.toString();
@@ -80,9 +83,9 @@ public class V3D_PointTest extends V3D_Test {
     public void testEquals() {
         System.out.println("equals");
         V3D_Point instance = P0P0P0;
-       BigDecimal x = new BigDecimal("0.000");
-       BigDecimal y = new BigDecimal("0.000");
-       BigDecimal z = new BigDecimal("0.000");
+       BigRational x = BigRational.valueOf(new BigDecimal("0.000"));
+       BigRational y = BigRational.valueOf(new BigDecimal("0.000"));
+       BigRational z = BigRational.valueOf(new BigDecimal("0.000"));
         Object o = new V3D_Point(e, x, y, z);
         boolean expResult = true;
         boolean result = instance.equals(o);
@@ -92,21 +95,21 @@ public class V3D_PointTest extends V3D_Test {
         y = P10;
         z = P0;
         instance = new V3D_Point(e, x, y, z);
-        x = new BigDecimal("1.000");
-        y = new BigDecimal("10.000");
-        z = new BigDecimal("0.000");
+        x = BigRational.valueOf(new BigDecimal("1.000"));
+        y = BigRational.valueOf(new BigDecimal("10.000"));
+        z = BigRational.valueOf(new BigDecimal("0.000"));
         o = new V3D_Point(e, x, y, z);
         expResult = true;
         result = instance.equals(o);
         assertEquals(expResult, result);
         // Test 3
-        x = BigDecimal.ONE;
-        y = BigDecimal.TEN;
-        z = BigDecimal.ZERO;
+        x = BigRational.ONE;
+        y = BigRational.TEN;
+        z = BigRational.ZERO;
         instance = new V3D_Point(e, x, y, z);
-        x = new BigDecimal("0.000");
-        y = new BigDecimal("1.000");
-        z = new BigDecimal("10.000");
+        x = BigRational.valueOf(new BigDecimal("0.000"));
+        y = BigRational.valueOf(new BigDecimal("1.000"));
+        z = BigRational.valueOf(new BigDecimal("10.000"));
         o = new V3D_Point(e, x, y, z);
         expResult = false;
         result = instance.equals(o);
@@ -129,7 +132,7 @@ public class V3D_PointTest extends V3D_Test {
         scale = 1;
         rm = RoundingMode.HALF_UP;
         instance = new V3D_Point(e, P3, P4, P0);
-        expResult = P5;
+        expResult = P5.toBigDecimal();
         result = instance.getDistance(P0P0P0, scale, rm);
         //assertEquals(expResult, result);
         assertThat(expResult, Matchers.comparesEqualTo(result));
@@ -141,7 +144,7 @@ public class V3D_PointTest extends V3D_Test {
     @Test
     public void testGetEnvelope3D() {
         System.out.println("getEnvelope3D");        
-        V3D_Envelope expResult = new V3D_Envelope(P0P0P0, P1P1P1);
+        V3D_Envelope expResult = new V3D_Envelope(e, P0P0P0, P1P1P1);
         V3D_Envelope result = P0P0P0.getEnvelope3D();
         result.envelope(P1P1P1.getEnvelope3D());
         assertEquals(expResult, result);
@@ -178,12 +181,12 @@ public class V3D_PointTest extends V3D_Test {
         int scale = 0;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point instance = P1P0P0;
-        BigDecimal expResult = P1;
+        BigDecimal expResult = P1.toBigDecimal();
         BigDecimal result = instance.getDistance(p, scale, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_Point(e, P3, P4, P0);
-        expResult = P5;
+        expResult = P5.toBigDecimal();
         result = instance.getDistance(p, scale, rm);
         assertEquals(expResult, result);
     }
@@ -198,13 +201,13 @@ public class V3D_PointTest extends V3D_Test {
         int scale = 0;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point instance = P0P1P0;
-        BigDecimal expResult = P1;
+        BigDecimal expResult = P1.toBigDecimal();
         BigDecimal result = instance.getDistance(l, scale, rm);
         assertEquals(expResult, result);
-        // Test 1
-        l = new V3D_Line(P0P0P0, P1N1P0);
+        // Test 2
+        l = new V3D_Line(P0P0P0, P0P0P1);
         instance = new V3D_Point(e, P3, P4, P0);
-        expResult = P5;
+        expResult = P5.toBigDecimal();
         result = instance.getDistance(l, scale, rm);
         assertEquals(expResult, result);
     }

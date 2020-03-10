@@ -34,7 +34,7 @@ public class V3D_FinitePlane extends V3D_Plane
     
     @Override
     public V3D_Envelope getEnvelope3D() {
-        return new V3D_Envelope(p, q, r);
+        return new V3D_Envelope(e, p, q, r);
     }
 
 }

@@ -15,7 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -28,35 +28,37 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  */
 public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * The minimum x-coordinate.
      */
-    public BigDecimal xMin;
+    public BigRational xMin;
 
     /**
      * The maximum x-coordinate.
      */
-    public BigDecimal xMax;
+    public BigRational xMax;
 
     /**
      * The minimum y-coordinate.
      */
-    public BigDecimal yMin;
+    public BigRational yMin;
 
     /**
      * The maximum y-coordinate.
      */
-    public BigDecimal yMax;
+    public BigRational yMax;
 
     /**
      * The minimum z-coordinate.
      */
-    public BigDecimal zMin;
+    public BigRational zMin;
 
     /**
      * The maximum z-coordinate.
      */
-    public BigDecimal zMax;
+    public BigRational zMax;
 
     /**
      * @param e The vector environment.
@@ -79,33 +81,27 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param a A point.
-     * @param b A point.
+     * @param e An envelope.
+     * @param points The points.
      */
-    public V3D_Envelope(V3D_Point a, V3D_Point b) {
-        super(a.e);
-        xMax = a.x.max(b.x);
-        xMin = a.x.min(b.x);
-        yMax = a.y.max(b.y);
-        yMin = a.y.min(b.y);
-        zMax = a.z.max(b.z);
-        zMin = a.z.min(b.z);
-    }
-
-    /**
-     * @param a A point.
-     * @param b A point.
-     * @param c A point.
-     */
-    public V3D_Envelope(V3D_Point a, V3D_Point b,
-            V3D_Point c) {
-        super(a.e);
-        xMin = a.x.min(b.x).min(c.x);
-        xMax = a.x.max(b.x).max(c.x);
-        yMin = a.y.min(b.y).min(c.y);
-        yMax = a.y.max(b.y).max(c.y);
-        zMin = a.z.min(b.z).min(c.z);
-        zMax = a.z.max(b.z).max(c.z);
+    public V3D_Envelope(V3D_Environment e, V3D_Point... points) {
+        super(e);
+        if (points.length > 0) {
+            xMin = points[0].x;
+            xMax = points[0].x;
+            yMin = points[0].y;
+            yMax = points[0].y;
+            zMin = points[0].z;
+            zMax = points[0].z;
+            for (int i = 1; i < points.length; i++) {
+                xMin = BigRational.min(xMin, points[i].x);
+                xMax = BigRational.max(xMax, points[i].x);
+                yMin = BigRational.min(yMin, points[i].y);
+                yMax = BigRational.max(yMax, points[i].y);
+                zMin = BigRational.min(zMin, points[i].z);
+                zMax = BigRational.max(zMax, points[i].z);
+            }
+        }
     }
 
     /**
@@ -114,8 +110,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param y The y-coordinate of a point.
      * @param z The z-coordinate of a point.
      */
-    public V3D_Envelope(V3D_Environment e, BigDecimal x, BigDecimal y,
-            BigDecimal z) {
+    public V3D_Envelope(V3D_Environment e, BigRational x, BigRational y,
+            BigRational z) {
         super(e);
         xMin = x;
         xMax = x;
@@ -123,30 +119,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         yMax = y;
         zMin = z;
         zMax = z;
-    }
-
-    /**
-     *
-     * @param g The geometries.
-     */
-    public V3D_Envelope(V3D_Point[] g) {
-        super(g[0].e);
-        V3D_Envelope en = g[0].getEnvelope3D();
-        xMin = en.xMin;
-        xMax = en.xMin;
-        yMin = en.yMin;
-        yMax = en.yMax;
-        zMin = en.zMin;
-        zMax = en.zMax;
-        for (int i = 1; i < g.length; i++) {
-            en = g[i].getEnvelope3D();
-            xMin = xMin.min(en.xMin);
-            xMax = xMax.max(en.xMax);
-            yMin = yMin.min(en.yMin);
-            yMax = yMax.max(en.yMax);
-            zMin = zMin.min(en.zMin);
-            zMax = zMax.max(en.zMax);
-        }
     }
 
     @Override
@@ -162,12 +134,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return The possibly expanded envelope which is this.
      */
     public V3D_Envelope envelope(V3D_Envelope e) {
-        xMin = e.xMin.min(xMin);
-        xMax = e.xMax.max(xMax);
-        yMin = e.yMin.min(yMin);
-        yMax = e.yMax.max(yMax);
-        zMin = e.zMin.min(zMin);
-        zMax = e.zMax.max(zMax);
+        xMin = BigRational.min(e.xMin, xMin);
+        xMax = BigRational.max(e.xMax, xMax);
+        yMin = BigRational.min(e.yMin, yMin);
+        yMax = BigRational.max(e.yMax, yMax);
+        zMin = BigRational.min(e.zMin, zMin);
+        zMax = BigRational.max(e.zMax, zMax);
         return this;
     }
 
@@ -270,6 +242,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * @param l A line segment to test for intersection.
      * @param scale scale
+     * @param rm RoundingMode
      * @return {@code true} if this intersects with {@code l}.
      */
     public boolean isIntersectedBy(V3D_LineSegment l, int scale, RoundingMode rm) {
@@ -324,7 +297,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z The z-coordinate of the point to test for intersection.
      * @return {@code true} if this intersects with {@code p}
      */
-    public boolean isIntersectedBy(BigDecimal x, BigDecimal y, BigDecimal z) {
+    public boolean isIntersectedBy(BigRational x, BigRational y, BigRational z) {
         return x.compareTo(xMin) != -1 && x.compareTo(xMax) != 1
                 && y.compareTo(yMin) != -1 && y.compareTo(yMax) != 1
                 && z.compareTo(zMin) != -1 && z.compareTo(zMax) != 1;

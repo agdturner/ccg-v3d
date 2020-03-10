@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -58,6 +59,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @version 1.0
  */
 public class V3D_Plane extends V3D_Geometry {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * One of the points that defines the plane.
@@ -114,12 +117,55 @@ public class V3D_Plane extends V3D_Geometry {
         this.q = q;
         this.r = r;
         // Check for collinearity
-        if (normalVector.dx.compareTo(BigDecimal.ZERO) == 0
-                && normalVector.dy.compareTo(BigDecimal.ZERO) == 0
-                && normalVector.dz.compareTo(BigDecimal.ZERO) == 0) {
+        if (normalVector.dx.compareTo(e.P0) == 0
+                && normalVector.dy.compareTo(e.P0) == 0
+                && normalVector.dz.compareTo(e.P0) == 0) {
             throw new RuntimeException("The three points do not define a plane, "
                     + "but are collinear (they might all be the same point!");
         }
+    }
+
+    /**
+     * An equation of the plane containing the point {@code p} with normal
+     * vector {@code n} is
+     * {@code n.dx(x) + n.dy(y) + n.dz(z) = d}.
+     *
+     * @param e V3D_Environment
+     * @param p What {@link #p} is set to.
+     * @param n What {@link #normalVector} is set to.
+     * @throws RuntimeException If p, q and r are collinear.
+     */
+    public V3D_Plane(V3D_Environment e, V3D_Point p, V3D_Vector n) {
+        super(e);
+        this.p = p;
+        BigRational d = n.dx.multiply(p.x).add(n.dy.multiply(p.y).add(n.dz.multiply(p.z)));
+        if (n.dx.compareTo(e.P0) == 0) {
+            if (n.dy.compareTo(e.P0) == 0) {
+                
+            } else {
+                
+            }
+        } else {
+            if (n.dy.compareTo(e.P0) == 0) {
+                if (n.dz.compareTo(e.P0) == 0) {
+                }
+            } else {
+                if (n.dz.compareTo(e.P0) == 0) {
+                }
+            }
+        }
+        // Set: x = 0; y = 0
+        // Then: z = d/n.dz
+        this.q = new V3D_Point(e, e.P0, e.P0, d.divide(n.dz));
+        // Set: x = 0; z = 0
+        // Then: y = d/n.dy
+        this.r = new V3D_Point(e, e.P0, d.divide(n.dy), e.P0);
+        pq = new V3D_Vector(e, p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
+        pr = new V3D_Vector(e, p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
+        /**
+         * Calculate the normal perpendicular vector.
+         */
+        normalVector = n;
     }
 
     @Override
@@ -168,9 +214,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} If {@code pt} is on the plane.
      */
     public boolean isIntersectedBy(V3D_Point pt) {
-        BigDecimal d = normalVector.dx.multiply(p.x.subtract(pt.x)).add(normalVector.dy.multiply(p.y
+        BigRational d = normalVector.dx.multiply(p.x.subtract(pt.x)).add(normalVector.dy.multiply(p.y
                 .subtract(pt.y))).add(normalVector.dz.multiply(p.z.subtract(pt.z)));
-        return d.compareTo(BigDecimal.ZERO) == 0;
+        return d.compareTo(e.P0) == 0;
         // Alternative:
         // p.x = l*(ab.x)+m*(ac.x) ---1
         // p.y = l*(ab.y)+m*(ac.y) ---2
@@ -202,6 +248,19 @@ public class V3D_Plane extends V3D_Geometry {
                 return this;
             }
         }
+        // Parametric equation of line:
+        // x(t) = t(dx)+l.q.x}
+        // y(t) = t(dy)+l.q.y}
+        // z(t) = t(dz)+l.q.z}
+        // Equation of this plane:
+        // A*(x) + B*(y) + C*(z) - D = 0 where D = -(A*x0 + B*y0 + C*z0)
+        // A = normalVector.dx
+        // B = normalVector.dy
+        // C = normalVector.dz
+        BigRational D = normalVector.dx.multiply(p.x).add(
+                normalVector.dy.multiply(p.y).add(
+                        normalVector.dz.multiply(p.z)));
+
         throw new UnsupportedOperationException();
     }
 
@@ -219,12 +278,11 @@ public class V3D_Plane extends V3D_Geometry {
         }
         // Calculate the line of intersection, where v is the line vector.
         // What to do depends on which elements of v are non-zero.
-        if (v.dx.compareTo(BigDecimal.ZERO) == 0) {
-            if (v.dy.compareTo(BigDecimal.ZERO) == 0) {
-                BigDecimal z = Math_BigDecimal.divideRoundIfNecessary(
-                        pl.normalVector.dx.multiply(pl.p.x.subtract(pl.q.x)).add(
-                                normalVector.dy.multiply(pl.p.y.subtract(pl.q.x))),
-                        v.dz, scale, rm).add(pl.p.z);
+        if (v.dx.compareTo(e.P0) == 0) {
+            if (v.dy.compareTo(e.P0) == 0) {
+                BigRational z = pl.normalVector.dx.multiply(pl.p.x.subtract(pl.q.x)).add(
+                                normalVector.dy.multiply(pl.p.y.subtract(pl.q.x)))
+                        .divide(v.dz).add(pl.p.z);
                 V3D_Point pt;
                 if (normalVector.dx.compareTo(e.P0) == 0) {
                     pt = new V3D_Point(e, pl.p.x, p.y, z);
@@ -310,11 +368,10 @@ public class V3D_Plane extends V3D_Geometry {
 //                    }
 //                }
             } else {
-                if (v.dz.compareTo(BigDecimal.ZERO) == 0) {
-                    BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(
-                            normalVector.dx.multiply(p.x.subtract(q.x)).add(
-                                    normalVector.dz.multiply(p.z.subtract(q.x))),
-                            v.dy, scale, rm).add(p.y);
+                if (v.dz.compareTo(e.P0) == 0) {
+                    BigRational y = normalVector.dx.multiply(p.x.subtract(q.x)).add(
+                                    normalVector.dz.multiply(p.z.subtract(q.x)))
+                            .divide(v.dy).add(p.y);
                     V3D_Point pt;
                     if (normalVector.dx.compareTo(e.P0) == 0) {
                         pt = new V3D_Point(e, pl.p.x, y, p.z);
@@ -338,25 +395,23 @@ public class V3D_Plane extends V3D_Geometry {
                     // bz - cz = m - l -cm - lb
                     // z(b - c) = m - l -cm - lb
                     // z = (m - l -cm - lb) / (b - c)
-                    BigDecimal numerator = p.z.subtract(p.y)
+                    BigRational numerator = p.z.subtract(p.y)
                             .subtract(normalVector.dz.multiply(p.z))
                             .subtract(p.y.multiply(normalVector.dy));
-                    BigDecimal denominator = normalVector.dy.subtract(normalVector.dz);
+                    BigRational denominator = normalVector.dy.subtract(normalVector.dz);
                     if (denominator.compareTo(e.P0) == 0) {
                         // Another case to deal with
                         return null;
                     } else {
-                        BigDecimal z = Math_BigDecimal.divideRoundIfNecessary(
-                                numerator, denominator, scale + 2, rm); // scale + 2 sensible?
+                        BigRational z = numerator.divide(denominator);
                         // Substitute into 1
                         // y = (p.y - c(z−p.z)) / b   --- 1
                         if (normalVector.dy.compareTo(e.P0) == 0) {
                             // Another case to deal with
                             return null;
                         } else {
-                            BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(
-                                    p.y.subtract(normalVector.dz.multiply(z.subtract(p.z))),
-                                    normalVector.dy, scale, rm);
+                            BigRational y = p.y.subtract(normalVector.dz.multiply(z.subtract(p.z)))
+                                    .divide(normalVector.dy);
                             return new V3D_Line(new V3D_Point(e, e.P0, y, z),
                                     new V3D_Point(e, e.P0, y.add(v.dy), z.add(v.dz)));
                         }
@@ -364,12 +419,11 @@ public class V3D_Plane extends V3D_Geometry {
                 }
             }
         } else {
-            if (v.dy.compareTo(BigDecimal.ZERO) == 0) {
-                if (v.dz.compareTo(BigDecimal.ZERO) == 0) {
-                    BigDecimal x = Math_BigDecimal.divideRoundIfNecessary(
-                            pl.normalVector.dy.multiply(pl.p.y.subtract(pl.q.y)).add(
-                                    normalVector.dz.multiply(pl.p.z.subtract(pl.q.y))),
-                            v.dx, scale, rm).add(pl.p.x);
+            if (v.dy.compareTo(e.P0) == 0) {
+                if (v.dz.compareTo(e.P0) == 0) {
+                    BigRational x = pl.normalVector.dy.multiply(pl.p.y.subtract(pl.q.y)).add(
+                                    normalVector.dz.multiply(pl.p.z.subtract(pl.q.y)))
+                            .divide(v.dx).add(pl.p.x);
                     V3D_Point pt;
                     if (normalVector.dy.compareTo(e.P0) == 0) {
                         if (normalVector.dz.compareTo(e.P0) == 0) {
@@ -386,16 +440,23 @@ public class V3D_Plane extends V3D_Geometry {
                     }
                     return new V3D_Line(pt, pt.apply(v));
                 } else {
-                    // Case 5
-                    return null;
+                    BigRational z = pl.normalVector.dx.multiply(pl.p.x.subtract(pl.q.x)).add(
+                                    normalVector.dy.multiply(pl.p.y.subtract(pl.q.x)))
+                            .divide(v.dz).add(pl.p.z);
+                    V3D_Point pt;
+                    if (normalVector.dx.compareTo(e.P0) == 0) {
+                        pt = new V3D_Point(e, pl.p.x, p.y, z);
+                    } else {
+                        pt = new V3D_Point(e, p.x, pl.p.y, z);
+                    }
+                    return new V3D_Line(pt, pt.apply(v));
                 }
             } else {
-                if (v.dz.compareTo(BigDecimal.ZERO) == 0) {
+                if (v.dz.compareTo(e.P0) == 0) {
                     // Case 6
-                    BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(
-                            normalVector.dx.multiply(p.x.subtract(q.x)).add(
-                                    normalVector.dz.multiply(p.z.subtract(q.x))),
-                            v.dy, scale, rm).add(p.y);
+                    BigRational y = normalVector.dx.multiply(p.x.subtract(q.x)).add(
+                                    normalVector.dz.multiply(p.z.subtract(q.x)))
+                            .divide(v.dy).add(p.y);
                     V3D_Point pt;
                     if (p.x.compareTo(e.P0) == 0) {
                         pt = new V3D_Point(e, p.x, y, pl.p.z); // x=1 z=0
@@ -478,105 +539,117 @@ public class V3D_Plane extends V3D_Geometry {
                     // ey-ek = dj−dx+fl−fi-fag/c+fax/c-fbh/c+fby/c
                     // x = (ey-ek-dj-fl+fi+fag/c+fbh/c-fby/c)/(fa/c−d)  ---32 x ito y
                     // Stage 2: Are any denominators 0?
-                    BigDecimal a = normalVector.dx;
-                    BigDecimal b = normalVector.dy;
-                    BigDecimal c = normalVector.dz;
-                    BigDecimal d = pl.normalVector.dx;
-                    BigDecimal e = pl.normalVector.dy;
-                    BigDecimal f = pl.normalVector.dz;
-                    BigDecimal db = d.multiply(b);
-                    BigDecimal dc = d.multiply(c);
-                    BigDecimal ea = e.multiply(a);
-                    BigDecimal ec = e.multiply(c);
-                    BigDecimal ef = e.multiply(f);
-                    BigDecimal fa = f.multiply(a);
-                    BigDecimal fb = f.multiply(b);
-                    BigDecimal db_div_a = Math_BigDecimal.divideRoundIfNecessary(db, a, scale, rm);
-                    BigDecimal dc_div_a = Math_BigDecimal.divideRoundIfNecessary(dc, a, scale, rm);
-                    BigDecimal ea_div_b = Math_BigDecimal.divideRoundIfNecessary(ea, b, scale, rm);
-                    BigDecimal ec_div_b = Math_BigDecimal.divideRoundIfNecessary(ec, b, scale, rm);
-                    BigDecimal fa_div_c = Math_BigDecimal.divideRoundIfNecessary(fa, c, scale, rm);
-                    BigDecimal fb_div_c = Math_BigDecimal.divideRoundIfNecessary(fb, c, scale, rm);
-                    BigDecimal denom12yitoz = e.subtract(db_div_a);
-                    BigDecimal denom12zitoy = dc_div_a.subtract(f);
-                    BigDecimal denom13zitoy = f.subtract(dc_div_a);
-                    BigDecimal denom13yitoz = db_div_a.subtract(e);
-                    BigDecimal denom21xitoz = d.subtract(ea_div_b);
-                    BigDecimal denom21zitox = ec_div_b.subtract(f);
-                    BigDecimal denom23zitox = f.subtract(ec_div_b);
-                    BigDecimal denom23xitoz = ea_div_b.subtract(d);
-                    BigDecimal denom31xitoy = d.subtract(fa_div_c);
-                    BigDecimal denom31yitox = e.add(fb_div_c);
-                    BigDecimal denom32yitox = e.subtract(fb_div_c);
-                    BigDecimal denom32xitoy = fa_div_c.subtract(d);
-                    // Solve for z
-                    // Let; n = v.dx; o = v.dy; p = v.dz
-                    // x(t) = x + v.dx 
-                    // y(t) = y(0) + v.dy 
-                    // z-p = z(0)
-                    // z = (ey-dby/a-dj_dg+dbh/a+dci/a-fl-ek)/(dc/a-f)  ---12 z ito y                    
-                    // z-p = (ey-dby/a-dj_dg+dbh/a+dci/a-fl-ek)/(dc/a-f)
-                    // y = (fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e)  ---13 y ito z
-                    // z-p = (e((fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e))-db((fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e))/a-dj-dg+dbh/a+dci/a-fl-ek)/(dc/a-f)
-                    // (z-p)(dc/a-f) = e((fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e))-db((fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e))/a-dj-dg+dbh/a+dci/a-fl-ek
-                    // (efz-edcz/a-edj+edg+edbh/a+edci/a-eek-efl)/(db/a-e) = -dbfz/(db-ae)+dbdcz/(adb-aae)+ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek
-                    // efz/(db/a-e)-edcz/(db-ae)-edj/(db/a-e)+edg/(db/a-e)+edbh/(db-ae)+edci/(db-ae)-eek/(db/a-e)-efl/db/a-e) = -dbfz/(db-ae)+dbdcz/(adb-aae)+ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek
-                    // efz/(db/a-e)-edcz/(db-ae)+dbfz/(db-ae)-dbdcz/(adb-aae) = ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek+edj/(db/a-e)-edg/(db/a-e)-edbh/(db-ae)-edci/(db-ae)+eek/(db/a-e)+efl/db/a-e)
-                    // z(ef/(db/a-e)-edc/(db-ae)+dbf/(db-ae)-dbdc/(adb-aae)) = ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek+edj/(db/a-e)-edg/(db/a-e)-edbh/(db-ae)-edci/(db-ae)+eek/(db/a-e)+efl/db/a-e)
-                    // z = num/den
-                    // den = ef/(db/a-e)-edc/(db-ae)+dbf/(db-ae)-dbdc/(adb-aae);
-                    // num = ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek+edj/(db/a-e)-edg/(db/a-e)-edbh/(db-ae)-edci/(db-ae)+eek/(db/a-e)+efl/db/a-e)
-                    // Let: q = db-ae; r = db/a-e; s=adb-aae
-                    BigDecimal q = db.subtract(a.multiply(e));
-                    BigDecimal r = db_div_a.subtract(e);
-                    BigDecimal s = db.multiply(a).subtract(a.multiply(ea));
-                    BigDecimal den = Math_BigDecimal.divideRoundIfNecessary(ef, r, scale, rm)
-                            .subtract(Math_BigDecimal.divideRoundIfNecessary(e.multiply(dc), q, scale, rm))
-                            .add(Math_BigDecimal.divideRoundIfNecessary(db.multiply(f), q, scale, rm))
-                            .subtract(Math_BigDecimal.divideRoundIfNecessary(d.multiply(db.multiply(c)), s, scale, rm));
-                    BigDecimal g = p.x;
-                    BigDecimal h = p.y;
-                    BigDecimal i = p.z;
-                    BigDecimal j = pl.p.x;
-                    BigDecimal k = pl.p.y;
-                    BigDecimal l = pl.p.z;
-                    BigDecimal ek = e.multiply(k);
-                    BigDecimal ci = c.multiply(i);
-                    BigDecimal dg = d.multiply(g);
-                    BigDecimal dbh = db.multiply(h);
-                    BigDecimal dbh_sub_dci = dbh.subtract(d.multiply(ci));
-                    BigDecimal fl = f.multiply(l);
-                    BigDecimal bh = b.multiply(h);
-                    BigDecimal dj = d.multiply(j);
-                    BigDecimal num = d.multiply(j.subtract(dg).add(ek).add(fl))
-                            .subtract(Math_BigDecimal.divideRoundIfNecessary(e.multiply(dbh_sub_dci), q, scale, rm))
-                            .subtract(Math_BigDecimal.divideRoundIfNecessary(d.multiply(dbh_sub_dci), s, scale, rm))
-                            .subtract(dj.subtract(dg))
-                            .add(Math_BigDecimal.divideRoundIfNecessary(d.multiply(bh.add(ci)), a, scale, rm))
-                            .subtract(fl.subtract(ek))
-                            .add(Math_BigDecimal.divideRoundIfNecessary(e.multiply(dj.subtract(dg).add(ek).add(fl)), r, scale, rm));
-                    BigDecimal z = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
-                    // y = (dj−dg-dbh/a-dci/a+dcz/a+fl−fz+ek)/(e-db/a)  ---12 y ito z
-                    // y = num/den
-                    num = dj.subtract(dg).subtract(db_div_a.multiply(h))
-                            .subtract(dc_div_a.multiply(i))
-                            .add(dc_div_a.multiply(z)).add(fl).subtract(f.multiply(z)).add(ek);
-                    den = e.subtract(db_div_a);
-                    BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
-                    // x = (ek−eh-eag/b-eci/b+ecz/b+fl−fz-dj)/(d-ea/b)  ---21 x ito z
-                    BigDecimal e_div_b = Math_BigDecimal.divideRoundIfNecessary(e, b, scale, rm);
-                    num = ek.subtract(e.multiply(h))
-                            .subtract(g.multiply(a).multiply(e_div_b))
-                            .subtract(ci.multiply(e_div_b))
-                            .add(dc_div_a.multiply(z))
-                            .add(c.multiply(z).multiply(e_div_b))
-                            .add(fl)
-                            .subtract(f.multiply(z))
-                            .subtract(dj);
-                    den = d.subtract(a.multiply(e_div_b));
-                    BigDecimal x = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
-                    V3D_Point aPoint = new V3D_Point(this.e, x, y, z);
-                    return new V3D_Line(aPoint, aPoint.apply(v));
+                    BigRational x = normalVector.dy.multiply(pl.p.y.subtract(pl.q.y)).add(
+                                    normalVector.dz.multiply(pl.p.z.subtract(pl.q.y)))
+                            .divide(v.dx).add(pl.p.x);
+                    BigRational y = normalVector.dx.multiply(p.x.subtract(q.x)).add(
+                                    normalVector.dz.multiply(p.z.subtract(q.x)))
+                            .divide(v.dy).add(p.y);
+                    BigRational z = normalVector.dx.multiply(pl.p.x.subtract(pl.q.x)).add(
+                                    normalVector.dy.multiply(pl.p.y.subtract(pl.q.x)))
+                            .divide(v.dz).add(pl.p.z);
+                    V3D_Point pt = new V3D_Point(this.e, x, y, z);
+                    return new V3D_Line(pt, pt.apply(v));
+
+//                    BigDecimal a = normalVector.dx;
+//                    BigDecimal b = normalVector.dy;
+//                    BigDecimal c = normalVector.dz;
+//                    BigDecimal d = pl.normalVector.dx;
+//                    BigDecimal e = pl.normalVector.dy;
+//                    BigDecimal f = pl.normalVector.dz;
+//                    BigDecimal db = d.multiply(b);
+//                    BigDecimal dc = d.multiply(c);
+//                    BigDecimal ea = e.multiply(a);
+//                    BigDecimal ec = e.multiply(c);
+//                    BigDecimal ef = e.multiply(f);
+//                    BigDecimal fa = f.multiply(a);
+//                    BigDecimal fb = f.multiply(b);
+//                    BigDecimal db_div_a = Math_BigDecimal.divideRoundIfNecessary(db, a, scale, rm);
+//                    BigDecimal dc_div_a = Math_BigDecimal.divideRoundIfNecessary(dc, a, scale, rm);
+//                    BigDecimal ea_div_b = Math_BigDecimal.divideRoundIfNecessary(ea, b, scale, rm);
+//                    BigDecimal ec_div_b = Math_BigDecimal.divideRoundIfNecessary(ec, b, scale, rm);
+//                    BigDecimal fa_div_c = Math_BigDecimal.divideRoundIfNecessary(fa, c, scale, rm);
+//                    BigDecimal fb_div_c = Math_BigDecimal.divideRoundIfNecessary(fb, c, scale, rm);
+//                    BigDecimal denom12yitoz = e.subtract(db_div_a);
+//                    BigDecimal denom12zitoy = dc_div_a.subtract(f);
+//                    BigDecimal denom13zitoy = f.subtract(dc_div_a);
+//                    BigDecimal denom13yitoz = db_div_a.subtract(e);
+//                    BigDecimal denom21xitoz = d.subtract(ea_div_b);
+//                    BigDecimal denom21zitox = ec_div_b.subtract(f);
+//                    BigDecimal denom23zitox = f.subtract(ec_div_b);
+//                    BigDecimal denom23xitoz = ea_div_b.subtract(d);
+//                    BigDecimal denom31xitoy = d.subtract(fa_div_c);
+//                    BigDecimal denom31yitox = e.add(fb_div_c);
+//                    BigDecimal denom32yitox = e.subtract(fb_div_c);
+//                    BigDecimal denom32xitoy = fa_div_c.subtract(d);
+//                    // Solve for z
+//                    // Let; n = v.dx; o = v.dy; p = v.dz
+//                    // x(t) = x + v.dx 
+//                    // y(t) = y(0) + v.dy 
+//                    // z-p = z(0)
+//                    // z = (ey-dby/a-dj_dg+dbh/a+dci/a-fl-ek)/(dc/a-f)  ---12 z ito y                    
+//                    // z-p = (ey-dby/a-dj_dg+dbh/a+dci/a-fl-ek)/(dc/a-f)
+//                    // y = (fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e)  ---13 y ito z
+//                    // z-p = (e((fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e))-db((fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e))/a-dj-dg+dbh/a+dci/a-fl-ek)/(dc/a-f)
+//                    // (z-p)(dc/a-f) = e((fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e))-db((fz-dcz/a-dj+dg+dbh/a+dci/a-ek-fl)/(db/a-e))/a-dj-dg+dbh/a+dci/a-fl-ek
+//                    // (efz-edcz/a-edj+edg+edbh/a+edci/a-eek-efl)/(db/a-e) = -dbfz/(db-ae)+dbdcz/(adb-aae)+ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek
+//                    // efz/(db/a-e)-edcz/(db-ae)-edj/(db/a-e)+edg/(db/a-e)+edbh/(db-ae)+edci/(db-ae)-eek/(db/a-e)-efl/db/a-e) = -dbfz/(db-ae)+dbdcz/(adb-aae)+ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek
+//                    // efz/(db/a-e)-edcz/(db-ae)+dbfz/(db-ae)-dbdcz/(adb-aae) = ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek+edj/(db/a-e)-edg/(db/a-e)-edbh/(db-ae)-edci/(db-ae)+eek/(db/a-e)+efl/db/a-e)
+//                    // z(ef/(db/a-e)-edc/(db-ae)+dbf/(db-ae)-dbdc/(adb-aae)) = ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek+edj/(db/a-e)-edg/(db/a-e)-edbh/(db-ae)-edci/(db-ae)+eek/(db/a-e)+efl/db/a-e)
+//                    // z = num/den
+//                    // den = ef/(db/a-e)-edc/(db-ae)+dbf/(db-ae)-dbdc/(adb-aae);
+//                    // num = ddj/(db-ae)-ddg/(db-ae)-ddbh/(adb-aae)-ddci/(adb-aae)+dek/(db-ae)+dfl/(db-ae)-dj-dg+dbh/a+dci/a-fl-ek+edj/(db/a-e)-edg/(db/a-e)-edbh/(db-ae)-edci/(db-ae)+eek/(db/a-e)+efl/db/a-e)
+//                    // Let: q = db-ae; r = db/a-e; s=adb-aae
+//                    BigDecimal q = db.subtract(a.multiply(e));
+//                    BigDecimal r = db_div_a.subtract(e);
+//                    BigDecimal s = db.multiply(a).subtract(a.multiply(ea));
+//                    BigDecimal den = Math_BigDecimal.divideRoundIfNecessary(ef, r, scale, rm)
+//                            .subtract(Math_BigDecimal.divideRoundIfNecessary(e.multiply(dc), q, scale, rm))
+//                            .add(Math_BigDecimal.divideRoundIfNecessary(db.multiply(f), q, scale, rm))
+//                            .subtract(Math_BigDecimal.divideRoundIfNecessary(d.multiply(db.multiply(c)), s, scale, rm));
+//                    BigDecimal g = p.x;
+//                    BigDecimal h = p.y;
+//                    BigDecimal i = p.z;
+//                    BigDecimal j = pl.p.x;
+//                    BigDecimal k = pl.p.y;
+//                    BigDecimal l = pl.p.z;
+//                    BigDecimal ek = e.multiply(k);
+//                    BigDecimal ci = c.multiply(i);
+//                    BigDecimal dg = d.multiply(g);
+//                    BigDecimal dbh = db.multiply(h);
+//                    BigDecimal dbh_sub_dci = dbh.subtract(d.multiply(ci));
+//                    BigDecimal fl = f.multiply(l);
+//                    BigDecimal bh = b.multiply(h);
+//                    BigDecimal dj = d.multiply(j);
+//                    BigDecimal num = d.multiply(j.subtract(dg).add(ek).add(fl))
+//                            .subtract(Math_BigDecimal.divideRoundIfNecessary(e.multiply(dbh_sub_dci), q, scale, rm))
+//                            .subtract(Math_BigDecimal.divideRoundIfNecessary(d.multiply(dbh_sub_dci), s, scale, rm))
+//                            .subtract(dj.subtract(dg))
+//                            .add(Math_BigDecimal.divideRoundIfNecessary(d.multiply(bh.add(ci)), a, scale, rm))
+//                            .subtract(fl.subtract(ek))
+//                            .add(Math_BigDecimal.divideRoundIfNecessary(e.multiply(dj.subtract(dg).add(ek).add(fl)), r, scale, rm));
+//                    BigDecimal z = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
+//                    // y = (dj−dg-dbh/a-dci/a+dcz/a+fl−fz+ek)/(e-db/a)  ---12 y ito z
+//                    // y = num/den
+//                    num = dj.subtract(dg).subtract(db_div_a.multiply(h))
+//                            .subtract(dc_div_a.multiply(i))
+//                            .add(dc_div_a.multiply(z)).add(fl).subtract(f.multiply(z)).add(ek);
+//                    den = e.subtract(db_div_a);
+//                    BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
+//                    // x = (ek−eh-eag/b-eci/b+ecz/b+fl−fz-dj)/(d-ea/b)  ---21 x ito z
+//                    BigDecimal e_div_b = Math_BigDecimal.divideRoundIfNecessary(e, b, scale, rm);
+//                    num = ek.subtract(e.multiply(h))
+//                            .subtract(g.multiply(a).multiply(e_div_b))
+//                            .subtract(ci.multiply(e_div_b))
+//                            .add(dc_div_a.multiply(z))
+//                            .add(c.multiply(z).multiply(e_div_b))
+//                            .add(fl)
+//                            .subtract(f.multiply(z))
+//                            .subtract(dj);
+//                    den = d.subtract(a.multiply(e_div_b));
+//                    BigDecimal x = Math_BigDecimal.divideRoundIfNecessary(num, den, scale, rm);
+//                    V3D_Point aPoint = new V3D_Point(this.e, x, y, z);
+//                    return new V3D_Line(aPoint, aPoint.apply(v));
                 }
             }
         }
@@ -611,7 +684,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} if this is parallel to p given scale and rm.
      */
     public boolean isParallel(V3D_Line l, int scale, RoundingMode rm) {
-        return l.pq.isParallel(this.pq, scale, rm);
+        return l.v.isParallel(this.pq, scale, rm);
     }
 
     @Override

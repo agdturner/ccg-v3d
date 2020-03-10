@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -34,6 +33,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @version 1.0
  */
 public class V3D_EnvelopeTest extends V3D_Test {
+
+    private static final long serialVersionUID = 1L;
 
     public V3D_EnvelopeTest() throws Exception {
         super(new V3D_Environment(new Generic_Environment(
@@ -62,7 +63,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P0P0P0);
+        V3D_Envelope instance = new V3D_Envelope(e, P0P0P0, P0P0P0);
         String expResult = "V3D_Envelope(xMin=0, xMax=0,yMin=0, yMax=0,zMin=0,"
                 + " zMax=0)";
         String result = instance.toString();
@@ -75,9 +76,9 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testEnvelope() {
         System.out.println("envelope");
-        V3D_Envelope e1 = new V3D_Envelope(P0P0P0, P0P0P0);
-        V3D_Envelope instance = new V3D_Envelope(P1P1P1, P1P1P1);
-        V3D_Envelope expResult = new V3D_Envelope(P0P0P0, P1P1P1);
+        V3D_Envelope e1 = new V3D_Envelope(e, P0P0P0, P0P0P0);
+        V3D_Envelope instance = new V3D_Envelope(e, P1P1P1, P1P1P1);
+        V3D_Envelope expResult = new V3D_Envelope(e, P0P0P0, P1P1P1);
         V3D_Envelope result = instance.envelope(e1);
         assertEquals(expResult, result);
     }
@@ -88,8 +89,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Envelope() {
         System.out.println("isIntersectedBy");
-        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P0P0P0);
-        V3D_Envelope e000111 = new V3D_Envelope(P0P0P0, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(e, P0P0P0, P0P0P0);
+        V3D_Envelope e000111 = new V3D_Envelope(e, P0P0P0, P1P1P1);
         boolean expResult = true;
         boolean result = instance.isIntersectedBy(e000111);
         assertEquals(expResult, result);
@@ -101,7 +102,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_3args_1() {
         System.out.println("isIntersectedBy");
-        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(e, N1N1N1, P1P1P1);
         V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
         int scale = 0;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -116,7 +117,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Point() {
         System.out.println("isIntersectedBy");
-        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(e, P0P0P0, P1P1P1);
         boolean expResult = true;
         boolean result = instance.isIntersectedBy(P0P0P0);
         assertEquals(expResult, result);
@@ -127,7 +128,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
      */
     @Test
     public void testIsIntersectedBy_3args_2() {
-        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(e, P0P0P0, P1P1P1);
         boolean expResult = true;
         boolean result = instance.isIntersectedBy(P0, P0, P0);
         assertEquals(expResult, result);
@@ -139,16 +140,10 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testGetEnvelope3D() {
         System.out.println("getEnvelope3D");
-        BigDecimal x = BigDecimal.ZERO;
-        BigDecimal y = BigDecimal.ZERO;
-        BigDecimal z = BigDecimal.ZERO;
-        V3D_Point p1 = new V3D_Point(e, x, y, z);
-         x = BigDecimal.ONE;
-         y = BigDecimal.ONE;
-         z = BigDecimal.ONE;
-        V3D_Point p2 = new V3D_Point(e, x, y, z);
-        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
-        V3D_Envelope expResult = new V3D_Envelope(P0P0P0, P1P1P1);
+        V3D_Point p0 = P0P0P0;
+        V3D_Point p1 = P1P1P1;
+        V3D_Envelope instance = new V3D_Envelope(e, p0, p1);
+        V3D_Envelope expResult = new V3D_Envelope(e, p0, p1);
         V3D_Envelope result = instance.getEnvelope3D();
         assertEquals(expResult, result);
     }
@@ -159,8 +154,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testEquals() {
         System.out.println("equals");
-        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
-        Object o = new V3D_Envelope(P0P0P0, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(e, P0P0P0, P1P1P1);
+        Object o = new V3D_Envelope(e, P0P0P0, P1P1P1);
         boolean expResult = true;
         boolean result = instance.equals(o);
         assertEquals(expResult, result);
@@ -170,12 +165,12 @@ public class V3D_EnvelopeTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Envelope.
      */
     @Test
-    public void testIsIntersectedBy_V3D_LineSegment_int() throws Exception {
+    public void testIsIntersectedBy_V3D_LineSegment_int() {
         System.out.println("isIntersectedBy");
         V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
         int scale = 1;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(e, N1N1N1, P1P1P1);
         boolean expResult = true;
         boolean result = instance.isIntersectedBy(l, scale, rm);
         assertEquals(expResult, result);
@@ -187,12 +182,9 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_3args() {
         System.out.println("isIntersectedBy");
-        BigDecimal x = P0;
-        BigDecimal y = P0;
-        BigDecimal z = P0;
-        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(e, N1N1N1, P1P1P1);
         boolean expResult = true;
-        boolean result = instance.isIntersectedBy(x, y, z);
+        boolean result = instance.isIntersectedBy(P0, P0, P0);
         assertEquals(expResult, result);
     }
 

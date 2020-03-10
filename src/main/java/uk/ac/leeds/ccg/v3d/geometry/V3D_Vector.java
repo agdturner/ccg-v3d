@@ -15,7 +15,10 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
@@ -30,20 +33,22 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Object;
  */
 public class V3D_Vector extends V3D_Object {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * The change in x.
      */
-    public final BigDecimal dx;
+    public final BigRational dx;
 
     /**
      * The change in y.
      */
-    public final BigDecimal dy;
+    public final BigRational dy;
 
     /**
      * The change in z.
      */
-    public final BigDecimal dz;
+    public final BigRational dz;
 
     /**
      * For storing the magnitude.
@@ -56,7 +61,8 @@ public class V3D_Vector extends V3D_Object {
      * @param dy What {@link #dy} is set to.
      * @param dz What {@link #dz} is set to.
      */
-    public V3D_Vector(V3D_Environment e, BigDecimal dx, BigDecimal dy, BigDecimal dz) {
+    public V3D_Vector(V3D_Environment e, BigRational dx, BigRational dy, 
+            BigRational dz) {
         super(e);
         this.dx = dx;
         this.dy = dy;
@@ -126,7 +132,7 @@ public class V3D_Vector extends V3D_Object {
      * @param s The scalar value to multiply this by.
      * @return Scaled vector.
      */
-    public V3D_Vector multiply(BigDecimal s) {
+    public V3D_Vector multiply(BigRational s) {
         return new V3D_Vector(e, dx.multiply(s), dy.multiply(s), dz.multiply(s));
     }
     
@@ -153,7 +159,7 @@ public class V3D_Vector extends V3D_Object {
      * @param v V3D_Vector
      * @return dot product
      */
-    public BigDecimal getDotProduct(V3D_Vector v) {
+    public BigRational getDotProduct(V3D_Vector v) {
         return (v.dx.multiply(this.dx)).add(v.dy.multiply(this.dy))
                 .add(v.dz.multiply(this.dz));
     }
@@ -165,7 +171,7 @@ public class V3D_Vector extends V3D_Object {
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isOrthogonal(V3D_Vector v) {
-        return getDotProduct(v).compareTo(BigDecimal.ZERO) == 0;
+        return getDotProduct(v).compareTo(BigRational.ZERO) == 0;
     }
 
     /**
@@ -193,7 +199,7 @@ public class V3D_Vector extends V3D_Object {
      */
     protected BigDecimal initMagnitude(int scale, RoundingMode rm) {
         magnitude = Math_BigDecimal.sqrt(dx.multiply(dx).add(dy.multiply(dy))
-                .add(dz.multiply(dz)), scale, rm);
+                .add(dz.multiply(dz)).toBigDecimal(), scale, rm);
         return magnitude;
     }
 
@@ -206,61 +212,58 @@ public class V3D_Vector extends V3D_Object {
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isParallel(V3D_Vector v, int scale, RoundingMode rm) {
-        BigDecimal t = BigDecimal.ONE.scaleByPowerOfTen(-scale);
-        if (dx.compareTo(BigDecimal.ZERO) == 0 &&
-            dy.compareTo(BigDecimal.ZERO) == 0 &&
-            dz.compareTo(BigDecimal.ZERO) == 0) {
+        BigRational t = BigRational.valueOf(BigDecimal.ONE.scaleByPowerOfTen(-scale));
+        if (dx.compareTo(BigRational.ZERO) == 0 &&
+            dy.compareTo(BigRational.ZERO) == 0 &&
+            dz.compareTo(BigRational.ZERO) == 0) {
             return false;        
         }
-        if (v.dx.compareTo(BigDecimal.ZERO) == 0 &&
-            v.dy.compareTo(BigDecimal.ZERO) == 0 &&
-            v.dz.compareTo(BigDecimal.ZERO) == 0) {
+        if (v.dx.compareTo(BigRational.ZERO) == 0 &&
+            v.dy.compareTo(BigRational.ZERO) == 0 &&
+            v.dz.compareTo(BigRational.ZERO) == 0) {
             return false;        
         }
-        if (dx.compareTo(BigDecimal.ZERO) == 0
-                && v.dx.compareTo(BigDecimal.ZERO) != 0) {
+        if (dx.compareTo(BigRational.ZERO) == 0
+                && v.dx.compareTo(BigRational.ZERO) != 0) {
             return false;
         }
-        if (dy.compareTo(BigDecimal.ZERO) == 0
-                && v.dy.compareTo(BigDecimal.ZERO) != 0) {
+        if (dy.compareTo(BigRational.ZERO) == 0
+                && v.dy.compareTo(BigRational.ZERO) != 0) {
             return false;
         }
-        if (dz.compareTo(BigDecimal.ZERO) == 0
-                && v.dz.compareTo(BigDecimal.ZERO) != 0) {
+        if (dz.compareTo(BigRational.ZERO) == 0
+                && v.dz.compareTo(BigRational.ZERO) != 0) {
             return false;
         }
-        if (dx.compareTo(BigDecimal.ZERO) == 0
-                && v.dx.compareTo(BigDecimal.ZERO) == 0) {
-            if (dy.compareTo(BigDecimal.ZERO) == 0
-                    && v.dy.compareTo(BigDecimal.ZERO) == 0) {
-                return !(dz.compareTo(BigDecimal.ZERO) == 0
-                        || v.dz.compareTo(BigDecimal.ZERO) == 0);
+        if (dx.compareTo(BigRational.ZERO) == 0
+                && v.dx.compareTo(BigRational.ZERO) == 0) {
+            if (dy.compareTo(BigRational.ZERO) == 0
+                    && v.dy.compareTo(BigRational.ZERO) == 0) {
+                return !(dz.compareTo(BigRational.ZERO) == 0
+                        || v.dz.compareTo(BigRational.ZERO) == 0);
             } else {
-                if (dz.compareTo(BigDecimal.ZERO) == 0
-                        && v.dz.compareTo(BigDecimal.ZERO) == 0) {
+                if (dz.compareTo(BigRational.ZERO) == 0
+                        && v.dz.compareTo(BigRational.ZERO) == 0) {
                     return true;
                 } else {
-                    BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dy,
-                            dy, scale, rm);
+                    BigRational c = v.dy.divide(dy);
                     return c.multiply(dz).subtract(v.dz).abs().compareTo(t) == -1;
                 }
             }
         } else {
-            if (dy.compareTo(BigDecimal.ZERO) == 0
-                    && v.dy.compareTo(BigDecimal.ZERO) == 0) {
-                if (dz.compareTo(BigDecimal.ZERO) == 0
-                        && v.dz.compareTo(BigDecimal.ZERO) == 0) {
+            if (dy.compareTo(BigRational.ZERO) == 0
+                    && v.dy.compareTo(BigRational.ZERO) == 0) {
+                if (dz.compareTo(BigRational.ZERO) == 0
+                        && v.dz.compareTo(BigRational.ZERO) == 0) {
                     return true;
                 } else {
-                    BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dx,
-                            dx, scale, rm);
+                    BigRational c = v.dx.divide(dx);
                     return c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1;
                 }
             } else {
-                BigDecimal c = Math_BigDecimal.divideRoundIfNecessary(v.dx, dx,
-                        scale, rm);
-                if (dz.compareTo(BigDecimal.ZERO) == 0
-                        && v.dz.compareTo(BigDecimal.ZERO) == 0) {
+                BigRational c = v.dx.divide(dx);
+                if (dz.compareTo(BigRational.ZERO) == 0
+                        && v.dz.compareTo(BigRational.ZERO) == 0) {
                     return c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1;
                 } else {
                     return c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1
@@ -293,10 +296,7 @@ public class V3D_Vector extends V3D_Object {
      * @return this scaled by the magnitude.
      */
     public V3D_Vector getUnitVector(int scale, RoundingMode rm) {
-        BigDecimal m = getMagnitude(scale + 2, rm);
-        return new V3D_Vector(e,
-                Math_BigDecimal.divideRoundIfNecessary(dx, m, scale, rm),
-                Math_BigDecimal.divideRoundIfNecessary(dy, m, scale, rm),
-                Math_BigDecimal.divideRoundIfNecessary(dz, m, scale, rm));
+        BigRational m = BigRational.valueOf(getMagnitude(scale + 2, rm));
+        return new V3D_Vector(e, dx.divide(m), dy.divide(m), dz.divide(m));
     }
 }

@@ -15,34 +15,36 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.Objects;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
- * Class for a line in 3D represented by two points {@link #p} and {@link #q}
- * and the following equations:
+ * 3D representation of an infinite length line. The line passes through the
+ * point {@link #p} and is travelling in the direction {@link #v}.
  * <ul>
- * <li>{@code r(t) = <x(t),y(t),z(t)>}</li>
- * <li>{@code v = <dx,dy,dz>} - This is the vector from p to q.</li>
- * <li>{@code q = <q.x,q.y,q.z>}</li>
- * <li>{@code r(t) = tv+q = <t(dx)+q.x, t(dy)+q.y, t(dz)+q.z>}</li>
- * <li>{@code x(t) = t(dx)+q.x}</li>
- * <li>{@code y(t) = t(dy)+q.y}</li>
- * <li>{@code z(t) = t(dz)+q.z}</li>
- * <li>{@code t = x(t)−q.x(dx)}</li>
- * <li>{@code t = y(t)−q.y(dy)}</li>
- * <li>{@code t = z(t)−q.z(dz)}</li>
- * <li>{@code x(t)−q.x(dx) = y(t)−q.y(dy) = z(t)−q.z(dz)}</li>
- * <li>{@code r(t) = t(pq)+b = <p.x+(pq.dx)t, p.y+(pq.y)t, p.z+(pq.z)t>}</li>
+ * <li>Vector Form
+ * <ul>
+ * <li>(x,y,z) = (p.x,p.y,p.z) + t(v.dx,v.dy,v.dz)</li>
  * </ul>
- * The line is infinite.
+ * <li>Parametric Form (where t describes a particular point on the line)
+ * <ul>
+ * <li>x = p.x + t(v.dx)</li>
+ * <li>y = p.y + t(v.dy)</li>
+ * <li>z = p.z + t(v.dz)</li>
+ * </ul>
+ * <li>Symmetric Form (assume v.dx, v.dy, and v.dz are all nonzero)
+ * <ul>
+ * <li>(x−p.x)/v.dx = (y−p.y)/v.dy = (z−p.z)/v.dz</li>
+ * </ul></li>
+ * </ul>
  *
  * @author Andy Turner
  * @version 1.0
  */
 public class V3D_Line extends V3D_Geometry {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * A point defining the line.
@@ -55,9 +57,9 @@ public class V3D_Line extends V3D_Geometry {
     public V3D_Point q;
 
     /**
-     * The direction vector from p in the direction of q.
+     * The direction vector from {@link #p} in the direction of {@link #q}.
      */
-    public V3D_Vector pq;
+    public V3D_Vector v;
 
     /**
      * @param p What {@link #p} is set to.
@@ -72,8 +74,19 @@ public class V3D_Line extends V3D_Geometry {
         }
         this.p = new V3D_Point(p);
         this.q = new V3D_Point(q);
-        pq = new V3D_Vector(e, q.x.subtract(p.x), q.y.subtract(p.y),
+        v = new V3D_Vector(e, q.x.subtract(p.x), q.y.subtract(p.y),
                 q.z.subtract(p.z));
+    }
+
+    /**
+     * @param p What {@link #p} is set to.
+     * @param v What {@link #v} is set to.
+     */
+    public V3D_Line(V3D_Point p, V3D_Vector v) {
+        super(p.e);
+        this.p = new V3D_Point(p);
+        this.v = v;
+        q = p.apply(v);
     }
 
     /**
@@ -88,7 +101,7 @@ public class V3D_Line extends V3D_Geometry {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "(p=" + p.toString()
-                + ", q=" + q.toString() + ")";
+                + ", v=" + v.toString() + ")";
     }
 
     @Override
@@ -106,23 +119,19 @@ public class V3D_Line extends V3D_Geometry {
     public int hashCode() {
         int hash = 7;
         hash = 17 * hash + Objects.hashCode(this.p);
-        hash = 17 * hash + Objects.hashCode(this.q);
+        hash = 17 * hash + Objects.hashCode(this.v);
         return hash;
     }
 
     /**
-     *
-     * @param pt A point to test for intersection within the specified
-     * tolerance.
+     * @param pt A point to test for intersection.
      * @return {@code true} if p is on the line.
      */
     public boolean isIntersectedBy(V3D_Point pt) {
         V3D_Vector ppt = new V3D_Vector(e, pt.x.subtract(p.x),
                 pt.y.subtract(p.y), pt.z.subtract(p.z));
-        V3D_Vector cp = pq.getCrossProduct(ppt);
-        return cp.dx.compareTo(BigDecimal.ZERO) == 0
-                && cp.dy.compareTo(BigDecimal.ZERO) == 0
-                && cp.dz.compareTo(BigDecimal.ZERO) == 0;
+        V3D_Vector cp = v.getCrossProduct(ppt);
+        return cp.dx.isZero() && cp.dy.isZero() && cp.dz.isZero();
     }
 
     /**
@@ -130,10 +139,8 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} If this and {@code l} are parallel.
      */
     public boolean isParallel(V3D_Line l) {
-        V3D_Vector v = pq.getCrossProduct(l.pq);
-        return v.dx.compareTo(BigDecimal.ZERO) == 0
-                && v.dy.compareTo(BigDecimal.ZERO) == 0
-                && v.dz.compareTo(BigDecimal.ZERO) == 0;
+        V3D_Vector cp = v.getCrossProduct(l.v);
+        return cp.dx.isZero() && cp.dy.isZero() && cp.dz.isZero();
     }
 
     /**
@@ -157,194 +164,120 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} If this and {@code l} intersect.
      */
     public V3D_Geometry getIntersection(V3D_Line l, int scale, RoundingMode rm) {
-        BigDecimal epsilon = BigDecimal.ONE.scaleByPowerOfTen(-scale);
-        if (V3D_Line.this.isIntersectedBy(l.p)) {
-            if (V3D_Line.this.isIntersectedBy(l.q)) {
-                return this;
+        // First check if the points that define l intersect this.
+        if (isIntersectedBy(l.p)) {
+            if (isIntersectedBy(l.q)) {
+                return this; // The lines are coincident.
             } else {
                 return l.p;
             }
         } else {
-            if (V3D_Line.this.isIntersectedBy(l.q)) {
+            if (isIntersectedBy(l.q)) {
                 return l.q;
             } else {
+                // Case of parallel and non equal lines.
+                if (this.isParallel(l)) {
+                    return null;
+                }
                 /**
                  * Find the intersection point where the two equations of the
                  * lines meet. (x(t)−x0)/a = (y(t)−y0)/b = (z(t)−z0)/c
                  */
                 // (x−p.x)/a = (y−p.y)/b = (z−p.z)/c
-                // t = (pq.dx - x0)/p.x;
-                // t = (pq.dy - y0)/p.y;
-                // t = (pq.dz - z0)/p.z;
+                // t = (v.dx - x0)/p.x;
+                // t = (v.dy - y0)/p.y;
+                // t = (v.dz - z0)/p.z;
                 // x(t) = t(dx)+q.x
                 // y(t) = t(dy)+q.y
                 // z(t) = t(dz)+q.z
-                // 1: t(pq.dx)+q.x = s(l.pq.dx)+l.q.x
-                // 2: t(pq.dy)+q.y = s(l.pq.dy)+l.q.y
-                // 3: t(pq.dz)+q.z = s(l.pq.dz)+l.q.z
+                // 1: t(v.dx)+q.x = s(l.v.dx)+l.q.x
+                // 2: t(v.dy)+q.y = s(l.v.dy)+l.q.y
+                // 3: t(v.dz)+q.z = s(l.v.dz)+l.q.z
                 // Let:
-                // l.pq.dx = k; l.pq.dy = l; l.pq.dz = m;
+                // l.v.dx = k; l.v.dy = l; l.v.dz = m;
                 // From 1:
-                // t = ((s(k)+l.q.x-q.x)/(pq.dx))
+                // t = ((s(k)+l.q.x-q.x)/(v.dx))
                 // Let:
                 // l.q.x-q.x = e; l.q.y-q.y = f; l.q.z-q.z = g
-                // pq.dx = a; pq.dy = b; pq.dz = c
+                // v.dx = a; v.dy = b; v.dz = c
                 // t = (sk+e)/a
                 // Sub into 2:
                 // ((sk+e)/a)b+q.y = sl + l.q.y
                 // skb/a +eb/a - s1 = l.q.y - q.y
                 // s(kb/a - l) = l.q.y - q.y - eb/a
                 // s = (l.q.y - q.y - eb/a) / ((kb/a) - l)
-                // Calculate s:
-                BigDecimal numerator = l.q.y.subtract(q.y).subtract(
-                        Math_BigDecimal.divideRoundIfNecessary(
-                                l.q.x.subtract(q.x).multiply(pq.dy), pq.dx, scale, rm));
-                BigDecimal denominator = Math_BigDecimal.divideRoundIfNecessary(
-                        l.pq.dx.multiply(pq.dy), pq.dx, scale, rm).subtract(l.pq.dy);
-                if (denominator.compareTo(BigDecimal.ZERO) == 0) {
-                    numerator = l.q.z.subtract(q.z).subtract(
-                            Math_BigDecimal.divideRoundIfNecessary(
-                                    l.q.y.subtract(q.y).multiply(pq.dz), pq.dy, scale, rm));
-                    denominator = Math_BigDecimal.divideRoundIfNecessary(
-                            l.pq.dy.multiply(pq.dz), pq.dy, scale, rm).subtract(l.pq.dz);
-                    if (denominator.compareTo(BigDecimal.ZERO) == 0) {
-                        numerator = l.q.x.subtract(q.x).subtract(
-                                Math_BigDecimal.divideRoundIfNecessary(
-                                        l.q.z.subtract(q.z).multiply(pq.dx), pq.dz, scale, rm));
-                        denominator = Math_BigDecimal.divideRoundIfNecessary(
-                                l.pq.dz.multiply(pq.dx), pq.dz, scale, rm).subtract(l.pq.dx);
-                        BigDecimal s = Math_BigDecimal.divideRoundIfNecessary(
-                                numerator, denominator, scale, rm);
-                        // Calculate t:
-                        // t = ((s(k)+l.q.z-q.z)/(pq.dz))
-                        BigDecimal t;
-                        if (pq.dz.compareTo(BigDecimal.ZERO) != 0) {
-                            t = Math_BigDecimal.divideRoundIfNecessary(
-                                    s.multiply(l.pq.dz).add(l.q.z).subtract(q.z),
-                                    pq.dz, scale, rm);
-                            BigDecimal chk = (t.multiply(pq.dy).add(q.y)).subtract(s.multiply(l.pq.dy).add(l.q.y));
-                            if (chk.abs().compareTo(epsilon) != -1) {
-                                // There is no intersection, return null;
-                                return null;
-                            }
-                            return new V3D_Point(e,
-                                    t.multiply(pq.dx).add(q.x),
-                                    t.multiply(pq.dy).add(q.y),
-                                    t.multiply(pq.dz).add(q.z));
-                        } else {
-                            if (pq.dx.compareTo(BigDecimal.ZERO) != 0) {
-                                t = Math_BigDecimal.divideRoundIfNecessary(
-                                        s.multiply(l.pq.dx).add(l.q.x).subtract(q.x),
-                                        pq.dx, scale, rm);
-                                BigDecimal chk = (t.multiply(pq.dy).add(q.y)).subtract(s.multiply(l.pq.dy).add(l.q.y));
-                                if (chk.abs().compareTo(epsilon) != -1) {
-                                    // There is no intersection, return null;
-                                    return null;
-                                }
-                                return new V3D_Point(e,
-                                        t.multiply(pq.dx).add(q.x),
-                                        t.multiply(pq.dy).add(q.y),
-                                        t.multiply(pq.dz).add(q.z));
-                            } else {
-                                t = Math_BigDecimal.divideRoundIfNecessary(
-                                        s.multiply(l.pq.dy).add(l.q.y).subtract(q.y),
-                                        pq.dy, scale, rm);
-                                return new V3D_Point(e,
-                                        t.multiply(pq.dx).add(q.x),
-                                        t.multiply(pq.dy).add(q.y),
-                                        t.multiply(pq.dz).add(q.z));
-                            }
-                        }
+                BigRational t;
+                if (v.dx.isZero()) {
+                    // Line has constant x                    
+                    if (v.dy.isZero()) {
+                        // Line has constant y
+                        // Line is parallel to z axis
+                        /*
+                         * x = p.x + t(v.dx)
+                         * y = p.y + t(v.dy)
+                         * z = p.z + t(v.dz)
+                         */
+                        BigRational num = l.q.x.subtract(q.x).subtract(l.q.z
+                                .subtract(q.z).multiply(v.dx).divide(v.dz));
+                        BigRational den = l.v.dz.multiply(v.dx).divide(v.dz)
+                                .subtract(l.v.dx);
+                        t = num.divide(den).multiply(l.v.dz).add(l.q.z)
+                                .subtract(q.z).divide(v.dz);
+                    } else if (v.dz.isZero()) {
+                        // Line has constant z
+                        BigRational num = l.q.z.subtract(q.z).subtract(l.q.y
+                                .subtract(q.y).multiply(v.dz).divide(v.dy));
+                        BigRational den = l.v.dy.multiply(v.dz).divide(v.dy)
+                                .subtract(l.v.dz);
+                        t = num.divide(den).multiply(l.v.dz).add(l.q.z)
+                                .subtract(q.z).divide(v.dz);
                     } else {
-                        BigDecimal s = Math_BigDecimal.divideRoundIfNecessary(
-                                numerator, denominator, scale, rm);
-                        // Calculate t:
-                        // t = ((s(k)+l.q.y-q.y)/(pq.dy))
-                        BigDecimal t;
-                        if (pq.dy.compareTo(BigDecimal.ZERO) != 0) {
-                            t = Math_BigDecimal.divideRoundIfNecessary(
-                                    s.multiply(l.pq.dy).add(l.q.y).subtract(q.y),
-                                    pq.dy, scale, rm);
-                            BigDecimal chk = (t.multiply(pq.dx).add(q.x)).subtract(s.multiply(l.pq.dx).add(l.q.x));
-                            if (chk.abs().compareTo(epsilon) != -1) {
-                                // There is no intersection, return null;
-                                return null;
-                            }
-                            return new V3D_Point(e,
-                                    t.multiply(pq.dx).add(q.x),
-                                    t.multiply(pq.dy).add(q.y),
-                                    t.multiply(pq.dz).add(q.z));
-                        } else {
-                            if (pq.dz.compareTo(BigDecimal.ZERO) != 0) {
-                                t = Math_BigDecimal.divideRoundIfNecessary(
-                                        s.multiply(l.pq.dz).add(l.q.z).subtract(q.z),
-                                        pq.dz, scale, rm);
-                                BigDecimal chk = (t.multiply(pq.dx).add(q.x)).subtract(s.multiply(l.pq.dx).add(l.q.x));
-                                if (chk.abs().compareTo(epsilon) != -1) {
-                                    // There is no intersection, return null;
-                                    return null;
-                                }
-                                return new V3D_Point(e,
-                                        t.multiply(pq.dx).add(q.x),
-                                        t.multiply(pq.dy).add(q.y),
-                                        t.multiply(pq.dz).add(q.z));
-                            } else {
-                                t = Math_BigDecimal.divideRoundIfNecessary(
-                                        s.multiply(l.pq.dx).add(l.q.x).subtract(q.x),
-                                        pq.dx, scale, rm);
-                                return new V3D_Point(e,
-                                        t.multiply(pq.dx).add(q.x),
-                                        t.multiply(pq.dy).add(q.y),
-                                        t.multiply(pq.dz).add(q.z));
-                            }
-                        }
+                        BigRational den = l.v.dy.multiply(v.dx).divide(v.dy)
+                                .subtract(l.v.dx);
+                        BigRational num = l.q.x.subtract(q.x).subtract(l.q.y
+                                .subtract(q.y).multiply(v.dx).divide(v.dy));
+                        t = num.divide(den).multiply(l.v.dy).add(l.q.y)
+                                .subtract(q.y).divide(v.dy);
                     }
                 } else {
-                    BigDecimal s = Math_BigDecimal.divideRoundIfNecessary(
-                            numerator, denominator, scale, rm);
-                    // Calculate t:
-                    // t = ((s(k)+l.q.x-q.x)/(pq.dx))
-                    BigDecimal t;
-                    if (pq.dx.compareTo(BigDecimal.ZERO) != 0) {
-                        t = Math_BigDecimal.divideRoundIfNecessary(
-                                s.multiply(l.pq.dx).add(l.q.x).subtract(q.x),
-                                pq.dx, scale, rm);
-                        BigDecimal chk = (t.multiply(pq.dz).add(q.z)).subtract(s.multiply(l.pq.dz).add(l.q.z));
-                        if (chk.abs().compareTo(epsilon) != -1) {
-                            // There is no intersection, return null;
-                            return null;
-                        }
-                        return new V3D_Point(e,
-                                t.multiply(pq.dx).add(q.x),
-                                t.multiply(pq.dy).add(q.y),
-                                t.multiply(pq.dz).add(q.z));
-                    } else {
-                        if (pq.dy.compareTo(BigDecimal.ZERO) != 0) {
-                            t = Math_BigDecimal.divideRoundIfNecessary(
-                                    s.multiply(l.pq.dy).add(l.q.y).subtract(q.y),
-                                    pq.dy, scale, rm);
-                            BigDecimal chk = (t.multiply(pq.dz).add(q.z)).subtract(s.multiply(l.pq.dz).add(l.q.z));
-                            if (chk.abs().compareTo(epsilon) != -1) {
-                                // There is no intersection, return null;
-                                return null;
-                            }
-                            return new V3D_Point(e,
-                                    t.multiply(pq.dx).add(q.x),
-                                    t.multiply(pq.dy).add(q.y),
-                                    t.multiply(pq.dz).add(q.z));
+                    if (v.dy.isZero()) {
+                        if (v.dz.isZero()) {
+                            BigRational num = l.q.y.subtract(q.y).subtract(l.q.x
+                                    .subtract(q.z).multiply(v.dy).divide(v.dx));
+                            BigRational den = l.v.dz.multiply(v.dy).divide(v.dx)
+                                    .subtract(l.v.dy);
+                            t = num.divide(den).multiply(l.v.dy).add(l.q.x)
+                                    .subtract(q.x).divide(v.dx);
                         } else {
-                            t = Math_BigDecimal.divideRoundIfNecessary(
-                                    s.multiply(l.pq.dz).add(l.q.z).subtract(q.z),
-                                    pq.dz, scale, rm);
-                            return new V3D_Point(e,
-                                    t.multiply(pq.dx).add(q.x),
-                                    t.multiply(pq.dy).add(q.y),
-                                    t.multiply(pq.dz).add(q.z));
+                            BigRational num = l.q.y.subtract(q.y).subtract(l.q.z
+                                    .subtract(q.z).multiply(v.dy).divide(v.dz));
+                            BigRational den = l.v.dz.multiply(v.dy).divide(v.dz)
+                                    .subtract(l.v.dy);
+                            t = num.divide(den).multiply(l.v.dx).add(l.q.x)
+                                    .subtract(q.x).divide(v.dx);
                         }
+                    } else if (v.dz.isZero()) {
+                        BigRational num = l.q.z.subtract(q.z).subtract(l.q.y
+                                .subtract(q.y).multiply(v.dz).divide(v.dy));
+                        BigRational den = l.v.dy.multiply(v.dz).divide(v.dy)
+                                .subtract(l.v.dz);
+                        t = num.divide(den).multiply(l.v.dx).add(l.q.x)
+                                .subtract(q.x).divide(v.dx);
+                    } else {
+                        //dy dz nonzero
+                        BigRational den = l.v.dx.multiply(v.dy).divide(v.dx)
+                                .subtract(l.v.dy);
+                        BigRational num = l.q.y.subtract(q.y).subtract(l.q.x
+                                .subtract(q.x).multiply(v.dy).divide(v.dx));
+                        t = num.divide(den).multiply(l.v.dx).add(l.q.x)
+                                .subtract(q.x).divide(v.dx);
                     }
                 }
+                return new V3D_Point(e,
+                        t.multiply(v.dx).add(q.x),
+                        t.multiply(v.dy).add(q.y),
+                        t.multiply(v.dz).add(q.z));
             }
         }
     }
-
 }

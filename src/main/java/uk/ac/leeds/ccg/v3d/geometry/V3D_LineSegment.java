@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -29,8 +30,9 @@ import uk.ac.leeds.ccg.math.Math_BigDecimal;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_LineSegment extends V3D_Line
-        implements V3D_FiniteGeometry {
+public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * For storing the unit vector. Only if the direction aligns with an axis is
@@ -105,14 +107,12 @@ public class V3D_LineSegment extends V3D_Line
                 return initUnitVector(scale, rm);
             } else {
                 if (unitVectorRoundingMode.equals(rm)) {
-                    return new V3D_Vector(e, unitVector.dx.setScale(scale),
-                            unitVector.dy.setScale(scale),
-                            unitVector.dz.setScale(scale));
+                    return new V3D_Vector(e, unitVector.dx, unitVector.dy,
+                            unitVector.dz);
                 } else {
                     if (scale < unitVectorScale) {
-                        return new V3D_Vector(e, unitVector.dx.setScale(scale),
-                                unitVector.dy.setScale(scale),
-                                unitVector.dz.setScale(scale));
+                        return new V3D_Vector(e, unitVector.dx, unitVector.dy,
+                                unitVector.dz);
                     } else {
                         return initUnitVector(scale, rm);
                     }
@@ -132,11 +132,9 @@ public class V3D_LineSegment extends V3D_Line
      */
     public V3D_Vector initUnitVector(int scale, RoundingMode rm) {
         if (unitVector == null) {
-            BigDecimal distance = getLength(scale + 2, rm);
-            unitVector = new V3D_Vector(e,
-                    Math_BigDecimal.divideRoundIfNecessary(pq.dx, distance, scale, rm),
-                    Math_BigDecimal.divideRoundIfNecessary(pq.dy, distance, scale, rm),
-                    Math_BigDecimal.divideRoundIfNecessary(pq.dz, distance, scale, rm));
+            BigRational distance = BigRational.valueOf(getLength(scale + 2, rm));
+            unitVector = new V3D_Vector(e, v.dx.divide(distance),
+                    v.dy.divide(distance), v.dz.divide(distance));
         }
         return unitVector;
     }
@@ -145,7 +143,7 @@ public class V3D_LineSegment extends V3D_Line
      * @param s The scaler value to multiply each coordinate of this by.
      * @return this multiplied by scalar
      */
-    public V3D_LineSegment multiply(BigDecimal s) {
+    public V3D_LineSegment multiply(BigRational s) {
         return new V3D_LineSegment(
                 new V3D_Point(e, p.x.multiply(s), p.y.multiply(s), p.z.multiply(s)),
                 new V3D_Point(e, q.x.multiply(s), q.y.multiply(s), q.z.multiply(s)));
@@ -165,7 +163,7 @@ public class V3D_LineSegment extends V3D_Line
      */
     @Override
     public V3D_Envelope getEnvelope3D() {
-        return new V3D_Envelope(p, q);
+        return new V3D_Envelope(e, p, q);
     }
 
     /**

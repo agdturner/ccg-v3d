@@ -20,6 +20,8 @@ import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import ch.obermuhlner.math.big.BigRational;
+import jdk.jshell.spi.ExecutionControl;
 
 /**
  * V3D_Point
@@ -27,23 +29,24 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Point extends V3D_Geometry
-        implements V3D_FiniteGeometry {
+public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * The x coordinate.
      */
-    public BigDecimal x;
+    public BigRational x;
 
     /**
      * The y coordinate.
      */
-    public BigDecimal y;
+    public BigRational y;
 
     /**
      * The z coordinate.
      */
-    public BigDecimal z;
+    public BigRational z;
 
     /**
      * @param p The point to duplicate
@@ -61,12 +64,12 @@ public class V3D_Point extends V3D_Geometry
      * @param y What {@link #y} is set to.
      * @param z What {@link #z} is set to.
      */
-    public V3D_Point(V3D_Environment e, BigDecimal x, BigDecimal y,
-            BigDecimal z) {
+    public V3D_Point(V3D_Environment e, BigRational x, BigRational y,
+            BigRational z) {
         super(e);
-        this.x = new BigDecimal(x.toString());
-        this.y = new BigDecimal(y.toString());
-        this.z = new BigDecimal(z.toString());
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     @Override
@@ -120,10 +123,10 @@ public class V3D_Point extends V3D_Geometry
         if (this.equals(p)) {
             return BigDecimal.ZERO;
         }
-        BigDecimal dx = this.x.subtract(p.x);
-        BigDecimal dy = this.y.subtract(p.y);
-        BigDecimal dz = this.z.subtract(p.z);
-        return Math_BigDecimal.sqrt(dx.pow(2).add(dy.pow(2)).add(dz.pow(2)),
+        BigRational dx = this.x.subtract(p.x);
+        BigRational dy = this.y.subtract(p.y);
+        BigRational dz = this.z.subtract(p.z);
+        return Math_BigDecimal.sqrt(dx.pow(2).add(dy.pow(2)).add(dz.pow(2)).toBigDecimal(),
                 scale, rm);
     }
 
@@ -141,13 +144,29 @@ public class V3D_Point extends V3D_Geometry
             return BigDecimal.ZERO;
         }
         l.p.getDistance(l.q, scale, rm);
-        V3D_Vector pqu = l.pq.getUnitVector(scale, rm);
+        V3D_Vector lu = l.v.getUnitVector(scale, rm);
         V3D_Vector v = new V3D_Vector(this, l.p);
-        BigDecimal v_dot_pqu = v.getDotProduct(pqu);
-        V3D_Point p = l.q.apply(pqu.multiply(v_dot_pqu));
+        BigRational v_dot_lu = v.getDotProduct(lu);
+        V3D_Point p = l.q.apply(lu.multiply(v_dot_lu));
         return p.getDistance(this, scale, rm);
     }
 
+    /**
+     * Get the distance between this and {@code pl}.
+     *
+     * @param pl A plane.
+     * @param scale The scale. A positive value gives the number of decimal
+     * places. A negative value rounds to the left of the decimal point.
+     * @param rm The RoundingMode for the calculation.
+     * @return The distance from {@code p} to this.
+     */
+    public BigDecimal getDistance(V3D_Plane pl, int scale, RoundingMode rm) {
+        if (pl.isIntersectedBy(this)) {
+            return BigDecimal.ZERO;
+        }
+        throw new RuntimeException("Not implemented");
+    }
+    
     @Override
     public V3D_Envelope getEnvelope3D() {
         return new V3D_Envelope(e, x, y, z);
