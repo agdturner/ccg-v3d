@@ -15,8 +15,11 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import static org.hamcrest.MatcherAssert.assertThat;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +37,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @version 1.0
  */
 public class V3D_LineTest extends V3D_Test {
+
+    private static final long serialVersionUID = 1L;
 
     public V3D_LineTest() throws Exception {
         super(new V3D_Environment(new Generic_Environment(
@@ -68,7 +73,9 @@ public class V3D_LineTest extends V3D_Test {
 //        testIsIntersectedBy_V3D_Point();
 //        testIsParallel();
 //        testIsIntersectedBy_V3D_Line();
-        testGetIntersection_3args();
+//        testGetIntersection();
+//        testIsIntersectedBy_3args();
+        testGetDistance();
     }
 
     /**
@@ -202,7 +209,7 @@ public class V3D_LineTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Line.
      */
     //@Test
-    public void testGetIntersection_3args() {
+    public void testGetIntersection() {
         System.out.println("getIntersection");
         V3D_Line l;
         int scale;
@@ -369,6 +376,60 @@ public class V3D_LineTest extends V3D_Test {
 
         // Tests needed
         // v.dx != 0, v.dy = 0, v.dz != 0
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Line.
+     */
+    //@Test
+    public void testIsIntersectedBy_3args() {
+        System.out.println("isIntersectedBy");
+        V3D_Line l;
+        int scale;
+        RoundingMode rm;
+        V3D_Line instance;
+        boolean expResult;
+        boolean result;
+        // Test 1
+        l = getLine(N1N1N1, P1P1P1);
+        scale = 1;
+        rm = RoundingMode.HALF_UP;
+        instance = getLine(N1P1N1, P1N1P1);
+        expResult = true;
+        result = instance.isIntersectedBy(l, scale, rm);
+        assertEquals(expResult, result);
+        // Test 2
+        l = getLine(P0N1N1, P1P1P1);
+        scale = 1;
+        rm = RoundingMode.HALF_UP;
+        instance = getLine(N1P1N1, P1N1P1);
+        expResult = true;
+        result = instance.isIntersectedBy(l, scale, rm);
+        assertEquals(expResult, result);
+        
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Line.
+     */
+    //@Test
+    public void testGetDistance() {
+        System.out.println("getDistance");
+        V3D_Line l;
+        int scale;
+        RoundingMode rm;
+        V3D_Line instance;
+        BigDecimal expResult;
+        BigDecimal result;
+        // Test 1
+        l = new V3D_Line(new V3D_Point(e, P2, P6, N9), new V3D_Vector(e, P3, P4, N4));
+        scale = 1;
+        rm = RoundingMode.HALF_UP;
+        instance = new V3D_Line(new V3D_Point(e, N1, N2, P3), new V3D_Vector(e, P2, N6, P1));
+        expResult = new BigDecimal("4.7");
+        result = instance.getDistance(l, scale, rm);
+        //assertEquals(expResult, result);
+        assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 
 }

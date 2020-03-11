@@ -16,8 +16,10 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
  * 3D representation of an infinite length line. The line passes through the
@@ -279,5 +281,27 @@ public class V3D_Line extends V3D_Geometry {
                         t.multiply(v.dz).add(q.z));
             }
         }
+    }
+    
+    /**
+     * @param l A line.
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return The shortest distance between this and {@code l}. 
+     */
+    public BigDecimal getDistance(V3D_Line l, int scale, RoundingMode rm) {
+       // The coordinates of points along the lines are given by:
+       // p = <p.x, p.y, p.z> + t<v.dx, v.dy, v.dz>
+       // lp = <l.p.x, l.p.y, l.p.z> + t<l.v.dx, l.v.dy, l.v.dz>
+       // p2 = r2+t2e2
+       // The line connecting the closest points has direction vector:
+       // n = v.l.v
+       V3D_Vector n = v.getCrossProduct(l.v);
+       // d = n.(p−l.p)/||n||
+       V3D_Vector p_sub_lp = new V3D_Vector(e, p.x.subtract(l.p.x), 
+               p.y.subtract(l.p.y), p.z.subtract(l.p.z));
+       BigRational m = BigRational.valueOf(n.getMagnitude(scale, rm));
+       BigRational d = n.getDotProduct(p_sub_lp).divide(m);
+       return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), scale, rm);
     }
 }
