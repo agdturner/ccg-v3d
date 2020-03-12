@@ -158,7 +158,7 @@ public class V3D_Plane extends V3D_Geometry {
         this.r = new V3D_Point(e, e.P0, d.divide(n.dy), e.P0);
         pq = new V3D_Vector(e, p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
         pr = new V3D_Vector(e, p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
-        n = n;
+        this.n = n;
     }
 
     @Override
@@ -180,13 +180,9 @@ public class V3D_Plane extends V3D_Geometry {
 
     /**
      * @param l The line to test for intersection with this.
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
      * @return {@code true} If this and {@code l} intersect.
      */
-    //public boolean isIntersectedBy(V3D_Line l, int scale, RoundingMode rm) {
     public boolean isIntersectedBy(V3D_Line l) {
-        //    if (isParallel(l, scale, rm)) {
         if (isParallel(l)) {
             if (!isOnPlane(l)) {
                 return false;
@@ -215,7 +211,7 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * @param l
+     * @param l line to intersect with this.
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_Geometry getIntersection(V3D_Line l) {
@@ -286,6 +282,27 @@ public class V3D_Plane extends V3D_Geometry {
         return new V3D_Point(e, x, y, z);
     }
 
+    /**
+     * @param l line segment to intersect with this.
+     * @return The intersection between {@code this} and {@code l}.
+     */
+    public V3D_Geometry getIntersection(V3D_LineSegment l) {
+        V3D_Geometry li = this.getIntersection(l.getLine());
+        if (li == null) {
+            return null;
+        }
+        if (li instanceof V3D_Line) {
+            return li;
+        }
+        V3D_Point pt = (V3D_Point) li;
+        V3D_Envelope le = l.getEnvelope3D();
+        if (le.isIntersectedBy(pt)) {
+            return pt;
+        } else {
+            return null;
+        }
+    }
+    
     /**
      * @param pl The plane to intersect.
      * @return The intersection between {@code this} and {@code pl}

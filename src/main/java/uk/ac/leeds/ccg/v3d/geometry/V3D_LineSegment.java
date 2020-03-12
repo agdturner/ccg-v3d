@@ -219,8 +219,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * segments do not intersect.
      *
      * @param l The line to get intersection with this.
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_Geometry getIntersection(V3D_LineSegment l) {
