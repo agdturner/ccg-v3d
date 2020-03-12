@@ -103,7 +103,7 @@ public class V3D_Line extends V3D_Geometry {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "(p=" + p.toString()
-                + ", v=" + v.toString() + ")";
+                + ", q=" + q.toString() + ", v=" + v.toString() + ")";
     }
 
     @Override
@@ -158,12 +158,13 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * if this and l are the same then return this.
+     * Intersects {@code this} with {@code l}. If they are equivalent then
+     * return {@code this}.
      *
      * @param l The line to get intersection with this.
      * @param scale The scale for the precision of the result.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} If this and {@code l} intersect.
+     * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_Geometry getIntersection(V3D_Line l, int scale, RoundingMode rm) {
         // First check if the points that define l intersect this.
@@ -282,26 +283,26 @@ public class V3D_Line extends V3D_Geometry {
             }
         }
     }
-    
+
     /**
      * @param l A line.
      * @param scale The scale for the precision of the result.
      * @param rm The RoundingMode for any rounding.
-     * @return The shortest distance between this and {@code l}. 
+     * @return The shortest distance between this and {@code l}.
      */
     public BigDecimal getDistance(V3D_Line l, int scale, RoundingMode rm) {
-       // The coordinates of points along the lines are given by:
-       // p = <p.x, p.y, p.z> + t<v.dx, v.dy, v.dz>
-       // lp = <l.p.x, l.p.y, l.p.z> + t<l.v.dx, l.v.dy, l.v.dz>
-       // p2 = r2+t2e2
-       // The line connecting the closest points has direction vector:
-       // n = v.l.v
-       V3D_Vector n = v.getCrossProduct(l.v);
-       // d = n.(p−l.p)/||n||
-       V3D_Vector p_sub_lp = new V3D_Vector(e, p.x.subtract(l.p.x), 
-               p.y.subtract(l.p.y), p.z.subtract(l.p.z));
-       BigRational m = BigRational.valueOf(n.getMagnitude(scale, rm));
-       BigRational d = n.getDotProduct(p_sub_lp).divide(m);
-       return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), scale, rm);
+        // The coordinates of points along the lines are given by:
+        // p = <p.x, p.y, p.z> + t<v.dx, v.dy, v.dz>
+        // lp = <l.p.x, l.p.y, l.p.z> + t<l.v.dx, l.v.dy, l.v.dz>
+        // p2 = r2+t2e2
+        // The line connecting the closest points has direction vector:
+        // n = v.l.v
+        V3D_Vector n = v.getCrossProduct(l.v);
+        // d = n.(p−l.p)/||n||
+        V3D_Vector p_sub_lp = new V3D_Vector(e, p.x.subtract(l.p.x),
+                p.y.subtract(l.p.y), p.z.subtract(l.p.z));
+        BigRational m = BigRational.valueOf(n.getMagnitude(scale, rm));
+        BigRational d = n.getDotProduct(p_sub_lp).divide(m);
+        return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), scale, rm);
     }
 }

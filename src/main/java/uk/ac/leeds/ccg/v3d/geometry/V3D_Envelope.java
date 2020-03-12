@@ -121,6 +121,27 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         zMax = z;
     }
 
+    /**
+     * @param e The vector environment.
+     * @param xMin What {@link xMin} is set to.
+     * @param xMax What {@link xMax} is set to.
+     * @param yMin What {@link yMin} is set to.
+     * @param yMax What {@link yMax} is set to.
+     * @param zMin What {@link zMin} is set to.
+     * @param zMax What {@link zMax} is set to.
+     */
+    public V3D_Envelope(V3D_Environment e, BigRational xMin, BigRational xMax,
+            BigRational yMin, BigRational yMax, BigRational zMin,
+            BigRational zMax) {
+        super(e);
+        this.xMin = xMin;
+        this.xMax = xMax;
+        this.yMin = yMin;
+        this.yMax = yMax;
+        this.zMin = zMin;
+        this.zMax = zMax;
+    }
+
     @Override
     public String toString() {
         return this.getClass().getSimpleName()
@@ -301,6 +322,25 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         return x.compareTo(xMin) != -1 && x.compareTo(xMax) != 1
                 && y.compareTo(yMin) != -1 && y.compareTo(yMax) != 1
                 && z.compareTo(zMin) != -1 && z.compareTo(zMax) != 1;
+    }
+
+    /**
+     *
+     * @param en The envelope to intersect.
+     * @return {@code null} if there is no intersection; {@code en} if
+     * {@code this.equals(en)}; otherwise returns the intersection.
+     */
+    public V3D_Envelope getIntersection(V3D_Envelope en) {
+        if (this.equals(en)) {
+            return en;
+        }
+        if (!this.isIntersectedBy(en)) {
+            return null;
+        }
+        return new V3D_Envelope(e, BigRational.max(xMin, en.xMin), 
+                BigRational.min(xMax, en.xMax), BigRational.max(yMin, en.yMin), 
+                BigRational.min(yMax, en.yMax), BigRational.max(zMin, en.zMin), 
+                BigRational.min(zMax, en.zMax));
     }
 
     @Override

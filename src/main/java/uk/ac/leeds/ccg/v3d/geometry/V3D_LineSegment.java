@@ -19,7 +19,6 @@ import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
  * Class for a line segment in 3D represented by two Point3D instances, one is
@@ -33,6 +32,8 @@ import uk.ac.leeds.ccg.math.Math_BigDecimal;
 public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
+
+    public final V3D_Envelope en;
 
     /**
      * For storing the unit vector. Only if the direction aligns with an axis is
@@ -58,6 +59,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     public V3D_LineSegment(V3D_Point start, V3D_Point end) {
         super(start, end);
+        en = new V3D_Envelope(e, p, q);
     }
 
     /**
@@ -65,6 +67,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     public V3D_LineSegment(V3D_Line l) {
         super(l);
+        en = new V3D_Envelope(e, p, q);
     }
 
     @Override
@@ -163,7 +166,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Envelope getEnvelope3D() {
-        return new V3D_Envelope(e, p, q);
+        return en;
     }
 
     /**
@@ -201,5 +204,134 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
             return super.isIntersectedBy(l, scale, rm);
         }
         return false;
+    }
+
+    /**
+     * @return {@code this}
+     */
+    public V3D_Line getLine() {
+        return this;
+    }
+
+    /**
+     * Intersects {@code this} with {@code l}. If they are equivalent then
+     * return {@code this}. If they overlap in a line return the part that
+     * overlaps (the order of points is not defined). If they intersect at a
+     * point, the point is returned. {@code null} is returned if the two line
+     * segments do not intersect.
+     *
+     * @param l The line to get intersection with this.
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return The intersection between {@code this} and {@code l}.
+     */
+    public V3D_Geometry getIntersection(V3D_LineSegment l, int scale, RoundingMode rm) {
+        V3D_Envelope ren = this.en.getIntersection(l.en);
+        if (ren == null) {
+            return null;
+        }
+        V3D_Geometry lineIntersection = this.getLine().getIntersection(
+                l.getLine(), scale, rm);
+        if (lineIntersection == null) {
+            return null;
+        }
+        if (lineIntersection instanceof V3D_Point) {
+            return lineIntersection;
+        }
+        /**
+         * Check the type of intersection. {@code
+         * 1)   p ---------- q
+         *         l.p ---------- l.q
+         * 2)   p ------------------------ q
+         *         l.p ---------- l.q
+         * 3)        p ---------- q         
+         *    l.p ------------------------ l.q
+         * 4)        p ---------- q
+         *    l.p ---------- l.q
+         * 5)   q ---------- p
+         *         l.p ---------- l.q
+         * 6)   q ------------------------ p
+         *         l.p ---------- l.q
+         * 7)        q ---------- p         
+         *    l.p ------------------------ l.q
+         * 8)        q ---------- p
+         *    l.p ---------- l.q
+         * 9)   p ---------- q
+         *         l.q ---------- l.p
+         * 10)   p ------------------------ q
+         *         l.q ---------- l.p
+         * 11)       p ---------- q         
+         *    l.q ------------------------ l.p
+         * 12)       p ---------- q
+         *    l.q ---------- l.p
+         * 13)  q ---------- p
+         *         l.q ---------- l.p
+         * 14)  q ------------------------ p
+         *         l.q ---------- l.p
+         * 15)       q ---------- p         
+         *    l.q ------------------------ l.p
+         * 16)       q ---------- p
+         *    l.q ---------- l.p
+         * }
+         */ 
+        if (isIntersectedBy(l.p)) {
+            // Cases 1, 2, 5, 6, 14, 16
+            if (isIntersectedBy(l.q)) {
+                // Cases 2, 6, 14
+                /**
+                 * The line segments are effectively the same although the start
+                 * and end points may be opposite.
+                 */
+                return l;
+            } else {
+                // Cases 1, 5, 16
+                if (l.isIntersectedBy(p)) {
+                    // Cases 5
+                    return new V3D_LineSegment(l.p, p);
+                } else {
+                    // Cases 1, 16
+                    return new V3D_LineSegment(l.p, q);
+                }
+            }
+        } else {
+            // Cases 3, 4, 7, 8, 9, 10, 11, 12, 13, 15
+            if (isIntersectedBy(l.q)) {
+                // Cases 4, 8, 9, 10, 11
+                if (l.isIntersectedBy(p)) {
+                    // Cases 4, 11, 13
+                    if (l.isIntersectedBy(q)) {
+                        // Cases 11
+                        return this;
+                    } else {
+                        // Cases 4, 13
+                        return new V3D_LineSegment(p, l.q);
+                    }
+                } else {
+                    // Cases 8, 9, 10
+                    if (l.isIntersectedBy(q)) {
+                        // Cases 8, 9
+                        return new V3D_LineSegment(q, l.q);
+                    } else {
+                        // Cases 10                      
+                        return l;
+                    }
+                }
+            } else {
+                // Cases 3, 7, 12, 15
+                if (l.isIntersectedBy(p)) {
+                    // Cases 3, 12, 15
+                    if (l.isIntersectedBy(q)) {
+                        // Cases 3, 15
+                        return this;
+                    } else {
+                        // Cases 12                 
+                        return new V3D_LineSegment(p, l.p);
+                    }
+                } else {
+                    // Cases 7
+                    return this;
+                }
+            }
+        }
     }
 }

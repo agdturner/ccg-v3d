@@ -39,6 +39,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  */
 public class V3D_LineSegmentTest extends V3D_Test {
 
+    private static final long serialVersionUID = 1L;
+
     public V3D_LineSegmentTest() throws Exception {
         super(new V3D_Environment(new Generic_Environment(
                 new Generic_Defaults())));
@@ -70,7 +72,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         V3D_Point end = new V3D_Point(e, P1, P1, P1);
         V3D_LineSegment instance = new V3D_LineSegment(start, end);
         String expResult = "V3D_LineSegment(p=V3D_Point(x=0, y=0, z=0), "
-                + "q=V3D_Point(x=1, y=1, z=1))";
+                + "q=V3D_Point(x=1, y=1, z=1), v=V3D_Vector(dx=1, dy=1, dz=1))";
         String result = instance.toString();
         assertEquals(expResult, result);
     }

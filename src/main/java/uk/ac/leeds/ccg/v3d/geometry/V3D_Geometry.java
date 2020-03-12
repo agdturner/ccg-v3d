@@ -26,6 +26,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Object;
  */
 public abstract class V3D_Geometry extends V3D_Object {
 
+    private static final long serialVersionUID = 1L;
+
     public V3D_Geometry(V3D_Environment e) {
         super(e);
     }

@@ -67,14 +67,14 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testAll() {
         System.out.println("testAll");
-//        testEquals();
-//        testIsOnLine();
-//        testHashCode();
-//        testIsIntersectedBy_V3D_Point();
-//        testIsParallel();
-//        testIsIntersectedBy_V3D_Line();
-//        testGetIntersection();
-//        testIsIntersectedBy_3args();
+        testEquals();
+        testIsOnLine();
+        testHashCode();
+        testIsIntersectedBy_V3D_Point();
+        testIsParallel();
+        testIsIntersectedBy_V3D_Line();
+        testGetIntersection();
+        testIsIntersectedBy_3args();
         testGetDistance();
     }
 
@@ -85,8 +85,8 @@ public class V3D_LineTest extends V3D_Test {
     public void testToString() {
         System.out.println("toString");
         V3D_Line instance = getLine(P0P0P0, P1P0P0);
-        String expResult = "V3D_Line(p=V3D_Point(x=0, y=0, z=0), "
-                + "q=V3D_Point(x=1, y=0, z=0))";
+        String expResult = "V3D_Line(p=V3D_Point(x=0, y=0, z=0), q=V3D_Point("
+                + "x=1, y=0, z=0), v=V3D_Vector(dx==1, dy=0, dz=0))";
         String result = instance.toString();
         assertEquals(expResult, result);
     }
@@ -373,9 +373,6 @@ public class V3D_LineTest extends V3D_Test {
         instance = getLine(new V3D_Point(e, P1,P2,P0), new V3D_Point(e, P2,P2,P1));
         result = instance.getIntersection(l, scale, rm);
         assertEquals(expResult, result);
-
-        // Tests needed
-        // v.dx != 0, v.dy = 0, v.dz != 0
     }
 
     /**
