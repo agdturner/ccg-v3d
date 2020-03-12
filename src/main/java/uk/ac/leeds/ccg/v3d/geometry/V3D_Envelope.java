@@ -337,10 +337,25 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         if (!this.isIntersectedBy(en)) {
             return null;
         }
-        return new V3D_Envelope(e, BigRational.max(xMin, en.xMin), 
-                BigRational.min(xMax, en.xMax), BigRational.max(yMin, en.yMin), 
-                BigRational.min(yMax, en.yMax), BigRational.max(zMin, en.zMin), 
+        return new V3D_Envelope(e, BigRational.max(xMin, en.xMin),
+                BigRational.min(xMax, en.xMax), BigRational.max(yMin, en.yMin),
+                BigRational.min(yMax, en.yMax), BigRational.max(zMin, en.zMin),
                 BigRational.min(zMax, en.zMax));
+    }
+
+    /**
+     * Returns {@code null} if {@code this} does not intersect {@code l};
+     * otherwise returns the intersection which is either a point or a line
+     * segment.
+     *
+     * @param l The line to intersect.
+     * @return {@code null} if there is no intersection; otherwise returns the
+     * intersection.
+     */
+    public V3D_Geometry getIntersection(V3D_Line l) {
+        // Check if l.p intersects
+        //return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override

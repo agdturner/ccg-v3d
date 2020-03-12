@@ -16,11 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.Objects;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -48,11 +44,11 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * </ul>
  *
  * <ol>
- * <li>normalVector.dx(x(t)−p.x)+normalVector.dy(y(t)−p.y)+normalVector.dz(z(t)−p.z)
+ * <li>n.dx(x(t)−p.x)+n.dy(y(t)−p.y)+n.dz(z(t)−p.z)
  * = 0</li>
- * <li>normalVector.dx(x(t)−q.x)+normalVector.dy(y(t)−q.y)+normalVector.dz(z(t)−q.z)
+ * <li>n.dx(x(t)−q.x)+n.dy(y(t)−q.y)+n.dz(z(t)−q.z)
  * = 0</li>
- * <li>normalVector.dx(x(t)−r.x)+normalVector.dy(y(t)−r.y)+normalVector.dz(z(t)−r.z)
+ * <li>n.dx(x(t)−r.x)+n.dy(y(t)−r.y)+n.dz(z(t)−r.z)
  * = 0</li>
  * </ol>
  *
@@ -93,7 +89,7 @@ public class V3D_Plane extends V3D_Geometry {
      * is given by order in which the two vectors {@link #pq} and {@link #pr}
      * are used in a cross product calculation when the plane is constructed.
      */
-    public V3D_Vector normalVector;
+    public V3D_Vector n;
 
     /**
      * @param e V3D_Environment
@@ -110,7 +106,7 @@ public class V3D_Plane extends V3D_Geometry {
         /**
          * Calculate the normal perpendicular vector.
          */
-        normalVector = new V3D_Vector(e,
+        n = new V3D_Vector(e,
                 pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz)),
                 pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz)).negate(),
                 pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy)));
@@ -118,9 +114,9 @@ public class V3D_Plane extends V3D_Geometry {
         this.q = q;
         this.r = r;
         // Check for collinearity
-        if (normalVector.dx.compareTo(e.P0) == 0
-                && normalVector.dy.compareTo(e.P0) == 0
-                && normalVector.dz.compareTo(e.P0) == 0) {
+        if (n.dx.compareTo(e.P0) == 0
+                && n.dy.compareTo(e.P0) == 0
+                && n.dz.compareTo(e.P0) == 0) {
             throw new RuntimeException("The three points do not define a plane, "
                     + "but are collinear (they might all be the same point!");
         }
@@ -132,7 +128,7 @@ public class V3D_Plane extends V3D_Geometry {
      *
      * @param e V3D_Environment
      * @param p What {@link #p} is set to.
-     * @param n What {@link #normalVector} is set to.
+     * @param n What {@link #n} is set to.
      * @throws RuntimeException If p, q and r are collinear.
      */
     public V3D_Plane(V3D_Environment e, V3D_Point p, V3D_Vector n) {
@@ -162,7 +158,7 @@ public class V3D_Plane extends V3D_Geometry {
         this.r = new V3D_Point(e, e.P0, d.divide(n.dy), e.P0);
         pq = new V3D_Vector(e, p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
         pr = new V3D_Vector(e, p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
-        normalVector = n;
+        n = n;
     }
 
     @Override
@@ -172,20 +168,11 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * @return {@link #normalVector}
-     */
-    public V3D_Vector getNormalVector() {
-        return normalVector;
-    }
-
-    /**
      * @param pl The plane to test for intersection with this.
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
      * @return {@code true} If this and {@code pl} intersect.
      */
-    public boolean isIntersectedBy(V3D_Plane pl, int scale, RoundingMode rm) {
-        if (this.isParallel(pl, scale, rm)) {
+    public boolean isIntersectedBy(V3D_Plane pl) {
+        if (this.isParallel(pl)) {
             return this.equals(pl);
         }
         return true;
@@ -197,8 +184,10 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} If this and {@code l} intersect.
      */
-    public boolean isIntersectedBy(V3D_Line l, int scale, RoundingMode rm) {
-        if (isParallel(l, scale, rm)) {
+    //public boolean isIntersectedBy(V3D_Line l, int scale, RoundingMode rm) {
+    public boolean isIntersectedBy(V3D_Line l) {
+        //    if (isParallel(l, scale, rm)) {
+        if (isParallel(l)) {
             if (!isOnPlane(l)) {
                 return false;
             }
@@ -211,9 +200,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} If {@code pt} is on the plane.
      */
     public boolean isIntersectedBy(V3D_Point pt) {
-        BigRational d = normalVector.dx.multiply(p.x.subtract(pt.x))
-                .add(normalVector.dy.multiply(p.y.subtract(pt.y)))
-                .add(normalVector.dz.multiply(p.z.subtract(pt.z)));
+        BigRational d = n.dx.multiply(p.x.subtract(pt.x))
+                .add(n.dy.multiply(p.y.subtract(pt.y)))
+                .add(n.dz.multiply(p.z.subtract(pt.z)));
         return d.compareTo(e.P0) == 0;
     }
 
@@ -226,14 +215,11 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     *
      * @param l
-     * @param scale
-     * @param rm
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry getIntersection(V3D_Line l, int scale, RoundingMode rm) {
-        if (this.isParallel(l, scale, rm)) {
+    public V3D_Geometry getIntersection(V3D_Line l) {
+        if (this.isParallel(l)) {
             if (isOnPlane(l)) {
                 return this;
             }
@@ -263,9 +249,9 @@ public class V3D_Plane extends V3D_Geometry {
         // z = p.z + t(v.dz)
         // Equation of this plane:
         // A*(x-x0) + B*(y-y0) + C*(z-z0) = 0
-        // A = normalVector.dx
-        // B = normalVector.dy
-        // C = normalVector.dz
+        // A = n.dx
+        // B = n.dy
+        // C = n.dz
         // x = l.p.x + t(l.v.dx)
         // y = l.p.y + t(l.v.dy)
         // z = l.p.z + t(l.v.dz)
@@ -276,33 +262,37 @@ public class V3D_Plane extends V3D_Geometry {
         // A*(x-x0) + B*(y-y0) + C*(z-z0) = 0
         // x = ((By0 - By + Cz0 - Cz) / A) - x0
         // x = ((By0 - By + Cz0 - Cz) / A) - x0
-//        BigRational x = (((normalVector.dy.multiply(y0)).subtract(normalVector.dy.multiply(y))
-//                .add(normalVector.dz.multiply(z0)).subtract(normalVector.dz.multiply(z)))
-//                .divide(normalVector.dx)).subtract(x0);
+//        BigRational x = (((n.dy.multiply(y0)).subtract(n.dy.multiply(y))
+//                .add(n.dz.multiply(z0)).subtract(n.dz.multiply(z)))
+//                .divide(n.dx)).subtract(x0);
         BigRational x0 = p.x;
         BigRational y0 = p.y;
         BigRational z0 = p.z;
-//        l.p.x  + t(l.v.dx) = (((normalVector.dy.multiply(y0)).subtract(normalVector.dy.multiply(l.p.y + t(l.v.dy)))
-//                .add(normalVector.dz.multiply(z0)).subtract(normalVector.dz.multiply(l.p.z + t(l.v.dz))))
-//                .divide(normalVector.dx)).subtract(x0);
-//        normalVector.dx.multiply(l.p.x.add(x0)) + t.multiply(normalVector.dx.multiply(l.v.dx)) 
-//                = (normalVector.dy.multiply(y0)).subtract(normalVector.dy.multiply(l.p.y + t(l.v.dy)))
-//                .add(normalVector.dz.multiply(z0)).subtract(normalVector.dz.multiply(l.p.z + t(l.v.dz)));
-        BigRational t = (normalVector.dy.multiply(y0)).subtract(normalVector.dy.multiply(l.p.y))
-                .add(normalVector.dz.multiply(z0)).subtract(normalVector.dz.multiply(l.p.z))
-                .subtract(normalVector.dx.multiply(l.p.x.add(x0)))
-                .divide(normalVector.dx.multiply(l.v.dx)
-                        .add(normalVector.dz.multiply(l.v.dz))
-                        .add(normalVector.dy.multiply(l.v.dy)));
-        BigRational x = l.p.x.add(t.multiply(l.v.dx)); 
-        BigRational y = l.p.y.add(t.multiply(l.v.dy)); 
+//        l.p.x  + t(l.v.dx) = (((n.dy.multiply(y0)).subtract(n.dy.multiply(l.p.y + t(l.v.dy)))
+//                .add(n.dz.multiply(z0)).subtract(n.dz.multiply(l.p.z + t(l.v.dz))))
+//                .divide(n.dx)).subtract(x0);
+//        n.dx.multiply(l.p.x.add(x0)) + t.multiply(n.dx.multiply(l.v.dx)) 
+//                = (n.dy.multiply(y0)).subtract(n.dy.multiply(l.p.y + t(l.v.dy)))
+//                .add(n.dz.multiply(z0)).subtract(n.dz.multiply(l.p.z + t(l.v.dz)));
+        BigRational t = (n.dy.multiply(y0)).subtract(n.dy.multiply(l.p.y))
+                .add(n.dz.multiply(z0)).subtract(n.dz.multiply(l.p.z))
+                .subtract(n.dx.multiply(l.p.x.add(x0)))
+                .divide(n.dx.multiply(l.v.dx)
+                        .add(n.dz.multiply(l.v.dz))
+                        .add(n.dy.multiply(l.v.dy)));
+        BigRational x = l.p.x.add(t.multiply(l.v.dx));
+        BigRational y = l.p.y.add(t.multiply(l.v.dy));
         BigRational z = l.p.z.add(t.multiply(l.v.dz));
         return new V3D_Point(e, x, y, z);
     }
 
-    public V3D_Geometry getIntersection(V3D_Plane pl, int scale, RoundingMode rm) {
+    /**
+     * @param pl The plane to intersect.
+     * @return The intersection between {@code this} and {@code pl}
+     */
+    public V3D_Geometry getIntersection(V3D_Plane pl) {
         // Calculate the cross product of the normal vectors.
-        V3D_Vector v = normalVector.getCrossProduct(pl.normalVector);
+        V3D_Vector v = n.getCrossProduct(pl.n);
         if (v.isZeroVector()) {
             // The planes are parallel.
             if (pl.equals(this)) {
@@ -316,11 +306,11 @@ public class V3D_Plane extends V3D_Geometry {
         // What to do depends on which elements of v are non-zero.
         if (v.dx.compareTo(e.P0) == 0) {
             if (v.dy.compareTo(e.P0) == 0) {
-                BigRational z = pl.normalVector.dx.multiply(pl.p.x.subtract(pl.q.x)).add(
-                        normalVector.dy.multiply(pl.p.y.subtract(pl.q.x)))
-                        .divide(v.dz).add(pl.p.z);
+                BigRational z = pl.n.dx.multiply(pl.p.x
+                        .subtract(pl.q.x)).add(n.dy.multiply(pl.p.y
+                        .subtract(pl.q.x))).divide(v.dz).add(pl.p.z);
                 V3D_Point pt;
-                if (normalVector.dx.compareTo(e.P0) == 0) {
+                if (n.dx.compareTo(e.P0) == 0) {
                     pt = new V3D_Point(e, pl.p.x, p.y, z);
                 } else {
                     pt = new V3D_Point(e, p.x, pl.p.y, z);
@@ -329,11 +319,11 @@ public class V3D_Plane extends V3D_Geometry {
                 // The intersection is at z=?
 
                 /**
-                 * normalVector.dx(x(t)−p.x)+normalVector.dy(y(t)−p.y)+normalVector.dz(z(t)−p.z)
+                 * n.dx(x(t)−p.x)+n.dy(y(t)−p.y)+n.dz(z(t)−p.z)
                  */
                 // where:
-                // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
-                // pl.normalVector.dx = d; pl.normalVector.dy = e; pl.normalVector.dz = f
+                // n.dx = a; n.dy = b; n.dz = c
+                // pl.n.dx = d; pl.n.dy = e; pl.n.dz = f
                 // a(x−p.x) + b(y−p.y) + c(z−p.z) = 0
                 // x = p.x + ((- b(y−p.y) - c(z−p.z)) / a)                     --- 1
                 // y = p.y + ((- a(x−p.x) - c(z−p.z)) / b)                     --- 2
@@ -351,32 +341,32 @@ public class V3D_Plane extends V3D_Geometry {
                 // x = k + ((e(l - y) - f(z - m)) / d)   --- 1p
                 // y = l + ((d(k - x) - f(z - l)) / e)   --- 2p
                 // z = m + ((d(k - x) - e(y - m)) / f)   --- 3p
-//                if (normalVector.dx.compareTo(e.P0) == 0) {
+//                if (n.dx.compareTo(e.P0) == 0) {
 //                    //pl.b
-//                } else if (normalVector.dy.compareTo(e.P0) == 0) {
+//                } else if (n.dy.compareTo(e.P0) == 0) {
 ////                    // y = l + ((- a(x − k) - c(z − l)) / b)
 //                    BigDecimal y = p.y;
 ////                    // x = k + ((e(l - y) - f(z - m)) / d)
 ////                    // z = m + ((- d(x - k) - e(y - m)) / f)
 ////                    BigDecimal x = p.x.apply(
 ////                            Math_BigDecimal.divideRoundIfNecessary(
-////                                    (pl.normalVector.dy.multiply(p.y.subtract(y))).subtract(pl.normalVector.dz.multiply(z.subtract(pl.p.z))),
-////                                    pl.normalVector.dx, scale, rm));
+////                                    (pl.n.dy.multiply(p.y.subtract(y))).subtract(pl.n.dz.multiply(z.subtract(pl.p.z))),
+////                                    pl.n.dx, scale, rm));
 //                } else {
 //                    return e.zAxis;
 //                }
 //                //BigDecimal x = p.x
 //                BigDecimal numerator = p.z.subtract(p.y)
-//                        .subtract(normalVector.dz.multiply(p.z))
-//                        .subtract(p.y.multiply(normalVector.dy));
-//                BigDecimal denominator = normalVector.dy.subtract(normalVector.dz);
+//                        .subtract(n.dz.multiply(p.z))
+//                        .subtract(p.y.multiply(n.dy));
+//                BigDecimal denominator = n.dy.subtract(n.dz);
 //                if (denominator.compareTo(e.P0) == 0) {
 //                    // Case 1: The z axis
 //                    return null;
 //                } else {
 //                    // y = (p.y - c(z−p.z)) / b   --- 1          
 //                    // z = (p.z - b(y−p.y)) / c   --- 2
-//                    // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
+//                    // n.dx = a; n.dy = b; n.dz = c
 //                    // Let:
 //                    // p.x = k; p.y = l; p.z = m
 //                    // y = (l - c(z - m)) / b
@@ -392,24 +382,24 @@ public class V3D_Plane extends V3D_Geometry {
 //                            numerator, denominator, scale + 2, rm); // scale + 2 sensible?
 //                    // Substitute into 1
 //                    // y = (p.y - c(z−p.z)) / b   --- 1
-//                    if (normalVector.dy.compareTo(e.P0) == 0) {
+//                    if (n.dy.compareTo(e.P0) == 0) {
 //                        // Another case to deal with
 //                        return null;
 //                    } else {
 //                        BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(
-//                                p.y.subtract(normalVector.dz.multiply(z.subtract(p.z))),
-//                                normalVector.dy, scale, rm);
+//                                p.y.subtract(n.dz.multiply(z.subtract(p.z))),
+//                                n.dy, scale, rm);
 //                        return new V3D_Line(new V3D_Point(e, p.x, y, z),
 //                                new V3D_Point(e, p.x.multiply(e.N1), y.add(v.dy), z.add(v.dz)));
 //                    }
 //                }
             } else {
                 if (v.dz.compareTo(e.P0) == 0) {
-                    BigRational y = normalVector.dx.multiply(p.x.subtract(q.x)).add(
-                            normalVector.dz.multiply(p.z.subtract(q.x)))
+                    BigRational y = n.dx.multiply(p.x.subtract(q.x)).add(
+                            n.dz.multiply(p.z.subtract(q.x)))
                             .divide(v.dy).add(p.y);
                     V3D_Point pt;
-                    if (normalVector.dx.compareTo(e.P0) == 0) {
+                    if (n.dx.compareTo(e.P0) == 0) {
                         pt = new V3D_Point(e, pl.p.x, y, p.z);
                     } else {
                         pt = new V3D_Point(e, p.x, y, pl.p.z);
@@ -419,7 +409,7 @@ public class V3D_Plane extends V3D_Geometry {
                     // Case 3
                     // y = (p.y - c(z−p.z)) / b   --- 1          
                     // z = (p.z - b(y−p.y)) / c   --- 2
-                    // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
+                    // n.dx = a; n.dy = b; n.dz = c
                     // Let:
                     // p.x = k; p.y = l; p.z = m
                     // y = (l - c(z - m)) / b
@@ -432,9 +422,9 @@ public class V3D_Plane extends V3D_Geometry {
                     // z(b - c) = m - l -cm - lb
                     // z = (m - l -cm - lb) / (b - c)
                     BigRational numerator = p.z.subtract(p.y)
-                            .subtract(normalVector.dz.multiply(p.z))
-                            .subtract(p.y.multiply(normalVector.dy));
-                    BigRational denominator = normalVector.dy.subtract(normalVector.dz);
+                            .subtract(n.dz.multiply(p.z))
+                            .subtract(p.y.multiply(n.dy));
+                    BigRational denominator = n.dy.subtract(n.dz);
                     if (denominator.compareTo(e.P0) == 0) {
                         // Another case to deal with
                         return null;
@@ -442,12 +432,12 @@ public class V3D_Plane extends V3D_Geometry {
                         BigRational z = numerator.divide(denominator);
                         // Substitute into 1
                         // y = (p.y - c(z−p.z)) / b   --- 1
-                        if (normalVector.dy.compareTo(e.P0) == 0) {
+                        if (n.dy.compareTo(e.P0) == 0) {
                             // Another case to deal with
                             return null;
                         } else {
-                            BigRational y = p.y.subtract(normalVector.dz.multiply(z.subtract(p.z)))
-                                    .divide(normalVector.dy);
+                            BigRational y = p.y.subtract(n.dz.multiply(z.subtract(p.z)))
+                                    .divide(n.dy);
                             return new V3D_Line(new V3D_Point(e, e.P0, y, z),
                                     new V3D_Point(e, e.P0, y.add(v.dy), z.add(v.dz)));
                         }
@@ -457,18 +447,18 @@ public class V3D_Plane extends V3D_Geometry {
         } else {
             if (v.dy.compareTo(e.P0) == 0) {
                 if (v.dz.compareTo(e.P0) == 0) {
-                    BigRational x = pl.normalVector.dy.multiply(pl.p.y.subtract(pl.q.y)).add(
-                            normalVector.dz.multiply(pl.p.z.subtract(pl.q.y)))
+                    BigRational x = pl.n.dy.multiply(pl.p.y.subtract(pl.q.y)).add(
+                            n.dz.multiply(pl.p.z.subtract(pl.q.y)))
                             .divide(v.dx).add(pl.p.x);
                     V3D_Point pt;
-                    if (normalVector.dy.compareTo(e.P0) == 0) {
-                        if (normalVector.dz.compareTo(e.P0) == 0) {
+                    if (n.dy.compareTo(e.P0) == 0) {
+                        if (n.dz.compareTo(e.P0) == 0) {
                             pt = new V3D_Point(e, x, p.y, pl.p.z);
                         } else {
                             pt = new V3D_Point(e, x, pl.p.y, p.z);
                         }
                     } else {
-                        if (normalVector.dz.compareTo(e.P0) == 0) {
+                        if (n.dz.compareTo(e.P0) == 0) {
                             pt = new V3D_Point(e, x, p.y, pl.p.z);
                         } else {
                             pt = new V3D_Point(e, x, p.y, pl.p.z);
@@ -476,11 +466,11 @@ public class V3D_Plane extends V3D_Geometry {
                     }
                     return new V3D_Line(pt, pt.apply(v));
                 } else {
-                    BigRational z = pl.normalVector.dx.multiply(pl.p.x.subtract(pl.q.x)).add(
-                            normalVector.dy.multiply(pl.p.y.subtract(pl.q.x)))
+                    BigRational z = pl.n.dx.multiply(pl.p.x.subtract(pl.q.x)).add(
+                            n.dy.multiply(pl.p.y.subtract(pl.q.x)))
                             .divide(v.dz).add(pl.p.z);
                     V3D_Point pt;
-                    if (normalVector.dx.compareTo(e.P0) == 0) {
+                    if (n.dx.compareTo(e.P0) == 0) {
                         pt = new V3D_Point(e, pl.p.x, p.y, z);
                     } else {
                         pt = new V3D_Point(e, p.x, pl.p.y, z);
@@ -490,8 +480,8 @@ public class V3D_Plane extends V3D_Geometry {
             } else {
                 if (v.dz.compareTo(e.P0) == 0) {
                     // Case 6
-                    BigRational y = normalVector.dx.multiply(p.x.subtract(q.x)).add(
-                            normalVector.dz.multiply(p.z.subtract(q.x)))
+                    BigRational y = n.dx.multiply(p.x.subtract(q.x)).add(
+                            n.dz.multiply(p.z.subtract(q.x)))
                             .divide(v.dy).add(p.y);
                     V3D_Point pt;
                     if (p.x.compareTo(e.P0) == 0) {
@@ -505,11 +495,11 @@ public class V3D_Plane extends V3D_Geometry {
                      * Case 7: Neither plane aligns with any axis and they are
                      * not orthogonal.
                      *
-                     * normalVector.dx(x(t)−p.x)+normalVector.dy(y(t)−p.y)+normalVector.dz(z(t)−p.z)
+                     * n.dx(x(t)−p.x)+n.dy(y(t)−p.y)+n.dz(z(t)−p.z)
                      */
                     // where:
-                    // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
-                    // pl.normalVector.dx = d; pl.normalVector.dy = e; pl.normalVector.dz = f
+                    // n.dx = a; n.dy = b; n.dz = c
+                    // pl.n.dx = d; pl.n.dy = e; pl.n.dz = f
                     // a(x−p.x)+b(y−p.y)+c(z−p.z) = 0
                     // x = (ap.x-by+bp.y-cz+cp.z)/a
                     // x = p.x+((b(p.y−y)+c(p.z−z))/a)                    --- 1
@@ -575,24 +565,24 @@ public class V3D_Plane extends V3D_Geometry {
                     // ey-ek = dj−dx+fl−fi-fag/c+fax/c-fbh/c+fby/c
                     // x = (ey-ek-dj-fl+fi+fag/c+fbh/c-fby/c)/(fa/c−d)  ---32 x ito y
                     // Stage 2: Are any denominators 0?
-                    BigRational x = normalVector.dy.multiply(pl.p.y.subtract(pl.q.y)).add(
-                            normalVector.dz.multiply(pl.p.z.subtract(pl.q.y)))
+                    BigRational x = n.dy.multiply(pl.p.y.subtract(pl.q.y)).add(
+                            n.dz.multiply(pl.p.z.subtract(pl.q.y)))
                             .divide(v.dx).add(pl.p.x);
-                    BigRational y = normalVector.dx.multiply(p.x.subtract(q.x)).add(
-                            normalVector.dz.multiply(p.z.subtract(q.x)))
+                    BigRational y = n.dx.multiply(p.x.subtract(q.x)).add(
+                            n.dz.multiply(p.z.subtract(q.x)))
                             .divide(v.dy).add(p.y);
-                    BigRational z = normalVector.dx.multiply(pl.p.x.subtract(pl.q.x)).add(
-                            normalVector.dy.multiply(pl.p.y.subtract(pl.q.x)))
+                    BigRational z = n.dx.multiply(pl.p.x.subtract(pl.q.x)).add(
+                            n.dy.multiply(pl.p.y.subtract(pl.q.x)))
                             .divide(v.dz).add(pl.p.z);
                     V3D_Point pt = new V3D_Point(this.e, x, y, z);
                     return new V3D_Line(pt, pt.apply(v));
 
-//                    BigDecimal a = normalVector.dx;
-//                    BigDecimal b = normalVector.dy;
-//                    BigDecimal c = normalVector.dz;
-//                    BigDecimal d = pl.normalVector.dx;
-//                    BigDecimal e = pl.normalVector.dy;
-//                    BigDecimal f = pl.normalVector.dz;
+//                    BigDecimal a = n.dx;
+//                    BigDecimal b = n.dy;
+//                    BigDecimal c = n.dz;
+//                    BigDecimal d = pl.n.dx;
+//                    BigDecimal e = pl.n.dy;
+//                    BigDecimal f = pl.n.dz;
 //                    BigDecimal db = d.multiply(b);
 //                    BigDecimal dc = d.multiply(c);
 //                    BigDecimal ea = e.multiply(a);
@@ -690,9 +680,9 @@ public class V3D_Plane extends V3D_Geometry {
             }
         }
         // This is where the two equations of the plane are equal.
-        // normalVector.dx(x(t)−p.x)+normalVector.dy(y(t)−p.y)+normalVector.dz(z(t)−p.z)
+        // n.dx(x(t)−p.x)+n.dy(y(t)−p.y)+n.dz(z(t)−p.z)
         // where:
-        // normalVector.dx = a; normalVector.dy = b; normalVector.dz = c
+        // n.dx = a; n.dy = b; n.dz = c
         // a(x−p.x) + b(y−p.y) + c(z−p.z) = 0
         // x = (p.x - b(y−p.y) - c(z−p.z)) / a                     --- 1
         // y = (p.y - a(x−p.x) - c(z−p.z)) / b                     --- 2
@@ -705,22 +695,19 @@ public class V3D_Plane extends V3D_Geometry {
 
     /**
      * @param p The plane to test if it is parallel to this.
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this is parallel to p given scale and rm.
+     * @return {@code true} if {@code this} is parallel to {@code p}.
      */
-    public boolean isParallel(V3D_Plane p, int scale, RoundingMode rm) {
-        return p.getNormalVector().isParallel(getNormalVector(), scale, rm);
+    public boolean isParallel(V3D_Plane p) {
+        return p.n.isParallel(n);
     }
 
     /**
      * @param l The line to test if it is parallel to this.
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this is parallel to p given scale and rm.
+     * @return {@code true} if {@coe this} is parallel to {@code l}.
      */
-    public boolean isParallel(V3D_Line l, int scale, RoundingMode rm) {
-        return l.v.isParallel(this.pq, scale, rm);
+    public boolean isParallel(V3D_Line l) {
+        V3D_Vector cp = this.n.getCrossProduct(l.v);
+        return !(cp.dx.isZero() && cp.dy.isZero() && cp.dz.isZero());
     }
 
     @Override

@@ -194,14 +194,12 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     /**
      * @param l A line to test for intersection within the specified tolerance.
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
      * @return true if p is within t of this given scale.
      */
-    public boolean isIntersectedBy(V3D_LineSegment l, int scale, RoundingMode rm) {
+    public boolean isIntersectedBy(V3D_LineSegment l) {
         boolean ei = getEnvelope3D().isIntersectedBy(l.getEnvelope3D());
         if (ei) {
-            return super.isIntersectedBy(l, scale, rm);
+            return super.isIntersectedBy(l);
         }
         return false;
     }
@@ -225,13 +223,13 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * @param rm The RoundingMode for any rounding.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int scale, RoundingMode rm) {
+    public V3D_Geometry getIntersection(V3D_LineSegment l) {
         V3D_Envelope ren = this.en.getIntersection(l.en);
         if (ren == null) {
             return null;
         }
         V3D_Geometry lineIntersection = this.getLine().getIntersection(
-                l.getLine(), scale, rm);
+                l.getLine());
         if (lineIntersection == null) {
             return null;
         }

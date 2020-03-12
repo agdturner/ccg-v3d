@@ -17,8 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
@@ -133,7 +131,8 @@ public class V3D_Vector extends V3D_Object {
      * @return Scaled vector.
      */
     public V3D_Vector multiply(BigRational s) {
-        return new V3D_Vector(e, dx.multiply(s), dy.multiply(s), dz.multiply(s));
+        return new V3D_Vector(e, dx.multiply(s), dy.multiply(s), 
+                dz.multiply(s));
     }
     
     /**
@@ -149,7 +148,8 @@ public class V3D_Vector extends V3D_Object {
      * @return A new vector which is this subtract {@code v}.
      */
     public V3D_Vector subtract(V3D_Vector v) {
-        return new V3D_Vector(e, dx.subtract(v.dx), dy.subtract(v.dy), dz.subtract(v.dz));
+        return new V3D_Vector(e, dx.subtract(v.dx), dy.subtract(v.dy), 
+                dz.subtract(v.dz));
     }
     
     /**
@@ -171,7 +171,7 @@ public class V3D_Vector extends V3D_Object {
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isOrthogonal(V3D_Vector v) {
-        return getDotProduct(v).compareTo(BigRational.ZERO) == 0;
+        return getDotProduct(v).isZero();
     }
 
     /**
@@ -206,68 +206,53 @@ public class V3D_Vector extends V3D_Object {
     /**
      * Test if this is parallel to {@code v}.
      *
-     * @param v The
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
+     * @param v The vector to test if it is parallel to this.
      * @return {@code true} if this and {@code v} are orthogonal.
      */
-    public boolean isParallel(V3D_Vector v, int scale, RoundingMode rm) {
-        BigRational t = BigRational.valueOf(BigDecimal.ONE.scaleByPowerOfTen(-scale));
-        if (dx.compareTo(BigRational.ZERO) == 0 &&
-            dy.compareTo(BigRational.ZERO) == 0 &&
-            dz.compareTo(BigRational.ZERO) == 0) {
+    public boolean isParallel(V3D_Vector v) {
+        if (dx.isZero() &&
+            dy.isZero() &&
+            dz.isZero()) {
             return false;        
         }
-        if (v.dx.compareTo(BigRational.ZERO) == 0 &&
-            v.dy.compareTo(BigRational.ZERO) == 0 &&
-            v.dz.compareTo(BigRational.ZERO) == 0) {
+        if (v.dx.isZero() &&
+            v.dy.isZero() &&
+            v.dz.isZero()) {
             return false;        
         }
-        if (dx.compareTo(BigRational.ZERO) == 0
-                && v.dx.compareTo(BigRational.ZERO) != 0) {
+        if (dx.isZero() && !v.dx.isZero()) {
             return false;
         }
-        if (dy.compareTo(BigRational.ZERO) == 0
-                && v.dy.compareTo(BigRational.ZERO) != 0) {
+        if (dy.isZero() && !v.dy.isZero()) {
             return false;
         }
-        if (dz.compareTo(BigRational.ZERO) == 0
-                && v.dz.compareTo(BigRational.ZERO) != 0) {
+        if (dz.isZero() && !v.dz.isZero()) {
             return false;
         }
-        if (dx.compareTo(BigRational.ZERO) == 0
-                && v.dx.compareTo(BigRational.ZERO) == 0) {
-            if (dy.compareTo(BigRational.ZERO) == 0
-                    && v.dy.compareTo(BigRational.ZERO) == 0) {
-                return !(dz.compareTo(BigRational.ZERO) == 0
-                        || v.dz.compareTo(BigRational.ZERO) == 0);
+        if (dx.isZero() && v.dx.isZero()) {
+            if (dy.isZero() && v.dy.isZero()) {
+                return !(dz.isZero() || v.dz.isZero());
             } else {
-                if (dz.compareTo(BigRational.ZERO) == 0
-                        && v.dz.compareTo(BigRational.ZERO) == 0) {
+                if (dz.isZero() && v.dz.isZero()) {
                     return true;
                 } else {
-                    BigRational c = v.dy.divide(dy);
-                    return c.multiply(dz).subtract(v.dz).abs().compareTo(t) == -1;
+                    return v.dy.divide(dy).multiply(dz).subtract(v.dz).isZero();
                 }
             }
         } else {
-            if (dy.compareTo(BigRational.ZERO) == 0
-                    && v.dy.compareTo(BigRational.ZERO) == 0) {
-                if (dz.compareTo(BigRational.ZERO) == 0
-                        && v.dz.compareTo(BigRational.ZERO) == 0) {
+            if (dy.isZero() && v.dy.isZero()) {
+                if (dz.isZero() && v.dz.isZero()) {
                     return true;
                 } else {
-                    BigRational c = v.dx.divide(dx);
-                    return c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1;
+                    return v.dx.divide(dx).multiply(dy).subtract(v.dy).isZero();
                 }
             } else {
-                BigRational c = v.dx.divide(dx);
-                if (dz.compareTo(BigRational.ZERO) == 0
-                        && v.dz.compareTo(BigRational.ZERO) == 0) {
-                    return c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1;
+                if (dz.isZero() && v.dz.isZero()) {
+                    return v.dx.divide(dx).multiply(dy).subtract(v.dy).isZero();
                 } else {
-                    return c.multiply(dy).subtract(v.dy).abs().compareTo(t) == -1
-                            && c.multiply(dz).subtract(v.dz).abs().compareTo(t) == -1;
+                    BigRational c = v.dx.divide(dx);
+                    return c.multiply(dy).subtract(v.dy).abs().isZero()
+                            && c.multiply(dz).subtract(v.dz).abs().isZero();
                 }
             }
         }

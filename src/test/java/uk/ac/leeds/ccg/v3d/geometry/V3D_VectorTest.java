@@ -610,61 +610,34 @@ public class V3D_VectorTest extends V3D_Test {
     public void testIsParallel() {
         System.out.println("isParallel");
         V3D_Vector v = new V3D_Vector(P0P0P0);
-        int scale = 0;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector instance = new V3D_Vector(P1P1P1);
         boolean expResult = false;
-        boolean result = instance.isParallel(v, scale, rm);
+        boolean result = instance.isParallel(v);
         assertEquals(expResult, result);
         // Test 2
-        scale = 1;
-        result = instance.isParallel(v, scale, rm);
+        result = instance.isParallel(v);
         assertEquals(expResult, result);
         // Test 3
         v = new V3D_Vector(N1N1N1);
-        scale = 0;
         instance = new V3D_Vector(P1P1P1);
         expResult = true;
-        result = instance.isParallel(v, scale, rm);
+        result = instance.isParallel(v);
         assertEquals(expResult, result);
         // Test 4
-        scale = 5;
         expResult = true;
-        result = instance.isParallel(v, scale, rm);
+        result = instance.isParallel(v);
         assertEquals(expResult, result);
         // Test 5
         v = new V3D_Vector(P1P0P0);
-        scale = 10;
         instance = new V3D_Vector(P0P1P1);
         expResult = false;
-        result = instance.isParallel(v, scale, rm);
+        result = instance.isParallel(v);
         assertEquals(expResult, result);
         // Test 6
-        scale = -3;
         v = new V3D_Vector(e, P0, P1, P10000);
         instance = new V3D_Vector(e, P0, P1, P10001);
-        expResult = true;
-        result = instance.isParallel(v, scale, rm);
-        assertEquals(expResult, result);
-        // Test 7
-        scale = -2;
-        expResult = true;
-        result = instance.isParallel(v, scale, rm);
-        assertEquals(expResult, result);
-        // Test 8
-        scale = -1;
-        expResult = true;
-        result = instance.isParallel(v, scale, rm);
-        assertEquals(expResult, result);
-        // Test 9
-        scale = 0;
         expResult = false;
-        result = instance.isParallel(v, scale, rm);
-        assertEquals(expResult, result);
-        // Test 7
-        scale = 1;
-        expResult = false;
-        result = instance.isParallel(v, scale, rm);
+        result = instance.isParallel(v);
         assertEquals(expResult, result);
     }
 
