@@ -201,7 +201,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Envelope.
      */
     @Test
-    public void testGetIntersection() {
+    public void testGetIntersection_V3D_Envelope() {
         System.out.println("getIntersection");
         V3D_Envelope en;
         V3D_Envelope instance;
@@ -231,6 +231,22 @@ public class V3D_EnvelopeTest extends V3D_Test {
         expResult = new V3D_Envelope(e, P0P0N1, P0P0P1);
         result = instance.getIntersection(en);
         assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Envelope.
+     */
+    @Test
+    public void testGetIntersection_V3D_Line() {
+        System.out.println("getIntersection");
+        V3D_Line li = new V3D_Line(P0P0P0, P0P0P1);
+        V3D_Envelope instance = new V3D_Envelope(e, N1N1N1, P1P1P1);
+        V3D_Geometry expResult = new V3D_LineSegment(P0P0N1, P0P0P1);
+        V3D_Geometry result = instance.getIntersection(li);
+        assertEquals(expResult, result);
+        // Test 2
+        
+        
     }
 
 }

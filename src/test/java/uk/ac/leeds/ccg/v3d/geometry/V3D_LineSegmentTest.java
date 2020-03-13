@@ -114,7 +114,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_LineSegment(P1P1P0, P0P0P0);
-        expResult = false;
+        expResult = true;
         result = instance.equals(o);
         assertEquals(expResult, result);
 

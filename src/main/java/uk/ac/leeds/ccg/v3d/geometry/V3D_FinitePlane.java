@@ -215,7 +215,7 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
                         if (rli == null) {
                             // Check for intersections with l, b
                             V3D_Point blf = new V3D_Point(e, en.xMin, en.yMin, en.zMin);
-                            return getIntersects_l(li, en, tlf, blf, brf, tlip);
+                            return getIntersects_lb(li, en, tlf, blf, brf, tlip);
                         } else if (rli instanceof V3D_LineSegment) {
                             return rli;
                         } else {
@@ -223,7 +223,7 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
                             if (rlip.equals(tlip)) {
                                 // Check for intersections with l, b
                                 V3D_Point blf = new V3D_Point(e, en.xMin, en.yMin, en.zMin);
-                                return getIntersects_l(li, en, tlf, blf, brf, tlip);
+                                return getIntersects_lb(li, en, tlf, blf, brf, tlip);
                             } else {
                                 return new V3D_LineSegment(rlip, tlip);
                             }
@@ -322,7 +322,7 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
                 V3D_FinitePlane l = new V3D_FinitePlane(blf, bla, tlf);
                 V3D_FinitePlane r = new V3D_FinitePlane(brf, bra, trf);
                 V3D_FinitePlane f = new V3D_FinitePlane(brf, blf, tlf);
-                V3D_FinitePlane a = new V3D_FinitePlane(bra, bra, tra);
+                V3D_FinitePlane a = new V3D_FinitePlane(bra, bla, tra);
                 // Does li intersect with t?
                 V3D_Geometry tli = t.getIntersection(li);
                 if (tli == null) {
@@ -491,7 +491,7 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
         }
     }
 
-    public V3D_Geometry getIntersects_l(V3D_Line li, V3D_Envelope en,
+    private V3D_Geometry getIntersects_lb(V3D_Line li, V3D_Envelope en,
             V3D_Point tlf, V3D_Point blf, V3D_Point brf, V3D_Point tlip) {
         V3D_LineSegment l = new V3D_LineSegment(tlf, blf);
         V3D_Geometry lli = l.getIntersection(li);

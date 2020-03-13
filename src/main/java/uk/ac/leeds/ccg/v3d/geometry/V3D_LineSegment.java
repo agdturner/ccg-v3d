@@ -21,10 +21,10 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 /**
- * Class for a line segment in 3D represented by two Point3D instances, one is
- * designated a start point and the other an end point. In this way a line
- * segment explicitly has a direction. Two instances are regarded as equal if
- * their start and end points are the same.
+ * Class for a line segment in 3D represented by two Point3D instances. Two 
+ * instances are regarded as equal i they are represented by the same points 
+ * irrespective as which is assigned as {@link #p} and which is assigned as 
+ * {@link #q}.
  *
  * @author Andy Turner
  * @version 1.0
@@ -74,12 +74,11 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     public boolean equals(Object o) {
         if (o instanceof V3D_LineSegment) {
             V3D_LineSegment l = (V3D_LineSegment) o;
-            if (hashCode() == l.hashCode()) {
-                if (l.p.equals(p)) {
-                    if (l.q.equals(q)) {
-                        return true;
-                    }
-                }
+            if (l.p.equals(p) && l.q.equals(q)) {
+                return true;
+            }
+            if (l.p.equals(q) && l.q.equals(p)) {
+                return true;
             }
         }
         return false;
@@ -232,7 +231,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
          *         l.p ---------- l.q
          * 2)   p ------------------------ q
          *         l.p ---------- l.q
-         * 3)        p ---------- q         
+         * 3)        p ---------- q
          *    l.p ------------------------ l.q
          * 4)        p ---------- q
          *    l.p ---------- l.q
@@ -240,7 +239,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
          *         l.p ---------- l.q
          * 6)   q ------------------------ p
          *         l.p ---------- l.q
-         * 7)        q ---------- p         
+         * 7)        q ---------- p
          *    l.p ------------------------ l.q
          * 8)        q ---------- p
          *    l.p ---------- l.q
@@ -248,7 +247,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
          *         l.q ---------- l.p
          * 10)   p ------------------------ q
          *         l.q ---------- l.p
-         * 11)       p ---------- q         
+         * 11)       p ---------- q
          *    l.q ------------------------ l.p
          * 12)       p ---------- q
          *    l.q ---------- l.p
@@ -256,12 +255,12 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
          *         l.q ---------- l.p
          * 14)  q ------------------------ p
          *         l.q ---------- l.p
-         * 15)       q ---------- p         
+         * 15)       q ---------- p
          *    l.q ------------------------ l.p
          * 16)       q ---------- p
          *    l.q ---------- l.p
          * }
-         */ 
+         */
         if (isIntersectedBy(l.p)) {
             // Cases 1, 2, 5, 6, 14, 16
             if (isIntersectedBy(l.q)) {
