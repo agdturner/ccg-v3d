@@ -21,7 +21,8 @@ import java.util.Objects;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * An envelope contains all the extreme values with respect to the X and Y axes.
+ * An envelope contains all the extreme values with respect to the X, Y and Z 
+ * axes.
  *
  * @author Andy Turner
  * @version 1.0

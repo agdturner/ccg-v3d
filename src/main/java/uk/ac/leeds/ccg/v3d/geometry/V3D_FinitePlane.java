@@ -71,6 +71,109 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
                  */
                 V3D_Envelope en = getEnvelope3D();
                 /**
+                 * Handle special cases where the envelope is effectively flat
+                 * as the plane aligns with an axis.
+                 */
+                boolean dx0 = en.xMin.equals(en.xMax);
+                boolean dy0 = en.yMin.equals(en.yMax);
+                boolean dz0 = en.zMin.equals(en.zMax);
+                if (dx0) {
+                    if (dy0 || dz0) {
+                        return new V3D_LineSegment(
+                                new V3D_Point(e, en.xMin, en.yMin, en.zMin),
+                                new V3D_Point(e, en.xMax, en.yMax, en.zMax));
+                    }
+                    // Intersects with t?
+                    V3D_Point tlf = new V3D_Point(e, en.xMin, en.yMin, en.zMax);
+                    V3D_Point tla = new V3D_Point(e, en.xMin, en.yMax, en.zMax);
+                    V3D_LineSegment t = new V3D_LineSegment(tlf, tla);
+                    V3D_Geometry tli = t.getIntersection(li);
+                    if (tli == null) {
+                        // Intersects with f?
+                        V3D_Point blf = new V3D_Point(e, en.xMin, en.yMin, en.zMin);
+                        V3D_LineSegment f = new V3D_LineSegment(tlf, blf);
+                        V3D_Geometry fli = f.getIntersection(li);
+                        if (fli == null) {
+                            // Intersects with a?
+                            V3D_Point bla = new V3D_Point(e, en.xMin, en.yMax, en.zMin);
+                            V3D_LineSegment a = new V3D_LineSegment(bla, tla);
+                            V3D_Geometry ali = a.getIntersection(li);
+                            if (ali == null) {
+                                V3D_LineSegment b = new V3D_LineSegment(bla, blf);
+                                // Intersects b
+                                return b.getIntersection(li);
+                            } else {
+                                return ali;
+                            }
+                        } else if (fli instanceof V3D_LineSegment) {
+                            return fli;
+                        } else {
+                            V3D_Point flip = (V3D_Point) fli;
+                            // Check for intersection with a, b
+                            // Intersects with a?
+                            V3D_Point bla = new V3D_Point(e, en.xMin, en.yMax, en.zMin);
+                            V3D_LineSegment a = new V3D_LineSegment(bla, tla);
+                            V3D_Geometry ali = a.getIntersection(li);
+                            if (ali == null) {
+                                // Intersects b
+                                V3D_LineSegment b = new V3D_LineSegment(bla, blf);
+                                V3D_Point blip = (V3D_Point) b.getIntersection(li);
+                                if (flip.equals(blip)) {
+                                    return flip;
+                                } else {
+                                    return new V3D_LineSegment(blip, flip);
+                                }
+                            } else {
+                                return new V3D_LineSegment((V3D_Point) ali, flip);
+                            }
+                        }
+                    } else if (tli instanceof V3D_LineSegment) {
+                        return tli;
+                    } else {
+                        V3D_Point tlip = (V3D_Point) tli;
+                        // Check for intersections with a, f, b
+                        // Intersects with a?
+                        V3D_Point bla = new V3D_Point(e, en.xMin, en.yMax, en.zMin);
+                        V3D_LineSegment a = new V3D_LineSegment(bla, tla);
+                        V3D_Geometry ali = a.getIntersection(li);
+                        if (ali == null) {
+                            // Check for intersections with f, b
+                            return getIntersects_f(li, en, tlf, bla, bla, tlip);
+                        } else if (ali instanceof V3D_LineSegment) {
+                            return ali;
+                        } else {
+                            V3D_Point alip = (V3D_Point) ali;
+                            if (alip.equals(tlip)) {
+                                // Check for intersections with f, b
+                                return getIntersects_f(li, en, tlf, bla, bla, tlip);
+                            } else {
+                                return new V3D_LineSegment(alip, tlip);
+                            }
+                        }
+                    }
+                }
+                if (dy0) {
+                    if (dz0) {
+                        return new V3D_LineSegment(
+                                new V3D_Point(e, en.xMin, en.yMin, en.zMin),
+                                new V3D_Point(e, en.xMax, en.yMax, en.zMax));
+                    }
+                    
+                    V3D_Point tlf = new V3D_Point(e, en.xMin, en.yMin, en.zMax);
+                    V3D_Point blf = new V3D_Point(e, en.xMin, en.yMin, en.zMin);
+                    V3D_Point brf = new V3D_Point(e, en.xMax, en.yMin, en.zMin);
+                    V3D_FinitePlane f = new V3D_FinitePlane(brf, blf, tlf);
+                    return f.getIntersection(li);
+
+                }
+                if (dz0) {
+                    V3D_Point tlf = new V3D_Point(e, en.xMin, en.yMin, en.zMax);
+                    V3D_Point tla = new V3D_Point(e, en.xMin, en.yMax, en.zMax);
+                    V3D_Point trf = new V3D_Point(e, en.xMax, en.yMin, en.zMax);
+                    V3D_FinitePlane t = new V3D_FinitePlane(tlf, tla, trf);
+                    return t.getIntersection(li);
+                }
+                /**
                  * There are 8 corners: 4 at the top; tlf (Top, Left, For), tla
                  * (Top, Left, Aft), trf (Top, Right, For), tra (Top, Right,
                  * Aft); 4 at the bottom; blf (Bottom, Left, For), bla (Bottom,
@@ -85,12 +188,12 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
                 V3D_Point bla = new V3D_Point(e, en.xMin, en.yMax, en.zMin);
                 V3D_Point brf = new V3D_Point(e, en.xMax, en.yMin, en.zMin);
                 V3D_Point bra = new V3D_Point(e, en.xMax, en.yMax, en.zMin);
-                V3D_FinitePlane t = new V3D_FinitePlane(blf, bla, brf);
+                V3D_FinitePlane t = new V3D_FinitePlane(tlf, tla, trf);
                 V3D_FinitePlane b = new V3D_FinitePlane(blf, bla, brf);
                 V3D_FinitePlane l = new V3D_FinitePlane(blf, bla, tlf);
                 V3D_FinitePlane r = new V3D_FinitePlane(brf, bra, trf);
                 V3D_FinitePlane f = new V3D_FinitePlane(brf, blf, tlf);
-                V3D_FinitePlane a = new V3D_FinitePlane(brf, bra, trf);
+                V3D_FinitePlane a = new V3D_FinitePlane(bra, bra, tra);
                 // Does li intersect with t?
                 V3D_Geometry tli = t.getIntersection(li);
                 if (tli == null) {
@@ -188,7 +291,7 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
                     V3D_Point tlip = (V3D_Point) tli;
                     V3D_Geometry lli = l.getIntersection(li);
                     if (lli == null) {
-                        return checkFurtherIntersections_arfb(li, a, r,
+                        return getIntersects_arfb(li, a, r,
                                 f, b, tlip);
                     } else if (lli instanceof V3D_LineSegment) {
                         return lli;
@@ -198,7 +301,7 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
                         } else {
                             V3D_Point llip = (V3D_Point) lli;
                             if (llip.equals(tlip)) {
-                                return checkFurtherIntersections_arfb(li, a, r,
+                                return getIntersects_arfb(li, a, r,
                                         f, b, tlip);
                             } else {
                                 return new V3D_LineSegment(tlip, llip);
@@ -211,25 +314,43 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
         return null;
     }
 
-    private V3D_Geometry checkFurtherIntersections_arfb(V3D_Line li,
+    private V3D_Geometry getIntersects_f(V3D_Line li, V3D_Envelope en,
+            V3D_Point tlf, V3D_Point blf, V3D_Point bla, V3D_Point tlip) {
+        V3D_LineSegment f = new V3D_LineSegment(tlf, blf);
+        V3D_Geometry fli = f.getIntersection(li);
+        if (fli == null) {
+            // Intersects with b?
+            V3D_LineSegment b = new V3D_LineSegment(bla, blf);
+            V3D_Geometry bli = b.getIntersection(li);
+            if (bli == null) {
+                return tlip;
+            } else {
+                return new V3D_LineSegment((V3D_Point) bli, tlip);
+            }
+        } else {
+            return new V3D_LineSegment(tlip, (V3D_Point) fli);
+        }
+    }
+
+    private V3D_Geometry getIntersects_arfb(V3D_Line li,
             V3D_FinitePlane a, V3D_FinitePlane r, V3D_FinitePlane f,
             V3D_FinitePlane b, V3D_Point tlip) {
         V3D_Geometry ali = a.getIntersection(li);
         if (ali == null) {
-            return checkFurtherIntersections_rfb(li, r, f, b, tlip);
+            return getIntersects_rfb(li, r, f, b, tlip);
         } else if (ali instanceof V3D_LineSegment) {
             return ali;
         } else {
             V3D_Point alip = (V3D_Point) ali;
             if (alip.equals(tlip)) {
-                return checkFurtherIntersections_rfb(li, r, f, b, tlip);
+                return getIntersects_rfb(li, r, f, b, tlip);
             } else {
                 return new V3D_LineSegment(tlip, alip);
             }
         }
     }
 
-    private V3D_Geometry checkFurtherIntersections_rfb(V3D_Line li,
+    private V3D_Geometry getIntersects_rfb(V3D_Line li,
             V3D_FinitePlane r, V3D_FinitePlane f, V3D_FinitePlane b,
             V3D_Point tlip) {
         V3D_Geometry rli = r.getIntersection(li);
