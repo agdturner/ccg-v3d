@@ -97,6 +97,31 @@ public class V3D_FinitePlaneTest extends V3D_Test {
         V3D_Geometry expResult = li;
         V3D_Geometry result = instance.getIntersection(li);
         assertEquals(expResult, result);
+        // Test 2
+         li = new V3D_Line(P0P0P0, P0P1P0);
+         instance = new V3D_FinitePlane(P0P0P0, P0P0P1, P0P1P0);
+         expResult = li;
+         result = instance.getIntersection(li);
+        assertEquals(expResult, result);
+        // Test 3
+         li = new V3D_Line(P0P0P0, P1P0P0);
+         instance = new V3D_FinitePlane(P0P0P0, P1P0P0, P1P1P0);
+         expResult = li;
+         result = instance.getIntersection(li);
+        assertEquals(expResult, result);
+        // Test 4
+         li = new V3D_Line(P0P0P0, P1P1P1);
+         instance = new V3D_FinitePlane(P0P0P0, P1P0P0, P1P1P0);
+         expResult = P0P0P0;
+         result = instance.getIntersection(li);
+        assertEquals(expResult, result);
+        // Test 5
+         li = new V3D_Line(P0P0P0, P1P1P1);
+         instance = new V3D_FinitePlane(P0P0P0, P1P0P0, P1P1P0);
+         expResult = P0P0P0;
+         result = instance.getIntersection(li);
+        assertEquals(expResult, result);
+        
     }
 
 }
