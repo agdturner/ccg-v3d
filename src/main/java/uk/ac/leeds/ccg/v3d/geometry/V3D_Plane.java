@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.util.Objects;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * V3D_Plane - for representing infinite flat 2D planes in 3D. The plane is
@@ -92,14 +91,13 @@ public class V3D_Plane extends V3D_Geometry {
     public V3D_Vector n;
 
     /**
-     * @param e V3D_Environment
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
      * @throws RuntimeException If p, q and r are collinear.
      */
-    public V3D_Plane(V3D_Environment e, V3D_Point p, V3D_Point q, V3D_Point r) {
-        super(e);
+    public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r) {
+        super(p.e);
         //                         i                 j                   k
         pq = new V3D_Vector(e, p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
         pr = new V3D_Vector(e, p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
@@ -126,13 +124,12 @@ public class V3D_Plane extends V3D_Geometry {
      * An equation of the plane containing the point {@code p} with normal
      * vector {@code n} is {@code n.dx(x) + n.dy(y) + n.dz(z) = d}.
      *
-     * @param e V3D_Environment
      * @param p What {@link #p} is set to.
      * @param n What {@link #n} is set to.
      * @throws RuntimeException If p, q and r are collinear.
      */
-    public V3D_Plane(V3D_Environment e, V3D_Point p, V3D_Vector n) {
-        super(e);
+    public V3D_Plane(V3D_Point p, V3D_Vector n) {
+        super(p.e);
         this.p = p;
         BigRational d = n.dx.multiply(p.x).add(n.dy.multiply(p.y).add(n.dz.multiply(p.z)));
         if (n.dx.compareTo(e.P0) == 0) {
@@ -217,7 +214,7 @@ public class V3D_Plane extends V3D_Geometry {
     public V3D_Geometry getIntersection(V3D_Line l) {
         if (this.isParallel(l)) {
             if (isOnPlane(l)) {
-                return this;
+                return l;
             }
         }
         // Are there any points in common?
@@ -284,10 +281,11 @@ public class V3D_Plane extends V3D_Geometry {
 
     /**
      * @param l line segment to intersect with this.
+     * @param flag Used to distinguish from {@link #getIntersection(V3D_Line)}.  
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry getIntersection(V3D_LineSegment l) {
-        V3D_Geometry li = this.getIntersection(l.getLine());
+    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean flag) {
+        V3D_Geometry li = getIntersection(l);
         if (li == null) {
             return null;
         }

@@ -61,13 +61,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     public BigRational zMax;
 
     /**
-     * @param e The vector environment.
-     */
-    public V3D_Envelope(V3D_Environment e) {
-        super(e);
-    }
-
-    /**
      * @param e An envelope.
      */
     public V3D_Envelope(V3D_Envelope e) {
@@ -287,12 +280,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             V3D_Point p1p0p1 = new V3D_Point(e, xMax, yMin, zMax);
             V3D_Point p1p1p0 = new V3D_Point(e, xMax, yMax, zMin);
             V3D_Point p1p1p1 = new V3D_Point(e, xMax, yMax, zMax);
-            V3D_FinitePlane x0 = new V3D_FinitePlane(e, p0p0p0, p0p0p1, p0p1p1);
-            V3D_FinitePlane x1 = new V3D_FinitePlane(e, p1p0p0, p1p0p1, p1p1p1);
-            V3D_FinitePlane y0 = new V3D_FinitePlane(e, p0p0p0, p1p0p0, p1p0p1);
-            V3D_FinitePlane y1 = new V3D_FinitePlane(e, p0p1p0, p1p1p0, p1p1p1);
-            V3D_FinitePlane z0 = new V3D_FinitePlane(e, p0p0p0, p1p0p0, p1p1p0);
-            V3D_FinitePlane z1 = new V3D_FinitePlane(e, p0p0p1, p1p0p1, p1p1p1);
+            V3D_FinitePlane x0 = new V3D_FinitePlane(p0p0p0, p0p0p1, p0p1p1);
+            V3D_FinitePlane x1 = new V3D_FinitePlane(p1p0p0, p1p0p1, p1p1p1);
+            V3D_FinitePlane y0 = new V3D_FinitePlane(p0p0p0, p1p0p0, p1p0p1);
+            V3D_FinitePlane y1 = new V3D_FinitePlane(p0p1p0, p1p1p0, p1p1p1);
+            V3D_FinitePlane z0 = new V3D_FinitePlane(p0p0p0, p1p0p0, p1p1p0);
+            V3D_FinitePlane z1 = new V3D_FinitePlane(p0p0p1, p1p0p1, p1p1p1);
 //        if(l.isIntersectedBy(x0) ||
 //                l.isIntersectedBy(x1)) {
 //            return true;

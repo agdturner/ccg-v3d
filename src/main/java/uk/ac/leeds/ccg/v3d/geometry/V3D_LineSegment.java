@@ -205,13 +205,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
-     * @return {@code this}
-     */
-    public V3D_Line getLine() {
-        return this;
-    }
-
-    /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
      * return {@code this}. If they overlap in a line return the part that
      * overlaps (the order of points is not defined). If they intersect at a
@@ -226,8 +219,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         if (ren == null) {
             return null;
         }
-        V3D_Geometry lineIntersection = this.getLine().getIntersection(
-                l.getLine());
+        V3D_Geometry lineIntersection = super.getIntersection(l);
         if (lineIntersection == null) {
             return null;
         }

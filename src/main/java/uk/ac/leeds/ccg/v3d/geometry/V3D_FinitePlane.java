@@ -15,8 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-
 /**
  * V3D_FinitePlane This general class defines those planes that are all bounded
  * by their envelope exactly. It can be extended to consider finite planes that
@@ -30,21 +28,14 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
 
-    public V3D_FinitePlane(V3D_Environment e, V3D_Point a, V3D_Point b,
+    public V3D_FinitePlane(V3D_Point a, V3D_Point b,
             V3D_Point c) {
-        super(e, a, b, c);
+        super(a, b, c);
     }
 
     @Override
     public V3D_Envelope getEnvelope3D() {
         return new V3D_Envelope(e, p, q, r);
-    }
-
-    /**
-     * @return {@code this}
-     */
-    public V3D_Plane getPlane() {
-        return this;
     }
 
     /**
@@ -54,7 +45,7 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
     @Override
     public boolean isIntersectedBy(V3D_Point pt) {
         if (getEnvelope3D().isIntersectedBy(pt)) {
-            if (getPlane().isIntersectedBy(pt)) {
+            if (super.isIntersectedBy(pt)) {
                 return true;
             }
         }
@@ -67,7 +58,7 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Line li) {
-        V3D_Geometry pi = getPlane().getIntersection(li);
+        V3D_Geometry pi = super.getIntersection(li);
         if (pi != null) {
             if (pi instanceof V3D_Line) {
                 V3D_Line pil = (V3D_Line) pi;
@@ -86,20 +77,20 @@ public class V3D_FinitePlane extends V3D_Plane implements V3D_FiniteGeometry {
                  * Left, Aft), brf (Bottom, Right, For), bra (Bottom, Right,
                  * Aft)
                  */
-                V3D_Point tlf = new V3D_Point(e, en.zMax, en.xMin, en.yMin);
-                V3D_Point tla = new V3D_Point(e, en.zMax, en.xMin, en.yMax);
-                V3D_Point trf = new V3D_Point(e, en.zMax, en.xMax, en.yMin);
-                V3D_Point tra = new V3D_Point(e, en.zMax, en.xMax, en.yMax);
-                V3D_Point blf = new V3D_Point(e, en.zMin, en.xMin, en.yMin);
-                V3D_Point bla = new V3D_Point(e, en.zMin, en.xMin, en.yMax);
-                V3D_Point brf = new V3D_Point(e, en.zMin, en.xMax, en.yMin);
-                V3D_Point bra = new V3D_Point(e, en.zMin, en.xMax, en.yMax);
-                V3D_FinitePlane t = new V3D_FinitePlane(e, blf, bla, brf);
-                V3D_FinitePlane b = new V3D_FinitePlane(e, blf, bla, brf);
-                V3D_FinitePlane l = new V3D_FinitePlane(e, blf, bla, tlf);
-                V3D_FinitePlane r = new V3D_FinitePlane(e, brf, bra, trf);
-                V3D_FinitePlane f = new V3D_FinitePlane(e, brf, blf, tlf);
-                V3D_FinitePlane a = new V3D_FinitePlane(e, brf, bra, trf);
+                V3D_Point tlf = new V3D_Point(e, en.xMin, en.yMin, en.zMax);
+                V3D_Point tla = new V3D_Point(e, en.xMin, en.yMax, en.zMax);
+                V3D_Point trf = new V3D_Point(e, en.xMax, en.yMin, en.zMax);
+                V3D_Point tra = new V3D_Point(e, en.xMax, en.yMax, en.zMax);
+                V3D_Point blf = new V3D_Point(e, en.xMin, en.yMin, en.zMin);
+                V3D_Point bla = new V3D_Point(e, en.xMin, en.yMax, en.zMin);
+                V3D_Point brf = new V3D_Point(e, en.xMax, en.yMin, en.zMin);
+                V3D_Point bra = new V3D_Point(e, en.xMax, en.yMax, en.zMin);
+                V3D_FinitePlane t = new V3D_FinitePlane(blf, bla, brf);
+                V3D_FinitePlane b = new V3D_FinitePlane(blf, bla, brf);
+                V3D_FinitePlane l = new V3D_FinitePlane(blf, bla, tlf);
+                V3D_FinitePlane r = new V3D_FinitePlane(brf, bra, trf);
+                V3D_FinitePlane f = new V3D_FinitePlane(brf, blf, tlf);
+                V3D_FinitePlane a = new V3D_FinitePlane(brf, bra, trf);
                 // Does li intersect with t?
                 V3D_Geometry tli = t.getIntersection(li);
                 if (tli == null) {

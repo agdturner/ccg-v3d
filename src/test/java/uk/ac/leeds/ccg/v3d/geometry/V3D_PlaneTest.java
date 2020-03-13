@@ -99,7 +99,7 @@ public class V3D_PlaneTest extends V3D_Test {
      */
     public V3D_Plane getPlane(V3D_Point p, V3D_Point q, V3D_Point r) {
         try {
-            return new V3D_Plane(e, p, q, r);
+            return new V3D_Plane(p, q, r);
         } catch (Exception ex) {
             ex.printStackTrace(System.err);
         }
@@ -337,7 +337,7 @@ public class V3D_PlaneTest extends V3D_Test {
         assertEquals(expResult, result);
         // Test 2
         l = new V3D_Line(N1N1N1, P1P1P1);
-        instance = new V3D_Plane(e, P1P1N1, P1N1N1, N1P1N1); // z=-1 plane
+        instance = new V3D_Plane(P1P1N1, P1N1N1, N1P1N1); // z=-1 plane
         expResult = false;
         result = instance.isIntersectedBy(l);
         assertEquals(expResult, result);
@@ -583,7 +583,7 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Geometry result;
         // Test 1
          l = new V3D_Line(P0N1N1, new V3D_Point(e, P2, P1, P1));
-         instance = new V3D_Plane(e, P1N1P0, new V3D_Point(e,P2,P1,P1), P0P1P0);
+         instance = new V3D_Plane(P1N1P0, new V3D_Point(e,P2,P1,P1), P0P1P0);
          expResult = new V3D_Point(e,P2,P1,P1);
          result = instance.getIntersection(l);
          assertEquals(expResult, result);
@@ -595,7 +595,7 @@ public class V3D_PlaneTest extends V3D_Test {
          // plane
          // 2x + y − 4z = 4
          // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
-         instance = new V3D_Plane(e, new V3D_Point(e,P0,P0,N1), 
+         instance = new V3D_Plane(new V3D_Point(e,P0,P0,N1), 
                  new V3D_Point(e,P0,P4,P0), new V3D_Point(e,P2,P0,P0));
          // (2, 8, 2)
          expResult = new V3D_Point(e,P2,P8,P2);
@@ -609,7 +609,7 @@ public class V3D_PlaneTest extends V3D_Test {
          // plane
          // 2x + y − 4z = 4
          // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
-         instance = new V3D_Plane(e, new V3D_Point(e,P0,P0,N1), 
+         instance = new V3D_Plane(new V3D_Point(e,P0,P0,N1), 
                  new V3D_Point(e,P0,P4,P0), new V3D_Point(e,P2,P0,P0));
          // (2, 8, 2)
          expResult = new V3D_Point(e,P2,P8,P2);
@@ -622,7 +622,7 @@ public class V3D_PlaneTest extends V3D_Test {
          l = new V3D_Line(new V3D_Point(e, P0,P0,P0), new V3D_Point(e, P0, P0, P1));
          // plane
          // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
-         instance = new V3D_Plane(e, new V3D_Point(e,P0,P0,P2), 
+         instance = new V3D_Plane(new V3D_Point(e,P0,P0,P2), 
                  new V3D_Point(e,P1,P0,P2), new V3D_Point(e,P0,P1,P2));
          expResult = new V3D_Point(e,P0,P0,P2);
          result = instance.getIntersection(l);
