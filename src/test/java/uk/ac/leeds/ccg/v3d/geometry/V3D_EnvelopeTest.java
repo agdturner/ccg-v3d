@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -71,7 +72,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     }
 
     /**
-     * Test of envelope method, of class V3D_Envelope.
+     * Test of envelop method, of class V3D_Envelope.
      */
     @Test
     public void testEnvelope() {
@@ -79,7 +80,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Envelope e1 = new V3D_Envelope(e, P0P0P0, P0P0P0);
         V3D_Envelope instance = new V3D_Envelope(e, P1P1P1, P1P1P1);
         V3D_Envelope expResult = new V3D_Envelope(e, P0P0P0, P1P1P1);
-        V3D_Envelope result = instance.envelope(e1);
+        V3D_Envelope result = instance.union(e1);
         assertEquals(expResult, result);
     }
 
@@ -93,21 +94,6 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Envelope e000111 = new V3D_Envelope(e, P0P0P0, P1P1P1);
         boolean expResult = true;
         boolean result = instance.isIntersectedBy(e000111);
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of isIntersectedBy method, of class V3D_Envelope.
-     */
-    @Test
-    public void testIsIntersectedBy_3args_1() {
-        System.out.println("isIntersectedBy");
-        V3D_Envelope instance = new V3D_Envelope(e, N1N1N1, P1P1P1);
-        V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
-        int scale = 0;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        boolean expResult = true;
-        boolean result = instance.isIntersectedBy(l, scale, rm);
         assertEquals(expResult, result);
     }
 
@@ -135,7 +121,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     }
 
     /**
-     * Test of getEnvelope3D method, of class V3D_Envelope.
+     * Test of getEnvelope method, of class V3D_Envelope.
      */
     @Test
     public void testGetEnvelope3D() {
@@ -144,7 +130,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Point p1 = P1P1P1;
         V3D_Envelope instance = new V3D_Envelope(e, p0, p1);
         V3D_Envelope expResult = new V3D_Envelope(e, p0, p1);
-        V3D_Envelope result = instance.getEnvelope3D();
+        V3D_Envelope result = instance.getEnvelope();
         assertEquals(expResult, result);
     }
 
@@ -158,21 +144,6 @@ public class V3D_EnvelopeTest extends V3D_Test {
         Object o = new V3D_Envelope(e, P0P0P0, P1P1P1);
         boolean expResult = true;
         boolean result = instance.equals(o);
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of isIntersectedBy method, of class V3D_Envelope.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_LineSegment_int() {
-        System.out.println("isIntersectedBy");
-        V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P1P1);
-        int scale = 1;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Envelope instance = new V3D_Envelope(e, N1N1N1, P1P1P1);
-        boolean expResult = true;
-        boolean result = instance.isIntersectedBy(l, scale, rm);
         assertEquals(expResult, result);
     }
 

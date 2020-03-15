@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -139,14 +140,14 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
-     * Test of getEnvelope3D method, of class V3D_Point.
+     * Test of getEnvelope method, of class V3D_Point.
      */
     @Test
-    public void testGetEnvelope3D() {
-        System.out.println("getEnvelope3D");        
+    public void testGetEnvelope() {
+        System.out.println("getEnvelope");        
         V3D_Envelope expResult = new V3D_Envelope(e, P0P0P0, P1P1P1);
-        V3D_Envelope result = P0P0P0.getEnvelope3D();
-        result.envelope(P1P1P1.getEnvelope3D());
+        V3D_Envelope result = P0P0P0.getEnvelope();
+        result.union(P1P1P1.getEnvelope());
         assertEquals(expResult, result);
     }
 

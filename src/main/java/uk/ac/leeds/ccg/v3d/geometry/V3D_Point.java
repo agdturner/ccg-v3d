@@ -15,13 +15,13 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import ch.obermuhlner.math.big.BigRational;
-import jdk.jshell.spi.ExecutionControl;
 
 /**
  * V3D_Point
@@ -29,7 +29,8 @@ import jdk.jshell.spi.ExecutionControl;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
+public class V3D_Point extends V3D_Geometry implements Comparable<V3D_Point>,
+        V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
 
@@ -123,11 +124,21 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         if (this.equals(p)) {
             return BigDecimal.ZERO;
         }
+        return Math_BigDecimal.sqrt(getDistanceSquared(p).toBigDecimal(), scale,
+                rm);
+    }
+
+    /**
+     * Get the distance squared between this and {@code p}.
+     *
+     * @param p A point.
+     * @return The distance squared from {@code p} to this.
+     */
+    public BigRational getDistanceSquared(V3D_Point p) {
         BigRational dx = this.x.subtract(p.x);
         BigRational dy = this.y.subtract(p.y);
         BigRational dz = this.z.subtract(p.z);
-        return Math_BigDecimal.sqrt(dx.pow(2).add(dy.pow(2)).add(dz.pow(2)).toBigDecimal(),
-                scale, rm);
+        return dx.pow(2).add(dy.pow(2)).add(dz.pow(2));
     }
 
     /**
@@ -166,10 +177,29 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         }
         throw new RuntimeException("Not implemented");
     }
-    
+
     @Override
-    public V3D_Envelope getEnvelope3D() {
+    public V3D_Envelope getEnvelope() {
         return new V3D_Envelope(e, x, y, z);
+    }
+
+    /**
+     * Order first in terms of {@link #x}, then {@link #y}, then {@link #z}.
+     *
+     * @param o
+     * @return
+     */
+    @Override
+    public int compareTo(V3D_Point o) {
+        int xcomp = x.compareTo(o.x);
+        if (xcomp == 0) {
+            int ycomp = y.compareTo(o.y);
+            if (ycomp == 0) {
+                return z.compareTo(o.z);
+            }
+            return ycomp;
+        }
+        return xcomp;
     }
 
 }

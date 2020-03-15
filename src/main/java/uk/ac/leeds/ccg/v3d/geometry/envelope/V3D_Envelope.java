@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.envelope;
 
 import ch.obermuhlner.math.big.BigRational;
-import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_FiniteGeometry;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 
 /**
  * An envelope contains all the extreme values with respect to the X, Y and Z
- * axes.
+ * axes. It is an axis aligned bounding box, which may have length of zero in
+ * any direction. For a point the envelope is essentially the point.
  *
  * @author Andy Turner
  * @version 1.0
@@ -34,35 +39,65 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * The minimum x-coordinate.
      */
-    public BigRational xMin;
+    private BigRational xMin;
 
     /**
      * The maximum x-coordinate.
      */
-    public BigRational xMax;
+    private BigRational xMax;
 
     /**
      * The minimum y-coordinate.
      */
-    public BigRational yMin;
+    private BigRational yMin;
 
     /**
      * The maximum y-coordinate.
      */
-    public BigRational yMax;
+    private BigRational yMax;
 
     /**
      * The minimum z-coordinate.
      */
-    public BigRational zMin;
+    private BigRational zMin;
 
     /**
      * The maximum z-coordinate.
      */
-    public BigRational zMax;
+    private BigRational zMax;
 
     /**
-     * @param e An envelope.
+     * The top face.
+     */
+    protected V3D_EnvelopeFaceTop t;
+    
+    /**
+     * The left face.
+     */
+    protected V3D_EnvelopeFaceLeft l;
+    
+    /**
+     * The aft face.
+     */
+    protected V3D_EnvelopeFaceAft a;
+    
+    /**
+     * The right face.
+     */
+    protected V3D_EnvelopeFaceRight r;
+        
+    /**
+     * The fore face.
+     */
+    protected V3D_EnvelopeFaceFore f;
+        
+    /**
+     * The bottom face.
+     */
+    protected V3D_EnvelopeFaceBottom b;
+
+    /**
+     * @param e An envelop.
      */
     public V3D_Envelope(V3D_Envelope e) {
         super(e.e);
@@ -72,11 +107,29 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         xMax = e.xMax;
         zMin = e.zMin;
         zMax = e.zMax;
+        init();
+    }
+
+    private void init() {
+        V3D_Point tlf = new V3D_Point(e, getxMin(), getyMin(), getzMax());
+        V3D_Point tla = new V3D_Point(e, getxMin(), getyMax(), getzMax());
+        V3D_Point tar = new V3D_Point(e, getxMax(), getyMax(), getzMax());
+        V3D_Point trf = new V3D_Point(e, getxMax(), getyMin(), getzMax());
+        V3D_Point blf = new V3D_Point(e, getxMin(), getyMin(), getzMin());
+        V3D_Point bla = new V3D_Point(e, getxMin(), getyMax(), getzMin());
+        V3D_Point bar = new V3D_Point(e, getxMax(), getyMax(), getzMin());
+        V3D_Point brf = new V3D_Point(e, getxMax(), getyMin(), getzMin());
+        t = new V3D_EnvelopeFaceTop(tlf, tla, tar, trf);
+        l = new V3D_EnvelopeFaceLeft(tlf, tla, bla, blf);
+        a = new V3D_EnvelopeFaceAft(tla, tar, bar, bla);
+        r = new V3D_EnvelopeFaceRight(trf, tar, bar, brf);
+        f = new V3D_EnvelopeFaceFore(tlf, trf, brf, blf);
+        b = new V3D_EnvelopeFaceBottom(blf, bla, bar, brf);
     }
 
     /**
-     * @param e An envelope.
-     * @param points The points.
+     * @param e An envelop.
+     * @param points The points used to form the envelop.
      */
     public V3D_Envelope(V3D_Environment e, V3D_Point... points) {
         super(e);
@@ -94,6 +147,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 yMax = BigRational.max(yMax, points[i].y);
                 zMin = BigRational.min(zMin, points[i].z);
                 zMax = BigRational.max(zMax, points[i].z);
+                init();
             }
         }
     }
@@ -139,23 +193,26 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     @Override
     public String toString() {
         return this.getClass().getSimpleName()
-                + "(xMin=" + xMin.toString() + ", xMax=" + xMax.toString() + ","
-                + "yMin=" + yMin.toString() + ", yMax=" + yMax.toString() + ","
-                + "zMin=" + zMin.toString() + ", zMax=" + zMax.toString() + ")";
+                + "(xMin=" + getxMin().toString() + ", xMax=" + getxMax().toString() + ","
+                + "yMin=" + getyMin().toString() + ", yMax=" + getyMax().toString() + ","
+                + "zMin=" + getzMin().toString() + ", zMax=" + getzMax().toString() + ")";
     }
 
     /**
-     * @param e The V3D_Envelope for this to envelop
-     * @return The possibly expanded envelope which is this.
+     * @param e The V3D_Envelope to union with this.
+     * @return an Envelope which is {@code this} union {@code e}.
      */
-    public V3D_Envelope envelope(V3D_Envelope e) {
-        xMin = BigRational.min(e.xMin, xMin);
-        xMax = BigRational.max(e.xMax, xMax);
-        yMin = BigRational.min(e.yMin, yMin);
-        yMax = BigRational.max(e.yMax, yMax);
-        zMin = BigRational.min(e.zMin, zMin);
-        zMax = BigRational.max(e.zMax, zMax);
-        return this;
+    public V3D_Envelope union(V3D_Envelope e) {
+        if (e.isContainedBy(this)) {
+            return this;
+        } else {
+            return new V3D_Envelope(this.e, BigRational.min(e.getxMin(), getxMin()),
+                    BigRational.max(e.getxMax(), getxMax()),
+                    BigRational.min(e.getyMin(), getyMin()),
+                    BigRational.max(e.getyMax(), getyMax()),
+                    BigRational.min(e.getzMin(), getzMin()),
+                    BigRational.max(e.getzMax(), getzMax()));
+        }
     }
 
     /**
@@ -165,70 +222,70 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return {@code true} if this intersects with {@code e}.
      */
     public boolean isIntersectedBy(V3D_Envelope e) {
-        // Does this contain any corners of e
-        boolean r = isIntersectedBy(e.xMin, e.yMin, e.zMax);
-        if (r) {
-            return r;
+        // Does this contain any corners of e?
+        boolean re = isIntersectedBy(e.getxMin(), e.getyMin(), e.getzMax());
+        if (re) {
+            return re;
         }
-        r = isIntersectedBy(e.xMin, e.yMax, e.zMax);
-        if (r) {
-            return r;
+        re = isIntersectedBy(e.getxMin(), e.getyMax(), e.getzMax());
+        if (re) {
+            return re;
         }
-        r = isIntersectedBy(e.xMax, e.yMin, e.zMax);
-        if (r) {
-            return r;
+        re = isIntersectedBy(e.getxMax(), e.getyMin(), e.getzMax());
+        if (re) {
+            return re;
         }
-        r = isIntersectedBy(e.xMax, e.yMax, e.zMax);
-        if (r) {
-            return r;
+        re = isIntersectedBy(e.getxMax(), e.getyMax(), e.getzMax());
+        if (re) {
+            return re;
         }
-        r = isIntersectedBy(e.xMin, e.yMin, e.zMin);
-        if (r) {
-            return r;
+        re = isIntersectedBy(e.getxMin(), e.getyMin(), e.getzMin());
+        if (re) {
+            return re;
         }
-        r = isIntersectedBy(e.xMin, e.yMax, e.zMin);
-        if (r) {
-            return r;
+        re = isIntersectedBy(e.getxMin(), e.getyMax(), e.getzMin());
+        if (re) {
+            return re;
         }
-        r = isIntersectedBy(e.xMax, e.yMin, e.zMin);
-        if (r) {
-            return r;
+        re = isIntersectedBy(e.getxMax(), e.getyMin(), e.getzMin());
+        if (re) {
+            return re;
         }
-        r = isIntersectedBy(e.xMax, e.yMax, e.zMin);
-        if (r) {
-            return r;
+        re = isIntersectedBy(e.getxMax(), e.getyMax(), e.getzMin());
+        if (re) {
+            return re;
         }
         // Does e contain any corners of this
-        r = e.isIntersectedBy(xMax, yMax, zMax);
-        if (r) {
-            return r;
+        re = e.isIntersectedBy(getxMax(), getyMax(), getzMax());
+        if (re) {
+            return re;
         }
-        r = e.isIntersectedBy(xMin, yMax, zMax);
-        if (r) {
-            return r;
+        re = e.isIntersectedBy(getxMin(), getyMax(), getzMax());
+        if (re) {
+            return re;
         }
-        r = e.isIntersectedBy(xMax, yMin, zMax);
-        if (r) {
-            return r;
+        re = e.isIntersectedBy(getxMax(), getyMin(), getzMax());
+        if (re) {
+            return re;
         }
-        r = e.isIntersectedBy(xMax, yMax, zMax);
-        if (r) {
-            return r;
+        re = e.isIntersectedBy(getxMax(), getyMax(), getzMax());
+        if (re) {
+            return re;
         }
         /**
          * Check to see if xMin and xMax are between e.xMin and e.xMax, e.yMin
          * and e.yMax are between yMin and yMax, and e.zMin and e.zMax are
          * between zMin and zMax.
          */
-        if (e.xMax.compareTo(xMax) != 1 && e.xMax.compareTo(xMin) != -1
-                && e.xMin.compareTo(xMax) != 1
-                && e.xMin.compareTo(xMin) != -1) {
-            if (yMin.compareTo(e.yMax) != 1 && yMin.compareTo(e.yMin) != -1
-                    && yMax.compareTo(e.yMax) != 1
-                    && yMax.compareTo(e.yMin) != -1) {
-                if (zMin.compareTo(e.zMax) != 1 && zMin.compareTo(e.zMin) != -1
-                        && zMax.compareTo(e.zMax) != 1
-                        && zMax.compareTo(e.zMin) != -1) {
+        if (e.getxMax().compareTo(getxMax()) != 1 && e.getxMax().compareTo(getxMin()) != -1
+                && e.getxMin().compareTo(getxMax()) != 1
+                && e.getxMin().compareTo(getxMin()) != -1) {
+            if (getyMin().compareTo(e.getyMax()) != 1 && getyMin().compareTo(e.getyMin()) != -1
+                    && getyMax().compareTo(e.getyMax()) != 1
+                    && getyMax().compareTo(e.getyMin()) != -1) {
+                if (getzMin().compareTo(e.getzMax()) != 1 && getzMin().compareTo(e.getzMin()) != -1
+                        && getzMax().compareTo(e.getzMax()) != 1
+                        && getzMax().compareTo(e.getzMin()) != -1) {
                     return true;
                 }
             }
@@ -238,15 +295,15 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * between e.yMin and e.yMax, and zMin and zMax are between e.zMin and
          * e.zMax.
          */
-        if (xMax.compareTo(e.xMax) != 1 && xMax.compareTo(e.xMin) != -1
-                && xMin.compareTo(e.xMax) != 1
-                && xMin.compareTo(e.xMin) != -1) {
-            if (e.yMin.compareTo(yMax) != 1 && e.yMin.compareTo(yMin) != -1
-                    && e.yMax.compareTo(yMax) != 1
-                    && e.yMax.compareTo(yMin) != -1) {
-                if (e.zMin.compareTo(zMax) != 1 && e.zMin.compareTo(zMin) != -1
-                        && e.zMax.compareTo(zMax) != 1
-                        && e.zMax.compareTo(zMin) != -1) {
+        if (getxMax().compareTo(e.getxMax()) != 1 && getxMax().compareTo(e.getxMin()) != -1
+                && getxMin().compareTo(e.getxMax()) != 1
+                && getxMin().compareTo(e.getxMin()) != -1) {
+            if (e.getyMin().compareTo(getyMax()) != 1 && e.getyMin().compareTo(getyMin()) != -1
+                    && e.getyMax().compareTo(getyMax()) != 1
+                    && e.getyMax().compareTo(getyMin()) != -1) {
+                if (e.getzMin().compareTo(getzMax()) != 1 && e.getzMin().compareTo(getzMin()) != -1
+                        && e.getzMax().compareTo(getzMax()) != 1
+                        && e.getzMax().compareTo(getzMin()) != -1) {
                     return true;
                 }
             }
@@ -255,47 +312,45 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param l A line segment to test for intersection.
-     * @param scale scale
-     * @param rm RoundingMode
-     * @return {@code true} if this intersects with {@code l}.
+     * Containment includes the boundary. So anything in or on the boundary is
+     * contained.
+     *
+     * @param e V3D_Envelope
+     * @return if this is contained by {@code e}
      */
-    public boolean isIntersectedBy(V3D_LineSegment l, int scale, RoundingMode rm) {
-        V3D_Envelope le = l.getEnvelope3D();
-        if (le.isIntersectedBy(getEnvelope3D())) {
-            if (isIntersectedBy(l.p)) {
-                return true;
+    public boolean isContainedBy(V3D_Envelope e) {
+        return this.getxMax().compareTo(e.getxMax()) != 1
+                && this.getxMin().compareTo(e.getxMin()) != -1
+                && this.getyMax().compareTo(e.getyMax()) != 1
+                && this.getyMin().compareTo(e.getyMin()) != -1
+                && this.getzMax().compareTo(e.getzMax()) != 1
+                && this.getzMin().compareTo(e.getzMin()) != -1;
+    }
+
+    /**
+     * @param l Line segment to intersect with {@code this}.
+     * @param flag For distinguishing between this method and
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}.
+     * @return either a point or line segment which is the intersection of
+     * {@code l} and {@code this}.
+     */
+    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean flag) {
+        V3D_Envelope le = l.getEnvelope();
+        if (le.isIntersectedBy(getEnvelope())) {
+            V3D_Geometry i = getIntersection(l);
+            if (i == null) {
+                return null;
+            } else if (i instanceof V3D_Point) {
+                V3D_Point ip = (V3D_Point) i;
+                if (l.isIntersectedBy(ip)) {
+                    return ip;
+                }
+            } else {
+                V3D_LineSegment ils = (V3D_LineSegment) i;
+                return ils.getIntersection(l);
             }
-            if (isIntersectedBy(l.q)) {
-                return true;
-            }
-            /**
-             * Check if l intersects any of the finite planes which defines the
-             * faces of the box.
-             */
-            V3D_Point p0p0p0 = new V3D_Point(e, xMin, yMin, zMin);
-            V3D_Point p0p0p1 = new V3D_Point(e, xMin, yMin, zMax);
-            V3D_Point p0p1p0 = new V3D_Point(e, xMin, yMax, zMin);
-            V3D_Point p0p1p1 = new V3D_Point(e, xMin, yMax, zMax);
-            V3D_Point p1p0p0 = new V3D_Point(e, xMax, yMin, zMin);
-            V3D_Point p1p0p1 = new V3D_Point(e, xMax, yMin, zMax);
-            V3D_Point p1p1p0 = new V3D_Point(e, xMax, yMax, zMin);
-            V3D_Point p1p1p1 = new V3D_Point(e, xMax, yMax, zMax);
-            V3D_FinitePlane x0 = new V3D_FinitePlane(p0p0p0, p0p0p1, p0p1p1);
-            V3D_FinitePlane x1 = new V3D_FinitePlane(p1p0p0, p1p0p1, p1p1p1);
-            V3D_FinitePlane y0 = new V3D_FinitePlane(p0p0p0, p1p0p0, p1p0p1);
-            V3D_FinitePlane y1 = new V3D_FinitePlane(p0p1p0, p1p1p0, p1p1p1);
-            V3D_FinitePlane z0 = new V3D_FinitePlane(p0p0p0, p1p0p0, p1p1p0);
-            V3D_FinitePlane z1 = new V3D_FinitePlane(p0p0p1, p1p0p1, p1p1p1);
-//        if(l.isIntersectedBy(x0) ||
-//                l.isIntersectedBy(x1)) {
-//            return true;
-//        }
-//        return false;
-            throw new UnsupportedOperationException();
-        } else {
-            return false;
         }
+        return null;
     }
 
     /**
@@ -313,14 +368,14 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return {@code true} if this intersects with {@code p}
      */
     public boolean isIntersectedBy(BigRational x, BigRational y, BigRational z) {
-        return x.compareTo(xMin) != -1 && x.compareTo(xMax) != 1
-                && y.compareTo(yMin) != -1 && y.compareTo(yMax) != 1
-                && z.compareTo(zMin) != -1 && z.compareTo(zMax) != 1;
+        return x.compareTo(getxMin()) != -1 && x.compareTo(getxMax()) != 1
+                && y.compareTo(getyMin()) != -1 && y.compareTo(getyMax()) != 1
+                && z.compareTo(getzMin()) != -1 && z.compareTo(getzMax()) != 1;
     }
 
     /**
      *
-     * @param en The envelope to intersect.
+     * @param en The envelop to intersect.
      * @return {@code null} if there is no intersection; {@code en} if
      * {@code this.equals(en)}; otherwise returns the intersection.
      */
@@ -331,10 +386,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         if (!this.isIntersectedBy(en)) {
             return null;
         }
-        return new V3D_Envelope(e, BigRational.max(xMin, en.xMin),
-                BigRational.min(xMax, en.xMax), BigRational.max(yMin, en.yMin),
-                BigRational.min(yMax, en.yMax), BigRational.max(zMin, en.zMin),
-                BigRational.min(zMax, en.zMax));
+        return new V3D_Envelope(e, BigRational.max(getxMin(), en.getxMin()),
+                BigRational.min(getxMax(), en.getxMax()), BigRational.max(getyMin(), en.getyMin()),
+                BigRational.min(getyMax(), en.getyMax()), BigRational.max(getzMin(), en.getzMin()),
+                BigRational.min(getzMax(), en.getzMax()));
     }
 
     /**
@@ -347,20 +402,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * intersection.
      */
     public V3D_Geometry getIntersection(V3D_Line li) {
-        V3D_Point tlf = new V3D_Point(e, xMin, yMin, zMax);
-        V3D_Point tla = new V3D_Point(e, xMin, yMax, zMax);
-        V3D_Point trf = new V3D_Point(e, xMax, yMin, zMax);
-        V3D_Point tra = new V3D_Point(e, xMax, yMax, zMax);
-        V3D_Point blf = new V3D_Point(e, xMin, yMin, zMin);
-        V3D_Point bla = new V3D_Point(e, xMin, yMax, zMin);
-        V3D_Point brf = new V3D_Point(e, xMax, yMin, zMin);
-        V3D_Point bra = new V3D_Point(e, xMax, yMax, zMin);
-        V3D_FinitePlane t = new V3D_FinitePlane(tlf, tla, trf);
-        V3D_FinitePlane b = new V3D_FinitePlane(blf, bla, brf);
-        V3D_FinitePlane l = new V3D_FinitePlane(blf, bla, tlf);
-        V3D_FinitePlane r = new V3D_FinitePlane(brf, bra, trf);
-        V3D_FinitePlane f = new V3D_FinitePlane(brf, blf, tlf);
-        V3D_FinitePlane a = new V3D_FinitePlane(bra, bla, tra);
         V3D_Geometry tli = t.getIntersection(li);
         if (tli == null) {
             // Check l, a, r, f, b
@@ -526,7 +567,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Envelope getEnvelope3D() {
+    public V3D_Envelope getEnvelope() {
         return this;
     }
 
@@ -534,12 +575,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     public boolean equals(Object o) {
         if (o instanceof V3D_Envelope) {
             V3D_Envelope en = (V3D_Envelope) o;
-            if (this.xMin.compareTo(en.xMin) == 0
-                    && this.xMax.compareTo(en.xMax) == 0
-                    && this.yMin.compareTo(en.yMin) == 0
-                    && this.yMax.compareTo(en.yMax) == 0
-                    && this.zMin.compareTo(en.zMin) == 0
-                    && this.zMax.compareTo(en.zMax) == 0) {
+            if (this.getxMin().compareTo(en.getxMin()) == 0
+                    && this.getxMax().compareTo(en.getxMax()) == 0
+                    && this.getyMin().compareTo(en.getyMin()) == 0
+                    && this.getyMax().compareTo(en.getyMax()) == 0
+                    && this.getzMin().compareTo(en.getzMin()) == 0
+                    && this.getzMax().compareTo(en.getzMax()) == 0) {
                 return true;
             }
         }
@@ -549,13 +590,55 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 43 * hash + Objects.hashCode(this.xMin);
-        hash = 43 * hash + Objects.hashCode(this.xMax);
-        hash = 43 * hash + Objects.hashCode(this.yMin);
-        hash = 43 * hash + Objects.hashCode(this.yMax);
-        hash = 43 * hash + Objects.hashCode(this.zMin);
-        hash = 43 * hash + Objects.hashCode(this.zMax);
+        hash = 43 * hash + Objects.hashCode(this.getxMin());
+        hash = 43 * hash + Objects.hashCode(this.getxMax());
+        hash = 43 * hash + Objects.hashCode(this.getyMin());
+        hash = 43 * hash + Objects.hashCode(this.getyMax());
+        hash = 43 * hash + Objects.hashCode(this.getzMin());
+        hash = 43 * hash + Objects.hashCode(this.getzMax());
         return hash;
+    }
+
+    /**
+     * @return the xMin
+     */
+    public BigRational getxMin() {
+        return xMin;
+    }
+
+    /**
+     * @return the xMax
+     */
+    public BigRational getxMax() {
+        return xMax;
+    }
+
+    /**
+     * @return the yMin
+     */
+    public BigRational getyMin() {
+        return yMin;
+    }
+
+    /**
+     * @return the yMax
+     */
+    public BigRational getyMax() {
+        return yMax;
+    }
+
+    /**
+     * @return the zMin
+     */
+    public BigRational getzMin() {
+        return zMin;
+    }
+
+    /**
+     * @return the zMax
+     */
+    public BigRational getzMax() {
+        return zMax;
     }
 
 }

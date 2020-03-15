@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 import ch.obermuhlner.math.big.BigRational;
 import java.util.Objects;
 
@@ -205,33 +206,35 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * @param l line to intersect with this.
-     * @return The intersection between {@code this} and {@code l}.
+     * @param pl The plane to intersect with the line.
+     * @param l The line to intersect with the plane.
+     * @return The intersection of the line and the plane. This is either
+     * {@code null} a line or a point.
      */
-    public V3D_Geometry getIntersection(V3D_Line l) {
-        if (this.isParallel(l)) {
-            if (isOnPlane(l)) {
+    public static V3D_Geometry getIntersection(V3D_Plane pl, V3D_Line l) {
+        if (pl.isParallel(l)) {
+            if (pl.isOnPlane(l)) {
                 return l;
             }
         }
         // Are there any points in common?
-        if (l.p.equals(p)) {
-            return p;
+        if (l.p.equals(pl.p)) {
+            return pl.p;
         }
-        if (l.p.equals(q)) {
-            return q;
+        if (l.p.equals(pl.q)) {
+            return pl.q;
         }
-        if (l.p.equals(r)) {
-            return r;
+        if (l.p.equals(pl.r)) {
+            return pl.r;
         }
-        if (l.q.equals(p)) {
-            return p;
+        if (l.q.equals(pl.p)) {
+            return pl.p;
         }
-        if (l.q.equals(q)) {
-            return q;
+        if (l.q.equals(pl.q)) {
+            return pl.q;
         }
-        if (l.q.equals(r)) {
-            return r;
+        if (l.q.equals(pl.r)) {
+            return pl.r;
         }
 
 //        BigRational t;
@@ -301,7 +304,6 @@ public class V3D_Plane extends V3D_Geometry {
 //                        .subtract(q.x).divide(v.dx);
 //            }
 //        }
-
         // Parametric equation of line:
         // x = p.x + t(v.dx)
         // y = p.y + t(v.dy)
@@ -324,29 +326,37 @@ public class V3D_Plane extends V3D_Geometry {
 //        BigRational x = (((n.dy.multiply(y0)).subtract(n.dy.multiply(y))
 //                .add(n.dz.multiply(z0)).subtract(n.dz.multiply(z)))
 //                .divide(n.dx)).subtract(x0);
-        BigRational x0 = p.x;
-        BigRational y0 = p.y;
-        BigRational z0 = p.z;
+        BigRational x0 = pl.p.x;
+        BigRational y0 = pl.p.y;
+        BigRational z0 = pl.p.z;
 //        l.p.x  + t(l.v.dx) = (((n.dy.multiply(y0)).subtract(n.dy.multiply(l.p.y + t(l.v.dy)))
 //                .add(n.dz.multiply(z0)).subtract(n.dz.multiply(l.p.z + t(l.v.dz))))
 //                .divide(n.dx)).subtract(x0);
 //        n.dx.multiply(l.p.x.add(x0)) + t.multiply(n.dx.multiply(l.v.dx)) 
 //                = (n.dy.multiply(y0)).subtract(n.dy.multiply(l.p.y + t(l.v.dy)))
 //                .add(n.dz.multiply(z0)).subtract(n.dz.multiply(l.p.z + t(l.v.dz)));
-        BigRational num = (n.dy.multiply(y0)).subtract(n.dy.multiply(l.p.y))
-                .add(n.dz.multiply(z0)).subtract(n.dz.multiply(l.p.z))
-                .subtract(n.dx.multiply(l.p.x.add(x0)));
-        BigRational den = n.dx.multiply(l.v.dx).add(n.dz.multiply(l.v.dz))
-                .add(n.dy.multiply(l.v.dy));
+        BigRational num = (pl.n.dy.multiply(y0)).subtract(pl.n.dy.multiply(l.p.y))
+                .add(pl.n.dz.multiply(z0)).subtract(pl.n.dz.multiply(l.p.z))
+                .subtract(pl.n.dx.multiply(l.p.x.add(x0)));
+        BigRational den = pl.n.dx.multiply(l.v.dx).add(pl.n.dz.multiply(l.v.dz))
+                .add(pl.n.dy.multiply(l.v.dy));
         if (den.isZero()) {
-            return new V3D_Point(e, e.P0, e.P0, e.P0);            // Not sure if this is right?
+            return new V3D_Point(pl.e, pl.e.P0, pl.e.P0, pl.e.P0);            // Not sure if this is right?
         } else {
             BigRational t = num.divide(den);
             BigRational x = l.p.x.add(t.multiply(l.v.dx));
             BigRational y = l.p.y.add(t.multiply(l.v.dy));
             BigRational z = l.p.z.add(t.multiply(l.v.dz));
-            return new V3D_Point(e, x, y, z);
+            return new V3D_Point(pl.e, x, y, z);
         }
+    }
+
+    /**
+     * @param l line to intersect with this.
+     * @return The intersection between {@code this} and {@code l}.
+     */
+    public V3D_Geometry getIntersection(V3D_Line l) {
+        return getIntersection(this, l);
     }
 
     /**
@@ -360,15 +370,13 @@ public class V3D_Plane extends V3D_Geometry {
             return null;
         }
         if (li instanceof V3D_Line) {
-            return li;
+            return l;
         }
         V3D_Point pt = (V3D_Point) li;
-        V3D_Envelope le = l.getEnvelope3D();
-        if (le.isIntersectedBy(pt)) {
+        if (l.isIntersectedBy(pt)) {
             return pt;
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**

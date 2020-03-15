@@ -14,18 +14,28 @@
  * limitations under the License.
  */
 
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.envelope;
 
-import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
-
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 
 /**
- * V3D_FiniteGeometry
+ * A class for a line segment aligned with axes. 
+ * 
+ * The rectangles may be infinitesimally small in terms of one (line segment) or 
+ * two dimensions (point).
  * 
  * @author Andy Turner
  * @version 1.0
  */
-public interface V3D_FiniteGeometry {
+public abstract class V3D_EnvelopeEdge extends V3D_LineSegment {
 
-    public abstract V3D_Envelope getEnvelope();
+    /**
+     * @param p One of three of the four corners of the {@code e}.
+     * @param q One of three of the four corners of the {@code e}.
+     */
+    public V3D_EnvelopeEdge(V3D_Point p, V3D_Point q) {
+        super(p, q);
+    }
 }

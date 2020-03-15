@@ -163,19 +163,23 @@ public class V3D_Line extends V3D_Geometry {
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_Geometry getIntersection(V3D_Line l) {
+        return getIntersection(this, l);
+    }
+    
+    public static V3D_Geometry getIntersection(V3D_Line l0, V3D_Line l1) {
         // First check if the points that define l intersect this.
-        if (isIntersectedBy(l.p)) {
-            if (isIntersectedBy(l.q)) {
-                return this; // The lines are coincident.
+        if (l0.isIntersectedBy(l1.p)) {
+            if (l0.isIntersectedBy(l1.q)) {
+                return l0; // The lines are coincident.
             } else {
-                return l.p;
+                return l1.p;
             }
         } else {
-            if (isIntersectedBy(l.q)) {
-                return l.q;
+            if (l0.isIntersectedBy(l1.q)) {
+                return l1.q;
             } else {
                 // Case of parallel and non equal lines.
-                if (this.isParallel(l)) {
+                if (l0.isParallel(l1)) {
                     return null;
                 }
                 /**
@@ -206,9 +210,9 @@ public class V3D_Line extends V3D_Geometry {
                 // s(kb/a - l) = l.q.y - q.y - eb/a
                 // s = (l.q.y - q.y - eb/a) / ((kb/a) - l)
                 BigRational t;
-                if (v.dx.isZero()) {
+                if (l0.v.dx.isZero()) {
                     // Line has constant x                    
-                    if (v.dy.isZero()) {
+                    if (l0.v.dy.isZero()) {
                         // Line has constant y
                         // Line is parallel to z axis
                         /*
@@ -216,66 +220,66 @@ public class V3D_Line extends V3D_Geometry {
                          * y = p.y + t(v.dy)
                          * z = p.z + t(v.dz)
                          */
-                        BigRational num = l.q.x.subtract(q.x).subtract(l.q.z
-                                .subtract(q.z).multiply(v.dx).divide(v.dz));
-                        BigRational den = l.v.dz.multiply(v.dx).divide(v.dz)
-                                .subtract(l.v.dx);
-                        t = num.divide(den).multiply(l.v.dz).add(l.q.z)
-                                .subtract(q.z).divide(v.dz);
-                    } else if (v.dz.isZero()) {
+                        BigRational num = l1.q.x.subtract(l0.q.x).subtract(l1.q.z
+                                .subtract(l0.q.z).multiply(l0.v.dx).divide(l0.v.dz));
+                        BigRational den = l1.v.dz.multiply(l0.v.dx).divide(l0.v.dz)
+                                .subtract(l1.v.dx);
+                        t = num.divide(den).multiply(l1.v.dz).add(l1.q.z)
+                                .subtract(l0.q.z).divide(l0.v.dz);
+                    } else if (l0.v.dz.isZero()) {
                         // Line has constant z
-                        BigRational num = l.q.z.subtract(q.z).subtract(l.q.y
-                                .subtract(q.y).multiply(v.dz).divide(v.dy));
-                        BigRational den = l.v.dy.multiply(v.dz).divide(v.dy)
-                                .subtract(l.v.dz);
-                        t = num.divide(den).multiply(l.v.dz).add(l.q.z)
-                                .subtract(q.z).divide(v.dz);
+                        BigRational num = l1.q.z.subtract(l0.q.z).subtract(l1.q.y
+                                .subtract(l0.q.y).multiply(l0.v.dz).divide(l0.v.dy));
+                        BigRational den = l1.v.dy.multiply(l0.v.dz).divide(l0.v.dy)
+                                .subtract(l1.v.dz);
+                        t = num.divide(den).multiply(l1.v.dz).add(l1.q.z)
+                                .subtract(l0.q.z).divide(l0.v.dz);
                     } else {
-                        BigRational den = l.v.dy.multiply(v.dx).divide(v.dy)
-                                .subtract(l.v.dx);
-                        BigRational num = l.q.x.subtract(q.x).subtract(l.q.y
-                                .subtract(q.y).multiply(v.dx).divide(v.dy));
-                        t = num.divide(den).multiply(l.v.dy).add(l.q.y)
-                                .subtract(q.y).divide(v.dy);
+                        BigRational den = l1.v.dy.multiply(l0.v.dx).divide(l0.v.dy)
+                                .subtract(l1.v.dx);
+                        BigRational num = l1.q.x.subtract(l0.q.x).subtract(l1.q.y
+                                .subtract(l0.q.y).multiply(l0.v.dx).divide(l0.v.dy));
+                        t = num.divide(den).multiply(l1.v.dy).add(l1.q.y)
+                                .subtract(l0.q.y).divide(l0.v.dy);
                     }
                 } else {
-                    if (v.dy.isZero()) {
-                        if (v.dz.isZero()) {
-                            BigRational num = l.q.y.subtract(q.y).subtract(l.q.x
-                                    .subtract(q.z).multiply(v.dy).divide(v.dx));
-                            BigRational den = l.v.dz.multiply(v.dy).divide(v.dx)
-                                    .subtract(l.v.dy);
-                            t = num.divide(den).multiply(l.v.dy).add(l.q.x)
-                                    .subtract(q.x).divide(v.dx);
+                    if (l0.v.dy.isZero()) {
+                        if (l0.v.dz.isZero()) {
+                            BigRational num = l1.q.y.subtract(l0.q.y).subtract(l1.q.x
+                                    .subtract(l0.q.z).multiply(l0.v.dy).divide(l0.v.dx));
+                            BigRational den = l1.v.dz.multiply(l0.v.dy).divide(l0.v.dx)
+                                    .subtract(l1.v.dy);
+                            t = num.divide(den).multiply(l1.v.dy).add(l1.q.x)
+                                    .subtract(l0.q.x).divide(l0.v.dx);
                         } else {
-                            BigRational num = l.q.y.subtract(q.y).subtract(l.q.z
-                                    .subtract(q.z).multiply(v.dy).divide(v.dz));
-                            BigRational den = l.v.dz.multiply(v.dy).divide(v.dz)
-                                    .subtract(l.v.dy);
-                            t = num.divide(den).multiply(l.v.dx).add(l.q.x)
-                                    .subtract(q.x).divide(v.dx);
+                            BigRational num = l1.q.y.subtract(l0.q.y).subtract(l1.q.z
+                                    .subtract(l0.q.z).multiply(l0.v.dy).divide(l0.v.dz));
+                            BigRational den = l1.v.dz.multiply(l0.v.dy).divide(l0.v.dz)
+                                    .subtract(l1.v.dy);
+                            t = num.divide(den).multiply(l1.v.dx).add(l1.q.x)
+                                    .subtract(l0.q.x).divide(l0.v.dx);
                         }
-                    } else if (v.dz.isZero()) {
-                        BigRational num = l.q.z.subtract(q.z).subtract(l.q.y
-                                .subtract(q.y).multiply(v.dz).divide(v.dy));
-                        BigRational den = l.v.dy.multiply(v.dz).divide(v.dy)
-                                .subtract(l.v.dz);
-                        t = num.divide(den).multiply(l.v.dx).add(l.q.x)
-                                .subtract(q.x).divide(v.dx);
+                    } else if (l0.v.dz.isZero()) {
+                        BigRational num = l1.q.z.subtract(l0.q.z).subtract(l1.q.y
+                                .subtract(l0.q.y).multiply(l0.v.dz).divide(l0.v.dy));
+                        BigRational den = l1.v.dy.multiply(l0.v.dz).divide(l0.v.dy)
+                                .subtract(l1.v.dz);
+                        t = num.divide(den).multiply(l1.v.dx).add(l1.q.x)
+                                .subtract(l0.q.x).divide(l0.v.dx);
                     } else {
                         //dy dz nonzero
-                        BigRational den = l.v.dx.multiply(v.dy).divide(v.dx)
-                                .subtract(l.v.dy);
-                        BigRational num = l.q.y.subtract(q.y).subtract(l.q.x
-                                .subtract(q.x).multiply(v.dy).divide(v.dx));
-                        t = num.divide(den).multiply(l.v.dx).add(l.q.x)
-                                .subtract(q.x).divide(v.dx);
+                        BigRational den = l1.v.dx.multiply(l0.v.dy).divide(l0.v.dx)
+                                .subtract(l1.v.dy);
+                        BigRational num = l1.q.y.subtract(l0.q.y).subtract(l1.q.x
+                                .subtract(l0.q.x).multiply(l0.v.dy).divide(l0.v.dx));
+                        t = num.divide(den).multiply(l1.v.dx).add(l1.q.x)
+                                .subtract(l0.q.x).divide(l0.v.dx);
                     }
                 }
-                return new V3D_Point(e,
-                        t.multiply(v.dx).add(q.x),
-                        t.multiply(v.dy).add(q.y),
-                        t.multiply(v.dz).add(q.z));
+                return new V3D_Point(l0.e,
+                        t.multiply(l0.v.dx).add(l0.q.x),
+                        t.multiply(l0.v.dy).add(l0.q.y),
+                        t.multiply(l0.v.dz).add(l0.q.z));
             }
         }
     }

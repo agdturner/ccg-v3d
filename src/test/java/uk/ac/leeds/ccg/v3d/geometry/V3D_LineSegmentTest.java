@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -90,14 +91,14 @@ public class V3D_LineSegmentTest extends V3D_Test {
     }
 
     /**
-     * Test of getEnvelope3D method, of class V3D_LineSegment.
+     * Test of getEnvelope method, of class V3D_LineSegment.
      */
     @Test
     public void testGetEnvelope3D() {
         System.out.println("getEnvelope3D");
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
         V3D_Envelope expResult = new V3D_Envelope(e, P0P0P0, P1P1P0);
-        V3D_Envelope result = instance.getEnvelope3D();
+        V3D_Envelope result = instance.getEnvelope();
         assertEquals(expResult, result);
     }
 
@@ -182,27 +183,6 @@ public class V3D_LineSegmentTest extends V3D_Test {
                 instance.v.dy.divide(magnitude),
                 instance.v.dz.divide(magnitude));
         result = instance.initUnitVector(scale, rm);
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of isIntersectedBy method, of class V3D_LineSegment.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_Envelope_int() {
-        System.out.println("isIntersectedBy");
-        V3D_Envelope en = new V3D_Envelope(e, P0P0P0, P1P1P1);
-        int scale = 0;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, N1N1N1);
-        boolean expResult = true;
-        boolean result = instance.isIntersectedBy(en, scale, rm);
-        assertEquals(expResult, result);
-        // Test 2
-        en = new V3D_Envelope(e, N1P0P0, P1P1P1);
-        instance = new V3D_LineSegment(P0P0P0, N1N1N1);
-        expResult = true;
-        result = instance.isIntersectedBy(en, scale, rm);
         assertEquals(expResult, result);
     }
 
