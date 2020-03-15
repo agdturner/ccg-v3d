@@ -4,6 +4,7 @@ https://github.com/agdturner/agdt-java-vector3D
 
 ## Current Version
 Developed and tested on Java 11 using Maven.
+https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3D
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3D -->
 <dependency>
