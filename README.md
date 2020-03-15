@@ -30,7 +30,7 @@ A 0.1 release is available on Maven Central. The next phase of development is to
 The library began development in March 2020 and is actively being developed. 
 
 ## Known uses
-As yet it is not being used, but I plan to use it to construct a 3D model of Earth :)
+As yet it is not being used, but I plan to use it to construct a 3D model of Earth :) https://github.com/agdturner/agdt-java-project-Earth
 
 ## Dependencies
 The library relies heavily on the Big Math
