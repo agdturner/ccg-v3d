@@ -186,8 +186,9 @@ public class V3D_Point extends V3D_Geometry implements Comparable<V3D_Point>,
     /**
      * Order first in terms of {@link #x}, then {@link #y}, then {@link #z}.
      *
-     * @param o
-     * @return
+     * @param o The point to compare with.
+     * @return -1, 0, 1 depending on if this is less than equal to or greater 
+     * than {@code o}.
      */
     @Override
     public int compareTo(V3D_Point o) {

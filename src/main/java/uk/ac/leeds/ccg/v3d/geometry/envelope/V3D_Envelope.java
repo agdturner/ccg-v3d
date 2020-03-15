@@ -147,8 +147,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 yMax = BigRational.max(yMax, points[i].y);
                 zMin = BigRational.min(zMin, points[i].z);
                 zMax = BigRational.max(zMax, points[i].z);
-                init();
             }
+            init();
         }
     }
 

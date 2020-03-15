@@ -120,7 +120,7 @@ public class V3D_Vector extends V3D_Object {
     }
 
     /**
-     * @return {@code true} if {@code this.equals(e.zeroVector)) 
+     * @return {@code true} if {@code this.equals(e.zeroVector)} 
      */
     public boolean isZeroVector() {
         return this.equals(e.zeroVector);

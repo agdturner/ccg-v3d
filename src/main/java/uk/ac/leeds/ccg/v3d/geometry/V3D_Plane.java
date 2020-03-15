@@ -817,8 +817,7 @@ public class V3D_Plane extends V3D_Geometry {
 
     /**
      * @param l The line to test if it is parallel to this.
-     * @return {@code true} if {
-     * @coe this} is parallel to {@code l}.
+     * @return {@code true} if {@code this} is parallel to {@code l}.
      */
     public boolean isParallel(V3D_Line l) {
         V3D_Vector cp = this.n.getCrossProduct(l.v);

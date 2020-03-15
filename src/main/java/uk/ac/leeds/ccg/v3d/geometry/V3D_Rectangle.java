@@ -53,7 +53,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
 
     @Override
     public V3D_Envelope getEnvelope() {
-        return new V3D_Envelope(e, p, q, r);
+        return new V3D_Envelope(e, p, q, r, s);
     }
 
     /**
