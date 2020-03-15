@@ -45,12 +45,9 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
      * @param q The top right corner of the rectangle.
      * @param r The bottom left corner of the rectangle.
      * @param s The bottom right corner of the rectangle.
-     * @param checkCollinearity If {@code false} the rectangle is for an
-     * envelope face which is allowed to collapse to a line or a point.
      */
-    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s,
-            boolean checkCollinearity) {
-        super(p, q, r, checkCollinearity);
+    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s) {
+        super(p, q, r);
         this.s = s;
     }
 

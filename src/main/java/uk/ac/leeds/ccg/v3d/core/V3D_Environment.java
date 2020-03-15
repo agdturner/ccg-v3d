@@ -108,7 +108,7 @@ public class V3D_Environment extends Generic_MemoryManager {
         super();
         this.env = e;
         origin = new V3D_Point(this, P0, P0, P0);
-        xAxis = new V3D_Line(origin, new V3D_Point(this, P1, P0, P0));
+        xAxis = new V3D_Line(origin, new V3D_Point(this, P1, P0, P0), false);
         yAxis = new V3D_Line(origin, new V3D_Point(this, P0, P1, P0));
         zAxis = new V3D_Line(origin, new V3D_Point(this, P0, P0, P1));
         i = new V3D_Vector(new V3D_Point(this, P1, P0, P0));

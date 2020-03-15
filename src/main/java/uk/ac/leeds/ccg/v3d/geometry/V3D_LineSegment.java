@@ -22,9 +22,9 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 /**
- * Class for a line segment in 3D represented by two Point3D instances. Two 
- * instances are regarded as equal i they are represented by the same points 
- * irrespective as which is assigned as {@link #p} and which is assigned as 
+ * Class for a line segment in 3D represented by two Point3D instances. Two
+ * instances are regarded as equal i they are represented by the same points
+ * irrespective as which is assigned as {@link #p} and which is assigned as
  * {@link #q}.
  *
  * @author Andy Turner
@@ -34,7 +34,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
 
-    public final V3D_Envelope en;
+    protected V3D_Envelope en;
 
     /**
      * For storing the unit vector. Only if the direction aligns with an axis is
@@ -60,7 +60,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     public V3D_LineSegment(V3D_Point p, V3D_Point q) {
         super(p, q);
-        en = new V3D_Envelope(e, p, q);
     }
 
     /**
@@ -166,6 +165,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Envelope getEnvelope() {
+        if (en == null) {
+            en = new V3D_Envelope(e, p, q);
+        }
         return en;
     }
 
@@ -207,7 +209,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     public V3D_Geometry getIntersection(V3D_LineSegment l) {
         return getIntersection(this, l);
     }
-    
+
     public static V3D_Geometry getIntersection(V3D_LineSegment l0, V3D_LineSegment l1) {
         V3D_Envelope ren = l0.en.getIntersection(l1.en);
         if (ren == null) {

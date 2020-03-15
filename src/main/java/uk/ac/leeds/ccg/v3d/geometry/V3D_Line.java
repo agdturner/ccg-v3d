@@ -66,18 +66,42 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
-     * @throws RuntimeException If p and q are coincident.
+     * @param checkCoincidence If true a check for coincidence of {@link #p} and
+     * {@link #q} is done otherwise it is not done (as in the case when the line
+     * is a line segment defining the edge of an envelope which is allowed to be
+     * a point).
+     * @throws RuntimeException If {@code p} and {@code q} are coincident and
+     * {@code checkCoincidence} is {@code true}.
      */
-    public V3D_Line(V3D_Point p, V3D_Point q) {
+    public V3D_Line(V3D_Point p, V3D_Point q, boolean checkCoincidence) {
         super(p.e);
-        if (p.equals(q)) {
-            throw new RuntimeException("The inputs p and q are the same point "
-                    + "and do not define a line.");
+        if (checkCoincidence) {
+            if (p.equals(q)) {
+                throw new RuntimeException("The inputs p and q are the same point "
+                        + "and do not define a line.");
+            }
         }
+        init(p, q);
+    }
+
+    private void init(V3D_Point p, V3D_Point q) {
         this.p = new V3D_Point(p);
         this.q = new V3D_Point(q);
         v = new V3D_Vector(e, q.x.subtract(p.x), q.y.subtract(p.y),
                 q.z.subtract(p.z));
+    }
+
+    /**
+     * {@code p} should not be equal to {@code q} unless the line is a line
+     * segment which is part of an envelope. If unsure the use
+     * {@link #V3D_Line(V3D_Point, V3D_Point, boolean)}.
+     *
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     */
+    public V3D_Line(V3D_Point p, V3D_Point q) {
+        super(p.e);
+        init(p, q);
     }
 
     /**
@@ -165,7 +189,7 @@ public class V3D_Line extends V3D_Geometry {
     public V3D_Geometry getIntersection(V3D_Line l) {
         return getIntersection(this, l);
     }
-    
+
     public static V3D_Geometry getIntersection(V3D_Line l0, V3D_Line l1) {
         // First check if the points that define l intersect this.
         if (l0.isIntersectedBy(l1.p)) {

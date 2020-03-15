@@ -58,34 +58,34 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * One of the points that defines the plane.
      */
-    public final V3D_Point p;
+    protected V3D_Point p;
 
     /**
      * One of the points that defines the plane.
      */
-    public final V3D_Point q;
+   protected V3D_Point q;
 
     /**
      * One of the points that defines the plane.
      */
-    public final V3D_Point r;
+    protected V3D_Point r;
 
     /**
      * The vector representing the move from {@link #p} to {@link #q}.
      */
-    public final V3D_Vector pq;
+    protected V3D_Vector pq;
 
     /**
      * The vector representing the move from {@link #p} to {@link #r}.
      */
-    public final V3D_Vector pr;
+    protected V3D_Vector pr;
 
     /**
      * The normal vector. (This is perpendicular to the plane and it's direction
      * is given by order in which the two vectors {@link #pq} and {@link #pr}
      * are used in a cross product calculation when the plane is constructed.
      */
-    public V3D_Vector n;
+    protected V3D_Vector n;
 
     /**
      * @param p What {@link #p} is set to.
@@ -98,7 +98,19 @@ public class V3D_Plane extends V3D_Geometry {
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r,
             boolean checkCollinearity) {
         super(p.e);
-        //                         i                 j                   k
+        init(p, q, r);
+        if (checkCollinearity) {
+            // Check for collinearity
+            if (n.dx.compareTo(e.P0) == 0
+                    && n.dy.compareTo(e.P0) == 0
+                    && n.dz.compareTo(e.P0) == 0) {
+                throw new RuntimeException("The three points do not define a plane, "
+                        + "but are collinear (they might all be the same point!");
+            }
+        }
+    }
+
+    private void init(V3D_Point p, V3D_Point q, V3D_Point r) {
         pq = new V3D_Vector(e, p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
         pr = new V3D_Vector(e, p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
         /**
@@ -110,16 +122,21 @@ public class V3D_Plane extends V3D_Geometry {
                 pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy)));
         this.p = p;
         this.q = q;
-        this.r = r;
-        if (!checkCollinearity) {
-            // Check for collinearity
-            if (n.dx.compareTo(e.P0) == 0
-                    && n.dy.compareTo(e.P0) == 0
-                    && n.dz.compareTo(e.P0) == 0) {
-                throw new RuntimeException("The three points do not define a plane, "
-                        + "but are collinear (they might all be the same point!");
-            }
-        }
+        this.r = r;        
+    }
+    
+    /**
+     * This assumes that p, q and r are not collinear or that this is called in
+     * the construction of an envelope face which can effectively be a line
+     * segment or a point.
+     *
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     * @param r What {@link #r} is set to.
+     */
+    public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r) {
+        super(p.e);
+        init(p, q, r);
     }
 
     /**

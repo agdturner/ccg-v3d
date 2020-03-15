@@ -32,7 +32,7 @@ import uk.ac.leeds.ccg.v3d.geometry.V3D_Rectangle;
  */
 public abstract class V3D_EnvelopeFace extends V3D_Rectangle {
 
-    protected final V3D_Envelope en;
+    protected V3D_Envelope en;
     
     /**
      * @param p One of the four corners of the rectangle/envelope.
@@ -41,12 +41,14 @@ public abstract class V3D_EnvelopeFace extends V3D_Rectangle {
      * @param s One of the four corners of the rectangle/envelope.
      */
     public V3D_EnvelopeFace(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s) {
-        super(p, q, r, s, false);
-        this.en = new V3D_Envelope(p.e, p, q, r);
+        super(p, q, r, s);
     }
 
     @Override
     public V3D_Envelope getEnvelope() {
+        if (en == null) {
+            en = new V3D_Envelope(e, p, q, r);
+        }
         return en;
     }
     
