@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.envelope;
 
-import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
-import java.math.RoundingMode;
+import ch.obermuhlner.math.big.BigRational;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,15 +25,20 @@ import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.test.V3D_Test;
 
 /**
  * V3D_EnvelopeTest
- *
+ * 
  * @author Andy Turner
  * @version 1.0
  */
 public class V3D_EnvelopeTest extends V3D_Test {
-
+    
     private static final long serialVersionUID = 1L;
 
     public V3D_EnvelopeTest() throws Exception {
@@ -65,7 +69,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     public void testToString() {
         System.out.println("toString");
         V3D_Envelope instance = new V3D_Envelope(e, P0P0P0, P0P0P0);
-        String expResult = "V3D_Envelope(xMin=0, xMax=0,yMin=0, yMax=0,zMin=0,"
+        String expResult = "V3D_Envelope(xMin=0, xMax=0, yMin=0, yMax=0,zMin=0,"
                 + " zMax=0)";
         String result = instance.toString();
         assertEquals(expResult, result);
@@ -220,4 +224,148 @@ public class V3D_EnvelopeTest extends V3D_Test {
         
     }
 
+    /**
+     * Test of union method, of class V3D_Envelope.
+     */
+    @Test
+    public void testUnion() {
+        System.out.println("union");
+        V3D_Envelope e = null;
+        V3D_Envelope instance = null;
+        V3D_Envelope expResult = null;
+        V3D_Envelope result = instance.union(e);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of isContainedBy method, of class V3D_Envelope.
+     */
+    @Test
+    public void testIsContainedBy() {
+        System.out.println("isContainedBy");
+        V3D_Envelope e = null;
+        V3D_Envelope instance = null;
+        boolean expResult = false;
+        boolean result = instance.isContainedBy(e);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Envelope.
+     */
+    @Test
+    public void testGetIntersection_V3D_LineSegment_boolean() {
+        System.out.println("getIntersection");
+        V3D_LineSegment l = null;
+        boolean flag = false;
+        V3D_Envelope instance = null;
+        V3D_Geometry expResult = null;
+        V3D_Geometry result = instance.getIntersection(l, flag);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getEnvelope method, of class V3D_Envelope.
+     */
+    @Test
+    public void testGetEnvelope() {
+        System.out.println("getEnvelope");
+        V3D_Envelope instance = null;
+        V3D_Envelope expResult = null;
+        V3D_Envelope result = instance.getEnvelope();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getxMin method, of class V3D_Envelope.
+     */
+    @Test
+    public void testGetxMin() {
+        System.out.println("getxMin");
+        V3D_Envelope instance = null;
+        BigRational expResult = null;
+        BigRational result = instance.getxMin();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getxMax method, of class V3D_Envelope.
+     */
+    @Test
+    public void testGetxMax() {
+        System.out.println("getxMax");
+        V3D_Envelope instance = null;
+        BigRational expResult = null;
+        BigRational result = instance.getxMax();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getyMin method, of class V3D_Envelope.
+     */
+    @Test
+    public void testGetyMin() {
+        System.out.println("getyMin");
+        V3D_Envelope instance = null;
+        BigRational expResult = null;
+        BigRational result = instance.getyMin();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getyMax method, of class V3D_Envelope.
+     */
+    @Test
+    public void testGetyMax() {
+        System.out.println("getyMax");
+        V3D_Envelope instance = null;
+        BigRational expResult = null;
+        BigRational result = instance.getyMax();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getzMin method, of class V3D_Envelope.
+     */
+    @Test
+    public void testGetzMin() {
+        System.out.println("getzMin");
+        V3D_Envelope instance = null;
+        BigRational expResult = null;
+        BigRational result = instance.getzMin();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getzMax method, of class V3D_Envelope.
+     */
+    @Test
+    public void testGetzMax() {
+        System.out.println("getzMax");
+        V3D_Envelope instance = null;
+        BigRational expResult = null;
+        BigRational result = instance.getzMax();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+    
 }

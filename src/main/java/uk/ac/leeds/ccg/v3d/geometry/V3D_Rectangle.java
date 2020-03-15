@@ -47,7 +47,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
      * @param s The bottom right corner of the rectangle.
      */
     public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s) {
-        super(p, q, r);
+        super(p, q, r, true);
         this.s = s;
     }
 

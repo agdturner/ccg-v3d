@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import uk.ac.leeds.ccg.v3d.test.V3D_Test;
 import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;

@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.test;
 
 import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.core.V3D_Object;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 
 /**
  * V3D_Test

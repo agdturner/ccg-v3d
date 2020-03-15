@@ -92,9 +92,12 @@ public class V3D_Plane extends V3D_Geometry {
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
+     * @param skipCollinearityCheck If true then the collinearity check is
+     * skipped.
      * @throws RuntimeException If p, q and r are collinear.
      */
-    public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r) {
+    public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r,
+            boolean skipCollinearityCheck) {
         super(p.e);
         //                         i                 j                   k
         pq = new V3D_Vector(e, p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
@@ -109,12 +112,14 @@ public class V3D_Plane extends V3D_Geometry {
         this.p = p;
         this.q = q;
         this.r = r;
-        // Check for collinearity
-        if (n.dx.compareTo(e.P0) == 0
-                && n.dy.compareTo(e.P0) == 0
-                && n.dz.compareTo(e.P0) == 0) {
-            throw new RuntimeException("The three points do not define a plane, "
-                    + "but are collinear (they might all be the same point!");
+        if (!skipCollinearityCheck) {
+            // Check for collinearity
+            if (n.dx.compareTo(e.P0) == 0
+                    && n.dy.compareTo(e.P0) == 0
+                    && n.dz.compareTo(e.P0) == 0) {
+                throw new RuntimeException("The three points do not define a plane, "
+                        + "but are collinear (they might all be the same point!");
+            }
         }
     }
 

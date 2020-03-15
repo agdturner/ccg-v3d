@@ -31,7 +31,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
     private static final long serialVersionUID = 1L;
 
     public V3D_Triangle(V3D_Point p, V3D_Point q, V3D_Point r) {
-        super(p, q, r);
+        super(p, q, r, false);
     }
 
     @Override
