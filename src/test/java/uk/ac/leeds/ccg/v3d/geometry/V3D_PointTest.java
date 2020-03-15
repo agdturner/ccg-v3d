@@ -148,7 +148,7 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("getEnvelope");        
         V3D_Envelope expResult = new V3D_Envelope(e, P0P0P0, P1P1P1);
         V3D_Envelope result = P0P0P0.getEnvelope();
-        result.union(P1P1P1.getEnvelope());
+        result = result.union(P1P1P1.getEnvelope());
         assertEquals(expResult, result);
     }
 

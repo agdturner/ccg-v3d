@@ -136,6 +136,7 @@ public class V3D_EnvelopeFaceTop extends V3D_EnvelopeFace {
             }
         } else {
                 V3D_Point pi = (V3D_Point) i;
+                en = getEnvelope();
                 if (pi.x.compareTo(en.getxMin()) != -1
                         && pi.x.compareTo(en.getxMax()) != 1
                         && pi.y.compareTo(en.getyMin()) != -1
