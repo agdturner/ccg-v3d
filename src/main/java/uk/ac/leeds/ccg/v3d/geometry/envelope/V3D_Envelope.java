@@ -193,9 +193,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     @Override
     public String toString() {
         return this.getClass().getSimpleName()
-                + "(xMin=" + getxMin().toString() + ", xMax=" + getxMax().toString() + ","
-                + "yMin=" + getyMin().toString() + ", yMax=" + getyMax().toString() + ","
-                + "zMin=" + getzMin().toString() + ", zMax=" + getzMax().toString() + ")";
+                + "(xMin=" + getxMin().toString() + ", xMax=" + getxMax().toString()
+                + ", yMin=" + getyMin().toString() + ", yMax=" + getyMax().toString()
+                + ", zMin=" + getzMin().toString() + ", zMax=" + getzMax().toString() + ")";
     }
 
     /**

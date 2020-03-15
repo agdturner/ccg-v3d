@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 import ch.obermuhlner.math.big.BigRational;
 import java.util.Objects;
 
@@ -92,12 +91,12 @@ public class V3D_Plane extends V3D_Geometry {
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
-     * @param skipCollinearityCheck If true then the collinearity check is
-     * skipped.
+     * @param checkCollinearity If {@code false} the rectangle is for an
+     * envelope face which is allowed to collapse to a line or a point.
      * @throws RuntimeException If p, q and r are collinear.
      */
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r,
-            boolean skipCollinearityCheck) {
+            boolean checkCollinearity) {
         super(p.e);
         //                         i                 j                   k
         pq = new V3D_Vector(e, p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
@@ -112,7 +111,7 @@ public class V3D_Plane extends V3D_Geometry {
         this.p = p;
         this.q = q;
         this.r = r;
-        if (!skipCollinearityCheck) {
+        if (!checkCollinearity) {
             // Check for collinearity
             if (n.dx.compareTo(e.P0) == 0
                     && n.dy.compareTo(e.P0) == 0

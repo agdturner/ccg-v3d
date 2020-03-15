@@ -41,7 +41,7 @@ public abstract class V3D_EnvelopeFace extends V3D_Rectangle {
      * @param s One of the four corners of the rectangle/envelope.
      */
     public V3D_EnvelopeFace(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s) {
-        super(p, q, r, s);
+        super(p, q, r, s, false);
         this.en = new V3D_Envelope(p.e, p, q, r);
     }
 
