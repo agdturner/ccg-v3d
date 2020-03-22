@@ -3,8 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-vector3d</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.2</version>
     <!--
+    <version>1.0-SNAPSHOT</version>
     <version>0.1</version>
     -->
     <packaging>jar</packaging>
@@ -42,8 +43,8 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <agdt-java-generic.version>1.2-SNAPSHOT</agdt-java-generic.version>
-        <agdt-java-math.version>1.4-SNAPSHOT</agdt-java-math.version>
+        <agdt-java-generic.version>1.5</agdt-java-generic.version>
+        <agdt-java-math.version>1.5</agdt-java-math.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.version>3.0.1</maven.version>
@@ -52,16 +53,19 @@
     </properties>
     
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-generic -->
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>agdt-java-generic</artifactId>
             <version>${agdt-java-generic.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-math -->
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>agdt-java-math</artifactId>
             <version>${agdt-java-math.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/ch.obermuhlner/big-math -->
         <dependency>
             <groupId>ch.obermuhlner</groupId>
             <artifactId>big-math</artifactId>

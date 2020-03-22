@@ -16,7 +16,6 @@
 
 package uk.ac.leeds.ccg.v3d.geometry.envelope;
 
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 
@@ -32,8 +31,8 @@ import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 public abstract class V3D_EnvelopeEdge extends V3D_LineSegment {
 
     /**
-     * @param p One of three of the four corners of the {@code e}.
-     * @param q One of three of the four corners of the {@code e}.
+     * @param p One of the four corners of a face of the envelope.
+     * @param q One of the four corners of a face of the envelope.
      */
     public V3D_EnvelopeEdge(V3D_Point p, V3D_Point q) {
         super(p, q);
