@@ -16,12 +16,12 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.core.V3D_Object;
 
 /**
  * V3D_Vector
@@ -29,7 +29,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Object;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Vector extends V3D_Object {
+public class V3D_Vector implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -54,14 +54,11 @@ public class V3D_Vector extends V3D_Object {
     public BigDecimal magnitude;
 
     /**
-     * @param e V3D_Environment
      * @param dx What {@link #dx} is set to.
      * @param dy What {@link #dy} is set to.
      * @param dz What {@link #dz} is set to.
      */
-    public V3D_Vector(V3D_Environment e, BigRational dx, BigRational dy, 
-            BigRational dz) {
-        super(e);
+    public V3D_Vector(BigRational dx, BigRational dy, BigRational dz) {
         this.dx = dx;
         this.dy = dy;
         this.dz = dz;
@@ -73,7 +70,6 @@ public class V3D_Vector extends V3D_Object {
      * @param p the point to which the vector starting at the origin goes.
      */
     public V3D_Vector(V3D_Point p) {
-        super(p.e);
         this.dx = p.x;
         this.dy = p.y;
         this.dz = p.z;
@@ -86,7 +82,6 @@ public class V3D_Vector extends V3D_Object {
      * @param q the point where the vector ends.
      */
     public V3D_Vector(V3D_Point p, V3D_Point q) {
-        super(p.e);
         this.dx = q.x.subtract(p.x);
         this.dy = q.y.subtract(p.y);
         this.dz = q.z.subtract(p.z);
@@ -123,7 +118,7 @@ public class V3D_Vector extends V3D_Object {
      * @return {@code true} if {@code this.equals(e.zeroVector)} 
      */
     public boolean isZeroVector() {
-        return this.equals(e.zeroVector);
+        return this.equals(V3D_Environment.ZERO_VECTOR);
     }
     
     /**
@@ -131,8 +126,7 @@ public class V3D_Vector extends V3D_Object {
      * @return Scaled vector.
      */
     public V3D_Vector multiply(BigRational s) {
-        return new V3D_Vector(e, dx.multiply(s), dy.multiply(s), 
-                dz.multiply(s));
+        return new V3D_Vector(dx.multiply(s), dy.multiply(s),                 dz.multiply(s));
     }
     
     /**
@@ -140,7 +134,7 @@ public class V3D_Vector extends V3D_Object {
      * @return A new vector which is this add {@code v}.
      */
     public V3D_Vector add(V3D_Vector v) {
-        return new V3D_Vector(e, dx.add(v.dx), dy.add(v.dy), dz.add(v.dz));
+        return new V3D_Vector(dx.add(v.dx), dy.add(v.dy), dz.add(v.dz));
     }
     
     /**
@@ -148,7 +142,7 @@ public class V3D_Vector extends V3D_Object {
      * @return A new vector which is this subtract {@code v}.
      */
     public V3D_Vector subtract(V3D_Vector v) {
-        return new V3D_Vector(e, dx.subtract(v.dx), dy.subtract(v.dy), 
+        return new V3D_Vector(dx.subtract(v.dx), dy.subtract(v.dy), 
                 dz.subtract(v.dz));
     }
     
@@ -268,7 +262,7 @@ public class V3D_Vector extends V3D_Object {
      * @return V3D_Vector
      */
     public V3D_Vector getCrossProduct(V3D_Vector v) {
-        return new V3D_Vector(e, dy.multiply(v.dz).subtract(v.dy.multiply(dz)),
+        return new V3D_Vector(dy.multiply(v.dz).subtract(v.dy.multiply(dz)),
                 dz.multiply(v.dx).subtract(v.dz.multiply(dx)),
                 dx.multiply(v.dy).subtract(v.dx.multiply(dy)));
     }
@@ -282,6 +276,6 @@ public class V3D_Vector extends V3D_Object {
      */
     public V3D_Vector getUnitVector(int scale, RoundingMode rm) {
         BigRational m = BigRational.valueOf(getMagnitude(scale + 2, rm));
-        return new V3D_Vector(e, dx.divide(m), dy.divide(m), dz.divide(m));
+        return new V3D_Vector(dx.divide(m), dy.divide(m), dz.divide(m));
     }
 }

@@ -367,10 +367,10 @@ public class V3D_LineTest extends V3D_Test {
         BigDecimal expResult;
         BigDecimal result;
         // Test 1
-        l = new V3D_Line(new V3D_Point(e, P2, P6, N9), new V3D_Vector(e, P3, P4, N4));
+        l = new V3D_Line(new V3D_Point(e, P2, P6, N9), new V3D_Vector(P3, P4, N4));
         scale = 1;
         rm = RoundingMode.HALF_UP;
-        instance = new V3D_Line(new V3D_Point(e, N1, N2, P3), new V3D_Vector(e, P2, N6, P1));
+        instance = new V3D_Line(new V3D_Point(e, N1, N2, P3), new V3D_Vector(P2, N6, P1));
         expResult = new BigDecimal("4.7");
         result = instance.getDistance(l, scale, rm);
         //assertEquals(expResult, result);

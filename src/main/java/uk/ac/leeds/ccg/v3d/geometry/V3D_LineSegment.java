@@ -109,11 +109,11 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
                 return initUnitVector(scale, rm);
             } else {
                 if (unitVectorRoundingMode.equals(rm)) {
-                    return new V3D_Vector(e, unitVector.dx, unitVector.dy,
+                    return new V3D_Vector(unitVector.dx, unitVector.dy,
                             unitVector.dz);
                 } else {
                     if (scale < unitVectorScale) {
-                        return new V3D_Vector(e, unitVector.dx, unitVector.dy,
+                        return new V3D_Vector(unitVector.dx, unitVector.dy,
                                 unitVector.dz);
                     } else {
                         return initUnitVector(scale, rm);
@@ -135,7 +135,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     public V3D_Vector initUnitVector(int scale, RoundingMode rm) {
         if (unitVector == null) {
             BigRational distance = BigRational.valueOf(getLength(scale + 2, rm));
-            unitVector = new V3D_Vector(e, v.dx.divide(distance),
+            unitVector = new V3D_Vector(v.dx.divide(distance),
                     v.dy.divide(distance), v.dz.divide(distance));
         }
         return unitVector;

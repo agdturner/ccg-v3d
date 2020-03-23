@@ -142,7 +142,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
         BigRational magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(
                 P2.toBigDecimal(), scale + 2, rm));
-        V3D_Vector expResult = new V3D_Vector(e, instance.v.dx.divide(magnitude),
+        V3D_Vector expResult = new V3D_Vector(instance.v.dx.divide(magnitude),
                 instance.v.dy.divide(magnitude),
                 instance.v.dz.divide(magnitude));
         V3D_Vector result = instance.getUnitVector(scale, rm);
@@ -150,8 +150,8 @@ public class V3D_LineSegmentTest extends V3D_Test {
         // Test 2
         instance = new V3D_LineSegment(P0P0P0, P1P1P1);
         magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(P3.toBigDecimal(), scale + 2, rm));
-        expResult = new V3D_Vector(e, instance.v.dx.divide(magnitude),
-                instance.v.dy.divide(magnitude), 
+        expResult = new V3D_Vector(instance.v.dx.divide(magnitude),
+                instance.v.dy.divide(magnitude),
                 instance.v.dz.divide(magnitude));
         result = instance.getUnitVector(scale, rm);
         assertEquals(expResult, result);
@@ -169,18 +169,16 @@ public class V3D_LineSegmentTest extends V3D_Test {
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
         BigRational magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(
                 P2.toBigDecimal(), scale + 2, rm));
-        V3D_Vector expResult = new V3D_Vector(e, 
-                instance.v.dx.divide(magnitude),
+        V3D_Vector expResult = new V3D_Vector(instance.v.dx.divide(magnitude),
                 instance.v.dy.divide(magnitude),
                 instance.v.dz.divide(magnitude));
         V3D_Vector result = instance.initUnitVector(scale, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_LineSegment(P0P0P0, P1P1P1);
-        magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(P3.toBigDecimal(), 
+        magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(P3.toBigDecimal(),
                 scale + 2, rm));
-        expResult = new V3D_Vector(e, 
-                instance.v.dx.divide(magnitude),
+        expResult = new V3D_Vector(instance.v.dx.divide(magnitude),
                 instance.v.dy.divide(magnitude),
                 instance.v.dz.divide(magnitude));
         result = instance.initUnitVector(scale, rm);

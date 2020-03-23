@@ -111,12 +111,12 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     private void init(V3D_Point p, V3D_Point q, V3D_Point r) {
-        pq = new V3D_Vector(e, p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
-        pr = new V3D_Vector(e, p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
+        pq = new V3D_Vector(p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
+        pr = new V3D_Vector(p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
         /**
          * Calculate the normal perpendicular vector.
          */
-        n = new V3D_Vector(e,
+        n = new V3D_Vector(
                 pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz)),
                 pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz)).negate(),
                 pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy)));
@@ -172,8 +172,8 @@ public class V3D_Plane extends V3D_Geometry {
         // Set: x = 0; z = 0
         // Then: y = d/n.dy
         this.r = new V3D_Point(e, e.P0, d.divide(n.dy), e.P0);
-        pq = new V3D_Vector(e, p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
-        pr = new V3D_Vector(e, p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
+        pq = new V3D_Vector(p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
+        pr = new V3D_Vector(p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
         this.n = n;
     }
 

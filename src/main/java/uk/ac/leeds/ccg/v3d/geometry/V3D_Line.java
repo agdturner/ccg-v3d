@@ -87,7 +87,7 @@ public class V3D_Line extends V3D_Geometry {
     private void init(V3D_Point p, V3D_Point q) {
         this.p = new V3D_Point(p);
         this.q = new V3D_Point(q);
-        v = new V3D_Vector(e, q.x.subtract(p.x), q.y.subtract(p.y),
+        v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
                 q.z.subtract(p.z));
     }
 
@@ -154,7 +154,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if p is on the line.
      */
     public boolean isIntersectedBy(V3D_Point pt) {
-        V3D_Vector ppt = new V3D_Vector(e, pt.x.subtract(p.x),
+        V3D_Vector ppt = new V3D_Vector(pt.x.subtract(p.x),
                 pt.y.subtract(p.y), pt.z.subtract(p.z));
         V3D_Vector cp = v.getCrossProduct(ppt);
         return cp.dx.isZero() && cp.dy.isZero() && cp.dz.isZero();
@@ -328,7 +328,7 @@ public class V3D_Line extends V3D_Geometry {
         // n = v.l.v
         V3D_Vector n = v.getCrossProduct(l.v);
         // d = n.(p−l.p)/||n||
-        V3D_Vector p_sub_lp = new V3D_Vector(e, p.x.subtract(l.p.x),
+        V3D_Vector p_sub_lp = new V3D_Vector(p.x.subtract(l.p.x),
                 p.y.subtract(l.p.y), p.z.subtract(l.p.z));
         BigRational m = BigRational.valueOf(n.getMagnitude(scale, rm));
         BigRational d = n.getDotProduct(p_sub_lp).divide(m);

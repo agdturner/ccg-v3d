@@ -39,7 +39,7 @@ import uk.ac.leeds.ccg.v3d.io.V3D_Files;
 public class V3D_Environment extends Generic_MemoryManager {
 
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * The origin at {@code <0,0,0>}.
      */
@@ -49,7 +49,7 @@ public class V3D_Environment extends Generic_MemoryManager {
      * The x axis.
      */
     public final V3D_Line xAxis;
-   
+
     /**
      * The y axis.
      */
@@ -61,24 +61,25 @@ public class V3D_Environment extends Generic_MemoryManager {
     public final V3D_Line zAxis;
 
     /**
-     * Unit vector based at the origin in the x axis direction. 
+     * Unit vector based at the origin in the x axis direction.
      */
     public final V3D_Vector i;
 
     /**
-     * Unit vector based at the origin in the y axis direction. 
+     * Unit vector based at the origin in the y axis direction.
      */
     public final V3D_Vector j;
 
     /**
-     * Unit vector based at the origin in the z axis direction. 
+     * Unit vector based at the origin in the z axis direction.
      */
     public final V3D_Vector k;
 
     /**
      * Zero vector.
      */
-    public final V3D_Vector zeroVector;
+    public static final V3D_Vector ZERO_VECTOR = new V3D_Vector(
+            BigRational.ZERO, BigRational.ZERO, BigRational.ZERO);
 
     /**
      * For code brevity.
@@ -88,9 +89,9 @@ public class V3D_Environment extends Generic_MemoryManager {
     public final BigRational P2 = BigRational.valueOf(2);
     public final BigRational P3 = BigRational.valueOf(3);
     public final BigRational N1 = BigRational.ONE.negate();
-    
+
     public Generic_Environment env;
-    
+
     public V3D_Files files;
 
     /**
@@ -98,11 +99,11 @@ public class V3D_Environment extends Generic_MemoryManager {
      */
     public Math_BigDecimal bd;
 
-    public V3D_Environment(Generic_Environment e) throws IOException, 
+    public V3D_Environment(Generic_Environment e) throws IOException,
             Exception {
         this(e, e.files.getDir());
     }
-    
+
     public V3D_Environment(Generic_Environment e, Generic_Path dir)
             throws IOException, Exception {
         super();
@@ -118,9 +119,8 @@ public class V3D_Environment extends Generic_MemoryManager {
         initMemoryReserve(Default_Memory_Threshold, env);
         files = new V3D_Files(new Generic_Defaults(Paths.get(dir.toString(),
                 V3D_Strings.s_v3d)));
-        zeroVector = new V3D_Vector(this, P0, P0, P0);
     }
-            
+
     public BigDecimal getRounded_BigDecimal(BigDecimal toRoundBigDecimal,
             BigDecimal toRoundToBigDecimal) {
         int scale = toRoundToBigDecimal.scale();

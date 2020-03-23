@@ -166,7 +166,7 @@ public class V3D_PointTest extends V3D_Test {
     @Test
     public void testApply() {
         System.out.println("apply");
-        V3D_Vector v = new V3D_Vector(e, P1, P1, P1);
+        V3D_Vector v = new V3D_Vector(P1, P1, P1);
         V3D_Point instance = P0P0P0;
         V3D_Point expResult = P1P1P1;
         V3D_Point result = instance.apply(v);
