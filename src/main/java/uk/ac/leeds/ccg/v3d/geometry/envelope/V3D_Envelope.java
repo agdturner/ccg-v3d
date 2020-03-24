@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry.envelope;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.util.Objects;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_FiniteGeometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
@@ -100,25 +99,24 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param e An envelop.
      */
     public V3D_Envelope(V3D_Envelope e) {
-        super(e.e);
-        yMin = e.yMin;
-        yMax = e.yMax;
         xMin = e.xMin;
         xMax = e.xMax;
+        yMin = e.yMin;
+        yMax = e.yMax;
         zMin = e.zMin;
         zMax = e.zMax;
         init();
     }
 
     private void init() {
-        V3D_Point tlf = new V3D_Point(e, getxMin(), getyMin(), getzMax());
-        V3D_Point tla = new V3D_Point(e, getxMin(), getyMax(), getzMax());
-        V3D_Point tar = new V3D_Point(e, getxMax(), getyMax(), getzMax());
-        V3D_Point trf = new V3D_Point(e, getxMax(), getyMin(), getzMax());
-        V3D_Point blf = new V3D_Point(e, getxMin(), getyMin(), getzMin());
-        V3D_Point bla = new V3D_Point(e, getxMin(), getyMax(), getzMin());
-        V3D_Point bar = new V3D_Point(e, getxMax(), getyMax(), getzMin());
-        V3D_Point brf = new V3D_Point(e, getxMax(), getyMin(), getzMin());
+        V3D_Point tlf = new V3D_Point(getxMin(), getyMin(), getzMax());
+        V3D_Point tla = new V3D_Point(getxMin(), getyMax(), getzMax());
+        V3D_Point tar = new V3D_Point(getxMax(), getyMax(), getzMax());
+        V3D_Point trf = new V3D_Point(getxMax(), getyMin(), getzMax());
+        V3D_Point blf = new V3D_Point(getxMin(), getyMin(), getzMin());
+        V3D_Point bla = new V3D_Point(getxMin(), getyMax(), getzMin());
+        V3D_Point bar = new V3D_Point(getxMax(), getyMax(), getzMin());
+        V3D_Point brf = new V3D_Point(getxMax(), getyMin(), getzMin());
         t = new V3D_EnvelopeFaceTop(tlf, tla, tar, trf);
         l = new V3D_EnvelopeFaceLeft(tlf, tla, bla, blf);
         a = new V3D_EnvelopeFaceAft(tla, tar, bar, bla);
@@ -128,11 +126,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param e An envelop.
      * @param points The points used to form the envelop.
      */
-    public V3D_Envelope(V3D_Environment e, V3D_Point... points) {
-        super(e);
+    public V3D_Envelope(V3D_Point... points) {
         if (points.length > 0) {
             xMin = points[0].x;
             xMax = points[0].x;
@@ -153,14 +149,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param e The vector environment.
      * @param x The x-coordinate of a point.
      * @param y The y-coordinate of a point.
      * @param z The z-coordinate of a point.
      */
-    public V3D_Envelope(V3D_Environment e, BigRational x, BigRational y,
-            BigRational z) {
-        super(e);
+    public V3D_Envelope(BigRational x, BigRational y, BigRational z) {
         xMin = x;
         xMax = x;
         yMin = y;
@@ -179,10 +172,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param zMin What {@link zMin} is set to.
      * @param zMax What {@link zMax} is set to.
      */
-    public V3D_Envelope(V3D_Environment e, BigRational xMin, BigRational xMax,
-            BigRational yMin, BigRational yMax, BigRational zMin,
-            BigRational zMax) {
-        super(e);
+    public V3D_Envelope(BigRational xMin, BigRational xMax, BigRational yMin, 
+            BigRational yMax, BigRational zMin,            BigRational zMax) {
         this.xMin = xMin;
         this.xMax = xMax;
         this.yMin = yMin;
@@ -208,7 +199,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         if (e.isContainedBy(this)) {
             return this;
         } else {
-            return new V3D_Envelope(this.e, BigRational.min(e.getxMin(), getxMin()),
+            return new V3D_Envelope(BigRational.min(e.getxMin(), getxMin()),
                     BigRational.max(e.getxMax(), getxMax()),
                     BigRational.min(e.getyMin(), getyMin()),
                     BigRational.max(e.getyMax(), getyMax()),
@@ -378,9 +369,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         if (!this.isIntersectedBy(en)) {
             return null;
         }
-        return new V3D_Envelope(e, BigRational.max(getxMin(), en.getxMin()),
-                BigRational.min(getxMax(), en.getxMax()), BigRational.max(getyMin(), en.getyMin()),
-                BigRational.min(getyMax(), en.getyMax()), BigRational.max(getzMin(), en.getzMin()),
+        return new V3D_Envelope(BigRational.max(getxMin(), en.getxMin()),
+                BigRational.min(getxMax(), en.getxMax()), 
+                BigRational.max(getyMin(), en.getyMin()),
+                BigRational.min(getyMax(), en.getyMax()), 
+                BigRational.max(getzMin(), en.getzMin()),
                 BigRational.min(getzMax(), en.getzMax()));
     }
 

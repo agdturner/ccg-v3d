@@ -15,8 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.core.V3D_Object;
+import java.io.Serializable;
 
 /**
  * For 3D geometrical objects.
@@ -24,12 +23,11 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Object;
  * @author Andy Turner
  * @version 1.0.0
  */
-public abstract class V3D_Geometry extends V3D_Object {
+public abstract class V3D_Geometry implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public V3D_Geometry(V3D_Environment e) {
-        super(e);
+    public V3D_Geometry() {
     }
     
 }

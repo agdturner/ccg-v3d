@@ -67,7 +67,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     public V3D_LineSegment(V3D_Line l) {
         super(l);
-        en = new V3D_Envelope(e, p, q);
+        en = new V3D_Envelope(p, q);
     }
 
     @Override
@@ -147,8 +147,8 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     public V3D_LineSegment multiply(BigRational s) {
         return new V3D_LineSegment(
-                new V3D_Point(e, p.x.multiply(s), p.y.multiply(s), p.z.multiply(s)),
-                new V3D_Point(e, q.x.multiply(s), q.y.multiply(s), q.z.multiply(s)));
+                new V3D_Point(p.x.multiply(s), p.y.multiply(s), p.z.multiply(s)),
+                new V3D_Point(q.x.multiply(s), q.y.multiply(s), q.z.multiply(s)));
     }
 
     /**
@@ -166,7 +166,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
-            en = new V3D_Envelope(e, p, q);
+            en = new V3D_Envelope(p, q);
         }
         return en;
     }

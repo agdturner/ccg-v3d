@@ -209,7 +209,7 @@ public class V3D_LineTest extends V3D_Test {
 
         // Test 1
         l = getLine(N1N1N1, P1P1P1);
-        instance = getLine(P1P1P0, new V3D_Point(e, P1, P1, P2));
+        instance = getLine(P1P1P0, new V3D_Point(P1, P1, P2));
         expResult = P1P1P1;
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
@@ -220,14 +220,14 @@ public class V3D_LineTest extends V3D_Test {
         assertEquals(expResult, result);
         // Test 3
         l = getLine(N1N1N1, P1P1P1);
-        instance = getLine(new V3D_Point(e, P3, P1, P1), new V3D_Point(e, P1, P3, P3));
-        expResult = new V3D_Point(e, P2, P2, P2);
+        instance = getLine(new V3D_Point(P3, P1, P1), new V3D_Point(P1, P3, P3));
+        expResult = new V3D_Point(P2, P2, P2);
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 4
         l = getLine(N1N1P0, P1P1P0);
-        instance = getLine(new V3D_Point(e, P3, P3, P0), new V3D_Point(e, P3, P3, N1));
-        expResult = new V3D_Point(e, P3, P3, P0);
+        instance = getLine(new V3D_Point(P3, P3, P0), new V3D_Point(P3, P3, N1));
+        expResult = new V3D_Point(P3, P3, P0);
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 5
@@ -249,13 +249,13 @@ public class V3D_LineTest extends V3D_Test {
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 8
-        l = getLine(new V3D_Point(e, N2, N2, N2), N1N1N1);
+        l = getLine(new V3D_Point(N2, N2, N2), N1N1N1);
         instance = getLine(P1N1N1, P0P0P0);
         expResult = P0P0P0;
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 9
-        l = getLine(new V3D_Point(e, N2, N2, N2), N1N1N1);
+        l = getLine(new V3D_Point(N2, N2, N2), N1N1N1);
         instance = getLine(P0P0P0, N1P1P1);
         expResult = P0P0P0;
         result = instance.getIntersection(l);
@@ -263,7 +263,7 @@ public class V3D_LineTest extends V3D_Test {
         // Test 10
         l = getLine(N1N1N1, P1P1P1);
         expResult = getLine(N1N1N1, P1P1P1);
-        instance = getLine(new V3D_Point(e, N3, N3, N3), new V3D_Point(e, N4, N4, N4));
+        instance = getLine(new V3D_Point(N3, N3, N3), new V3D_Point(N4, N4, N4));
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 11 to 13
@@ -275,16 +275,16 @@ public class V3D_LineTest extends V3D_Test {
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 12
-        l = getLine(P0N1N1, new V3D_Point(e, P2, P1, P1));
+        l = getLine(P0N1N1, new V3D_Point(P2, P1, P1));
         expResult = P1P0P0;
         instance = getLine(P1P0P0, P1P1P1);
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 13
-        l = getLine(P0N1P1, new V3D_Point(e, P2, P1, P3));
-        expResult = new V3D_Point(e, P1, P0, P2);
-        instance = getLine(new V3D_Point(e, P1, P0, P2),
-                new V3D_Point(e, P1, P1, P3));
+        l = getLine(P0N1P1, new V3D_Point(P2, P1, P3));
+        expResult = new V3D_Point(P1, P0, P2);
+        instance = getLine(new V3D_Point(P1, P0, P2),
+                new V3D_Point(P1, P1, P3));
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
 
@@ -297,15 +297,15 @@ public class V3D_LineTest extends V3D_Test {
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 15
-        l = getLine(P0N1N1, new V3D_Point(e, P2,P1,P1));
+        l = getLine(P0N1N1, new V3D_Point(P2,P1,P1));
         expResult = P1P0P0;
-        instance = getLine(P1P0P0, new V3D_Point(e, P2,P0,P0));
+        instance = getLine(P1P0P0, new V3D_Point(P2,P0,P0));
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 16
-        l = getLine(P0N1P0, new V3D_Point(e, P2,P1,P2));
+        l = getLine(P0N1P0, new V3D_Point(P2,P1,P2));
         expResult = P1P0P1;
-        instance = getLine(P1P0P1, new V3D_Point(e, P2,P0,P1));
+        instance = getLine(P1P0P1, new V3D_Point(P2,P0,P1));
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 17 to 19
@@ -317,15 +317,15 @@ public class V3D_LineTest extends V3D_Test {
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 18
-        l = getLine(P0N1N1, new V3D_Point(e, P2,P1,P1));
+        l = getLine(P0N1N1, new V3D_Point(P2,P1,P1));
         expResult = P1P0P0;
-        instance = getLine(P1P0P0, new V3D_Point(e, P2,P0,P1));
+        instance = getLine(P1P0P0, new V3D_Point(P2,P0,P1));
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 19
-        l = getLine(P0P1N1, new V3D_Point(e, P2,P3,P1));
-        expResult = new V3D_Point(e, P1,P2,P0);
-        instance = getLine(new V3D_Point(e, P1,P2,P0), new V3D_Point(e, P2,P2,P1));
+        l = getLine(P0P1N1, new V3D_Point(P2,P3,P1));
+        expResult = new V3D_Point(P1,P2,P0);
+        instance = getLine(new V3D_Point(P1,P2,P0), new V3D_Point(P2,P2,P1));
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
     }
@@ -367,10 +367,10 @@ public class V3D_LineTest extends V3D_Test {
         BigDecimal expResult;
         BigDecimal result;
         // Test 1
-        l = new V3D_Line(new V3D_Point(e, P2, P6, N9), new V3D_Vector(P3, P4, N4));
+        l = new V3D_Line(new V3D_Point(P2, P6, N9), new V3D_Vector(P3, P4, N4));
         scale = 1;
         rm = RoundingMode.HALF_UP;
-        instance = new V3D_Line(new V3D_Point(e, N1, N2, P3), new V3D_Vector(P2, N6, P1));
+        instance = new V3D_Line(new V3D_Point(N1, N2, P3), new V3D_Vector(P2, N6, P1));
         expResult = new BigDecimal("4.7");
         result = instance.getDistance(l, scale, rm);
         //assertEquals(expResult, result);

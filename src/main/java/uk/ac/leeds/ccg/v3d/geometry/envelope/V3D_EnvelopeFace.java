@@ -47,7 +47,7 @@ public abstract class V3D_EnvelopeFace extends V3D_Rectangle {
     @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
-            en = new V3D_Envelope(e, p, q, r);
+            en = new V3D_Envelope(p, q, r);
         }
         return en;
     }

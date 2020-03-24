@@ -74,7 +74,6 @@ public class V3D_Line extends V3D_Geometry {
      * {@code checkCoincidence} is {@code true}.
      */
     public V3D_Line(V3D_Point p, V3D_Point q, boolean checkCoincidence) {
-        super(p.e);
         if (checkCoincidence) {
             if (p.equals(q)) {
                 throw new RuntimeException("The inputs p and q are the same point "
@@ -100,7 +99,6 @@ public class V3D_Line extends V3D_Geometry {
      * @param q What {@link #q} is set to.
      */
     public V3D_Line(V3D_Point p, V3D_Point q) {
-        super(p.e);
         init(p, q);
     }
 
@@ -109,7 +107,6 @@ public class V3D_Line extends V3D_Geometry {
      * @param v What {@link #v} is set to.
      */
     public V3D_Line(V3D_Point p, V3D_Vector v) {
-        super(p.e);
         this.p = new V3D_Point(p);
         this.v = v;
         q = p.apply(v);
@@ -119,7 +116,6 @@ public class V3D_Line extends V3D_Geometry {
      * @param l Vector_LineSegment3D
      */
     public V3D_Line(V3D_Line l) {
-        super(l.e);
         this.p = l.p;
         this.q = l.q;
     }
@@ -307,8 +303,7 @@ public class V3D_Line extends V3D_Geometry {
                         .subtract(l0.q.x).divide(l0.v.dx);
             }
         }
-        return new V3D_Point(l0.e,
-                t.multiply(l0.v.dx).add(l0.q.x),
+        return new V3D_Point(t.multiply(l0.v.dx).add(l0.q.x),
                 t.multiply(l0.v.dy).add(l0.q.y),
                 t.multiply(l0.v.dz).add(l0.q.z));
     }

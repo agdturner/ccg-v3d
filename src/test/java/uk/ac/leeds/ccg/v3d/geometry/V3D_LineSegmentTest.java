@@ -68,8 +68,8 @@ public class V3D_LineSegmentTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        V3D_Point start = new V3D_Point(e, P0, P0, P0);
-        V3D_Point end = new V3D_Point(e, P1, P1, P1);
+        V3D_Point start = new V3D_Point(P0, P0, P0);
+        V3D_Point end = new V3D_Point(P1, P1, P1);
         V3D_LineSegment instance = new V3D_LineSegment(start, end);
         String expResult = "V3D_LineSegment(p=V3D_Point(x=0, y=0, z=0), "
                 + "q=V3D_Point(x=1, y=1, z=1), v=V3D_Vector(dx=1, dy=1, dz=1))";
@@ -98,7 +98,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
     public void testGetEnvelope3D() {
         System.out.println("getEnvelope3D");
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
-        V3D_Envelope expResult = new V3D_Envelope(e, P0P0P0, P1P1P0);
+        V3D_Envelope expResult = new V3D_Envelope(P0P0P0, P1P1P0);
         V3D_Envelope result = instance.getEnvelope();
         assertEquals(expResult, result);
     }

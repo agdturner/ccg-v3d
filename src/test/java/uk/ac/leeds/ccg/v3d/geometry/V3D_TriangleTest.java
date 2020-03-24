@@ -65,7 +65,7 @@ public class V3D_TriangleTest extends V3D_Test {
     public void testGetEnvelope3D() {
         System.out.println("getEnvelope3D");
         V3D_Triangle instance = new V3D_Triangle(P0P0P0, P1P0P0, P1P1P0);
-        V3D_Envelope expResult = new V3D_Envelope(e, P0P0P0, P1P0P0, P1P1P0);
+        V3D_Envelope expResult = new V3D_Envelope(P0P0P0, P1P0P0, P1P1P0);
         V3D_Envelope result = instance.getEnvelope();
         assertEquals(expResult, result);
     }

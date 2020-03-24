@@ -64,9 +64,9 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testGetEnvelope() {
         System.out.println("getEnvelope");
-        V3D_Rectangle instance = new V3D_Rectangle(new V3D_Point(e, N2, P0, N2),
-            N1P1P1, P1P1N1, new V3D_Point(e, P0, N2, N2));
-        V3D_Envelope expResult = new V3D_Envelope(e, N2N2N2, P1P1P1);
+        V3D_Rectangle instance = new V3D_Rectangle(new V3D_Point(N2, P0, N2),
+            N1P1P1, P1P1N1, new V3D_Point(P0, N2, N2));
+        V3D_Envelope expResult = new V3D_Envelope(N2N2N2, P1P1P1);
         V3D_Envelope result = instance.getEnvelope();
         assertEquals(expResult, result);
     }
@@ -78,8 +78,8 @@ public class V3D_RectangleTest extends V3D_Test {
     public void testIsIntersectedBy() {
         System.out.println("isIntersectedBy");
         V3D_Point pt = N1P1P1;
-        V3D_Rectangle instance = new V3D_Rectangle(new V3D_Point(e, N2, P0, N2),
-            N1P1P1, P1P1N1, new V3D_Point(e, P0, N2, N2));
+        V3D_Rectangle instance = new V3D_Rectangle(new V3D_Point(N2, P0, N2),
+            N1P1P1, P1P1N1, new V3D_Point(P0, N2, N2));
         boolean expResult = true;
         boolean result = instance.isIntersectedBy(pt);
         assertEquals(expResult, result);
@@ -92,8 +92,8 @@ public class V3D_RectangleTest extends V3D_Test {
     public void testGetIntersection() {
         System.out.println("getIntersection");
         V3D_Line l = new V3D_Line(N1P1P1, P1P1P1);
-        V3D_Rectangle instance = new V3D_Rectangle(new V3D_Point(e, N2, P0, N2),
-            N1P1P1, P1P1N1, new V3D_Point(e, P0, N2, N2));
+        V3D_Rectangle instance = new V3D_Rectangle(new V3D_Point(N2, P0, N2),
+            N1P1P1, P1P1N1, new V3D_Point(P0, N2, N2));
         V3D_Geometry expResult = N1P1P1;
         V3D_Geometry result = instance.getIntersection(l);
         assertEquals(expResult, result);

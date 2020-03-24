@@ -92,7 +92,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     //@Test
     public void testToString() {
         System.out.println("toString");
-        V3D_Envelope instance = new V3D_Envelope(e, P0P0P0);
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0);
         String expResult = "V3D_Envelope(xMin=0, xMax=0, yMin=0, yMax=0"
                 + ", zMin=0, zMax=0)";
         String result = instance.toString();
@@ -105,9 +105,9 @@ public class V3D_EnvelopeTest extends V3D_Test {
     //@Test
     public void testEnvelope() {
         System.out.println("envelope");
-        V3D_Envelope e1 = new V3D_Envelope(e, P0P0P0, P0P0P0);
-        V3D_Envelope instance = new V3D_Envelope(e, P1P1P1, P1P1P1);
-        V3D_Envelope expResult = new V3D_Envelope(e, P0P0P0, P1P1P1);
+        V3D_Envelope e1 = new V3D_Envelope(P0P0P0, P0P0P0);
+        V3D_Envelope instance = new V3D_Envelope(P1P1P1, P1P1P1);
+        V3D_Envelope expResult = new V3D_Envelope(P0P0P0, P1P1P1);
         V3D_Envelope result = instance.union(e1);
         assertEquals(expResult, result);
     }
@@ -118,8 +118,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
     //@Test
     public void testIsIntersectedBy_V3D_Envelope() {
         System.out.println("isIntersectedBy");
-        V3D_Envelope instance = new V3D_Envelope(e, P0P0P0, P0P0P0);
-        V3D_Envelope e000111 = new V3D_Envelope(e, P0P0P0, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P0P0P0);
+        V3D_Envelope e000111 = new V3D_Envelope(P0P0P0, P1P1P1);
         boolean expResult = true;
         boolean result = instance.isIntersectedBy(e000111);
         assertEquals(expResult, result);
@@ -131,7 +131,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     //@Test
     public void testIsIntersectedBy_V3D_Point() {
         System.out.println("isIntersectedBy");
-        V3D_Envelope instance = new V3D_Envelope(e, P0P0P0, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
         boolean expResult = true;
         boolean result = instance.isIntersectedBy(P0P0P0);
         assertEquals(expResult, result);
@@ -145,8 +145,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("getEnvelope3D");
         V3D_Point p0 = P0P0P0;
         V3D_Point p1 = P1P1P1;
-        V3D_Envelope instance = new V3D_Envelope(e, p0, p1);
-        V3D_Envelope expResult = new V3D_Envelope(e, p0, p1);
+        V3D_Envelope instance = new V3D_Envelope(p0, p1);
+        V3D_Envelope expResult = new V3D_Envelope(p0, p1);
         V3D_Envelope result = instance.getEnvelope();
         assertEquals(expResult, result);
     }
@@ -157,8 +157,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
     //@Test
     public void testEquals() {
         System.out.println("equals");
-        V3D_Envelope instance = new V3D_Envelope(e, P0P0P0, P1P1P1);
-        Object o = new V3D_Envelope(e, P0P0P0, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
+        Object o = new V3D_Envelope(P0P0P0, P1P1P1);
         boolean expResult = true;
         boolean result = instance.equals(o);
         assertEquals(expResult, result);
@@ -170,7 +170,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     //@Test
     public void testIsIntersectedBy_3args() {
         System.out.println("isIntersectedBy");
-        V3D_Envelope instance = new V3D_Envelope(e, N1N1N1, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
         boolean expResult = true;
         boolean result = instance.isIntersectedBy(P0, P0, P0);
         assertEquals(expResult, result);
@@ -196,27 +196,27 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Envelope expResult;
         V3D_Envelope result;
         // Test 1
-        en = new V3D_Envelope(e, N1N1N1, P1P1P1);
-        instance = new V3D_Envelope(e, P0P0P0, P1P1P1);
-        expResult = new V3D_Envelope(e, P0P0P0, P1P1P1);
+        en = new V3D_Envelope(N1N1N1, P1P1P1);
+        instance = new V3D_Envelope(P0P0P0, P1P1P1);
+        expResult = new V3D_Envelope(P0P0P0, P1P1P1);
         result = instance.getIntersection(en);
         assertEquals(expResult, result);
         // Test 2
-        en = new V3D_Envelope(e, N1N1N1, P0P0P0);
-        instance = new V3D_Envelope(e, P0P0P0, P1P1P1);
-        expResult = new V3D_Envelope(e, P0P0P0);
+        en = new V3D_Envelope(N1N1N1, P0P0P0);
+        instance = new V3D_Envelope(P0P0P0, P1P1P1);
+        expResult = new V3D_Envelope(P0P0P0);
         result = instance.getIntersection(en);
         assertEquals(expResult, result);
         // Test 3
-        en = new V3D_Envelope(e, N1N1N1, P0P0P0);
-        instance = new V3D_Envelope(e, P0P0P0, P1P1P1);
-        expResult = new V3D_Envelope(e, P0P0P0);
+        en = new V3D_Envelope(N1N1N1, P0P0P0);
+        instance = new V3D_Envelope(P0P0P0, P1P1P1);
+        expResult = new V3D_Envelope(P0P0P0);
         result = instance.getIntersection(en);
         assertEquals(expResult, result);
         // Test 4
-        en = new V3D_Envelope(e, N1N1N1, P0P0P1);
-        instance = new V3D_Envelope(e, P0P0N1, P1P1P1);
-        expResult = new V3D_Envelope(e, P0P0N1, P0P0P1);
+        en = new V3D_Envelope(N1N1N1, P0P0P1);
+        instance = new V3D_Envelope(P0P0N1, P1P1P1);
+        expResult = new V3D_Envelope(P0P0N1, P0P0P1);
         result = instance.getIntersection(en);
         assertEquals(expResult, result);
     }
@@ -228,7 +228,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     public void testGetIntersection_V3D_Line() {
         System.out.println("getIntersection");
         V3D_Line li = new V3D_Line(P0P0P0, P0P0P1);
-        V3D_Envelope instance = new V3D_Envelope(e, N1N1N1, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
         V3D_Geometry expResult = new V3D_LineSegment(P0P0N1, P0P0P1);
         V3D_Geometry result = instance.getIntersection(li);
         assertEquals(expResult, result);
@@ -242,9 +242,9 @@ public class V3D_EnvelopeTest extends V3D_Test {
     //@Test
     public void testUnion() {
         System.out.println("union");
-        V3D_Envelope e = new V3D_Envelope(this.e, N2N2N2, P1P1P1);
-        V3D_Envelope instance = new V3D_Envelope(this.e, N1N1N1, P2P2P2);
-        V3D_Envelope expResult = new V3D_Envelope(this.e, N2N2N2, P2P2P2);
+        V3D_Envelope e = new V3D_Envelope(N2N2N2, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P2P2P2);
+        V3D_Envelope expResult = new V3D_Envelope(N2N2N2, P2P2P2);
         V3D_Envelope result = instance.union(e);
         assertEquals(expResult, result);
     }
@@ -255,8 +255,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
     //@Test
     public void testIsContainedBy() {
         System.out.println("isContainedBy");
-        V3D_Envelope e = new V3D_Envelope(this.e, N2N2N2, P2P2P2);
-        V3D_Envelope instance = new V3D_Envelope(this.e, N1N1N1, P1P1P1);
+        V3D_Envelope e = new V3D_Envelope( N2N2N2, P2P2P2);
+        V3D_Envelope instance = new V3D_Envelope( N1N1N1, P1P1P1);
         boolean expResult = true;
         boolean result = instance.isContainedBy(e);
         assertEquals(expResult, result);
@@ -270,7 +270,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("getIntersection");
         V3D_LineSegment l = new V3D_LineSegment(N2N2N2, P0P0P0);
         boolean flag = false;
-        V3D_Envelope instance = new V3D_Envelope(this.e, N1N1N1, P1P1P1);
+        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
         V3D_Geometry expResult = new V3D_LineSegment(N1N1N1, P0P0P0);
         V3D_Geometry result = instance.getIntersection(l, flag);
         assertEquals(expResult, result);
@@ -282,8 +282,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
     //@Test
     public void testGetEnvelope() {
         System.out.println("getEnvelope");
-        V3D_Envelope instance = new V3D_Envelope(this.e, P0P0P0);
-        V3D_Envelope expResult = new V3D_Envelope(this.e, P0P0P0);
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0);
+        V3D_Envelope expResult = new V3D_Envelope(P0P0P0);
         V3D_Envelope result = instance.getEnvelope();
         assertEquals(expResult, result);
     }

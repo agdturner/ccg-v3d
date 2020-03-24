@@ -84,18 +84,18 @@ public class V3D_Environment extends Generic_MemoryManager {
     /**
      * For code brevity.
      */
-    public final BigRational P0 = BigRational.ZERO;
-    public final BigRational P1 = BigRational.ONE;
-    public final BigRational P2 = BigRational.valueOf(2);
-    public final BigRational P3 = BigRational.valueOf(3);
-    public final BigRational N1 = BigRational.ONE.negate();
+    public static final BigRational P0 = BigRational.ZERO;
+    public static final BigRational P1 = BigRational.ONE;
+    public static final BigRational P2 = BigRational.valueOf(2);
+    public static final BigRational P3 = BigRational.valueOf(3);
+    public static final BigRational N1 = BigRational.ONE.negate();
 
     public Generic_Environment env;
 
     public V3D_Files files;
 
     /**
-     * MathBigDecimal
+     * Math_BigDecimal
      */
     public Math_BigDecimal bd;
 
@@ -108,13 +108,13 @@ public class V3D_Environment extends Generic_MemoryManager {
             throws IOException, Exception {
         super();
         this.env = e;
-        origin = new V3D_Point(this, P0, P0, P0);
-        xAxis = new V3D_Line(origin, new V3D_Point(this, P1, P0, P0), false);
-        yAxis = new V3D_Line(origin, new V3D_Point(this, P0, P1, P0));
-        zAxis = new V3D_Line(origin, new V3D_Point(this, P0, P0, P1));
-        i = new V3D_Vector(new V3D_Point(this, P1, P0, P0));
-        j = new V3D_Vector(new V3D_Point(this, P0, P1, P0));
-        k = new V3D_Vector(new V3D_Point(this, P0, P0, P1));
+        origin = new V3D_Point(P0, P0, P0);
+        xAxis = new V3D_Line(origin, new V3D_Point(P1, P0, P0), false);
+        yAxis = new V3D_Line(origin, new V3D_Point(P0, P1, P0));
+        zAxis = new V3D_Line(origin, new V3D_Point(P0, P0, P1));
+        i = new V3D_Vector(new V3D_Point(P1, P0, P0));
+        j = new V3D_Vector(new V3D_Point(P0, P1, P0));
+        k = new V3D_Vector(new V3D_Point(P0, P0, P1));
         bd = new Math_BigDecimal();
         initMemoryReserve(Default_Memory_Threshold, env);
         files = new V3D_Files(new Generic_Defaults(Paths.get(dir.toString(),

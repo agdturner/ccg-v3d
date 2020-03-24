@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import ch.obermuhlner.math.big.BigRational;
 
 /**
@@ -53,21 +52,17 @@ public class V3D_Point extends V3D_Geometry implements Comparable<V3D_Point>,
      * @param p The point to duplicate
      */
     public V3D_Point(V3D_Point p) {
-        super(p.e);
         x = p.x;
         y = p.y;
         z = p.z;
     }
 
     /**
-     * @param e What {@link #e} is set to.
      * @param x What {@link #x} is set to.
      * @param y What {@link #y} is set to.
      * @param z What {@link #z} is set to.
      */
-    public V3D_Point(V3D_Environment e, BigRational x, BigRational y,
-            BigRational z) {
-        super(e);
+    public V3D_Point(BigRational x, BigRational y,            BigRational z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -108,7 +103,7 @@ public class V3D_Point extends V3D_Geometry implements Comparable<V3D_Point>,
      * @return a new point which is this shifted by v.
      */
     public V3D_Point apply(V3D_Vector v) {
-        return new V3D_Point(e, x.add(v.dx), y.add(v.dy), z.add(v.dz));
+        return new V3D_Point(x.add(v.dx), y.add(v.dy), z.add(v.dz));
     }
 
     /**
@@ -180,7 +175,7 @@ public class V3D_Point extends V3D_Geometry implements Comparable<V3D_Point>,
 
     @Override
     public V3D_Envelope getEnvelope() {
-        return new V3D_Envelope(e, x, y, z);
+        return new V3D_Envelope(x, y, z);
     }
 
     /**

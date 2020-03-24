@@ -109,39 +109,38 @@ public abstract class V3D_Test extends V3D_Object {
 
     public V3D_Test(V3D_Environment e) {
         super(e);
+        P1P1P1 = new V3D_Point(P1, P1, P1);
+        P1P1P0 = new V3D_Point(P1, P1, P0);
+        P1P1N1 = new V3D_Point(P1, P1, N1);
+        P1P0P1 = new V3D_Point(P1, P0, P1);
+        P1P0P0 = new V3D_Point(P1, P0, P0);
+        P1P0N1 = new V3D_Point(P1, P0, N1);
+        P1N1P1 = new V3D_Point(P1, N1, P1);
+        P1N1P0 = new V3D_Point(P1, N1, P0);
+        P1N1N1 = new V3D_Point(P1, N1, N1);
 
-        P1P1P1 = new V3D_Point(e, P1, P1, P1);
-        P1P1P0 = new V3D_Point(e, P1, P1, P0);
-        P1P1N1 = new V3D_Point(e, P1, P1, N1);
-        P1P0P1 = new V3D_Point(e, P1, P0, P1);
-        P1P0P0 = new V3D_Point(e, P1, P0, P0);
-        P1P0N1 = new V3D_Point(e, P1, P0, N1);
-        P1N1P1 = new V3D_Point(e, P1, N1, P1);
-        P1N1P0 = new V3D_Point(e, P1, N1, P0);
-        P1N1N1 = new V3D_Point(e, P1, N1, N1);
+        P0P1P1 = new V3D_Point(P0, P1, P1);
+        P0P1P0 = new V3D_Point(P0, P1, P0);
+        P0P1N1 = new V3D_Point(P0, P1, N1);
+        P0P0P1 = new V3D_Point(P0, P0, P1);
+        P0P0P0 = new V3D_Point(P0, P0, P0);
+        P0P0N1 = new V3D_Point(P0, P0, N1);
+        P0N1P1 = new V3D_Point(P0, N1, P1);
+        P0N1P0 = new V3D_Point(P0, N1, P0);
+        P0N1N1 = new V3D_Point(P0, N1, N1);
 
-        P0P1P1 = new V3D_Point(e, P0, P1, P1);
-        P0P1P0 = new V3D_Point(e, P0, P1, P0);
-        P0P1N1 = new V3D_Point(e, P0, P1, N1);
-        P0P0P1 = new V3D_Point(e, P0, P0, P1);
-        P0P0P0 = new V3D_Point(e, P0, P0, P0);
-        P0P0N1 = new V3D_Point(e, P0, P0, N1);
-        P0N1P1 = new V3D_Point(e, P0, N1, P1);
-        P0N1P0 = new V3D_Point(e, P0, N1, P0);
-        P0N1N1 = new V3D_Point(e, P0, N1, N1);
+        N1P1P1 = new V3D_Point(N1, P1, P1);
+        N1P1P0 = new V3D_Point(N1, P1, P0);
+        N1P1N1 = new V3D_Point(N1, P1, N1);
+        N1P0P1 = new V3D_Point(N1, P0, P1);
+        N1P0P0 = new V3D_Point(N1, P0, P0);
+        N1P0N1 = new V3D_Point(N1, P0, N1);
+        N1N1P1 = new V3D_Point(N1, N1, P1);
+        N1N1P0 = new V3D_Point(N1, N1, P0);
+        N1N1N1 = new V3D_Point(N1, N1, N1);
 
-        N1P1P1 = new V3D_Point(e, N1, P1, P1);
-        N1P1P0 = new V3D_Point(e, N1, P1, P0);
-        N1P1N1 = new V3D_Point(e, N1, P1, N1);
-        N1P0P1 = new V3D_Point(e, N1, P0, P1);
-        N1P0P0 = new V3D_Point(e, N1, P0, P0);
-        N1P0N1 = new V3D_Point(e, N1, P0, N1);
-        N1N1P1 = new V3D_Point(e, N1, N1, P1);
-        N1N1P0 = new V3D_Point(e, N1, N1, P0);
-        N1N1N1 = new V3D_Point(e, N1, N1, N1);
-
-        P2P2P2 = new V3D_Point(e, P2, P2, P2);
-        N2N2N2 = new V3D_Point(e, N2, N2, N2);
+        P2P2P2 = new V3D_Point(P2, P2, P2);
+        N2N2N2 = new V3D_Point(N2, N2, N2);
 
     }
 }
