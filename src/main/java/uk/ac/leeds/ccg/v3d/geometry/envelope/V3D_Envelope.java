@@ -164,7 +164,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param e The vector environment.
      * @param xMin What {@link xMin} is set to.
      * @param xMax What {@link xMax} is set to.
      * @param yMin What {@link yMin} is set to.
