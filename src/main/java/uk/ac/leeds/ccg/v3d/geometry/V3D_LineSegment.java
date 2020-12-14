@@ -84,12 +84,40 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         return false;
     }
 
+    /**
+     * @param l The line segment to test if it is the same as {@code this}.
+     * @return {@code true} iff {@code l} is the same as {@code this}.
+     */
+    public boolean equals(V3D_LineSegment l) {
+        return p.equals(l.p) && q.equals(l.q);
+    }
+    
+    /**
+     * @param l The line segment to test if it is equal to {@code this}.
+     * @return {@code true} iff {@code this} is equal to {@code l} ignoring the
+     * direction of {@link #v}.
+     */
+    public boolean equalsIgnoreDirection(V3D_LineSegment l) {
+        if (equals(l)) {
+            return true;
+        } else {
+            return p.equals(l.q) && q.equals(l.p);
+        }
+    }
+    
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 31 * hash + Objects.hashCode(this.p);
         hash = 31 * hash + Objects.hashCode(this.q);
         return hash;
+    }
+    
+    /**
+     * @return {@code true} iff this line segment is effectively a point. 
+     */
+    public boolean isPoint() {
+        return p.equals(q);
     }
 
     /**

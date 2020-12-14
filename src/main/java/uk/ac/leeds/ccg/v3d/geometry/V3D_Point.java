@@ -62,10 +62,43 @@ public class V3D_Point extends V3D_Geometry implements Comparable<V3D_Point>,
      * @param y What {@link #y} is set to.
      * @param z What {@link #z} is set to.
      */
-    public V3D_Point(BigRational x, BigRational y,            BigRational z) {
+    public V3D_Point(BigRational x, BigRational y, BigRational z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    /**
+     * @param x What {@link #x} is set to.
+     * @param y What {@link #y} is set to.
+     * @param z What {@link #z} is set to.
+     */
+    public V3D_Point(BigDecimal x, BigDecimal y, BigDecimal z) {
+        this.x = BigRational.valueOf(x);
+        this.y = BigRational.valueOf(y);
+        this.z = BigRational.valueOf(z);
+    }
+
+    /**
+     * @param x What {@link #x} is set to.
+     * @param y What {@link #y} is set to.
+     * @param z What {@link #z} is set to.
+     */
+    public V3D_Point(double x, double y, double z) {
+        this.x = BigRational.valueOf(x);
+        this.y = BigRational.valueOf(y);
+        this.z = BigRational.valueOf(z);
+    }
+
+    /**
+     * @param x What {@link #x} is set to.
+     * @param y What {@link #y} is set to.
+     * @param z What {@link #z} is set to.
+     */
+    public V3D_Point(long x, long y, long z) {
+        this.x = BigRational.valueOf(x);
+        this.y = BigRational.valueOf(y);
+        this.z = BigRational.valueOf(z);
     }
 
     @Override
@@ -77,12 +110,20 @@ public class V3D_Point extends V3D_Geometry implements Comparable<V3D_Point>,
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Point) {
-            V3D_Point p = (V3D_Point) o;
-            if (p.x.compareTo(x) == 0) {
-                if (p.y.compareTo(y) == 0) {
-                    if (p.z.compareTo(z) == 0) {
-                        return true;
-                    }
+            return equals((V3D_Point) o);
+        }
+        return false;
+    }
+
+    /**
+     * @param p The point to test if it is the same as {@code this}.
+     * @return {@code true} iff {@code p} is the same as {@code this}.
+     */
+    public boolean equals(V3D_Point p) {
+        if (p.x.compareTo(x) == 0) {
+            if (p.y.compareTo(y) == 0) {
+                if (p.z.compareTo(z) == 0) {
+                    return true;
                 }
             }
         }
@@ -182,7 +223,7 @@ public class V3D_Point extends V3D_Geometry implements Comparable<V3D_Point>,
      * Order first in terms of {@link #x}, then {@link #y}, then {@link #z}.
      *
      * @param o The point to compare with.
-     * @return -1, 0, 1 depending on if this is less than equal to or greater 
+     * @return -1, 0, 1 depending on if this is less than equal to or greater
      * than {@code o}.
      */
     @Override

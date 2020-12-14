@@ -129,12 +129,17 @@ public class V3D_Line extends V3D_Geometry {
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Line) {
-            V3D_Line l = (V3D_Line) o;
-            if (this.isIntersectedBy(l.p) && this.isIntersectedBy(l.q)) {
-                return true;
-            }
+            return equals((V3D_Line) o);
         }
         return false;
+    }
+
+    /**
+     * @param l The line to test if it is the same as {@code this}.
+     * @return {@code true} iff {@code l} is the same as {@code this}.
+     */
+    public boolean equals(V3D_Line l) {
+        return isIntersectedBy(l.p) && isIntersectedBy(l.q);
     }
 
     @Override

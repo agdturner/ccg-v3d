@@ -22,38 +22,96 @@ import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
  * V3D_Rectangle. This class defines a finite plane that is rectangular. This
  * can be infinitesimally small in which case it is a point when
  * {@link #p}, {@link #q}, {@link #r} and {@link #s} are equal. {@code
- * p ----------- q
- * |             |
- * |             |
- * |             |
- * r ----------- s
+ *         t
+ *  p ----------- q
+ *  |             |
+ * l|             |ri
+ *  |             |
+ *  s ----------- r
+ *         b
  * }
  *
  * @author Andy Turner
- * @version 1.0
+ * @version 1.0.0
  */
 public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The other corner of the rectangle. The others are {@link #p}, {@link #q}, 
+     * and {@link #r}.
+     */
     public final V3D_Point s;
+    
+    /**
+     * For storing the envelope
+     */
+    protected V3D_Envelope en;
+    
+    /**
+     * For storing the line segment from {@link #p} to {@link #q}. 
+     */
+    protected final V3D_LineSegment t;
 
     /**
-     * Checks that pq and rs are orthogonal to pr and qs.
-     *
+     * For storing the line segment from {@link #q} to {@link #r}. 
+     */
+    protected final V3D_LineSegment ri;
+
+    /**
+     * For storing the line segment from {@link #r} to {@link #s}. 
+     */
+    protected final V3D_LineSegment b;
+
+    /**
+     * For storing the vector from {@link #s} to {@link #p}. 
+     */
+    protected final V3D_LineSegment l;
+    
+    /**
      * @param p The top left corner of the rectangle.
      * @param q The top right corner of the rectangle.
-     * @param r The bottom left corner of the rectangle.
-     * @param s The bottom right corner of the rectangle.
+     * @param r The bottom right corner of the rectangle.
+     * @param s The bottom left corner of the rectangle.
+     * @throws java.lang.Exception iff the points do not define a rectangle.
      */
-    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s) {
+    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s) 
+            throws Exception {
         super(p, q, r);
         this.s = s;
+        //en = new V3D_Envelope(p, q, r, s); Not initialised here as it causes a StackOverflowError
+        pq = new V3D_Vector(p, q);
+        qr = new V3D_Vector(q, r);
+        t = new V3D_LineSegment(p, q);
+        ri = new V3D_LineSegment(q, r);
+        b = new V3D_LineSegment(r, s);
+        l = new V3D_LineSegment(s, p);
+        // Check for rectangle.
+        if (pq.isZeroVector()) {
+//            if (qr.isZeroVector()) {
+//                // Rectangle is a point.
+//            } else {
+//                // Rectangle is a line.
+//            }
+        } else {
+            if (qr.isZeroVector()) {
+                // Rectangle is a line.
+            } else {
+                // Rectangle has area.
+                if (!(pq.isOrthogonal(qr))) {
+                    throw new Exception("The points do not define a rectangle.");
+                }
+            }
+        }
     }
 
     @Override
     public V3D_Envelope getEnvelope() {
-        return new V3D_Envelope(p, q, r, s);
+        if (en == null) {
+            en = new V3D_Envelope(p, q, r, s);
+        }
+        return en;
     }
 
     /**
@@ -80,8 +138,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
         if (i == null) {
             return null;
         } else if (i instanceof V3D_Line) {
+            getEnvelope();
             V3D_Line li = (V3D_Line) i;
-            V3D_Envelope en = getEnvelope();
             V3D_Geometry enil = en.getIntersection(l);
             if (enil == null) {
                 return null;
@@ -246,113 +304,4 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
         return null;
     }
 
-    private V3D_Geometry getIntersects_fr(V3D_Line li, V3D_Envelope en,
-            V3D_Point tlf, V3D_Point trf, V3D_Point tra, V3D_Point llip) {
-        V3D_LineSegment f = new V3D_LineSegment(tlf, trf);
-        V3D_Geometry fli = f.getIntersection(li);
-        if (fli == null) {
-            // Intersects with r?
-            V3D_LineSegment r2 = new V3D_LineSegment(tra, trf);
-            V3D_Geometry rli = r2.getIntersection(li);
-            if (rli == null) {
-                return llip;
-            } else {
-                return new V3D_LineSegment((V3D_Point) rli, llip);
-            }
-        } else {
-            if (fli instanceof V3D_LineSegment) {
-                return fli;
-            } else {
-                return new V3D_LineSegment(llip, (V3D_Point) fli);
-            }
-        }
-    }
-
-    private V3D_Geometry getIntersects_fb(V3D_Line li, V3D_Envelope en,
-            V3D_Point tlf, V3D_Point blf, V3D_Point bla, V3D_Point tlip) {
-        V3D_LineSegment f = new V3D_LineSegment(tlf, blf);
-        V3D_Geometry fli = f.getIntersection(li);
-        if (fli == null) {
-            // Intersects with b?
-            V3D_LineSegment b = new V3D_LineSegment(bla, blf);
-            V3D_Geometry bli = b.getIntersection(li);
-            if (bli == null) {
-                return tlip;
-            } else {
-                return new V3D_LineSegment((V3D_Point) bli, tlip);
-            }
-        } else {
-            if (fli instanceof V3D_LineSegment) {
-                return fli;
-            } else {
-                return new V3D_LineSegment(tlip, (V3D_Point) fli);
-            }
-        }
-    }
-
-    private V3D_Geometry getIntersects_lb(V3D_Line li, V3D_Envelope en,
-            V3D_Point tlf, V3D_Point blf, V3D_Point brf, V3D_Point tlip) {
-        V3D_LineSegment l = new V3D_LineSegment(tlf, blf);
-        V3D_Geometry lli = l.getIntersection(li);
-        if (lli == null) {
-            // Intersects with b?
-            V3D_LineSegment b = new V3D_LineSegment(brf, blf);
-            V3D_Geometry bli = b.getIntersection(li);
-            if (bli == null) {
-                return tlip;
-            } else {
-                return new V3D_LineSegment((V3D_Point) bli, tlip);
-            }
-        } else {
-            if (lli instanceof V3D_LineSegment) {
-                return lli;
-            } else {
-                return new V3D_LineSegment(tlip, (V3D_Point) lli);
-            }
-        }
-    }
-
-    private V3D_Geometry getIntersects_arfb(V3D_Line li,
-            V3D_Rectangle a, V3D_Rectangle r, V3D_Rectangle f,
-            V3D_Rectangle b, V3D_Point tlip) {
-        V3D_Geometry ali = a.getIntersection(li);
-        if (ali == null) {
-            return getIntersects_rfb(li, r, f, b, tlip);
-        } else if (ali instanceof V3D_LineSegment) {
-            return ali;
-        } else {
-            V3D_Point alip = (V3D_Point) ali;
-            if (alip.equals(tlip)) {
-                return getIntersects_rfb(li, r, f, b, tlip);
-            } else {
-                return new V3D_LineSegment(tlip, alip);
-            }
-        }
-    }
-
-    private V3D_Geometry getIntersects_rfb(V3D_Line li,
-            V3D_Rectangle r, V3D_Rectangle f, V3D_Rectangle b,
-            V3D_Point tlip) {
-        V3D_Geometry rli = r.getIntersection(li);
-        if (rli == null) {
-            // Check for further intersections
-            V3D_Geometry fli = f.getIntersection(li);
-            if (fli == null) {
-                // Check for further intersections
-                V3D_Geometry bli = b.getIntersection(li);
-                if (bli == null) {
-                    return tlip;
-                } else {
-                    return new V3D_LineSegment(tlip,
-                            (V3D_Point) bli);
-                }
-            } else {
-                return new V3D_LineSegment(tlip,
-                        (V3D_Point) fli);
-            }
-        } else {
-            return new V3D_LineSegment(tlip,
-                    (V3D_Point) rli);
-        }
-    }
 }

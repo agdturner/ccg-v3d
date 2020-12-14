@@ -123,7 +123,6 @@ public class V3D_TriangleTest extends V3D_Test {
         expResult = P0P0P0;
         result = instance.getIntersection(li);
         assertEquals(expResult, result);
-
     }
 
 }

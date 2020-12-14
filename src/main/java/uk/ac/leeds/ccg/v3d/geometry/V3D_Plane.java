@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import ch.obermuhlner.math.big.BigRational;
 import java.util.Objects;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.geometrics.V3D_Distribution;
 
 /**
  * V3D_Plane - for representing infinite flat 2D planes in 3D. The plane is
@@ -77,9 +78,9 @@ public class V3D_Plane extends V3D_Geometry {
     protected V3D_Vector pq;
 
     /**
-     * The vector representing the move from {@link #p} to {@link #r}.
+     * The vector representing the move from {@link #q} to {@link #r}.
      */
-    protected V3D_Vector pr;
+    protected V3D_Vector qr;
 
     /**
      * The normal vector. (This is perpendicular to the plane and it's direction
@@ -99,7 +100,6 @@ public class V3D_Plane extends V3D_Geometry {
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r,
             boolean checkCollinearity) {
         init(p, q, r);
-        V3D_Environment e;
         if (checkCollinearity) {
             // Check for collinearity
             BigRational P0 = V3D_Environment.P0;
@@ -114,14 +114,14 @@ public class V3D_Plane extends V3D_Geometry {
 
     private void init(V3D_Point p, V3D_Point q, V3D_Point r) {
         pq = new V3D_Vector(p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
-        pr = new V3D_Vector(p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
+        qr = new V3D_Vector(q.x.subtract(r.x), q.y.subtract(r.y), q.z.subtract(r.z));
         /**
          * Calculate the normal perpendicular vector.
          */
         n = new V3D_Vector(
-                pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz)),
-                pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz)).negate(),
-                pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy)));
+                pq.dy.multiply(qr.dz).subtract(qr.dy.multiply(pq.dz)),
+                pq.dx.multiply(qr.dz).subtract(qr.dx.multiply(pq.dz)).negate(),
+                pq.dx.multiply(qr.dy).subtract(qr.dx.multiply(pq.dy)));
         this.p = p;
         this.q = q;
         this.r = r;
@@ -137,6 +137,10 @@ public class V3D_Plane extends V3D_Geometry {
      * @param r What {@link #r} is set to.
      */
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r) {
+        if (V3D_Distribution.isCollinear(p, q, r)) {
+            throw new RuntimeException("Cannot construct plane as the points "
+                    + "are collinear.");
+        }
         init(p, q, r);
     }
 
@@ -174,7 +178,7 @@ public class V3D_Plane extends V3D_Geometry {
         // Then: y = d/n.dy
         this.r = new V3D_Point(P0, d.divide(n.dy), P0);
         pq = new V3D_Vector(p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
-        pr = new V3D_Vector(p.x.subtract(r.x), p.y.subtract(r.y), p.z.subtract(r.z));
+        qr = new V3D_Vector(q.x.subtract(r.x), q.y.subtract(r.y), q.z.subtract(r.z));
         this.n = n;
     }
 

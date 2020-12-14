@@ -16,6 +16,8 @@
 package uk.ac.leeds.ccg.v3d.geometry.envelope;
 
 import ch.obermuhlner.math.big.BigRational;
+import static org.hamcrest.MatcherAssert.assertThat;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +40,7 @@ import uk.ac.leeds.ccg.v3d.test.V3D_Test;
  * V3D_EnvelopeTest
  *
  * @author Andy Turner
- * @version 1.0
+ * @version 1.0.0
  */
 public class V3D_EnvelopeTest extends V3D_Test {
 
@@ -68,7 +70,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * A master controller for all tests.
      */
-    @Test
+    //@Test
     public void testAll() {
         testToString();
         testEnvelope();
@@ -89,7 +91,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of toString method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testToString() {
         System.out.println("toString");
         V3D_Envelope instance = new V3D_Envelope(P0P0P0);
@@ -102,7 +104,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of envelop method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testEnvelope() {
         System.out.println("envelope");
         V3D_Envelope e1 = new V3D_Envelope(P0P0P0, P0P0P0);
@@ -115,20 +117,20 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of isIntersectedBy method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testIsIntersectedBy_V3D_Envelope() {
         System.out.println("isIntersectedBy");
         V3D_Envelope instance = new V3D_Envelope(P0P0P0, P0P0P0);
-        V3D_Envelope e000111 = new V3D_Envelope(P0P0P0, P1P1P1);
+        V3D_Envelope e = new V3D_Envelope(P0P0P0, P1P1P1);
         boolean expResult = true;
-        boolean result = instance.isIntersectedBy(e000111);
+        boolean result = instance.isIntersectedBy(e);
         assertEquals(expResult, result);
     }
 
     /**
      * Test of isIntersectedBy method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testIsIntersectedBy_V3D_Point() {
         System.out.println("isIntersectedBy");
         V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
@@ -140,7 +142,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of getEnvelope method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testGetEnvelope3D() {
         System.out.println("getEnvelope3D");
         V3D_Point p0 = P0P0P0;
@@ -154,7 +156,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of equals method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testEquals() {
         System.out.println("equals");
         V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
@@ -167,7 +169,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of isIntersectedBy method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testIsIntersectedBy_3args() {
         System.out.println("isIntersectedBy");
         V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
@@ -179,7 +181,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of hashCode method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testHashCode() {
         System.out.println("hashCode");
         assertTrue(true); // None test.
@@ -188,7 +190,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of getIntersection method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testGetIntersection_V3D_Envelope() {
         System.out.println("getIntersection");
         V3D_Envelope en;
@@ -224,7 +226,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of getIntersection method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testGetIntersection_V3D_Line() {
         System.out.println("getIntersection");
         V3D_Line li = new V3D_Line(P0P0P0, P0P0P1);
@@ -239,7 +241,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of union method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testUnion() {
         System.out.println("union");
         V3D_Envelope e = new V3D_Envelope(N2N2N2, P1P1P1);
@@ -252,7 +254,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of isContainedBy method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testIsContainedBy() {
         System.out.println("isContainedBy");
         V3D_Envelope e = new V3D_Envelope( N2N2N2, P2P2P2);
@@ -265,7 +267,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of getIntersection method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testGetIntersection_V3D_LineSegment_boolean() {
         System.out.println("getIntersection");
         V3D_LineSegment l = new V3D_LineSegment(N2N2N2, P0P0P0);
@@ -279,7 +281,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of getEnvelope method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testGetEnvelope() {
         System.out.println("getEnvelope");
         V3D_Envelope instance = new V3D_Envelope(P0P0P0);
@@ -291,85 +293,73 @@ public class V3D_EnvelopeTest extends V3D_Test {
     /**
      * Test of getxMin method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testGetxMin() {
         System.out.println("getxMin");
-        V3D_Envelope instance = null;
-        BigRational expResult = null;
+        V3D_Envelope instance = new V3D_Envelope(P0N1N1, P0N1P0, N2N2N2);
+        BigRational expResult = N2;
         BigRational result = instance.getxMin();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 
     /**
      * Test of getxMax method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testGetxMax() {
         System.out.println("getxMax");
-        V3D_Envelope instance = null;
-        BigRational expResult = null;
+        V3D_Envelope instance = new V3D_Envelope(P0N1N1, P0N1P0, N2N2N2);
+        BigRational expResult = P0;
         BigRational result = instance.getxMax();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 
     /**
      * Test of getyMin method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testGetyMin() {
         System.out.println("getyMin");
-        V3D_Envelope instance = null;
-        BigRational expResult = null;
+        V3D_Envelope instance = new V3D_Envelope(P0N1N1, P0N1P0, N2N2N2);
+        BigRational expResult = N2;
         BigRational result = instance.getyMin();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 
     /**
      * Test of getyMax method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testGetyMax() {
         System.out.println("getyMax");
-        V3D_Envelope instance = null;
-        BigRational expResult = null;
+        V3D_Envelope instance = new V3D_Envelope(P0N1N1, P0N1P0, N2N2N2);
+        BigRational expResult = N1;
         BigRational result = instance.getyMax();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 
     /**
      * Test of getzMin method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testGetzMin() {
         System.out.println("getzMin");
-        V3D_Envelope instance = null;
-        BigRational expResult = null;
+        V3D_Envelope instance = new V3D_Envelope(P0N1N1, P0N1P0, N2N2N2);
+        BigRational expResult = N2;
         BigRational result = instance.getzMin();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 
     /**
      * Test of getzMax method, of class V3D_Envelope.
      */
-    //@Test
+    @Test
     public void testGetzMax() {
         System.out.println("getzMax");
-        V3D_Envelope instance = null;
-        BigRational expResult = null;
+        V3D_Envelope instance = new V3D_Envelope(P0N1N1, P0N1P0, N2N2N2);
+        BigRational expResult = P0;
         BigRational result = instance.getzMax();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 
 }

@@ -596,8 +596,8 @@ public class V3D_PlaneTest extends V3D_Test {
         // plane
         // 2x + y − 4z = 4
         // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
-        instance = new V3D_Plane(new V3D_Point(P0, P0, N1),
-                new V3D_Point(P0, P4, P0), new V3D_Point(P2, P0, P0));
+        instance = new V3D_Plane(P0P0N1, new V3D_Point(P0, P4, P0), 
+                new V3D_Point(P2, P0, P0));
         // (2, 8, 2)
         expResult = new V3D_Point(P2, P8, P2);
         result = instance.getIntersection(l);

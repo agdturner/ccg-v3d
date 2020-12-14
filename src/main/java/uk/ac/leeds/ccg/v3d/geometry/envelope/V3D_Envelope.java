@@ -17,11 +17,14 @@ package uk.ac.leeds.ccg.v3d.geometry.envelope;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_FiniteGeometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Rectangle;
 
 /**
  * An envelope contains all the extreme values with respect to the X, Y and Z
@@ -68,32 +71,32 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * The top face.
      */
-    protected V3D_EnvelopeFaceTop t;
+    protected V3D_Rectangle t;
 
     /**
      * The left face.
      */
-    protected V3D_EnvelopeFaceLeft l;
+    protected V3D_Rectangle l;
 
     /**
      * The aft face.
      */
-    protected V3D_EnvelopeFaceAft a;
+    protected V3D_Rectangle a;
 
     /**
      * The right face.
      */
-    protected V3D_EnvelopeFaceRight r;
+    protected V3D_Rectangle r;
 
     /**
      * The fore face.
      */
-    protected V3D_EnvelopeFaceFore f;
+    protected V3D_Rectangle f;
 
     /**
      * The bottom face.
      */
-    protected V3D_EnvelopeFaceBottom b;
+    protected V3D_Rectangle b;
 
     /**
      * @param e An envelop.
@@ -109,20 +112,24 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     private void init() {
-        V3D_Point tlf = new V3D_Point(getxMin(), getyMin(), getzMax());
-        V3D_Point tla = new V3D_Point(getxMin(), getyMax(), getzMax());
-        V3D_Point tar = new V3D_Point(getxMax(), getyMax(), getzMax());
-        V3D_Point trf = new V3D_Point(getxMax(), getyMin(), getzMax());
-        V3D_Point blf = new V3D_Point(getxMin(), getyMin(), getzMin());
-        V3D_Point bla = new V3D_Point(getxMin(), getyMax(), getzMin());
-        V3D_Point bar = new V3D_Point(getxMax(), getyMax(), getzMin());
-        V3D_Point brf = new V3D_Point(getxMax(), getyMin(), getzMin());
-        t = new V3D_EnvelopeFaceTop(tlf, tla, tar, trf);
-        l = new V3D_EnvelopeFaceLeft(tlf, tla, bla, blf);
-        a = new V3D_EnvelopeFaceAft(tla, tar, bar, bla);
-        r = new V3D_EnvelopeFaceRight(trf, tar, bar, brf);
-        f = new V3D_EnvelopeFaceFore(tlf, trf, brf, blf);
-        b = new V3D_EnvelopeFaceBottom(blf, bla, bar, brf);
+        try {
+            V3D_Point tlf = new V3D_Point(getxMin(), getyMin(), getzMax());
+            V3D_Point tla = new V3D_Point(getxMin(), getyMax(), getzMax());
+            V3D_Point tar = new V3D_Point(getxMax(), getyMax(), getzMax());
+            V3D_Point trf = new V3D_Point(getxMax(), getyMin(), getzMax());
+            V3D_Point blf = new V3D_Point(getxMin(), getyMin(), getzMin());
+            V3D_Point bla = new V3D_Point(getxMin(), getyMax(), getzMin());
+            V3D_Point bar = new V3D_Point(getxMax(), getyMax(), getzMin());
+            V3D_Point brf = new V3D_Point(getxMax(), getyMin(), getzMin());
+            t = new V3D_Rectangle(tlf, tla, tar, trf);
+            l = new V3D_Rectangle(tlf, tla, bla, blf);
+            a = new V3D_Rectangle(tla, tar, bar, bla);
+            r = new V3D_Rectangle(trf, tar, bar, brf);
+            f = new V3D_Rectangle(tlf, trf, brf, blf);
+            b = new V3D_Rectangle(blf, bla, bar, brf);
+        } catch (Exception ex) {
+            Logger.getLogger(V3D_Envelope.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

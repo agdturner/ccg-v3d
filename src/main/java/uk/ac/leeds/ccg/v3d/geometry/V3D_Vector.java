@@ -51,6 +51,11 @@ public class V3D_Vector implements Serializable {
     /**
      * For storing the magnitude.
      */
+    public BigRational magnitudeSquared;
+    
+    /**
+     * For storing the magnitude.
+     */
     public BigDecimal magnitude;
 
     /**
@@ -169,6 +174,18 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * If {@code null}, then initialise {@link #magnitudeSquared} and return it.
+     * @return {@link #magnitudeSquared} after initialising it if it is {@code null}.
+     */
+    public BigRational getMagnitudeSquared() {
+        if (magnitudeSquared == null){
+            magnitudeSquared = dx.multiply(dx).add(dy.multiply(dy))
+                .add(dz.multiply(dz));
+        }
+        return magnitudeSquared;
+    }
+    
+    /**
      * Get the magnitude of the vector at the given scale.
      *
      * @param scale The scale for the precision of the result.
@@ -192,8 +209,8 @@ public class V3D_Vector implements Serializable {
      * @return {@link #magnitude} initialised with {@code scale} and {@code rm}.
      */
     protected BigDecimal initMagnitude(int scale, RoundingMode rm) {
-        magnitude = Math_BigDecimal.sqrt(dx.multiply(dx).add(dy.multiply(dy))
-                .add(dz.multiply(dz)).toBigDecimal(), scale, rm);
+        magnitude = Math_BigDecimal.sqrt(getMagnitudeSquared().toBigDecimal()
+                , scale, rm);
         return magnitude;
     }
 
