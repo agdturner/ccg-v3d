@@ -121,11 +121,24 @@ public class V3D_Environment extends Generic_MemoryManager {
      */
     public Math_BigDecimal bd;
 
+    /**
+     * Creates a new V3D_Environment
+     * @param e Generic_Environment
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
     public V3D_Environment(Generic_Environment e) throws IOException,
             Exception {
         this(e, e.files.getDir());
     }
 
+    /**
+     * Creates a new V3D_Environment
+     * @param e Generic_Environment
+     * @param dir Generic_Path
+     * @throws IOException If encountered.
+     * @throws Exception If encountered.
+     */
     public V3D_Environment(Generic_Environment e, Generic_Path dir)
             throws IOException, Exception {
         super();
@@ -141,15 +154,6 @@ public class V3D_Environment extends Generic_MemoryManager {
         initMemoryReserve(Default_Memory_Threshold, env);
         files = new V3D_Files(new Generic_Defaults(Paths.get(dir.toString(),
                 V3D_Strings.s_v3d)));
-    }
-
-    public BigDecimal getRounded_BigDecimal(BigDecimal toRoundBigDecimal,
-            BigDecimal toRoundToBigDecimal) {
-        int scale = toRoundToBigDecimal.scale();
-        BigDecimal r = toRoundBigDecimal.setScale(scale - 1, RoundingMode.FLOOR);
-        r = r.setScale(scale);
-        r = r.add(toRoundToBigDecimal);
-        return r;
     }
 
     @Override

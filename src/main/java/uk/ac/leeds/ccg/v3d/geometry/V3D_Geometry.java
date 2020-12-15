@@ -27,6 +27,9 @@ public abstract class V3D_Geometry implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Created a new V3D_Geometry.
+     */
     public V3D_Geometry() {
     }
     
