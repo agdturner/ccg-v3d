@@ -19,9 +19,9 @@ import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 
 /**
- * V3D_Rectangle. This class defines a finite plane that is rectangular. This
- * can be infinitesimally small in which case it is a point when
- * {@link #p}, {@link #q}, {@link #r} and {@link #s} are equal. {@code
+ * For representing and processing rectangles in 3D. In special cases, the
+ * rectangle could be a line segment or a point when two or all of
+ * {@link #p}, {@link #q}, {@link #r} and {@link #s} are equal respectively.  {@code
  *         t
  *  p ----------- q
  *  |             |
@@ -120,39 +120,67 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
     public boolean isIntersectedBy(V3D_Point pt) {
         if (getEnvelope().isIntersectedBy(pt)) {
             if (super.isIntersectedBy(pt)) {
-                if (this.t.isIntersectedBy(pt) || ri.isIntersectedBy(pt)
-                        || b.isIntersectedBy(pt) || l.isIntersectedBy(pt)) {
+                return isIntersectedBy0(pt);
+            }
+        }
+        return false;
+    }
+
+    private boolean isIntersectedBy0(V3D_Point pt) {
+        if (t.isIntersectedBy(pt) || ri.isIntersectedBy(pt)
+                || b.isIntersectedBy(pt) || l.isIntersectedBy(pt)) {
+            return true;
+        }
+        V3D_Vector ppt = new V3D_Vector(p, pt);
+        V3D_Vector qpt = new V3D_Vector(q, pt);
+        V3D_Vector rpt = new V3D_Vector(r, pt);
+        V3D_Vector spt = new V3D_Vector(s, pt);
+        V3D_Vector rs = new V3D_Vector(r, s);
+        V3D_Vector sp = new V3D_Vector(s, p);
+        V3D_Vector cp = pq.getCrossProduct(ppt);
+        V3D_Vector cq = qr.getCrossProduct(qpt);
+        V3D_Vector cr = rs.getCrossProduct(rpt);
+        V3D_Vector cs = sp.getCrossProduct(spt);
+        /**
+         * If cp, cq, cr, and cs are all in the same direction then pt
+         * intersects.
+         */
+        BigRational mp = cp.getMagnitudeSquared();
+        BigRational mq = cq.getMagnitudeSquared();
+        V3D_Vector cpq = cp.add(cq);
+        BigRational mpq = cpq.getMagnitudeSquared();
+        if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
+            BigRational mr = cr.getMagnitudeSquared();
+            V3D_Vector cpqr = cpq.add(cr);
+            BigRational mpqr = cpqr.getMagnitudeSquared();
+            if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
+                BigRational ms = cs.getMagnitudeSquared();
+                BigRational mpqrs = cpqr.add(cs).getMagnitudeSquared();
+                if (mpqrs.compareTo(ms) == 1 && mpqrs.compareTo(mpqr) == 1) {
                     return true;
                 }
-                V3D_Vector ppt = new V3D_Vector(p, pt);
-                V3D_Vector qpt = new V3D_Vector(q, pt);
-                V3D_Vector rpt = new V3D_Vector(r, pt);
-                V3D_Vector spt = new V3D_Vector(s, pt);
-                V3D_Vector rs = new V3D_Vector(r, s);
-                V3D_Vector sp = new V3D_Vector(s, p);
-                V3D_Vector cp = pq.getCrossProduct(ppt);
-                V3D_Vector cq = qr.getCrossProduct(qpt);
-                V3D_Vector cr = rs.getCrossProduct(rpt);
-                V3D_Vector cs = sp.getCrossProduct(spt);
-                /**
-                 * If cp, cq, cr, and cs are all in the same direction then pt
-                 * intersects.
-                 */
-                BigRational mp = cp.getMagnitudeSquared();
-                BigRational mq = cq.getMagnitudeSquared();
-                V3D_Vector cpq = cp.add(cq);
-                BigRational mpq = cpq.getMagnitudeSquared();
-                if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
-                    BigRational mr = cr.getMagnitudeSquared();
-                    V3D_Vector cpqr = cpq.add(cr);
-                    BigRational mpqr = cpqr.getMagnitudeSquared();
-                    if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
-                        BigRational ms = cs.getMagnitudeSquared();
-                        BigRational mpqrs = cpqr.add(cs).getMagnitudeSquared();
-                        if (mpqrs.compareTo(ms) == 1 && mpqrs.compareTo(mpqr) == 1) {
-                            return true;
-                        }
-                    }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Line l) {
+        if (super.isIntersectedBy(l)) {
+            return isIntersectedBy0((V3D_Point) super.getIntersection(l));
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean isIntersectedBy(V3D_LineSegment l, boolean b) {
+        if (this.getEnvelope().isIntersectedBy(l.getEnvelope())) {
+            if (super.isIntersectedBy(l)) {
+                V3D_Geometry g = super.getIntersection(l, b);
+                if (g instanceof V3D_Point) {
+                    return l.isIntersectedBy((V3D_Point) g);
+                } else {
+                    return l.isIntersectedBy((V3D_LineSegment) g, b);
                 }
             }
         }

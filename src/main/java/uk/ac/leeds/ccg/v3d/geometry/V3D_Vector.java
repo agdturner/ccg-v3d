@@ -212,7 +212,7 @@ public class V3D_Vector implements Serializable {
      */
     protected BigDecimal initMagnitude(int scale, RoundingMode rm) {
         magnitude = Math_BigDecimal.sqrt(getMagnitudeSquared().toBigDecimal(),
-                 scale, rm);
+                scale, rm);
         return magnitude;
     }
 
@@ -223,14 +223,10 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isParallel(V3D_Vector v) {
-        if (dx.isZero()
-                && dy.isZero()
-                && dz.isZero()) {
+        if (dx.isZero() && dy.isZero() && dz.isZero()) {
             return false;
         }
-        if (v.dx.isZero()
-                && v.dy.isZero()
-                && v.dz.isZero()) {
+        if (v.dx.isZero() && v.dy.isZero() && v.dz.isZero()) {
             return false;
         }
         if (dx.isZero() && !v.dx.isZero()) {
@@ -303,9 +299,9 @@ public class V3D_Vector implements Serializable {
      * returned.
      * @param v1 One of the vectors for which the normal perpendicular vector is
      * returned.
-     * @return The normal perpendicular vector to {@code v0} and {@code v1}.
+     * @return The normal perpendicular vector of {@code v0} and {@code v1}.
      */
-    public static V3D_Vector getNormalPerpendicularVector(V3D_Vector v0, 
+    public static V3D_Vector getNormal(V3D_Vector v0,
             V3D_Vector v1) {
         return new V3D_Vector(
                 v0.dy.multiply(v1.dz).subtract(v1.dy.multiply(v0.dz)),

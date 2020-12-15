@@ -33,13 +33,33 @@ public interface V3D_FiniteGeometry {
     public abstract V3D_Envelope getEnvelope();
 
     /**
-     * For getting the intersection between the geometry and the point
+     * For identifying if the geometry is intersected by point
      * {@code p}.
      *
      * @param p The point to test for intersection with.
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
     public abstract boolean isIntersectedBy(V3D_Point p);
+
+    /**
+     * For identifying if the geometry is intersected by line
+     * {@code l}.
+     *
+     * @param l The line to test for intersection with.
+     * @return {@code true} iff the geometry is intersected by {@code l}.
+     */
+    public abstract boolean isIntersectedBy(V3D_Line l);
+
+    /**
+     * For identifying if the geometry is intersected by line
+     * {@code l}.
+     *
+     * @param l The line segment to test for intersection with.
+     * @param b To distinguish this method from
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}.
+     * @return {@code true} iff the geometry is intersected by {@code l}.
+     */
+    public abstract boolean isIntersectedBy(V3D_LineSegment l, boolean b);
 
     /**
      * For getting the intersection between the geometry and the line {@code l}.

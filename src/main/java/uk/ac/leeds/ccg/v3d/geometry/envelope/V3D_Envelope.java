@@ -837,4 +837,33 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         return zMax;
     }
 
+    @Override
+    public boolean isIntersectedBy(V3D_Line li) {
+        if (t.isIntersectedBy(li)) {
+            return true;
+        } else if (l.isIntersectedBy(li)) {
+            return true;
+        } else if (a.isIntersectedBy(li)) {
+            return true;
+        } else if (r.isIntersectedBy(li)) {
+            return true;
+        } else {
+            return f.isIntersectedBy(li);
+        }
+    }
+    
+    @Override
+    public boolean isIntersectedBy(V3D_LineSegment l, boolean b) {
+        V3D_Envelope le = l.getEnvelope();
+        if (le.isIntersectedBy(this)) {
+            if (this.isIntersectedBy(l.p) || this.isIntersectedBy(l.q)) {
+                return true;
+            }
+            if (this.b.isIntersectedBy(l)) {
+                return true;
+            }
+            return isIntersectedBy(l);
+        }
+        return false;
+    }
 }

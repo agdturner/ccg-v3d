@@ -177,7 +177,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} If this and {@code l} intersect.
      */
     public boolean isIntersectedBy(V3D_Line l) {
-        return this.getIntersection(l) != null;
+        return getIntersection(l) != null;
     }
 
     /**

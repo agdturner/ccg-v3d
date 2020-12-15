@@ -223,6 +223,11 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         return this.equals(p);
     }
 
+    @Override
+    public boolean isIntersectedBy(V3D_Line l) {
+        return l.isIntersectedBy(this);
+    }
+
     /**
      * @param l The line to intersect with {@code this}.
      * @return {@code this} if the point is on the line {@code l} else return
@@ -242,6 +247,11 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
             return this;
         }
         return null;
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_LineSegment l, boolean b) {
+        return l.isIntersectedBy(this);
     }
 
 }

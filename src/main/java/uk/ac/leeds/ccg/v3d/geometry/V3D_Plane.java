@@ -104,7 +104,7 @@ public class V3D_Plane extends V3D_Geometry {
         /**
          * Calculate the normal perpendicular vector.
          */
-        n = V3D_Vector.getNormalPerpendicularVector(pq, qr);
+        n = V3D_Vector.getNormal(pq, qr);
         this.p = p;
         this.q = q;
         this.r = r;
@@ -139,7 +139,7 @@ public class V3D_Plane extends V3D_Geometry {
         /**
          * Calculate the normal perpendicular vector.
          */
-        n = V3D_Vector.getNormalPerpendicularVector(pq, qr);
+        n = V3D_Vector.getNormal(pq, qr);
         this.p = p;
         this.q = q;
         this.r = r;
@@ -180,7 +180,7 @@ public class V3D_Plane extends V3D_Geometry {
         this.r = new V3D_Point(P0, d.divide(n.dy), P0);
         pq = new V3D_Vector(p, q);
         qr = new V3D_Vector(q, r);
-        this.n = V3D_Vector.getNormalPerpendicularVector(pq, qr);
+        this.n = V3D_Vector.getNormal(pq, qr);
     }
 
     @Override
@@ -194,8 +194,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} If this and {@code pl} intersect.
      */
     public boolean isIntersectedBy(V3D_Plane pl) {
-        if (this.isParallel(pl)) {
-            return this.equals(pl);
+        if (isParallel(pl)) {
+            return equals(pl);
         }
         return true;
     }

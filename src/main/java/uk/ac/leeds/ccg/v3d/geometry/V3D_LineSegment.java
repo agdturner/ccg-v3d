@@ -215,15 +215,33 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param l A line to test for intersection within the specified tolerance.
-     * @return true if p is within t of this given scale.
+     * @param l A line segment to indicate intersection with this.
+     * @return {@code true} iff {@code l} intersects with {@code this}.
      */
-    public boolean isIntersectedBy(V3D_LineSegment l) {
+    @Override
+    public boolean isIntersectedBy(V3D_LineSegment l, boolean b) {
         boolean ei = getEnvelope().isIntersectedBy(l.getEnvelope());
         if (ei) {
             return super.isIntersectedBy(l);
         }
         return false;
+    }
+
+    /**
+     * @param l A line to test for intersection within the specified tolerance.
+     * @return true if p is within t of this given scale.
+     */
+    @Override
+    public boolean isIntersectedBy(V3D_Line l) {
+        V3D_Geometry i = super.getIntersection(l);
+        if (i == null) {
+            return false;
+        }
+        if (i instanceof V3D_Point) {
+            return isIntersectedBy((V3D_Point) i);
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -243,7 +261,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
             return i;
         }
         if (i instanceof V3D_Point) {
-            if (this.isIntersectedBy((V3D_Point) i)) {
+            if (isIntersectedBy((V3D_Point) i)) {
                 return i;
             } else {
                 return null;
