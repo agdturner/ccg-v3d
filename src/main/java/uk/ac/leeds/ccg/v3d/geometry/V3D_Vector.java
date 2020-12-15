@@ -52,7 +52,7 @@ public class V3D_Vector implements Serializable {
      * For storing the magnitude squared.
      */
     public BigRational magnitudeSquared;
-    
+
     /**
      * For storing the magnitude.
      */
@@ -120,20 +120,20 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @return {@code true} if {@code this.equals(e.zeroVector)} 
+     * @return {@code true} if {@code this.equals(e.zeroVector)}
      */
     public boolean isZeroVector() {
         return this.equals(V3D_Environment.ZERO_VECTOR);
     }
-    
+
     /**
      * @param s The scalar value to multiply this by.
      * @return Scaled vector.
      */
     public V3D_Vector multiply(BigRational s) {
-        return new V3D_Vector(dx.multiply(s), dy.multiply(s),                 dz.multiply(s));
+        return new V3D_Vector(dx.multiply(s), dy.multiply(s), dz.multiply(s));
     }
-    
+
     /**
      * @param v The vector to add.
      * @return A new vector which is this add {@code v}.
@@ -141,16 +141,16 @@ public class V3D_Vector implements Serializable {
     public V3D_Vector add(V3D_Vector v) {
         return new V3D_Vector(dx.add(v.dx), dy.add(v.dy), dz.add(v.dz));
     }
-    
+
     /**
      * @param v The vector to subtract.
      * @return A new vector which is this subtract {@code v}.
      */
     public V3D_Vector subtract(V3D_Vector v) {
-        return new V3D_Vector(dx.subtract(v.dx), dy.subtract(v.dy), 
+        return new V3D_Vector(dx.subtract(v.dx), dy.subtract(v.dy),
                 dz.subtract(v.dz));
     }
-    
+
     /**
      * Calculate and return the
      * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
@@ -175,16 +175,18 @@ public class V3D_Vector implements Serializable {
 
     /**
      * If {@code null}, then initialise {@link #magnitudeSquared} and return it.
-     * @return {@link #magnitudeSquared} after initialising it if it is {@code null}.
+     *
+     * @return {@link #magnitudeSquared} after initialising it if it is
+     * {@code null}.
      */
     public BigRational getMagnitudeSquared() {
-        if (magnitudeSquared == null){
+        if (magnitudeSquared == null) {
             magnitudeSquared = dx.multiply(dx).add(dy.multiply(dy))
-                .add(dz.multiply(dz));
+                    .add(dz.multiply(dz));
         }
         return magnitudeSquared;
     }
-    
+
     /**
      * Get the magnitude of the vector at the given scale.
      *
@@ -209,8 +211,8 @@ public class V3D_Vector implements Serializable {
      * @return {@link #magnitude} initialised with {@code scale} and {@code rm}.
      */
     protected BigDecimal initMagnitude(int scale, RoundingMode rm) {
-        magnitude = Math_BigDecimal.sqrt(getMagnitudeSquared().toBigDecimal()
-                , scale, rm);
+        magnitude = Math_BigDecimal.sqrt(getMagnitudeSquared().toBigDecimal(),
+                 scale, rm);
         return magnitude;
     }
 
@@ -221,15 +223,15 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isParallel(V3D_Vector v) {
-        if (dx.isZero() &&
-            dy.isZero() &&
-            dz.isZero()) {
-            return false;        
+        if (dx.isZero()
+                && dy.isZero()
+                && dz.isZero()) {
+            return false;
         }
-        if (v.dx.isZero() &&
-            v.dy.isZero() &&
-            v.dz.isZero()) {
-            return false;        
+        if (v.dx.isZero()
+                && v.dy.isZero()
+                && v.dz.isZero()) {
+            return false;
         }
         if (dx.isZero() && !v.dx.isZero()) {
             return false;
@@ -294,5 +296,21 @@ public class V3D_Vector implements Serializable {
     public V3D_Vector getUnitVector(int scale, RoundingMode rm) {
         BigRational m = BigRational.valueOf(getMagnitude(scale + 2, rm));
         return new V3D_Vector(dx.divide(m), dy.divide(m), dz.divide(m));
+    }
+
+    /**
+     * @param v0 One of the vectors for which the normal perpendicular vector is
+     * returned.
+     * @param v1 One of the vectors for which the normal perpendicular vector is
+     * returned.
+     * @return The normal perpendicular vector to {@code v0} and {@code v1}.
+     */
+    public static V3D_Vector getNormalPerpendicularVector(V3D_Vector v0, 
+            V3D_Vector v1) {
+        return new V3D_Vector(
+                v0.dy.multiply(v1.dz).subtract(v1.dy.multiply(v0.dz)),
+                v0.dx.multiply(v1.dz).subtract(v1.dx.multiply(v0.dz)).negate(),
+                v0.dx.multiply(v1.dy).subtract(v1.dx.multiply(v0.dy)));
+
     }
 }

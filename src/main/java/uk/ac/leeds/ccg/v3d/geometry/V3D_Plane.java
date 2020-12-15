@@ -60,34 +60,34 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * One of the points that defines the plane.
      */
-    protected V3D_Point p;
+    protected final V3D_Point p;
 
     /**
      * One of the points that defines the plane.
      */
-    protected V3D_Point q;
+    protected final V3D_Point q;
 
     /**
      * One of the points that defines the plane.
      */
-    protected V3D_Point r;
+    protected final V3D_Point r;
 
     /**
      * The vector representing the move from {@link #p} to {@link #q}.
      */
-    protected V3D_Vector pq;
+    protected final V3D_Vector pq;
 
     /**
      * The vector representing the move from {@link #q} to {@link #r}.
      */
-    protected V3D_Vector qr;
+    protected final V3D_Vector qr;
 
     /**
      * The normal vector. (This is perpendicular to the plane and it's direction
      * is given by order in which the two vectors {@link #pq} and {@link #qr}
      * are used in a cross product calculation when the plane is constructed.
      */
-    protected V3D_Vector n;
+    protected final V3D_Vector n;
 
     /**
      * @param p What {@link #p} is set to.
@@ -99,7 +99,15 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r,
             boolean checkCollinearity) {
-        init(p, q, r);
+        pq = new V3D_Vector(p, q);
+        qr = new V3D_Vector(q, r);
+        /**
+         * Calculate the normal perpendicular vector.
+         */
+        n = V3D_Vector.getNormalPerpendicularVector(pq, qr);
+        this.p = p;
+        this.q = q;
+        this.r = r;
         if (checkCollinearity) {
             // Check for collinearity
             BigRational P0 = V3D_Environment.P0;
@@ -110,21 +118,6 @@ public class V3D_Plane extends V3D_Geometry {
                         + "but are collinear (they might all be the same point!");
             }
         }
-    }
-
-    private void init(V3D_Point p, V3D_Point q, V3D_Point r) {
-        pq = new V3D_Vector(p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
-        qr = new V3D_Vector(q.x.subtract(r.x), q.y.subtract(r.y), q.z.subtract(r.z));
-        /**
-         * Calculate the normal perpendicular vector.
-         */
-        n = new V3D_Vector(
-                pq.dy.multiply(qr.dz).subtract(qr.dy.multiply(pq.dz)),
-                pq.dx.multiply(qr.dz).subtract(qr.dx.multiply(pq.dz)).negate(),
-                pq.dx.multiply(qr.dy).subtract(qr.dx.multiply(pq.dy)));
-        this.p = p;
-        this.q = q;
-        this.r = r;
     }
 
     /**
@@ -141,7 +134,15 @@ public class V3D_Plane extends V3D_Geometry {
             throw new RuntimeException("Cannot construct plane as the points "
                     + "are collinear.");
         }
-        init(p, q, r);
+        pq = new V3D_Vector(p, q);
+        qr = new V3D_Vector(q, r);
+        /**
+         * Calculate the normal perpendicular vector.
+         */
+        n = V3D_Vector.getNormalPerpendicularVector(pq, qr);
+        this.p = p;
+        this.q = q;
+        this.r = r;
     }
 
     /**
@@ -177,9 +178,9 @@ public class V3D_Plane extends V3D_Geometry {
         // Set: x = 0; z = 0
         // Then: y = d/n.dy
         this.r = new V3D_Point(P0, d.divide(n.dy), P0);
-        pq = new V3D_Vector(p.x.subtract(q.x), p.y.subtract(q.y), p.z.subtract(q.z));
-        qr = new V3D_Vector(q.x.subtract(r.x), q.y.subtract(r.y), q.z.subtract(r.z));
-        this.n = n;
+        pq = new V3D_Vector(p, q);
+        qr = new V3D_Vector(q, r);
+        this.n = V3D_Vector.getNormalPerpendicularVector(pq, qr);
     }
 
     @Override

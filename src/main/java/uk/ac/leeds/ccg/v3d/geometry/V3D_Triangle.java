@@ -35,6 +35,11 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
     private static final long serialVersionUID = 1L;
 
     /**
+     * The vector representing the move from {@link #r} to {@link #p}.
+     */
+    protected V3D_Vector rp;
+    
+    /**
      * For storing the envelope.
      */
     protected V3D_Envelope en;
@@ -90,7 +95,6 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
                 V3D_Vector ppt = new V3D_Vector(p, pt);
                 V3D_Vector qpt = new V3D_Vector(q, pt);
                 V3D_Vector rpt = new V3D_Vector(r, pt);
-                V3D_Vector rp = new V3D_Vector(r, p);
                 V3D_Vector cp = pq.getCrossProduct(ppt);
                 V3D_Vector cq = qr.getCrossProduct(qpt);
                 V3D_Vector cr = rp.getCrossProduct(rpt);
@@ -125,6 +129,62 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
                 BigDecimal.valueOf(2), scale, rm);
     }
 
+    /**
+     * @param l The line to intersect with.
+     * @return A point or line segment.
+     */
+    @Override
+    public V3D_Geometry getIntersection(V3D_Line l) {
+        V3D_Geometry i = super.getIntersection(l);
+        if (i == null) {
+            return null;
+        } else if (i instanceof V3D_Line) {
+            V3D_Line li = (V3D_Line) i;
+            V3D_Geometry enil = getEnvelope().getIntersection(l);
+            if (enil == null) {
+                return null;
+            }
+            /**
+             * Get the intersection of the line and each edge of the triangle.
+             */
+            V3D_Geometry lpqi = lpq.getIntersection(li);
+            if (lpqi == null) {
+                // Check lqr, lrp
+                V3D_Geometry lqri = lqr.getIntersection(li);
+                if (lqri == null) {
+                    // No need to check lrp.
+                    return null;
+                } else if (lqri instanceof V3D_LineSegment) {
+                    return lqri;
+                } else {
+                    return new V3D_LineSegment((V3D_Point) lqri,
+                                    (V3D_Point) lrp.getIntersection(li));
+                }
+            } else if (lpqi instanceof V3D_LineSegment) {
+                return lpqi;
+            } else {
+                // Check lqr
+                V3D_Geometry lqri = lqr.getIntersection(li);
+                if (lqri == null) {
+                    return new V3D_LineSegment((V3D_Point) lpqi,
+                                    (V3D_Point) lrp.getIntersection(li));
+                } else if (lqri instanceof V3D_LineSegment) {
+                    return lqri;
+                } else {
+                    return new V3D_LineSegment((V3D_Point) lqri,
+                                    (V3D_Point) lpqi);
+                }                
+            }
+        } else {
+            V3D_Point pi = (V3D_Point) i;
+            if (this.isIntersectedBy(pi)) {
+                return pi;
+            } else {
+                return null;
+            }
+        }
+    }
+    
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, boolean b) {
         V3D_Geometry i = getIntersection(l);

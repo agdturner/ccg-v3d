@@ -39,50 +39,48 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The other corner of the rectangle. The others are {@link #p}, {@link #q}, 
+     * The other corner of the rectangle. The others are {@link #p}, {@link #q},
      * and {@link #r}.
      */
     public final V3D_Point s;
-    
+
     /**
      * For storing the envelope
      */
     protected V3D_Envelope en;
-    
+
     /**
-     * For storing the line segment from {@link #p} to {@link #q}. 
+     * For storing the line segment from {@link #p} to {@link #q}.
      */
     protected final V3D_LineSegment t;
 
     /**
-     * For storing the line segment from {@link #q} to {@link #r}. 
+     * For storing the line segment from {@link #q} to {@link #r}.
      */
     protected final V3D_LineSegment ri;
 
     /**
-     * For storing the line segment from {@link #r} to {@link #s}. 
+     * For storing the line segment from {@link #r} to {@link #s}.
      */
     protected final V3D_LineSegment b;
 
     /**
-     * For storing the vector from {@link #s} to {@link #p}. 
+     * For storing the vector from {@link #s} to {@link #p}.
      */
     protected final V3D_LineSegment l;
-    
+
     /**
      * @param p The top left corner of the rectangle.
      * @param q The top right corner of the rectangle.
      * @param r The bottom right corner of the rectangle.
      * @param s The bottom left corner of the rectangle.
-     * @throws java.lang.RuntimeException iff the points do not define a 
+     * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
     public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s) {
         super(p, q, r);
         this.s = s;
         //en = new V3D_Envelope(p, q, r, s); Not initialised here as it causes a StackOverflowError
-        pq = new V3D_Vector(p, q);
-        qr = new V3D_Vector(q, r);
         t = new V3D_LineSegment(p, q);
         ri = new V3D_LineSegment(q, r);
         b = new V3D_LineSegment(r, s);
@@ -122,7 +120,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
     public boolean isIntersectedBy(V3D_Point pt) {
         if (getEnvelope().isIntersectedBy(pt)) {
             if (super.isIntersectedBy(pt)) {
-                if (this.t.isIntersectedBy(pt) || ri.isIntersectedBy(pt) 
+                if (this.t.isIntersectedBy(pt) || ri.isIntersectedBy(pt)
                         || b.isIntersectedBy(pt) || l.isIntersectedBy(pt)) {
                     return true;
                 }
@@ -177,8 +175,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
                 return null;
             }
             /**
-             * Get the intersection of the line segment and each edge of the
-             * rectangle.
+             * Get the intersection of the line and each edge of the rectangle.
              */
             V3D_Geometry ti = t.getIntersection(li);
             if (ti == null) {
@@ -244,7 +241,6 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
                 return ti;
             } else {
                 // Check ri, b, l
-                V3D_LineSegment qs = new V3D_LineSegment(q, s);
                 V3D_Geometry rii = ri.getIntersection(li);
                 if (rii == null) {
                     // Check b, l
