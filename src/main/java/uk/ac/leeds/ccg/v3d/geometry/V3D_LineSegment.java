@@ -236,7 +236,37 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * @param l The line to get intersection with this.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry getIntersection(V3D_LineSegment l) {
+    @Override
+    public V3D_Geometry getIntersection(V3D_Line l) {
+        V3D_Geometry i = super.getIntersection(l);
+        if (i == null) {
+            return i;
+        }
+        if (i instanceof V3D_Point) {
+            if (this.isIntersectedBy((V3D_Point) i)) {
+                return i;
+            } else {
+                return null;
+            }
+        } else {
+            return this;
+        }
+    }
+    
+    /**
+     * Intersects {@code this} with {@code l}. If they are equivalent then
+     * return {@code this}. If they overlap in a line return the part that
+     * overlaps (the order of points is not defined). If they intersect at a
+     * point, the point is returned. {@code null} is returned if the two line
+     * segments do not intersect.
+     *
+     * @param l The line to get intersection with this.
+     * @param b To distinguish this method from
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}.
+     * @return The intersection between {@code this} and {@code l}.
+     */
+    @Override
+    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean b) {
         return getIntersection(this, l);
     }
 
@@ -248,7 +278,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * @return The intersection between {@code l0} and {@code l1}.
      */
     public static V3D_Geometry getIntersection(V3D_LineSegment l0, V3D_LineSegment l1) {
-        V3D_Envelope ren = l0.getEnvelope().getIntersection(l1.en);
+        V3D_Envelope ren = l0.getEnvelope().getIntersection(l1.getEnvelope());
         if (ren == null) {
             return null;
         }

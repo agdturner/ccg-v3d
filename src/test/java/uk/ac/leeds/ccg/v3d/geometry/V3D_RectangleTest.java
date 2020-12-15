@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
@@ -76,45 +77,25 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Rectangle instance;
         V3D_Envelope expResult;
         V3D_Envelope result;
-        try {
-            instance = new V3D_Rectangle(N1P1P0, P1P1P0, P1N1P0, N1N1P0);
-            expResult = new V3D_Envelope(N1N1P0, P1P1P0);
-            result = instance.getEnvelope();
-            assertEquals(expResult, result);
-        } catch (Exception ex) {
-            Logger.getLogger(V3D_RectangleTest.class.getName()).log(Level.SEVERE, null, ex);
-            assertTrue(false);
-        }
+        instance = new V3D_Rectangle(N1P1P0, P1P1P0, P1N1P0, N1N1P0);
+        expResult = new V3D_Envelope(N1N1P0, P1P1P0);
+        result = instance.getEnvelope();
+        assertEquals(expResult, result);
         // Test 2
-        try {
-            instance = new V3D_Rectangle(N1P1P1, P1P1P0, P1N1P0, N1N1P1);
-            expResult = new V3D_Envelope(N1N1P0, P1P1P1);
-            result = instance.getEnvelope();
-            assertEquals(expResult, result);
-        } catch (Exception ex) {
-            Logger.getLogger(V3D_RectangleTest.class.getName()).log(Level.SEVERE, null, ex);
-            assertTrue(false);
-        }
+        instance = new V3D_Rectangle(N1P1P1, P1P1P0, P1N1P0, N1N1P1);
+        expResult = new V3D_Envelope(N1N1P0, P1P1P1);
+        result = instance.getEnvelope();
+        assertEquals(expResult, result);
         // Test 3
-        try {
-            instance = new V3D_Rectangle(N1P1P1, P1P1N1, P1N1N1, N1N1P1);
-            expResult = new V3D_Envelope(N1N1N1, P1P1P1);
-            result = instance.getEnvelope();
-            assertEquals(expResult, result);
-        } catch (Exception ex) {
-            Logger.getLogger(V3D_RectangleTest.class.getName()).log(Level.SEVERE, null, ex);
-            assertTrue(false);
-        }
+        instance = new V3D_Rectangle(N1P1P1, P1P1N1, P1N1N1, N1N1P1);
+        expResult = new V3D_Envelope(N1N1N1, P1P1P1);
+        result = instance.getEnvelope();
+        assertEquals(expResult, result);
         // Test 4
-        try {
-            instance = new V3D_Rectangle(N1N1N1, P1N1N1, P1P1N1, N1P1N1);
-            expResult = new V3D_Envelope(N1N1N1, P1P1N1);
-            result = instance.getEnvelope();
-            assertEquals(expResult, result);
-        } catch (Exception ex) {
-            Logger.getLogger(V3D_RectangleTest.class.getName()).log(Level.SEVERE, null, ex);
-            assertTrue(false);
-        }
+        instance = new V3D_Rectangle(N1N1N1, P1N1N1, P1P1N1, N1P1N1);
+        expResult = new V3D_Envelope(N1N1N1, P1P1N1);
+        result = instance.getEnvelope();
+        assertEquals(expResult, result);
     }
 
     /**
@@ -124,13 +105,18 @@ public class V3D_RectangleTest extends V3D_Test {
     public void testIsIntersectedBy() {
         System.out.println("isIntersectedBy");
         V3D_Point pt = P0P0P0;
-        try {
-            V3D_Rectangle instance = new V3D_Rectangle(N1P1P0, P1P1P0, P1N1P0, N1N1P0);
-            assertTrue(instance.isIntersectedBy(pt));
-        } catch (Exception ex) {
-            Logger.getLogger(V3D_RectangleTest.class.getName()).log(Level.SEVERE, null, ex);
-            assertTrue(false);
-        }
+        V3D_Rectangle instance = new V3D_Rectangle(N1P1P0, P1P1P0, P1N1P0, N1N1P0);
+        assertTrue(instance.isIntersectedBy(pt));
+        // Test 2
+        instance = new V3D_Rectangle(N1P0P0, P0P1P0, P1P0P0, P0N1P0);
+        assertTrue(instance.isIntersectedBy(pt));
+        // Test 3
+        BigRational half = BigRational.ONE.divide(2);
+        pt = new V3D_Point(half, half, P0);
+        assertTrue(instance.isIntersectedBy(pt));
+        // Test 3
+        pt = new V3D_Point(half.add(BigRational.valueOf("0.00000000001")), half, P0);
+        assertFalse(instance.isIntersectedBy(pt));
     }
 
     /**
@@ -143,15 +129,10 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Rectangle instance;
         V3D_Geometry expResult;
         V3D_Geometry result;
-        try {
-            instance = new V3D_Rectangle(N1P1P0, P1P1P0, P1N1P0, N1N1P0);
-            expResult = P0P0P0;
-            result = instance.getIntersection(l);
-            assertEquals(expResult, result);
-        } catch (Exception ex) {
-            Logger.getLogger(V3D_Envelope.class.getName()).log(Level.SEVERE, null, ex);
-            assertTrue(false);
-        }
+        instance = new V3D_Rectangle(N1P1P0, P1P1P0, P1N1P0, N1N1P0);
+        expResult = P0P0P0;
+        result = instance.getIntersection(l);
+        assertEquals(expResult, result);
     }
 
 }

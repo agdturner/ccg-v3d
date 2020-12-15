@@ -22,10 +22,10 @@ import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 
 /**
- * V3D_Triangle This general class defines those planes that are all bounded
- * by their envelope exactly. It can be extended to consider finite planes that
- * are not triangular a particular shape, such as circles, ellipses, triangles, squares, and
- * other regular or irregular 2D shapes.
+ * V3D_Triangle This general class defines those planes that are all bounded by
+ * their envelope exactly. It can be extended to consider finite planes that are
+ * not triangular a particular shape, such as circles, ellipses, triangles,
+ * squares, and other regular or irregular 2D shapes.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -53,12 +53,13 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
      * The line from {@link #r} to {@link #p}.
      */
     protected final V3D_LineSegment lrp;
-    
+
     /**
      * Creates a new triangle.
+     *
      * @param p A point that defines the triangle.
      * @param q A point that defines the triangle.
-     * @param r A point that defines the triangle. 
+     * @param r A point that defines the triangle.
      */
     public V3D_Triangle(V3D_Point p, V3D_Point q, V3D_Point r) {
         super(p, q, r);
@@ -90,17 +91,21 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
                 V3D_Vector qpt = new V3D_Vector(q, pt);
                 V3D_Vector rpt = new V3D_Vector(r, pt);
                 V3D_Vector rp = new V3D_Vector(r, p);
-                V3D_Vector pqppt = pq.getCrossProduct(ppt);
-                V3D_Vector qrqpt = qr.getCrossProduct(qpt);
-                V3D_Vector rprpt = rp.getCrossProduct(rpt);
-                BigRational mpqppt = pqppt.getMagnitudeSquared();
-                BigRational mqrqpt = qrqpt.getMagnitudeSquared();
-                V3D_Vector pqpptqrqpt = pqppt.add(qrqpt);
-                BigRational mpqpptqrqpt = pqpptqrqpt.getMagnitudeSquared();
-                if (mpqpptqrqpt.compareTo(mpqppt) == 1 && mpqpptqrqpt.compareTo(mqrqpt) == 1) {
-                    BigRational mrprpt = rprpt.getMagnitudeSquared();
-                    BigRational mpqpptqrqptmrprpt = pqpptqrqpt.add(rprpt).getMagnitudeSquared();
-                    if (mpqpptqrqptmrprpt.compareTo(mrprpt) == 1 && mpqpptqrqptmrprpt.compareTo(mpqpptqrqpt) == 1) {
+                V3D_Vector cp = pq.getCrossProduct(ppt);
+                V3D_Vector cq = qr.getCrossProduct(qpt);
+                V3D_Vector cr = rp.getCrossProduct(rpt);
+                /**
+                 * If cp, cq and cr are all in the same direction then pt
+                 * intersects.
+                 */
+                BigRational mp = cp.getMagnitudeSquared();
+                BigRational mq = cq.getMagnitudeSquared();
+                V3D_Vector cpq = cp.add(cq);
+                BigRational mpq = cpq.getMagnitudeSquared();
+                if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
+                    BigRational mr = cr.getMagnitudeSquared();
+                    BigRational mpqr = cpq.add(cr).getMagnitudeSquared();
+                    if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
                         return true;
                     }
                 }
@@ -112,11 +117,28 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
     /**
      * @param scale The scale.
      * @param rm RoundingMode.
-     * @return The area of the triangle (rounded). 
+     * @return The area of the triangle (rounded).
      */
     public BigDecimal getArea(int scale, RoundingMode rm) {
         return Math_BigDecimal.divideRoundIfNecessary(
                 pq.getCrossProduct(qr).getMagnitude(scale + 1, rm),
                 BigDecimal.valueOf(2), scale, rm);
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean b) {
+        V3D_Geometry i = getIntersection(l);
+        if (i == null) {
+            return null;
+        }
+        if (i instanceof V3D_Point) {
+            if (l.isIntersectedBy((V3D_Point) i)) {
+                return i;
+            } else {
+                return null;
+            }
+        } else {
+            return ((V3D_LineSegment) i).getIntersection(l, b);
+        }
     }
 }

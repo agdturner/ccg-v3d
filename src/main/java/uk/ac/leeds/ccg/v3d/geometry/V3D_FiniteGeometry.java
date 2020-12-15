@@ -13,30 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 
-
 /**
  * V3D_FiniteGeometry
- * 
+ *
  * @author Andy Turner
- * @version 1.0
+ * @version 1.0.0
  */
 public interface V3D_FiniteGeometry {
 
     /**
      * For getting the envelope of the geometry
-     * @return The V3D_Envelope. 
+     *
+     * @return The V3D_Envelope.
      */
     public abstract V3D_Envelope getEnvelope();
-    
+
     /**
-     * For getting the intersection between the geometry and a {@code l}.
+     * For getting the intersection between the geometry and the point
+     * {@code p}.
+     *
+     * @param p The point to test for intersection with.
+     * @return {@code true} iff the geometry is intersected by {@code p}.
+     */
+    public abstract boolean isIntersectedBy(V3D_Point p);
+
+    /**
+     * For getting the intersection between the geometry and the line {@code l}.
+     *
      * @param l The line to intersect with.
-     * @return The V3D_Geometry. 
+     * @return The V3D_Geometry.
      */
     public abstract V3D_Geometry getIntersection(V3D_Line l);
+
+    /**
+     * For getting the intersection between the geometry and the line segment
+     * {@code l}.
+     *
+     * @param l The line segment to intersect with.
+     * @param b To distinguish this method from
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}.
+     * @return The V3D_Geometry.
+     */
+    public abstract V3D_Geometry getIntersection(V3D_LineSegment l, boolean b);
 }

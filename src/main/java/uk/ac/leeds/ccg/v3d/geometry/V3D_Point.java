@@ -218,19 +218,30 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         return new V3D_Envelope(x, y, z);
     }
 
+    @Override
+    public boolean isIntersectedBy(V3D_Point p) {
+        return this.equals(p);
+    }
+
     /**
      * @param l The line to intersect with {@code this}.
-     * @return {@code this} if the point is on the line {@code l} else return {@code null}. 
+     * @return {@code this} if the point is on the line {@code l} else return
+     * {@code null}.
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Line l) {
         if (l.isIntersectedBy(this)) {
             return this;
-        } else {
-            return null;
         }
+        return null;
     }
-    
-    
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean b) {
+        if (l.isIntersectedBy(this)) {
+            return this;
+        }
+        return null;
+    }
 
 }

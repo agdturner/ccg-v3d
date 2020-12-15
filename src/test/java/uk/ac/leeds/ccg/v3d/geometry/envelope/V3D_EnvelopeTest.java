@@ -271,10 +271,9 @@ public class V3D_EnvelopeTest extends V3D_Test {
     public void testGetIntersection_V3D_LineSegment_boolean() {
         System.out.println("getIntersection");
         V3D_LineSegment l = new V3D_LineSegment(N2N2N2, P0P0P0);
-        boolean flag = false;
         V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
         V3D_Geometry expResult = new V3D_LineSegment(N1N1N1, P0P0P0);
-        V3D_Geometry result = instance.getIntersection(l, flag);
+        V3D_Geometry result = instance.getIntersection(l, true);
         assertEquals(expResult, result);
     }
 

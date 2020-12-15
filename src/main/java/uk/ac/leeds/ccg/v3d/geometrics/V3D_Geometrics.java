@@ -20,11 +20,11 @@ import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 
 /**
- * A class for methods to test distributions.
+ * A class for geometrics.
  * @author Andy Turner
  * @version 1.0.0
  */
-public class V3D_Distribution {
+public class V3D_Geometrics {
     
     /**
      * @param points The points to test if they are collinear.

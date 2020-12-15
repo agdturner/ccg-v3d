@@ -49,7 +49,7 @@ public class V3D_Vector implements Serializable {
     public final BigRational dz;
 
     /**
-     * For storing the magnitude.
+     * For storing the magnitude squared.
      */
     public BigRational magnitudeSquared;
     

@@ -18,7 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import ch.obermuhlner.math.big.BigRational;
 import java.util.Objects;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.geometrics.V3D_Distribution;
+import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * V3D_Plane - for representing infinite flat 2D planes in 3D. The plane is
@@ -137,7 +137,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param r What {@link #r} is set to.
      */
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r) {
-        if (V3D_Distribution.isCollinear(p, q, r)) {
+        if (V3D_Geometrics.isCollinear(p, q, r)) {
             throw new RuntimeException("Cannot construct plane as the points "
                     + "are collinear.");
         }

@@ -17,8 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry.envelope;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_FiniteGeometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
@@ -513,16 +511,14 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
     /**
      * @param l Line segment to intersect with {@code this}.
-     * @param flag For distinguishing between this method and
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}.
      * @return either a point or line segment which is the intersection of
      * {@code l} and {@code this}.
      */
-    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean flag) {
+    @Override
+    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean b) {
         V3D_Envelope le = l.getEnvelope();
         if (le.isIntersectedBy(this)) {
-            V3D_Envelope ei = le.getIntersection(this);
-            return ei.getIntersection(l);
+            return le.getIntersection(this).getIntersection(l);
         }
         return null;
     }
@@ -531,6 +527,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param p The point to test for intersection.
      * @return {@code true} if this intersects with {@code p}
      */
+    @Override
     public boolean isIntersectedBy(V3D_Point p) {
         return isIntersectedBy(p.x, p.y, p.z);
     }
@@ -577,6 +574,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return {@code null} if there is no intersection; otherwise returns the
      * intersection.
      */
+    @Override
     public V3D_Geometry getIntersection(V3D_Line li) {
         V3D_Geometry tli = t.getIntersection(li);
         if (tli == null) {
