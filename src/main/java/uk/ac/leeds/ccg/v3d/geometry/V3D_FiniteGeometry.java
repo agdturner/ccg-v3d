@@ -28,4 +28,6 @@ import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 public interface V3D_FiniteGeometry {
 
     public abstract V3D_Envelope getEnvelope();
+    
+    public abstract V3D_Geometry getIntersection(V3D_Line l);
 }

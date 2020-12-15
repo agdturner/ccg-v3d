@@ -71,32 +71,32 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * The top face.
      */
-    protected V3D_Rectangle t;
+    protected final V3D_FiniteGeometry t;
 
     /**
      * The left face.
      */
-    protected V3D_Rectangle l;
+    protected final V3D_FiniteGeometry l;
 
     /**
      * The aft face.
      */
-    protected V3D_Rectangle a;
+    protected final V3D_FiniteGeometry a;
 
     /**
      * The right face.
      */
-    protected V3D_Rectangle r;
+    protected final V3D_FiniteGeometry r;
 
     /**
      * The fore face.
      */
-    protected V3D_Rectangle f;
+    protected final V3D_FiniteGeometry f;
 
     /**
      * The bottom face.
      */
-    protected V3D_Rectangle b;
+    protected final V3D_FiniteGeometry b;
 
     /**
      * @param e An envelop.
@@ -108,50 +108,142 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         yMax = e.yMax;
         zMin = e.zMin;
         zMax = e.zMax;
-        init();
-    }
-
-    private void init() {
-        try {
-            V3D_Point tlf = new V3D_Point(getxMin(), getyMin(), getzMax());
-            V3D_Point tla = new V3D_Point(getxMin(), getyMax(), getzMax());
-            V3D_Point tar = new V3D_Point(getxMax(), getyMax(), getzMax());
-            V3D_Point trf = new V3D_Point(getxMax(), getyMin(), getzMax());
-            V3D_Point blf = new V3D_Point(getxMin(), getyMin(), getzMin());
-            V3D_Point bla = new V3D_Point(getxMin(), getyMax(), getzMin());
-            V3D_Point bar = new V3D_Point(getxMax(), getyMax(), getzMin());
-            V3D_Point brf = new V3D_Point(getxMax(), getyMin(), getzMin());
-            t = new V3D_Rectangle(tlf, tla, tar, trf);
-            l = new V3D_Rectangle(tlf, tla, bla, blf);
-            a = new V3D_Rectangle(tla, tar, bar, bla);
-            r = new V3D_Rectangle(trf, tar, bar, brf);
-            f = new V3D_Rectangle(tlf, trf, brf, blf);
-            b = new V3D_Rectangle(blf, bla, bar, brf);
-        } catch (Exception ex) {
-            Logger.getLogger(V3D_Envelope.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        t = e.t;
+        l = e.t;
+        a = e.t;
+        r = e.t;
+        f = e.t;
+        b = e.t;
     }
 
     /**
      * @param points The points used to form the envelop.
      */
     public V3D_Envelope(V3D_Point... points) {
-        if (points.length > 0) {
-            xMin = points[0].x;
-            xMax = points[0].x;
-            yMin = points[0].y;
-            yMax = points[0].y;
-            zMin = points[0].z;
-            zMax = points[0].z;
-            for (int i = 1; i < points.length; i++) {
-                xMin = BigRational.min(xMin, points[i].x);
-                xMax = BigRational.max(xMax, points[i].x);
-                yMin = BigRational.min(yMin, points[i].y);
-                yMax = BigRational.max(yMax, points[i].y);
-                zMin = BigRational.min(zMin, points[i].z);
-                zMax = BigRational.max(zMax, points[i].z);
-            }
-            init();
+        int len = points.length;
+        switch (len) {
+            case 0:
+                throw new RuntimeException("Cannot create envelope from an empty "
+                        + "collection of points.");
+            case 1:
+                xMin = points[0].x;
+                xMax = points[0].x;
+                yMin = points[0].y;
+                yMax = points[0].y;
+                zMin = points[0].z;
+                zMax = points[0].z;
+                t = points[0];
+                l = t;
+                a = t;
+                r = t;
+                f = t;
+                b = t;
+                break;
+            default:
+                xMin = points[0].x;
+                xMax = points[0].x;
+                yMin = points[0].y;
+                yMax = points[0].y;
+                zMin = points[0].z;
+                zMax = points[0].z;
+                for (int i = 1; i < points.length; i++) {
+                    xMin = BigRational.min(xMin, points[i].x);
+                    xMax = BigRational.max(xMax, points[i].x);
+                    yMin = BigRational.min(yMin, points[i].y);
+                    yMax = BigRational.max(yMax, points[i].y);
+                    zMin = BigRational.min(zMin, points[i].z);
+                    zMax = BigRational.max(zMax, points[i].z);
+                }
+                if (xMin.compareTo(xMax) == 0) {
+                    if (yMin.compareTo(yMax) == 0) {
+                        if (zMin.compareTo(zMax) == 0) {
+                            t = new V3D_Point(xMin, yMin, zMin);
+                            l = t;
+                            a = t;
+                            r = t;
+                            f = t;
+                            b = t;
+                        } else {
+                            t = new V3D_Point(xMin, yMin, zMax);
+                            b = new V3D_Point(xMin, yMin, zMin);
+                            l = new V3D_LineSegment((V3D_Point) b, (V3D_Point) t);
+                            r = l;
+                            f = l;
+                            a = l;
+                        }
+                    } else {
+                        if (zMin.compareTo(zMax) == 0) {
+                            f = new V3D_Point(xMin, yMin, zMin);
+                            a = new V3D_Point(xMin, yMax, zMin);
+                            t = new V3D_LineSegment((V3D_Point) f, (V3D_Point) a);
+                            l = t;
+                            r = t;
+                            b = t;
+                        } else {
+                            V3D_Point bf = new V3D_Point(xMin, yMin, zMin);
+                            V3D_Point ba = new V3D_Point(xMin, yMax, zMin);
+                            V3D_Point tf = new V3D_Point(xMin, yMin, zMax);
+                            V3D_Point ta = new V3D_Point(xMin, yMax, zMax);
+                            b = new V3D_LineSegment(bf, ba);
+                            t = new V3D_LineSegment(tf, ta);
+                            f = new V3D_LineSegment(bf, tf);
+                            a = new V3D_LineSegment(ba, ta);
+                            l = new V3D_Rectangle(tf, ta, ba, bf);
+                            r = l;
+                        }
+                    }
+                } else {
+                    if (yMin.compareTo(yMax) == 0) {
+                        if (zMin.compareTo(zMax) == 0) {
+                            l = new V3D_Point(xMin, yMin, zMin);
+                            r = new V3D_Point(xMax, yMin, zMin);
+                            f = new V3D_LineSegment((V3D_Point) l, (V3D_Point) r);
+                            a = f;
+                            t = f;
+                            b = f;
+                        } else {
+                            V3D_Point bl = new V3D_Point(xMin, yMin, zMin);
+                            V3D_Point br = new V3D_Point(xMax, yMin, zMin);
+                            V3D_Point tl = new V3D_Point(xMin, yMin, zMax);
+                            V3D_Point tr = new V3D_Point(xMax, yMin, zMax);
+                            b = new V3D_LineSegment(bl, br);
+                            t = new V3D_LineSegment(tl, tr);
+                            l = new V3D_LineSegment(bl, tl);
+                            r = new V3D_LineSegment(br, tr);
+                            f = new V3D_Rectangle(tl, tr, br, bl);
+                            a = f;
+                        }
+                    } else {
+                        if (zMin.compareTo(zMax) == 0) {
+                            V3D_Point fl = new V3D_Point(xMin, yMin, zMin);
+                            V3D_Point fr = new V3D_Point(xMax, yMin, zMin);
+                            V3D_Point al = new V3D_Point(xMin, yMax, zMin);
+                            V3D_Point ar = new V3D_Point(xMax, yMax, zMin);
+                            f = new V3D_LineSegment(fl, fr);
+                            a = new V3D_LineSegment(al, ar);
+                            l = new V3D_LineSegment(fl, al);
+                            r = new V3D_LineSegment(fr, ar);
+                            t = new V3D_Rectangle(fl, al, ar, fr);
+                            b = t;
+                        } else {
+                            V3D_Point tlf = new V3D_Point(xMin, yMin, zMax);
+                            V3D_Point tla = new V3D_Point(xMin, yMax, zMax);
+                            V3D_Point tar = new V3D_Point(xMax, yMax, zMax);
+                            V3D_Point trf = new V3D_Point(xMax, yMin, zMax);
+                            V3D_Point blf = new V3D_Point(xMin, yMin, zMin);
+                            V3D_Point bla = new V3D_Point(xMin, yMax, zMin);
+                            V3D_Point bar = new V3D_Point(xMax, yMax, zMin);
+                            V3D_Point brf = new V3D_Point(xMax, yMin, zMin);
+                            t = new V3D_Rectangle(tlf, tla, tar, trf);
+                            l = new V3D_Rectangle(tlf, tla, bla, blf);
+                            a = new V3D_Rectangle(tla, tar, bar, bla);
+                            r = new V3D_Rectangle(trf, tar, bar, brf);
+                            f = new V3D_Rectangle(tlf, trf, brf, blf);
+                            b = new V3D_Rectangle(blf, bla, bar, brf);
+                        }
+                    }
+                }
+                break;
         }
     }
 
@@ -167,7 +259,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         yMax = y;
         zMin = z;
         zMax = z;
-        init();
+        t = new V3D_Point(x, y, z);
+        l = t;
+        a = t;
+        r = t;
+        f = t;
+        b = t;
     }
 
     /**
@@ -178,15 +275,103 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param zMin What {@link zMin} is set to.
      * @param zMax What {@link zMax} is set to.
      */
-    public V3D_Envelope(BigRational xMin, BigRational xMax, BigRational yMin, 
-            BigRational yMax, BigRational zMin,            BigRational zMax) {
+    public V3D_Envelope(BigRational xMin, BigRational xMax, BigRational yMin,
+            BigRational yMax, BigRational zMin, BigRational zMax) {
         this.xMin = xMin;
         this.xMax = xMax;
         this.yMin = yMin;
         this.yMax = yMax;
         this.zMin = zMin;
         this.zMax = zMax;
-        init();
+        if (xMin.compareTo(xMax) == 0) {
+            if (yMin.compareTo(yMax) == 0) {
+                if (zMin.compareTo(zMax) == 0) {
+                    t = new V3D_Point(xMin, yMin, zMin);
+                    l = t;
+                    a = t;
+                    r = t;
+                    f = t;
+                    b = t;
+                } else {
+                    t = new V3D_Point(xMin, yMin, zMax);
+                    b = new V3D_Point(xMin, yMin, zMin);
+                    l = new V3D_LineSegment((V3D_Point) b, (V3D_Point) t);
+                    r = l;
+                    f = l;
+                    a = l;
+                }
+            } else {
+                if (zMin.compareTo(zMax) == 0) {
+                    f = new V3D_Point(xMin, yMin, zMin);
+                    a = new V3D_Point(xMin, yMax, zMin);
+                    t = new V3D_LineSegment((V3D_Point) f, (V3D_Point) a);
+                    l = t;
+                    r = t;
+                    b = t;
+                } else {
+                    V3D_Point bf = new V3D_Point(xMin, yMin, zMin);
+                    V3D_Point ba = new V3D_Point(xMin, yMax, zMin);
+                    V3D_Point tf = new V3D_Point(xMin, yMin, zMax);
+                    V3D_Point ta = new V3D_Point(xMin, yMax, zMax);
+                    b = new V3D_LineSegment(bf, ba);
+                    t = new V3D_LineSegment(tf, ta);
+                    f = new V3D_LineSegment(bf, tf);
+                    a = new V3D_LineSegment(ba, ta);
+                    l = new V3D_Rectangle(tf, ta, ba, bf);
+                    r = l;
+                }
+            }
+        } else {
+            if (yMin.compareTo(yMax) == 0) {
+                if (zMin.compareTo(zMax) == 0) {
+                    l = new V3D_Point(xMin, yMin, zMin);
+                    r = new V3D_Point(xMax, yMin, zMin);
+                    f = new V3D_LineSegment((V3D_Point) l, (V3D_Point) r);
+                    a = f;
+                    t = f;
+                    b = f;
+                } else {
+                    V3D_Point bl = new V3D_Point(xMin, yMin, zMin);
+                    V3D_Point br = new V3D_Point(xMax, yMin, zMin);
+                    V3D_Point tl = new V3D_Point(xMin, yMin, zMax);
+                    V3D_Point tr = new V3D_Point(xMax, yMin, zMax);
+                    b = new V3D_LineSegment(bl, br);
+                    t = new V3D_LineSegment(tl, tr);
+                    l = new V3D_LineSegment(bl, tl);
+                    r = new V3D_LineSegment(br, tr);
+                    f = new V3D_Rectangle(tl, tr, br, bl);
+                    a = f;
+                }
+            } else {
+                if (zMin.compareTo(zMax) == 0) {
+                    V3D_Point fl = new V3D_Point(xMin, yMin, zMin);
+                    V3D_Point fr = new V3D_Point(xMax, yMin, zMin);
+                    V3D_Point al = new V3D_Point(xMin, yMax, zMin);
+                    V3D_Point ar = new V3D_Point(xMax, yMax, zMin);
+                    f = new V3D_LineSegment(fl, fr);
+                    a = new V3D_LineSegment(al, ar);
+                    l = new V3D_LineSegment(fl, al);
+                    r = new V3D_LineSegment(fr, ar);
+                    t = new V3D_Rectangle(fl, al, ar, fr);
+                    b = t;
+                } else {
+                    V3D_Point tlf = new V3D_Point(xMin, yMin, zMax);
+                    V3D_Point tla = new V3D_Point(xMin, yMax, zMax);
+                    V3D_Point tar = new V3D_Point(xMax, yMax, zMax);
+                    V3D_Point trf = new V3D_Point(xMax, yMin, zMax);
+                    V3D_Point blf = new V3D_Point(xMin, yMin, zMin);
+                    V3D_Point bla = new V3D_Point(xMin, yMax, zMin);
+                    V3D_Point bar = new V3D_Point(xMax, yMax, zMin);
+                    V3D_Point brf = new V3D_Point(xMax, yMin, zMin);
+                    t = new V3D_Rectangle(tlf, tla, tar, trf);
+                    l = new V3D_Rectangle(tlf, tla, bla, blf);
+                    a = new V3D_Rectangle(tla, tar, bar, bla);
+                    r = new V3D_Rectangle(trf, tar, bar, brf);
+                    f = new V3D_Rectangle(tlf, trf, brf, blf);
+                    b = new V3D_Rectangle(blf, bla, bar, brf);
+                }
+            }
+        }
     }
 
     @Override
@@ -376,9 +561,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             return null;
         }
         return new V3D_Envelope(BigRational.max(getxMin(), en.getxMin()),
-                BigRational.min(getxMax(), en.getxMax()), 
+                BigRational.min(getxMax(), en.getxMax()),
                 BigRational.max(getyMin(), en.getyMin()),
-                BigRational.min(getyMax(), en.getyMax()), 
+                BigRational.min(getyMax(), en.getyMax()),
                 BigRational.max(getzMin(), en.getzMin()),
                 BigRational.min(getzMax(), en.getzMax()));
     }

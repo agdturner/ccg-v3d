@@ -74,10 +74,10 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
      * @param q The top right corner of the rectangle.
      * @param r The bottom right corner of the rectangle.
      * @param s The bottom left corner of the rectangle.
-     * @throws java.lang.Exception iff the points do not define a rectangle.
+     * @throws java.lang.RuntimeException iff the points do not define a 
+     * rectangle.
      */
-    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s) 
-            throws Exception {
+    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s) {
         super(p, q, r);
         this.s = s;
         //en = new V3D_Envelope(p, q, r, s); Not initialised here as it causes a StackOverflowError
@@ -89,18 +89,18 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
         l = new V3D_LineSegment(s, p);
         // Check for rectangle.
         if (pq.isZeroVector()) {
-//            if (qr.isZeroVector()) {
-//                // Rectangle is a point.
-//            } else {
-//                // Rectangle is a line.
-//            }
+            if (qr.isZeroVector()) {
+                // Rectangle is a point.
+            } else {
+                // Rectangle is a line.
+            }
         } else {
             if (qr.isZeroVector()) {
                 // Rectangle is a line.
             } else {
                 // Rectangle has area.
                 if (!(pq.isOrthogonal(qr))) {
-                    throw new Exception("The points do not define a rectangle.");
+                    throw new RuntimeException("The points do not define a rectangle.");
                 }
             }
         }

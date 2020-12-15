@@ -28,8 +28,7 @@ import ch.obermuhlner.math.big.BigRational;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Point extends V3D_Geometry implements Comparable<V3D_Point>,
-        V3D_FiniteGeometry {
+public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
 
@@ -220,23 +219,18 @@ public class V3D_Point extends V3D_Geometry implements Comparable<V3D_Point>,
     }
 
     /**
-     * Order first in terms of {@link #x}, then {@link #y}, then {@link #z}.
-     *
-     * @param o The point to compare with.
-     * @return -1, 0, 1 depending on if this is less than equal to or greater
-     * than {@code o}.
+     * @param l The line to intersect with {@code this}.
+     * @return {@code this} if the point is on the line {@code l} else return {@code null}. 
      */
     @Override
-    public int compareTo(V3D_Point o) {
-        int xcomp = x.compareTo(o.x);
-        if (xcomp == 0) {
-            int ycomp = y.compareTo(o.y);
-            if (ycomp == 0) {
-                return z.compareTo(o.z);
-            }
-            return ycomp;
+    public V3D_Geometry getIntersection(V3D_Line l) {
+        if (l.isIntersectedBy(this)) {
+            return this;
+        } else {
+            return null;
         }
-        return xcomp;
     }
+    
+    
 
 }
