@@ -85,13 +85,35 @@ public class V3D_Environment extends Generic_MemoryManager {
      * For code brevity.
      */
     public static final BigRational P0 = BigRational.ZERO;
+    
+    /**
+     * For code brevity.
+     */
     public static final BigRational P1 = BigRational.ONE;
+    
+    /**
+     * For code brevity.
+     */
     public static final BigRational P2 = BigRational.valueOf(2);
+    
+    /**
+     * For code brevity.
+     */
     public static final BigRational P3 = BigRational.valueOf(3);
+    
+    /**
+     * For code brevity.
+     */
     public static final BigRational N1 = BigRational.ONE.negate();
 
+    /**
+     * Generic_Environment.
+     */
     public Generic_Environment env;
 
+    /**
+     * V3D_Files.
+     */
     public V3D_Files files;
 
     /**

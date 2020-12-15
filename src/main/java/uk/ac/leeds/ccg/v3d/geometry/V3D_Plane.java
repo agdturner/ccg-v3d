@@ -26,7 +26,7 @@ import uk.ac.leeds.ccg.v3d.geometrics.V3D_Distribution;
  * collinear, or from any point on the plane and a normal vector that is
  * perpendicular to the plane. From three points that are not collinear an
  * equation of the plane can be derived by creating two V3D_Vectors {@link #pq}
- * and {@link #pr}. The equation of the plane is:
+ * and {@link #qr}. The equation of the plane is:
  * <ul>
  * <li>A*(x-x0) + B*(y-y0) + C*(z-z0) = 0</li>
  * <li>A*(x) + B*(y) + C*(z) - D = 0 where D = -(A*x0 + B*y0 + C*z0)</li>

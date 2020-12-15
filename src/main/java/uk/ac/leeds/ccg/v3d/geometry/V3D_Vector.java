@@ -27,7 +27,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * V3D_Vector
  *
  * @author Andy Turner
- * @version 1.0
+ * @version 1.0.0
  */
 public class V3D_Vector implements Serializable {
 

@@ -22,6 +22,9 @@ import uk.ac.leeds.ccg.generic.core.Generic_Strings;
  */
 public class V3D_Strings extends Generic_Strings {
     
+    /**
+     * "v3d"
+     */
     public static String s_v3d = "v3d";
     
 }

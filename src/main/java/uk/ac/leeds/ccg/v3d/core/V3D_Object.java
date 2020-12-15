@@ -25,6 +25,9 @@ import java.io.Serializable;
  */
 public class V3D_Object implements Serializable {
 
+    /**
+     * V3D_Environment
+     */
     public V3D_Environment e;
 
     /**
