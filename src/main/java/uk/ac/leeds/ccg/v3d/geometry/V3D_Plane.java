@@ -84,7 +84,7 @@ public class V3D_Plane extends V3D_Geometry {
 
     /**
      * The normal vector. (This is perpendicular to the plane and it's direction
-     * is given by order in which the two vectors {@link #pq} and {@link #pr}
+     * is given by order in which the two vectors {@link #pq} and {@link #qr}
      * are used in a cross product calculation when the plane is constructed.
      */
     protected V3D_Vector n;

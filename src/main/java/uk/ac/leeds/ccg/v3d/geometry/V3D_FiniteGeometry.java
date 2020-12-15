@@ -35,6 +35,7 @@ public interface V3D_FiniteGeometry {
     
     /**
      * For getting the intersection between the geometry and a {@code l}.
+     * @param l The line to intersect with.
      * @return The V3D_Geometry. 
      */
     public abstract V3D_Geometry getIntersection(V3D_Line l);
