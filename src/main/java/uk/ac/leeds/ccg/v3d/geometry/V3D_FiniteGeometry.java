@@ -27,7 +27,15 @@ import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
  */
 public interface V3D_FiniteGeometry {
 
+    /**
+     * For getting the envelope of the geometry
+     * @return The V3D_Envelope. 
+     */
     public abstract V3D_Envelope getEnvelope();
     
+    /**
+     * For getting the intersection between the geometry and a {@code l}.
+     * @return The V3D_Geometry. 
+     */
     public abstract V3D_Geometry getIntersection(V3D_Line l);
 }

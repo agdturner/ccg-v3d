@@ -34,6 +34,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * For storing the envelope of this.
+     */
     protected V3D_Envelope en;
 
     /**
@@ -67,7 +70,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     public V3D_LineSegment(V3D_Line l) {
         super(l);
-        en = new V3D_Envelope(p, q);
     }
 
     @Override
@@ -238,6 +240,13 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         return getIntersection(this, l);
     }
 
+    /**
+     * A utility method for calculating and returning the intersection between 
+     * {@code l0} and {@code l1}
+     * @param l0 Line to intersect with {@code l1}.
+     * @param l1 Line to intersect with {@code l0}.
+     * @return The intersection between {@code l0} and {@code l1}.
+     */
     public static V3D_Geometry getIntersection(V3D_LineSegment l0, V3D_LineSegment l1) {
         V3D_Envelope ren = l0.getEnvelope().getIntersection(l1.en);
         if (ren == null) {

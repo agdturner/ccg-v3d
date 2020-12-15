@@ -191,6 +191,13 @@ public class V3D_Line extends V3D_Geometry {
         return getIntersection(this, l);
     }
 
+    /**
+     * A utility method for calculating and returning the intersection between 
+     * {@code l0} and {@code l1}
+     * @param l0 Line to intersect with {@code l1}.
+     * @param l1 Line to intersect with {@code l0}.
+     * @return The intersection between {@code l0} and {@code l1}.
+     */
     public static V3D_Geometry getIntersection(V3D_Line l0, V3D_Line l1) {
         // Check the points.
         if (l0.isIntersectedBy(l1.p)) {
