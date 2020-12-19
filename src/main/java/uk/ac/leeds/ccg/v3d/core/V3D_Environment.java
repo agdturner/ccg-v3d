@@ -17,8 +17,6 @@ package uk.ac.leeds.ccg.v3d.core;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.file.Paths;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
@@ -26,6 +24,7 @@ import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.generic.memory.Generic_MemoryManager;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 import uk.ac.leeds.ccg.v3d.io.V3D_Files;
@@ -41,9 +40,54 @@ public class V3D_Environment extends Generic_MemoryManager {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The origin at {@code <0,0,0>}.
+     * 0
      */
-    public final V3D_Point origin;
+    public static final BigRational P0 = BigRational.ZERO;
+    
+    /**
+     * 1
+     */
+    public static final BigRational P1 = BigRational.ONE;
+    
+    /**
+     * 2
+     */
+    public static final BigRational P2 = BigRational.TWO;
+    
+    /**
+     * 3
+     */
+    public static final BigRational P3 = BigRational.valueOf(3);
+    
+    /**
+     * -1
+     */
+    public static final BigRational N1 = BigRational.ONE.negate();
+
+    /**
+     * Zero vector.
+     */
+    public static final V3D_Vector V0 = new V3D_Vector(P0, P0, P0);
+
+    /**
+     * The point at {@code <0,0,0>}.
+     */
+    public static final V3D_Point P0P0P0 = new V3D_Point(P0, P0, P0);
+
+    /**
+     * The point at {@code <1,0,0>}.
+     */
+    public static final V3D_Point P1P0P0 = new V3D_Point(P1, P0, P0);
+
+    /**
+     * The point at {@code <0,1,0>}.
+     */
+    public static final V3D_Point P0P1P0 = new V3D_Point(P0, P1, P0);
+
+    /**
+     * The point at {@code <0,0,1>}.
+     */
+    public static final V3D_Point P0P0P1 = new V3D_Point(P0, P0, P1);
 
     /**
      * The x axis.
@@ -61,6 +105,21 @@ public class V3D_Environment extends Generic_MemoryManager {
     public final V3D_Line zAxis;
 
     /**
+     * The x = 0 plane.
+     */
+    public final V3D_Plane x0;
+
+    /**
+     * The y = 0 plane.
+     */
+    public final V3D_Plane y0;
+
+    /**
+     * The z = 0 plane.
+     */
+    public final V3D_Plane z0;
+
+    /**
      * Unit vector based at the origin in the x axis direction.
      */
     public final V3D_Vector i;
@@ -74,37 +133,6 @@ public class V3D_Environment extends Generic_MemoryManager {
      * Unit vector based at the origin in the z axis direction.
      */
     public final V3D_Vector k;
-
-    /**
-     * Zero vector.
-     */
-    public static final V3D_Vector ZERO_VECTOR = new V3D_Vector(
-            BigRational.ZERO, BigRational.ZERO, BigRational.ZERO);
-
-    /**
-     * For code brevity.
-     */
-    public static final BigRational P0 = BigRational.ZERO;
-    
-    /**
-     * For code brevity.
-     */
-    public static final BigRational P1 = BigRational.ONE;
-    
-    /**
-     * For code brevity.
-     */
-    public static final BigRational P2 = BigRational.valueOf(2);
-    
-    /**
-     * For code brevity.
-     */
-    public static final BigRational P3 = BigRational.valueOf(3);
-    
-    /**
-     * For code brevity.
-     */
-    public static final BigRational N1 = BigRational.ONE.negate();
 
     /**
      * Generic_Environment.
@@ -143,13 +171,15 @@ public class V3D_Environment extends Generic_MemoryManager {
             throws IOException, Exception {
         super();
         this.env = e;
-        origin = new V3D_Point(P0, P0, P0);
-        xAxis = new V3D_Line(origin, new V3D_Point(P1, P0, P0), false);
-        yAxis = new V3D_Line(origin, new V3D_Point(P0, P1, P0));
-        zAxis = new V3D_Line(origin, new V3D_Point(P0, P0, P1));
-        i = new V3D_Vector(new V3D_Point(P1, P0, P0));
-        j = new V3D_Vector(new V3D_Point(P0, P1, P0));
-        k = new V3D_Vector(new V3D_Point(P0, P0, P1));
+        i = new V3D_Vector(P1P0P0);
+        j = new V3D_Vector(P0P1P0);
+        k = new V3D_Vector(P0P0P1);
+        xAxis = new V3D_Line(P0P0P0, i);
+        yAxis = new V3D_Line(P0P0P0, j);
+        zAxis = new V3D_Line(P0P0P0, k);
+        x0 = new V3D_Plane(P0P0P0, P0P1P0, P0P0P1);
+        y0 = new V3D_Plane(P0P0P0, P1P0P0, P0P0P1);
+        z0 = new V3D_Plane(P0P0P0, P1P0P0, P0P1P0);
         bd = new Math_BigDecimal();
         initMemoryReserve(Default_Memory_Threshold, env);
         files = new V3D_Files(new Generic_Defaults(Paths.get(dir.toString(),

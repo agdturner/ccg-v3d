@@ -42,6 +42,5 @@ module uk.ac.leeds.ccg.vector3D {
      */
     exports uk.ac.leeds.ccg.v3d.core;
     exports uk.ac.leeds.ccg.v3d.geometry;
-    exports uk.ac.leeds.ccg.v3d.geometry.envelope;
     exports uk.ac.leeds.ccg.v3d.io;
 }

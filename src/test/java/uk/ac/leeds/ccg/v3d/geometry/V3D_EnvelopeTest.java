@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry.envelope;
+package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 //import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
@@ -122,9 +123,13 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("isIntersectedBy");
         V3D_Envelope instance = new V3D_Envelope(P0P0P0, P0P0P0);
         V3D_Envelope e = new V3D_Envelope(P0P0P0, P1P1P1);
-        boolean expResult = true;
-        boolean result = instance.isIntersectedBy(e);
-        assertEquals(expResult, result);
+        assertTrue(instance.isIntersectedBy(e));
+        // Test 2
+        instance = new V3D_Envelope(N1N1N1, P0P0P0);
+        assertTrue(instance.isIntersectedBy(e));
+        // Test 3
+        instance = new V3D_Envelope(N1N1N1, N1P0P0);
+        assertFalse(instance.isIntersectedBy(e));
     }
 
     /**
@@ -133,10 +138,64 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Point() {
         System.out.println("isIntersectedBy");
-        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
-        boolean expResult = true;
-        boolean result = instance.isIntersectedBy(P0P0P0);
-        assertEquals(expResult, result);
+        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
+        // Test 1 the centre
+        assertTrue(instance.isIntersectedBy(P0P0P0));
+        // Test 2 to 9 the corners
+        // Test 2
+        assertTrue(instance.isIntersectedBy(P1P1P1));
+        // Test 3
+        assertTrue(instance.isIntersectedBy(N1N1N1));
+        // Test 4
+        assertTrue(instance.isIntersectedBy(N1N1P1));
+        // Test 5
+        assertTrue(instance.isIntersectedBy(N1P1N1));
+        // Test 6
+        assertTrue(instance.isIntersectedBy(P1N1N1));
+        // Test 7
+        assertTrue(instance.isIntersectedBy(P1P1N1));
+        // Test 8
+        assertTrue(instance.isIntersectedBy(P1N1P1));
+        // Test 9
+        assertTrue(instance.isIntersectedBy(N1P1P1));
+        // Test 10 to 21 edge mid points
+        // Test 10
+        assertTrue(instance.isIntersectedBy(N1N1P0));
+        // Test 11
+        assertTrue(instance.isIntersectedBy(N1P0N1));
+        // Test 12
+        assertTrue(instance.isIntersectedBy(P0N1N1));
+        // Test 13
+        assertTrue(instance.isIntersectedBy(P1P1P0));
+        // Test 14
+        assertTrue(instance.isIntersectedBy(P1P0P1));
+        // Test 15
+        assertTrue(instance.isIntersectedBy(P0P1P1));
+        // Test 16
+        assertTrue(instance.isIntersectedBy(P0N1P1));
+        // Test 17
+        assertTrue(instance.isIntersectedBy(N1P1P0));
+        // Test 18
+        assertTrue(instance.isIntersectedBy(P1P0N1));
+        // Test 19
+        assertTrue(instance.isIntersectedBy(P0P1N1));
+        // Test 20
+        assertTrue(instance.isIntersectedBy(P1N1P0));
+        // Test 21
+        assertTrue(instance.isIntersectedBy(N1P0P1));
+        // Test 22 to 28 face mid points
+        // Test 22
+        assertTrue(instance.isIntersectedBy(P0P0P1));
+        // Test 23
+        assertTrue(instance.isIntersectedBy(P0P1P0));
+        // Test 24
+        assertTrue(instance.isIntersectedBy(P1P0P0));
+        // Test 25
+        assertTrue(instance.isIntersectedBy(P0P0N1));
+        // Test 26
+        assertTrue(instance.isIntersectedBy(P0N1P0));
+        // Test 27
+        assertTrue(instance.isIntersectedBy(N1P0P0));
     }
 
     /**
@@ -161,9 +220,13 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("equals");
         V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
         Object o = new V3D_Envelope(P0P0P0, P1P1P1);
-        boolean expResult = true;
-        boolean result = instance.equals(o);
-        assertEquals(expResult, result);
+        assertTrue(instance.equals(o));
+        // Test 2
+        o = new V3D_Envelope(P1P1P1, P0P0P0);
+        assertTrue(instance.equals(o));
+        // Test 3
+        o = new V3D_Envelope(P1N1P1, P0P0P0);
+        assertFalse(instance.equals(o));
     }
 
     /**
@@ -173,9 +236,11 @@ public class V3D_EnvelopeTest extends V3D_Test {
     public void testIsIntersectedBy_3args() {
         System.out.println("isIntersectedBy");
         V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
-        boolean expResult = true;
-        boolean result = instance.isIntersectedBy(P0, P0, P0);
-        assertEquals(expResult, result);
+        assertTrue(instance.isIntersectedBy(P0, P0, P0));
+        /**
+         * No need for a full set of test here as this is covered by
+         * testIsIntersectedBy_V3D_Point()
+         */
     }
 
     /**
@@ -184,7 +249,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testHashCode() {
         System.out.println("hashCode");
-        assertTrue(true); // None test.
+        // No test.
     }
 
     /**
@@ -235,7 +300,36 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Geometry result = instance.getIntersection(li);
         assertEquals(expResult, result);
         // Test 2
-
+        li = new V3D_Line(P0P0P0, P0P1P0);
+        expResult = new V3D_LineSegment(P0N1P0, P0P1P0);
+        result = instance.getIntersection(li);
+        assertEquals(expResult, result);
+        // Test 3
+        li = new V3D_Line(P0P0P0, P1P0P0);
+        expResult = new V3D_LineSegment(N1P0P0, P1P0P0);
+        result = instance.getIntersection(li);
+        assertEquals(expResult, result);
+        // Test 4
+        li = new V3D_Line(P1P1P1, new V3D_Point(P0, P2, P1));
+        expResult = P1P1P1;
+        result = instance.getIntersection(li);
+        assertEquals(expResult, result);
+        // Test 5
+        li = new V3D_Line(P1P1P1, new V3D_Point(P0, P2, P1));
+        expResult = P1P1P1;
+        result = instance.getIntersection(li);
+        assertEquals(expResult, result);
+        // Test 6 Intersection of a corner at a point
+        li = new V3D_Line(P1P1P1, new V3D_Point(P0, P2, P1));
+        expResult = P1P1P1;
+        result = instance.getIntersection(li);
+        assertEquals(expResult, result);
+        // Test 6 Intersection of an edge at a point
+        li = new V3D_Line(P1P1P0, new V3D_Point(P0, P2, P2));
+        expResult = P1P1P0;
+        result = instance.getIntersection(li);
+        assertEquals(expResult, result);
+        // To do: add some expResult = null test cases
     }
 
     /**
@@ -244,10 +338,10 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testUnion() {
         System.out.println("union");
-        V3D_Envelope e = new V3D_Envelope(N2N2N2, P1P1P1);
+        V3D_Envelope en = new V3D_Envelope(N2N2N2, P1P1P1);
         V3D_Envelope instance = new V3D_Envelope(N1N1N1, P2P2P2);
         V3D_Envelope expResult = new V3D_Envelope(N2N2N2, P2P2P2);
-        V3D_Envelope result = instance.union(e);
+        V3D_Envelope result = instance.union(en);
         assertEquals(expResult, result);
     }
 
@@ -257,11 +351,15 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testIsContainedBy() {
         System.out.println("isContainedBy");
-        V3D_Envelope e = new V3D_Envelope( N2N2N2, P2P2P2);
-        V3D_Envelope instance = new V3D_Envelope( N1N1N1, P1P1P1);
-        boolean expResult = true;
-        boolean result = instance.isContainedBy(e);
-        assertEquals(expResult, result);
+        V3D_Envelope en = new V3D_Envelope(N2N2N2, P2P2P2);
+        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
+        assertTrue(instance.isContainedBy(en));
+        // Test 2
+        instance = new V3D_Envelope(N2N2N2, P2P2P2);
+        assertTrue(instance.isContainedBy(en));
+        // Test 3
+        en = new V3D_Envelope(N1N1N1, P2P2P2);
+        assertFalse(instance.isContainedBy(en));
     }
 
     /**
@@ -270,11 +368,57 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_LineSegment_boolean() {
         System.out.println("getIntersection");
-        V3D_LineSegment l = new V3D_LineSegment(N2N2N2, P0P0P0);
+        V3D_LineSegment li = new V3D_LineSegment(N2N2N2, P0P0P0);
         V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
         V3D_Geometry expResult = new V3D_LineSegment(N1N1N1, P0P0P0);
-        V3D_Geometry result = instance.getIntersection(l, true);
+        V3D_Geometry result = instance.getIntersection(li, true);
         assertEquals(expResult, result);
+        // Test 2
+        li = new V3D_LineSegment(P0P0P0, P0P1P0);
+        expResult = new V3D_LineSegment(P0P0P0, P0P1P0);
+        result = instance.getIntersection(li, true);
+        assertEquals(expResult, result);
+        // Test 3
+        li = new V3D_LineSegment(P0N1P0, P0P1P0);
+        expResult = new V3D_LineSegment(P0N1P0, P0P1P0);
+        result = instance.getIntersection(li, true);
+        assertEquals(expResult, result);
+        // Test 4
+        li = new V3D_LineSegment(P0P0P0, P1P0P0);
+        expResult = new V3D_LineSegment(P0P0P0, P1P0P0);
+        result = instance.getIntersection(li, true);
+        assertEquals(expResult, result);
+        // Test 5
+        li = new V3D_LineSegment(N1P0P0, P1P0P0);
+        expResult = new V3D_LineSegment(N1P0P0, P1P0P0);
+        result = instance.getIntersection(li, true);
+        assertEquals(expResult, result);
+        // Test 6
+        li = new V3D_LineSegment(new V3D_Point(N2, P0, P0), P1P0P0);
+        expResult = new V3D_LineSegment(N1P0P0, P1P0P0);
+        result = instance.getIntersection(li, true);
+        assertEquals(expResult, result);
+        // Test 7
+        li = new V3D_LineSegment(P1P1P1, new V3D_Point(P0, P2, P1));
+        expResult = P1P1P1;
+        result = instance.getIntersection(li, true);
+        assertEquals(expResult, result);
+        // Test 8
+        li = new V3D_LineSegment(P1P1P1, new V3D_Point(P0, P2, P1));
+        expResult = P1P1P1;
+        result = instance.getIntersection(li, true);
+        assertEquals(expResult, result);
+        // Test 9 Intersection of a corner at a point
+        li = new V3D_LineSegment(P1P1P1, new V3D_Point(P0, P2, P1));
+        expResult = P1P1P1;
+        result = instance.getIntersection(li, true);
+        assertEquals(expResult, result);
+        // Test 10 Intersection of an edge at a point
+        li = new V3D_LineSegment(P1P1P0, new V3D_Point(P0, P2, P2));
+        expResult = P1P1P0;
+        result = instance.getIntersection(li, true);
+        assertEquals(expResult, result);
+        // To do: add some expResult = null test cases.
     }
 
     /**
@@ -359,6 +503,90 @@ public class V3D_EnvelopeTest extends V3D_Test {
         BigRational expResult = P0;
         BigRational result = instance.getzMax();
         assertThat(expResult, Matchers.comparesEqualTo(result));
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Envelope.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_Line() {
+        System.out.println("isIntersectedBy");
+        V3D_Line li = new V3D_Line(P0P0P0, P0P0P1);
+        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
+        assertTrue(instance.isIntersectedBy(li));
+        // Test 2
+        li = new V3D_Line(P0P0P0, P0P1P0);
+        assertTrue(instance.isIntersectedBy(li));
+        // Test 3
+        li = new V3D_Line(P0P0P0, P1P0P0);
+        assertTrue(instance.isIntersectedBy(li));
+        // Test 4
+        li = new V3D_Line(P1P1P1, new V3D_Point(P0, P2, P1));
+        assertTrue(instance.isIntersectedBy(li));
+        // Test 5
+        li = new V3D_Line(P1P1P1, new V3D_Point(P0, P2, P1));
+        assertTrue(instance.isIntersectedBy(li));
+        // Test 6 Intersection of a corner at a point
+        li = new V3D_Line(P1P1P1, new V3D_Point(P0, P2, P1));
+        assertTrue(instance.isIntersectedBy(li));
+        // Test 6 Intersection of an edge at a point
+        li = new V3D_Line(P1P1P0, new V3D_Point(P0, P2, P2));
+        assertTrue(instance.isIntersectedBy(li));
+        // To do: add some false test cases.
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Envelope.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_LineSegment_boolean() {
+        System.out.println("isIntersectedBy");
+        V3D_LineSegment li = new V3D_LineSegment(N2N2N2, P0P0P0);
+        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
+        assertTrue(instance.isIntersectedBy(li));
+        // Test 2
+        li = new V3D_LineSegment(P0P0P0, P0P1P0);
+        assertTrue(instance.isIntersectedBy(li, true));
+        // Test 3
+        li = new V3D_LineSegment(P0N1P0, P0P1P0);
+        assertTrue(instance.isIntersectedBy(li, true));
+        // Test 4
+        li = new V3D_LineSegment(P0P0P0, P1P0P0);
+        assertTrue(instance.isIntersectedBy(li, true));
+        // Test 5
+        li = new V3D_LineSegment(N1P0P0, P1P0P0);
+        assertTrue(instance.isIntersectedBy(li, true));
+        // Test 6
+        li = new V3D_LineSegment(new V3D_Point(N2, P0, P0), P1P0P0);
+        assertTrue(instance.isIntersectedBy(li, true));
+        // Test 7
+        li = new V3D_LineSegment(P1P1P1, new V3D_Point(P0, P2, P1));
+        assertTrue(instance.isIntersectedBy(li, true));
+        // Test 8
+        li = new V3D_LineSegment(P1P1P1, new V3D_Point(P0, P2, P1));
+        assertTrue(instance.isIntersectedBy(li, true));
+        // Test 9 Intersection of a corner at a point
+        li = new V3D_LineSegment(P1P1P1, new V3D_Point(P0, P2, P1));
+        assertTrue(instance.isIntersectedBy(li, true));
+        // Test 10 Intersection of an edge at a point
+        li = new V3D_LineSegment(P1P1P0, new V3D_Point(P0, P2, P2));
+        assertTrue(instance.isIntersectedBy(li, true));
+        // To do: add some false test cases.
+    }
+
+    /**
+     * Test of isEnvelopeIntersectedBy method, of class V3D_Envelope.
+     */
+    @Test
+    public void testIsEnvelopeIntersectedBy() {
+        System.out.println("isEnvelopeIntersectedBy");
+        V3D_Line l = new V3D_Line(P0P0P0, P1P0P0);
+        V3D_Envelope instance = new V3D_Envelope(N1N1N1, P1P1P1);
+        assertTrue(instance.isEnvelopeIntersectedBy(l));
+        // Test 2
+        l = new V3D_Line(N1N1N1, N1N1P0);
+        instance = new V3D_Envelope(P0P0P0, P1P1P1);
+        assertFalse(instance.isEnvelopeIntersectedBy(l));
     }
 
 }

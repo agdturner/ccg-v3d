@@ -19,7 +19,6 @@ import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
-import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 
 /**
  * For representing and processing triangles in 3D. In special cases, the
@@ -88,6 +87,15 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
         return en;
     }
 
+    /**
+     * @param v The vector to apply.
+     * @return a new rectangle.
+     */
+    @Override
+    public V3D_Triangle apply(V3D_Vector v) {
+        return new V3D_Triangle(p.apply(v), q.apply(v), r.apply(v));
+    }
+    
     /**
      * @param pt The point to intersect with.
      * @return A point or line segment.
@@ -235,5 +243,10 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
         } else {
             return ((V3D_LineSegment) i).getIntersection(l, b);
         }
+    }
+    
+    @Override
+    public boolean isEnvelopeIntersectedBy(V3D_Line l) {
+        return getEnvelope().isIntersectedBy(l);
     }
 }

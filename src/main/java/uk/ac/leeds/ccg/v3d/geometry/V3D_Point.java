@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -23,7 +22,32 @@ import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import ch.obermuhlner.math.big.BigRational;
 
 /**
- * V3D_Point
+ * This {@code
+ *                                       y
+ *                          z           +
+ *                          +          /               .<x0, y0, z0>
+ *                          |         /                |
+ *                          |        /                 |
+ *                          |    y0-/------------------|
+ *                          |      /                   /
+ *                          |     /                   /
+ *                          |    /                   /
+ *                       z0-|   /                   /
+ *                          |  /                   /
+ *                          | /                   /
+ *                          |/                   /
+ *  - ----------------------|------------------------ + x
+ *                         /|                    |
+ *                        / |                    x0
+ *                       /  |
+ *                      /   |
+ *                     /    |
+ *                    /     |
+ *                   /      |
+ *                  /       |
+ *                 -        |
+ *                          -
+ * }
  *
  * @author Andy Turner
  * @version 1.0
@@ -140,8 +164,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 
     /**
      * @param v The vector to apply.
-     * @return a new point which is this shifted by v.
+     * @return a new point.
      */
+    @Override
     public V3D_Point apply(V3D_Vector v) {
         return new V3D_Point(x.add(v.dx), y.add(v.dy), z.add(v.dz));
     }
@@ -251,6 +276,11 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, boolean b) {
+        return l.isIntersectedBy(this);
+    }
+    
+    @Override
+    public boolean isEnvelopeIntersectedBy(V3D_Line l) {
         return l.isIntersectedBy(this);
     }
 

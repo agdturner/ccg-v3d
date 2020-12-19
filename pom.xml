@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-vector3d</artifactId>
-    <version>0.5-SNAPHOT</version>
+    <version>0.5-SNAPSHOT</version>
     <!--
     <version>0.5</version>
     -->

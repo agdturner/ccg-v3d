@@ -21,7 +21,6 @@ import java.math.RoundingMode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
 import uk.ac.leeds.ccg.v3d.test.V3D_Test;
-import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;

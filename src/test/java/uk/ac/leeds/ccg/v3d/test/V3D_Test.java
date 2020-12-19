@@ -29,8 +29,8 @@ import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 public abstract class V3D_Test extends V3D_Object {
 
     public static final BigRational P0 = BigRational.ZERO;
-    public static final BigRational P1 = BigRational.valueOf(1);
-    public static final BigRational P2 = BigRational.valueOf(2);
+    public static final BigRational P1 = BigRational.ONE;
+    public static final BigRational P2 = BigRational.TWO;
     public static final BigRational P3 = BigRational.valueOf(3);
     public static final BigRational P4 = BigRational.valueOf(4);
     public static final BigRational P5 = BigRational.valueOf(5);
@@ -39,7 +39,6 @@ public abstract class V3D_Test extends V3D_Object {
     public static final BigRational P8 = BigRational.valueOf(8);
     public static final BigRational P9 = BigRational.valueOf(9);
     public static final BigRational P10 = BigRational.TEN;
-    public static final BigRational P11 = BigRational.TEN;
     public static final BigRational P99 = BigRational.valueOf(99);
     public static final BigRational P100 = BigRational.valueOf(100);
     public static final BigRational P101 = BigRational.valueOf(101);
@@ -113,17 +112,16 @@ public abstract class V3D_Test extends V3D_Object {
         P1P1P0 = new V3D_Point(P1, P1, P0);
         P1P1N1 = new V3D_Point(P1, P1, N1);
         P1P0P1 = new V3D_Point(P1, P0, P1);
-        P1P0P0 = new V3D_Point(P1, P0, P0);
+        P1P0P0 = V3D_Environment.P1P0P0;
         P1P0N1 = new V3D_Point(P1, P0, N1);
         P1N1P1 = new V3D_Point(P1, N1, P1);
         P1N1P0 = new V3D_Point(P1, N1, P0);
         P1N1N1 = new V3D_Point(P1, N1, N1);
-
         P0P1P1 = new V3D_Point(P0, P1, P1);
-        P0P1P0 = new V3D_Point(P0, P1, P0);
+        P0P1P0 = V3D_Environment.P0P1P0;
         P0P1N1 = new V3D_Point(P0, P1, N1);
-        P0P0P1 = new V3D_Point(P0, P0, P1);
-        P0P0P0 = new V3D_Point(P0, P0, P0);
+        P0P0P1 = V3D_Environment.P0P0P1;
+        P0P0P0 = V3D_Environment.P0P0P0;
         P0P0N1 = new V3D_Point(P0, P0, N1);
         P0N1P1 = new V3D_Point(P0, N1, P1);
         P0N1P0 = new V3D_Point(P0, N1, P0);

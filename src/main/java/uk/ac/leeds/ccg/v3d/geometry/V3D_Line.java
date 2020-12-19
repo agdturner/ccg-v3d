@@ -40,7 +40,7 @@ import uk.ac.leeds.ccg.math.Math_BigDecimal;
  * <li>(x−p.x)/v.dx = (y−p.y)/v.dy = (z−p.z)/v.dz</li>
  * </ul></li>
  * </ul>
- *
+ *                                                                               
  * @author Andy Turner
  * @version 1.0
  */
@@ -51,44 +51,17 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * A point defining the line.
      */
-    public V3D_Point p;
+    public final V3D_Point p;
 
     /**
      * A point defining the line.
      */
-    public V3D_Point q;
+    public final V3D_Point q;
 
     /**
      * The direction vector from {@link #p} in the direction of {@link #q}.
      */
-    public V3D_Vector v;
-
-    /**
-     * @param p What {@link #p} is set to.
-     * @param q What {@link #q} is set to.
-     * @param checkCoincidence If true a check for coincidence of {@link #p} and
-     * {@link #q} is done otherwise it is not done (as in the case when the line
-     * is a line segment defining the edge of an envelope which is allowed to be
-     * a point).
-     * @throws RuntimeException If {@code p} and {@code q} are coincident and
-     * {@code checkCoincidence} is {@code true}.
-     */
-    public V3D_Line(V3D_Point p, V3D_Point q, boolean checkCoincidence) {
-        if (checkCoincidence) {
-            if (p.equals(q)) {
-                throw new RuntimeException("The inputs p and q are the same point "
-                        + "and do not define a line.");
-            }
-        }
-        init(p, q);
-    }
-
-    private void init(V3D_Point p, V3D_Point q) {
-        this.p = new V3D_Point(p);
-        this.q = new V3D_Point(q);
-        v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
-                q.z.subtract(p.z));
-    }
+    public final V3D_Vector v;
 
     /**
      * {@code p} should not be equal to {@code q} unless the line is a line
@@ -99,7 +72,10 @@ public class V3D_Line extends V3D_Geometry {
      * @param q What {@link #q} is set to.
      */
     public V3D_Line(V3D_Point p, V3D_Point q) {
-        init(p, q);
+        this.p = p;
+        this.q = q;
+        v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
+                q.z.subtract(p.z));
     }
 
     /**
@@ -107,7 +83,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param v What {@link #v} is set to.
      */
     public V3D_Line(V3D_Point p, V3D_Vector v) {
-        this.p = new V3D_Point(p);
+        this.p = p;
         this.v = v;
         q = p.apply(v);
     }
@@ -118,6 +94,8 @@ public class V3D_Line extends V3D_Geometry {
     public V3D_Line(V3D_Line l) {
         this.p = l.p;
         this.q = l.q;
+        v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
+                q.z.subtract(p.z));
     }
 
     @Override
@@ -321,6 +299,15 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
+     * @param v The vector to apply.
+     * @return a new line.
+     */
+    @Override
+    public V3D_Line apply(V3D_Vector v) {
+        return new V3D_Line(p.apply(v), q.apply(v));
+    }
+    
+    /**
      * @param l A line.
      * @param scale The scale for the precision of the result.
      * @param rm The RoundingMode for any rounding.
@@ -340,5 +327,56 @@ public class V3D_Line extends V3D_Geometry {
         BigRational m = BigRational.valueOf(n.getMagnitude(scale, rm));
         BigRational d = n.getDotProduct(p_sub_lp).divide(m);
         return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), scale, rm);
+    }
+    
+    /**
+     * @return {@code true} iff this is parallel to the plane defined by x=0.
+     */
+    public boolean isParallelToX0() {
+        return v.dx.compareTo(BigRational.ZERO) == 0;
+    }
+            
+    /**
+     * @return {@code true} iff this is parallel to the plane defined by y=0.
+     */
+    public boolean isParallelToY0() {
+        return v.dy.compareTo(BigRational.ZERO) == 0;
+    }
+            
+    /**
+     * @return {@code true} iff this is parallel to the plane defined by z=0.
+     */
+    public boolean isParallelToZ0() {
+        return v.dz.compareTo(BigRational.ZERO) == 0;
+    }
+            
+    @Override
+    public boolean isEnvelopeIntersectedBy(V3D_Line l) {
+        if (this.isIntersectedBy(l)) {
+            return true;
+        }
+        if (this.isParallelToX0()) {
+            if (this.isParallelToY0()) {
+                return false;
+            } else if (this.isParallelToZ0()) {
+                return false;                
+            } else {
+                return !this.isParallel(l);
+            }
+        } else {
+            if (this.isParallelToY0()) {
+                if (this.isParallelToZ0()) {
+                    return false;
+                } else {
+                    return !this.isParallel(l);
+                }                        
+            } else {
+                if (this.isParallelToZ0()) {
+                    return !this.isParallel(l);
+                } else {
+                    return true;
+                }
+            }
+        }
     }
 }

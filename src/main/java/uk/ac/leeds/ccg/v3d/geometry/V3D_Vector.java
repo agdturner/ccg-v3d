@@ -123,7 +123,7 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} if {@code this.equals(e.zeroVector)}
      */
     public boolean isZeroVector() {
-        return this.equals(V3D_Environment.ZERO_VECTOR);
+        return this.equals(V3D_Environment.V0);
     }
 
     /**
@@ -272,7 +272,7 @@ public class V3D_Vector implements Serializable {
      * <A href="https://en.wikipedia.org/wiki/Cross_product">cross product</A>.
      * Treat this as the first vector and {@code v} as the second vector. The
      * resulting vector is in the direction given by the right hand rule.
-     *
+     * 
      * @param v V3D_Vector
      * @return V3D_Vector
      */
@@ -292,21 +292,5 @@ public class V3D_Vector implements Serializable {
     public V3D_Vector getUnitVector(int scale, RoundingMode rm) {
         BigRational m = BigRational.valueOf(getMagnitude(scale + 2, rm));
         return new V3D_Vector(dx.divide(m), dy.divide(m), dz.divide(m));
-    }
-
-    /**
-     * @param v0 One of the vectors for which the normal perpendicular vector is
-     * returned.
-     * @param v1 One of the vectors for which the normal perpendicular vector is
-     * returned.
-     * @return The normal perpendicular vector of {@code v0} and {@code v1}.
-     */
-    public static V3D_Vector getNormal(V3D_Vector v0,
-            V3D_Vector v1) {
-        return new V3D_Vector(
-                v0.dy.multiply(v1.dz).subtract(v1.dy.multiply(v0.dz)),
-                v0.dx.multiply(v1.dz).subtract(v1.dx.multiply(v0.dz)).negate(),
-                v0.dx.multiply(v1.dy).subtract(v1.dx.multiply(v0.dy)));
-
     }
 }

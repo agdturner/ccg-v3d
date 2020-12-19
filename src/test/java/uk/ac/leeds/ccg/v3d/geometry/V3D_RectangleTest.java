@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 import uk.ac.leeds.ccg.v3d.test.V3D_Test;
 
 /**

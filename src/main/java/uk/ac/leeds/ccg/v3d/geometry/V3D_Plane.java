@@ -1,9 +1,9 @@
 /*
- * Copyright 2020 Andy Turner, University of Leeds.
+ * Copyright 2020 CCG, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain xxx copy of the License at
+ * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -16,8 +16,8 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
+import java.math.BigInteger;
 import java.util.Objects;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
@@ -104,13 +104,13 @@ public class V3D_Plane extends V3D_Geometry {
         /**
          * Calculate the normal perpendicular vector.
          */
-        n = V3D_Vector.getNormal(pq, qr);
+        n = pq.getCrossProduct(qr);
         this.p = p;
         this.q = q;
         this.r = r;
         if (checkCollinearity) {
             // Check for collinearity
-            BigRational P0 = V3D_Environment.P0;
+            BigRational P0 = BigRational.ZERO;
             if (n.dx.compareTo(P0) == 0
                     && n.dy.compareTo(P0) == 0
                     && n.dz.compareTo(P0) == 0) {
@@ -139,7 +139,7 @@ public class V3D_Plane extends V3D_Geometry {
         /**
          * Calculate the normal perpendicular vector.
          */
-        n = V3D_Vector.getNormal(pq, qr);
+        n = pq.getCrossProduct(qr);
         this.p = p;
         this.q = q;
         this.r = r;
@@ -156,7 +156,7 @@ public class V3D_Plane extends V3D_Geometry {
     public V3D_Plane(V3D_Point p, V3D_Vector n) {
         this.p = p;
         BigRational d = n.dx.multiply(p.x).add(n.dy.multiply(p.y).add(n.dz.multiply(p.z)));
-        BigRational P0 = V3D_Environment.P0;
+        BigRational P0 = BigRational.ZERO;
         if (n.dx.compareTo(P0) == 0) {
             if (n.dy.compareTo(P0) == 0) {
 
@@ -180,7 +180,7 @@ public class V3D_Plane extends V3D_Geometry {
         this.r = new V3D_Point(P0, d.divide(n.dy), P0);
         pq = new V3D_Vector(p, q);
         qr = new V3D_Vector(q, r);
-        this.n = V3D_Vector.getNormal(pq, qr);
+        this.n = pq.getCrossProduct(qr);
     }
 
     @Override
@@ -189,6 +189,15 @@ public class V3D_Plane extends V3D_Geometry {
                 + ", q=" + q.toString() + ", r=" + r.toString() + ")";
     }
 
+    /**
+     * @param v The vector to apply.
+     * @return a new plane.
+     */
+    @Override
+    public V3D_Plane apply(V3D_Vector v) {
+        return new V3D_Plane(p.apply(v), q.apply(v), r.apply(v));
+    }
+    
     /**
      * @param pl The plane to test for intersection with this.
      * @return {@code true} If this and {@code pl} intersect.
@@ -221,11 +230,11 @@ public class V3D_Plane extends V3D_Geometry {
         BigRational d = n.dx.multiply(p.x.subtract(pt.x))
                 .add(n.dy.multiply(p.y.subtract(pt.y)))
                 .add(n.dz.multiply(p.z.subtract(pt.z)));
-        return d.compareTo(V3D_Environment.P0) == 0;
+        return d.compareTo(BigRational.ZERO) == 0;
     }
 
     /**
-     * @param l The line segment to test if it is on the plane.
+     * @param l The line to test if it is on the plane.
      * @return {@code true} If {@code pt} is on the plane.
      */
     public boolean isOnPlane(V3D_Line l) {
@@ -242,28 +251,30 @@ public class V3D_Plane extends V3D_Geometry {
         if (pl.isParallel(l)) {
             if (pl.isOnPlane(l)) {
                 return l;
+            } else {
+                return null;
             }
         }
-        // Are there any points in common?
-        if (l.p.equals(pl.p)) {
-            return pl.p;
+        // Are either of the points of l on the plane.
+        if (pl.isIntersectedBy(l.p)) {
+            return l.p;
         }
-        if (l.p.equals(pl.q)) {
-            return pl.q;
+        if (pl.isIntersectedBy(l.q)) {
+            return l.q;
         }
-        if (l.p.equals(pl.r)) {
-            return pl.r;
-        }
-        if (l.q.equals(pl.p)) {
-            return pl.p;
-        }
-        if (l.q.equals(pl.q)) {
-            return pl.q;
-        }
-        if (l.q.equals(pl.r)) {
-            return pl.r;
-        }
-
+        // Equation of plane
+        // a = pl.n.dx
+        // b = pl.n.dy
+        // c = pl.n.dz
+        // Point pt = (x0, y0, z0)
+        // 1) a(x - x0) + b(y - y0) + c(z - z0) = 0
+        // 2) x = l.p.x + t(l.v.dx)
+        // 3) y = l.p.y + t(l.v.dy)
+        // 4) z = l.p.z + t(l.v.dz)
+        // x = (by0 - by + cz0 - cz - ax0) / a
+        // y = (ax0 - ax + cz0 - cz - by0) / b
+        // z = (ax0 - ax + by0 - by - cz0) / c
+        
 //        BigRational t;
 //        if (l.v.dx.isZero()) {
 //            // Line has constant x                    
@@ -343,13 +354,9 @@ public class V3D_Plane extends V3D_Geometry {
         // x = l.p.x + t(l.v.dx)
         // y = l.p.y + t(l.v.dy)
         // z = l.p.z + t(l.v.dz)
-        //
-        // t = (z - l.p.z) / t
-        // If A != 0
-        // Solve for x
-        // A*(x-x0) + B*(y-y0) + C*(z-z0) = 0
-        // x = ((By0 - By + Cz0 - Cz) / A) - x0
-        // x = ((By0 - By + Cz0 - Cz) / A) - x0
+        // x = (By0 - By + Cz0 - Cz - Ax0) / A
+        // y = (Ax0 - Ax + Cz0 - Cz - By0) / B
+        // z = (Ax0 - Ax + Bz0 - Bz - Cy0) / C
 //        BigRational x = (((n.dy.multiply(y0)).subtract(n.dy.multiply(y))
 //                .add(n.dz.multiply(z0)).subtract(n.dz.multiply(z)))
 //                .divide(n.dx)).subtract(x0);
@@ -368,8 +375,8 @@ public class V3D_Plane extends V3D_Geometry {
         BigRational den = pl.n.dx.multiply(l.v.dx).add(pl.n.dz.multiply(l.v.dz))
                 .add(pl.n.dy.multiply(l.v.dy));
         if (den.isZero()) {
-            return new V3D_Point(V3D_Environment.P0, V3D_Environment.P0,
-                    V3D_Environment.P0); // Not sure if this is right?
+            BigRational P0 = BigRational.ZERO;
+            return new V3D_Point(P0, P0, P0); // Not sure if this is right?
         } else {
             BigRational t = num.divide(den);
             BigRational x = l.p.x.add(t.multiply(l.v.dx));
@@ -425,7 +432,7 @@ public class V3D_Plane extends V3D_Geometry {
         }
         // Calculate the line of intersection, where v is the line vector.
         // What to do depends on which elements of v are non-zero.
-        BigRational P0 = V3D_Environment.P0;
+        BigRational P0 = BigRational.ZERO;
         if (v.dx.compareTo(P0) == 0) {
             if (v.dy.compareTo(P0) == 0) {
                 BigRational z = pl.n.dx.multiply(pl.p.x
@@ -828,7 +835,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} if {@code this} is parallel to {@code l}.
      */
     public boolean isParallel(V3D_Line l) {
-        V3D_Vector cp = this.n.getCrossProduct(l.v);
+        V3D_Vector cp = n.getCrossProduct(l.v);
         return !(cp.dx.isZero() && cp.dy.isZero() && cp.dz.isZero());
     }
 
@@ -854,5 +861,10 @@ public class V3D_Plane extends V3D_Geometry {
         hash = 47 * hash + Objects.hashCode(this.q);
         hash = 47 * hash + Objects.hashCode(this.r);
         return hash;
+    }
+    
+    @Override
+    public boolean isEnvelopeIntersectedBy(V3D_Line l) {
+        return true;
     }
 }

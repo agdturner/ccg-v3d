@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
-import uk.ac.leeds.ccg.v3d.geometry.envelope.V3D_Envelope;
 
 /**
  * For representing and processing rectangles in 3D. In special cases, the
@@ -42,7 +41,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
      * The other corner of the rectangle. The others are {@link #p}, {@link #q},
      * and {@link #r}.
      */
-    public final V3D_Point s;
+    protected final V3D_Point s;
 
     /**
      * For storing the envelope
@@ -113,6 +112,15 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
     }
 
     /**
+     * @param v The vector to apply.
+     * @return a new rectangle.
+     */
+    @Override
+    public V3D_Rectangle apply(V3D_Vector v) {
+        return new V3D_Rectangle(p.apply(v), q.apply(v), r.apply(v), s.apply(v));
+    }
+    
+    /**
      * @param pt The point to intersect with.
      * @return A point or line segment.
      */
@@ -174,7 +182,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
     
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, boolean b) {
-        if (this.getEnvelope().isIntersectedBy(l.getEnvelope())) {
+        if (getEnvelope().isIntersectedBy(l.getEnvelope())) {
             if (super.isIntersectedBy(l)) {
                 V3D_Geometry g = super.getIntersection(l, b);
                 if (g instanceof V3D_Point) {
@@ -342,5 +350,10 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
         } else {
             return ((V3D_LineSegment) i).getIntersection(l, b);
         }
+    }
+    
+    @Override
+    public boolean isEnvelopeIntersectedBy(V3D_Line l) {
+        return getEnvelope().isIntersectedBy(l);
     }
 }
