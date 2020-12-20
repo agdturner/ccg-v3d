@@ -214,13 +214,67 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
     public boolean isScalarMultiple(V3D_Vector v) {
-        BigRational s = dx.divide(v.dx);
-        if (dy.multiply(s).compareTo(v.dy) == 0) {
-            if (dz.multiply(s).compareTo(v.dz) == 0) {
-                return true;
+        BigRational s;
+        if (dx.isZero()) {
+            if (v.dx.isZero()) {
+                if (dy.isZero()) {
+                    if (v.dy.isZero()) {
+                        if (dz.isZero()) {
+                            return v.dz.isZero();
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        return false;
+                    }
+                } else {
+                    if (v.dy.isZero()) {
+                        return false;
+                    } else {
+                        if (dz.isZero()) {
+                            return v.dz.isZero();
+                        } else {
+                            s = dy.divide(v.dy);
+                            return dz.multiply(s).compareTo(v.dz) == 0;
+                        }
+                    }
+                }
+            } else {
+                return false;
+            }
+        } else {
+            if (v.dx.isZero()) {
+                return false;
+            } else {
+                if (dy.isZero()) {
+                    if (v.dy.isZero()) {
+                        if (dz.isZero()) {
+                            return v.dz.isZero();
+                        } else {
+                            s = dx.divide(v.dx);
+                            return dz.multiply(s).compareTo(v.dz) == 0;
+                        }
+                    } else {
+                        return false;
+                    }
+                } else {
+                    if (v.dy.isZero()) {
+                        return false;
+                    } else {
+                        s = dx.divide(v.dx);
+                        if (dy.multiply(s).compareTo(v.dy) == 0) {
+                            if (dz.isZero()) {
+                                return v.dz.isZero();
+                            } else {
+                                return dz.multiply(s).compareTo(v.dz) == 0;
+                            }
+                        } else {
+                            return false;
+                        }
+                    }
+                }
             }
         }
-        return false;
     }
 
     /**
@@ -228,7 +282,7 @@ public class V3D_Vector implements Serializable {
      * <A href="https://en.wikipedia.org/wiki/Cross_product">cross product</A>.
      * Treat this as the first vector and {@code v} as the second vector. The
      * resulting vector is in the direction given by the right hand rule.
-     * 
+     *
      * @param v V3D_Vector
      * @return V3D_Vector
      */

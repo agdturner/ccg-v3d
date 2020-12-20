@@ -242,6 +242,7 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
+     * https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
      * @param pl The plane to intersect with the line.
      * @param l The line to intersect with the plane.
      * @return The intersection of the line and the plane. This is either
@@ -275,6 +276,15 @@ public class V3D_Plane extends V3D_Geometry {
         // y = (ax0 - ax + cz0 - cz - by0) / b
         // z = (ax0 - ax + by0 - by - cz0) / c
         
+        // ax+by+cz+d=0
+        // a(pl.p.x)+b(pl.p.y)+ c(pl.p.z) +d = 0
+        // pl.n.dx(pl.p.x)+pl.n.dy(pl.p.y)+ c(pl.p.z) +d = 0
+        // 
+        BigRational num = new V3D_Vector(pl.p, l.p).getDotProduct(pl.n);
+            BigRational den = l.v.getDotProduct(pl.n);
+            BigRational t = num.divide(den);
+            return l.p.apply(l.v.multiply(t));
+            
 //        BigRational t;
 //        if (l.v.dx.isZero()) {
 //            // Line has constant x                    
@@ -360,30 +370,34 @@ public class V3D_Plane extends V3D_Geometry {
 //        BigRational x = (((n.dy.multiply(y0)).subtract(n.dy.multiply(y))
 //                .add(n.dz.multiply(z0)).subtract(n.dz.multiply(z)))
 //                .divide(n.dx)).subtract(x0);
-        BigRational x0 = pl.p.x;
-        BigRational y0 = pl.p.y;
-        BigRational z0 = pl.p.z;
+//
+//        BigRational x0 = pl.p.x;
+//        BigRational y0 = pl.p.y;
+//        BigRational z0 = pl.p.z;
+//        
 //        l.p.x  + t(l.v.dx) = (((n.dy.multiply(y0)).subtract(n.dy.multiply(l.p.y + t(l.v.dy)))
 //                .add(n.dz.multiply(z0)).subtract(n.dz.multiply(l.p.z + t(l.v.dz))))
 //                .divide(n.dx)).subtract(x0);
 //        n.dx.multiply(l.p.x.add(x0)) + t.multiply(n.dx.multiply(l.v.dx)) 
 //                = (n.dy.multiply(y0)).subtract(n.dy.multiply(l.p.y + t(l.v.dy)))
 //                .add(n.dz.multiply(z0)).subtract(n.dz.multiply(l.p.z + t(l.v.dz)));
-        BigRational num = (pl.n.dy.multiply(y0)).subtract(pl.n.dy.multiply(l.p.y))
-                .add(pl.n.dz.multiply(z0)).subtract(pl.n.dz.multiply(l.p.z))
-                .subtract(pl.n.dx.multiply(l.p.x.add(x0)));
-        BigRational den = pl.n.dx.multiply(l.v.dx).add(pl.n.dz.multiply(l.v.dz))
-                .add(pl.n.dy.multiply(l.v.dy));
-        if (den.isZero()) {
-            BigRational P0 = BigRational.ZERO;
-            return new V3D_Point(P0, P0, P0); // Not sure if this is right?
-        } else {
-            BigRational t = num.divide(den);
-            BigRational x = l.p.x.add(t.multiply(l.v.dx));
-            BigRational y = l.p.y.add(t.multiply(l.v.dy));
-            BigRational z = l.p.z.add(t.multiply(l.v.dz));
-            return new V3D_Point(x, y, z);
-        }
+//
+//
+//        BigRational num = (pl.n.dy.multiply(y0)).subtract(pl.n.dy.multiply(l.p.y))
+//                .add(pl.n.dz.multiply(z0)).subtract(pl.n.dz.multiply(l.p.z))
+//                .subtract(pl.n.dx.multiply(l.p.x.add(x0)));
+//        BigRational den = pl.n.dx.multiply(l.v.dx).add(pl.n.dz.multiply(l.v.dz))
+//                .add(pl.n.dy.multiply(l.v.dy));
+//        if (den.isZero()) {
+//            BigRational P0 = BigRational.ZERO;
+//            return new V3D_Point(P0, P0, P0); // Not sure if this is right?
+//        } else {
+//            BigRational t = num.divide(den);
+//            BigRational x = l.p.x.add(t.multiply(l.v.dx));
+//            BigRational y = l.p.y.add(t.multiply(l.v.dy));
+//            BigRational z = l.p.z.add(t.multiply(l.v.dz));
+//            return new V3D_Point(x, y, z);
+//        }
     }
 
     /**
