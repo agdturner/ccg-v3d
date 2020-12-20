@@ -144,8 +144,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} If this and {@code l} are parallel.
      */
     public boolean isParallel(V3D_Line l) {
-        V3D_Vector cp = v.getCrossProduct(l.v);
-        return cp.dx.isZero() && cp.dy.isZero() && cp.dz.isZero();
+        return v.isScalarMultiple(l.v);
     }
 
     /**

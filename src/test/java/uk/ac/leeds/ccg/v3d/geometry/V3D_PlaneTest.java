@@ -333,9 +333,35 @@ public class V3D_PlaneTest extends V3D_Test {
         System.out.println("isParallel");
         V3D_Plane p = new V3D_Plane(P1P1P0, P1N1P0, N1P1P0);
         V3D_Plane instance = new V3D_Plane(P1P1P1, P1N1P1, N1P1P1);
-        boolean expResult = true;
-        boolean result = instance.isParallel(p);
-        assertEquals(expResult, result);
+        assertTrue(instance.isParallel(p));
+        // Test 2
+        instance = new V3D_Plane(P1P1N1, P1N1N1, N1P1N1);
+        assertTrue(instance.isParallel(p));
+        // Test 3
+        instance = new V3D_Plane(P1P1N1, P1N1N1, N1P1N1);
+        assertTrue(instance.isParallel(p));
+        // Test 4
+        p = e.x0;
+        instance = e.y0;
+        assertFalse(instance.isParallel(p));
+        // Test 5
+        p = e.x0;
+        instance = e.z0;
+        assertFalse(instance.isParallel(p));
+        // Test 6
+        p = e.y0;
+        instance = e.z0;
+        assertFalse(instance.isParallel(p));
+        // Test 7
+        p = new V3D_Plane(P0P0P0, P0P1P0, P1P1P1);
+        instance = new V3D_Plane(P1P0P0, P1P1P0, new V3D_Point(P2, P1, P1));
+        assertTrue(instance.isParallel(p));
+        // Test 8
+        instance = new V3D_Plane(P1N1P0, P1P0P0, new V3D_Point(P2, P0, P1));
+        assertTrue(instance.isParallel(p));
+        // Test 9
+        instance = new V3D_Plane(P1P0P0, P1P1P0, P1P1P1);
+        assertFalse(instance.isParallel(p));
     }
 
     /**
@@ -346,9 +372,33 @@ public class V3D_PlaneTest extends V3D_Test {
         System.out.println("isParallel");
         V3D_Line l = e.xAxis; 
         V3D_Plane instance = e.y0;
-        boolean expResult = true;
-        boolean result = instance.isParallel(l);
-        assertEquals(expResult, result);
+        assertTrue(instance.isParallel(l));
+        // Test 2
+        instance = e.z0;
+        assertTrue(instance.isParallel(l));
+        // Test 3
+        instance = e.x0;
+        assertFalse(instance.isParallel(l));
+        // Test 4
+        l = e.yAxis;
+        instance = e.x0;
+        assertTrue(instance.isParallel(l));
+        // Test 5
+        instance = e.y0;
+        assertFalse(instance.isParallel(l));
+        // Test 6
+        instance = e.z0;
+        assertTrue(instance.isParallel(l));
+        // Test 7
+        l = e.zAxis;
+        instance = e.x0;
+        assertTrue(instance.isParallel(l));
+        // Test 8
+        instance = e.y0;
+        assertTrue(instance.isParallel(l));
+        // Test 9
+        instance = e.z0;
+        assertFalse(instance.isParallel(l));
     }
 
     /**

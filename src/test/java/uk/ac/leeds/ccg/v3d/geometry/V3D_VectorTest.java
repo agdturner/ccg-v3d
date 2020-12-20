@@ -608,37 +608,37 @@ public class V3D_VectorTest extends V3D_Test {
      * Test of isParallel method, of class V3D_Vector.
      */
     @Test
-    public void testIsParallel() {
+    public void testIsScalarMultiple() {
         System.out.println("isParallel");
         V3D_Vector v = new V3D_Vector(P0P0P0);
         V3D_Vector instance = new V3D_Vector(P1P1P1);
         boolean expResult = false;
-        boolean result = instance.isParallel(v);
+        boolean result = instance.isScalarMultiple(v);
         assertEquals(expResult, result);
         // Test 2
-        result = instance.isParallel(v);
+        result = instance.isScalarMultiple(v);
         assertEquals(expResult, result);
         // Test 3
         v = new V3D_Vector(N1N1N1);
         instance = new V3D_Vector(P1P1P1);
         expResult = true;
-        result = instance.isParallel(v);
+        result = instance.isScalarMultiple(v);
         assertEquals(expResult, result);
         // Test 4
         expResult = true;
-        result = instance.isParallel(v);
+        result = instance.isScalarMultiple(v);
         assertEquals(expResult, result);
         // Test 5
         v = new V3D_Vector(P1P0P0);
         instance = new V3D_Vector(P0P1P1);
         expResult = false;
-        result = instance.isParallel(v);
+        result = instance.isScalarMultiple(v);
         assertEquals(expResult, result);
         // Test 6
         v = new V3D_Vector(P0, P1, P10000);
         instance = new V3D_Vector(P0, P1, P10001);
         expResult = false;
-        result = instance.isParallel(v);
+        result = instance.isScalarMultiple(v);
         assertEquals(expResult, result);
     }
 

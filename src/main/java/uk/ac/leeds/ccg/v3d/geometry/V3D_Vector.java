@@ -143,15 +143,6 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @param v The vector to subtract.
-     * @return A new vector which is this subtract {@code v}.
-     */
-    public V3D_Vector subtract(V3D_Vector v) {
-        return new V3D_Vector(dx.subtract(v.dx), dy.subtract(v.dy),
-                dz.subtract(v.dz));
-    }
-
-    /**
      * Calculate and return the
      * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
      *
@@ -217,54 +208,19 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * Test if this is parallel to {@code v}.
+     * Test if {@code v} is a scalar multiple of {@code this}.
      *
-     * @param v The vector to test if it is parallel to this.
-     * @return {@code true} if this and {@code v} are orthogonal.
+     * @param v The vector to test if it is a scalar multiple of {@code this}.
+     * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
-    public boolean isParallel(V3D_Vector v) {
-        if (dx.isZero() && dy.isZero() && dz.isZero()) {
-            return false;
-        }
-        if (v.dx.isZero() && v.dy.isZero() && v.dz.isZero()) {
-            return false;
-        }
-        if (dx.isZero() && !v.dx.isZero()) {
-            return false;
-        }
-        if (dy.isZero() && !v.dy.isZero()) {
-            return false;
-        }
-        if (dz.isZero() && !v.dz.isZero()) {
-            return false;
-        }
-        if (dx.isZero() && v.dx.isZero()) {
-            if (dy.isZero() && v.dy.isZero()) {
-                return !(dz.isZero() || v.dz.isZero());
-            } else {
-                if (dz.isZero() && v.dz.isZero()) {
-                    return true;
-                } else {
-                    return v.dy.divide(dy).multiply(dz).subtract(v.dz).isZero();
-                }
-            }
-        } else {
-            if (dy.isZero() && v.dy.isZero()) {
-                if (dz.isZero() && v.dz.isZero()) {
-                    return true;
-                } else {
-                    return v.dx.divide(dx).multiply(dy).subtract(v.dy).isZero();
-                }
-            } else {
-                if (dz.isZero() && v.dz.isZero()) {
-                    return v.dx.divide(dx).multiply(dy).subtract(v.dy).isZero();
-                } else {
-                    BigRational c = v.dx.divide(dx);
-                    return c.multiply(dy).subtract(v.dy).abs().isZero()
-                            && c.multiply(dz).subtract(v.dz).abs().isZero();
-                }
+    public boolean isScalarMultiple(V3D_Vector v) {
+        BigRational s = dx.divide(v.dx);
+        if (dy.multiply(s).compareTo(v.dy) == 0) {
+            if (dz.multiply(s).compareTo(v.dz) == 0) {
+                return true;
             }
         }
+        return false;
     }
 
     /**

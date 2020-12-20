@@ -827,7 +827,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} if {@code this} is parallel to {@code p}.
      */
     public boolean isParallel(V3D_Plane p) {
-        return p.n.isParallel(n);
+        return p.n.isScalarMultiple(n);
     }
 
     /**
@@ -835,8 +835,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} if {@code this} is parallel to {@code l}.
      */
     public boolean isParallel(V3D_Line l) {
-        V3D_Vector cp = n.getCrossProduct(l.v);
-        return !(cp.dx.isZero() && cp.dy.isZero() && cp.dz.isZero());
+        return n.getDotProduct(l.v).isZero();
+        //V3D_Vector cp = n.getCrossProduct(l.v);
+        //return !(cp.dx.isZero() && cp.dy.isZero() && cp.dz.isZero());
     }
 
     @Override
