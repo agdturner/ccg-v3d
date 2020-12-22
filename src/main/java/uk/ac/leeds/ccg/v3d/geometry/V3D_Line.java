@@ -85,7 +85,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param check Ignored. It is here to distinguish with 
-     * {@link #V3D_Line(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, uk.ac.leeds.ccg.v3d.geometry.V3D_Point)}.
+     * {@link #V3D_Line(V3D_Point, V3D_Point)}.
      * @throws RuntimeException if {@code p.equals(q)}. 
      */
     public V3D_Line(V3D_Point p, V3D_Point q, boolean check) {
@@ -101,7 +101,7 @@ public class V3D_Line extends V3D_Geometry {
     
     /**
      * {@code v} should not be the zero vector {@code <0,0,0>}. If unsure use 
-     * {@link #V3D_Line(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, uk.ac.leeds.ccg.v3d.geometry.V3D_Point, boolean)}.
+     * {@link #V3D_Line(V3D_Point, V3D_Point, boolean)}.
      * @param p What {@link #p} is set to.
      * @param v What {@link #v} is set to.
      * @throws RuntimeException if {@code v.isZeroVector()}. 
@@ -121,7 +121,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param p What {@link #p} is set to.
      * @param v What {@link #v} is set to.
      * @param check Ignored. It is here to distinguish with 
-     * {@link #V3D_Line(V3D_Point, V3D_Vector).
+     * {@link #V3D_Line(V3D_Point, V3D_Vector)}.
      */
     public V3D_Line(V3D_Point p, V3D_Vector v, boolean check) {
         this.p = p;
