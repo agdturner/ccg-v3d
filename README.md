@@ -52,7 +52,8 @@ Mostly what is implemented so far is intersection:
 * The library began development in March 2020 and is actively being developed. 
 
 ## Known uses
-I am using it to construct and visualise a [3D model of Earth](https://github.com/agdturner/agdt-java-project-Earth)
+No known uses yet.
+I am planning to use it to construct and visualise a [3D model of Earth](https://github.com/agdturner/agdt-java-project-Earth)
 
 ## Contributions
 - Please report issues in the usual way.
