@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -650,6 +651,197 @@ public class V3D_VectorTest extends V3D_Test {
         expResult = new V3D_Vector(N1P1P0);
         result = instance.getCrossProduct(v);
         assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of equals method, of class V3D_Vector.
+     */
+    @Test
+    public void testEquals_Object() {
+        System.out.println("equals");
+        Object o = e.i;
+        V3D_Vector instance = e.i;
+        assertTrue(instance.equals(o));
+        // Test 2
+        instance = e.j;
+        assertFalse(instance.equals(o));
+    }
+
+    /**
+     * Test of equals method, of class V3D_Vector.
+     */
+    @Test
+    public void testEquals_V3D_Vector() {
+        System.out.println("equals");
+        V3D_Vector v = e.i;
+        V3D_Vector instance = e.i;
+        assertTrue(instance.equals(v));
+        // Test 2
+        instance = e.j;
+        assertFalse(instance.equals(v));
+    }
+
+    /**
+     * Test of isReverse method, of class V3D_Vector.
+     */
+    @Test
+    public void testIsReverse() {
+        System.out.println("isReverse");
+        V3D_Vector v = e.i;
+        V3D_Vector instance = new V3D_Vector(-1,0,0);
+        assertTrue(instance.isReverse(v));
+        // Test 2
+    }
+
+    /**
+     * Test of isZeroVector method, of class V3D_Vector.
+     */
+    @Test
+    public void testIsZeroVector() {
+        System.out.println("isZeroVector");
+        V3D_Vector instance = new V3D_Vector(0,0,0);
+        assertTrue(instance.isZeroVector());
+        // Test 2
+        instance = new V3D_Vector(1,0,0);
+        assertFalse(instance.isZeroVector());
+    }
+
+    /**
+     * Test of multiply method, of class V3D_Vector.
+     */
+    @Test
+    public void testMultiply() {
+        System.out.println("multiply");
+        BigRational s = BigRational.ZERO;
+        V3D_Vector instance = new V3D_Vector(0,0,0);
+        V3D_Vector expResult = new V3D_Vector(0,0,0);
+        V3D_Vector result = instance.multiply(s);
+        assertEquals(expResult, result);
+        // Test 2
+        s = BigRational.ZERO;
+         instance = new V3D_Vector(10,10,10);
+         expResult = new V3D_Vector(0,0,0);
+         result = instance.multiply(s);
+        assertEquals(expResult, result);
+        // Test 3
+        s = BigRational.TWO;
+         instance = new V3D_Vector(10,10,10);
+         expResult = new V3D_Vector(20,20,20);
+         result = instance.multiply(s);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of add method, of class V3D_Vector.
+     */
+    @Test
+    public void testAdd() {
+        System.out.println("add");
+        V3D_Vector instance = new V3D_Vector(0,0,0);
+        V3D_Vector v = new V3D_Vector(0,0,0);
+        V3D_Vector expResult = new V3D_Vector(0,0,0);
+        V3D_Vector result = instance.add(v);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = new V3D_Vector(0,0,0);
+         v = new V3D_Vector(1,1,1);
+         expResult = new V3D_Vector(1,1,1);
+         result = instance.add(v);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of subtract method, of class V3D_Vector.
+     */
+    @Test
+    public void testSubtract() {
+        System.out.println("subtract");
+        V3D_Vector instance = new V3D_Vector(0,0,0);
+        V3D_Vector v = new V3D_Vector(0,0,0);
+        V3D_Vector expResult = new V3D_Vector(0,0,0);
+        V3D_Vector result = instance.add(v);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = new V3D_Vector(0,0,0);
+         v = new V3D_Vector(1,1,1);
+         expResult = new V3D_Vector(-1,-1,-1);
+         result = instance.add(v);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of reverse method, of class V3D_Vector.
+     */
+    @Test
+    public void testReverse() {
+        System.out.println("reverse");
+        V3D_Vector instance = new V3D_Vector(0,0,0);
+        V3D_Vector expResult = new V3D_Vector(0,0,0);
+        V3D_Vector result = instance.reverse();
+        assertEquals(expResult, result);
+        // Test 2
+        instance = new V3D_Vector(1,1,1);
+         expResult = new V3D_Vector(-1,-1,-1);
+         result = instance.reverse();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getMagnitudeSquared method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetMagnitudeSquared() {
+        System.out.println("getMagnitudeSquared");
+        V3D_Vector instance = new V3D_Vector(0,0,0);
+        BigRational expResult = BigRational.ZERO;
+        BigRational result = instance.getMagnitudeSquared();
+        assertEquals(expResult, result);
+        // Test 2
+        instance = new V3D_Vector(1,1,1);
+         expResult = BigRational.valueOf(3);
+         result = instance.getMagnitudeSquared();
+        assertEquals(expResult, result);
+        // Test 3
+        instance = new V3D_Vector(2,2,2);
+         expResult = BigRational.valueOf(12);
+         result = instance.getMagnitudeSquared();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getUnitVector method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetUnitVector() {
+        System.out.println("getUnitVector");
+        int scale = 1;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Vector instance = e.i;
+        V3D_Vector expResult = e.i;
+        V3D_Vector result = instance.getUnitVector(scale, rm);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = new V3D_Vector(100,0,0);
+         expResult = e.i;
+         result = instance.getUnitVector(scale, rm);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getAsMatrix method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetAsMatrix() {
+        System.out.println("getAsMatrix");
+        V3D_Vector instance = e.i;
+        Math_Matrix_BR expResult = new Math_Matrix_BR(1, 3);
+        BigRational[][] m = expResult.getM();
+        m[0][0] = BigRational.ONE;
+        m[0][1] = BigRational.ZERO;
+        m[0][2] = BigRational.ZERO;
+        Math_Matrix_BR result = instance.getAsMatrix();
+        assertEquals(expResult, result);
+        // Test 2
     }
 
 }

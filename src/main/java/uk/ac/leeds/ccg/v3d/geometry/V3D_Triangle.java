@@ -21,9 +21,15 @@ import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
- * For representing and processing triangles in 3D. In special cases, the
- * triangle could be a line segment or a point when two or all of
- * {@link #p}, {@link #q}, and {@link #r} are equal respectively.  {@code
+ * For representing and processing triangles in 3D. For representing and
+ * processing rectangles in 3D. A triangle has a non-zero area and does not have
+ * to align with any of the axes. The corner points are {@link #p}, {@link #q}
+ * and {@link #r}. The vector {@link #rp} stores the vector from {@link #r} to
+ * {@link #qr}. The line segment {@link #lpq} is the line segment from
+ * {@link #p} to {@link #q}. The line segment {@link #lqr} is the line segment
+ * from {@link #q} to {@link #r}. The line segment {@link #lrp} is the line
+ * segment from {@link #r} to {@link #p}. The following depicts a generic
+ * triangle (no attempt has been made to draw this three dimensionally) {@code
  *      lpq
  *  p -------- q
  *    \      /
@@ -95,7 +101,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
     public V3D_Triangle apply(V3D_Vector v) {
         return new V3D_Triangle(p.apply(v), q.apply(v), r.apply(v));
     }
-    
+
     /**
      * @param pt The point to intersect with.
      * @return A point or line segment.
@@ -111,7 +117,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
     }
 
     private boolean isIntersectedBy0(V3D_Point pt) {
-        if (lpq.isIntersectedBy(pt) || lqr.isIntersectedBy(pt) 
+        if (lpq.isIntersectedBy(pt) || lqr.isIntersectedBy(pt)
                 || lrp.isIntersectedBy(pt)) {
             return true;
         }
@@ -145,7 +151,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
         }
         return false;
     }
-    
+
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, boolean b) {
         if (this.getEnvelope().isIntersectedBy(l.getEnvelope())) {
@@ -244,7 +250,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
             return ((V3D_LineSegment) i).getIntersection(l, b);
         }
     }
-    
+
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l) {
         return getEnvelope().isIntersectedBy(l);

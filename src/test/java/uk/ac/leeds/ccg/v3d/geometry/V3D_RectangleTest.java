@@ -33,7 +33,7 @@ import uk.ac.leeds.ccg.v3d.test.V3D_Test;
  * V3D_RectangleTest
  *
  * @author Andy Turner
- * @version 1.0
+ * @version 1.0.0
  */
 public class V3D_RectangleTest extends V3D_Test {
 

@@ -22,23 +22,24 @@ import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import ch.obermuhlner.math.big.BigRational;
 
 /**
- * This {@code
+ * 3D representation of a point. The "*" denotes a point in 3D in the following
+ * depiction: {@code
  *                                       y
  *                          z           +
- *                          +          /               .<x0, y0, z0>
- *                          |         /                |
- *                          |        /                 |
- *                          |    y0-/------------------|
+ *                          +          /                *p=<x0,y0,z0>
+ *                          |         /                 |
+ *                          |        /                  |
+ *                          |    y0-/-------------------|
  *                          |      /                   /
  *                          |     /                   /
  *                          |    /                   /
- *                       z0-|   /                   /
- *                          |  /                   /
+ *                          |   /                   /
+ *                       z0-|  /                   /
  *                          | /                   /
  *                          |/                   /
- *  - ----------------------|------------------------ + x
- *                         /|                    |
- *                        / |                    x0
+ *  - ----------------------|-------------------/---- + x
+ *                         /|                   x0
+ *                        / |
  *                       /  |
  *                      /   |
  *                     /    |
@@ -278,7 +279,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     public boolean isIntersectedBy(V3D_LineSegment l, boolean b) {
         return l.isIntersectedBy(this);
     }
-    
+
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l) {
         return l.isIntersectedBy(this);

@@ -16,39 +16,66 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
-import java.math.BigInteger;
 import java.util.Objects;
 import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 
 /**
- * V3D_Plane - for representing infinite flat 2D planes in 3D. The plane is
- * defined by three points {@link #p}, {@link #q} and {@link #r} that are not
- * collinear, or from any point on the plane and a normal vector that is
- * perpendicular to the plane. From three points that are not collinear an
- * equation of the plane can be derived by creating two V3D_Vectors {@link #pq}
- * and {@link #qr}. The equation of the plane is:
+ * 3D representation of an infinite plane. The plane is defined by three points
+ * {@link #p}, {@link #q} and {@link #r} that are not collinear, a normal vector
+ * {@link #n} that is perpendicular to the plane, and two vectors; {@link #pq}
+ * (which is the vector from {@link #p} to {@link #q}), and {@link #qr} (which
+ * is the vector from {@link #q} to {@link #r}). The "*" denotes a point in 3D,
+ * {@link #pq} is depicted with a line of "e" symbols, {@link #qr} is depicted
+ * with a line of "f" symbols in the following depiction: {@code
+ *                                       y
+ *                          z           +
+ *                          +          /                * p=<x0,y0,z0>
+ *                          |         /                e
+ *                          |        /                e
+ *                          |    y0-/                e
+ *                          |      /                e
+ *                          |     /               e
+ *                          |    /               e
+ *                          |   /               e
+ *                       z0-|  /               e
+ *                          | /               e
+ *             x2           |/         x1    e
+ *  - ---------/------------|-----------/---e---/---- + x
+ *                         /|              e   x0
+ *                        / |-z1          e
+ *                    y2-/  |           e
+ *                      /   |          e
+ *                  y1-/    |         e
+ *                    /  z2-|        e
+ *                   /      | f f f * q=<x1,y1,z1>
+ *                  f f f f f
+ *          * f f f/        |
+ *  r=<x2,y2,z2>  -         |
+ *                          -
+ * }
+ *
+ *
+ * The equation of the plane is:
  * <ul>
- * <li>A*(x-x0) + B*(y-y0) + C*(z-z0) = 0</li>
- * <li>A*(x) + B*(y) + C*(z) - D = 0 where D = -(A*x0 + B*y0 + C*z0)</li>
+ * <li>{@code A*(x-x0) + B*(y-y0) + C*(z-z0) = 0}</li>
+ * <li>{@code A*(x) + B*(y) + C*(z) - D = 0 where D = -(A*x0 + B*y0 + C*z0)}</li>
  * </ul>
  * where:
  * <ul>
- * <li>x, y, and z are any of the coordinates in {@link #p}, {@link #q} and
- * {@link #r}</li>
- * <li>x0, y0 and z0 represents any other point in the plane</li>
- * <li>{@code A = pq.dy.multiply(pr.dz).subtract(pr.dy.multiply(pq.dz))} - which
- * is the dx of the normal vector (that is perpendicular to the plane).</li>
- * <li>{@code B = (pq.dx.multiply(pr.dz).subtract(pr.dx.multiply(pq.dz))).negate()}
- * - which is the dy of the normal vector.</li>
- * <li>{@code C = pq.dx.multiply(pr.dy).subtract(pr.dx.multiply(pq.dy))} - which
- * is the dz of the normal vector.</li>
+ * <li>{@code x}, {@code y}, and {@code z} are the coordinates from either
+ * {@link #p}, {@link #q} or {@link #r}</li>
+ * <li>{@code x0}, {@code y0} and {@code z0} represents any other point on the
+ * plane</li>
+ * <li>{@code A} is the {@code dx} of {@link #n}.</li>
+ * <li>{@code B} is the {@code dy} of {@link #n}.</li>
+ * <li>{@code C} is the {@code dz} of {@link #n}.</li>
  * </ul>
  *
  * <ol>
- * <li>n.dx(x(t)−p.x)+n.dy(y(t)−p.y)+n.dz(z(t)−p.z) = 0</li>
- * <li>n.dx(x(t)−q.x)+n.dy(y(t)−q.y)+n.dz(z(t)−q.z) = 0</li>
- * <li>n.dx(x(t)−r.x)+n.dy(y(t)−r.y)+n.dz(z(t)−r.z) = 0</li>
+ * <li>{@code n.dx(x(t)−p.x)+n.dy(y(t)−p.y)+n.dz(z(t)−p.z) = 0}</li>
+ * <li>{@code n.dx(x(t)−q.x)+n.dy(y(t)−q.y)+n.dz(z(t)−q.z) = 0}</li>
+ * <li>{@code n.dx(x(t)−r.x)+n.dy(y(t)−r.y)+n.dz(z(t)−r.z) = 0}</li>
  * </ol>
  *
  * @author Andy Turner
@@ -714,7 +741,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} if {@code this} is parallel to {@code p}.
      */
     public boolean isParallel(V3D_Plane p) {
-        return p.n.isScalarMultiple(n);
+        //return p.n.isScalarMultiple(n); // alternative - probably slower?
+        return n.getCrossProduct(p.n).isZeroVector();
     }
 
     /**
@@ -723,19 +751,50 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public boolean isParallel(V3D_Line l) {
         return n.getDotProduct(l.v).isZero();
-        //V3D_Vector cp = n.getCrossProduct(l.v);
-        //return !(cp.dx.isZero() && cp.dy.isZero() && cp.dz.isZero());
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Plane) {
-            V3D_Plane pl = (V3D_Plane) o;
+            return equals((V3D_Plane) o);
+        }
+        return false;
+    }
+
+    /**
+     * Planes are equal if they are coincident and their normal perpendicular
+     * vectors point in the same direction. They may be coincident and be
+     * defined by the same three points, but may not be equal. They may be equal
+     * even if they are defined by different points.
+     *
+     * @param pl The plane to check for equality with {@code this}.
+     * @return {@code true} iff {@code this} and {@code pl} are the same.
+     */
+    public boolean equals(V3D_Plane pl) {
+        if (n.equals(pl.n)) {
             if (isIntersectedBy(pl.p)) {
                 if (isIntersectedBy(pl.q)) {
                     if (isIntersectedBy(pl.r)) {
+
                         return true;
                     }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Planes are equal if they are coincident and the {@link #n} is the same.
+     *
+     * @param pl The plane to check for equality with {@code this}.
+     * @return {@code true} iff {@code this} and {@code pl} are the same.
+     */
+    public boolean isCoincident(V3D_Plane pl) {
+        if (isIntersectedBy(pl.p)) {
+            if (isIntersectedBy(pl.q)) {
+                if (isIntersectedBy(pl.r)) {
+                    return true;
                 }
             }
         }
@@ -774,4 +833,20 @@ public class V3D_Plane extends V3D_Geometry {
         return res;
     }
 
+    /**
+     * Using {@link #p} and {@link #n} define a line and find the point of
+     * intersection on {@code p} and then return the distance squared between it
+     * and {@link #p}.
+     *
+     * @param p The other plane used to calculate the distance.
+     * @return The shortest distance between {@code this} and {@code p}. Choose
+     * {@link #p}
+     */
+    public BigRational getDistanceSquared(V3D_Plane p) {
+        if (isParallel(p)) {
+            return this.p.getDistanceSquared((V3D_Point) p.getIntersection(
+                    new V3D_Line(this.p, n)));
+        }
+        return BigRational.ZERO;
+    }
 }

@@ -407,12 +407,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return if this is contained by {@code e}
      */
     public boolean isContainedBy(V3D_Envelope e) {
-        return this.getxMax().compareTo(e.getxMax()) != 1
-                && this.getxMin().compareTo(e.getxMin()) != -1
-                && this.getyMax().compareTo(e.getyMax()) != 1
-                && this.getyMin().compareTo(e.getyMin()) != -1
-                && this.getzMax().compareTo(e.getzMax()) != 1
-                && this.getzMin().compareTo(e.getzMin()) != -1;
+        return getxMax().compareTo(e.getxMax()) != 1
+                && getxMin().compareTo(e.getxMin()) != -1
+                && getyMax().compareTo(e.getyMax()) != 1
+                && getyMin().compareTo(e.getyMin()) != -1
+                && getzMax().compareTo(e.getzMax()) != 1
+                && getzMin().compareTo(e.getzMin()) != -1;
     }
 
     /**
@@ -444,7 +444,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z The z-coordinate of the point to test for intersection.
      * @return {@code true} if this intersects with {@code p}
      */
-    public boolean isIntersectedBy(BigRational x, BigRational y, BigRational z) {
+    public boolean isIntersectedBy(BigRational x, BigRational y, 
+            BigRational z) {
         return x.compareTo(getxMin()) != -1 && x.compareTo(getxMax()) != 1
                 && y.compareTo(getyMin()) != -1 && y.compareTo(getyMax()) != 1
                 && z.compareTo(getzMin()) != -1 && z.compareTo(getzMax()) != 1;

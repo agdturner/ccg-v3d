@@ -18,15 +18,22 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import ch.obermuhlner.math.big.BigRational;
 
 /**
- * For representing and processing rectangles in 3D. In special cases, the
- * rectangle could be a line segment or a point when two or all of
- * {@link #p}, {@link #q}, {@link #r} and {@link #s} are equal respectively.  {@code
+ * For representing and processing rectangles in 3D. A rectangle has a non-zero
+ * area and does not have to align with any of the axes. The corner points
+ * {@link #p}, {@link #q}, {@link #r}, {@link #s} are arranged in a rectangular
+ * fashion so that the vector {@link #pq} is orthogonal to {@link #qr}. The top
+ * of a rectangle {@link #t} is the line segment from {@link #p} to {@link #q}.
+ * The right of a rectangle {@link #ri} is the line segment from {@link #q} to
+ * {@link #r}. The bottom of a rectangle {@link #b} is the line segment from
+ * {@link #r} to {@link #s}. The left of a rectangle {@link #l} is the line
+ * segment from {@link #s} to {@link #p}. The following depicts a generic
+ * rectangle (no attempt has been made to draw this three dimensionally) {@code
  *         t
- *  p ----------- q
+ * p*-------------*q
  *  |             |
  * l|             |ri
  *  |             |
- *  s ----------- r
+ * s*-------------*r
  *         b
  * }
  *
@@ -119,7 +126,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
     public V3D_Rectangle apply(V3D_Vector v) {
         return new V3D_Rectangle(p.apply(v), q.apply(v), r.apply(v), s.apply(v));
     }
-    
+
     /**
      * @param pt The point to intersect with.
      * @return A point or line segment.
@@ -179,7 +186,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
         }
         return false;
     }
-    
+
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, boolean b) {
         if (getEnvelope().isIntersectedBy(l.getEnvelope())) {
@@ -351,7 +358,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
             return ((V3D_LineSegment) i).getIntersection(l, b);
         }
     }
-    
+
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l) {
         return getEnvelope().isIntersectedBy(l);

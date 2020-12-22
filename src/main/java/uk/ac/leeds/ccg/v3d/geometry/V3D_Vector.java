@@ -21,10 +21,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * V3D_Vector
+ * Represents a vector or translation that involves a change in the x coordinate
+ * {@link #dx}, a change in the y coordinate {@link #dy} and a change in the z
+ * coordinate {@link #dz}.
  *
  * @author Andy Turner
  * @version 1.0.0
@@ -70,6 +73,17 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * @param dx What {@link #dx} is set to.
+     * @param dy What {@link #dy} is set to.
+     * @param dz What {@link #dz} is set to.
+     */
+    public V3D_Vector(long dx, long dy, long dz) {
+        this.dx = BigRational.valueOf(dx);
+        this.dy = BigRational.valueOf(dy);
+        this.dz = BigRational.valueOf(dz);
+    }
+
+    /**
      * Creates a vector from the origin to {@code p}
      *
      * @param p the point to which the vector starting at the origin goes.
@@ -81,7 +95,7 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * Creates a vector from {@code p} to {@code q}
+     * Creates a vector from {@code p} to {@code q}.
      *
      * @param p the point where the vector starts.
      * @param q the point where the vector ends.
@@ -101,15 +115,30 @@ public class V3D_Vector implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Vector) {
-            V3D_Vector v = (V3D_Vector) o;
-            if (dx.compareTo(v.dx) == 0 && dy.compareTo(v.dy) == 0
-                    && dz.compareTo(v.dz) == 0) {
-                return true;
-            }
+            return equals((V3D_Vector) o);
         }
         return false;
     }
 
+    /**
+     * Indicates if {@code this} and {@code v} are equal.
+     * @param v The vector to compare with {@code this}.
+     * @return {@code true} iff {@code this} is the same as {@code v}.
+     */
+    public boolean equals(V3D_Vector v) {
+        return dx.compareTo(v.dx) == 0 && dy.compareTo(v.dy) == 0
+                && dz.compareTo(v.dz) == 0;
+    }
+    
+    /**
+     * Indicates if {@code this} is the reverse of {@code v}.
+     * @param v The vector to compare with {@code this}.
+     * @return {@code true} iff {@code this} is the reverse of {@code v}.
+     */
+    public boolean isReverse(V3D_Vector v) {
+        return equals(v.reverse());
+    }
+    
     @Override
     public int hashCode() {
         int hash = 3;
@@ -147,7 +176,7 @@ public class V3D_Vector implements Serializable {
      * @return A new vector which is {@code this} minus {@code v}.
      */
     public V3D_Vector subtract(V3D_Vector v) {
-        return new V3D_Vector(dx.subtract(v.dx), dy.subtract(v.dy), 
+        return new V3D_Vector(dx.subtract(v.dx), dy.subtract(v.dy),
                 dz.subtract(v.dz));
     }
 
@@ -318,5 +347,17 @@ public class V3D_Vector implements Serializable {
     public V3D_Vector getUnitVector(int scale, RoundingMode rm) {
         BigRational m = BigRational.valueOf(getMagnitude(scale + 2, rm));
         return new V3D_Vector(dx.divide(m), dy.divide(m), dz.divide(m));
+    }
+    
+    /**
+     * @return The points that define the plan as a matrix.
+     */
+    public Math_Matrix_BR getAsMatrix() {
+        Math_Matrix_BR r = new Math_Matrix_BR(1, 3);
+        BigRational[][] m = r.getM();
+        m[0][0] = dx;
+        m[0][1] = dy;
+        m[0][2] = dz;
+        return r;
     }
 }

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
+import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -168,7 +169,7 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Point q = new V3D_Point(P2, P0, P0);
         V3D_Point r = new V3D_Point(P0, P2, P0);
         instance = new V3D_Plane(P0P0P0, q, r);
-        assertTrue(instance.equals(o));
+        assertFalse(instance.equals(o));
     }
 
     /**
@@ -764,6 +765,194 @@ public class V3D_PlaneTest extends V3D_Test {
         expResult = new V3D_Point(P0, P0, P2);
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
+    }
 
+    /**
+     * Test of apply method, of class V3D_Plane.
+     */
+    @Test
+    public void testApply() {
+        System.out.println("apply");
+        V3D_Vector v = new V3D_Vector(1, 0, 0);
+        V3D_Plane instance = e.x0;
+        V3D_Plane expResult = new V3D_Plane(P1P0P0, P1P1P0, P1P0P1);
+        V3D_Plane result = instance.apply(v);
+        assertEquals(expResult, result);
+        // Test 2
+    }
+
+    /**
+     * Test of isOnPlane method, of class V3D_Plane.
+     */
+    @Test
+    public void testIsOnPlane() {
+        System.out.println("isOnPlane");
+        V3D_Line l = new V3D_Line(P0P0P0, P1P0P0);
+        V3D_Plane instance = new V3D_Plane(P0P0P0, P1P0P0, P1P1P0);
+        assertTrue(instance.isOnPlane(l));
+        // Test 2
+        l = new V3D_Line(P0P0P0, P1P1P0);
+        assertTrue(instance.isOnPlane(l));
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetIntersection_V3D_Plane_V3D_Line() {
+        System.out.println("getIntersection");
+        // No test - These tests are covered by testGetIntersection_V3D_Line.
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetIntersection_V3D_LineSegment_boolean() {
+        System.out.println("getIntersection");
+        V3D_LineSegment l = null;
+        boolean flag = false;
+        V3D_Plane instance = null;
+        V3D_Geometry expResult = null;
+        V3D_Geometry result;
+        // Test 1-3 part of axis with orthoganol plane through origin.
+        // Test 1
+        l = new V3D_LineSegment(N1P0P0, P1P0P0);
+        instance = e.x0;
+        expResult = P0P0P0;
+        result = instance.getIntersection(l, flag);
+        assertEquals(expResult, result);
+        // Test 2
+        l = new V3D_LineSegment(P0N1P0, P0P1P0);
+        instance = e.y0;
+        expResult = P0P0P0;
+        result = instance.getIntersection(l, flag);
+        assertEquals(expResult, result);
+        // Test 3
+        l = new V3D_LineSegment(P0P0N1, P0P0P1);
+        instance = e.z0;
+        expResult = P0P0P0;
+        result = instance.getIntersection(l, flag);
+        assertEquals(expResult, result);
+        // Test 4-6 part of axis with orthoganol plane not through origin.
+        // Test 4
+        l = new V3D_LineSegment(N1P0P0, P1P0P0);
+        instance = e.x0.apply(new V3D_Vector(P1, P0, P0));
+        expResult = P1P0P0;
+        result = instance.getIntersection(l, flag);
+        assertEquals(expResult, result);
+        // Test 5
+        l = new V3D_LineSegment(P0N1P0, P0P1P0);
+        instance = e.y0.apply(new V3D_Vector(P0, P1, P0));
+        expResult = P0P1P0;
+        result = instance.getIntersection(l, flag);
+        assertEquals(expResult, result);
+        // Test 6
+        l = new V3D_LineSegment(P0P0N1, P0P0P1);
+        instance = e.z0.apply(new V3D_Vector(P0, P0, P1));
+        expResult = P0P0P1;
+        result = instance.getIntersection(l, flag);
+        assertEquals(expResult, result);
+        // Test 7
+        // line
+        // x = t, y = 2 + 3t, z = t
+        // points (0, 2, 0), (1, 5, 1) 
+        l = new V3D_LineSegment(new V3D_Point(P0, P2, P0), new V3D_Point(P1, P5, P1));
+        // plane
+        // 2x + y − 4z = 4
+        // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
+        instance = new V3D_Plane(P0P0N1, new V3D_Point(P0, P4, P0), 
+                new V3D_Point(P2, P0, P0));
+        // (2, 8, 2)
+        expResult = new V3D_Point(P2, P8, P2);
+        result = instance.getIntersection(l, flag);
+        assertNotEquals(expResult, result);
+        l = new V3D_LineSegment(new V3D_Point(P0, P2, P0), new V3D_Point(P2, P8, P2));
+        result = instance.getIntersection(l, flag);
+        assertEquals(expResult, result);
+        // Test 9
+        // line
+        // x = t, y = 2 + 3t, z = t
+        // points (0, 2, 0), (1, 5, 1) 
+        l = new V3D_LineSegment(new V3D_Point(P0, P2, P0), new V3D_Point(P1, P5, P1));
+        // plane
+        // 2x + y − 4z = 4
+        // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
+        instance = new V3D_Plane(new V3D_Point(P0, P0, N1),
+                new V3D_Point(P0, P4, P0), new V3D_Point(P2, P0, P0));
+        // (2, 8, 2)
+        expResult = new V3D_Point(P2, P8, P2);
+        result = instance.getIntersection(l, flag);
+        assertNotEquals(expResult, result);
+        l = new V3D_LineSegment(new V3D_Point(P0, P2, P0), new V3D_Point(P2, P8, P2));
+        result = instance.getIntersection(l, flag);
+        assertEquals(expResult, result);
+        // Test 10
+        // line
+        // x = 0, y = 0, z = t
+        // points (0, 0, 0), (0, 0, 1) 
+        l = new V3D_LineSegment(new V3D_Point(P0, P0, P0), new V3D_Point(P0, P0, P1));
+        // plane
+        // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
+        instance = new V3D_Plane(new V3D_Point(P0, P0, P2),
+                new V3D_Point(P1, P0, P2), new V3D_Point(P0, P1, P2));
+        expResult = new V3D_Point(P0, P0, P2);
+        result = instance.getIntersection(l, flag);
+        assertNotEquals(expResult, result);
+        l = new V3D_LineSegment(new V3D_Point(P0, P0, P0), new V3D_Point(P0, P0, P4));
+        result = instance.getIntersection(l, flag);
+        assertEquals(expResult, result);
+        
+    }
+
+    /**
+     * Test of isEnvelopeIntersectedBy method, of class V3D_Plane.
+     */
+    @Test
+    public void testIsEnvelopeIntersectedBy() {
+        System.out.println("isEnvelopeIntersectedBy");
+        // No test
+    }
+
+    /**
+     * Test of getAsMatrix method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetAsMatrix() {
+        System.out.println("getAsMatrix");
+        V3D_Plane instance = e.x0;
+        Math_Matrix_BR expResult = new Math_Matrix_BR(3, 3);
+        BigRational[][] m = expResult.getM();
+        m[0][0] = BigRational.ZERO;
+        m[0][1] = BigRational.ZERO;
+        m[0][2] = BigRational.ZERO;
+        m[1][0] = BigRational.ZERO;
+        m[1][1] = BigRational.ONE;
+        m[1][2] = BigRational.ZERO;
+        m[2][0] = BigRational.ZERO;
+        m[2][1] = BigRational.ZERO;
+        m[2][2] = BigRational.ONE;
+        Math_Matrix_BR result = instance.getAsMatrix();
+        assertEquals(expResult, result);
+        // Test 2
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetDistanceSquared() {
+        System.out.println("getDistanceSquared");
+        V3D_Plane p = e.x0;
+        V3D_Plane instance = e.x0;
+        BigRational expResult = BigRational.ZERO;
+        BigRational result = instance.getDistanceSquared(p);
+        assertEquals(expResult, result);
+        // Test 2
+        V3D_Vector v = e.i;
+         instance = e.x0.apply(v);
+         expResult = BigRational.ONE;
+         result = instance.getDistanceSquared(p);
+        
     }
 }

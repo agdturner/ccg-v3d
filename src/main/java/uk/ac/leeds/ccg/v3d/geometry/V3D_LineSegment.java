@@ -21,10 +21,36 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 /**
- * Class for a line segment in 3D represented by two Point3D instances. Two
- * instances are regarded as equal i they are represented by the same points
- * irrespective as which is assigned as {@link #p} and which is assigned as
- * {@link #q}.
+ * 3D representation of a finite length line (a line segment). The line begins
+ * at the point {@link #p}, travels in the direction {@link #v} and ends at the
+ * point {@link # q}. The "*" denotes a point in 3D and the line is shown with a
+ * line of "e" symbols in the following depiction: {@code
+ *                                       y
+ *                          z           +
+ *                          +          /                * p=<x0,y0,z0>
+ *                          |         /                e
+ *                          |        /                e
+ *                          |    y0-/                e
+ *                          |      /                e
+ *                          |     /               e
+ *                          |    /               e
+ *                          |   /               e
+ *                       z0-|  /               e
+ *                          | /               e
+ *                          |/         x1    e
+ *  - ----------------------|-----------/---e---/---- + x
+ *                         /|              e   x0
+ *                        / |-z1          e
+ *                       /  |           e
+ *                      /   |          e
+ *                  y1-/    |         e
+ *                    /     |        e
+ *                   /      |       * q=<x1,y1,z1>
+ *                  /       |
+ *                 /        |
+ *                -         |
+ *                          -
+ * }
  *
  * @author Andy Turner
  * @version 1.0
@@ -92,7 +118,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     public boolean equals(V3D_LineSegment l) {
         return p.equals(l.p) && q.equals(l.q);
     }
-    
+
     /**
      * @param l The line segment to test if it is equal to {@code this}.
      * @return {@code true} iff {@code this} is equal to {@code l} ignoring the
@@ -105,7 +131,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
             return p.equals(l.q) && q.equals(l.p);
         }
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -113,9 +139,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         hash = 31 * hash + Objects.hashCode(this.q);
         return hash;
     }
-    
+
     /**
-     * @return {@code true} iff this line segment is effectively a point. 
+     * @return {@code true} iff this line segment is effectively a point.
      */
     public boolean isPoint() {
         return p.equals(q);
@@ -269,7 +295,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
             return this;
         }
     }
-    
+
     /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
      * return {@code this}. If they overlap in a line return the part that
@@ -288,13 +314,14 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
-     * A utility method for calculating and returning the intersection between 
+     * A utility method for calculating and returning the intersection between
      * {@code l0} and {@code l1}
+     *
      * @param l0 Line to intersect with {@code l1}.
      * @param l1 Line to intersect with {@code l0}.
      * @return The intersection between {@code l0} and {@code l1}.
      */
-    public static V3D_Geometry getIntersection(V3D_LineSegment l0, 
+    public static V3D_Geometry getIntersection(V3D_LineSegment l0,
             V3D_LineSegment l1) {
         V3D_Envelope ren = l0.getEnvelope().getIntersection(l1.getEnvelope());
         if (ren == null) {
@@ -403,7 +430,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
             }
         }
     }
-    
+
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l) {
         return getEnvelope().isIntersectedBy(l);

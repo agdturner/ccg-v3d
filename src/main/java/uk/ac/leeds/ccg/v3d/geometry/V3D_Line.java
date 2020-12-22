@@ -24,21 +24,50 @@ import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 
 /**
  * 3D representation of an infinite length line. The line passes through the
- * point {@link #p} and is travelling in the direction {@link #v}.
+ * point {@link #p} and is travelling in the direction {@link #v} through point
+ * {@link # q}. The "*" denotes a point in 3D and the line is shown with a line
+ * of "e" symbols in the following depiction: {@code
+ *                                       y                e
+ *                          z           +                e
+ *                          +          /                * p=<x0,y0,z0>
+ *                          |         /                e
+ *                          |        /                e
+ *                          |    y0-/                e
+ *                          |      /                e
+ *                          |     /               e
+ *                          |    /               e
+ *                          |   /               e
+ *                       z0-|  /               e
+ *                          | /               e
+ *                          |/         x1    e
+ *  - ----------------------|-----------/---e---/---- + x
+ *                         /|              e   x0
+ *                        / |-z1          e
+ *                       /  |           e
+ *                      /   |          e
+ *                  y1-/    |         e
+ *                    /     |        e
+ *                   /      |       * q=<x1,y1,z1>
+ *                  /       |      e
+ *                 /        |     e
+ *                -         |    e
+ *                          -   e
+ * }
  * <ul>
  * <li>Vector Form
  * <ul>
- * <li>(x,y,z) = (p.x,p.y,p.z) + t(v.dx,v.dy,v.dz)</li>
+ * <li>{@code (x,y,z) = (p.x,p.y,p.z) + t(v.dx,v.dy,v.dz)}</li>
  * </ul>
  * <li>Parametric Form (where t describes a particular point on the line)
  * <ul>
- * <li>x = p.x + t(v.dx)</li>
- * <li>y = p.y + t(v.dy)</li>
- * <li>z = p.z + t(v.dz)</li>
+ * <li>{@code x = p.x + t(v.dx)}</li>
+ * <li>{@code y = p.y + t(v.dy)}</li>
+ * <li>{@code z = p.z + t(v.dz)}</li>
  * </ul>
- * <li>Symmetric Form (assume v.dx, v.dy, and v.dz are all nonzero)
+ * <li>Symmetric Form (assume {@code v.dx}, {@code v.dy}, and {@code v.dz} are
+ * all nonzero)
  * <ul>
- * <li>(x−p.x)/v.dx = (y−p.y)/v.dy = (z−p.z)/v.dz</li>
+ * <li>{@code (x−p.x)/v.dx = (y−p.y)/v.dy = (z−p.z)/v.dz}</li>
  * </ul></li>
  * </ul>
  *
@@ -84,13 +113,13 @@ public class V3D_Line extends V3D_Geometry {
      *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
-     * @param check Ignored. It is here to distinguish with 
+     * @param check Ignored. It is here to distinguish with
      * {@link #V3D_Line(V3D_Point, V3D_Point)}.
-     * @throws RuntimeException if {@code p.equals(q)}. 
+     * @throws RuntimeException if {@code p.equals(q)}.
      */
     public V3D_Line(V3D_Point p, V3D_Point q, boolean check) {
         if (p.equals(q)) {
-            throw new RuntimeException("Points " + p + " and " + q 
+            throw new RuntimeException("Points " + p + " and " + q
                     + " are the same and so do not define a line.");
         }
         this.p = p;
@@ -98,13 +127,14 @@ public class V3D_Line extends V3D_Geometry {
         v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
                 q.z.subtract(p.z));
     }
-    
+
     /**
-     * {@code v} should not be the zero vector {@code <0,0,0>}. If unsure use 
+     * {@code v} should not be the zero vector {@code <0,0,0>}. If unsure use
      * {@link #V3D_Line(V3D_Point, V3D_Point, boolean)}.
+     *
      * @param p What {@link #p} is set to.
      * @param v What {@link #v} is set to.
-     * @throws RuntimeException if {@code v.isZeroVector()}. 
+     * @throws RuntimeException if {@code v.isZeroVector()}.
      */
     public V3D_Line(V3D_Point p, V3D_Vector v) {
         if (v.isZeroVector()) {
@@ -118,9 +148,10 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * Checks to ensure v is not the zero vector {@code <0,0,0>}.
+     *
      * @param p What {@link #p} is set to.
      * @param v What {@link #v} is set to.
-     * @param check Ignored. It is here to distinguish with 
+     * @param check Ignored. It is here to distinguish with
      * {@link #V3D_Line(V3D_Point, V3D_Vector)}.
      */
     public V3D_Line(V3D_Point p, V3D_Vector v, boolean check) {
@@ -128,7 +159,7 @@ public class V3D_Line extends V3D_Geometry {
         this.v = v;
         q = p.apply(v);
     }
-    
+
     /**
      * @param l Vector_LineSegment3D
      */
@@ -248,7 +279,7 @@ public class V3D_Line extends V3D_Geometry {
             return null;
         }
         V3D_Vector vl0pl1q = new V3D_Vector(l0.p, l1.q);
-        
+
         BigRational vl0pl1ql1v = vl0pl1q.dx.multiply(l1.v.dx)
                 .add(vl0pl1q.dy.multiply(l1.v.dy))
                 .add(vl0pl1q.dz.multiply(l1.v.dz));
@@ -358,9 +389,9 @@ public class V3D_Line extends V3D_Geometry {
             }
         }
     }
-    
+
     /**
-     * @return The points that define the plan as a matrix. 
+     * @return The points that define the plan as a matrix.
      */
     public Math_Matrix_BR getAsMatrix() {
         Math_Matrix_BR res = new Math_Matrix_BR(3, 2);
