@@ -136,10 +136,26 @@ public class V3D_Vector implements Serializable {
 
     /**
      * @param v The vector to add.
-     * @return A new vector which is this add {@code v}.
+     * @return A new vector which is {@code this} add {@code v}.
      */
     public V3D_Vector add(V3D_Vector v) {
         return new V3D_Vector(dx.add(v.dx), dy.add(v.dy), dz.add(v.dz));
+    }
+
+    /**
+     * @param v The vector to subtract.
+     * @return A new vector which is {@code this} minus {@code v}.
+     */
+    public V3D_Vector subtract(V3D_Vector v) {
+        return new V3D_Vector(dx.subtract(v.dx), dy.subtract(v.dy), 
+                dz.subtract(v.dz));
+    }
+
+    /**
+     * @return A new vector which is the opposite to {@code this}.
+     */
+    public V3D_Vector reverse() {
+        return new V3D_Vector(dx.negate(), dy.negate(), dz.negate());
     }
 
     /**

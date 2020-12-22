@@ -470,7 +470,7 @@ public class V3D_LineTest extends V3D_Test {
         assertTrue(instance.isEnvelopeIntersectedBy(l));
         // Test 2
         l = new V3D_Line(P0P0P1, P0P1P1);
-        instance = new V3D_Line(P0P0N1, P1N1N1);
+        instance = new V3D_Line(P0P0N1, P0P1N1);
         assertFalse(instance.isEnvelopeIntersectedBy(l));
     }
 }

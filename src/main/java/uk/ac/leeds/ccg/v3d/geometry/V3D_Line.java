@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 
 /**
  * 3D representation of an infinite length line. The line passes through the
@@ -40,7 +41,7 @@ import uk.ac.leeds.ccg.math.Math_BigDecimal;
  * <li>(x−p.x)/v.dx = (y−p.y)/v.dy = (z−p.z)/v.dz</li>
  * </ul></li>
  * </ul>
- *                                                                               
+ *
  * @author Andy Turner
  * @version 1.0
  */
@@ -169,8 +170,10 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * A utility method for calculating and returning the intersection between 
-     * {@code l0} and {@code l1}
+     * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection A utility
+     * method for calculating and returning the intersection between {@code l0}
+     * and {@code l1}
+     *
      * @param l0 Line to intersect with {@code l1}.
      * @param l1 Line to intersect with {@code l0}.
      * @return The intersection between {@code l0} and {@code l1}.
@@ -198,103 +201,40 @@ public class V3D_Line extends V3D_Geometry {
         if (l0.isParallel(l1)) {
             return null;
         }
-        /**
-         * Find the intersection point where the two equations of the lines
-         * meet. (x(t)−x0)/a = (y(t)−y0)/b = (z(t)−z0)/c
-         */
-        // (x−p.x)/a = (y−p.y)/b = (z−p.z)/c
-        // t = (v.dx - x0)/p.x;
-        // t = (v.dy - y0)/p.y;
-        // t = (v.dz - z0)/p.z;
-        // x(t) = t(dx)+q.x
-        // y(t) = t(dy)+q.y
-        // z(t) = t(dz)+q.z
-        // 1: t(v.dx)+q.x = s(l.v.dx)+l.q.x
-        // 2: t(v.dy)+q.y = s(l.v.dy)+l.q.y
-        // 3: t(v.dz)+q.z = s(l.v.dz)+l.q.z
-        // Let:
-        // l.v.dx = k; l.v.dy = l; l.v.dz = m;
-        // From 1:
-        // t = ((s(k)+l.q.x-q.x)/(v.dx))
-        // Let:
-        // l.q.x-q.x = e; l.q.y-q.y = f; l.q.z-q.z = g
-        // v.dx = a; v.dy = b; v.dz = c
-        // t = (sk+e)/a
-        // Sub into 2:
-        // ((sk+e)/a)b+q.y = sl + l.q.y
-        // skb/a +eb/a - s1 = l.q.y - q.y
-        // s(kb/a - l) = l.q.y - q.y - eb/a
-        // s = (l.q.y - q.y - eb/a) / ((kb/a) - l)
-        BigRational t;
-        if (l0.v.dx.isZero()) {
-            // Line has constant x                    
-            if (l0.v.dy.isZero()) {
-                // Line has constant y
-                // Line is parallel to z axis
-                /*
-                 * x = p.x + t(v.dx)
-                 * y = p.y + t(v.dy)
-                 * z = p.z + t(v.dz)
-                 */
-                BigRational num = l1.q.x.subtract(l0.q.x).subtract(l1.q.z
-                        .subtract(l0.q.z).multiply(l0.v.dx).divide(l0.v.dz));
-                BigRational den = l1.v.dz.multiply(l0.v.dx).divide(l0.v.dz)
-                        .subtract(l1.v.dx);
-                t = num.divide(den).multiply(l1.v.dz).add(l1.q.z)
-                        .subtract(l0.q.z).divide(l0.v.dz);
-            } else if (l0.v.dz.isZero()) {
-                // Line has constant z
-                BigRational num = l1.q.z.subtract(l0.q.z).subtract(l1.q.y
-                        .subtract(l0.q.y).multiply(l0.v.dz).divide(l0.v.dy));
-                BigRational den = l1.v.dy.multiply(l0.v.dz).divide(l0.v.dy)
-                        .subtract(l1.v.dz);
-                t = num.divide(den).multiply(l1.v.dz).add(l1.q.z)
-                        .subtract(l0.q.z).divide(l0.v.dz);
-            } else {
-                BigRational den = l1.v.dy.multiply(l0.v.dx).divide(l0.v.dy)
-                        .subtract(l1.v.dx);
-                BigRational num = l1.q.x.subtract(l0.q.x).subtract(l1.q.y
-                        .subtract(l0.q.y).multiply(l0.v.dx).divide(l0.v.dy));
-                t = num.divide(den).multiply(l1.v.dy).add(l1.q.y)
-                        .subtract(l0.q.y).divide(l0.v.dy);
-            }
-        } else {
-            if (l0.v.dy.isZero()) {
-                if (l0.v.dz.isZero()) {
-                    BigRational num = l1.q.y.subtract(l0.q.y).subtract(l1.q.x
-                            .subtract(l0.q.z).multiply(l0.v.dy).divide(l0.v.dx));
-                    BigRational den = l1.v.dz.multiply(l0.v.dy).divide(l0.v.dx)
-                            .subtract(l1.v.dy);
-                    t = num.divide(den).multiply(l1.v.dy).add(l1.q.x)
-                            .subtract(l0.q.x).divide(l0.v.dx);
-                } else {
-                    BigRational num = l1.q.y.subtract(l0.q.y).subtract(l1.q.z
-                            .subtract(l0.q.z).multiply(l0.v.dy).divide(l0.v.dz));
-                    BigRational den = l1.v.dz.multiply(l0.v.dy).divide(l0.v.dz)
-                            .subtract(l1.v.dy);
-                    t = num.divide(den).multiply(l1.v.dx).add(l1.q.x)
-                            .subtract(l0.q.x).divide(l0.v.dx);
-                }
-            } else if (l0.v.dz.isZero()) {
-                BigRational num = l1.q.z.subtract(l0.q.z).subtract(l1.q.y
-                        .subtract(l0.q.y).multiply(l0.v.dz).divide(l0.v.dy));
-                BigRational den = l1.v.dy.multiply(l0.v.dz).divide(l0.v.dy)
-                        .subtract(l1.v.dz);
-                t = num.divide(den).multiply(l1.v.dx).add(l1.q.x)
-                        .subtract(l0.q.x).divide(l0.v.dx);
-            } else {
-                //dy dz nonzero
-                BigRational den = l1.v.dx.multiply(l0.v.dy).divide(l0.v.dx)
-                        .subtract(l1.v.dy);
-                BigRational num = l1.q.y.subtract(l0.q.y).subtract(l1.q.x
-                        .subtract(l0.q.x).multiply(l0.v.dy).divide(l0.v.dx));
-                t = num.divide(den).multiply(l1.v.dx).add(l1.q.x)
-                        .subtract(l0.q.x).divide(l0.v.dx);
-            }
+        if (l0.v.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
+            return null;
         }
-        return new V3D_Point(t.multiply(l0.v.dx).add(l0.q.x),
-                t.multiply(l0.v.dy).add(l0.q.y),
-                t.multiply(l0.v.dz).add(l0.q.z));
+        if (l1.v.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
+            return null;
+        }
+        V3D_Vector vl0pl1q = new V3D_Vector(l0.p, l1.q);
+        
+        BigRational vl0pl1ql1v = vl0pl1q.dx.multiply(l1.v.dx)
+                .add(vl0pl1q.dy.multiply(l1.v.dy))
+                .add(vl0pl1q.dz.multiply(l1.v.dz));
+        BigRational vl1l0 = l1.v.dx.multiply(l0.v.dx)
+                .add(l1.v.dy.multiply(l0.v.dy))
+                .add(l1.v.dz.multiply(l0.v.dz));
+        BigRational vl0pl1ql0v = vl0pl1q.dx.multiply(l0.v.dx)
+                .add(vl0pl1q.dy.multiply(l0.v.dy))
+                .add(vl0pl1q.dz.multiply(l0.v.dz));
+        BigRational vl1l1 = l1.v.dx.multiply(l1.v.dx)
+                .add(l1.v.dy.multiply(l1.v.dy))
+                .add(l1.v.dz.multiply(l1.v.dz));
+        BigRational vl0l0 = l0.v.dx.multiply(l0.v.dx)
+                .add(l0.v.dy.multiply(l0.v.dy))
+                .add(l0.v.dz.multiply(l0.v.dz));
+        BigRational den = (vl0l0.multiply(vl1l1))
+                .subtract(vl1l0.multiply(vl1l0));
+        if (den.compareTo(BigRational.ZERO) == 0) {
+            return null;
+        }
+        BigRational num = (vl0pl1ql1v.multiply(vl1l0))
+                .subtract(vl0pl1ql0v.multiply(vl1l1));
+        BigRational t = num.divide(den);
+        return new V3D_Point(l0.q.x.add(t.multiply(l0.v.dx)),
+                l0.q.y.add(t.multiply(l0.v.dy)),
+                l0.q.z.add(t.multiply(l0.v.dz)));
     }
 
     /**
@@ -305,7 +245,7 @@ public class V3D_Line extends V3D_Geometry {
     public V3D_Line apply(V3D_Vector v) {
         return new V3D_Line(p.apply(v), q.apply(v));
     }
-    
+
     /**
      * @param l A line.
      * @param scale The scale for the precision of the result.
@@ -327,28 +267,28 @@ public class V3D_Line extends V3D_Geometry {
         BigRational d = n.getDotProduct(p_sub_lp).divide(m);
         return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), scale, rm);
     }
-    
+
     /**
      * @return {@code true} iff this is parallel to the plane defined by x=0.
      */
     public boolean isParallelToX0() {
         return v.dx.compareTo(BigRational.ZERO) == 0;
     }
-            
+
     /**
      * @return {@code true} iff this is parallel to the plane defined by y=0.
      */
     public boolean isParallelToY0() {
         return v.dy.compareTo(BigRational.ZERO) == 0;
     }
-            
+
     /**
      * @return {@code true} iff this is parallel to the plane defined by z=0.
      */
     public boolean isParallelToZ0() {
         return v.dz.compareTo(BigRational.ZERO) == 0;
     }
-            
+
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l) {
         if (this.isIntersectedBy(l)) {
@@ -358,7 +298,7 @@ public class V3D_Line extends V3D_Geometry {
             if (this.isParallelToY0()) {
                 return false;
             } else if (this.isParallelToZ0()) {
-                return false;                
+                return false;
             } else {
                 return !this.isParallel(l);
             }
@@ -368,7 +308,7 @@ public class V3D_Line extends V3D_Geometry {
                     return false;
                 } else {
                     return !this.isParallel(l);
-                }                        
+                }
             } else {
                 if (this.isParallelToZ0()) {
                     return !this.isParallel(l);
@@ -377,5 +317,20 @@ public class V3D_Line extends V3D_Geometry {
                 }
             }
         }
+    }
+    
+    /**
+     * @return The points that define the plan as a matrix. 
+     */
+    public Math_Matrix_BR getAsMatrix() {
+        Math_Matrix_BR res = new Math_Matrix_BR(3, 2);
+        BigRational[][] m = res.getM();
+        m[0][0] = p.x;
+        m[0][1] = p.y;
+        m[0][2] = p.z;
+        m[1][0] = q.x;
+        m[1][1] = q.y;
+        m[1][2] = q.z;
+        return res;
     }
 }
