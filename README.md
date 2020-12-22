@@ -39,7 +39,7 @@ Developed and tested on Java 15 using Maven.
 - Please see the [POM](https://github.com/agdturner/agdt-java-vector3d/blob/master/pom.xml) for details.
 
 ## General description
-The coordinates for points are stored as rational numbers. An attempt is being made not to round unless absolutely necessary.
+The coordinates for points are stored as rational numbers. An attempt is being made not to round unless absolutely necessary. Mostly this has been successful thanks to the use of BigRational from the BigMath library in that there is no rounding for any intersection operations. However, to get the magnitude of a vector, some rounding might be necessary as the result may not be rational. In these instances the user can specify the precision and RoundingMode desired.
 
 Mostly what is implemented so far is intersection:
 * point-plane, point-line, point-line_segement, point-rectangle
