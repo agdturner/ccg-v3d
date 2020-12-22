@@ -318,24 +318,59 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * @param l A line.
+     * https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+     * @param p A point for which the minimum distance from {@code this} is 
+     * returned.
      * @param scale The scale for the precision of the result.
      * @param rm The RoundingMode for any rounding.
-     * @return The shortest distance between this and {@code l}.
+     * @return The minimum distance between this and {@code p}.
+     */
+    public BigDecimal getDistance(V3D_Point p, int scale, RoundingMode rm) {
+        /**
+         * Calculate the direction vector of the line connecting the closest 
+         * points by computing the cross product.
+         */
+        V3D_Vector pv = new V3D_Vector(p);
+        V3D_Vector cp = v.getCrossProduct(pv);
+        /**
+         * Calculate the delta from {@link #p} and l.p
+         */
+        V3D_Vector delta = new V3D_Vector(this.p).subtract(pv);
+        BigRational m = BigRational.valueOf(cp.getMagnitude(scale, rm));
+        // d = cp.(delta)/m
+        BigRational dp = cp.getDotProduct(delta);
+        if (dp.compareTo(m) == 0) {
+            return BigDecimal.ONE; // Prevent a divide by zero if both are zero.
+        }
+        BigRational d = dp.divide(m);
+        return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), scale, rm);
+    }
+    
+    /**
+     * https://en.wikipedia.org/wiki/Skew_lines#Nearest_points
+     * @param l A line for which the minimum distance from {@code this} is 
+     * returned.
+     * @param scale The scale for the precision of the result.
+     * @param rm The RoundingMode for any rounding.
+     * @return The minimum distance between this and {@code l}.
      */
     public BigDecimal getDistance(V3D_Line l, int scale, RoundingMode rm) {
-        // The coordinates of points along the lines are given by:
-        // p = <p.x, p.y, p.z> + t<v.dx, v.dy, v.dz>
-        // lp = <l.p.x, l.p.y, l.p.z> + t<l.v.dx, l.v.dy, l.v.dz>
-        // p2 = r2+t2e2
-        // The line connecting the closest points has direction vector:
-        // n = v.l.v
-        V3D_Vector n = v.getCrossProduct(l.v);
-        // d = n.(p−l.p)/||n||
-        V3D_Vector p_sub_lp = new V3D_Vector(p.x.subtract(l.p.x),
-                p.y.subtract(l.p.y), p.z.subtract(l.p.z));
-        BigRational m = BigRational.valueOf(n.getMagnitude(scale, rm));
-        BigRational d = n.getDotProduct(p_sub_lp).divide(m);
+        /**
+         * Calculate the direction vector of the line connecting the closest 
+         * points by computing the cross product.
+         */
+        V3D_Vector cp = v.getCrossProduct(l.v);
+        /**
+         * Calculate the delta from {@link #p} and l.p
+         */
+        V3D_Vector delta = new V3D_Vector(p).subtract(new V3D_Vector(l.p));
+        BigRational m = BigRational.valueOf(cp.getMagnitude(scale, rm));
+        // d = cp.(delta)/m
+        BigRational dp = cp.getDotProduct(delta);
+        if (dp.compareTo(m) == 0) {
+            return BigDecimal.ONE; // Prevent a divide by zero if both are zero.
+        }
+        BigRational d = dp.divide(m);
         return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), scale, rm);
     }
 
@@ -394,7 +429,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return The points that define the plan as a matrix.
      */
     public Math_Matrix_BR getAsMatrix() {
-        Math_Matrix_BR res = new Math_Matrix_BR(3, 2);
+        Math_Matrix_BR res = new Math_Matrix_BR(2, 3);
         BigRational[][] m = res.getM();
         m[0][0] = p.x;
         m[0][1] = p.y;

@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
+import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -279,15 +280,15 @@ public class V3D_LineTest extends V3D_Test {
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 18
-        l = new V3D_Line(P0N1N1, new V3D_Point(P2,P1,P1));
+        l = new V3D_Line(P0N1N1, new V3D_Point(P2, P1, P1));
         expResult = P1P0P0;
-        instance = new V3D_Line(P1P0P0, new V3D_Point(P2,P0,P0));
+        instance = new V3D_Line(P1P0P0, new V3D_Point(P2, P0, P0));
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 19
-        l = new V3D_Line(P0N1P0, new V3D_Point(P2,P1,P2));
+        l = new V3D_Line(P0N1P0, new V3D_Point(P2, P1, P2));
         expResult = P1P0P1;
-        instance = new V3D_Line(P1P0P1, new V3D_Point(P2,P0,P1));
+        instance = new V3D_Line(P1P0P1, new V3D_Point(P2, P0, P1));
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 20 to 21
@@ -299,15 +300,15 @@ public class V3D_LineTest extends V3D_Test {
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 21
-        l = new V3D_Line(P0N1N1, new V3D_Point(P2,P1,P1));
+        l = new V3D_Line(P0N1N1, new V3D_Point(P2, P1, P1));
         expResult = P1P0P0;
-        instance = new V3D_Line(P1P0P0, new V3D_Point(P2,P0,P1));
+        instance = new V3D_Line(P1P0P0, new V3D_Point(P2, P0, P1));
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 22
-        l = new V3D_Line(P0P1N1, new V3D_Point(P2,P3,P1));
-        expResult = new V3D_Point(P1,P2,P0);
-        instance = new V3D_Line(new V3D_Point(P1,P2,P0), new V3D_Point(P2,P2,P1));
+        l = new V3D_Line(P0P1N1, new V3D_Point(P2, P3, P1));
+        expResult = new V3D_Point(P1, P2, P0);
+        instance = new V3D_Line(new V3D_Point(P1, P2, P0), new V3D_Point(P2, P2, P1));
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
     }
@@ -334,29 +335,6 @@ public class V3D_LineTest extends V3D_Test {
         expResult = true;
         result = instance.isIntersectedBy(l);
         assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of getDistance method, of class V3D_Line.
-     */
-    @Test
-    public void testGetDistance() {
-        System.out.println("getDistance");
-        V3D_Line l;
-        int scale;
-        RoundingMode rm;
-        V3D_Line instance;
-        BigDecimal expResult;
-        BigDecimal result;
-        // Test 1
-        l = new V3D_Line(new V3D_Point(P2, P6, N9), new V3D_Vector(P3, P4, N4));
-        scale = 1;
-        rm = RoundingMode.HALF_UP;
-        instance = new V3D_Line(new V3D_Point(N1, N2, P3), new V3D_Vector(P2, N6, P1));
-        expResult = new BigDecimal("4.7");
-        result = instance.getDistance(l, scale, rm);
-        //assertEquals(expResult, result);
-        assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 
     /**
@@ -472,5 +450,93 @@ public class V3D_LineTest extends V3D_Test {
         l = new V3D_Line(P0P0P1, P0P1P1);
         instance = new V3D_Line(P0P0N1, P0P1N1);
         assertFalse(instance.isEnvelopeIntersectedBy(l));
+    }
+
+    /**
+     * Test of apply method, of class V3D_Line.
+     */
+    @Test
+    public void testApply() {
+        System.out.println("apply");
+        V3D_Vector v = e.i;
+        V3D_Line instance = e.xAxis;
+        V3D_Line expResult = e.xAxis;
+        V3D_Line result = instance.apply(v);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = e.yAxis;
+        expResult = new V3D_Line(P1P0P0, P1P1P0);
+        result = instance.apply(v);
+        assertEquals(expResult, result);
+        // Test 3
+        instance = e.zAxis;
+        expResult = new V3D_Line(P1P0P0, P1P0P1);
+        result = instance.apply(v);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getAsMatrix method, of class V3D_Line.
+     */
+    @Test
+    public void testGetAsMatrix() {
+        System.out.println("getAsMatrix");
+        V3D_Line instance = e.xAxis;
+        Math_Matrix_BR expResult = new Math_Matrix_BR(2, 3);
+        BigRational[][] m = expResult.getM();
+        m[0][0] = BigRational.ZERO;
+        m[0][1] = BigRational.ZERO;
+        m[0][2] = BigRational.ZERO;
+        m[1][0] = BigRational.ONE;
+        m[1][1] = BigRational.ZERO;
+        m[1][2] = BigRational.ZERO;
+        Math_Matrix_BR result = instance.getAsMatrix();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Line.
+     */
+    @Test
+    public void testGetDistance_3args_1() {
+        System.out.println("getDistance");
+        V3D_Point p;
+        int scale;
+        RoundingMode rm;
+        V3D_Line instance;
+        BigDecimal expResult;
+        BigDecimal result;
+        // Test 1
+        p = P0P0P0;
+        scale = 1;
+        rm = RoundingMode.HALF_UP;
+        instance = new V3D_Line(P1P0P0, P1P1P0);
+        expResult = BigDecimal.ONE;
+        result = instance.getDistance(p, scale, rm);
+        //assertEquals(expResult, result);
+        assertThat(expResult, Matchers.comparesEqualTo(result));
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Line.
+     */
+    @Test
+    public void testGetDistance_3args_2() {
+        System.out.println("getDistance");
+        V3D_Line l;
+        int scale;
+        RoundingMode rm;
+        V3D_Line instance;
+        BigDecimal expResult;
+        BigDecimal result;
+        // Test 1
+        l = new V3D_Line(new V3D_Point(P2, P6, N9), new V3D_Vector(P3, P4, N4));
+        scale = 1;
+        rm = RoundingMode.HALF_UP;
+        instance = new V3D_Line(new V3D_Point(N1, N2, P3), new V3D_Vector(P2, N6, P1));
+        expResult = new BigDecimal("4.7");
+        result = instance.getDistance(l, scale, rm);
+        //assertEquals(expResult, result);
+        assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 }

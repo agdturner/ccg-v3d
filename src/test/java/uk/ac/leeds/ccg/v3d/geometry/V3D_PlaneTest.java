@@ -143,7 +143,7 @@ public class V3D_PlaneTest extends V3D_Test {
         assertTrue(instance.isOnPlane(l));
         // Test 9
         instance = e.z0;
-        assertFalse(instance.isOnPlane(l));        
+        assertFalse(instance.isOnPlane(l));
     }
 
     /**
@@ -444,7 +444,7 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsParallel_V3D_Line() {
         System.out.println("isParallel");
-        V3D_Line l = e.xAxis; 
+        V3D_Line l = e.xAxis;
         V3D_Plane instance = e.y0;
         assertTrue(instance.isParallel(l));
         // Test 2
@@ -733,7 +733,7 @@ public class V3D_PlaneTest extends V3D_Test {
         // plane
         // 2x + y − 4z = 4
         // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
-        instance = new V3D_Plane(P0P0N1, new V3D_Point(P0, P4, P0), 
+        instance = new V3D_Plane(P0P0N1, new V3D_Point(P0, P4, P0),
                 new V3D_Point(P2, P0, P0));
         // (2, 8, 2)
         expResult = new V3D_Point(P2, P8, P2);
@@ -861,7 +861,7 @@ public class V3D_PlaneTest extends V3D_Test {
         // plane
         // 2x + y − 4z = 4
         // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
-        instance = new V3D_Plane(P0P0N1, new V3D_Point(P0, P4, P0), 
+        instance = new V3D_Plane(P0P0N1, new V3D_Point(P0, P4, P0),
                 new V3D_Point(P2, P0, P0));
         // (2, 8, 2)
         expResult = new V3D_Point(P2, P8, P2);
@@ -902,7 +902,7 @@ public class V3D_PlaneTest extends V3D_Test {
         l = new V3D_LineSegment(new V3D_Point(P0, P0, P0), new V3D_Point(P0, P0, P4));
         result = instance.getIntersection(l, flag);
         assertEquals(expResult, result);
-        
+
     }
 
     /**
@@ -950,9 +950,12 @@ public class V3D_PlaneTest extends V3D_Test {
         assertEquals(expResult, result);
         // Test 2
         V3D_Vector v = e.i;
-         instance = e.x0.apply(v);
-         expResult = BigRational.ONE;
-         result = instance.getDistanceSquared(p);
-        
+        instance = e.x0.apply(v);
+        expResult = BigRational.ONE;
+        result = instance.getDistanceSquared(p);
+        // Test 3
+        instance = e.x0.apply(v);
+        expResult = BigRational.valueOf(4);
+        result = instance.getDistanceSquared(p);
     }
 }
