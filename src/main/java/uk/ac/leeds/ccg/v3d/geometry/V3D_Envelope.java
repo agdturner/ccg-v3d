@@ -27,7 +27,7 @@ import java.util.Objects;
  * <li>a top ({@link #t}) aligned with {@link #zMax}</li>
  * <li>a bottom ({@link #b}) aligned with {@link #zMin}</li>
  * <li>a left ({@link #l}) aligned with {@link #xMin}</li>
- * <li>a right ({@link #ri}) aligned with {@link #xMax}</li>
+ * <li>a right ({@link #r}) aligned with {@link #xMax}</li>
  * <li>a fore ({@link #f}) aligned with {@link #yMin}</li>
  * <li>a aft ({@link #a}) aligned with {@link #yMax}</li>
  * </ul>
@@ -61,7 +61,7 @@ import java.util.Objects;
  *          tlf /_ _ _ _ _ |_ _ _ _ _ _ _ _ _ _ _ /trf       |
  *             |           |                     |           |
  *             |           |                     |           |
- *  - ----  l  |           |                     |           |  ri  ---- + x
+ *  - ----  l  |           |                     |           |  r  ---- + x
  *             |           |                     |           |
  *             |        bla|_ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _|bra
  *             |           /                     |           /

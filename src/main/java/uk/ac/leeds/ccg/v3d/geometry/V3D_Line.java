@@ -65,8 +65,7 @@ public class V3D_Line extends V3D_Geometry {
     public final V3D_Vector v;
 
     /**
-     * {@code p} should not be equal to {@code q} unless the line is a line
-     * segment which is part of an envelope. If unsure the use
+     * {@code p} should not be equal to {@code q}. If unsure use
      * {@link #V3D_Line(V3D_Point, V3D_Point, boolean)}.
      *
      * @param p What {@link #p} is set to.
@@ -80,15 +79,56 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
+     * {@code p} should not be equal to {@code q}. If unsure use
+     * {@link #V3D_Line(V3D_Point, V3D_Point, boolean)}.
+     *
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     * @param check Ignored. It is here to distinguish with 
+     * {@link #V3D_Line(V3D_Point, V3D_Point).
+     * @throws RuntimeException if {@code p.equals(q)}. 
+     */
+    public V3D_Line(V3D_Point p, V3D_Point q, boolean check) {
+        if (p.equals(q)) {
+            throw new RuntimeException("Points " + p + " and " + q 
+                    + " are the same and so do not define a line.");
+        }
+        this.p = p;
+        this.q = q;
+        v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
+                q.z.subtract(p.z));
+    }
+    
+    /**
+     * {@code v} should not be the zero vector <0,0,0>. If unsure use 
+     * {@link #V3D_Line(V3D_Point, V3D_Vector, boolean)}.
      * @param p What {@link #p} is set to.
      * @param v What {@link #v} is set to.
+     * @throws RuntimeException if {@code v.isZeroVector()}. 
      */
     public V3D_Line(V3D_Point p, V3D_Vector v) {
+        if (v.isZeroVector()) {
+            throw new RuntimeException("Vector " + v + " is the zero vector "
+                    + "and so cannot define a line.");
+        }
         this.p = p;
         this.v = v;
         q = p.apply(v);
     }
 
+    /**
+     * Checks to ensure v is not the zero vector <0,0,0>.
+     * @param p What {@link #p} is set to.
+     * @param v What {@link #v} is set to.
+     * @param check Ignored. It is here to distinguish with 
+     * {@link #V3D_Line(V3D_Point, V3D_Vector).
+     */
+    public V3D_Line(V3D_Point p, V3D_Vector v, boolean check) {
+        this.p = p;
+        this.v = v;
+        q = p.apply(v);
+    }
+    
     /**
      * @param l Vector_LineSegment3D
      */
