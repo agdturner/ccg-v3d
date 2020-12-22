@@ -35,7 +35,7 @@ import java.util.Objects;
  * different faces and also gives an abbreviated name of each point that
  * reflects these. This points are not stored explicitly in an instance of the
  * class with these names, but for a normal envelope (which is not a point or a
- * line or a plane), there are these 8 points stored in the rectangles that 
+ * line or a plane), there are these 8 points stored in the rectangles that
  * represent each face. {@code
  *
  *                                                          y
@@ -380,88 +380,18 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return {@code true} if this intersects with {@code e}.
      */
     public boolean isIntersectedBy(V3D_Envelope e) {
-        // Does this contain any corners of e?
-        boolean re = isIntersectedBy(e.getxMin(), e.getyMin(), e.getzMax());
-        if (re) {
-            return re;
-        }
-        re = isIntersectedBy(e.getxMin(), e.getyMax(), e.getzMax());
-        if (re) {
-            return re;
-        }
-        re = isIntersectedBy(e.getxMax(), e.getyMin(), e.getzMax());
-        if (re) {
-            return re;
-        }
-        re = isIntersectedBy(e.getxMax(), e.getyMax(), e.getzMax());
-        if (re) {
-            return re;
-        }
-        re = isIntersectedBy(e.getxMin(), e.getyMin(), e.getzMin());
-        if (re) {
-            return re;
-        }
-        re = isIntersectedBy(e.getxMin(), e.getyMax(), e.getzMin());
-        if (re) {
-            return re;
-        }
-        re = isIntersectedBy(e.getxMax(), e.getyMin(), e.getzMin());
-        if (re) {
-            return re;
-        }
-        re = isIntersectedBy(e.getxMax(), e.getyMax(), e.getzMin());
-        if (re) {
-            return re;
-        }
-        // Does e contain any corners of this
-        re = e.isIntersectedBy(getxMax(), getyMax(), getzMax());
-        if (re) {
-            return re;
-        }
-        re = e.isIntersectedBy(getxMin(), getyMax(), getzMax());
-        if (re) {
-            return re;
-        }
-        re = e.isIntersectedBy(getxMax(), getyMin(), getzMax());
-        if (re) {
-            return re;
-        }
-        re = e.isIntersectedBy(getxMax(), getyMax(), getzMax());
-        if (re) {
-            return re;
-        }
-        /**
-         * Check to see if xMin and xMax are between e.xMin and e.xMax, e.yMin
-         * and e.yMax are between yMin and yMax, and e.zMin and e.zMax are
-         * between zMin and zMax.
-         */
-        if (e.getxMax().compareTo(getxMax()) != 1 && e.getxMax().compareTo(getxMin()) != -1
+        if (e.getxMax().compareTo(getxMin()) != -1
                 && e.getxMin().compareTo(getxMax()) != 1
-                && e.getxMin().compareTo(getxMin()) != -1) {
-            if (getyMin().compareTo(e.getyMax()) != 1 && getyMin().compareTo(e.getyMin()) != -1
-                    && getyMax().compareTo(e.getyMax()) != 1
-                    && getyMax().compareTo(e.getyMin()) != -1) {
-                if (getzMin().compareTo(e.getzMax()) != 1 && getzMin().compareTo(e.getzMin()) != -1
-                        && getzMax().compareTo(e.getzMax()) != 1
-                        && getzMax().compareTo(e.getzMin()) != -1) {
-                    return true;
-                }
-            }
-        }
-        /**
-         * Check to see if e.xMin and e.xMax are between xMax, yMin and yMax are
-         * between e.yMin and e.yMax, and zMin and zMax are between e.zMin and
-         * e.zMax.
-         */
-        if (getxMax().compareTo(e.getxMax()) != 1 && getxMax().compareTo(e.getxMin()) != -1
-                && getxMin().compareTo(e.getxMax()) != 1
-                && getxMin().compareTo(e.getxMin()) != -1) {
-            if (e.getyMin().compareTo(getyMax()) != 1 && e.getyMin().compareTo(getyMin()) != -1
-                    && e.getyMax().compareTo(getyMax()) != 1
-                    && e.getyMax().compareTo(getyMin()) != -1) {
-                if (e.getzMin().compareTo(getzMax()) != 1 && e.getzMin().compareTo(getzMin()) != -1
-                        && e.getzMax().compareTo(getzMax()) != 1
-                        && e.getzMax().compareTo(getzMin()) != -1) {
+                && getxMax().compareTo(e.getxMin()) != -1
+                && getxMin().compareTo(e.getxMax()) != 1) {
+            if (e.getyMax().compareTo(getyMin()) != -1
+                    && e.getyMin().compareTo(getyMax()) != 1
+                    && getyMax().compareTo(e.getyMin()) != -1
+                    && getyMin().compareTo(e.getyMax()) != 1) {
+                if (e.getzMax().compareTo(getzMin()) != -1
+                        && e.getzMin().compareTo(getzMax()) != 1
+                        && getzMax().compareTo(e.getzMin()) != -1
+                        && getzMin().compareTo(e.getzMax()) != 1) {
                     return true;
                 }
             }
@@ -615,6 +545,78 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         return getGeometry((V3D_Point) rli, alip);
                     }
                 }
+            } else if (lli instanceof V3D_LineSegment) {
+                return lli;
+            } else {
+                V3D_Point llip = (V3D_Point) lli;
+                // Check a, r, f, b
+                V3D_Geometry ali = a.getIntersection(li);
+                if (ali == null) {
+                    // Check r, f, b
+                    V3D_Geometry rli = r.getIntersection(li);
+                    if (rli == null) {
+                        // Check f, b
+                        V3D_Geometry fli = f.getIntersection(li);
+                        if (fli == null) {
+                            // Check b
+                            V3D_Geometry bli = b.getIntersection(li);
+                            if (bli == null) {
+                                return getGeometry(llip, (V3D_Point) bli);
+                            } else if (bli instanceof V3D_LineSegment) {
+                                return bli;
+                            } else {
+                                return getGeometry((V3D_Point) bli, llip);
+                            }
+                        } else if (fli instanceof V3D_LineSegment) {
+                            return fli;
+                        } else {
+                            // Check b
+                            V3D_Geometry bli = b.getIntersection(li);
+                            if (bli == null) {
+                                return getGeometry(llip, (V3D_Point) bli);
+                            } else if (bli instanceof V3D_LineSegment) {
+                                return bli;
+                            } else {
+                                return getGeometry((V3D_Point) bli, llip);
+                            }
+                        }
+                    } else if (rli instanceof V3D_LineSegment) {
+                        return rli;
+                    } else {
+                        return getGeometry((V3D_Point) rli, llip);
+                    }
+                } else if (ali instanceof V3D_LineSegment) {
+                    return ali;
+                } else {
+                    // Check for intersection with r, f, b
+                    V3D_Point alip = (V3D_Point) ali;
+                    if (alip.equals(llip)) {
+                        V3D_Geometry rli = r.getIntersection(li);
+                        if (rli == null) {
+                            // Check f, b
+                            V3D_Geometry fli = f.getIntersection(li);
+                            if (fli == null) {
+                                // check for intersection with b
+                                V3D_Geometry bli = b.getIntersection(li);
+                                if (bli == null) {
+                                    return alip;
+                                } else if (bli instanceof V3D_LineSegment) {
+                                    return bli;
+                                } else {
+                                    return getGeometry((V3D_Point) bli, alip);
+                                }
+                            } else if (fli instanceof V3D_LineSegment) {
+                                return fli;
+                            } else {
+                                return getGeometry((V3D_Point) fli, alip);
+                            }
+                        } else {
+                            return getGeometry((V3D_Point) rli, llip);
+                        }
+                    } else {
+                        return getGeometry(alip, llip);
+                    }
+                }
             }
         } else if (tli instanceof V3D_LineSegment) {
             return tli;
@@ -638,10 +640,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         } else if (fli instanceof V3D_LineSegment) {
                             return fli;
                         } else {
-                            // Could have a corner so still need to check b
-                            // so far here there is an intersection with t and f
-                            // and there is no intersection with a, r, and l
-                            // check for intersection with b
+                            // Check b
                             V3D_Geometry bli = b.getIntersection(li);
                             if (bli == null) {
                                 return getGeometry(tlip, (V3D_Point) bli);
@@ -721,7 +720,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 return getGeometry(tlip, (V3D_Point) lli);
             }
         }
-        return null; // Should not get here remove after writing test cases.
     }
 
     private V3D_Geometry getGeometry(V3D_Point p, V3D_Point q) {

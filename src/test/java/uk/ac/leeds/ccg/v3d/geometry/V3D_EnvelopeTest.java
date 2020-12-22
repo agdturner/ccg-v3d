@@ -414,7 +414,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         result = instance.getIntersection(li, true);
         assertEquals(expResult, result);
         // Test 10 Intersection of an edge at a point
-        li = new V3D_LineSegment(P1P1P0, new V3D_Point(P0, P2, P2));
+        li = new V3D_LineSegment(P1P1P0, new V3D_Point(P2, P2, P0));
         expResult = P1P1P0;
         result = instance.getIntersection(li, true);
         assertEquals(expResult, result);

@@ -294,7 +294,8 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * @param l1 Line to intersect with {@code l0}.
      * @return The intersection between {@code l0} and {@code l1}.
      */
-    public static V3D_Geometry getIntersection(V3D_LineSegment l0, V3D_LineSegment l1) {
+    public static V3D_Geometry getIntersection(V3D_LineSegment l0, 
+            V3D_LineSegment l1) {
         V3D_Envelope ren = l0.getEnvelope().getIntersection(l1.getEnvelope());
         if (ren == null) {
             return null;
