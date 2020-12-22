@@ -8,10 +8,10 @@ A Java library for 3D spatial geometry.
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-vector3D</artifactId>
-    <version>0.4</version>
+    <version>0.5</version>
 </dependency>
 ```
-[JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-vector3d/0.4/agdt-java-generic-0.4.jar)
+[JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-vector3d/0.5/agdt-java-generic-0.5.jar)
 
 ## Dependencies
 Developed and tested on Java 15 using Maven.
