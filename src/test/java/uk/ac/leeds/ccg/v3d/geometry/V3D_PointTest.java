@@ -211,6 +211,25 @@ public class V3D_PointTest extends V3D_Test {
         expResult = P5.toBigDecimal();
         result = instance.getDistance(l, scale, rm);
         assertEquals(expResult, result);
+        // Test 3
+        l = new V3D_Line(P0P0P1, P0P0P0);
+        instance = new V3D_Point(P3, P4, P0);
+        expResult = P5.toBigDecimal();
+        result = instance.getDistance(l, scale, rm);
+        assertEquals(expResult, result);
+        // Test 4
+        l = new V3D_Line(P0P0P0, P0P0P1);
+        instance = new V3D_Point(P4, P3, P0);
+        expResult = P5.toBigDecimal();
+        result = instance.getDistance(l, scale, rm);
+        assertEquals(expResult, result);
+        // Test 3
+        l = new V3D_Line(P0P0P0, P0P0P1);
+        instance = new V3D_Point(P4, P3, P10);
+        expResult = P5.toBigDecimal();
+        result = instance.getDistance(l, scale, rm);
+        assertEquals(expResult, result);
+       
     }
 
 }

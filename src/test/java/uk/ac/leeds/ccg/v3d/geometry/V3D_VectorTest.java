@@ -688,7 +688,7 @@ public class V3D_VectorTest extends V3D_Test {
     public void testIsReverse() {
         System.out.println("isReverse");
         V3D_Vector v = e.i;
-        V3D_Vector instance = new V3D_Vector(-1,0,0);
+        V3D_Vector instance = new V3D_Vector(-1, 0, 0);
         assertTrue(instance.isReverse(v));
         // Test 2
     }
@@ -699,10 +699,10 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testIsZeroVector() {
         System.out.println("isZeroVector");
-        V3D_Vector instance = new V3D_Vector(0,0,0);
+        V3D_Vector instance = new V3D_Vector(0, 0, 0);
         assertTrue(instance.isZeroVector());
         // Test 2
-        instance = new V3D_Vector(1,0,0);
+        instance = new V3D_Vector(1, 0, 0);
         assertFalse(instance.isZeroVector());
     }
 
@@ -713,21 +713,21 @@ public class V3D_VectorTest extends V3D_Test {
     public void testMultiply() {
         System.out.println("multiply");
         BigRational s = BigRational.ZERO;
-        V3D_Vector instance = new V3D_Vector(0,0,0);
-        V3D_Vector expResult = new V3D_Vector(0,0,0);
+        V3D_Vector instance = new V3D_Vector(0, 0, 0);
+        V3D_Vector expResult = new V3D_Vector(0, 0, 0);
         V3D_Vector result = instance.multiply(s);
         assertEquals(expResult, result);
         // Test 2
         s = BigRational.ZERO;
-         instance = new V3D_Vector(10,10,10);
-         expResult = new V3D_Vector(0,0,0);
-         result = instance.multiply(s);
+        instance = new V3D_Vector(10, 10, 10);
+        expResult = new V3D_Vector(0, 0, 0);
+        result = instance.multiply(s);
         assertEquals(expResult, result);
         // Test 3
         s = BigRational.TWO;
-         instance = new V3D_Vector(10,10,10);
-         expResult = new V3D_Vector(20,20,20);
-         result = instance.multiply(s);
+        instance = new V3D_Vector(10, 10, 10);
+        expResult = new V3D_Vector(20, 20, 20);
+        result = instance.multiply(s);
         assertEquals(expResult, result);
     }
 
@@ -737,16 +737,16 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testAdd() {
         System.out.println("add");
-        V3D_Vector instance = new V3D_Vector(0,0,0);
-        V3D_Vector v = new V3D_Vector(0,0,0);
-        V3D_Vector expResult = new V3D_Vector(0,0,0);
+        V3D_Vector instance = new V3D_Vector(0, 0, 0);
+        V3D_Vector v = new V3D_Vector(0, 0, 0);
+        V3D_Vector expResult = new V3D_Vector(0, 0, 0);
         V3D_Vector result = instance.add(v);
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_Vector(0,0,0);
-         v = new V3D_Vector(1,1,1);
-         expResult = new V3D_Vector(1,1,1);
-         result = instance.add(v);
+        instance = new V3D_Vector(0, 0, 0);
+        v = new V3D_Vector(1, 1, 1);
+        expResult = new V3D_Vector(1, 1, 1);
+        result = instance.add(v);
         assertEquals(expResult, result);
     }
 
@@ -756,16 +756,17 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testSubtract() {
         System.out.println("subtract");
-        V3D_Vector instance = new V3D_Vector(0,0,0);
-        V3D_Vector v = new V3D_Vector(0,0,0);
-        V3D_Vector expResult = new V3D_Vector(0,0,0);
+        V3D_Vector instance = new V3D_Vector(0, 0, 0);
+        V3D_Vector v = new V3D_Vector(0, 0, 0);
+        V3D_Vector expResult = new V3D_Vector(0, 0, 0);
         V3D_Vector result = instance.add(v);
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_Vector(0,0,0);
-         v = new V3D_Vector(1,1,1);
-         expResult = new V3D_Vector(-1,-1,-1);
-         result = instance.add(v);
+        instance = new V3D_Vector(0, 0, 0);
+        v = new V3D_Vector(1, 1, 1);
+        expResult = new V3D_Vector(-1, -1, -1);
+        result = instance.subtract(v);
+        //assertTrue(expResult.compareTo(result) == 0);
         assertEquals(expResult, result);
     }
 
@@ -775,14 +776,14 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testReverse() {
         System.out.println("reverse");
-        V3D_Vector instance = new V3D_Vector(0,0,0);
-        V3D_Vector expResult = new V3D_Vector(0,0,0);
+        V3D_Vector instance = new V3D_Vector(0, 0, 0);
+        V3D_Vector expResult = new V3D_Vector(0, 0, 0);
         V3D_Vector result = instance.reverse();
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_Vector(1,1,1);
-         expResult = new V3D_Vector(-1,-1,-1);
-         result = instance.reverse();
+        instance = new V3D_Vector(1, 1, 1);
+        expResult = new V3D_Vector(-1, -1, -1);
+        result = instance.reverse();
         assertEquals(expResult, result);
     }
 
@@ -792,20 +793,20 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testGetMagnitudeSquared() {
         System.out.println("getMagnitudeSquared");
-        V3D_Vector instance = new V3D_Vector(0,0,0);
+        V3D_Vector instance = new V3D_Vector(0, 0, 0);
         BigRational expResult = BigRational.ZERO;
         BigRational result = instance.getMagnitudeSquared();
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 2
-        instance = new V3D_Vector(1,1,1);
-         expResult = BigRational.valueOf(3);
-         result = instance.getMagnitudeSquared();
-        assertEquals(expResult, result);
+        instance = new V3D_Vector(1, 1, 1);
+        expResult = BigRational.valueOf(3);
+        result = instance.getMagnitudeSquared();
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 3
-        instance = new V3D_Vector(2,2,2);
-         expResult = BigRational.valueOf(12);
-         result = instance.getMagnitudeSquared();
-        assertEquals(expResult, result);
+        instance = new V3D_Vector(2, 2, 2);
+        expResult = BigRational.valueOf(12);
+        result = instance.getMagnitudeSquared();
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -821,9 +822,9 @@ public class V3D_VectorTest extends V3D_Test {
         V3D_Vector result = instance.getUnitVector(scale, rm);
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_Vector(100,0,0);
-         expResult = e.i;
-         result = instance.getUnitVector(scale, rm);
+        instance = new V3D_Vector(100, 0, 0);
+        expResult = e.i;
+        result = instance.getUnitVector(scale, rm);
         assertEquals(expResult, result);
     }
 

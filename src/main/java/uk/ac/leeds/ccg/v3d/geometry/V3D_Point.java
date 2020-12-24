@@ -20,6 +20,7 @@ import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import ch.obermuhlner.math.big.BigRational;
+import java.math.MathContext;
 
 /**
  * 3D representation of a point. The "*" denotes a point in 3D in the following
@@ -215,12 +216,15 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         if (l.isIntersectedBy(this)) {
             return BigDecimal.ZERO;
         }
-        l.p.getDistance(l.q, scale, rm);
-        V3D_Vector lu = l.v.getUnitVector(scale, rm);
-        V3D_Vector v = new V3D_Vector(this, l.p);
-        BigRational v_dot_lu = v.getDotProduct(lu);
-        V3D_Point p = l.q.apply(lu.multiply(v_dot_lu));
-        return p.getDistance(this, scale, rm);
+        //V3D_Vector cp = new V3D_Vector(this, l.q).getCrossProduct(
+        //        new V3D_Vector(this, l.p));
+        V3D_Vector cp = new V3D_Vector(this, l.p).getCrossProduct(
+                new V3D_Vector(this, l.q));
+//        return Math_BigDecimal.divideRoundIfNecessary(
+//                cp.getMagnitude(scale, rm), l.v.getMagnitude(scale, rm), scale,
+//                rm);
+        return cp.getMagnitude(scale + 1, rm)
+                .divide(l.v.getMagnitude(scale + 1, rm), scale, rm);
     }
 
     /**

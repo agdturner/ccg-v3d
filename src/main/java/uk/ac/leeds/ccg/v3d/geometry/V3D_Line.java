@@ -348,6 +348,7 @@ public class V3D_Line extends V3D_Geometry {
     
     /**
      * https://en.wikipedia.org/wiki/Skew_lines#Nearest_points
+     * https://en.wikipedia.org/wiki/Distance_between_two_parallel_lines
      * @param l A line for which the minimum distance from {@code this} is 
      * returned.
      * @param scale The scale for the precision of the result.
@@ -355,6 +356,13 @@ public class V3D_Line extends V3D_Geometry {
      * @return The minimum distance between this and {@code l}.
      */
     public BigDecimal getDistance(V3D_Line l, int scale, RoundingMode rm) {
+        if (isParallel(l)) {
+            //q.getDistance(l, scale, rm);
+            return p.getDistance(l, scale, rm);
+//            V3D_Vector v2 = new V3D_Vector(l.p, q);
+//            return v2.subtract(v.multiply((v2.getDotProduct(v))
+//                    .divide(v.getMagnitudeSquared()))).getMagnitude(scale, rm);
+        } else {
         /**
          * Calculate the direction vector of the line connecting the closest 
          * points by computing the cross product.
@@ -367,11 +375,10 @@ public class V3D_Line extends V3D_Geometry {
         BigRational m = BigRational.valueOf(cp.getMagnitude(scale, rm));
         // d = cp.(delta)/m
         BigRational dp = cp.getDotProduct(delta);
-        if (dp.compareTo(m) == 0) {
-            return BigDecimal.ONE; // Prevent a divide by zero if both are zero.
-        }
+        // m should only be zero if the lines are parallel.
         BigRational d = dp.divide(m);
         return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), scale, rm);
+        }
     }
 
     /**

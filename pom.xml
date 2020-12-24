@@ -43,12 +43,18 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <agdt-java-generic.version>1.7.2</agdt-java-generic.version>
-        <agdt-java-math.version>1.6</agdt-java-math.version>
+        <agdt-java-math.version>1.7</agdt-java-math.version>
+        <big-math.version>2.3.0</big-math.version>
+        <!--
+        <ojalgo.version>48.0.0</ojalgo.version>
+        -->
+        <ojalgo.version>48.3.2</ojalgo.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.version>3.0.1</maven.version>
         <junit.version>5.7.0</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
+
     </properties>
     
     <dependencies>
@@ -68,14 +74,16 @@
         <dependency>
             <groupId>ch.obermuhlner</groupId>
             <artifactId>big-math</artifactId>
-            <version>2.3.0</version>
+            <version>${big-math.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.ojalgo/ojalgo -->
+        <!--
         <dependency>
             <groupId>org.ojalgo</groupId>
             <artifactId>ojalgo</artifactId>
-            <version>48.0.0</version>
+            <version>${ojalgo.version}</version>
         </dependency>
+        -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
