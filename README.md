@@ -67,7 +67,7 @@ Additionally there is some functionality for calculating lengths, areas and angl
 - Implement area calculations for shapes.
 - Implement [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron) - a truely 3D object.
 
-* The library began development in March 2020 and is actively being developed. 
+* The library began development in March 2020. After something of a [hiatus](https://en.wiktionary.org/wiki/hiatus), I am finding more time to develop it again. 
 
 ## Known uses and issues
 Nothing yet!
