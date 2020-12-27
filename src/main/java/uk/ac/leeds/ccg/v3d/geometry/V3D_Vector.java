@@ -52,6 +52,12 @@ public class V3D_Vector implements Serializable {
     public final BigRational dz;
 
     /**
+     * The zero vector {@code <0,0,0>} where
+     * {@link #dx} = {@link #dy} = {@link #dz} = 0.
+     */
+    public static final V3D_Vector ZERO = new V3D_Vector(0, 0, 0);
+
+    /**
      * For storing the magnitude squared.
      */
     public BigRational magnitudeSquared;
@@ -122,6 +128,7 @@ public class V3D_Vector implements Serializable {
 
     /**
      * Indicates if {@code this} and {@code v} are equal.
+     *
      * @param v The vector to compare with {@code this}.
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
@@ -129,16 +136,17 @@ public class V3D_Vector implements Serializable {
         return dx.compareTo(v.dx) == 0 && dy.compareTo(v.dy) == 0
                 && dz.compareTo(v.dz) == 0;
     }
-    
+
     /**
      * Indicates if {@code this} is the reverse of {@code v}.
+     *
      * @param v The vector to compare with {@code this}.
      * @return {@code true} iff {@code this} is the reverse of {@code v}.
      */
     public boolean isReverse(V3D_Vector v) {
         return equals(v.reverse());
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -348,7 +356,7 @@ public class V3D_Vector implements Serializable {
         BigRational m = BigRational.valueOf(getMagnitude(scale + 2, rm));
         return new V3D_Vector(dx.divide(m), dy.divide(m), dz.divide(m));
     }
-    
+
     /**
      * @return The points that define the plan as a matrix.
      */
