@@ -123,18 +123,16 @@ public class V3D_PointTest extends V3D_Test {
     @Test
     public void testGetDistance() {
         System.out.println("getDistance");
-        int scale = 0;
-        RoundingMode rm = RoundingMode.HALF_UP;
+        int mps = 0;
         V3D_Point instance = P0P0P0;
         BigDecimal expResult = BigDecimal.ZERO;
-        BigDecimal result = instance.getDistance(P0P0P0, scale, rm);
+        BigDecimal result = instance.getDistance(P0P0P0, mps);
         assertEquals(expResult, result);
         // Test 2
-        scale = 1;
-        rm = RoundingMode.HALF_UP;
+        mps = 1;
         instance = new V3D_Point(P3, P4, P0);
         expResult = P5.toBigDecimal();
-        result = instance.getDistance(P0P0P0, scale, rm);
+        result = instance.getDistance(P0P0P0, mps);
         //assertEquals(expResult, result);
         assertThat(expResult, Matchers.comparesEqualTo(result));
     }
@@ -179,16 +177,15 @@ public class V3D_PointTest extends V3D_Test {
     public void testGetDistance_3args_1() {
         System.out.println("getDistance");
         V3D_Point p = P0P0P0;
-        int scale = 0;
-        RoundingMode rm = RoundingMode.HALF_UP;
+        int mps = 0;
         V3D_Point instance = P1P0P0;
         BigDecimal expResult = P1.toBigDecimal();
-        BigDecimal result = instance.getDistance(p, scale, rm);
+        BigDecimal result = instance.getDistance(p, mps);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_Point(P3, P4, P0);
         expResult = P5.toBigDecimal();
-        result = instance.getDistance(p, scale, rm);
+        result = instance.getDistance(p, mps);
         assertEquals(expResult, result);
     }
 
@@ -199,35 +196,34 @@ public class V3D_PointTest extends V3D_Test {
     public void testGetDistance_3args_2() {
         System.out.println("getDistance");
         V3D_Line l = new V3D_Line(P0P0P0,P0P0P1);
-        int scale = 0;
-        RoundingMode rm = RoundingMode.HALF_UP;
+        int mps = 0;
         V3D_Point instance = P0P1P0;
         BigDecimal expResult = P1.toBigDecimal();
-        BigDecimal result = instance.getDistance(l, scale, rm);
+        BigDecimal result = instance.getDistance(l, mps);
         assertEquals(expResult, result);
         // Test 2
         l = new V3D_Line(P0P0P0, P0P0P1);
         instance = new V3D_Point(P3, P4, P0);
         expResult = P5.toBigDecimal();
-        result = instance.getDistance(l, scale, rm);
+        result = instance.getDistance(l, mps);
         assertEquals(expResult, result);
         // Test 3
         l = new V3D_Line(P0P0P1, P0P0P0);
         instance = new V3D_Point(P3, P4, P0);
         expResult = P5.toBigDecimal();
-        result = instance.getDistance(l, scale, rm);
+        result = instance.getDistance(l, mps);
         assertEquals(expResult, result);
         // Test 4
         l = new V3D_Line(P0P0P0, P0P0P1);
         instance = new V3D_Point(P4, P3, P0);
         expResult = P5.toBigDecimal();
-        result = instance.getDistance(l, scale, rm);
+        result = instance.getDistance(l, mps);
         assertEquals(expResult, result);
         // Test 3
         l = new V3D_Line(P0P0P0, P0P0P1);
         instance = new V3D_Point(P4, P3, P10);
         expResult = P5.toBigDecimal();
-        result = instance.getDistance(l, scale, rm);
+        result = instance.getDistance(l, mps);
         assertEquals(expResult, result);
        
     }

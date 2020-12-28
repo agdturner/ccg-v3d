@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Objects;
 
 /**
@@ -68,23 +67,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * Stores the length of the line squared.
      */
     protected final BigRational len2;
-
-    /**
-     * For storing the unit vector. Only if the direction aligns with an axis is
-     * this precise. Otherwise the precision is given by
-     * {@link #unitVectorScale}.
-     */
-    public V3D_Vector unitVector;
-
-    /**
-     * For storing the minimum precision of the {@link #unitVector}.
-     */
-    public int unitVectorMinimumPrecision;
-
-    /**
-     * For storing if the {@link #unitVector} is stored precisely.
-     */
-    public boolean isPreciseUnitVector;
 
     /**
      * @param p What {@link #p} is set to.
@@ -151,58 +133,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     public boolean isPoint() {
         return p.equals(q);
-    }
-
-    /**
-     * For getting the unit vector of this line to {@code scale} precision using
-     * {@code rm} if necessary.
-     *
-          * @param mps The minimum precision scale for the precision of the result.
-* @return The unit vector of this line to {@code scale} precision using
-     * {@code rm} if necessary.
-     */
-    public V3D_Vector getUnitVector(int mps) {
-        if (unitVector == null) {
-            return initUnitVector(mps);
-        } else {
-            if (mps > unitVectorScale) {
-                return initUnitVector(mps);
-            } else {
-                    return new V3D_Vector(unitVector.dx, unitVector.dy,
-                            unitVector.dz);
-            }
-        }
-    }
-
-    /**
-     * For initialising and returning the unit vector of this line to
-     * {@code scale} precision using {@code rm} if necessary.
-     *
-     * @param mps The minimum precision scale for the precision of the result.
-     * @return The unit vector of this line to {@code scale} precision using
-     * {@code rm} if necessary.
-     */
-    public V3D_Vector initUnitVector(int mps) {
-        if (unitVector == null) {
-            BigRational distance = BigRational.valueOf(getLength(mps + 2));
-            unitVector = new V3D_Vector(v.dx.divide(distance),
-                    v.dy.divide(distance), v.dz.divide(distance));
-        } else {
-            if (isPreciseUnitVector) {
-                return unitVector;
-            } else {
-                if (unitVectorMinimumPrecision < mps) {
-
-                }
-            }
-        }
-    }
-
-    private V3D_Vector initUnitVector0(int mps) {
-        BigRational distance = BigRational.valueOf(getLength(mps + 1));
-        unitVector = new V3D_Vector(v.dx.divide(distance),
-                v.dy.divide(distance), v.dz.divide(distance));
-        return unitVector;
     }
 
     /**

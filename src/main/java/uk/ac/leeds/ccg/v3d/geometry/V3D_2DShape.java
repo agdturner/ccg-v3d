@@ -15,8 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigRational;
-import java.math.RoundingMode;
+import java.math.BigDecimal;
 
 /**
  * V3D_FiniteGeometry
@@ -28,17 +27,15 @@ public interface V3D_2DShape extends V3D_FiniteGeometry {
 
     /**
      * For calculating and returning the perimeter.
-     * @param precision The precision the result is rounded to if necessary.
-     * @param rm The RoundingMode used to round the result if necessary.
+     * @param mps The minimum precision scale of the result.
      * @return The Perimeter.
      */
-    public abstract BigRational getPerimeter(int precision, RoundingMode rm);
+    public abstract BigDecimal getPerimeter(int mps);
 
     /**
      * For calculating and returning the area.
-     * @param precision The precision the result is rounded to if necessary.
-     * @param rm The RoundingMode used to round the result if necessary.
+     * @param mps The minimum precision scale of the result.
      * @return The area.
      */
-    public abstract BigRational getArea(int precision, RoundingMode rm);
+    public abstract BigDecimal getArea(int mps);
 }

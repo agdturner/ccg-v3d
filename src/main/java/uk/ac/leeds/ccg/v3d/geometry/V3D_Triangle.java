@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
@@ -168,16 +167,24 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     }
 
     /**
-     * @param scale The scale.
-     * @param rm RoundingMode.
+     * @param mps The minimum precision scale of the result.
      * @return The area of the triangle (rounded).
      */
-    public BigDecimal getArea(int scale, RoundingMode rm) {
-        return Math_BigDecimal.divideRoundIfNecessary(
-                pq.getCrossProduct(qr).getMagnitude(scale + 1, rm),
-                BigDecimal.valueOf(2), scale, rm);
+    public BigDecimal getArea(int mps) {
+        return Math_BigDecimal.divideNoRounding(
+                pq.getCrossProduct(qr).getMagnitude(mps + 1),
+                BigDecimal.valueOf(2));
     }
 
+    /**
+     * @param mps The minimum precision scale of the result.
+     */
+    @Override
+    public BigDecimal getPerimeter(int mps) {
+        int p = mps + 1;
+        return lpq.getLength(p).add(lqr.getLength(p)).add(lrp.getLength(p));
+    }
+    
     /**
      * @param l The line to intersect with.
      * @return A point or line segment.

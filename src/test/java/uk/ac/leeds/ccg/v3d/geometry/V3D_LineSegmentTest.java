@@ -82,11 +82,11 @@ public class V3D_LineSegmentTest extends V3D_Test {
     @Test
     public void testGetLength() {
         System.out.println("getLength");
-        int scale = 2;
-        RoundingMode rm = RoundingMode.HALF_EVEN;
+        int mps = 2;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
-        BigDecimal expResult = Math_BigDecimal.sqrt(P2.toBigDecimal(), scale, rm);
-        BigDecimal result = instance.getLength(scale, rm);
+        BigDecimal expResult = Math_BigDecimal.sqrt(P2.toBigDecimal(), mps, 
+                RoundingMode.HALF_UP);
+        BigDecimal result = instance.getLength(mps);
         assertEquals(expResult, result);
     }
 
@@ -128,60 +128,6 @@ public class V3D_LineSegmentTest extends V3D_Test {
     public void testHashCode() {
         System.out.println("hashCode");
         assertTrue(true); // Non test
-    }
-
-    /**
-     * Test of getUnitVector method, of class V3D_LineSegment.
-     */
-    @Test
-    public void testGetUnitVector() {
-        System.out.println("getUnitVector");
-        int scale = 1;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
-        BigRational magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(
-                P2.toBigDecimal(), scale + 2, rm));
-        V3D_Vector expResult = new V3D_Vector(instance.v.dx.divide(magnitude),
-                instance.v.dy.divide(magnitude),
-                instance.v.dz.divide(magnitude));
-        V3D_Vector result = instance.getUnitVector(scale, rm);
-        assertEquals(expResult, result);
-        // Test 2
-        instance = new V3D_LineSegment(P0P0P0, P1P1P1);
-        magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(P3.toBigDecimal(), scale + 2, rm));
-        expResult = new V3D_Vector(instance.v.dx.divide(magnitude),
-                instance.v.dy.divide(magnitude),
-                instance.v.dz.divide(magnitude));
-        result = instance.getUnitVector(scale, rm);
-        assertEquals(expResult, result);
-
-    }
-
-    /**
-     * Test of initUnitVector method, of class V3D_LineSegment.
-     */
-    @Test
-    public void testInitUnitVector() {
-        System.out.println("initUnitVector");
-        int scale = 1;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
-        BigRational magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(
-                P2.toBigDecimal(), scale + 2, rm));
-        V3D_Vector expResult = new V3D_Vector(instance.v.dx.divide(magnitude),
-                instance.v.dy.divide(magnitude),
-                instance.v.dz.divide(magnitude));
-        V3D_Vector result = instance.initUnitVector(scale, rm);
-        assertEquals(expResult, result);
-        // Test 2
-        instance = new V3D_LineSegment(P0P0P0, P1P1P1);
-        magnitude = BigRational.valueOf(Math_BigDecimal.sqrt(P3.toBigDecimal(),
-                scale + 2, rm));
-        expResult = new V3D_Vector(instance.v.dx.divide(magnitude),
-                instance.v.dy.divide(magnitude),
-                instance.v.dz.divide(magnitude));
-        result = instance.initUnitVector(scale, rm);
-        assertEquals(expResult, result);
     }
 
     /**

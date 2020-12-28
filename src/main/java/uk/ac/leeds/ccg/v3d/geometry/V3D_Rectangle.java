@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * For representing and processing rectangles in 3D. A rectangle has a non-zero
@@ -367,14 +366,13 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     }
 
     @Override
-    public BigRational getPerimeter(int mps) {
-        int p1 = mps + 1;
-        this.l.getLength(p1).add(BigDecimal.TEN)
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public BigDecimal getPerimeter(int mps) {
+        int p = mps + 1;
+        return l.getLength(p).add(t.getLength(p)).multiply(BigDecimal.valueOf(2));
     }
 
     @Override
-    public BigRational getArea(int precision, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public BigDecimal getArea(int mps) {
+        return l.v.m.multiply(t.v.m).toBigDecimal();
     }
 }

@@ -109,11 +109,10 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetArea() {
         System.out.println("getArea");
-        int scale = 1;
-        RoundingMode rm = RoundingMode.HALF_UP;
+        int mps = 1;
         V3D_Triangle instance = new V3D_Triangle(P0P0P0, P0P1P0, P1P0P0);
         BigDecimal expResult = new BigDecimal("0.5");
-        BigDecimal result = instance.getArea(scale, rm);
+        BigDecimal result = instance.getArea(mps);
         assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 

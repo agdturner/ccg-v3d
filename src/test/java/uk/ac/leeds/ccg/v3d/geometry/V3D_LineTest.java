@@ -19,7 +19,6 @@ import uk.ac.leeds.ccg.v3d.test.V3D_Test;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -502,18 +501,16 @@ public class V3D_LineTest extends V3D_Test {
     public void testGetDistance_3args_1() {
         System.out.println("getDistance");
         V3D_Point p;
-        int scale;
-        RoundingMode rm;
+        int mps;
         V3D_Line instance;
         BigDecimal expResult;
         BigDecimal result;
         // Test 1
         p = P0P0P0;
-        scale = 1;
-        rm = RoundingMode.HALF_UP;
+        mps = 1;
         instance = new V3D_Line(P1P0P0, P1P1P0);
         expResult = BigDecimal.ONE;
-        result = instance.getDistance(p, scale, rm);
+        result = instance.getDistance(p, mps);
         assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 
@@ -524,26 +521,23 @@ public class V3D_LineTest extends V3D_Test {
     public void testGetDistance_3args_2() {
         System.out.println("getDistance");
         V3D_Line l;
-        int scale;
-        RoundingMode rm;
+        int mps;
         V3D_Line instance;
         BigDecimal expResult;
         BigDecimal result;
         // Test 1
         l = new V3D_Line(new V3D_Point(P2, P6, N9), new V3D_Vector(P3, P4, N4));
-        scale = 1;
-        rm = RoundingMode.HALF_UP;
+        mps = 1;
         instance = new V3D_Line(new V3D_Point(N1, N2, P3), new V3D_Vector(P2, N6, P1));
         expResult = new BigDecimal("4.7");
-        result = instance.getDistance(l, scale, rm);
+        result = instance.getDistance(l, mps);
         assertThat(expResult, Matchers.comparesEqualTo(result));
         // Test 2
         l = new V3D_Line(P0P0P0, P1P1P0);
-        scale = 4;
-        rm = RoundingMode.HALF_UP;
+        mps = 4;
         instance = new V3D_Line(P1N1P0, new V3D_Point(P2, P0, P0));
-        expResult = new BigDecimal("2").sqrt(new MathContext(scale+1, rm));
-        result = instance.getDistance(l, scale, rm);
+        expResult = BigDecimal.valueOf(2).sqrt(new MathContext(mps+1));
+        result = instance.getDistance(l, mps);
         assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 }
