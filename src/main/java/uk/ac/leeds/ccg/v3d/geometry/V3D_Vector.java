@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
@@ -58,14 +59,9 @@ public class V3D_Vector implements Serializable {
     public static final V3D_Vector ZERO = new V3D_Vector(0, 0, 0);
 
     /**
-     * For storing the magnitude squared.
+     * For storing the magnitude squared and getting the magnitude.
      */
-    public BigRational magnitudeSquared;
-
-    /**
-     * For storing the magnitude.
-     */
-    public BigDecimal magnitude;
+    public final Math_BigRationalSqrt m;
 
     /**
      * @param dx What {@link #dx} is set to.
@@ -76,6 +72,8 @@ public class V3D_Vector implements Serializable {
         this.dx = dx;
         this.dy = dy;
         this.dz = dz;
+        m = new Math_BigRationalSqrt(dx.multiply(dx).add(dy.multiply(dy))
+                .add(dz.multiply(dz)));
     }
 
     /**
@@ -84,9 +82,8 @@ public class V3D_Vector implements Serializable {
      * @param dz What {@link #dz} is set to.
      */
     public V3D_Vector(long dx, long dy, long dz) {
-        this.dx = BigRational.valueOf(dx);
-        this.dy = BigRational.valueOf(dy);
-        this.dz = BigRational.valueOf(dz);
+        this(BigRational.valueOf(dx), BigRational.valueOf(dy),
+                BigRational.valueOf(dz));
     }
 
     /**
@@ -95,9 +92,7 @@ public class V3D_Vector implements Serializable {
      * @param p the point to which the vector starting at the origin goes.
      */
     public V3D_Vector(V3D_Point p) {
-        this.dx = p.x;
-        this.dy = p.y;
-        this.dz = p.z;
+        this(p.x, p.y, p.z);
     }
 
     /**
@@ -107,15 +102,13 @@ public class V3D_Vector implements Serializable {
      * @param q the point where the vector ends.
      */
     public V3D_Vector(V3D_Point p, V3D_Point q) {
-        this.dx = q.x.subtract(p.x);
-        this.dy = q.y.subtract(p.y);
-        this.dz = q.z.subtract(p.z);
+        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
     }
 
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "(dx=" + dx + ", dy=" + dy
-                + ", dz=" + dz + ")";
+                + ", dz=" + dz + ", m=" + m + ")";
     }
 
     @Override
@@ -218,46 +211,20 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * If {@code null}, then initialise {@link #magnitudeSquared} and return it.
-     *
-     * @return {@link #magnitudeSquared} after initialising it if it is
-     * {@code null}.
+     * @return {@link #m.x}
      */
     public BigRational getMagnitudeSquared() {
-        if (magnitudeSquared == null) {
-            magnitudeSquared = dx.multiply(dx).add(dy.multiply(dy))
-                    .add(dz.multiply(dz));
-        }
-        return magnitudeSquared;
+        return m.x;
     }
-
+            
     /**
-     * Get the magnitude of the vector at the given scale.
+     * Get the m of the vector at the given scale.
      *
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@link #magnitude} initialised with {@code scale} and {@code rm}.
+     * @param mps The minimum precision scale of the result.
+     * @return {@link #m} initialised with {@code scale} and {@code rm}.
      */
-    public BigDecimal getMagnitude(int scale, RoundingMode rm) {
-        if (magnitude == null) {
-            return initMagnitude(scale, rm);
-        }
-        if (magnitude.scale() > scale) {
-            return magnitude.setScale(scale);
-        } else {
-            return initMagnitude(scale, rm);
-        }
-    }
-
-    /**
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@link #magnitude} initialised with {@code scale} and {@code rm}.
-     */
-    protected BigDecimal initMagnitude(int scale, RoundingMode rm) {
-        magnitude = Math_BigDecimal.sqrt(getMagnitudeSquared().toBigDecimal(),
-                scale, rm);
-        return magnitude;
+    public BigDecimal getMagnitude(int mps) {
+        return m.getSqrtApprox(mps);
     }
 
     /**
@@ -346,15 +313,14 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * Scales the vector by the magnitude so that it has length 1
+     * Scales the vector by the m so that it has length 1
      *
      * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
-     * @return this scaled by the magnitude.
+     * @return this scaled by the m.
      */
-    public V3D_Vector getUnitVector(int scale, RoundingMode rm) {
-        BigRational m = BigRational.valueOf(getMagnitude(scale + 2, rm));
-        return new V3D_Vector(dx.divide(m), dy.divide(m), dz.divide(m));
+    public V3D_Vector getUnitVector(int scale) {
+        BigRational d = BigRational.valueOf(m.getSqrtApprox(scale + 2));
+        return new V3D_Vector(dx.divide(d), dy.divide(d), dz.divide(d));
     }
 
     /**

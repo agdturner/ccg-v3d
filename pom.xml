@@ -47,8 +47,8 @@
         <big-math.version>2.3.0</big-math.version>
         <!--
         <ojalgo.version>48.0.0</ojalgo.version>
-        -->
         <ojalgo.version>48.3.2</ojalgo.version>
+        -->
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.version>3.0.1</maven.version>

@@ -321,11 +321,10 @@ public class V3D_Line extends V3D_Geometry {
      * https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
      * @param p A point for which the minimum distance from {@code this} is 
      * returned.
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
+     * @param mps The minimum precision scale for the precision of the result.
      * @return The minimum distance between this and {@code p}.
      */
-    public BigDecimal getDistance(V3D_Point p, int scale, RoundingMode rm) {
+    public BigDecimal getDistance(V3D_Point p, int mps) {
         /**
          * Calculate the direction vector of the line connecting the closest 
          * points by computing the cross product.
@@ -336,14 +335,15 @@ public class V3D_Line extends V3D_Geometry {
          * Calculate the delta from {@link #p} and l.p
          */
         V3D_Vector delta = new V3D_Vector(this.p).subtract(pv);
-        BigRational m = BigRational.valueOf(cp.getMagnitude(scale, rm));
+        BigRational m = BigRational.valueOf(cp.getMagnitude(mps));
         // d = cp.(delta)/m
         BigRational dp = cp.getDotProduct(delta);
         if (dp.compareTo(m) == 0) {
             return BigDecimal.ONE; // Prevent a divide by zero if both are zero.
         }
         BigRational d = dp.divide(m);
-        return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), scale, rm);
+        return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), mps,
+                RoundingMode.HALF_UP);
     }
     
     /**
@@ -351,14 +351,13 @@ public class V3D_Line extends V3D_Geometry {
      * https://en.wikipedia.org/wiki/Distance_between_two_parallel_lines
      * @param l A line for which the minimum distance from {@code this} is 
      * returned.
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
-     * @return The minimum distance between this and {@code l}.
+     * @param mps The minimum precision scale for the precision of the result.
+    * @return The minimum distance between this and {@code l}.
      */
-    public BigDecimal getDistance(V3D_Line l, int scale, RoundingMode rm) {
+    public BigDecimal getDistance(V3D_Line l, int mps) {
         if (isParallel(l)) {
             //q.getDistance(l, scale, rm);
-            return p.getDistance(l, scale, rm);
+            return p.getDistance(l, mps);
 //            V3D_Vector v2 = new V3D_Vector(l.p, q);
 //            return v2.subtract(v.multiply((v2.getDotProduct(v))
 //                    .divide(v.getMagnitudeSquared()))).getMagnitude(scale, rm);
@@ -372,12 +371,13 @@ public class V3D_Line extends V3D_Geometry {
          * Calculate the delta from {@link #p} and l.p
          */
         V3D_Vector delta = new V3D_Vector(p).subtract(new V3D_Vector(l.p));
-        BigRational m = BigRational.valueOf(cp.getMagnitude(scale, rm));
+        BigRational m = BigRational.valueOf(cp.getMagnitude(mps));
         // d = cp.(delta)/m
         BigRational dp = cp.getDotProduct(delta);
         // m should only be zero if the lines are parallel.
         BigRational d = dp.divide(m);
-        return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), scale, rm);
+        return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), mps, 
+                RoundingMode.HALF_UP);
         }
     }
 

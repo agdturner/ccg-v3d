@@ -16,6 +16,8 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * For representing and processing rectangles in 3D. A rectangle has a non-zero
@@ -40,7 +42,7 @@ import ch.obermuhlner.math.big.BigRational;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
+public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     private static final long serialVersionUID = 1L;
 
@@ -362,5 +364,17 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_FiniteGeometry {
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l) {
         return getEnvelope().isIntersectedBy(l);
+    }
+
+    @Override
+    public BigRational getPerimeter(int mps) {
+        int p1 = mps + 1;
+        this.l.getLength(p1).add(BigDecimal.TEN)
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigRational getArea(int precision, RoundingMode rm) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -42,7 +42,7 @@ import uk.ac.leeds.ccg.math.Math_BigDecimal;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class V3D_Triangle extends V3D_Plane implements V3D_FiniteGeometry {
+public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
 
     private static final long serialVersionUID = 1L;
 

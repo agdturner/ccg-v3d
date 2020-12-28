@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
@@ -177,17 +178,19 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * Get the distance between this and {@code p}.
      *
      * @param p A point.
-     * @param scale The scale. A positive value gives the number of decimal
-     * places. A negative value rounds to the left of the decimal point.
-     * @param rm The RoundingMode for the calculation.
+          * @param mps The minimum precision scale for the precision of the result.
+A positive 
+     * value gives the number of decimal places. A negative value gives 
+     * precision left of the decimal point. If rounding happens, then this uses 
+     * {@link RoundingMode.HALF_UP}.
      * @return The distance from {@code p} to this.
      */
-    public BigDecimal getDistance(V3D_Point p, int scale, RoundingMode rm) {
+    public BigDecimal getDistance(V3D_Point p, int mps) {
         if (this.equals(p)) {
             return BigDecimal.ZERO;
         }
-        return Math_BigDecimal.sqrt(getDistanceSquared(p).toBigDecimal(), scale,
-                rm);
+        return Math_BigDecimal.sqrt(getDistanceSquared(p).toBigDecimal(),
+                mps, RoundingMode.HALF_UP);
     }
 
     /**
@@ -207,12 +210,12 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * Get the distance between this and {@code l}.
      *
      * @param l A line.
-     * @param scale The scale. A positive value gives the number of decimal
+          * @param mps The minimum precision scale for the precision of the result.
+ A positive value gives the number of decimal
      * places. A negative value rounds to the left of the decimal point.
-     * @param rm The RoundingMode for the calculation.
      * @return The distance from {@code p} to this.
      */
-    public BigDecimal getDistance(V3D_Line l, int scale, RoundingMode rm) {
+    public BigDecimal getDistance(V3D_Line l, int mps) {
         if (l.isIntersectedBy(this)) {
             return BigDecimal.ZERO;
         }
@@ -223,8 +226,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 //        return Math_BigDecimal.divideRoundIfNecessary(
 //                cp.getMagnitude(scale, rm), l.v.getMagnitude(scale, rm), scale,
 //                rm);
-        return cp.getMagnitude(scale + 1, rm)
-                .divide(l.v.getMagnitude(scale + 1, rm), scale, rm);
+        return cp.getMagnitude(mps + 1).divide(l.v.getMagnitude(mps + 1), mps, 
+                RoundingMode.HALF_UP);
     }
 
     /**

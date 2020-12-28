@@ -65,6 +65,11 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     protected V3D_Envelope en;
 
     /**
+     * Stores the length of the line squared.
+     */
+    protected final BigRational len2;
+
+    /**
      * For storing the unit vector. Only if the direction aligns with an axis is
      * this precise. Otherwise the precision is given by
      * {@link #unitVectorScale}.
@@ -72,15 +77,14 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     public V3D_Vector unitVector;
 
     /**
-     * For storing the scale at which the {@link #unitVector} is precise given
-     * {@link #unitVectorRoundingMode}.
+     * For storing the minimum precision of the {@link #unitVector}.
      */
-    public int unitVectorScale;
+    public int unitVectorMinimumPrecision;
 
     /**
-     * Used for calculating the {@link #unitVector} if necessary.
+     * For storing if the {@link #unitVector} is stored precisely.
      */
-    public RoundingMode unitVectorRoundingMode;
+    public boolean isPreciseUnitVector;
 
     /**
      * @param p What {@link #p} is set to.
@@ -88,6 +92,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     public V3D_LineSegment(V3D_Point p, V3D_Point q) {
         super(p, q);
+        len2 = p.getDistanceSquared(q);
     }
 
     /**
@@ -95,6 +100,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     public V3D_LineSegment(V3D_Line l) {
         super(l);
+        len2 = p.getDistanceSquared(q);
     }
 
     @Override
@@ -151,29 +157,19 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * For getting the unit vector of this line to {@code scale} precision using
      * {@code rm} if necessary.
      *
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
-     * @return The unit vector of this line to {@code scale} precision using
+          * @param mps The minimum precision scale for the precision of the result.
+* @return The unit vector of this line to {@code scale} precision using
      * {@code rm} if necessary.
      */
-    public V3D_Vector getUnitVector(int scale, RoundingMode rm) {
+    public V3D_Vector getUnitVector(int mps) {
         if (unitVector == null) {
-            return initUnitVector(scale, rm);
+            return initUnitVector(mps);
         } else {
-            if (scale > unitVectorScale) {
-                return initUnitVector(scale, rm);
+            if (mps > unitVectorScale) {
+                return initUnitVector(mps);
             } else {
-                if (unitVectorRoundingMode.equals(rm)) {
                     return new V3D_Vector(unitVector.dx, unitVector.dy,
                             unitVector.dz);
-                } else {
-                    if (scale < unitVectorScale) {
-                        return new V3D_Vector(unitVector.dx, unitVector.dy,
-                                unitVector.dz);
-                    } else {
-                        return initUnitVector(scale, rm);
-                    }
-                }
             }
         }
     }
@@ -182,17 +178,30 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * For initialising and returning the unit vector of this line to
      * {@code scale} precision using {@code rm} if necessary.
      *
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
+     * @param mps The minimum precision scale for the precision of the result.
      * @return The unit vector of this line to {@code scale} precision using
      * {@code rm} if necessary.
      */
-    public V3D_Vector initUnitVector(int scale, RoundingMode rm) {
+    public V3D_Vector initUnitVector(int mps) {
         if (unitVector == null) {
-            BigRational distance = BigRational.valueOf(getLength(scale + 2, rm));
+            BigRational distance = BigRational.valueOf(getLength(mps + 2));
             unitVector = new V3D_Vector(v.dx.divide(distance),
                     v.dy.divide(distance), v.dz.divide(distance));
+        } else {
+            if (isPreciseUnitVector) {
+                return unitVector;
+            } else {
+                if (unitVectorMinimumPrecision < mps) {
+
+                }
+            }
         }
+    }
+
+    private V3D_Vector initUnitVector0(int mps) {
+        BigRational distance = BigRational.valueOf(getLength(mps + 1));
+        unitVector = new V3D_Vector(v.dx.divide(distance),
+                v.dy.divide(distance), v.dz.divide(distance));
         return unitVector;
     }
 
@@ -207,12 +216,11 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param scale The scale for the precision of the result.
-     * @param rm The RoundingMode for any rounding.
+     * @param mps The minimum precision scale for the precision of the result.
      * @return The length of this as a BigDecimal
      */
-    public BigDecimal getLength(int scale, RoundingMode rm) {
-        return p.getDistance(q, scale, rm);
+    public BigDecimal getLength(int mps) {
+        return p.getDistance(q, mps);
     }
 
     /**
