@@ -171,8 +171,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      * @return The area of the triangle (rounded).
      */
     public BigDecimal getArea(int mps) {
-        return Math_BigDecimal.divideNoRounding(
-                pq.getCrossProduct(qr).getMagnitude(mps + 1),
+        return pq.getCrossProduct(qr).getMagnitude(mps + 1).divide(
                 BigDecimal.valueOf(2));
     }
 
