@@ -25,7 +25,7 @@ import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 /**
  * 3D representation of an infinite length line. The line passes through the
  * point {@link #p} and is travelling in the direction {@link #v} through point
- * {@link # q}. The "*" denotes a point in 3D and the line is shown with a line
+ * {@link #q}. The "*" denotes a point in 3D and the line is shown with a line
  * of "e" symbols in the following depiction: {@code
  *                                       y                e
  *                          z           +                e

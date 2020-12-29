@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * 3D representation of a finite length line (a line segment). The line begins
  * at the point {@link #p}, travels in the direction {@link #v} and ends at the
- * point {@link # q}. The "*" denotes a point in 3D and the line is shown with a
+ * point {@link #q}. The "*" denotes a point in 3D and the line is shown with a
  * line of "e" symbols in the following depiction: {@code
  *                                       y
  *                          z           +
