@@ -37,7 +37,6 @@ Developed and tested on [Java Development Kit, version 15](https://openjdk.java.
 - [agdt-java-generic](https://github.com/agdturner/agdt-java-generic)
 - [agdt-java-math](https://github.com/agdturner/agdt-java-math)
 - [BigMath](https://github.com/eobermuhlner/big-math)
-- There are third party dependencies for testing.
 - Please see the [POM](https://github.com/agdturner/agdt-java-vector3d/blob/master/pom.xml) for details.
 
 ## Details
