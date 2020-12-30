@@ -72,7 +72,8 @@ public class V3D_LineSegmentTest extends V3D_Test {
         V3D_LineSegment instance = new V3D_LineSegment(start, end);
         String expResult = "V3D_LineSegment(p=V3D_Point(x=0, y=0, z=0), "
                 + "q=V3D_Point(x=1, y=1, z=1), v=V3D_Vector(dx=1, dy=1, dz=1, "
-                + "m=Math_BigRationalSqrt(x=3, sqrtx=null)))";
+                + "m=Math_BigRationalSqrt(x=3, sqrtx=null, sqrtxapprox=null, "
+                + "minimumPrecisionScale=0)))";
         String result = instance.toString();
         assertEquals(expResult, result);
     }

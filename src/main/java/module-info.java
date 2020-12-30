@@ -27,13 +27,12 @@ module uk.ac.leeds.ccg.vector3D {
     requires ch.obermuhlner.math.big;
 
     /**
-     * The agdt-java-generic library is used for generic functionality.
+     * The agdt-java-generic library is used for some general functionality.
      */
     requires transitive uk.ac.leeds.ccg.generic;
 
     /**
-     * The agdt-java-math library is used for some computing with numbers stored
-     * as {@link java.math.BigDecimal}.
+     * The agdt-java-math library is used for some mathematics.
      */
     requires transitive uk.ac.leeds.ccg.math;
 

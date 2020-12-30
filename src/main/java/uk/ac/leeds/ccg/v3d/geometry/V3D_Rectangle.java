@@ -373,6 +373,6 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     @Override
     public BigDecimal getArea(int mps) {
-        return l.v.m.multiply(t.v.m).toBigDecimal();
+        return l.v.m.multiply(t.v.m).toBigDecimal(mps);
     }
 }

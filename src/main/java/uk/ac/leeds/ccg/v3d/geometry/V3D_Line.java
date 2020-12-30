@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 
 /**
@@ -335,7 +336,12 @@ public class V3D_Line extends V3D_Geometry {
          * Calculate the delta from {@link #p} and l.p
          */
         V3D_Vector delta = new V3D_Vector(this.p).subtract(pv);
-        BigRational m = BigRational.valueOf(cp.getMagnitude(mps));
+        BigRational m;
+        if (cp.m.sqrtx != null) {
+            m = cp.m.sqrtx;
+        } else {
+            m = BigRational.valueOf(cp.getMagnitude(mps + 2));
+        }
         // d = cp.(delta)/m
         BigRational dp = cp.getDotProduct(delta);
         if (dp.compareTo(m) == 0) {
@@ -344,6 +350,36 @@ public class V3D_Line extends V3D_Geometry {
         BigRational d = dp.divide(m);
         return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), mps,
                 RoundingMode.HALF_UP);
+    }
+    
+    /**
+     * https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+     * @param p A point for which the minimum distance from {@code this} is 
+     * returned.
+     * @return The minimum distance between this and {@code p}.
+     */
+    public BigRational getDistance(V3D_Point p) {
+        /**
+         * Calculate the direction vector of the line connecting the closest 
+         * points by computing the cross product.
+         */
+        V3D_Vector pv = new V3D_Vector(p);
+        V3D_Vector cp = v.getCrossProduct(pv);
+        /**
+         * Calculate the delta from {@link #p} and l.p
+         */
+        V3D_Vector delta = new V3D_Vector(this.p).subtract(pv);
+        BigRational m;
+        if (cp.m.sqrtx == null) {
+            return null;
+        } else {
+            m = cp.m.sqrtx;
+        }
+        BigRational dp = cp.getDotProduct(delta);
+        if (dp.compareTo(m) == 0) {
+            return BigRational.ONE; // Prevent a divide by zero if both are zero.
+        }
+        return dp.divide(m);
     }
     
     /**

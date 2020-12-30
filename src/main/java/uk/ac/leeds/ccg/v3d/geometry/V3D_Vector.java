@@ -18,9 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Objects;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -211,20 +209,20 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @return {@link #m.x}
+     * @return The magnitude of the vector squared.
      */
     public BigRational getMagnitudeSquared() {
         return m.x;
     }
             
     /**
-     * Get the m of the vector at the given scale.
+     * Get the magnitude of the vector at the minimum precision scale {@code mps}.
      *
      * @param mps The minimum precision scale of the result.
      * @return {@link #m} initialised with {@code scale} and {@code rm}.
      */
     public BigDecimal getMagnitude(int mps) {
-        return m.getSqrtApprox(mps);
+        return m.toBigDecimal(mps);
     }
 
     /**
@@ -315,12 +313,16 @@ public class V3D_Vector implements Serializable {
     /**
      * Scales the vector by the m so that it has length 1
      *
-     * @param scale The scale for the precision of the result.
+     * @param mps The minimum precision scale of the result.
      * @return this scaled by the m.
      */
-    public V3D_Vector getUnitVector(int scale) {
-        BigRational d = BigRational.valueOf(m.getSqrtApprox(scale + 2));
-        return new V3D_Vector(dx.divide(d), dy.divide(d), dz.divide(d));
+    public V3D_Vector getUnitVector(int mps) {
+        if (m.sqrtx == null) {
+            BigRational d = BigRational.valueOf(m.toBigDecimal(mps));
+            return new V3D_Vector(dx.divide(m.sqrtx), dy.divide(d), dz.divide(d));
+        } else {
+            return new V3D_Vector(dx.divide(m.sqrtx), dy.divide(m.sqrtx), dz.divide(m.sqrtx));
+        }
     }
 
     /**

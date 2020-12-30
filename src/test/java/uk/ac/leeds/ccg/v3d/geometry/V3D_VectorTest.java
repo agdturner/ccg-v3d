@@ -71,7 +71,8 @@ public class V3D_VectorTest extends V3D_Test {
         System.out.println("toString");
         V3D_Vector instance = new V3D_Vector(P0P0P0);
         String expResult = "V3D_Vector(dx=0, dy=0, dz=0, "
-                + "m=Math_BigRationalSqrt(x=0, sqrtx=null))";
+                + "m=Math_BigRationalSqrt(x=0, sqrtx=null, sqrtxapprox=null, "
+                + "minimumPrecisionScale=0))";
         String result = instance.toString();
         assertEquals(expResult, result);
     }
