@@ -1,8 +1,7 @@
 # [agdt-java-vector3d](https://github.com/agdturner/agdt-java-vector3d)
 
-A Java [3D](https://en.wikipedia.org/wiki/Euclidean_space) geometry library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where x=y=z=0.
-
-Points in this space are currently stored as [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances with each coordinate stored as an immutable [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java). But, I am considering changing this to allow for coordinates that are irrational...
+## Description
+A Java [3D](https://en.wikipedia.org/wiki/Euclidean_space) geometry library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where the coordinate x=y=z=0. All points in this space can be defined as immutable [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances with each coordinate stored currently as a [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java). I am considering changing this to allow for coordinates to be [algebraic numbers](https://en.wikipedia.org/wiki/Algebraic_number) and possible also allow for other irrational [transcendental numbers](https://en.wikipedia.org/wiki/Transcendental_number). There are advantages and disadvantages of supporting more numbers!
 
 Implementations are written for:
 - Straight lines and line segments
@@ -10,7 +9,7 @@ Implementations are written for:
 
 Most of the intersection and length/area work is done without there needing to be any rounding.
 
-(See [Details](#Details) section below for further description of implementation.)
+(See below for [Details](#Details).)
 
 ## Latest Versions
 Developed and tested on [Java Development Kit, version 15](https://openjdk.java.net/projects/jdk/15/).
@@ -90,8 +89,10 @@ Additionally there is some functionality for calculating lengths and areas. Some
 - The [University of Leeds](http://www.leeds.ac.uk) and externally funded research grants have supported the development of this library.
 - Thank you [openJDK](https://openjdk.java.net/) contributors and all involved in creating the platform.
 - Thank you Eric for the [BigMath](https://github.com/eobermuhlner/big-math) library.
-- Thank you developers of other useful Java libraries that have helped inspire me.
-- Thank you creators, maintainers and contributors of relevent content on:
+- Thank you developers and maintainers of other useful Java libraries that provide inspiration.
+- Thank you developers and maintainers of [Apache Maven](https://maven.apache.org/), [Apache NetBeans](https://netbeans.apache.org/), and [git](https://git-scm.com/) which I use for developing code.
+- Thank you developers and maintainers of [GitHub](http://github.com) for supporting the development of this code and for providing a means of creating a community of users and  developers.
+- Thank you developers, maintainers and contributors of relevent content on:
 -- [Wikimedia](https://www.wikimedia.org/) projects, in particular the [English language Wikipedia](https://en.wikipedia.org/wiki/Main_Page)
 -- [StackExchange](https://stackexchange.com), in particular [StackOverflow](https://stackoverflow.com/) and [Math.StackExchange](http://math.stackexchange.com/).
 - Information that has helped me develop this library is cited in the source code.
