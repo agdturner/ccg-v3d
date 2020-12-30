@@ -11,7 +11,7 @@ Implementations are written for:
 
 Most of the intersection and length/area work is done without there needing to be any rounding.
 
-(See [Details](#Details) section below for further description of implementation.)
+(See below for [Details](#Details).)
 
 ## Latest Versions
 Developed and tested on [Java Development Kit, version 15](https://openjdk.java.net/projects/jdk/15/).
