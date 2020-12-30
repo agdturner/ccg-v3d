@@ -10,7 +10,7 @@ Implementations are written for:
 
 Most of the intersection and length/area work is done without there needing to be any rounding.
 
-(See [#Details] below for more details of what is implemented.)
+(See [Details](#Details) section below for further description of implementation.)
 
 ## Latest Versions
 Developed and tested on [Java Development Kit, version 15](https://openjdk.java.net/projects/jdk/15/).
@@ -41,34 +41,42 @@ Developed and tested on [Java Development Kit, version 15](https://openjdk.java.
 - Please see the [POM](https://github.com/agdturner/agdt-java-vector3d/blob/master/pom.xml) for details.
 
 ## Details
-Lines ([V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java)) are straight and have infinite length and are defined by two points and also a vector ([V3D_Vector](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java)) that gives the direction and difference from the end point to the start point. The vector is essentially a translation which shows how one point maps onto the other. The points and vector of a line are immutable. There is some small redundancy as the line could be defined simply be two points or a single point and a vector and so the line objects are heavier than they need to be, however, this implementation provides some convenience. V3D_Vector also allows for the magnitude and the magnitudeSquared of the vector to be stored. The magnitudeSquared can be stored exactly as a BigRational. However the magnitude may have to be rounded as roots can be irrational and unable to be stored exactly as a BigRational. 
+[V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances are infinitely small tly with each coordinate stored as an immutable [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java)
 
-Line segments ([V3D_LineSegment](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_LineSegment.java)) are extended from lines (with the two points being the ends of the line segment). The line segment cannot have zero length.
+[V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) instances are immutable straight and extend infinitely. They have two points and a vector ([V3D_Vector](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java)). The vector gives the direction of the line and is calculated as the difference from one point to the other. There is some small redundancy as the line could be defined simply by two points, or by a single point and a vector. Additionally, [V3D_Vector](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java) instances also store the square of the magnitude and also the magnitude (if this can be stored precisely as a rational number). Alternative implementations may calculate these attributes as needed, but this implementation calculates these attributes so they are conveniently available. So, a [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) instance is perhaps considerably heavier than it needs to be. 
 
-[Planes](https://en.wikipedia.org/wiki/Plane_(geometry)) ([V3D_Plane](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Plane.java)) are immutable and extend infintely, and are defined by 3 points (p, q and r) that are not [collinear](https://en.wikipedia.org/wiki/Collinearity) and two vectors (pq that gives how p is mapped onto q, and qr that gives how q is mapped onto r). The perpendicular normal vector to the plane (n) is calculated and stored. The direction of this is given by the order of the points, so each plane effectively has a front and a back. The equality of planes can depend on the direction of the perpendicular normal vector as well as whether the points of each plane are [coplanar](https://en.wikipedia.org/wiki/Coplanarity).
+[V3D_LineSegment](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_LineSegment.java) instances are immutable and finite. Essentially, they are [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) instances with the two points that define the line being the ends of the segment. A line segment is not permitted to have zero length.
 
-[Triangles](https://en.wikipedia.org/wiki/Triangle) ([V3D_Triangle](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Triangle.java)) are extended from planes and the three points are the corners of the triangle. An additional vector (rp that gives how r is mapped onto p) is stored for each triangle. Each side of the triangle is also stored as a line segment for convenience. All these elements of a triangle are immutable. So again, as with lines, there is some redundancy in what is stored, but these additional things are stored for convenience.
+[V3D_Plane](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Plane.java) instances are immutable [Planes](https://en.wikipedia.org/wiki/Plane_(geometry)) extending infintely. They have 3 points (p, q and r) that are not [collinear](https://en.wikipedia.org/wiki/Collinearity) and two vectors (pq that gives how p is mapped onto q, and qr that gives how q is mapped onto r). The perpendicular normal vector to the plane (n) is calculated and stored. The direction of this is given by the order of the points, so each plane effectively has a front and a back. The equality of planes depends on the direction of the perpendicular normal vector as well as whether the points of each plane are [coplanar](https://en.wikipedia.org/wiki/Coplanarity).
 
-[Rectangles](https://en.wikipedia.org/wiki/Rectangle) ([V3D_Rectangle](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Rectangle.java)) are extended from planes and the three points (p, q and r) are the first three corners of the rectangle working around clockwise from the front of the plane. The other corner point of the rectangle (s) is also stored as are additional vectors (rs that gives how r is mapped onto s, and sp that gives how s is mapped onto p). Additionally the edges of the rectangle are stored as line segments for convenience. All these elements of a rectangle are immutable. So again, as with lines and triangles, there is some redundancy in what is stored, but these additional things are stored for convenience.
+[V3D_Triangle](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Triangle.java) instances are immutable and finite [Triangles](https://en.wikipedia.org/wiki/Triangle). Essentially they are [V3D_Plane](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Plane.java) instances and the three points {p, q and r} are the corners of the triangle. An additional vector (rp that gives how r is mapped onto p) is stored for each triangle. Each side of the triangle is also stored as a line segment for convenience. So again, as with other geometry objects, there is some redundancy in what is stored, but these additional things are stored for convenience.
 
-So far, some intersection functionality has been implemented. A full set of intersections would indicate both if the following intersect and what that intersection is:
+[V3D_Rectangle](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Rectangle.java) instances are immutable and finite [Rectangles](https://en.wikipedia.org/wiki/Rectangle). Essentially they are [V3D_Plane](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Plane.java) instances and the three points (p, q and r) are the first three corners of the rectangle working around clockwise from the front of the plane. The other corner point of the rectangle (s) is also stored as are additional vectors (rs that gives how r is mapped onto s, and sp that gives how s is mapped onto p). Additionally the edges of the rectangle are stored as line segments for convenience. So again, as with other geometry objects, there is some redundancy in what is stored, but these additional things are stored for convenience.
+
+Most of what is implemented so far is intersection. Not all of this is yet implemented. But, that which is implemented involves no rounding.
+
+The full set of intersection functionality will indicate both if different geometries intersect and what the intersection is.
+
+So far the following intersection code is implemented:
 * point-plane, point-line, point-line_segement, point-rectangle, point-triangle
 * line-line, line-plane
-* line_segment-line line_segment-line_segment, line_segment-plane, line_segment-triangle, line_segment-rectangle
-* plane-plane, plane-triangle, plane-rectangle, triangle-triangle, triangle-rectangle, rectangle-rectangle
+* line_segment-line line_segment-line_segment, line_segment-plane
+* plane-plane
 
-Not all of this is yet implemented. But, that which is implemented involves no rounding.
+What is still to do is:
+* line_segment-triangle, line_segment-rectangle
+* plane-triangle, plane-rectangle, triangle-triangle, triangle-rectangle, rectangle-rectangle
 
-Additionally there is some functionality for calculating lengths, areas and angles. Some of this can require precision and rounding modes to be defined. An attempt is being made to be clear if a result is rounded or exact.
+Additionally there is some functionality for calculating lengths and areas. Some of this can require precision and rounding modes to be defined. An attempt is being made to be clear if a result is rounded or exact.
 
 ## Development plans/ideas
 - Complete implementation of intersection functionality.
-- Complete implementation for calculating the minimum distances between points, line segments and shapes.
-- Implement area calculations for shapes.
+- Implement code for calculating the minimum distances between all the different geometries.
 - Implement [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron) - a truely 3D object.
 - Implement [differentiable_curve](https://en.wikipedia.org/wiki/Differentiable_curve). A line passing through a point but that does not have to be straight.
 - Develop the library in an [agile](https://en.wikipedia.org/wiki/Agile_software_development) way.
 - [Contribute](https://openjdk.java.net/contribute/) to the development of the openJDK.
+- Considering allowing irrational coordinates. 
 
 ## Development history
 - The library began development in March 2020. After something of a [hiatus](https://en.wiktionary.org/wiki/hiatus), I am finding more time to develop it again. 
