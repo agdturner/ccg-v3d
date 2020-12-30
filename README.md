@@ -72,8 +72,8 @@ Additionally there is some functionality for calculating lengths and areas. Some
 ## Development plans/ideas
 - Complete implementation of intersection functionality.
 - Implement code for calculating the minimum distances between all the different geometries.
-- Implement [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron) - a truely 3D object.
-- Implement [differentiable_curve](https://en.wikipedia.org/wiki/Differentiable_curve). A line passing through a point but that does not have to be straight.
+- Implement V3D_Tetrahedron - a [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
+- Implement V3D_Curve - a [differentiable curve](https://en.wikipedia.org/wiki/Differentiable_curve). A line passing through a point but that does not have to be straight.
 - Develop the library in an [agile](https://en.wikipedia.org/wiki/Agile_software_development) way.
 - [Contribute](https://openjdk.java.net/contribute/) to the development of the openJDK.
 - Considering allowing irrational coordinates. 
