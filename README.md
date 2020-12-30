@@ -3,7 +3,7 @@
 ## Description
 A Java [3D](https://en.wikipedia.org/wiki/Euclidean_space) geometry library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where x=y=z=0.
 
-Points in this space are currently stored as [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances with each coordinate stored as an immutable [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java). But, I am considering changing this to allow for coordinates that are irrational...
+Points in this space are currently stored as immutable [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances with each coordinate stored as a [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java). But, I am considering changing this to allow for coordinates that are irrational...
 
 Implementations are written for:
 - Straight lines and line segments
