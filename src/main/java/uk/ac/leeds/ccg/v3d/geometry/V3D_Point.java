@@ -22,6 +22,7 @@ import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.MathContext;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
  * 3D representation of a point. The "*" denotes a point in 3D in the following
@@ -59,6 +60,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
 
+    public static final V3D_Point ORIGIN = new V3D_Point(0, 0, 0);
+    
     /**
      * The x coordinate.
      */
@@ -178,6 +181,20 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * Get the distance between this and {@code p}.
      *
      * @param p A point.
+     * @return The distance from {@code p} to this.
+     */
+    @Override
+    public Math_BigRationalSqrt getDistance(V3D_Point p){
+        if (this.equals(p)) {
+            return Math_BigRationalSqrt.ZERO;
+        }
+        return new Math_BigRationalSqrt(getDistanceSquared(p));
+    }
+            
+    /**
+     * Get the distance between this and {@code p}.
+     *
+     * @param p A point.
      * @param mps The minimum precision scale for the precision of the result. A
      * positive value gives the number of decimal places. A negative value gives
      * precision left of the decimal point. If rounding happens, then this uses
@@ -233,12 +250,25 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * Get the distance between this and {@code pl}.
      *
      * @param pl A plane.
-     * @param scale The scale. A positive value gives the number of decimal
-     * places. A negative value rounds to the left of the decimal point.
-     * @param rm The RoundingMode for the calculation.
      * @return The distance from {@code p} to this.
      */
-    public BigDecimal getDistance(V3D_Plane pl, int scale, RoundingMode rm) {
+    public Math_BigRationalSqrt getDistance(V3D_Plane pl) {
+        if (pl.isIntersectedBy(this)) {
+            return Math_BigRationalSqrt.ZERO;
+        }
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
+     * Get the distance between this and {@code pl}.
+     *
+     * @param pl A plane.
+     * @param mps The minimum precision scale for the precision of the result. A
+     * positive value gives the number of decimal places. A negative value
+     * rounds to the left of the decimal point.
+     * @return The distance from {@code p} to this.
+     */
+    public BigDecimal getDistance(V3D_Plane pl, int mps) {
         if (pl.isIntersectedBy(this)) {
             return BigDecimal.ZERO;
         }

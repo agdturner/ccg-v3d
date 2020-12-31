@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -81,7 +82,7 @@ public class V3D_PointTest extends V3D_Test {
      * Test of equals method, of class V3D_Point.
      */
     @Test
-    public void testEquals() {
+    public void testEquals_Object() {
         System.out.println("equals");
         V3D_Point instance = P0P0P0;
        BigRational x = BigRational.valueOf(new BigDecimal("0.000"));
@@ -225,7 +226,159 @@ public class V3D_PointTest extends V3D_Test {
         expResult = P5.toBigDecimal();
         result = instance.getDistance(l, mps);
         assertEquals(expResult, result);
-       
+    }
+
+    /**
+     * Test of equals method, of class V3D_Point.
+     */
+    @Test
+    public void testEquals_V3D_Point() {
+        System.out.println("equals");
+        V3D_Point p = n;
+        V3D_Point instance = null;
+        boolean expResult = false;
+        boolean result = instance.equals(p);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Point.
+     */
+    @Test
+    public void testGetDistance_V3D_Point() {
+        System.out.println("getDistance");
+        V3D_Point p = null;
+        V3D_Point instance = null;
+        Math_BigRationalSqrt expResult = null;
+        Math_BigRationalSqrt result = instance.getDistance(p);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Point.
+     */
+    @Test
+    public void testGetDistance_V3D_Point_int() {
+        System.out.println("getDistance");
+        V3D_Point p = null;
+        int mps = 0;
+        V3D_Point instance = null;
+        BigDecimal expResult = null;
+        BigDecimal result = instance.getDistance(p, mps);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_Point.
+     */
+    @Test
+    public void testGetDistanceSquared() {
+        System.out.println("getDistanceSquared");
+        V3D_Point p = null;
+        V3D_Point instance = null;
+        BigRational expResult = null;
+        BigRational result = instance.getDistanceSquared(p);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Point.
+     */
+    @Test
+    public void testGetDistance_V3D_Line_int() {
+        System.out.println("getDistance");
+        V3D_Line l = null;
+        int mps = 0;
+        V3D_Point instance = null;
+        BigDecimal expResult = null;
+        BigDecimal result = instance.getDistance(l, mps);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Point.
+     */
+    @Test
+    public void testGetDistance_3args() {
+        System.out.println("getDistance");
+        V3D_Plane pl = null;
+        int scale = 0;
+        RoundingMode rm = null;
+        V3D_Point instance = null;
+        BigDecimal expResult = null;
+        BigDecimal result = instance.getDistance(pl, scale, rm);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Point.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_Point() {
+        System.out.println("isIntersectedBy");
+        V3D_Point p = V3D_Point.ORIGIN;
+        V3D_Point instance = V3D_Point.ORIGIN;
+        assertTrue(instance.isIntersectedBy(p));
+        // Test 2
+        instance = P0N1N1;
+        assertFalse(instance.isIntersectedBy(p));
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Point.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_Line() {
+        System.out.println("isIntersectedBy");
+        // No test as this is tested in V3D_LineTest.
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Point.
+     */
+    @Test
+    public void testGetIntersection_V3D_Line() {
+        System.out.println("getIntersection");
+        // No test as this is tested in V3D_LineTest.
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Point.
+     */
+    @Test
+    public void testGetIntersection_V3D_LineSegment_boolean() {
+        System.out.println("getIntersection");
+        // No test as this is tested in V3D_LineSegmentTest.
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Point.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_LineSegment_boolean() {
+        System.out.println("isIntersectedBy");
+        // No test as this is tested in V3D_LineSegmentTest.
+    }
+
+    /**
+     * Test of isEnvelopeIntersectedBy method, of class V3D_Point.
+     */
+    @Test
+    public void testIsEnvelopeIntersectedBy() {
+        System.out.println("isEnvelopeIntersectedBy");
+        // No test as this is tested in V3D_EnvelopeTest.
     }
 
 }

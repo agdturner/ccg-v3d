@@ -15,6 +15,8 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
+
 /**
  * V3D_FiniteGeometry
  *
@@ -77,4 +79,12 @@ public interface V3D_FiniteGeometry {
      * @return The V3D_Geometry.
      */
     public abstract V3D_Geometry getIntersection(V3D_LineSegment l, boolean b);
+    
+    /**
+     * For getting the minimum distance to {@code p}.
+     *
+     * @param p A point.
+     * @return The minimum distance to {@code p}.
+     */
+    public abstract Math_BigRationalSqrt getDistance(V3D_Point p);
 }

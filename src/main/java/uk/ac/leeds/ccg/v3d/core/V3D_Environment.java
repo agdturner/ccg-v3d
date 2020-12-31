@@ -72,7 +72,7 @@ public class V3D_Environment extends Generic_MemoryManager {
     /**
      * The point at {@code <0,0,0>}.
      */
-    public static final V3D_Point P0P0P0 = new V3D_Point(P0, P0, P0);
+    public static final V3D_Point P0P0P0 = V3D_Point.ORIGIN;
 
     /**
      * The point at {@code <1,0,0>}.
