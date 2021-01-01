@@ -1,7 +1,7 @@
 # [agdt-java-vector3d](https://github.com/agdturner/agdt-java-vector3d)
 
 ## Description
-A modularised Java [3D](https://en.wikipedia.org/wiki/Euclidean_space) geometry library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where the coordinates x=y=z=0. All points in this space can be defined as immutable [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances with each coordinate stored currently as a [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java). I am considering changing this to allow for coordinates to be [algebraic numbers](https://en.wikipedia.org/wiki/Algebraic_number) and possibly any [real number](https://en.wikipedia.org/wiki/Real_number).
+A modularised Java [3D](https://en.wikipedia.org/wiki/Euclidean_space) geometry library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where the coordinates x=y=z=0. All points in this space can be defined as immutable [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances with each coordinate stored currently as a [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java). This wants changing to allow for coordinates to e stored as any [real number](https://en.wikipedia.org/wiki/Real_number).
 
 Code is currently written for:
 - Straight lines and line segments
@@ -65,7 +65,7 @@ Additionally there is some functionality for calculating lengths and areas. Some
 - Implement V3D_Tetrahedron - a [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
 - Implement V3D_Curve - a [differentiable curve](https://en.wikipedia.org/wiki/Differentiable_curve). A line passing through a point but that does not have to be straight.
 - [Contribute](https://openjdk.java.net/contribute/) to the development of the openJDK.
-- Considering supporting coordinates that can in theory be any [real number](https://en.wikipedia.org/wiki/Real_number). 
+- Change so coordinates are stored as [real numbers](https://en.wikipedia.org/wiki/Real_number). 
 
 ## Development history
 ### Origins
