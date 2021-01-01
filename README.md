@@ -1,7 +1,7 @@
 # [agdt-java-vector3d](https://github.com/agdturner/agdt-java-vector3d)
 
 ## Description
-A Java [3D](https://en.wikipedia.org/wiki/Euclidean_space) geometry library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where the coordinate x=y=z=0. All points in this space can be defined as immutable [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances with each coordinate stored currently as a [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java). I am considering changing this to allow for coordinates to be [algebraic numbers](https://en.wikipedia.org/wiki/Algebraic_number) and possibly any [real number](https://en.wikipedia.org/wiki/Real_number).
+A Java [3D](https://en.wikipedia.org/wiki/Euclidean_space) geometry library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where the coordinates x=y=z=0. All points in this space can be defined as immutable [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances with each coordinate stored currently as a [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java). I am considering changing this to allow for coordinates to be [algebraic numbers](https://en.wikipedia.org/wiki/Algebraic_number) and possibly any [real number](https://en.wikipedia.org/wiki/Real_number).
 
 Code is currently written for:
 - Straight lines and line segments
