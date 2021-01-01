@@ -77,7 +77,8 @@ Additionally there is some functionality for calculating lengths and areas. Some
 - Considering allowing irrational coordinates. 
 
 ## Development history
-- The library began development in March 2020. After something of a [hiatus](https://en.wiktionary.org/wiki/hiatus), I am finding more time to develop it again. 
+### Origins
+The library began development in March 2020 with a view to supporting the development of [solar systems](https://en.wikipedia.org/wiki/Solar_systems) models.
 
 ## Contributions
 - Welcome.
@@ -88,7 +89,7 @@ Additionally there is some functionality for calculating lengths and areas. Some
 ## Acknowledgements and thanks
 - The [University of Leeds](http://www.leeds.ac.uk) and externally funded research grants have supported the development of this library.
 - Thank you [openJDK](https://openjdk.java.net/) contributors and all involved in creating the platform.
-- Thank you Eric for the [BigMath](https://github.com/eobermuhlner/big-math) library.
+- Thank you Eric et al for the [BigMath](https://github.com/eobermuhlner/big-math) library.
 - Thank you developers and maintainers of other useful Java libraries that provide inspiration.
 - Thank you developers and maintainers of [Apache Maven](https://maven.apache.org/), [Apache NetBeans](https://netbeans.apache.org/), and [git](https://git-scm.com/) which I use for developing code.
 - Thank you developers and maintainers of [GitHub](http://github.com) for supporting the development of this code and for providing a means of creating a community of users and  developers.
