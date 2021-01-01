@@ -11,9 +11,8 @@ Most of the intersection and length/area work is done without there needing to b
 
 (See below for [Details](#Details).)
 
-## Latest Versions
+## Latest Version
 Developed and tested on [Java Development Kit, version 15](https://openjdk.java.net/projects/jdk/15/).
-### Stable
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
 <dependency>
@@ -23,15 +22,7 @@ Developed and tested on [Java Development Kit, version 15](https://openjdk.java.
 </dependency>
 ```
 [JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-vector3d/0.6/agdt-java-vector3d-0.6.jar)
-### Development
-```
-<!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
-<dependency>
-    <groupId>io.github.agdturner</groupId>
-    <artifactId>agdt-java-vector3D</artifactId>
-    <version>0.7-SNAPSHOT</version>
-</dependency>
-```
+
 ## Dependencies
 - [agdt-java-generic](https://github.com/agdturner/agdt-java-generic)
 - [agdt-java-math](https://github.com/agdturner/agdt-java-math)
