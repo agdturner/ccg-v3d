@@ -63,9 +63,8 @@ Additionally there is some functionality for calculating lengths and areas. Some
 - Implement code for calculating the minimum distances between all the different geometries.
 - Implement V3D_Tetrahedron - a [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
 - Implement V3D_Curve - a [differentiable curve](https://en.wikipedia.org/wiki/Differentiable_curve). A line passing through a point but that does not have to be straight.
-- Develop the library in an [agile](https://en.wikipedia.org/wiki/Agile_software_development) way.
 - [Contribute](https://openjdk.java.net/contribute/) to the development of the openJDK.
-- Considering allowing irrational coordinates. 
+- Considering supporting coordinates that can in theory be any [real number](https://en.wikipedia.org/wiki/Real_number). 
 
 ## Development history
 ### Origins
@@ -88,4 +87,4 @@ The library began development in March 2020 with a view to supporting the develo
 -- [Wikimedia](https://www.wikimedia.org/) projects, in particular the [English language Wikipedia](https://en.wikipedia.org/wiki/Main_Page)
 -- [StackExchange](https://stackexchange.com), in particular [StackOverflow](https://stackoverflow.com/) and [Math.StackExchange](http://math.stackexchange.com/).
 - Information that has helped me develop this library is cited in the source code.
-- This library is a product of my education, interest and work. Thank you teachers, especially those that supported me.
+- Thank you to those that supported me personally and all who have made a positive contribution to society. Let us try to look after each other, look after this world, make space for wildlife, and engineer knowledge :)
