@@ -12,7 +12,7 @@ Most of the intersection and length/area/volume work is done without there needi
 
 (See below for [Details](#Details).)
 
-## Latest Version
+## Latest versioned release
 Developed and tested on [Java Development Kit, version 15](https://openjdk.java.net/projects/jdk/15/).
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
