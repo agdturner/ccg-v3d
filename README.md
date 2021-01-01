@@ -1,13 +1,14 @@
 # [agdt-java-vector3d](https://github.com/agdturner/agdt-java-vector3d)
 
 ## Description
-A Java [3D](https://en.wikipedia.org/wiki/Euclidean_space) geometry library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where the coordinate x=y=z=0. All points in this space can be defined as immutable [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances with each coordinate stored currently as a [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java). I am considering changing this to allow for coordinates to be [algebraic numbers](https://en.wikipedia.org/wiki/Algebraic_number) and possible also allow for other irrational [transcendental numbers](https://en.wikipedia.org/wiki/Transcendental_number). There are advantages and disadvantages of supporting more numbers!
+A Java [3D](https://en.wikipedia.org/wiki/Euclidean_space) geometry library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where the coordinate x=y=z=0. All points in this space can be defined as immutable [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances with each coordinate stored currently as a [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java). I am considering changing this to allow for coordinates to be [algebraic numbers](https://en.wikipedia.org/wiki/Algebraic_number) and possibly any [real number](https://en.wikipedia.org/wiki/Real_number).
 
-Implementations are written for:
+Code is currently written for:
 - Straight lines and line segments
-- 2D planes (Triangles and Rectangles)
+- 2D planes, Triangles and Rectangles
+- Envelope - a 3D Rectilinear volume with sides aligned with the coordinate axes 
 
-Most of the intersection and length/area work is done without there needing to be any rounding.
+Most of the intersection and length/area/volume work is done without there needing to be any rounding.
 
 (See below for [Details](#Details).)
 
