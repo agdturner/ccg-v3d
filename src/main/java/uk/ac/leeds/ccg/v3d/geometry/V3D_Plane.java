@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 
@@ -831,6 +832,32 @@ public class V3D_Plane extends V3D_Geometry {
         m[2][1] = r.y;
         m[2][2] = r.z;
         return res;
+    }
+
+    /**
+     * Get the distance squared between this and {@code pl}.
+     *
+     * @param p A point.
+     * @return The distance from {@code this} to {@code p}.
+     */
+    public BigRational getDistanceSquared(V3D_Point p) {
+        if (this.isIntersectedBy(p)) {
+            return BigRational.ZERO;
+        }
+        throw new RuntimeException("Not implemented");
+    }
+    
+    /**
+     * Get the distance between this and {@code pl}.
+     *
+     * @param p A point.
+     * @return The distance from {@code this} to {@code p}.
+     */
+    public Math_BigRationalSqrt getDistance(V3D_Point p) {
+        if (this.isIntersectedBy(p)) {
+            return Math_BigRationalSqrt.ZERO;
+        }
+        return new Math_BigRationalSqrt(getDistanceSquared(p));
     }
 
     /**

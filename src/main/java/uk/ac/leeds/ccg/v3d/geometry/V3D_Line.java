@@ -348,7 +348,7 @@ public class V3D_Line extends V3D_Geometry {
             return BigDecimal.ONE; // Prevent a divide by zero if both are zero.
         }
         BigRational d = dp.divide(m);
-        return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), mps,
+        return Math_BigDecimal.round(d.toBigDecimal(), mps,
                 RoundingMode.HALF_UP);
     }
     
@@ -358,7 +358,7 @@ public class V3D_Line extends V3D_Geometry {
      * returned.
      * @return The minimum distance between this and {@code p}.
      */
-    public BigRational getDistance(V3D_Point p) {
+    public Math_BigRationalSqrt getDistance(V3D_Point p) {
         /**
          * Calculate the direction vector of the line connecting the closest 
          * points by computing the cross product.
@@ -369,17 +369,11 @@ public class V3D_Line extends V3D_Geometry {
          * Calculate the delta from {@link #p} and l.p
          */
         V3D_Vector delta = new V3D_Vector(this.p).subtract(pv);
-        BigRational m;
-        if (cp.m.sqrtx == null) {
-            return null;
-        } else {
-            m = cp.m.sqrtx;
+        Math_BigRationalSqrt dp = new Math_BigRationalSqrt(cp.getDotProduct(delta));
+        if (dp.compareTo(cp.m) == 0) {
+            return Math_BigRationalSqrt.ONE; // Prevent a divide by zero if both are zero.
         }
-        BigRational dp = cp.getDotProduct(delta);
-        if (dp.compareTo(m) == 0) {
-            return BigRational.ONE; // Prevent a divide by zero if both are zero.
-        }
-        return dp.divide(m);
+        return dp.divide(cp.m);
     }
     
     /**
@@ -412,7 +406,7 @@ public class V3D_Line extends V3D_Geometry {
         BigRational dp = cp.getDotProduct(delta);
         // m should only be zero if the lines are parallel.
         BigRational d = dp.divide(m);
-        return Math_BigDecimal.roundIfNecessary(d.toBigDecimal(), mps, 
+        return Math_BigDecimal.round(d.toBigDecimal(), mps, 
                 RoundingMode.HALF_UP);
         }
     }

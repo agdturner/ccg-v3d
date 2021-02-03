@@ -85,9 +85,9 @@ public class V3D_PointTest extends V3D_Test {
     public void testEquals_Object() {
         System.out.println("equals");
         V3D_Point instance = P0P0P0;
-       BigRational x = BigRational.valueOf(new BigDecimal("0.000"));
-       BigRational y = BigRational.valueOf(new BigDecimal("0.000"));
-       BigRational z = BigRational.valueOf(new BigDecimal("0.000"));
+        BigRational x = BigRational.valueOf(new BigDecimal("0.000"));
+        BigRational y = BigRational.valueOf(new BigDecimal("0.000"));
+        BigRational z = BigRational.valueOf(new BigDecimal("0.000"));
         Object o = new V3D_Point(x, y, z);
         boolean expResult = true;
         boolean result = instance.equals(o);
@@ -143,7 +143,7 @@ public class V3D_PointTest extends V3D_Test {
      */
     @Test
     public void testGetEnvelope() {
-        System.out.println("getEnvelope");        
+        System.out.println("getEnvelope");
         V3D_Envelope expResult = new V3D_Envelope(P0P0P0, P1P1P1);
         V3D_Envelope result = P0P0P0.getEnvelope();
         result = result.union(P1P1P1.getEnvelope());
@@ -172,10 +172,73 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
+     * Test of equals method, of class V3D_Point.
+     */
+    @Test
+    public void testEquals_V3D_Point() {
+        System.out.println("equals");
+        V3D_Point instance = P0P0P0;
+        BigRational x = BigRational.valueOf(new BigDecimal("0.000"));
+        BigRational y = BigRational.valueOf(new BigDecimal("0.000"));
+        BigRational z = BigRational.valueOf(new BigDecimal("0.000"));
+        V3D_Point p = new V3D_Point(x, y, z);
+        boolean expResult = true;
+        boolean result = instance.equals(p);
+        assertEquals(expResult, result);
+        // Test 2
+        x = P1;
+        y = P10;
+        z = P0;
+        instance = new V3D_Point(x, y, z);
+        x = BigRational.valueOf(new BigDecimal("1.000"));
+        y = BigRational.valueOf(new BigDecimal("10.000"));
+        z = BigRational.valueOf(new BigDecimal("0.000"));
+        p = new V3D_Point(x, y, z);
+        expResult = true;
+        result = instance.equals(p);
+        assertEquals(expResult, result);
+        // Test 3
+        x = BigRational.ONE;
+        y = BigRational.TEN;
+        z = BigRational.ZERO;
+        instance = new V3D_Point(x, y, z);
+        x = BigRational.valueOf(new BigDecimal("0.000"));
+        y = BigRational.valueOf(new BigDecimal("1.000"));
+        z = BigRational.valueOf(new BigDecimal("10.000"));
+        p = new V3D_Point(x, y, z);
+        expResult = false;
+        result = instance.equals(p);
+        assertEquals(expResult, result);
+    }
+
+    /**
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
-    public void testGetDistance_3args_1() {
+    public void testGetDistance_V3D_Point() {
+        System.out.println("getDistance");
+        V3D_Point p = V3D_Point.ORIGIN;
+        V3D_Point instance = V3D_Point.ORIGIN;
+        Math_BigRationalSqrt expResult = Math_BigRationalSqrt.ZERO;
+        Math_BigRationalSqrt result = instance.getDistance(p);
+        assertEquals(expResult, result);
+        // Test 2
+         instance = P1P0P0;
+         expResult = Math_BigRationalSqrt.ONE;
+         result = instance.getDistance(p);
+        assertEquals(expResult, result);
+        // Test 3
+         instance = P1P1P0;
+         expResult = new Math_BigRationalSqrt(2);
+         result = instance.getDistance(p);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Point.
+     */
+    @Test
+    public void testGetDistance_V3D_Point_int() {
         System.out.println("getDistance");
         V3D_Point p = P0P0P0;
         int mps = 0;
@@ -191,12 +254,30 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
+     * Test of getDistanceSquared method, of class V3D_Point.
+     */
+    @Test
+    public void testGetDistanceSquared() {
+        System.out.println("getDistanceSquared");
+        V3D_Point instance = P0P0P0;
+        BigRational expResult = BigRational.ZERO;
+        BigRational result = instance.getDistanceSquared(P0P0P0);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = new V3D_Point(P3, P4, P0);
+        expResult = BigRational.valueOf(25);
+        result = instance.getDistanceSquared(P0P0P0);
+        //assertEquals(expResult, result);
+        assertThat(expResult, Matchers.comparesEqualTo(result));
+    }
+
+    /**
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
-    public void testGetDistance_3args_2() {
+    public void testGetDistance_V3D_Line_int() {
         System.out.println("getDistance");
-        V3D_Line l = new V3D_Line(P0P0P0,P0P0P1);
+        V3D_Line l = new V3D_Line(P0P0P0, P0P0P1);
         int mps = 0;
         V3D_Point instance = P0P1P0;
         BigDecimal expResult = P1.toBigDecimal();
@@ -226,100 +307,6 @@ public class V3D_PointTest extends V3D_Test {
         expResult = P5.toBigDecimal();
         result = instance.getDistance(l, mps);
         assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of equals method, of class V3D_Point.
-     */
-    @Test
-    public void testEquals_V3D_Point() {
-        System.out.println("equals");
-        V3D_Point p = n;
-        V3D_Point instance = null;
-        boolean expResult = false;
-        boolean result = instance.equals(p);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getDistance method, of class V3D_Point.
-     */
-    @Test
-    public void testGetDistance_V3D_Point() {
-        System.out.println("getDistance");
-        V3D_Point p = null;
-        V3D_Point instance = null;
-        Math_BigRationalSqrt expResult = null;
-        Math_BigRationalSqrt result = instance.getDistance(p);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getDistance method, of class V3D_Point.
-     */
-    @Test
-    public void testGetDistance_V3D_Point_int() {
-        System.out.println("getDistance");
-        V3D_Point p = null;
-        int mps = 0;
-        V3D_Point instance = null;
-        BigDecimal expResult = null;
-        BigDecimal result = instance.getDistance(p, mps);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getDistanceSquared method, of class V3D_Point.
-     */
-    @Test
-    public void testGetDistanceSquared() {
-        System.out.println("getDistanceSquared");
-        V3D_Point p = null;
-        V3D_Point instance = null;
-        BigRational expResult = null;
-        BigRational result = instance.getDistanceSquared(p);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getDistance method, of class V3D_Point.
-     */
-    @Test
-    public void testGetDistance_V3D_Line_int() {
-        System.out.println("getDistance");
-        V3D_Line l = null;
-        int mps = 0;
-        V3D_Point instance = null;
-        BigDecimal expResult = null;
-        BigDecimal result = instance.getDistance(l, mps);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getDistance method, of class V3D_Point.
-     */
-    @Test
-    public void testGetDistance_3args() {
-        System.out.println("getDistance");
-        V3D_Plane pl = null;
-        int scale = 0;
-        RoundingMode rm = null;
-        V3D_Point instance = null;
-        BigDecimal expResult = null;
-        BigDecimal result = instance.getDistance(pl, scale, rm);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -379,6 +366,24 @@ public class V3D_PointTest extends V3D_Test {
     public void testIsEnvelopeIntersectedBy() {
         System.out.println("isEnvelopeIntersectedBy");
         // No test as this is tested in V3D_EnvelopeTest.
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Point.
+     */
+    @Test
+    public void testGetDistance_V3D_Plane() {
+        System.out.println("getDistance");
+        // No test as this is tested in V3D_PlaneTest.
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Point.
+     */
+    @Test
+    public void testGetDistance_V3D_Plane_int() {
+        System.out.println("getDistance");
+        // No test as this is tested in V3D_PlaneTest.
     }
 
 }

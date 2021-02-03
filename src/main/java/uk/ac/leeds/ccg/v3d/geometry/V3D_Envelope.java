@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
  * An envelope contains all the extreme values with respect to the X, Y and Z
@@ -839,5 +840,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l) {
         return isIntersectedBy(l);
+    }
+
+    @Override
+    public Math_BigRationalSqrt getDistance(V3D_Point p) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

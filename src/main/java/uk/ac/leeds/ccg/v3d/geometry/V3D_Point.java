@@ -250,13 +250,10 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * Get the distance between this and {@code pl}.
      *
      * @param pl A plane.
-     * @return The distance from {@code p} to this.
+     * @return The distance from {@code this} to {@code pl}.
      */
     public Math_BigRationalSqrt getDistance(V3D_Plane pl) {
-        if (pl.isIntersectedBy(this)) {
-            return Math_BigRationalSqrt.ZERO;
-        }
-        throw new RuntimeException("Not implemented");
+        return pl.getDistance(this);
     }
 
     /**

@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
@@ -587,6 +588,36 @@ public class V3D_EnvelopeTest extends V3D_Test {
         l = new V3D_Line(N1N1N1, N1N1P0);
         instance = new V3D_Envelope(P0P0P0, P1P1P1);
         assertFalse(instance.isEnvelopeIntersectedBy(l));
+    }
+
+    /**
+     * Test of apply method, of class V3D_Envelope.
+     */
+    @Test
+    public void testApply() {
+        System.out.println("apply");
+        V3D_Vector v = null;
+        V3D_Envelope instance = null;
+        V3D_Envelope expResult = null;
+        V3D_Envelope result = instance.apply(v);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Envelope.
+     */
+    @Test
+    public void testGetDistance() {
+        System.out.println("getDistance");
+        V3D_Point p = null;
+        V3D_Envelope instance = null;
+        Math_BigRationalSqrt expResult = null;
+        Math_BigRationalSqrt result = instance.getDistance(p);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
 }
