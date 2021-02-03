@@ -1,19 +1,19 @@
 # [agdt-java-vector3d](https://github.com/agdturner/agdt-java-vector3d)
 
 ## Description
-A Java [3D](https://en.wikipedia.org/wiki/Euclidean_space) geometry library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where the coordinate x=y=z=0. All points in this space can be defined as immutable [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances with each coordinate stored currently as a [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java). I am considering changing this to allow for coordinates to be [algebraic numbers](https://en.wikipedia.org/wiki/Algebraic_number) and possible also allow for other irrational [transcendental numbers](https://en.wikipedia.org/wiki/Transcendental_number). There are advantages and disadvantages of supporting more numbers!
+A modularised Java three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry) library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where the coordinates x=y=z=0. All points in this space can be defined as immutable [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) instances. Coordinates are currently stored as [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java) numbers, but the intention is to change this to allow in theory any [real number](https://en.wikipedia.org/wiki/Real_number).
 
-Implementations are written for:
+Code is currently written for:
 - Straight lines and line segments
-- 2D planes (Triangles and Rectangles)
+- 2D planes, Triangles and Rectangles
+- Envelope - a 3D Rectilinear volume with sides aligned with the coordinate axes 
 
-Most of the intersection and length/area work is done without there needing to be any rounding.
+Most of the intersection and length/area/volume work is done without there needing to be any rounding.
 
 (See below for [Details](#Details).)
 
-## Latest Versions
+## Latest versioned release
 Developed and tested on [Java Development Kit, version 15](https://openjdk.java.net/projects/jdk/15/).
-### Stable
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
 <dependency>
@@ -23,15 +23,7 @@ Developed and tested on [Java Development Kit, version 15](https://openjdk.java.
 </dependency>
 ```
 [JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-vector3d/0.6/agdt-java-vector3d-0.6.jar)
-### Development
-```
-<!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
-<dependency>
-    <groupId>io.github.agdturner</groupId>
-    <artifactId>agdt-java-vector3D</artifactId>
-    <version>0.7-SNAPSHOT</version>
-</dependency>
-```
+
 ## Dependencies
 - [agdt-java-generic](https://github.com/agdturner/agdt-java-generic)
 - [agdt-java-math](https://github.com/agdturner/agdt-java-math)
@@ -72,12 +64,12 @@ Additionally there is some functionality for calculating lengths and areas. Some
 - Implement code for calculating the minimum distances between all the different geometries.
 - Implement V3D_Tetrahedron - a [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
 - Implement V3D_Curve - a [differentiable curve](https://en.wikipedia.org/wiki/Differentiable_curve). A line passing through a point but that does not have to be straight.
-- Develop the library in an [agile](https://en.wikipedia.org/wiki/Agile_software_development) way.
 - [Contribute](https://openjdk.java.net/contribute/) to the development of the openJDK.
-- Considering allowing irrational coordinates. 
+- Change so coordinates are stored as [real numbers](https://en.wikipedia.org/wiki/Real_number). 
 
 ## Development history
-- The library began development in March 2020. After something of a [hiatus](https://en.wiktionary.org/wiki/hiatus), I am finding more time to develop it again. 
+### Origins
+The library began development in March 2020 with a view to supporting the development of [solar systems](https://en.wikipedia.org/wiki/Solar_systems) models.
 
 ## Contributions
 - Welcome.
@@ -88,7 +80,7 @@ Additionally there is some functionality for calculating lengths and areas. Some
 ## Acknowledgements and thanks
 - The [University of Leeds](http://www.leeds.ac.uk) and externally funded research grants have supported the development of this library.
 - Thank you [openJDK](https://openjdk.java.net/) contributors and all involved in creating the platform.
-- Thank you Eric for the [BigMath](https://github.com/eobermuhlner/big-math) library.
+- Thank you Eric et al for the [BigMath](https://github.com/eobermuhlner/big-math) library.
 - Thank you developers and maintainers of other useful Java libraries that provide inspiration.
 - Thank you developers and maintainers of [Apache Maven](https://maven.apache.org/), [Apache NetBeans](https://netbeans.apache.org/), and [git](https://git-scm.com/) which I use for developing code.
 - Thank you developers and maintainers of [GitHub](http://github.com) for supporting the development of this code and for providing a means of creating a community of users and  developers.
@@ -96,4 +88,4 @@ Additionally there is some functionality for calculating lengths and areas. Some
 -- [Wikimedia](https://www.wikimedia.org/) projects, in particular the [English language Wikipedia](https://en.wikipedia.org/wiki/Main_Page)
 -- [StackExchange](https://stackexchange.com), in particular [StackOverflow](https://stackoverflow.com/) and [Math.StackExchange](http://math.stackexchange.com/).
 - Information that has helped me develop this library is cited in the source code.
-- This library is a product of my education, interest and work. Thank you teachers, especially those that supported me.
+- Thank you to those that supported me personally and all who have made a positive contribution to society. Let us try to look after each other, look after this world, make space for wildlife, and engineer knowledge :)
