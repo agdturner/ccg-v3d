@@ -36,7 +36,7 @@ import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
-import uk.ac.leeds.ccg.v3d.test.V3D_Test;
+import uk.ac.leeds.ccg.v3d.V3D_Test;
 
 /**
  * V3D_EnvelopeTest

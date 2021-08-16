@@ -19,7 +19,7 @@ import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
-import uk.ac.leeds.ccg.v3d.test.V3D_Test;
+import uk.ac.leeds.ccg.v3d.V3D_Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;

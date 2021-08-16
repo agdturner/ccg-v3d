@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.test;
+package uk.ac.leeds.ccg.v3d;
 
 import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;

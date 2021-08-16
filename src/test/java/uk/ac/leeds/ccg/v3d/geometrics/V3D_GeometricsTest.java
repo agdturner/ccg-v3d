@@ -25,7 +25,7 @@ import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
-import uk.ac.leeds.ccg.v3d.test.V3D_Test;
+import uk.ac.leeds.ccg.v3d.V3D_Test;
 
 /**
  * @author Andy Turner
