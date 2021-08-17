@@ -596,13 +596,17 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testApply() {
         System.out.println("apply");
-        V3D_Vector v = null;
-        V3D_Envelope instance = null;
-        V3D_Envelope expResult = null;
+        V3D_Vector v = new V3D_Vector(1, 1, 1);
+        V3D_Envelope instance = new V3D_Envelope(P0, P1, P0, P1, P0, P1);
+        V3D_Envelope expResult = new V3D_Envelope(P1, P2, P1, P2, P1, P2);
         V3D_Envelope result = instance.apply(v);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Test 2
+        v = new V3D_Vector(-1, -1, -1);
+        instance = new V3D_Envelope(P0, P1, P0, P1, P0, P1);
+        expResult = new V3D_Envelope(N1, P0, N1, P0, N1, P0);
+        result = instance.apply(v);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -611,13 +615,11 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testGetDistance() {
         System.out.println("getDistance");
-        V3D_Point p = null;
-        V3D_Envelope instance = null;
-        Math_BigRationalSqrt expResult = null;
+        V3D_Point p = new V3D_Point(P0, P0, P0);
+        V3D_Envelope instance = new V3D_Envelope(N1, P1, N1, P1, N1, P1);
+        Math_BigRationalSqrt expResult = new Math_BigRationalSqrt(0);
         Math_BigRationalSqrt result = instance.getDistance(p);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
 }

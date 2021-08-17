@@ -72,8 +72,9 @@ public class V3D_LineTest extends V3D_Test {
         V3D_Line instance = new V3D_Line(P0P0P0, P1P0P0);
         String expResult = "V3D_Line(p=V3D_Point(x=0, y=0, z=0), q=V3D_Point("
                 + "x=1, y=0, z=0), v=V3D_Vector(dx=1, dy=0, dz=0, "
-                + "m=Math_BigRationalSqrt(x=1, sqrtx=1)))";
+                + "m=Math_BigRationalSqrt(x=1, sqrtx=1, sqrtxapprox=null, oom=0)))";
         String result = instance.toString();
+        System.out.println(result);
         assertEquals(expResult, result);
     }
 
@@ -502,16 +503,16 @@ public class V3D_LineTest extends V3D_Test {
     public void testGetDistance_3args_1() {
         System.out.println("getDistance");
         V3D_Point p;
-        int mps;
+        int oom;
         V3D_Line instance;
         BigDecimal expResult;
         BigDecimal result;
         // Test 1
         p = P0P0P0;
-        mps = 1;
+        oom = 1;
         instance = new V3D_Line(P1P0P0, P1P1P0);
         expResult = BigDecimal.ONE;
-        result = instance.getDistance(p, mps);
+        result = instance.getDistance(p, oom);
         assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 
@@ -522,23 +523,23 @@ public class V3D_LineTest extends V3D_Test {
     public void testGetDistance_3args_2() {
         System.out.println("getDistance");
         V3D_Line l;
-        int mps;
+        int oom;
         V3D_Line instance;
         BigDecimal expResult;
         BigDecimal result;
         // Test 1
         l = new V3D_Line(new V3D_Point(P2, P6, N9), new V3D_Vector(P3, P4, N4));
-        mps = 1;
+        oom = -1;
         instance = new V3D_Line(new V3D_Point(N1, N2, P3), new V3D_Vector(P2, N6, P1));
-        expResult = new BigDecimal("5.5");
-        result = instance.getDistance(l, mps);
+        expResult = new BigDecimal("4.7"); // 5.5?
+        result = instance.getDistance(l, oom);
         assertThat(expResult, Matchers.comparesEqualTo(result));
         // Test 2
         l = new V3D_Line(P0P0P0, P1P1P0);
-        mps = 4;
+        oom = -4;
         instance = new V3D_Line(P1N1P0, new V3D_Point(P2, P0, P0));
-        expResult = BigDecimal.valueOf(2).sqrt(new MathContext(mps+1));
-        result = instance.getDistance(l, mps);
+        expResult = BigDecimal.valueOf(2).sqrt(new MathContext(1 - oom));
+        result = instance.getDistance(l, oom);
         assertThat(expResult, Matchers.comparesEqualTo(result));
     }
 }
