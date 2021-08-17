@@ -15,14 +15,13 @@
  */
 package uk.ac.leeds.ccg.v3d.geometrics;
 
-import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 
 /**
  * A class for geometrics.
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class V3D_Geometrics {
     

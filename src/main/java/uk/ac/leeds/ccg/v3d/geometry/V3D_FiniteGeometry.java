@@ -21,7 +21,7 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  * V3D_FiniteGeometry
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public interface V3D_FiniteGeometry {
 

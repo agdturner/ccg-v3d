@@ -146,11 +146,11 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param mps The minimum precision scale for the precision of the result.
+     * @param oom The Order of Magnitude for the precision of the result.
      * @return The length of this as a BigDecimal
      */
-    public BigDecimal getLength(int mps) {
-        return p.getDistance(q, mps);
+    public BigDecimal getLength(int oom) {
+        return p.getDistance(q, oom);
     }
 
     /**

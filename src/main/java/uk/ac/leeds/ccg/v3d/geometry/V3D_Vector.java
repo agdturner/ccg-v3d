@@ -212,17 +212,17 @@ public class V3D_Vector implements Serializable {
      * @return The magnitude of the vector squared.
      */
     public BigRational getMagnitudeSquared() {
-        return m.x;
+        return m.getX();
     }
             
     /**
-     * Get the magnitude of the vector at the minimum precision scale {@code mps}.
+     * Get the magnitude of the vector at the given {@code oom}.
      *
-     * @param mps The minimum precision scale of the result.
+     * @param oom The Order of Magnitude for the precision of the result.
      * @return {@link #m} initialised with {@code scale} and {@code rm}.
      */
-    public BigDecimal getMagnitude(int mps) {
-        return m.toBigDecimal(mps);
+    public BigDecimal getMagnitude(int oom) {
+        return m.toBigDecimal(oom);
     }
 
     /**
@@ -311,18 +311,17 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * Scales the vector by the m so that it has length 1
+     * Scales by {@link #m} to give a unit vector with length 1.
      *
-     * @param mps The minimum precision scale of the result.
-     * @return this scaled by the m.
+     * @param oom The order of magnitude for the precision of the result.
+     * @return this scaled by {@link #m}.
      */
-    public V3D_Vector getUnitVector(int mps) {
-        if (m.sqrtx == null) {
-            BigRational d = BigRational.valueOf(m.toBigDecimal(mps));
-            return new V3D_Vector(dx.divide(m.sqrtx), dy.divide(d), dz.divide(d));
-        } else {
-            return new V3D_Vector(dx.divide(m.sqrtx), dy.divide(m.sqrtx), dz.divide(m.sqrtx));
+    public V3D_Vector getUnitVector(int oom) {
+        BigRational d = m.getSqrt();
+        if (d == null) {
+            d = BigRational.valueOf(m.toBigDecimal(oom));
         }
+        return new V3D_Vector(dx.divide(d), dy.divide(d), dz.divide(d));
     }
 
     /**

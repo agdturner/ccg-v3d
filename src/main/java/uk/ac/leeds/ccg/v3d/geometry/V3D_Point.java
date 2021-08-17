@@ -15,13 +15,11 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigDecimalMath;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import ch.obermuhlner.math.big.BigRational;
-import java.math.MathContext;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
@@ -195,18 +193,15 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * Get the distance between this and {@code p}.
      *
      * @param p A point.
-     * @param mps The minimum precision scale for the precision of the result. A
-     * positive value gives the number of decimal places. A negative value gives
-     * precision left of the decimal point. If rounding happens, then this uses
-     * {@link java.math.RoundingMode#HALF_UP}.
+     * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance from {@code p} to this.
      */
-    public BigDecimal getDistance(V3D_Point p, int mps) {
+    public BigDecimal getDistance(V3D_Point p, int oom) {
         if (this.equals(p)) {
             return BigDecimal.ZERO;
         }
         return Math_BigDecimal.sqrt(getDistanceSquared(p).toBigDecimal(),
-                mps, RoundingMode.HALF_UP);
+                oom, RoundingMode.HALF_UP);
     }
 
     /**
@@ -226,23 +221,16 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * Get the distance between this and {@code l}.
      *
      * @param l A line.
-     * @param mps The minimum precision scale for the precision of the result. A
-     * positive value gives the number of decimal places. A negative value
-     * rounds to the left of the decimal point.
+     * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance from {@code p} to this.
      */
-    public BigDecimal getDistance(V3D_Line l, int mps) {
+    public BigDecimal getDistance(V3D_Line l, int oom) {
         if (l.isIntersectedBy(this)) {
             return BigDecimal.ZERO;
         }
-        //V3D_Vector cp = new V3D_Vector(this, l.q).getCrossProduct(
-        //        new V3D_Vector(this, l.p));
         V3D_Vector cp = new V3D_Vector(this, l.p).getCrossProduct(
                 new V3D_Vector(this, l.q));
-//        return Math_BigDecimal.divideRoundIfNecessary(
-//                cp.getMagnitude(scale, rm), l.v.getMagnitude(scale, rm), scale,
-//                rm);
-        return cp.getMagnitude(mps + 1).divide(l.v.getMagnitude(mps + 1), mps,
+        return cp.getMagnitude(oom - 1).divide(l.v.getMagnitude(oom - 1), -oom,
                 RoundingMode.HALF_UP);
     }
 
@@ -260,12 +248,10 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * Get the distance between this and {@code pl}.
      *
      * @param pl A plane.
-     * @param mps The minimum precision scale for the precision of the result. A
-     * positive value gives the number of decimal places. A negative value
-     * rounds to the left of the decimal point.
+     * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance from {@code p} to this.
      */
-    public BigDecimal getDistance(V3D_Plane pl, int mps) {
+    public BigDecimal getDistance(V3D_Plane pl, int oom) {
         if (pl.isIntersectedBy(this)) {
             return BigDecimal.ZERO;
         }

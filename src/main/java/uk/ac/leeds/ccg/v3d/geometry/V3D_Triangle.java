@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
  * For representing and processing triangles in 3D. For representing and
@@ -167,20 +166,20 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     }
 
     /**
-     * @param mps The minimum precision scale of the result.
+     * @param oom The minimum precision scale of the result.
      * @return The area of the triangle (rounded).
      */
-    public BigDecimal getArea(int mps) {
-        return pq.getCrossProduct(qr).getMagnitude(mps + 1).divide(
+    public BigDecimal getArea(int oom) {
+        return pq.getCrossProduct(qr).getMagnitude(oom - 1).divide(
                 BigDecimal.valueOf(2));
     }
 
     /**
-     * @param mps The minimum precision scale of the result.
+     * @param oom The minimum precision scale of the result.
      */
     @Override
-    public BigDecimal getPerimeter(int mps) {
-        int p = mps + 1;
+    public BigDecimal getPerimeter(int oom) {
+        int p = oom - 1;
         return lpq.getLength(p).add(lqr.getLength(p)).add(lrp.getLength(p));
     }
     

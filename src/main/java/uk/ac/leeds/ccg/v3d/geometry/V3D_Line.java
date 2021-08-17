@@ -320,14 +320,16 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
-     * @param p A point for which the minimum distance from {@code this} is 
+     *
+     * @param p A point for which the minimum distance from {@code this} is
      * returned.
-     * @param mps The minimum precision scale for the precision of the result.
+     *
+     * @param oom The Order of Magnitude for the precision of the result.
      * @return The minimum distance between this and {@code p}.
      */
-    public BigDecimal getDistance(V3D_Point p, int mps) {
+    public BigDecimal getDistance(V3D_Point p, int oom) {
         /**
-         * Calculate the direction vector of the line connecting the closest 
+         * Calculate the direction vector of the line connecting the closest
          * points by computing the cross product.
          */
         V3D_Vector pv = new V3D_Vector(p);
@@ -336,31 +338,30 @@ public class V3D_Line extends V3D_Geometry {
          * Calculate the delta from {@link #p} and l.p
          */
         V3D_Vector delta = new V3D_Vector(this.p).subtract(pv);
-        BigRational m;
-        if (cp.m.sqrtx != null) {
-            m = cp.m.sqrtx;
-        } else {
-            m = BigRational.valueOf(cp.getMagnitude(mps + 2));
+        BigRational ms = cp.m.getSqrt();
+        if (ms == null) {
+            ms = BigRational.valueOf(cp.getMagnitude(oom - 2));
         }
         // d = cp.(delta)/m
         BigRational dp = cp.getDotProduct(delta);
-        if (dp.compareTo(m) == 0) {
+        if (dp.compareTo(ms) == 0) {
             return BigDecimal.ONE; // Prevent a divide by zero if both are zero.
         }
-        BigRational d = dp.divide(m);
-        return Math_BigDecimal.round(d.toBigDecimal(), mps,
+        BigRational d = dp.divide(ms);
+        return Math_BigDecimal.round(d.toBigDecimal(), oom,
                 RoundingMode.HALF_UP);
     }
-    
+
     /**
      * https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
-     * @param p A point for which the minimum distance from {@code this} is 
+     *
+     * @param p A point for which the minimum distance from {@code this} is
      * returned.
      * @return The minimum distance between this and {@code p}.
      */
     public Math_BigRationalSqrt getDistance(V3D_Point p) {
         /**
-         * Calculate the direction vector of the line connecting the closest 
+         * Calculate the direction vector of the line connecting the closest
          * points by computing the cross product.
          */
         V3D_Vector pv = new V3D_Vector(p);
@@ -375,39 +376,40 @@ public class V3D_Line extends V3D_Geometry {
         }
         return dp.divide(cp.m);
     }
-    
+
     /**
      * https://en.wikipedia.org/wiki/Skew_lines#Nearest_points
      * https://en.wikipedia.org/wiki/Distance_between_two_parallel_lines
-     * @param l A line for which the minimum distance from {@code this} is 
+     *
+     * @param l A line for which the minimum distance from {@code this} is
      * returned.
-     * @param mps The minimum precision scale for the precision of the result.
-    * @return The minimum distance between this and {@code l}.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The minimum distance between this and {@code l}.
      */
-    public BigDecimal getDistance(V3D_Line l, int mps) {
+    public BigDecimal getDistance(V3D_Line l, int oom) {
         if (isParallel(l)) {
             //q.getDistance(l, scale, rm);
-            return p.getDistance(l, mps);
+            return p.getDistance(l, oom);
 //            V3D_Vector v2 = new V3D_Vector(l.p, q);
 //            return v2.subtract(v.multiply((v2.getDotProduct(v))
 //                    .divide(v.getMagnitudeSquared()))).getMagnitude(scale, rm);
         } else {
-        /**
-         * Calculate the direction vector of the line connecting the closest 
-         * points by computing the cross product.
-         */
-        V3D_Vector cp = v.getCrossProduct(l.v);
-        /**
-         * Calculate the delta from {@link #p} and l.p
-         */
-        V3D_Vector delta = new V3D_Vector(p).subtract(new V3D_Vector(l.p));
-        BigRational m = BigRational.valueOf(cp.getMagnitude(mps));
-        // d = cp.(delta)/m
-        BigRational dp = cp.getDotProduct(delta);
-        // m should only be zero if the lines are parallel.
-        BigRational d = dp.divide(m);
-        return Math_BigDecimal.round(d.toBigDecimal(), mps, 
-                RoundingMode.HALF_UP);
+            /**
+             * Calculate the direction vector of the line connecting the closest
+             * points by computing the cross product.
+             */
+            V3D_Vector cp = v.getCrossProduct(l.v);
+            /**
+             * Calculate the delta from {@link #p} and l.p
+             */
+            V3D_Vector delta = new V3D_Vector(p).subtract(new V3D_Vector(l.p));
+            BigRational m = BigRational.valueOf(cp.getMagnitude(oom));
+            // d = cp.(delta)/m
+            BigRational dp = cp.getDotProduct(delta);
+            // m should only be zero if the lines are parallel.
+            BigRational d = dp.divide(m);
+            return Math_BigDecimal.round(d.toBigDecimal(), oom,
+                    RoundingMode.HALF_UP);
         }
     }
 

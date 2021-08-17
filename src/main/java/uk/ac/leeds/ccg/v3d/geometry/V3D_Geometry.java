@@ -49,7 +49,7 @@ import java.io.Serializable;
  * }
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public abstract class V3D_Geometry implements Serializable {
 

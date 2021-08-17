@@ -844,6 +844,12 @@ public class V3D_Plane extends V3D_Geometry {
         if (this.isIntersectedBy(p)) {
             return BigRational.ZERO;
         }
+        // d2=|v⋅n|2
+        //  =|(x1−x0,y1−y0,z1−z0)⋅n|
+        //  =(A(x1−x0)+B(y1−y0)+C(z1−z0))2/(A2+B2+C2)
+        V3D_Vector v = new V3D_Vector(p, this.p);
+        V3D_Vector unitVector = this.n.getUnitVector(0);
+        
         throw new RuntimeException("Not implemented");
     }
     
@@ -857,6 +863,7 @@ public class V3D_Plane extends V3D_Geometry {
         if (this.isIntersectedBy(p)) {
             return Math_BigRationalSqrt.ZERO;
         }
+        
         return new Math_BigRationalSqrt(getDistanceSquared(p));
     }
 

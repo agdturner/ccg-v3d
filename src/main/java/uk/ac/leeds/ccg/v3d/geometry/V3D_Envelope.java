@@ -89,7 +89,7 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  * }
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
@@ -342,7 +342,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
     /**
      * @param v The vector to apply.
-     * @return a new plane.
+     * @return a new V3D_Envelope.
      */
     @Override
     public V3D_Envelope apply(V3D_Vector v) {
@@ -844,6 +844,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
     @Override
     public Math_BigRationalSqrt getDistance(V3D_Point p) {
+        if (this.isIntersectedBy(p)) {
+            return new Math_BigRationalSqrt(0);
+        }
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

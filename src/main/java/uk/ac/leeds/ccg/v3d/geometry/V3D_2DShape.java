@@ -21,21 +21,21 @@ import java.math.BigDecimal;
  * V3D_FiniteGeometry
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public interface V3D_2DShape extends V3D_FiniteGeometry {
 
     /**
      * For calculating and returning the perimeter.
-     * @param mps The minimum precision scale of the result.
+     * @param oom The Order of Magnitude for the precision of the result.
      * @return The Perimeter.
      */
-    public abstract BigDecimal getPerimeter(int mps);
+    public abstract BigDecimal getPerimeter(int oom);
 
     /**
      * For calculating and returning the area.
-     * @param mps The minimum precision scale of the result.
+     * @param oom The Order of Magnitude for the precision of the result.
      * @return The area.
      */
-    public abstract BigDecimal getArea(int mps);
+    public abstract BigDecimal getArea(int oom);
 }
