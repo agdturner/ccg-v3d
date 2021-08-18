@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.Math_BigInteger;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
@@ -534,11 +535,6 @@ public class V3D_VectorTest extends V3D_Test {
         assertEquals(expResult, result);
     }
 
-    protected int getOomsqrt(BigRational v, int oom) {
-        return Math_BigInteger.getOrderOfMagnitudeOfMostSignificantDigit(
-                v.toBigDecimal(new MathContext(2 - oom)).toBigInteger().sqrt()) + 1;
-    }
-
     /**
      * Test of getMagnitude method, of class V3D_Vector.
      */
@@ -561,21 +557,21 @@ public class V3D_VectorTest extends V3D_Test {
         oom = -1;
         instance = new V3D_Vector(P1P1P0);
         expResultSquared = P2;
-        oomsqrt = getOomsqrt(expResultSquared, oom);
+        oomsqrt = Math_BigRationalSqrt.getOOM(expResultSquared, oom);
         expResult = expResultSquared.toBigDecimal().sqrt(new MathContext(oomsqrt - oom));
         result = instance.getMagnitude(oom);
         assertEquals(expResult, result);
         // Test 4
         oom = -2;
         expResultSquared = P2;
-        oomsqrt = getOomsqrt(expResultSquared, oom);
+        oomsqrt = Math_BigRationalSqrt.getOOM(expResultSquared, oom);
         expResult = expResultSquared.toBigDecimal().sqrt(new MathContext(oomsqrt - oom));
         result = instance.getMagnitude(oom);
         assertEquals(expResult, result);
         // Test 5
         oom = -10;
         expResultSquared = P2;
-        oomsqrt = getOomsqrt(expResultSquared, oom);
+        oomsqrt = Math_BigRationalSqrt.getOOM(expResultSquared, oom);
         expResult = expResultSquared.toBigDecimal().sqrt(new MathContext(oomsqrt - oom));
         result = instance.getMagnitude(oom);
         assertEquals(expResult, result);
@@ -583,7 +579,7 @@ public class V3D_VectorTest extends V3D_Test {
         oom = -1;
         instance = new V3D_Vector(P1P1P1);
         expResultSquared = P3;
-        oomsqrt = getOomsqrt(expResultSquared, oom);
+        oomsqrt = Math_BigRationalSqrt.getOOM(expResultSquared, oom);
         expResult = expResultSquared.toBigDecimal().sqrt(new MathContext(oomsqrt - oom));
         result = instance.getMagnitude(oom);
         assertEquals(expResult, result);
@@ -591,7 +587,7 @@ public class V3D_VectorTest extends V3D_Test {
         oom = -8;
         instance = new V3D_Vector(P1P1P1);
         expResultSquared = P3;
-        oomsqrt = getOomsqrt(expResultSquared, oom);
+        oomsqrt = Math_BigRationalSqrt.getOOM(expResultSquared, oom);
         expResult = expResultSquared.toBigDecimal().sqrt(new MathContext(oomsqrt - oom));
         result = instance.getMagnitude(oom);
         assertEquals(expResult, result);
@@ -599,21 +595,21 @@ public class V3D_VectorTest extends V3D_Test {
         oom = -100;
         instance = new V3D_Vector(P10, P10, P10);
         expResultSquared = BigRational.valueOf(300);
-        oomsqrt = getOomsqrt(expResultSquared, oom);
+        oomsqrt = Math_BigRationalSqrt.getOOM(expResultSquared, oom);
         expResult = expResultSquared.toBigDecimal().sqrt(new MathContext(oomsqrt - oom));
         result = instance.getMagnitude(oom);
         assertEquals(expResult, result);
         // Test 9
         instance = new V3D_Vector(P3, P4, N4);
         expResultSquared = BigRational.valueOf(41);
-        oomsqrt = getOomsqrt(expResultSquared, oom);
+        oomsqrt = Math_BigRationalSqrt.getOOM(expResultSquared, oom);
         expResult = expResultSquared.toBigDecimal().sqrt(new MathContext(oomsqrt - oom));
         result = instance.getMagnitude(oom);
         assertEquals(expResult, result);
         // Test 10
         instance = new V3D_Vector(P7, P8, N4);
         expResultSquared = P7.pow(2).add(P8.pow(2).add(N4.pow(2)));
-        oomsqrt = getOomsqrt(expResultSquared, oom);
+        oomsqrt = Math_BigRationalSqrt.getOOM(expResultSquared, oom);
         expResult = expResultSquared.toBigDecimal().sqrt(new MathContext(oomsqrt - oom));
         result = instance.getMagnitude(oom);
         assertEquals(expResult, result);

@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 import ch.obermuhlner.math.big.BigRational;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -150,7 +151,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of equals method, of class V3D_Plane.
      */
     @Test
-    public void testEquals() {
+    public void testEquals_Object() {
         System.out.println("equals");
         Object o = new V3D_Plane(P0P1P0, P1P1P1, P1P0P0);
         V3D_Plane instance = new V3D_Plane(P0P1P0, P1P1P1, P1P0P0);
@@ -957,5 +958,61 @@ public class V3D_PlaneTest extends V3D_Test {
         instance = e.x0.apply(v);
         expResult = BigRational.valueOf(4);
         result = instance.getDistanceSquared(p);
+    }
+
+    /**
+     * Test of equals method, of class V3D_Plane.
+     */
+    @Test
+    public void testEquals_V3D_Plane() {
+        System.out.println("equals");
+        V3D_Plane p = e.x0;
+        V3D_Plane instance = e.x0;
+        assertTrue(p.equals(instance));
+        // Test 2
+        p = new V3D_Plane(P0P1P0, P1P1P1, P1P0P0);
+        instance = new V3D_Plane(P0P1P0, P1P1P1, P1P0P0);
+        assertTrue(instance.equals(p));
+        // Test 3
+        instance = new V3D_Plane(P1P1P0, P1P1P1, P1P0P0);
+        assertFalse(instance.equals(p));
+        // Test 4
+        instance = new V3D_Plane(P1P1P1, P1P0P0, P0P1P0);
+        assertTrue(instance.equals(p));
+        // Test 5
+        instance = new V3D_Plane(P1P0P0, P0P1P0, P1P1P1);
+        assertTrue(instance.equals(p));
+        // Test 6
+        p = new V3D_Plane(P0P0P0, P1P0P0, P0P1P0);
+        V3D_Point q = new V3D_Point(P2, P0, P0);
+        V3D_Point r = new V3D_Point(P0, P2, P0);
+        instance = new V3D_Plane(P0P0P0, q, r);
+        assertFalse(instance.equals(p));
+    }
+
+    /**
+     * Test of isCoincident method, of class V3D_Plane.
+     */
+    @Test
+    public void testIsCoincident() {
+        // No test as covered by other tests.
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetDistance() {
+        System.out.println("getDistance");
+        V3D_Point p = new V3D_Point(P5, P0, P0);
+        int oom = 0;
+        V3D_Plane instance = new V3D_Plane(P0P0P0, P0P0P1, P0P1P1);
+        BigDecimal expResult = BigDecimal.valueOf(5);
+        BigDecimal result = instance.getDistance(p, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 2
+        p = new V3D_Point(P5, P10, P0);
+        result = instance.getDistance(p, oom);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 }

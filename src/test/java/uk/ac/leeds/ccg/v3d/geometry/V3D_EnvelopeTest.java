@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
+import java.math.BigDecimal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -615,11 +616,12 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testGetDistance() {
         System.out.println("getDistance");
+        int oom = -1;
         V3D_Point p = new V3D_Point(P0, P0, P0);
         V3D_Envelope instance = new V3D_Envelope(N1, P1, N1, P1, N1, P1);
-        Math_BigRationalSqrt expResult = new Math_BigRationalSqrt(0);
-        Math_BigRationalSqrt result = instance.getDistance(p);
-        assertEquals(expResult, result);
+        BigDecimal expResult = new Math_BigRationalSqrt(0).toBigDecimal(oom);
+        BigDecimal result = instance.getDistance(p, oom);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
 }

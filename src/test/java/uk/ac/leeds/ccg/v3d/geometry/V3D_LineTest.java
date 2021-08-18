@@ -513,7 +513,7 @@ public class V3D_LineTest extends V3D_Test {
         instance = new V3D_Line(P1P0P0, P1P1P0);
         expResult = BigDecimal.ONE;
         result = instance.getDistance(p, oom);
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -533,13 +533,13 @@ public class V3D_LineTest extends V3D_Test {
         instance = new V3D_Line(new V3D_Point(N1, N2, P3), new V3D_Vector(P2, N6, P1));
         expResult = new BigDecimal("4.7"); // 5.5?
         result = instance.getDistance(l, oom);
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         l = new V3D_Line(P0P0P0, P1P1P0);
         oom = -4;
         instance = new V3D_Line(P1N1P0, new V3D_Point(P2, P0, P0));
         expResult = BigDecimal.valueOf(2).sqrt(new MathContext(1 - oom));
         result = instance.getDistance(l, oom);
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(expResult.compareTo(result) == 0);
     }
 }
