@@ -19,8 +19,6 @@ import uk.ac.leeds.ccg.v3d.V3D_Test;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import static org.hamcrest.MatcherAssert.assertThat;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -188,8 +186,10 @@ public class V3D_LineTest extends V3D_Test {
         V3D_Geometry expResult;
         V3D_Geometry result;
         // Test 1
-        l = new V3D_Line(N1N1N1, P1P1P1);
-        instance = new V3D_Line(N1P1N1, P1N1P1);
+        //l = new V3D_Line(N1N1N1, P1P1P1);
+        l = new V3D_Line(P1P1P1, N1N1N1);
+        //instance = new V3D_Line(N1P1N1, P1N1P1);
+        instance = new V3D_Line(P1N1P1, N1P1N1);
         expResult = P0P0P0;
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
@@ -334,7 +334,7 @@ public class V3D_LineTest extends V3D_Test {
         // Test 2
         l = new V3D_Line(P0N1N1, P1P1P1);
         instance = new V3D_Line(N1P1N1, P1N1P1);
-        expResult = true;
+        expResult = false;
         result = instance.isIntersectedBy(l);
         assertEquals(expResult, result);
     }
@@ -384,7 +384,9 @@ public class V3D_LineTest extends V3D_Test {
         result = instance.getIntersection(l);
         assertEquals(expResult, result);
         // Test 3
-        instance = new V3D_Line(P0P1P0, P0N1P0);
+        //instance = new V3D_Line(P0P1P0, P0N1P0);
+        instance = new V3D_Line(P0N1P0, P0P1P0);
+        l = new V3D_Line(P1P1P1, P0P0P0);
         expResult = P0P0P0;
         result = instance.getIntersection(l);
         assertEquals(expResult, result);

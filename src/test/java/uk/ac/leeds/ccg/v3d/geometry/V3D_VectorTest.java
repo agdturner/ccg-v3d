@@ -18,7 +18,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.MathContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -28,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
-import uk.ac.leeds.ccg.math.Math_BigInteger;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -72,7 +70,7 @@ public class V3D_VectorTest extends V3D_Test {
         System.out.println("toString");
         V3D_Vector instance = new V3D_Vector(P0P0P0);
         String expResult = "V3D_Vector(dx=0, dy=0, dz=0, "
-                + "m=Math_BigRationalSqrt(x=0, sqrtx=null, sqrtxapprox=null, "
+                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, sqrtxapprox=null, "
                 + "oom=0))";
         String result = instance.toString();
         assertEquals(expResult, result);
