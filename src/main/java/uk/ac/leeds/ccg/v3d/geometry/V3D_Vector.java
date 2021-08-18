@@ -214,7 +214,7 @@ public class V3D_Vector implements Serializable {
     public BigRational getMagnitudeSquared() {
         return m.getX();
     }
-            
+
     /**
      * Get the magnitude of the vector at the given {@code oom}.
      *
@@ -280,11 +280,13 @@ public class V3D_Vector implements Serializable {
                         return false;
                     } else {
                         s = dx.divide(v.dx);
-                        if (dy.multiply(s).compareTo(v.dy) == 0) {
+                        if (dy.multiply(s).compareTo(v.dy) == 0 ||
+                              v.dy.multiply(s).compareTo(dy) == 0  ) {
                             if (dz.isZero()) {
                                 return v.dz.isZero();
                             } else {
-                                return dz.multiply(s).compareTo(v.dz) == 0;
+                                return dz.multiply(s).compareTo(v.dz) == 0 ||
+                                        v.dz.multiply(s).compareTo(dz) == 0;
                             }
                         } else {
                             return false;

@@ -320,6 +320,7 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * Get the intersection between two lines.
      *
+     * Part adapted from http://paulbourke.net/geometry/pointlineplane/
      * @param l0 One line.
      * @param l1 Another line.
      * @return
@@ -329,6 +330,8 @@ public class V3D_Line extends V3D_Geometry {
         if (l0.isParallel(l1)) {
             if (l0.p.isIntersectedBy(l1)) {
                 return l0;
+            } else {
+                return null;
             }
         }
         V3D_Point p1 = l0.p;
@@ -704,7 +707,6 @@ public class V3D_Line extends V3D_Geometry {
                 //l0.p.x + l0.v.dx * lamda = l1.p.x + l1.v.dx * mu
                 //l0.p.y + l0.v.dy * lamda = l1.p.y + l1.v.dy * mu
                 //l0.p.z + l0.v.dz * lamda = l1.p.z + l1.v.dz * mu
-
                 return new V3D_Point(x, y, z);
             }
             return null;
@@ -714,21 +716,34 @@ public class V3D_Line extends V3D_Geometry {
         BigRational mua = numer.divide(denom);
 
         //double mub = (d1343 + d4321 * (mua)) / d4343;
-        BigRational mub = (d1343.add(d4321.multiply(mua))).divide(d4343);
+        BigRational mub = (d1343.add(d4321.multiply(mua))).divide(d4343).negate();
         V3D_Point p = new V3D_Point(
                 (p1.x.add(mua.multiply(p21.dx))),
                 (p1.y.add(mua.multiply(p21.dy))),
                 (p1.z.add(mua.multiply(p21.dz))));
+        // If point p is on both lines then return this as the intersection.
+        if (l0.isIntersectedBy(p) && l1.isIntersectedBy(p)) {
+            return p;
+        }
         V3D_Point q = new V3D_Point(
                 (p3.x.add(mub.multiply(p43.dx))),
                 (p3.y.add(mub.multiply(p43.dy))),
                 (p3.z.add(mub.multiply(p43.dz))));
-
+        // If point q is on both lines then return this as the intersection.
+        if (l0.isIntersectedBy(q) && l1.isIntersectedBy(q)) {
+            return q;
+        }
+        /**
+         * The only time when p and q should be different is when the lines do
+         * not intersect. In this case p and q are meant to be the end points 
+         * of the shortest line between the tow lines input.  
+         */
         if (p.equals(q)) {
             return p;
+        } else {
+            return null;
         }
-
-        return new V3D_Line(p, q);
+        //return new V3D_Line(p, q);
     }
 
     /**

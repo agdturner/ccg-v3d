@@ -235,7 +235,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Line l) {
-        V3D_Geometry i = super.getIntersection(l);
+        // Create new lines first to see if infinite lines intersect.
+        V3D_Geometry i = V3D_Line.getIntersection(new V3D_Line(this),
+                new V3D_Line(l));
         if (i == null) {
             return i;
         }
@@ -245,11 +247,13 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
             } else {
                 return null;
             }
+        } else if (i instanceof V3D_Line) {
+                return this;
         } else {
-            return this;
+            return null;
         }
     }
-
+    
     /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
      * return {@code this}. If they overlap in a line return the part that
@@ -281,7 +285,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         if (ren == null) {
             return null;
         }
-        V3D_Geometry li = V3D_Line.getIntersection(l0, l1);
+        // Get intersection of infinite lines. 
+        V3D_Geometry li = V3D_Line.getIntersection(new V3D_Line(l0),
+                new V3D_Line(l1));
         if (li == null) {
             return null;
         }
@@ -385,10 +391,10 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         }
     }
 
-    @Override
-    public boolean isEnvelopeIntersectedBy(V3D_Line l) {
-        return getEnvelope().isIntersectedBy(l);
-    }
+//    @Override
+//    public boolean isEnvelopeIntersectedBy(V3D_Line l) {
+//        return getEnvelope().isIntersectedBy(l);
+//    }
 
     /**
      * If the distance from a point to the line is less than the distance of the
