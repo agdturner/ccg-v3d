@@ -256,11 +256,14 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * Get the intersection line (the shortest line) between two lines.
-     *
+     * Get the intersection line (the shortest line) between two lines. The two
+     * lines must not intersect for this to work.
+     * Part adapted from
+     * <a href="http://paulbourke.net/geometry/pointlineplane/">http://paulbourke.net/geometry/pointlineplane/</a>.
+     * 
      * @param l0 One line.
      * @param l1 Another line.
-     * @return
+     * @return The line of intersection between l0 and l1
      */
     public static V3D_Geometry getIntersection1(V3D_Line l0, V3D_Line l1) {
         V3D_Point p1 = l0.p;
@@ -269,7 +272,6 @@ public class V3D_Line extends V3D_Geometry {
         V3D_Point p4 = l1.q;
         V3D_Vector p13 = new V3D_Vector(p1, p3);
         V3D_Vector p43 = new V3D_Vector(p4, p3);
-
         if (p43.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
             return null;
         }
@@ -277,31 +279,24 @@ public class V3D_Line extends V3D_Geometry {
         if (p21.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
             return null;
         }
-
-        //double d1343 = p13.X * (double)p43.X + (double)p13.Y * p43.Y + (double)p13.Z * p43.Z;
-        BigRational d1343 = (p13.dx.multiply(p43.dx)).add(p13.dy.multiply(p43.dy)).add(p13.dz.multiply(p43.dz));
-        //double d4321 = p43.X * (double)p21.X + (double)p43.Y * p21.Y + (double)p43.Z * p21.Z;
-        BigRational d4321 = (p43.dx.multiply(p21.dx)).add(p43.dy.multiply(p21.dy)).add(p43.dz.multiply(p21.dz));
-        //double d1321 = p13.X * (double)p21.X + (double)p13.Y * p21.Y + (double)p13.Z * p21.Z;
-        BigRational d1321 = (p13.dx.multiply(p21.dx)).add(p13.dy.multiply(p21.dy)).add(p13.dz.multiply(p21.dz));
-        //double d4343 = p43.X * (double)p43.X + (double)p43.Y * p43.Y + (double)p43.Z * p43.Z;
-        BigRational d4343 = (p43.dx.multiply(p43.dx)).add(p43.dy.multiply(p43.dy)).add(p43.dz.multiply(p43.dz));
-        //double d2121 = p21.X * (double)p21.X + (double)p21.Y * p21.Y + (double)p21.Z * p21.Z;
-        BigRational d2121 = (p21.dx.multiply(p21.dx)).add(p21.dy.multiply(p21.dy)).add(p21.dz.multiply(p21.dz));
-
-        //double denom = d2121 * d4343 - d4321 * d4321;
-        BigRational denom = (d2121.multiply(d4343)).subtract(d4321.multiply(d4321));
-        if (denom.compareTo(BigRational.ZERO) == 0) {
+        BigRational d1343 = (p13.dx.multiply(p43.dx)).add(p13.dy
+                .multiply(p43.dy)).add(p13.dz.multiply(p43.dz));
+        BigRational d4321 = (p43.dx.multiply(p21.dx)).add(p43.dy
+                .multiply(p21.dy)).add(p43.dz.multiply(p21.dz));
+        BigRational d1321 = (p13.dx.multiply(p21.dx)).add(p13.dy
+                .multiply(p21.dy)).add(p13.dz.multiply(p21.dz));
+        BigRational d4343 = (p43.dx.multiply(p43.dx)).add(p43.dy
+                .multiply(p43.dy)).add(p43.dz.multiply(p43.dz));
+        BigRational d2121 = (p21.dx.multiply(p21.dx)).add(p21.dy
+                .multiply(p21.dy)).add(p21.dz.multiply(p21.dz));
+        BigRational den = (d2121.multiply(d4343)).subtract(d4321
+                .multiply(d4321));
+        if (den.compareTo(BigRational.ZERO) == 0) {
             return null;
         }
-
-        //double numer = d1343 * d4321 - d1321 * d4343;
-        BigRational numer = (d1343.multiply(d4321)).subtract(d1321.multiply(d4343));
-
-        //double mua = numer / denom;
-        BigRational mua = numer.divide(denom);
-
-        //double mub = (d1343 + d4321 * (mua)) / d4343;
+        BigRational num = (d1343.multiply(d4321)).subtract(d1321
+                .multiply(d4343));
+        BigRational mua = num.divide(den);
         BigRational mub = (d1343.add(d4321.multiply(mua))).divide(d4343);
         V3D_Point p = new V3D_Point(
                 (p1.x.add(mua.multiply(p21.dx))),
@@ -319,11 +314,11 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * Get the intersection between two lines.
-     *
-     * Part adapted from http://paulbourke.net/geometry/pointlineplane/
+     * Part adapted from <a href="http://paulbourke.net/geometry/pointlineplane/">http://paulbourke.net/geometry/pointlineplane/</a>.
+     * 
      * @param l0 One line.
      * @param l1 Another line.
-     * @return
+     * @return The intersection between two lines or {@code null}.
      */
     public static V3D_Geometry getIntersection(V3D_Line l0, V3D_Line l1) {
         // If lines are coincident return line.
@@ -340,7 +335,6 @@ public class V3D_Line extends V3D_Geometry {
         V3D_Point p4 = l1.q;
         V3D_Vector p13 = new V3D_Vector(p1, p3);
         V3D_Vector p43 = new V3D_Vector(p4, p3);
-
         if (p43.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
             if (l0.isIntersectedBy(l1.p)) {
                 return l1.p;
@@ -352,22 +346,20 @@ public class V3D_Line extends V3D_Geometry {
                 return l0.p;
             }
         }
-
-        //double d1343 = p13.X * (double)p43.X + (double)p13.Y * p43.Y + (double)p13.Z * p43.Z;
-        BigRational d1343 = (p13.dx.multiply(p43.dx)).add(p13.dy.multiply(p43.dy)).add(p13.dz.multiply(p43.dz));
-        //double d4321 = p43.X * (double)p21.X + (double)p43.Y * p21.Y + (double)p43.Z * p21.Z;
-        BigRational d4321 = (p43.dx.multiply(p21.dx)).add(p43.dy.multiply(p21.dy)).add(p43.dz.multiply(p21.dz));
-        //double d1321 = p13.X * (double)p21.X + (double)p13.Y * p21.Y + (double)p13.Z * p21.Z;
-        BigRational d1321 = (p13.dx.multiply(p21.dx)).add(p13.dy.multiply(p21.dy)).add(p13.dz.multiply(p21.dz));
-        //double d4343 = p43.X * (double)p43.X + (double)p43.Y * p43.Y + (double)p43.Z * p43.Z;
-        BigRational d4343 = (p43.dx.multiply(p43.dx)).add(p43.dy.multiply(p43.dy)).add(p43.dz.multiply(p43.dz));
-        //double d2121 = p21.X * (double)p21.X + (double)p21.Y * p21.Y + (double)p21.Z * p21.Z;
-        BigRational d2121 = (p21.dx.multiply(p21.dx)).add(p21.dy.multiply(p21.dy)).add(p21.dz.multiply(p21.dz));
-
-        //double denom = d2121 * d4343 - d4321 * d4321;
-        BigRational denom = (d2121.multiply(d4343)).subtract(d4321.multiply(d4321));
-        //double numer = d1343 * d4321 - d1321 * d4343;
-        BigRational numer = (d1343.multiply(d4321)).subtract(d1321.multiply(d4343));
+        BigRational d1343 = (p13.dx.multiply(p43.dx)).add(p13.dy
+                .multiply(p43.dy)).add(p13.dz.multiply(p43.dz));
+        BigRational d4321 = (p43.dx.multiply(p21.dx)).add(p43.dy
+                .multiply(p21.dy)).add(p43.dz.multiply(p21.dz));
+        BigRational d1321 = (p13.dx.multiply(p21.dx)).add(p13.dy
+                .multiply(p21.dy)).add(p13.dz.multiply(p21.dz));
+        BigRational d4343 = (p43.dx.multiply(p43.dx)).add(p43.dy
+                .multiply(p43.dy)).add(p43.dz.multiply(p43.dz));
+        BigRational d2121 = (p21.dx.multiply(p21.dx)).add(p21.dy
+                .multiply(p21.dy)).add(p21.dz.multiply(p21.dz));
+        BigRational denom = (d2121.multiply(d4343)).subtract(d4321
+                .multiply(d4321));
+        BigRational numer = (d1343.multiply(d4321)).subtract(d1321
+                .multiply(d4343));
         if (denom.compareTo(BigRational.ZERO) == 0) {
             if (numer.compareTo(BigRational.ZERO) == 0) {
                 BigRational x;
@@ -711,11 +703,7 @@ public class V3D_Line extends V3D_Geometry {
             }
             return null;
         }
-
-        //double mua = numer / denom;
         BigRational mua = numer.divide(denom);
-
-        //double mub = (d1343 + d4321 * (mua)) / d4343;
         BigRational mub = (d1343.add(d4321.multiply(mua))).divide(d4343).negate();
         V3D_Point p = new V3D_Point(
                 (p1.x.add(mua.multiply(p21.dx))),

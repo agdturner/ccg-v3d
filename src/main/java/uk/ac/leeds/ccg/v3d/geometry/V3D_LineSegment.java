@@ -137,8 +137,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param s The scaler value to multiply each coordinate of this by.
-     * @return this multiplied by scalar
+     * @param v The vector to apply to each coordinate of this.
+     * @return a new V3D_LineSegment which is {@code this} with the {@code v}
+     * applied.
      */
     @Override
     public V3D_LineSegment apply(V3D_Vector v) {
@@ -248,12 +249,12 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
                 return null;
             }
         } else if (i instanceof V3D_Line) {
-                return this;
+            return this;
         } else {
             return null;
         }
     }
-    
+
     /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
      * return {@code this}. If they overlap in a line return the part that
@@ -395,7 +396,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 //    public boolean isEnvelopeIntersectedBy(V3D_Line l) {
 //        return getEnvelope().isIntersectedBy(l);
 //    }
-
     /**
      * If the distance from a point to the line is less than the distance of the
      * point from either end of the line and the distance from either end of the

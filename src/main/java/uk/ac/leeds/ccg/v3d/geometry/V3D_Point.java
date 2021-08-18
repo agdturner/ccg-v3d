@@ -58,6 +58,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The origin of the Euclidean space.
+     */
     public static final V3D_Point ORIGIN = new V3D_Point(0, 0, 0);
     
     /**
