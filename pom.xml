@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-vector3d</artifactId>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.7</version>
     <!--
     <version>0.7-SNAPSHOT</version>
     -->
@@ -16,7 +16,8 @@
         <url>git@github.com:agdturner/agdt-java-vector3d.git</url>
         <connection>scm:git:git@github.com:agdturner/agdt-java-vector3d.git</connection>
         <developerConnection>scm:git:git@github.com:agdturner/agdt-java-vector3d</developerConnection>
-    </scm>
+      <tag>agdt-java-vector3d-0.7</tag>
+  </scm>
     <licenses>
         <license>
             <name>APACHE LICENSE, VERSION 2.0</name>
