@@ -16,6 +16,8 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
@@ -755,6 +757,14 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     @Override
+    public boolean equals(V3D_Geometry g) {
+        if (g instanceof V3D_Plane) {
+            return equals((V3D_Plane) g);
+        }
+        return false;
+    }
+    
+    @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Plane) {
             return equals((V3D_Plane) o);
@@ -835,36 +845,22 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * Get the distance squared between this and {@code pl}.
-     *
-     * @param p A point.
-     * @return The distance from {@code this} to {@code p}.
-     */
-    public BigRational getDistanceSquared(V3D_Point p) {
-        if (this.isIntersectedBy(p)) {
-            return BigRational.ZERO;
-        }
-        // d2=|v⋅n|2
-        //  =|(x1−x0,y1−y0,z1−z0)⋅n|
-        //  =(A(x1−x0)+B(y1−y0)+C(z1−z0))2/(A2+B2+C2)
-        V3D_Vector v = new V3D_Vector(p, this.p);
-        V3D_Vector unitVector = this.n.getUnitVector(0);
-        
-        throw new RuntimeException("Not implemented");
-    }
-    
-    /**
      * Get the distance between this and {@code pl}.
      *
      * @param p A point.
+     * @param oom The order of magnitude of the precision.
      * @return The distance from {@code this} to {@code p}.
      */
-    public Math_BigRationalSqrt getDistance(V3D_Point p) {
+    public BigDecimal getDistance(V3D_Point p, int oom) {
         if (this.isIntersectedBy(p)) {
-            return Math_BigRationalSqrt.ZERO;
+            return BigDecimal.ZERO;
         }
-        
-        return new Math_BigRationalSqrt(getDistanceSquared(p));
+        V3D_Vector v = new V3D_Vector(p, this.p);
+        V3D_Vector unitVector = this.n.getUnitVector(oom);
+        //MathContext mc = new MathContext(Math_BigRationalSqrt.getOOM(BigRational.ONE, oom));
+        MathContext mc = new MathContext(6 - oom);
+        BigDecimal r = v.getDotProduct(unitVector).abs().toBigDecimal(mc);
+        return r;
     }
 
     /**

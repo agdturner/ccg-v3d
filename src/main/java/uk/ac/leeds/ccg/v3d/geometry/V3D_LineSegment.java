@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
  * 3D representation of a finite length line (a line segment). The line begins
@@ -139,10 +140,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * @param s The scaler value to multiply each coordinate of this by.
      * @return this multiplied by scalar
      */
-    public V3D_LineSegment multiply(BigRational s) {
-        return new V3D_LineSegment(
-                new V3D_Point(p.x.multiply(s), p.y.multiply(s), p.z.multiply(s)),
-                new V3D_Point(q.x.multiply(s), q.y.multiply(s), q.z.multiply(s)));
+    @Override
+    public V3D_LineSegment apply(V3D_Vector v) {
+        return new V3D_LineSegment(p.apply(v), q.apply(v));
     }
 
     /**
@@ -172,13 +172,29 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     public boolean isIntersectedBy(V3D_Point p) {
         boolean ei = getEnvelope().isIntersectedBy(p.getEnvelope());
         if (ei) {
-            return super.isIntersectedBy(p);
+            if (super.isIntersectedBy(p)) {
+                Math_BigRationalSqrt a = p.getDistance(this.p);
+                if (a.getX().isZero()) {
+                    return true;
+                }
+                Math_BigRationalSqrt b = p.getDistance(this.q);
+                if (b.getX().isZero()) {
+                    return true;
+                }
+                Math_BigRationalSqrt l = this.p.getDistance(this.q);
+                if (a.add(b).compareTo(l) != 1) {
+                    return true;
+                }
+            }
         }
         return false;
     }
 
     /**
      * @param l A line segment to indicate intersection with this.
+     * @param b Used to distinguish this method from
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * value is ignored!
      * @return {@code true} iff {@code l} intersects with {@code this}.
      */
     @Override
@@ -372,5 +388,32 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l) {
         return getEnvelope().isIntersectedBy(l);
+    }
+
+    /**
+     * If the distance from a point to the line is less than the distance of the
+     * point from either end of the line and the distance from either end of the
+     * line is greater than the length of the line then the distance is the
+     * shortest of the distances from the point to the points at either end of
+     * the line segment. In all other cases, the distance is the distance
+     * between the point and the line.
+     *
+     * @param p A point for which the minimum distance from {@code this} is
+     * returned.
+     *
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The minimum distance between this and {@code p}.
+     */
+    @Override
+    public BigDecimal getDistance(V3D_Point p, int oom) {
+        BigDecimal d = super.getDistance(p, oom);
+        BigDecimal l = this.getLength(oom);
+        BigDecimal a = p.getDistance(this.p, oom);
+        BigDecimal b = p.getDistance(this.q, oom);
+        if (d.compareTo(a) == -1 && d.compareTo(b) == -1 && a.compareTo(l) == 1
+                && b.compareTo(l) == 1) {
+            return a.min(b);
+        }
+        return d;
     }
 }

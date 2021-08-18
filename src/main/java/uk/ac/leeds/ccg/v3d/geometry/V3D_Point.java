@@ -135,6 +135,14 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     @Override
+    public boolean equals(V3D_Geometry g) {
+        if (g instanceof V3D_Point) {
+            return equals((V3D_Point) g);
+        }
+        return false;
+    }
+    
+    @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Point) {
             return equals((V3D_Point) o);
@@ -181,7 +189,6 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param p A point.
      * @return The distance from {@code p} to this.
      */
-    @Override
     public Math_BigRationalSqrt getDistance(V3D_Point p){
         if (this.equals(p)) {
             return Math_BigRationalSqrt.ZERO;
@@ -196,10 +203,12 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance from {@code p} to this.
      */
+    @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
         if (this.equals(p)) {
             return BigDecimal.ZERO;
         }
+        
         return Math_BigDecimal.sqrt(getDistanceSquared(p).toBigDecimal(),
                 oom, RoundingMode.HALF_UP);
     }
@@ -238,24 +247,11 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * Get the distance between this and {@code pl}.
      *
      * @param pl A plane.
-     * @return The distance from {@code this} to {@code pl}.
-     */
-    public Math_BigRationalSqrt getDistance(V3D_Plane pl) {
-        return pl.getDistance(this);
-    }
-
-    /**
-     * Get the distance between this and {@code pl}.
-     *
-     * @param pl A plane.
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance from {@code p} to this.
      */
     public BigDecimal getDistance(V3D_Plane pl, int oom) {
-        if (pl.isIntersectedBy(this)) {
-            return BigDecimal.ZERO;
-        }
-        throw new RuntimeException("Not implemented");
+        return pl.getDistance(this, oom);
     }
 
     @Override

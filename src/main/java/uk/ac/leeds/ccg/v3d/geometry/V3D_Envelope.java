@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
+import java.math.BigDecimal;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
@@ -445,7 +446,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z The z-coordinate of the point to test for intersection.
      * @return {@code true} if this intersects with {@code p}
      */
-    public boolean isIntersectedBy(BigRational x, BigRational y, 
+    public boolean isIntersectedBy(BigRational x, BigRational y,
             BigRational z) {
         return x.compareTo(getxMin()) != -1 && x.compareTo(getxMax()) != 1
                 && y.compareTo(getyMin()) != -1 && y.compareTo(getyMax()) != 1
@@ -737,18 +738,39 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         return this;
     }
 
+    /**
+     * Test for equality.
+     * 
+     * @param g The V3D_Geometry to test for equality with this.
+     * @return {@code true} iff this and e are equal.
+     */
+    @Override
+    public boolean equals(V3D_Geometry g) {
+        if (g instanceof V3D_Envelope) {
+            return equals((V3D_Envelope) g);
+        }
+        return false;
+    }
+    
+    /**
+     * Test for equality.
+     * 
+     * @param e The V3D_Envelope to test for equality with this.
+     * @return {@code true} iff this and e are equal.
+     */
+    public boolean equals(V3D_Envelope e) {
+        return this.getxMin().compareTo(e.getxMin()) == 0
+                && this.getxMax().compareTo(e.getxMax()) == 0
+                && this.getyMin().compareTo(e.getyMin()) == 0
+                && this.getyMax().compareTo(e.getyMax()) == 0
+                && this.getzMin().compareTo(e.getzMin()) == 0
+                && this.getzMax().compareTo(e.getzMax()) == 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Envelope) {
-            V3D_Envelope en = (V3D_Envelope) o;
-            if (this.getxMin().compareTo(en.getxMin()) == 0
-                    && this.getxMax().compareTo(en.getxMax()) == 0
-                    && this.getyMin().compareTo(en.getyMin()) == 0
-                    && this.getyMax().compareTo(en.getyMax()) == 0
-                    && this.getzMin().compareTo(en.getzMin()) == 0
-                    && this.getzMax().compareTo(en.getzMax()) == 0) {
-                return true;
-            }
+            return equals((V3D_Envelope) o);
         }
         return false;
     }
@@ -843,9 +865,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     @Override
-    public Math_BigRationalSqrt getDistance(V3D_Point p) {
+    public BigDecimal getDistance(V3D_Point p, int oom) {
         if (this.isIntersectedBy(p)) {
-            return new Math_BigRationalSqrt(0);
+            return BigDecimal.ZERO;
         }
         throw new UnsupportedOperationException("Not supported yet.");
     }

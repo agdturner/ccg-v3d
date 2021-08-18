@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
  * For representing and processing rectangles in 3D. A rectangle has a non-zero
@@ -374,5 +375,22 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     @Override
     public BigDecimal getArea(int mps) {
         return l.v.m.multiply(t.v.m).toBigDecimal(mps);
+    }
+    
+    /**
+     * Get the distance between this and {@code pl}.
+     *
+     * @param p A point.
+     * @param oom The order of magnitude of the precision.
+     * @return The distance from {@code this} to {@code p}.
+     */
+    @Override
+    public BigDecimal getDistance(V3D_Point p, int oom) {
+        if (this.isIntersectedBy(p)) {
+            return BigDecimal.ZERO;
+        }
+//        int oom = Math_BigRationalSqrt.getOOM()
+//        return (getDistanceSquared(p, oom));
+        return null;
     }
 }

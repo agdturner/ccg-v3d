@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import java.math.BigDecimal;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
@@ -84,7 +85,8 @@ public interface V3D_FiniteGeometry {
      * For getting the minimum distance to {@code p}.
      *
      * @param p A point.
+     * @param oom The order of magnitude for the result.
      * @return The minimum distance to {@code p}.
      */
-    public abstract Math_BigRationalSqrt getDistance(V3D_Point p);
+    public abstract BigDecimal getDistance(V3D_Point p, int oom);
 }

@@ -72,4 +72,13 @@ public abstract class V3D_Geometry implements Serializable {
      * @return a new geometry which is {@code this} shifted by {@code v}.
      */
     public abstract V3D_Geometry apply(V3D_Vector v);
+    
+    
+    /**
+     * Test for equality.
+     * 
+     * @param g The V3D_Geometry to test for equality with this.
+     * @return {@code true} iff {@code this} and {@code g} are equal.
+     */
+    public abstract boolean equals(V3D_Geometry g);
 }

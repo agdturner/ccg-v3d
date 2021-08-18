@@ -177,6 +177,20 @@ public class V3D_Line extends V3D_Geometry {
                 + ", q=" + q.toString() + ", v=" + v.toString() + ")";
     }
 
+    /**
+     * Test for equality.
+     *
+     * @param g The V3D_Geometry to test for equality with this.
+     * @return {@code true} iff this and e are equal.
+     */
+    @Override
+    public boolean equals(V3D_Geometry g) {
+        if (g instanceof V3D_Line) {
+            return equals((V3D_Line) g);
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Line) {
@@ -242,6 +256,482 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
+     * Get the intersection line (the shortest line) between two lines.
+     *
+     * @param l0 One line.
+     * @param l1 Another line.
+     * @return
+     */
+    public static V3D_Geometry getIntersection1(V3D_Line l0, V3D_Line l1) {
+        V3D_Point p1 = l0.p;
+        V3D_Point p2 = l0.q;
+        V3D_Point p3 = l1.p;
+        V3D_Point p4 = l1.q;
+        V3D_Vector p13 = new V3D_Vector(p1, p3);
+        V3D_Vector p43 = new V3D_Vector(p4, p3);
+
+        if (p43.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
+            return null;
+        }
+        V3D_Vector p21 = new V3D_Vector(p2, p1);
+        if (p21.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
+            return null;
+        }
+
+        //double d1343 = p13.X * (double)p43.X + (double)p13.Y * p43.Y + (double)p13.Z * p43.Z;
+        BigRational d1343 = (p13.dx.multiply(p43.dx)).add(p13.dy.multiply(p43.dy)).add(p13.dz.multiply(p43.dz));
+        //double d4321 = p43.X * (double)p21.X + (double)p43.Y * p21.Y + (double)p43.Z * p21.Z;
+        BigRational d4321 = (p43.dx.multiply(p21.dx)).add(p43.dy.multiply(p21.dy)).add(p43.dz.multiply(p21.dz));
+        //double d1321 = p13.X * (double)p21.X + (double)p13.Y * p21.Y + (double)p13.Z * p21.Z;
+        BigRational d1321 = (p13.dx.multiply(p21.dx)).add(p13.dy.multiply(p21.dy)).add(p13.dz.multiply(p21.dz));
+        //double d4343 = p43.X * (double)p43.X + (double)p43.Y * p43.Y + (double)p43.Z * p43.Z;
+        BigRational d4343 = (p43.dx.multiply(p43.dx)).add(p43.dy.multiply(p43.dy)).add(p43.dz.multiply(p43.dz));
+        //double d2121 = p21.X * (double)p21.X + (double)p21.Y * p21.Y + (double)p21.Z * p21.Z;
+        BigRational d2121 = (p21.dx.multiply(p21.dx)).add(p21.dy.multiply(p21.dy)).add(p21.dz.multiply(p21.dz));
+
+        //double denom = d2121 * d4343 - d4321 * d4321;
+        BigRational denom = (d2121.multiply(d4343)).subtract(d4321.multiply(d4321));
+        if (denom.compareTo(BigRational.ZERO) == 0) {
+            return null;
+        }
+
+        //double numer = d1343 * d4321 - d1321 * d4343;
+        BigRational numer = (d1343.multiply(d4321)).subtract(d1321.multiply(d4343));
+
+        //double mua = numer / denom;
+        BigRational mua = numer.divide(denom);
+
+        //double mub = (d1343 + d4321 * (mua)) / d4343;
+        BigRational mub = (d1343.add(d4321.multiply(mua))).divide(d4343);
+        V3D_Point p = new V3D_Point(
+                (p1.x.add(mua.multiply(p21.dx))),
+                (p1.y.add(mua.multiply(p21.dy))),
+                (p1.z.add(mua.multiply(p21.dz))));
+        V3D_Point q = new V3D_Point(
+                (p3.x.add(mub.multiply(p43.dx))),
+                (p3.y.add(mub.multiply(p43.dy))),
+                (p3.z.add(mub.multiply(p43.dz))));
+        if (p.equals(q)) {
+            return p;
+        }
+        return new V3D_Line(p, q);
+    }
+
+    /**
+     * Get the intersection between two lines.
+     *
+     * @param l0 One line.
+     * @param l1 Another line.
+     * @return
+     */
+    public static V3D_Geometry getIntersection(V3D_Line l0, V3D_Line l1) {
+        // If lines are coincident return line.
+        if (l0.isParallel(l1)) {
+            if (l0.p.isIntersectedBy(l1)) {
+                return l0;
+            }
+        }
+        V3D_Point p1 = l0.p;
+        V3D_Point p2 = l0.q;
+        V3D_Point p3 = l1.p;
+        V3D_Point p4 = l1.q;
+        V3D_Vector p13 = new V3D_Vector(p1, p3);
+        V3D_Vector p43 = new V3D_Vector(p4, p3);
+
+        if (p43.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
+            if (l0.isIntersectedBy(l1.p)) {
+                return l1.p;
+            }
+        }
+        V3D_Vector p21 = new V3D_Vector(p2, p1);
+        if (p21.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
+            if (l1.isIntersectedBy(l0.p)) {
+                return l0.p;
+            }
+        }
+
+        //double d1343 = p13.X * (double)p43.X + (double)p13.Y * p43.Y + (double)p13.Z * p43.Z;
+        BigRational d1343 = (p13.dx.multiply(p43.dx)).add(p13.dy.multiply(p43.dy)).add(p13.dz.multiply(p43.dz));
+        //double d4321 = p43.X * (double)p21.X + (double)p43.Y * p21.Y + (double)p43.Z * p21.Z;
+        BigRational d4321 = (p43.dx.multiply(p21.dx)).add(p43.dy.multiply(p21.dy)).add(p43.dz.multiply(p21.dz));
+        //double d1321 = p13.X * (double)p21.X + (double)p13.Y * p21.Y + (double)p13.Z * p21.Z;
+        BigRational d1321 = (p13.dx.multiply(p21.dx)).add(p13.dy.multiply(p21.dy)).add(p13.dz.multiply(p21.dz));
+        //double d4343 = p43.X * (double)p43.X + (double)p43.Y * p43.Y + (double)p43.Z * p43.Z;
+        BigRational d4343 = (p43.dx.multiply(p43.dx)).add(p43.dy.multiply(p43.dy)).add(p43.dz.multiply(p43.dz));
+        //double d2121 = p21.X * (double)p21.X + (double)p21.Y * p21.Y + (double)p21.Z * p21.Z;
+        BigRational d2121 = (p21.dx.multiply(p21.dx)).add(p21.dy.multiply(p21.dy)).add(p21.dz.multiply(p21.dz));
+
+        //double denom = d2121 * d4343 - d4321 * d4321;
+        BigRational denom = (d2121.multiply(d4343)).subtract(d4321.multiply(d4321));
+        //double numer = d1343 * d4321 - d1321 * d4343;
+        BigRational numer = (d1343.multiply(d4321)).subtract(d1321.multiply(d4343));
+        if (denom.compareTo(BigRational.ZERO) == 0) {
+            if (numer.compareTo(BigRational.ZERO) == 0) {
+                BigRational x;
+                BigRational y;
+                BigRational z;
+                BigRational lamda;
+                BigRational mu;
+                if (l0.v.dx.compareTo(BigRational.ZERO) == 0) {
+                    x = l0.p.x;
+                    if (l1.v.dx.compareTo(BigRational.ZERO) == 0) {
+                        if (l0.v.dy.compareTo(BigRational.ZERO) == 0) {
+                            y = l0.p.y;
+                            if (l1.v.dy.compareTo(BigRational.ZERO) == 0) {
+                                z = l0.p.z;
+                            } else {
+                                if (l0.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                    z = l0.p.z;
+                                } else {
+                                    if (l1.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                        z = l1.p.z;
+                                    } else {
+                                        mu = (l0.p.y.subtract(l1.p.y)).divide(l1.v.dy);
+                                        z = l1.p.z.add(l1.v.dz.multiply(mu));
+                                    }
+                                }
+                            }
+                        } else {
+                            if (l1.v.dy.compareTo(BigRational.ZERO) == 0) {
+                                y = l1.p.y;
+                                if (l0.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                    z = l0.p.z;
+                                } else {
+                                    if (l1.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                        z = l1.p.z;
+                                    } else {
+                                        lamda = (l1.p.y.subtract(l0.p.y)).divide(l0.v.dy);
+                                        z = l0.p.z.add(l0.v.dz.multiply(lamda));
+                                    }
+                                }
+                                //x = l0.p.x;            
+                                //l0.p.x + l0.v.dx * lamda = l1.p.x + l1.v.dx * mu
+                                //l0.p.y + l0.v.dy * lamda = l1.p.y + l1.v.dy * mu
+                                //l0.p.z + l0.v.dz * lamda = l1.p.z + l1.v.dz * mu
+
+                            } else {
+                                if (l0.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                    z = l0.p.z;
+                                    mu = (l0.p.z.subtract(l1.p.z)).divide(l1.v.dy);
+                                    y = l1.p.y.add(l1.v.dy.multiply(mu));
+                                } else {
+                                    if (l1.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                        z = l1.p.z;
+                                        lamda = (l1.p.z.subtract(l0.p.z)).divide(l0.v.dy);
+                                        y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                    } else {
+                                        // There are 2 ways to calculate lamda. One way should work! - If not try calculating mu.
+//                                        mu = ((l0.p.y.add(l0.v.dy.multiply(lamda))).subtract(l1.p.y)).divide(l1.v.dy);
+//                                        lamda = ((l1.p.z.subtract(l0.p.z)).divide(l0.v.dz)).add(l1.v.dz.multiply(mu));
+//                                        lamda = ((l1.p.z.subtract(l0.p.z)).divide(l0.v.dz)).add(l1.v.dz.multiply(((l0.p.y.add(l0.v.dy.multiply(lamda))).subtract(l1.p.y)).divide(l1.v.dy)));
+//                                        l = ((bz-az)/adz) + (bdz*(ady*(l-by)/bdy))
+//                                        l = ((bz-az)/adz) + bdz*ady*l/bdy - bdz*ady*by/bdy
+//                                        l - bdz*ady*l/bdy = ((bz-az)/adz) - bdz*ady*by/bdy
+//                                        l (1 - bdz*ady/bdy) = ((bz-az)/adz) - bdz*ady*by/bdy
+//                                        l = (((bz-az)/adz) - bdz*ady*by/bdy)/(1 - bdz*ady/bdy)
+                                        BigRational denom2 = BigRational.ONE.subtract(l1.v.dz.multiply(l0.v.dy.divide(l1.v.dy)));
+                                        if (denom2.compareTo(BigRational.ZERO) != 0) {
+                                            lamda = (((l1.p.z.subtract(l0.p.z)).divide(l0.v.dz)).subtract(l1.v.dz.multiply(l0.v.dy.multiply(l1.p.y.divide(l1.v.dy))))).divide(denom2);
+                                            z = l0.p.z.add(l0.v.dz.multiply(lamda));
+                                            y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                        } else {
+                                            denom2 = BigRational.ONE.subtract(l1.v.dy.multiply(l0.v.dz.divide(l1.v.dz)));
+                                            if (denom2.compareTo(BigRational.ZERO) != 0) {
+                                                lamda = (((l1.p.y.subtract(l0.p.y)).divide(l0.v.dy)).subtract(l1.v.dy.multiply(l0.v.dz.multiply(l1.p.z.divide(l1.v.dz))))).divide(denom2);
+                                                z = l0.p.z.add(l0.v.dz.multiply(lamda));
+                                                y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                            } else {
+                                                // This should not happen!
+                                                z = null;
+                                                y = null;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        mu = (l0.p.x.subtract(l1.p.x)).divide(l1.v.dx);
+                        if (l0.v.dy.compareTo(BigRational.ZERO) == 0) {
+                            if (l1.v.dy.compareTo(BigRational.ZERO) == 0) {
+                                y = l0.p.y;
+                                z = l0.p.z;
+                            } else {
+                                if (l0.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                    y = l1.p.y.add(l1.v.dy.multiply(mu));
+                                } else {
+                                    y = l0.p.y.add(l0.v.dy.multiply(mu));
+                                }
+                                if (l1.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                    z = l0.p.z;
+                                } else {
+                                    z = l1.p.z.add(l1.v.dz.multiply(mu));
+                                }
+                            }
+                        } else {
+                            lamda = ((l1.p.y.add(l1.v.dy.multiply(mu)))
+                                    .subtract(l0.p.x)).divide(l0.v.dy);
+                            if (l0.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                z = l0.p.z;
+                            } else {
+                                z = l0.p.z.add(l0.v.dz.multiply(lamda));
+                            }
+                            if (l1.v.dy.compareTo(BigRational.ZERO) == 0) {
+                                y = l0.p.y;
+                            } else {
+                                y = l1.p.y.add(l1.v.dy.multiply(mu));
+                            }
+                        }
+                    }
+                } else {
+                    if (l1.v.dx.compareTo(BigRational.ZERO) == 0) {
+                        lamda = l1.p.x.subtract(l0.p.x).divide(l0.v.dx);
+                        x = l1.p.x;
+                        if (l0.v.dy.compareTo(BigRational.ZERO) == 0) {
+                            mu = (l0.p.y.subtract(l1.p.y)).divide(l1.v.dy);
+                            y = l0.p.y;
+                            if (l0.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                z = l0.p.z;
+                            } else {
+                                if (l1.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                    z = l1.p.z;
+                                } else {
+                                    z = l1.p.z.add(l1.v.dz.multiply(mu));
+                                }
+                            }
+                        } else {
+                            if (l0.v.dy.compareTo(BigRational.ZERO) == 0) {
+                                y = l0.p.y;
+                                if (l1.v.dy.compareTo(BigRational.ZERO) == 0) {
+                                    if (l0.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                        z = l0.p.z;
+                                    } else {
+                                        if (l1.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                            z = l1.p.z;
+                                        } else {
+                                            mu = ((l0.p.z.add(l0.v.dz.multiply(lamda))).subtract(l1.p.z)).divide(l1.v.dz);
+                                            z = l1.p.z.add(l1.v.dz.multiply(mu));
+                                        }
+                                    }
+                                } else {
+                                    if (l0.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                        z = l0.p.z;
+                                    } else {
+                                        if (l1.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                            z = l1.p.z;
+                                        } else {
+                                            mu = (l0.p.z.subtract(l1.p.z)).divide(l1.v.dz);
+                                            z = l1.p.z.add(l1.v.dz.multiply(mu));
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (l1.v.dy.compareTo(BigRational.ZERO) == 0) {
+                                    y = l1.p.y;
+                                    if (l0.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                        z = l0.p.z;
+                                    } else {
+                                        if (l1.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                            z = l1.p.z;
+                                        } else {
+                                            mu = ((l0.p.z.add(l0.v.dz.multiply(lamda))).subtract(l1.p.z)).divide(l1.v.dz);
+                                            z = l1.p.z.add(l1.v.dz.multiply(mu));
+                                        }
+                                    }
+                                } else {
+                                    y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                    if (l0.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                        z = l0.p.z;
+                                    } else {
+                                        if (l1.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                            z = l1.p.z;
+                                        } else {
+                                            mu = ((l0.p.z.add(l0.v.dz.multiply(lamda))).subtract(l1.p.z)).divide(l1.v.dz);
+                                            z = l1.p.z.add(l1.v.dz.multiply(mu));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        // l0.v.dx > 0 && l1.v.dx > 0
+                        if (l0.v.dy.compareTo(BigRational.ZERO) == 0) {
+                            y = l0.p.y;
+                            if (l1.v.dy.compareTo(BigRational.ZERO) == 0) {
+                                if (l0.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                    z = l0.p.z;
+                                    x = l0.p.x;
+                                } else {
+                                    if (l1.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                        z = l1.p.z;
+                                        lamda = (l1.p.z.subtract(l0.p.z)).divide(l0.v.dz);
+                                        x = l0.p.x.add(l0.v.dx.multiply(lamda));
+                                    } else {
+                                        // There are 2 ways to calculate lamda. One way should work! - If not try calculating mu.
+//                                        mu = ((l0.p.x.add(l0.v.dx.multiply(lamda))).subtract(l1.p.x)).divide(l1.v.dx);
+//                                        lamda = ((l1.p.z.subtract(l0.p.z)).divide(l0.v.dz)).add(l1.v.dz.multiply(mu));
+//                                        lamda = ((l1.p.z.subtract(l0.p.z)).divide(l0.v.dz)).add(l1.v.dz.multiply(((l0.p.x.add(l0.v.dx.multiply(lamda))).subtract(l1.p.x)).divide(l1.v.dx)));
+//                                        l = ((bz-az)/adz) + (bdz*(adx*(l-bx)/bdx))
+//                                        l = ((bz-az)/adz) + bdz*adx*l/bdx - bdz*adx*bx/bdx
+//                                        l - bdz*adx*l/bdx = ((bz-az)/adz) - bdz*adx*bx/bdx
+//                                        l (1 - bdz*adx/bdx) = ((bz-az)/adz) - bdz*adx*bx/bdx
+//                                        l = (((bz-az)/adz) - bdz*adx*bx/bdx)/(1 - bdz*adx/bdx)
+                                        BigRational denom2 = BigRational.ONE.subtract(l1.v.dz.multiply(l0.v.dx.divide(l1.v.dx)));
+                                        if (denom2.compareTo(BigRational.ZERO) != 0) {
+                                            lamda = (((l1.p.z.subtract(l0.p.z)).divide(l0.v.dz)).subtract(l1.v.dz.multiply(l0.v.dx.multiply(l1.p.x.divide(l1.v.dx))))).divide(denom2);
+                                            z = l0.p.z.add(l0.v.dz.multiply(lamda));
+                                            x = l0.p.x.add(l0.v.dx.multiply(lamda));
+                                        } else {
+                                            denom2 = BigRational.ONE.subtract(l1.v.dx.multiply(l0.v.dz.divide(l1.v.dz)));
+                                            if (denom2.compareTo(BigRational.ZERO) != 0) {
+                                                lamda = (((l1.p.x.subtract(l0.p.x)).divide(l0.v.dx)).subtract(l1.v.dx.multiply(l0.v.dz.multiply(l1.p.z.divide(l1.v.dz))))).divide(denom2);
+                                                z = l0.p.z.add(l0.v.dz.multiply(lamda));
+                                                x = l0.p.x.add(l0.v.dx.multiply(lamda));
+                                            } else {
+                                                // This should not happen!
+                                                z = null;
+                                                x = null;
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                mu = l0.p.y.subtract(l1.p.y).divide(l1.v.dy);
+                                x = l1.p.x.add(l1.v.dx.multiply(mu));
+                                z = l1.p.z.add(l1.v.dz.multiply(mu));
+                            }
+                        } else {
+                            // l0.v.dx > 0 && l1.v.dx > 0 && l0.v.dy > 0
+                            if (l0.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                z = l0.p.z;
+                                if (l1.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                    // There are 2 ways to calculate lamda. One way should work! - If not try calculating mu.
+//                                    mu = ((l0.p.x.add(l0.v.dx.multiply(lamda))).subtract(l1.p.x)).divide(l1.v.dx);
+//                                    lamda = ((l1.p.y.subtract(l0.p.y)).divide(l0.v.dy)).add(l1.v.dy.multiply(mu));
+//                                    lamda = ((l1.p.y.subtract(l0.p.y)).divide(l0.v.dy)).add(l1.v.dy.multiply(((l0.p.x.add(l0.v.dx.multiply(lamda))).subtract(l1.p.x)).divide(l1.v.dx)));
+//                                    l = ((by - ay) / ady) + (bdy * (adx * (l - bx) / bdx))
+//                                    l = ((by - ay) / ady) + bdy * adx * l / bdx - bdy * adx * bx / bdx
+//                                    l - bdy * adx * l / bdx = ((by - ay) / ady) - bdy * adx * bx / bdx
+//                                    l(1 - bdy * adx / bdx) = ((by - ay) / ady) - bdy * adx * bx / bdx
+//                                    l = (((by-ay)/ady) - bdy*adx*bx/bdx)/(1 - bdy*adx/bdx)
+                                    BigRational denom2 = BigRational.ONE.subtract(l1.v.dy.multiply(l0.v.dx.divide(l1.v.dx)));
+                                    if (denom2.compareTo(BigRational.ZERO) != 0) {
+                                        lamda = (((l1.p.y.subtract(l0.p.y)).divide(l0.v.dy)).subtract(l1.v.dy.multiply(l0.v.dx.multiply(l1.p.x.divide(l1.v.dx))))).divide(denom2);
+                                        y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                        x = l0.p.x.add(l0.v.dx.multiply(lamda));
+                                    } else {
+                                        denom2 = BigRational.ONE.subtract(l1.v.dx.multiply(l0.v.dy.divide(l1.v.dy)));
+                                        if (denom2.compareTo(BigRational.ZERO) != 0) {
+                                            lamda = (((l1.p.x.subtract(l0.p.x)).divide(l0.v.dx)).subtract(l1.v.dx.multiply(l0.v.dy.multiply(l1.p.y.divide(l1.v.dy))))).divide(denom2);
+                                            y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                            x = l0.p.x.add(l0.v.dx.multiply(lamda));
+                                        } else {
+                                            // This should not happen!
+                                            y = null;
+                                            x = null;
+                                        }
+                                    }
+                                } else {
+                                    mu = (l0.p.z.subtract(l1.p.z)).divide(l1.v.dz);
+                                    y = l1.p.y.add(l1.v.dy.multiply(mu));
+                                    x = l1.p.x.add(l1.v.dx.multiply(mu));
+                                }
+                            } else {
+                                if (l1.v.dz.compareTo(BigRational.ZERO) == 0) {
+                                    z = l1.p.z;
+                                    lamda = (l1.p.z.subtract(l0.p.z)).divide(l0.v.dz);
+                                    y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                    x = l0.p.x.add(l0.v.dx.multiply(lamda));
+                                } else {
+                                    // There are 6 ways to calculate lamda. One way should work! - If not try calculating mu.
+                                    BigRational denom2 = BigRational.ONE.subtract(l1.v.dy.multiply(l0.v.dx.divide(l1.v.dx)));
+                                    if (denom2.compareTo(BigRational.ZERO) != 0) {
+                                        lamda = (((l1.p.y.subtract(l0.p.y)).divide(l0.v.dy)).subtract(l1.v.dy.multiply(l0.v.dx.multiply(l1.p.x.divide(l1.v.dx))))).divide(denom2);
+                                        x = l0.p.x.add(l0.v.dx.multiply(lamda));
+                                        y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                        z = l0.p.z.add(l0.v.dz.multiply(lamda));
+                                    } else {
+                                        denom2 = BigRational.ONE.subtract(l1.v.dy.multiply(l0.v.dz.divide(l1.v.dz)));
+                                        if (denom2.compareTo(BigRational.ZERO) != 0) {
+                                            lamda = (((l1.p.y.subtract(l0.p.y)).divide(l0.v.dy)).subtract(l1.v.dy.multiply(l0.v.dz.multiply(l1.p.z.divide(l1.v.dz))))).divide(denom2);
+                                            x = l0.p.x.add(l0.v.dx.multiply(lamda));
+                                            y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                            z = l0.p.z.add(l0.v.dz.multiply(lamda));
+                                        } else {
+                                            denom2 = BigRational.ONE.subtract(l1.v.dz.multiply(l0.v.dx.divide(l1.v.dx)));
+                                            if (denom2.compareTo(BigRational.ZERO) != 0) {
+                                                lamda = (((l1.p.z.subtract(l0.p.z)).divide(l0.v.dz)).subtract(l1.v.dz.multiply(l0.v.dx.multiply(l1.p.x.divide(l1.v.dx))))).divide(denom2);
+                                                x = l0.p.x.add(l0.v.dx.multiply(lamda));
+                                                y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                                z = l0.p.z.add(l0.v.dz.multiply(lamda));
+                                            } else {
+                                                denom2 = BigRational.ONE.subtract(l1.v.dz.multiply(l0.v.dy.divide(l1.v.dy)));
+                                                if (denom2.compareTo(BigRational.ZERO) != 0) {
+                                                    lamda = (((l1.p.z.subtract(l0.p.z)).divide(l0.v.dz)).subtract(l1.v.dz.multiply(l0.v.dy.multiply(l1.p.y.divide(l1.v.dy))))).divide(denom2);
+                                                    x = l0.p.x.add(l0.v.dx.multiply(lamda));
+                                                    y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                                    z = l0.p.z.add(l0.v.dz.multiply(lamda));
+                                                } else {
+                                                    denom2 = BigRational.ONE.subtract(l1.v.dx.multiply(l0.v.dx.divide(l1.v.dy)));
+                                                    if (denom2.compareTo(BigRational.ZERO) != 0) {
+                                                        lamda = (((l1.p.x.subtract(l0.p.x)).divide(l0.v.dx)).subtract(l1.v.dx.multiply(l0.v.dy.multiply(l1.p.y.divide(l1.v.dy))))).divide(denom2);
+                                                        x = l0.p.x.add(l0.v.dx.multiply(lamda));
+                                                        y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                                        z = l0.p.z.add(l0.v.dz.multiply(lamda));
+                                                    } else {
+                                                        denom2 = BigRational.ONE.subtract(l1.v.dx.multiply(l0.v.dx.divide(l1.v.dz)));
+                                                        if (denom2.compareTo(BigRational.ZERO) != 0) {
+                                                            lamda = (((l1.p.x.subtract(l0.p.x)).divide(l0.v.dx)).subtract(l1.v.dx.multiply(l0.v.dz.multiply(l1.p.z.divide(l1.v.dz))))).divide(denom2);
+                                                            x = l0.p.x.add(l0.v.dx.multiply(lamda));
+                                                            y = l0.p.y.add(l0.v.dy.multiply(lamda));
+                                                            z = l0.p.z.add(l0.v.dz.multiply(lamda));
+                                                        } else {
+                                                            // This should not happen!
+                                                            x = null;
+                                                            y = null;
+                                                            z = null;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                //l0.p.x + l0.v.dx * lamda = l1.p.x + l1.v.dx * mu
+                //l0.p.y + l0.v.dy * lamda = l1.p.y + l1.v.dy * mu
+                //l0.p.z + l0.v.dz * lamda = l1.p.z + l1.v.dz * mu
+
+                return new V3D_Point(x, y, z);
+            }
+            return null;
+        }
+
+        //double mua = numer / denom;
+        BigRational mua = numer.divide(denom);
+
+        //double mub = (d1343 + d4321 * (mua)) / d4343;
+        BigRational mub = (d1343.add(d4321.multiply(mua))).divide(d4343);
+        V3D_Point p = new V3D_Point(
+                (p1.x.add(mua.multiply(p21.dx))),
+                (p1.y.add(mua.multiply(p21.dy))),
+                (p1.z.add(mua.multiply(p21.dz))));
+        V3D_Point q = new V3D_Point(
+                (p3.x.add(mub.multiply(p43.dx))),
+                (p3.y.add(mub.multiply(p43.dy))),
+                (p3.z.add(mub.multiply(p43.dz))));
+
+        if (p.equals(q)) {
+            return p;
+        }
+
+        return new V3D_Line(p, q);
+    }
+
+    /**
      * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection A utility
      * method for calculating and returning the intersection between {@code l0}
      * and {@code l1}
@@ -250,7 +740,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param l1 Line to intersect with {@code l0}.
      * @return The intersection between {@code l0} and {@code l1}.
      */
-    public static V3D_Geometry getIntersection(V3D_Line l0, V3D_Line l1) {
+    public static V3D_Geometry getIntersection2(V3D_Line l0, V3D_Line l1) {
         // Check the points.
         if (l0.isIntersectedBy(l1.p)) {
             if (l0.isIntersectedBy(l1.q)) {
@@ -261,52 +751,52 @@ public class V3D_Line extends V3D_Geometry {
         } else {
             if (l0.isIntersectedBy(l1.q)) {
                 return l1.q;
+            } else {
+                if (l1.isIntersectedBy(l0.p)) {
+                    return l0.p;
+                }
+                if (l1.isIntersectedBy(l0.q)) {
+                    return l0.q;
+                }
+                // Case of parallel and non equal lines.
+                if (l0.isParallel(l1)) {
+                    return null;
+                }
+                if (l0.v.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
+                    return null;
+                }
+                if (l1.v.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
+                    return null;
+                }
+                V3D_Vector vl0pl1q = new V3D_Vector(l0.p, l1.q);
+                BigRational vl0pl1ql1v = vl0pl1q.dx.multiply(l1.v.dx)
+                        .add(vl0pl1q.dy.multiply(l1.v.dy))
+                        .add(vl0pl1q.dz.multiply(l1.v.dz));
+                BigRational vl1l0 = l1.v.dx.multiply(l0.v.dx)
+                        .add(l1.v.dy.multiply(l0.v.dy))
+                        .add(l1.v.dz.multiply(l0.v.dz));
+                BigRational vl0pl1ql0v = vl0pl1q.dx.multiply(l0.v.dx)
+                        .add(vl0pl1q.dy.multiply(l0.v.dy))
+                        .add(vl0pl1q.dz.multiply(l0.v.dz));
+                BigRational vl1l1 = l1.v.dx.multiply(l1.v.dx)
+                        .add(l1.v.dy.multiply(l1.v.dy))
+                        .add(l1.v.dz.multiply(l1.v.dz));
+                BigRational vl0l0 = l0.v.dx.multiply(l0.v.dx)
+                        .add(l0.v.dy.multiply(l0.v.dy))
+                        .add(l0.v.dz.multiply(l0.v.dz));
+                BigRational den = (vl0l0.multiply(vl1l1))
+                        .subtract(vl1l0.multiply(vl1l0));
+                if (den.compareTo(BigRational.ZERO) == 0) {
+                    return null;
+                }
+                BigRational num = (vl0pl1ql1v.multiply(vl1l0))
+                        .subtract(vl0pl1ql0v.multiply(vl1l1));
+                BigRational t = num.divide(den);
+                return new V3D_Point(l0.q.x.add(t.multiply(l0.v.dx)),
+                        l0.q.y.add(t.multiply(l0.v.dy)),
+                        l0.q.z.add(t.multiply(l0.v.dz)));
             }
         }
-        if (l1.isIntersectedBy(l0.p)) {
-            return l0.p;
-        }
-        if (l1.isIntersectedBy(l0.q)) {
-            return l0.q;
-        }
-        // Case of parallel and non equal lines.
-        if (l0.isParallel(l1)) {
-            return null;
-        }
-        if (l0.v.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
-            return null;
-        }
-        if (l1.v.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
-            return null;
-        }
-        V3D_Vector vl0pl1q = new V3D_Vector(l0.p, l1.q);
-
-        BigRational vl0pl1ql1v = vl0pl1q.dx.multiply(l1.v.dx)
-                .add(vl0pl1q.dy.multiply(l1.v.dy))
-                .add(vl0pl1q.dz.multiply(l1.v.dz));
-        BigRational vl1l0 = l1.v.dx.multiply(l0.v.dx)
-                .add(l1.v.dy.multiply(l0.v.dy))
-                .add(l1.v.dz.multiply(l0.v.dz));
-        BigRational vl0pl1ql0v = vl0pl1q.dx.multiply(l0.v.dx)
-                .add(vl0pl1q.dy.multiply(l0.v.dy))
-                .add(vl0pl1q.dz.multiply(l0.v.dz));
-        BigRational vl1l1 = l1.v.dx.multiply(l1.v.dx)
-                .add(l1.v.dy.multiply(l1.v.dy))
-                .add(l1.v.dz.multiply(l1.v.dz));
-        BigRational vl0l0 = l0.v.dx.multiply(l0.v.dx)
-                .add(l0.v.dy.multiply(l0.v.dy))
-                .add(l0.v.dz.multiply(l0.v.dz));
-        BigRational den = (vl0l0.multiply(vl1l1))
-                .subtract(vl1l0.multiply(vl1l0));
-        if (den.compareTo(BigRational.ZERO) == 0) {
-            return null;
-        }
-        BigRational num = (vl0pl1ql1v.multiply(vl1l0))
-                .subtract(vl0pl1ql0v.multiply(vl1l1));
-        BigRational t = num.divide(den);
-        return new V3D_Point(l0.q.x.add(t.multiply(l0.v.dx)),
-                l0.q.y.add(t.multiply(l0.v.dy)),
-                l0.q.z.add(t.multiply(l0.v.dz)));
     }
 
     /**
