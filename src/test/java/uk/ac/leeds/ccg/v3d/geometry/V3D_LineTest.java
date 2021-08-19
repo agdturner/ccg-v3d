@@ -511,8 +511,15 @@ public class V3D_LineTest extends V3D_Test {
         BigDecimal result;
         // Test 1
         p = P0P0P0;
-        oom = 1;
+        oom = -1;
         instance = new V3D_Line(P1P0P0, P1P1P0);
+        expResult = BigDecimal.ONE;
+        result = instance.getDistance(p, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 2
+        p = P0P0P0;
+        oom = -1;
+        instance = new V3D_Line(P0P1P0, P1P1P0);
         expResult = BigDecimal.ONE;
         result = instance.getDistance(p, oom);
         assertTrue(expResult.compareTo(result) == 0);

@@ -638,48 +638,80 @@ public class V3D_EnvelopeTest extends V3D_Test {
         BigDecimal expResult = new Math_BigRationalSqrt(0).toBigDecimal(oom);
         BigDecimal result = instance.getDistance(p, oom);
         assertTrue(expResult.compareTo(result) == 0);
-        // Test 2
+        // Test
         instance = new V3D_Envelope(N1N1N1, P1P1P1);
-        p = N2N2N2;
-        result = instance.getDistance(p, oom);
+        // Corners
+        // Test 2
+        result = instance.getDistance(N2N2N2, oom);
         expResult = new Math_BigRationalSqrt(3).toBigDecimal(oom);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
-        p = new V3D_Point(N2, N2, P2);
-        result = instance.getDistance(p, oom);
-        expResult = new Math_BigRationalSqrt(3).toBigDecimal(oom);
+        result = instance.getDistance(N2N2P2, oom);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 4
-        p = new V3D_Point(N2, P2, N2);
-        result = instance.getDistance(p, oom);
-        expResult = new Math_BigRationalSqrt(3).toBigDecimal(oom);
+        result = instance.getDistance(N2P2N2, oom);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 5
-        p = new V3D_Point(N2, P2, P2);
-        result = instance.getDistance(p, oom);
-        expResult = new Math_BigRationalSqrt(3).toBigDecimal(oom);
+        result = instance.getDistance(N2P2P2, oom);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 6
-        p = new V3D_Point(P2, N2, N2);
-        result = instance.getDistance(p, oom);
-        expResult = new Math_BigRationalSqrt(3).toBigDecimal(oom);
+        result = instance.getDistance(P2N2N2, oom);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 7
-        p = new V3D_Point(P2, N2, P2);
-        result = instance.getDistance(p, oom);
-        expResult = new Math_BigRationalSqrt(3).toBigDecimal(oom);
+        result = instance.getDistance(P2N2P2, oom);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 8
-        p = new V3D_Point(P2, P2, N2);
-        result = instance.getDistance(p, oom);
-        expResult = new Math_BigRationalSqrt(3).toBigDecimal(oom);
+        result = instance.getDistance(P2P2N2, oom);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 9
-        p = new V3D_Point(P2, P2, P2);
-        result = instance.getDistance(p, oom);
-        expResult = new Math_BigRationalSqrt(3).toBigDecimal(oom);
+        result = instance.getDistance(P2P2P2, oom);
         assertTrue(expResult.compareTo(result) == 0);
-        
+        // Edges
+        // Test 10
+        expResult = new Math_BigRationalSqrt(2).toBigDecimal(oom);
+//        result = instance.getDistance(N2N2P0, oom);
+//        assertTrue(expResult.compareTo(result) == 0);
+        // Test 11
+        result = instance.getDistance(N2P2P0, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 12
+        result = instance.getDistance(N2P0N2, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 13
+        result = instance.getDistance(N2P0P2, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 14
+        result = instance.getDistance(P0N2P2, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 15
+        result = instance.getDistance(P0P2N2, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 16
+        result = instance.getDistance(P2P0N2, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 17
+        result = instance.getDistance(P2N2P0, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // 6 planes
+        // Test 18
+        expResult = new Math_BigRationalSqrt(1).toBigDecimal(oom);
+        result = instance.getDistance(N2P0P0, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 19
+        result = instance.getDistance(P0N2P0, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 20
+        result = instance.getDistance(P0P0N2, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 21
+        result = instance.getDistance(P2P0P0, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 22
+        result = instance.getDistance(P0P2P0, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 23
+        result = instance.getDistance(P0P0P2, oom);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
 

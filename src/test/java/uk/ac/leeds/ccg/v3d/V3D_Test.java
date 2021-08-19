@@ -69,7 +69,7 @@ public abstract class V3D_Test extends V3D_Object {
     public static final BigRational N10000 = P10000.negate();
     public static final BigRational N10001 = P10001.negate();
     private static final long serialVersionUID = 1L;
-    
+
     public final V3D_Point P1P1P1;
     public final V3D_Point P1P1P0;
     public final V3D_Point P1P1N1;
@@ -79,19 +79,15 @@ public abstract class V3D_Test extends V3D_Object {
     public final V3D_Point P1N1P1;
     public final V3D_Point P1N1P0;
     public final V3D_Point P1N1N1;
-
     public final V3D_Point P0P1P1;
     public final V3D_Point P0P1P0;
     public final V3D_Point P0P1N1;
     public final V3D_Point P0P0P1;
-    
     public final V3D_Point P0P0P0;
-    
     public final V3D_Point P0P0N1;
     public final V3D_Point P0N1P1;
     public final V3D_Point P0N1P0;
     public final V3D_Point P0N1N1;
-
     public final V3D_Point N1P1P1;
     public final V3D_Point N1P1P0;
     public final V3D_Point N1P1N1;
@@ -103,8 +99,36 @@ public abstract class V3D_Test extends V3D_Object {
     public final V3D_Point N1N1N1;
 
     public final V3D_Point P2P2P2;
+    public final V3D_Point P2P2N2;
+    public final V3D_Point P2N2P2;
+    public final V3D_Point P2N2N2;
+    public final V3D_Point N2P2P2;
+    public final V3D_Point N2P2N2;
+    public final V3D_Point N2N2P2;
     public final V3D_Point N2N2N2;
 
+    public final V3D_Point N2N2P0;
+    public final V3D_Point N2P0N2;
+    public final V3D_Point P0N2N2;
+
+    public final V3D_Point N2P0P0;
+    public final V3D_Point P0P0N2;
+    public final V3D_Point P0N2P0;
+
+    public final V3D_Point P2N2P0;
+    public final V3D_Point P2P0N2;
+    public final V3D_Point P0P2N2;
+    public final V3D_Point P0N2P2;
+    public final V3D_Point N2P0P2;
+    public final V3D_Point N2P2P0;
+
+    public final V3D_Point P2P0P0;
+    public final V3D_Point P0P0P2;
+    public final V3D_Point P0P2P0;
+
+    public final V3D_Point P2P2P0;
+    public final V3D_Point P2P0P2;
+    public final V3D_Point P0P2P2;
 
     public V3D_Test(V3D_Environment e) {
         super(e);
@@ -126,7 +150,6 @@ public abstract class V3D_Test extends V3D_Object {
         P0N1P1 = new V3D_Point(P0, N1, P1);
         P0N1P0 = new V3D_Point(P0, N1, P0);
         P0N1N1 = new V3D_Point(P0, N1, N1);
-
         N1P1P1 = new V3D_Point(N1, P1, P1);
         N1P1P0 = new V3D_Point(N1, P1, P0);
         N1P1N1 = new V3D_Point(N1, P1, N1);
@@ -138,7 +161,35 @@ public abstract class V3D_Test extends V3D_Object {
         N1N1N1 = new V3D_Point(N1, N1, N1);
 
         P2P2P2 = new V3D_Point(P2, P2, P2);
+        P2P2N2 = new V3D_Point(P2, P2, N2);
+        P2N2P2 = new V3D_Point(P2, N2, P2);
+        P2N2N2 = new V3D_Point(P2, N2, N2);
+        N2P2P2 = new V3D_Point(N2, P2, P2);
+        N2P2N2 = new V3D_Point(N2, P2, N2);
+        N2N2P2 = new V3D_Point(N2, N2, P2);
         N2N2N2 = new V3D_Point(N2, N2, N2);
 
+        N2N2P0 = new V3D_Point(N2, N2, P0);
+        N2P0N2 = new V3D_Point(N2, P0, N2);
+        P0N2N2 = new V3D_Point(P0, N2, N2);
+
+        N2P0P0 = new V3D_Point(N2, P0, P0);
+        P0P0N2 = new V3D_Point(P0, P0, N2);
+        P0N2P0 = new V3D_Point(P0, N2, P0);
+
+        P2N2P0 = new V3D_Point(P2, N2, P0);
+        P2P0N2 = new V3D_Point(P2, P0, N2);
+        P0P2N2 = new V3D_Point(P0, P2, N2);
+        P0N2P2 = new V3D_Point(P0, N2, P2);
+        N2P0P2 = new V3D_Point(N2, P0, P2);
+        N2P2P0 = new V3D_Point(N2, P2, P0);
+
+        P2P0P0 = new V3D_Point(P2, P0, P0);
+        P0P0P2 = new V3D_Point(P0, P0, P2);
+        P0P2P0 = new V3D_Point(P0, P2, P0);
+
+        P2P2P0 = new V3D_Point(P2, P2, P0);
+        P2P0P2 = new V3D_Point(P2, P0, P2);
+        P0P2P2 = new V3D_Point(P0, P2, P2);
     }
 }
