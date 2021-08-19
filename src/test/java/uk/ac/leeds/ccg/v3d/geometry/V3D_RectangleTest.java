@@ -65,11 +65,11 @@ public class V3D_RectangleTest extends V3D_Test {
     public void testGetEnvelope() {
         System.out.println("getEnvelope");
         /*
-         * p ----------- q
+         * q ----------- r
          * |             |
          * |             |
          * |             |
-         * s ----------- r
+         * p ----------- s
          */
         V3D_Rectangle instance;
         V3D_Envelope expResult;
