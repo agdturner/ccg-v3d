@@ -226,9 +226,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             f = new V3D_LineSegment(fb, ft);
                             l = f;
                             a = f;
-                            r = f;                            
+                            r = f;
                             t = ft;
-                            b = fb; 
+                            b = fb;
                         }
                     } else {
                         if (zmin.compareTo(zmax) == 0) {
@@ -460,7 +460,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     *
      * @param en The envelop to intersect.
      * @return {@code null} if there is no intersection; {@code en} if
      * {@code this.equals(en)}; otherwise returns the intersection.
@@ -907,7 +906,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         if (xcmin == -1) {
             if (ycmin == -1) {
                 if (zcmin == -1) {
-                    // A
+                    // lbf
                     if (f instanceof V3D_Rectangle) {
                         return ((V3D_Rectangle) f).p.getDistance(p, oom);
                     } else if (f instanceof V3D_LineSegment) {
@@ -917,11 +916,20 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     }
                 } else {
                     if (zcmax == 1) {
-                        // F
+                        // bla
                         if (l instanceof V3D_Rectangle) {
                             return ((V3D_Rectangle) l).p.getDistance(p, oom);
                         } else if (l instanceof V3D_LineSegment) {
                             return ((V3D_LineSegment) l).p.getDistance(p, oom);
+                        } else {
+                            return ((V3D_Point) l).getDistance(p, oom);
+                        }
+                    } else {
+                        // lba - lbf
+                        if (l instanceof V3D_Rectangle) {
+                            return new V3D_Line(((V3D_Rectangle) l).b).getDistance(p, oom);
+                        } else if (l instanceof V3D_LineSegment) {
+                            return ((V3D_Line) l).getDistance(p, oom);
                         } else {
                             return ((V3D_Point) l).getDistance(p, oom);
                         }
@@ -930,7 +938,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             } else {
                 if (ycmax == 1) {
                     if (zcmin == -1) {
-                        // B
+                        // ltf
                         if (f instanceof V3D_Rectangle) {
                             return ((V3D_Rectangle) f).q.getDistance(p, oom);
                         } else if (f instanceof V3D_LineSegment) {
@@ -940,11 +948,51 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         }
                     } else {
                         if (zcmax == 1) {
-                            // C
+                            // lta
                             if (l instanceof V3D_Rectangle) {
                                 return ((V3D_Rectangle) l).q.getDistance(p, oom);
                             } else if (l instanceof V3D_LineSegment) {
                                 return ((V3D_LineSegment) l).p.getDistance(p, oom);
+                            } else {
+                                return ((V3D_Point) l).getDistance(p, oom);
+                            }
+                        } else {
+                            // lta - ltf
+                            if (l instanceof V3D_Rectangle) {
+                                return new V3D_Line(((V3D_Rectangle) l).t).getDistance(p, oom);
+                            } else if (l instanceof V3D_LineSegment) {
+                                return ((V3D_Line) l).getDistance(p, oom);
+                            } else {
+                                return ((V3D_Point) l).getDistance(p, oom);
+                            }
+                        }
+                    }
+                } else {
+                    if (zcmin == -1) {
+                        // lbf - ltf
+                        if (l instanceof V3D_Rectangle) {
+                            return new V3D_Line(((V3D_Rectangle) l).l).getDistance(p, oom);
+                        } else if (l instanceof V3D_LineSegment) {
+                            return ((V3D_Line) l).getDistance(p, oom);
+                        } else {
+                            return ((V3D_Point) l).getDistance(p, oom);
+                        }
+                    } else {
+                        if (zcmax == 1) {
+                            // lba - lta
+                            if (l instanceof V3D_Rectangle) {
+                                return new V3D_Line(((V3D_Rectangle) l).l).getDistance(p, oom);
+                            } else if (l instanceof V3D_LineSegment) {
+                                return ((V3D_Line) l).getDistance(p, oom);
+                            } else {
+                                return ((V3D_Point) l).getDistance(p, oom);
+                            }
+                        } else {
+                            // lba - lta - ltf - lbf
+                            if (l instanceof V3D_Rectangle) {
+                                return ((V3D_Plane) l).getDistance(p, oom);
+                            } else if (l instanceof V3D_LineSegment) {
+                                return ((V3D_Line) l).getDistance(p, oom);
                             } else {
                                 return ((V3D_Point) l).getDistance(p, oom);
                             }
@@ -956,7 +1004,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             if (xcmax == 1) {
                 if (ycmin == -1) {
                     if (zcmin == -1) {
-                        // H
+                        // rbf
                         if (f instanceof V3D_Rectangle) {
                             return ((V3D_Rectangle) f).s.getDistance(p, oom);
                         } else if (f instanceof V3D_LineSegment) {
@@ -966,7 +1014,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         }
                     } else {
                         if (zcmax == 1) {
-                            // G
+                            // rba
                             if (a instanceof V3D_Rectangle) {
                                 return ((V3D_Rectangle) a).p.getDistance(p, oom);
                             } else if (a instanceof V3D_LineSegment) {
@@ -974,12 +1022,21 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             } else {
                                 return ((V3D_Point) a).getDistance(p, oom);
                             }
+                        } else {
+                            // rbf - rba
+                            if (r instanceof V3D_Rectangle) {
+                                return new V3D_Line(((V3D_Rectangle) r).b).getDistance(p, oom);
+                            } else if (r instanceof V3D_LineSegment) {
+                                return ((V3D_Line) r).getDistance(p, oom);
+                            } else {
+                                return ((V3D_Point) r).getDistance(p, oom);
+                            }
                         }
                     }
                 } else {
                     if (ycmax == 1) {
                         if (zcmin == -1) {
-                            // E
+                            // rtf
                             if (f instanceof V3D_Rectangle) {
                                 return ((V3D_Rectangle) f).r.getDistance(p, oom);
                             } else if (f instanceof V3D_LineSegment) {
@@ -989,7 +1046,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             }
                         } else {
                             if (zcmax == 1) {
-                                // D
+                                // rta
                                 if (a instanceof V3D_Rectangle) {
                                     return ((V3D_Rectangle) a).q.getDistance(p, oom);
                                 } else if (a instanceof V3D_LineSegment) {
@@ -997,12 +1054,150 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 } else {
                                     return ((V3D_Point) a).getDistance(p, oom);
                                 }
+                            } else {
+                                // rtf - rta
+                                if (r instanceof V3D_Rectangle) {
+                                    return new V3D_Line(((V3D_Rectangle) r).t).getDistance(p, oom);
+                                } else if (r instanceof V3D_LineSegment) {
+                                    return ((V3D_Line) r).getDistance(p, oom);
+                                } else {
+                                    return ((V3D_Point) r).getDistance(p, oom);
+                                }
+                            }
+                        }
+                    } else {
+                        if (zcmin == -1) {
+                            // rbf - rtf
+                            if (f instanceof V3D_Rectangle) {
+                                return new V3D_Line(((V3D_Rectangle) f).ri).getDistance(p, oom);
+                            } else if (f instanceof V3D_LineSegment) {
+                                return ((V3D_Line) f).getDistance(p, oom);
+                            } else {
+                                return ((V3D_Point) f).getDistance(p, oom);
+                            }
+                        } else {
+                            if (zcmax == 1) {
+                                // rba - rta
+                                if (a instanceof V3D_Rectangle) {
+                                    return new V3D_Line(((V3D_Rectangle) a).l).getDistance(p, oom);
+                                } else if (a instanceof V3D_LineSegment) {
+                                    return ((V3D_Line) a).getDistance(p, oom);
+                                } else {
+                                    return ((V3D_Point) a).getDistance(p, oom);
+                                }
+                            } else {
+                                // rbf - rtf - rta - rba
+                                if (r instanceof V3D_Rectangle) {
+                                    return ((V3D_Plane) r).getDistance(p, oom);
+                                } else if (r instanceof V3D_LineSegment) {
+                                    return ((V3D_Line) r).getDistance(p, oom);
+                                } else {
+                                    return ((V3D_Point) r).getDistance(p, oom);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (ycmin == -1) {
+                    if (zcmin == -1) {
+                        // lbf - rbf
+                        if (f instanceof V3D_Rectangle) {
+                            return new V3D_Line(((V3D_Rectangle) f).b).getDistance(p, oom);
+                        } else if (f instanceof V3D_LineSegment) {
+                            return ((V3D_Line) f).getDistance(p, oom);
+                        } else {
+                            return ((V3D_Point) f).getDistance(p, oom);
+                        }
+                    } else {
+                        if (zcmax == 1) {
+                            // rba - lba
+                            if (a instanceof V3D_Rectangle) {
+                                return new V3D_Line(((V3D_Rectangle) a).b).getDistance(p, oom);
+                            } else if (a instanceof V3D_LineSegment) {
+                                return ((V3D_Line) a).getDistance(p, oom);
+                            } else {
+                                return ((V3D_Point) a).getDistance(p, oom);
+                            }
+                        } else {
+                            // lba - lbf - rbf - rba
+                            if (b instanceof V3D_Rectangle) {
+                                return ((V3D_Plane) b).getDistance(p, oom);
+                            } else if (b instanceof V3D_LineSegment) {
+                                return ((V3D_Line) b).getDistance(p, oom);
+                            } else {
+                                return ((V3D_Point) b).getDistance(p, oom);
+                            }
+                        }
+                    }
+                } else {
+                    // xany
+                    if (ycmax == 1) {
+                        if (zcmin == -1) {
+                            // ltf - rtf
+                            if (f instanceof V3D_Rectangle) {
+                                return ((V3D_Rectangle) f).t.getDistance(p, oom);
+                            } else if (f instanceof V3D_LineSegment) {
+                                return ((V3D_LineSegment) f).q.getDistance(p, oom);
+                            } else {
+                                return ((V3D_Point) f).getDistance(p, oom);
+                            }
+                        } else {
+                            if (zcmax == 1) {
+                                // rta - lta
+                                if (a instanceof V3D_Rectangle) {
+                                    return new V3D_Line(((V3D_Rectangle) a).t).getDistance(p, oom);
+                                } else if (a instanceof V3D_LineSegment) {
+                                    return ((V3D_Line) a).getDistance(p, oom);
+                                } else {
+                                    return ((V3D_Point) a).getDistance(p, oom);
+                                }
+                            } else {
+                                // ltf - lta - rta - rtf
+                                if (t instanceof V3D_Rectangle) {
+                                    return ((V3D_Plane) t).getDistance(p, oom);
+                                } else if (r instanceof V3D_LineSegment) {
+                                    return ((V3D_Line) t).getDistance(p, oom);
+                                } else {
+                                    return ((V3D_Point) t).getDistance(p, oom);
+                                }
+                            }
+                        }
+                    } else {
+                        if (zcmin == -1) {
+                            // lbf - ltf - rtf - rbf
+                            if (f instanceof V3D_Rectangle) {
+                                return ((V3D_Plane) f).getDistance(p, oom);
+                            } else if (f instanceof V3D_LineSegment) {
+                                return ((V3D_Line) f).getDistance(p, oom);
+                            } else {
+                                return ((V3D_Point) f).getDistance(p, oom);
+                            }
+                        } else {
+                            if (zcmax == 1) {
+                                // rba - rta - lta - lba
+                                if (a instanceof V3D_Rectangle) {
+                                    return ((V3D_Plane) a).getDistance(p, oom);
+                                } else if (a instanceof V3D_LineSegment) {
+                                    return ((V3D_Line) a).getDistance(p, oom);
+                                } else {
+                                    return ((V3D_Point) a).getDistance(p, oom);
+                                }
+                            } else {
+                                // lba - lbf - rbf - rba
+                                if (r instanceof V3D_Rectangle) {
+                                    return ((V3D_Plane) b).getDistance(p, oom);
+                                } else if (r instanceof V3D_LineSegment) {
+                                    return ((V3D_LineSegment) b).getDistance(p, oom);
+                                } else {
+                                    return ((V3D_Point) b).getDistance(p, oom);
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        return null;
+
     }
 }

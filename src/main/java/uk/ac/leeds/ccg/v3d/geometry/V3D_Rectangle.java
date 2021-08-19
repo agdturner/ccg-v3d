@@ -116,6 +116,13 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     }
 
     @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(p=" + p.toString()
+                + ", q=" + q.toString() + ", r=" + r.toString() 
+                + ", s=" + s.toString() + ")";
+    }
+    
+    @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
             en = new V3D_Envelope(p, q, r, s);

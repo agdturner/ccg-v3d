@@ -820,17 +820,20 @@ public class V3D_Line extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The minimum distance between this and {@code p}.
      */
+    @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
         /**
          * Calculate the direction vector of the line connecting the closest
          * points by computing the cross product.
          */
         V3D_Vector pv = new V3D_Vector(p);
+        //V3D_Vector pv = new V3D_Vector(this.p);
         V3D_Vector cp = v.getCrossProduct(pv);
         /**
          * Calculate the delta from {@link #p} and l.p
          */
         V3D_Vector delta = new V3D_Vector(this.p).subtract(pv);
+        //V3D_Vector delta = new V3D_Vector(p).subtract(pv);
         BigRational ms = cp.m.getSqrt();
         if (ms == null) {
             ms = BigRational.valueOf(cp.getMagnitude(oom - 2));
