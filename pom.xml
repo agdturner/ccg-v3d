@@ -4,20 +4,17 @@
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-vector3d</artifactId>
     <version>0.8-SNAPSHOT</version>
-    <!--
-    <version>0.7-SNAPSHOT</version>
-    -->
     <packaging>jar</packaging>
     
     <name>agdt-java-vector3d</name>
     <url>https://github.com/agdturner/agdt-java-vector3d</url>
-    <description>A Java Library for handling 2D spatial vector3d data.</description>
+    <description>A Java Library for handling 3D spatial vector data.</description>
     <scm>
         <url>git@github.com:agdturner/agdt-java-vector3d.git</url>
         <connection>scm:git:git@github.com:agdturner/agdt-java-vector3d.git</connection>
         <developerConnection>scm:git:git@github.com:agdturner/agdt-java-vector3d</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
     <licenses>
         <license>
             <name>APACHE LICENSE, VERSION 2.0</name>
