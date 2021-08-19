@@ -11,7 +11,8 @@ Code and tests are in development and the current focus is to to develop insters
 (See below for [Details](#Details).)
 
 ## Latest versioned release
-Developed and tested on [Java Development Kit, version 15](https://openjdk.java.net/projects/jdk/15/).
+Developed and tested on [Java Development Kit, version 15](https://openjdk.java.net/projects/jdk/15/). The latest version is on GitHub
+# I have been trying and failing to submit the Maven central repoistory via https://central.sonatype.org/...
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
 <dependency>
