@@ -18,7 +18,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.util.Objects;
-import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
  * An envelope contains all the extreme values with respect to the X, Y and Z
@@ -26,12 +25,12 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  * any direction. For a point the envelope is essentially the point. The
  * envelope may also be a line. In any case it has:
  * <ul>
- * <li>a top ({@link #t}) aligned with {@link #zMax}</li>
- * <li>a bottom ({@link #b}) aligned with {@link #zMin}</li>
+ * <li>a top ({@link #t}) aligned with {@link #yMax}</li>
+ * <li>a bottom ({@link #b}) aligned with {@link #yMin}</li>
  * <li>a left ({@link #l}) aligned with {@link #xMin}</li>
  * <li>a right ({@link #r}) aligned with {@link #xMax}</li>
- * <li>a fore ({@link #f}) aligned with {@link #yMin}</li>
- * <li>a aft ({@link #a}) aligned with {@link #yMax}</li>
+ * <li>a fore ({@link #f}) aligned with {@link #zMin}</li>
+ * <li>a aft ({@link #a}) aligned with {@link #zMax}</li>
  * </ul>
  * The following depiction of a bounding box indicate the location of the
  * different faces and also gives an abbreviated name of each point that
@@ -40,8 +39,8 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  * line or a plane), there are these 8 points stored in the rectangles that
  * represent each face. {@code
  *
- *                                                          y
- *                                    z                    +
+ *                                                          z
+ *                                    y                   +
  *                                    +                   /
  *                                    |                  /
  *                                    |                 /
@@ -49,7 +48,7 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  *                                    |
  *                                                  a
  *                                    t
- *                      tla_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ tra
+ *                      lta_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ rta
  *                        /|                                /|
  *                       / |                               / |
  *                      /  |                              /  |
@@ -60,12 +59,12 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  *                 /       |                         /       |
  *                /        |                        /        |
  *               /         |                       /         |
- *          tlf /_ _ _ _ _ |_ _ _ _ _ _ _ _ _ _ _ /trf       |
+ *          ltf /_ _ _ _ _ |_ _ _ _ _ _ _ _ _ _ _ /rtf       |
  *             |           |                     |           |
  *             |           |                     |           |
  *  - ----  l  |           |                     |           |  r  ---- + x
  *             |           |                     |           |
- *             |        bla|_ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _|bra
+ *             |        lba|_ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _|rba
  *             |           /                     |           /
  *             |          /                      |          /
  *             |         /                       |         /
@@ -77,7 +76,7 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  *             |   /                             |   /
  *             |  /                              |  /
  *             | /                               | /
- *          blf|/_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |/brf
+ *          lbf|/_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |/rbf
  *
  *                                     b
  *                      f
@@ -166,11 +165,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         yMax = e.yMax;
         zMin = e.zMin;
         zMax = e.zMax;
-        t = e.t;
+        f = e.f;
         l = e.l;
         a = e.a;
         r = e.r;
-        f = e.f;
+        t = e.t;
         b = e.b;
     }
 
@@ -190,12 +189,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 yMax = points[0].y;
                 zMin = points[0].z;
                 zMax = points[0].z;
-                t = points[0];
-                l = t;
-                a = t;
-                r = t;
-                f = t;
-                b = t;
+                f = points[0];
+                l = f;
+                a = f;
+                r = f;
+                t = f;
+                b = f;
                 break;
             default:
                 BigRational xmin = points[0].x;
@@ -215,89 +214,95 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 if (xmin.compareTo(xmax) == 0) {
                     if (ymin.compareTo(ymax) == 0) {
                         if (zmin.compareTo(zmax) == 0) {
-                            t = new V3D_Point(xmin, ymin, zmin);
-                            l = t;
-                            a = t;
-                            r = t;
-                            f = t;
-                            b = t;
+                            f = new V3D_Point(xmin, ymin, zmin);
+                            l = f;
+                            a = f;
+                            r = f;
+                            t = f;
+                            b = f;
                         } else {
-                            t = new V3D_Point(xmin, ymin, zmax);
-                            b = new V3D_Point(xmin, ymin, zmin);
-                            l = new V3D_LineSegment((V3D_Point) b, (V3D_Point) t);
-                            r = l;
-                            f = l;
-                            a = l;
+                            V3D_Point fb = new V3D_Point(xmin, ymin, zmin);
+                            V3D_Point ft = new V3D_Point(xmin, ymax, zmin);
+                            f = new V3D_LineSegment(fb, ft);
+                            l = f;
+                            a = f;
+                            r = f;                            
+                            t = ft;
+                            b = fb; 
                         }
                     } else {
                         if (zmin.compareTo(zmax) == 0) {
-                            f = new V3D_Point(xmin, ymin, zmin);
-                            a = new V3D_Point(xmin, ymax, zmin);
-                            t = new V3D_LineSegment((V3D_Point) f, (V3D_Point) a);
-                            l = t;
-                            r = t;
-                            b = t;
+                            V3D_Point fb = new V3D_Point(xmin, ymin, zmin);
+                            V3D_Point lt = new V3D_Point(xmin, ymax, zmin);
+                            f = new V3D_LineSegment(fb, lt);
+                            l = f;
+                            a = f;
+                            r = f;
+                            t = lt;
+                            b = fb;
                         } else {
                             V3D_Point bf = new V3D_Point(xmin, ymin, zmin);
-                            V3D_Point ba = new V3D_Point(xmin, ymax, zmin);
-                            V3D_Point tf = new V3D_Point(xmin, ymin, zmax);
+                            V3D_Point ba = new V3D_Point(xmin, ymin, zmax);
+                            V3D_Point tf = new V3D_Point(xmin, ymax, zmin);
                             V3D_Point ta = new V3D_Point(xmin, ymax, zmax);
-                            b = new V3D_LineSegment(bf, ba);
-                            t = new V3D_LineSegment(tf, ta);
                             f = new V3D_LineSegment(bf, tf);
+                            l = new V3D_Rectangle(ba, ta, tf, bf);
                             a = new V3D_LineSegment(ba, ta);
-                            l = new V3D_Rectangle(tf, ta, ba, bf);
-                            r = l;
+                            r = new V3D_Rectangle(bf, tf, ta, ba);
+                            t = new V3D_LineSegment(tf, ta);
+                            b = new V3D_LineSegment(ba, bf);
                         }
                     }
                 } else {
                     if (ymin.compareTo(ymax) == 0) {
                         if (zmin.compareTo(zmax) == 0) {
-                            l = new V3D_Point(xmin, ymin, zmin);
-                            r = new V3D_Point(xmax, ymin, zmin);
-                            f = new V3D_LineSegment((V3D_Point) l, (V3D_Point) r);
-                            a = f;
+                            V3D_Point lf = new V3D_Point(xmin, ymin, zmin);
+                            V3D_Point rf = new V3D_Point(xmax, ymin, zmin);
+                            f = new V3D_LineSegment(lf, rf);
+                            l = lf;
+                            a = new V3D_LineSegment(rf, lf);
+                            r = rf;
                             t = f;
                             b = f;
                         } else {
-                            V3D_Point bl = new V3D_Point(xmin, ymin, zmin);
-                            V3D_Point br = new V3D_Point(xmax, ymin, zmin);
-                            V3D_Point tl = new V3D_Point(xmin, ymin, zmax);
-                            V3D_Point tr = new V3D_Point(xmax, ymin, zmax);
-                            b = new V3D_LineSegment(bl, br);
-                            t = new V3D_LineSegment(tl, tr);
-                            l = new V3D_LineSegment(bl, tl);
-                            r = new V3D_LineSegment(br, tr);
-                            f = new V3D_Rectangle(tl, tr, br, bl);
-                            a = f;
+                            V3D_Point lf = new V3D_Point(xmin, ymin, zmin);
+                            V3D_Point la = new V3D_Point(xmin, ymin, zmax);
+                            V3D_Point ra = new V3D_Point(xmax, ymin, zmax);
+                            V3D_Point rf = new V3D_Point(xmax, ymin, zmin);
+                            f = new V3D_LineSegment(lf, rf);
+                            l = new V3D_LineSegment(la, lf);
+                            a = new V3D_LineSegment(ra, la);
+                            r = new V3D_LineSegment(rf, ra);
+                            t = new V3D_Rectangle(lf, la, ra, rf);
+                            b = new V3D_Rectangle(la, lf, rf, ra);
                         }
                     } else {
                         if (zmin.compareTo(zmax) == 0) {
-                            V3D_Point fl = new V3D_Point(xmin, ymin, zmin);
-                            V3D_Point fr = new V3D_Point(xmax, ymin, zmin);
-                            V3D_Point al = new V3D_Point(xmin, ymax, zmin);
-                            V3D_Point ar = new V3D_Point(xmax, ymax, zmin);
-                            f = new V3D_LineSegment(fl, fr);
-                            a = new V3D_LineSegment(al, ar);
-                            l = new V3D_LineSegment(fl, al);
-                            r = new V3D_LineSegment(fr, ar);
-                            t = new V3D_Rectangle(fl, al, ar, fr);
-                            b = t;
+                            V3D_Point lb = new V3D_Point(xmin, ymin, zmin);
+                            V3D_Point lt = new V3D_Point(xmin, ymax, zmin);
+                            V3D_Point rt = new V3D_Point(xmax, ymax, zmin);
+                            V3D_Point rb = new V3D_Point(xmax, ymin, zmin);
+                            f = new V3D_Rectangle(lb, lt, rt, rb);
+                            l = new V3D_LineSegment(lb, lt);
+                            a = new V3D_Rectangle(rb, rt, lt, lb);
+                            r = new V3D_LineSegment(rb, rt);
+                            t = new V3D_LineSegment(lt, rt);
+                            b = new V3D_LineSegment(lb, rb);
                         } else {
-                            V3D_Point tlf = new V3D_Point(xmin, ymin, zmax);
-                            V3D_Point tla = new V3D_Point(xmin, ymax, zmax);
-                            V3D_Point tar = new V3D_Point(xmax, ymax, zmax);
-                            V3D_Point trf = new V3D_Point(xmax, ymin, zmax);
-                            V3D_Point blf = new V3D_Point(xmin, ymin, zmin);
-                            V3D_Point bla = new V3D_Point(xmin, ymax, zmin);
-                            V3D_Point bar = new V3D_Point(xmax, ymax, zmin);
-                            V3D_Point brf = new V3D_Point(xmax, ymin, zmin);
-                            t = new V3D_Rectangle(tlf, tla, tar, trf);
-                            l = new V3D_Rectangle(tlf, tla, bla, blf);
-                            a = new V3D_Rectangle(tla, tar, bar, bla);
-                            r = new V3D_Rectangle(trf, tar, bar, brf);
-                            f = new V3D_Rectangle(tlf, trf, brf, blf);
-                            b = new V3D_Rectangle(blf, bla, bar, brf);
+                            V3D_Point lbf = new V3D_Point(xmin, ymin, zmin);
+                            V3D_Point ltf = new V3D_Point(xmin, ymax, zmin);
+                            V3D_Point rtf = new V3D_Point(xmax, ymax, zmin);
+                            V3D_Point rbf = new V3D_Point(xmax, ymin, zmin);
+                            V3D_Point lba = new V3D_Point(xmin, ymin, zmax);
+                            V3D_Point lta = new V3D_Point(xmin, ymax, zmax);
+                            V3D_Point rta = new V3D_Point(xmax, ymax, zmax);
+                            V3D_Point rba = new V3D_Point(xmax, ymin, zmax);
+                            f = new V3D_Rectangle(lbf, ltf, rtf, rbf);
+                            l = new V3D_Rectangle(lba, lta, ltf, lbf);
+                            a = new V3D_Rectangle(rba, rta, lta, lba);
+                            r = new V3D_Rectangle(rbf, rtf, rta, rba);
+                            t = new V3D_Rectangle(ltf, lta, rta, rtf);
+                            b = new V3D_Rectangle(lba, lbf, rbf, rba);
                         }
                     }
                 }
@@ -347,15 +352,15 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Envelope apply(V3D_Vector v) {
-        V3D_Point tlf = new V3D_Point(xMin, yMin, zMax).apply(v);
-        V3D_Point tla = new V3D_Point(xMin, yMax, zMax).apply(v);
-        V3D_Point tar = new V3D_Point(xMax, yMax, zMax).apply(v);
-        V3D_Point trf = new V3D_Point(xMax, yMin, zMax).apply(v);
-        V3D_Point blf = new V3D_Point(xMin, yMin, zMin).apply(v);
-        V3D_Point bla = new V3D_Point(xMin, yMax, zMin).apply(v);
-        V3D_Point bar = new V3D_Point(xMax, yMax, zMin).apply(v);
-        V3D_Point brf = new V3D_Point(xMax, yMin, zMin).apply(v);
-        return new V3D_Envelope(tlf, tla, tar, trf, blf, bla, bar, brf);
+        V3D_Point lbf = new V3D_Point(xMin, yMin, zMin).apply(v);
+        V3D_Point ltf = new V3D_Point(xMin, yMin, zMax).apply(v);
+        V3D_Point rtf = new V3D_Point(xMax, yMin, zMax).apply(v);
+        V3D_Point rbf = new V3D_Point(xMax, yMin, zMin).apply(v);
+        V3D_Point lba = new V3D_Point(xMin, yMax, zMin).apply(v);
+        V3D_Point lta = new V3D_Point(xMin, yMax, zMax).apply(v);
+        V3D_Point rba = new V3D_Point(xMax, yMax, zMin).apply(v);
+        V3D_Point rta = new V3D_Point(xMax, yMax, zMax).apply(v);
+        return new V3D_Envelope(lbf, ltf, rtf, rbf, lba, lta, rba, rta);
     }
 
     /**
@@ -366,7 +371,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         if (e.isContainedBy(this)) {
             return this;
         } else {
-            return new V3D_Envelope(BigRational.min(e.getxMin(), getxMin()),
+            return new V3D_Envelope(
+                    BigRational.min(e.getxMin(), getxMin()),
                     BigRational.max(e.getxMax(), getxMax()),
                     BigRational.min(e.getyMin(), getyMin()),
                     BigRational.max(e.getyMax(), getyMax()),
@@ -466,7 +472,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         if (!this.isIntersectedBy(en)) {
             return null;
         }
-        return new V3D_Envelope(BigRational.max(getxMin(), en.getxMin()),
+        return new V3D_Envelope(
+                BigRational.max(getxMin(), en.getxMin()),
                 BigRational.min(getxMax(), en.getxMax()),
                 BigRational.max(getyMin(), en.getyMin()),
                 BigRational.min(getyMax(), en.getyMax()),
@@ -740,7 +747,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
     /**
      * Test for equality.
-     * 
+     *
      * @param g The V3D_Geometry to test for equality with this.
      * @return {@code true} iff this and e are equal.
      */
@@ -751,10 +758,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         }
         return false;
     }
-    
+
     /**
      * Test for equality.
-     * 
+     *
      * @param e The V3D_Envelope to test for equality with this.
      * @return {@code true} iff this and e are equal.
      */
@@ -864,11 +871,138 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         return isIntersectedBy(l);
     }
 
+    /**
+     * A point within the Envelope currently returns a distance of zero. This
+     * could be changed in future to provide a negative distance which would be
+     * the distance inside the envelope. To calculate the distance outside the
+     * envelope, there are a number of different cases. The first cases are when
+     * the closest point on the Envelope to the point {@code p} is one of the
+     * corners. The next cases are when it is a point on one of the edges of
+     * {@link #t}, {@link #b}, {@link #l}, {@link #r}, {@link #f}. The next
+     * cases are when it is a point on one of the faces of {@link #t},
+     * {@link #b}, {@link #l}, {@link #r}, {@link #f}. Depending on the values
+     * and the oom given. The distance may appear to be zero when it is in fact
+     * greater than zero. To test if the distance is zero use
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Point)}.
+     *
+     * @param p The point to find the distance to/from.
+     * @param oom The Order of Magnitude for the result precision.
+     * @return The approximate or exact distance at the given {@code oom}.
+     */
     @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
         if (this.isIntersectedBy(p)) {
             return BigDecimal.ZERO;
         }
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Special case where Envelope is infinitesimally small.
+        if (l instanceof V3D_Point) {
+            return ((V3D_Point) l).getDistance(p, oom);
+        }
+        int xcmin = p.x.compareTo(xMin);
+        int xcmax = p.x.compareTo(xMax);
+        int ycmin = p.y.compareTo(yMin);
+        int ycmax = p.y.compareTo(yMax);
+        int zcmin = p.z.compareTo(zMin);
+        int zcmax = p.z.compareTo(zMax);
+        if (xcmin == -1) {
+            if (ycmin == -1) {
+                if (zcmin == -1) {
+                    // A
+                    if (f instanceof V3D_Rectangle) {
+                        return ((V3D_Rectangle) f).p.getDistance(p, oom);
+                    } else if (f instanceof V3D_LineSegment) {
+                        return ((V3D_LineSegment) f).p.getDistance(p, oom);
+                    } else {
+                        return ((V3D_Point) f).getDistance(p, oom);
+                    }
+                } else {
+                    if (zcmax == 1) {
+                        // F
+                        if (l instanceof V3D_Rectangle) {
+                            return ((V3D_Rectangle) l).p.getDistance(p, oom);
+                        } else if (l instanceof V3D_LineSegment) {
+                            return ((V3D_LineSegment) l).p.getDistance(p, oom);
+                        } else {
+                            return ((V3D_Point) l).getDistance(p, oom);
+                        }
+                    }
+                }
+            } else {
+                if (ycmax == 1) {
+                    if (zcmin == -1) {
+                        // B
+                        if (f instanceof V3D_Rectangle) {
+                            return ((V3D_Rectangle) f).q.getDistance(p, oom);
+                        } else if (f instanceof V3D_LineSegment) {
+                            return ((V3D_LineSegment) f).p.getDistance(p, oom);
+                        } else {
+                            return ((V3D_Point) f).getDistance(p, oom);
+                        }
+                    } else {
+                        if (zcmax == 1) {
+                            // C
+                            if (l instanceof V3D_Rectangle) {
+                                return ((V3D_Rectangle) l).q.getDistance(p, oom);
+                            } else if (l instanceof V3D_LineSegment) {
+                                return ((V3D_LineSegment) l).p.getDistance(p, oom);
+                            } else {
+                                return ((V3D_Point) l).getDistance(p, oom);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            if (xcmax == 1) {
+                if (ycmin == -1) {
+                    if (zcmin == -1) {
+                        // H
+                        if (f instanceof V3D_Rectangle) {
+                            return ((V3D_Rectangle) f).s.getDistance(p, oom);
+                        } else if (f instanceof V3D_LineSegment) {
+                            return ((V3D_LineSegment) f).q.getDistance(p, oom);
+                        } else {
+                            return ((V3D_Point) f).getDistance(p, oom);
+                        }
+                    } else {
+                        if (zcmax == 1) {
+                            // G
+                            if (a instanceof V3D_Rectangle) {
+                                return ((V3D_Rectangle) a).p.getDistance(p, oom);
+                            } else if (a instanceof V3D_LineSegment) {
+                                return ((V3D_LineSegment) a).p.getDistance(p, oom);
+                            } else {
+                                return ((V3D_Point) a).getDistance(p, oom);
+                            }
+                        }
+                    }
+                } else {
+                    if (ycmax == 1) {
+                        if (zcmin == -1) {
+                            // E
+                            if (f instanceof V3D_Rectangle) {
+                                return ((V3D_Rectangle) f).r.getDistance(p, oom);
+                            } else if (f instanceof V3D_LineSegment) {
+                                return ((V3D_LineSegment) f).q.getDistance(p, oom);
+                            } else {
+                                return ((V3D_Point) f).getDistance(p, oom);
+                            }
+                        } else {
+                            if (zcmax == 1) {
+                                // D
+                                if (a instanceof V3D_Rectangle) {
+                                    return ((V3D_Rectangle) a).q.getDistance(p, oom);
+                                } else if (a instanceof V3D_LineSegment) {
+                                    return ((V3D_LineSegment) a).p.getDistance(p, oom);
+                                } else {
+                                    return ((V3D_Point) a).getDistance(p, oom);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

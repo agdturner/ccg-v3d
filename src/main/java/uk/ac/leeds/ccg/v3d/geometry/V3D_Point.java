@@ -25,21 +25,21 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 /**
  * 3D representation of a point. The "*" denotes a point in 3D in the following
  * depiction: {@code
- *                                       y
- *                          z           +
+ *                                       z
+ *                          y           +
  *                          +          /                *p=<x0,y0,z0>
  *                          |         /                 |
  *                          |        /                  |
- *                          |    y0-/-------------------|
+ *                          |    z0-/-------------------|
  *                          |      /                   /
  *                          |     /                   /
  *                          |    /                   /
  *                          |   /                   /
- *                       z0-|  /                   /
+ *                       y0-|  /                   /
  *                          | /                   /
  *                          |/                   /
  *  - ----------------------|-------------------/---- + x
- *                         /|                   x0
+ *                         /|                  x0
  *                        / |
  *                       /  |
  *                      /   |
@@ -211,7 +211,6 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         if (this.equals(p)) {
             return BigDecimal.ZERO;
         }
-        
         return Math_BigDecimal.sqrt(getDistanceSquared(p).toBigDecimal(),
                 oom, RoundingMode.HALF_UP);
     }

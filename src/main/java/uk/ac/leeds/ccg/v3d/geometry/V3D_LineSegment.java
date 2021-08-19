@@ -25,25 +25,25 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  * at the point {@link #p}, travels in the direction {@link #v} and ends at the
  * point {@link #q}. The "*" denotes a point in 3D and the line is shown with a
  * line of "e" symbols in the following depiction: {@code
- *                                       y
- *                          z           +
+ *                                       z
+ *                          y           +
  *                          +          /                * p=<x0,y0,z0>
  *                          |         /                e
  *                          |        /                e
- *                          |    y0-/                e
+ *                          |    z0-/                e
  *                          |      /                e
  *                          |     /               e
  *                          |    /               e
  *                          |   /               e
- *                       z0-|  /               e
+ *                       y0-|  /               e
  *                          | /               e
  *                          |/         x1    e
  *  - ----------------------|-----------/---e---/---- + x
  *                         /|              e   x0
- *                        / |-z1          e
+ *                        / |-y1          e
  *                       /  |           e
  *                      /   |          e
- *                  y1-/    |         e
+ *                  z1-/    |         e
  *                    /     |        e
  *                   /      |       * q=<x1,y1,z1>
  *                  /       |

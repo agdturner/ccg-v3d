@@ -28,25 +28,25 @@ import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
  * point {@link #p} and is travelling in the direction {@link #v} through point
  * {@link #q}. The "*" denotes a point in 3D and the line is shown with a line
  * of "e" symbols in the following depiction: {@code
- *                                       y                e
- *                          z           +                e
+ *                                       z                e
+ *                          y           +                e
  *                          +          /                * p=<x0,y0,z0>
  *                          |         /                e
  *                          |        /                e
- *                          |    y0-/                e
+ *                          |    z0-/                e
  *                          |      /                e
  *                          |     /               e
  *                          |    /               e
  *                          |   /               e
- *                       z0-|  /               e
+ *                       y0-|  /               e
  *                          | /               e
  *                          |/         x1    e
  *  - ----------------------|-----------/---e---/---- + x
  *                         /|              e   x0
- *                        / |-z1          e
+ *                        / |-y1          e
  *                       /  |           e
  *                      /   |          e
- *                  y1-/    |         e
+ *                  z1-/    |         e
  *                    /     |        e
  *                   /      |       * q=<x1,y1,z1>
  *                  /       |      e

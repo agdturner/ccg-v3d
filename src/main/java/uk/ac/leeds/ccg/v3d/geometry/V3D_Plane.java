@@ -31,26 +31,26 @@ import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
  * is the vector from {@link #q} to {@link #r}). The "*" denotes a point in 3D,
  * {@link #pq} is depicted with a line of "e" symbols, {@link #qr} is depicted
  * with a line of "f" symbols in the following depiction: {@code
- *                                       y
- *                          z           +
+ *                                       z
+ *                          y           +
  *                          +          /                * p=<x0,y0,z0>
  *                          |         /                e
  *                          |        /                e
- *                          |    y0-/                e
+ *                          |    z0-/                e
  *                          |      /                e
  *                          |     /               e
  *                          |    /               e
  *                          |   /               e
- *                       z0-|  /               e
+ *                       y0-|  /               e
  *                          | /               e
  *             x2           |/         x1    e
  *  - ---------/------------|-----------/---e---/---- + x
  *                         /|              e   x0
- *                        / |-z1          e
- *                    y2-/  |           e
+ *                        / |-y1          e
+ *                    z2-/  |           e
  *                      /   |          e
- *                  y1-/    |         e
- *                    /  z2-|        e
+ *                  z1-/    |         e
+ *                    /  y2-|        e
  *                   /      | f f f * q=<x1,y1,z1>
  *                  f f f f f
  *          * f f f/        |
@@ -851,6 +851,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom The order of magnitude of the precision.
      * @return The distance from {@code this} to {@code p}.
      */
+    @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
         if (this.isIntersectedBy(p)) {
             return BigDecimal.ZERO;
@@ -859,8 +860,7 @@ public class V3D_Plane extends V3D_Geometry {
         V3D_Vector unitVector = this.n.getUnitVector(oom);
         //MathContext mc = new MathContext(Math_BigRationalSqrt.getOOM(BigRational.ONE, oom));
         MathContext mc = new MathContext(6 - oom);
-        BigDecimal r = v.getDotProduct(unitVector).abs().toBigDecimal(mc);
-        return r;
+        return v.getDotProduct(unitVector).abs().toBigDecimal(mc);
     }
 
     /**

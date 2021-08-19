@@ -38,7 +38,7 @@ import java.math.BigDecimal;
  * }
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
 

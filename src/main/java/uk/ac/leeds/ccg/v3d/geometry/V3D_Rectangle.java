@@ -23,24 +23,27 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  * For representing and processing rectangles in 3D. A rectangle has a non-zero
  * area and does not have to align with any of the axes. The corner points
  * {@link #p}, {@link #q}, {@link #r}, {@link #s} are arranged in a rectangular
- * fashion so that the vector {@link #pq} is orthogonal to {@link #qr}. The top
- * of a rectangle {@link #t} is the line segment from {@link #p} to {@link #q}.
- * The right of a rectangle {@link #ri} is the line segment from {@link #q} to
- * {@link #r}. The bottom of a rectangle {@link #b} is the line segment from
- * {@link #r} to {@link #s}. The left of a rectangle {@link #l} is the line
+ * fashion so that {@link #pq} is orthogonal to {@link #qr}. The left of a
+ * rectangle {@link #l} is the line segment from {@link #p} to {@link #q}. The
+ * top of a rectangle {@link #t} is the line segment from {@link #q} to
+ * {@link #r}. The right of a rectangle {@link #ri} is the line segment from
+ * {@link #r} to {@link #s}. The bottom of a rectangle {@link #b} is the line
  * segment from {@link #s} to {@link #p}. The following depicts a generic
  * rectangle (no attempt has been made to draw this three dimensionally) {@code
- *         t
- * p*-------------*q
- *  |             |
- * l|             |ri
- *  |             |
- * s*-------------*r
- *         b
+ *          t
+ * q *-------------* r
+ *   |             |
+ * l |             | ri
+ *   |             |
+ * p *-------------* s
+ *          b
  * }
+ * Although what is depicted can be imagined as aligning with the x and y axes.
+ * A rectangle can be defined by any three coordinates in 3D space so long as
+ * the three points are at right angles.
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
@@ -58,30 +61,30 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     protected V3D_Envelope en;
 
     /**
-     * For storing the line segment from {@link #p} to {@link #q}.
-     */
-    protected final V3D_LineSegment t;
-
-    /**
-     * For storing the line segment from {@link #q} to {@link #r}.
-     */
-    protected final V3D_LineSegment ri;
-
-    /**
-     * For storing the line segment from {@link #r} to {@link #s}.
-     */
-    protected final V3D_LineSegment b;
-
-    /**
-     * For storing the vector from {@link #s} to {@link #p}.
+     * For storing the vector from {@link #p} to {@link #q}.
      */
     protected final V3D_LineSegment l;
 
     /**
-     * @param p The top left corner of the rectangle.
-     * @param q The top right corner of the rectangle.
-     * @param r The bottom right corner of the rectangle.
-     * @param s The bottom left corner of the rectangle.
+     * For storing the line segment from {@link #q} to {@link #r}.
+     */
+    protected final V3D_LineSegment t;
+
+    /**
+     * For storing the line segment from {@link #r} to {@link #s}.
+     */
+    protected final V3D_LineSegment ri;
+
+    /**
+     * For storing the line segment from {@link #s} to {@link #p}.
+     */
+    protected final V3D_LineSegment b;
+
+    /**
+     * @param p The bottom left corner of the rectangle.
+     * @param q The top left corner of the rectangle.
+     * @param r The top right corner of the rectangle.
+     * @param s The bottom right corner of the rectangle.
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
@@ -89,10 +92,10 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
         super(p, q, r);
         this.s = s;
         //en = new V3D_Envelope(p, q, r, s); Not initialised here as it causes a StackOverflowError
-        t = new V3D_LineSegment(p, q);
-        ri = new V3D_LineSegment(q, r);
-        b = new V3D_LineSegment(r, s);
-        l = new V3D_LineSegment(s, p);
+        l = new V3D_LineSegment(p, q);
+        t = new V3D_LineSegment(q, r);
+        ri = new V3D_LineSegment(r, s);
+        b = new V3D_LineSegment(s, p);
         // Check for rectangle.
         if (pq.isZeroVector()) {
             if (qr.isZeroVector()) {
@@ -376,7 +379,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     public BigDecimal getArea(int mps) {
         return l.v.m.multiply(t.v.m).toBigDecimal(mps);
     }
-    
+
     /**
      * Get the distance between this and {@code pl}.
      *
