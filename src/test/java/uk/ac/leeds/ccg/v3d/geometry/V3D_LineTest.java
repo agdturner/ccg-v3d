@@ -25,9 +25,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
+import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -97,9 +99,10 @@ public class V3D_LineTest extends V3D_Test {
      * Test of hashCode method, of class V3D_Line.
      */
     @Test
+    @Disabled
     public void testHashCode() {
         System.out.println("hashCode");
-        assertTrue(true);  // No test!
+        assertTrue(true);  // No test.
     }
 
     /**
@@ -517,12 +520,24 @@ public class V3D_LineTest extends V3D_Test {
         result = instance.getDistance(p, oom);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
-        p = P0P0P0;
-        oom = -1;
+        oom = -2;
         instance = new V3D_Line(P0P1P0, P1P1P0);
-        expResult = BigDecimal.ONE;
         result = instance.getDistance(p, oom);
         assertTrue(expResult.compareTo(result) == 0);
+        // Test 3
+        p = P1P1P1;
+        oom = -3;
+        instance = new V3D_Line(P0P0P0, P1P1P0);
+        result = instance.getDistance(p, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 4
+        oom = - 4;
+        p = P0P1P0;
+        instance = new V3D_Line(P0P0P0, P1P1P0);
+        expResult = new Math_BigRationalSqrt(2).divide(new Math_BigRationalSqrt(4)).toBigDecimal(oom);
+        result = instance.getDistance(p, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        //expResult = new Math_BigRationalSqrt(BigRational.ONE.divide(2)).toBigDecimal(oom);
     }
 
     /**

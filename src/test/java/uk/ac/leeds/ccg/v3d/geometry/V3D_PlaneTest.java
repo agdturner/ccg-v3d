@@ -24,6 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
@@ -800,6 +801,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Plane.
      */
     @Test
+    @Disabled
     public void testGetIntersection_V3D_Plane_V3D_Line() {
         System.out.println("getIntersection");
         // No test - These tests are covered by testGetIntersection_V3D_Line.
@@ -910,9 +912,10 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of isEnvelopeIntersectedBy method, of class V3D_Plane.
      */
     @Test
+    @Disabled
     public void testIsEnvelopeIntersectedBy() {
         System.out.println("isEnvelopeIntersectedBy");
-        // No test
+        // No test.
     }
 
     /**
@@ -994,6 +997,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of isCoincident method, of class V3D_Plane.
      */
     @Test
+    @Disabled
     public void testIsCoincident() {
         // No test as covered by other tests.
     }

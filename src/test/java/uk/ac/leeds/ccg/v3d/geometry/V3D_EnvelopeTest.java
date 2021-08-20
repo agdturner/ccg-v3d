@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Disabled;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
@@ -265,6 +266,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
      * Test of hashCode method, of class V3D_Envelope.
      */
     @Test
+    @Disabled
     public void testHashCode() {
         System.out.println("hashCode");
         // No test.
@@ -669,8 +671,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
         // Edges
         // Test 10
         expResult = new Math_BigRationalSqrt(2).toBigDecimal(oom);
-//        result = instance.getDistance(N2N2P0, oom);
-//        assertTrue(expResult.compareTo(result) == 0);
+        result = instance.getDistance(N2N2P0, oom);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 11
         result = instance.getDistance(N2P2P0, oom);
         assertTrue(expResult.compareTo(result) == 0);

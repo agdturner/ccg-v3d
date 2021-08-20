@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
@@ -327,6 +328,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
      * Test of isEnvelopeIntersectedBy method, of class V3D_LineSegment.
      */
     @Test
+    @Disabled
     public void testIsEnvelopeIntersectedBy() {
         // No test as this is covered by V3D_EnvelopeTest.testIsIntersectedBy_V3D_LineSegment_boolean()
     }
