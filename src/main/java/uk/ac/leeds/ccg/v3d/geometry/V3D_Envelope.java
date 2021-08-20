@@ -971,7 +971,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     if (zcmin == -1) {
                         // lbf - ltf
                         if (l instanceof V3D_Rectangle) {
-                            return new V3D_Line(((V3D_Rectangle) l).l).getDistance(p, oom);
+                            return new V3D_Line(((V3D_Rectangle) l).ri).getDistance(p, oom);
                         } else if (l instanceof V3D_LineSegment) {
                             return ((V3D_Line) l).getDistance(p, oom);
                         } else {
@@ -990,7 +990,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         } else {
                             // lba - lta - ltf - lbf
                             if (l instanceof V3D_Rectangle) {
-                                return ((V3D_Plane) l).getDistance(p, oom);
+                                return new V3D_Plane((V3D_Rectangle) l).getDistance(p, oom);
                             } else if (l instanceof V3D_LineSegment) {
                                 return ((V3D_Line) l).getDistance(p, oom);
                             } else {
@@ -1088,7 +1088,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             } else {
                                 // rbf - rtf - rta - rba
                                 if (r instanceof V3D_Rectangle) {
-                                    return ((V3D_Plane) r).getDistance(p, oom);
+                                    return new V3D_Plane((V3D_Rectangle) r).getDistance(p, oom);
                                 } else if (r instanceof V3D_LineSegment) {
                                     return ((V3D_Line) r).getDistance(p, oom);
                                 } else {
@@ -1122,7 +1122,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         } else {
                             // lba - lbf - rbf - rba
                             if (b instanceof V3D_Rectangle) {
-                                return ((V3D_Plane) b).getDistance(p, oom);
+                                return new V3D_Plane((V3D_Rectangle) b).getDistance(p, oom);
                             } else if (b instanceof V3D_LineSegment) {
                                 return ((V3D_Line) b).getDistance(p, oom);
                             } else {
@@ -1155,7 +1155,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             } else {
                                 // ltf - lta - rta - rtf
                                 if (t instanceof V3D_Rectangle) {
-                                    return ((V3D_Plane) t).getDistance(p, oom);
+                                    return new V3D_Plane((V3D_Rectangle) t).getDistance(p, oom);
                                 } else if (r instanceof V3D_LineSegment) {
                                     return ((V3D_Line) t).getDistance(p, oom);
                                 } else {
@@ -1167,7 +1167,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         if (zcmin == -1) {
                             // lbf - ltf - rtf - rbf
                             if (f instanceof V3D_Rectangle) {
-                                return ((V3D_Plane) f).getDistance(p, oom);
+                                return new V3D_Plane((V3D_Rectangle) f).getDistance(p, oom);
                             } else if (f instanceof V3D_LineSegment) {
                                 return ((V3D_Line) f).getDistance(p, oom);
                             } else {
@@ -1177,7 +1177,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             if (zcmax == 1) {
                                 // rba - rta - lta - lba
                                 if (a instanceof V3D_Rectangle) {
-                                    return ((V3D_Plane) a).getDistance(p, oom);
+                                    return new V3D_Plane((V3D_Rectangle) a).getDistance(p, oom);
                                 } else if (a instanceof V3D_LineSegment) {
                                     return ((V3D_Line) a).getDistance(p, oom);
                                 } else {
@@ -1186,7 +1186,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             } else {
                                 // lba - lbf - rbf - rba
                                 if (r instanceof V3D_Rectangle) {
-                                    return ((V3D_Plane) b).getDistance(p, oom);
+                                    return new V3D_Plane((V3D_Rectangle) b).getDistance(p, oom);
                                 } else if (r instanceof V3D_LineSegment) {
                                     return ((V3D_LineSegment) b).getDistance(p, oom);
                                 } else {

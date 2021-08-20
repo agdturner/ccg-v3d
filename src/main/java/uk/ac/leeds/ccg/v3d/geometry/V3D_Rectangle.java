@@ -388,7 +388,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     }
 
     /**
-     * Get the distance between this and {@code pl}.
+     * Get the distance between this and {@code pl}. This code is incomplete.
      *
      * @param p A point.
      * @param oom The order of magnitude of the precision.
@@ -399,8 +399,10 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
         if (this.isIntersectedBy(p)) {
             return BigDecimal.ZERO;
         }
-//        int oom = Math_BigRationalSqrt.getOOM()
-//        return (getDistanceSquared(p, oom));
-        return null;
+        // As this is not an inifinite plane this answer is incorrect. We need 
+        // to discover if this distance is less than the distance from any 
+        // line segment of the rectangle and if the distance from the point to 
+        // all edge is less than the length of these edges... 
+        return super.getDistance(p, oom);
     }
 }

@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
@@ -257,10 +258,9 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * Get the intersection line (the shortest line) between two lines. The two
-     * lines must not intersect for this to work.
-     * Part adapted from
+     * lines must not intersect for this to work. Part adapted from
      * <a href="http://paulbourke.net/geometry/pointlineplane/">http://paulbourke.net/geometry/pointlineplane/</a>.
-     * 
+     *
      * @param l0 One line.
      * @param l1 Another line.
      * @return The line of intersection between l0 and l1
@@ -313,9 +313,9 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * Get the intersection between two lines.
-     * Part adapted from <a href="http://paulbourke.net/geometry/pointlineplane/">http://paulbourke.net/geometry/pointlineplane/</a>.
-     * 
+     * Get the intersection between two lines. Part adapted from
+     * <a href="http://paulbourke.net/geometry/pointlineplane/">http://paulbourke.net/geometry/pointlineplane/</a>.
+     *
      * @param l0 One line.
      * @param l1 Another line.
      * @return The intersection between two lines or {@code null}.
@@ -723,8 +723,8 @@ public class V3D_Line extends V3D_Geometry {
         }
         /**
          * The only time when p and q should be different is when the lines do
-         * not intersect. In this case p and q are meant to be the end points 
-         * of the shortest line between the tow lines input.  
+         * not intersect. In this case p and q are meant to be the end points of
+         * the shortest line between the tow lines input.
          */
         if (p.equals(q)) {
             return p;
@@ -822,30 +822,26 @@ public class V3D_Line extends V3D_Geometry {
      */
     @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
-        /**
-         * Calculate the direction vector of the line connecting the closest
-         * points by computing the cross product.
-         */
-        V3D_Vector pv = new V3D_Vector(p);
-        //V3D_Vector pv = new V3D_Vector(this.p);
-        V3D_Vector cp = v.getCrossProduct(pv);
-        /**
-         * Calculate the delta from {@link #p} and l.p
-         */
-        V3D_Vector delta = new V3D_Vector(this.p).subtract(pv);
-        //V3D_Vector delta = new V3D_Vector(p).subtract(pv);
-        BigRational ms = cp.m.getSqrt();
-        if (ms == null) {
-            ms = BigRational.valueOf(cp.getMagnitude(oom - 2));
-        }
-        // d = cp.(delta)/m
-        BigRational dp = cp.getDotProduct(delta);
-        if (dp.compareTo(ms) == 0) {
-            return BigDecimal.ONE; // Prevent a divide by zero if both are zero.
-        }
-        BigRational d = dp.divide(ms);
-        return Math_BigDecimal.round(d.toBigDecimal(), oom,
-                RoundingMode.HALF_UP);
+//        /**
+//         * Calculate the direction vector of the line connecting the closest
+//         * points by computing the cross product.
+//         */
+//        V3D_Vector pv = new V3D_Vector(this.p, p);
+//        V3D_Vector cp = pv.getCrossProduct(v);
+//        
+//        BigRational pvm2 = pv.getMagnitudeSquared();
+//        BigRational cpm2 = cp.getMagnitudeSquared();
+//        if (pvm2.compareTo(BigRational.ZERO) == 0) {
+//            if (cpm2.compareTo(BigRational.ZERO) == 0) {
+//                return BigDecimal.ONE;
+//            }
+//        }
+//        Math_BigRationalSqrt pvm = new Math_BigRationalSqrt(pvm2);
+//        Math_BigRationalSqrt cpm = new Math_BigRationalSqrt(cpm2);
+//        return cpm.divide(pvm).toBigDecimal(oom);
+        V3D_Vector pv = new V3D_Vector(this.p, p);
+        V3D_Vector vu = v.getUnitVector(oom);
+        return p.getDistance(new V3D_Point(vu.multiply(pv.getDotProduct(vu)).add(new V3D_Vector(this.p))), oom);
     }
 
     /**

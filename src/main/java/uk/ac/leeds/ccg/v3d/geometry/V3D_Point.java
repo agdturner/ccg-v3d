@@ -88,6 +88,15 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
+     * @param v The vector.
+     */
+    public V3D_Point(V3D_Vector v) {
+        x = v.dx;
+        y = v.dy;
+        z = v.dz;
+    }
+
+    /**
      * @param x What {@link #x} is set to.
      * @param y What {@link #y} is set to.
      * @param z What {@link #z} is set to.

@@ -121,24 +121,49 @@ public class V3D_Plane extends V3D_Geometry {
     protected final V3D_Vector n;
 
     /**
+     * Create a new instance. Collinearity is not checked.
+     *
+     * @param p The plane used to create this.
+     */
+    public V3D_Plane(V3D_Plane p) {
+        this(p.p, p.q, p.r, p.pq, p.qr, p.n, false);
+    }
+
+    /**
+     * Create a new instance.
+     *
+     * @param p The plane used to create this.
+     * @param checkCollinearity If {@code false} the there is no check for
+     * collinearity.
+     * @throws RuntimeException If p, q and r are collinear and this is checked
+     * for.
+     */
+    public V3D_Plane(V3D_Plane p, boolean checkCollinearity) {
+        this(p.p, p.q, p.r, p.pq, p.qr, p.n, checkCollinearity);
+    }
+
+    /**
+     * Create a new instance.
+     *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
-     * @param checkCollinearity If {@code false} the rectangle is for an
-     * envelope face which is allowed to collapse to a line or a point.
-     * @throws RuntimeException If p, q and r are collinear.
+     * @param pq What {@link #pq} is set to.
+     * @param qr What {@link #qr} is set to.
+     * @param n What {@link #n} is set to.
+     * @param checkCollinearity If {@code false} the there is no check for
+     * collinearity.
+     * @throws RuntimeException If p, q and r are collinear and this is checked
+     * for.
      */
-    public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r,
-            boolean checkCollinearity) {
-        pq = new V3D_Vector(p, q);
-        qr = new V3D_Vector(q, r);
-        /**
-         * Calculate the normal perpendicular vector.
-         */
-        n = pq.getCrossProduct(qr);
+    public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Vector pq,
+            V3D_Vector qr, V3D_Vector n, boolean checkCollinearity) {
         this.p = p;
         this.q = q;
         this.r = r;
+        this.pq = pq;
+        this.qr = qr;
+        this.n = n;
         if (checkCollinearity) {
             // Check for collinearity
             BigRational P0 = BigRational.ZERO;
@@ -152,28 +177,32 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * This assumes that p, q and r are not collinear or that this is called in
-     * the construction of an envelope face which can effectively be a line
-     * segment or a point.
+     * Create a new instance.
+     *
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     * @param r What {@link #r} is set to.
+     * @param checkCollinearity If {@code false} the there is no check for
+     * collinearity.
+     * @throws RuntimeException If p, q and r are collinear and this is checked
+     * for.
+     */
+    public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r,
+            boolean checkCollinearity) {
+        this(p, q, r, new V3D_Vector(p, q), new V3D_Vector(q, r),
+                new V3D_Vector(p, q).getCrossProduct(new V3D_Vector(q, r)),
+                checkCollinearity);
+    }
+
+    /**
+     * Create a new instance. This assumes that p, q and r are not collinear.
      *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
      */
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r) {
-        if (V3D_Geometrics.isCollinear(p, q, r)) {
-            throw new RuntimeException("Cannot construct plane as the points "
-                    + "are collinear.");
-        }
-        pq = new V3D_Vector(p, q);
-        qr = new V3D_Vector(q, r);
-        /**
-         * Calculate the normal perpendicular vector.
-         */
-        n = pq.getCrossProduct(qr);
-        this.p = p;
-        this.q = q;
-        this.r = r;
+        this(p, q, r, false);
     }
 
     /**
@@ -182,33 +211,35 @@ public class V3D_Plane extends V3D_Geometry {
      *
      * @param p What {@link #p} is set to.
      * @param n What {@link #n} is set to.
-     * @throws RuntimeException If p, q and r are collinear.
      */
     public V3D_Plane(V3D_Point p, V3D_Vector n) {
         this.p = p;
         BigRational d = n.dx.multiply(p.x).add(n.dy.multiply(p.y).add(n.dz.multiply(p.z)));
         BigRational P0 = BigRational.ZERO;
         if (n.dx.compareTo(P0) == 0) {
-            if (n.dy.compareTo(P0) == 0) {
-
-            } else {
-
-            }
+            // Set: x = 0; y = 0
+            // Then: z = d/n.dz
+            this.q = new V3D_Point(P0, P0, d.divide(n.dz));
+            // Set: x = 0; z = 0
+            // Then: y = d/n.dy
+            this.r = new V3D_Point(P0, d.divide(n.dy), P0);
         } else {
             if (n.dy.compareTo(P0) == 0) {
-                if (n.dz.compareTo(P0) == 0) {
-                }
+                // Set: x = 0; y = 0
+                // Then: z = d/n.dz
+                this.q = new V3D_Point(P0, P0, d.divide(n.dz));
+                // Set: y = 0; z = 0
+                // Then: x = d/n.dx
+                this.r = new V3D_Point(P0, d.divide(n.dx), P0);
             } else {
-                if (n.dz.compareTo(P0) == 0) {
-                }
+                // Set: x = 0; y = 0
+                // Then: z = d/n.dz
+                this.q = new V3D_Point(P0, P0, d.divide(n.dz));
+                // Set: x = 0; z = 0
+                // Then: y = d/n.dy
+                this.r = new V3D_Point(P0, d.divide(n.dy), P0);
             }
         }
-        // Set: x = 0; y = 0
-        // Then: z = d/n.dz
-        this.q = new V3D_Point(P0, P0, d.divide(n.dz));
-        // Set: x = 0; z = 0
-        // Then: y = d/n.dy
-        this.r = new V3D_Point(P0, d.divide(n.dy), P0);
         pq = new V3D_Vector(p, q);
         qr = new V3D_Vector(q, r);
         this.n = pq.getCrossProduct(qr);
@@ -763,7 +794,7 @@ public class V3D_Plane extends V3D_Geometry {
         }
         return false;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Plane) {
