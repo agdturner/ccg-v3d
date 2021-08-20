@@ -134,7 +134,7 @@ public class V3D_Plane extends V3D_Geometry {
      *
      * @param p The plane used to create this.
      * @param checkCollinearity If {@code false} the there is no check for
-     * collinearity.
+     * co-linearity.
      * @throws RuntimeException If p, q and r are collinear and this is checked
      * for.
      */
@@ -888,10 +888,11 @@ public class V3D_Plane extends V3D_Geometry {
             return BigDecimal.ZERO;
         }
         V3D_Vector v = new V3D_Vector(p, this.p);
-        V3D_Vector unitVector = this.n.getUnitVector(oom);
-        //MathContext mc = new MathContext(Math_BigRationalSqrt.getOOM(BigRational.ONE, oom));
+        V3D_Vector u = this.n.getUnitVector(oom);
+//        MathContext mc = new MathContext(Math_BigRationalSqrt
+//                .getOOM(BigRational.ONE, oom));
         MathContext mc = new MathContext(6 - oom);
-        return v.getDotProduct(unitVector).abs().toBigDecimal(mc);
+        return v.getDotProduct(u).abs().toBigDecimal(mc);
     }
 
     /**

@@ -898,11 +898,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             return ((V3D_Point) l).getDistance(p, oom);
         }
         int xcmin = p.x.compareTo(xMin);
-        int xcmax = p.x.compareTo(xMax);
         int ycmin = p.y.compareTo(yMin);
-        int ycmax = p.y.compareTo(yMax);
         int zcmin = p.z.compareTo(zMin);
-        int zcmax = p.z.compareTo(zMax);
         if (xcmin == -1) {
             if (ycmin == -1) {
                 if (zcmin == -1) {
@@ -915,6 +912,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         return ((V3D_Point) f).getDistance(p, oom);
                     }
                 } else {
+                    int zcmax = p.z.compareTo(zMax);
                     if (zcmax == 1) {
                         // bla
                         if (l instanceof V3D_Rectangle) {
@@ -936,6 +934,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     }
                 }
             } else {
+                int ycmax = p.y.compareTo(yMax);
                 if (ycmax == 1) {
                     if (zcmin == -1) {
                         // ltf
@@ -947,6 +946,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             return ((V3D_Point) f).getDistance(p, oom);
                         }
                     } else {
+                        int zcmax = p.z.compareTo(zMax);
                         if (zcmax == 1) {
                             // lta
                             if (l instanceof V3D_Rectangle) {
@@ -978,6 +978,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             return ((V3D_Point) l).getDistance(p, oom);
                         }
                     } else {
+                        int zcmax = p.z.compareTo(zMax);
                         if (zcmax == 1) {
                             // lba - lta
                             if (l instanceof V3D_Rectangle) {
@@ -1001,6 +1002,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 }
             }
         } else {
+            int xcmax = p.x.compareTo(xMax);
             if (xcmax == 1) {
                 if (ycmin == -1) {
                     if (zcmin == -1) {
@@ -1013,6 +1015,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             return ((V3D_Point) f).getDistance(p, oom);
                         }
                     } else {
+                        int zcmax = p.z.compareTo(zMax);
                         if (zcmax == 1) {
                             // rba
                             if (a instanceof V3D_Rectangle) {
@@ -1034,6 +1037,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         }
                     }
                 } else {
+                    int ycmax = p.y.compareTo(yMax);
                     if (ycmax == 1) {
                         if (zcmin == -1) {
                             // rtf
@@ -1045,6 +1049,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 return ((V3D_Point) f).getDistance(p, oom);
                             }
                         } else {
+                            int zcmax = p.z.compareTo(zMax);
                             if (zcmax == 1) {
                                 // rta
                                 if (a instanceof V3D_Rectangle) {
@@ -1076,6 +1081,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 return ((V3D_Point) f).getDistance(p, oom);
                             }
                         } else {
+                            int zcmax = p.z.compareTo(zMax);
                             if (zcmax == 1) {
                                 // rba - rta
                                 if (a instanceof V3D_Rectangle) {
@@ -1110,6 +1116,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             return ((V3D_Point) f).getDistance(p, oom);
                         }
                     } else {
+                        int zcmax = p.z.compareTo(zMax);
                         if (zcmax == 1) {
                             // rba - lba
                             if (a instanceof V3D_Rectangle) {
@@ -1131,7 +1138,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         }
                     }
                 } else {
-                    // xany
+                    int ycmax = p.y.compareTo(yMax);
                     if (ycmax == 1) {
                         if (zcmin == -1) {
                             // ltf - rtf
@@ -1143,6 +1150,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 return ((V3D_Point) f).getDistance(p, oom);
                             }
                         } else {
+                            int zcmax = p.z.compareTo(zMax);
                             if (zcmax == 1) {
                                 // rta - lta
                                 if (a instanceof V3D_Rectangle) {
@@ -1174,6 +1182,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 return ((V3D_Point) f).getDistance(p, oom);
                             }
                         } else {
+                            int zcmax = p.z.compareTo(zMax);
                             if (zcmax == 1) {
                                 // rba - rta - lta - lba
                                 if (a instanceof V3D_Rectangle) {
@@ -1198,6 +1207,5 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 }
             }
         }
-
     }
 }

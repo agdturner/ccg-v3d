@@ -17,7 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
  * For representing and processing rectangles in 3D. A rectangle has a non-zero
@@ -153,6 +153,15 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
         return false;
     }
 
+    private boolean isIntersectedBy0(V3D_Line ls) {
+        if (t.isIntersectedBy(ls) || ri.isIntersectedBy(ls)
+                || b.isIntersectedBy(ls) || l.isIntersectedBy(ls)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     private boolean isIntersectedBy0(V3D_Point pt) {
         if (t.isIntersectedBy(pt) || ri.isIntersectedBy(pt)
                 || b.isIntersectedBy(pt) || l.isIntersectedBy(pt)) {
@@ -193,8 +202,15 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     @Override
     public boolean isIntersectedBy(V3D_Line l) {
-        if (super.isIntersectedBy(l)) {
-            return isIntersectedBy0((V3D_Point) super.getIntersection(l));
+        //if (super.isIntersectedBy(l)) {
+        V3D_Plane pl = new V3D_Plane(this);
+        if (pl.isIntersectedBy(l)) {
+            V3D_Geometry g = pl.getIntersection(l);
+            if (g instanceof V3D_Point) {
+                return isIntersectedBy0((V3D_Point) pl.getIntersection(l));
+            } else {
+                return isIntersectedBy0((V3D_Line) pl.getIntersection(l));
+            }
         }
         return false;
     }
@@ -220,7 +236,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Line l) {
-        V3D_Geometry i = super.getIntersection(l);
+        //V3D_Geometry i = super.getIntersection(l);
+        V3D_Geometry i = new V3D_Plane(this).getIntersection(l);
         if (i == null) {
             return null;
         } else if (i instanceof V3D_Line) {
@@ -377,19 +394,22 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     }
 
     @Override
-    public BigDecimal getPerimeter(int mps) {
-        int p = mps + 1;
-        return l.getLength(p).add(t.getLength(p)).multiply(BigDecimal.valueOf(2));
+    public BigDecimal getPerimeter(int oom) {
+        int oomn2 = oom - 2;
+        return l.getLength(oomn2).add(t.getLength(oomn2))
+                .multiply(BigDecimal.valueOf(2));
     }
 
     @Override
-    public BigDecimal getArea(int mps) {
-        return l.v.m.multiply(t.v.m).toBigDecimal(mps);
+    public BigDecimal getArea(int oom) {
+        int oomn2 = oom - 2;
+        return Math_BigDecimal.round(l.v.getMagnitude(oomn2)
+                .multiply(t.v.getMagnitude(oomn2)), oom);
     }
 
     /**
-     * Get the distance between this and {@code pl}. This code is incomplete.
-     *
+     * Get the distance between this and {@code pl}.
+     * 
      * @param p A point.
      * @param oom The order of magnitude of the precision.
      * @return The distance from {@code this} to {@code p}.
@@ -399,10 +419,16 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
         if (this.isIntersectedBy(p)) {
             return BigDecimal.ZERO;
         }
-        // As this is not an inifinite plane this answer is incorrect. We need 
-        // to discover if this distance is less than the distance from any 
-        // line segment of the rectangle and if the distance from the point to 
-        // all edge is less than the length of these edges... 
-        return super.getDistance(p, oom);
+        BigDecimal dp = super.getDistance(p, oom);
+        BigDecimal ld = l.getDistance(p, oom);
+        BigDecimal td = t.getDistance(p, oom);
+        BigDecimal rd = r.getDistance(p, oom);
+        BigDecimal bd = b.getDistance(p, oom);
+        if (dp.compareTo(ld) == 0 && dp.compareTo(td) == 0 
+                && dp.compareTo(rd) == 0 && dp.compareTo(bd) == 0) {
+            return dp;
+        } else {
+            return Math_BigDecimal.min(ld, td, rd, bd);
+        } 
     }
 }
