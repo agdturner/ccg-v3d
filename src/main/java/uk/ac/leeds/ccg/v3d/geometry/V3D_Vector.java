@@ -94,12 +94,41 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * Creates a vector from the origin to {@code p}
+     *
+     * @param p the point to which the vector starting at the origin goes.
+     */
+    public V3D_Vector(V3D_Envelope.Point p) {
+        this(p.x, p.y, p.z);
+    }
+
+    /**
      * Creates a vector from {@code p} to {@code q}.
      *
      * @param p the point where the vector starts.
      * @param q the point where the vector ends.
      */
     public V3D_Vector(V3D_Point p, V3D_Point q) {
+        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
+    }
+
+    /**
+     * Creates a vector from {@code p} to {@code q}.
+     *
+     * @param p the point where the vector starts.
+     * @param q the point where the vector ends.
+     */
+    public V3D_Vector(V3D_Envelope.Point p, V3D_Envelope.Point q) {
+        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
+    }
+
+    /**
+     * Creates a vector from {@code p} to {@code q}.
+     *
+     * @param p the point where the vector starts.
+     * @param q the point where the vector ends.
+     */
+    public V3D_Vector(V3D_Envelope.Point p, V3D_Point q) {
         this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
     }
 

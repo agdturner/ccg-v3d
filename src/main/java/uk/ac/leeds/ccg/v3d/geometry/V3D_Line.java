@@ -163,7 +163,9 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * @param l Vector_LineSegment3D
+     * Create a new instance from {@code l}
+     *
+     * @param l Line to create from.
      */
     public V3D_Line(V3D_Line l) {
         this.p = l.p;
@@ -881,7 +883,6 @@ public class V3D_Line extends V3D_Geometry {
 //        }
 //        return dp.divide(cp.m);
 //    }
-
     /**
      * https://en.wikipedia.org/wiki/Skew_lines#Nearest_points
      * https://en.wikipedia.org/wiki/Distance_between_two_parallel_lines

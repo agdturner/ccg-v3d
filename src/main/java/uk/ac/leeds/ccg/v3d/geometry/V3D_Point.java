@@ -88,6 +88,15 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
+     * @param p The point to duplicate
+     */
+    public V3D_Point(V3D_Envelope.Point p) {
+        x = p.x;
+        y = p.y;
+        z = p.z;
+    }
+
+    /**
      * @param v The vector.
      */
     public V3D_Point(V3D_Vector v) {

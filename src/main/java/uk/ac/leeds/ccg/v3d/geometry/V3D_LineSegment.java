@@ -73,6 +73,15 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      */
+    public V3D_LineSegment(V3D_LineSegment l) {
+        super(l);
+        len2 = p.getDistanceSquared(q);
+    }
+
+    /**
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     */
     public V3D_LineSegment(V3D_Point p, V3D_Point q) {
         super(p, q);
         len2 = p.getDistanceSquared(q);
@@ -84,6 +93,13 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     public V3D_LineSegment(V3D_Line l) {
         super(l);
         len2 = p.getDistanceSquared(q);
+    }
+
+    /**
+     * @param l Vector_LineSegment3D
+     */
+    public V3D_LineSegment(V3D_Envelope.LineSegment l) {
+        this(new V3D_Point(l.p), new V3D_Point(l.q));
     }
 
     @Override
@@ -236,12 +252,17 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Line l) {
-        // Create new lines first to see if infinite lines intersect.
+        // Check if infinite lines intersect.
         V3D_Geometry i = V3D_Line.getIntersection(new V3D_Line(this),
                 new V3D_Line(l));
         if (i == null) {
+            // There is no intersection.
             return i;
         }
+        /**
+         * If infinite lines intersects at a point, then check this point is on 
+         * this.
+         */ 
         if (i instanceof V3D_Point) {
             if (isIntersectedBy((V3D_Point) i)) {
                 return i;
@@ -249,8 +270,10 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
                 return null;
             }
         } else if (i instanceof V3D_Line) {
+            // If the lines are the same, then return this. 
             return this;
         } else {
+            // There is no intersection.
             return null;
         }
     }

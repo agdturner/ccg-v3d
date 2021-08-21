@@ -114,14 +114,27 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
             }
         }
     }
+    
+    /**
+     * @param p The bottom left corner of the rectangle.
+     * @param q The top left corner of the rectangle.
+     * @param r The top right corner of the rectangle.
+     * @param s The bottom right corner of the rectangle.
+     * @throws java.lang.RuntimeException iff the points do not define a
+     * rectangle.
+     */
+    public V3D_Rectangle(V3D_Envelope.Rectangle r) {
+        this(new V3D_Point(r.p), new V3D_Point(r.q), new V3D_Point(r.r), new V3D_Point(r.s));
+    }
+    
 
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "(p=" + p.toString()
-                + ", q=" + q.toString() + ", r=" + r.toString() 
+                + ", q=" + q.toString() + ", r=" + r.toString()
                 + ", s=" + s.toString() + ")";
     }
-    
+
     @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
@@ -154,14 +167,10 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     }
 
     private boolean isIntersectedBy0(V3D_Line ls) {
-        if (t.isIntersectedBy(ls) || ri.isIntersectedBy(ls)
-                || b.isIntersectedBy(ls) || l.isIntersectedBy(ls)) {
-            return true;
-        } else {
-            return false;
-        }
+        return t.isIntersectedBy(ls) || ri.isIntersectedBy(ls)
+                || b.isIntersectedBy(ls) || l.isIntersectedBy(ls);
     }
-    
+
     private boolean isIntersectedBy0(V3D_Point pt) {
         if (t.isIntersectedBy(pt) || ri.isIntersectedBy(pt)
                 || b.isIntersectedBy(pt) || l.isIntersectedBy(pt)) {
@@ -202,28 +211,36 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     @Override
     public boolean isIntersectedBy(V3D_Line l) {
-        //if (super.isIntersectedBy(l)) {
         V3D_Plane pl = new V3D_Plane(this);
         if (pl.isIntersectedBy(l)) {
             V3D_Geometry g = pl.getIntersection(l);
             if (g instanceof V3D_Point) {
-                return isIntersectedBy0((V3D_Point) pl.getIntersection(l));
+                return isIntersectedBy0((V3D_Point) g);
             } else {
-                return isIntersectedBy0((V3D_Line) pl.getIntersection(l));
+                return isIntersectedBy0((V3D_Line) g);
             }
         }
         return false;
     }
 
+    /**
+     * Intersection test.
+     *
+     * @param l The line segment to test for intersection.
+     * @param b This is a flag to distinguish this method from
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}.
+     * @return {@code true} iff this rectangle is intersected by {@code l}
+     */
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, boolean b) {
         if (getEnvelope().isIntersectedBy(l.getEnvelope())) {
-            if (super.isIntersectedBy(l)) {
-                V3D_Geometry g = super.getIntersection(l, b);
+            V3D_Plane pl = new V3D_Plane(this);
+            if (pl.isIntersectedBy(l)) {
+                V3D_Geometry g = pl.getIntersection(l, b);
                 if (g instanceof V3D_Point) {
-                    return l.isIntersectedBy((V3D_Point) g);
+                    return isIntersectedBy((V3D_Point) g);
                 } else {
-                    return l.isIntersectedBy((V3D_LineSegment) g, b);
+                    return isIntersectedBy((V3D_LineSegment) g, b);
                 }
             }
         }
@@ -236,155 +253,175 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Line l) {
-        //V3D_Geometry i = super.getIntersection(l);
-        V3D_Geometry i = new V3D_Plane(this).getIntersection(l);
-        if (i == null) {
+        V3D_Geometry g = new V3D_Plane(this).getIntersection(l);
+        if (g == null) {
             return null;
-        } else if (i instanceof V3D_Line) {
-            V3D_Line li = (V3D_Line) i;
-            V3D_Geometry enil = getEnvelope().getIntersection(l);
-            if (enil == null) {
-                return null;
-            }
-            /**
-             * Get the intersection of the line and each edge of the rectangle.
-             */
-            V3D_Geometry ti = t.getIntersection(li);
-            if (ti == null) {
-                // Check ri, b, l
-                V3D_Geometry rii = ri.getIntersection(li);
-                if (rii == null) {
-                    // Check b, l
-                    V3D_Geometry bi = b.getIntersection(li);
-                    if (bi == null) {
-                        // Check l
-                        V3D_Geometry tli = this.l.getIntersection(li);
-                        if (tli == null) {
-                            return null;
-                        } else {
-                            return tli;
-                        }
-                    } else if (bi instanceof V3D_LineSegment) {
-                        return bi;
-                    } else {
-                        // Check l
-                        V3D_Geometry tli = this.l.getIntersection(li);
-                        if (tli == null) {
+        } else {
+            if (g instanceof V3D_Point) {
+                if (this.isIntersectedBy((V3D_Point) g)) {
+                    return g;
+                } else {
+                    return null;
+                }
+            } else {
+                V3D_Line li = (V3D_Line) g;
+                /**
+                 * This is left here as a comment as whilst in theory a Quick
+                 * test of the envelope is a good idea (for speeding things up),
+                 * there is a problem as V3D_Rectangles are parts of
+                 * V3D_Envelopes and this results in a StackOverflow error as
+                 * is. To overcome this a special type of aligned V3D_Rectangle
+                 * could be defined and used for V3D_Envelopes for which the
+                 * intersection calculations can be simplified.
+                 */
+//                // Quick test of the envelope.
+//                V3D_Geometry enil = getEnvelope().getIntersection(l);
+//                if (enil == null) {
+//                    return null;
+//                }
+                /**
+                 * Get the intersection of the line and each edge of the
+                 * rectangle.
+                 */
+                V3D_Geometry ti = t.getIntersection(li);
+                if (ti == null) {
+                    // Check ri, b, l
+                    V3D_Geometry rii = ri.getIntersection(li);
+                    if (rii == null) {
+                        // Check b, l
+                        V3D_Geometry bi = b.getIntersection(li);
+                        if (bi == null) {
+                            // Check l
+                            V3D_Geometry tli = this.l.getIntersection(li);
+                            if (tli == null) {
+                                return null;
+                            } else {
+                                return tli;
+                            }
+                        } else if (bi instanceof V3D_LineSegment) {
                             return bi;
                         } else {
-                            return new V3D_LineSegment((V3D_Point) bi,
-                                    (V3D_Point) tli);
-                        }
-                    }
-                } else if (rii instanceof V3D_LineSegment) {
-                    return rii;
-                } else {
-                    // Check b, l
-                    V3D_Geometry bi = b.getIntersection(li);
-                    if (bi == null) {
-                        // Check l
-                        V3D_Geometry tli = this.l.getIntersection(li);
-                        if (tli == null) {
-                            return rii;
-                        } else {
-                            return new V3D_LineSegment((V3D_Point) rii,
-                                    (V3D_Point) tli);
-                        }
-                    } else if (bi instanceof V3D_LineSegment) {
-                        return bi;
-                    } else {
-                        // Check l
-                        V3D_Geometry tli = this.l.getIntersection(li);
-                        if (tli == null) {
-                            V3D_Point riip = (V3D_Point) rii;
-                            V3D_Point bip = (V3D_Point) bi;
-                            if (riip.equals(bip)) {
-                                return bip;
+                            // Check l
+                            V3D_Geometry tli = this.l.getIntersection(li);
+                            if (tli == null) {
+                                return bi;
                             } else {
-                                return new V3D_LineSegment(riip, bip);
-                            }
-                        } else {
-                            return new V3D_LineSegment((V3D_Point) bi,
-                                    (V3D_Point) tli);
-                        }
-                    }
-                }
-            } else if (ti instanceof V3D_LineSegment) {
-                return ti;
-            } else {
-                // Check ri, b, l
-                V3D_Geometry rii = ri.getIntersection(li);
-                if (rii == null) {
-                    // Check b, l
-                    V3D_Geometry bi = b.getIntersection(li);
-                    if (bi == null) {
-                        // Check l
-                        V3D_Geometry tli = this.l.getIntersection(li);
-                        if (tli == null) {
-                            return ti;
-                        } else {
-                            V3D_Point tlip = (V3D_Point) tli;
-                            V3D_Point tip = (V3D_Point) ti;
-                            if (tlip.equals(tip)) {
-                                return tlip;
-                            } else {
-                                return new V3D_LineSegment(tlip, tip);
+                                return new V3D_LineSegment((V3D_Point) bi,
+                                        (V3D_Point) tli);
                             }
                         }
-                    } else if (bi instanceof V3D_LineSegment) {
-                        return bi;
+                    } else if (rii instanceof V3D_LineSegment) {
+                        return rii;
                     } else {
-                        return new V3D_LineSegment((V3D_Point) ti, (V3D_Point) bi);
-                    }
-                } else {
-                    V3D_Point tip = (V3D_Point) ti;
-                    V3D_Point riip = (V3D_Point) rii;
-                    if (tip.equals(riip)) {
                         // Check b, l
-                        V3D_Geometry sri = b.getIntersection(li);
-                        if (sri == null) {
+                        V3D_Geometry bi = b.getIntersection(li);
+                        if (bi == null) {
                             // Check l
                             V3D_Geometry tli = this.l.getIntersection(li);
                             if (tli == null) {
                                 return rii;
                             } else {
-                                return new V3D_LineSegment(riip,
+                                return new V3D_LineSegment((V3D_Point) rii,
                                         (V3D_Point) tli);
                             }
-                        } else if (sri instanceof V3D_LineSegment) {
-                            return sri;
+                        } else if (bi instanceof V3D_LineSegment) {
+                            return bi;
                         } else {
-                            return new V3D_LineSegment(riip, (V3D_Point) sri);
+                            // Check l
+                            V3D_Geometry tli = this.l.getIntersection(li);
+                            if (tli == null) {
+                                V3D_Point riip = (V3D_Point) rii;
+                                V3D_Point bip = (V3D_Point) bi;
+                                if (riip.equals(bip)) {
+                                    return bip;
+                                } else {
+                                    return new V3D_LineSegment(riip, bip);
+                                }
+                            } else {
+                                return new V3D_LineSegment((V3D_Point) bi,
+                                        (V3D_Point) tli);
+                            }
+                        }
+                    }
+                } else if (ti instanceof V3D_LineSegment) {
+                    return ti;
+                } else {
+                    // Check ri, b, l
+                    V3D_Geometry rii = ri.getIntersection(li);
+                    if (rii == null) {
+                        // Check b, l
+                        V3D_Geometry bi = b.getIntersection(li);
+                        if (bi == null) {
+                            // Check l
+                            V3D_Geometry tli = this.l.getIntersection(li);
+                            if (tli == null) {
+                                return ti;
+                            } else {
+                                V3D_Point tlip = (V3D_Point) tli;
+                                V3D_Point tip = (V3D_Point) ti;
+                                if (tlip.equals(tip)) {
+                                    return tlip;
+                                } else {
+                                    return new V3D_LineSegment(tlip, tip);
+                                }
+                            }
+                        } else if (bi instanceof V3D_LineSegment) {
+                            return bi;
+                        } else {
+                            return new V3D_LineSegment((V3D_Point) ti, (V3D_Point) bi);
                         }
                     } else {
-                        return new V3D_LineSegment(riip, tip);
+                        V3D_Point tip = (V3D_Point) ti;
+                        V3D_Point riip = (V3D_Point) rii;
+                        if (tip.equals(riip)) {
+                            // Check b, l
+                            V3D_Geometry sri = b.getIntersection(li);
+                            if (sri == null) {
+                                // Check l
+                                V3D_Geometry tli = this.l.getIntersection(li);
+                                if (tli == null) {
+                                    return rii;
+                                } else {
+                                    return new V3D_LineSegment(riip,
+                                            (V3D_Point) tli);
+                                }
+                            } else if (sri instanceof V3D_LineSegment) {
+                                return sri;
+                            } else {
+                                return new V3D_LineSegment(riip, (V3D_Point) sri);
+                            }
+                        } else {
+                            return new V3D_LineSegment(riip, tip);
+                        }
                     }
                 }
-            }
-        } else {
-            V3D_Point pi = (V3D_Point) i;
-            if (this.isIntersectedBy(pi)) {
-                return pi;
-            } else {
-                return null;
             }
         }
     }
 
+    /**
+     * Calculates and returns the intersections between {@code this} and
+     * {@code l}.
+     *
+     * @param l The line segment to test for intersection.
+     * @param b This is a flag to distinguish this method from
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}.
+     * @return The intersection or {@code null} iff there is no intersection.
+     */
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, boolean b) {
-        V3D_Geometry i = getIntersection(l);
-        if (i == null) {
+        V3D_Geometry g = getIntersection(l);
+        if (g == null) {
             return null;
         }
-        if (i instanceof V3D_Point) {
-            if (l.isIntersectedBy((V3D_Point) i)) {
-                return i;
+        if (g instanceof V3D_Point) {
+            if (l.isIntersectedBy((V3D_Point) g)) {
+                return g;
             } else {
                 return null;
             }
         } else {
-            return ((V3D_LineSegment) i).getIntersection(l, b);
+            return l.getIntersection(((V3D_LineSegment) g), b);
         }
     }
 
@@ -409,7 +446,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     /**
      * Get the distance between this and {@code pl}.
-     * 
+     *
      * @param p A point.
      * @param oom The order of magnitude of the precision.
      * @return The distance from {@code this} to {@code p}.
@@ -424,11 +461,11 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
         BigDecimal td = t.getDistance(p, oom);
         BigDecimal rd = r.getDistance(p, oom);
         BigDecimal bd = b.getDistance(p, oom);
-        if (dp.compareTo(ld) == 0 && dp.compareTo(td) == 0 
+        if (dp.compareTo(ld) == 0 && dp.compareTo(td) == 0
                 && dp.compareTo(rd) == 0 && dp.compareTo(bd) == 0) {
             return dp;
         } else {
             return Math_BigDecimal.min(ld, td, rd, bd);
-        } 
+        }
     }
 }
