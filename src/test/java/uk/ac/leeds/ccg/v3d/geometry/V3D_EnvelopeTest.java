@@ -44,7 +44,7 @@ import uk.ac.leeds.ccg.v3d.V3D_Test;
  * V3D_EnvelopeTest
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
 public class V3D_EnvelopeTest extends V3D_Test {
 

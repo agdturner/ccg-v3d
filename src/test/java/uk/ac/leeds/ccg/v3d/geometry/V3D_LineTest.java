@@ -534,7 +534,14 @@ public class V3D_LineTest extends V3D_Test {
         oom = - 4;
         p = P0P1P0;
         instance = new V3D_Line(P0P0P0, P1P1P0);
-        expResult = new Math_BigRationalSqrt(2).divide(new Math_BigRationalSqrt(4)).toBigDecimal(oom);
+        int ooms = Math_BigRationalSqrt.getOOM(BigRational.TWO, oom);
+        if (ooms > 0) {
+            ooms = 0;
+        }
+        MathContext mc = new MathContext(-ooms);
+        expResult = BigRational.valueOf(new Math_BigRationalSqrt(
+                BigRational.TWO).toBigDecimal(oom)).divide(2)
+                .toBigDecimal(mc);
         result = instance.getDistance(p, oom);
         assertTrue(expResult.compareTo(result) == 0);
         //expResult = new Math_BigRationalSqrt(BigRational.ONE.divide(2)).toBigDecimal(oom);
