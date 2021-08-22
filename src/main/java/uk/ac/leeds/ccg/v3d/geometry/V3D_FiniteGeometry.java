@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
-import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
  * V3D_FiniteGeometry
@@ -34,8 +33,7 @@ public interface V3D_FiniteGeometry {
     public abstract V3D_Envelope getEnvelope();
 
     /**
-     * For identifying if the geometry is intersected by point
-     * {@code p}.
+     * For identifying if the geometry is intersected by point {@code p}.
      *
      * @param p The point to test for intersection with.
      * @return {@code true} iff the geometry is intersected by {@code p}.
@@ -43,8 +41,7 @@ public interface V3D_FiniteGeometry {
     public abstract boolean isIntersectedBy(V3D_Point p);
 
     /**
-     * For identifying if the geometry is intersected by line
-     * {@code l}.
+     * For identifying if the geometry is intersected by line {@code l}.
      *
      * @param l The line to test for intersection with.
      * @return {@code true} iff the geometry is intersected by {@code l}.
@@ -52,8 +49,7 @@ public interface V3D_FiniteGeometry {
     public abstract boolean isIntersectedBy(V3D_Line l);
 
     /**
-     * For identifying if the geometry is intersected by line
-     * {@code l}.
+     * For identifying if the geometry is intersected by line {@code l}.
      *
      * @param l The line segment to test for intersection with.
      * @param b To distinguish this method from
@@ -75,12 +71,13 @@ public interface V3D_FiniteGeometry {
      * {@code l}.
      *
      * @param l The line segment to intersect with.
-     * @param b To distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}.
+     * @param flag To distinguish this method from
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * value is ignored.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_Geometry getIntersection(V3D_LineSegment l, boolean b);
-    
+    public abstract V3D_Geometry getIntersection(V3D_LineSegment l, boolean flag);
+
     /**
      * For getting the minimum distance to {@code p}.
      *
@@ -89,4 +86,45 @@ public interface V3D_FiniteGeometry {
      * @return The minimum distance to {@code p}.
      */
     public abstract BigDecimal getDistance(V3D_Point p, int oom);
+
+    /**
+     * If p and q are equal then the point is returned otherwise the line
+     * segment is returned
+     *
+     * @param p A point.
+     * @param q Another possibly equal point.
+     * @return either {@code p} or {@code new V3D_LineSegment(p, q)}
+     */
+    public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q) {
+        if (p.equals(q)) {
+            return p;
+        } else {
+            return new V3D_LineSegment(p, q);
+        }
+    }
+
+    /**
+     * If p, q and r are equal then the point is returned. If two of the points
+     * are the same, then a line segment is returned. If all points are
+     * different then a triangle is returned.
+     *
+     * @param p A point.
+     * @param q Another possibly equal point.
+     * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or {@code new V3D_Triangle(p, q, r)}
+     */
+    public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q, V3D_Point r) {
+        if (p.equals(q)) {
+            return getGeometry(p, r);
+        } else {
+            if (q.equals(r)) {
+                return getGeometry(q, p);
+            } else {
+                if (r.equals(p)) {
+                    return getGeometry(r, q);
+                } else {
+                    return new V3D_Triangle(p, q, r);
+                }
+            }
+        }
+    }
 }

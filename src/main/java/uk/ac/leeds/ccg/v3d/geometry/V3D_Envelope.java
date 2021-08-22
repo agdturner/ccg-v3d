@@ -542,11 +542,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     if (bil == null) {
                                         return null;
                                     } else {
-                                        return getGeometry((V3D_Point) ril,
+                                        return V3D_FiniteGeometry.getGeometry((V3D_Point) ril,
                                                 (V3D_Point) bil);
                                     }
                                 } else {
-                                    return getGeometry((V3D_Point) ril,
+                                    return V3D_FiniteGeometry.getGeometry((V3D_Point) ril,
                                             (V3D_Point) til);
                                 }
                             }
@@ -560,16 +560,17 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     if (bil == null) {
                                         return null;
                                     } else {
-                                        return getGeometry((V3D_Point) ail,
+                                        return V3D_FiniteGeometry.getGeometry(
+                                                (V3D_Point) ail,
                                                 (V3D_Point) bil);
                                     }
                                 } else {
-                                    return getGeometry((V3D_Point) ail,
-                                            (V3D_Point) til);
+                                    return V3D_FiniteGeometry.getGeometry(
+                                            (V3D_Point) ail, (V3D_Point) til);
                                 }
                             } else {
-                                return getGeometry((V3D_Point) ail,
-                                        (V3D_Point) ril);
+                                return V3D_FiniteGeometry.getGeometry(
+                                        (V3D_Point) ail, (V3D_Point) ril);
                             }
                         }
                     } else {
@@ -585,14 +586,16 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     if (bil == null) {
                                         return null;
                                     } else {
-                                        return getGeometry((V3D_Point) lil,
+                                        return V3D_FiniteGeometry.getGeometry(
+                                                (V3D_Point) lil,
                                                 (V3D_Point) bil);
                                     }
                                 } else {
                                     if (bil == null) {
                                         return null;
                                     } else {
-                                        return getGeometry((V3D_Point) lil,
+                                        return V3D_FiniteGeometry.getGeometry(
+                                                (V3D_Point) lil,
                                                 (V3D_Point) bil);
                                     }
                                 }
@@ -601,8 +604,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                         (V3D_Point) ril);
                             }
                         } else {
-                            return getGeometry((V3D_Point) lil,
-                                    (V3D_Point) ail);
+                            return V3D_FiniteGeometry.getGeometry(
+                                    (V3D_Point) lil, (V3D_Point) ail);
                         }
                     }
                 } else {
@@ -616,24 +619,24 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 if (til == null) {
                                     return null;
                                 } else {
-                                    return getGeometry((V3D_Point) fil,
-                                            (V3D_Point) til);
+                                    return V3D_FiniteGeometry.getGeometry(
+                                            (V3D_Point) fil, (V3D_Point) til);
                                 }
                             } else {
-                                return getGeometry((V3D_Point) fil,
-                                        (V3D_Point) ril);
+                                return V3D_FiniteGeometry.getGeometry(
+                                        (V3D_Point) fil, (V3D_Point) ril);
                             }
                         } else {
                             return new V3D_LineSegment((V3D_Point) fil,
-                                                    (V3D_Point) ail);
+                                    (V3D_Point) ail);
                         }
                     } else {
                         if (ail == null) {
-                            return getGeometry((V3D_Point) fil,
-                                    (V3D_Point) lil);
+                            return V3D_FiniteGeometry.getGeometry(
+                                    (V3D_Point) fil, (V3D_Point) lil);
                         } else {
-                            return getGeometry((V3D_Point) fil,
-                                    (V3D_Point) ail);
+                            return V3D_FiniteGeometry.getGeometry(
+                                    (V3D_Point) fil, (V3D_Point) ail);
                         }
                     }
                 }
@@ -649,14 +652,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 return new V3D_Rectangle((Rectangle) f).getIntersection(li);
             default:
                 return new V3D_Rectangle((Rectangle) f).getIntersection(li);
-        }
-    }
-
-    private V3D_Geometry getGeometry(V3D_Point p, V3D_Point q) {
-        if (p.equals(q)) {
-            return p;
-        } else {
-            return new V3D_LineSegment(p, q);
         }
     }
 
@@ -717,12 +712,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     if (bil == null) {
                                         return getIntersection((V3D_Point) ril, li, lipi);
                                     } else {
-                                        return getGeometry((V3D_Point) ril,
+                                        return V3D_FiniteGeometry.getGeometry(
+                                                (V3D_Point) ril,
                                                 (V3D_Point) bil);
                                     }
                                 } else {
-                                    return getGeometry((V3D_Point) ril,
-                                            (V3D_Point) til);
+                                    return V3D_FiniteGeometry.getGeometry(
+                                            (V3D_Point) ril, (V3D_Point) til);
                                 }
                             }
                         } else {
@@ -735,16 +731,17 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     if (bil == null) {
                                         return getIntersection((V3D_Point) ail, li, lipi);
                                     } else {
-                                        return getGeometry((V3D_Point) ail,
+                                        return V3D_FiniteGeometry.getGeometry(
+                                                (V3D_Point) ail,
                                                 (V3D_Point) bil);
                                     }
                                 } else {
-                                    return getGeometry((V3D_Point) ail,
-                                            (V3D_Point) til);
+                                    return V3D_FiniteGeometry.getGeometry(
+                                            (V3D_Point) ail, (V3D_Point) til);
                                 }
                             } else {
-                                return getGeometry((V3D_Point) ail,
-                                        (V3D_Point) ril);
+                                return V3D_FiniteGeometry.getGeometry(
+                                        (V3D_Point) ail, (V3D_Point) ril);
                             }
                         }
                     } else {
@@ -760,14 +757,16 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     if (bil == null) {
                                         return getIntersection((V3D_Point) lil, li, lipi);
                                     } else {
-                                        return getGeometry((V3D_Point) lil,
+                                        return V3D_FiniteGeometry.getGeometry(
+                                                (V3D_Point) lil,
                                                 (V3D_Point) bil);
                                     }
                                 } else {
                                     if (bil == null) {
                                         return getIntersection((V3D_Point) lil, li, lipi);
                                     } else {
-                                        return getGeometry((V3D_Point) lil,
+                                        return V3D_FiniteGeometry.getGeometry(
+                                                (V3D_Point) lil,
                                                 (V3D_Point) bil);
                                     }
                                 }
@@ -776,8 +775,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                         (V3D_Point) ril);
                             }
                         } else {
-                            return getGeometry((V3D_Point) lil,
-                                    (V3D_Point) ail);
+                            return V3D_FiniteGeometry.getGeometry(
+                                    (V3D_Point) lil, (V3D_Point) ail);
                         }
                     }
                 } else {
@@ -791,23 +790,23 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 if (til == null) {
                                     return getIntersection((V3D_Point) fil, li, lipi);
                                 } else {
-                                    return getGeometry((V3D_Point) fil,
-                                            (V3D_Point) til);
+                                    return V3D_FiniteGeometry.getGeometry(
+                                            (V3D_Point) fil, (V3D_Point) til);
                                 }
                             } else {
-                                return getGeometry((V3D_Point) fil,
-                                        (V3D_Point) ril);
+                                return V3D_FiniteGeometry.getGeometry(
+                                        (V3D_Point) fil, (V3D_Point) ril);
                             }
                         } else {
                             return new V3D_LineSegment((V3D_Point) fil,
-                                                    (V3D_Point) ail);
+                                    (V3D_Point) ail);
                         }
                     } else {
                         if (ail == null) {
                             return getIntersection((V3D_Point) fil, li, lipi);
                         } else {
-                            return getGeometry((V3D_Point) fil,
-                                    (V3D_Point) ail);
+                            return V3D_FiniteGeometry.getGeometry(
+                                    (V3D_Point) fil, (V3D_Point) ail);
                         }
                     }
                 }
@@ -828,9 +827,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
     private V3D_Geometry getIntersection(V3D_Point pi, V3D_LineSegment li, boolean lipi) {
         if (lipi) {
-            return getGeometry(li.p, pi);
+            return V3D_FiniteGeometry.getGeometry(li.p, pi);
         } else {
-            return getGeometry(li.q, pi);
+            return V3D_FiniteGeometry.getGeometry(li.q, pi);
         }
     }
 

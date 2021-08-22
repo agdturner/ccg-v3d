@@ -266,11 +266,11 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 V3D_Line li = (V3D_Line) g;
                 /**
                  * Whilst in theory a test of the envelope might seem a good
-                 * idea (for speeding things up), I am not sure if it actually
-                 * does. Optimisation plans can look at this. There are some
-                 * parts of intersection algorithms that can be done in
-                 * parallel, so it might not be obvious what the quickest ways
-                 * are! One of the reasons that V3D_Envelope has it's own
+                 * idea (for speeding things up), timing experiments are wanted
+                 * to be sure it does. Optimisation plans should bear in mind
+                 * that some parts of intersection algorithms that can be done
+                 * in parallel, so it might not be obvious what the quickest
+                 * ways are! One of the reasons that V3D_Envelope has it's own
                  * geometry is because they needed their own special rectangles
                  * otherwise this "optimisation" resulted in a StackOverflow
                  * error.
