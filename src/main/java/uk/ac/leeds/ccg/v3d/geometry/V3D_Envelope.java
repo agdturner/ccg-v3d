@@ -532,7 +532,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 } else {
                                     V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
                                             .getIntersection(li);
-                                    return getGeometry((V3D_Point) til,
+                                    return new V3D_LineSegment((V3D_Point) til,
                                             (V3D_Point) bil);
                                 }
                             } else {
@@ -597,7 +597,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     }
                                 }
                             } else {
-                                return getGeometry((V3D_Point) lil,
+                                return new V3D_LineSegment((V3D_Point) lil,
                                         (V3D_Point) ril);
                             }
                         } else {
@@ -624,28 +624,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                         (V3D_Point) ril);
                             }
                         } else {
-                            if (ril == null) {
-                                V3D_Geometry til = (new V3D_Rectangle((Rectangle) t))
-                                        .getIntersection(li);
-                                if (til == null) {
-                                    V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
-                                            .getIntersection(li);
-                                    if (bil == null) {
-                                        return null;
-                                    } else {
-                                        return getGeometry((V3D_Point) fil,
-                                                (V3D_Point) bil);
-                                    }
-                                } else {
-                                    return getGeometry((V3D_Point) fil,
-                                            (V3D_Point) til);
-                                }
-                            } else {
-                                return getGeometry((V3D_Point) fil,
-                                        (V3D_Point) ril);
-                            }
+                            return new V3D_LineSegment((V3D_Point) fil,
+                                                    (V3D_Point) ail);
                         }
-                    } else {                        
+                    } else {
                         if (ail == null) {
                             return getGeometry((V3D_Point) fil,
                                     (V3D_Point) lil);
@@ -725,7 +707,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                         return getIntersection((V3D_Point) bil, li, lipi);
                                     }
                                 } else {
-                                    return getGeometry((V3D_Point) til,
+                                    return new V3D_LineSegment((V3D_Point) til,
                                             (V3D_Point) bil);
                                 }
                             } else {
@@ -790,7 +772,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     }
                                 }
                             } else {
-                                return getGeometry((V3D_Point) lil,
+                                return new V3D_LineSegment((V3D_Point) lil,
                                         (V3D_Point) ril);
                             }
                         } else {
@@ -817,31 +799,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                         (V3D_Point) ril);
                             }
                         } else {
-                            if (ril == null) {
-                                V3D_Geometry til = (new V3D_Rectangle((Rectangle) t))
-                                        .getIntersection(li, flag);
-                                if (til == null) {
-                                    V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
-                                            .getIntersection(li, flag);
-                                    if (bil == null) {
-                                        return getIntersection((V3D_Point) fil, li, lipi);
-                                    } else {
-                                        return getGeometry((V3D_Point) fil,
-                                                (V3D_Point) bil);
-                                    }
-                                } else {
-                                    return getGeometry((V3D_Point) fil,
-                                            (V3D_Point) til);
-                                }
-                            } else {
-                                return getGeometry((V3D_Point) fil,
-                                        (V3D_Point) ril);
-                            }
+                            return new V3D_LineSegment((V3D_Point) fil,
+                                                    (V3D_Point) ail);
                         }
                     } else {
                         if (ail == null) {
-                            return getGeometry((V3D_Point) fil,
-                                    (V3D_Point) lil);
+                            return getIntersection((V3D_Point) fil, li, lipi);
                         } else {
                             return getGeometry((V3D_Point) fil,
                                     (V3D_Point) ail);

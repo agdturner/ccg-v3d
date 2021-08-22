@@ -403,24 +403,55 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      * {@code l}.
      *
      * @param l The line segment to test for intersection.
-     * @param b This is a flag to distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}.
+     * @param flag This is to distinguish this method from
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The value is ignored.
      * @return The intersection or {@code null} iff there is no intersection.
      */
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean b) {
-        V3D_Geometry g = getIntersection(l);
-        if (g == null) {
-            return null;
-        }
-        if (g instanceof V3D_Point) {
-            if (l.isIntersectedBy((V3D_Point) g)) {
-                return g;
+    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean flag) {
+        boolean lip = isIntersectedBy(l.p);
+        boolean liq = isIntersectedBy(l.q);
+        if (lip) {
+            if (liq) {
+                return l;
             } else {
-                return null;
+                V3D_Geometry li = getIntersection(l);
+                if (li instanceof V3D_Point) {
+                    return l.p;
+                } else {
+                    V3D_LineSegment lli = (V3D_LineSegment) li;
+                    if (lli.p.equals(l.p)) {
+                        return new V3D_LineSegment(l.p, lli.q);                        
+                    } else {
+                        return new V3D_LineSegment(l.p, lli.p);   
+                    }
+                }
             }
         } else {
-            return l.getIntersection(((V3D_LineSegment) g), b);
+            V3D_Geometry li = getIntersection(l);
+            if (liq) {                
+                if (li instanceof V3D_Point) {
+                    return l.q;
+                } else {
+                    V3D_LineSegment lli = (V3D_LineSegment) li;
+                    if (lli.q.equals(l.q)) {
+                        return new V3D_LineSegment(l.q, lli.p);                        
+                    } else {
+                        return new V3D_LineSegment(l.q, lli.q);   
+                    }
+                }
+            } else {
+                if (li instanceof V3D_Point) {
+                    V3D_Point pli = (V3D_Point) li;
+                    if (l.isIntersectedBy(pli)) {
+                        return pli;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    return li;
+                }
+            }
         }
     }
 
