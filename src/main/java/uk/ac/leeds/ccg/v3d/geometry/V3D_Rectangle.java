@@ -114,7 +114,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
             }
         }
     }
-    
+
     /**
      * @param p The bottom left corner of the rectangle.
      * @param q The top left corner of the rectangle.
@@ -126,7 +126,6 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     public V3D_Rectangle(V3D_Envelope.Rectangle r) {
         this(new V3D_Point(r.p), new V3D_Point(r.q), new V3D_Point(r.r), new V3D_Point(r.s));
     }
-    
 
     @Override
     public String toString() {
@@ -265,19 +264,21 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 }
             } else {
                 V3D_Line li = (V3D_Line) g;
-//                /**
-//                 * This is left here as a comment as whilst in theory a Quick
-//                 * test of the envelope is a good idea (for speeding things up),
-//                 * there is a problem as V3D_Rectangles are parts of
-//                 * V3D_Envelopes and this results in a StackOverflow error as
-//                 * is. To overcome this a special type of aligned V3D_Rectangle
-//                 * could be defined and used for V3D_Envelopes for which the
-//                 * intersection calculations can be simplified.
-//                 */
-//                // Quick test of the envelope.
-//                if (!getEnvelope().isIntersectedBy(l)) {
-//                    return null;
-//                }
+                /**
+                 * Whilst in theory a test of the envelope might seem a good
+                 * idea (for speeding things up), I am not sure if it actually
+                 * does. Optimisation plans can look at this. There are some
+                 * parts of intersection algorithms that can be done in
+                 * parallel, so it might not be obvious what the quickest ways
+                 * are! One of the reasons that V3D_Envelope has it's own
+                 * geometry is because they needed their own special rectangles
+                 * otherwise this "optimisation" resulted in a StackOverflow
+                 * error.
+                 */
+                // Quick test of the envelope?!
+                if (!getEnvelope().isIntersectedBy(l)) {
+                    return null;
+                }
                 /**
                  * Get the intersection of the line and each edge of the
                  * rectangle.
@@ -404,7 +405,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      *
      * @param l The line segment to test for intersection.
      * @param flag This is to distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The value is ignored.
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * value is ignored.
      * @return The intersection or {@code null} iff there is no intersection.
      */
     @Override
@@ -421,23 +423,23 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 } else {
                     V3D_LineSegment lli = (V3D_LineSegment) li;
                     if (lli.p.equals(l.p)) {
-                        return new V3D_LineSegment(l.p, lli.q);                        
+                        return new V3D_LineSegment(l.p, lli.q);
                     } else {
-                        return new V3D_LineSegment(l.p, lli.p);   
+                        return new V3D_LineSegment(l.p, lli.p);
                     }
                 }
             }
         } else {
             V3D_Geometry li = getIntersection(l);
-            if (liq) {                
+            if (liq) {
                 if (li instanceof V3D_Point) {
                     return l.q;
                 } else {
                     V3D_LineSegment lli = (V3D_LineSegment) li;
                     if (lli.q.equals(l.q)) {
-                        return new V3D_LineSegment(l.q, lli.p);                        
+                        return new V3D_LineSegment(l.q, lli.p);
                     } else {
-                        return new V3D_LineSegment(l.q, lli.q);   
+                        return new V3D_LineSegment(l.q, lli.q);
                     }
                 }
             } else {
