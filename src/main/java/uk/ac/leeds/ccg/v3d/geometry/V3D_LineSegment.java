@@ -209,13 +209,13 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     /**
      * @param l A line segment to indicate intersection with this.
-     * @param b Used to distinguish this method from
+     * @param flag Used to distinguish this method from
      * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
-     * value is ignored!
+     * value is ignored.
      * @return {@code true} iff {@code l} intersects with {@code this}.
      */
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, boolean b) {
+    public boolean isIntersectedBy(V3D_LineSegment l, boolean flag) {
         boolean ei = getEnvelope().isIntersectedBy(l.getEnvelope());
         if (ei) {
             return super.isIntersectedBy(l);
@@ -260,9 +260,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
             return i;
         }
         /**
-         * If infinite lines intersects at a point, then check this point is on 
+         * If infinite lines intersects at a point, then check this point is on
          * this.
-         */ 
+         */
         if (i instanceof V3D_Point) {
             if (isIntersectedBy((V3D_Point) i)) {
                 return i;
@@ -286,12 +286,13 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * segments do not intersect.
      *
      * @param l The line to get intersection with this.
-     * @param b To distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}.
+     * @param flag To distinguish this method from
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * value is ignored.
      * @return The intersection between {@code this} and {@code l}.
      */
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean b) {
+    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean flag) {
         return getIntersection(this, l);
     }
 

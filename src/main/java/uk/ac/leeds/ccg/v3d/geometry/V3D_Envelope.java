@@ -161,6 +161,26 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     protected final Geometry b;
 
     /**
+     * <table>
+     * <caption>Types</caption>
+     * <thead>
+     * <tr><td>type</td><td>description</td></tr>
+     * </thead>
+     * <tbody>
+     * <tr><td>0</td><td>f, l, a, r, t, b Point</td></tr>
+     * <tr><td>1</td><td>f, l, a, r, t, b Rectangle</td></tr>
+     * <tr><td>2</td><td>f, a Point; l, r, t, b LineSegment</td></tr>
+     * <tr><td>4</td><td>1, r Point; f, a, t, b LineSegment</td></tr>
+     * <tr><td>6</td><td>t, b Point; f, l, a, r LineSegment</td></tr>
+     * <tr><td>3</td><td>f, a LineSegment; l, r, t, b Rectangle</td></tr>
+     * <tr><td>5</td><td>1, r LineSegment; f, a, t, b Rectangle</td></tr>
+     * <tr><td>7</td><td>t, b LineSegment; f, l, a, r Rectangle</td></tr>
+     * </tbody>
+     * </table>
+     */
+    protected final int type;
+
+    /**
      * @param e An envelope.
      */
     public V3D_Envelope(V3D_Envelope e) {
@@ -176,6 +196,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         r = e.r;
         t = e.t;
         b = e.b;
+        type = e.type;
     }
 
     /**
@@ -200,6 +221,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 r = f;
                 t = f;
                 b = f;
+                type = 1;
                 break;
             default:
                 BigRational xmin = points[0].x;
@@ -225,79 +247,78 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             r = f;
                             t = f;
                             b = f;
+                            type = 0;
                         } else {
-                            Point fb = new Point(xmin, ymin, zmin);
-                            Point ft = new Point(xmin, ymax, zmin);
-                            f = new LineSegment(fb, ft);
-                            l = f;
-                            a = f;
-                            r = f;
-                            t = ft;
-                            b = fb;
+                            Point fp = new Point(xmin, ymin, zmin);
+                            Point ap = new Point(xmin, ymax, zmin);
+                            f = fp;
+                            l = new LineSegment(ap, fp);
+                            a = ap;
+                            r = new LineSegment(fp, ap);
+                            t = r;
+                            b = l;
+                            type = 2;
                         }
                     } else {
+                        Point bf = new Point(xmin, ymin, zmin);
+                        Point tf = new Point(xmin, ymax, zmin);
                         if (zmin.compareTo(zmax) == 0) {
-                            Point fb = new Point(xmin, ymin, zmin);
-                            Point lt = new Point(xmin, ymax, zmin);
-                            f = new LineSegment(fb, lt);
+                            f = new LineSegment(bf, tf);
                             l = f;
                             a = f;
                             r = f;
-                            t = lt;
-                            b = fb;
+                            t = tf;
+                            b = bf;
+                            type = 4;
                         } else {
-                            Point bf = new Point(xmin, ymin, zmin);
-                            Point ba = new Point(xmin, ymin, zmax);
-                            Point tf = new Point(xmin, ymax, zmin);
                             Point ta = new Point(xmin, ymax, zmax);
+                            Point ba = new Point(xmin, ymin, zmax);
                             f = new LineSegment(bf, tf);
                             l = new Rectangle(ba, ta, tf, bf);
                             a = new LineSegment(ba, ta);
                             r = new Rectangle(bf, tf, ta, ba);
                             t = new LineSegment(tf, ta);
                             b = new LineSegment(ba, bf);
+                            type = 3;
                         }
                     }
                 } else {
                     if (ymin.compareTo(ymax) == 0) {
+                        Point lf = new Point(xmin, ymin, zmin);
+                        Point rf = new Point(xmax, ymin, zmin);
                         if (zmin.compareTo(zmax) == 0) {
-                            Point lf = new Point(xmin, ymin, zmin);
-                            Point rf = new Point(xmax, ymin, zmin);
                             f = new LineSegment(lf, rf);
                             l = lf;
                             a = new LineSegment(rf, lf);
                             r = rf;
                             t = f;
                             b = f;
+                            type = 6;
                         } else {
-                            Point lf = new Point(xmin, ymin, zmin);
                             Point la = new Point(xmin, ymin, zmax);
                             Point ra = new Point(xmax, ymin, zmax);
-                            Point rf = new Point(xmax, ymin, zmin);
                             f = new LineSegment(lf, rf);
                             l = new LineSegment(la, lf);
                             a = new LineSegment(ra, la);
                             r = new LineSegment(rf, ra);
                             t = new Rectangle(lf, la, ra, rf);
                             b = new Rectangle(la, lf, rf, ra);
+                            type = 5;
                         }
                     } else {
+                        Point lbf = new Point(xmin, ymin, zmin);
+                        Point ltf = new Point(xmin, ymax, zmin);
+                        Point rtf = new Point(xmax, ymax, zmin);
+                        Point rbf = new Point(xmax, ymin, zmin);
                         if (zmin.compareTo(zmax) == 0) {
-                            Point lb = new Point(xmin, ymin, zmin);
-                            Point lt = new Point(xmin, ymax, zmin);
-                            Point rt = new Point(xmax, ymax, zmin);
-                            Point rb = new Point(xmax, ymin, zmin);
-                            f = new Rectangle(lb, lt, rt, rb);
-                            l = new LineSegment(lb, lt);
-                            a = new Rectangle(rb, rt, lt, lb);
-                            r = new LineSegment(rb, rt);
-                            t = new LineSegment(lt, rt);
-                            b = new LineSegment(lb, rb);
+                            f = new Rectangle(lbf, ltf, rtf, rbf);
+                            l = new LineSegment(lbf, ltf);
+                            a = new Rectangle(rbf, rtf, ltf, lbf);
+                            r = new LineSegment(rbf, rtf);
+                            t = new LineSegment(ltf, rtf);
+                            b = new LineSegment(lbf, rbf);
+                            type = 7;
                         } else {
-                            Point lbf = new Point(xmin, ymin, zmin);
-                            Point ltf = new Point(xmin, ymax, zmin);
-                            Point rtf = new Point(xmax, ymax, zmin);
-                            Point rbf = new Point(xmax, ymin, zmin);
                             Point lba = new Point(xmin, ymin, zmax);
                             Point lta = new Point(xmin, ymax, zmax);
                             Point rta = new Point(xmax, ymax, zmax);
@@ -308,6 +329,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             r = new Rectangle(rbf, rtf, rta, rba);
                             t = new Rectangle(ltf, lta, rta, rtf);
                             b = new Rectangle(lba, lbf, rbf, rba);
+                            type = 1;
                         }
                     }
                 }
@@ -429,20 +451,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param l Line segment to intersect with {@code this}.
-     * @return either a point or line segment which is the intersection of
-     * {@code l} and {@code this}.
-     */
-    @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean b) {
-        V3D_Envelope le = l.getEnvelope();
-        if (le.isIntersectedBy(this)) {
-            return le.getIntersection(this).getIntersection(l);
-        }
-        return null;
-    }
-
-    /**
      * @param p The point to test for intersection.
      * @return {@code true} if this intersects with {@code p}
      */
@@ -496,254 +504,169 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Line li) {
-        if (t instanceof Point) {
-            if (l instanceof Point) {
-                V3D_Point p = new V3D_Point((Point) l);
-                if (li.isIntersectedBy(p)) {
-                    return p;
-                }
-            } else {
-                V3D_LineSegment ls = new V3D_LineSegment((LineSegment) l);
-                return ls.getIntersection(li);
-            }
-        }
-        V3D_Geometry tli = new V3D_Rectangle((Rectangle) t).getIntersection(li);
-        if (tli == null) {
-            // Check l, a, r, f, b
-            V3D_Geometry lli = new V3D_Rectangle((Rectangle) l).getIntersection(li);
-            if (lli == null) {
-                // Check a, r, f, b
-                V3D_Geometry ali = new V3D_Rectangle((Rectangle) a).getIntersection(li);
-                if (ali == null) {
-                    // Check r, f, b
-                    V3D_Geometry rli = new V3D_Rectangle((Rectangle) r).getIntersection(li);
-                    if (rli == null) {
-                        // Check f, b
-                        V3D_Geometry fli = new V3D_Rectangle((Rectangle) f).getIntersection(li);
-                        if (fli == null) {
-                            // null intersection.
-                            return null;
-                        } else if (fli instanceof V3D_LineSegment) {
-                            return fli;
-                        } else {
-                            V3D_Point flip = (V3D_Point) fli;
-                            V3D_Point blip = (V3D_Point) new V3D_Rectangle((Rectangle) b).getIntersection(li);
-                            return getGeometry(flip, blip);
-                        }
-                    } else if (rli instanceof V3D_LineSegment) {
-                        return rli;
-                    } else {
-                        V3D_Point rlip = (V3D_Point) rli;
-                        // check for intersection with b
-                        V3D_Geometry bli = new V3D_Rectangle((Rectangle) b).getIntersection(li);
-                        if (bli == null) {
-                            return rlip;
-                        } else {
-                            return getGeometry((V3D_Point) bli, rlip);
-                        }
-                    }
-                } else if (ali instanceof V3D_LineSegment) {
-                    return ali;
+        switch (type) {
+            case 0:
+                V3D_Point fp = new V3D_Point((Point) f);
+                if (li.isIntersectedBy(fp)) {
+                    return fp;
                 } else {
-                    // Check for intersection with r, f, b
-                    V3D_Point alip = (V3D_Point) ali;
-                    V3D_Geometry rli = new V3D_Rectangle((Rectangle) r).getIntersection(li);
-                    if (rli == null) {
-                        // Check f, b
-                        V3D_Geometry fli = new V3D_Rectangle((Rectangle) f).getIntersection(li);
-                        if (fli == null) {
-                            // check for intersection with b
-                            V3D_Geometry bli = new V3D_Rectangle((Rectangle) b).getIntersection(li);
-                            if (bli == null) {
-                                return alip;
-                            } else if (bli instanceof V3D_LineSegment) {
-                                return bli;
-                            } else {
-                                return getGeometry((V3D_Point) bli, alip);
-                            }
-                        } else if (fli instanceof V3D_LineSegment) {
-                            return fli;
-                        } else {
-                            return getGeometry((V3D_Point) fli, alip);
-                        }
-                    } else {
-                        return getGeometry((V3D_Point) rli, alip);
-                    }
+                    return null;
                 }
-            } else if (lli instanceof V3D_LineSegment) {
-                return lli;
-            } else {
-                V3D_Point llip = (V3D_Point) lli;
-                // Check a, r, f, b
-                V3D_Geometry ali = new V3D_Rectangle((Rectangle) a).getIntersection(li);
-                if (ali == null) {
-                    // Check r, f, b
-                    V3D_Geometry rli = new V3D_Rectangle((Rectangle) r).getIntersection(li);
-                    if (rli == null) {
-                        // Check f, b
-                        V3D_Geometry fli = new V3D_Rectangle((Rectangle) f).getIntersection(li);
-                        if (fli == null) {
-                            // Check b
-                            V3D_Geometry bli = new V3D_Rectangle((Rectangle) b).getIntersection(li);
-                            if (bli == null) {
-                                return getGeometry(llip, (V3D_Point) bli);
-                            } else if (bli instanceof V3D_LineSegment) {
-                                return bli;
-                            } else {
-                                return getGeometry((V3D_Point) bli, llip);
-                            }
-                        } else if (fli instanceof V3D_LineSegment) {
-                            return fli;
-                        } else {
-                            // Check b
-                            V3D_Geometry bli = new V3D_Rectangle((Rectangle) b).getIntersection(li);
-                            if (bli == null) {
-                                return getGeometry(llip, (V3D_Point) bli);
-                            } else if (bli instanceof V3D_LineSegment) {
-                                return bli;
-                            } else {
-                                return getGeometry((V3D_Point) bli, llip);
-                            }
-                        }
-                    } else if (rli instanceof V3D_LineSegment) {
-                        return rli;
-                    } else {
-                        return getGeometry((V3D_Point) rli, llip);
-                    }
-                } else if (ali instanceof V3D_LineSegment) {
-                    return ali;
-                } else {
-                    // Check for intersection with r, f, b
-                    V3D_Point alip = (V3D_Point) ali;
-                    if (alip.equals(llip)) {
-                        V3D_Geometry rli = new V3D_Rectangle((Rectangle) r).getIntersection(li);
-                        if (rli == null) {
-                            // Check f, b
-                            V3D_Geometry fli = new V3D_Rectangle((Rectangle) f).getIntersection(li);
-                            if (fli == null) {
-                                // check for intersection with b
-                                V3D_Geometry bli = new V3D_Rectangle((Rectangle) b).getIntersection(li);
-                                if (bli == null) {
-                                    return alip;
-                                } else if (bli instanceof V3D_LineSegment) {
-                                    return bli;
+            case 1:
+                V3D_Geometry fil = (new V3D_Rectangle((Rectangle) f))
+                        .getIntersection(li);
+                V3D_Geometry lil = (new V3D_Rectangle((Rectangle) l))
+                        .getIntersection(li);
+                V3D_Geometry ail = (new V3D_Rectangle((Rectangle) a))
+                        .getIntersection(li);
+                if (fil == null) {
+                    if (lil == null) {
+                        V3D_Geometry ril = (new V3D_Rectangle((Rectangle) r))
+                                .getIntersection(li);
+                        if (ail == null) {
+                            V3D_Geometry til = (new V3D_Rectangle((Rectangle) t))
+                                    .getIntersection(li);
+                            if (ril == null) {
+                                if (til == null) {
+                                    return null;
                                 } else {
-                                    return getGeometry((V3D_Point) bli, alip);
+                                    V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
+                                            .getIntersection(li);
+                                    return getGeometry((V3D_Point) til,
+                                            (V3D_Point) bil);
                                 }
-                            } else if (fli instanceof V3D_LineSegment) {
-                                return fli;
                             } else {
-                                return getGeometry((V3D_Point) fli, alip);
-                            }
-                        } else {
-                            return getGeometry((V3D_Point) rli, llip);
-                        }
-                    } else {
-                        return getGeometry(alip, llip);
-                    }
-                }
-            }
-        } else if (tli instanceof V3D_LineSegment) {
-            return tli;
-        } else {
-            V3D_Point tlip = (V3D_Point) tli;
-            // Check l, a, r, f, b
-            V3D_Geometry lli = new V3D_Rectangle((Rectangle) l).getIntersection(li);
-            if (lli == null) {
-                // Check a, r, f, b
-                V3D_Geometry ali = new V3D_Rectangle((Rectangle) a).getIntersection(li);
-                if (ali == null) {
-                    // Check r, f, b
-                    V3D_Geometry rli = new V3D_Rectangle((Rectangle) r).getIntersection(li);
-                    if (rli == null) {
-                        // Check f, b
-                        V3D_Geometry fli = new V3D_Rectangle((Rectangle) f).getIntersection(li);
-                        if (fli == null) {
-                            // Intersects b
-                            V3D_Point blip = (V3D_Point) new V3D_Rectangle((Rectangle) b).getIntersection(li);
-                            return getGeometry(tlip, blip);
-                        } else if (fli instanceof V3D_LineSegment) {
-                            return fli;
-                        } else {
-                            // Check b
-                            V3D_Geometry bli = new V3D_Rectangle((Rectangle) b).getIntersection(li);
-                            if (bli == null) {
-                                return getGeometry(tlip, (V3D_Point) bli);
-                            } else if (bli instanceof V3D_LineSegment) {
-                                return bli;
-                            } else {
-                                return getGeometry((V3D_Point) bli, tlip);
-                            }
-                        }
-                    } else if (rli instanceof V3D_LineSegment) {
-                        return rli;
-                    } else {
-                        V3D_Point rlip = (V3D_Point) rli;
-                        // check for intersection with b
-                        V3D_Geometry bli = new V3D_Rectangle((Rectangle) b).getIntersection(li);
-                        if (bli == null) {
-                            return rlip;
-                        } else {
-                            return getGeometry((V3D_Point) bli, rlip);
-                        }
-                    }
-                } else if (ali instanceof V3D_LineSegment) {
-                    return ali;
-                } else {
-                    // Check for intersection with r, f, b
-                    V3D_Point alip = (V3D_Point) ali;
-                    V3D_Geometry rli = new V3D_Rectangle((Rectangle) r).getIntersection(li);
-                    if (rli == null) {
-                        // Check f, b
-                        V3D_Geometry fli = new V3D_Rectangle((Rectangle) f).getIntersection(li);
-                        if (fli == null) {
-                            // check for intersection with b
-                            V3D_Geometry bli = new V3D_Rectangle((Rectangle) b).getIntersection(li);
-                            if (bli == null) {
-                                return alip;
-                            } else if (bli instanceof V3D_LineSegment) {
-                                return bli;
-                            } else {
-                                return getGeometry((V3D_Point) bli, alip);
-                            }
-                        } else if (fli instanceof V3D_LineSegment) {
-                            return fli;
-                        } else {
-                            return getGeometry((V3D_Point) fli, alip);
-                        }
-                    } else {
-                        V3D_Point rlip = (V3D_Point) rli;
-                        if (rlip.equals(alip)) {
-                            // Still more checking to do...
-                            // Check f, b
-                            V3D_Geometry fli = new V3D_Rectangle((Rectangle) f).getIntersection(li);
-                            if (fli == null) {
-                                // check for intersection with b
-                                V3D_Geometry bli = new V3D_Rectangle((Rectangle) b).getIntersection(li);
-                                if (bli == null) {
-                                    return alip;
-                                } else if (bli instanceof V3D_LineSegment) {
-                                    return bli;
+                                if (til == null) {
+                                    V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
+                                            .getIntersection(li);
+                                    if (bil == null) {
+                                        return null;
+                                    } else {
+                                        return getGeometry((V3D_Point) ril,
+                                                (V3D_Point) bil);
+                                    }
                                 } else {
-                                    return getGeometry((V3D_Point) bli, alip);
+                                    return getGeometry((V3D_Point) ril,
+                                            (V3D_Point) til);
                                 }
-                            } else if (fli instanceof V3D_LineSegment) {
-                                return fli;
-                            } else {
-                                return getGeometry((V3D_Point) fli, alip);
                             }
                         } else {
-                            return getGeometry((V3D_Point) rli, alip);
+                            if (ril == null) {
+                                V3D_Geometry til = (new V3D_Rectangle((Rectangle) t))
+                                        .getIntersection(li);
+                                if (til == null) {
+                                    V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
+                                            .getIntersection(li);
+                                    if (bil == null) {
+                                        return null;
+                                    } else {
+                                        return getGeometry((V3D_Point) ail,
+                                                (V3D_Point) bil);
+                                    }
+                                } else {
+                                    return getGeometry((V3D_Point) ail,
+                                            (V3D_Point) til);
+                                }
+                            } else {
+                                return getGeometry((V3D_Point) ail,
+                                        (V3D_Point) ril);
+                            }
+                        }
+                    } else {
+                        if (ail == null) {
+                            V3D_Geometry ril = (new V3D_Rectangle((Rectangle) r))
+                                    .getIntersection(li);
+                            if (ril == null) {
+                                V3D_Geometry til = (new V3D_Rectangle((Rectangle) t))
+                                        .getIntersection(li);
+                                V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
+                                        .getIntersection(li);
+                                if (til == null) {
+                                    if (bil == null) {
+                                        return null;
+                                    } else {
+                                        return getGeometry((V3D_Point) lil,
+                                                (V3D_Point) bil);
+                                    }
+                                } else {
+                                    if (bil == null) {
+                                        return null;
+                                    } else {
+                                        return getGeometry((V3D_Point) lil,
+                                                (V3D_Point) bil);
+                                    }
+                                }
+                            } else {
+                                return getGeometry((V3D_Point) lil,
+                                        (V3D_Point) ril);
+                            }
+                        } else {
+                            return getGeometry((V3D_Point) lil,
+                                    (V3D_Point) ail);
+                        }
+                    }
+                } else {
+                    if (lil == null) {
+                        V3D_Geometry ril = (new V3D_Rectangle((Rectangle) r))
+                                .getIntersection(li);
+                        if (ail == null) {
+                            if (ril == null) {
+                                V3D_Geometry til = (new V3D_Rectangle((Rectangle) t))
+                                        .getIntersection(li);
+                                if (til == null) {
+                                    return null;
+                                } else {
+                                    return getGeometry((V3D_Point) fil,
+                                            (V3D_Point) til);
+                                }
+                            } else {
+                                return getGeometry((V3D_Point) fil,
+                                        (V3D_Point) ril);
+                            }
+                        } else {
+                            if (ril == null) {
+                                V3D_Geometry til = (new V3D_Rectangle((Rectangle) t))
+                                        .getIntersection(li);
+                                if (til == null) {
+                                    V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
+                                            .getIntersection(li);
+                                    if (bil == null) {
+                                        return null;
+                                    } else {
+                                        return getGeometry((V3D_Point) fil,
+                                                (V3D_Point) bil);
+                                    }
+                                } else {
+                                    return getGeometry((V3D_Point) fil,
+                                            (V3D_Point) til);
+                                }
+                            } else {
+                                return getGeometry((V3D_Point) fil,
+                                        (V3D_Point) ril);
+                            }
+                        }
+                    } else {                        
+                        if (ail == null) {
+                            return getGeometry((V3D_Point) fil,
+                                    (V3D_Point) lil);
+                        } else {
+                            return getGeometry((V3D_Point) fil,
+                                    (V3D_Point) ail);
                         }
                     }
                 }
-            } else if (lli instanceof V3D_LineSegment) {
-                return lli;
-            } else {
-                // Still more checking to do...
-                // intersection top and left could be at a corner and anyway need to check other faces...
-                return getGeometry(tlip, (V3D_Point) lli);
-            }
+            case 2:
+                return new V3D_LineSegment((LineSegment) l).getIntersection(li);
+            case 4:
+                return new V3D_LineSegment((LineSegment) f).getIntersection(li);
+            case 6:
+                return new V3D_LineSegment((LineSegment) f).getIntersection(li);
+            case 3:
+                return new V3D_Rectangle((Rectangle) l).getIntersection(li);
+            case 5:
+                return new V3D_Rectangle((Rectangle) f).getIntersection(li);
+            default:
+                return new V3D_Rectangle((Rectangle) f).getIntersection(li);
         }
     }
 
@@ -752,6 +675,199 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             return p;
         } else {
             return new V3D_LineSegment(p, q);
+        }
+    }
+
+    /**
+     * @param l Line segment to intersect with {@code this}.
+     * @return either a point or line segment which is the intersection of
+     * {@code l} and {@code this}.
+     * @param flag To distinguish this method from
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * value is ignored.
+     */
+    @Override
+    public V3D_Geometry getIntersection(V3D_LineSegment li, boolean flag) {
+        // Special case where both ends of li are within Envelope
+        boolean lipi = isIntersectedBy(li.p);
+        if (lipi && isIntersectedBy(li.q)) {
+            return li;
+        }
+        switch (type) {
+            case 0:
+                V3D_Point fp = new V3D_Point((Point) f);
+                if (li.isIntersectedBy(fp)) {
+                    return fp;
+                } else {
+                    return null;
+                }
+            case 1:
+                V3D_Geometry fil = (new V3D_Rectangle((Rectangle) f))
+                        .getIntersection(li, flag);
+                V3D_Geometry lil = (new V3D_Rectangle((Rectangle) l))
+                        .getIntersection(li, flag);
+                V3D_Geometry ail = (new V3D_Rectangle((Rectangle) a))
+                        .getIntersection(li, flag);
+                if (fil == null) {
+                    if (lil == null) {
+                        V3D_Geometry ril = (new V3D_Rectangle((Rectangle) r))
+                                .getIntersection(li, flag);
+                        if (ail == null) {
+                            V3D_Geometry til = (new V3D_Rectangle((Rectangle) t))
+                                    .getIntersection(li, flag);
+                            if (ril == null) {
+                                V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
+                                        .getIntersection(li, flag);
+                                if (til == null) {
+                                    if (bil == null) {
+                                        return null;
+                                    } else {
+                                        return getIntersection((V3D_Point) bil, li, lipi);
+                                    }
+                                } else {
+                                    return getGeometry((V3D_Point) til,
+                                            (V3D_Point) bil);
+                                }
+                            } else {
+                                if (til == null) {
+                                    V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
+                                            .getIntersection(li);
+                                    if (bil == null) {
+                                        return getIntersection((V3D_Point) ril, li, lipi);
+                                    } else {
+                                        return getGeometry((V3D_Point) ril,
+                                                (V3D_Point) bil);
+                                    }
+                                } else {
+                                    return getGeometry((V3D_Point) ril,
+                                            (V3D_Point) til);
+                                }
+                            }
+                        } else {
+                            if (ril == null) {
+                                V3D_Geometry til = (new V3D_Rectangle((Rectangle) t))
+                                        .getIntersection(li, flag);
+                                if (til == null) {
+                                    V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
+                                            .getIntersection(li, flag);
+                                    if (bil == null) {
+                                        return getIntersection((V3D_Point) ail, li, lipi);
+                                    } else {
+                                        return getGeometry((V3D_Point) ail,
+                                                (V3D_Point) bil);
+                                    }
+                                } else {
+                                    return getGeometry((V3D_Point) ail,
+                                            (V3D_Point) til);
+                                }
+                            } else {
+                                return getGeometry((V3D_Point) ail,
+                                        (V3D_Point) ril);
+                            }
+                        }
+                    } else {
+                        if (ail == null) {
+                            V3D_Geometry ril = (new V3D_Rectangle((Rectangle) r))
+                                    .getIntersection(li, flag);
+                            if (ril == null) {
+                                V3D_Geometry til = (new V3D_Rectangle((Rectangle) t))
+                                        .getIntersection(li, flag);
+                                V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
+                                        .getIntersection(li, flag);
+                                if (til == null) {
+                                    if (bil == null) {
+                                        return getIntersection((V3D_Point) lil, li, lipi);
+                                    } else {
+                                        return getGeometry((V3D_Point) lil,
+                                                (V3D_Point) bil);
+                                    }
+                                } else {
+                                    if (bil == null) {
+                                        return getIntersection((V3D_Point) lil, li, lipi);
+                                    } else {
+                                        return getGeometry((V3D_Point) lil,
+                                                (V3D_Point) bil);
+                                    }
+                                }
+                            } else {
+                                return getGeometry((V3D_Point) lil,
+                                        (V3D_Point) ril);
+                            }
+                        } else {
+                            return getGeometry((V3D_Point) lil,
+                                    (V3D_Point) ail);
+                        }
+                    }
+                } else {
+                    if (lil == null) {
+                        V3D_Geometry ril = (new V3D_Rectangle((Rectangle) r))
+                                .getIntersection(li, flag);
+                        if (ail == null) {
+                            if (ril == null) {
+                                V3D_Geometry til = (new V3D_Rectangle((Rectangle) t))
+                                        .getIntersection(li, flag);
+                                if (til == null) {
+                                    return getIntersection((V3D_Point) fil, li, lipi);
+                                } else {
+                                    return getGeometry((V3D_Point) fil,
+                                            (V3D_Point) til);
+                                }
+                            } else {
+                                return getGeometry((V3D_Point) fil,
+                                        (V3D_Point) ril);
+                            }
+                        } else {
+                            if (ril == null) {
+                                V3D_Geometry til = (new V3D_Rectangle((Rectangle) t))
+                                        .getIntersection(li, flag);
+                                if (til == null) {
+                                    V3D_Geometry bil = (new V3D_Rectangle((Rectangle) b))
+                                            .getIntersection(li, flag);
+                                    if (bil == null) {
+                                        return getIntersection((V3D_Point) fil, li, lipi);
+                                    } else {
+                                        return getGeometry((V3D_Point) fil,
+                                                (V3D_Point) bil);
+                                    }
+                                } else {
+                                    return getGeometry((V3D_Point) fil,
+                                            (V3D_Point) til);
+                                }
+                            } else {
+                                return getGeometry((V3D_Point) fil,
+                                        (V3D_Point) ril);
+                            }
+                        }
+                    } else {
+                        if (ail == null) {
+                            return getGeometry((V3D_Point) fil,
+                                    (V3D_Point) lil);
+                        } else {
+                            return getGeometry((V3D_Point) fil,
+                                    (V3D_Point) ail);
+                        }
+                    }
+                }
+            case 2:
+                return new V3D_LineSegment((LineSegment) l).getIntersection(li);
+            case 4:
+                return new V3D_LineSegment((LineSegment) f).getIntersection(li);
+            case 6:
+                return new V3D_LineSegment((LineSegment) f).getIntersection(li);
+            case 3:
+                return new V3D_Rectangle((Rectangle) l).getIntersection(li);
+            case 5:
+                return new V3D_Rectangle((Rectangle) f).getIntersection(li);
+            default:
+                return new V3D_Rectangle((Rectangle) f).getIntersection(li);
+        }
+    }
+
+    private V3D_Geometry getIntersection(V3D_Point pi, V3D_LineSegment li, boolean lipi) {
+        if (lipi) {
+            return getGeometry(li.p, pi);
+        } else {
+            return getGeometry(li.q, pi);
         }
     }
 
@@ -852,38 +968,99 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * Each part of this testing could be done simultaneously which might speed
-     * things up.
+     * Test if {@code this} is intersected by {@code li}.
      *
      * @param li The line to test for intersection.
-     * @return {@code tres} iff {@code this} is intersected by {@code li}.
+     * @return {@code true} iff {@code this} is intersected by {@code li}.
      */
     @Override
     public boolean isIntersectedBy(V3D_Line li) {
-        if (new V3D_Rectangle((Rectangle) t).isIntersectedBy(li)) {
-            return true;
-        } else if (new V3D_Rectangle((Rectangle) l).isIntersectedBy(li)) {
-            return true;
-        } else if (new V3D_Rectangle((Rectangle) a).isIntersectedBy(li)) {
-            return true;
-        } else if (new V3D_Rectangle((Rectangle) r).isIntersectedBy(li)) {
-            return true;
-        } else {
-            return new V3D_Rectangle((Rectangle) f).isIntersectedBy(li);
+        switch (type) {
+            case 0:
+                return li.isIntersectedBy(new V3D_Point((Point) f));
+            case 1:
+                /**
+                 * Each part of this testing could be done simultaneously. An
+                 * alternative method might test three orthogonal sides and the
+                 * additional corner that is on none of these sides.
+                 */
+                if (new V3D_Rectangle((Rectangle) f).isIntersectedBy(li)) {
+                    return true;
+                } else if (new V3D_Rectangle((Rectangle) l).isIntersectedBy(li)) {
+                    return true;
+                } else if (new V3D_Rectangle((Rectangle) a).isIntersectedBy(li)) {
+                    return true;
+                } else if (new V3D_Rectangle((Rectangle) r).isIntersectedBy(li)) {
+                    return true;
+                } else if (new V3D_Rectangle((Rectangle) t).isIntersectedBy(li)) {
+                    return true;
+                } else {
+                    return new V3D_Rectangle((Rectangle) b).isIntersectedBy(li);
+                }
+            case 2:
+                return new V3D_LineSegment((LineSegment) l).isIntersectedBy(li);
+            case 4:
+                return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li);
+            case 6:
+                return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li);
+            case 3:
+                return new V3D_Rectangle((Rectangle) l).isIntersectedBy(li);
+            case 5:
+                return new V3D_Rectangle((Rectangle) f).isIntersectedBy(li);
+            default:
+                return new V3D_Rectangle((Rectangle) f).isIntersectedBy(li);
         }
     }
 
+    /**
+     *
+     * Test if {@code this} is intersected by {@code li}.
+     *
+     * @param li The line to test for intersection.
+     * @param flag To distinguish this method from
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * value is ignored.
+     * @return {@code true} iff {@code this} is intersected by {@code li}.
+     */
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, boolean b) {
-        V3D_Envelope le = l.getEnvelope();
+    public boolean isIntersectedBy(V3D_LineSegment li, boolean flag) {
+        V3D_Envelope le = li.getEnvelope();
         if (le.isIntersectedBy(this)) {
-            if (this.isIntersectedBy(l.p) || this.isIntersectedBy(l.q)) {
-                return true;
+            switch (type) {
+                case 0:
+                    return li.isIntersectedBy(new V3D_Point((Point) f));
+                case 1:
+                    /**
+                     * Each part of this testing could be done simultaneously.
+                     * An alternative method might test three orthogonal sides
+                     * and the additional corner that is on none of these sides.
+                     */
+                    if (new V3D_Rectangle((Rectangle) f).isIntersectedBy(li)) {
+                        return true;
+                    } else if (new V3D_Rectangle((Rectangle) l).isIntersectedBy(li)) {
+                        return true;
+                    } else if (new V3D_Rectangle((Rectangle) a).isIntersectedBy(li)) {
+                        return true;
+                    } else if (new V3D_Rectangle((Rectangle) r).isIntersectedBy(li)) {
+                        return true;
+                    } else if (new V3D_Rectangle((Rectangle) t).isIntersectedBy(li)) {
+                        return true;
+                    } else {
+                        return new V3D_Rectangle((Rectangle) b).isIntersectedBy(li);
+                    }
+                case 2:
+                    return new V3D_LineSegment((LineSegment) l).isIntersectedBy(li);
+                case 4:
+                    return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li);
+                case 6:
+                    return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li);
+                case 3:
+                    return new V3D_Rectangle((Rectangle) l).isIntersectedBy(li);
+                case 5:
+                    return new V3D_Rectangle((Rectangle) f).isIntersectedBy(li);
+                default:
+                    return new V3D_Rectangle((Rectangle) f).isIntersectedBy(li);
             }
-            if (new V3D_Rectangle((Rectangle) this.b).isIntersectedBy(l)) {
-                return true;
-            }
-            return isIntersectedBy(l);
         }
         return false;
     }

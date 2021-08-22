@@ -265,18 +265,17 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 }
             } else {
                 V3D_Line li = (V3D_Line) g;
-                /**
-                 * This is left here as a comment as whilst in theory a Quick
-                 * test of the envelope is a good idea (for speeding things up),
-                 * there is a problem as V3D_Rectangles are parts of
-                 * V3D_Envelopes and this results in a StackOverflow error as
-                 * is. To overcome this a special type of aligned V3D_Rectangle
-                 * could be defined and used for V3D_Envelopes for which the
-                 * intersection calculations can be simplified.
-                 */
+//                /**
+//                 * This is left here as a comment as whilst in theory a Quick
+//                 * test of the envelope is a good idea (for speeding things up),
+//                 * there is a problem as V3D_Rectangles are parts of
+//                 * V3D_Envelopes and this results in a StackOverflow error as
+//                 * is. To overcome this a special type of aligned V3D_Rectangle
+//                 * could be defined and used for V3D_Envelopes for which the
+//                 * intersection calculations can be simplified.
+//                 */
 //                // Quick test of the envelope.
-//                V3D_Geometry enil = getEnvelope().getIntersection(l);
-//                if (enil == null) {
+//                if (!getEnvelope().isIntersectedBy(l)) {
 //                    return null;
 //                }
                 /**
