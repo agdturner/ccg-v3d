@@ -236,7 +236,7 @@ public class V3D_Line extends V3D_Geometry {
     public boolean isParallel(V3D_Line l) {
         return v.isScalarMultiple(l.v);
     }
-
+    
     /**
      * This computes the intersection and tests if it is {@code null}
      *
@@ -259,15 +259,16 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * Get the intersection line (the shortest line) between two lines. The two
-     * lines must not intersect for this to work. Part adapted from
+     * Get the line of intersection (the shortest line) between two lines. The
+     * two lines must not intersect or be parallel for this to work. Part
+     * adapted from
      * <a href="http://paulbourke.net/geometry/pointlineplane/">http://paulbourke.net/geometry/pointlineplane/</a>.
      *
      * @param l0 One line.
      * @param l1 Another line.
      * @return The line of intersection between l0 and l1
      */
-    public static V3D_Geometry getIntersection1(V3D_Line l0, V3D_Line l1) {
+    public static V3D_Geometry getLineOfIntersection(V3D_Line l0, V3D_Line l1) {
         V3D_Point p1 = l0.p;
         V3D_Point p2 = l0.q;
         V3D_Point p3 = l1.p;
@@ -861,8 +862,8 @@ public class V3D_Line extends V3D_Geometry {
 //         * Calculate the direction vector of the line connecting the closest
 //         * points by computing the cross product.
 //         */
-////        V3D_Vector pv = new V3D_Vector(this.p, p);
-////        V3D_Vector cp = pv.getCrossProduct(v);
+//        V3D_Vector pv = new V3D_Vector(this.p, p);
+//        V3D_Vector cp = pv.getCrossProduct(v);
 ////        BigRational pvm2 = pv.getMagnitudeSquared();
 ////        BigRational cpm2 = cp.getMagnitudeSquared();
 ////        if (pvm2.compareTo(BigRational.ZERO) == 0) {
@@ -883,6 +884,7 @@ public class V3D_Line extends V3D_Geometry {
 //        }
 //        return dp.divide(cp.m);
 //    }
+    
     /**
      * https://en.wikipedia.org/wiki/Skew_lines#Nearest_points
      * https://en.wikipedia.org/wiki/Distance_between_two_parallel_lines
@@ -892,6 +894,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The minimum distance between this and {@code l}.
      */
+    @Override
     public BigDecimal getDistance(V3D_Line l, int oom) {
         if (isParallel(l)) {
             //q.getDistance(l, scale, rm);
@@ -982,5 +985,10 @@ public class V3D_Line extends V3D_Geometry {
         m[1][1] = q.y;
         m[1][2] = q.z;
         return res;
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

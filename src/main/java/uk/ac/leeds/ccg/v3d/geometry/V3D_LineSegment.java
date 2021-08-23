@@ -171,6 +171,13 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
+     * @return The length of this squared as a BigRational.
+     */
+    public BigRational getLength2() {
+        return p.getDistanceSquared(q);
+    }
+
+    /**
      * @return {@code new V3D_Envelope(start, end)}
      */
     @Override

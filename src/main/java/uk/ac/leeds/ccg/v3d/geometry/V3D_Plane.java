@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
+import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * 3D representation of an infinite plane. The plane is defined by three points
@@ -163,14 +164,17 @@ public class V3D_Plane extends V3D_Geometry {
         this.qr = qr;
         this.n = n;
         if (checkCollinearity) {
-            // Check for collinearity
-            BigRational P0 = BigRational.ZERO;
-            if (n.dx.compareTo(P0) == 0
-                    && n.dy.compareTo(P0) == 0
-                    && n.dz.compareTo(P0) == 0) {
-                throw new RuntimeException("The three points do not define a plane, "
-                        + "but are collinear (they might all be the same point!");
+            if (V3D_Geometrics.isCollinear(p, q, r)) {
+                throw new RuntimeException("The three points do not define a"
+                        + " plane as they are collinear");
             }
+//            BigRational P0 = BigRational.ZERO;
+//            if (n.dx.compareTo(P0) == 0
+//                    && n.dy.compareTo(P0) == 0
+//                    && n.dz.compareTo(P0) == 0) {
+//                throw new RuntimeException("The three points do not define a plane, "
+//                        + "but are collinear (they might all be the same point!");
+//            }
         }
     }
 
@@ -908,5 +912,15 @@ public class V3D_Plane extends V3D_Geometry {
                     new V3D_Line(this.p, n)));
         }
         return BigRational.ZERO;
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

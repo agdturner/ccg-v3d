@@ -62,7 +62,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * The origin of the Euclidean space.
      */
     public static final V3D_Point ORIGIN = new V3D_Point(0, 0, 0);
-    
+
     /**
      * The x coordinate.
      */
@@ -162,7 +162,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         }
         return false;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Point) {
@@ -210,13 +210,13 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param p A point.
      * @return The distance from {@code p} to this.
      */
-    public Math_BigRationalSqrt getDistance(V3D_Point p){
+    public Math_BigRationalSqrt getDistance(V3D_Point p) {
         if (this.equals(p)) {
             return Math_BigRationalSqrt.ZERO;
         }
         return new Math_BigRationalSqrt(getDistanceSquared(p));
     }
-            
+
     /**
      * Get the distance between this and {@code p}.
      *
@@ -253,6 +253,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance from {@code p} to this.
      */
+    @Override
     public BigDecimal getDistance(V3D_Line l, int oom) {
         if (l.isIntersectedBy(this)) {
             return BigDecimal.ZERO;
@@ -318,6 +319,44 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l) {
         return l.isIntersectedBy(this);
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        /**
+         * Get the distance from the ends of the line segment to the point. If
+         * both these distances is less than the length of the line segment then
+         * the distance is the distance from the point to the infinite line.
+         *
+         */
+        int oom2 = oom - 2;
+        BigRational l2 = l.getLength2();
+        BigRational lp2 = l.p.getDistanceSquared(this);
+        BigRational lq2 = l.q.getDistanceSquared(this);
+        BigDecimal lp = (new V3D_Line(l)).getDistance(this, oom);
+        if (lp2.compareTo(l2) == -1 && lq2.compareTo(l2) == -1) {
+            return lp;
+        }
+        /**
+         * If the projection from the point onto the infinite line intersects in
+         * a place within the line segment, then the distance is the distance
+         * from the point to the infinite line. If it is outside the line
+         * segment, then the distance is the minimum of the distances from the
+         * point to the ends of the line segment.
+         */
+        //BigRational pl2 = (new V3D_Line(l)).getDistanceSquared(this);
+        BigDecimal pl = (new V3D_Line(l)).getDistance(this, oom2);
+        BigRational pl2 = BigRational.valueOf(pl).pow(2);
+        V3D_Vector u = l.v.getUnitVector(oom - 2);
+        V3D_Point pi = new V3D_Point(u.multiply(BigRational.valueOf(
+                new Math_BigRationalSqrt(lp2.subtract(pl2)).toBigDecimal(oom2)))
+                .add(new V3D_Vector(l.p)));
+        if (l.isIntersectedBy(pi)) {
+            return lp;
+        } else {
+            return new Math_BigRationalSqrt(BigRational.min(lp2, lq2))
+                    .toBigDecimal(oom);
+        }
     }
 
 }

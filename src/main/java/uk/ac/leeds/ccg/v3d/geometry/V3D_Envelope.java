@@ -1371,6 +1371,16 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         }
     }
 
+    @Override
+    public BigDecimal getDistance(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     /**
      * Abstract Geometry class for geometries aligning with axes.
      */
