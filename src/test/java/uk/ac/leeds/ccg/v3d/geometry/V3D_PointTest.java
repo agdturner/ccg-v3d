@@ -224,14 +224,14 @@ public class V3D_PointTest extends V3D_Test {
         Math_BigRationalSqrt result = instance.getDistance(p);
         assertEquals(expResult, result);
         // Test 2
-         instance = P1P0P0;
-         expResult = Math_BigRationalSqrt.ONE;
-         result = instance.getDistance(p);
+        instance = P1P0P0;
+        expResult = Math_BigRationalSqrt.ONE;
+        result = instance.getDistance(p);
         assertEquals(expResult, result);
         // Test 3
-         instance = P1P1P0;
-         expResult = new Math_BigRationalSqrt(2);
-         result = instance.getDistance(p);
+        instance = P1P1P0;
+        expResult = new Math_BigRationalSqrt(2);
+        result = instance.getDistance(p);
         assertEquals(expResult, result);
     }
 
@@ -392,6 +392,47 @@ public class V3D_PointTest extends V3D_Test {
     public void testGetDistance_V3D_Plane_int() {
         System.out.println("getDistance");
         // No test as this is tested in V3D_PlaneTest.
+    }
+
+    /**
+     * Test of equals method, of class V3D_Point.
+     */
+    @Test
+    @Disabled
+    public void testEquals_V3D_Geometry() {
+        System.out.println("equals");
+        V3D_Geometry g = P0P0P0;
+        V3D_Point instance = P0P0P0;
+        assertTrue(instance.equals(g));
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Point.
+     */
+    @Test
+    public void testGetDistance_V3D_LineSegment_int() {
+        System.out.println("getDistance");
+        V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P2P0P0);
+        int oom = -1;
+        V3D_Point instance = P1P1P0;
+        BigDecimal expResult = BigDecimal.ONE;
+        BigDecimal result = instance.getDistance(l, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 2
+        instance = N1N1P0;
+        result = instance.getDistance(l, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 3
+        instance = P2P2P0;
+        expResult = BigDecimal.valueOf(2);
+        result = instance.getDistance(l, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 4
+        instance = P1P1P0;
+        l = new V3D_LineSegment(P0P0P0, P2P0P0);
+        expResult = new Math_BigRationalSqrt(5).toBigDecimal(oom);
+        result = instance.getDistance(l, oom);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
 }
