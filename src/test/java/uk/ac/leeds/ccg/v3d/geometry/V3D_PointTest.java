@@ -428,8 +428,8 @@ public class V3D_PointTest extends V3D_Test {
         result = instance.getDistance(l, oom);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 4
-        instance = P1P1P0;
-        l = new V3D_LineSegment(P0P0P0, P2P0P0);
+        instance = P2P2P0;
+        l = new V3D_LineSegment(P0P0P0, P1P0P0);
         expResult = new Math_BigRationalSqrt(5).toBigDecimal(oom);
         result = instance.getDistance(l, oom);
         assertTrue(expResult.compareTo(result) == 0);
