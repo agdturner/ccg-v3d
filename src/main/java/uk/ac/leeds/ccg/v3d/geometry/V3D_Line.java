@@ -236,7 +236,7 @@ public class V3D_Line extends V3D_Geometry {
     public boolean isParallel(V3D_Line l) {
         return v.isScalarMultiple(l.v);
     }
-    
+
     /**
      * This computes the intersection and tests if it is {@code null}
      *
@@ -884,7 +884,6 @@ public class V3D_Line extends V3D_Geometry {
 //        }
 //        return dp.divide(cp.m);
 //    }
-    
     /**
      * https://en.wikipedia.org/wiki/Skew_lines#Nearest_points
      * https://en.wikipedia.org/wiki/Distance_between_two_parallel_lines
@@ -987,6 +986,15 @@ public class V3D_Line extends V3D_Geometry {
         return res;
     }
 
+    /**
+     * An implementation of this exists:
+     * https://www.geometrictools.com/Documentation/DistanceLine3Line3.pdf
+     * https://www.geometrictools.com/GTE/Mathematics/DistSegmentSegment.h
+     *
+     * @param l
+     * @param oom
+     * @return
+     */
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
