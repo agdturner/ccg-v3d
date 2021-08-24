@@ -91,7 +91,7 @@ What is next to do is:
 - line_segment-line_segment
 
 ### Areas, Perimeters, Volumes
-Methods or calculating these require the user to specify an [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) so that the result are provided accurate to that precision. There is the So far methods for calculating lengths fothese, but not muchlengths and areas. This typycally 
+Methods or calculating these require the user to specify an [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) so that the result are provided accurate to that precision.
 
 ## Development plans
 - Implement code for calculating the minimum distances between all the different geometries.
