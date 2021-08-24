@@ -98,7 +98,7 @@ Methods or calculating these require the user to specify an [Order of Magnitude]
 
 ## Development history
 ### Origins
-The library began development in March 2020 with a view to supporting the development of [Cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinate based 3D models of [Space](https://en.wikipedia.org/wiki/Space), particularly [solar systems](https://en.wikipedia.org/wiki/Solar_systems) and parts of them, not least being [Earth](https://en.wikipedia.org/wiki/Earth).
+The library began development in March 2020 with a view to supporting the development of [Cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinate based 3D models of [Space](https://en.wikipedia.org/wiki/Space), particularly [Solar Systems](https://en.wikipedia.org/wiki/Solar_system)s and parts of them, not least being [Earth](https://en.wikipedia.org/wiki/Earth).
 
 ## Contributions
 - Welcome, but to save time and energy, try liaising and we can collect our thoughts about how to organise.
