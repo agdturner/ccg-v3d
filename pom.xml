@@ -41,7 +41,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <agdt-java-generic.version>1.9</agdt-java-generic.version>
-        <agdt-java-math.version>1.12-SNAPSHOT</agdt-java-math.version>
+        <agdt-java-math.version>1.13</agdt-java-math.version>
         <big-math.version>2.3.0</big-math.version>
         <!--
         <ojalgo.version>48.0.0</ojalgo.version>
