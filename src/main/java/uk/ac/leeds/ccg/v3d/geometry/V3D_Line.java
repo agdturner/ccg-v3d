@@ -17,11 +17,8 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 
 /**
@@ -991,9 +988,10 @@ public class V3D_Line extends V3D_Geometry {
      * https://www.geometrictools.com/Documentation/DistanceLine3Line3.pdf
      * https://www.geometrictools.com/GTE/Mathematics/DistSegmentSegment.h
      *
-     * @param l
-     * @param oom
-     * @return
+     * @param l The line segment to return the distance from.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The distance from {@code this} to {@code l} at the {@code oom} 
+     * precision.
      */
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {

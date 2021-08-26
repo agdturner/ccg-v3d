@@ -656,9 +656,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param l Line segment to intersect with {@code this}.
+     * @param li Line segment to intersect with {@code this}.
      * @return either a point or line segment which is the intersection of
-     * {@code l} and {@code this}.
+     * {@code li} and {@code this}.
      * @param flag To distinguish this method from
      * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
      * value is ignored.
@@ -1524,8 +1524,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         public final V3D_Vector v;
 
         /**
-         * {@code p} should not be equal to {@code q}. If unsure use
-         * {@link #V3D_Line(V3D_Point, V3D_Point, boolean)}.
+         * {@code p} should not be equal to {@code q}.
          *
          * @param p What {@link #p} is set to.
          * @param q What {@link #q} is set to.
@@ -1908,14 +1907,14 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * This rectangle is aligned with the axes.
      *
-     * Like with {@link V3D_Rectangle, the corner points
-     * {@link #p}, {@link #q}, {@link #r}, {@link #s} are rectangular and {@link #pq} is assumed to be orthogonal to {@link #qr}. The left of a
-     * rectangle {@link #l} is the line segment from {@link #p} to {@link #q}. The
-     * top of a rectangle {@link #t} is the line segment from {@link #q} to
-     * {@link #r}. The right of a rectangle {@link #ri} is the line segment from
-     * {@link #r} to {@link #s}. The bottom of a rectangle {@link #b} is the line
-     * segment from {@link #s} to {@link #p}. The following depicts a generic
-     * rectangle {@code
+     * Like with {@link V3D_Rectangle}, the corner points {@link #p}, {@link #q},
+     * {@link #r}, {@link #s} are rectangular and {@link #pq} is assumed to be
+     * orthogonal to {@link #qr}. The left of a rectangle {@link #l} is the line
+     * segment from {@link #p} to {@link #q}. The top of a rectangle {@link #t}
+     * is the line segment from {@link #q} to {@link #r}. The right of a
+     * rectangle {@link #ri} is the line segment from {@link #r} to {@link #s}.
+     * The bottom of a rectangle {@link #b} is the line segment from {@link #s}
+     * to {@link #p}. The following depicts a generic rectangle {@code
      *          t
      * q *-------------* r
      *   |             |

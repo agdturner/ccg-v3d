@@ -81,6 +81,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     protected final V3D_LineSegment b;
 
     /**
+     * Create a new instance.
+     * 
      * @param p The bottom left corner of the rectangle.
      * @param q The top left corner of the rectangle.
      * @param r The top right corner of the rectangle.
@@ -116,10 +118,9 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     }
 
     /**
-     * @param p The bottom left corner of the rectangle.
-     * @param q The top left corner of the rectangle.
-     * @param r The top right corner of the rectangle.
-     * @param s The bottom right corner of the rectangle.
+     * Create a new instance.
+     * 
+     * @param r What {@code this} is created from.
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */

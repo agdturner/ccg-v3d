@@ -110,6 +110,7 @@ public interface V3D_FiniteGeometry {
      *
      * @param p A point.
      * @param q Another possibly equal point.
+     * @param r Another possibly equal point.
      * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or {@code new V3D_Triangle(p, q, r)}
      */
     public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q, V3D_Point r) {
