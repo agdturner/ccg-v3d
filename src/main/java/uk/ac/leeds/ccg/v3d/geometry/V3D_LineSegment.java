@@ -72,7 +72,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     /**
      * Create a new instance.
      * 
-     * @param l What {@link this} is created from.
+     * @param l What {@code this} is created from.
      */
     public V3D_LineSegment(V3D_LineSegment l) {
         super(l);
@@ -93,7 +93,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     /**
      * Create a new instance.
      * 
-     * @param l What {@link this} is created from.
+     * @param l What {@code this} is created from.
      */
     public V3D_LineSegment(V3D_Line l) {
         super(l);
@@ -103,7 +103,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     /**
      * Create a new instance.
      * 
-     * @param l What {@link this} is created from.
+     * @param l What {@code this} is created from.
      */
     public V3D_LineSegment(V3D_Envelope.LineSegment l) {
         this(new V3D_Point(l.p), new V3D_Point(l.q));
