@@ -14,16 +14,15 @@ Code and tests are in development and the current focus is to to develop insters
 ## Latest versioned releases
 Developed and tested on [Java Development Kit, version 15](https://openjdk.java.net/projects/jdk/15/). The latest version is on GitHub.
 
-<!-- I have been trying and failing to submit the Maven central repoistory via https://central.sonatype.org/ -->
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-vector3D</artifactId>
-    <version>0.6</version>
+    <version>0.7</version>
 </dependency>
 ```
-[JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-vector3d/0.6/agdt-java-vector3d-0.6.jar)
+[JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-vector3d/0.7/agdt-java-vector3d-0.7.jar)
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
 <dependency>
