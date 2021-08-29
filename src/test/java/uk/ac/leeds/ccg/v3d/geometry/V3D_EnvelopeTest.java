@@ -17,8 +17,8 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-import static org.hamcrest.MatcherAssert.assertThat;
-import org.hamcrest.Matchers;
+//import static org.hamcrest.MatcherAssert.assertThat;
+//import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -462,7 +462,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Envelope instance = new V3D_Envelope(P0N1N1, P0N1P0, N2N2N2);
         BigRational expResult = N2;
         BigRational result = instance.getxMin();
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -474,7 +474,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Envelope instance = new V3D_Envelope(P0N1N1, P0N1P0, N2N2N2);
         BigRational expResult = P0;
         BigRational result = instance.getxMax();
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -486,7 +486,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Envelope instance = new V3D_Envelope(P0N1N1, P0N1P0, N2N2N2);
         BigRational expResult = N2;
         BigRational result = instance.getyMin();
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -498,7 +498,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Envelope instance = new V3D_Envelope(P0N1N1, P0N1P0, N2N2N2);
         BigRational expResult = N1;
         BigRational result = instance.getyMax();
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -510,7 +510,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Envelope instance = new V3D_Envelope(P0N1N1, P0N1P0, N2N2N2);
         BigRational expResult = N2;
         BigRational result = instance.getzMin();
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -522,7 +522,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Envelope instance = new V3D_Envelope(P0N1N1, P0N1P0, N2N2N2);
         BigRational expResult = P0;
         BigRational result = instance.getzMax();
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**

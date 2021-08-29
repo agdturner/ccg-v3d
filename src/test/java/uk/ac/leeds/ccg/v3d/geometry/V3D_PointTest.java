@@ -18,8 +18,8 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-import org.hamcrest.Matchers;
-import static org.hamcrest.MatcherAssert.assertThat;
+//import org.hamcrest.Matchers;
+//import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -134,8 +134,7 @@ public class V3D_PointTest extends V3D_Test {
         instance = new V3D_Point(P3, P4, P0);
         expResult = P5.toBigDecimal();
         result = instance.getDistance(P0P0P0, oom);
-        //assertEquals(expResult, result);
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -268,8 +267,7 @@ public class V3D_PointTest extends V3D_Test {
         instance = new V3D_Point(P3, P4, P0);
         expResult = BigRational.valueOf(25);
         result = instance.getDistanceSquared(P0P0P0);
-        //assertEquals(expResult, result);
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**

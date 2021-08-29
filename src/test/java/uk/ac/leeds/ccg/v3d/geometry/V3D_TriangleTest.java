@@ -17,8 +17,8 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-import static org.hamcrest.MatcherAssert.assertThat;
-import org.hamcrest.Matchers;
+//import static org.hamcrest.MatcherAssert.assertThat;
+//import org.hamcrest.Matchers;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -114,7 +114,7 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Triangle instance = new V3D_Triangle(P0P0P0, P0P1P0, P1P0P0);
         BigDecimal expResult = new BigDecimal("0.5");
         BigDecimal result = instance.getArea(mps);
-        assertThat(expResult, Matchers.comparesEqualTo(result));
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
