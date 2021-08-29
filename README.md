@@ -8,8 +8,8 @@ Code and tests are in development and the current focus is to to develop insters
 - Straight [line segment](https://en.wikipedia.org/wiki/Line_segment)s
 - [Triangle](https://en.wikipedia.org/wiki/Triangle)s
 - [Rectangle](https://en.wikipedia.org/wiki/Rectangle)s
-- [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s
-- [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
+- [Rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s
+- [Tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
 
 ## Latest versioned releases
 Developed and tested on [Java Development Kit, version 15](https://openjdk.java.net/projects/jdk/15/). The latest version is on GitHub.
