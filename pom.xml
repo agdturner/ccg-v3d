@@ -4,6 +4,12 @@
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-vector3d</artifactId>
     <version>0.7</version>
+    <!--
+    <version>0.7</version>
+    -->
+    <!--
+    <version>0.8-SNAPSHOT</version>
+    -->
     <packaging>jar</packaging>
     
     <name>agdt-java-vector3d</name>
@@ -267,8 +273,22 @@
         </repository>
         -->
         <repository>
+            <id>github</id>
+            <name>GitHub agdturner Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/agdturner/agdt-java-vector3d</url>
+        </repository>
+        <!--
+        <repository>
             <id>ossrh</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
+        -->
+        <!--
+        <repository>
+            <id>github</id>
+            <name>GitHub agdturner Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/agdturner/agdt-java-vector3d</url>
+        </repository>
+        -->
     </distributionManagement>
 </project>
