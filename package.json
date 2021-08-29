@@ -1,0 +1,22 @@
+{
+  "name": "agdt-java-vector3d",
+  "version": "0.7",
+  "description": "Generic Vector3D Java",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agdturner/agdt-java-vector3d.git"
+  },
+  "keywords": [
+    "Java"
+  ],
+  "author": "Andy Turner",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/agdturner/agdt-java-vector3d/issues"
+  },
+  "homepage": "https://github.com/agdturner/agdt-java-vector3d#readme"
+}
