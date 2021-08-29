@@ -40,8 +40,8 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <agdt-java-generic.version>1.9</agdt-java-generic.version>
-        <agdt-java-math.version>1.13</agdt-java-math.version>
+        <agdt-java-generic.version>1.11</agdt-java-generic.version>
+        <agdt-java-math.version>1.14</agdt-java-math.version>
         <big-math.version>2.3.0</big-math.version>
         <!--
         <ojalgo.version>48.0.0</ojalgo.version>
@@ -51,8 +51,9 @@
         <maven.compiler.target>11</maven.compiler.target>
         <maven.version>3.0.1</maven.version>
         <junit.version>5.7.0</junit.version>
+        <!--
         <hamcrest.version>2.2</hamcrest.version>
-
+        -->
     </properties>
     
     <dependencies>
@@ -94,6 +95,7 @@
             <version>5.6.0</version>
             <scope>test</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
@@ -118,6 +120,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
