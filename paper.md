@@ -27,15 +27,17 @@ In addition to Java 15, the library is dependent on two mathematics libraries an
 
 Point positions in space are defined using [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinates. The axes X, Y and Z meet at the origin point <x,y,z> where x=y=z=0. Cartesian coordinates are currently stored as [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java) numbers - a subset of [rational numbers](https://en.wikipedia.org/wiki/Rational_number). Conceptually, from the origin, the X Axis runs in a positive direction to the right, the Y Axis runs in a positive direction up, and the Z Axis runs in a positive direction in (or forwards). These choices are arbitrary, but this is regarded as being "left handed". This is intuitive in that many 2D graphs have the X axis running positive and towards the right, and the Y axis running positive in an upwards direction on a vertical screen. People look at a screen and move closer to it to zoom in and move backward to zoom out.
 
-The library has reached a level of maturity where it might be useful to others some of who might want to develop it.
+The library has reached a level of maturity where it might be useful to others, some of who might want to develop it.
 
-There are methods which test if geometries intersect and methods that return the geometry of the intersection. The methods that test for intersection involve no rounding. In some cases, the methods that involve calculating the intersection are compromised as points in the intersection cannot be accurately given as [rational numbers]. For some applications, it might be advantageous to support some [irrational number](https://en.wikipedia.org/wiki/Irrational_number) coordinates (in particular numbers expressed as the multiplications and divisions of rational roots). It is also thought that it will be useful to differentiate between intersecting geometries touching and passing through each other.
+There are methods which test if geometries intersect and methods that return the geometry of the intersection. The methods that test for intersection involve no rounding. In some cases, the methods that involve calculating the intersection are compromised as points in the intersection cannot be accurately given as [rational numbers]. For some applications, it might be advantageous to support some [irrational number](https://en.wikipedia.org/wiki/Irrational_number) coordinates (in particular numbers expressed as rational square roots). It is also thought that it will be useful to differentiate between intersecting geometries touching and passing through each other.
 
 The library does not yet have a [tetrahedra](https://en.wikipedia.org/wiki/Tetrahedra) class or deal with other [polyhedra](https://en.wikipedia.org/wiki/Polyhedra), but this is a natural evolution of the library. It would be great to implement robust methods for calculating distances between [simplex](https://en.wikipedia.org/wiki/Simplex)s, for which there can be minimum, maximum and average ones - the latter of these helped by defining a notion of a [centroid](https://en.wikipedia.org/wiki/Centroid).
 
 Currently, the implemented distance methods return [BigDecimal](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/math/BigDecimal.html) numbers and the user supplies an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) for the precision of the result. Sometimes a result can be returned precisely, but at other times some rounding is needed.
 
-As experessed above, it may be that storing coordinates as rational numbers might be too limitting and similarly only defining straight line segments might be too. It might be that in future functionality for handing curves is also developed.
+It may be that storing coordinates as rational numbers is too limitting.
+
+It may be that in future functionality for handing curves is developed.
 
 # Statement of need
 
