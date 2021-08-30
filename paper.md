@@ -34,5 +34,7 @@ Geographically everything is moving and changing. These changes vary with scale.
 
 The library might also be useful in studying things at larger scales, i.e. the positions and movements of other [astronomical object](https://en.wikipedia.org/wiki/Astronomical_object)s, and modelling their shapes and changes in their structures over time. It might also be useful in studying things at smaller spatial scales here on Earth, including the shapes and orientation of things. It might have diverse practical application in telecommunication and transportation. It might also be useful in biology, chemistry and some types of physics.
 
+# References
+
 # Acknowledgements
 - The [University of Leeds](http://www.leeds.ac.uk) and externally funded research grants have supported the development of this library or the dependencies.
