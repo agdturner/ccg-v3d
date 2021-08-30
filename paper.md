@@ -3,8 +3,11 @@ title: 'Development of a Modularised Java library for 3D Euclidean geometry'
 tags:
   - Java
   - geometry
+  - cartesian
   - arbitrary precision
   - order of magnitude
+  - intersection
+  - distance
 authors:
   - name: Andy G. D. Turner^[corresponding author]
     orcid: 0000-0002-6098-6313
@@ -12,7 +15,7 @@ authors:
 affiliations:
  - name: CCG, School of Geography, University of Leeds
  - index: 1
-date: 26 August 2021
+date: 30 August 2021
 #bibliography: paper.bib
 ---
 
@@ -22,7 +25,7 @@ This paper introduces a modularised Java library for three-dimensional ([3D](htt
 
 The library has reached a level of maturity where it might be useful to others who might be encouraged to also help develop it. Quite a lot of work has gone into the intersection methods (which involve no rounding) and distance calculations (for which the user has to specify an [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) for the precision of the result).
 
-The library does not yet deal with [Tetrahedra](https://en.wikipedia.org/wiki/Tetrahedra). The plan is to implement robust methods for: calculating the distance between all the [Simplexes](https://en.wikipedia.org/wiki/Simplexes) and to differentiate between two intersecting geometries touching and passing through each other.
+The library does not yet deal with [Tetrahedra](https://en.wikipedia.org/wiki/Tetrahedra). The plan is to implement robust methods for: calculating the distance between all the [simplex](https://en.wikipedia.org/wiki/Simplex)s and to differentiate between two intersecting geometries touching and passing through each other.
 
 For some applications, it might be advantageous to allow irrational coordinates. This might be wanted when intersecting, for instance defining the intersection of two skew lines as a point (in some cases it is possible to define the intersection point using rational coordinates, but in other cases it might only be possible to store the intersection accurately using irrational numbers expressed as the multiplications and divisions of rational roots. 
 
@@ -30,7 +33,7 @@ For some applications, it might be advantageous to allow irrational coordinates.
 
 The library provides robust intersection methods for [Simplexes](https://en.wikipedia.org/wiki/Simplexes) in 3D (currently with the exception of [Tetrahedra](https://en.wikipedia.org/wiki/Tetrahedra)). The author intends to use the library to help visualise global scale geographical data and to develop 3D models of [Earth](https://en.wikipedia.org/wiki/Earth) and parts of it.
 
-Geographically, everything is moving and changing. These changes vary with scale. Geographers commonly explore patterns of change in different things in regions across ranges of spacial and temporal scales using data at specific spatial and temporal resolutions. The [structure of Earth](https://en.wikipedia.org/wiki/Structure_of_Earth), whilst conceptually well defined, is continually changing as Earth moves relative to the [Sun](https://en.wikipedia.org/wiki/Sun), the [Moon](https://en.wikipedia.org/wiki/Moon) and other [astronomical object](https://en.wikipedia.org/wiki/Astronomical_object)s. More of Earth's atmosphere, for example, stretches further out towards the Sun as it heats and expands in the day. The orbit of the Earth around the Sun is complicated and the distance from the Earth to the Sun varies through time. [Orbital eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity) affects Earth surface processes and probably causes changes deep within the Earth. Earth's solar system has [helicoid](https://en.wikipedia.org/wiki/Helicoid) like motion as it traverses the [Milky Way](https://en.wikipedia.org/wiki/Milky_Way). The varying position of Earth's solar system relative to centre and plane of the galaxy is thought to have significant effects. Other [astronomical object](https://en.wikipedia.org/wiki/Astronomical_object)s affect Earth's [geoid](https://en.wikipedia.org/wiki/Geoid) and may influence [Earth's magnetic field](https://en.wikipedia.org/wiki/Earth%27s_magnetic_field). How good are our best estimates of sea levels and Earth's magnetic field in the next 50 to 100 years? Application of this code abounds in [Earth Science](https://en.wikipedia.org/wiki/Earth_science)s which was one of the original motivations for developing it.
+Geographically, everything is moving and changing. These changes vary with scale. Geographers commonly explore patterns of change in different things in regions across ranges of spacial and temporal scales using data at specific spatial and temporal resolutions. The [structure of Earth](https://en.wikipedia.org/wiki/Structure_of_Earth), whilst conceptually well defined, is continually changing as Earth moves relative to the [Sun](https://en.wikipedia.org/wiki/Sun), the [Moon](https://en.wikipedia.org/wiki/Moon) and other [astronomical object](https://en.wikipedia.org/wiki/Astronomical_object)s. More of Earth's atmosphere, for example, stretches further out towards the Sun as it heats and expands in the day. The orbit of the Earth around the Sun is complicated and the distance from the Earth to the Sun varies through time. [Orbital eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity) affects Earth surface processes and probably causes changes deep within the Earth. Earth's solar system has [helicoid](https://en.wikipedia.org/wiki/Helicoid) like motion as it traverses the [Milky Way](https://en.wikipedia.org/wiki/Milky_Way). The varying position of Earth's solar system relative to centre and plane of the galaxy is thought to have significant effects. Other astronomical objects affect Earth's [geoid](https://en.wikipedia.org/wiki/Geoid) and may influence [Earth's magnetic field](https://en.wikipedia.org/wiki/Earth%27s_magnetic_field). How good are our best estimates of sea levels and Earth's magnetic field in the next 50 to 100 years? Application of this code abounds in [Earth Science](https://en.wikipedia.org/wiki/Earth_science)s which was one of the original motivations for developing it.
 
 The library might also be useful in studying things at larger and smaller scales, in particular examining shapes and changes in structure over time. It might have diverse practical application in telecommunication and transportation, biology, chemistry and physics.
 
