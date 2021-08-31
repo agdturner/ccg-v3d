@@ -29,15 +29,15 @@ Point positions in space are defined using [cartesian](https://en.wikipedia.org/
 
 The library has reached a level of maturity where it might be useful to others, some of who might want to develop it.
 
-There are methods which test if geometries intersect and methods that return the geometry of the intersection. The methods that test for intersection involve no rounding. In some cases, the methods that involve calculating the intersection are compromised as points in the intersection cannot be accurately given as [rational numbers]. For some applications, it might be advantageous to support some [irrational number](https://en.wikipedia.org/wiki/Irrational_number) coordinates (in particular numbers expressed as rational square roots). It is also thought that it will be useful to differentiate between intersecting geometries touching and passing through each other.
+There are methods which test if geometries intersect and methods that return the geometry of the intersection. The methods that test for intersection involve no rounding. In some cases, the methods that involve calculating the intersection are compromised as points in the intersection cannot be accurately stored using BigRational. For some applications, it might be advantageous to support [algebraic number](https://en.wikipedia.org/wiki/Algebraic_number) coordinates. It is also considered useful to differentiate intersecting geometries that touch or pass through each other.
 
-The library does not yet have a [tetrahedra](https://en.wikipedia.org/wiki/Tetrahedra) class or deal with other [polyhedra](https://en.wikipedia.org/wiki/Polyhedra), but this is a natural evolution of the library. It would be great to implement robust methods for calculating distances between [simplex](https://en.wikipedia.org/wiki/Simplex)s, for which there can be minimum, maximum and average ones - the latter of these helped by defining a notion of a [centroid](https://en.wikipedia.org/wiki/Centroid).
+The library does not yet have a [tetrahedra](https://en.wikipedia.org/wiki/Tetrahedra) class or deal with other [polyhedra](https://en.wikipedia.org/wiki/Polyhedra), but this is a natural evolution of the library. It would be great to implement robust methods for calculating distances between all [simplex](https://en.wikipedia.org/wiki/Simplex)s, for which there can be minimum, maximum and average - the latter of these helped by defining a notion of a [centroid](https://en.wikipedia.org/wiki/Centroid).
 
 Currently, the implemented distance methods return [BigDecimal](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/math/BigDecimal.html) numbers and the user supplies an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) for the precision of the result. Sometimes a result can be returned precisely, but at other times some rounding is needed.
 
 It may be that storing coordinates as rational numbers is too limitting.
 
-It may be that in future functionality for handing curves is developed.
+It could be good to develop geometry for eliptic curves.
 
 # Statement of need
 
