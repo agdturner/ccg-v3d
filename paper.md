@@ -37,7 +37,7 @@ Currently, the implemented distance methods return [BigDecimal](https://docs.ora
 
 It may be that storing coordinates as rational numbers is too limitting.
 
-It could be good to develop geometry for eliptic curves.
+It would be good to develop geometry for [curve](https://en.wikipedia.org/wiki/Curve)s.
 
 # Statement of need
 
