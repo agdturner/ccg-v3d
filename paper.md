@@ -29,15 +29,19 @@ Point positions in space are defined using [cartesian](https://en.wikipedia.org/
 
 The library has reached a level of maturity where it might be useful to others, some of who might want to develop it.
 
-There are methods which test if geometries intersect and methods that return the geometry of the intersection. The methods that test for intersection involve no rounding. In some cases, the methods that involve calculating the intersection are compromised as points in the intersection cannot be accurately stored using BigRational. For some applications, it might be advantageous to support [algebraic number](https://en.wikipedia.org/wiki/Algebraic_number) coordinates. It is also considered useful to differentiate intersecting geometries that touch or pass through each other.
+There are methods which test if geometries intersect and methods that return the geometry of the intersection. The methods that test for intersection involve no rounding. To calculate geometries of intersection, sometimes rounding seems necessary, but this might be overcome by allowing coordinates to be stored as [algebraic number](https://en.wikipedia.org/wiki/Algebraic_number)s. There are perhaps usage scenarios that invovle differentiating between intersecting geometries that touch or that touch and pass through each other.
 
-The library does not yet have a [tetrahedra](https://en.wikipedia.org/wiki/Tetrahedra) class or deal with other [polyhedra](https://en.wikipedia.org/wiki/Polyhedra), but this is a natural evolution of the library. It would be great to implement robust methods for calculating distances between all [simplex](https://en.wikipedia.org/wiki/Simplex)s, for which there can be minimum, maximum and average - the latter of these helped by defining a notion of a [centroid](https://en.wikipedia.org/wiki/Centroid).
+The library does not yet have geometry implementations for any volumes other than a [rectangular cuboid](https://en.wikipedia.org/wiki/Rectangular_cubiod) aligned with the axes. All finite geometries have such a bounding rectangular cuboid which is known as an envelope. It can be quick to test if two envelopes intersect, if they do, then there is a chance that the geometries that have these envelopes also intersect.
 
-Currently, the implemented distance methods return [BigDecimal](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/math/BigDecimal.html) numbers and the user supplies an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) for the precision of the result. Sometimes a result can be returned precisely, but at other times some rounding is needed.
+It is planned to implement:
+1. Some [polyhedra](https://en.wikipedia.org/wiki/Polyhedra) beginning with [tetrahedra](https://en.wikipedia.org/wiki/Tetrahedra) and rectangular cuboids that do not necessarily align with the axes.
+2. Distance calculating functionality between all [simplex](https://en.wikipedia.org/wiki/Simplex)s and polyhedra, for which there can be minimum, maximum and average distances. For the latter of these, it might be helpful to define [centroid](https://en.wikipedia.org/wiki/Centroid)s.
 
-It may be that storing coordinates as rational numbers is too limitting.
+Currently, the implemented distance methods return [BigDecimal](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/math/BigDecimal.html) numbers and the user supplies an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) for the precision of the result. Sometimes a result can be returned precisely, but sometimes rounding is necessary.
 
-It would be good to develop geometry for [curve](https://en.wikipedia.org/wiki/Curve)s.
+Is storing coordinates as rational numbers too limiting?
+
+Is there a use case scenario for [curve](https://en.wikipedia.org/wiki/Curve)d geometry?
 
 # Statement of need
 
