@@ -17,9 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-//import static org.hamcrest.MatcherAssert.assertThat;
-//import org.hamcrest.Matchers;
-import uk.ac.leeds.ccg.v3d.V3D_Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,25 +24,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
-import uk.ac.leeds.ccg.generic.core.Generic_Environment;
-import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.V3D_Test;
 
 /**
- * V3D_TriangleTest
+ * Test of V3D_Triangle class.
  *
  * @author Andy Turner
  * @version 1.0
  */
 public class V3D_TriangleTest extends V3D_Test {
 
-    private static final long serialVersionUID = 1L;
-
-    public V3D_TriangleTest() throws Exception {
-        super(new V3D_Environment(new Generic_Environment(
-                new Generic_Defaults())));
-    }
+    public V3D_TriangleTest(){}
 
     @BeforeAll
     public static void setUpClass() {

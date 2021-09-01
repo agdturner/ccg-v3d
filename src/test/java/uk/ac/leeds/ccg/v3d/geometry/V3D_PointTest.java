@@ -15,11 +15,8 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import uk.ac.leeds.ccg.v3d.V3D_Test;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
-//import org.hamcrest.Matchers;
-//import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,25 +24,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
-import uk.ac.leeds.ccg.generic.core.Generic_Environment;
-import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.V3D_Test;
 
 /**
- * V3D_PointTest
+ * Test of V3D_Point class.
  *
  * @author Andy Turner
  * @version 1.0
  */
 public class V3D_PointTest extends V3D_Test {
 
-    private static final long serialVersionUID = 1L;
-
-    public V3D_PointTest() throws Exception {
-        super(new V3D_Environment(new Generic_Environment(
-                new Generic_Defaults())));
-    }
+    public V3D_PointTest(){}
 
     @BeforeAll
     public static void setUpClass() {
@@ -69,9 +59,9 @@ public class V3D_PointTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        BigRational x = e.P0;
-        BigRational y = e.P0;
-        BigRational z = e.P0;
+        BigRational x = P0;
+        BigRational y = P0;
+        BigRational z = P0;
         V3D_Point instance = new V3D_Point(x, y, z);
         String expResult = "V3D_Point(x=0, y=0, z=0)";
         String result = instance.toString();

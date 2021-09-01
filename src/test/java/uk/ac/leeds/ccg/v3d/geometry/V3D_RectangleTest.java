@@ -23,26 +23,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import uk.ac.leeds.ccg.generic.core.Generic_Environment;
-import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 
 /**
- * V3D_RectangleTest
+ * Test of V3D_Rectangle class.
  *
  * @author Andy Turner
  * @version 1.0.0
  */
 public class V3D_RectangleTest extends V3D_Test {
 
-    private static final long serialVersionUID = 1L;
-
-    public V3D_RectangleTest() throws Exception {
-        super(new V3D_Environment(new Generic_Environment(
-                new Generic_Defaults())));
-    }
+    public V3D_RectangleTest(){}
 
     @BeforeAll
     public static void setUpClass() {

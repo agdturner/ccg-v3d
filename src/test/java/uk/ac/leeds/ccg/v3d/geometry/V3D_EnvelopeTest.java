@@ -28,20 +28,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.Disabled;
-import uk.ac.leeds.ccg.generic.core.Generic_Environment;
-import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 
 /**
- * V3D_EnvelopeTest
+ * Test class for V3D_Envelope.
  *
  * @author Andy Turner
  * @version 1.0
@@ -50,10 +42,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 
     private static final long serialVersionUID = 1L;
 
-    public V3D_EnvelopeTest() throws Exception {
-        super(new V3D_Environment(new Generic_Environment(
-                new Generic_Defaults())));
-    }
+    public V3D_EnvelopeTest() {}
 
     @BeforeAll
     public static void setUpClass() {

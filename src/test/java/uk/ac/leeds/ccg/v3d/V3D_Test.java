@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d;
 
 import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.core.V3D_Object;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 
 /**
@@ -26,7 +25,7 @@ import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class V3D_Test extends V3D_Object {
+public abstract class V3D_Test {
 
     public static final BigRational P0 = BigRational.ZERO;
     public static final BigRational P1 = BigRational.ONE;
@@ -68,7 +67,6 @@ public abstract class V3D_Test extends V3D_Object {
     public static final BigRational N9999 = P9999.negate();
     public static final BigRational N10000 = P10000.negate();
     public static final BigRational N10001 = P10001.negate();
-    private static final long serialVersionUID = 1L;
 
     public final V3D_Point P1P1P1;
     public final V3D_Point P1P1P0;
@@ -130,8 +128,7 @@ public abstract class V3D_Test extends V3D_Object {
     public final V3D_Point P2P0P2;
     public final V3D_Point P0P2P2;
 
-    public V3D_Test(V3D_Environment e) {
-        super(e);
+    public V3D_Test() {
         P1P1P1 = new V3D_Point(P1, P1, P1);
         P1P1P0 = new V3D_Point(P1, P1, P0);
         P1P1N1 = new V3D_Point(P1, P1, N1);

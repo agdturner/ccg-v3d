@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import uk.ac.leeds.ccg.v3d.V3D_Test;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
@@ -25,10 +24,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
-import uk.ac.leeds.ccg.generic.core.Generic_Environment;
-import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.V3D_Test;
 
 /**
  * V3D_LineSegmentTest
@@ -38,12 +36,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  */
 public class V3D_LineSegmentTest extends V3D_Test {
 
-    private static final long serialVersionUID = 1L;
-
-    public V3D_LineSegmentTest() throws Exception {
-        super(new V3D_Environment(new Generic_Environment(
-                new Generic_Defaults())));
-    }
+    public V3D_LineSegmentTest(){}
 
     @BeforeAll
     public static void setUpClass() {
@@ -196,7 +189,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
     @Test
     public void testApply() {
         System.out.println("apply");
-        V3D_Vector v = e.i;
+        V3D_Vector v = V3D_Environment.i;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P0P0);
         V3D_LineSegment expResult = new V3D_LineSegment(P1P0P0, new V3D_Point(P2, P0, P0));
         V3D_LineSegment result = instance.apply(v);

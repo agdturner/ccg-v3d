@@ -25,26 +25,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import uk.ac.leeds.ccg.generic.core.Generic_Environment;
-import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * V3D_VectorTest
+ * Test of V3D_Vector class.
  *
  * @author Andy Turner
  * @version 1.0
  */
 public class V3D_VectorTest extends V3D_Test {
 
-    private static final long serialVersionUID = 1L;
-
-    public V3D_VectorTest() throws Exception {
-        super(new V3D_Environment(new Generic_Environment(
-                new Generic_Defaults())));
-    }
+    public V3D_VectorTest() {}
 
     @BeforeAll
     public static void setUpClass() {
@@ -677,11 +670,11 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testEquals_Object() {
         System.out.println("equals");
-        Object o = e.i;
-        V3D_Vector instance = e.i;
+        Object o = V3D_Environment.i;
+        V3D_Vector instance = V3D_Environment.i;
         assertTrue(instance.equals(o));
         // Test 2
-        instance = e.j;
+        instance = V3D_Environment.j;
         assertFalse(instance.equals(o));
     }
 
@@ -691,11 +684,11 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testEquals_V3D_Vector() {
         System.out.println("equals");
-        V3D_Vector v = e.i;
-        V3D_Vector instance = e.i;
+        V3D_Vector v = V3D_Environment.i;
+        V3D_Vector instance = V3D_Environment.i;
         assertTrue(instance.equals(v));
         // Test 2
-        instance = e.j;
+        instance = V3D_Environment.j;
         assertFalse(instance.equals(v));
     }
 
@@ -705,7 +698,7 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testIsReverse() {
         System.out.println("isReverse");
-        V3D_Vector v = e.i;
+        V3D_Vector v = V3D_Environment.i;
         V3D_Vector instance = new V3D_Vector(-1, 0, 0);
         assertTrue(instance.isReverse(v));
         // Test 2
@@ -834,13 +827,13 @@ public class V3D_VectorTest extends V3D_Test {
     public void testGetUnitVector() {
         System.out.println("getUnitVector");
         int oom = -1;
-        V3D_Vector instance = e.i;
-        V3D_Vector expResult = e.i;
+        V3D_Vector instance = V3D_Environment.i;
+        V3D_Vector expResult = V3D_Environment.i;
         V3D_Vector result = instance.getUnitVector(oom);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_Vector(100, 0, 0);
-        expResult = e.i;
+        expResult = V3D_Environment.i;
         result = instance.getUnitVector(oom);
         assertEquals(expResult, result);
     }
@@ -851,7 +844,7 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testGetAsMatrix() {
         System.out.println("getAsMatrix");
-        V3D_Vector instance = e.i;
+        V3D_Vector instance = V3D_Environment.i;
         Math_Matrix_BR expResult = new Math_Matrix_BR(1, 3);
         BigRational[][] m = expResult.getM();
         m[0][0] = BigRational.ONE;

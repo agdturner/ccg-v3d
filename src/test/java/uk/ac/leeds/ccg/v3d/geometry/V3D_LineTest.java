@@ -26,26 +26,19 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
-import uk.ac.leeds.ccg.generic.core.Generic_Environment;
-import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * V3D_LineTest
+ * Test class for V3D_Line.
  *
  * @author Andy Turner
  * @version 1.0
  */
 public class V3D_LineTest extends V3D_Test {
 
-    private static final long serialVersionUID = 1L;
-
-    public V3D_LineTest() throws Exception {
-        super(new V3D_Environment(new Generic_Environment(
-                new Generic_Defaults())));
-    }
+    public V3D_LineTest(){}
 
     @BeforeAll
     public static void setUpClass() {
@@ -126,14 +119,14 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testIsParallel() {
         System.out.println("isParallel");
-        V3D_Line l = e.xAxis;
-        V3D_Line instance = e.xAxis;
+        V3D_Line l = V3D_Environment.xAxis;
+        V3D_Line instance = V3D_Environment.xAxis;
         assertTrue(instance.isParallel(l));
         // Test 2
-        instance = e.yAxis;
+        instance = V3D_Environment.yAxis;
         assertFalse(instance.isParallel(l));
         // Test 3
-        instance = e.zAxis;
+        instance = V3D_Environment.zAxis;
         assertFalse(instance.isParallel(l));
         // Test 4
         instance = new V3D_Line(P0P1P0, P1P1P0);
@@ -151,7 +144,7 @@ public class V3D_LineTest extends V3D_Test {
         instance = new V3D_Line(P1P0P1, P0P1P1);
         assertFalse(instance.isParallel(l));
         // Test 9
-        l = e.yAxis;
+        l = V3D_Environment.yAxis;
         instance = new V3D_Line(P0P0P1, P0P1P1);
         assertTrue(instance.isParallel(l));
         // Test 9
@@ -164,7 +157,7 @@ public class V3D_LineTest extends V3D_Test {
         instance = new V3D_Line(P1P0P1, P1P1P0);
         assertFalse(instance.isParallel(l));
         // Test 12
-        l = e.zAxis;
+        l = V3D_Environment.zAxis;
         instance = new V3D_Line(P1P0P0, P1P0P1);
         assertTrue(instance.isParallel(l));
         // Test 9
@@ -465,18 +458,18 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testApply() {
         System.out.println("apply");
-        V3D_Vector v = e.i;
-        V3D_Line instance = e.xAxis;
-        V3D_Line expResult = e.xAxis;
+        V3D_Vector v = V3D_Environment.i;
+        V3D_Line instance = V3D_Environment.xAxis;
+        V3D_Line expResult = V3D_Environment.xAxis;
         V3D_Line result = instance.apply(v);
         assertEquals(expResult, result);
         // Test 2
-        instance = e.yAxis;
+        instance = V3D_Environment.yAxis;
         expResult = new V3D_Line(P1P0P0, P1P1P0);
         result = instance.apply(v);
         assertEquals(expResult, result);
         // Test 3
-        instance = e.zAxis;
+        instance = V3D_Environment.zAxis;
         expResult = new V3D_Line(P1P0P0, P1P0P1);
         result = instance.apply(v);
         assertEquals(expResult, result);
@@ -488,7 +481,7 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testGetAsMatrix() {
         System.out.println("getAsMatrix");
-        V3D_Line instance = e.xAxis;
+        V3D_Line instance = V3D_Environment.xAxis;
         Math_Matrix_BR expResult = new Math_Matrix_BR(2, 3);
         BigRational[][] m = expResult.getM();
         m[0][0] = BigRational.ZERO;
