@@ -383,18 +383,6 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
-     * Test of equals method, of class V3D_Point.
-     */
-    @Test
-    @Disabled
-    public void testEquals_V3D_Geometry() {
-        System.out.println("equals");
-        V3D_Geometry g = P0P0P0;
-        V3D_Point instance = P0P0P0;
-        assertTrue(instance.equals(g));
-    }
-
-    /**
      * Test of getDistance method, of class V3D_Point.
      */
     @Test

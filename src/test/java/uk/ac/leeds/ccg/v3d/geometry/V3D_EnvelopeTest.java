@@ -223,18 +223,19 @@ public class V3D_EnvelopeTest extends V3D_Test {
     
     /**
      * Test of equals method, of class V3D_Envelope.
-     * Test covered by {@link #testEquals_Object()}.
-     */
-    @Test
-    public void testEquals_V3D_Geometry() {
-    }
-
-    /**
-     * Test of equals method, of class V3D_Envelope.
-     * Test covered by {@link #testEquals_Object()}.
      */
     @Test
     public void testEquals_V3D_Envelope() {
+        System.out.println("equals");
+        V3D_Envelope instance = new V3D_Envelope(P0P0P0, P1P1P1);
+        V3D_Envelope e = new V3D_Envelope(P0P0P0, P1P1P1);
+        assertTrue(instance.equals(e));
+        // Test 2
+        e = new V3D_Envelope(P1P1P1, P0P0P0);
+        assertTrue(instance.equals(e));
+        // Test 3
+        e = new V3D_Envelope(P1N1P1, P0P0P0);
+        assertFalse(instance.equals(e));
     }
 
     /**

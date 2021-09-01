@@ -498,7 +498,7 @@ public class V3D_LineTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Line.
      */
     @Test
-    public void testGetDistance_3args_1() {
+    public void testGetDistance_V3D_Point_int() {
         System.out.println("getDistance");
         V3D_Point p;
         int oom;
@@ -537,14 +537,143 @@ public class V3D_LineTest extends V3D_Test {
                 .toBigDecimal(mc);
         result = instance.getDistance(p, oom);
         assertTrue(expResult.compareTo(result) == 0);
-        //expResult = new Math_BigRationalSqrt(BigRational.ONE.divide(2)).toBigDecimal(oom);
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Line.
+     */
+    @Test
+    @Disabled
+    public void testIsIntersectedBy_V3D_Ray() {
+        System.out.println("isIntersectedBy");
+        V3D_Ray r = null;
+        V3D_Line instance = null;
+        boolean expResult = false;
+        boolean result = instance.isIntersectedBy(r);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Line.
+     */
+    @Test
+    @Disabled
+    public void testGetIntersection_V3D_Ray() {
+        System.out.println("getIntersection");
+        V3D_Ray r = null;
+        V3D_Line instance = null;
+        V3D_Geometry expResult = null;
+        V3D_Geometry result = instance.getIntersection(r);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getLineOfIntersection method, of class V3D_Line.
+     */
+    @Test
+    @Disabled
+    public void testGetLineOfIntersection_V3D_Point() {
+        System.out.println("getLineOfIntersection");
+        V3D_Point pt = null;
+        V3D_Line instance = null;
+        V3D_LineSegment expResult = null;
+        V3D_LineSegment result = instance.getLineOfIntersection(pt);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getPointOfIntersection method, of class V3D_Line.
+     */
+    @Test
+    @Disabled
+    public void testGetPointOfIntersection() {
+        System.out.println("getPointOfIntersection");
+        V3D_Point pt = null;
+        V3D_Line instance = null;
+        V3D_Point expResult = null;
+        V3D_Point result = instance.getPointOfIntersection(pt);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getLineOfIntersection method, of class V3D_Line.
+     */
+    @Test
+    @Disabled
+    public void testGetLineOfIntersection_V3D_Line_V3D_Line() {
+        System.out.println("getLineOfIntersection");
+        V3D_Line l0 = null;
+        V3D_Line l1 = null;
+        V3D_Geometry expResult = null;
+        V3D_Geometry result = V3D_Line.getLineOfIntersection(l0, l1);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getIntersection2 method, of class V3D_Line.
+     */
+    @Test
+    @Disabled
+    public void testGetIntersection2() {
+        System.out.println("getIntersection2");
+        V3D_Line l0 = null;
+        V3D_Line l1 = null;
+        V3D_Geometry expResult = null;
+        V3D_Geometry result = V3D_Line.getIntersection2(l0, l1);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
     /**
      * Test of getDistance method, of class V3D_Line.
      */
     @Test
-    public void testGetDistance_3args_2() {
+    @Disabled
+    public void testGetDistance_V3D_Ray_int() {
+        System.out.println("getDistance");
+        V3D_Ray r = null;
+        int oom = 0;
+        V3D_Line instance = null;
+        BigDecimal expResult = null;
+        BigDecimal result = instance.getDistance(r, oom);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Line.
+     */
+    @Test
+    @Disabled
+    public void testGetDistance_V3D_LineSegment_int() {
+        System.out.println("getDistance");
+        V3D_LineSegment l = null;
+        int oom = 0;
+        V3D_Line instance = null;
+        BigDecimal expResult = null;
+        BigDecimal result = instance.getDistance(l, oom);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+    
+    /**
+     * Test of getDistance method, of class V3D_Line.
+     */
+    @Test
+    public void testGetDistance_V3D_Line_int() {
         System.out.println("getDistance");
         V3D_Line l;
         int oom;
@@ -565,5 +694,5 @@ public class V3D_LineTest extends V3D_Test {
         expResult = BigDecimal.valueOf(2).sqrt(new MathContext(1 - oom));
         result = instance.getDistance(l, oom);
         assertTrue(expResult.compareTo(result) == 0);
-    }
+}
 }

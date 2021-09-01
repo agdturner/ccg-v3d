@@ -679,20 +679,6 @@ public class V3D_VectorTest extends V3D_Test {
     }
 
     /**
-     * Test of equals method, of class V3D_Vector.
-     */
-    @Test
-    public void testEquals_V3D_Vector() {
-        System.out.println("equals");
-        V3D_Vector v = V3D_Environment.i;
-        V3D_Vector instance = V3D_Environment.i;
-        assertTrue(instance.equals(v));
-        // Test 2
-        instance = V3D_Environment.j;
-        assertFalse(instance.equals(v));
-    }
-
-    /**
      * Test of isReverse method, of class V3D_Vector.
      */
     @Test
