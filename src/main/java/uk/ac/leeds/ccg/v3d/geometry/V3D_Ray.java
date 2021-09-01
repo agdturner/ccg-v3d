@@ -137,7 +137,7 @@ public class V3D_Ray extends V3D_Line {
     }
 
     /**
-     * @param p A point to test for intersection.
+     * @param pt A point to test for intersection.
      * @return {@code true} if {@code this} is intersected by {@code p}.
      */
     @Override
@@ -471,7 +471,7 @@ public class V3D_Ray extends V3D_Line {
      * the points at either end of the line segment. In all other cases, the
      * distance is the distance between the point and the line.
      *
-     * @param p A point for which the minimum distance from {@code this} is
+     * @param pt A point for which the minimum distance from {@code this} is
      * returned.
      *
      * @param oom The Order of Magnitude for the precision of the result.
