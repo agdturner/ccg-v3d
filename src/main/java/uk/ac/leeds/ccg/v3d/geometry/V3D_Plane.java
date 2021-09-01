@@ -789,13 +789,13 @@ public class V3D_Plane extends V3D_Geometry {
         return n.getDotProduct(l.v).isZero();
     }
 
-    @Override
-    public boolean equals(V3D_Geometry g) {
-        if (g instanceof V3D_Plane) {
-            return equals((V3D_Plane) g);
-        }
-        return false;
-    }
+//    @Override
+//    public boolean equals(V3D_Geometry g) {
+//        if (g instanceof V3D_Plane) {
+//            return equals((V3D_Plane) g);
+//        }
+//        return false;
+//    }
 
     @Override
     public boolean equals(Object o) {

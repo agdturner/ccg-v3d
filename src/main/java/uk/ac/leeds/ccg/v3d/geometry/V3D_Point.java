@@ -155,13 +155,13 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
                 + ", y=" + y.toString() + ", z=" + z.toString() + ")";
     }
 
-    @Override
-    public boolean equals(V3D_Geometry g) {
-        if (g instanceof V3D_Point) {
-            return equals((V3D_Point) g);
-        }
-        return false;
-    }
+//    @Override
+//    public boolean equals(V3D_Geometry g) {
+//        if (g instanceof V3D_Point) {
+//            return equals((V3D_Point) g);
+//        }
+//        return false;
+//    }
 
     @Override
     public boolean equals(Object o) {

@@ -838,19 +838,19 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         return this;
     }
 
-    /**
-     * Test for equality.
-     *
-     * @param g The V3D_Geometry to test for equality with this.
-     * @return {@code true} iff this and e are equal.
-     */
-    @Override
-    public boolean equals(V3D_Geometry g) {
-        if (g instanceof V3D_Envelope) {
-            return equals((V3D_Envelope) g);
-        }
-        return false;
-    }
+//    /**
+//     * Test for equality.
+//     *
+//     * @param g The V3D_Geometry to test for equality with this.
+//     * @return {@code true} iff this and e are equal.
+//     */
+//    @Override
+//    public boolean equals(V3D_Geometry g) {
+//        if (g instanceof V3D_Envelope) {
+//            return equals((V3D_Envelope) g);
+//        }
+//        return false;
+//    }
 
     /**
      * Test for equality.

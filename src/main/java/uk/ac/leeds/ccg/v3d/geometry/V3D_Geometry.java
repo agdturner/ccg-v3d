@@ -17,8 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
 
 /**
  * For 3D Euclidean geometrical objects. The three dimensions have are
@@ -75,14 +73,6 @@ public abstract class V3D_Geometry implements Serializable {
      * @return a new geometry which is {@code this} shifted by {@code v}.
      */
     public abstract V3D_Geometry apply(V3D_Vector v);
-    
-    /**
-     * Test for equality.
-     * 
-     * @param g The V3D_Geometry to test for equality with this.
-     * @return {@code true} iff {@code this} and {@code g} are equal.
-     */
-    public abstract boolean equals(V3D_Geometry g);
     
     /**
      * Get the distance between this and {@code p}.

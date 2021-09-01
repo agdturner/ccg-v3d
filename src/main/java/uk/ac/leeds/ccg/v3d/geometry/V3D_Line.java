@@ -183,13 +183,13 @@ public class V3D_Line extends V3D_Geometry {
      * @param g The V3D_Geometry to test for equality with this.
      * @return {@code true} iff this and e are equal.
      */
-    @Override
-    public boolean equals(V3D_Geometry g) {
-        if (g instanceof V3D_Line) {
-            return equals((V3D_Line) g);
-        }
-        return false;
-    }
+//    @Override
+//    public boolean equals(V3D_Geometry g) {
+//        if (g instanceof V3D_Line) {
+//            return equals((V3D_Line) g);
+//        }
+//        return false;
+//    }
 
     @Override
     public boolean equals(Object o) {
