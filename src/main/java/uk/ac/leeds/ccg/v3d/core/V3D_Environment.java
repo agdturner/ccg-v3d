@@ -90,50 +90,50 @@ public class V3D_Environment extends Generic_MemoryManager {
     public static final V3D_Point P0P0P1 = new V3D_Point(P0, P0, P1);
 
     /**
-     * The x axis.
-     */
-    public final V3D_Line xAxis;
-
-    /**
-     * The y axis.
-     */
-    public final V3D_Line yAxis;
-
-    /**
-     * The z axis.
-     */
-    public final V3D_Line zAxis;
-
-    /**
-     * The x = 0 plane.
-     */
-    public final V3D_Plane x0;
-
-    /**
-     * The y = 0 plane.
-     */
-    public final V3D_Plane y0;
-
-    /**
-     * The z = 0 plane.
-     */
-    public final V3D_Plane z0;
-
-    /**
      * Unit vector based at the origin in the x axis direction.
      */
-    public final V3D_Vector i;
+    public static final V3D_Vector i = new V3D_Vector(P1P0P0);
 
     /**
      * Unit vector based at the origin in the y axis direction.
      */
-    public final V3D_Vector j;
+    public static final V3D_Vector j = new V3D_Vector(P0P1P0);
 
     /**
      * Unit vector based at the origin in the z axis direction.
      */
-    public final V3D_Vector k;
+    public static final V3D_Vector k = new V3D_Vector(P0P0P1);
 
+    /**
+     * The x axis.
+     */
+    public static final V3D_Line xAxis = new V3D_Line(P0P0P0, i);
+    
+    /**
+     * The y axis.
+     */
+    public static final V3D_Line yAxis = new V3D_Line(P0P0P0, j);
+
+    /**
+     * The z axis.
+     */
+    public static final V3D_Line zAxis = new V3D_Line(P0P0P0, k);
+
+    /**
+     * The x = 0 plane.
+     */
+    public static final V3D_Plane x0 = new V3D_Plane(P0P0P0, P0P1P0, P0P0P1);
+
+    /**
+     * The y = 0 plane.
+     */
+    public static final V3D_Plane y0 = new V3D_Plane(P0P0P0, P1P0P0, P0P0P1);
+
+    /**
+     * The z = 0 plane.
+     */
+    public static final V3D_Plane z0 = new V3D_Plane(P0P0P0, P1P0P0, P0P1P0);
+    
     /**
      * Generic_Environment.
      */
@@ -171,15 +171,6 @@ public class V3D_Environment extends Generic_MemoryManager {
             throws IOException, Exception {
         super();
         this.env = e;
-        i = new V3D_Vector(P1P0P0);
-        j = new V3D_Vector(P0P1P0);
-        k = new V3D_Vector(P0P0P1);
-        xAxis = new V3D_Line(P0P0P0, i);
-        yAxis = new V3D_Line(P0P0P0, j);
-        zAxis = new V3D_Line(P0P0P0, k);
-        x0 = new V3D_Plane(P0P0P0, P0P1P0, P0P0P1);
-        y0 = new V3D_Plane(P0P0P0, P1P0P0, P0P0P1);
-        z0 = new V3D_Plane(P0P0P0, P1P0P0, P0P1P0);
         bd = new Math_BigDecimal();
         initMemoryReserve(Default_Memory_Threshold, env);
         files = new V3D_Files(new Generic_Defaults(Paths.get(dir.toString(),
