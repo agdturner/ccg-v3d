@@ -177,11 +177,11 @@ public class V3D_Ray extends V3D_Line {
             case -1:
                 switch (vdxc0) {
                     case -1:
-                        return false;
+                        return getptycpy(pt);
                     case 0:
                         return false;
                     default:
-                        return getptycpy(pt);
+                        return false;
                 }
             case 0:
                 switch (vdxc0) {
@@ -195,11 +195,11 @@ public class V3D_Ray extends V3D_Line {
             default:
                 switch (vdxc0) {
                     case -1:
-                        return getptycpy(pt);
+                        return false;
                     case 0:
                         return false;
                     default:
-                        return false;
+                        return getptycpy(pt);
                 }
         }
     }
@@ -211,11 +211,11 @@ public class V3D_Ray extends V3D_Line {
             case -1:
                 switch (vdyc0) {
                     case -1:
-                        return false;
+                        return getptzcpz(pt);
                     case 0:
                         return false;
                     default:
-                        return getptzcpz(pt);
+                        return false;
                 }
             case 0:
                 switch (vdyc0) {
@@ -245,35 +245,31 @@ public class V3D_Ray extends V3D_Line {
             case -1:
                 switch (vdzc0) {
                     case -1:
-                        return false;
+                        return true;
                     case 0:
                         return false;
                     default:
-                        break;
+                        return false;
                 }
-                break;
             case 0:
                 switch (vdzc0) {
                     case -1:
                         return false;
                     case 0:
-                        break;
+                        return true;
                     default:
                         return false;
                 }
-                break;
             default:
                 switch (vdzc0) {
                     case -1:
-                        break;
+                        return false;
                     case 0:
                         return false;
                     default:
-                        return false;
+                        return true;
                 }
-                break;
         }
-        return true;
     }
 
     /**
