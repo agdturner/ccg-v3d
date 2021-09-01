@@ -68,9 +68,9 @@ Instances are immutable and finite [triangle](https://en.wikipedia.org/wiki/Tria
 Instances are immutable and finite [rectangle](https://en.wikipedia.org/wiki/Rectangle)s. Essentially they are [V3D_Plane](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Plane.java) instances and the three points (p, q and r) are the first three corners of the rectangle working around clockwise from the front of the plane. The other corner point of the rectangle (s) is also stored as are additional vectors (rs that gives how r is mapped onto s, and sp that gives how s is mapped onto p). Additionally the edges of the rectangle are stored as line segments for convenience. So again, as with other geometry objects, there is some redundancy in what is stored, but these additional things are stored for convenience.
 
 ## Development progress
-Most of what is implemented so far is intersection and distance from a point functionality. Not all of this is yet implemented for all geometries. The implemented intersection test implementations involve no rounding. For distance calculations, the user is asked to supply an [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) which is used to provide an answer rounded to or correct to this. The default rounding is to round half up.
+Most of what is implemented so far is intersection and distance from a point functionality. Not all of this is yet implemented for all geometries. The implemented intersection test implementations involve no rounding. For distance calculations, the user is asked to supply an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) which is used to provide an answer rounded to or correct to this. The default rounding is to round half up.
 
-The aim is to have intersection functionality for all geometries including a test of whether any two geometry instances intersect and a method to get the intersection. As the geometries become more complicated, this aim becomes harder. Additional intersection funtionality that might be considered is whether or not the geometries touch or whether they overlap oe cross through each other. Additionally robust distance methods are wanted to calculate the shortest distance between any two geometries accurate to a given [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude).  
+The aim is to have intersection functionality for all geometries including a test of whether any two geometry instances intersect and a method to get the intersection. As the geometries become more complicated, this aim becomes harder. Additional intersection funtionality that might be considered is whether or not the geometries touch or whether they overlap oe cross through each other. Additionally robust distance methods are wanted to calculate the shortest distance between any two geometries accurate to a given [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude).  
 
 ### Intersection
 So far, methods for testing if there is an intersection and for retrieving the intersection are implemented for:
@@ -88,7 +88,7 @@ What is next to do:
 It would also be good to distinguish between geometries touching and overlapping.
 
 ### Distance, Areas, Perimeters, Volumes
-Methods for calculating these require the user to specify an [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) so that the result are provided accurate to that precision.
+Methods for calculating these currently require the user to specify an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) so that the result are provided accurate to that precision.
 So far, methods for calculating the minimum distance between geometries are implemented for:
 - point-plane, point-line, point-ray, point-line_segment, point-rectangle, point-triangle
 - plane-plane, plane-line, plane-ray, plane-line_segment
@@ -104,7 +104,7 @@ It might also be good to calculate the centroids and average distances, and perh
 
 ## Development history
 ### Origins
-The library began development in March 2020 with a view to supporting the development of [Cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinate based 3D models of [Space](https://en.wikipedia.org/wiki/Space), particularly [solar system](https://en.wikipedia.org/wiki/Solar_system)s and parts of them, not least being [Earth](https://en.wikipedia.org/wiki/Earth).
+The library began development in March 2020 with a view to supporting the development of [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinate based 3D models of [space](https://en.wikipedia.org/wiki/Space), particularly [solar system](https://en.wikipedia.org/wiki/Solar_system)s and parts of them, not least being [Earth](https://en.wikipedia.org/wiki/Earth).
 
 ## Contributions
 - Welcome, but to save time and energy, please liaise and we can try to organise.
