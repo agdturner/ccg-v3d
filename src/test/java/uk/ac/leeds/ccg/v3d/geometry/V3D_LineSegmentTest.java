@@ -29,7 +29,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 
 /**
- * V3D_LineSegmentTest
+ * Test of V3D_LineSegment class.
  *
  * @author Andy Turner
  * @version 1.0
@@ -128,15 +128,11 @@ public class V3D_LineSegmentTest extends V3D_Test {
         System.out.println("isIntersectedBy");
         V3D_Point p = P0P0P0;
         V3D_LineSegment instance = new V3D_LineSegment(N1N1N1, P1P1P1);
-        boolean expResult = true;
-        boolean result = instance.isIntersectedBy(p);
-        assertEquals(expResult, result);
+        assertTrue(instance.isIntersectedBy(p));
         // Test2
         p = P1P1P1;
         instance = new V3D_LineSegment(N1N1N1, P1P1P1);
-        expResult = true;
-        result = instance.isIntersectedBy(p);
-        assertEquals(expResult, result);
+        assertTrue(instance.isIntersectedBy(p));
     }
 
     /**

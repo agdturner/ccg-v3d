@@ -20,6 +20,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
@@ -58,12 +59,11 @@ public class V3D_RayTest extends V3D_Test {
     public void testEquals_Object() {
         System.out.println("equals");
         Object o = new V3D_Ray(P0P0P0, P1P1P1);
-        V3D_Ray instance = null;
-        boolean expResult = false;
-        boolean result = instance.equals(o);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_Ray instance = new V3D_Ray(P0P0P0, P1P1P1);
+        assertTrue(instance.equals(o));
+        // Test 2
+        instance = new V3D_Ray(P1P1P1, P2P2P2);
+        assertFalse(instance.equals(o));        
     }
 
     /**
@@ -72,19 +72,19 @@ public class V3D_RayTest extends V3D_Test {
     @Test
     public void testEquals_V3D_Ray() {
         System.out.println("equals");
-        V3D_Ray l = null;
-        V3D_Ray instance = null;
-        boolean expResult = false;
-        boolean result = instance.equals(l);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_Ray r = new V3D_Ray(P0P0P0, P1P1P1);
+        V3D_Ray instance = new V3D_Ray(P0P0P0, P1P1P1);
+        assertTrue(instance.equals(r));
+        // Test 2
+        instance = new V3D_Ray(P1P1P1, P2P2P2);
+        assertFalse(instance.equals(r)); 
     }
 
     /**
      * Test of hashCode method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testHashCode() {
         System.out.println("hashCode");
         V3D_Ray instance = null;
@@ -99,6 +99,7 @@ public class V3D_RayTest extends V3D_Test {
      * Test of apply method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testApply() {
         System.out.println("apply");
         V3D_Vector v = null;
@@ -114,115 +115,195 @@ public class V3D_RayTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testIsIntersectedBy_V3D_Point() {
         System.out.println("isIntersectedBy");
-        V3D_Point pt = null;
-        V3D_Ray instance = null;
-        boolean expResult = false;
-        boolean result = instance.isIntersectedBy(pt);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_Point p = P0P0P0;
+        V3D_Ray instance = new V3D_Ray(N1N1N1, P1P1P1);
+        assertTrue(instance.isIntersectedBy(p));
+        // Test2
+        p = P1P1P1;
+        instance = new V3D_Ray(N1N1N1, P1P1P1);
+        assertTrue(instance.isIntersectedBy(p));
     }
 
     /**
      * Test of isIntersectedBy method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testIsIntersectedBy_V3D_Ray_boolean() {
         System.out.println("isIntersectedBy");
-        V3D_Ray r = null;
-        boolean flag = false;
-        V3D_Ray instance = null;
-        boolean expResult = false;
-        boolean result = instance.isIntersectedBy(r, flag);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_Ray r = new V3D_Ray(P0P0P0, P1P0P0);
+        V3D_Ray instance = new V3D_Ray(P0P0P0, P1P0P0);
+        assertTrue(instance.isIntersectedBy(r, false));
+        // Test 2
+        instance = new V3D_Ray(P0P0P0, P1P1P1);
+        assertTrue(instance.isIntersectedBy(r, false));
+        // Test 3
+        instance = new V3D_Ray(N1N1N1, N1N1P0);
+        assertFalse(instance.isIntersectedBy(r, false));
+        // Test 4
+        r = new V3D_Ray(N1N1P0, P1P1P0);
+        instance = new V3D_Ray(N1N1N1, P1P1P1);
+        assertTrue(instance.isIntersectedBy(r, false));
     }
 
     /**
      * Test of isIntersectedBy method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testIsIntersectedBy_V3D_LineSegment_boolean() {
         System.out.println("isIntersectedBy");
-        V3D_LineSegment l = null;
-        boolean flag = false;
-        V3D_Ray instance = null;
-        boolean expResult = false;
-        boolean result = instance.isIntersectedBy(l, flag);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P0P0);
+        V3D_Ray instance = new V3D_Ray(P0P0P0, P1P0P0);
+        assertTrue(instance.isIntersectedBy(l, false));
+        // Test 2
+        instance = new V3D_Ray(P0P0P0, P1P1P1);
+        assertTrue(instance.isIntersectedBy(l, false));
+        // Test 3
+        instance = new V3D_Ray(N1N1N1, N1N1P0);
+        assertFalse(instance.isIntersectedBy(l, false));
+        // Test 4
+        l = new V3D_LineSegment(N1N1P0, P1P1P0);
+        instance = new V3D_Ray(N1N1N1, P1P1P1);
+        assertTrue(instance.isIntersectedBy(l, false));
     }
 
     /**
      * Test of isIntersectedBy method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testIsIntersectedBy_V3D_Line() {
         System.out.println("isIntersectedBy");
-        V3D_Line l = null;
-        V3D_Ray instance = null;
-        boolean expResult = false;
-        boolean result = instance.isIntersectedBy(l);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_Line l = new V3D_Line(P0P0P0, P1P0P0);
+        V3D_Ray instance = new V3D_Ray(P0P0P0, P1P0P0);
+        assertTrue(instance.isIntersectedBy(l));
+        // Test 2
+        instance = new V3D_Ray(P0P0P0, P1P1P1);
+        assertTrue(instance.isIntersectedBy(l));
+        // Test 3
+        instance = new V3D_Ray(N1N1N1, N1N1P0);
+        assertFalse(instance.isIntersectedBy(l));
+        // Test 4
+        l = new V3D_Ray(N1N1P0, P1P1P0);
+        instance = new V3D_Ray(N1N1N1, P1P1P1);
+        assertTrue(instance.isIntersectedBy(l));
     }
 
     /**
      * Test of getIntersection method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testGetIntersection_V3D_Line() {
         System.out.println("getIntersection");
-        V3D_Line l = null;
-        V3D_Ray instance = null;
-        V3D_Geometry expResult = null;
+        V3D_Line l = new V3D_Line(P0P0P0, P1P0P0);
+        V3D_Ray instance = new V3D_Ray(P0P0P0, P1P0P0);
+        V3D_Geometry expResult = new V3D_LineSegment(P0P0P0, P1P0P0);
         V3D_Geometry result = instance.getIntersection(l);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertTrue(expResult.equals(result));
+        // Test 2
+        instance = new V3D_Ray(P0P0P0, P1P1P1);
+        result = instance.getIntersection(l);
+        expResult = P0P0P0;
+        assertTrue(expResult.equals(result));
+        // Test 3
+        instance = new V3D_Ray(N1N1N1, N1N1P0);
+        result = instance.getIntersection(l);
+        assertNull(result);
+        // Test 4
+        l = new V3D_Line(N1N1P0, P1P1P0);
+        instance = new V3D_Ray(N1N1N1, P1P1P1);
+        result = instance.getIntersection(l);
+        expResult = P0P0P0;
+        assertTrue(expResult.equals(result));
+        // Test 5
+        l = new V3D_Line(P0P0P0, P1P0P0);
+        instance = new V3D_Ray(N1P0P0, P1P0P0);
+        result = instance.getIntersection(l);
+        expResult = new V3D_Ray(N1P0P0, P1P0P0);
+        assertTrue(expResult.equals(result));
     }
 
     /**
      * Test of getIntersection method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testGetIntersection_V3D_Ray_boolean() {
         System.out.println("getIntersection");
-        V3D_Ray r = null;
-        boolean flag = false;
-        V3D_Ray instance = null;
-        V3D_Geometry expResult = null;
-        V3D_Geometry result = instance.getIntersection(r, flag);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_Ray l = new V3D_Ray(P0P0P0, P1P0P0);
+        V3D_Ray instance = new V3D_Ray(P0P0P0, P1P0P0);
+        V3D_Geometry expResult = new V3D_LineSegment(P0P0P0, P1P0P0);
+        V3D_Geometry result = instance.getIntersection(l);
+        assertTrue(expResult.equals(result));
+        // Test 2
+        instance = new V3D_Ray(P0P0P0, P1P1P1);
+        result = instance.getIntersection(l);
+        expResult = P0P0P0;
+        assertTrue(expResult.equals(result));
+        // Test 3
+        instance = new V3D_Ray(N1N1N1, N1N1P0);
+        result = instance.getIntersection(l);
+        assertNull(result);
+        // Test 4
+        l = new V3D_Ray(N1N1P0, P1P1P0);
+        instance = new V3D_Ray(N1N1N1, P1P1P1);
+        result = instance.getIntersection(l);
+        expResult = P0P0P0;
+        assertTrue(expResult.equals(result));
+        // Test 5
+        l = new V3D_Ray(P0P0P0, P1P0P0);
+        instance = new V3D_Ray(N1P0P0, P1P0P0);
+        result = instance.getIntersection(l);
+        expResult = new V3D_Ray(N1P0P0, P1P0P0);
+        assertTrue(expResult.equals(result));
     }
 
     /**
      * Test of getIntersection method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testGetIntersection_V3D_LineSegment_boolean() {
         System.out.println("getIntersection");
-        V3D_LineSegment l = null;
+        V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P0P0);
         boolean flag = false;
-        V3D_Ray instance = null;
-        V3D_Geometry expResult = null;
+        V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P0P0);
+        V3D_Geometry expResult = new V3D_LineSegment(P0P0P0, P1P0P0);
         V3D_Geometry result = instance.getIntersection(l, flag);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertTrue(expResult.equals(result));
+        // Test 2
+        instance = new V3D_LineSegment(P0P0P0, P1P1P1);
+        result = instance.getIntersection(l, true);
+        expResult = P0P0P0;
+        assertTrue(expResult.equals(result));
+        // Test 3
+        instance = new V3D_LineSegment(N1N1N1, N1N1P0);
+        result = instance.getIntersection(l, true);
+        assertNull(result);
+        // Test 4
+        l = new V3D_LineSegment(N1N1P0, P1P1P0);
+        instance = new V3D_LineSegment(N1N1N1, P1P1P1);
+        result = instance.getIntersection(l, true);
+        expResult = P0P0P0;
+        assertTrue(expResult.equals(result));
+        // Test 5
+        l = new V3D_LineSegment(P0P0P0, P1P0P0);
+        instance = new V3D_LineSegment(N1P0P0, P1P0P0);
+        result = instance.getIntersection(l, true);
+        expResult = new V3D_LineSegment(P0P0P0, P1P0P0);
+        assertTrue(expResult.equals(result));
     }
 
     /**
      * Test of getLineOfIntersection method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testGetLineOfIntersection() {
         System.out.println("getLineOfIntersection");
         V3D_Point pt = null;
@@ -238,6 +319,7 @@ public class V3D_RayTest extends V3D_Test {
      * Test of getPointOfIntersection method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testGetPointOfIntersection() {
         System.out.println("getPointOfIntersection");
         V3D_Point pt = null;
@@ -253,32 +335,42 @@ public class V3D_RayTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testGetDistance_V3D_Point_int() {
         System.out.println("getDistance");
-        V3D_Point pt = null;
-        int oom = 0;
-        V3D_Ray instance = null;
-        BigDecimal expResult = null;
-        BigDecimal result = instance.getDistance(pt, oom);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_Point p;
+        int oom;
+        V3D_Ray instance;
+        BigDecimal expResult;
+        BigDecimal result;
+        // Test 1
+        p = P0P0P0;
+        oom = -1;
+        instance = new V3D_Ray(P1P0P0, P1P1P0);
+        expResult = BigDecimal.ONE;
+        result = instance.getDistance(p, oom);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
      * Test of getDistance method, of class V3D_Ray.
      */
     @Test
+    @Disabled
     public void testGetDistance_V3D_Ray_int() {
         System.out.println("getDistance");
-        V3D_Ray r = null;
-        int oom = 0;
-        V3D_Ray instance = null;
-        BigDecimal expResult = null;
-        BigDecimal result = instance.getDistance(r, oom);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_Ray p;
+        int oom;
+        V3D_Ray instance;
+        BigDecimal expResult;
+        BigDecimal result;
+        // Test 1
+        p = new V3D_Ray(P0P0P0, P1P1P1);
+        oom = -1;
+        instance = new V3D_Ray(P1P0P0, P1P1P0);
+        expResult = BigDecimal.ONE;
+        result = instance.getDistance(p, oom);
+        assertTrue(expResult.compareTo(result) == 0);
     }
     
 }
