@@ -196,8 +196,8 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param p A point to test for intersection within the specified tolerance.
-     * @return true if p is within t of this given scale.
+     * @param p A point to test for intersection.
+     * @return {@code true} if {@code this} is intersected by {@code p}.
      */
     @Override
     public boolean isIntersectedBy(V3D_Point p) {
@@ -430,10 +430,11 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         }
     }
 
-//    @Override
-//    public boolean isEnvelopeIntersectedBy(V3D_Line l) {
-//        return getEnvelope().isIntersectedBy(l);
-//    }
+    @Override
+    public boolean isEnvelopeIntersectedBy(V3D_Line l) {
+        return getEnvelope().isIntersectedBy(l);
+    }
+    
     /**
      * If the distance from a point to the line is less than the distance of the
      * point from either end of the line and the distance from either end of the
@@ -459,5 +460,20 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
             return a.min(b);
         }
         return d;
+    }
+    
+    /**
+     * An implementation of this exists:
+     * https://www.geometrictools.com/Documentation/DistanceLine3Line3.pdf
+     * https://www.geometrictools.com/GTE/Mathematics/DistSegmentSegment.h
+     *
+     * @param l The line segment to return the distance from.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The distance from {@code this} to {@code l} at the {@code oom} 
+     * precision.
+     */
+    @Override
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

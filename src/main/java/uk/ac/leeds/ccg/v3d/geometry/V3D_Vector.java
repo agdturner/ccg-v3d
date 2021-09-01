@@ -360,10 +360,61 @@ public class V3D_Vector implements Serializable {
      */
     public Math_Matrix_BR getAsMatrix() {
         Math_Matrix_BR r = new Math_Matrix_BR(1, 3);
-        BigRational[][] m = r.getM();
-        m[0][0] = dx;
-        m[0][1] = dy;
-        m[0][2] = dz;
+        BigRational[][] rm = r.getM();
+        rm[0][0] = dx;
+        rm[0][1] = dy;
+        rm[0][2] = dz;
         return r;
+    }
+    
+    /**
+     * @return The direction of the vector:
+     * <Table>
+     * <caption>Directions</caption>
+     * <thead>
+     * <tr><td>ID</td><td>Description</td></tr>
+     * </thead>
+     * <tbody>
+     * <tr><td>1</td><td>Pdx, Pdy, Pdz</td></tr>
+     * <tr><td>2</td><td>Pdx, Pdy, Ndz</td></tr>
+     * <tr><td>3</td><td>Pdx, Ndy, Pdz</td></tr>
+     * <tr><td>4</td><td>Pdx, Ndy, Ndz</td></tr>
+     * <tr><td>5</td><td>Ndx, Pdy, Pdz</td></tr>
+     * <tr><td>6</td><td>Ndx, Pdy, Ndz</td></tr>
+     * <tr><td>7</td><td>Ndx, Ndy, Pdz</td></tr>
+     * <tr><td>8</td><td>Ndx, Ndy, Ndz</td></tr>
+     * </tbody>
+     * </Table>
+     */
+    public int getDirection() {
+        if (dx.compareTo(BigRational.ZERO) != -1) {
+            if (dy.compareTo(BigRational.ZERO) != -1) {
+                if (dz.compareTo(BigRational.ZERO) != -1) {
+                    return 1;
+                } else {
+                    return 2;
+                }
+            } else {
+                if (dz.compareTo(BigRational.ZERO) != -1) {
+                    return 3;
+                } else {
+                    return 4;
+                }
+            }
+        } else {
+            if (dy.compareTo(BigRational.ZERO) != -1) {
+                if (dz.compareTo(BigRational.ZERO) != -1) {
+                    return 5;
+                } else {
+                    return 6;
+                }
+            } else {
+                if (dz.compareTo(BigRational.ZERO) != -1) {
+                    return 7;
+                } else {
+                    return 8;
+                }
+            }
+        }
     }
 }

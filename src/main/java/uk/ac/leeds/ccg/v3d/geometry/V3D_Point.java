@@ -358,5 +358,65 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
                     .toBigDecimal(oom);
         }
     }
+    
+    /**
+     * @param r The ray to get the distance from.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The minimum distance between {@code this} and {@code r}.
+     */
+    public BigDecimal getDistance(V3D_Ray r, int oom) {
+        V3D_Point pt = r.getPointOfIntersection(this);
+        return pt.getDistance(this, oom);
+    }
 
+    /**
+     * @return The location of the point:
+     * <Table>
+     * <caption>Locations</caption>
+     * <thead>
+     * <tr><td>Code</td><td>Description</td></tr>
+     * </thead>
+     * <tbody>
+     * <tr><td>1</td><td>Px, Py, Pz</td></tr>
+     * <tr><td>2</td><td>Px, Py, Nz</td></tr>
+     * <tr><td>3</td><td>Px, Ny, Pz</td></tr>
+     * <tr><td>4</td><td>Px, Ny, Nz</td></tr>
+     * <tr><td>5</td><td>Nx, Py, Pz</td></tr>
+     * <tr><td>6</td><td>Nx, Py, Nz</td></tr>
+     * <tr><td>7</td><td>Nx, Ny, Pz</td></tr>
+     * <tr><td>8</td><td>Nx, Ny, Nz</td></tr>
+     * </tbody>
+     * </Table>
+     */
+    public int getLocation() {
+        if (x.compareTo(BigRational.ZERO) != -1) {
+            if (y.compareTo(BigRational.ZERO) != -1) {
+                if (z.compareTo(BigRational.ZERO) != -1) {
+                    return 1;
+                } else {
+                    return 2;
+                }
+            } else {
+                if (z.compareTo(BigRational.ZERO) != -1) {
+                    return 3;
+                } else {
+                    return 4;
+                }
+            }
+        } else {
+            if (y.compareTo(BigRational.ZERO) != -1) {
+                if (z.compareTo(BigRational.ZERO) != -1) {
+                    return 5;
+                } else {
+                    return 6;
+                }
+            } else {
+                if (z.compareTo(BigRational.ZERO) != -1) {
+                    return 7;
+                } else {
+                    return 8;
+                }
+            }
+        }
+    }
 }

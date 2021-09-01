@@ -237,8 +237,8 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * This computes the intersection and tests if it is {@code null}
      *
-     * @param l The line to test if it isIntersectedBy with this.
-     * @return {@code true} If this and {@code l} intersect.
+     * @param l The line to test if it intersects with {@code this}.
+     * @return {@code true} If {@code this} and {@code l} intersect.
      */
     public boolean isIntersectedBy(V3D_Line l) {
         return getIntersection(l) != null;
@@ -248,11 +248,66 @@ public class V3D_Line extends V3D_Geometry {
      * Intersects {@code this} with {@code l}. If they are equivalent then
      * return {@code this}.
      *
-     * @param l The line to get intersection with this.
+     * @param l The line to get the intersection with {@code this}.
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_Geometry getIntersection(V3D_Line l) {
         return getIntersection(this, l);
+    }
+
+    /**
+     * @param r The ray to test if it intersects with {@code this}.
+     * @return {@code true} If {@code this} and {@code r} intersect.
+     */
+    public boolean isIntersectedBy(V3D_Ray r) {
+        return r.isIntersectedBy(this);
+    }
+
+    /**
+     * Intersects {@code this} with {@code r}.
+     *
+     * @param r The ray to get intersection with {@code this}.
+     * @return The intersection between {@code this} and {@code r}.
+     */
+    public V3D_Geometry getIntersection(V3D_Ray r) {
+        return r.getIntersection(this);
+    }
+
+    /**
+     * @param pt A point for which the shortest line segment to this is
+     * returned.
+     * @return The line segment having the shortest distance between {@code pt}
+     * and {@code this}.
+     */
+    public V3D_LineSegment getLineOfIntersection(V3D_Point pt) {
+        if (isIntersectedBy(pt)) {
+            return new V3D_LineSegment(pt, pt);
+        }
+        /**
+         * Calculate the direction vector of the line connecting the closest
+         * points by computing the cross product.
+         */
+        V3D_Vector pv = new V3D_Vector(p, pt);
+        V3D_Vector cp = pv.getCrossProduct(v);
+        /**
+         * Create any second point on this line by applying the cross product
+         * vector.
+         */
+        V3D_Line loi = new V3D_Line(pt, pt.apply(cp));
+        V3D_Point poi = (V3D_Point) getIntersection(loi);
+        return new V3D_LineSegment(pt, poi);
+    }
+
+    /**
+     * @param pt The point projected onto this.
+     * @return A point on {@code this} which is the shortest distance from
+     * {@code pt}.
+     */
+    public V3D_Point getPointOfIntersection(V3D_Point pt) {
+        if (this.isIntersectedBy(pt)) {
+            return pt;
+        }
+        return (V3D_Point) getIntersection(this, getLineOfIntersection(pt));
     }
 
     /**
@@ -918,6 +973,28 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
+     * @param r A ray for which the minimum distance from {@code this} is
+     * returned.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The minimum distance between {@code this} and {@code r}.
+     */
+    public BigDecimal getDistance(V3D_Ray r, int oom) {
+        if (isParallel(r)) {
+            return p.getDistance(new V3D_Line(r), oom);
+        } else {
+            if (isIntersectedBy(r)) {
+                return BigDecimal.ZERO;
+            } else {
+                V3D_LineSegment li = (V3D_LineSegment) getLineOfIntersection(this, r);
+                if (r.isIntersectedBy(li.q)) {
+                    return li.getLength(oom);
+                }
+                return r.p.getDistance(this, oom);
+            }
+        }
+    }
+
+    /**
      * @return {@code true} iff this is parallel to the plane defined by x=0.
      */
     public boolean isParallelToX0() {
@@ -990,7 +1067,7 @@ public class V3D_Line extends V3D_Geometry {
      *
      * @param l The line segment to return the distance from.
      * @param oom The Order of Magnitude for the precision of the result.
-     * @return The distance from {@code this} to {@code l} at the {@code oom} 
+     * @return The distance from {@code this} to {@code l} at the {@code oom}
      * precision.
      */
     @Override
