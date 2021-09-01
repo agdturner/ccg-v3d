@@ -50,7 +50,10 @@ This is similar to a point in that it involves storing 3 [BigRational](https://g
 In the general case, this is a [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid) with edges aligned with the axes. However, the dimensions can collapse, so that this is essentially just a [rectangle](https://en.wikipedia.org/wiki/Rectangle), or a line segment or a point. Each finite geometry has an envelope that bounds it. Much geometrical calculation uses these.
 
 ### [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java)
-Instances are immutable straight and extend infinitely. They have two points and a vector ([V3D_Vector](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java)). The vector gives the direction of the line and is calculated as the difference from one point to the other. There is some small redundancy as the line could be defined simply by two points, or by a single point and a vector. Additionally, [V3D_Vector](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java) instances also store the square of the magnitude and also the magnitude (if this can be stored precisely as a rational number). Alternative implementations may calculate these attributes as needed, but this implementation calculates these attributes so they are conveniently available. So, a [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) instance is perhaps considerably heavier than it needs to be. 
+Instances are immutable straight lines that extend infinitely. They have two points and a vector ([V3D_Vector](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java)). The vector gives the direction of the line and is calculated as the difference from one point to the other. There is some small redundancy as the line could be defined simply by two points, or by a single point and a vector. Additionally, [V3D_Vector](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java) instances also store the square of the magnitude and also the magnitude (if this can be stored precisely as a rational number). Alternative implementations may calculate these attributes as needed, but this implementation calculates these attributes so they are conveniently available. So, a [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) instance is perhaps considerably heavier than it needs to be. 
+
+### [V3D_Ray](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Ray.java)
+Instances are immutable straight lines that extend infinitely from a point in one direction. Essentially, they are [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) instances with the first of the two points that define the line being the start of the ray that extends infinitely in the direction beyond the second point.
 
 ### [V3D_LineSegment](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_LineSegment.java)
 Instances are immutable and finite. Essentially, they are [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) instances with the two points that define the line being the ends of the segment. A line segment is not permitted to have zero length.
@@ -71,39 +74,40 @@ The aim is to have intersection functionality for all geometries including a tes
 
 ### Intersection
 So far, methods for testing if there is an intersection and for retrieving the intersection are implemented for:
-- point-plane, point-line, point-line_segement, point-rectangle, point-triangle
-- line-line, line-plane
-- line_segment-line line_segment-line_segment, line_segment-plane
-- plane-plane
+- point-plane, point-line, point-ray, point-line_segement, point-rectangle, point-triangle
+- plane-plane, plane-line, plane-ray, plane-line_segment
+- line-line, line-ray, line-line_segment
+- ray-ray, ray-line_segment
+- line_segment-line_segment
 See the respective classes in the [geometry package](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/).
-What is next to do is:
+What is next to do:
+- plane-triangle, plane-rectangle
 - line_segment-triangle, line_segment-rectangle
-- plane-triangle, plane-rectangle, triangle-triangle, triangle-rectangle, rectangle-rectangle
+- triangle-triangle, triangle-rectangle
+- rectangle-rectangle
+It would also be good to distinguish between geometries touching and overlapping.
 
-### Distance
-So far, methods for calculating the distance between geometries are implemented for:
-- point-plane, point-line, point-line_segement, point-rectangle, point-triangle
-- line-line, line-plane
+### Distance, Areas, Perimeters, Volumes
+Methods for calculating these require the user to specify an [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) so that the result are provided accurate to that precision.
+So far, methods for calculating the minimum distance between geometries are implemented for:
+- point-plane, point-line, point-ray, point-line_segment, point-rectangle, point-triangle
+- plane-plane, plane-line, plane-ray, plane-line_segment
+- line-line, line-ray, line-line_segment
+- ray-ray, ray-line_segment
 See the respective classes in the [geometry package](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/). There is a related method in With a distance calculations it is 
 What is next to do is:
-- line-line_segment
 - line_segment-line_segment
-
-### Areas, Perimeters, Volumes
-Methods or calculating these require the user to specify an [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) so that the result are provided accurate to that precision.
+It might also be good to calculate the centroids and average distances, and perhaps maximum distances.
 
 ## Development plans
-- Implement code for calculating the minimum distances between all the different geometries.
 - Implement some basic volumes including [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s and [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
-- Implement V3D_Curve - a [differentiable curve](https://en.wikipedia.org/wiki/Differentiable_curve). A line passing through a point but that does not have to be straight.
-- [Contribute](https://openjdk.java.net/contribute/) or offer the library as a contribution to the development of the openJDK.
 
 ## Development history
 ### Origins
 The library began development in March 2020 with a view to supporting the development of [Cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinate based 3D models of [Space](https://en.wikipedia.org/wiki/Space), particularly [solar system](https://en.wikipedia.org/wiki/Solar_system)s and parts of them, not least being [Earth](https://en.wikipedia.org/wiki/Earth).
 
 ## Contributions
-- Welcome, but to save time and energy, try liaising and we can collect our thoughts about how to organise.
+- Welcome, but to save time and energy, please liaise and we can try to organise.
 
 ## LICENCE
 - APACHE LICENSE, VERSION 2.0: https://www.apache.org/licenses/LICENSE-2.0
