@@ -184,14 +184,7 @@ public class V3D_Ray extends V3D_Line {
                         return false;
                 }
             case 0:
-                switch (vdxc0) {
-                    case -1:
-                        return false;
-                    case 0:
-                        return getptycpy(pt);
-                    default:
-                        return false;
-                }
+                return getptycpy(pt);
             default:
                 switch (vdxc0) {
                     case -1:
@@ -218,14 +211,7 @@ public class V3D_Ray extends V3D_Line {
                         return false;
                 }
             case 0:
-                switch (vdyc0) {
-                    case -1:
-                        return false;
-                    case 0:
-                        return getptzcpz(pt);
-                    default:
-                        return false;
-                }
+                return getptzcpz(pt);
             default:
                 switch (vdyc0) {
                     case -1:
@@ -252,14 +238,7 @@ public class V3D_Ray extends V3D_Line {
                         return false;
                 }
             case 0:
-                switch (vdzc0) {
-                    case -1:
-                        return false;
-                    case 0:
-                        return true;
-                    default:
-                        return false;
-                }
+                return true;
             default:
                 switch (vdzc0) {
                     case -1:
@@ -280,6 +259,9 @@ public class V3D_Ray extends V3D_Line {
      * @return {@code true} iff {@code r} intersects with {@code this}.
      */
     public boolean isIntersectedBy(V3D_Ray r, boolean flag) {
+        if (p.equals(r.p)) {
+            return true;
+        }
         V3D_Line tl = new V3D_Line(this);
         boolean isIntersectedrtl = r.isIntersectedBy(tl);
         if (isIntersectedrtl == false) {
@@ -296,13 +278,15 @@ public class V3D_Ray extends V3D_Line {
          * then they do not intersect unless the points they start at intersect
          * with the other ray.
          */
-        if (!tl.equals(rl)) {
-            return false;
+        if (isIntersectedrtl && isIntersectedtrl) {
+            if (r.isIntersectedBy(p)) {
+                return true;
+            }
+            if (isIntersectedBy(r.p)) {
+                return true;
+            }
         }
-        if (r.isIntersectedBy(p)) {
-            return true;
-        }
-        return isIntersectedBy(r.p);
+        return false;
     }
 
     /**
@@ -447,10 +431,11 @@ public class V3D_Ray extends V3D_Line {
     public V3D_Geometry getIntersection(V3D_LineSegment l, boolean flag) {
         return getIntersection(this, l);
     }
-    
+
     /**
      * @param pt A point for which the shortest line to this is returned.
-     * @return The line having the shortest distance between {@code pt} and {@code this}.
+     * @return The line having the shortest distance between {@code pt} and
+     * {@code this}.
      */
     @Override
     public V3D_LineSegment getLineOfIntersection(V3D_Point pt) {
@@ -461,10 +446,11 @@ public class V3D_Ray extends V3D_Line {
             return new V3D_LineSegment(pt, p);
         }
     }
-    
+
     /**
      * @param pt The point projected onto this.
-     * @return A point on {@code this} which is the shortest distance from {@code pt}.
+     * @return A point on {@code this} which is the shortest distance from
+     * {@code pt}.
      */
     @Override
     public V3D_Point getPointOfIntersection(V3D_Point pt) {
