@@ -115,7 +115,6 @@ public class V3D_RayTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Ray.
      */
     @Test
-    @Disabled
     public void testIsIntersectedBy_V3D_Point() {
         System.out.println("isIntersectedBy");
         V3D_Point p = P0P0P0;
@@ -131,7 +130,6 @@ public class V3D_RayTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Ray.
      */
     @Test
-    @Disabled
     public void testIsIntersectedBy_V3D_Ray_boolean() {
         System.out.println("isIntersectedBy");
         V3D_Ray r = new V3D_Ray(P0P0P0, P1P0P0);
@@ -153,7 +151,6 @@ public class V3D_RayTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Ray.
      */
     @Test
-    @Disabled
     public void testIsIntersectedBy_V3D_LineSegment_boolean() {
         System.out.println("isIntersectedBy");
         V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P0P0);
@@ -175,7 +172,6 @@ public class V3D_RayTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Ray.
      */
     @Test
-    @Disabled
     public void testIsIntersectedBy_V3D_Line() {
         System.out.println("isIntersectedBy");
         V3D_Line l = new V3D_Line(P0P0P0, P1P0P0);
@@ -197,7 +193,6 @@ public class V3D_RayTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Ray.
      */
     @Test
-    @Disabled
     public void testGetIntersection_V3D_Line() {
         System.out.println("getIntersection");
         V3D_Line l = new V3D_Line(P0P0P0, P1P0P0);
@@ -232,7 +227,6 @@ public class V3D_RayTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Ray.
      */
     @Test
-    @Disabled
     public void testGetIntersection_V3D_Ray_boolean() {
         System.out.println("getIntersection");
         V3D_Ray l = new V3D_Ray(P0P0P0, P1P0P0);
@@ -267,7 +261,6 @@ public class V3D_RayTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Ray.
      */
     @Test
-    @Disabled
     public void testGetIntersection_V3D_LineSegment_boolean() {
         System.out.println("getIntersection");
         V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P0P0);
