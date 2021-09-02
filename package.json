@@ -1,19 +1,22 @@
 {
   "name": "agdt-java-vector3d",
-  "version": "0.7",
-  "description": "Generic Vector3D Java",
+  "version": "0.8.0",
+  "description": "3D Euclidean Vector Geometry",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "exit 0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/agdturner/agdt-java-vector3d.git"
   },
   "keywords": [
+    "vector",
+    "geometry",
+    "3D",
     "Java"
   ],
-  "author": "Andy Turner",
+  "author": "A.G.D.Turner",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/agdturner/agdt-java-vector3d/issues"
