@@ -335,8 +335,7 @@ public class V3D_Ray extends V3D_Line {
     @Override
     public V3D_Geometry getIntersection(V3D_Line l) {
         // Check if infinite lines intersect.
-        V3D_Geometry g = V3D_Line.getIntersection(new V3D_Line(this),
-                new V3D_Line(l));
+        V3D_Geometry g = new V3D_Line(this).getIntersection(new V3D_Line(l));
         if (g == null) {
             // There is no intersection.
             return g;
@@ -429,7 +428,7 @@ public class V3D_Ray extends V3D_Line {
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_Geometry getIntersection(V3D_LineSegment l, boolean flag) {
-        return getIntersection(this, l);
+        return getIntersection(l);
     }
 
     /**
@@ -457,7 +456,7 @@ public class V3D_Ray extends V3D_Line {
         if (this.isIntersectedBy(pt)) {
             return pt;
         }
-        return (V3D_Point) getIntersection(this, getLineOfIntersection(pt));
+        return (V3D_Point) getIntersection(getLineOfIntersection(pt));
     }
 
     /**
