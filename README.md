@@ -19,7 +19,7 @@ Developed and tested on [Java Development Kit, version 15](https://openjdk.java.
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-vector3D</artifactId>
-    <version>0.7</version>
+    <version>0.8</version>
 </dependency>
 ```
 [JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-vector3d/0.7/agdt-java-vector3d-0.7.jar)
@@ -28,7 +28,7 @@ Developed and tested on [Java Development Kit, version 15](https://openjdk.java.
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-vector3D</artifactId>
-    <version>0.8-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -105,6 +105,10 @@ It might also be good to calculate the centroids and average distances, and perh
 ## Development history
 ### Origins
 The library began development in March 2020 with a view to supporting the development of [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinate based 3D models of [space](https://en.wikipedia.org/wiki/Space), particularly [solar system](https://en.wikipedia.org/wiki/Solar_system)s and parts of them, not least being [Earth](https://en.wikipedia.org/wiki/Earth).
+### Summary of main changes
+#### 0.7 to 0.8
+- Simplifications to the intersection methods removing the static methods.
+- Inclusion of a V3D_Ray class.
 
 ## Contributions
 - Welcome, but to save time and energy, please liaise and we can try to organise.
