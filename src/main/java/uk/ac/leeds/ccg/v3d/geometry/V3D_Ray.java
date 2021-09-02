@@ -183,7 +183,7 @@ public class V3D_Ray extends V3D_Line {
             case 0:
                 return getptycpy(pt);
             default:
-                if (vdxc0 == -1) {
+                if (vdxc0 == 1) {
                     return getptycpy(pt);
                 } else {
                     return false;
