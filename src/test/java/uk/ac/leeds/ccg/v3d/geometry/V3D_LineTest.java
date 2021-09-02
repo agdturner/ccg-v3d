@@ -389,19 +389,6 @@ public class V3D_LineTest extends V3D_Test {
     }
 
     /**
-     * Test of getIntersection method, of class V3D_Line.
-     */
-    @Test
-    public void testGetIntersection_V3D_Line_V3D_Line() {
-        System.out.println("getIntersection");
-        V3D_Line l0 = new V3D_Line(P0P0P0, P1P1P1);
-        V3D_Line l1 = new V3D_Line(P0P0P0, P1P1P1);
-        V3D_Geometry expResult = new V3D_Line(P0P0P0, P1P1P1);
-        V3D_Geometry result = V3D_Line.getIntersection(l0, l1);
-        assertEquals(expResult, result);
-    }
-
-    /**
      * Test of isParallelToX0 method, of class V3D_Line.
      */
     @Test
@@ -613,23 +600,7 @@ public class V3D_LineTest extends V3D_Test {
         V3D_Line l0 = null;
         V3D_Line l1 = null;
         V3D_Geometry expResult = null;
-        V3D_Geometry result = V3D_Line.getLineOfIntersection(l0, l1);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getIntersection2 method, of class V3D_Line.
-     */
-    @Test
-    @Disabled
-    public void testGetIntersection2() {
-        System.out.println("getIntersection2");
-        V3D_Line l0 = null;
-        V3D_Line l1 = null;
-        V3D_Geometry expResult = null;
-        V3D_Geometry result = V3D_Line.getIntersection2(l0, l1);
+        V3D_Geometry result = l0.getLineOfIntersection(l1);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
