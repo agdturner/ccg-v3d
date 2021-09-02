@@ -707,9 +707,8 @@ public class V3D_Line extends V3D_Geometry {
      * adapted from
      * <a href="http://paulbourke.net/geometry/pointlineplane/">http://paulbourke.net/geometry/pointlineplane/</a>.
      *
-     * @param l0 One line.
-     * @param l Another line.
-     * @return The line of intersection between {@code this} and {@code l}
+     * @param l The line to get the line of intersection with.
+     * @return The line of intersection between {@code this} and {@code l}.
      */
     public V3D_Geometry getLineOfIntersection(V3D_Line l) {
         V3D_Vector plp = new V3D_Vector(p, l.p);
@@ -731,13 +730,11 @@ public class V3D_Line extends V3D_Geometry {
                 .multiply(lqlp.dy)).add(lqlp.dz.multiply(lqlp.dz));
         BigRational e = (qp.dx.multiply(qp.dx)).add(qp.dy
                 .multiply(qp.dy)).add(qp.dz.multiply(qp.dz));
-        BigRational den = (e.multiply(d)).subtract(b
-                .multiply(b));
+        BigRational den = (e.multiply(d)).subtract(b.multiply(b));
         if (den.compareTo(BigRational.ZERO) == 0) {
             return null;
         }
-        BigRational num = (a.multiply(b)).subtract(c
-                .multiply(d));
+        BigRational num = (a.multiply(b)).subtract(c.multiply(d));
         BigRational mua = num.divide(den);
         BigRational mub = (a.add(b.multiply(mua))).divide(d);
         V3D_Point pi = new V3D_Point(

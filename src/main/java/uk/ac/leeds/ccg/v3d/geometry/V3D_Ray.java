@@ -175,24 +175,18 @@ public class V3D_Ray extends V3D_Line {
         int vdxc0 = v.dx.compareTo(BigRational.ZERO);
         switch (ptxcpx) {
             case -1:
-                switch (vdxc0) {
-                    case -1:
-                        return getptycpy(pt);
-                    case 0:
-                        return false;
-                    default:
-                        return false;
+                if (vdxc0 == -1) {
+                    return getptycpy(pt);
+                } else {
+                    return false;
                 }
             case 0:
                 return getptycpy(pt);
             default:
-                switch (vdxc0) {
-                    case -1:
-                        return false;
-                    case 0:
-                        return false;
-                    default:
-                        return getptycpy(pt);
+                if (vdxc0 == -1) {
+                    return getptycpy(pt);
+                } else {
+                    return false;
                 }
         }
     }
@@ -202,24 +196,18 @@ public class V3D_Ray extends V3D_Line {
         int vdyc0 = v.dy.compareTo(BigRational.ZERO);
         switch (ptycpy) {
             case -1:
-                switch (vdyc0) {
-                    case -1:
-                        return getptzcpz(pt);
-                    case 0:
-                        return false;
-                    default:
-                        return false;
+                if (vdyc0 == -1) {
+                    return getptzcpz(pt);
+                } else {
+                    return false;
                 }
             case 0:
                 return getptzcpz(pt);
             default:
-                switch (vdyc0) {
-                    case -1:
-                        return false;
-                    case 0:
-                        return false;
-                    default:
-                        return getptzcpz(pt);
+                if (vdyc0 == 1) {
+                    return getptzcpz(pt);
+                } else {
+                    return false;
                 }
         }
     }
@@ -229,25 +217,11 @@ public class V3D_Ray extends V3D_Line {
         int vdzc0 = v.dz.compareTo(BigRational.ZERO);
         switch (ptzcpz) {
             case -1:
-                switch (vdzc0) {
-                    case -1:
-                        return true;
-                    case 0:
-                        return false;
-                    default:
-                        return false;
-                }
+                return vdzc0 == -1;
             case 0:
                 return true;
             default:
-                switch (vdzc0) {
-                    case -1:
-                        return false;
-                    case 0:
-                        return false;
-                    default:
-                        return true;
-                }
+                return vdzc0 == 1;
         }
     }
 
