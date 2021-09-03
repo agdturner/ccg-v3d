@@ -53,7 +53,7 @@ Geographically, everything is moving and changing. The rates of movement and cha
 
 The library might also be useful in studying shapes and changes in structure over time across a large range of scales and have diverse practical application in telecommunications, transportation, architecture, engineering, biology and [classical mechanics](https://en.wikipedia.org/wiki/Classical_mechanics). For modern chemistry and physics representing space as having three dimensions and tracking changes in this through time represented as a distinct fourth dimension is now commonly insufficent. It is well reasoned that double the [dimension](https://en.wikipedia.org/wiki/Dimension_(vector_space))s of [4D](https://en.wikipedia.org/wiki/Four-dimensional_space) are wanted and that the use of [octonions](https://en.wikipedia.org/wiki/Octonion) is useful in developing our understanding of the fabric of reality `[@Furey:2021]`. It may be that some of the code developed for this library might be useful for developing a library that works in higher dimensions.
 
-# References
-
 # Acknowledgements
 - The [University of Leeds](http://www.leeds.ac.uk) and externally funded research grants have supported the development of this library or the dependencies.
+
+# References
