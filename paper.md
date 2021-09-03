@@ -23,7 +23,7 @@ date: 30 August 2021
 
 This paper introduces a modularised Java library for three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry).
 
-In addition to Java 15, the library is dependent on two mathematics libraries and a general library: `[@Turner:2021]`, `[@Obermühlner:2021]` and `[@agdt-java-generic:2021]`.
+In addition to Java 15, the library is dependent on two mathematics libraries and a general library: `[@Turner:2021]`, `[@Obermühlner:2021]` and `[@agdt-java-generic]`.
 
 Point positions in space are defined using [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinates. The axes X, Y and Z meet at the origin point <x,y,z> where x=y=z=0. Cartesian coordinates are currently stored as [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java) numbers - a subset of [rational numbers](https://en.wikipedia.org/wiki/Rational_number). Conceptually, from the origin, the X Axis runs in a positive direction to the right, the Y Axis runs in a positive direction up, and the Z Axis runs in a positive direction in (or forwards). These choices are arbitrary, but this is regarded as being "left handed". This is intuitive in that many 2D graphs have the X axis running positive and towards the right, and the Y axis running positive in an upwards direction on a vertical screen. People look at a screen and move closer to it to zoom in and move backward to zoom out.
 
