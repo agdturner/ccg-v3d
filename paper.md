@@ -16,7 +16,7 @@ affiliations:
  - name: CCG, School of Geography, University of Leeds
  - index: 1
 date: 30 August 2021
-#bibliography: paper.bib
+bibliography: paper.bib
 ---
 
 # Summary
