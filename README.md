@@ -22,7 +22,7 @@ Developed and tested on [Java Development Kit, version 15](https://openjdk.java.
     <version>0.8</version>
 </dependency>
 ```
-[JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-vector3d/0.7/agdt-java-vector3d-0.7.jar)
+[JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-vector3d/0.8/agdt-java-vector3d-0.8.jar)
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
 <dependency>
