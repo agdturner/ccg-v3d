@@ -9,7 +9,7 @@ tags:
   - intersection
   - distance
 authors:
-  - name: Andy G. D. Turner^[corresponding author]
+  - name: Andy Turner^[corresponding author]
     orcid: 0000-0002-6098-6313
     affiliation: 1
 affiliations:
