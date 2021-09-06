@@ -47,7 +47,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <agdt-java-generic.version>1.11</agdt-java-generic.version>
-        <agdt-java-math.version>1.14</agdt-java-math.version>
+        <ccg-math.version>1.15-SNAPSHOT</ccg-math.version>
         <big-math.version>2.3.0</big-math.version>
         <!--
         <ojalgo.version>48.0.0</ojalgo.version>
@@ -69,11 +69,11 @@
             <artifactId>agdt-java-generic</artifactId>
             <version>${agdt-java-generic.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-math -->
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-math -->
         <dependency>
             <groupId>io.github.agdturner</groupId>
-            <artifactId>agdt-java-math</artifactId>
-            <version>${agdt-java-math.version}</version>
+            <artifactId>ccg-math</artifactId>
+            <version>${ccg-math.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/ch.obermuhlner/big-math -->
         <dependency>
@@ -283,12 +283,6 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
         -->
-        <!--
-        <repository>
-            <id>github</id>
-            <name>GitHub agdturner Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/agdturner/agdt-java-vector3d</url>
-        </repository>
-        -->
+        
     </distributionManagement>
 </project>
