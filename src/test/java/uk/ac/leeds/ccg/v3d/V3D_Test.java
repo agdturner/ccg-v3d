@@ -67,126 +67,137 @@ public abstract class V3D_Test {
     public static final BigRational N9999 = P9999.negate();
     public static final BigRational N10000 = P10000.negate();
     public static final BigRational N10001 = P10001.negate();
+    // P2xx
+    public static final V3D_Point P2P2P2 = new V3D_Point(P2, P2, P2);
+    public static final V3D_Point P2P2P1 = new V3D_Point(P2, P2, P1);
+    public static final V3D_Point P2P2P0 = new V3D_Point(P2, P2, P0);
+    public static final V3D_Point P2P2N1 = new V3D_Point(P2, P2, N1);
+    public static final V3D_Point P2P2N2 = new V3D_Point(P2, P2, N2);
+    public static final V3D_Point P2P1P2 = new V3D_Point(P2, P1, P2);
+    public static final V3D_Point P2P1P1 = new V3D_Point(P2, P1, P1);
+    public static final V3D_Point P2P1P0 = new V3D_Point(P2, P1, P0);
+    public static final V3D_Point P2P1N1 = new V3D_Point(P2, P1, N1);
+    public static final V3D_Point P2P1N2 = new V3D_Point(P2, P1, N2);
+    public static final V3D_Point P2P0P2 = new V3D_Point(P2, P0, P2);
+    public static final V3D_Point P2P0P1 = new V3D_Point(P2, P0, P1);
+    public static final V3D_Point P2P0P0 = new V3D_Point(P2, P0, P0);
+    public static final V3D_Point P2P0N1 = new V3D_Point(P2, P0, N1);
+    public static final V3D_Point P2P0N2 = new V3D_Point(P2, P0, N2);
+    public static final V3D_Point P2N1P2 = new V3D_Point(P2, N1, P2);
+    public static final V3D_Point P2N1P1 = new V3D_Point(P2, N1, P1);
+    public static final V3D_Point P2N1P0 = new V3D_Point(P2, N1, P0);
+    public static final V3D_Point P2N1N1 = new V3D_Point(P2, N1, N1);
+    public static final V3D_Point P2N1N2 = new V3D_Point(P2, N1, N2);
+    public static final V3D_Point P2N2P2 = new V3D_Point(P2, N2, P2);
+    public static final V3D_Point P2N2P1 = new V3D_Point(P2, N2, P1);
+    public static final V3D_Point P2N2P0 = new V3D_Point(P2, N2, P0);
+    public static final V3D_Point P2N2N1 = new V3D_Point(P2, N2, N1);
+    public static final V3D_Point P2N2N2 = new V3D_Point(P2, N2, N2);
+    // P1xx
+    public static final V3D_Point P1P2P2 = new V3D_Point(P1, P2, P2);
+    public static final V3D_Point P1P2P1 = new V3D_Point(P1, P2, P1);
+    public static final V3D_Point P1P2P0 = new V3D_Point(P1, P2, P0);
+    public static final V3D_Point P1P2N1 = new V3D_Point(P1, P2, N1);
+    public static final V3D_Point P1P2N2 = new V3D_Point(P1, P2, N2);
+    public static final V3D_Point P1P1P2 = new V3D_Point(P1, P1, P2);
+    public static final V3D_Point P1P1P1 = new V3D_Point(P1, P1, P1);
+    public static final V3D_Point P1P1P0 = new V3D_Point(P1, P1, P0);
+    public static final V3D_Point P1P1N1 = new V3D_Point(P1, P1, N1);
+    public static final V3D_Point P1P1N2 = new V3D_Point(P1, P1, N2);
+    public static final V3D_Point P1P0P2 = new V3D_Point(P1, P0, P2);
+    public static final V3D_Point P1P0P1 = new V3D_Point(P1, P0, P1);
+    public static final V3D_Point P1P0P0 = new V3D_Point(P1, P0, P0);
+    public static final V3D_Point P1P0N1 = new V3D_Point(P1, P0, N1);
+    public static final V3D_Point P1P0N2 = new V3D_Point(P1, P0, N2);
+    public static final V3D_Point P1N1P2 = new V3D_Point(P1, N1, P2);
+    public static final V3D_Point P1N1P1 = new V3D_Point(P1, N1, P1);
+    public static final V3D_Point P1N1P0 = new V3D_Point(P1, N1, P0);
+    public static final V3D_Point P1N1N1 = new V3D_Point(P1, N1, N1);
+    public static final V3D_Point P1N1N2 = new V3D_Point(P1, N1, N2);
+    public static final V3D_Point P1N2P2 = new V3D_Point(P1, N2, P2);
+    public static final V3D_Point P1N2P1 = new V3D_Point(P1, N2, P1);
+    public static final V3D_Point P1N2P0 = new V3D_Point(P1, N2, P0);
+    public static final V3D_Point P1N2N1 = new V3D_Point(P1, N2, N1);
+    public static final V3D_Point P1N2N2 = new V3D_Point(P1, N2, N2);
+    // P0xx
+    public static final V3D_Point P0P2P2 = new V3D_Point(P0, P2, P2);
+    public static final V3D_Point P0P2P1 = new V3D_Point(P0, P2, P1);
+    public static final V3D_Point P0P2P0 = new V3D_Point(P0, P2, P0);
+    public static final V3D_Point P0P2N1 = new V3D_Point(P0, P2, N1);
+    public static final V3D_Point P0P2N2 = new V3D_Point(P0, P2, N2);
+    public static final V3D_Point P0P1P2 = new V3D_Point(P0, P1, P2);
+    public static final V3D_Point P0P1P1 = new V3D_Point(P0, P1, P1);
+    public static final V3D_Point P0P1P0 = new V3D_Point(P0, P1, P0);
+    public static final V3D_Point P0P1N1 = new V3D_Point(P0, P1, N1);
+    public static final V3D_Point P0P1N2 = new V3D_Point(P0, P1, N2);
+    public static final V3D_Point P0P0P2 = new V3D_Point(P0, P0, P2);
+    public static final V3D_Point P0P0P1 = new V3D_Point(P0, P0, P1);
+    // ORIGIN
+    public static final V3D_Point P0P0P0 = new V3D_Point(P0, P0, P0);
+    public static final V3D_Point P0P0N1 = new V3D_Point(P0, P0, N1);
+    public static final V3D_Point P0P0N2 = new V3D_Point(P0, P0, N2);
+    public static final V3D_Point P0N1P2 = new V3D_Point(P0, N1, P2);
+    public static final V3D_Point P0N1P1 = new V3D_Point(P0, N1, P1);
+    public static final V3D_Point P0N1P0 = new V3D_Point(P0, N1, P0);
+    public static final V3D_Point P0N1N1 = new V3D_Point(P0, N1, N1);
+    public static final V3D_Point P0N1N2 = new V3D_Point(P0, N1, N2);
+    public static final V3D_Point P0N2P2 = new V3D_Point(P0, N2, P2);
+    public static final V3D_Point P0N2P1 = new V3D_Point(P0, N2, P1);
+    public static final V3D_Point P0N2P0 = new V3D_Point(P0, N2, P0);
+    public static final V3D_Point P0N2N1 = new V3D_Point(P0, N2, N1);
+    public static final V3D_Point P0N2N2 = new V3D_Point(P0, N2, N2);
+    // N1xx
+    public static final V3D_Point N1P2P2 = new V3D_Point(N1, P2, P2);
+    public static final V3D_Point N1P2P1 = new V3D_Point(N1, P2, P1);
+    public static final V3D_Point N1P2P0 = new V3D_Point(N1, P2, P0);
+    public static final V3D_Point N1P2N1 = new V3D_Point(N1, P2, N1);
+    public static final V3D_Point N1P2N2 = new V3D_Point(N1, P2, N2);
+    public static final V3D_Point N1P1P2 = new V3D_Point(N1, P1, P2);
+    public static final V3D_Point N1P1P1 = new V3D_Point(N1, P1, P1);
+    public static final V3D_Point N1P1P0 = new V3D_Point(N1, P1, P0);
+    public static final V3D_Point N1P1N1 = new V3D_Point(N1, P1, N1);
+    public static final V3D_Point N1P1N2 = new V3D_Point(N1, P1, N2);
+    public static final V3D_Point N1P0P2 = new V3D_Point(N1, P0, P2);
+    public static final V3D_Point N1P0P1 = new V3D_Point(N1, P0, P1);
+    public static final V3D_Point N1P0P0 = new V3D_Point(N1, P0, P0);
+    public static final V3D_Point N1P0N1 = new V3D_Point(N1, P0, N1);
+    public static final V3D_Point N1P0N2 = new V3D_Point(N1, P0, N2);
+    public static final V3D_Point N1N1P2 = new V3D_Point(N1, N1, P2);
+    public static final V3D_Point N1N1P1 = new V3D_Point(N1, N1, P1);
+    public static final V3D_Point N1N1P0 = new V3D_Point(N1, N1, P0);
+    public static final V3D_Point N1N1N1 = new V3D_Point(N1, N1, N1);
+    public static final V3D_Point N1N1N2 = new V3D_Point(N1, N1, N2);
+    public static final V3D_Point N1N2P2 = new V3D_Point(N1, N2, P2);
+    public static final V3D_Point N1N2P1 = new V3D_Point(N1, N2, P1);
+    public static final V3D_Point N1N2P0 = new V3D_Point(N1, N2, P0);
+    public static final V3D_Point N1N2N1 = new V3D_Point(N1, N2, N1);
+    public static final V3D_Point N1N2N2 = new V3D_Point(N1, N2, N2);
+   // N2xx
+    public static final V3D_Point N2P2P2 = new V3D_Point(N2, P2, P2);
+    public static final V3D_Point N2P2P1 = new V3D_Point(N2, P2, P1);
+    public static final V3D_Point N2P2P0 = new V3D_Point(N2, P2, P0);
+    public static final V3D_Point N2P2N1 = new V3D_Point(N2, P2, N1);
+    public static final V3D_Point N2P2N2 = new V3D_Point(N2, P2, N2);
+    public static final V3D_Point N2P1P2 = new V3D_Point(N2, P1, P2);
+    public static final V3D_Point N2P1P1 = new V3D_Point(N2, P1, P1);
+    public static final V3D_Point N2P1P0 = new V3D_Point(N2, P1, P0);
+    public static final V3D_Point N2P1N1 = new V3D_Point(N2, P1, N1);
+    public static final V3D_Point N2P1N2 = new V3D_Point(N2, P1, N2);
+    public static final V3D_Point N2P0P2 = new V3D_Point(N2, P0, P2);
+    public static final V3D_Point N2P0P1 = new V3D_Point(N2, P0, P1);
+    public static final V3D_Point N2P0P0 = new V3D_Point(N2, P0, P0);
+    public static final V3D_Point N2P0N1 = new V3D_Point(N2, P0, N1);
+    public static final V3D_Point N2P0N2 = new V3D_Point(N2, P0, N2);
+    public static final V3D_Point N2N1P2 = new V3D_Point(N2, N1, P2);
+    public static final V3D_Point N2N1P1 = new V3D_Point(N2, N1, P1);
+    public static final V3D_Point N2N1P0 = new V3D_Point(N2, N1, P0);
+    public static final V3D_Point N2N1N1 = new V3D_Point(N2, N1, N1);
+    public static final V3D_Point N2N1N2 = new V3D_Point(N2, N1, N2);
+    public static final V3D_Point N2N2P2 = new V3D_Point(N2, N2, P2);
+    public static final V3D_Point N2N2P1 = new V3D_Point(N2, N2, P1);
+    public static final V3D_Point N2N2P0 = new V3D_Point(N2, N2, P0);
+    public static final V3D_Point N2N2N1 = new V3D_Point(N2, N2, N1);
+    public static final V3D_Point N2N2N2 = new V3D_Point(N2, N2, N2);
 
-    public final V3D_Point P1P1P1;
-    public final V3D_Point P1P1P0;
-    public final V3D_Point P1P1N1;
-    public final V3D_Point P1P0P1;
-    public final V3D_Point P1P0P0;
-    public final V3D_Point P1P0N1;
-    public final V3D_Point P1N1P1;
-    public final V3D_Point P1N1P0;
-    public final V3D_Point P1N1N1;
-    public final V3D_Point P0P1P1;
-    public final V3D_Point P0P1P0;
-    public final V3D_Point P0P1N1;
-    public final V3D_Point P0P0P1;
-    public final V3D_Point P0P0P0;
-    public final V3D_Point P0P0N1;
-    public final V3D_Point P0N1P1;
-    public final V3D_Point P0N1P0;
-    public final V3D_Point P0N1N1;
-    public final V3D_Point N1P1P1;
-    public final V3D_Point N1P1P0;
-    public final V3D_Point N1P1N1;
-    public final V3D_Point N1P0P1;
-    public final V3D_Point N1P0P0;
-    public final V3D_Point N1P0N1;
-    public final V3D_Point N1N1P1;
-    public final V3D_Point N1N1P0;
-    public final V3D_Point N1N1N1;
-
-    public final V3D_Point P2P2P2;
-    public final V3D_Point P2P2N2;
-    public final V3D_Point P2N2P2;
-    public final V3D_Point P2N2N2;
-    public final V3D_Point N2P2P2;
-    public final V3D_Point N2P2N2;
-    public final V3D_Point N2N2P2;
-    public final V3D_Point N2N2N2;
-
-    public final V3D_Point N2N2P0;
-    public final V3D_Point N2P0N2;
-    public final V3D_Point P0N2N2;
-
-    public final V3D_Point N2P0P0;
-    public final V3D_Point P0P0N2;
-    public final V3D_Point P0N2P0;
-
-    public final V3D_Point P2N2P0;
-    public final V3D_Point P2P0N2;
-    public final V3D_Point P0P2N2;
-    public final V3D_Point P0N2P2;
-    public final V3D_Point N2P0P2;
-    public final V3D_Point N2P2P0;
-
-    public final V3D_Point P2P0P0;
-    public final V3D_Point P0P0P2;
-    public final V3D_Point P0P2P0;
-
-    public final V3D_Point P2P2P0;
-    public final V3D_Point P2P0P2;
-    public final V3D_Point P0P2P2;
-
-    public V3D_Test() {
-        P1P1P1 = new V3D_Point(P1, P1, P1);
-        P1P1P0 = new V3D_Point(P1, P1, P0);
-        P1P1N1 = new V3D_Point(P1, P1, N1);
-        P1P0P1 = new V3D_Point(P1, P0, P1);
-        P1P0P0 = V3D_Environment.P1P0P0;
-        P1P0N1 = new V3D_Point(P1, P0, N1);
-        P1N1P1 = new V3D_Point(P1, N1, P1);
-        P1N1P0 = new V3D_Point(P1, N1, P0);
-        P1N1N1 = new V3D_Point(P1, N1, N1);
-        P0P1P1 = new V3D_Point(P0, P1, P1);
-        P0P1P0 = V3D_Environment.P0P1P0;
-        P0P1N1 = new V3D_Point(P0, P1, N1);
-        P0P0P1 = V3D_Environment.P0P0P1;
-        P0P0P0 = V3D_Environment.P0P0P0;
-        P0P0N1 = new V3D_Point(P0, P0, N1);
-        P0N1P1 = new V3D_Point(P0, N1, P1);
-        P0N1P0 = new V3D_Point(P0, N1, P0);
-        P0N1N1 = new V3D_Point(P0, N1, N1);
-        N1P1P1 = new V3D_Point(N1, P1, P1);
-        N1P1P0 = new V3D_Point(N1, P1, P0);
-        N1P1N1 = new V3D_Point(N1, P1, N1);
-        N1P0P1 = new V3D_Point(N1, P0, P1);
-        N1P0P0 = new V3D_Point(N1, P0, P0);
-        N1P0N1 = new V3D_Point(N1, P0, N1);
-        N1N1P1 = new V3D_Point(N1, N1, P1);
-        N1N1P0 = new V3D_Point(N1, N1, P0);
-        N1N1N1 = new V3D_Point(N1, N1, N1);
-
-        P2P2P2 = new V3D_Point(P2, P2, P2);
-        P2P2N2 = new V3D_Point(P2, P2, N2);
-        P2N2P2 = new V3D_Point(P2, N2, P2);
-        P2N2N2 = new V3D_Point(P2, N2, N2);
-        N2P2P2 = new V3D_Point(N2, P2, P2);
-        N2P2N2 = new V3D_Point(N2, P2, N2);
-        N2N2P2 = new V3D_Point(N2, N2, P2);
-        N2N2N2 = new V3D_Point(N2, N2, N2);
-
-        N2N2P0 = new V3D_Point(N2, N2, P0);
-        N2P0N2 = new V3D_Point(N2, P0, N2);
-        P0N2N2 = new V3D_Point(P0, N2, N2);
-
-        N2P0P0 = new V3D_Point(N2, P0, P0);
-        P0P0N2 = new V3D_Point(P0, P0, N2);
-        P0N2P0 = new V3D_Point(P0, N2, P0);
-
-        P2N2P0 = new V3D_Point(P2, N2, P0);
-        P2P0N2 = new V3D_Point(P2, P0, N2);
-        P0P2N2 = new V3D_Point(P0, P2, N2);
-        P0N2P2 = new V3D_Point(P0, N2, P2);
-        N2P0P2 = new V3D_Point(N2, P0, P2);
-        N2P2P0 = new V3D_Point(N2, P2, P0);
-
-        P2P0P0 = new V3D_Point(P2, P0, P0);
-        P0P0P2 = new V3D_Point(P0, P0, P2);
-        P0P2P0 = new V3D_Point(P0, P2, P0);
-
-        P2P2P0 = new V3D_Point(P2, P2, P0);
-        P2P0P2 = new V3D_Point(P2, P0, P2);
-        P0P2P2 = new V3D_Point(P0, P2, P2);
-    }
+    public V3D_Test() {}
 }

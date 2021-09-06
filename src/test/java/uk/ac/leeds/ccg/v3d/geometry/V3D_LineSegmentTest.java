@@ -81,7 +81,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0);
         BigDecimal expResult = Math_BigDecimal.sqrt(P2.toBigDecimal(), oom,
                 RoundingMode.HALF_UP);
-        BigDecimal result = instance.getLength(oom);
+        BigDecimal result = instance.getLength().toBigDecimal(oom);
         assertEquals(expResult, result);
     }
 
