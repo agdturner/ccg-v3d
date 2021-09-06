@@ -26,7 +26,7 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  * point {@link #q}. The "*" denotes a point in 3D and the line is shown with a
  * line of "e" symbols in the following depiction: {@code
  *                                       z
- *                          y           +
+ *                          y           -
  *                          +          /                * p=<x0,y0,z0>
  *                          |         /                e
  *                          |        /                e
@@ -38,7 +38,7 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  *                       y0-|  /               e
  *                          | /               e
  *                          |/         x1    e
- *  - ----------------------|-----------/---e---/---- + x
+ * x - ---------------------|-----------/---e---/---- + x
  *                         /|              e   x0
  *                        / |-y1          e
  *                       /  |           e
@@ -48,8 +48,8 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  *                   /      |       * q=<x1,y1,z1>
  *                  /       |
  *                 /        |
- *                -         |
- *                          -
+ *                +         -
+ *               z          y
  * }
  *
  * @author Andy Turner
@@ -170,11 +170,10 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the result.
-     * @return The length of this as a BigDecimal
+     * @return The length of this as a BigRational
      */
-    public BigDecimal getLength(int oom) {
-        return p.getDistance(q, oom);
+    public Math_BigRationalSqrt getLength() {
+        return new Math_BigRationalSqrt(getLength2());
     }
 
     /**
@@ -450,7 +449,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
         BigDecimal d = super.getDistance(p, oom);
-        BigDecimal l = this.getLength(oom);
+        BigDecimal l = this.getLength().toBigDecimal(oom);
         BigDecimal a = p.getDistance(this.p, oom);
         BigDecimal b = p.getDistance(this.q, oom);
         if (d.compareTo(a) == -1 && d.compareTo(b) == -1 && a.compareTo(l) == 1

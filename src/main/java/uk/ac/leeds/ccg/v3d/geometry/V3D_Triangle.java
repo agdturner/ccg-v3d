@@ -173,8 +173,10 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public BigDecimal getArea(int oom) {
-        return pq.getCrossProduct(qr).getMagnitude(oom - 1).divide(
-                BigDecimal.valueOf(2));
+        return Math_BigDecimal.round(pq.getCrossProduct(qr).getMagnitude().toBigDecimal(oom - 1)
+                .divide(BigDecimal.valueOf(2)), oom);
+//        return pq.getCrossProduct(qr).getMagnitude(oom - 1).divide(
+//                BigDecimal.valueOf(2));
     }
 
     /**
@@ -183,8 +185,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     @Override
     public BigDecimal getPerimeter(int oom) {
         int oomN1 = oom - 1;
-        return Math_BigDecimal.round(lpq.getLength(oomN1)
-                .add(lqr.getLength(oomN1)).add(lrp.getLength(oomN1)), oom);
+        return Math_BigDecimal.round(lpq.getLength().toBigDecimal(oomN1)
+                .add(lqr.getLength().toBigDecimal(oomN1))
+                .add(lrp.getLength().toBigDecimal(oomN1)), oom);
     }
 
     /**

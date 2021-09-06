@@ -24,7 +24,7 @@ import java.math.BigDecimal;
  * where {@code x=0, y=0 and z=0} the following depicts the origin and
  * dimensions. {@code
  *                                       z
- *                          y           +
+ *                          y           -
  *                          +          /
  *                          |         /
  *                          |        /
@@ -36,7 +36,7 @@ import java.math.BigDecimal;
  *                          |  /
  *                          | /
  *                          |/
- *  - ----------------------|------------------------ + x
+ * x - ---------------------|------------------------ + x
  *                         /|
  *                        / |
  *                       /  |
@@ -45,8 +45,8 @@ import java.math.BigDecimal;
  *                    /     |
  *                   /      |
  *                  /       |
- *                 -        |
- *                          -
+ *                 +        -
+ *                z         y
  * }
  *
  * @author Andy Turner

@@ -43,11 +43,9 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  * class with these names, but for a normal envelope (which is not a point or a
  * line or a plane), there are these 8 points stored in the rectangles that
  * represent each face. {@code
- *
- *                                                          z
- *                                    y                   +
- *                                    +                   /
- *                                    |                  /
+ *                                                         z
+ *                                    y                   -
+ *                                    +                  /
  *                                    |                 /
  *                                    |                /
  *                                    |
@@ -67,7 +65,7 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  *          ltf /_ _ _ _ _ |_ _ _ _ _ _ _ _ _ _ _ /rtf       |
  *             |           |                     |           |
  *             |           |                     |           |
- *  - ----  l  |           |                     |           |  r  ---- + x
+ *  x - --- l  |           |                     |           |  r  --- + x
  *             |           |                     |           |
  *             |        lba|_ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _|rba
  *             |           /                     |           /
@@ -88,9 +86,9 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  *                                     |
  *                    /                |
  *                   /                 |
- *                  /                  |
- *                 -                   |
- *                                     -
+ *                  /                  -
+ *                 +                   y
+ *                z                    
  * }
  *
  * @author Andy Turner
@@ -1447,9 +1445,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * @param v The vector.
          */
         public Point(V3D_Vector v) {
-            x = v.dx;
-            y = v.dy;
-            z = v.dz;
+            x = v.getDX();
+            y = v.getDY();
+            z = v.getDZ();
         }
 
         @Override
@@ -1564,7 +1562,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             V3D_Vector ppt = new V3D_Vector(pt.x.subtract(p.x),
                     pt.y.subtract(p.y), pt.z.subtract(p.z));
             V3D_Vector cp = v.getCrossProduct(ppt);
-            return cp.dx.isZero() && cp.dy.isZero() && cp.dz.isZero();
+            return cp.getDX().isZero() && cp.getDY().isZero() && cp.getDZ().isZero();
         }
 
         /**
@@ -1592,15 +1590,15 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     return null;
                 }
             }
-            if (l.v.dx.compareTo(BigRational.ZERO) == 0) {
-                if (l.v.dy.compareTo(BigRational.ZERO) == 0) {
-                    if (l.v.dz.compareTo(BigRational.ZERO) == 0) {
+            if (l.v.getDX().compareTo(BigRational.ZERO) == 0) {
+                if (l.v.getDY().compareTo(BigRational.ZERO) == 0) {
+                    if (l.v.getDZ().compareTo(BigRational.ZERO) == 0) {
                         if (isIntersectedBy(l.p)) {
                             return l.p;
                         }
                     }
                 }
-                if (v.dx.compareTo(BigRational.ZERO) == 0) {
+                if (v.getDX().compareTo(BigRational.ZERO) == 0) {
                     //Point p = new Point(l.p.x, );
                 }
             } else {
@@ -1645,11 +1643,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                  * Calculate the delta from {@link #p} and l.p
                  */
                 V3D_Vector delta = new V3D_Vector(p).subtract(new V3D_Vector(l.p));
-                BigRational m = BigRational.valueOf(cp.getMagnitude(oom - 2));
+                //BigRational m = BigRational.valueOf(cp.getMagnitude(oom - 2));
+                Math_BigRationalSqrt m = cp.getMagnitude();
                 // d = cp.(delta)/m
                 BigRational dp = cp.getDotProduct(delta);
                 // m should only be zero if the lines are parallel.
-                BigRational d = dp.divide(m);
+                BigRational d = dp.divide(m.getX());
                 return Math_BigDecimal.round(d.toBigDecimal(), oom);
             }
         }
@@ -1834,9 +1833,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * @return {@code true} If {@code pt} is on the plane.
          */
         public boolean isIntersectedBy(Point pt) {
-            BigRational d = n.dx.multiply(p.x.subtract(pt.x))
-                    .add(n.dy.multiply(p.y.subtract(pt.y)))
-                    .add(n.dz.multiply(p.z.subtract(pt.z)));
+            BigRational d = n.getDX().multiply(p.x.subtract(pt.x))
+                    .add(n.getDY().multiply(p.y.subtract(pt.y)))
+                    .add(n.getDZ().multiply(p.z.subtract(pt.z)));
             return d.compareTo(BigRational.ZERO) == 0;
         }
 
@@ -1878,9 +1877,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             BigRational num = new V3D_Vector(p, l.p).getDotProduct(n);
             BigRational den = l.v.getDotProduct(n);
             BigRational t = num.divide(den);
-            return new Point(l.p.x.subtract(l.v.dx.multiply(t)),
-                    l.p.y.subtract(l.v.dy.multiply(t)),
-                    l.p.z.subtract(l.v.dz.multiply(t)));
+            return new Point(l.p.x.subtract(l.v.getDX().multiply(t)),
+                    l.p.y.subtract(l.v.getDY().multiply(t)),
+                    l.p.z.subtract(l.v.getDZ().multiply(t)));
         }
 
         /**

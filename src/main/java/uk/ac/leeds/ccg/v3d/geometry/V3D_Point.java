@@ -25,8 +25,8 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 /**
  * 3D representation of a point. The "*" denotes a point in 3D in the following
  * depiction: {@code
- *                                       z
- *                          y           +
+ *                                       
+ *                          y           -
  *                          +          /                *p=<x0,y0,z0>
  *                          |         /                 |
  *                          |        /                  |
@@ -47,8 +47,8 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  *                    /     |
  *                   /      |
  *                  /       |
- *                 -        |
- *                          -
+ *                 +        |
+ *                z         -
  * }
  *
  * @author Andy Turner
@@ -100,9 +100,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param v The vector.
      */
     public V3D_Point(V3D_Vector v) {
-        x = v.dx;
-        y = v.dy;
-        z = v.dz;
+        x = v.dx.getSqrt();
+        y = v.dy.getSqrt();
+        z = v.dz.getSqrt();
     }
 
     /**
@@ -155,14 +155,6 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
                 + ", y=" + y.toString() + ", z=" + z.toString() + ")";
     }
 
-//    @Override
-//    public boolean equals(V3D_Geometry g) {
-//        if (g instanceof V3D_Point) {
-//            return equals((V3D_Point) g);
-//        }
-//        return false;
-//    }
-
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Point) {
@@ -201,7 +193,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Point apply(V3D_Vector v) {
-        return new V3D_Point(x.add(v.dx), y.add(v.dy), z.add(v.dz));
+        return new V3D_Point(x.add(v.getDX()), y.add(v.getDY()), z.add(v.getDZ()));
     }
 
     /**
@@ -260,8 +252,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         }
         V3D_Vector cp = new V3D_Vector(this, l.p).getCrossProduct(
                 new V3D_Vector(this, l.q));
-        return cp.getMagnitude(oom - 1).divide(l.v.getMagnitude(oom - 1), -oom,
-                RoundingMode.HALF_UP);
+        return cp.getMagnitude().divide(l.v.getMagnitude()).toBigDecimal(oom);
+//        return cp.getMagnitude(oom - 1).divide(l.v.getMagnitude(oom - 1), -oom,
+//                RoundingMode.HALF_UP);
     }
 
     /**

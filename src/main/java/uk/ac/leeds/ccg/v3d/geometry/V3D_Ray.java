@@ -27,7 +27,7 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  * point {@link #q}. The "*" denotes a point in 3D and the line is shown with a
  * line of "e" symbols in the following depiction: {@code
  *                                       z
- *                          y           +
+ *                          y           -
  *                          +          /                * p=<x0,y0,z0>
  *                          |         /                e
  *                          |    z0  /                e
@@ -49,8 +49,8 @@ import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
  *                   /      |       * q=<x1,y1,z1>
  *                  /       |      e
  *                 /        |     e
- *                -         |    e
- *                          -   e
+ *                +         -    e
+ *               z          y   e
  * }
  *
  * @author Andy Turner
@@ -172,7 +172,7 @@ public class V3D_Ray extends V3D_Line {
      */
     private boolean isPossibleIntersection(V3D_Point pt) {
         int ptxcpx = pt.x.compareTo(p.x);
-        int vdxc0 = v.dx.compareTo(BigRational.ZERO);
+        int vdxc0 = v.getDX().compareTo(BigRational.ZERO);
         switch (ptxcpx) {
             case -1:
                 if (vdxc0 == -1) {
@@ -193,7 +193,7 @@ public class V3D_Ray extends V3D_Line {
 
     private boolean getptycpy(V3D_Point pt) {
         int ptycpy = pt.y.compareTo(p.y);
-        int vdyc0 = v.dy.compareTo(BigRational.ZERO);
+        int vdyc0 = v.getDY().compareTo(BigRational.ZERO);
         switch (ptycpy) {
             case -1:
                 if (vdyc0 == -1) {
@@ -214,7 +214,7 @@ public class V3D_Ray extends V3D_Line {
 
     private boolean getptzcpz(V3D_Point pt) {
         int ptzcpz = pt.z.compareTo(p.z);
-        int vdzc0 = v.dz.compareTo(BigRational.ZERO);
+        int vdzc0 = v.getDZ().compareTo(BigRational.ZERO);
         switch (ptzcpz) {
             case -1:
                 return vdzc0 == -1;
@@ -479,7 +479,7 @@ public class V3D_Ray extends V3D_Line {
     @Override
     public BigDecimal getDistance(V3D_Ray r, int oom) {
         if (isParallel(r)) {
-            return ((V3D_LineSegment) getLineOfIntersection(r.p)).getLength(oom);
+            return getLineOfIntersection(r.p).getLength().toBigDecimal(oom);
         } else {
             V3D_Line tl = new V3D_Line(this);
             //BigDecimal tldr = tl.getDistance(r, oom);
@@ -488,15 +488,15 @@ public class V3D_Ray extends V3D_Line {
             //BigDecimal rldt = rl.getDistance(this, oom);
             V3D_LineSegment rltp = rl.getLineOfIntersection(p);
             if (isIntersectedBy(tlrp.q)) {
-                BigDecimal tlrpl = tlrp.getLength(oom);
+                BigDecimal tlrpl = tlrp.getLength().toBigDecimal(oom);
                 if (r.isIntersectedBy(rltp.q)) {
-                    return tlrpl.min(rltp.getLength(oom));
+                    return tlrpl.min(rltp.getLength().toBigDecimal(oom));
                 } else {
                     return tlrpl;
                 }
             } else {
                 if (r.isIntersectedBy(rltp.q)) {
-                    return rltp.getLength(oom);
+                    return rltp.getLength().toBigDecimal(oom);
                 } else {
                     return p.getDistance(r.p, oom);
                 }

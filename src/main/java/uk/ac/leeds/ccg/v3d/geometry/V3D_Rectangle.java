@@ -466,15 +466,16 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     @Override
     public BigDecimal getPerimeter(int oom) {
         int oomn2 = oom - 2;
-        return l.getLength(oomn2).add(t.getLength(oomn2))
+        return l.getLength().toBigDecimal(oomn2)
+                .add(t.getLength().toBigDecimal(oomn2))
                 .multiply(BigDecimal.valueOf(2));
     }
 
     @Override
     public BigDecimal getArea(int oom) {
-        int oomn2 = oom - 2;
-        return Math_BigDecimal.round(l.v.getMagnitude(oomn2)
-                .multiply(t.v.getMagnitude(oomn2)), oom);
+//        return Math_BigDecimal.round(l.v.getMagnitude(oomn2)
+//                .multiply(t.v.getMagnitude(oomn2)), oom);
+        return l.v.getMagnitude().multiply(t.v.getMagnitude()).toBigDecimal(oom);
     }
 
     /**
