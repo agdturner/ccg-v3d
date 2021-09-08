@@ -54,27 +54,28 @@ public class V3D_GeometricsTest extends V3D_Test {
     @Test
     public void testIsCollinear() {
         System.out.println("isCollinear");
+        int oom = -1;
         V3D_Point[] points = new V3D_Point[3];
         points[0] = P0P0P0;
         points[1] = P1P0P0;
         points[2] = N1P0P0;
-        assertTrue(V3D_Geometrics.isCollinear(points));
+        assertTrue(V3D_Geometrics.isCollinear(oom, points));
         // Test 2
         points[2] = P0P0P0;
-        assertTrue(V3D_Geometrics.isCollinear(points));
+        assertTrue(V3D_Geometrics.isCollinear(oom, points));
         // Test 3
         points[2] = P1P1P0;
-        assertFalse(V3D_Geometrics.isCollinear(points));
+        assertFalse(V3D_Geometrics.isCollinear(oom, points));
         // Test 4
         points[2] = P1P0P1;
-        assertFalse(V3D_Geometrics.isCollinear(points));
+        assertFalse(V3D_Geometrics.isCollinear(oom, points));
         // Test 5
         points[1] = N1N1N1;
         points[2] = P1P1P1;
-        assertTrue(V3D_Geometrics.isCollinear(points));
+        assertTrue(V3D_Geometrics.isCollinear(oom, points));
         // Test 6
         points[2] = P1P1P0;
-        assertFalse(V3D_Geometrics.isCollinear(points));
+        assertFalse(V3D_Geometrics.isCollinear(oom, points));
     }
     
 }
