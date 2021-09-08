@@ -227,7 +227,7 @@ public class V3D_PointTest extends V3D_Test {
         assertEquals(expResult, result);
         // Test 4
         instance = new V3D_Point(P3, P4, P0);
-        expResult = new Math_BigRationalSqrt(5, oom);
+        expResult = new Math_BigRationalSqrt(25, oom);
         result = instance.getDistance(p);
         assertEquals(expResult, result);
         // Test 5

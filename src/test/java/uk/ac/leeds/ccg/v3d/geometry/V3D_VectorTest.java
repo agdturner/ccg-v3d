@@ -67,10 +67,10 @@ public class V3D_VectorTest extends V3D_Test {
         int oom = -1;
         V3D_Vector instance = new V3D_Vector(P0P0P0, oom);
         String expResult = "V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, sqrtxapprox=null, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, sqrtxapprox=null, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, sqrtxapprox=null, oom=0), "
-                + "m=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, sqrtxapprox=null, oom=0))";
+                + "dx=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=0), "
+                + "dy=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=0), "
+                + "dz=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=0), "
+                + "m=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=0))";
         String result = instance.toString();
         assertEquals(expResult, result);
     }
