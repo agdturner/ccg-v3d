@@ -29,9 +29,9 @@ public class V3D_Geometrics {
      * @param points The points to test if they are collinear.
      * @return {@code true} iff all the points are collinear.
      */
-    public static boolean isCollinear(V3D_Point... points) {
+    public static boolean isCollinear(int oom, V3D_Point... points) {
         if (points.length > 2) {
-            V3D_Line l = new V3D_Line(points[0], points[1]);
+            V3D_Line l = new V3D_Line(points[0], points[1], oom);
             for (int i = 2; i < points.length; i++) {
                 if (!l.isIntersectedBy(points[i])) {
                     return false;

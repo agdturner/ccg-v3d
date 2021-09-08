@@ -77,18 +77,18 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      * @param q A point that defines the triangle.
      * @param r A point that defines the triangle.
      */
-    public V3D_Triangle(V3D_Point p, V3D_Point q, V3D_Point r) {
-        super(p, q, r);
-        lpq = new V3D_LineSegment(p, q);
-        lqr = new V3D_LineSegment(q, r);
-        lrp = new V3D_LineSegment(r, p);
-        rp = new V3D_Vector(r, p);
+    public V3D_Triangle(V3D_Point p, V3D_Point q, V3D_Point r, int oom) {
+        super(p, q, r, oom);
+        lpq = new V3D_LineSegment(p, q, oom);
+        lqr = new V3D_LineSegment(q, r, oom);
+        lrp = new V3D_LineSegment(r, p, oom);
+        rp = new V3D_Vector(r, p, oom);
     }
 
     @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
-            en = new V3D_Envelope(p, q, r);
+            en = new V3D_Envelope(-1, p, q, r);
         }
         return en;
     }
@@ -99,7 +99,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public V3D_Triangle apply(V3D_Vector v) {
-        return new V3D_Triangle(p.apply(v), q.apply(v), r.apply(v));
+        return new V3D_Triangle(p.apply(v), q.apply(v), r.apply(v), v.oom);
     }
 
     /**
@@ -121,9 +121,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
                 || lrp.isIntersectedBy(pt)) {
             return true;
         }
-        V3D_Vector ppt = new V3D_Vector(p, pt);
-        V3D_Vector qpt = new V3D_Vector(q, pt);
-        V3D_Vector rpt = new V3D_Vector(r, pt);
+        V3D_Vector ppt = new V3D_Vector(p, pt, n.oom);
+        V3D_Vector qpt = new V3D_Vector(q, pt, n.oom);
+        V3D_Vector rpt = new V3D_Vector(r, pt, n.oom);
         V3D_Vector cp = pq.getCrossProduct(ppt);
         V3D_Vector cq = qr.getCrossProduct(qpt);
         V3D_Vector cr = rp.getCrossProduct(rpt);
@@ -221,25 +221,25 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
                 return lqri;
             } else {
                 return new V3D_LineSegment((V3D_Point) lqri,
-                        (V3D_Point) lrpi);
+                        (V3D_Point) lrpi, n.oom);
             }
         } else if (lpqi instanceof V3D_LineSegment) {
             return lpqi;
         } else {
             if (lqri == null) {
                 return new V3D_LineSegment((V3D_Point) lpqi,
-                        (V3D_Point) lrpi);
+                        (V3D_Point) lrpi, n.oom);
             } else if (lqri instanceof V3D_LineSegment) {
                 return lqri;
             } else {
                 if (lrpi == null) {
                     return new V3D_LineSegment((V3D_Point) lqri,
-                            (V3D_Point) lpqi);
+                            (V3D_Point) lpqi, n.oom);
                 } else if (lrpi instanceof V3D_LineSegment) {
                     return lrpi;
                 } else {
                     return V3D_FiniteGeometry.getGeometry((V3D_Point) lpqi, 
-                            (V3D_Point) lrpi, (V3D_Point) lrpi);
+                            (V3D_Point) lrpi, (V3D_Point) lrpi, n.oom);
                 }
             }
         }
@@ -259,9 +259,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
                 } else {
                     V3D_LineSegment lli = (V3D_LineSegment) li;
                     if (lli.p.equals(l.p)) {
-                        return new V3D_LineSegment(l.p, lli.q);
+                        return new V3D_LineSegment(l.p, lli.q, n.oom);
                     } else {
-                        return new V3D_LineSegment(l.p, lli.p);
+                        return new V3D_LineSegment(l.p, lli.p, n.oom);
                     }
                 }
             }
@@ -273,9 +273,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
                 } else {
                     V3D_LineSegment lli = (V3D_LineSegment) li;
                     if (lli.q.equals(l.q)) {
-                        return new V3D_LineSegment(l.q, lli.q);
+                        return new V3D_LineSegment(l.q, lli.q, n.oom);
                     } else {
-                        return new V3D_LineSegment(l.q, lli.p);
+                        return new V3D_LineSegment(l.q, lli.p, n.oom);
                     }
                 }
             } else {

@@ -90,14 +90,14 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
-    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s) {
-        super(p, q, r);
+    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s, int oom) {
+        super(p, q, r, oom);
         this.s = s;
         //en = new V3D_Envelope(p, q, r, s); Not initialised here as it causes a StackOverflowError
-        l = new V3D_LineSegment(p, q);
-        t = new V3D_LineSegment(q, r);
-        ri = new V3D_LineSegment(r, s);
-        b = new V3D_LineSegment(s, p);
+        l = new V3D_LineSegment(p, q, oom);
+        t = new V3D_LineSegment(q, r, oom);
+        ri = new V3D_LineSegment(r, s, oom);
+        b = new V3D_LineSegment(s, p, oom);
         // Check for rectangle.
         if (pq.isZeroVector()) {
             if (qr.isZeroVector()) {
@@ -124,8 +124,9 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
-    public V3D_Rectangle(V3D_Envelope.Rectangle r) {
-        this(new V3D_Point(r.p), new V3D_Point(r.q), new V3D_Point(r.r), new V3D_Point(r.s));
+    public V3D_Rectangle(V3D_Envelope.Rectangle r, int oom) {
+        this(new V3D_Point(r.p), new V3D_Point(r.q), new V3D_Point(r.r),
+                new V3D_Point(r.s), oom);
     }
 
     @Override
@@ -138,7 +139,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
-            en = new V3D_Envelope(p, q, r, s);
+            en = new V3D_Envelope(n.oom, p, q, r, s);
         }
         return en;
     }
@@ -149,7 +150,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public V3D_Rectangle apply(V3D_Vector v) {
-        return new V3D_Rectangle(p.apply(v), q.apply(v), r.apply(v), s.apply(v));
+        return new V3D_Rectangle(p.apply(v), q.apply(v), r.apply(v),
+                s.apply(v), v.oom);
     }
 
     /**
@@ -176,12 +178,12 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 || b.isIntersectedBy(pt) || l.isIntersectedBy(pt)) {
             return true;
         }
-        V3D_Vector ppt = new V3D_Vector(p, pt);
-        V3D_Vector qpt = new V3D_Vector(q, pt);
-        V3D_Vector rpt = new V3D_Vector(r, pt);
-        V3D_Vector spt = new V3D_Vector(s, pt);
-        V3D_Vector rs = new V3D_Vector(r, s);
-        V3D_Vector sp = new V3D_Vector(s, p);
+        V3D_Vector ppt = new V3D_Vector(p, pt, n.oom);
+        V3D_Vector qpt = new V3D_Vector(q, pt, n.oom);
+        V3D_Vector rpt = new V3D_Vector(r, pt, n.oom);
+        V3D_Vector spt = new V3D_Vector(s, pt, n.oom);
+        V3D_Vector rs = new V3D_Vector(r, s, n.oom);
+        V3D_Vector sp = new V3D_Vector(s, p, n.oom);
         V3D_Vector cp = pq.getCrossProduct(ppt);
         V3D_Vector cq = qr.getCrossProduct(qpt);
         V3D_Vector cr = rs.getCrossProduct(rpt);
@@ -307,8 +309,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                             if (tli == null) {
                                 return bi;
                             } else {
-                                return new V3D_LineSegment((V3D_Point) bi,
-                                        (V3D_Point) tli);
+                                return new V3D_LineSegment(
+                                        (V3D_Point) bi, (V3D_Point) tli, n.oom);
                             }
                         }
                     } else if (rii instanceof V3D_LineSegment) {
@@ -323,7 +325,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                                 return rii;
                             } else {
                                 return new V3D_LineSegment((V3D_Point) rii,
-                                        (V3D_Point) tli);
+                                        (V3D_Point) tli, n.oom);
                             }
                         } else if (bi instanceof V3D_LineSegment) {
                             return bi;
@@ -336,11 +338,11 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                                 if (riip.equals(bip)) {
                                     return bip;
                                 } else {
-                                    return new V3D_LineSegment(riip, bip);
+                                    return new V3D_LineSegment(riip, bip, n.oom);
                                 }
                             } else {
                                 return new V3D_LineSegment((V3D_Point) bi,
-                                        (V3D_Point) tli);
+                                        (V3D_Point) tli, n.oom);
                             }
                         }
                     }
@@ -363,13 +365,14 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                                 if (tlip.equals(tip)) {
                                     return tlip;
                                 } else {
-                                    return new V3D_LineSegment(tlip, tip);
+                                    return new V3D_LineSegment(tlip, tip, n.oom);
                                 }
                             }
                         } else if (bi instanceof V3D_LineSegment) {
                             return bi;
                         } else {
-                            return new V3D_LineSegment((V3D_Point) ti, (V3D_Point) bi);
+                            return new V3D_LineSegment((V3D_Point) ti, 
+                                    (V3D_Point) bi, n.oom);
                         }
                     } else {
                         V3D_Point tip = (V3D_Point) ti;
@@ -384,15 +387,15 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                                     return rii;
                                 } else {
                                     return new V3D_LineSegment(riip,
-                                            (V3D_Point) tli);
+                                            (V3D_Point) tli, n.oom);
                                 }
                             } else if (sri instanceof V3D_LineSegment) {
                                 return sri;
                             } else {
-                                return new V3D_LineSegment(riip, (V3D_Point) sri);
+                                return new V3D_LineSegment(riip, (V3D_Point) sri, n.oom);
                             }
                         } else {
-                            return new V3D_LineSegment(riip, tip);
+                            return new V3D_LineSegment(riip, tip, n.oom);
                         }
                     }
                 }
@@ -424,9 +427,9 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 } else {
                     V3D_LineSegment lli = (V3D_LineSegment) li;
                     if (lli.p.equals(l.p)) {
-                        return new V3D_LineSegment(l.p, lli.q);
+                        return new V3D_LineSegment(l.p, lli.q, n.oom);
                     } else {
-                        return new V3D_LineSegment(l.p, lli.p);
+                        return new V3D_LineSegment(l.p, lli.p, n.oom);
                     }
                 }
             }
@@ -438,9 +441,9 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 } else {
                     V3D_LineSegment lli = (V3D_LineSegment) li;
                     if (lli.q.equals(l.q)) {
-                        return new V3D_LineSegment(l.q, lli.p);
+                        return new V3D_LineSegment(l.q, lli.p, n.oom);
                     } else {
-                        return new V3D_LineSegment(l.q, lli.q);
+                        return new V3D_LineSegment(l.q, lli.q, n.oom);
                     }
                 }
             } else {

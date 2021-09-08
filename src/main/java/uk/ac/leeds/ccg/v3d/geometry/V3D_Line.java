@@ -102,11 +102,11 @@ public class V3D_Line extends V3D_Geometry {
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      */
-    public V3D_Line(V3D_Point p, V3D_Point q) {
+    public V3D_Line(V3D_Point p, V3D_Point q, int oom) {
         this.p = p;
         this.q = q;
         v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
-                q.z.subtract(p.z));
+                q.z.subtract(p.z), oom);
     }
 
     /**
@@ -119,7 +119,7 @@ public class V3D_Line extends V3D_Geometry {
      * {@link #V3D_Line(V3D_Point, V3D_Point)}.
      * @throws RuntimeException if {@code p.equals(q)}.
      */
-    public V3D_Line(V3D_Point p, V3D_Point q, boolean check) {
+    public V3D_Line(V3D_Point p, V3D_Point q, int oom, boolean check) {
         if (p.equals(q)) {
             throw new RuntimeException("Points " + p + " and " + q
                     + " are the same and so do not define a line.");
@@ -127,7 +127,7 @@ public class V3D_Line extends V3D_Geometry {
         this.p = p;
         this.q = q;
         v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
-                q.z.subtract(p.z));
+                q.z.subtract(p.z), oom);
     }
 
     /**
@@ -171,7 +171,7 @@ public class V3D_Line extends V3D_Geometry {
         this.p = l.p;
         this.q = l.q;
         v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
-                q.z.subtract(p.z));
+                q.z.subtract(p.z), l.v.oom);
     }
 
     @Override
@@ -210,7 +210,7 @@ public class V3D_Line extends V3D_Geometry {
      */
     public boolean isIntersectedBy(V3D_Point pt) {
         V3D_Vector ppt = new V3D_Vector(pt.x.subtract(p.x),
-                pt.y.subtract(p.y), pt.z.subtract(p.z));
+                pt.y.subtract(p.y), pt.z.subtract(p.z), v.oom);
         V3D_Vector cp = v.getCrossProduct(ppt);
         return cp.getDX().isZero() && cp.getDY().isZero() && cp.getDZ().isZero();
     }
@@ -250,14 +250,14 @@ public class V3D_Line extends V3D_Geometry {
                 return null;
             }
         }
-        V3D_Vector plp = new V3D_Vector(p, l.p);
-        V3D_Vector lqlp = new V3D_Vector(l.q, l.p);
+        V3D_Vector plp = new V3D_Vector(p, l.p, v.oom);
+        V3D_Vector lqlp = new V3D_Vector(l.q, l.p, v.oom);
         if (lqlp.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
             if (isIntersectedBy(l.p)) {
                 return l.p;
             }
         }
-        V3D_Vector qp = new V3D_Vector(q, p);
+        V3D_Vector qp = new V3D_Vector(q, p, v.oom);
         if (qp.getMagnitudeSquared().compareTo(BigRational.ZERO) == 0) {
             if (l.isIntersectedBy(p)) {
                 return p;
@@ -675,9 +675,9 @@ public class V3D_Line extends V3D_Geometry {
      */
     public V3D_LineSegment getLineOfIntersection(V3D_Point pt) {
         if (isIntersectedBy(pt)) {
-            return new V3D_LineSegment(pt, pt);
+            return new V3D_LineSegment(pt, pt, v.oom);
         }
-        return new V3D_LineSegment(pt, getPointOfIntersection(pt));
+        return new V3D_LineSegment(pt, getPointOfIntersection(pt), v.oom);
     }
 
     /**
@@ -692,7 +692,7 @@ public class V3D_Line extends V3D_Geometry {
             return pt;
         }
         V3D_Vector uv = v.reverse().getUnitVector(-10);
-        V3D_Vector ba = new V3D_Vector(q, pt);
+        V3D_Vector ba = new V3D_Vector(q, pt, v.oom);
         BigRational bp = ba.getDotProduct(uv);
         return q.apply(uv.multiply(bp));
         
@@ -731,7 +731,7 @@ public class V3D_Line extends V3D_Geometry {
         if (isParallel(l)) {
             return null;
         }
-        V3D_Vector A = new V3D_Vector(p, l.p);
+        V3D_Vector A = new V3D_Vector(p, l.p, v.oom);
         V3D_Vector B = v.reverse();
         V3D_Vector C = l.v.reverse();
         
@@ -749,7 +749,7 @@ public class V3D_Line extends V3D_Geometry {
         
         V3D_Point lpi = l.p.apply(C.multiply(mb.negate()));
         
-        return new V3D_LineSegment(tpi, lpi);
+        return new V3D_LineSegment(tpi, lpi, v.oom);
         
         
 //        // p13
@@ -805,7 +805,7 @@ public class V3D_Line extends V3D_Geometry {
      */
     @Override
     public V3D_Line apply(V3D_Vector v) {
-        return new V3D_Line(p.apply(v), q.apply(v));
+        return new V3D_Line(p.apply(v), q.apply(v), Math.min(v.oom, this.v.oom));
     }
 
     /**
@@ -838,10 +838,10 @@ public class V3D_Line extends V3D_Geometry {
 //        return cpm.divide(pvm).toBigDecimal(oom);
 //
 //        return getDistance(p).toBigDecimal(oom);
-        V3D_Vector pv = new V3D_Vector(this.p, p);
+        V3D_Vector pv = new V3D_Vector(this.p, p, v.oom);
         V3D_Vector vu = v.getUnitVector(oom - 2);
         return p.getDistance(new V3D_Point(vu.multiply(pv.getDotProduct(vu))
-                .add(new V3D_Vector(this.p))), oom);
+                .add(new V3D_Vector(this.p, v.oom))), oom);
     }
 
 //    /**
@@ -905,7 +905,8 @@ public class V3D_Line extends V3D_Geometry {
             /**
              * Calculate the delta from {@link #p} and l.p
              */
-            V3D_Vector delta = new V3D_Vector(p).subtract(new V3D_Vector(l.p));
+            V3D_Vector delta = new V3D_Vector(p, v.oom).subtract(
+                    new V3D_Vector(l.p, v.oom));
             //BigRational m = BigRational.valueOf(cp.getMagnitude(oom - 2));
             Math_BigRationalSqrt m = cp.getMagnitude();
             // d = cp.(delta)/m

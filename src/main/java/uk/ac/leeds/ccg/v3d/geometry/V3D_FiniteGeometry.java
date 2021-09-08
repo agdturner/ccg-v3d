@@ -95,11 +95,11 @@ public interface V3D_FiniteGeometry {
      * @param q Another possibly equal point.
      * @return either {@code p} or {@code new V3D_LineSegment(p, q)}
      */
-    public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q) {
+    public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q, int oom) {
         if (p.equals(q)) {
             return p;
         } else {
-            return new V3D_LineSegment(p, q);
+            return new V3D_LineSegment(p, q, oom);
         }
     }
 
@@ -113,17 +113,18 @@ public interface V3D_FiniteGeometry {
      * @param r Another possibly equal point.
      * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or {@code new V3D_Triangle(p, q, r)}
      */
-    public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q, V3D_Point r) {
+    public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q, 
+            V3D_Point r, int oom) {
         if (p.equals(q)) {
-            return getGeometry(p, r);
+            return getGeometry(p, r, oom);
         } else {
             if (q.equals(r)) {
-                return getGeometry(q, p);
+                return getGeometry(q, p, oom);
             } else {
                 if (r.equals(p)) {
-                    return getGeometry(r, q);
+                    return getGeometry(r, q, oom);
                 } else {
-                    return new V3D_Triangle(p, q, r);
+                    return new V3D_Triangle(p, q, r, oom);
                 }
             }
         }

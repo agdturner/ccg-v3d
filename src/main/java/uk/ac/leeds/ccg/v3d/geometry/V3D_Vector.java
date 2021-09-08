@@ -24,9 +24,9 @@ import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * Represents a vector or translation that may involve a change in the x coordinate
- * {@link #dx}, a change in the y coordinate {@link #dy} and/or a change in the z
- * coordinate {@link #dz}.
+ * Represents a vector or translation that may involve a change in the x
+ * coordinate {@link #dx}, a change in the y coordinate {@link #dy} and/or a
+ * change in the z coordinate {@link #dz}.
  *
  * @author Andy Turner
  * @version 1.1
@@ -54,7 +54,7 @@ public class V3D_Vector implements Serializable {
      * The zero vector {@code <0,0,0>} where
      * {@link #dx} = {@link #dy} = {@link #dz} = 0.
      */
-    public static final V3D_Vector ZERO = new V3D_Vector(0, 0, 0);
+    public static final V3D_Vector ZERO = new V3D_Vector(0, 0, 0, 0);
 
     /**
      * For storing the magnitude squared and getting the magnitude.
@@ -62,24 +62,36 @@ public class V3D_Vector implements Serializable {
     public final Math_BigRationalSqrt m;
 
     /**
-     * @param dx What {@link #dx} is set to.
-     * @param dy What {@link #dy} is set to.
-     * @param dz What {@link #dz} is set to.
+     * The Order of Magnitude used for the root calculation of {@link #m}.
      */
-    public V3D_Vector(Math_BigRationalSqrt dx, Math_BigRationalSqrt dy,
-            Math_BigRationalSqrt dz) {
-        this.dx = dx;
-        this.dy = dy;
-        this.dz = dz;
-        m = new Math_BigRationalSqrt(dx.getX().add(dy.getX()).add(dz.getX()));
-    }
+    public int oom;
     
     /**
      * @param dx What {@link #dx} is set to.
      * @param dy What {@link #dy} is set to.
      * @param dz What {@link #dz} is set to.
+     * @param oom The Order of Magnitude used for the root calculation used to
+     * initialise {@link #m}.
      */
-    public V3D_Vector(BigRational dx, BigRational dy, BigRational dz) {
+    public V3D_Vector(Math_BigRationalSqrt dx, Math_BigRationalSqrt dy,
+            Math_BigRationalSqrt dz, int oom) {
+        this.dx = dx;
+        this.dy = dy;
+        this.dz = dz;
+        m = new Math_BigRationalSqrt(dx.getX().add(dy.getX()).add(dz.getX()),
+                oom);
+        this.oom = oom;
+    }
+
+    /**
+     * @param dx What {@link #dx} is set to.
+     * @param dy What {@link #dy} is set to.
+     * @param dz What {@link #dz} is set to.
+     * @param oom The Order of Magnitude used for the root calculation used to
+     * initialise {@link #m}.
+     */
+    public V3D_Vector(BigRational dx, BigRational dy, BigRational dz,
+            int oom) {
         BigRational dx2 = dx.pow(2);
         BigRational dy2 = dy.pow(2);
         BigRational dz2 = dz.pow(2);
@@ -98,35 +110,42 @@ public class V3D_Vector implements Serializable {
         } else {
             this.dz = new Math_BigRationalSqrt(dz2, dz);
         }
-        m = new Math_BigRationalSqrt(dx2.add(dy2.add(dz2)));
+        m = new Math_BigRationalSqrt(dx2.add(dy2.add(dz2)), oom);
+        this.oom = oom;
     }
 
     /**
      * @param dx What {@link #dx} is set to.
      * @param dy What {@link #dy} is set to.
      * @param dz What {@link #dz} is set to.
+     * @param oom The Order of Magnitude used for the root calculation used to
+     * initialise {@link #m}.
      */
-    public V3D_Vector(long dx, long dy, long dz) {
+    public V3D_Vector(long dx, long dy, long dz, int oom) {
         this(BigRational.valueOf(dx), BigRational.valueOf(dy),
-                BigRational.valueOf(dz));
+                BigRational.valueOf(dz), oom);
     }
 
     /**
      * Creates a vector from the origin to {@code p}
      *
      * @param p the point to which the vector starting at the origin goes.
+     * @param oom The Order of Magnitude used for the root calculation used to
+     * initialise {@link #m}.
      */
-    public V3D_Vector(V3D_Point p) {
-        this(p.x, p.y, p.z);
+    public V3D_Vector(V3D_Point p, int oom) {
+        this(p.x, p.y, p.z, oom);
     }
 
     /**
      * Creates a vector from the origin to {@code p}
      *
      * @param p the point to which the vector starting at the origin goes.
+     * @param oom The Order of Magnitude used for the root calculation used to
+     * initialise {@link #m}.
      */
-    public V3D_Vector(V3D_Envelope.Point p) {
-        this(p.x, p.y, p.z);
+    public V3D_Vector(V3D_Envelope.Point p, int oom) {
+        this(p.x, p.y, p.z, oom);
     }
 
     /**
@@ -134,9 +153,11 @@ public class V3D_Vector implements Serializable {
      *
      * @param p the point where the vector starts.
      * @param q the point where the vector ends.
+     * @param oom The Order of Magnitude used for the root calculation used to
+     * initialise {@link #m}.
      */
-    public V3D_Vector(V3D_Point p, V3D_Point q) {
-        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
+    public V3D_Vector(V3D_Point p, V3D_Point q, int oom) {
+        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z), oom);
     }
 
     /**
@@ -144,9 +165,11 @@ public class V3D_Vector implements Serializable {
      *
      * @param p the point where the vector starts.
      * @param q the point where the vector ends.
+     * @param oomi The Order of Magnitude used for the root calculation used to
+     * initialise {@link #m}.
      */
-    public V3D_Vector(V3D_Envelope.Point p, V3D_Envelope.Point q) {
-        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
+    public V3D_Vector(V3D_Envelope.Point p, V3D_Envelope.Point q, int oomi) {
+        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z), oomi);
     }
 
     /**
@@ -154,9 +177,11 @@ public class V3D_Vector implements Serializable {
      *
      * @param p the point where the vector starts.
      * @param q the point where the vector ends.
+     * @param oom The Order of Magnitude used for the root calculation used to
+     * initialise {@link #m}.
      */
-    public V3D_Vector(V3D_Envelope.Point p, V3D_Point q) {
-        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
+    public V3D_Vector(V3D_Envelope.Point p, V3D_Point q, int oom) {
+        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z), oom);
     }
 
     @Override
@@ -214,41 +239,41 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @return The value of {@link #dx} as a BigRational 
+     * @return The value of {@link #dx} as a BigRational
      */
     public final BigRational getDX() {
-//        if (dx.negative) {
-//            return dx.getSqrt().negate();
-//        } else {
-//            return dx.getSqrt();
-//        }
-        return dx.getX();
+        if (dx.negative) {
+            return dx.getSqrt().negate();
+        } else {
+            return dx.getSqrt();
+        }
+//        return dx.getX();
     }
-    
+
     /**
-     * @return The value of {@link #dy} as a BigRational 
+     * @return The value of {@link #dy} as a BigRational
      */
     public final BigRational getDY() {
-//        if (dy.negative) {
-//            return dy.getSqrt().negate();
-//        } else {
-//            return dy.getSqrt();
-//        }
-        return dy.getX();
+        if (dy.negative) {
+            return dy.getSqrt().negate();
+        } else {
+            return dy.getSqrt();
+        }
+//        return dy.getX();
     }
-    
+
     /**
-     * @return The value of {@link #dz} as a BigRational 
+     * @return The value of {@link #dz} as a BigRational
      */
     public final BigRational getDZ() {
-//        if (dz.negative) {
-//            return dz.getSqrt().negate();
-//        } else {
-//            return dz.getSqrt();
-//        }
-        return dz.getX();
+        if (dz.negative) {
+            return dz.getSqrt().negate();
+        } else {
+            return dz.getSqrt();
+        }
+//        return dz.getX();
     }
-    
+
     /**
      * @param s The scalar value to multiply this by.
      * @return Scaled vector.
@@ -257,7 +282,8 @@ public class V3D_Vector implements Serializable {
         return new V3D_Vector(
                 dx.multiply(s),
                 dy.multiply(s),
-                dz.multiply(s));
+                dz.multiply(s),
+        oom);
     }
 
     /**
@@ -266,9 +292,9 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector add(V3D_Vector v) {
         return new V3D_Vector(
-                dx.add(v.dx), 
+                dx.add(v.dx),
                 dy.add(v.dy),
-                dz.add(v.dz));
+                dz.add(v.dz), v.oom);
     }
 
     /**
@@ -279,7 +305,7 @@ public class V3D_Vector implements Serializable {
         return new V3D_Vector(
                 getDX().subtract(v.getDX()),
                 getDY().subtract(v.getDY()),
-                getDZ().subtract(v.getDZ()));
+                getDZ().subtract(v.getDZ()), v.oom);
     }
 
     /**
@@ -288,10 +314,10 @@ public class V3D_Vector implements Serializable {
     public V3D_Vector reverse() {
         return new V3D_Vector(
                 getDX().negate(),
-                getDY().negate(), 
-                getDZ().negate());
+                getDY().negate(),
+                getDZ().negate(), oom);
     }
-    
+
     /**
      * Calculate and return the
      * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
@@ -300,9 +326,12 @@ public class V3D_Vector implements Serializable {
      * @return dot product
      */
     public BigRational getDotProduct(V3D_Vector v) {
-        return (v.getDX().multiply(getDX()))
-                .add(v.getDY().multiply(getDY()))
-                .add(v.getDZ().multiply(getDZ()));
+//        return (v.getDX().multiply(getDX()))
+//                .add(v.getDY().multiply(getDY()))
+//                .add(v.getDZ().multiply(getDZ()));
+        return (v.dx.multiply(dx)).getSqrt()
+                .add(v.dy.multiply(dy).getSqrt())
+                .add(v.dz.multiply(dz).getSqrt());
     }
 
     /**
@@ -384,13 +413,13 @@ public class V3D_Vector implements Serializable {
                         return false;
                     } else {
                         s = getDX().divide(v.getDX());
-                        if (getDY().multiply(s).compareTo(v.getDY()) == 0 ||
-                              v.getDY().multiply(s).compareTo(getDY()) == 0  ) {
+                        if (getDY().multiply(s).compareTo(v.getDY()) == 0
+                                || v.getDY().multiply(s).compareTo(getDY()) == 0) {
                             if (getDZ().isZero()) {
                                 return v.getDZ().isZero();
                             } else {
-                                return getDZ().multiply(s).compareTo(v.getDZ()) == 0 ||
-                                        v.getDZ().multiply(s).compareTo(getDZ()) == 0;
+                                return getDZ().multiply(s).compareTo(v.getDZ()) == 0
+                                        || v.getDZ().multiply(s).compareTo(getDZ()) == 0;
                             }
                         } else {
                             return false;
@@ -414,7 +443,10 @@ public class V3D_Vector implements Serializable {
         return new V3D_Vector(
                 getDY().multiply(v.getDZ()).subtract(v.getDY().multiply(getDZ())),
                 getDZ().multiply(v.getDX()).subtract(v.getDZ().multiply(getDX())),
-                getDX().multiply(v.getDY()).subtract(v.getDX().multiply(getDY())));
+                getDX().multiply(v.getDY()).subtract(v.getDX().multiply(getDY())), v.oom);
+//                dy.multiply(v.dz).getSqrt().subtract(v.dy.multiply(dz).getSqrt()),
+//                dz.multiply(v.dx).getSqrt().subtract(v.dz.multiply(dx).getSqrt()),
+//                dx.multiply(v.dy).getSqrt().subtract(v.dx.multiply(dy).getSqrt()), v.oom);
     }
 
     /**
@@ -431,7 +463,7 @@ public class V3D_Vector implements Serializable {
         return new V3D_Vector(
                 dx.getSqrt().divide(d),
                 dy.getSqrt().divide(d),
-                dz.getSqrt().divide(d));
+                dz.getSqrt().divide(d), oom);
     }
 
     /**
@@ -445,7 +477,7 @@ public class V3D_Vector implements Serializable {
         rm[0][2] = getDZ();
         return r;
     }
-    
+
     /**
      * @return The direction of the vector:
      * <Table>

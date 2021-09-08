@@ -206,7 +206,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         if (this.equals(p)) {
             return Math_BigRationalSqrt.ZERO;
         }
-        return new Math_BigRationalSqrt(getDistanceSquared(p));
+        return new Math_BigRationalSqrt(getDistanceSquared(p), -1);
     }
 
     /**
@@ -250,8 +250,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         if (l.isIntersectedBy(this)) {
             return BigDecimal.ZERO;
         }
-        V3D_Vector cp = new V3D_Vector(this, l.p).getCrossProduct(
-                new V3D_Vector(this, l.q));
+        // Not sure what oom should be in the cross product...
+        V3D_Vector cp = new V3D_Vector(this, l.p, oom).getCrossProduct(
+                new V3D_Vector(this, l.q, oom));
         return cp.getMagnitude().divide(l.v.getMagnitude()).toBigDecimal(oom);
 //        return cp.getMagnitude(oom - 1).divide(l.v.getMagnitude(oom - 1), -oom,
 //                RoundingMode.HALF_UP);
@@ -270,7 +271,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 
     @Override
     public V3D_Envelope getEnvelope() {
-        return new V3D_Envelope(x, y, z);
+        return new V3D_Envelope(x, y, z, -1);
     }
 
     @Override
@@ -342,12 +343,13 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         BigRational pl2 = BigRational.valueOf(pl).pow(2);
         V3D_Vector u = l.v.getUnitVector(oom - 2);
         V3D_Point pi = new V3D_Point(u.multiply(BigRational.valueOf(
-                new Math_BigRationalSqrt(lp2.subtract(pl2)).toBigDecimal(oom2)))
-                .add(new V3D_Vector(l.p)));
+                new Math_BigRationalSqrt(lp2.subtract(pl2), oom2)
+                        .toBigDecimal(oom2)))
+                .add(new V3D_Vector(l.p, oom2)));
         if (l.isIntersectedBy(pi)) {
             return lp;
         } else {
-            return new Math_BigRationalSqrt(BigRational.min(lp2, lq2))
+            return new Math_BigRationalSqrt(BigRational.min(lp2, lq2), oom2)
                     .toBigDecimal(oom);
         }
     }

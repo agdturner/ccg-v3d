@@ -75,8 +75,8 @@ public class V3D_Ray extends V3D_Line {
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      */
-    public V3D_Ray(V3D_Point p, V3D_Point q) {
-        super(p, q);
+    public V3D_Ray(V3D_Point p, V3D_Point q, int oom) {
+        super(p, q, oom);
     }
 
     /**
@@ -93,8 +93,8 @@ public class V3D_Ray extends V3D_Line {
      *
      * @param l What {@code this} is created from.
      */
-    public V3D_Ray(V3D_Envelope.LineSegment l) {
-        this(new V3D_Point(l.p), new V3D_Point(l.q));
+    public V3D_Ray(V3D_Envelope.LineSegment l, int oom) {
+        this(new V3D_Point(l.p), new V3D_Point(l.q), oom);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class V3D_Ray extends V3D_Line {
      */
     @Override
     public V3D_Ray apply(V3D_Vector v) {
-        return new V3D_Ray(p.apply(v), q.apply(v));
+        return new V3D_Ray(p.apply(v), q.apply(v), v.oom);
     }
 
     /**
@@ -275,7 +275,7 @@ public class V3D_Ray extends V3D_Line {
         if (!isIntersectedBy(rlpq, flag)) {
             return false;
         }
-        V3D_Ray rlqp = new V3D_Ray(l.q, l.p);
+        V3D_Ray rlqp = new V3D_Ray(l.q, l.p, v.oom);
         return isIntersectedBy(rlqp, flag);
     }
 
@@ -374,7 +374,7 @@ public class V3D_Ray extends V3D_Line {
                  */
                 if (isIntersectedBy(r.p)) {
                     if (r.isIntersectedBy(p)) {
-                        return new V3D_LineSegment(r.p, p);
+                        return new V3D_LineSegment(r.p, p, v.oom);
                     } else {
                         return r;
                     }
@@ -416,7 +416,7 @@ public class V3D_Ray extends V3D_Line {
         if (isIntersectedBy(lip.q)) {
             return lip;
         } else {
-            return new V3D_LineSegment(pt, p);
+            return new V3D_LineSegment(pt, p, v.oom);
         }
     }
 

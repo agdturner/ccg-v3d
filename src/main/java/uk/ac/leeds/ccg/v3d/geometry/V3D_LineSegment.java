@@ -85,8 +85,8 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      */
-    public V3D_LineSegment(V3D_Point p, V3D_Point q) {
-        super(p, q);
+    public V3D_LineSegment(V3D_Point p, V3D_Point q, int oom) {
+        super(p, q, oom);
         len2 = p.getDistanceSquared(q);
     }
 
@@ -106,7 +106,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * @param l What {@code this} is created from.
      */
     public V3D_LineSegment(V3D_Envelope.LineSegment l) {
-        this(new V3D_Point(l.p), new V3D_Point(l.q));
+        this(new V3D_Point(l.p), new V3D_Point(l.q), l.v.oom);
     }
 
     @Override
@@ -160,24 +160,26 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param v The vector to apply to each coordinate of this.
+     * @param v The vector to apply to each coordinate of {@code this}.
      * @return a new V3D_LineSegment which is {@code this} with the {@code v}
      * applied.
      */
     @Override
     public V3D_LineSegment apply(V3D_Vector v) {
-        return new V3D_LineSegment(p.apply(v), q.apply(v));
+        return new V3D_LineSegment(p.apply(v), q.apply(v),
+                Math.min(this.v.oom, v.oom));
     }
 
     /**
-     * @return The length of this as a BigRational
+     * @return The length of {@code this}.
      */
     public Math_BigRationalSqrt getLength() {
-        return new Math_BigRationalSqrt(getLength2());
+        // The choice of -1 is arbitrary.
+        return new Math_BigRationalSqrt(getLength2(), -1);
     }
 
     /**
-     * @return The length of this squared as a BigRational.
+     * @return The length of {@code this} squared.
      */
     public BigRational getLength2() {
         return p.getDistanceSquared(q);
@@ -189,7 +191,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
-            en = new V3D_Envelope(p, q);
+            en = new V3D_Envelope(v.oom, p, q);
         }
         return en;
     }
@@ -305,25 +307,12 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, boolean flag) {
-        return getIntersection(this, l);
-    }
-
-    /**
-     * A utility method for calculating and returning the intersection between
-     * {@code l0} and {@code l1}
-     *
-     * @param l0 Line to intersect with {@code l1}.
-     * @param l1 Line to intersect with {@code l0}.
-     * @return The intersection between {@code l0} and {@code l1}.
-     */
-    public static V3D_Geometry getIntersection(V3D_LineSegment l0,
-            V3D_LineSegment l1) {
-        V3D_Envelope ren = l0.getEnvelope().getIntersection(l1.getEnvelope());
+        V3D_Envelope ren = this.getEnvelope().getIntersection(l.getEnvelope());
         if (ren == null) {
             return null;
         }
         // Get intersection of infinite lines. 
-        V3D_Geometry li = new V3D_Line(l0).getIntersection(new V3D_Line(l1));
+        V3D_Geometry li = new V3D_Line(this).getIntersection(new V3D_Line(l));
         if (li == null) {
             return null;
         }
@@ -366,62 +355,62 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
          *    l.q ---------- l.p
          * }
          */
-        if (l0.isIntersectedBy(l1.p)) {
+        if (this.isIntersectedBy(l.p)) {
             // Cases 1, 2, 5, 6, 14, 16
-            if (l0.isIntersectedBy(l1.q)) {
+            if (this.isIntersectedBy(l.q)) {
                 // Cases 2, 6, 14
                 /**
                  * The line segments are effectively the same although the start
                  * and end points may be opposite.
                  */
-                return l1;
+                return l;
             } else {
                 // Cases 1, 5, 16
-                if (l1.isIntersectedBy(l0.p)) {
+                if (l.isIntersectedBy(this.p)) {
                     // Cases 5
-                    return new V3D_LineSegment(l1.p, l0.p);
+                    return new V3D_LineSegment(l.p, this.p, v.oom);
                 } else {
                     // Cases 1, 16
-                    return new V3D_LineSegment(l1.p, l0.q);
+                    return new V3D_LineSegment(l.p, this.q, v.oom);
                 }
             }
         } else {
             // Cases 3, 4, 7, 8, 9, 10, 11, 12, 13, 15
-            if (l0.isIntersectedBy(l1.q)) {
+            if (this.isIntersectedBy(l.q)) {
                 // Cases 4, 8, 9, 10, 11
-                if (l1.isIntersectedBy(l0.p)) {
+                if (l.isIntersectedBy(this.p)) {
                     // Cases 4, 11, 13
-                    if (l1.isIntersectedBy(l0.q)) {
+                    if (l.isIntersectedBy(this.q)) {
                         // Cases 11
-                        return l0;
+                        return this;
                     } else {
                         // Cases 4, 13
-                        return new V3D_LineSegment(l0.p, l1.q);
+                        return new V3D_LineSegment(this.p, l.q, v.oom);
                     }
                 } else {
                     // Cases 8, 9, 10
-                    if (l1.isIntersectedBy(l0.q)) {
+                    if (l.isIntersectedBy(this.q)) {
                         // Cases 8, 9
-                        return new V3D_LineSegment(l0.q, l1.q);
+                        return new V3D_LineSegment(this.q, l.q, v.oom);
                     } else {
                         // Cases 10                      
-                        return l1;
+                        return l;
                     }
                 }
             } else {
                 // Cases 3, 7, 12, 15
-                if (l1.isIntersectedBy(l0.p)) {
+                if (l.isIntersectedBy(this.p)) {
                     // Cases 3, 12, 15
-                    if (l1.isIntersectedBy(l0.q)) {
+                    if (l.isIntersectedBy(this.q)) {
                         // Cases 3, 15
-                        return l0;
+                        return this;
                     } else {
                         // Cases 12                 
-                        return new V3D_LineSegment(l0.p, l1.p);
+                        return new V3D_LineSegment(this.p, l.p, v.oom);
                     }
                 } else {
                     // Cases 7
-                    return l0;
+                    return this;
                 }
             }
         }

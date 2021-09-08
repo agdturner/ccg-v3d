@@ -165,7 +165,7 @@ public class V3D_Plane extends V3D_Geometry {
         this.qr = qr;
         this.n = n;
         if (checkCollinearity) {
-            if (V3D_Geometrics.isCollinear(p, q, r)) {
+            if (V3D_Geometrics.isCollinear(pq.oom, p, q, r)) {
                 throw new RuntimeException("The three points do not define a"
                         + " plane as they are collinear");
             }
@@ -190,10 +190,12 @@ public class V3D_Plane extends V3D_Geometry {
      * @throws RuntimeException If p, q and r are collinear and this is checked
      * for.
      */
-    public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r,
+    public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r, int oom,
             boolean checkCollinearity) {
-        this(p, q, r, new V3D_Vector(p, q), new V3D_Vector(q, r),
-                new V3D_Vector(p, q).getCrossProduct(new V3D_Vector(q, r)),
+        this(p, q, r, new V3D_Vector(p, q, oom),
+                new V3D_Vector(q, r, oom),
+                new V3D_Vector(p, q, oom).getCrossProduct(
+                        new V3D_Vector(q, r, oom)),
                 checkCollinearity);
     }
 
@@ -204,8 +206,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
      */
-    public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r) {
-        this(p, q, r, false);
+    public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r, int oom) {
+        this(p, q, r, oom, false);
     }
 
     /**
@@ -243,8 +245,8 @@ public class V3D_Plane extends V3D_Geometry {
                 this.r = new V3D_Point(P0, d.divide(n.getDY()), P0);
             }
         }
-        pq = new V3D_Vector(p, q);
-        qr = new V3D_Vector(q, r);
+        pq = new V3D_Vector(p, q, n.oom);
+        qr = new V3D_Vector(q, r, n.oom);
         this.n = pq.getCrossProduct(qr);
     }
 
@@ -260,7 +262,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     @Override
     public V3D_Plane apply(V3D_Vector v) {
-        return new V3D_Plane(p.apply(v), q.apply(v), r.apply(v));
+        return new V3D_Plane(p.apply(v), q.apply(v), r.apply(v), v.oom);
     }
 
     /**
@@ -309,40 +311,31 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
      *
-     * @param pl The plane to intersect with the line.
      * @param l The line to intersect with the plane.
      * @return The intersection of the line and the plane. This is either
      * {@code null} a line or a point.
      */
-    public static V3D_Geometry getIntersection(V3D_Plane pl, V3D_Line l) {
-        if (pl.isParallel(l)) {
-            if (pl.isOnPlane(l)) {
+    public V3D_Geometry getIntersection(V3D_Line l) {
+        if (this.isParallel(l)) {
+            if (this.isOnPlane(l)) {
                 return l;
             } else {
                 return null;
             }
         }
         // Are either of the points of l on the plane.
-        if (pl.isIntersectedBy(l.p)) {
+        if (this.isIntersectedBy(l.p)) {
             return l.p;
         }
-        if (pl.isIntersectedBy(l.q)) {
+        if (this.isIntersectedBy(l.q)) {
             return l.q;
         }
-        BigRational num = new V3D_Vector(pl.p, l.p).getDotProduct(pl.n);
-        BigRational den = l.v.getDotProduct(pl.n);
+        BigRational num = new V3D_Vector(this.p, l.p, n.oom).getDotProduct(this.n);
+        BigRational den = l.v.getDotProduct(this.n);
         BigRational t = num.divide(den);
         return new V3D_Point(l.p.x.subtract(l.v.getDX().multiply(t)),
                 l.p.y.subtract(l.v.getDY().multiply(t)),
                 l.p.z.subtract(l.v.getDZ().multiply(t)));
-    }
-
-    /**
-     * @param l line to intersect with this.
-     * @return The intersection between {@code this} and {@code l}.
-     */
-    public V3D_Geometry getIntersection(V3D_Line l) {
-        return getIntersection(this, l);
     }
 
     /**
@@ -395,7 +388,7 @@ public class V3D_Plane extends V3D_Geometry {
                 } else {
                     pt = new V3D_Point(p.x, pl.p.y, z);
                 }
-                return new V3D_Line(pt, pt.apply(v));
+                return new V3D_Line(pt, pt.apply(v), v.oom);
                 // The intersection is at z=?
 
                 /**
@@ -484,7 +477,7 @@ public class V3D_Plane extends V3D_Geometry {
                     } else {
                         pt = new V3D_Point(p.x, y, pl.p.z);
                     }
-                    return new V3D_Line(pt, pt.apply(v));
+                    return new V3D_Line(pt, pt.apply(v), v.oom);
                 } else {
                     // Case 3
                     // y = (p.y - c(z−p.z)) / b   --- 1          
@@ -518,8 +511,9 @@ public class V3D_Plane extends V3D_Geometry {
                         } else {
                             BigRational y = p.y.subtract(n.getDZ().multiply(z.subtract(p.z)))
                                     .divide(n.getDY());
-                            return new V3D_Line(new V3D_Point(P0, y, z),
-                                    new V3D_Point(P0, y.add(v.getDY()), z.add(v.getDZ())));
+                            return new V3D_Line(
+                                    new V3D_Point(P0, y, z),
+                                    new V3D_Point(P0, y.add(v.getDY()), z.add(v.getDZ())), v.oom);
                         }
                     }
                 }
@@ -544,7 +538,7 @@ public class V3D_Plane extends V3D_Geometry {
                             pt = new V3D_Point(x, p.y, pl.p.z);
                         }
                     }
-                    return new V3D_Line(pt, pt.apply(v));
+                    return new V3D_Line(pt, pt.apply(v), v.oom);
                 } else {
                     BigRational z = pl.n.getDX().multiply(pl.p.x.subtract(pl.q.x)).add(
                             n.getDY().multiply(pl.p.y.subtract(pl.q.x)))
@@ -555,7 +549,7 @@ public class V3D_Plane extends V3D_Geometry {
                     } else {
                         pt = new V3D_Point(p.x, pl.p.y, z);
                     }
-                    return new V3D_Line(pt, pt.apply(v));
+                    return new V3D_Line(pt, pt.apply(v), v.oom);
                 }
             } else {
                 if (v.getDZ().compareTo(P0) == 0) {
@@ -569,7 +563,7 @@ public class V3D_Plane extends V3D_Geometry {
                     } else {
                         pt = new V3D_Point(pl.p.x, y, p.z);
                     }
-                    return new V3D_Line(pt, pt.apply(v));
+                    return new V3D_Line(pt, pt.apply(v), v.oom);
                 } else {
                     /**
                      * Case 7: Neither plane aligns with any axis and they are
@@ -655,7 +649,7 @@ public class V3D_Plane extends V3D_Geometry {
                             n.getDY().multiply(pl.p.y.subtract(pl.q.x)))
                             .divide(v.getDZ()).add(pl.p.z);
                     V3D_Point pt = new V3D_Point(x, y, z);
-                    return new V3D_Line(pt, pt.apply(v));
+                    return new V3D_Line(pt, pt.apply(v), v.oom);
 
 //                    BigDecimal a = n.getDX();
 //                    BigDecimal b = n.getDY();
@@ -890,7 +884,7 @@ public class V3D_Plane extends V3D_Geometry {
         if (this.isIntersectedBy(p)) {
             return BigDecimal.ZERO;
         }
-        V3D_Vector v = new V3D_Vector(p, this.p);
+        V3D_Vector v = new V3D_Vector(p, this.p, oom);
         V3D_Vector u = this.n.getUnitVector(oom);
 //        MathContext mc = new MathContext(Math_BigRationalSqrt
 //                .getOOM(BigRational.ONE, oom));

@@ -67,7 +67,7 @@ public class V3D_Environment extends Generic_MemoryManager {
     /**
      * Zero vector.
      */
-    public static final V3D_Vector V0 = new V3D_Vector(P0, P0, P0);
+    public static final V3D_Vector V0 = new V3D_Vector(P0, P0, P0, -1);
 
     /**
      * The point at {@code <0,0,0>}.
@@ -92,17 +92,17 @@ public class V3D_Environment extends Generic_MemoryManager {
     /**
      * Unit vector based at the origin in the x axis direction.
      */
-    public static final V3D_Vector i = new V3D_Vector(P1P0P0);
+    public static final V3D_Vector i = new V3D_Vector(P1P0P0, -1);
 
     /**
      * Unit vector based at the origin in the y axis direction.
      */
-    public static final V3D_Vector j = new V3D_Vector(P0P1P0);
+    public static final V3D_Vector j = new V3D_Vector(P0P1P0, -1);
 
     /**
      * Unit vector based at the origin in the z axis direction.
      */
-    public static final V3D_Vector k = new V3D_Vector(P0P0P1);
+    public static final V3D_Vector k = new V3D_Vector(P0P0P1, -1);
 
     /**
      * The x axis.
@@ -122,17 +122,17 @@ public class V3D_Environment extends Generic_MemoryManager {
     /**
      * The x = 0 plane.
      */
-    public static final V3D_Plane x0 = new V3D_Plane(P0P0P0, P0P1P0, P0P0P1);
+    public static final V3D_Plane x0 = new V3D_Plane(P0P0P0, P0P1P0, P0P0P1, -1);
 
     /**
      * The y = 0 plane.
      */
-    public static final V3D_Plane y0 = new V3D_Plane(P0P0P0, P1P0P0, P0P0P1);
+    public static final V3D_Plane y0 = new V3D_Plane(P0P0P0, P1P0P0, P0P0P1, -1);
 
     /**
      * The z = 0 plane.
      */
-    public static final V3D_Plane z0 = new V3D_Plane(P0P0P0, P1P0P0, P0P1P0);
+    public static final V3D_Plane z0 = new V3D_Plane(P0P0P0, P1P0P0, P0P1P0, -1);
     
     /**
      * Generic_Environment.
