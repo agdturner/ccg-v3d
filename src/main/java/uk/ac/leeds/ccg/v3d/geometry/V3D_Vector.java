@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
@@ -65,7 +64,7 @@ public class V3D_Vector implements Serializable {
      * The Order of Magnitude used for the root calculation of {@link #m}.
      */
     public int oom;
-    
+
     /**
      * @param dx What {@link #dx} is set to.
      * @param dy What {@link #dy} is set to.
@@ -78,8 +77,8 @@ public class V3D_Vector implements Serializable {
         this.dx = dx;
         this.dy = dy;
         this.dz = dz;
-        m = new Math_BigRationalSqrt(dx.getX().add(dy.getX()).add(dz.getX()),
-                oom);
+        m = new Math_BigRationalSqrt(dx.getX().abs().add(dy.getX().abs())
+                .add(dz.getX().abs()), oom);
         this.oom = oom;
     }
 
@@ -96,19 +95,19 @@ public class V3D_Vector implements Serializable {
         BigRational dy2 = dy.pow(2);
         BigRational dz2 = dz.pow(2);
         if (dx.compareTo(BigRational.ZERO) == -1) {
-            this.dx = new Math_BigRationalSqrt(dx2.negate(), dx);
+            this.dx = new Math_BigRationalSqrt(dx2.negate(), dx, oom);
         } else {
-            this.dx = new Math_BigRationalSqrt(dx2, dx);
+            this.dx = new Math_BigRationalSqrt(dx2, dx, oom);
         }
         if (dy.compareTo(BigRational.ZERO) == -1) {
-            this.dy = new Math_BigRationalSqrt(dy2.negate(), dy);
+            this.dy = new Math_BigRationalSqrt(dy2.negate(), dy, oom);
         } else {
-            this.dy = new Math_BigRationalSqrt(dy2, dy);
+            this.dy = new Math_BigRationalSqrt(dy2, dy, oom);
         }
         if (dz.compareTo(BigRational.ZERO) == -1) {
-            this.dz = new Math_BigRationalSqrt(dz2.negate(), dz);
+            this.dz = new Math_BigRationalSqrt(dz2.negate(), dz, oom);
         } else {
-            this.dz = new Math_BigRationalSqrt(dz2, dz);
+            this.dz = new Math_BigRationalSqrt(dz2, dz, oom);
         }
         m = new Math_BigRationalSqrt(dx2.add(dy2.add(dz2)), oom);
         this.oom = oom;
@@ -283,7 +282,7 @@ public class V3D_Vector implements Serializable {
                 dx.multiply(s),
                 dy.multiply(s),
                 dz.multiply(s),
-        oom);
+                oom);
     }
 
     /**
@@ -326,12 +325,34 @@ public class V3D_Vector implements Serializable {
      * @return dot product
      */
     public BigRational getDotProduct(V3D_Vector v) {
-//        return (v.getDX().multiply(getDX()))
-//                .add(v.getDY().multiply(getDY()))
-//                .add(v.getDZ().multiply(getDZ()));
-        return (v.dx.multiply(dx)).getSqrt()
-                .add(v.dy.multiply(dy).getSqrt())
-                .add(v.dz.multiply(dz).getSqrt());
+        BigRational vdx = v.getDX().abs();
+        if (v.dx.negative) {
+            vdx = vdx.negate();
+        }
+        BigRational vdy = v.getDY().abs();
+        if (v.dy.negative) {
+            vdy = vdy.negate();
+        }
+        BigRational vdz = v.getDZ().abs();
+        if (v.dz.negative) {
+            vdz = vdz.negate();
+        }
+        BigRational tdx = getDX().abs();
+        if (dx.negative) {
+            tdx = tdx.negate();
+        }
+        BigRational tdy = getDY().abs();
+        if (dy.negative) {
+            tdy = tdy.negate();
+        }
+        BigRational tdz = getDZ().abs();
+        if (dz.negative) {
+            tdz = tdz.negate();
+        }
+        return (vdx.multiply(tdx)).add(vdy.multiply(tdy)).add(vdz.multiply(tdz));
+//        return (v.dx.multiply(dx)).getSqrt()
+//                .add(v.dy.multiply(dy).getSqrt())
+//                .add(v.dz.multiply(dz).getSqrt());
     }
 
     /**
