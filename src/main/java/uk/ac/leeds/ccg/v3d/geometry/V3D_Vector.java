@@ -386,7 +386,6 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
     public boolean isScalarMultiple(V3D_Vector v) {
-        BigRational s;
         if (getDX().isZero()) {
             if (v.getDX().isZero()) {
                 if (getDY().isZero()) {
@@ -406,8 +405,13 @@ public class V3D_Vector implements Serializable {
                         if (getDZ().isZero()) {
                             return v.getDZ().isZero();
                         } else {
-                            s = getDY().divide(v.getDY());
-                            return getDZ().multiply(s).compareTo(v.getDZ()) == 0;
+                            if (v.getDZ().isZero()) {
+                                return false;
+                            } else {
+                                BigRational sy = getDY().divide(v.getDY());
+                                BigRational sz = getDZ().divide(v.getDZ());
+                                return sy == sz;
+                            }
                         }
                     }
                 }
@@ -423,8 +427,9 @@ public class V3D_Vector implements Serializable {
                         if (getDZ().isZero()) {
                             return v.getDZ().isZero();
                         } else {
-                            s = getDX().divide(v.getDX());
-                            return getDZ().multiply(s).compareTo(v.getDZ()) == 0;
+                            BigRational sx = getDX().divide(v.getDX());
+                            BigRational sz = getDZ().divide(v.getDZ());
+                            return sx == sz;
                         }
                     } else {
                         return false;
@@ -433,15 +438,11 @@ public class V3D_Vector implements Serializable {
                     if (v.getDY().isZero()) {
                         return false;
                     } else {
-                        s = getDX().divide(v.getDX());
-                        if (getDY().multiply(s).compareTo(v.getDY()) == 0
-                                || v.getDY().multiply(s).compareTo(getDY()) == 0) {
-                            if (getDZ().isZero()) {
-                                return v.getDZ().isZero();
-                            } else {
-                                return getDZ().multiply(s).compareTo(v.getDZ()) == 0
-                                        || v.getDZ().multiply(s).compareTo(getDZ()) == 0;
-                            }
+                        BigRational sx = getDX().divide(v.getDX());
+                        BigRational sy = getDY().divide(v.getDY());
+                        BigRational sz = getDZ().divide(v.getDZ());
+                        if (sx == sy) {
+                            return sy == sz;
                         } else {
                             return false;
                         }

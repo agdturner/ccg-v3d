@@ -194,7 +194,19 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Point apply(V3D_Vector v) {
-        return new V3D_Point(x.add(v.getDX()), y.add(v.getDY()), z.add(v.getDZ()));
+        BigRational dx = x.add(v.getDX());
+        if (v.dx.negative) {
+            dx = dx.negate();
+        }
+        BigRational dy = y.add(v.getDY());
+        if (v.dy.negative) {
+            dy = dy.negate();
+        }
+        BigRational dz = z.add(v.getDZ());
+        if (v.dz.negative) {
+            dz = dz.negate();
+        }
+        return new V3D_Point(dx, dy, dz);
     }
 
     /**

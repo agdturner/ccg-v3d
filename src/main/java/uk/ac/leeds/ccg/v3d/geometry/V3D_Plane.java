@@ -17,9 +17,11 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
@@ -121,25 +123,12 @@ public class V3D_Plane extends V3D_Geometry {
     protected final V3D_Vector n;
 
     /**
-     * Create a new instance. Collinearity is not checked.
+     * Create a new instance.
      *
      * @param p The plane used to create this.
      */
     public V3D_Plane(V3D_Plane p) {
-        this(p.p, p.q, p.r, p.pq, p.qr, p.n, false);
-    }
-
-    /**
-     * Create a new instance.
-     *
-     * @param p The plane used to create this.
-     * @param checkCollinearity If {@code false} the there is no check for
-     * co-linearity.
-     * @throws RuntimeException If p, q and r are collinear and this is checked
-     * for.
-     */
-    public V3D_Plane(V3D_Plane p, boolean checkCollinearity) {
-        this(p.p, p.q, p.r, p.pq, p.qr, p.n, checkCollinearity);
+        this(p.p, p.q, p.r, p.pq, p.qr, p.n);
     }
 
     /**
@@ -151,52 +140,51 @@ public class V3D_Plane extends V3D_Geometry {
      * @param pq What {@link #pq} is set to.
      * @param qr What {@link #qr} is set to.
      * @param n What {@link #n} is set to.
-     * @param checkCollinearity If {@code false} the there is no check for
-     * collinearity.
      * @throws RuntimeException If p, q and r are collinear and this is checked
      * for.
      */
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Vector pq,
-            V3D_Vector qr, V3D_Vector n, boolean checkCollinearity) {
+            V3D_Vector qr, V3D_Vector n) {
         this.p = p;
         this.q = q;
         this.r = r;
         this.pq = pq;
         this.qr = qr;
         this.n = n;
-        if (checkCollinearity) {
-            if (V3D_Geometrics.isCollinear(pq.oom, p, q, r)) {
-                throw new RuntimeException("The three points do not define a"
-                        + " plane as they are collinear");
-            }
-//            BigRational P0 = BigRational.ZERO;
-//            if (n.getDX().compareTo(P0) == 0
-//                    && n.getDY().compareTo(P0) == 0
-//                    && n.getDZ().compareTo(P0) == 0) {
-//                throw new RuntimeException("The three points do not define a plane, "
-//                        + "but are collinear (they might all be the same point!");
-//            }
-        }
     }
 
     /**
-     * Create a new instance.
+     * Create a new instance. If {@code q} is at the origin, then swap this with
+     * one of the other points as otherwise the cross product/normal vector
+     * turns out to be the Zero vector.
      *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
-     * @param checkCollinearity If {@code false} the there is no check for
-     * collinearity.
-     * @throws RuntimeException If p, q and r are collinear and this is checked
-     * for.
+     * @param checkCoplanar If {@code false} the there is no check that p, q and
+     * are coplanar.
+     * @throws RuntimeException If p, q and r are not coplanar and this is
+     * checked for.
      */
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r, int oom,
-            boolean checkCollinearity) {
-        this(p, q, r, new V3D_Vector(p, q, oom),
-                new V3D_Vector(q, r, oom),
-                new V3D_Vector(p, q, oom).getCrossProduct(
-                        new V3D_Vector(q, r, oom)),
-                checkCollinearity);
+            boolean checkCoplanar) {
+        if (q.equals(V3D_Environment.P0P0P0)) {
+            this.p = q;
+            this.q = p;
+        } else {
+            this.p = p;
+            this.q = q;
+        }
+        this.r = r;
+        this.pq = new V3D_Vector(this.p, this.q, oom);
+        this.qr = new V3D_Vector(this.q, this.r, oom);
+        this.n = this.pq.getCrossProduct(this.qr);
+        if (checkCoplanar) {
+            if (V3D_Geometrics.isCoplanar(pq.oom, p, q, r)) {
+                throw new RuntimeException("The points do not define a plane.");
+            }
+        }
+
     }
 
     /**
@@ -212,7 +200,8 @@ public class V3D_Plane extends V3D_Geometry {
 
     /**
      * An equation of the plane containing the point {@code p} with normal
-     * vector {@code n} is {@code n.getDX()(x) + n.getDY()(y) + n.getDZ()(z) = d}.
+     * vector {@code n} is
+     * {@code n.getDX()(x) + n.getDY()(y) + n.getDZ()(z) = d}.
      *
      * @param p What {@link #p} is set to.
      * @param n What {@link #n} is set to.
@@ -290,14 +279,32 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
+     * This uses matrices as per the answer to this:
+     * <a href="https://math.stackexchange.com/questions/684141/check-if-a-point-is-on-a-plane-minimize-the-use-of-multiplications-and-divisio">https://math.stackexchange.com/questions/684141/check-if-a-point-is-on-a-plane-minimize-the-use-of-multiplications-and-divisio</a>
+     * 
      * @param pt The point to test if it is on the plane.
      * @return {@code true} If {@code pt} is on the plane.
      */
     public boolean isIntersectedBy(V3D_Point pt) {
-        BigRational d = n.getDX().multiply(p.x.subtract(pt.x))
-                .add(n.getDY().multiply(p.y.subtract(pt.y)))
-                .add(n.getDZ().multiply(p.z.subtract(pt.z)));
-        return d.compareTo(BigRational.ZERO) == 0;
+        Math_Matrix_BR mm = new Math_Matrix_BR(4, 4);
+        BigRational[][] m = mm.getM();
+        m[0][0] = p.x;
+        m[1][0] = p.y;
+        m[2][0] = p.z;
+        m[3][0] = BigRational.ONE;
+        m[0][1] = q.x;
+        m[1][1] = q.y;
+        m[2][1] = q.z;
+        m[3][1] = BigRational.ONE;
+        m[0][2] = r.x;
+        m[1][2] = r.y;
+        m[2][2] = r.z;
+        m[3][2] = BigRational.ONE;
+        m[0][3] = pt.x;
+        m[1][3] = pt.y;
+        m[2][3] = pt.z;
+        m[3][3] = BigRational.ONE;
+        return mm.getDeterminant() == BigRational.ZERO;
     }
 
     /**
@@ -791,7 +798,6 @@ public class V3D_Plane extends V3D_Geometry {
 //        }
 //        return false;
 //    }
-
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Plane) {
@@ -810,16 +816,18 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
     public boolean equals(V3D_Plane pl) {
-        if (n.equals(pl.n)) {
-            if (isIntersectedBy(pl.p)) {
-                if (isIntersectedBy(pl.q)) {
-                    if (isIntersectedBy(pl.r)) {
-
-                        return true;
-                    }
-                }
-            }
+        if (V3D_Geometrics.isCoplanar(n.oom, this, pl.p, pl.q, pl.r)) {
+            return true;
         }
+//        if (n.equals(pl.n)) {
+//            if (isIntersectedBy(pl.p)) {
+//                if (isIntersectedBy(pl.q)) {
+//                    if (isIntersectedBy(pl.r)) {
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
         return false;
     }
 

@@ -22,6 +22,7 @@ import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
+import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * 3D representation of an infinite length line. The line passes through the
@@ -101,6 +102,7 @@ public class V3D_Line extends V3D_Geometry {
      *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
+     * @param oom Arbitrary, but used to initialise {@link #v}.
      */
     public V3D_Line(V3D_Point p, V3D_Point q, int oom) {
         this.p = p;
@@ -560,6 +562,9 @@ public class V3D_Line extends V3D_Geometry {
                                         x = p.x.add(v.getDX().multiply(lamda));
                                         y = p.y.add(v.getDY().multiply(lamda));
                                         z = p.z.add(v.getDZ().multiply(lamda));
+//                                        x = q.x.add(v.getDX().multiply(lamda));
+//                                        y = q.y.add(v.getDY().multiply(lamda));
+//                                        z = q.z.add(v.getDZ().multiply(lamda));
                                     } else {
                                         den2 = BigRational.ONE.subtract(l.v.getDY().multiply(v.getDZ().divide(l.v.getDZ())));
                                         if (den2.compareTo(BigRational.ZERO) != 0) {
@@ -691,31 +696,11 @@ public class V3D_Line extends V3D_Geometry {
         if (this.isIntersectedBy(pt)) {
             return pt;
         }
-        V3D_Vector uv = v.reverse().getUnitVector(-10);
-        V3D_Vector ba = new V3D_Vector(q, pt, v.oom);
-        BigRational bp = ba.getDotProduct(uv);
-        return q.apply(uv.multiply(bp));
-        
-//        // This is but a projection onto the line
-//        V3D_Vector a = new V3D_Vector(pt, p);
-//        //V3D_Vector a = new V3D_Vector(p, pt);
-//        BigRational adb = a.getDotProduct(v);
-//        BigRational vdv = v.getDotProduct(v);
-//        return p.apply(v.multiply(adb.divide(vdv)));
-//
-//        // This is but a projection onto the line
-//        V3D_Vector ptq = new V3D_Vector(pt, q);
-//        BigRational t = v.getDotProduct(ptq).divide(v.getDotProduct(v));
-//        V3D_Vector d = v.multiply(t);
-//        return new V3D_Point(q.x.subtract(d.getDX()), q.y.subtract(d.getDY()), q.z.subtract(d.getDZ()));
-//            
-//          // https://forum.unity.com/threads/how-do-i-find-the-closest-point-on-a-line.340058/
-//            V3D_Vector uv = v.getUnitVector(-10);
-//            V3D_Vector a = new V3D_Vector(pt, p);
-//            BigRational d = a.getDotProduct(uv);
-//            return p.apply(uv.multiply(d));
-//
-//          // https://community.khronos.org/t/closest-point-on-a-vector-to-a-point/49723/5
+        V3D_Vector a = new V3D_Vector(pt, p, v.oom);
+        //V3D_Vector a = new V3D_Vector(p, pt);
+        BigRational adb = a.getDotProduct(v);
+        BigRational vdv = v.getDotProduct(v);
+        return p.apply(v.multiply(adb.divide(vdv)));
     }
 
     /**
