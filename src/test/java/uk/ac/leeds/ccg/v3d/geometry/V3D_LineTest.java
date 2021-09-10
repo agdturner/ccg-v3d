@@ -68,10 +68,10 @@ public class V3D_LineTest extends V3D_Test {
         String expResult = "V3D_Line("
                 + "p=V3D_Point(x=0, y=0, z=0), q=V3D_Point(x=1, y=0, z=0), "
                 + "v=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, sqrtxapprox=null, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, sqrtxapprox=null, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, sqrtxapprox=null, oom=0), "
-                + "m=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, sqrtxapprox=null, oom=0)))";
+                + "dx=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, oomi=-1, sqrtxapprox=null, oom=0), "
+                + "dy=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=0), "
+                + "dz=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=0), "
+                + "m=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, oomi=-1, sqrtxapprox=null, oom=0)))";
         String result = instance.toString();
         System.out.println(result);
         assertEquals(expResult, result);
@@ -178,13 +178,16 @@ public class V3D_LineTest extends V3D_Test {
         // Test 11
         instance = new V3D_Line(P1P0P1, P1P1P0, oom);
         assertFalse(instance.isParallel(l));
+        // Test 12
+        l = new V3D_Line(P1P1P1, N1N1N1, oom);
+        instance = new V3D_Line(P1N1P1, N1P1N1, oom);
+        assertFalse(instance.isParallel(l));
     }
 
     /**
      * Test of getIntersection method, of class V3D_Line.
      */
     @Test
-    @Disabled
     public void testGetIntersection() {
         System.out.println("getIntersection");
         int oom = -1;

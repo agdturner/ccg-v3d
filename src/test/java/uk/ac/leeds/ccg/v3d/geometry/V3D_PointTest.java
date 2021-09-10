@@ -305,7 +305,6 @@ public class V3D_PointTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
-    @Disabled
     public void testGetDistance_V3D_Line_int() {
         System.out.println("getDistance");
         int oom = 0;
@@ -428,7 +427,6 @@ public class V3D_PointTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
-    @Disabled
     public void testGetDistance_V3D_LineSegment_int() {
         System.out.println("getDistance");
         int oom = -1;
