@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometrics;
 
-import javax.sound.sampled.AudioSystem;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;

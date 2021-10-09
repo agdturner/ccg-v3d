@@ -15,9 +15,10 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.Math_BigRational;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * For representing and processing rectangles in 3D. A rectangle has a non-zero
@@ -50,10 +51,23 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     private static final long serialVersionUID = 1L;
 
     /**
+     * For storing if q is at the origin.
+     */
+    protected final boolean qAtOrigin;
+
+    /**
      * The other corner of the rectangle. The others are {@link #p}, {@link #q},
      * and {@link #r}.
      */
     protected final V3D_Point s;
+
+    /**
+     * Initialised when the q provided to initialise this is at the origin and p
+     * and q have been swapped to define the plane. So, this represents the
+     * vector from the point p input (which is now stored as {@link #q}) to
+     * {@link #s}.
+     */
+    protected final V3D_Vector qs;
 
     /**
      * For storing the envelope
@@ -82,7 +96,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     /**
      * Create a new instance.
-     * 
+     *
      * @param p The bottom left corner of the rectangle.
      * @param q The top left corner of the rectangle.
      * @param r The top right corner of the rectangle.
@@ -92,6 +106,17 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      */
     public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s, int oom) {
         super(p, q, r, oom);
+        /**
+         * p and q get swapped if q is at the origin in defining the plane, in
+         * which case {@link #pq} is now representing the reverse, and
+         * {@link qr} represents the vector from p to r.
+         */
+        qAtOrigin = q.equals(V3D_Environment.P0P0P0);
+        if (qAtOrigin) {
+            qs = new V3D_Vector(p, s, oom);
+        } else {
+            qs = null;
+        }
         this.s = s;
         //en = new V3D_Envelope(p, q, r, s); Not initialised here as it causes a StackOverflowError
         l = new V3D_LineSegment(p, q, oom);
@@ -110,8 +135,14 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 // Rectangle is a line.
             } else {
                 // Rectangle has area.
-                if (!(pq.isOrthogonal(qr))) {
-                    throw new RuntimeException("The points do not define a rectangle.");
+                if (qAtOrigin) {
+                    if (!(pq.isOrthogonal(qs))) {
+                        throw new RuntimeException("The points do not define a rectangle.");
+                    }
+                } else {
+                    if (!(pq.isOrthogonal(qr))) {
+                        throw new RuntimeException("The points do not define a rectangle.");
+                    }
                 }
             }
         }
@@ -119,7 +150,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     /**
      * Create a new instance.
-     * 
+     *
      * @param r What {@code this} is created from.
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
@@ -178,33 +209,66 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 || b.isIntersectedBy(pt) || l.isIntersectedBy(pt)) {
             return true;
         }
-        V3D_Vector ppt = new V3D_Vector(p, pt, n.oom);
-        V3D_Vector qpt = new V3D_Vector(q, pt, n.oom);
-        V3D_Vector rpt = new V3D_Vector(r, pt, n.oom);
-        V3D_Vector spt = new V3D_Vector(s, pt, n.oom);
-        V3D_Vector rs = new V3D_Vector(r, s, n.oom);
-        V3D_Vector sp = new V3D_Vector(s, p, n.oom);
-        V3D_Vector cp = pq.getCrossProduct(ppt);
-        V3D_Vector cq = qr.getCrossProduct(qpt);
-        V3D_Vector cr = rs.getCrossProduct(rpt);
-        V3D_Vector cs = sp.getCrossProduct(spt);
-        /**
-         * If cp, cq, cr, and cs are all in the same direction then pt
-         * intersects.
-         */
-        BigRational mp = cp.getMagnitudeSquared();
-        BigRational mq = cq.getMagnitudeSquared();
-        V3D_Vector cpq = cp.add(cq);
-        BigRational mpq = cpq.getMagnitudeSquared();
-        if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
-            BigRational mr = cr.getMagnitudeSquared();
-            V3D_Vector cpqr = cpq.add(cr);
-            BigRational mpqr = cpqr.getMagnitudeSquared();
-            if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
-                BigRational ms = cs.getMagnitudeSquared();
-                BigRational mpqrs = cpqr.add(cs).getMagnitudeSquared();
-                if (mpqrs.compareTo(ms) == 1 && mpqrs.compareTo(mpqr) == 1) {
-                    return true;
+        if (qAtOrigin) {
+            V3D_Vector ppt = new V3D_Vector(q, pt, n.oom);
+            V3D_Vector qpt = new V3D_Vector(p, pt, n.oom);
+            V3D_Vector rpt = new V3D_Vector(r, pt, n.oom);
+            V3D_Vector spt = new V3D_Vector(s, pt, n.oom);
+            V3D_Vector rs = new V3D_Vector(r, s, n.oom);
+            V3D_Vector sp = new V3D_Vector(s, q, n.oom);
+            V3D_Vector cp = pq.reverse().getCrossProduct(ppt);
+            V3D_Vector cq = qr.getCrossProduct(qpt);
+            V3D_Vector cr = rs.getCrossProduct(rpt);
+            V3D_Vector cs = sp.getCrossProduct(spt);
+            /**
+             * If cp, cq, cr, and cs are all in the same direction then pt
+             * intersects.
+             */
+            Math_BigRational mp = cp.getMagnitudeSquared();
+            Math_BigRational mq = cq.getMagnitudeSquared();
+            V3D_Vector cpq = cp.add(cq);
+            Math_BigRational mpq = cpq.getMagnitudeSquared();
+            if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
+                Math_BigRational mr = cr.getMagnitudeSquared();
+                V3D_Vector cpqr = cpq.add(cr);
+                Math_BigRational mpqr = cpqr.getMagnitudeSquared();
+                if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
+                    Math_BigRational ms = cs.getMagnitudeSquared();
+                    Math_BigRational mpqrs = cpqr.add(cs).getMagnitudeSquared();
+                    if (mpqrs.compareTo(ms) == 1 && mpqrs.compareTo(mpqr) == 1) {
+                        return true;
+                    }
+                }
+            }
+        } else {
+            V3D_Vector ppt = new V3D_Vector(p, pt, n.oom);
+            V3D_Vector qpt = new V3D_Vector(q, pt, n.oom);
+            V3D_Vector rpt = new V3D_Vector(r, pt, n.oom);
+            V3D_Vector spt = new V3D_Vector(s, pt, n.oom);
+            V3D_Vector rs = new V3D_Vector(r, s, n.oom);
+            V3D_Vector sp = new V3D_Vector(s, p, n.oom);
+            V3D_Vector cp = pq.getCrossProduct(ppt);
+            V3D_Vector cq = qr.getCrossProduct(qpt);
+            V3D_Vector cr = rs.getCrossProduct(rpt);
+            V3D_Vector cs = sp.getCrossProduct(spt);
+            /**
+             * If cp, cq, cr, and cs are all in the same direction then pt
+             * intersects.
+             */
+            Math_BigRational mp = cp.getMagnitudeSquared();
+            Math_BigRational mq = cq.getMagnitudeSquared();
+            V3D_Vector cpq = cp.add(cq);
+            Math_BigRational mpq = cpq.getMagnitudeSquared();
+            if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
+                Math_BigRational mr = cr.getMagnitudeSquared();
+                V3D_Vector cpqr = cpq.add(cr);
+                Math_BigRational mpqr = cpqr.getMagnitudeSquared();
+                if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
+                    Math_BigRational ms = cs.getMagnitudeSquared();
+                    Math_BigRational mpqrs = cpqr.add(cs).getMagnitudeSquared();
+                    if (mpqrs.compareTo(ms) == 1 && mpqrs.compareTo(mpqr) == 1) {
+                        return true;
+                    }
                 }
             }
         }
@@ -371,7 +435,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                         } else if (bi instanceof V3D_LineSegment) {
                             return bi;
                         } else {
-                            return new V3D_LineSegment((V3D_Point) ti, 
+                            return new V3D_LineSegment((V3D_Point) ti,
                                     (V3D_Point) bi, n.oom);
                         }
                     } else {

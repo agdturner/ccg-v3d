@@ -15,9 +15,9 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.Math_BigRational;
 
 /**
  * For representing and processing triangles in 3D. For representing and
@@ -130,13 +130,13 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
         /**
          * If cp, cq and cr are all in the same direction then pt intersects.
          */
-        BigRational mp = cp.getMagnitudeSquared();
-        BigRational mq = cq.getMagnitudeSquared();
+        Math_BigRational mp = cp.getMagnitudeSquared();
+        Math_BigRational mq = cq.getMagnitudeSquared();
         V3D_Vector cpq = cp.add(cq);
-        BigRational mpq = cpq.getMagnitudeSquared();
+        Math_BigRational mpq = cpq.getMagnitudeSquared();
         if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
-            BigRational mr = cr.getMagnitudeSquared();
-            BigRational mpqr = cpq.add(cr).getMagnitudeSquared();
+            Math_BigRational mr = cr.getMagnitudeSquared();
+            Math_BigRational mpqr = cpq.add(cr).getMagnitudeSquared();
             if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
                 return true;
             }

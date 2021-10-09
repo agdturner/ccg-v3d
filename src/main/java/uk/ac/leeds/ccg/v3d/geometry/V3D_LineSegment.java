@@ -15,9 +15,9 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.Math_BigRational;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
@@ -67,7 +67,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     /**
      * Stores the length of the line squared.
      */
-    protected final BigRational len2;
+    protected final Math_BigRational len2;
 
     /**
      * Create a new instance.
@@ -181,7 +181,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     /**
      * @return The length of {@code this} squared.
      */
-    public BigRational getLength2() {
+    public Math_BigRational getLength2() {
         return p.getDistanceSquared(q);
     }
 

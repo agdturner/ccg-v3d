@@ -15,13 +15,13 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.Math_BigRational;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
@@ -107,32 +107,32 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * The minimum x-coordinate.
      */
-    private final BigRational xMin;
+    private final Math_BigRational xMin;
 
     /**
      * The maximum x-coordinate.
      */
-    private final BigRational xMax;
+    private final Math_BigRational xMax;
 
     /**
      * The minimum y-coordinate.
      */
-    private final BigRational yMin;
+    private final Math_BigRational yMin;
 
     /**
      * The maximum y-coordinate.
      */
-    private final BigRational yMax;
+    private final Math_BigRational yMax;
 
     /**
      * The minimum z-coordinate.
      */
-    private final BigRational zMin;
+    private final Math_BigRational zMin;
 
     /**
      * The maximum z-coordinate.
      */
-    private final BigRational zMax;
+    private final Math_BigRational zMax;
 
     /**
      * The top face.
@@ -172,13 +172,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * </thead>
      * <tbody>
      * <tr><td>0</td><td>f, l, a, r, t, b Point</td></tr>
-     * <tr><td>1</td><td>f, l, a, r, t, b Rectangle</td></tr>
-     * <tr><td>2</td><td>f, a Point; l, r, t, b LineSegment</td></tr>
-     * <tr><td>4</td><td>1, r Point; f, a, t, b LineSegment</td></tr>
-     * <tr><td>6</td><td>t, b Point; f, l, a, r LineSegment</td></tr>
-     * <tr><td>3</td><td>f, a LineSegment; l, r, t, b Rectangle</td></tr>
-     * <tr><td>5</td><td>1, r LineSegment; f, a, t, b Rectangle</td></tr>
-     * <tr><td>7</td><td>t, b LineSegment; f, l, a, r Rectangle</td></tr>
+     * <tr><td>1</td><td>f, a Point; l, r, t, b LineSegment</td></tr>
+     * <tr><td>2</td><td>1, r Point; f, a, t, b LineSegment</td></tr>
+     * <tr><td>3</td><td>t, b Point; f, l, a, r LineSegment</td></tr>
+     * <tr><td>4</td><td>f, a Rectangle; l, r, t, b LineSegment</td></tr>
+     * <tr><td>5</td><td>1, r Rectangle; f, a, t, b LineSegment</td></tr>
+     * <tr><td>6</td><td>t, b Rectangle; f, l, a, r LineSegment</td></tr>
+     * <tr><td>7</td><td>f, l, a, r, t, b Rectangle</td></tr>
      * </tbody>
      * </table>
      */
@@ -229,22 +229,22 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 r = f;
                 t = f;
                 b = f;
-                type = 1;
+                type = 0; // f, l, a, r, t, b Point
                 break;
             default:
-                BigRational xmin = points[0].x;
-                BigRational xmax = points[0].x;
-                BigRational ymin = points[0].y;
-                BigRational ymax = points[0].y;
-                BigRational zmin = points[0].z;
-                BigRational zmax = points[0].z;
+                Math_BigRational xmin = points[0].x;
+                Math_BigRational xmax = points[0].x;
+                Math_BigRational ymin = points[0].y;
+                Math_BigRational ymax = points[0].y;
+                Math_BigRational zmin = points[0].z;
+                Math_BigRational zmax = points[0].z;
                 for (int i = 1; i < points.length; i++) {
-                    xmin = BigRational.min(xmin, points[i].x);
-                    xmax = BigRational.max(xmax, points[i].x);
-                    ymin = BigRational.min(ymin, points[i].y);
-                    ymax = BigRational.max(ymax, points[i].y);
-                    zmin = BigRational.min(zmin, points[i].z);
-                    zmax = BigRational.max(zmax, points[i].z);
+                    xmin = Math_BigRational.min(xmin, points[i].x);
+                    xmax = Math_BigRational.max(xmax, points[i].x);
+                    ymin = Math_BigRational.min(ymin, points[i].y);
+                    ymax = Math_BigRational.max(ymax, points[i].y);
+                    zmin = Math_BigRational.min(zmin, points[i].z);
+                    zmax = Math_BigRational.max(zmax, points[i].z);
                 }
                 if (xmin.compareTo(xmax) == 0) {
                     if (ymin.compareTo(ymax) == 0) {
@@ -255,7 +255,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             r = f;
                             t = f;
                             b = f;
-                            type = 0;
+                            type = 0; // f, l, a, r, t, b Point
                         } else {
                             Point fp = new Point(xmin, ymin, zmin);
                             Point ap = new Point(xmin, ymax, zmin);
@@ -265,7 +265,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             r = new LineSegment(fp, ap, oom);
                             t = r;
                             b = l;
-                            type = 2;
+                            type = 1; // f, a Point; l, r, t, b LineSegment
                         }
                     } else {
                         Point bf = new Point(xmin, ymin, zmin);
@@ -277,7 +277,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             r = f;
                             t = tf;
                             b = bf;
-                            type = 4;
+                            type = 3; // t, b Point; f, l, a, r LineSegment
                         } else {
                             Point ta = new Point(xmin, ymax, zmax);
                             Point ba = new Point(xmin, ymin, zmax);
@@ -287,7 +287,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             r = new Rectangle(bf, tf, ta, ba, oom);
                             t = new LineSegment(tf, ta, oom);
                             b = new LineSegment(ba, bf, oom);
-                            type = 3;
+                            type = 5; // 1, r Rectangle; f, a, t, b LineSegment
                         }
                     }
                 } else {
@@ -301,7 +301,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             r = rf;
                             t = f;
                             b = f;
-                            type = 6;
+                            type = 2; // 1, r Point; f, a, t, b LineSegment
                         } else {
                             Point la = new Point(xmin, ymin, zmax);
                             Point ra = new Point(xmax, ymin, zmax);
@@ -311,7 +311,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             r = new LineSegment(rf, ra, oom);
                             t = new Rectangle(lf, la, ra, rf, oom);
                             b = new Rectangle(la, lf, rf, ra, oom);
-                            type = 5;
+                            type = 6; // t, b Rectangle; f, l, a, r LineSegment
                         }
                     } else {
                         Point lbf = new Point(xmin, ymin, zmin);
@@ -325,7 +325,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             r = new LineSegment(rbf, rtf, oom);
                             t = new LineSegment(ltf, rtf, oom);
                             b = new LineSegment(lbf, rbf, oom);
-                            type = 7;
+                            type = 4; // f, a Rectangle; l, r, t, b LineSegment
                         } else {
                             Point lba = new Point(xmin, ymin, zmax);
                             Point lta = new Point(xmin, ymax, zmax);
@@ -337,7 +337,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             r = new Rectangle(rbf, rtf, rta, rba, oom);
                             t = new Rectangle(ltf, lta, rta, rtf, oom);
                             b = new Rectangle(lba, lbf, rbf, rba, oom);
-                            type = 1;
+                            type = 7; // f, l, a, r, t, b Rectangle
                         }
                     }
                 }
@@ -356,7 +356,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param y The y-coordinate of a point.
      * @param z The z-coordinate of a point.
      */
-    public V3D_Envelope(BigRational x, BigRational y, BigRational z, int oom) {
+    public V3D_Envelope(Math_BigRational x, Math_BigRational y, Math_BigRational z, int oom) {
         this(oom, new V3D_Point(x, y, z));
     }
 
@@ -368,8 +368,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param zMin What {@link zMin} is set to.
      * @param zMax What {@link zMax} is set to.
      */
-    public V3D_Envelope(BigRational xMin, BigRational xMax, BigRational yMin,
-            BigRational yMax, BigRational zMin, BigRational zMax, int oom) {
+    public V3D_Envelope(Math_BigRational xMin, Math_BigRational xMax, Math_BigRational yMin,
+            Math_BigRational yMax, Math_BigRational zMin, Math_BigRational zMax, int oom) {
         this(oom, new V3D_Point(xMin, yMin, zMin), new V3D_Point(xMax, yMax, zMax));
     }
 
@@ -387,14 +387,14 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Envelope apply(V3D_Vector v) {
-        V3D_Point lbf = new V3D_Point(xMin, yMin, zMin).apply(v);
-        V3D_Point ltf = new V3D_Point(xMin, yMin, zMax).apply(v);
-        V3D_Point rtf = new V3D_Point(xMax, yMin, zMax).apply(v);
-        V3D_Point rbf = new V3D_Point(xMax, yMin, zMin).apply(v);
-        V3D_Point lba = new V3D_Point(xMin, yMax, zMin).apply(v);
-        V3D_Point lta = new V3D_Point(xMin, yMax, zMax).apply(v);
-        V3D_Point rba = new V3D_Point(xMax, yMax, zMin).apply(v);
-        V3D_Point rta = new V3D_Point(xMax, yMax, zMax).apply(v);
+        V3D_Point lbf = new V3D_Point(xMin, yMin, zMax).apply(v);
+        V3D_Point ltf = new V3D_Point(xMin, yMin, zMin).apply(v);
+        V3D_Point rtf = new V3D_Point(xMax, yMin, zMin).apply(v);
+        V3D_Point rbf = new V3D_Point(xMax, yMin, zMax).apply(v);
+        V3D_Point lba = new V3D_Point(xMin, yMax, zMax).apply(v);
+        V3D_Point lta = new V3D_Point(xMin, yMax, zMin).apply(v);
+        V3D_Point rba = new V3D_Point(xMax, yMax, zMax).apply(v);
+        V3D_Point rta = new V3D_Point(xMax, yMax, zMin).apply(v);
         return new V3D_Envelope(oom, lbf, ltf, rtf, rbf, lba, lta, rba, rta);
     }
 
@@ -407,12 +407,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             return this;
         } else {
             return new V3D_Envelope(
-                    BigRational.min(e.getxMin(), getxMin()),
-                    BigRational.max(e.getxMax(), getxMax()),
-                    BigRational.min(e.getyMin(), getyMin()),
-                    BigRational.max(e.getyMax(), getyMax()),
-                    BigRational.min(e.getzMin(), getzMin()),
-                    BigRational.max(e.getzMax(), getzMax()),
+                    Math_BigRational.min(e.getxMin(), getxMin()),
+                    Math_BigRational.max(e.getxMax(), getxMax()),
+                    Math_BigRational.min(e.getyMin(), getyMin()),
+                    Math_BigRational.max(e.getyMax(), getyMax()),
+                    Math_BigRational.min(e.getzMin(), getzMin()),
+                    Math_BigRational.max(e.getzMax(), getzMax()),
                     oom);
         }
     }
@@ -474,8 +474,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z The z-coordinate of the point to test for intersection.
      * @return {@code true} if this intersects with {@code p}
      */
-    public boolean isIntersectedBy(BigRational x, BigRational y,
-            BigRational z) {
+    public boolean isIntersectedBy(Math_BigRational x, Math_BigRational y,
+            Math_BigRational z) {
         return x.compareTo(getxMin()) != -1 && x.compareTo(getxMax()) != 1
                 && y.compareTo(getyMin()) != -1 && y.compareTo(getyMax()) != 1
                 && z.compareTo(getzMin()) != -1 && z.compareTo(getzMax()) != 1;
@@ -494,12 +494,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             return null;
         }
         return new V3D_Envelope(
-                BigRational.max(getxMin(), en.getxMin()),
-                BigRational.min(getxMax(), en.getxMax()),
-                BigRational.max(getyMin(), en.getyMin()),
-                BigRational.min(getyMax(), en.getyMax()),
-                BigRational.max(getzMin(), en.getzMin()),
-                BigRational.min(getzMax(), en.getzMax()),
+                Math_BigRational.max(getxMin(), en.getxMin()),
+                Math_BigRational.min(getxMax(), en.getxMax()),
+                Math_BigRational.max(getyMin(), en.getyMin()),
+                Math_BigRational.min(getyMax(), en.getyMax()),
+                Math_BigRational.max(getzMin(), en.getzMin()),
+                Math_BigRational.min(getzMax(), en.getzMax()),
                 oom);
     }
 
@@ -523,6 +523,18 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     return null;
                 }
             case 1:
+                return new V3D_LineSegment((LineSegment) l).getIntersection(li);
+            case 2:
+                return new V3D_LineSegment((LineSegment) f).getIntersection(li);
+            case 3:
+                return new V3D_LineSegment((LineSegment) f).getIntersection(li);
+            case 4:
+                return new V3D_Rectangle((Rectangle) f, oom).getIntersection(li);
+            case 5:
+                return new V3D_Rectangle((Rectangle) l, oom).getIntersection(li);
+            case 6:
+                return new V3D_Rectangle((Rectangle) t, oom).getIntersection(li);
+            default:
                 V3D_Geometry fil = (new V3D_Rectangle((Rectangle) f, oom))
                         .getIntersection(li);
                 V3D_Geometry lil = (new V3D_Rectangle((Rectangle) l, oom))
@@ -566,7 +578,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     return V3D_FiniteGeometry.getGeometry(
                                             (V3D_Point) ril,
                                             (V3D_Point) til,
-                                                oom);
+                                            oom);
                                 }
                             }
                         } else {
@@ -589,12 +601,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 } else {
                                     return V3D_FiniteGeometry.getGeometry(
                                             (V3D_Point) ail, (V3D_Point) til,
-                                                oom);
+                                            oom);
                                 }
                             } else {
                                 return V3D_FiniteGeometry.getGeometry(
                                         (V3D_Point) ail, (V3D_Point) ril,
-                                                oom);
+                                        oom);
                             }
                         }
                     } else {
@@ -653,18 +665,18 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 } else {
                                     return V3D_FiniteGeometry.getGeometry(
                                             (V3D_Point) fil, (V3D_Point) til,
-                                                oom);
+                                            oom);
                                 }
                             } else {
                                 return V3D_FiniteGeometry.getGeometry(
                                         (V3D_Point) fil, (V3D_Point) ril,
-                                                oom);
+                                        oom);
                             }
                         } else {
                             return new V3D_LineSegment(
                                     (V3D_Point) fil,
                                     (V3D_Point) ail,
-                                        oom);
+                                    oom);
                         }
                     } else {
                         if (ail == null) {
@@ -676,18 +688,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         }
                     }
                 }
-            case 2:
-                return new V3D_LineSegment((LineSegment) l).getIntersection(li);
-            case 4:
-                return new V3D_LineSegment((LineSegment) f).getIntersection(li);
-            case 6:
-                return new V3D_LineSegment((LineSegment) f).getIntersection(li);
-            case 3:
-                return new V3D_Rectangle((Rectangle) l, oom).getIntersection(li);
-            case 5:
-                return new V3D_Rectangle((Rectangle) f, oom).getIntersection(li);
-            default:
-                return new V3D_Rectangle((Rectangle) f, oom).getIntersection(li);
         }
     }
 
@@ -715,6 +715,18 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     return null;
                 }
             case 1:
+                return new V3D_LineSegment((LineSegment) l).getIntersection(li);
+            case 2:
+                return new V3D_LineSegment((LineSegment) f).getIntersection(li);
+            case 3:
+                return new V3D_LineSegment((LineSegment) f).getIntersection(li);
+            case 4:
+                return new V3D_Rectangle((Rectangle) f, oom).getIntersection(li);
+            case 5:
+                return new V3D_Rectangle((Rectangle) l, oom).getIntersection(li);
+            case 6:
+                return new V3D_Rectangle((Rectangle) t, oom).getIntersection(li);
+            default:
                 V3D_Geometry fil = (new V3D_Rectangle((Rectangle) f, oom))
                         .getIntersection(li, flag);
                 V3D_Geometry lil = (new V3D_Rectangle((Rectangle) l, oom))
@@ -744,7 +756,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     return new V3D_LineSegment(
                                             (V3D_Point) til,
                                             (V3D_Point) bil,
-                                        oom);
+                                            oom);
                                 }
                             } else {
                                 if (til == null) {
@@ -763,7 +775,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 } else {
                                     return V3D_FiniteGeometry.getGeometry(
                                             (V3D_Point) ril, (V3D_Point) til,
-                                                oom);
+                                            oom);
                                 }
                             }
                         } else {
@@ -787,12 +799,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 } else {
                                     return V3D_FiniteGeometry.getGeometry(
                                             (V3D_Point) ail, (V3D_Point) til,
-                                                oom);
+                                            oom);
                                 }
                             } else {
                                 return V3D_FiniteGeometry.getGeometry(
                                         (V3D_Point) ail, (V3D_Point) ril,
-                                                oom);
+                                        oom);
                             }
                         }
                     } else {
@@ -837,7 +849,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         } else {
                             return V3D_FiniteGeometry.getGeometry(
                                     (V3D_Point) lil, (V3D_Point) ail,
-                                                oom);
+                                    oom);
                         }
                     }
                 } else {
@@ -855,12 +867,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 } else {
                                     return V3D_FiniteGeometry.getGeometry(
                                             (V3D_Point) fil, (V3D_Point) til,
-                                                oom);
+                                            oom);
                                 }
                             } else {
                                 return V3D_FiniteGeometry.getGeometry(
                                         (V3D_Point) fil, (V3D_Point) ril,
-                                                oom);
+                                        oom);
                             }
                         } else {
                             return new V3D_LineSegment((V3D_Point) fil,
@@ -875,18 +887,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         }
                     }
                 }
-            case 2:
-                return new V3D_LineSegment((LineSegment) l).getIntersection(li);
-            case 4:
-                return new V3D_LineSegment((LineSegment) f).getIntersection(li);
-            case 6:
-                return new V3D_LineSegment((LineSegment) f).getIntersection(li);
-            case 3:
-                return new V3D_Rectangle((Rectangle) l, oom).getIntersection(li);
-            case 5:
-                return new V3D_Rectangle((Rectangle) f, oom).getIntersection(li);
-            default:
-                return new V3D_Rectangle((Rectangle) f, oom).getIntersection(li);
         }
     }
 
@@ -955,42 +955,42 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * @return the xMin
      */
-    public BigRational getxMin() {
+    public Math_BigRational getxMin() {
         return xMin;
     }
 
     /**
      * @return the xMax
      */
-    public BigRational getxMax() {
+    public Math_BigRational getxMax() {
         return xMax;
     }
 
     /**
      * @return the yMin
      */
-    public BigRational getyMin() {
+    public Math_BigRational getyMin() {
         return yMin;
     }
 
     /**
      * @return the yMax
      */
-    public BigRational getyMax() {
+    public Math_BigRational getyMax() {
         return yMax;
     }
 
     /**
      * @return the zMin
      */
-    public BigRational getzMin() {
+    public Math_BigRational getzMin() {
         return zMin;
     }
 
     /**
      * @return the zMax
      */
-    public BigRational getzMax() {
+    public Math_BigRational getzMax() {
         return zMax;
     }
 
@@ -1006,6 +1006,18 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             case 0:
                 return li.isIntersectedBy(new V3D_Point((Point) f));
             case 1:
+                return new V3D_LineSegment((LineSegment) l).isIntersectedBy(li);
+            case 2:
+                return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li);
+            case 3:
+                return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li);
+            case 4:
+                return new V3D_Rectangle((Rectangle) f, oom).isIntersectedBy(li);
+            case 5:
+                return new V3D_Rectangle((Rectangle) l, oom).isIntersectedBy(li);
+            case 6:
+                return new V3D_Rectangle((Rectangle) t, oom).isIntersectedBy(li);
+            default:
                 /**
                  * Each part of this testing could be done simultaneously. An
                  * alternative method might test three orthogonal sides and the
@@ -1024,18 +1036,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 } else {
                     return new V3D_Rectangle((Rectangle) b, oom).isIntersectedBy(li);
                 }
-            case 2:
-                return new V3D_LineSegment((LineSegment) l).isIntersectedBy(li);
-            case 4:
-                return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li);
-            case 6:
-                return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li);
-            case 3:
-                return new V3D_Rectangle((Rectangle) l, oom).isIntersectedBy(li);
-            case 5:
-                return new V3D_Rectangle((Rectangle) f, oom).isIntersectedBy(li);
-            default:
-                return new V3D_Rectangle((Rectangle) f, oom).isIntersectedBy(li);
         }
     }
 
@@ -1057,6 +1057,18 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 case 0:
                     return li.isIntersectedBy(new V3D_Point((Point) f));
                 case 1:
+                    return new V3D_LineSegment((LineSegment) l).isIntersectedBy(li);
+                case 2:
+                    return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li);
+                case 3:
+                    return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li);
+                case 4:
+                    return new V3D_Rectangle((Rectangle) f, oom).isIntersectedBy(li);
+                case 5:
+                    return new V3D_Rectangle((Rectangle) l, oom).isIntersectedBy(li);
+                case 6:
+                    return new V3D_Rectangle((Rectangle) t, oom).isIntersectedBy(li);
+                default:
                     /**
                      * Each part of this testing could be done simultaneously.
                      * An alternative method might test three orthogonal sides
@@ -1075,18 +1087,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     } else {
                         return new V3D_Rectangle((Rectangle) b, oom).isIntersectedBy(li);
                     }
-                case 2:
-                    return new V3D_LineSegment((LineSegment) l).isIntersectedBy(li);
-                case 4:
-                    return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li);
-                case 6:
-                    return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li);
-                case 3:
-                    return new V3D_Rectangle((Rectangle) l, oom).isIntersectedBy(li);
-                case 5:
-                    return new V3D_Rectangle((Rectangle) f, oom).isIntersectedBy(li);
-                default:
-                    return new V3D_Rectangle((Rectangle) f, oom).isIntersectedBy(li);
             }
         }
         return false;
@@ -1549,17 +1549,17 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         /**
          * The x coordinate.
          */
-        public BigRational x;
+        public Math_BigRational x;
 
         /**
          * The y coordinate.
          */
-        public BigRational y;
+        public Math_BigRational y;
 
         /**
          * The z coordinate.
          */
-        public BigRational z;
+        public Math_BigRational z;
 
         /**
          * Create a new instance from {@code p}.
@@ -1579,7 +1579,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * @param y What {@link #y} is set to.
          * @param z What {@link #z} is set to.
          */
-        public Point(BigRational x, BigRational y, BigRational z) {
+        public Point(Math_BigRational x, Math_BigRational y, Math_BigRational z) {
             this.x = x;
             this.y = y;
             this.z = z;
@@ -1639,10 +1639,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * @param p A point.
          * @return The distance squared from {@code p} to this.
          */
-        public BigRational getDistanceSquared(Point p) {
-            BigRational dx = x.subtract(p.x);
-            BigRational dy = y.subtract(p.y);
-            BigRational dz = z.subtract(p.z);
+        public Math_BigRational getDistanceSquared(Point p) {
+            Math_BigRational dx = x.subtract(p.x);
+            Math_BigRational dy = y.subtract(p.y);
+            Math_BigRational dz = z.subtract(p.z);
             return dx.pow(2).add(dy.pow(2)).add(dz.pow(2));
         }
 
@@ -1748,15 +1748,15 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     return null;
                 }
             }
-            if (l.v.getDX().compareTo(BigRational.ZERO) == 0) {
-                if (l.v.getDY().compareTo(BigRational.ZERO) == 0) {
-                    if (l.v.getDZ().compareTo(BigRational.ZERO) == 0) {
+            if (l.v.getDX().compareTo(Math_BigRational.ZERO) == 0) {
+                if (l.v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
+                    if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
                         if (isIntersectedBy(l.p)) {
                             return l.p;
                         }
                     }
                 }
-                if (v.getDX().compareTo(BigRational.ZERO) == 0) {
+                if (v.getDX().compareTo(Math_BigRational.ZERO) == 0) {
                     //Point p = new Point(l.p.x, );
                 }
             } else {
@@ -1802,12 +1802,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                  */
                 V3D_Vector delta = new V3D_Vector(p, oom)
                         .subtract(new V3D_Vector(l.p, oom));
-                //BigRational m = BigRational.valueOf(cp.getMagnitude(oom - 2));
+                //Math_BigRational m = Math_BigRational.valueOf(cp.getMagnitude(oom - 2));
                 Math_BigRationalSqrt m = cp.getMagnitude();
                 // d = cp.(delta)/m
-                BigRational dp = cp.getDotProduct(delta);
+                Math_BigRational dp = cp.getDotProduct(delta);
                 // m should only be zero if the lines are parallel.
-                BigRational d = dp.divide(m.getX());
+                Math_BigRational d = dp.divide(m.getX());
                 return Math_BigDecimal.round(d.toBigDecimal(), oom);
             }
         }
@@ -1987,6 +1987,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     oom);
         }
 
+        @Override
+        public String toString() {
+            return this.getClass().getSimpleName() + "(p=" + p.toString()
+                    + ", q=" + q.toString() + ", r=" + r.toString()
+                    + ", n=" + n.toString() + ")";
+        }
+        
         /**
          * @param l The line to test if it is parallel to this.
          * @return {@code true} if {@code this} is parallel to {@code l}.
@@ -2008,10 +2015,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * @return {@code true} If {@code pt} is on the plane.
          */
         public boolean isIntersectedBy(Point pt) {
-            BigRational d = n.getDX().multiply(p.x.subtract(pt.x))
+            Math_BigRational d = n.getDX().multiply(p.x.subtract(pt.x))
                     .add(n.getDY().multiply(p.y.subtract(pt.y)))
                     .add(n.getDZ().multiply(p.z.subtract(pt.z)));
-            return d.compareTo(BigRational.ZERO) == 0;
+            return d.compareTo(Math_BigRational.ZERO) == 0;
         }
 
         /**
@@ -2049,9 +2056,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             if (isIntersectedBy(l.q)) {
                 return l.q;
             }
-            BigRational num = new V3D_Vector(p, l.p, oom).getDotProduct(n);
-            BigRational den = l.v.getDotProduct(n);
-            BigRational t = num.divide(den);
+            Math_BigRational num = new V3D_Vector(p, l.p, oom).getDotProduct(n);
+            Math_BigRational den = l.v.getDotProduct(n);
+            Math_BigRational t = num.divide(den);
             return new Point(l.p.x.subtract(l.v.getDX().multiply(t)),
                     l.p.y.subtract(l.v.getDY().multiply(t)),
                     l.p.z.subtract(l.v.getDZ().multiply(t)));
@@ -2071,7 +2078,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             V3D_Vector v = new V3D_Vector(p, this.p, oom);
             V3D_Vector u = this.n.getUnitVector(oom);
 //        MathContext mc = new MathContext(Math_BigRationalSqrt
-//                .getOOM(BigRational.ONE, oom));
+//                .getOOM(Math_BigRational.ONE, oom));
             MathContext mc = new MathContext(6 - oom);
             return v.getDotProduct(u).abs().toBigDecimal(mc);
         }
@@ -2146,6 +2153,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             t = new LineSegment(q, r, oom);
             ri = new LineSegment(r, s, oom);
             b = new LineSegment(s, p, oom);
+        }
+
+        @Override
+        public String toString() {
+            return this.getClass().getSimpleName() + "(p=" + p.toString()
+                    + ", q=" + q.toString() + ", r=" + r.toString()
+                    + ", s=" + s.toString() + ")";
         }
 
         /**

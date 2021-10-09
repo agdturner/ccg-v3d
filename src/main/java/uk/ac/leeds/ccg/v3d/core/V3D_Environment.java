@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.core;
 
-import ch.obermuhlner.math.big.BigRational;
 import java.io.IOException;
 import java.nio.file.Paths;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
@@ -23,6 +22,7 @@ import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
 import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.generic.memory.Generic_MemoryManager;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
@@ -42,27 +42,27 @@ public class V3D_Environment extends Generic_MemoryManager {
     /**
      * 0
      */
-    public static final BigRational P0 = BigRational.ZERO;
+    public static final Math_BigRational P0 = Math_BigRational.ZERO;
     
     /**
      * 1
      */
-    public static final BigRational P1 = BigRational.ONE;
+    public static final Math_BigRational P1 = Math_BigRational.ONE;
     
     /**
      * 2
      */
-    public static final BigRational P2 = BigRational.TWO;
+    public static final Math_BigRational P2 = Math_BigRational.TWO;
     
     /**
      * 3
      */
-    public static final BigRational P3 = BigRational.valueOf(3);
+    public static final Math_BigRational P3 = Math_BigRational.valueOf(3);
     
     /**
      * -1
      */
-    public static final BigRational N1 = BigRational.ONE.negate();
+    public static final Math_BigRational N1 = Math_BigRational.ONE.negate();
 
     /**
      * Zero vector.

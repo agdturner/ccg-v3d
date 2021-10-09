@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.Math_BigDecimal;
-import ch.obermuhlner.math.big.BigRational;
 import uk.ac.leeds.ccg.math.Math_BigRational;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
@@ -67,17 +66,17 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * The x coordinate.
      */
-    public BigRational x;
+    public Math_BigRational x;
 
     /**
      * The y coordinate.
      */
-    public BigRational y;
+    public Math_BigRational y;
 
     /**
      * The z coordinate.
      */
-    public BigRational z;
+    public Math_BigRational z;
 
     /**
      * @param p The point to duplicate
@@ -101,9 +100,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param v The vector.
      */
     public V3D_Point(V3D_Vector v) {
-        x = v.dx.getSqrt();
-        y = v.dy.getSqrt();
-        z = v.dz.getSqrt();
+        x = v.dx.getSqrt(v.oom);
+        y = v.dy.getSqrt(v.oom);
+        z = v.dz.getSqrt(v.oom);
     }
 
     /**
@@ -111,7 +110,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param y What {@link #y} is set to.
      * @param z What {@link #z} is set to.
      */
-    public V3D_Point(BigRational x, BigRational y, BigRational z) {
+    public V3D_Point(Math_BigRational x, Math_BigRational y, Math_BigRational z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -123,9 +122,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z What {@link #z} is set to.
      */
     public V3D_Point(BigDecimal x, BigDecimal y, BigDecimal z) {
-        this.x = BigRational.valueOf(x);
-        this.y = BigRational.valueOf(y);
-        this.z = BigRational.valueOf(z);
+        this.x = Math_BigRational.valueOf(x);
+        this.y = Math_BigRational.valueOf(y);
+        this.z = Math_BigRational.valueOf(z);
     }
 
     /**
@@ -134,9 +133,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z What {@link #z} is set to.
      */
     public V3D_Point(double x, double y, double z) {
-        this.x = BigRational.valueOf(x);
-        this.y = BigRational.valueOf(y);
-        this.z = BigRational.valueOf(z);
+        this.x = Math_BigRational.valueOf(x);
+        this.y = Math_BigRational.valueOf(y);
+        this.z = Math_BigRational.valueOf(z);
     }
 
     /**
@@ -145,9 +144,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z What {@link #z} is set to.
      */
     public V3D_Point(long x, long y, long z) {
-        this.x = BigRational.valueOf(x);
-        this.y = BigRational.valueOf(y);
-        this.z = BigRational.valueOf(z);
+        this.x = Math_BigRational.valueOf(x);
+        this.y = Math_BigRational.valueOf(y);
+        this.z = Math_BigRational.valueOf(z);
     }
 
     @Override
@@ -194,18 +193,12 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Point apply(V3D_Vector v) {
-        BigRational dx = x.add(v.getDX());
-        if (v.dx.negative) {
-            dx = dx.negate();
-        }
-        BigRational dy = y.add(v.getDY());
-        if (v.dy.negative) {
-            dy = dy.negate();
-        }
-        BigRational dz = z.add(v.getDZ());
-        if (v.dz.negative) {
-            dz = dz.negate();
-        }
+        Math_BigRational dx = x.add(v.getDX());
+        Math_BigRational dy = y.add(v.getDY());
+        Math_BigRational dz = z.add(v.getDZ());
+//        Math_BigRational dx = x.subtract(v.getDX());
+//        Math_BigRational dy = y.subtract(v.getDY());
+//        Math_BigRational dz = z.subtract(v.getDZ());
         return new V3D_Point(dx, dy, dz);
     }
 
@@ -244,10 +237,10 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param p A point.
      * @return The distance squared from {@code p} to this.
      */
-    public BigRational getDistanceSquared(V3D_Point p) {
-        BigRational dx = this.x.subtract(p.x);
-        BigRational dy = this.y.subtract(p.y);
-        BigRational dz = this.z.subtract(p.z);
+    public Math_BigRational getDistanceSquared(V3D_Point p) {
+        Math_BigRational dx = this.x.subtract(p.x);
+        Math_BigRational dy = this.y.subtract(p.y);
+        Math_BigRational dz = this.z.subtract(p.z);
         return dx.pow(2).add(dy.pow(2)).add(dz.pow(2));
     }
 
@@ -337,9 +330,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
          *
          */
         int oom2 = oom - 2;
-        BigRational l2 = l.getLength2();
-        BigRational lp2 = l.p.getDistanceSquared(this);
-        BigRational lq2 = l.q.getDistanceSquared(this);
+        Math_BigRational l2 = l.getLength2();
+        Math_BigRational lp2 = l.p.getDistanceSquared(this);
+        Math_BigRational lq2 = l.q.getDistanceSquared(this);
         BigDecimal lp = (new V3D_Line(l)).getDistance(this, oom);
         if (lp2.compareTo(l2) == -1 && lq2.compareTo(l2) == -1) {
             return lp;
@@ -351,18 +344,18 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
          * segment, then the distance is the minimum of the distances from the
          * point to the ends of the line segment.
          */
-        //BigRational pl2 = (new V3D_Line(l)).getDistanceSquared(this);
+        //Math_BigRational pl2 = (new V3D_Line(l)).getDistanceSquared(this);
         BigDecimal pl = (new V3D_Line(l)).getDistance(this, oom2);
-        BigRational pl2 = BigRational.valueOf(pl).pow(2);
+        Math_BigRational pl2 = Math_BigRational.valueOf(pl).pow(2);
         V3D_Vector u = l.v.getUnitVector(oom - 2);
-        V3D_Point pi = new V3D_Point(u.multiply(BigRational.valueOf(
+        V3D_Point pi = new V3D_Point(u.multiply(Math_BigRational.valueOf(
                 new Math_BigRationalSqrt(lp2.subtract(pl2), oom2)
                         .toBigDecimal(oom2)))
                 .add(new V3D_Vector(l.p, oom2)));
         if (l.isIntersectedBy(pi)) {
             return lp;
         } else {
-            return new Math_BigRationalSqrt(BigRational.min(lp2, lq2), oom2)
+            return new Math_BigRationalSqrt(Math_BigRational.min(lp2, lq2), oom2)
                     .toBigDecimal(oom);
         }
     }
@@ -397,29 +390,29 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * </Table>
      */
     public int getLocation() {
-        if (x.compareTo(BigRational.ZERO) != -1) {
-            if (y.compareTo(BigRational.ZERO) != -1) {
-                if (z.compareTo(BigRational.ZERO) != -1) {
+        if (x.compareTo(Math_BigRational.ZERO) != -1) {
+            if (y.compareTo(Math_BigRational.ZERO) != -1) {
+                if (z.compareTo(Math_BigRational.ZERO) != -1) {
                     return 1;
                 } else {
                     return 2;
                 }
             } else {
-                if (z.compareTo(BigRational.ZERO) != -1) {
+                if (z.compareTo(Math_BigRational.ZERO) != -1) {
                     return 3;
                 } else {
                     return 4;
                 }
             }
         } else {
-            if (y.compareTo(BigRational.ZERO) != -1) {
-                if (z.compareTo(BigRational.ZERO) != -1) {
+            if (y.compareTo(Math_BigRational.ZERO) != -1) {
+                if (z.compareTo(Math_BigRational.ZERO) != -1) {
                     return 5;
                 } else {
                     return 6;
                 }
             } else {
-                if (z.compareTo(BigRational.ZERO) != -1) {
+                if (z.compareTo(Math_BigRational.ZERO) != -1) {
                     return 7;
                 } else {
                     return 8;

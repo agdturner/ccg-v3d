@@ -15,9 +15,9 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.Math_BigRational;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 
 /**
@@ -172,7 +172,7 @@ public class V3D_Ray extends V3D_Line {
      */
     private boolean isPossibleIntersection(V3D_Point pt) {
         int ptxcpx = pt.x.compareTo(p.x);
-        int vdxc0 = v.getDX().compareTo(BigRational.ZERO);
+        int vdxc0 = v.getDX().compareTo(Math_BigRational.ZERO);
         switch (ptxcpx) {
             case -1:
                 if (vdxc0 == -1) {
@@ -193,7 +193,7 @@ public class V3D_Ray extends V3D_Line {
 
     private boolean getptycpy(V3D_Point pt) {
         int ptycpy = pt.y.compareTo(p.y);
-        int vdyc0 = v.getDY().compareTo(BigRational.ZERO);
+        int vdyc0 = v.getDY().compareTo(Math_BigRational.ZERO);
         switch (ptycpy) {
             case -1:
                 if (vdyc0 == -1) {
@@ -214,7 +214,7 @@ public class V3D_Ray extends V3D_Line {
 
     private boolean getptzcpz(V3D_Point pt) {
         int ptzcpz = pt.z.compareTo(p.z);
-        int vdzc0 = v.getDZ().compareTo(BigRational.ZERO);
+        int vdzc0 = v.getDZ().compareTo(Math_BigRational.ZERO);
         switch (ptzcpz) {
             case -1:
                 return vdzc0 == -1;

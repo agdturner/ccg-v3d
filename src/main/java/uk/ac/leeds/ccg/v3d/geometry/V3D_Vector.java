@@ -15,9 +15,13 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigRational;
+import ch.obermuhlner.math.big.BigComplex;
+import ch.obermuhlner.math.big.BigComplexMath;
+import ch.obermuhlner.math.big.BigDecimalMath;
 import java.io.Serializable;
+import java.math.MathContext;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.Math_BigRational;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -89,25 +93,25 @@ public class V3D_Vector implements Serializable {
      * @param oom The Order of Magnitude used for the root calculation used to
      * initialise {@link #m}.
      */
-    public V3D_Vector(BigRational dx, BigRational dy, BigRational dz,
+    public V3D_Vector(Math_BigRational dx, Math_BigRational dy, Math_BigRational dz,
             int oom) {
-        BigRational dx2 = dx.pow(2);
-        BigRational dy2 = dy.pow(2);
-        BigRational dz2 = dz.pow(2);
-        if (dx.compareTo(BigRational.ZERO) == -1) {
-            this.dx = new Math_BigRationalSqrt(dx2.negate(), dx, oom);
+        Math_BigRational dx2 = dx.pow(2);
+        Math_BigRational dy2 = dy.pow(2);
+        Math_BigRational dz2 = dz.pow(2);
+        if (dx.compareTo(Math_BigRational.ZERO) == -1) {
+            this.dx = new Math_BigRationalSqrt(dx2.negate(), dx, oom, true);
         } else {
-            this.dx = new Math_BigRationalSqrt(dx2, dx, oom);
+            this.dx = new Math_BigRationalSqrt(dx2, dx, oom, false);
         }
-        if (dy.compareTo(BigRational.ZERO) == -1) {
-            this.dy = new Math_BigRationalSqrt(dy2.negate(), dy, oom);
+        if (dy.compareTo(Math_BigRational.ZERO) == -1) {
+            this.dy = new Math_BigRationalSqrt(dy2.negate(), dy, oom, true);
         } else {
-            this.dy = new Math_BigRationalSqrt(dy2, dy, oom);
+            this.dy = new Math_BigRationalSqrt(dy2, dy, oom, false);
         }
-        if (dz.compareTo(BigRational.ZERO) == -1) {
-            this.dz = new Math_BigRationalSqrt(dz2.negate(), dz, oom);
+        if (dz.compareTo(Math_BigRational.ZERO) == -1) {
+            this.dz = new Math_BigRationalSqrt(dz2.negate(), dz, oom, true);
         } else {
-            this.dz = new Math_BigRationalSqrt(dz2, dz, oom);
+            this.dz = new Math_BigRationalSqrt(dz2, dz, oom, false);
         }
         m = new Math_BigRationalSqrt(dx2.add(dy2.add(dz2)), oom);
         this.oom = oom;
@@ -121,8 +125,8 @@ public class V3D_Vector implements Serializable {
      * initialise {@link #m}.
      */
     public V3D_Vector(long dx, long dy, long dz, int oom) {
-        this(BigRational.valueOf(dx), BigRational.valueOf(dy),
-                BigRational.valueOf(dz), oom);
+        this(Math_BigRational.valueOf(dx), Math_BigRational.valueOf(dy),
+                Math_BigRational.valueOf(dz), oom);
     }
 
     /**
@@ -238,37 +242,37 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @return The value of {@link #dx} as a BigRational
+     * @return The value of {@link #dx} as a Math_BigRational
      */
-    public final BigRational getDX() {
+    public final Math_BigRational getDX() {
         if (dx.negative) {
-            return dx.getSqrt().negate();
+            return dx.getSqrt().abs().negate();
         } else {
-            return dx.getSqrt();
+            return dx.getSqrt().abs();
         }
 //        return dx.getX();
     }
 
     /**
-     * @return The value of {@link #dy} as a BigRational
+     * @return The value of {@link #dy} as a Math_BigRational
      */
-    public final BigRational getDY() {
+    public final Math_BigRational getDY() {
         if (dy.negative) {
-            return dy.getSqrt().negate();
+            return dy.getSqrt().abs().negate();
         } else {
-            return dy.getSqrt();
+            return dy.getSqrt().abs();
         }
 //        return dy.getX();
     }
 
     /**
-     * @return The value of {@link #dz} as a BigRational
+     * @return The value of {@link #dz} as a Math_BigRational
      */
-    public final BigRational getDZ() {
+    public final Math_BigRational getDZ() {
         if (dz.negative) {
-            return dz.getSqrt().negate();
+            return dz.getSqrt().abs().negate();
         } else {
-            return dz.getSqrt();
+            return dz.getSqrt().abs();
         }
 //        return dz.getX();
     }
@@ -277,7 +281,7 @@ public class V3D_Vector implements Serializable {
      * @param s The scalar value to multiply this by.
      * @return Scaled vector.
      */
-    public V3D_Vector multiply(BigRational s) {
+    public V3D_Vector multiply(Math_BigRational s) {
         return new V3D_Vector(
                 dx.multiply(s),
                 dy.multiply(s),
@@ -324,32 +328,35 @@ public class V3D_Vector implements Serializable {
      * @param v V3D_Vector
      * @return dot product
      */
-    public BigRational getDotProduct(V3D_Vector v) {
-        BigRational vdx = v.getDX().abs();
-        if (v.dx.negative) {
-            vdx = vdx.negate();
-        }
-        BigRational vdy = v.getDY().abs();
-        if (v.dy.negative) {
-            vdy = vdy.negate();
-        }
-        BigRational vdz = v.getDZ().abs();
-        if (v.dz.negative) {
-            vdz = vdz.negate();
-        }
-        BigRational tdx = getDX().abs();
-        if (dx.negative) {
-            tdx = tdx.negate();
-        }
-        BigRational tdy = getDY().abs();
-        if (dy.negative) {
-            tdy = tdy.negate();
-        }
-        BigRational tdz = getDZ().abs();
-        if (dz.negative) {
-            tdz = tdz.negate();
-        }
-        return (vdx.multiply(tdx)).add(vdy.multiply(tdy)).add(vdz.multiply(tdz));
+    public Math_BigRational getDotProduct(V3D_Vector v) {
+        return (v.getDX().multiply(getDX()))
+                .add(v.getDY().multiply(getDY()))
+                .add(v.getDZ().multiply(getDZ()));
+//        Math_BigRational vdx = v.getDX().abs();
+//        if (v.dx.negative) {
+//            vdx = vdx.negate();
+//        }
+//        Math_BigRational vdy = v.getDY().abs();
+//        if (v.dy.negative) {
+//            vdy = vdy.negate();
+//        }
+//        Math_BigRational vdz = v.getDZ().abs();
+//        if (v.dz.negative) {
+//            vdz = vdz.negate();
+//        }
+//        Math_BigRational tdx = getDX().abs();
+//        if (dx.negative) {
+//            tdx = tdx.negate();
+//        }
+//        Math_BigRational tdy = getDY().abs();
+//        if (dy.negative) {
+//            tdy = tdy.negate();
+//        }
+//        Math_BigRational tdz = getDZ().abs();
+//        if (dz.negative) {
+//            tdz = tdz.negate();
+//        }
+//        return (vdx.multiply(tdx)).add(vdy.multiply(tdy)).add(vdz.multiply(tdz));
 //        return (v.dx.multiply(dx)).getSqrt()
 //                .add(v.dy.multiply(dy).getSqrt())
 //                .add(v.dz.multiply(dz).getSqrt());
@@ -362,13 +369,16 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isOrthogonal(V3D_Vector v) {
+        if (isScalarMultiple(v)) {
+            return false;
+        }
         return getDotProduct(v).isZero();
     }
 
     /**
      * @return The magnitude of the vector squared.
      */
-    public BigRational getMagnitudeSquared() {
+    public Math_BigRational getMagnitudeSquared() {
         return m.getX();
     }
 
@@ -408,9 +418,9 @@ public class V3D_Vector implements Serializable {
                             if (v.getDZ().isZero()) {
                                 return false;
                             } else {
-                                BigRational sy = getDY().divide(v.getDY());
-                                BigRational sz = getDZ().divide(v.getDZ());
-                                return sy == sz;
+                                Math_BigRational sy = getDY().divide(v.getDY());
+                                Math_BigRational sz = getDZ().divide(v.getDZ());
+                                return sy.compareTo(sz) == 0;
                             }
                         }
                     }
@@ -427,9 +437,9 @@ public class V3D_Vector implements Serializable {
                         if (getDZ().isZero()) {
                             return v.getDZ().isZero();
                         } else {
-                            BigRational sx = getDX().divide(v.getDX());
-                            BigRational sz = getDZ().divide(v.getDZ());
-                            return sx == sz;
+                            Math_BigRational sx = getDX().divide(v.getDX());
+                            Math_BigRational sz = getDZ().divide(v.getDZ());
+                            return sx.compareTo(sz) == 0;
                         }
                     } else {
                         return false;
@@ -438,18 +448,50 @@ public class V3D_Vector implements Serializable {
                     if (v.getDY().isZero()) {
                         return false;
                     } else {
-                        BigRational sx = getDX().divide(v.getDX());
-                        BigRational sy = getDY().divide(v.getDY());
-                        BigRational sz = getDZ().divide(v.getDZ());
-                        if (sx == sy) {
-                            return sy == sz;
+                        if (getDZ().isZero()) {
+                            if (v.getDZ().isZero()) {
+                                Math_BigRational sx = getDX().divide(v.getDX());
+                                Math_BigRational sy = getDY().divide(v.getDY());
+                                return sx.compareTo(sy) == 0;
+                            } else {
+                                return false;
+                            }
                         } else {
-                            return false;
+                            if (v.getDZ().isZero()) {
+                                return false;
+                            } else {
+                                Math_BigRational sx = getDX().divide(v.getDX());
+                                Math_BigRational sy = getDY().divide(v.getDY());
+                                Math_BigRational sz = getDZ().divide(v.getDZ());
+                                if (sx.compareTo(sy) == 0) {
+                                    return sy.compareTo(sz) == 0;
+                                } else {
+                                    return false;
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Find the dot product of the vectors. Divide the dot product with the
+     * magnitude of the first vector. Divide the resultant with the magnitude of
+     * the second vector.
+     *
+     * @param v The vector to find the angle between.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The angle in radians between {@code this} and {@code v}.
+     */
+    public Math_BigRational getAngle(V3D_Vector v, int oom) {
+        Math_BigRational dp = getDotProduct(v);
+        Math_BigRational m2 = getMagnitude().getSqrt(oom);
+        Math_BigRational vm2 = v.getMagnitude().getSqrt(oom);
+        MathContext mc = new MathContext(-oom); // This is almost certainly wrong and needs to be checked!
+        return Math_BigRational.valueOf(BigDecimalMath.acos(dp.divide(m2.multiply(vm2)).toBigDecimal(mc), mc));
+
     }
 
     /**
@@ -463,12 +505,12 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector getCrossProduct(V3D_Vector v) {
         return new V3D_Vector(
-                getDY().multiply(v.getDZ()).subtract(v.getDY().multiply(getDZ())),
-                getDZ().multiply(v.getDX()).subtract(v.getDZ().multiply(getDX())),
-                getDX().multiply(v.getDY()).subtract(v.getDX().multiply(getDY())), v.oom);
-//                dy.multiply(v.dz).getSqrt().subtract(v.dy.multiply(dz).getSqrt()),
-//                dz.multiply(v.dx).getSqrt().subtract(v.dz.multiply(dx).getSqrt()),
-//                dx.multiply(v.dy).getSqrt().subtract(v.dx.multiply(dy).getSqrt()), v.oom);
+                //                getDY().multiply(v.getDZ()).subtract(v.getDY().multiply(getDZ())).negate(),
+                //                getDZ().multiply(v.getDX()).subtract(v.getDZ().multiply(getDX())),
+                //                getDX().multiply(v.getDY()).subtract(v.getDX().multiply(getDY())), v.oom);
+                dy.multiply(v.dz).getSqrt().subtract(v.dy.multiply(dz).getSqrt()),
+                dz.multiply(v.dx).getSqrt().subtract(v.dz.multiply(dx).getSqrt()),
+                dx.multiply(v.dy).getSqrt().subtract(v.dx.multiply(dy).getSqrt()), v.oom);
     }
 
     /**
@@ -478,9 +520,9 @@ public class V3D_Vector implements Serializable {
      * @return this scaled by {@link #m}.
      */
     public V3D_Vector getUnitVector(int oom) {
-        BigRational d = m.getSqrt();
+        Math_BigRational d = m.getSqrt();
         if (d == null) {
-            d = BigRational.valueOf(m.toBigDecimal(oom));
+            d = Math_BigRational.valueOf(m.toBigDecimal(oom));
         }
         return new V3D_Vector(
                 dx.getSqrt().divide(d),
@@ -492,12 +534,11 @@ public class V3D_Vector implements Serializable {
      * @return The points that define the plan as a matrix.
      */
     public Math_Matrix_BR getAsMatrix() {
-        Math_Matrix_BR r = new Math_Matrix_BR(1, 3);
-        BigRational[][] rm = r.getM();
-        rm[0][0] = getDX();
-        rm[0][1] = getDY();
-        rm[0][2] = getDZ();
-        return r;
+        Math_BigRational[][] ma = new Math_BigRational[1][3];
+        ma[0][0] = getDX();
+        ma[0][1] = getDY();
+        ma[0][2] = getDZ();
+        return new Math_Matrix_BR(ma);
     }
 
     /**
@@ -520,29 +561,29 @@ public class V3D_Vector implements Serializable {
      * </Table>
      */
     public int getDirection() {
-        if (getDX().compareTo(BigRational.ZERO) != -1) {
-            if (getDY().compareTo(BigRational.ZERO) != -1) {
-                if (getDZ().compareTo(BigRational.ZERO) != -1) {
+        if (getDX().compareTo(Math_BigRational.ZERO) != -1) {
+            if (getDY().compareTo(Math_BigRational.ZERO) != -1) {
+                if (getDZ().compareTo(Math_BigRational.ZERO) != -1) {
                     return 1;
                 } else {
                     return 2;
                 }
             } else {
-                if (getDZ().compareTo(BigRational.ZERO) != -1) {
+                if (getDZ().compareTo(Math_BigRational.ZERO) != -1) {
                     return 3;
                 } else {
                     return 4;
                 }
             }
         } else {
-            if (getDY().compareTo(BigRational.ZERO) != -1) {
-                if (getDZ().compareTo(BigRational.ZERO) != -1) {
+            if (getDY().compareTo(Math_BigRational.ZERO) != -1) {
+                if (getDZ().compareTo(Math_BigRational.ZERO) != -1) {
                     return 5;
                 } else {
                     return 6;
                 }
             } else {
-                if (getDZ().compareTo(BigRational.ZERO) != -1) {
+                if (getDZ().compareTo(Math_BigRational.ZERO) != -1) {
                     return 7;
                 } else {
                     return 8;
