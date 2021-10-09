@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import uk.ac.leeds.ccg.v3d.V3D_Test;
-import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
@@ -27,6 +26,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.Math_BigInteger;
+import uk.ac.leeds.ccg.math.Math_BigRational;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -67,12 +67,12 @@ public class V3D_VectorTest extends V3D_Test {
         int oom = -1;
         V3D_Vector instance = new V3D_Vector(P0P0P0, oom);
         String expResult = "V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=0), "
-                + "m=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=0))";
+                + "dx=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=-1), "
+                + "dy=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=-1), "
+                + "dz=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=-1), "
+                + "m=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=-1))";
         String result = instance.toString();
-        assertEquals(expResult, result);
+        assertTrue(expResult.equalsIgnoreCase(result));
     }
 
     /**
@@ -113,8 +113,8 @@ public class V3D_VectorTest extends V3D_Test {
         int oom = -1;
         V3D_Vector v = new V3D_Vector(P0P1P0, oom);
         V3D_Vector instance = new V3D_Vector(P1P0P0, oom);
-        BigRational expResult = P0;
-        BigRational result = instance.getDotProduct(v);
+        Math_BigRational expResult = P0;
+        Math_BigRational result = instance.getDotProduct(v);
         assertEquals(expResult, result);
         // Test 2
         v = new V3D_Vector(P0P1P0, oom);
@@ -137,402 +137,170 @@ public class V3D_VectorTest extends V3D_Test {
     public void testIsOrthogonal() {
         System.out.println("isOrthogonal");
         int oom = -1;
-        V3D_Vector v = new V3D_Vector(P1P0P0, oom);
-        // Tests A: 1 To 26
+        V3D_Vector v;
+        V3D_Vector instance;
         // Test 1
-        V3D_Vector instance = new V3D_Vector(P0P1P0, oom);
-        boolean expResult = true;
-        boolean result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 2
+        v = new V3D_Vector(P1P0P0, oom);
+        instance = new V3D_Vector(P0P1P0, oom);
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P0P1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 3
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0N1P0, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 4
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P0P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 5
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P1P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 6
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1N1P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 7
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1N1P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 8
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P1P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 9
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P1N1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 10
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0N1N1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 11
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0N1P1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 12
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P1P1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 14
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P1N1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 15
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0N1N1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 16
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0N1P1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 17
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P1P1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 18
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 19
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P1P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 20
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P1P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 21
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 22
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1N1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 23
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1N1P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 24
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1N1P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 25
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1N1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 26
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P0P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
+        assertFalse(instance.isOrthogonal(v));
+        // Test 2
         v = new V3D_Vector(P1P1P0, oom);
-        // Tests B: 1 To 26
-        // Test 1
         instance = new V3D_Vector(P1P0P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 2
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1N1P0, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 3
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0N1P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 4
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1N1P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 5
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P0P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 6
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P1P0, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 7
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P1P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 8
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P1P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 9
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 10
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P0N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 11
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1N1N1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 12
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0N1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 13
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1N1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 14
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P0N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 15
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P1N1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 16
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 17
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P0N1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 18
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P1P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 19
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P0P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 20
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1N1P1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 21
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0N1P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 22
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1N1P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 23
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P0P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 24
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P1P1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 25
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P1P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 26
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P0P1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        v = new V3D_Vector(P1P1P1, oom);
-        // Tests C: 1 To 26
-        // Test 1
-        instance = new V3D_Vector(P1P1P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 2
-        instance = new V3D_Vector(P1P0P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
+        assertTrue(instance.isOrthogonal(v));
         // Test 3
+        v = new V3D_Vector(P1P1P1, oom);
+        instance = new V3D_Vector(P1P1P1, oom);
+        assertFalse(instance.isOrthogonal(v));
+        instance = new V3D_Vector(P1P0P1, oom);
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1N1P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 4
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0N1P1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 5
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1N1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 6
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P0P1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 7
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P1P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 8
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P1P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 9
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P0P1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 9
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P1P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 10
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P0P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 11
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1N1P0, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 12
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0N1P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 13
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1N1P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 14
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P0P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 15
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P1P0, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 15
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P1P0, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 16
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P0P0, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 17
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 18
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1P0N1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 19
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P1N1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 20
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0N1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 21
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1N1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 22
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P0N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 23
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(N1P1N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 24
+        assertFalse(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P1N1, oom);
-        expResult = true;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
-        // Test 25
+        assertTrue(instance.isOrthogonal(v));
         instance = new V3D_Vector(P0P0N1, oom);
-        expResult = false;
-        result = instance.isOrthogonal(v);
-        assertEquals(expResult, result);
+        assertFalse(instance.isOrthogonal(v));
     }
 
     /**
@@ -543,7 +311,7 @@ public class V3D_VectorTest extends V3D_Test {
         System.out.println("getMagnitude");
         int oom = 0;
         V3D_Vector instance = new V3D_Vector(P0P0P0, oom);
-        BigRational expResultSquared;
+        Math_BigRational expResultSquared;
         BigDecimal expResult = P0.toBigDecimal();
         int precision;
         BigDecimal result = instance.getMagnitude().toBigDecimal(oom);
@@ -595,7 +363,7 @@ public class V3D_VectorTest extends V3D_Test {
         oom = -100;
         instance = new V3D_Vector(P10, P10, P10, oom);
         int x2 = 300;
-        expResultSquared = BigRational.valueOf(x2);
+        expResultSquared = Math_BigRational.valueOf(x2);
         precision = Math_BigInteger.getOrderOfMagnitudeOfMostSignificantDigit(BigInteger.valueOf(x2).sqrt()) + 1 - oom;
         expResult = expResultSquared.toBigDecimal().sqrt(new MathContext(precision));
         result = instance.getMagnitude().toBigDecimal(oom);
@@ -603,7 +371,7 @@ public class V3D_VectorTest extends V3D_Test {
         // Test 9
         instance = new V3D_Vector(P3, P4, N4, oom);
         x2 = 41;
-        expResultSquared = BigRational.valueOf(x2);
+        expResultSquared = Math_BigRational.valueOf(x2);
         precision = Math_BigInteger.getOrderOfMagnitudeOfMostSignificantDigit(BigInteger.valueOf(x2).sqrt()) + 1 - oom;
         expResult = expResultSquared.toBigDecimal().sqrt(new MathContext(precision));
         result = instance.getMagnitude().toBigDecimal(oom);
@@ -724,19 +492,19 @@ public class V3D_VectorTest extends V3D_Test {
     public void testMultiply() {
         System.out.println("multiply");
         int oom = -1;
-        BigRational s = BigRational.ZERO;
+        Math_BigRational s = Math_BigRational.ZERO;
         V3D_Vector instance = new V3D_Vector(0, 0, 0, oom);
         V3D_Vector expResult = new V3D_Vector(0, 0, 0, oom);
         V3D_Vector result = instance.multiply(s);
         assertEquals(expResult, result);
         // Test 2
-        s = BigRational.ZERO;
+        s = Math_BigRational.ZERO;
         instance = new V3D_Vector(10, 10, 10, oom);
         expResult = new V3D_Vector(0, 0, 0, oom);
         result = instance.multiply(s);
         assertEquals(expResult, result);
         // Test 3
-        s = BigRational.TWO;
+        s = Math_BigRational.TWO;
         instance = new V3D_Vector(10, 10, 10, oom);
         expResult = new V3D_Vector(20, 20, 20, oom);
         result = instance.multiply(s);
@@ -822,17 +590,17 @@ public class V3D_VectorTest extends V3D_Test {
         System.out.println("getMagnitudeSquared");
         int oom = -1;
         V3D_Vector instance = new V3D_Vector(0, 0, 0, oom);
-        BigRational expResult = BigRational.ZERO;
-        BigRational result = instance.getMagnitudeSquared();
+        Math_BigRational expResult = Math_BigRational.ZERO;
+        Math_BigRational result = instance.getMagnitudeSquared();
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         instance = new V3D_Vector(1, 1, 1, oom);
-        expResult = BigRational.valueOf(3);
+        expResult = Math_BigRational.valueOf(3);
         result = instance.getMagnitudeSquared();
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         instance = new V3D_Vector(2, 2, 2, oom);
-        expResult = BigRational.valueOf(12);
+        expResult = Math_BigRational.valueOf(12);
         result = instance.getMagnitudeSquared();
         assertTrue(expResult.compareTo(result) == 0);
     }
@@ -862,11 +630,11 @@ public class V3D_VectorTest extends V3D_Test {
     public void testGetAsMatrix() {
         System.out.println("getAsMatrix");
         V3D_Vector instance = V3D_Environment.i;
-        Math_Matrix_BR expResult = new Math_Matrix_BR(1, 3);
-        BigRational[][] m = expResult.getM();
-        m[0][0] = BigRational.ONE;
-        m[0][1] = BigRational.ZERO;
-        m[0][2] = BigRational.ZERO;
+        Math_BigRational[][] m = new Math_BigRational[1][3];
+        m[0][0] = Math_BigRational.ONE;
+        m[0][1] = Math_BigRational.ZERO;
+        m[0][2] = Math_BigRational.ZERO;
+        Math_Matrix_BR expResult = new Math_Matrix_BR(m);
         Math_Matrix_BR result = instance.getAsMatrix();
         assertEquals(expResult, result);
         // Test 2

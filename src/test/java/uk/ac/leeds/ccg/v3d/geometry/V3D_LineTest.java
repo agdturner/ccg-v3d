@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import uk.ac.leeds.ccg.v3d.V3D_Test;
-import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import org.junit.jupiter.api.AfterEach;
@@ -26,6 +25,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
+import uk.ac.leeds.ccg.math.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -68,13 +68,13 @@ public class V3D_LineTest extends V3D_Test {
         String expResult = "V3D_Line("
                 + "p=V3D_Point(x=0, y=0, z=0), q=V3D_Point(x=1, y=0, z=0), "
                 + "v=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, oomi=-1, sqrtxapprox=null, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=0), "
-                + "m=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, oomi=-1, sqrtxapprox=null, oom=0)))";
+                + "dx=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, oomi=-1, sqrtxapprox=null, oom=-1), "
+                + "dy=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=-1), "
+                + "dz=Math_BigRationalSqrt(x=0, negative=false, sqrtx=0, oomi=-1, sqrtxapprox=null, oom=-1), "
+                + "m=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, oomi=-1, sqrtxapprox=1, oom=-1)))";
         String result = instance.toString();
         System.out.println(result);
-        assertEquals(expResult, result);
+        assertTrue(expResult.equalsIgnoreCase(result));
     }
 
     /**
@@ -329,7 +329,6 @@ public class V3D_LineTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Line.
      */
     @Test
-    @Disabled
     public void testIsIntersectedBy_V3D_Line() {
         System.out.println("isIntersectedBy");
         int oom = -1;
@@ -493,14 +492,14 @@ public class V3D_LineTest extends V3D_Test {
     public void testGetAsMatrix() {
         System.out.println("getAsMatrix");
         V3D_Line instance = V3D_Environment.xAxis;
-        Math_Matrix_BR expResult = new Math_Matrix_BR(2, 3);
-        BigRational[][] m = expResult.getM();
-        m[0][0] = BigRational.ZERO;
-        m[0][1] = BigRational.ZERO;
-        m[0][2] = BigRational.ZERO;
-        m[1][0] = BigRational.ONE;
-        m[1][1] = BigRational.ZERO;
-        m[1][2] = BigRational.ZERO;
+        Math_BigRational[][] m = new Math_BigRational[2][3];
+        m[0][0] = Math_BigRational.ZERO;
+        m[0][1] = Math_BigRational.ZERO;
+        m[0][2] = Math_BigRational.ZERO;
+        m[1][0] = Math_BigRational.ONE;
+        m[1][1] = Math_BigRational.ZERO;
+        m[1][2] = Math_BigRational.ZERO;
+        Math_Matrix_BR expResult = new Math_Matrix_BR(m);
         Math_Matrix_BR result = instance.getAsMatrix();
         assertEquals(expResult, result);
     }
@@ -509,7 +508,6 @@ public class V3D_LineTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Line.
      */
     @Test
-    @Disabled
     public void testGetDistance_V3D_Point_int() {
         System.out.println("getDistance");
         V3D_Point p;
@@ -539,13 +537,13 @@ public class V3D_LineTest extends V3D_Test {
         oom = - 4;
         p = P0P1P0;
         instance = new V3D_Line(P0P0P0, P1P1P0, oom);
-        int ooms = Math_BigRationalSqrt.getOOM(BigRational.TWO, oom);
+        int ooms = Math_BigRationalSqrt.getOOM(Math_BigRational.TWO, oom);
         if (ooms > 0) {
             ooms = 0;
         }
         MathContext mc = new MathContext(-ooms);
-        expResult = BigRational.valueOf(new Math_BigRationalSqrt(
-                BigRational.TWO, oom).toBigDecimal(oom)).divide(2)
+        expResult = Math_BigRational.valueOf(new Math_BigRationalSqrt(
+                Math_BigRational.TWO, oom).toBigDecimal(oom)).divide(2)
                 .toBigDecimal(mc);
         result = instance.getDistance(p, oom);
         assertTrue(expResult.compareTo(result) == 0);

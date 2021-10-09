@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -23,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import uk.ac.leeds.ccg.math.Math_BigRational;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 
@@ -104,11 +104,11 @@ public class V3D_RectangleTest extends V3D_Test {
         instance = new V3D_Rectangle(N1P0P0, P0P1P0, P1P0P0, P0N1P0, oom);
         assertTrue(instance.isIntersectedBy(pt));
         // Test 3
-        BigRational half = BigRational.ONE.divide(2);
+        Math_BigRational half = Math_BigRational.ONE.divide(2);
         pt = new V3D_Point(half, half, P0);
         assertTrue(instance.isIntersectedBy(pt));
         // Test 3
-        pt = new V3D_Point(half.add(BigRational.valueOf("0.00000000001")), half, P0);
+        pt = new V3D_Point(half.add(Math_BigRational.valueOf("0.00000000001")), half, P0);
         assertFalse(instance.isIntersectedBy(pt));
     }
 

@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -24,6 +23,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
+import uk.ac.leeds.ccg.math.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
@@ -84,6 +84,29 @@ public class V3D_PlaneTest extends V3D_Test {
                 + "q=V3D_Point(x=1, y=1, z=1), r=V3D_Point(x=1, y=0, z=0))";
         String result = instance.toString();
         assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of toString method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetEquation() {
+        System.out.println("getEquation");
+        int oom = -1;
+        V3D_Plane instance;
+        String expResult;
+        String result;
+        // Test 1
+        instance = new V3D_Plane(P0P0P0, P1P1P1, P1P0P0, oom);
+        expResult = "0 * x + -1 * y + 1 * z + 0 = 0";
+        result = instance.getEquation();
+        assertTrue(expResult.equalsIgnoreCase(result));
+        // Test 2
+        instance = new V3D_Plane(P1N2P1, new V3D_Point(P4, N2, N2),
+                new V3D_Point(P4, P1, P4), oom);
+        expResult = "9 * x + -18 * y + 9 * z + -54 = 0";
+        result = instance.getEquation();
+        assertTrue(expResult.equalsIgnoreCase(result));
     }
 
     /**
@@ -146,9 +169,13 @@ public class V3D_PlaneTest extends V3D_Test {
         assertTrue(instance.equals(o));
         // Test 5
         o = new V3D_Plane(P0P0P0, P1P0P0, P0P1P0, oom);
-        V3D_Point q = new V3D_Point(P2, P0, P0);
-        V3D_Point r = new V3D_Point(P0, P2, P0);
-        instance = new V3D_Plane(P0P0P0, q, r, oom);
+        instance = new V3D_Plane(P0P0P0, P2P0P0, P0P2P0, oom);
+        assertTrue(instance.equals(o));
+        // Test 6
+        instance = new V3D_Triangle(P0P0P0, P2P0P0, P0P2P0, oom);
+        assertTrue(instance.equals(o));
+        // Test 7
+        o = new V3D_Line(P0P0P0, P1P0P0, oom);
         assertFalse(instance.equals(o));
     }
 
@@ -1393,7 +1420,7 @@ public class V3D_PlaneTest extends V3D_Test {
         // x=-y
         instance = new V3D_Plane(P0P0P0, N1P1P0, P0P0P1, oom);
         // P2
-//        assertFalse(instance.isIntersectedBy(P2P2P2));
+        assertFalse(instance.isIntersectedBy(P2P2P2));
         assertFalse(instance.isIntersectedBy(P2P2P1));
         assertFalse(instance.isIntersectedBy(P2P2P0));
         assertFalse(instance.isIntersectedBy(P2P2N1));
@@ -2631,7 +2658,7 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Plane instance;
         V3D_Geometry expResult;
         V3D_Geometry result;
-        // Test 1 to 4 
+        // Test V3D_Environment.x0
         pl = V3D_Environment.x0;
         // Test 1 
         instance = V3D_Environment.x0;
@@ -3073,17 +3100,17 @@ public class V3D_PlaneTest extends V3D_Test {
     public void testGetAsMatrix() {
         System.out.println("getAsMatrix");
         V3D_Plane instance = V3D_Environment.x0;
-        Math_Matrix_BR expResult = new Math_Matrix_BR(3, 3);
-        BigRational[][] m = expResult.getM();
-        m[0][0] = BigRational.ZERO;
-        m[0][1] = BigRational.ZERO;
-        m[0][2] = BigRational.ZERO;
-        m[1][0] = BigRational.ZERO;
-        m[1][1] = BigRational.ONE;
-        m[1][2] = BigRational.ZERO;
-        m[2][0] = BigRational.ZERO;
-        m[2][1] = BigRational.ZERO;
-        m[2][2] = BigRational.ONE;
+        Math_BigRational[][] m = new Math_BigRational[3][3];
+        m[0][0] = Math_BigRational.ZERO;
+        m[0][1] = Math_BigRational.ZERO;
+        m[0][2] = Math_BigRational.ZERO;
+        m[1][0] = Math_BigRational.ZERO;
+        m[1][1] = Math_BigRational.ONE;
+        m[1][2] = Math_BigRational.ZERO;
+        m[2][0] = Math_BigRational.ZERO;
+        m[2][1] = Math_BigRational.ZERO;
+        m[2][2] = Math_BigRational.ONE;
+        Math_Matrix_BR expResult = new Math_Matrix_BR(m);
         Math_Matrix_BR result = instance.getAsMatrix();
         assertEquals(expResult, result);
         // Test 2
@@ -3097,18 +3124,20 @@ public class V3D_PlaneTest extends V3D_Test {
         System.out.println("getDistanceSquared");
         V3D_Plane p = V3D_Environment.x0;
         V3D_Plane instance = V3D_Environment.x0;
-        BigRational expResult = BigRational.ZERO;
-        BigRational result = instance.getDistanceSquared(p);
+        Math_BigRational expResult = Math_BigRational.ZERO;
+        Math_BigRational result = instance.getDistanceSquared(p);
         assertEquals(expResult, result);
         // Test 2
         V3D_Vector v = V3D_Environment.i;
         instance = V3D_Environment.x0.apply(v);
-        expResult = BigRational.ONE;
+        expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(p);
+        assertEquals(expResult, result);
         // Test 3
         instance = V3D_Environment.x0.apply(v);
-        expResult = BigRational.valueOf(4);
+        expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(p);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -3136,10 +3165,11 @@ public class V3D_PlaneTest extends V3D_Test {
         assertTrue(instance.equals(p));
         // Test 3
         p = new V3D_Plane(P0P0P0, P1P0P0, P0P1P0, oom);
-        V3D_Point q = new V3D_Point(P2, P0, P0);
-        V3D_Point r = new V3D_Point(P0, P2, P0);
-        instance = new V3D_Plane(P0P0P0, q, r, oom);
-        assertFalse(instance.equals(p));
+        instance = new V3D_Plane(P0P0P0, P2P0P0, P0P2P0, oom);
+        assertTrue(instance.equals(p));
+        // Test 6
+        instance = new V3D_Triangle(P0P0P0, P2P0P0, P0P2P0, oom);
+        assertTrue(instance.equals(p));
     }
 
     /**
@@ -3155,7 +3185,6 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Plane.
      */
     @Test
-    @Disabled
     public void testGetDistance() {
         System.out.println("getDistance");
         V3D_Point p = new V3D_Point(P5, P0, P0);

@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -24,6 +23,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
+import uk.ac.leeds.ccg.math.Math_BigRational;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 
@@ -59,9 +59,9 @@ public class V3D_PointTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        BigRational x = P0;
-        BigRational y = P0;
-        BigRational z = P0;
+        Math_BigRational x = P0;
+        Math_BigRational y = P0;
+        Math_BigRational z = P0;
         V3D_Point instance = new V3D_Point(x, y, z);
         String expResult = "V3D_Point(x=0, y=0, z=0)";
         String result = instance.toString();
@@ -75,9 +75,9 @@ public class V3D_PointTest extends V3D_Test {
     public void testEquals_Object() {
         System.out.println("equals");
         V3D_Point instance = P0P0P0;
-        BigRational x = BigRational.valueOf(new BigDecimal("0.000"));
-        BigRational y = BigRational.valueOf(new BigDecimal("0.000"));
-        BigRational z = BigRational.valueOf(new BigDecimal("0.000"));
+        Math_BigRational x = Math_BigRational.valueOf(new BigDecimal("0.000"));
+        Math_BigRational y = Math_BigRational.valueOf(new BigDecimal("0.000"));
+        Math_BigRational z = Math_BigRational.valueOf(new BigDecimal("0.000"));
         Object o = new V3D_Point(x, y, z);
         boolean expResult = true;
         boolean result = instance.equals(o);
@@ -87,21 +87,21 @@ public class V3D_PointTest extends V3D_Test {
         y = P10;
         z = P0;
         instance = new V3D_Point(x, y, z);
-        x = BigRational.valueOf(new BigDecimal("1.000"));
-        y = BigRational.valueOf(new BigDecimal("10.000"));
-        z = BigRational.valueOf(new BigDecimal("0.000"));
+        x = Math_BigRational.valueOf(new BigDecimal("1.000"));
+        y = Math_BigRational.valueOf(new BigDecimal("10.000"));
+        z = Math_BigRational.valueOf(new BigDecimal("0.000"));
         o = new V3D_Point(x, y, z);
         expResult = true;
         result = instance.equals(o);
         assertEquals(expResult, result);
         // Test 3
-        x = BigRational.ONE;
-        y = BigRational.TEN;
-        z = BigRational.ZERO;
+        x = Math_BigRational.ONE;
+        y = Math_BigRational.TEN;
+        z = Math_BigRational.ZERO;
         instance = new V3D_Point(x, y, z);
-        x = BigRational.valueOf(new BigDecimal("0.000"));
-        y = BigRational.valueOf(new BigDecimal("1.000"));
-        z = BigRational.valueOf(new BigDecimal("10.000"));
+        x = Math_BigRational.valueOf(new BigDecimal("0.000"));
+        y = Math_BigRational.valueOf(new BigDecimal("1.000"));
+        z = Math_BigRational.valueOf(new BigDecimal("10.000"));
         o = new V3D_Point(x, y, z);
         expResult = false;
         result = instance.equals(o);
@@ -170,9 +170,9 @@ public class V3D_PointTest extends V3D_Test {
     public void testEquals_V3D_Point() {
         System.out.println("equals");
         V3D_Point instance = P0P0P0;
-        BigRational x = BigRational.valueOf(new BigDecimal("0.000"));
-        BigRational y = BigRational.valueOf(new BigDecimal("0.000"));
-        BigRational z = BigRational.valueOf(new BigDecimal("0.000"));
+        Math_BigRational x = Math_BigRational.valueOf(new BigDecimal("0.000"));
+        Math_BigRational y = Math_BigRational.valueOf(new BigDecimal("0.000"));
+        Math_BigRational z = Math_BigRational.valueOf(new BigDecimal("0.000"));
         V3D_Point p = new V3D_Point(x, y, z);
         boolean expResult = true;
         boolean result = instance.equals(p);
@@ -182,21 +182,21 @@ public class V3D_PointTest extends V3D_Test {
         y = P10;
         z = P0;
         instance = new V3D_Point(x, y, z);
-        x = BigRational.valueOf(new BigDecimal("1.000"));
-        y = BigRational.valueOf(new BigDecimal("10.000"));
-        z = BigRational.valueOf(new BigDecimal("0.000"));
+        x = Math_BigRational.valueOf(new BigDecimal("1.000"));
+        y = Math_BigRational.valueOf(new BigDecimal("10.000"));
+        z = Math_BigRational.valueOf(new BigDecimal("0.000"));
         p = new V3D_Point(x, y, z);
         expResult = true;
         result = instance.equals(p);
         assertEquals(expResult, result);
         // Test 3
-        x = BigRational.ONE;
-        y = BigRational.TEN;
-        z = BigRational.ZERO;
+        x = Math_BigRational.ONE;
+        y = Math_BigRational.TEN;
+        z = Math_BigRational.ZERO;
         instance = new V3D_Point(x, y, z);
-        x = BigRational.valueOf(new BigDecimal("0.000"));
-        y = BigRational.valueOf(new BigDecimal("1.000"));
-        z = BigRational.valueOf(new BigDecimal("10.000"));
+        x = Math_BigRational.valueOf(new BigDecimal("0.000"));
+        y = Math_BigRational.valueOf(new BigDecimal("1.000"));
+        z = Math_BigRational.valueOf(new BigDecimal("10.000"));
         p = new V3D_Point(x, y, z);
         expResult = false;
         result = instance.equals(p);
@@ -291,12 +291,12 @@ public class V3D_PointTest extends V3D_Test {
     public void testGetDistanceSquared() {
         System.out.println("getDistanceSquared");
         V3D_Point instance = P0P0P0;
-        BigRational expResult = BigRational.ZERO;
-        BigRational result = instance.getDistanceSquared(P0P0P0);
+        Math_BigRational expResult = Math_BigRational.ZERO;
+        Math_BigRational result = instance.getDistanceSquared(P0P0P0);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_Point(P3, P4, P0);
-        expResult = BigRational.valueOf(25);
+        expResult = Math_BigRational.valueOf(25);
         result = instance.getDistanceSquared(P0P0P0);
         assertTrue(expResult.compareTo(result) == 0);
     }
@@ -427,6 +427,7 @@ public class V3D_PointTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
+    @Disabled
     public void testGetDistance_V3D_LineSegment_int() {
         System.out.println("getDistance");
         int oom = -1;

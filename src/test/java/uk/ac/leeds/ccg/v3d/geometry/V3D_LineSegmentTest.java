@@ -69,13 +69,13 @@ public class V3D_LineSegmentTest extends V3D_Test {
                 + "q=V3D_Point(x=1, y=1, z=1), "
                 + "v=V3D_Vector("
                 + "dx=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, "
-                + "sqrtxapprox=null, oom=0), "
+                + "oomi=-1, sqrtxapprox=null, oom=0), "
                 + "dy=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, "
-                + "sqrtxapprox=null, oom=0), "
+                + "oomi=-1, sqrtxapprox=null, oom=0), "
                 + "dz=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, "
-                + "sqrtxapprox=null, oom=0), "
+                + "oomi=-1, sqrtxapprox=null, oom=0), "
                 + "m=Math_BigRationalSqrt(x=3, negative=false, sqrtx=null, "
-                + "sqrtxapprox=null, oom=0)))";
+                + "oomi=-1, sqrtxapprox=null, oom=0)))";
         String result = instance.toString();
         assertEquals(expResult, result);
     }

@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 //import static org.hamcrest.MatcherAssert.assertThat;
 //import org.hamcrest.Matchers;
@@ -29,8 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Disabled;
+import uk.ac.leeds.ccg.math.Math_BigRational;
 import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
+//import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
 
 /**
  * Test class for V3D_Envelope.
@@ -467,8 +468,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
         int oom = -1;
         System.out.println("getxMin");
         V3D_Envelope instance = new V3D_Envelope(oom, P0N1N1, P0N1P0, N2N2N2);
-        BigRational expResult = N2;
-        BigRational result = instance.getxMin();
+        Math_BigRational expResult = N2;
+        Math_BigRational result = instance.getxMin();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -480,8 +481,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
         int oom = -1;
         System.out.println("getxMax");
         V3D_Envelope instance = new V3D_Envelope(oom, P0N1N1, P0N1P0, N2N2N2);
-        BigRational expResult = P0;
-        BigRational result = instance.getxMax();
+        Math_BigRational expResult = P0;
+        Math_BigRational result = instance.getxMax();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -493,8 +494,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
          int oom = -1;
        System.out.println("getyMin");
         V3D_Envelope instance = new V3D_Envelope(oom, P0N1N1, P0N1P0, N2N2N2);
-        BigRational expResult = N2;
-        BigRational result = instance.getyMin();
+        Math_BigRational expResult = N2;
+        Math_BigRational result = instance.getyMin();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -506,8 +507,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
            int oom = -1;
      System.out.println("getyMax");
         V3D_Envelope instance = new V3D_Envelope(oom, P0N1N1, P0N1P0, N2N2N2);
-        BigRational expResult = N1;
-        BigRational result = instance.getyMax();
+        Math_BigRational expResult = N1;
+        Math_BigRational result = instance.getyMax();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -519,8 +520,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
           int oom = -1;
       System.out.println("getzMin");
         V3D_Envelope instance = new V3D_Envelope(oom, P0N1N1, P0N1P0, N2N2N2);
-        BigRational expResult = N2;
-        BigRational result = instance.getzMin();
+        Math_BigRational expResult = N2;
+        Math_BigRational result = instance.getzMin();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -532,8 +533,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
          int oom = -1;
        System.out.println("getzMax");
         V3D_Envelope instance = new V3D_Envelope(oom, P0N1N1, P0N1P0, N2N2N2);
-        BigRational expResult = P0;
-        BigRational result = instance.getzMax();
+        Math_BigRational expResult = P0;
+        Math_BigRational result = instance.getzMax();
         assertTrue(expResult.compareTo(result) == 0);
     }
 
