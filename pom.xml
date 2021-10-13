@@ -46,10 +46,11 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <agdt-java-generic.version>1.11</agdt-java-generic.version>
-        <ccg-math.version>1.15-SNAPSHOT</ccg-math.version>
-        <big-math.version>2.3.0</big-math.version>
+        <ccg-generic.version>2.1</ccg-generic.version>
+        <ccg-io.version>1.1.0</ccg-io.version>
+        <ccg-math.version>2.0</ccg-math.version>
         <!--
+        <big-math.version>2.3.0</big-math.version>
         <ojalgo.version>48.0.0</ojalgo.version>
         <ojalgo.version>48.3.2</ojalgo.version>
         -->
@@ -63,11 +64,17 @@
     </properties>
     
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-generic -->
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-generic -->
         <dependency>
             <groupId>io.github.agdturner</groupId>
-            <artifactId>agdt-java-generic</artifactId>
-            <version>${agdt-java-generic.version}</version>
+            <artifactId>ccg-generic</artifactId>
+            <version>${ccg-generic.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-io -->
+        <dependency>
+            <groupId>io.github.agdturner</groupId>
+            <artifactId>ccg-io</artifactId>
+            <version>${ccg-io.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-math -->
         <dependency>
@@ -75,12 +82,13 @@
             <artifactId>ccg-math</artifactId>
             <version>${ccg-math.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/ch.obermuhlner/big-math -->
+        <!-- https://mvnrepository.com/artifact/ch.obermuhlner/big-math
         <dependency>
             <groupId>ch.obermuhlner</groupId>
             <artifactId>big-math</artifactId>
             <version>${big-math.version}</version>
         </dependency>
+        -->
         <!-- https://mvnrepository.com/artifact/org.ojalgo/ojalgo -->
         <!--
         <dependency>
@@ -92,13 +100,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.6.0</version>
+            <version>5.7.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.6.0</version>
+            <version>5.7.2</version>
             <scope>test</scope>
         </dependency>
         <!--
@@ -130,7 +138,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.6.0</version>
+            <version>5.7.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
