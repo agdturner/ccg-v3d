@@ -21,8 +21,8 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import java.io.Serializable;
 import java.math.MathContext;
 import java.util.Objects;
-import uk.ac.leeds.ccg.math.Math_BigRational;
-import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 

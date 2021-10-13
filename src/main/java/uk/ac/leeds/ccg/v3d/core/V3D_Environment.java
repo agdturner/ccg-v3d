@@ -19,10 +19,10 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import uk.ac.leeds.ccg.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.generic.io.Generic_Defaults;
-import uk.ac.leeds.ccg.generic.io.Generic_Path;
 import uk.ac.leeds.ccg.generic.memory.Generic_MemoryManager;
-import uk.ac.leeds.ccg.math.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.Math_BigRational;
+import uk.ac.leeds.ccg.io.IO_Path;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
@@ -163,11 +163,11 @@ public class V3D_Environment extends Generic_MemoryManager {
     /**
      * Creates a new V3D_Environment
      * @param e Generic_Environment
-     * @param dir Generic_Path
+     * @param dir IO_Path
      * @throws IOException If encountered.
      * @throws Exception If encountered.
      */
-    public V3D_Environment(Generic_Environment e, Generic_Path dir)
+    public V3D_Environment(Generic_Environment e, IO_Path dir)
             throws IOException, Exception {
         super();
         this.env = e;

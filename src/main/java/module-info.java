@@ -20,19 +20,17 @@
 module uk.ac.leeds.ccg.vector3D {
 
     /**
-     * The big-math library is mostly used for representing and computing with
-     * rational numbers as {@link ch.obermuhlner.math.big.BigRational}. It is
-     * also for some functions that work on {@link java.math.BigDecimal}.
-     */
-    //requires ch.obermuhlner.math.big;
-
-    /**
-     * The agdt-java-generic library is used for some general functionality.
+     * ccg-generic
      */
     requires transitive uk.ac.leeds.ccg.generic;
 
     /**
-     * The agdt-java-math library is used for some mathematics.
+     * ccg-io
+     */
+    requires transitive uk.ac.leeds.ccg.io;
+
+    /**
+     * ccg-math
      */
     requires transitive uk.ac.leeds.ccg.math;
 
