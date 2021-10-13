@@ -25,9 +25,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import uk.ac.leeds.ccg.math.Math_BigInteger;
-import uk.ac.leeds.ccg.math.Math_BigRational;
-import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 

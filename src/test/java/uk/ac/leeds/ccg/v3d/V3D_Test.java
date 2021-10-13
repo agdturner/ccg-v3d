@@ -15,7 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d;
 
-import uk.ac.leeds.ccg.math.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 

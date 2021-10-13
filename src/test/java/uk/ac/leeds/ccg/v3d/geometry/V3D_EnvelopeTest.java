@@ -28,8 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Disabled;
-import uk.ac.leeds.ccg.math.Math_BigRational;
-import uk.ac.leeds.ccg.math.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 //import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
 
