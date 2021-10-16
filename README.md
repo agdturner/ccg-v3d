@@ -77,24 +77,23 @@ Instances are immutable and finite [triangle](https://en.wikipedia.org/wiki/Tria
 Instances are immutable and finite [rectangle](https://en.wikipedia.org/wiki/Rectangle)s. Essentially they are [V3D_Plane](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Plane.java) instances and the three points (p, q and r) are the first three corners of the rectangle working around clockwise from the front of the plane. The other corner point of the rectangle (s) is also stored as are additional vectors (rs that gives how r is mapped onto s, and sp that gives how s is mapped onto p). Additionally the edges of the rectangle are stored as line segments for convenience. So again, as with other geometry objects, there is some redundancy in what is stored, but these additional things are stored for convenience.
 
 ## Development progress
-Most of what is implemented so far is intersection and distance from a point functionality. Not all of this is yet implemented for all geometries. The implemented intersection test implementations involve no rounding. For distance calculations, the user is asked to supply an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) which is used to provide an answer rounded to or correct to this. The default rounding is to round half up.
-
-The aim is to have intersection functionality for all geometries including a test of whether any two geometry instances intersect and a method to get the intersection. As the geometries become more complicated, this aim becomes harder. Additional intersection funtionality that might be considered is whether or not the geometries touch or whether they overlap oe cross through each other. Additionally robust distance methods are wanted to calculate the shortest distance between any two geometries accurate to a given [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude).  
+- Most of what is implemented so far is intersection and distance from a point functionality. Not all of this is yet implemented for all geometries. The implemented intersection test implementations involve no rounding. For distance calculations, the user is asked to supply an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) which is used to provide an answer rounded to or correct to this. The default rounding is to round half up.
+- The aim is to have intersection functionality for all geometries including a test of whether any two geometry instances intersect and a method to get the intersection. As the geometries become more complicated, this aim becomes harder. Additional intersection funtionality that might be considered is whether or not the geometries touch or whether they overlap oe cross through each other. Additionally robust distance methods are wanted to calculate the shortest distance between any two geometries accurate to a given [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude).  
 
 ### Intersection
-So far, methods for testing if there is an intersection and for retrieving the intersection are implemented for:
-- point-plane, point-line, point-ray, point-line_segement, point-rectangle, point-triangle
-- plane-plane, plane-line, plane-ray, plane-line_segment
-- line-line, line-ray, line-line_segment
-- ray-ray, ray-line_segment
-- line_segment-line_segment
-See the respective classes in the [geometry package](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/).
-What is next to do:
-- plane-triangle, plane-rectangle
-- line_segment-triangle, line_segment-rectangle
-- triangle-triangle, triangle-rectangle
-- rectangle-rectangle
-It would also be good to distinguish between geometries touching and overlapping.
+- So far, methods for testing if there is an intersection and for retrieving the intersection are implemented for:
+-- point-plane, point-line, point-ray, point-line_segement, point-rectangle, point-triangle
+-- plane-plane, plane-line, plane-ray, plane-line_segment
+-- line-line, line-ray, line-line_segment
+-- ray-ray, ray-line_segment
+-- line_segment-line_segment
+- See the respective classes in the [geometry package](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/).
+- What is next to do:
+-- plane-triangle, plane-rectangle
+-- line_segment-triangle, line_segment-rectangle
+-- triangle-triangle, triangle-rectangle
+-- rectangle-rectangle
+- It would also be good to distinguish between geometries touching and overlapping.
 
 ### Distance, Areas, Perimeters, Volumes
 Methods for calculating these currently require the user to specify an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) so that the result are provided accurate to that precision.
@@ -103,6 +102,7 @@ So far, methods for calculating the minimum distance between geometries are impl
 - plane-plane, plane-line, plane-ray, plane-line_segment
 - line-line, line-ray, line-line_segment
 - ray-ray, ray-line_segment
+
 See the respective classes in the [geometry package](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/). There is a related method in With a distance calculations it is 
 What is next to do is:
 - line_segment-line_segment
@@ -144,4 +144,4 @@ Geographical projections typically use a model for representing Earth relative t
 
 Geographically, everything is moving and changing. The rates of movement and change vary with scale. Geographers commonly explore patterns of change in different things in regions across ranges of spatial and temporal scales using data at specific spatial and temporal resolutions. The [structure of Earth](https://en.wikipedia.org/wiki/Structure_of_Earth), whilst conceptually well defined, is continually changing as Earth moves relative to the [Sun](https://en.wikipedia.org/wiki/Sun), the [Moon](https://en.wikipedia.org/wiki/Moon) and other [astronomical object](https://en.wikipedia.org/wiki/Astronomical_object)s which can have significant other affects on Earth. More of Earth's atmosphere, for example, stretches further out towards the Sun as it heats and expands in the day. The orbit of the Earth around the Sun is complicated and the distance from the Earth to the Sun varies through time. [Orbital eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity) affects Earth surface processes and probably causes changes deep within the Earth. Earth's solar system has [helicoid](https://en.wikipedia.org/wiki/Helicoid) like motion as it traverses the [Milky Way](https://en.wikipedia.org/wiki/Milky_Way). The varying position of Earth's solar system relative to the [galactic plane](https://en.wikipedia.org/wiki/Galactic_plane) is likely to affect [Earth's magnetic field](https://en.wikipedia.org/wiki/Earth%27s_magnetic_field). Nearby astronomical objects affect pressure on Earth and may alter the [geoid](https://en.wikipedia.org/wiki/Geoid) (sea levels) significantly. How good are our best estimates of sea levels and Earth's magnetic field in the next 50 to 100 years? Are current technology and models built based on [floating point](https://en.wikipedia.org/wiki/Floating_point) numbers providing sufficient accuracy?  Ocean boundaries change, water density changes with pressure and temperature (and state). Ice supported on land melts and adds to the mass. Although the total amount of ice is small relative to the total volume of water in the oceans which again is small relative to the mass of Earth. Application of this code abounds in [Earth Science](https://en.wikipedia.org/wiki/Earth_science)s which was one of the original motivations for developing it.
 
-f you find it useful, think it may be useful, or want to help develop the library, then please let me know.
+If you find this library useful, think it may be useful, or want to help develop it, then please let me know.
