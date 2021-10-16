@@ -96,24 +96,20 @@ Instances are immutable and finite [rectangle](https://en.wikipedia.org/wiki/Rec
 - It would also be good to distinguish between geometries touching and overlapping.
 
 ### Distance, Areas, Perimeters, Volumes
-Methods for calculating these currently require the user to specify an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) so that the result are provided accurate to that precision.
-So far, methods for calculating the minimum distance between geometries are implemented for:
-- point-plane, point-line, point-ray, point-line_segment, point-rectangle, point-triangle
-- plane-plane, plane-line, plane-ray, plane-line_segment
-- line-line, line-ray, line-line_segment
-- ray-ray, ray-line_segment
-
-See the respective classes in the [geometry package](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/). There is a related method in With a distance calculations it is 
-What is next to do is:
-- line_segment-line_segment
-It might also be good to calculate the centroids and average distances, and perhaps maximum distances.
+- Methods for calculating these currently require the user to specify an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) so that the result are provided accurate to that precision.
+- So far, methods for calculating the minimum distance between geometries are implemented for:
+-- point-plane, point-line, point-ray, point-line_segment, point-rectangle, point-triangle
+-- plane-plane, plane-line, plane-ray, plane-line_segment
+-- line-line, line-ray, line-line_segment
+-- ray-ray, ray-line_segment
+-- line_segment-line_segment
 
 ## Development plans
 - Implement some basic volumes including [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s and [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
 
 ## Development history
 ### Origins
-The library began development in March 2020 with a view to supporting the development of [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinate based 3D models of [space](https://en.wikipedia.org/wiki/Space), particularly [solar system](https://en.wikipedia.org/wiki/Solar_system)s and parts of them, not least being [Earth](https://en.wikipedia.org/wiki/Earth).
+The library began development in March 2020. The purpose of the library is to support making spatial models of parts of the [solar system](https://en.wikipedia.org/wiki/Solar_system).
 ### Summary of main changes
 #### 0.7 to 0.8
 - Simplifications to the intersection methods removing the static methods.
