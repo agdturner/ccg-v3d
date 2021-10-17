@@ -46,9 +46,9 @@ public class V3D_Geometrics {
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public static boolean isCollinear(V3D_Line l, V3D_Point... points) {
+    public static boolean isCollinear(int oom, V3D_Line l, V3D_Point... points) {
         for (V3D_Point p : points) {
-            if (!l.isIntersectedBy(p)) {
+            if (!l.isIntersectedBy(p, oom)) {
                 return false;
             }
         }
@@ -60,22 +60,22 @@ public class V3D_Geometrics {
      * @return {@code false} if all points are coincident. {@code true} iff all
      * the points are collinear.
      */
-    public static boolean isCollinear(V3D_Point... points) {
+    public static boolean isCollinear(int oom, V3D_Point... points) {
         // For the points to be in a line at least two must be different. 
         if (isCoincident(points)) {
             return false;
         }
-        return isCollinear0(points);
+        return isCollinear0(oom, points);
     }
 
     /**
      * @param points The points to test if they are collinear.
      * @return {@code true} iff all the points are collinear or coincident.
      */
-    private static boolean isCollinear0(V3D_Point... points) {
+    private static boolean isCollinear0(int oom, V3D_Point... points) {
         // Get a line
         V3D_Line l = getLine(points);
-        return isCollinear(l, points);
+        return isCollinear(oom, l, points);
     }
 
     /**
@@ -99,7 +99,7 @@ public class V3D_Geometrics {
      * @param points The points to test if they are coplanar with p.
      * @return {@code true} iff all points are coplanar with p.
      */
-    public static boolean isCoplanar(int oom, V3D_Plane p, V3D_Point... points) {
+    public static boolean isCoplanar(V3D_Plane p, V3D_Point... points) {
         for (V3D_Point pt : points) {
             if (!p.isIntersectedBy(pt)) {
                 return false;
@@ -118,9 +118,9 @@ public class V3D_Geometrics {
         if (isCoincident(points)) {
             return false;
         }
-        if (!isCollinear0(points)) {
+        if (!isCollinear0(oom, points)) {
             V3D_Plane p = getPlane0(oom, points);
-            return isCoplanar(oom, p, points);
+            return isCoplanar(p, points);
         }
         return false;
     }
@@ -136,7 +136,7 @@ public class V3D_Geometrics {
     private static V3D_Plane getPlane0(int oom, V3D_Point... points) {
         V3D_Line l = getLine(points);
         for (V3D_Point p : points) {
-            if (!isCollinear(l, p)) {
+            if (!isCollinear(oom, l, p)) {
                 return new V3D_Plane(l.p, l.q, p, oom);
             }
         }
@@ -157,7 +157,7 @@ public class V3D_Geometrics {
             return null;
         }
         for (V3D_Point p : points) {
-            if (!isCollinear(l, p)) {
+            if (!isCollinear(oom, l, p)) {
                 return new V3D_Plane(l.p, l.q, p, oom);
             }
         }

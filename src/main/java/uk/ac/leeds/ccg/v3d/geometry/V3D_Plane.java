@@ -188,12 +188,12 @@ public class V3D_Plane extends V3D_Geometry {
         this.qr = new V3D_Vector(this.q, this.r, oom);
         this.rp = new V3D_Vector(this.r, this.p, oom);
         if (qAtOrigin) {
-            this.n = this.qr.getCrossProduct(this.rp);
+            this.n = this.qr.getCrossProduct(this.rp, oom);
         } else {
-            this.n = this.pq.getCrossProduct(this.qr);
+            this.n = this.pq.getCrossProduct(this.qr, oom);
         }
         if (checkCoplanar) {
-            if (V3D_Geometrics.isCoplanar(pq.oom, p, q, r)) {
+            if (V3D_Geometrics.isCoplanar(oom, p, q, r)) {
                 throw new RuntimeException("The points do not define a plane.");
             }
         }
@@ -290,8 +290,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @param pl The plane to test for intersection with this.
      * @return {@code true} If this and {@code pl} intersect.
      */
-    public boolean isIntersectedBy(V3D_Plane pl) {
-        if (isParallel(pl)) {
+    public boolean isIntersectedBy(V3D_Plane pl, int oom) {
+        if (isParallel(pl, oom)) {
             return equals(pl);
         }
         return true;
@@ -301,7 +301,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param l The line to test for intersection with this.
      * @return {@code true} If this and {@code l} intersect.
      */
-    public boolean isIntersectedBy(V3D_Line l) {
+    public boolean isIntersectedBy(V3D_Line l, int oom) {
         if (isParallel(l)) {
             if (!isOnPlane(l)) {
                 return false;
@@ -427,7 +427,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param flag Used to distinguish from {@link #getIntersection(V3D_Line)}.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry getIntersection(V3D_LineSegment l, boolean flag) {
+    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean flag) {
         V3D_Geometry li = getIntersection(l);
         if (li == null) {
             return null;
@@ -436,7 +436,7 @@ public class V3D_Plane extends V3D_Geometry {
             return l;
         }
         V3D_Point pt = (V3D_Point) li;
-        if (l.isIntersectedBy(pt)) {
+        if (l.isIntersectedBy(pt, oom)) {
             return pt;
         }
         return null;
@@ -449,7 +449,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param pl The plane to intersect.
      * @return The intersection between {@code this} and {@code pl}
      */
-    public V3D_Geometry getIntersection(V3D_Plane pl) {
+    public V3D_Geometry getIntersection(V3D_Plane pl, int oom) {
         //function [p, n] = intersect_planes(p1, n1, p2, n2, p0)
         //M = [2 0 0 n1(1) n2(1)
         //     0 2 0 n1(2) n2(2)
@@ -500,7 +500,7 @@ public class V3D_Plane extends V3D_Geometry {
         
         
         // Calculate the cross product of the normal vectors.
-        V3D_Vector v = n.getCrossProduct(pl.n);
+        V3D_Vector v = n.getCrossProduct(pl.n, oom);
         if (v.isZeroVector()) {
             // The planes are parallel.
             if (pl.equals(this)) {
@@ -907,9 +907,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @param p The plane to test if it is parallel to this.
      * @return {@code true} if {@code this} is parallel to {@code p}.
      */
-    public boolean isParallel(V3D_Plane p) {
+    public boolean isParallel(V3D_Plane p, int oom) {
         //return p.n.isScalarMultiple(n); // alternative - probably slower?
-        return n.getCrossProduct(p.n).isZeroVector();
+        return n.getCrossProduct(p.n, oom).isZeroVector();
     }
 
     /**
@@ -945,7 +945,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
     public boolean equals(V3D_Plane pl) {
-        if (V3D_Geometrics.isCoplanar(n.oom, this, pl.p, pl.q, pl.r)) {
+        if (V3D_Geometrics.isCoplanar(this, pl.p, pl.q, pl.r)) {
             return true;
         }
 //        if (n.equals(pl.n)) {
@@ -987,7 +987,7 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     @Override
-    public boolean isEnvelopeIntersectedBy(V3D_Line l) {
+    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
         return true;
     }
 
@@ -1037,8 +1037,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The shortest distance between {@code this} and {@code p}. Choose
      * {@link #p}
      */
-    public Math_BigRational getDistanceSquared(V3D_Plane p) {
-        if (isParallel(p)) {
+    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
+        if (isParallel(p, oom)) {
             return this.p.getDistanceSquared((V3D_Point) p.getIntersection(
                     new V3D_Line(this.p, n)));
         }

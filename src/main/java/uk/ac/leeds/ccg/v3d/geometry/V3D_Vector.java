@@ -15,8 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigComplex;
-import ch.obermuhlner.math.big.BigComplexMath;
 import ch.obermuhlner.math.big.BigDecimalMath;
 import java.io.Serializable;
 import java.math.MathContext;
@@ -503,14 +501,14 @@ public class V3D_Vector implements Serializable {
      * @param v V3D_Vector
      * @return V3D_Vector
      */
-    public V3D_Vector getCrossProduct(V3D_Vector v) {
+    public V3D_Vector getCrossProduct(V3D_Vector v, int oom) {
         return new V3D_Vector(
                 //                getDY().multiply(v.getDZ()).subtract(v.getDY().multiply(getDZ())).negate(),
                 //                getDZ().multiply(v.getDX()).subtract(v.getDZ().multiply(getDX())),
                 //                getDX().multiply(v.getDY()).subtract(v.getDX().multiply(getDY())), v.oom);
-                dy.multiply(v.dz).getSqrt().subtract(v.dy.multiply(dz).getSqrt()),
-                dz.multiply(v.dx).getSqrt().subtract(v.dz.multiply(dx).getSqrt()),
-                dx.multiply(v.dy).getSqrt().subtract(v.dx.multiply(dy).getSqrt()), v.oom);
+                dy.multiply(v.dz).getSqrt(oom).subtract(v.dy.multiply(dz).getSqrt(oom)),
+                dz.multiply(v.dx).getSqrt(oom).subtract(v.dz.multiply(dx).getSqrt(oom)),
+                dx.multiply(v.dy).getSqrt(oom).subtract(v.dx.multiply(dy).getSqrt(oom)), oom);
     }
 
     /**
