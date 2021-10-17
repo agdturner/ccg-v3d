@@ -1,27 +1,21 @@
-# [agdt-java-vector3d](https://github.com/agdturner/agdt-java-vector3d)
-
-## WARNING and Rule of thumb
-Don't just go with your intuition, consider others before making choices!
-
-I am making a major change from a left-handed coordinate system to a right-handed one. The choice is somewhat arbitrary, but I chose a left-handed coordinate system based on intuition considering vertical screens and graphs and zooming in and out in terms of moving closer and further away. Left-handed coordinate systems perhaps works best for navigation, but I now realise (thanks to [this video](https://youtu.be/BoHQtXpWG2Y)), that it is normal in physics to use a right-handed coordinate system and that physicists will be put off if I persist with left-handedness. As this software is primarily being developed for scientific use. A change to right-handedness seems wise. This also fits better with typical geographical handedness, as in a projected right handed coordinate system with x representing longitude (that increases to the West) and y representing latitude (that increases to the North), the z would come out from the plane, which is more normal in terms of considering heights (we typically measure how high or deep something is from sea level or from the centre of Earth, or from ground level (floor 0 in a building is not at the top).
-
-I originally began with a right-handed coordinate system, but changed to a left handed one at some stage along the way based on intuition. Colleagues may consider this plain ignorant - pun intended!
-
-The reason for right handedness in physics is to do with rules of thumb which many use to figure out the direction of a force. Left and right hands are typically not mirror images of each other and there are useful hand rules in physics. As mentioned, geographers should also be happy with this change and hopefully everyone else can live with it. As I don't know of any other users of this code yet, I think it is wise to change sooner rather than later. Sorry about this confusion! Once I have turned things around, I will update the documentation, but it may take a little while...
+# [ccg-vector3d](https://github.com/agdturner/ccg-vector3d)
 
 ## Description
-A modularised Java three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry) library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where the [Cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinates x=y=z=0. Coordinates are currently stored as [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java) numbers. Conceptually, from the origin, the X Axis runs in a positive direction to the right, the Y Axis runs in a positive direction up, and the Z Axis runs in a positive direction in or forwards (in other words, it is "left-handed"). The choice of left-handed or right handed is arbitrary. The decision was based on screens and the idea of graphs and zooming in and out. You may be interested in the [geograhical footnote](#geographical-footnote).
+A modularised Java three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry) library.
 
-Unit tests are being developed along with the functional methods. The current focus is to to develop instersection and distance calculation code for dealing with:
+The dimensions are defined by [orthogonal](https://en.wikipedia.org/wiki/Orthogonality) axes X, Y and Z that meet at the [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) origin - a point <x, y, z> where the coordinates x=y=z=0. Coordinates are stored as [Math_BigRational](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRational.java) (rational) numbers that comprise a numerator and denominator [BigDecimal](https://cr.openjdk.java.net/~iris/se/17/latestSpec/api/java.base/java/math/BigDecimal.html). Math_BigRational supports exact arithmetic division and arithmetic where if rounding is necessary it is done using a user specified [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude#Uses).
+
+Conceptually, the cartesian is [right-handed](https://en.wikipedia.org/wiki/Right-hand_rule). Notes on [handedness](#handedness), the choice of [origin](#origin), and [geography](#geography) are provided below. This library is primarily being developed to support geography and Earth science applications, but it may support other uses too.
+
+The code development aims to be sustainable with a complete coverage of unit tests developed along with the functional methods.
+
+The current focus is to represent and provide instersection, centroid and distance calculation code for:
 - Envelopes - [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s with sides aligned with the coordinate axes 
 - Straight [line segment](https://en.wikipedia.org/wiki/Line_segment)s
-- [Triangle](https://en.wikipedia.org/wiki/Triangle)s
-- [Rectangle](https://en.wikipedia.org/wiki/Rectangle)s
-- [Rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s
-- [Tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
+- [Polytope](https://en.wikipedia.org/wiki/Polytope)s (shapes with flat faces) based on [Triangle](https://en.wikipedia.org/wiki/Triangle)s that form [triangulated irregular networks](https://en.wikipedia.org/wiki/Triangulated_irregular_network) - these are either planar and if not planar the surface may or may not enclose a volume.
 
 ## Latest versioned releases
-Developed and tested on [Java Development Kit, version 15](https://openjdk.java.net/projects/jdk/15/). The latest version is on GitHub.
+Developed and tested on [Java Development Kit, version 17](https://openjdk.java.net/projects/jdk/17/). The latest version is on GitHub.
 
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
@@ -56,7 +50,7 @@ Instances are infinitely small. Each coordinate is stored as an immutable [BigRa
 This is similar to a point in that it involves storing 3 [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java) numbers, but instead of representing a location relative to the origin of the axes, they define a general change in the x, y, and z coordinates. A vector can be applied to any geometry which essentailly shifts it relative to the origin.
 
 ### [V3D_Envelope](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Envelope.java)
-In the general case, this is a [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid) with edges aligned with the axes. However, the dimensions can collapse, so that this is essentially just a [rectangle](https://en.wikipedia.org/wiki/Rectangle), or a line segment or a point. Each finite geometry has an envelope that bounds it. Much geometrical calculation uses these.
+This is a [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid) with edges aligned with the axes. However, the dimensions can collapse to form a [rectangle](https://en.wikipedia.org/wiki/Rectangle), or again to form a line segment, or again to form a point. Each finite geometry has an envelope that bounds it. Envelopes can be useful for selecting geometries and performing geometry calculations for instance it can be quick to identify that two complicated polytopes do not intersect if their envelopes do not intersect (they still may not intersect, but failing fast is sometimes a big win).
 
 ### [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java)
 Instances are immutable straight lines that extend infinitely. They have two points and a vector ([V3D_Vector](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java)). The vector gives the direction of the line and is calculated as the difference from one point to the other. There is some small redundancy as the line could be defined simply by two points, or by a single point and a vector. Additionally, [V3D_Vector](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java) instances also store the square of the magnitude and also the magnitude (if this can be stored precisely as a rational number). Alternative implementations may calculate these attributes as needed, but this implementation calculates these attributes so they are conveniently available. So, a [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) instance is perhaps considerably heavier than it needs to be. 
@@ -77,47 +71,40 @@ Instances are immutable and finite [triangle](https://en.wikipedia.org/wiki/Tria
 Instances are immutable and finite [rectangle](https://en.wikipedia.org/wiki/Rectangle)s. Essentially they are [V3D_Plane](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Plane.java) instances and the three points (p, q and r) are the first three corners of the rectangle working around clockwise from the front of the plane. The other corner point of the rectangle (s) is also stored as are additional vectors (rs that gives how r is mapped onto s, and sp that gives how s is mapped onto p). Additionally the edges of the rectangle are stored as line segments for convenience. So again, as with other geometry objects, there is some redundancy in what is stored, but these additional things are stored for convenience.
 
 ## Development progress
-Most of what is implemented so far is intersection and distance from a point functionality. Not all of this is yet implemented for all geometries. The implemented intersection test implementations involve no rounding. For distance calculations, the user is asked to supply an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) which is used to provide an answer rounded to or correct to this. The default rounding is to round half up.
-
-The aim is to have intersection functionality for all geometries including a test of whether any two geometry instances intersect and a method to get the intersection. As the geometries become more complicated, this aim becomes harder. Additional intersection funtionality that might be considered is whether or not the geometries touch or whether they overlap oe cross through each other. Additionally robust distance methods are wanted to calculate the shortest distance between any two geometries accurate to a given [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude).  
+- Most of what is implemented so far is intersection and distance from a point functionality. Not all of this is yet implemented for all geometries. The implemented intersection test implementations involve no rounding. For distance calculations, the user is asked to supply an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) which is used to provide an answer rounded to or correct to this. The default rounding is to round half up.
+- The aim is to have intersection functionality for all geometries including a test of whether any two geometry instances intersect and a method to get the intersection. As the geometries become more complicated, this aim becomes harder. Additional intersection funtionality that might be considered is whether or not the geometries touch or whether they overlap oe cross through each other. Additionally robust distance methods are wanted to calculate the shortest distance between any two geometries accurate to a given [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude).  
 
 ### Intersection
-So far, methods for testing if there is an intersection and for retrieving the intersection are implemented for:
-- point-plane, point-line, point-ray, point-line_segement, point-rectangle, point-triangle
-- plane-plane, plane-line, plane-ray, plane-line_segment
-- line-line, line-ray, line-line_segment
-- ray-ray, ray-line_segment
-- line_segment-line_segment
-See the respective classes in the [geometry package](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/).
-What is next to do:
-- plane-triangle, plane-rectangle
-- line_segment-triangle, line_segment-rectangle
-- triangle-triangle, triangle-rectangle
-- rectangle-rectangle
-It would also be good to distinguish between geometries touching and overlapping.
+- So far, methods for testing if there is an intersection and for retrieving the intersection are implemented for:
+-- point-plane, point-line, point-ray, point-line_segement, point-rectangle, point-triangle
+-- plane-plane, plane-line, plane-ray, plane-line_segment
+-- line-line, line-ray, line-line_segment
+-- ray-ray, ray-line_segment
+-- line_segment-line_segment
+- See the respective classes in the [geometry package](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/).
+- What is next to do:
+-- plane-triangle, plane-rectangle
+-- line_segment-triangle, line_segment-rectangle
+-- triangle-triangle, triangle-rectangle
+-- rectangle-rectangle
+- It would also be good to distinguish between geometries touching and overlapping.
 
 ### Distance, Areas, Perimeters, Volumes
-Methods for calculating these currently require the user to specify an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) so that the result are provided accurate to that precision.
-So far, methods for calculating the minimum distance between geometries are implemented for:
-- point-plane, point-line, point-ray, point-line_segment, point-rectangle, point-triangle
-- plane-plane, plane-line, plane-ray, plane-line_segment
-- line-line, line-ray, line-line_segment
-- ray-ray, ray-line_segment
-See the respective classes in the [geometry package](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/). There is a related method in With a distance calculations it is 
-What is next to do is:
-- line_segment-line_segment
-It might also be good to calculate the centroids and average distances, and perhaps maximum distances.
-
-## Development plans
-- Implement some basic volumes including [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s and [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
+- Methods for calculating these currently require the user to specify an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) so that the result are provided accurate to that precision.
+- So far, methods for calculating the minimum distance between geometries are implemented for:
+-- point-plane, point-line, point-ray, point-line_segment, point-rectangle, point-triangle
+-- plane-plane, plane-line, plane-ray, plane-line_segment
+-- line-line, line-ray, line-line_segment
+-- ray-ray, ray-line_segment
+-- line_segment-line_segment
 
 ## Development history
 ### Origins
-The library began development in March 2020 with a view to supporting the development of [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinate based 3D models of [space](https://en.wikipedia.org/wiki/Space), particularly [solar system](https://en.wikipedia.org/wiki/Solar_system)s and parts of them, not least being [Earth](https://en.wikipedia.org/wiki/Earth).
+The library began development in March 2020. The purpose of the library is to support making spatial models of parts of the [solar system](https://en.wikipedia.org/wiki/Solar_system).
 ### Summary of main changes
 #### 0.7 to 0.8
 - Simplifications to the intersection methods removing the static methods.
-- Inclusion of a V3D_Ray class.
+- Inclusion of a V3D_Ray class.   
 
 ## Contributions
 - Welcome, but to save time and energy, please liaise and we can try to organise.
@@ -137,11 +124,21 @@ The library began development in March 2020 with a view to supporting the develo
 - Information that has helped me develop this library is cited in the source code.
 - Thank you to those that supported me personally and all who have made a positive contribution to society. Let us try to look after each other, look after this world, make space for wildlife, develop know how, safeguard this and apply it to boldy go, explore, find and maybe help or make friends with others :)
 
-## Geographical footnote
-Geographers commonly use projections to represent part or all of the surface of Earth as plan view maps. These often have: the Y Axis aligned with lines of [longitude](https://en.wikipedia.org/wiki/Longitude), with Zero on the [equator](https://en.wikipedia.org/wiki/Equator), increasing to the [North pole](https://en.wikipedia.org/wiki/North_Pole), and decreasing to the [South pole](https://en.wikipedia.org/wiki/South_Pole); the X Axis aligned with lines of [latitude](https://en.wikipedia.org/wiki/Latitude) with Zero on the [prime meridian](https://en.wikipedia.org/wiki/Prime_meridian) and increasing to the East and decreasing to the West. Yet there are many and varied so called [map projection](https://en.wikipedia.org/wiki/Map_projection)s that are used and the X Axis and Y axis do not necessarily align with the directions North, South, East and West, but the X Axis coordinates are orthogonal to the Y axis coordinates and so these form a [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) space. In some cases, the map projections are used to represent surface elevation data and what is most common with these is to measure the heights with the Z Axis coming up from the plan view (in a so called "right-handed" way). This fits with notions of heights, where increasing height is measured from a level increasing upwards.   
+# Notes
 
-Geographical projections typically use a model for representing Earth relative to some axis of [Earth's rotation](https://en.wikipedia.org/wiki/Earth%27s_rotation) and some estimation of a line denoting the [equator](https://en.wikipedia.org/wiki/Equator). The Earth is more eliptical than spherical in these alignments, yet both speherical and eliptical parameters for projections are common. Both have a notion of a centroid point deep in the Earth.
+## Handedness
+The handedness (the assignment of axes and their directions) has been changed from left-handed to right-handed. The choice is somewhat arbitrary. Left-handed was originally chosen as it is intuitive considering vertical screens and graphs and zooming in and out in terms of human perception and moving closer and further away. Left-handed is perhaps a good choice for navigation, but for physics and geography right-handedness is more common and as this library is more geared for supporting physics and geography, this change has been implemented.
 
-Geographically, everything is moving and changing. The rates of movement and change vary with scale. Geographers commonly explore patterns of change in different things in regions across ranges of spatial and temporal scales using data at specific spatial and temporal resolutions. The [structure of Earth](https://en.wikipedia.org/wiki/Structure_of_Earth), whilst conceptually well defined, is continually changing as Earth moves relative to the [Sun](https://en.wikipedia.org/wiki/Sun), the [Moon](https://en.wikipedia.org/wiki/Moon) and other [astronomical object](https://en.wikipedia.org/wiki/Astronomical_object)s which can have significant other affects on Earth. More of Earth's atmosphere, for example, stretches further out towards the Sun as it heats and expands in the day. The orbit of the Earth around the Sun is complicated and the distance from the Earth to the Sun varies through time. [Orbital eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity) affects Earth surface processes and probably causes changes deep within the Earth. Earth's solar system has [helicoid](https://en.wikipedia.org/wiki/Helicoid) like motion as it traverses the [Milky Way](https://en.wikipedia.org/wiki/Milky_Way). The varying position of Earth's solar system relative to the [galactic plane](https://en.wikipedia.org/wiki/Galactic_plane) is likely to affect [Earth's magnetic field](https://en.wikipedia.org/wiki/Earth%27s_magnetic_field). Nearby astronomical objects affect pressure on Earth and may alter the [geoid](https://en.wikipedia.org/wiki/Geoid) (sea levels) significantly. How good are our best estimates of sea levels and Earth's magnetic field in the next 50 to 100 years? Are current technology and models built based on [floating point](https://en.wikipedia.org/wiki/Floating_point) numbers providing sufficient accuracy?  Ocean boundaries change, water density changes with pressure and temperature (and state). Ice supported on land melts and adds to the mass. Although the total amount of ice is small relative to the total volume of water in the oceans which again is small relative to the mass of Earth. Application of this code abounds in [Earth Science](https://en.wikipedia.org/wiki/Earth_science)s which was one of the original motivations for developing it.
+The reason for right-handedness in physics is to do with rules of thumb which are use to figure out the direction of forces caused by the spin we are in (the Earth, Sun and Milky Way all spin a particular way). [Handedness and chirality](https://en.wikipedia.org/wiki/Chirality_(physics)) and the choice of handedness in physics is explained in [this video](https://youtu.be/BoHQtXpWG2Y).
 
-f you find it useful, think it may be useful, or want to help develop the library, then please let me know.
+## [origin](https://en.wikipedia.org/wiki/Origin_(mathematics))
+For a lot of physics, it might be sensible to set z=0 at the [centre of mass](https://en.wikipedia.org/wiki/Center_of_mass) (CoM). The thing is, there is typically a bigger system within which a system is based and within a system, there are smaller systems that might want to be modelled in relative terms. For each system, there can be a different CoM and it may be helpful to shift the origin and reorientate the axes for each. Some overall framework is wanted at the largest scale to position each entity relatively. What happens on Earth is influenced significantly by the relative positions of the Sun and Moon. Earth's orbit is also influenced by the orbits and masses of other solar system objects. At another scale, there could be significant effects caused by the position of the [solar system](https://en.wikipedia.org/wiki/Solar_System) in the [galactic plane](https://en.wikipedia.org/wiki/Galactic_plane).
+
+## Geography
+[Geographical projections](https://en.wikipedia.org/wiki/List_of_map_projections) are commonly used in geography to represent part or all of the surface of Earth as plan view maps. [Equirectangular_projection](https://en.wikipedia.org/wiki/Equirectangular_projection)s have: the Y Axis aligned with lines of [latitude](https://en.wikipedia.org/wiki/Latitude), with zero on the [equator](https://en.wikipedia.org/wiki/Equator), increasing to the [North pole](https://en.wikipedia.org/wiki/North_Pole), and decreasing to the [South pole](https://en.wikipedia.org/wiki/South_Pole); the X Axis aligned with lines of [longitude](https://en.wikipedia.org/wiki/Longitude) with zero at the [prime meridian](https://en.wikipedia.org/wiki/Prime_meridian) and increasing to the [East](https://en.wikipedia.org/wiki/East) and decreasing to the [West](https://en.wikipedia.org/wiki/West); and the Z axis represents height above [sea-level](https://en.wikipedia.org/wiki/Sea_level) or depth below sea-level. The choice of the [meridian](https://en.wikipedia.org/wiki/Meridian_(geography)) is arbitrary, and sea-level varies.
+
+[Spherical](https://en.wikipedia.org/wiki/Spherical_coordinate_system) and [ecliptic](https://en.wikipedia.org/wiki/Ecliptic_coordinate_system) coordinate systems are becoming more commonly used. These represent positions relative to the estimation of a centroid and the axis of [Earth's rotation](https://en.wikipedia.org/wiki/Earth%27s_rotation). See also: [Discrete_global_grid](https://en.wikipedia.org/wiki/Discrete_global_grid#Standard_equal-area_hierarchical_grids).
+
+Everything is moving and changing. The rates of movement and change vary with scale. Some geography involves exploring patterns of change in different things in regions across ranges of spatial and temporal scales using data at specific spatial and temporal resolutions. The [structure of Earth](https://en.wikipedia.org/wiki/Structure_of_Earth), whilst conceptually well defined, is continually changing as Earth moves relative to the [Sun](https://en.wikipedia.org/wiki/Sun), the [Moon](https://en.wikipedia.org/wiki/Moon) and other [astronomical object](https://en.wikipedia.org/wiki/Astronomical_object)s which can have significant affects on Earth. Earth's atmosphere, for example, expands further out towards the Sun as it heats in the day. The orbit of the Earth around the Sun is complicated and the distance from the Earth to the Sun varies through time. [Orbital eccentricity](https://en.wikipedia.org/wiki/Orbital_eccentricity) affects Earth surface processes and probably causes changes deep within the Earth. Earth's solar system has [helicoid](https://en.wikipedia.org/wiki/Helicoid) like motion as it traverses the [Milky Way](https://en.wikipedia.org/wiki/Milky_Way). The Earth spins like a dynamo and the  [magnetic field](https://en.wikipedia.org/wiki/Earth%27s_magnetic_field) is prone to flip. Nearby astronomical objects affect pressure on Earth and may alter the [geoid](https://en.wikipedia.org/wiki/Geoid) significantly. How good are our best estimates of sea levels and Earth's magnetic field in the next 50 to 100 years? Are models based on [floating point](https://en.wikipedia.org/wiki/Floating_point) estimates providing sufficient accuracy? Ocean boundaries change, water density changes with pressure and temperature (and state).
+
+If you find this library useful, think it may be useful, or want to help develop it, then please let me know.
