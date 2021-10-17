@@ -10,12 +10,7 @@ Conceptually, the cartesian is [right-handed](https://en.wikipedia.org/wiki/Righ
 The code development aims to be sustainable with a complete coverage of unit tests developed along with the functional methods. The current focus is to represent and provide instersection and distance calculation code for:
 - Envelopes - [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s with sides aligned with the coordinate axes 
 - Straight [line segment](https://en.wikipedia.org/wiki/Line_segment)s
-- [Surfaces](https://en.wikipedia.org/wiki/Surface#In_mathematics) based on [triangulated irregular networks](https://en.wikipedia.org/wiki/Triangulated_irregular_network)
--- [Triangle](https://en.wikipedia.org/wiki/Triangle)s
--- [Rectangle](https://en.wikipedia.org/wiki/Rectangle)s
-- [Volumes](https://en.wikipedia.org/wiki/Volume#In_mathematics) based on [triangulated irregular networks](https://en.wikipedia.org/wiki/Triangulated_irregular_network)
--- [Rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s
--- [Tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
+- [Polytope](https://en.wikipedia.org/wiki/Polytope)s based on [Triangle](https://en.wikipedia.org/wiki/Triangle)s and [triangulated irregular networks](https://en.wikipedia.org/wiki/Triangulated_irregular_network) including [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron) et al.
 
 ## Latest versioned releases
 Developed and tested on [Java Development Kit, version 17](https://openjdk.java.net/projects/jdk/17/). The latest version is on GitHub.
