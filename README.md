@@ -7,13 +7,15 @@ The dimensions are defined by [orthogonal](https://en.wikipedia.org/wiki/Orthogo
 
 Conceptually, the cartesian is [right-handed](https://en.wikipedia.org/wiki/Right-hand_rule). Notes on [handedness](#handedness), the choice of [origin](#origin), and [geography](#geography) are provided below. This library is primarily being developed to support geography and Earth science applications, but it may support other uses too.
 
-The code development aims to be sustainable with plentiful unit tests developed along with the functional methods. The current focus is to provide instersection and distance calculation code for dealing with:
+The code development aims to be sustainable with a complete coverage of unit tests developed along with the functional methods. The current focus is to represent and provide instersection and distance calculation code for:
 - Envelopes - [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s with sides aligned with the coordinate axes 
 - Straight [line segment](https://en.wikipedia.org/wiki/Line_segment)s
-- [Triangle](https://en.wikipedia.org/wiki/Triangle)s
-- [Rectangle](https://en.wikipedia.org/wiki/Rectangle)s
-- [Rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s
-- [Tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
+- [Surfaces](https://en.wikipedia.org/wiki/Surface#In_mathematics) based on [triangulated irregular networks](https://en.wikipedia.org/wiki/Triangulated_irregular_network)
+-- [Triangle](https://en.wikipedia.org/wiki/Triangle)s
+-- [Rectangle](https://en.wikipedia.org/wiki/Rectangle)s
+- [Volumes](https://en.wikipedia.org/wiki/Volume#In_mathematics) based on [triangulated irregular networks](https://en.wikipedia.org/wiki/Triangulated_irregular_network)
+-- [Rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s
+-- [Tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
 
 ## Latest versioned releases
 Developed and tested on [Java Development Kit, version 17](https://openjdk.java.net/projects/jdk/17/). The latest version is on GitHub.
@@ -98,11 +100,6 @@ Instances are immutable and finite [rectangle](https://en.wikipedia.org/wiki/Rec
 -- line-line, line-ray, line-line_segment
 -- ray-ray, ray-line_segment
 -- line_segment-line_segment
-
-## Development plans
-- Implement some basic volumes starting with [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s and [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
-- Implement [Surfaces](https://en.wikipedia.org/wiki/Surface#In_mathematics) based on [triangular irregular networks](https://en.wikipedia.org/wiki/Triangulated_irregular_network)
-
 
 ## Development history
 ### Origins
