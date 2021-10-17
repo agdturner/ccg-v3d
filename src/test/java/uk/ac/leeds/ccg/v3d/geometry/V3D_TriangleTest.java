@@ -141,10 +141,10 @@ public class V3D_TriangleTest extends V3D_Test {
         int oom = -1;
         V3D_Line l = new V3D_Line(P0P0P0, P2P2P2, oom);
         V3D_Triangle instance = new V3D_Triangle(P0P0P0, P0P1P0, P1P0P0, oom);
-        assertTrue(instance.isIntersectedBy(l));
+        assertTrue(instance.isIntersectedBy(l, oom));
         // Test 2
         l = new V3D_Line(P1P1P1, P1P1P0, oom);
-        assertFalse(instance.isIntersectedBy(l));
+        assertFalse(instance.isIntersectedBy(l, oom));
     }
 
     /**
@@ -156,10 +156,10 @@ public class V3D_TriangleTest extends V3D_Test {
         int oom = -1;
         V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P2P2P2, oom);
         V3D_Triangle instance = new V3D_Triangle(P0P0P0, P0P1P0, P1P0P0, oom);
-        assertTrue(instance.isIntersectedBy(l));
+        assertTrue(instance.isIntersectedBy(l, oom));
         // Test 2
         l = new V3D_LineSegment(P1P1P1, P1P1P0, oom);
-        assertFalse(instance.isIntersectedBy(l));
+        assertFalse(instance.isIntersectedBy(l, oom));
     }
 
     /**
@@ -199,7 +199,7 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_LineSegment l = new V3D_LineSegment(P2N2P0, new V3D_Point(P2, P1, P0), oom);
         V3D_Triangle instance = new V3D_Triangle(P0P0P0, P2P2P0, new V3D_Point(P4, P0, P0), oom);
         V3D_Geometry expResult = new V3D_LineSegment(P2P0P0, new V3D_Point(P2, P1, P0), oom);
-        V3D_Geometry result = instance.getIntersection(l, true);
+        V3D_Geometry result = instance.getIntersection(l, oom, true);
         assertEquals(expResult, result);
     }
 
@@ -212,7 +212,22 @@ public class V3D_TriangleTest extends V3D_Test {
         int oom = -1;
         V3D_Line l = new V3D_Line(P1N1P0, new V3D_Point(P1, P2, P0), oom);
         V3D_Triangle instance = new V3D_Triangle(P0P0P0, P1P1P0, P2P0P0, oom);
-        assertTrue(instance.isEnvelopeIntersectedBy(l));
+        assertTrue(instance.isEnvelopeIntersectedBy(l, oom));
+    }
+
+    /**
+     * Test of getCentroid method, of class V3D_Triangle.
+     */
+    @Test
+    public void testGetCentroid() {
+        System.out.println("getCentroid");
+        int oom = 0;
+        V3D_Triangle instance = null;
+        V3D_Point expResult = null;
+        V3D_Point result = instance.getCentroid(oom);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
 }

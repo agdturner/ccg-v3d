@@ -428,19 +428,19 @@ public class V3D_VectorTest extends V3D_Test {
         V3D_Vector v = new V3D_Vector(P1P1P1, oom);
         V3D_Vector instance = new V3D_Vector(N1N1N1, oom);
         V3D_Vector expResult = new V3D_Vector(P0P0P0, oom);
-        V3D_Vector result = instance.getCrossProduct(v);
+        V3D_Vector result = instance.getCrossProduct(v, oom);
         assertEquals(expResult, result);
         // Test 2
         v = new V3D_Vector(P1P1P1, oom);
         instance = new V3D_Vector(P1P1P0, oom);
         expResult = new V3D_Vector(P1N1P0, oom);
-        result = instance.getCrossProduct(v);
+        result = instance.getCrossProduct(v, oom);
         assertEquals(expResult, result);
         // Test 3
         v = new V3D_Vector(P1P1P0, oom);
         instance = new V3D_Vector(P1P1P1, oom);
         expResult = new V3D_Vector(N1P1P0, oom);
-        result = instance.getCrossProduct(v);
+        result = instance.getCrossProduct(v, oom);
         assertEquals(expResult, result);
     }
 

@@ -345,12 +345,13 @@ public class V3D_PointTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Point() {
         System.out.println("isIntersectedBy");
+        int oom = -2;
         V3D_Point p = V3D_Point.ORIGIN;
         V3D_Point instance = V3D_Point.ORIGIN;
-        assertTrue(instance.isIntersectedBy(p));
+        assertTrue(instance.isIntersectedBy(p, oom));
         // Test 2
         instance = P0N1N1;
-        assertFalse(instance.isIntersectedBy(p));
+        assertFalse(instance.isIntersectedBy(p, oom));
     }
 
     /**
