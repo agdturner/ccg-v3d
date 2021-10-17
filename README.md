@@ -1,9 +1,9 @@
 # [ccg-vector3d](https://github.com/agdturner/ccg-vector3d)
 
 ## Description
-A modularised Java three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry) library. The dimensions are defined by orthogonal coordinate axes X, Y and Z that meet at the origin point <x,y,z> where the [Cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinates x=y=z=0. Coordinates are stored as [Math_BigRational](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRational.java) numbers that comprise a numerator and denominator [BigDecimal](https://cr.openjdk.java.net/~iris/se/17/latestSpec/api/java.base/java/math/BigDecimal.html). Math_BigRational provides a lot of rational numbers and enables useful exact arithmetic and arithmetic where rounding is occurs if necessary to a user specified [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude#Uses). Conceptually, the cartesian is [right-handed](https://en.wikipedia.org/wiki/Right-hand_rule). The are some notes on [handedness](#handedness), the choice of [origin](#origin), and [geography](#geography) below.
+A modularised Java three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry) library. The dimensions are defined by [orthogonal](https://en.wikipedia.org/wiki/Orthogonality) axes X, Y and Z that meet at the [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) origin - a point <x, y, z> where the coordinates x=y=z=0. Coordinates are stored as [Math_BigRational](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRational.java) (rational) numbers that comprise a numerator and denominator [BigDecimal](https://cr.openjdk.java.net/~iris/se/17/latestSpec/api/java.base/java/math/BigDecimal.html). Math_BigRational supports exact arithmetic division and arithmetic where if rounding is necessary it is done using a user specified [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude#Uses). Conceptually, the cartesian is [right-handed](https://en.wikipedia.org/wiki/Right-hand_rule). Notes on [handedness](#handedness), the choice of [origin](#origin), and [geography](#geography) are provided below. This library is being developed to support computational geography and Earth sciences applications.
 
-Unit tests are being developed along with the functional methods. The current focus is to to develop instersection and distance calculation code for dealing with:
+The code development aims to be sustainable with plentiful unit tests developed along with the functional methods. The current focus is to provide instersection and distance calculation code for dealing with:
 - Envelopes - [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s with sides aligned with the coordinate axes 
 - Straight [line segment](https://en.wikipedia.org/wiki/Line_segment)s
 - [Triangle](https://en.wikipedia.org/wiki/Triangle)s
@@ -12,7 +12,7 @@ Unit tests are being developed along with the functional methods. The current fo
 - [Tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron).
 
 ## Latest versioned releases
-Developed and tested on [Java Development Kit, version 15](https://openjdk.java.net/projects/jdk/15/). The latest version is on GitHub.
+Developed and tested on [Java Development Kit, version 17](https://openjdk.java.net/projects/jdk/17/). The latest version is on GitHub.
 
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
