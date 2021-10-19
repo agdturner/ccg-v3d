@@ -143,11 +143,12 @@ public class V3D_GeometricsTest extends V3D_Test {
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
         points[2] = P2N2N2;
         // Others
-        points = new V3D_Point[2];
+        points = new V3D_Point[3];
         points[0] = P2P2P2;
         points[1] = N2N2N2;
+        points[2] = N1N1N1;
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
-        points[1] = P2P2P2;
+        points[1] = P1P1P0;
         assertFalse(V3D_Geometrics.isCollinear(oom, points));
         points = new V3D_Point[3];
         points[0] = P2P2P2;
@@ -187,19 +188,19 @@ public class V3D_GeometricsTest extends V3D_Test {
         points[0] = P2P2P0;
         points[1] = N2P2P0;
         points[2] = P2N2P0;
-        assertTrue(V3D_Geometrics.isCoplanar(p, points));
+        assertTrue(V3D_Geometrics.isCoplanar(oom, p, points));
         // Test 2
         points[2] = P2N2P1;
-        assertFalse(V3D_Geometrics.isCoplanar(p, points));
+        assertFalse(V3D_Geometrics.isCoplanar(oom, p, points));
         // Test 3
         p = new V3D_Plane(P0P0P0, P0P1P0, P0P0P1, oom);
         points[0] = P0P2P2;
         points[1] = P0N2P2;
         points[2] = P0P2N2;
-        assertTrue(V3D_Geometrics.isCoplanar(p, points));
+        assertTrue(V3D_Geometrics.isCoplanar(oom, p, points));
         // Test 4
         points[2] = P2N2P1;
-        assertFalse(V3D_Geometrics.isCoplanar(p, points));
+        assertFalse(V3D_Geometrics.isCoplanar(oom, p, points));
     }
 
     /**

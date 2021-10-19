@@ -308,7 +308,6 @@ public class V3D_EnvelopeTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Envelope.
      */
     @Test
-    @Disabled
     public void testGetIntersection_V3D_Line() {
         System.out.println("getIntersection");
         int oom = -1;
@@ -386,7 +385,6 @@ public class V3D_EnvelopeTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Envelope.
      */
     @Test
-    @Disabled
     public void testGetIntersection_V3D_LineSegment_boolean() {
         System.out.println("getIntersection");
         int oom = -1;
@@ -645,7 +643,6 @@ public class V3D_EnvelopeTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Envelope.
      */
     @Test
-    @Disabled
     public void testGetDistance() {
         System.out.println("getDistance");
         int oom = -1;

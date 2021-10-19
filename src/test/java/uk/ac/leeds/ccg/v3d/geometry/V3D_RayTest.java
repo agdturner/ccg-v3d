@@ -271,7 +271,7 @@ public class V3D_RayTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_LineSegment_boolean() {
         System.out.println("getIntersection");
-        int oom = 1;
+        int oom = -1;
         V3D_LineSegment l = new V3D_LineSegment(P0P0P0, P1P0P0, oom);
         boolean flag = false;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P0P0, oom);

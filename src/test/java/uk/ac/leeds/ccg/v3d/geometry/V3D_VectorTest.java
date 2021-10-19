@@ -23,6 +23,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
@@ -422,6 +423,7 @@ public class V3D_VectorTest extends V3D_Test {
      * Test of getCrossProduct method, of class V3D_Vector.
      */
     @Test
+    @Disabled
     public void testGetCrossProduct() {
         System.out.println("getCrossProduct");
         int oom = -1;
