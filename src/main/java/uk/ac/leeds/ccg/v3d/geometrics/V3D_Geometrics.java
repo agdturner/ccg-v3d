@@ -99,9 +99,9 @@ public class V3D_Geometrics {
      * @param points The points to test if they are coplanar with p.
      * @return {@code true} iff all points are coplanar with p.
      */
-    public static boolean isCoplanar(V3D_Plane p, V3D_Point... points) {
+    public static boolean isCoplanar(int oom, V3D_Plane p, V3D_Point... points) {
         for (V3D_Point pt : points) {
-            if (!p.isIntersectedBy(pt)) {
+            if (!p.isIntersectedBy(pt, oom)) {
                 return false;
             }
         }
@@ -120,7 +120,7 @@ public class V3D_Geometrics {
         }
         if (!isCollinear0(oom, points)) {
             V3D_Plane p = getPlane0(oom, points);
-            return isCoplanar(p, points);
+            return isCoplanar(oom, p, points);
         }
         return false;
     }

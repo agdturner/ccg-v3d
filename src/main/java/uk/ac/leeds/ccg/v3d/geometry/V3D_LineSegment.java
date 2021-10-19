@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -71,7 +72,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     /**
      * Create a new instance.
-     * 
+     *
      * @param l What {@code this} is created from.
      */
     public V3D_LineSegment(V3D_LineSegment l) {
@@ -81,7 +82,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     /**
      * Create a new instance.
-     * 
+     *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      */
@@ -92,7 +93,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     /**
      * Create a new instance.
-     * 
+     *
      * @param l What {@code this} is created from.
      */
     public V3D_LineSegment(V3D_Line l) {
@@ -102,11 +103,17 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     /**
      * Create a new instance.
-     * 
+     *
      * @param l What {@code this} is created from.
      */
     public V3D_LineSegment(V3D_Envelope.LineSegment l) {
         this(new V3D_Point(l.p), new V3D_Point(l.q), l.v.oom);
+    }
+    
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(p=" + p.toString()
+                + ", q=" + q.toString() + ", v=" + v.toString() + ")";
     }
 
     @Override
@@ -420,7 +427,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
         return getEnvelope().isIntersectedBy(l, oom);
     }
-    
+
     /**
      * If the distance from a point to the line is less than the distance of the
      * point from either end of the line and the distance from either end of the
@@ -447,7 +454,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         }
         return d;
     }
-    
+
     /**
      * An implementation of this exists:
      * https://www.geometrictools.com/Documentation/DistanceLine3Line3.pdf
@@ -455,22 +462,35 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      *
      * @param l The line segment to return the distance from.
      * @param oom The OOM for the precision of the result.
-     * @return The distance from {@code this} to {@code l} at the {@code oom} 
+     * @return The distance from {@code this} to {@code l} at the {@code oom}
      * precision.
      */
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
-        return getLineOfIntersection(l).getDistance(l, oom);
+        V3D_Geometry loi = getLineOfIntersection(l);
+        if (loi == null) {
+            /**
+             * Lines are parallel, so the distance is either from one end point
+             * to the other line. Calculate them all and choose the minimum.
+             */
+            return Math_BigDecimal.min(getDistance(l.p, oom),
+                    getDistance(l.q, oom), l.getDistance(p, oom),
+                    l.getDistance(q, oom));
+        } else {
+            return loi.getDistance(l, oom);
+        }
     }
-    
+
     /**
-     * Calculate and return the midpoint between p and q. 
+     * Calculate and return the midpoint between p and q.
+     *
      * @param oom The OOM for the precision of the result.
      * @return the midpoint between p and q to the OOM precision.
      */
     public V3D_Point getMidpoint(int oom) {
-        Math_BigRationalSqrt l = getLength().divide(Math_BigRational.TWO);
-        V3D_Vector pmpq = v.multiply(l.getSqrt(oom));
-        return p.apply(pmpq);        
+        //BigDecimal l = getLength().toBigDecimal(oom);
+        //V3D_Vector pmpq = v.divide(Math_BigRational.valueOf(l));
+        V3D_Vector pmpq = v.divide(Math_BigRational.valueOf(2));
+        return p.apply(pmpq);
     }
 }

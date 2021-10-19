@@ -68,8 +68,8 @@ import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
  * <li>{@code y = p.y + t(v.getDY())}</li>
  * <li>{@code z = p.z + t(v.getDZ())}</li>
  * </ul>
- * <li>Symmetric Form (assume {@code v.getDX()}, {@code v.getDY()}, and {@code v.getDZ()} are
- * all nonzero)
+ * <li>Symmetric Form (assume {@code v.getDX()}, {@code v.getDY()}, and
+ * {@code v.getDZ()} are all nonzero)
  * <ul>
  * <li>{@code (x−p.x)/v.getDX() = (y−p.y)/v.getDY() = (z−p.z)/v.getDZ()}</li>
  * </ul></li>
@@ -212,9 +212,23 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if p is on the line.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom) {
-        V3D_Vector ppt = new V3D_Vector(pt.x.subtract(p.x),
-                pt.y.subtract(p.y), pt.z.subtract(p.z), oom);
-        V3D_Vector cp = v.getCrossProduct(ppt, oom);
+        if (p.equals(pt)) {
+            return true;
+        }
+        if (q.equals(pt)) {
+            return true;
+        }
+        V3D_Vector cp;
+        if (p.equals(V3D_Point.ORIGIN)) {
+            V3D_Vector ppt = new V3D_Vector(pt.x.subtract(q.x),
+                    pt.y.subtract(q.y), pt.z.subtract(q.z), oom);
+            cp = v.getCrossProduct(ppt, oom);
+        } else {
+            V3D_Vector ppt = new V3D_Vector(pt.x.subtract(p.x),
+                    pt.y.subtract(p.y), pt.z.subtract(p.z), oom);
+            cp = v.getCrossProduct(ppt, oom);
+        }
+        //V3D_Vector cp = ppt.getCrossProduct(v, oom);
         return cp.getDX().isZero() && cp.getDY().isZero() && cp.getDZ().isZero();
     }
 
@@ -627,9 +641,12 @@ public class V3D_Line extends V3D_Geometry {
         Math_BigRational mua = num.divide(den);
         Math_BigRational mub = (a.add(b.multiply(mua))).divide(d).negate();
         V3D_Point pi = new V3D_Point(
-                (p.x.add(mua.multiply(qp.getDX()))),
-                (p.y.add(mua.multiply(qp.getDY()))),
-                (p.z.add(mua.multiply(qp.getDZ()))));
+                //                (p.x.add(mua.multiply(qp.getDX()))),
+                //                (p.y.add(mua.multiply(qp.getDY()))),
+                //                (p.z.add(mua.multiply(qp.getDZ()))));
+                (p.x.subtract(mua.multiply(qp.getDX()))),
+                (p.y.subtract(mua.multiply(qp.getDY()))),
+                (p.z.subtract(mua.multiply(qp.getDZ()))));
         // If point p is on both lines then return this as the intersection.
         if (isIntersectedBy(pi, oom) && l.isIntersectedBy(pi, oom)) {
             return pi;
@@ -689,6 +706,7 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * Adapted from:
      * <ahref="https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line">https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line</a>
+     *
      * @param pt The point projected onto this.
      * @return A point on {@code this} which is the shortest distance from
      * {@code pt}.
@@ -701,7 +719,8 @@ public class V3D_Line extends V3D_Geometry {
         //V3D_Vector a = new V3D_Vector(p, pt);
         Math_BigRational adb = a.getDotProduct(v);
         Math_BigRational vdv = v.getDotProduct(v);
-        return p.apply(v.multiply(adb.divide(vdv)).reverse());
+        //return p.apply(v.multiply(adb.divide(vdv)).reverse());
+        return p.apply(v.multiply(adb.divide(vdv)));
     }
 
     /**
@@ -720,24 +739,23 @@ public class V3D_Line extends V3D_Geometry {
         V3D_Vector A = new V3D_Vector(p, l.p, v.oom);
         V3D_Vector B = v.reverse();
         V3D_Vector C = l.v.reverse();
-        
+
         Math_BigRational AdB = A.getDotProduct(B);
         Math_BigRational AdC = A.getDotProduct(C);
         Math_BigRational CdB = C.getDotProduct(B);
         Math_BigRational BdB = B.getDotProduct(B);
         Math_BigRational CdC = C.getDotProduct(C);
-        
+
         Math_BigRational ma = (AdC.multiply(CdB)).subtract(AdB.multiply(CdC))
                 .divide((BdB.multiply(CdC)).subtract(CdB.multiply(CdB)));
         Math_BigRational mb = ((ma.multiply(CdB)).add(AdC)).divide(CdC);
-        
+
         V3D_Point tpi = p.apply(B.multiply(ma));
-        
+
         V3D_Point lpi = l.p.apply(C.multiply(mb.negate()));
-        
+
         return new V3D_LineSegment(tpi, lpi, v.oom);
-        
-        
+
 //        // p13
 //        V3D_Vector plp = new V3D_Vector(p, l.p);
 //        // p43
@@ -796,7 +814,9 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * <a href="https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line">https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line</a>
-     * Weisstein, Eric W. "Point-Line Distance--3-Dimensional." From MathWorld--A Wolfram Web Resource. https://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
+     * Weisstein, Eric W. "Point-Line Distance--3-Dimensional." From
+     * MathWorld--A Wolfram Web Resource.
+     * https://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
      *
      * @param p A point for which the minimum distance from {@code this} is
      * returned.
@@ -900,18 +920,20 @@ public class V3D_Line extends V3D_Geometry {
              * Calculate the direction vector of the line connecting the closest
              * points by computing the cross product.
              */
-            V3D_Vector cp = v.getCrossProduct(l.v, oom);
+            V3D_Vector cp = l.v.getCrossProduct2(v, oom);
+            //V3D_Vector cp = v.getCrossProduct(l.v, oom);
             /**
              * Calculate the delta from {@link #p} and l.p
              */
-            V3D_Vector delta = new V3D_Vector(p, v.oom).subtract(
-                    new V3D_Vector(l.p, v.oom));
+            V3D_Vector delta = new V3D_Vector(l.p, v.oom).subtract(
+                    new V3D_Vector(p, v.oom));
             //Math_BigRational m = Math_BigRational.valueOf(cp.getMagnitude(oom - 2));
             Math_BigRationalSqrt m = cp.getMagnitude();
             // d = cp.(delta)/m
             Math_BigRational dp = cp.getDotProduct(delta);
             // m should only be zero if the lines are parallel.
-            Math_BigRational d = dp.divide(m.getX());
+            //Math_BigRational d = dp.divide(m.getX());
+            Math_BigRational d = dp.divide(m.getSqrt(oom - 6));
             return Math_BigDecimal.round(d.toBigDecimal(), oom);
         }
     }
@@ -923,7 +945,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return The minimum distance between {@code this} and {@code r}.
      */
     public BigDecimal getDistance(V3D_Ray r, int oom) {
-    //public Math_BigRational getDistance(V3D_Ray r) {
+        //public Math_BigRational getDistance(V3D_Ray r) {
         if (isParallel(r)) {
             return p.getDistance(new V3D_Line(r), oom);
         } else {
@@ -933,7 +955,7 @@ public class V3D_Line extends V3D_Geometry {
                 V3D_Line rl = new V3D_Line(r);
                 if (isIntersectedBy(rl, oom)) {
                     getLineOfIntersection(r.p, oom).getLength().toBigDecimal(oom);
-                }                
+                }
                 V3D_LineSegment li = (V3D_LineSegment) getLineOfIntersection(r);
                 if (li == null) {
                     li = getLineOfIntersection(r.p, oom);

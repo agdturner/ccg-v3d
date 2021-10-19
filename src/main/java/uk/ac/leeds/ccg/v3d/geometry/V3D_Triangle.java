@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * For representing and processing triangles in 3D. For representing and
@@ -122,6 +123,12 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     }
 
     @Override
+    public String toString() {
+        return this.getClass().getName() + "(" + lpq.p.toString() + ", "
+                + lqr.p.toString() + ", " + lrp.p.toString() + ")";
+    }
+
+    @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
             en = new V3D_Envelope(-1, p, q, r);
@@ -145,7 +152,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom) {
         if (getEnvelope().isIntersectedBy(pt, oom)) {
-            if (super.isIntersectedBy(pt)) {
+            if (super.isIntersectedBy(pt, oom)) {
                 return isIntersectedBy0(pt, oom);
             }
         }
@@ -166,24 +173,49 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
         /**
          * If cp, cq and cr are all in the same direction then pt intersects.
          */
-        Math_BigRational mp = cp.getMagnitudeSquared();
-        Math_BigRational mq = cq.getMagnitudeSquared();
-        V3D_Vector cpq = cp.add(cq);
-        Math_BigRational mpq = cpq.getMagnitudeSquared();
-        if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
-            Math_BigRational mr = cr.getMagnitudeSquared();
-            Math_BigRational mpqr = cpq.add(cr).getMagnitudeSquared();
-            if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
-                return true;
+//        Math_BigRationalSqrt mp = cp.getMagnitude();
+//        Math_BigRationalSqrt mq = cq.getMagnitude();
+//        Math_BigRationalSqrt mr = cr.getMagnitude();
+        if (cp.dx.negative == cq.dx.negative && cp.dx.negative == cr.dx.negative) {
+            if (cp.dy.negative == cq.dy.negative && cp.dy.negative == cr.dy.negative) {
+                if (cp.dz.negative == cq.dz.negative && cp.dz.negative == cr.dz.negative) {
+                    return true;
+                }
             }
         }
+//        
+//        V3D_Vector cpq = cp.add(cq);
+//        Math_BigRational mpq = cpq.getMagnitudeSquared();
+//        if (mpq.compareTo(mp) == mpq.compareTo(mq) == mpr.compareTo(mr)) {
+//            
+//            Math_BigRational mr = cr.getMagnitudeSquared();
+//            Math_BigRational mpqr = cpq.add(cr).getMagnitudeSquared();
+//            //if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
+//            if (mpqr == mr) {
+//                return true;
+//            }
+//        }
         return false;
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Line l, int oom) {
         if (super.isIntersectedBy(l, oom)) {
-            return isIntersectedBy0((V3D_Point) super.getIntersection(l), oom);
+            V3D_Geometry g = super.getIntersection(l, oom);
+            if (g instanceof V3D_Point) {
+                V3D_Point p = (V3D_Point) g;
+                return isIntersectedBy(p, oom);
+            } else {
+                if (lpq.isIntersectedBy(l, oom)) {
+                    return true;
+                }
+                if (lqr.isIntersectedBy(l, oom)) {
+                    return true;
+                }
+                if (lrp.isIntersectedBy(l, oom)) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -232,7 +264,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Line l, int oom) {
-        V3D_Geometry g = (new V3D_Plane(this)).getIntersection(l);
+        V3D_Geometry g = (new V3D_Plane(this)).getIntersection(l, oom);
         if (g == null) {
             return null;
         }
@@ -283,13 +315,13 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
 
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
-        boolean lip = isIntersectedBy(l.p);
-        boolean liq = isIntersectedBy(l.q);
+        boolean lip = isIntersectedBy(l.p, oom);
+        boolean liq = isIntersectedBy(l.q, oom);
         if (lip) {
             if (liq) {
                 return l;
             } else {
-                V3D_Geometry li = getIntersection(l);
+                V3D_Geometry li = getIntersection(l, oom);
                 if (li instanceof V3D_Point) {
                     return l.p;
                 } else {
@@ -302,7 +334,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
                 }
             }
         } else {
-            V3D_Geometry li = getIntersection(l);
+            V3D_Geometry li = getIntersection(l, oom);
             if (liq) {
                 if (li instanceof V3D_Point) {
                     return l.q;
@@ -323,7 +355,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
                         return null;
                     }
                 } else {
-                    return li;
+                    return ((V3D_LineSegment) li).getIntersection(l, oom, b);
                 }
             }
         }

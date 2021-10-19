@@ -536,26 +536,26 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 return new V3D_Rectangle((Rectangle) t, oom).getIntersection(li, oom);
             default:
                 V3D_Geometry fil = (new V3D_Rectangle((Rectangle) f, oom))
-                        .getIntersection(li);
+                        .getIntersection(li, oom);
                 V3D_Geometry lil = (new V3D_Rectangle((Rectangle) l, oom))
-                        .getIntersection(li);
+                        .getIntersection(li, oom);
                 V3D_Geometry ail = (new V3D_Rectangle((Rectangle) a, oom))
-                        .getIntersection(li);
+                        .getIntersection(li, oom);
                 if (fil == null) {
                     if (lil == null) {
                         V3D_Geometry ril = (new V3D_Rectangle((Rectangle) r, oom))
-                                .getIntersection(li);
+                                .getIntersection(li, oom);
                         if (ail == null) {
                             V3D_Geometry til = (new V3D_Rectangle(
                                     (Rectangle) t, oom))
-                                    .getIntersection(li);
+                                    .getIntersection(li, oom);
                             if (ril == null) {
                                 if (til == null) {
                                     return null;
                                 } else {
                                     V3D_Geometry bil = (new V3D_Rectangle(
                                             (Rectangle) b, oom))
-                                            .getIntersection(li);
+                                            .getIntersection(li, oom);
                                     return new V3D_LineSegment(
                                             (V3D_Point) til,
                                             (V3D_Point) bil,
@@ -565,7 +565,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 if (til == null) {
                                     V3D_Geometry bil = (new V3D_Rectangle(
                                             (Rectangle) b, oom))
-                                            .getIntersection(li);
+                                            .getIntersection(li, oom);
                                     if (bil == null) {
                                         return null;
                                     } else {
@@ -585,11 +585,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             if (ril == null) {
                                 V3D_Geometry til = (new V3D_Rectangle(
                                         (Rectangle) t, oom))
-                                        .getIntersection(li);
+                                        .getIntersection(li, oom);
                                 if (til == null) {
                                     V3D_Geometry bil = (new V3D_Rectangle(
                                             (Rectangle) b, oom))
-                                            .getIntersection(li);
+                                            .getIntersection(li, oom);
                                     if (bil == null) {
                                         return null;
                                     } else {
@@ -613,14 +613,14 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         if (ail == null) {
                             V3D_Geometry ril = (new V3D_Rectangle(
                                     (Rectangle) r, oom))
-                                    .getIntersection(li);
+                                    .getIntersection(li, oom);
                             if (ril == null) {
                                 V3D_Geometry til = (new V3D_Rectangle(
                                         (Rectangle) t, oom))
-                                        .getIntersection(li);
+                                        .getIntersection(li, oom);
                                 V3D_Geometry bil = (new V3D_Rectangle(
                                         (Rectangle) b, oom))
-                                        .getIntersection(li);
+                                        .getIntersection(li, oom);
                                 if (til == null) {
                                     if (bil == null) {
                                         return null;
@@ -654,12 +654,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 } else {
                     if (lil == null) {
                         V3D_Geometry ril = (new V3D_Rectangle((Rectangle) r, oom))
-                                .getIntersection(li);
+                                .getIntersection(li, oom);
                         if (ail == null) {
                             if (ril == null) {
                                 V3D_Geometry til = (new V3D_Rectangle(
                                         (Rectangle) t, oom))
-                                        .getIntersection(li);
+                                        .getIntersection(li, oom);
                                 if (til == null) {
                                     return null;
                                 } else {
@@ -762,7 +762,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 if (til == null) {
                                     V3D_Geometry bil = (new V3D_Rectangle(
                                             (Rectangle) b, oom))
-                                            .getIntersection(li);
+                                            .getIntersection(li, oom);
                                     if (bil == null) {
                                         return getIntersection((V3D_Point) ril,
                                                 li, lipi);
@@ -1704,6 +1704,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     q.z.subtract(p.z), oom);
         }
 
+        @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(p=" + p.toString()
+                + ", q=" + q.toString() + ", v=" + v.toString() + ")";
+    }
         /**
          * @param l The line to test this with to see if they are parallel.
          * @return {@code true} If this and {@code l} are parallel.
@@ -1777,8 +1782,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         public BigDecimal getDistance(Point p, int oom) {
             V3D_Vector pv = new V3D_Vector(this.p, p, oom);
             V3D_Vector vu = v.getUnitVector(oom - 2);
-            return p.getDistance(new Point(vu.multiply(pv.getDotProduct(vu))
+            BigDecimal pd = p.getDistance(new Point(vu.multiply(pv.getDotProduct(vu))
                     .add(new V3D_Vector(this.p, oom))), oom);
+            pv = new V3D_Vector(this.q, p, oom);
+            vu = v.reverse().getUnitVector(oom - 2);
+            BigDecimal qd = p.getDistance(new Point(vu.multiply(pv.getDotProduct(vu))
+                    .add(new V3D_Vector(this.q, oom))), oom);
+            return pd.min(qd);
         }
 
         /**

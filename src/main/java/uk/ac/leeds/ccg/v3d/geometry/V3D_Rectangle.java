@@ -193,7 +193,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom) {
         if (getEnvelope().isIntersectedBy(pt, oom)) {
-            if (super.isIntersectedBy(pt)) {
+            if (super.isIntersectedBy(pt, oom)) {
                 return isIntersectedBy0(pt, oom);
             }
         }
@@ -309,7 +309,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     public boolean isIntersectedBy(V3D_Line l, int oom) {
         V3D_Plane pl = new V3D_Plane(this);
         if (pl.isIntersectedBy(l, oom)) {
-            V3D_Geometry g = pl.getIntersection(l);
+            V3D_Geometry g = pl.getIntersection(l, oom);
             if (g instanceof V3D_Point) {
                 return isIntersectedBy0((V3D_Point) g, oom);
             } else {
@@ -334,7 +334,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
             if (pl.isIntersectedBy(l, oom)) {
                 V3D_Geometry g = pl.getIntersection(l, oom, b);
                 if (g instanceof V3D_Point) {
-                    return isIntersectedBy((V3D_Point) g);
+                    return isIntersectedBy((V3D_Point) g, oom);
                 } else {
                     return isIntersectedBy((V3D_LineSegment) g, oom, b);
                 }
@@ -349,12 +349,12 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Line l, int oom) {
-        V3D_Geometry g = new V3D_Plane(this).getIntersection(l);
+        V3D_Geometry g = new V3D_Plane(this).getIntersection(l, oom);
         if (g == null) {
             return null;
         } else {
             if (g instanceof V3D_Point) {
-                if (this.isIntersectedBy((V3D_Point) g)) {
+                if (this.isIntersectedBy((V3D_Point) g, oom)) {
                     return g;
                 } else {
                     return null;
@@ -509,13 +509,13 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean flag) {
-        boolean lip = isIntersectedBy(l.p);
-        boolean liq = isIntersectedBy(l.q);
+        boolean lip = isIntersectedBy(l.p, oom);
+        boolean liq = isIntersectedBy(l.q, oom);
         if (lip) {
             if (liq) {
                 return l;
             } else {
-                V3D_Geometry li = getIntersection(l);
+                V3D_Geometry li = getIntersection(l, oom);
                 if (li instanceof V3D_Point) {
                     return l.p;
                 } else {
@@ -528,7 +528,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 }
             }
         } else {
-            V3D_Geometry li = getIntersection(l);
+            V3D_Geometry li = getIntersection(l, oom);
             if (liq) {
                 if (li instanceof V3D_Point) {
                     return l.q;
@@ -584,7 +584,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
-        if (this.isIntersectedBy(p)) {
+        if (this.isIntersectedBy(p, oom)) {
             return BigDecimal.ZERO;
         }
         BigDecimal dp = super.getDistance(p, oom);

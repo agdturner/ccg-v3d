@@ -261,20 +261,27 @@ public class V3D_Plane extends V3D_Geometry {
                 + ", q=" + q.toString() + ", r=" + r.toString() + ")";
     }
 
+    /**
+     * For getting the equation of the plane.
+     * @return The equation of the plane as a String.
+     */
     public String getEquation() {
-        Math_BigRational ndxsr = n.dx.getSqrt();
+        Math_BigRational ndxsr = n.dx.getSqrt().negate();
         Math_BigRational ndysr = n.dy.getSqrt();
         Math_BigRational ndzsr = n.dz.getSqrt();
         Math_BigRational k = (ndxsr.multiply(p.x)
-                .subtract(ndysr.multiply(p.y))
-                .subtract(ndzsr.multiply(p.z))).negate();
+                .add(ndysr.multiply(p.y))
+                .add(ndzsr.multiply(p.z))).negate();
+//        Math_BigRational k = (ndxsr.multiply(p.x)
+//                .subtract(ndysr.multiply(p.y))
+//                .subtract(ndzsr.multiply(p.z))).negate();
 //        Math_BigRational k = ndxsr.multiply(p.x)
 //                .add(ndysr.multiply(p.y))
 //                .add(ndzsr.multiply(p.z));
         return ndxsr.toRationalString() + " * x + "
                 + ndysr.toRationalString() + " * y + "
                 + ndzsr.toRationalString() + " * z + "
-                + k.negate().toRationalString() + " = 0";
+                + k.toRationalString() + " = 0";
     }
 
     /**
@@ -303,7 +310,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public boolean isIntersectedBy(V3D_Line l, int oom) {
         if (isParallel(l)) {
-            if (!isOnPlane(l)) {
+            if (!isOnPlane(l, oom)) {
                 return false;
             }
         }
@@ -317,7 +324,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param pt The point to test if it is on the plane.
      * @return {@code true} If {@code pt} is on the plane.
      */
-    public boolean isIntersectedBy(V3D_Point pt) {
+    public boolean isIntersectedBy(V3D_Point pt, int oom) {
         Math_BigRational[][] m = new Math_BigRational[4][4];
         m[0][0] = p.x;
         m[1][0] = p.y;
@@ -335,15 +342,15 @@ public class V3D_Plane extends V3D_Geometry {
         m[1][3] = pt.y;
         m[2][3] = pt.z;
         m[3][3] = Math_BigRational.ONE;
-        return new Math_Matrix_BR(m).getDeterminant() == Math_BigRational.ZERO;
+        return new Math_Matrix_BR(m).getDeterminant().compareTo(Math_BigRational.ZERO) == 0;
     }
 
     /**
      * @param l The line to test if it is on the plane.
      * @return {@code true} If {@code pt} is on the plane.
      */
-    public boolean isOnPlane(V3D_Line l) {
-        return isIntersectedBy(l.p) && isIntersectedBy(l.q);
+    public boolean isOnPlane(V3D_Line l, int oom) {
+        return isIntersectedBy(l.p, oom) && isIntersectedBy(l.q, oom);
     }
 
     /**
@@ -355,19 +362,19 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The intersection of the line and the plane. This is either
      * {@code null} a line or a point.
      */
-    public V3D_Geometry getIntersection(V3D_Line l) {
+    public V3D_Geometry getIntersection(V3D_Line l, int oom) {
         if (this.isParallel(l)) {
-            if (this.isOnPlane(l)) {
+            if (this.isOnPlane(l, oom)) {
                 return l;
             } else {
                 return null;
             }
         }
         // Are either of the points of l on the plane.
-        if (this.isIntersectedBy(l.p)) {
+        if (this.isIntersectedBy(l.p, oom)) {
             return l.p;
         }
-        if (this.isIntersectedBy(l.q)) {
+        if (this.isIntersectedBy(l.q, oom)) {
             return l.q;
         }
         Math_BigRational[][] m = new Math_BigRational[4][4];
@@ -428,7 +435,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean flag) {
-        V3D_Geometry li = getIntersection(l);
+        V3D_Geometry li = getIntersection(l, oom);
         if (li == null) {
             return null;
         }
@@ -944,8 +951,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @param pl The plane to check for equality with {@code this}.
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
-    public boolean equals(V3D_Plane pl) {
-        if (V3D_Geometrics.isCoplanar(this, pl.p, pl.q, pl.r)) {
+    public boolean equals(V3D_Plane pl, int oom) {
+        if (V3D_Geometrics.isCoplanar(oom, this, pl.p, pl.q, pl.r)) {
             return true;
         }
 //        if (n.equals(pl.n)) {
@@ -966,10 +973,10 @@ public class V3D_Plane extends V3D_Geometry {
      * @param pl The plane to check for equality with {@code this}.
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
-    public boolean isCoincident(V3D_Plane pl) {
-        if (isIntersectedBy(pl.p)) {
-            if (isIntersectedBy(pl.q)) {
-                if (isIntersectedBy(pl.r)) {
+    public boolean isCoincident(V3D_Plane pl, int oom) {
+        if (isIntersectedBy(pl.p, oom)) {
+            if (isIntersectedBy(pl.q, oom)) {
+                if (isIntersectedBy(pl.r, oom)) {
                     return true;
                 }
             }
@@ -1017,7 +1024,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
-        if (this.isIntersectedBy(p)) {
+        if (this.isIntersectedBy(p, oom)) {
             return BigDecimal.ZERO;
         }
         V3D_Vector v = new V3D_Vector(p, this.p, oom);
@@ -1040,7 +1047,7 @@ public class V3D_Plane extends V3D_Geometry {
     public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
         if (isParallel(p, oom)) {
             return this.p.getDistanceSquared((V3D_Point) p.getIntersection(
-                    new V3D_Line(this.p, n)));
+                    new V3D_Line(this.p, n), oom));
         }
         return Math_BigRational.ZERO;
     }

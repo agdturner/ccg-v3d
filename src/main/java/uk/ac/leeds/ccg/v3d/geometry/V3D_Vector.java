@@ -288,6 +288,18 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * @param s The scalar value to multiply this by.
+     * @return Scaled vector.
+     */
+    public V3D_Vector divide(Math_BigRational s) {
+        return new V3D_Vector(
+                dx.divide(s),
+                dy.divide(s),
+                dz.divide(s),
+                oom);
+    }
+
+    /**
      * @param v The vector to add.
      * @return A new vector which is {@code this} add {@code v}.
      */
@@ -503,12 +515,21 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector getCrossProduct(V3D_Vector v, int oom) {
         return new V3D_Vector(
-                //                getDY().multiply(v.getDZ()).subtract(v.getDY().multiply(getDZ())).negate(),
-                //                getDZ().multiply(v.getDX()).subtract(v.getDZ().multiply(getDX())),
-                //                getDX().multiply(v.getDY()).subtract(v.getDX().multiply(getDY())), v.oom);
-                dy.multiply(v.dz).getSqrt(oom).subtract(v.dy.multiply(dz).getSqrt(oom)),
-                dz.multiply(v.dx).getSqrt(oom).subtract(v.dz.multiply(dx).getSqrt(oom)),
+                dy.multiply(v.dz).getSqrt(oom).subtract(dz.multiply(v.dy).getSqrt(oom)),
+                dx.multiply(v.dz).getSqrt(oom).subtract(dz.multiply(v.dx).getSqrt(oom)).negate(),
                 dx.multiply(v.dy).getSqrt(oom).subtract(v.dx.multiply(dy).getSqrt(oom)), oom);
+    }
+
+    /**
+     * ??????????????????????????????????????????
+     * Why does this work for testGetDistance_V3D_Line_int() Test 1
+     * ??????????????????????????????????????????
+     */
+    public V3D_Vector getCrossProduct2(V3D_Vector v, int oom) {
+        return new V3D_Vector(
+                dy.multiply(v.dz).getSqrt(oom).subtract(v.dy.multiply(dz).getSqrt(oom)),
+                dz.multiply(v.dx).getSqrt(oom).negate().subtract(v.dz.multiply(dx).getSqrt(oom)),
+                dx.multiply(v.dy).getSqrt(oom).negate().subtract(v.dx.multiply(dy).getSqrt(oom)), oom);
     }
 
     /**
