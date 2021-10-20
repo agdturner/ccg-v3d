@@ -98,7 +98,7 @@ public class V3D_PlaneTest extends V3D_Test {
         String result;
         // Test 1
         instance = new V3D_Plane(P0P0P0, P1P1P1, P1P0P0, oom);
-        expResult = "0 * x + -1 * y + 1 * z + 0 = 0";
+        expResult = "0 * x + 1 * y + -1 * z + 0 = 0";
         result = instance.getEquation();
         assertTrue(expResult.equalsIgnoreCase(result));
         // Test 2
@@ -152,7 +152,6 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of equals method, of class V3D_Plane.
      */
     @Test
-    @Disabled
     public void testEquals_Object() {
         System.out.println("equals");
         int oom = -1;
@@ -2519,17 +2518,20 @@ public class V3D_PlaneTest extends V3D_Test {
         assertTrue(expResult.equals(result));
         // Z = 1
         instance = new V3D_Plane(P0P1P1, P0P0P1, P1P0P1, oom); 
-        expResult = new V3D_Vector(P0P0N1, oom);
+        //expResult = new V3D_Vector(P0P0N1, oom);
+        expResult = new V3D_Vector(P0P0P1, oom);
         result = instance.n;
         assertTrue(expResult.equals(result));
         // Y = 0
         instance = new V3D_Plane(P0P0P0, P0P1P0, P0P0N1, oom); 
-        expResult = new V3D_Vector(P1P0P0, oom);
+        //expResult = new V3D_Vector(P1P0P0, oom);
+        expResult = new V3D_Vector(N1P0P0, oom);
         result = instance.n;
         assertTrue(expResult.equals(result));
         // X = 0
         instance = new V3D_Plane(P0P0P0, P1P0P0, P0P0N1, oom); 
-        expResult = new V3D_Vector(P0N1P0, oom);
+        //expResult = new V3D_Vector(P0N1P0, oom);
+        expResult = new V3D_Vector(P0P1P0, oom);
         result = instance.n;
         assertTrue(expResult.equals(result));
         // Y = 0
@@ -2539,17 +2541,20 @@ public class V3D_PlaneTest extends V3D_Test {
         assertTrue(expResult.equals(result));
         // 
         instance = new V3D_Plane(P0P1P0, P1P1P1, P1P0P0, oom);
-        expResult = new V3D_Vector(N1N1P1, oom);
+        //expResult = new V3D_Vector(N1N1P1, oom);
+        expResult = new V3D_Vector(P1P1N1, oom);
         result = instance.n;
         assertTrue(expResult.equals(result));
         // X = 0
         instance = new V3D_Plane(P0P0P0, P0P1P1, P0N1P0, oom);
-        expResult = new V3D_Vector(N1P0P0, oom);
+        //expResult = new V3D_Vector(N1P0P0, oom);
+        expResult = new V3D_Vector(P1P0P0, oom);
         result = instance.n;
         assertTrue(expResult.equals(result));
         // 
         instance = new V3D_Plane(P0P0P0, P1P1P1, P0N1N1, oom);
-        expResult = new V3D_Vector(P0N1P1, oom);
+        //expResult = new V3D_Vector(P0N1P1, oom);
+        expResult = new V3D_Vector(P0P1N1, oom);
         result = instance.n;
         assertTrue(expResult.equals(result));
     }

@@ -99,10 +99,12 @@ public class V3D_LineTest extends V3D_Test {
      * Test of hashCode method, of class V3D_Line.
      */
     @Test
-    @Disabled
     public void testHashCode() {
         System.out.println("hashCode");
-        assertTrue(true);  // No test.
+        V3D_Line e = V3D_Environment.xAxis;
+        int result = e.hashCode();
+        int expResult = 9644914;
+        assertTrue(result == expResult);
     }
 
     /**
@@ -608,17 +610,16 @@ public class V3D_LineTest extends V3D_Test {
      * covered by {@link #testGetLineOfIntersection_V3D_Point()}
      */
     @Test
-    @Disabled
     public void testGetPointOfIntersection() {
         System.out.println("getPointOfIntersection");
         int oom = -1;
         V3D_Point pt = P2P0P0;
         V3D_Line instance = new V3D_Line(P0P0P0, P0P2P2, oom);
-        V3D_Point expResult = P1P1P0;
+        V3D_Point expResult = P0P0P0;
         V3D_Point result = instance.getPointOfIntersection(pt, oom);
         assertTrue(expResult.equals(result));
         // Test 2
-
+        // ...
     }
 
     /**
@@ -665,10 +666,10 @@ public class V3D_LineTest extends V3D_Test {
         // Test 4
         r = new V3D_Ray(P1P0P0, P2P0P0, oom);
         instance = new V3D_Line(P0P0P0, P0P1P0, oom);
-        expResult = BigDecimal.valueOf(0.5d);
+        expResult = new Math_BigRationalSqrt(2, oom, false).divide(Math_BigRational.valueOf(2)).toBigDecimal(oom);
         result = instance.getDistance(r, oom);
         assertTrue(expResult.compareTo(result) == 0);
-        // Test 4
+        // Test 5
         r = new V3D_Ray(P1P0P0, P2P0P0, oom);
         instance = new V3D_Line(P0P0P0, P0P1P0, oom);
         expResult = BigDecimal.valueOf(0.5d);

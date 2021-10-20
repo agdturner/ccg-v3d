@@ -261,10 +261,12 @@ public class V3D_EnvelopeTest extends V3D_Test {
      * Test of hashCode method, of class V3D_Envelope.
      */
     @Test
-    @Disabled
     public void testHashCode() {
         System.out.println("hashCode");
-        // No test.
+        V3D_Envelope e = new V3D_Envelope(0, P0P0P0);
+        int result = e.hashCode();
+        int expResult = 1299868383;
+        assertTrue(result == expResult);
     }
 
     /**

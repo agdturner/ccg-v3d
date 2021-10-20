@@ -144,9 +144,12 @@ public class V3D_PointTest extends V3D_Test {
      * Test of hashCode method, of class V3D_Point.
      */
     @Test
-    @Disabled
     public void testHashCode() {
-        // No test.
+        System.out.println("hashCode");
+        V3D_Envelope e = P0P0P0.getEnvelope();
+        int result = e.hashCode();
+        int expResult = 1299868383;
+        assertTrue(result == expResult);
     }
 
     /**
@@ -358,7 +361,7 @@ public class V3D_PointTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Point.
      */
     @Test
-    @Disabled
+    //@Disabled
     public void testIsIntersectedBy_V3D_Line() {
         System.out.println("isIntersectedBy");
         // No test as this is tested in V3D_LineTest.
@@ -368,7 +371,7 @@ public class V3D_PointTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Point.
      */
     @Test
-    @Disabled
+    //@Disabled
     public void testGetIntersection_V3D_Line() {
         System.out.println("getIntersection");
         // No test as this is tested in V3D_LineTest.
@@ -378,7 +381,7 @@ public class V3D_PointTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Point.
      */
     @Test
-    @Disabled
+    //@Disabled
     public void testGetIntersection_V3D_LineSegment_boolean() {
         System.out.println("getIntersection");
         // No test as this is tested in V3D_LineSegmentTest.
@@ -388,7 +391,7 @@ public class V3D_PointTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Point.
      */
     @Test
-    @Disabled
+    //@Disabled
     public void testIsIntersectedBy_V3D_LineSegment_boolean() {
         System.out.println("isIntersectedBy");
         // No test as this is tested in V3D_LineSegmentTest.
@@ -398,7 +401,7 @@ public class V3D_PointTest extends V3D_Test {
      * Test of isEnvelopeIntersectedBy method, of class V3D_Point.
      */
     @Test
-    @Disabled
+    //@Disabled
     public void testIsEnvelopeIntersectedBy() {
         System.out.println("isEnvelopeIntersectedBy");
         // No test as this is tested in V3D_EnvelopeTest.
@@ -408,7 +411,7 @@ public class V3D_PointTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
-    @Disabled
+    //@Disabled
     public void testGetDistance_V3D_Plane() {
         System.out.println("getDistance");
         // No test as this is tested in V3D_PlaneTest.
@@ -418,7 +421,7 @@ public class V3D_PointTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
-    @Disabled
+    //@Disabled
     public void testGetDistance_V3D_Plane_int() {
         System.out.println("getDistance");
         // No test as this is tested in V3D_PlaneTest.
@@ -428,7 +431,6 @@ public class V3D_PointTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
-    @Disabled
     public void testGetDistance_V3D_LineSegment_int() {
         System.out.println("getDistance");
         int oom = -1;

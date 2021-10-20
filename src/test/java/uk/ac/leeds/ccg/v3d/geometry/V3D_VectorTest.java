@@ -82,18 +82,7 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testEquals() {
         System.out.println("equals");
-        int oom = -1;
-        Object o = new V3D_Vector(P0P0P0, oom);
-        V3D_Vector instance = new V3D_Vector(P0P0P0, oom);
-        boolean expResult = true;
-        boolean result = instance.equals(o);
-        assertEquals(expResult, result);
-        // Test 2
-        o = new V3D_Vector(P0P0P0, oom);
-        instance = new V3D_Vector(P1P0P0, oom);
-        expResult = false;
-        result = instance.equals(o);
-        assertEquals(expResult, result);
+
     }
 
     /**
@@ -102,7 +91,10 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testHashCode() {
         System.out.println("hashCode");
-        assertTrue(true); // Not a test!
+        V3D_Vector v = new V3D_Vector(P0P0P0, 0);
+        int result = v.hashCode();
+        int expResult = 148760;
+        assertTrue(result == expResult);
     }
 
     /**
@@ -423,7 +415,6 @@ public class V3D_VectorTest extends V3D_Test {
      * Test of getCrossProduct method, of class V3D_Vector.
      */
     @Test
-    @Disabled
     public void testGetCrossProduct() {
         System.out.println("getCrossProduct");
         int oom = -1;
@@ -457,6 +448,15 @@ public class V3D_VectorTest extends V3D_Test {
         assertTrue(instance.equals(o));
         // Test 2
         instance = V3D_Environment.j;
+        assertFalse(instance.equals(o));
+        // Test 3
+        int oom = -1;
+        o = new V3D_Vector(P0P0P0, oom);
+        instance = new V3D_Vector(P0P0P0, oom);
+        assertTrue(instance.equals(o));
+        // Test 4
+        o = new V3D_Vector(P0P0P0, oom);
+        instance = new V3D_Vector(P1P0P0, oom);
         assertFalse(instance.equals(o));
     }
 
@@ -640,6 +640,126 @@ public class V3D_VectorTest extends V3D_Test {
         Math_Matrix_BR result = instance.getAsMatrix();
         assertEquals(expResult, result);
         // Test 2
+    }
+
+    /**
+     * Test of getDX method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetDX() {
+        System.out.println("getDX");
+        V3D_Vector instance = V3D_Environment.i;
+        Math_BigRational expResult = Math_BigRational.ONE;
+        Math_BigRational result = instance.getDX();
+        assertEquals(expResult, result);
+        // Test 2
+        instance = V3D_Environment.i.reverse();
+        expResult = Math_BigRational.ONE.negate();
+        result = instance.getDX();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getDY method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetDY() {
+        System.out.println("getDY");
+        V3D_Vector instance = V3D_Environment.j;
+        Math_BigRational expResult = Math_BigRational.ONE;
+        Math_BigRational result = instance.getDY();
+        assertEquals(expResult, result);
+        // Test 2
+        instance = V3D_Environment.j.reverse();
+        expResult = Math_BigRational.ONE.negate();
+        result = instance.getDY();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getDZ method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetDZ() {
+        System.out.println("getDZ");
+        V3D_Vector instance = V3D_Environment.k;
+        Math_BigRational expResult = Math_BigRational.ONE;
+        Math_BigRational result = instance.getDZ();
+        assertEquals(expResult, result);
+        // Test 2
+        instance = V3D_Environment.k.reverse();
+        expResult = Math_BigRational.ONE.negate();
+        result = instance.getDZ();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of divide method, of class V3D_Vector.
+     */
+    @Test
+    public void testDivide() {
+        System.out.println("divide");
+        Math_BigRational s = Math_BigRational.TWO;
+        V3D_Vector instance = V3D_Environment.i;
+        V3D_Vector expResult = new V3D_Vector(new V3D_Point(0.5d, 0d, 0d), -2);
+        V3D_Vector result = instance.divide(s);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getAngle method, of class V3D_Vector.
+     */
+    @Test
+    @Disabled
+    public void testGetAngle() {
+        System.out.println("getAngle");
+        V3D_Vector v = null;
+        int oom = 0;
+        V3D_Vector instance = null;
+        Math_BigRational expResult = null;
+        Math_BigRational result = instance.getAngle(v, oom);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getDirection method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetDirection() {
+        System.out.println("getDirection");
+        V3D_Vector instance = V3D_Environment.i;
+        int expResult = 1;
+        int result = instance.getDirection();
+        assertEquals(expResult, result);
+        // Test 2
+        instance = V3D_Environment.j;
+        expResult = 1;
+        result = instance.getDirection();
+        assertEquals(expResult, result);
+        // Test 3
+        instance = V3D_Environment.k;
+        expResult = 1;
+        result = instance.getDirection();
+        assertEquals(expResult, result);
+        // Test 4
+        instance = V3D_Environment.i.reverse();
+        expResult = 5;
+        result = instance.getDirection();
+        assertEquals(expResult, result);
+        // Test 5
+        instance = V3D_Environment.j.reverse();
+        expResult = 3;
+        result = instance.getDirection();
+        assertEquals(expResult, result);
+        // Test 6
+        instance = V3D_Environment.k.reverse();
+        expResult = 2;
+        result = instance.getDirection();
+        assertEquals(expResult, result);
+        // Test 7
+        //...
     }
 
 }

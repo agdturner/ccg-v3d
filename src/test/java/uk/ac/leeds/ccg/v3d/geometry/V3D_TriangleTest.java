@@ -173,6 +173,10 @@ public class V3D_TriangleTest extends V3D_Test {
         BigDecimal expResult = BigDecimal.valueOf(2).add(new Math_BigRationalSqrt(2, oom).toBigDecimal(oom));
         BigDecimal result = instance.getPerimeter(oom);
         assertTrue(expResult.compareTo(result) == 0);
+        oom = -1;
+        expResult = BigDecimal.valueOf(2).add(new Math_BigRationalSqrt(2, oom).toBigDecimal(oom));
+        result = instance.getPerimeter(oom);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
