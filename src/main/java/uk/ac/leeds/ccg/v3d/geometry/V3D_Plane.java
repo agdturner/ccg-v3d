@@ -266,7 +266,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The equation of the plane as a String.
      */
     public String getEquation() {
-        Math_BigRational ndxsr = n.dx.getSqrt().negate();
+        Math_BigRational ndxsr = n.dx.getSqrt();
         Math_BigRational ndysr = n.dy.getSqrt();
         Math_BigRational ndzsr = n.dz.getSqrt();
         Math_BigRational k = (ndxsr.multiply(p.x)
@@ -274,7 +274,7 @@ public class V3D_Plane extends V3D_Geometry {
                 .add(ndzsr.multiply(p.z))).negate();
 //        Math_BigRational k = (ndxsr.multiply(p.x)
 //                .subtract(ndysr.multiply(p.y))
-//                .subtract(ndzsr.multiply(p.z))).negate();
+//                .subtract(ndzsr.multiply(p.z)));
 //        Math_BigRational k = ndxsr.multiply(p.x)
 //                .add(ndysr.multiply(p.y))
 //                .add(ndzsr.multiply(p.z));
@@ -937,7 +937,8 @@ public class V3D_Plane extends V3D_Geometry {
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Plane) {
-            return equals((V3D_Plane) o);
+            V3D_Plane pl = (V3D_Plane) o;
+            return equals(pl, Math.min(this.n.oom, pl.n.oom));
         }
         return false;
     }

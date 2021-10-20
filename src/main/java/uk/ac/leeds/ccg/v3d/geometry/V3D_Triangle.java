@@ -380,6 +380,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
         V3D_Point c0 = (V3D_Point) lmpqr.getIntersection(lmqrp, oom, true);
         V3D_Point c1 = (V3D_Point) lmpqr.getIntersection(lmrpq, oom, true);
         V3D_Point c2 = (V3D_Point) lmrpq.getIntersection(lmqrp, oom, true);
+        System.out.println(toString());
         System.out.println("c0=" + c0.toString());
         System.out.println("c1=" + c1.toString());
         System.out.println("c2=" + c2.toString());

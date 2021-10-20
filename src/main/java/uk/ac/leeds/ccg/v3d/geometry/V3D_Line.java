@@ -719,8 +719,9 @@ public class V3D_Line extends V3D_Geometry {
         //V3D_Vector a = new V3D_Vector(p, pt);
         Math_BigRational adb = a.getDotProduct(v);
         Math_BigRational vdv = v.getDotProduct(v);
-        //return p.apply(v.multiply(adb.divide(vdv)).reverse());
-        return p.apply(v.multiply(adb.divide(vdv)));
+        return p.apply(v.multiply(adb.divide(vdv)).reverse());
+        //return q.apply(v.multiply(adb.divide(vdv)));
+        //return p.apply(v.multiply(adb.divide(vdv)));
     }
 
     /**
@@ -920,8 +921,8 @@ public class V3D_Line extends V3D_Geometry {
              * Calculate the direction vector of the line connecting the closest
              * points by computing the cross product.
              */
-            V3D_Vector cp = l.v.getCrossProduct2(v, oom);
-            //V3D_Vector cp = v.getCrossProduct(l.v, oom);
+            //V3D_Vector cp = l.v.getCrossProduct2(v, oom);
+            V3D_Vector cp = v.getCrossProduct(l.v, oom);
             /**
              * Calculate the delta from {@link #p} and l.p
              */
@@ -933,7 +934,7 @@ public class V3D_Line extends V3D_Geometry {
             Math_BigRational dp = cp.getDotProduct(delta);
             // m should only be zero if the lines are parallel.
             //Math_BigRational d = dp.divide(m.getX());
-            Math_BigRational d = dp.divide(m.getSqrt(oom - 6));
+            Math_BigRational d = dp.divide(m.getSqrt(oom - 6)).abs();
             return Math_BigDecimal.round(d.toBigDecimal(), oom);
         }
     }
