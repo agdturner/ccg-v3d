@@ -188,6 +188,13 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
+     * @return true iff this is equal to the ORIGIN. 
+     */
+    public boolean isOrigin() {
+        return equals(ORIGIN);
+    }
+    
+    /**
      * @param v The vector to apply.
      * @return a new point.
      */
