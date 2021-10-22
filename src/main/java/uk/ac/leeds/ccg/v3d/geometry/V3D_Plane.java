@@ -15,11 +15,13 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
@@ -214,112 +216,41 @@ public class V3D_Plane extends V3D_Geometry {
      * An equation of the plane containing the point {@code p} with normal
      * vector {@code n} is
      * {@code n.getDX()(x) + n.getDY()(y) + n.getDZ()(z) = d}.
-     *
+     * 
      * @param p What {@link #p} is set to.
-     * @param n What {@link #n} is set to.
+     * @param n What {@link #n} is set to. This cannot be the ZERO vector.
      */
     public V3D_Plane(V3D_Point p, V3D_Vector n) {
         this.p = p;
-        this.q = p.apply(n);
-        this.r = p.apply(n.reverse());
-//        Math_BigRational d = n.getDX().multiply(p.x).add(n.getDY().multiply(p.y)
-//                .add(n.getDZ().multiply(p.z)));
-//        if (d.isZero()) {
-//            if (n.getDX().isZero()) {
-//                if (n.getDY().isZero()) {
-//                    if (n.getDZ().isZero()) {
-//                        throw new Exception("Invalid plane definition.");
-//                    } else {
-//                        /**
-//                         * All points such that X=Y should work so long as they
-//                         * are not collinear.
-//                         */
-//                        this.q = new V3D_Point(p.x, p.y,
-//                                p.z.add(BigInteger.ONE));
-//                        this.r = new V3D_Point(p.x.add(BigInteger.ONE),
-//                                p.y.add(BigInteger.ONE), p.z);
-//                    }
-//                } else {
-//                    if (n.getDZ().isZero()) {
-//                        /**
-//                         * All points such that X=Z should work so long as they
-//                         * are not collinear.
-//                         */
-//                        this.q = new V3D_Point(p.x, p.y.add(BigInteger.ONE),
-//                                p.z);
-//                        this.r = new V3D_Point(p.x.add(BigInteger.ONE), p.y, 
-//                                p.z.add(BigInteger.ONE));
-//                    } else {
-//                        /**
-//                         * X = p.x
-//                         * All points such that X=Y should work so long as they
-//                         * are not collinear.
-//                         */
-//                        if (p.isOrigin()) {
-//                            this.q = new V3D_Point(p.x,
-//                                    p.y.add(n.getDY()), p.z.add(n.getDZ()));
-//                            this.r = new V3D_Point(p.x,
-//                                    p.y.subtract(n.getDY()), 
-//                                    p.z.subtract(n.getDZ()));
-//                        }
-//                    }
-//                }
-//            } else {
-//                if (n.getDY().isZero()) {
-//                    if (n.getDZ().isZero()) {
-//                        /**
-//                         * All points such that Y=Z should work so long as they
-//                         * are not collinear.
-//                         */
-//                        this.q = new V3D_Point(p.x.add(BigInteger.ONE), p.y,
-//                                p.z);
-//                        this.r = new V3D_Point(p.x, p.y.add(BigInteger.ONE),
-//                                p.z.add(BigInteger.ONE));
-//                    }
-//                } else {
-//                    if (n.getDZ().isZero()) {
-//                        this.q = new V3D_Point(p.x.add(n.getDX()),
-//                                    p.y.add(n.getDY()), p.z);
-//                        this.r = new V3D_Point(p.x.subtract(n.getDX()),
-//                                    p.y.subtract(n.getDY()), 
-//                                    p.z);
-//                    } else {
-//                        this.q = p.apply(n);
-//                        this.r = p.apply(n.reverse());
-//                        new V3D_Point(p.x.add(n.getDX()),
-//                                    p.y.add(n.getDY()), p.z.add(n.getDZ()));
-//                        this.r = new V3D_Point(p.x.subtract(n.getDX()),
-//                                    p.y.subtract(n.getDY()), 
-//                                    p.z.subtract(n.getDZ()));
-//                    }
-//                }
-//            }
-//        } else {
-//            if (n.getDX().isZero()) {
-//                // Set: x = 0; y = 0
-//                // Then: z = d/n.getDZ()
-//                this.q = new V3D_Point(V3D_Environment.P0, V3D_Environment.P0, d.divide(n.getDZ()));
-//                // Set: x = 0; z = 0
-//                // Then: y = d/n.getDY()
-//                this.r = new V3D_Point(V3D_Environment.P0, d.divide(n.getDY()), V3D_Environment.P0);
-//            } else {
-//                if (n.getDY().isZero()) {
-//                    // Set: x = 0; y = 0
-//                    // Then: z = d/n.getDZ()
-//                    this.q = new V3D_Point(V3D_Environment.P0, V3D_Environment.P0, d.divide(n.getDZ()));
-//                    // Set: y = 0; z = 0
-//                    // Then: x = d/n.getDX()
-//                    this.r = new V3D_Point(V3D_Environment.P0, d.divide(n.getDX()), V3D_Environment.P0);
-//                } else {
-//                    // Set: x = 0; y = 0
-//                    // Then: z = d/n.getDZ()
-//                    this.q = new V3D_Point(V3D_Environment.P0, V3D_Environment.P0, d.divide(n.getDZ()));
-//                    // Set: x = 0; z = 0
-//                    // Then: y = d/n.getDY()
-//                    this.r = new V3D_Point(V3D_Environment.P0, d.divide(n.getDY()), V3D_Environment.P0);
-//                }
-//            }
-//        }
+        /**
+         * Find a perpendicular vector using: user65203, How to find
+         * perpendicular vector to another vector?, URL (version: 2020-10-01):
+         * https://math.stackexchange.com/q/3821978
+         * Tested in testIsIntersectedBy_V3D_Point_int()
+         */
+        V3D_Vector pv;
+        V3D_Vector v1 = new V3D_Vector(Math_BigRationalSqrt.ZERO, n.dz, n.dy.negate(), n.oom);
+        V3D_Vector v2 = new V3D_Vector(n.dz.negate(), Math_BigRationalSqrt.ZERO, n.dx, n.oom);
+        V3D_Vector v3 = new V3D_Vector(n.dy.negate(), n.dx, Math_BigRationalSqrt.ZERO, n.oom);
+        Math_BigRational mv1 = v1.getMagnitudeSquared();
+        Math_BigRational mv2 = v2.getMagnitudeSquared();
+        Math_BigRational mv3 = v3.getMagnitudeSquared();
+        if (mv1.compareTo(mv2) == 1) {
+            if (mv1.compareTo(mv3) == 1) {
+                pv = v1;
+            } else {
+                pv = v3;
+            }
+        } else {
+            if (mv2.compareTo(mv3) == 1) {
+                pv = v2;
+            } else {
+                pv = v3;
+            }
+        }
+        this.q = p.apply(pv);
+        V3D_Vector pvx = pv.getCrossProduct(n, n.oom);
+        this.r = p.apply(pvx);
         pq = new V3D_Vector(p, q, n.oom);
         qr = new V3D_Vector(q, r, n.oom);
         rp = new V3D_Vector(r, p, n.oom);
@@ -523,70 +454,77 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
+     * https://www.microsoft.com/en-us/research/publication/intersection-of-two-planes/
+     * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc
      * https://math.stackexchange.com/questions/291289/find-the-point-on-the-line-of-intersection-of-the-two-planes-using-lagranges-me
      * http://tbirdal.blogspot.com/2016/10/a-better-approach-to-plane-intersection.html
+     * https://mathworld.wolfram.com/Plane-PlaneIntersection.html
      *
      * @param pl The plane to intersect.
      * @return The intersection between {@code this} and {@code pl}
      */
     public V3D_Geometry getIntersection(V3D_Plane pl, int oom) {
-        //function [p, n] = intersect_planes(p1, n1, p2, n2, p0)
-        //M = [2 0 0 n1(1) n2(1)
-        //     0 2 0 n1(2) n2(2)
-        //     0 0 2 n1(3) n2(3)
-        //     n1(1) n1(2) n1(3) 0 0
-        //     n2(1) n2(2) n2(3) 0 0];
-        Math_BigRational[][] m = new Math_BigRational[5][6];
-        m[0][0] = Math_BigRational.TWO;
-        m[0][1] = Math_BigRational.ZERO;
-        m[0][2] = Math_BigRational.ZERO;
-        m[0][3] = n.getDX();
-        m[0][4] = pl.n.getDX();
-        m[1][0] = Math_BigRational.ZERO;
-        m[1][1] = Math_BigRational.TWO;
-        m[1][2] = Math_BigRational.ZERO;
-        m[1][3] = n.getDY();
-        m[1][4] = pl.n.getDY();
-        m[2][0] = Math_BigRational.ZERO;
-        m[2][1] = Math_BigRational.ZERO;
-        m[2][2] = Math_BigRational.TWO;
-        m[2][3] = n.getDZ();
-        m[2][4] = pl.n.getDZ();
-        m[3][0] = n.getDX();
-        m[3][1] = n.getDY();
-        m[3][2] = n.getDZ();
-        m[3][3] = Math_BigRational.ZERO;
-        m[3][4] = Math_BigRational.ZERO;
-        m[4][0] = pl.n.getDX();
-        m[4][1] = pl.n.getDY();
-        m[4][2] = pl.n.getDZ();
-        m[4][3] = Math_BigRational.ZERO;
-        m[4][4] = Math_BigRational.ZERO;
-        // b4 = p1(1).*n1(1) + p1(2).*n1(2) + p1(3).*n1(3);
-        Math_BigRational b4 = p.x.multiply(n.getDX())
-                .add(p.y.multiply(n.getDY()))
-                .add(p.z.multiply(n.getDZ()));
-        System.out.println(b4);
-        // b5 = p2(1).*n2(1) + p2(2).*n2(2) + p2(3).*n2(3);
-        Math_BigRational b5 = pl.p.x.multiply(pl.n.getDX())
-                .add(pl.p.y.multiply(pl.n.getDY()))
-                .add(pl.p.z.multiply(pl.n.getDZ()));
-        System.out.println(b5);
-        // b = [2*p0(1) ; 2*p0(2) ; 2*p0(3); b4 ; b5];
-        m[0][5] = q.x.multiply(2);
-        m[1][5] = q.y.multiply(2);
-        m[2][5] = q.z.multiply(2);
-        m[3][5] = b4;
-        m[4][5] = b5;
-        // x = M\b;
-        Math_Matrix_BR mm = new Math_Matrix_BR(m);
-        Math_Matrix_BR ref = mm.getReducedRowEchelonForm();
-        System.out.println(ref);
-        // p = x(1:3);
-
-        // n = cross(n1, n2);
+//        /**
+//         * The following is from:
+//         * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc
+//         * But something is not right!
+//         */
+//        //function [p, n] = intersect_planes(p1, n1, p2, n2, p0)
+//        //M = [2 0 0 n1(1) n2(1)
+//        //     0 2 0 n1(2) n2(2)
+//        //     0 0 2 n1(3) n2(3)
+//        //     n1(1) n1(2) n1(3) 0 0
+//        //     n2(1) n2(2) n2(3) 0 0];
+//        Math_BigRational[][] m = new Math_BigRational[5][6];
+//        m[0][0] = Math_BigRational.TWO;
+//        m[0][1] = Math_BigRational.ZERO;
+//        m[0][2] = Math_BigRational.ZERO;
+//        m[0][3] = n.getDX();
+//        m[0][4] = pl.n.getDX();
+//        m[1][0] = Math_BigRational.ZERO;
+//        m[1][1] = Math_BigRational.TWO;
+//        m[1][2] = Math_BigRational.ZERO;
+//        m[1][3] = n.getDY();
+//        m[1][4] = pl.n.getDY();
+//        m[2][0] = Math_BigRational.ZERO;
+//        m[2][1] = Math_BigRational.ZERO;
+//        m[2][2] = Math_BigRational.TWO;
+//        m[2][3] = n.getDZ();
+//        m[2][4] = pl.n.getDZ();
+//        m[3][0] = n.getDX();
+//        m[3][1] = n.getDY();
+//        m[3][2] = n.getDZ();
+//        m[3][3] = Math_BigRational.ZERO;
+//        m[3][4] = Math_BigRational.ZERO;
+//        m[4][0] = pl.n.getDX();
+//        m[4][1] = pl.n.getDY();
+//        m[4][2] = pl.n.getDZ();
+//        m[4][3] = Math_BigRational.ZERO;
+//        m[4][4] = Math_BigRational.ZERO;
+//        // b4 = p1(1).*n1(1) + p1(2).*n1(2) + p1(3).*n1(3);
+//        Math_BigRational b4 = p.x.multiply(n.getDX())
+//                .add(p.y.multiply(n.getDY()))
+//                .add(p.z.multiply(n.getDZ()));
+//        System.out.println(b4);
+//        // b5 = p2(1).*n2(1) + p2(2).*n2(2) + p2(3).*n2(3);
+//        Math_BigRational b5 = pl.p.x.multiply(pl.n.getDX())
+//                .add(pl.p.y.multiply(pl.n.getDY()))
+//                .add(pl.p.z.multiply(pl.n.getDZ()));
+//        System.out.println(b5);
+//        // b = [2*p0(1) ; 2*p0(2) ; 2*p0(3); b4 ; b5];
+//        m[0][5] = q.x.multiply(2);
+//        m[1][5] = q.y.multiply(2);
+//        m[2][5] = q.z.multiply(2);
+//        m[3][5] = b4;
+//        m[4][5] = b5;
+//        // x = M\b;
+//        Math_Matrix_BR mm = new Math_Matrix_BR(m);
+//        Math_Matrix_BR ref = mm.getReducedRowEchelonForm();
+//        System.out.println(ref);
+//        // p = x(1:3);
+//        //???
+//        // n = cross(n1, n2);
         V3D_Vector v = n.getCrossProduct(pl.n, oom);
-
         // Calculate the cross product of the normal vectors.
         //V3D_Vector v = n.getCrossProduct(pl.n, oom);
         if (v.isZeroVector()) {

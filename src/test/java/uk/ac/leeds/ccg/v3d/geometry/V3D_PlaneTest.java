@@ -183,8 +183,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Plane.
      */
     @Test
-    @Disabled
-    public void testIsIntersectedBy_V3D_Plane() {
+    public void testIsIntersectedBy_V3D_Plane_int() {
         System.out.println("intersects");
         int oom = -1;
         V3D_Plane pl;
@@ -879,7 +878,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Plane.
      */
     @Test
-    public void testIsIntersectedBy_V3D_Point() {
+    public void testIsIntersectedBy_V3D_Point_int() {
         System.out.println("intersects");
         int oom = -1;
         V3D_Point pt;
@@ -2478,6 +2477,29 @@ public class V3D_PlaneTest extends V3D_Test {
         assertTrue(instance.isIntersectedBy(N2N2P0, oom));
         assertFalse(instance.isIntersectedBy(N2N2N1, oom));
         assertFalse(instance.isIntersectedBy(N2N2N2, oom));
+        // Test 2 from https://math.stackexchange.com/questions/2686606/equation-of-a-plane-passing-through-3-points        
+        V3D_Vector n = new V3D_Vector(1, -2, 1, oom);
+        V3D_Point p = new V3D_Point(1, -2, 1);
+        instance = new V3D_Plane(p, n);
+        assertTrue(instance.isIntersectedBy(new V3D_Point(4, -2, -2), oom));
+        assertTrue(instance.isIntersectedBy(new V3D_Point(4, 1, 4), oom));
+        n = new V3D_Vector(1, -2, 1, oom);
+        p = new V3D_Point(4, -2, -2);
+        instance = new V3D_Plane(p, n);
+        assertTrue(instance.isIntersectedBy(new V3D_Point(1, -2, 1), oom));
+        assertTrue(instance.isIntersectedBy(new V3D_Point(4, 1, 4), oom));
+        // Test 3
+         n = new V3D_Vector(1, -2, 1, oom);
+         p = new V3D_Point(0, 0, 0);
+        instance = new V3D_Plane(p, n);
+        assertTrue(instance.isIntersectedBy(new V3D_Point(3, 0, -3), oom));
+        assertTrue(instance.isIntersectedBy(new V3D_Point(3, 3, 3), oom));
+        n = new V3D_Vector(1, -2, 1, oom);
+        p = new V3D_Point(3, 0, -3);
+        instance = new V3D_Plane(p, n);
+        assertTrue(instance.isIntersectedBy(new V3D_Point(0, 0, 0), oom));
+        assertTrue(instance.isIntersectedBy(new V3D_Point(3, 3, 3), oom));
+        
     }
 
     /**
@@ -2563,7 +2585,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Plane.
      */
     @Test
-    public void testIsIntersectedBy_V3D_Line() {
+    public void testIsIntersectedBy_V3D_Line_int() {
         System.out.println("intersects");
         int oom = -1;
         V3D_Line l = new V3D_Line(P0P0P0, P0P1P0, oom); // Y axis
@@ -2583,7 +2605,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of isParallel method, of class V3D_Plane.
      */
     @Test
-    public void testIsParallel_V3D_Plane() {
+    public void testIsParallel_V3D_Plane_int() {
         System.out.println("isParallel");
         int oom = -1;
         V3D_Plane p = new V3D_Plane(P1P1P0, P1N1P0, N1P1P0, oom);
@@ -2660,8 +2682,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Plane.
      */
     @Test
-    @Disabled
-    public void testGetIntersection_V3D_Plane() {
+    public void testGetIntersection_V3D_Plane_int() {
         System.out.println("getIntersection");
         int oom = -1;
         V3D_Plane pl;
@@ -2669,37 +2690,43 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Geometry expResult;
         V3D_Geometry result;
 
-        // Two Planar patches
-        pl = new V3D_Plane(new V3D_Point(
-                Math_BigRational.valueOf(8).divide(3),
-                Math_BigRational.valueOf(-2).divide(3), Math_BigRational.ZERO),
-                new V3D_Vector(2, 8, 0, oom));
-        instance = new V3D_Plane(new V3D_Point(
-                Math_BigRational.valueOf(8).divide(3),
-                        Math_BigRational.ZERO,
-                        Math_BigRational.valueOf(-2).divide(3)),
-                new V3D_Vector(2, 0, 8, oom));
-        expResult = new V3D_Line(new V3D_Point(
-                Math_BigRational.valueOf(68).divide(27),
-                        Math_BigRational.valueOf(-17).divide(27),
-                        Math_BigRational.valueOf(-17).divide(27)),
-                new V3D_Vector(
-                        Math_BigRational.valueOf(4).divide(16),
-                        Math_BigRational.valueOf(-1).divide(16),
-                        Math_BigRational.valueOf(-1).divide(16), oom));
-        result = instance.getIntersection(pl, oom);
-        assertTrue(expResult.equals(result));
-
-        // Simple
-        pl = new V3D_Plane(new V3D_Point(7, 11, 0),
-                new V3D_Vector(0, 0, 3, oom));
-        instance = new V3D_Plane(new V3D_Point(1, 0, 0),
-                new V3D_Vector(5, 5, 0, oom));
-        expResult = new V3D_Line(new V3D_Point(0.5d, 0.5d, 0),
-                new V3D_Vector(-15, 15, 0, oom));
-        result = instance.getIntersection(pl, oom);
-        assertTrue(expResult.equals(result));
-
+//        /**
+//         * The following is from:
+//         * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc
+//         * Two Planar patches. But there is something wrong...
+//         */
+//        pl = new V3D_Plane(new V3D_Point(
+//                Math_BigRational.valueOf(8).divide(3),
+//                Math_BigRational.valueOf(-2).divide(3), Math_BigRational.ZERO),
+//                new V3D_Vector(2, 8, 0, oom));
+//        instance = new V3D_Plane(new V3D_Point(
+//                Math_BigRational.valueOf(8).divide(3),
+//                Math_BigRational.ZERO,
+//                Math_BigRational.valueOf(-2).divide(3)),
+//                new V3D_Vector(2, 0, 8, oom));
+//        expResult = new V3D_Line(new V3D_Point(
+//                Math_BigRational.valueOf(68).divide(27),
+//                Math_BigRational.valueOf(-17).divide(27),
+//                Math_BigRational.valueOf(-17).divide(27)),
+//                new V3D_Vector(
+//                        Math_BigRational.valueOf(4).divide(16),
+//                        Math_BigRational.valueOf(-1).divide(16),
+//                        Math_BigRational.valueOf(-1).divide(16), oom));
+//        result = instance.getIntersection(pl, oom);
+//        assertTrue(expResult.equals(result));
+//        /**
+//         * The following is from:
+//         * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc
+//         * Simple. But there is something wrong...
+//         */
+//        pl = new V3D_Plane(new V3D_Point(7, 11, 0),
+//                new V3D_Vector(0, 0, 3, oom));
+//        instance = new V3D_Plane(new V3D_Point(1, 0, 0),
+//                new V3D_Vector(5, 5, 0, oom));
+//        expResult = new V3D_Line(new V3D_Point(0.5d, 0.5d, 0),
+//                new V3D_Vector(-15, 15, 0, oom));
+//        result = instance.getIntersection(pl, oom);
+//        assertTrue(expResult.equals(result));
         // Test V3D_Environment.x0
         pl = V3D_Environment.x0;
         // Test 1 
@@ -2896,7 +2923,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Plane.
      */
     @Test
-    public void testGetIntersection_V3D_Line() {
+    public void testGetIntersection_V3D_Line_int() {
         System.out.println("getIntersection");
         int oom = -1;
         V3D_Line l;
@@ -3028,7 +3055,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Plane.
      */
     @Test
-    public void testGetIntersection_V3D_LineSegment_boolean() {
+    public void testGetIntersection_3args() {
         System.out.println("getIntersection");
         int oom = -1;
         V3D_LineSegment l = null;
@@ -3188,7 +3215,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of equals method, of class V3D_Plane.
      */
     @Test
-    public void testEquals_V3D_Plane() {
+    public void testEquals_V3D_Plane_int() {
         System.out.println("equals");
         int oom = -1;
         V3D_Plane p;
@@ -3229,7 +3256,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Plane.
      */
     @Test
-    public void testGetDistance() {
+    public void testGetDistance_V3D_Point_int() {
         System.out.println("getDistance");
         V3D_Point p = new V3D_Point(P5, P0, P0);
         int oom = 0;
@@ -3241,5 +3268,39 @@ public class V3D_PlaneTest extends V3D_Test {
         p = new V3D_Point(P5, P10, P0);
         result = instance.getDistance(p, oom);
         assertTrue(expResult.compareTo(result) == 0);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Plane.
+     */
+    @Test
+    @Disabled
+    public void testGetDistance_V3D_Line_int() {
+        System.out.println("getDistance");
+        V3D_Line l = null;
+        int oom = 0;
+        V3D_Plane instance = null;
+        BigDecimal expResult = null;
+        BigDecimal result = instance.getDistance(l, oom);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Plane.
+     */
+    @Test
+    @Disabled
+    public void testGetDistance_V3D_LineSegment_int() {
+        System.out.println("getDistance");
+        V3D_LineSegment l = null;
+        int oom = 0;
+        V3D_Plane instance = null;
+        BigDecimal expResult = null;
+        BigDecimal result = instance.getDistance(l, oom);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 }
