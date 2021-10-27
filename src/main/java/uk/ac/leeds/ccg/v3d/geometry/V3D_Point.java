@@ -97,12 +97,14 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
+     * Create a new instance.
      * @param v The vector.
+     * @param oom The Order of Magnitude for the precision.
      */
-    public V3D_Point(V3D_Vector v) {
-        x = v.dx.getSqrt(v.oom);
-        y = v.dy.getSqrt(v.oom);
-        z = v.dz.getSqrt(v.oom);
+    public V3D_Point(V3D_Vector v, int oom) {
+        x = v.getDX(oom);
+        y = v.getDY(oom);
+        z = v.getDZ(oom);
     }
 
     /**
@@ -196,13 +198,14 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     
     /**
      * @param v The vector to apply.
+     * @param oom The Order of Magnitude for the precision.
      * @return a new point.
      */
     @Override
-    public V3D_Point apply(V3D_Vector v) {
-        Math_BigRational dx = x.add(v.getDX());
-        Math_BigRational dy = y.add(v.getDY());
-        Math_BigRational dz = z.add(v.getDZ());
+    public V3D_Point apply(V3D_Vector v, int oom) {
+        Math_BigRational dx = x.add(v.getDX(oom));
+        Math_BigRational dy = y.add(v.getDY(oom));
+        Math_BigRational dz = z.add(v.getDZ(oom));
 //        Math_BigRational dx = x.subtract(v.getDX());
 //        Math_BigRational dy = y.subtract(v.getDY());
 //        Math_BigRational dz = z.subtract(v.getDZ());
@@ -234,8 +237,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         if (this.equals(p)) {
             return BigDecimal.ZERO;
         }
-        return Math_BigDecimal.sqrt(getDistanceSquared(p).toBigDecimal(),
-                oom, RoundingMode.HALF_UP);
+        return new Math_BigRationalSqrt(getDistanceSquared(p), oom)
+                .getSqrt(oom).toBigDecimal(oom);
     }
 
     /**
@@ -266,7 +269,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         // Not sure what oom should be in the cross product...
         V3D_Vector cp = new V3D_Vector(this, l.p, oom).getCrossProduct(
                 new V3D_Vector(this, l.q, oom), oom);
-        return cp.getMagnitude().divide(l.v.getMagnitude()).toBigDecimal(oom);
+        return cp.getMagnitude().divide(l.v.getMagnitude(), oom).toBigDecimal(oom);
 //        return cp.getMagnitude(oom - 1).divide(l.v.getMagnitude(oom - 1), -oom,
 //                RoundingMode.HALF_UP);
     }
@@ -283,8 +286,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Envelope getEnvelope() {
-        return new V3D_Envelope(x, y, z, -1);
+    public V3D_Envelope getEnvelope(int oom) {
+        return new V3D_Envelope(x, y, z, oom);
     }
 
     @Override
@@ -340,7 +343,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         Math_BigRational l2 = l.getLength2();
         Math_BigRational lp2 = l.p.getDistanceSquared(this);
         Math_BigRational lq2 = l.q.getDistanceSquared(this);
-        BigDecimal lp = (new V3D_Line(l)).getDistance(this, oom);
+        BigDecimal lp = (new V3D_Line(l, oom)).getDistance(this, oom);
         if (lp2.compareTo(l2) == -1 && lq2.compareTo(l2) == -1) {
             return lp;
         }
@@ -352,13 +355,13 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
          * point to the ends of the line segment.
          */
         //Math_BigRational pl2 = (new V3D_Line(l)).getDistanceSquared(this);
-        BigDecimal pl = (new V3D_Line(l)).getDistance(this, oom2);
+        BigDecimal pl = (new V3D_Line(l, oom)).getDistance(this, oom2);
         Math_BigRational pl2 = Math_BigRational.valueOf(pl).pow(2);
         V3D_Vector u = l.v.getUnitVector(oom - 2);
         V3D_Point pi = new V3D_Point(u.multiply(Math_BigRational.valueOf(
                 new Math_BigRationalSqrt(lp2.subtract(pl2), oom2)
-                        .toBigDecimal(oom2)))
-                .add(new V3D_Vector(l.p, oom2)));
+                        .toBigDecimal(oom2)), oom2)
+                .add(new V3D_Vector(l.p, oom2), oom2), oom2);
         if (l.isIntersectedBy(pi, oom)) {
             return lp;
         } else {

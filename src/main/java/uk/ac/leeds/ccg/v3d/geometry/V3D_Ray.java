@@ -65,8 +65,8 @@ public class V3D_Ray extends V3D_Line {
      *
      * @param l What {@code this} is created from.
      */
-    public V3D_Ray(V3D_Ray l) {
-        super(l);
+    public V3D_Ray(V3D_Ray l, int oom) {
+        super(l, oom);
     }
 
     /**
@@ -84,8 +84,8 @@ public class V3D_Ray extends V3D_Line {
      *
      * @param l What {@code this} is created from.
      */
-    public V3D_Ray(V3D_Line l) {
-        super(l);
+    public V3D_Ray(V3D_Line l, int oom) {
+        super(l, oom);
     }
 
     /**
@@ -132,8 +132,8 @@ public class V3D_Ray extends V3D_Line {
      * @return a new V3D_Ray which is {@code this} with the {@code v} applied.
      */
     @Override
-    public V3D_Ray apply(V3D_Vector v) {
-        return new V3D_Ray(p.apply(v), q.apply(v), v.oom);
+    public V3D_Ray apply(V3D_Vector v, int oom) {
+        return new V3D_Ray(p.apply(v, oom), q.apply(v, oom), oom);
     }
 
     /**
@@ -142,7 +142,7 @@ public class V3D_Ray extends V3D_Line {
      */
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom) {
-        boolean isPossibleIntersection = isPossibleIntersection(pt);
+        boolean isPossibleIntersection = isPossibleIntersection(pt, oom);
         if (isPossibleIntersection) {
             Math_BigRationalSqrt a = p.getDistance(this.p);
             if (a.getX().isZero()) {
@@ -153,7 +153,7 @@ public class V3D_Ray extends V3D_Line {
                 return true;
             }
             Math_BigRationalSqrt l = this.p.getDistance(this.q);
-            if (a.add(b).compareTo(l) != 1) {
+            if (a.add(b, oom).compareTo(l) != 1) {
                 return true;
             }
         }
@@ -170,51 +170,51 @@ public class V3D_Ray extends V3D_Line {
      * @return {@code false} if there is no chance of intersection, and
      * {@code true} otherwise.
      */
-    private boolean isPossibleIntersection(V3D_Point pt) {
+    private boolean isPossibleIntersection(V3D_Point pt, int oom) {
         int ptxcpx = pt.x.compareTo(p.x);
-        int vdxc0 = v.getDX().compareTo(Math_BigRational.ZERO);
+        int vdxc0 = v.getDX(oom).compareTo(Math_BigRational.ZERO);
         switch (ptxcpx) {
             case -1:
                 if (vdxc0 == -1) {
-                    return getptycpy(pt);
+                    return getptycpy(pt, oom);
                 } else {
                     return false;
                 }
             case 0:
-                return getptycpy(pt);
+                return getptycpy(pt, oom);
             default:
                 if (vdxc0 == 1) {
-                    return getptycpy(pt);
+                    return getptycpy(pt, oom);
                 } else {
                     return false;
                 }
         }
     }
 
-    private boolean getptycpy(V3D_Point pt) {
+    private boolean getptycpy(V3D_Point pt, int oom) {
         int ptycpy = pt.y.compareTo(p.y);
-        int vdyc0 = v.getDY().compareTo(Math_BigRational.ZERO);
+        int vdyc0 = v.getDY(oom).compareTo(Math_BigRational.ZERO);
         switch (ptycpy) {
             case -1:
                 if (vdyc0 == -1) {
-                    return getptzcpz(pt);
+                    return getptzcpz(pt, oom);
                 } else {
                     return false;
                 }
             case 0:
-                return getptzcpz(pt);
+                return getptzcpz(pt, oom);
             default:
                 if (vdyc0 == 1) {
-                    return getptzcpz(pt);
+                    return getptzcpz(pt, oom);
                 } else {
                     return false;
                 }
         }
     }
 
-    private boolean getptzcpz(V3D_Point pt) {
+    private boolean getptzcpz(V3D_Point pt, int oom) {
         int ptzcpz = pt.z.compareTo(p.z);
-        int vdzc0 = v.getDZ().compareTo(Math_BigRational.ZERO);
+        int vdzc0 = v.getDZ(oom).compareTo(Math_BigRational.ZERO);
         switch (ptzcpz) {
             case -1:
                 return vdzc0 == -1;
@@ -236,12 +236,12 @@ public class V3D_Ray extends V3D_Line {
         if (p.equals(r.p)) {
             return true;
         }
-        V3D_Line tl = new V3D_Line(this);
+        V3D_Line tl = new V3D_Line(this, oom);
         boolean isIntersectedrtl = r.isIntersectedBy(tl, oom);
         if (isIntersectedrtl == false) {
             return false;
         }
-        V3D_Line rl = new V3D_Line(r);
+        V3D_Line rl = new V3D_Line(r, oom);
         boolean isIntersectedtrl = isIntersectedBy(rl, oom);
         if (isIntersectedtrl == false) {
             return false;
@@ -271,11 +271,11 @@ public class V3D_Ray extends V3D_Line {
      * @return {@code true} iff {@code r} intersects with {@code this}.
      */
     public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean flag) {
-        V3D_Ray rlpq = new V3D_Ray(l);
+        V3D_Ray rlpq = new V3D_Ray(l, oom);
         if (!isIntersectedBy(rlpq, oom, flag)) {
             return false;
         }
-        V3D_Ray rlqp = new V3D_Ray(l.q, l.p, v.oom);
+        V3D_Ray rlqp = new V3D_Ray(l.q, l.p, oom);
         return isIntersectedBy(rlqp, oom, flag);
     }
 
@@ -309,7 +309,7 @@ public class V3D_Ray extends V3D_Line {
     @Override
     public V3D_Geometry getIntersection(V3D_Line l, int oom) {
         // Check if infinite lines intersect.
-        V3D_Geometry g = new V3D_Line(this).getIntersection(new V3D_Line(l), oom);
+        V3D_Geometry g = new V3D_Line(this, oom).getIntersection(new V3D_Line(l, oom), oom);
         if (g == null) {
             // There is no intersection.
             return g;
@@ -345,7 +345,7 @@ public class V3D_Ray extends V3D_Line {
      * @return The intersection between {@code this} and {@code r}.
      */
     public V3D_Geometry getIntersection(V3D_Ray r, int oom, boolean flag) {
-        V3D_Line tl = new V3D_Line(this);
+        V3D_Line tl = new V3D_Line(this, oom);
         V3D_Geometry rtl = r.getIntersection(tl, oom);
         if (rtl == null) {
             return null;
@@ -358,7 +358,7 @@ public class V3D_Ray extends V3D_Line {
             }
         } else {
             // Then rtl is an instance of V3D_Ray.
-            V3D_Line rl = new V3D_Line(r);
+            V3D_Line rl = new V3D_Line(r, oom);
             V3D_Geometry grl = getIntersection(rl, oom);
             if (grl instanceof V3D_Point) {
                 return grl;
@@ -374,7 +374,7 @@ public class V3D_Ray extends V3D_Line {
                  */
                 if (isIntersectedBy(r.p, oom)) {
                     if (r.isIntersectedBy(p, oom)) {
-                        return new V3D_LineSegment(r.p, p, v.oom);
+                        return new V3D_LineSegment(r.p, p, oom);
                     } else {
                         return r;
                     }
@@ -416,7 +416,7 @@ public class V3D_Ray extends V3D_Line {
         if (isIntersectedBy(lip.q, oom)) {
             return lip;
         } else {
-            return new V3D_LineSegment(pt, p, v.oom);
+            return new V3D_LineSegment(pt, p, oom);
         }
     }
 
@@ -455,7 +455,7 @@ public class V3D_Ray extends V3D_Line {
         if (isIntersectedBy(pt, oom)) {
             return BigDecimal.ZERO;
         }
-        V3D_Line l = new V3D_Line(this);
+        V3D_Line l = new V3D_Line(this, oom);
         V3D_Point ip = l.getPointOfIntersection(pt, oom);
         if (isIntersectedBy(ip, oom)) {
             return ip.getDistance(l.p, oom);
@@ -478,13 +478,13 @@ public class V3D_Ray extends V3D_Line {
      */
     @Override
     public BigDecimal getDistance(V3D_Ray r, int oom) {
-        if (isParallel(r)) {
+        if (isParallel(r, oom)) {
             return getLineOfIntersection(r.p, oom).getLength().toBigDecimal(oom);
         } else {
-            V3D_Line tl = new V3D_Line(this);
+            V3D_Line tl = new V3D_Line(this, oom);
             //BigDecimal tldr = tl.getDistance(r, oom);
             V3D_LineSegment tlrp = tl.getLineOfIntersection(r.p, oom);
-            V3D_Line rl = new V3D_Line(r);
+            V3D_Line rl = new V3D_Line(r, oom);
             //BigDecimal rldt = rl.getDistance(this, oom);
             V3D_LineSegment rltp = rl.getLineOfIntersection(p, oom);
             if (isIntersectedBy(tlrp.q, oom)) {

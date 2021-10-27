@@ -70,14 +70,10 @@ public class V3D_LineSegmentTest extends V3D_Test {
         String expResult = "V3D_LineSegment(p=V3D_Point(x=0, y=0, z=0), "
                 + "q=V3D_Point(x=1, y=1, z=1), "
                 + "v=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, "
-                + "oomi=-1, sqrtxapprox=null, oom=-1), "
-                + "dy=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, "
-                + "oomi=-1, sqrtxapprox=null, oom=-1), "
-                + "dz=Math_BigRationalSqrt(x=1, negative=false, sqrtx=1, "
-                + "oomi=-1, sqrtxapprox=null, oom=-1), "
-                + "m=Math_BigRationalSqrt(x=3, negative=false, sqrtx=null, "
-                + "oomi=-1, sqrtxapprox=1.7, oom=-1)))";
+                + "dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
+                + "dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
+                + "dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
+                + "m=Math_BigRationalSqrt(x=3, sqrtxapprox=1.7, oom=-1)))";
         String result = instance.toString();
         assertTrue(expResult.equalsIgnoreCase(result));
     }
@@ -90,10 +86,9 @@ public class V3D_LineSegmentTest extends V3D_Test {
         System.out.println("getLength");
         int oom = -2;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0, oom);
-        BigDecimal expResult = Math_BigDecimal.sqrt(P2.toBigDecimal(), oom,
-                RoundingMode.HALF_UP);
-        BigDecimal result = instance.getLength().toBigDecimal(oom);
-        assertTrue(expResult.equals(result));
+        Math_BigRationalSqrt expResult = new Math_BigRationalSqrt(P2, oom, false);
+        Math_BigRationalSqrt result = instance.getLength();
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -105,7 +100,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         int oom = -1;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0, oom);
         V3D_Envelope expResult = new V3D_Envelope(oom, P0P0P0, P1P1P0);
-        V3D_Envelope result = instance.getEnvelope();
+        V3D_Envelope result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result));
     }
 
@@ -206,17 +201,17 @@ public class V3D_LineSegmentTest extends V3D_Test {
         V3D_Vector v = V3D_Environment.i;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P0P0, oom);
         V3D_LineSegment expResult = new V3D_LineSegment(P1P0P0, new V3D_Point(P2, P0, P0), oom);
-        V3D_LineSegment result = instance.apply(v);
+        V3D_LineSegment result = instance.apply(v, oom);
         assertTrue(expResult.equals(result));
         // Test 2
         instance = new V3D_LineSegment(P0P0P0, P0P1P0, oom);
         expResult = new V3D_LineSegment(P1P0P0, P1P1P0, oom);
-        result = instance.apply(v);
+        result = instance.apply(v, oom);
         assertTrue(expResult.equals(result));
         // Test 3
         instance = new V3D_LineSegment(P0P0P0, P0P0P1, oom);
         expResult = new V3D_LineSegment(P1P0P0, P1P0P1, oom);
-        result = instance.apply(v);
+        result = instance.apply(v, oom);
         assertTrue(expResult.equals(result));
     }
 
@@ -406,7 +401,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         // Test 2
         oom = -1;
         instance = new V3D_LineSegment(P0P0P0, P2P0P0, oom);
-        expResult = new Math_BigRationalSqrt(4, 2, oom);
+        expResult = new Math_BigRationalSqrt(4L, 2L);
         result = instance.getLength();
         assertTrue(expResult.equals(result));
     }

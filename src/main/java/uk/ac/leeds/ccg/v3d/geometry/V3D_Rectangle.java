@@ -105,7 +105,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
-    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s, int oom) {
+    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s, 
+            int oom) {
         super(p, q, r, oom);
         /**
          * p and q get swapped if q is at the origin in defining the plane, in
@@ -137,11 +138,11 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
             } else {
                 // Rectangle has area.
                 if (qAtOrigin) {
-                    if (!(pq.isOrthogonal(qs))) {
+                    if (!(pq.isOrthogonal(qs, oom))) {
                         throw new RuntimeException("The points do not define a rectangle.");
                     }
                 } else {
-                    if (!(pq.isOrthogonal(qr))) {
+                    if (!(pq.isOrthogonal(qr, oom))) {
                         throw new RuntimeException("The points do not define a rectangle.");
                     }
                 }
@@ -169,9 +170,9 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     }
 
     @Override
-    public V3D_Envelope getEnvelope() {
+    public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = new V3D_Envelope(n.oom, p, q, r, s);
+            en = new V3D_Envelope(oom, p, q, r, s);
         }
         return en;
     }
@@ -181,9 +182,9 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      * @return a new rectangle.
      */
     @Override
-    public V3D_Rectangle apply(V3D_Vector v) {
-        return new V3D_Rectangle(p.apply(v), q.apply(v), r.apply(v),
-                s.apply(v), v.oom);
+    public V3D_Rectangle apply(V3D_Vector v, int oom) {
+        return new V3D_Rectangle(p.apply(v, oom), q.apply(v, oom), 
+                r.apply(v, oom), s.apply(v, oom), oom);
     }
 
     /**
@@ -192,7 +193,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom) {
-        if (getEnvelope().isIntersectedBy(pt, oom)) {
+        if (getEnvelope(oom).isIntersectedBy(pt, oom)) {
             if (super.isIntersectedBy(pt, oom)) {
                 return isIntersectedBy0(pt, oom);
             }
@@ -256,15 +257,15 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
              */
             Math_BigRational mp = cp.getMagnitudeSquared();
             Math_BigRational mq = cq.getMagnitudeSquared();
-            V3D_Vector cpq = cp.add(cq);
+            V3D_Vector cpq = cp.add(cq, oom);
             Math_BigRational mpq = cpq.getMagnitudeSquared();
             if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
                 Math_BigRational mr = cr.getMagnitudeSquared();
-                V3D_Vector cpqr = cpq.add(cr);
+                V3D_Vector cpqr = cpq.add(cr, oom);
                 Math_BigRational mpqr = cpqr.getMagnitudeSquared();
                 if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
                     Math_BigRational ms = cs.getMagnitudeSquared();
-                    Math_BigRational mpqrs = cpqr.add(cs).getMagnitudeSquared();
+                    Math_BigRational mpqrs = cpqr.add(cs, oom).getMagnitudeSquared();
                     if (mpqrs.compareTo(ms) == 1 && mpqrs.compareTo(mpqr) == 1) {
                         return true;
                     }
@@ -287,15 +288,15 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
              */
             Math_BigRational mp = cp.getMagnitudeSquared();
             Math_BigRational mq = cq.getMagnitudeSquared();
-            V3D_Vector cpq = cp.add(cq);
+            V3D_Vector cpq = cp.add(cq, oom);
             Math_BigRational mpq = cpq.getMagnitudeSquared();
             if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
                 Math_BigRational mr = cr.getMagnitudeSquared();
-                V3D_Vector cpqr = cpq.add(cr);
+                V3D_Vector cpqr = cpq.add(cr, oom);
                 Math_BigRational mpqr = cpqr.getMagnitudeSquared();
                 if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
                     Math_BigRational ms = cs.getMagnitudeSquared();
-                    Math_BigRational mpqrs = cpqr.add(cs).getMagnitudeSquared();
+                    Math_BigRational mpqrs = cpqr.add(cs, oom).getMagnitudeSquared();
                     if (mpqrs.compareTo(ms) == 1 && mpqrs.compareTo(mpqr) == 1) {
                         return true;
                     }
@@ -329,7 +330,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
-        if (getEnvelope().isIntersectedBy(l.getEnvelope())) {
+        if (getEnvelope(oom).isIntersectedBy(l.getEnvelope(oom))) {
             V3D_Plane pl = new V3D_Plane(this);
             if (pl.isIntersectedBy(l, oom)) {
                 V3D_Geometry g = pl.getIntersection(l, oom, b);
@@ -373,7 +374,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                  * error.
                  */
                 // Quick test of the envelope?!
-                if (!getEnvelope().isIntersectedBy(l, oom)) {
+                if (!getEnvelope(oom).isIntersectedBy(l, oom)) {
                     return null;
                 }
                 /**
@@ -404,7 +405,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                                 return bi;
                             } else {
                                 return new V3D_LineSegment(
-                                        (V3D_Point) bi, (V3D_Point) tli, n.oom);
+                                        (V3D_Point) bi, (V3D_Point) tli, oom);
                             }
                         }
                     } else if (rii instanceof V3D_LineSegment) {
@@ -419,7 +420,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                                 return rii;
                             } else {
                                 return new V3D_LineSegment((V3D_Point) rii,
-                                        (V3D_Point) tli, n.oom);
+                                        (V3D_Point) tli, oom);
                             }
                         } else if (bi instanceof V3D_LineSegment) {
                             return bi;
@@ -432,11 +433,11 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                                 if (riip.equals(bip)) {
                                     return bip;
                                 } else {
-                                    return new V3D_LineSegment(riip, bip, n.oom);
+                                    return new V3D_LineSegment(riip, bip, oom);
                                 }
                             } else {
                                 return new V3D_LineSegment((V3D_Point) bi,
-                                        (V3D_Point) tli, n.oom);
+                                        (V3D_Point) tli, oom);
                             }
                         }
                     }
@@ -459,14 +460,14 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                                 if (tlip.equals(tip)) {
                                     return tlip;
                                 } else {
-                                    return new V3D_LineSegment(tlip, tip, n.oom);
+                                    return new V3D_LineSegment(tlip, tip, oom);
                                 }
                             }
                         } else if (bi instanceof V3D_LineSegment) {
                             return bi;
                         } else {
                             return new V3D_LineSegment((V3D_Point) ti,
-                                    (V3D_Point) bi, n.oom);
+                                    (V3D_Point) bi, oom);
                         }
                     } else {
                         V3D_Point tip = (V3D_Point) ti;
@@ -481,15 +482,15 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                                     return rii;
                                 } else {
                                     return new V3D_LineSegment(riip,
-                                            (V3D_Point) tli, n.oom);
+                                            (V3D_Point) tli, oom);
                                 }
                             } else if (sri instanceof V3D_LineSegment) {
                                 return sri;
                             } else {
-                                return new V3D_LineSegment(riip, (V3D_Point) sri, n.oom);
+                                return new V3D_LineSegment(riip, (V3D_Point) sri, oom);
                             }
                         } else {
-                            return new V3D_LineSegment(riip, tip, n.oom);
+                            return new V3D_LineSegment(riip, tip, oom);
                         }
                     }
                 }
@@ -557,7 +558,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        return getEnvelope().isIntersectedBy(l, oom);
+        return getEnvelope(oom).isIntersectedBy(l, oom);
     }
 
     @Override
@@ -572,7 +573,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     public BigDecimal getArea(int oom) {
 //        return Math_BigDecimal.round(l.v.getMagnitude(oomn2)
 //                .multiply(t.v.getMagnitude(oomn2)), oom);
-        return l.v.getMagnitude().multiply(t.v.getMagnitude()).toBigDecimal(oom);
+        return l.v.getMagnitude().multiply(t.v.getMagnitude(), oom).toBigDecimal(oom);
     }
 
     /**

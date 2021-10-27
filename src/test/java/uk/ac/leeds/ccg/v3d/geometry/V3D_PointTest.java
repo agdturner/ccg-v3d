@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Disabled;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * Test of V3D_Point class.
@@ -122,7 +123,7 @@ public class V3D_PointTest extends V3D_Test {
         // Test 2
         oom = -1;
         instance = new V3D_Point(P3, P4, P0);
-        expResult = P5.toBigDecimal();
+        expResult = P5.toBigDecimal(oom);
         result = instance.getDistance(P0P0P0, oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
@@ -135,8 +136,8 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("getEnvelope");
         int oom = -1;
         V3D_Envelope expResult = new V3D_Envelope(oom, P0P0P0, P1P1P1);
-        V3D_Envelope result = P0P0P0.getEnvelope();
-        result = result.union(P1P1P1.getEnvelope());
+        V3D_Envelope result = P0P0P0.getEnvelope(oom);
+        result = result.union(P1P1P1.getEnvelope(oom));
         assertEquals(expResult, result);
     }
 
@@ -146,7 +147,7 @@ public class V3D_PointTest extends V3D_Test {
     @Test
     public void testHashCode() {
         System.out.println("hashCode");
-        V3D_Envelope e = P0P0P0.getEnvelope();
+        V3D_Envelope e = P0P0P0.getEnvelope(V3D_Environment.DEFAULT_OOM);
         int result = e.hashCode();
         int expResult = 1299868383;
         assertTrue(result == expResult);
@@ -162,7 +163,7 @@ public class V3D_PointTest extends V3D_Test {
         V3D_Vector v = new V3D_Vector(P1, P1, P1, oom);
         V3D_Point instance = P0P0P0;
         V3D_Point expResult = P1P1P1;
-        V3D_Point result = instance.apply(v);
+        V3D_Point result = instance.apply(v, oom);
         assertEquals(expResult, result);
     }
 
@@ -277,12 +278,12 @@ public class V3D_PointTest extends V3D_Test {
         V3D_Point p = P0P0P0;
         int oom = 0;
         V3D_Point instance = P1P0P0;
-        BigDecimal expResult = P1.toBigDecimal();
+        BigDecimal expResult = P1.toBigDecimal(oom);
         BigDecimal result = instance.getDistance(p, oom);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_Point(P3, P4, P0);
-        expResult = P5.toBigDecimal();
+        expResult = P5.toBigDecimal(oom);
         result = instance.getDistance(p, oom);
         assertEquals(expResult, result);
     }
@@ -313,31 +314,31 @@ public class V3D_PointTest extends V3D_Test {
         int oom = 0;
         V3D_Line l = new V3D_Line(P0P0P0, P0P0P1, oom);
         V3D_Point instance = P0P1P0;
-        BigDecimal expResult = P1.toBigDecimal();
+        BigDecimal expResult = P1.toBigDecimal(oom);
         BigDecimal result = instance.getDistance(l, oom);
         assertEquals(expResult, result);
         // Test 2
         l = new V3D_Line(P0P0P0, P0P0P1, oom);
         instance = new V3D_Point(P3, P4, P0);
-        expResult = P5.toBigDecimal();
+        expResult = P5.toBigDecimal(oom);
         result = instance.getDistance(l, oom);
         assertEquals(expResult, result);
         // Test 3
         l = new V3D_Line(P0P0P1, P0P0P0, oom);
         instance = new V3D_Point(P3, P4, P0);
-        expResult = P5.toBigDecimal();
+        expResult = P5.toBigDecimal(oom);
         result = instance.getDistance(l, oom);
         assertEquals(expResult, result);
         // Test 4
         l = new V3D_Line(P0P0P0, P0P0P1, oom);
         instance = new V3D_Point(P4, P3, P0);
-        expResult = P5.toBigDecimal();
+        expResult = P5.toBigDecimal(oom);
         result = instance.getDistance(l, oom);
         assertEquals(expResult, result);
         // Test 3
         l = new V3D_Line(P0P0P0, P0P0P1, oom);
         instance = new V3D_Point(P4, P3, P10);
-        expResult = P5.toBigDecimal();
+        expResult = P5.toBigDecimal(oom);
         result = instance.getDistance(l, oom);
         assertEquals(expResult, result);
     }

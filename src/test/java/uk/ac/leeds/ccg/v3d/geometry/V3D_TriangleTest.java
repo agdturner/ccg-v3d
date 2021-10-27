@@ -63,7 +63,7 @@ public class V3D_TriangleTest extends V3D_Test {
         int oom = -1;
         V3D_Triangle instance = new V3D_Triangle(P0P0P0, P1P0P0, P1P1P0, oom);
         V3D_Envelope expResult = new V3D_Envelope(oom, P0P0P0, P1P0P0, P1P1P0);
-        V3D_Envelope result = instance.getEnvelope();
+        V3D_Envelope result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result));
     }
 
@@ -94,7 +94,7 @@ public class V3D_TriangleTest extends V3D_Test {
         int oom = -1;
         V3D_Triangle instance = new V3D_Triangle(P0P0P0, P0P1P0, P1P0P0, oom);
         V3D_Envelope expResult = new V3D_Envelope(oom, P0P0P0, P0P1P0, P1P0P0);
-        V3D_Envelope result = instance.getEnvelope();
+        V3D_Envelope result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result));
     }
 
@@ -232,7 +232,7 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Point expResult;
         V3D_Point result;
         // Test
-        oom = -1;
+        oom = -3; //-2 fails!
         instance = new V3D_Triangle(P0P0P0, P1P0P0, P1P1P0, oom);
         expResult = new V3D_Point(Math_BigRational.valueOf(2, 3), 
                 Math_BigRational.valueOf(1, 3), Math_BigRational.ZERO);

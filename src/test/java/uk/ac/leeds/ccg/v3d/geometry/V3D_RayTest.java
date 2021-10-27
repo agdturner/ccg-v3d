@@ -104,10 +104,11 @@ public class V3D_RayTest extends V3D_Test {
     @Disabled
     public void testApply() {
         System.out.println("apply");
+        int oom = -1;
         V3D_Vector v = null;
         V3D_Ray instance = null;
         V3D_Ray expResult = null;
-        V3D_Ray result = instance.apply(v);
+        V3D_Ray result = instance.apply(v, oom);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

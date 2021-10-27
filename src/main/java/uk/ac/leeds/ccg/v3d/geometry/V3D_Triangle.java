@@ -129,9 +129,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     }
 
     @Override
-    public V3D_Envelope getEnvelope() {
+    public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = new V3D_Envelope(-1, p, q, r);
+            en = new V3D_Envelope(oom, p, q, r);
         }
         return en;
     }
@@ -141,8 +141,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      * @return a new rectangle.
      */
     @Override
-    public V3D_Triangle apply(V3D_Vector v) {
-        return new V3D_Triangle(p.apply(v), q.apply(v), r.apply(v), v.oom);
+    public V3D_Triangle apply(V3D_Vector v, int oom) {
+        return new V3D_Triangle(p.apply(v, oom), q.apply(v, oom), 
+                r.apply(v, oom), oom);
     }
 
     /**
@@ -151,7 +152,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom) {
-        if (getEnvelope().isIntersectedBy(pt, oom)) {
+        if (getEnvelope(oom).isIntersectedBy(pt, oom)) {
             if (super.isIntersectedBy(pt, oom)) {
                 return isIntersectedBy0(pt, oom);
             }
@@ -176,9 +177,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
 //        Math_BigRationalSqrt mp = cp.getMagnitude();
 //        Math_BigRationalSqrt mq = cq.getMagnitude();
 //        Math_BigRationalSqrt mr = cr.getMagnitude();
-        if (cp.dx.negative == cq.dx.negative && cp.dx.negative == cr.dx.negative) {
-            if (cp.dy.negative == cq.dy.negative && cp.dy.negative == cr.dy.negative) {
-                if (cp.dz.negative == cq.dz.negative && cp.dz.negative == cr.dz.negative) {
+        if (cp.dx.isNegative() == cq.dx.isNegative() && cp.dx.isNegative() == cr.dx.isNegative()) {
+            if (cp.dy.isNegative() == cq.dy.isNegative() && cp.dy.isNegative() == cr.dy.isNegative()) {
+                if (cp.dz.isNegative() == cq.dz.isNegative() && cp.dz.isNegative() == cr.dz.isNegative()) {
                     return true;
                 }
             }
@@ -222,7 +223,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
 
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
-        if (this.getEnvelope().isIntersectedBy(l.getEnvelope())) {
+        if (this.getEnvelope(oom).isIntersectedBy(l.getEnvelope(oom))) {
             if (super.isIntersectedBy(l, oom)) {
                 V3D_Geometry g = super.getIntersection(l, oom, b);
                 if (g instanceof V3D_Point) {
@@ -241,10 +242,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public BigDecimal getArea(int oom) {
-        return Math_BigDecimal.round(pq.getCrossProduct(qr, oom).getMagnitude()
-                .toBigDecimal(oom - 1).divide(BigDecimal.valueOf(2)), oom);
-//        return pq.getCrossProduct(qr).getMagnitude(oom - 1).divide(
-//                BigDecimal.valueOf(2));
+        return pq.getCrossProduct(rp.reverse(), oom).getMagnitude()
+                .divide(Math_BigRational.TWO, oom).toBigDecimal(oom);
     }
 
     /**
@@ -268,7 +267,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
         if (g == null) {
             return null;
         }
-        V3D_Geometry enil = getEnvelope().getIntersection(l, oom);
+        V3D_Geometry enil = getEnvelope(oom).getIntersection(l, oom);
         if (enil == null) {
             return null;
         }
@@ -289,25 +288,25 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
                 return lqri;
             } else {
                 return new V3D_LineSegment((V3D_Point) lqri,
-                        (V3D_Point) lrpi, n.oom);
+                        (V3D_Point) lrpi, oom);
             }
         } else if (lpqi instanceof V3D_LineSegment) {
             return lpqi;
         } else {
             if (lqri == null) {
                 return new V3D_LineSegment((V3D_Point) lpqi,
-                        (V3D_Point) lrpi, n.oom);
+                        (V3D_Point) lrpi, oom);
             } else if (lqri instanceof V3D_LineSegment) {
                 return lqri;
             } else {
                 if (lrpi == null) {
                     return new V3D_LineSegment((V3D_Point) lqri,
-                            (V3D_Point) lpqi, n.oom);
+                            (V3D_Point) lpqi, oom);
                 } else if (lrpi instanceof V3D_LineSegment) {
                     return lrpi;
                 } else {
                     return V3D_FiniteGeometry.getGeometry((V3D_Point) lpqi,
-                            (V3D_Point) lrpi, (V3D_Point) lrpi, n.oom);
+                            (V3D_Point) lrpi, (V3D_Point) lrpi, oom);
                 }
             }
         }
@@ -363,7 +362,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
 
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        return getEnvelope().isIntersectedBy(l, oom);
+        return getEnvelope(oom).isIntersectedBy(l, oom);
     }
 
     /**

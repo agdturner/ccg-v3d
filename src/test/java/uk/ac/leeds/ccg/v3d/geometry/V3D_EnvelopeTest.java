@@ -202,7 +202,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         int oom = -1;
         V3D_Envelope instance = new V3D_Envelope(oom, p0, p1);
         V3D_Envelope expResult = new V3D_Envelope(oom, p0, p1);
-        V3D_Envelope result = instance.getEnvelope();
+        V3D_Envelope result = instance.getEnvelope(oom);
         assertEquals(expResult, result);
     }
 
@@ -452,7 +452,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         int oom = -1;
         V3D_Envelope instance = new V3D_Envelope(oom, P0P0P0);
         V3D_Envelope expResult = new V3D_Envelope(oom, P0P0P0);
-        V3D_Envelope result = instance.getEnvelope();
+        V3D_Envelope result = instance.getEnvelope(oom);
         assertEquals(expResult, result);
     }
 
@@ -631,13 +631,13 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Vector v = new V3D_Vector(P1P1P1, oom);
         V3D_Envelope instance = new V3D_Envelope(oom, P0P0P0, P1P1P1);
         V3D_Envelope expResult = new V3D_Envelope(oom, P1P1P1, P2P2P2);
-        V3D_Envelope result = instance.apply(v);
+        V3D_Envelope result = instance.apply(v, oom);
         assertEquals(expResult, result);
         // Test 2
         v = new V3D_Vector(N1N1N1, oom);
         instance = new V3D_Envelope(oom, P0P0P0, P1P1P1);
         expResult = new V3D_Envelope(oom, N1N1N1, P0P0P0);
-        result = instance.apply(v);
+        result = instance.apply(v, oom);
         assertEquals(expResult, result);
     }
 

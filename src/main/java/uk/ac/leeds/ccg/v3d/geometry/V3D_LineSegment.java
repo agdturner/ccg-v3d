@@ -75,8 +75,8 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      *
      * @param l What {@code this} is created from.
      */
-    public V3D_LineSegment(V3D_LineSegment l) {
-        super(l);
+    public V3D_LineSegment(V3D_LineSegment l, int oom) {
+        super(l, oom);
         len2 = p.getDistanceSquared(q);
     }
 
@@ -96,8 +96,8 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      *
      * @param l What {@code this} is created from.
      */
-    public V3D_LineSegment(V3D_Line l) {
-        super(l);
+    public V3D_LineSegment(V3D_Line l, int oom) {
+        super(l, oom);
         len2 = p.getDistanceSquared(q);
     }
 
@@ -106,8 +106,8 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      *
      * @param l What {@code this} is created from.
      */
-    public V3D_LineSegment(V3D_Envelope.LineSegment l) {
-        this(new V3D_Point(l.p), new V3D_Point(l.q), l.v.oom);
+    public V3D_LineSegment(V3D_Envelope.LineSegment l, int oom) {
+        this(new V3D_Point(l.p), new V3D_Point(l.q), oom);
     }
     
     @Override
@@ -172,9 +172,8 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * applied.
      */
     @Override
-    public V3D_LineSegment apply(V3D_Vector v) {
-        return new V3D_LineSegment(p.apply(v), q.apply(v),
-                Math.min(this.v.oom, v.oom));
+    public V3D_LineSegment apply(V3D_Vector v, int oom) {
+        return new V3D_LineSegment(p.apply(v, oom), q.apply(v, oom), oom);
     }
 
     /**
@@ -196,9 +195,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * @return {@code new V3D_Envelope(start, end)}
      */
     @Override
-    public V3D_Envelope getEnvelope() {
+    public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = new V3D_Envelope(v.oom, p, q);
+            en = new V3D_Envelope(oom, p, q);
         }
         return en;
     }
@@ -209,7 +208,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     @Override
     public boolean isIntersectedBy(V3D_Point p, int oom) {
-        boolean ei = getEnvelope().isIntersectedBy(p.getEnvelope());
+        boolean ei = getEnvelope(oom).isIntersectedBy(p.getEnvelope(oom));
         if (ei) {
             if (super.isIntersectedBy(p, oom)) {
                 Math_BigRationalSqrt a = p.getDistance(this.p);
@@ -221,7 +220,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
                     return true;
                 }
                 Math_BigRationalSqrt l = this.p.getDistance(this.q);
-                if (a.add(b).compareTo(l) != 1) {
+                if (a.add(b, oom).compareTo(l) != 1) {
                     return true;
                 }
             }
@@ -238,7 +237,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean flag) {
-        boolean ei = getEnvelope().isIntersectedBy(l.getEnvelope());
+        boolean ei = getEnvelope(oom).isIntersectedBy(l.getEnvelope(oom));
         if (ei) {
             return super.isIntersectedBy(l, oom);
         }
@@ -275,7 +274,8 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     @Override
     public V3D_Geometry getIntersection(V3D_Line l, int oom) {
         // Check if infinite lines intersect.
-        V3D_Geometry i = new V3D_Line(this).getIntersection(new V3D_Line(l), oom);
+        V3D_Geometry i = new V3D_Line(this, oom).getIntersection(
+                new V3D_Line(l, oom), oom);
         if (i == null) {
             // There is no intersection.
             return i;
@@ -314,12 +314,14 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean flag) {
-        V3D_Envelope ren = this.getEnvelope().getIntersection(l.getEnvelope());
+        V3D_Envelope ren = this.getEnvelope(oom).getIntersection(
+                l.getEnvelope(oom));
         if (ren == null) {
             return null;
         }
         // Get intersection of infinite lines. 
-        V3D_Geometry li = new V3D_Line(this).getIntersection(new V3D_Line(l), oom);
+        V3D_Geometry li = new V3D_Line(this, oom).getIntersection(
+                new V3D_Line(l, oom), oom);
         if (li == null) {
             return null;
         }
@@ -425,7 +427,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        return getEnvelope().isIntersectedBy(l, oom);
+        return getEnvelope(oom).isIntersectedBy(l, oom);
     }
 
     /**
@@ -467,7 +469,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
-        V3D_Geometry loi = getLineOfIntersection(l);
+        V3D_Geometry loi = getLineOfIntersection(l, oom);
         if (loi == null) {
             /**
              * Lines are parallel, so the distance is either from one end point
@@ -490,7 +492,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     public V3D_Point getMidpoint(int oom) {
         //BigDecimal l = getLength().toBigDecimal(oom);
         //V3D_Vector pmpq = v.divide(Math_BigRational.valueOf(l));
-        V3D_Vector pmpq = v.divide(Math_BigRational.valueOf(2));
-        return p.apply(pmpq);
+        V3D_Vector pmpq = v.divide(Math_BigRational.valueOf(2), oom);
+        return p.apply(pmpq, oom);
     }
 }

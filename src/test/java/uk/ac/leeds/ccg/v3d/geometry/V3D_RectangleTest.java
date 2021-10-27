@@ -72,22 +72,22 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Envelope result;
         instance = new V3D_Rectangle(N1P1P0, P1P1P0, P1N1P0, N1N1P0, oom);
         expResult = new V3D_Envelope(oom, N1N1P0, P1P1P0);
-        result = instance.getEnvelope();
+        result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result));
         // Test 2
         instance = new V3D_Rectangle(N1P1P1, P1P1P0, P1N1P0, N1N1P1, oom);
         expResult = new V3D_Envelope(oom, N1N1P0, P1P1P1);
-        result = instance.getEnvelope();
+        result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result));
         // Test 3
         instance = new V3D_Rectangle(N1P1P1, P1P1N1, P1N1N1, N1N1P1, oom);
         expResult = new V3D_Envelope(oom, N1N1N1, P1P1P1);
-        result = instance.getEnvelope();
+        result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result));
         // Test 4
         instance = new V3D_Rectangle(N1N1N1, P1N1N1, P1P1N1, N1P1N1, oom);
         expResult = new V3D_Envelope(oom, N1N1N1, P1P1N1);
-        result = instance.getEnvelope();
+        result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result));
     }
 
@@ -109,7 +109,7 @@ public class V3D_RectangleTest extends V3D_Test {
         pt = new V3D_Point(half, half, P0);
         assertTrue(instance.isIntersectedBy(pt, oom));
         // Test 3
-        oom = -11;
+        oom = -12;
         pt = new V3D_Point(half.add(Math_BigRational.valueOf("0.00000000001")), half, P0);
         assertFalse(instance.isIntersectedBy(pt, oom));
     }
@@ -157,7 +157,7 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Vector v = new V3D_Vector(1,0,0, oom);
         V3D_Rectangle instance = new V3D_Rectangle(P0P0P0, P0P1P0, P1P1P0, P1P0P0, oom);
         V3D_Rectangle expResult = new V3D_Rectangle(P1P0P0, P1P1P0, new V3D_Point(P2,P1,P0), P2P0P0, oom);
-        V3D_Rectangle result = instance.apply(v);
+        V3D_Rectangle result = instance.apply(v, oom);
         assertTrue(expResult.equals(result));
     }
 

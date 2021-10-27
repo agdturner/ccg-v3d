@@ -60,18 +60,18 @@ import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
  * <ul>
  * <li>Vector Form
  * <ul>
- * <li>{@code (x,y,z) = (p.x,p.y,p.z) + t(v.getDX(),v.getDY(),v.getDZ())}</li>
+ * <li>{@code (x,y,z) = (p.x,p.y,p.z) + t(v.getDX(oom),v.getDY(oom),v.getDZ(oom))}</li>
  * </ul>
  * <li>Parametric Form (where t describes a particular point on the line)
  * <ul>
- * <li>{@code x = p.x + t(v.getDX())}</li>
- * <li>{@code y = p.y + t(v.getDY())}</li>
- * <li>{@code z = p.z + t(v.getDZ())}</li>
+ * <li>{@code x = p.x + t(v.getDX(oom))}</li>
+ * <li>{@code y = p.y + t(v.getDY(oom))}</li>
+ * <li>{@code z = p.z + t(v.getDZ(oom))}</li>
  * </ul>
- * <li>Symmetric Form (assume {@code v.getDX()}, {@code v.getDY()}, and
- * {@code v.getDZ()} are all nonzero)
+ * <li>Symmetric Form (assume {@code v.getDX(oom)}, {@code v.getDY(oom)}, and
+ * {@code v.getDZ(oom)} are all nonzero)
  * <ul>
- * <li>{@code (x−p.x)/v.getDX() = (y−p.y)/v.getDY() = (z−p.z)/v.getDZ()}</li>
+ * <li>{@code (x−p.x)/v.getDX(oom) = (y−p.y)/v.getDY(oom) = (z−p.z)/v.getDZ(oom)}</li>
  * </ul></li>
  * </ul>
  *
@@ -141,14 +141,14 @@ public class V3D_Line extends V3D_Geometry {
      * @param v What {@link #v} is set to.
      * @throws RuntimeException if {@code v.isZeroVector()}.
      */
-    public V3D_Line(V3D_Point p, V3D_Vector v) {
+    public V3D_Line(V3D_Point p, V3D_Vector v, int oom) {
         if (v.isZeroVector()) {
             throw new RuntimeException("Vector " + v + " is the zero vector "
                     + "and so cannot define a line.");
         }
         this.p = p;
         this.v = v;
-        q = p.apply(v);
+        q = p.apply(v, oom);
     }
 
     /**
@@ -159,22 +159,24 @@ public class V3D_Line extends V3D_Geometry {
      * @param check Ignored. It is here to distinguish with
      * {@link #V3D_Line(V3D_Point, V3D_Vector)}.
      */
-    public V3D_Line(V3D_Point p, V3D_Vector v, boolean check) {
+    public V3D_Line(V3D_Point p, V3D_Vector v, int oom, boolean check) {
         this.p = p;
         this.v = v;
-        q = p.apply(v);
+        q = p.apply(v, oom);
     }
 
     /**
      * Create a new instance from {@code l}
      *
      * @param l Line to create from.
+     * @param oom The Order of Magnitude for the precision of magnitude 
+     * calculations. 
      */
-    public V3D_Line(V3D_Line l) {
+    public V3D_Line(V3D_Line l, int oom) {
         this.p = l.p;
         this.q = l.q;
         v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
-                q.z.subtract(p.z), l.v.oom);
+                q.z.subtract(p.z), oom);
     }
 
     @Override
@@ -229,25 +231,43 @@ public class V3D_Line extends V3D_Geometry {
             cp = v.getCrossProduct(ppt, oom);
         }
         //V3D_Vector cp = ppt.getCrossProduct(v, oom);
-        return cp.getDX().isZero() && cp.getDY().isZero() && cp.getDZ().isZero();
+        return cp.dx.isZero() && cp.dy.isZero() && cp.dz.isZero();
     }
 
     /**
      * @param l The line to test this with to see if they are parallel.
      * @return {@code true} If this and {@code l} are parallel.
      */
-    public boolean isParallel(V3D_Line l) {
-        return v.isScalarMultiple(l.v);
+    public boolean isParallel(V3D_Line l, int oom) {
+        return v.isScalarMultiple(l.v, oom);
     }
 
     /**
-     * This computes the intersection and tests if it is {@code null}
-     *
-     * @param l The line to test if it intersects with {@code this}.
-     * @return {@code true} If {@code this} and {@code l} intersect.
+     * @return {@code true} if {@code this} and {@code l} intersect and false if 
+     * they may intersect, but more computation is needed.
      */
-    public boolean isIntersectedBy(V3D_Line l, int oom) {
-        return getIntersection(l, oom) != null;
+    protected boolean isIntersectedBy(V3D_Line l, int oom) {
+        if (V3D_Geometrics.isCollinear(oom, this.p, this.q, l.p)) {
+            return true;
+        } else {
+            V3D_Plane p = new V3D_Plane(this.p, this.q, l.p, oom);
+            if (V3D_Geometrics.isCoplanar(oom, p, l.q)) {
+                if (!isParallel(l, oom)) {
+                    return true;
+                }
+            }
+        }
+        if (V3D_Geometrics.isCollinear(oom, this.p, this.q, l.q)) {
+            return true;
+        } else {
+            V3D_Plane p = new V3D_Plane(this.p, this.q, l.q, oom);
+            if (V3D_Geometrics.isCoplanar(oom, p, l.q)) {
+                if (!isParallel(l, oom)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -259,37 +279,50 @@ public class V3D_Line extends V3D_Geometry {
      */
     public V3D_Geometry getIntersection(V3D_Line l, int oom) {
         // Special case of parallel lines.
-        if (isParallel(l)) {
+        if (isParallel(l, oom)) {
             if (p.isIntersectedBy(l, oom)) {
                 // If lines are coincident return this.
                 return this;
-            } else {
-                return null;
             }
         }
-        V3D_Vector plp = new V3D_Vector(p, l.p, v.oom);
-        V3D_Vector lqlp = new V3D_Vector(l.q, l.p, v.oom);
-        if (lqlp.getMagnitudeSquared().compareTo(Math_BigRational.ZERO) == 0) {
+        V3D_Vector plp = new V3D_Vector(p, l.p, oom);
+        V3D_Vector lqlp = new V3D_Vector(l.q, l.p, oom);
+        if (lqlp.getMagnitudeSquared().isZero()) {
             if (isIntersectedBy(l.p, oom)) {
                 return l.p;
             }
         }
-        V3D_Vector qp = new V3D_Vector(q, p, v.oom);
-        if (qp.getMagnitudeSquared().compareTo(Math_BigRational.ZERO) == 0) {
+        V3D_Vector qp = new V3D_Vector(q, p, oom);
+        if (qp.getMagnitudeSquared().isZero()) {
             if (l.isIntersectedBy(p, oom)) {
                 return p;
             }
         }
-        Math_BigRational a = (plp.getDX().multiply(lqlp.getDX())).add(plp.getDY()
-                .multiply(lqlp.getDY())).add(plp.getDZ().multiply(lqlp.getDZ()));
-        Math_BigRational b = (lqlp.getDX().multiply(qp.getDX())).add(lqlp.getDY()
-                .multiply(qp.getDY())).add(lqlp.getDZ().multiply(qp.getDZ()));
-        Math_BigRational c = (plp.getDX().multiply(qp.getDX())).add(plp.getDY()
-                .multiply(qp.getDY())).add(plp.getDZ().multiply(qp.getDZ()));
-        Math_BigRational d = (lqlp.getDX().multiply(lqlp.getDX())).add(lqlp.getDY()
-                .multiply(lqlp.getDY())).add(lqlp.getDZ().multiply(lqlp.getDZ()));
-        Math_BigRational e = (qp.getDX().multiply(qp.getDX())).add(qp.getDY()
-                .multiply(qp.getDY())).add(qp.getDZ().multiply(qp.getDZ()));
+        Math_BigRational a = plp.dx.multiply(lqlp.dx, oom).getSqrt(oom)
+                .add(plp.dy.multiply(lqlp.dy, oom).getSqrt(oom))
+                .add(plp.dz.multiply(lqlp.dz, oom).getSqrt(oom));
+        Math_BigRational b = lqlp.dx.multiply(qp.dx, oom).getSqrt(oom)
+                .add(lqlp.dy.multiply(qp.dy, oom).getSqrt(oom))
+                .add(lqlp.dz.multiply(qp.dz, oom).getSqrt(oom));
+        Math_BigRational c = plp.dx.multiply(qp.dx, oom).getSqrt(oom)
+                .add(plp.dy.multiply(qp.dy, oom).getSqrt(oom))
+                .add(plp.dz.multiply(qp.dz, oom).getSqrt(oom));
+        Math_BigRational d = lqlp.dx.multiply(lqlp.dx, oom).getSqrt(oom)
+                .add(lqlp.dy.multiply(lqlp.dy, oom).getSqrt(oom))
+                .add(lqlp.dz.multiply(lqlp.dz, oom).getSqrt(oom));
+        Math_BigRational e = qp.dx.multiply(qp.dx, oom).getSqrt(oom)
+                .add(qp.dy.multiply(qp.dy, oom).getSqrt(oom))
+                .add(qp.dz.multiply(qp.dz, oom).getSqrt(oom));
+//        Math_BigRational a = (plp.dx.multiply(lqlp.dx)).add(plp.dy
+//                .multiply(lqlp.dy)).add(plp.dz.multiply(lqlp.dz)).getSqrt(oom);
+//        Math_BigRational b = (lqlp.dx.multiply(qp.dx)).add(lqlp.dy
+//                .multiply(qp.dy)).add(lqlp.dz.multiply(qp.dz)).getSqrt(oom);
+//        Math_BigRational c = (plp.dx.multiply(qp.dx)).add(plp.dy
+//                .multiply(qp.dy)).add(plp.dz.multiply(qp.dz)).getSqrt(oom);
+//        Math_BigRational d = (lqlp.dx.multiply(lqlp.dx)).add(lqlp.dy
+//                .multiply(lqlp.dy)).add(lqlp.dz.multiply(lqlp.dz)).getSqrt(oom);
+//        Math_BigRational e = (qp.dx.multiply(qp.dx)).add(qp.dy
+//                .multiply(qp.dy)).add(qp.dz.multiply(qp.dz)).getSqrt(oom);
         Math_BigRational den = (e.multiply(d)).subtract(b.multiply(b));
         Math_BigRational num = (a.multiply(b)).subtract(c.multiply(d));
         if (den.compareTo(Math_BigRational.ZERO) == 0) {
@@ -299,74 +332,74 @@ public class V3D_Line extends V3D_Geometry {
                 Math_BigRational z;
                 Math_BigRational lamda;
                 Math_BigRational mu;
-                if (v.getDX().compareTo(Math_BigRational.ZERO) == 0) {
+                if (v.dx.isZero()) {
                     x = p.x;
-                    if (l.v.getDX().compareTo(Math_BigRational.ZERO) == 0) {
-                        if (v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
+                    if (l.v.dx.isZero()) {
+                        if (v.dy.isZero()) {
                             y = p.y;
-                            if (l.v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
+                            if (l.v.dy.isZero()) {
                                 z = p.z;
                             } else {
-                                if (v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                if (v.dz.isZero()) {
                                     z = p.z;
                                 } else {
-                                    if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                    if (l.v.dz.isZero()) {
                                         z = l.p.z;
                                     } else {
-                                        mu = (p.y.subtract(l.p.y)).divide(l.v.getDY());
-                                        z = l.p.z.add(l.v.getDZ().multiply(mu));
+                                        mu = (p.y.subtract(l.p.y)).divide(l.v.getDY(oom));
+                                        z = l.p.z.add(l.v.getDZ(oom).multiply(mu));
                                     }
                                 }
                             }
                         } else {
-                            if (l.v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
+                            if (l.v.dy.isZero()) {
                                 y = l.p.y;
-                                if (v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                if (v.dz.isZero()) {
                                     z = p.z;
                                 } else {
-                                    if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                    if (l.v.dz.isZero()) {
                                         z = l.p.z;
                                     } else {
-                                        lamda = (l.p.y.subtract(p.y)).divide(v.getDY());
-                                        z = p.z.add(v.getDZ().multiply(lamda));
+                                        lamda = (l.p.y.subtract(p.y)).divide(v.getDY(oom));
+                                        z = p.z.add(v.getDZ(oom).multiply(lamda));
                                     }
                                 }
                                 //x = p.x;            
-                                //p.x + v.getDX() * lamda = l.p.x + l.v.getDX() * mu
-                                //p.y + v.getDY() * lamda = l.p.y + l.v.getDY() * mu
-                                //p.z + v.getDZ() * lamda = l.p.z + l.v.getDZ() * mu
+                                //p.x + v.getDX(oom) * lamda = l.p.x + l.v.getDX(oom) * mu
+                                //p.y + v.getDY(oom) * lamda = l.p.y + l.v.getDY(oom) * mu
+                                //p.z + v.getDZ(oom) * lamda = l.p.z + l.v.getDZ(oom) * mu
 
                             } else {
-                                if (v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                if (v.dz.isZero()) {
                                     z = p.z;
-                                    mu = (p.z.subtract(l.p.z)).divide(l.v.getDY());
-                                    y = l.p.y.add(l.v.getDY().multiply(mu));
+                                    mu = (p.z.subtract(l.p.z)).divide(l.v.getDY(oom));
+                                    y = l.p.y.add(l.v.getDY(oom).multiply(mu));
                                 } else {
-                                    if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                    if (l.v.dz.isZero()) {
                                         z = l.p.z;
-                                        lamda = (l.p.z.subtract(p.z)).divide(v.getDY());
-                                        y = p.y.add(v.getDY().multiply(lamda));
+                                        lamda = (l.p.z.subtract(p.z)).divide(v.getDY(oom));
+                                        y = p.y.add(v.getDY(oom).multiply(lamda));
                                     } else {
                                         // There are 2 ways to calculate lamda. One way should work! - If not try calculating mu.
-//                                        mu = ((p.y.add(v.getDY().multiply(lamda))).subtract(l.p.y)).divide(l.v.getDY());
-//                                        lamda = ((l.p.z.subtract(p.z)).divide(v.getDZ())).add(l.v.getDZ().multiply(mu));
-//                                        lamda = ((l.p.z.subtract(p.z)).divide(v.getDZ())).add(l.v.getDZ().multiply(((p.y.add(v.getDY().multiply(lamda))).subtract(l.p.y)).divide(l.v.getDY())));
+//                                        mu = ((p.y.add(v.getDY(oom).multiply(lamda))).subtract(l.p.y)).divide(l.v.getDY(oom));
+//                                        lamda = ((l.p.z.subtract(p.z)).divide(v.getDZ(oom))).add(l.v.getDZ(oom).multiply(mu));
+//                                        lamda = ((l.p.z.subtract(p.z)).divide(v.getDZ(oom))).add(l.v.getDZ(oom).multiply(((p.y.add(v.getDY(oom).multiply(lamda))).subtract(l.p.y)).divide(l.v.getDY(oom))));
 //                                        l = ((bz-az)/adz) + (bdz*(ady*(l-by)/bdy))
 //                                        l = ((bz-az)/adz) + bdz*ady*l/bdy - bdz*ady*by/bdy
 //                                        l - bdz*ady*l/bdy = ((bz-az)/adz) - bdz*ady*by/bdy
 //                                        l (1 - bdz*ady/bdy) = ((bz-az)/adz) - bdz*ady*by/bdy
 //                                        l = (((bz-az)/adz) - bdz*ady*by/bdy)/(1 - bdz*ady/bdy)
-                                        Math_BigRational den2 = Math_BigRational.ONE.subtract(l.v.getDZ().multiply(v.getDY().divide(l.v.getDY())));
+                                        Math_BigRational den2 = Math_BigRational.ONE.subtract(l.v.getDZ(oom).multiply(v.getDY(oom).divide(l.v.getDY(oom))));
                                         if (den2.compareTo(Math_BigRational.ZERO) != 0) {
-                                            lamda = (((l.p.z.subtract(p.z)).divide(v.getDZ())).subtract(l.v.getDZ().multiply(v.getDY().multiply(l.p.y.divide(l.v.getDY()))))).divide(den2);
-                                            z = p.z.add(v.getDZ().multiply(lamda));
-                                            y = p.y.add(v.getDY().multiply(lamda));
+                                            lamda = (((l.p.z.subtract(p.z)).divide(v.getDZ(oom))).subtract(l.v.getDZ(oom).multiply(v.getDY(oom).multiply(l.p.y.divide(l.v.getDY(oom)))))).divide(den2);
+                                            z = p.z.add(v.getDZ(oom).multiply(lamda));
+                                            y = p.y.add(v.getDY(oom).multiply(lamda));
                                         } else {
-                                            den2 = Math_BigRational.ONE.subtract(l.v.getDY().multiply(v.getDZ().divide(l.v.getDZ())));
+                                            den2 = Math_BigRational.ONE.subtract(l.v.getDY(oom).multiply(v.getDZ(oom).divide(l.v.getDZ(oom))));
                                             if (den2.compareTo(Math_BigRational.ZERO) != 0) {
-                                                lamda = (((l.p.y.subtract(p.y)).divide(v.getDY())).subtract(l.v.getDY().multiply(v.getDZ().multiply(l.p.z.divide(l.v.getDZ()))))).divide(den2);
-                                                z = p.z.add(v.getDZ().multiply(lamda));
-                                                y = p.y.add(v.getDY().multiply(lamda));
+                                                lamda = (((l.p.y.subtract(p.y)).divide(v.getDY(oom))).subtract(l.v.getDY(oom).multiply(v.getDZ(oom).multiply(l.p.z.divide(l.v.getDZ(oom)))))).divide(den2);
+                                                z = p.z.add(v.getDZ(oom).multiply(lamda));
+                                                y = p.y.add(v.getDY(oom).multiply(lamda));
                                             } else {
                                                 // This should not happen!
                                                 z = null;
@@ -378,142 +411,142 @@ public class V3D_Line extends V3D_Geometry {
                             }
                         }
                     } else {
-                        mu = (p.x.subtract(l.p.x)).divide(l.v.getDX());
-                        if (v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
-                            if (l.v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
+                        mu = (p.x.subtract(l.p.x)).divide(l.v.getDX(oom));
+                        if (v.dy.isZero()) {
+                            if (l.v.dy.isZero()) {
                                 y = p.y;
                                 z = p.z;
                             } else {
-                                if (v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
-                                    y = l.p.y.add(l.v.getDY().multiply(mu));
+                                if (v.dz.isZero()) {
+                                    y = l.p.y.add(l.v.getDY(oom).multiply(mu));
                                 } else {
-                                    y = p.y.add(v.getDY().multiply(mu));
+                                    y = p.y.add(v.getDY(oom).multiply(mu));
                                 }
-                                if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                if (l.v.dz.isZero()) {
                                     z = p.z;
                                 } else {
-                                    z = l.p.z.add(l.v.getDZ().multiply(mu));
+                                    z = l.p.z.add(l.v.getDZ(oom).multiply(mu));
                                 }
                             }
                         } else {
-                            lamda = ((l.p.y.add(l.v.getDY().multiply(mu)))
-                                    .subtract(p.x)).divide(v.getDY());
-                            if (v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                            lamda = ((l.p.y.add(l.v.getDY(oom).multiply(mu)))
+                                    .subtract(p.x)).divide(v.getDY(oom));
+                            if (v.dz.isZero()) {
                                 z = p.z;
                             } else {
-                                z = p.z.add(v.getDZ().multiply(lamda));
+                                z = p.z.add(v.getDZ(oom).multiply(lamda));
                             }
-                            if (l.v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
+                            if (l.v.dy.isZero()) {
                                 y = p.y;
                             } else {
-                                y = l.p.y.add(l.v.getDY().multiply(mu));
+                                y = l.p.y.add(l.v.getDY(oom).multiply(mu));
                             }
                         }
                     }
                 } else {
-                    if (l.v.getDX().compareTo(Math_BigRational.ZERO) == 0) {
-                        lamda = l.p.x.subtract(p.x).divide(v.getDX());
+                    if (l.v.dx.isZero()) {
+                        lamda = l.p.x.subtract(p.x).divide(v.getDX(oom));
                         x = l.p.x;
-                        if (v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
-                            mu = (p.y.subtract(l.p.y)).divide(l.v.getDY());
+                        if (v.dy.isZero()) {
+                            mu = (p.y.subtract(l.p.y)).divide(l.v.getDY(oom));
                             y = p.y;
-                            if (v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                            if (v.dz.isZero()) {
                                 z = p.z;
                             } else {
-                                if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                if (l.v.dz.isZero()) {
                                     z = l.p.z;
                                 } else {
-                                    z = l.p.z.add(l.v.getDZ().multiply(mu));
+                                    z = l.p.z.add(l.v.getDZ(oom).multiply(mu));
                                 }
                             }
                         } else {
-                            if (v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
+                            if (v.dy.isZero()) {
                                 y = p.y;
-                                if (l.v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
-                                    if (v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                if (l.v.dy.isZero()) {
+                                    if (v.dz.isZero()) {
                                         z = p.z;
                                     } else {
-                                        if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                        if (l.v.dz.isZero()) {
                                             z = l.p.z;
                                         } else {
-                                            mu = ((p.z.add(v.getDZ().multiply(lamda))).subtract(l.p.z)).divide(l.v.getDZ());
-                                            z = l.p.z.add(l.v.getDZ().multiply(mu));
+                                            mu = ((p.z.add(v.getDZ(oom).multiply(lamda))).subtract(l.p.z)).divide(l.v.getDZ(oom));
+                                            z = l.p.z.add(l.v.getDZ(oom).multiply(mu));
                                         }
                                     }
                                 } else {
-                                    if (v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                    if (v.dz.isZero()) {
                                         z = p.z;
                                     } else {
-                                        if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                        if (l.v.dz.isZero()) {
                                             z = l.p.z;
                                         } else {
-                                            mu = (p.z.subtract(l.p.z)).divide(l.v.getDZ());
-                                            z = l.p.z.add(l.v.getDZ().multiply(mu));
+                                            mu = (p.z.subtract(l.p.z)).divide(l.v.getDZ(oom));
+                                            z = l.p.z.add(l.v.getDZ(oom).multiply(mu));
                                         }
                                     }
                                 }
                             } else {
-                                if (l.v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
+                                if (l.v.dy.isZero()) {
                                     y = l.p.y;
-                                    if (v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                    if (v.dz.isZero()) {
                                         z = p.z;
                                     } else {
-                                        if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                        if (l.v.dz.isZero()) {
                                             z = l.p.z;
                                         } else {
-                                            mu = ((p.z.add(v.getDZ().multiply(lamda))).subtract(l.p.z)).divide(l.v.getDZ());
-                                            z = l.p.z.add(l.v.getDZ().multiply(mu));
+                                            mu = ((p.z.add(v.getDZ(oom).multiply(lamda))).subtract(l.p.z)).divide(l.v.getDZ(oom));
+                                            z = l.p.z.add(l.v.getDZ(oom).multiply(mu));
                                         }
                                     }
                                 } else {
-                                    y = p.y.add(v.getDY().multiply(lamda));
-                                    if (v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                    y = p.y.add(v.getDY(oom).multiply(lamda));
+                                    if (v.dz.isZero()) {
                                         z = p.z;
                                     } else {
-                                        if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                        if (l.v.dz.isZero()) {
                                             z = l.p.z;
                                         } else {
-                                            mu = ((p.z.add(v.getDZ().multiply(lamda))).subtract(l.p.z)).divide(l.v.getDZ());
-                                            z = l.p.z.add(l.v.getDZ().multiply(mu));
+                                            mu = ((p.z.add(v.getDZ(oom).multiply(lamda))).subtract(l.p.z)).divide(l.v.getDZ(oom));
+                                            z = l.p.z.add(l.v.getDZ(oom).multiply(mu));
                                         }
                                     }
                                 }
                             }
                         }
                     } else {
-                        // v.getDX() > 0 && l.v.getDX() > 0
-                        if (v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
+                        // v.getDX(oom) > 0 && l.v.getDX(oom) > 0
+                        if (v.dy.isZero()) {
                             y = p.y;
-                            if (l.v.getDY().compareTo(Math_BigRational.ZERO) == 0) {
-                                if (v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                            if (l.v.dy.isZero()) {
+                                if (v.dz.isZero()) {
                                     z = p.z;
                                     x = p.x;
                                 } else {
-                                    if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                    if (l.v.dz.isZero()) {
                                         z = l.p.z;
-                                        lamda = (l.p.z.subtract(p.z)).divide(v.getDZ());
-                                        x = p.x.add(v.getDX().multiply(lamda));
+                                        lamda = (l.p.z.subtract(p.z)).divide(v.getDZ(oom));
+                                        x = p.x.add(v.getDX(oom).multiply(lamda));
                                     } else {
                                         // There are 2 ways to calculate lamda. One way should work! - If not try calculating mu.
-//                                        mu = ((p.x.add(v.getDX().multiply(lamda))).subtract(l.p.x)).divide(l.v.getDX());
-//                                        lamda = ((l.p.z.subtract(p.z)).divide(v.getDZ())).add(l.v.getDZ().multiply(mu));
-//                                        lamda = ((l.p.z.subtract(p.z)).divide(v.getDZ())).add(l.v.getDZ().multiply(((p.x.add(v.getDX().multiply(lamda))).subtract(l.p.x)).divide(l.v.getDX())));
+//                                        mu = ((p.x.add(v.getDX(oom).multiply(lamda))).subtract(l.p.x)).divide(l.v.getDX(oom));
+//                                        lamda = ((l.p.z.subtract(p.z)).divide(v.getDZ(oom))).add(l.v.getDZ(oom).multiply(mu));
+//                                        lamda = ((l.p.z.subtract(p.z)).divide(v.getDZ(oom))).add(l.v.getDZ(oom).multiply(((p.x.add(v.getDX(oom).multiply(lamda))).subtract(l.p.x)).divide(l.v.getDX(oom))));
 //                                        l = ((bz-az)/adz) + (bdz*(adx*(l-bx)/bdx))
 //                                        l = ((bz-az)/adz) + bdz*adx*l/bdx - bdz*adx*bx/bdx
 //                                        l - bdz*adx*l/bdx = ((bz-az)/adz) - bdz*adx*bx/bdx
 //                                        l (1 - bdz*adx/bdx) = ((bz-az)/adz) - bdz*adx*bx/bdx
 //                                        l = (((bz-az)/adz) - bdz*adx*bx/bdx)/(1 - bdz*adx/bdx)
-                                        Math_BigRational den2 = Math_BigRational.ONE.subtract(l.v.getDZ().multiply(v.getDX().divide(l.v.getDX())));
+                                        Math_BigRational den2 = Math_BigRational.ONE.subtract(l.v.getDZ(oom).multiply(v.getDX(oom).divide(l.v.getDX(oom))));
                                         if (den2.compareTo(Math_BigRational.ZERO) != 0) {
-                                            lamda = (((l.p.z.subtract(p.z)).divide(v.getDZ())).subtract(l.v.getDZ().multiply(v.getDX().multiply(l.p.x.divide(l.v.getDX()))))).divide(den2);
-                                            z = p.z.add(v.getDZ().multiply(lamda));
-                                            x = p.x.add(v.getDX().multiply(lamda));
+                                            lamda = (((l.p.z.subtract(p.z)).divide(v.getDZ(oom))).subtract(l.v.getDZ(oom).multiply(v.getDX(oom).multiply(l.p.x.divide(l.v.getDX(oom)))))).divide(den2);
+                                            z = p.z.add(v.getDZ(oom).multiply(lamda));
+                                            x = p.x.add(v.getDX(oom).multiply(lamda));
                                         } else {
-                                            den2 = Math_BigRational.ONE.subtract(l.v.getDX().multiply(v.getDZ().divide(l.v.getDZ())));
+                                            den2 = Math_BigRational.ONE.subtract(l.v.getDX(oom).multiply(v.getDZ(oom).divide(l.v.getDZ(oom))));
                                             if (den2.compareTo(Math_BigRational.ZERO) != 0) {
-                                                lamda = (((l.p.x.subtract(p.x)).divide(v.getDX())).subtract(l.v.getDX().multiply(v.getDZ().multiply(l.p.z.divide(l.v.getDZ()))))).divide(den2);
-                                                z = p.z.add(v.getDZ().multiply(lamda));
-                                                x = p.x.add(v.getDX().multiply(lamda));
+                                                lamda = (((l.p.x.subtract(p.x)).divide(v.getDX(oom))).subtract(l.v.getDX(oom).multiply(v.getDZ(oom).multiply(l.p.z.divide(l.v.getDZ(oom)))))).divide(den2);
+                                                z = p.z.add(v.getDZ(oom).multiply(lamda));
+                                                x = p.x.add(v.getDX(oom).multiply(lamda));
                                             } else {
                                                 // This should not happen!
                                                 z = null;
@@ -523,35 +556,35 @@ public class V3D_Line extends V3D_Geometry {
                                     }
                                 }
                             } else {
-                                mu = p.y.subtract(l.p.y).divide(l.v.getDY());
-                                x = l.p.x.add(l.v.getDX().multiply(mu));
-                                z = l.p.z.add(l.v.getDZ().multiply(mu));
+                                mu = p.y.subtract(l.p.y).divide(l.v.getDY(oom));
+                                x = l.p.x.add(l.v.getDX(oom).multiply(mu));
+                                z = l.p.z.add(l.v.getDZ(oom).multiply(mu));
                             }
                         } else {
-                            // v.getDX() > 0 && l.v.getDX() > 0 && v.getDY() > 0
-                            if (v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                            // v.getDX(oom) > 0 && l.v.getDX(oom) > 0 && v.getDY(oom) > 0
+                            if (v.dz.isZero()) {
                                 z = p.z;
-                                if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                if (l.v.dz.isZero()) {
                                     // There are 2 ways to calculate lamda. One way should work! - If not try calculating mu.
-//                                    mu = ((p.x.add(v.getDX().multiply(lamda))).subtract(l.p.x)).divide(l.v.getDX());
-//                                    lamda = ((l.p.y.subtract(p.y)).divide(v.getDY())).add(l.v.getDY().multiply(mu));
-//                                    lamda = ((l.p.y.subtract(p.y)).divide(v.getDY())).add(l.v.getDY().multiply(((p.x.add(v.getDX().multiply(lamda))).subtract(l.p.x)).divide(l.v.getDX())));
+//                                    mu = ((p.x.add(v.getDX(oom).multiply(lamda))).subtract(l.p.x)).divide(l.v.getDX(oom));
+//                                    lamda = ((l.p.y.subtract(p.y)).divide(v.getDY(oom))).add(l.v.getDY(oom).multiply(mu));
+//                                    lamda = ((l.p.y.subtract(p.y)).divide(v.getDY(oom))).add(l.v.getDY(oom).multiply(((p.x.add(v.getDX(oom).multiply(lamda))).subtract(l.p.x)).divide(l.v.getDX(oom))));
 //                                    l = ((by - ay) / ady) + (bdy * (adx * (l - bx) / bdx))
 //                                    l = ((by - ay) / ady) + bdy * adx * l / bdx - bdy * adx * bx / bdx
 //                                    l - bdy * adx * l / bdx = ((by - ay) / ady) - bdy * adx * bx / bdx
 //                                    l(1 - bdy * adx / bdx) = ((by - ay) / ady) - bdy * adx * bx / bdx
 //                                    l = (((by-ay)/ady) - bdy*adx*bx/bdx)/(1 - bdy*adx/bdx)
-                                    Math_BigRational den2 = Math_BigRational.ONE.subtract(l.v.getDY().multiply(v.getDX().divide(l.v.getDX())));
+                                    Math_BigRational den2 = Math_BigRational.ONE.subtract(l.v.getDY(oom).multiply(v.getDX(oom).divide(l.v.getDX(oom))));
                                     if (den2.compareTo(Math_BigRational.ZERO) != 0) {
-                                        lamda = (((l.p.y.subtract(p.y)).divide(v.getDY())).subtract(l.v.getDY().multiply(v.getDX().multiply(l.p.x.divide(l.v.getDX()))))).divide(den2);
-                                        y = p.y.add(v.getDY().multiply(lamda));
-                                        x = p.x.add(v.getDX().multiply(lamda));
+                                        lamda = (((l.p.y.subtract(p.y)).divide(v.getDY(oom))).subtract(l.v.getDY(oom).multiply(v.getDX(oom).multiply(l.p.x.divide(l.v.getDX(oom)))))).divide(den2);
+                                        y = p.y.add(v.getDY(oom).multiply(lamda));
+                                        x = p.x.add(v.getDX(oom).multiply(lamda));
                                     } else {
-                                        den2 = Math_BigRational.ONE.subtract(l.v.getDX().multiply(v.getDY().divide(l.v.getDY())));
+                                        den2 = Math_BigRational.ONE.subtract(l.v.getDX(oom).multiply(v.getDY(oom).divide(l.v.getDY(oom))));
                                         if (den2.compareTo(Math_BigRational.ZERO) != 0) {
-                                            lamda = (((l.p.x.subtract(p.x)).divide(v.getDX())).subtract(l.v.getDX().multiply(v.getDY().multiply(l.p.y.divide(l.v.getDY()))))).divide(den2);
-                                            y = p.y.add(v.getDY().multiply(lamda));
-                                            x = p.x.add(v.getDX().multiply(lamda));
+                                            lamda = (((l.p.x.subtract(p.x)).divide(v.getDX(oom))).subtract(l.v.getDX(oom).multiply(v.getDY(oom).multiply(l.p.y.divide(l.v.getDY(oom)))))).divide(den2);
+                                            y = p.y.add(v.getDY(oom).multiply(lamda));
+                                            x = p.x.add(v.getDX(oom).multiply(lamda));
                                         } else {
                                             // This should not happen!
                                             y = null;
@@ -559,62 +592,62 @@ public class V3D_Line extends V3D_Geometry {
                                         }
                                     }
                                 } else {
-                                    mu = (p.z.subtract(l.p.z)).divide(l.v.getDZ());
-                                    y = l.p.y.add(l.v.getDY().multiply(mu));
-                                    x = l.p.x.add(l.v.getDX().multiply(mu));
+                                    mu = (p.z.subtract(l.p.z)).divide(l.v.getDZ(oom));
+                                    y = l.p.y.add(l.v.getDY(oom).multiply(mu));
+                                    x = l.p.x.add(l.v.getDX(oom).multiply(mu));
                                 }
                             } else {
-                                if (l.v.getDZ().compareTo(Math_BigRational.ZERO) == 0) {
+                                if (l.v.dz.isZero()) {
                                     z = l.p.z;
-                                    lamda = (l.p.z.subtract(p.z)).divide(v.getDZ());
-                                    y = p.y.add(v.getDY().multiply(lamda));
-                                    x = p.x.add(v.getDX().multiply(lamda));
+                                    lamda = (l.p.z.subtract(p.z)).divide(v.getDZ(oom));
+                                    y = p.y.add(v.getDY(oom).multiply(lamda));
+                                    x = p.x.add(v.getDX(oom).multiply(lamda));
                                 } else {
                                     // There are 6 ways to calculate lamda. One way should work! - If not try calculating mu.
-                                    Math_BigRational den2 = Math_BigRational.ONE.subtract(l.v.getDY().multiply(v.getDX().divide(l.v.getDX())));
+                                    Math_BigRational den2 = Math_BigRational.ONE.subtract(l.v.getDY(oom).multiply(v.getDX(oom).divide(l.v.getDX(oom))));
                                     if (den2.compareTo(Math_BigRational.ZERO) != 0) {
-                                        lamda = (((l.p.y.subtract(p.y)).divide(v.getDY())).subtract(l.v.getDY().multiply(v.getDX().multiply(l.p.x.divide(l.v.getDX()))))).divide(den2);
-                                        x = p.x.add(v.getDX().multiply(lamda));
-                                        y = p.y.add(v.getDY().multiply(lamda));
-                                        z = p.z.add(v.getDZ().multiply(lamda));
-//                                        x = q.x.add(v.getDX().multiply(lamda));
-//                                        y = q.y.add(v.getDY().multiply(lamda));
-//                                        z = q.z.add(v.getDZ().multiply(lamda));
+                                        lamda = (((l.p.y.subtract(p.y)).divide(v.getDY(oom))).subtract(l.v.getDY(oom).multiply(v.getDX(oom).multiply(l.p.x.divide(l.v.getDX(oom)))))).divide(den2);
+                                        x = p.x.add(v.getDX(oom).multiply(lamda));
+                                        y = p.y.add(v.getDY(oom).multiply(lamda));
+                                        z = p.z.add(v.getDZ(oom).multiply(lamda));
+//                                        x = q.x.add(v.getDX(oom).multiply(lamda));
+//                                        y = q.y.add(v.getDY(oom).multiply(lamda));
+//                                        z = q.z.add(v.getDZ(oom).multiply(lamda));
                                     } else {
-                                        den2 = Math_BigRational.ONE.subtract(l.v.getDY().multiply(v.getDZ().divide(l.v.getDZ())));
+                                        den2 = Math_BigRational.ONE.subtract(l.v.getDY(oom).multiply(v.getDZ(oom).divide(l.v.getDZ(oom))));
                                         if (den2.compareTo(Math_BigRational.ZERO) != 0) {
-                                            lamda = (((l.p.y.subtract(p.y)).divide(v.getDY())).subtract(l.v.getDY().multiply(v.getDZ().multiply(l.p.z.divide(l.v.getDZ()))))).divide(den2);
-                                            x = p.x.add(v.getDX().multiply(lamda));
-                                            y = p.y.add(v.getDY().multiply(lamda));
-                                            z = p.z.add(v.getDZ().multiply(lamda));
+                                            lamda = (((l.p.y.subtract(p.y)).divide(v.getDY(oom))).subtract(l.v.getDY(oom).multiply(v.getDZ(oom).multiply(l.p.z.divide(l.v.getDZ(oom)))))).divide(den2);
+                                            x = p.x.add(v.getDX(oom).multiply(lamda));
+                                            y = p.y.add(v.getDY(oom).multiply(lamda));
+                                            z = p.z.add(v.getDZ(oom).multiply(lamda));
                                         } else {
-                                            den2 = Math_BigRational.ONE.subtract(l.v.getDZ().multiply(v.getDX().divide(l.v.getDX())));
+                                            den2 = Math_BigRational.ONE.subtract(l.v.getDZ(oom).multiply(v.getDX(oom).divide(l.v.getDX(oom))));
                                             if (den2.compareTo(Math_BigRational.ZERO) != 0) {
-                                                lamda = (((l.p.z.subtract(p.z)).divide(v.getDZ())).subtract(l.v.getDZ().multiply(v.getDX().multiply(l.p.x.divide(l.v.getDX()))))).divide(den2);
-                                                x = p.x.add(v.getDX().multiply(lamda));
-                                                y = p.y.add(v.getDY().multiply(lamda));
-                                                z = p.z.add(v.getDZ().multiply(lamda));
+                                                lamda = (((l.p.z.subtract(p.z)).divide(v.getDZ(oom))).subtract(l.v.getDZ(oom).multiply(v.getDX(oom).multiply(l.p.x.divide(l.v.getDX(oom)))))).divide(den2);
+                                                x = p.x.add(v.getDX(oom).multiply(lamda));
+                                                y = p.y.add(v.getDY(oom).multiply(lamda));
+                                                z = p.z.add(v.getDZ(oom).multiply(lamda));
                                             } else {
-                                                den2 = Math_BigRational.ONE.subtract(l.v.getDZ().multiply(v.getDY().divide(l.v.getDY())));
+                                                den2 = Math_BigRational.ONE.subtract(l.v.getDZ(oom).multiply(v.getDY(oom).divide(l.v.getDY(oom))));
                                                 if (den2.compareTo(Math_BigRational.ZERO) != 0) {
-                                                    lamda = (((l.p.z.subtract(p.z)).divide(v.getDZ())).subtract(l.v.getDZ().multiply(v.getDY().multiply(l.p.y.divide(l.v.getDY()))))).divide(den2);
-                                                    x = p.x.add(v.getDX().multiply(lamda));
-                                                    y = p.y.add(v.getDY().multiply(lamda));
-                                                    z = p.z.add(v.getDZ().multiply(lamda));
+                                                    lamda = (((l.p.z.subtract(p.z)).divide(v.getDZ(oom))).subtract(l.v.getDZ(oom).multiply(v.getDY(oom).multiply(l.p.y.divide(l.v.getDY(oom)))))).divide(den2);
+                                                    x = p.x.add(v.getDX(oom).multiply(lamda));
+                                                    y = p.y.add(v.getDY(oom).multiply(lamda));
+                                                    z = p.z.add(v.getDZ(oom).multiply(lamda));
                                                 } else {
-                                                    den2 = Math_BigRational.ONE.subtract(l.v.getDX().multiply(v.getDX().divide(l.v.getDY())));
+                                                    den2 = Math_BigRational.ONE.subtract(l.v.getDX(oom).multiply(v.getDX(oom).divide(l.v.getDY(oom))));
                                                     if (den2.compareTo(Math_BigRational.ZERO) != 0) {
-                                                        lamda = (((l.p.x.subtract(p.x)).divide(v.getDX())).subtract(l.v.getDX().multiply(v.getDY().multiply(l.p.y.divide(l.v.getDY()))))).divide(den2);
-                                                        x = p.x.add(v.getDX().multiply(lamda));
-                                                        y = p.y.add(v.getDY().multiply(lamda));
-                                                        z = p.z.add(v.getDZ().multiply(lamda));
+                                                        lamda = (((l.p.x.subtract(p.x)).divide(v.getDX(oom))).subtract(l.v.getDX(oom).multiply(v.getDY(oom).multiply(l.p.y.divide(l.v.getDY(oom)))))).divide(den2);
+                                                        x = p.x.add(v.getDX(oom).multiply(lamda));
+                                                        y = p.y.add(v.getDY(oom).multiply(lamda));
+                                                        z = p.z.add(v.getDZ(oom).multiply(lamda));
                                                     } else {
-                                                        den2 = Math_BigRational.ONE.subtract(l.v.getDX().multiply(v.getDX().divide(l.v.getDZ())));
+                                                        den2 = Math_BigRational.ONE.subtract(l.v.getDX(oom).multiply(v.getDX(oom).divide(l.v.getDZ(oom))));
                                                         if (den2.compareTo(Math_BigRational.ZERO) != 0) {
-                                                            lamda = (((l.p.x.subtract(p.x)).divide(v.getDX())).subtract(l.v.getDX().multiply(v.getDZ().multiply(l.p.z.divide(l.v.getDZ()))))).divide(den2);
-                                                            x = p.x.add(v.getDX().multiply(lamda));
-                                                            y = p.y.add(v.getDY().multiply(lamda));
-                                                            z = p.z.add(v.getDZ().multiply(lamda));
+                                                            lamda = (((l.p.x.subtract(p.x)).divide(v.getDX(oom))).subtract(l.v.getDX(oom).multiply(v.getDZ(oom).multiply(l.p.z.divide(l.v.getDZ(oom)))))).divide(den2);
+                                                            x = p.x.add(v.getDX(oom).multiply(lamda));
+                                                            y = p.y.add(v.getDY(oom).multiply(lamda));
+                                                            z = p.z.add(v.getDZ(oom).multiply(lamda));
                                                         } else {
                                                             // This should not happen!
                                                             x = null;
@@ -631,9 +664,9 @@ public class V3D_Line extends V3D_Geometry {
                         }
                     }
                 }
-                //p.x + v.getDX() * lamda = l.p.x + l.v.getDX() * mu
-                //p.y + v.getDY() * lamda = l.p.y + l.v.getDY() * mu
-                //p.z + v.getDZ() * lamda = l.p.z + l.v.getDZ() * mu
+                //p.x + v.getDX(oom) * lamda = l.p.x + l.v.getDX(oom) * mu
+                //p.y + v.getDY(oom) * lamda = l.p.y + l.v.getDY(oom) * mu
+                //p.z + v.getDZ(oom) * lamda = l.p.z + l.v.getDZ(oom) * mu
                 return new V3D_Point(x, y, z);
             }
             return null;
@@ -641,20 +674,20 @@ public class V3D_Line extends V3D_Geometry {
         Math_BigRational mua = num.divide(den);
         Math_BigRational mub = (a.add(b.multiply(mua))).divide(d).negate();
         V3D_Point pi = new V3D_Point(
-                //                (p.x.add(mua.multiply(qp.getDX()))),
-                //                (p.y.add(mua.multiply(qp.getDY()))),
-                //                (p.z.add(mua.multiply(qp.getDZ()))));
-                (p.x.subtract(mua.multiply(qp.getDX()))),
-                (p.y.subtract(mua.multiply(qp.getDY()))),
-                (p.z.subtract(mua.multiply(qp.getDZ()))));
+                //                (p.x.add(mua.multiply(qp.getDX(oom)))),
+                //                (p.y.add(mua.multiply(qp.getDY(oom)))),
+                //                (p.z.add(mua.multiply(qp.getDZ(oom)))));
+                (p.x.subtract(mua.multiply(qp.getDX(oom)))),
+                (p.y.subtract(mua.multiply(qp.getDY(oom)))),
+                (p.z.subtract(mua.multiply(qp.getDZ(oom)))));
         // If point p is on both lines then return this as the intersection.
         if (isIntersectedBy(pi, oom) && l.isIntersectedBy(pi, oom)) {
             return pi;
         }
         V3D_Point qi = new V3D_Point(
-                (l.p.x.add(mub.multiply(lqlp.getDX()))),
-                (l.p.y.add(mub.multiply(lqlp.getDY()))),
-                (l.p.z.add(mub.multiply(lqlp.getDZ()))));
+                (l.p.x.add(mub.multiply(lqlp.getDX(oom)))),
+                (l.p.y.add(mub.multiply(lqlp.getDY(oom)))),
+                (l.p.z.add(mub.multiply(lqlp.getDZ(oom)))));
         // If point q is on both lines then return this as the intersection.
         if (isIntersectedBy(qi, oom) && l.isIntersectedBy(qi, oom)) {
             return qi;
@@ -698,7 +731,7 @@ public class V3D_Line extends V3D_Geometry {
      */
     public V3D_LineSegment getLineOfIntersection(V3D_Point pt, int oom) {
         if (isIntersectedBy(pt, oom)) {
-            return new V3D_LineSegment(pt, pt, v.oom);
+            return new V3D_LineSegment(pt, pt, oom);
         }
         return new V3D_LineSegment(pt, getPointOfIntersection(pt, oom), oom);
     }
@@ -717,9 +750,9 @@ public class V3D_Line extends V3D_Geometry {
         }
         V3D_Vector a = new V3D_Vector(pt, p, oom);
         //V3D_Vector a = new V3D_Vector(p, pt);
-        Math_BigRational adb = a.getDotProduct(v);
-        Math_BigRational vdv = v.getDotProduct(v);
-        return p.apply(v.multiply(adb.divide(vdv)).reverse());
+        Math_BigRational adb = a.getDotProduct(v, oom);
+        Math_BigRational vdv = v.getDotProduct(v, oom);
+        return p.apply(v.multiply(adb.divide(vdv), oom).reverse(), oom);
         //return q.apply(v.multiply(adb.divide(vdv)));
         //return p.apply(v.multiply(adb.divide(vdv)));
     }
@@ -733,29 +766,29 @@ public class V3D_Line extends V3D_Geometry {
      * @param l The line to get the line of intersection with.
      * @return The line of intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry getLineOfIntersection(V3D_Line l) {
-        if (isParallel(l)) {
+    public V3D_Geometry getLineOfIntersection(V3D_Line l, int oom) {
+        if (isParallel(l, oom)) {
             return null;
         }
-        V3D_Vector A = new V3D_Vector(p, l.p, v.oom);
+        V3D_Vector A = new V3D_Vector(p, l.p, oom);
         V3D_Vector B = v.reverse();
         V3D_Vector C = l.v.reverse();
 
-        Math_BigRational AdB = A.getDotProduct(B);
-        Math_BigRational AdC = A.getDotProduct(C);
-        Math_BigRational CdB = C.getDotProduct(B);
-        Math_BigRational BdB = B.getDotProduct(B);
-        Math_BigRational CdC = C.getDotProduct(C);
+        Math_BigRational AdB = A.getDotProduct(B, oom);
+        Math_BigRational AdC = A.getDotProduct(C, oom);
+        Math_BigRational CdB = C.getDotProduct(B, oom);
+        Math_BigRational BdB = B.getDotProduct(B, oom);
+        Math_BigRational CdC = C.getDotProduct(C, oom);
 
         Math_BigRational ma = (AdC.multiply(CdB)).subtract(AdB.multiply(CdC))
                 .divide((BdB.multiply(CdC)).subtract(CdB.multiply(CdB)));
         Math_BigRational mb = ((ma.multiply(CdB)).add(AdC)).divide(CdC);
 
-        V3D_Point tpi = p.apply(B.multiply(ma));
+        V3D_Point tpi = p.apply(B.multiply(ma, oom), oom);
 
-        V3D_Point lpi = l.p.apply(C.multiply(mb.negate()));
+        V3D_Point lpi = l.p.apply(C.multiply(mb.negate(), oom), oom);
 
-        return new V3D_LineSegment(tpi, lpi, v.oom);
+        return new V3D_LineSegment(tpi, lpi, oom);
 
 //        // p13
 //        V3D_Vector plp = new V3D_Vector(p, l.p);
@@ -770,16 +803,16 @@ public class V3D_Line extends V3D_Geometry {
 //            return null;
 //        }
 //        // p1343
-//        Math_BigRational a = (plp.getDX().multiply(lqlp.getDX())).add(plp.getDY()
-//                .multiply(lqlp.getDY())).add(plp.getDZ().multiply(lqlp.getDZ()));
-//        Math_BigRational b = (lqlp.getDX().multiply(qp.getDX())).add(lqlp.getDY()
-//                .multiply(qp.getDY())).add(lqlp.getDZ().multiply(qp.getDZ()));
-//        Math_BigRational c = (plp.getDX().multiply(qp.getDX())).add(plp.getDY()
-//                .multiply(qp.getDY())).add(plp.getDZ().multiply(qp.getDZ()));
-//        Math_BigRational d = (lqlp.getDX().multiply(lqlp.getDX())).add(lqlp.getDY()
-//                .multiply(lqlp.getDY())).add(lqlp.getDZ().multiply(lqlp.getDZ()));
-//        Math_BigRational e = (qp.getDX().multiply(qp.getDX())).add(qp.getDY()
-//                .multiply(qp.getDY())).add(qp.getDZ().multiply(qp.getDZ()));
+//        Math_BigRational a = (plp.getDX(oom).multiply(lqlp.getDX(oom))).add(plp.getDY(oom)
+//                .multiply(lqlp.getDY(oom))).add(plp.getDZ(oom).multiply(lqlp.getDZ(oom)));
+//        Math_BigRational b = (lqlp.getDX(oom).multiply(qp.getDX(oom))).add(lqlp.getDY(oom)
+//                .multiply(qp.getDY(oom))).add(lqlp.getDZ(oom).multiply(qp.getDZ(oom)));
+//        Math_BigRational c = (plp.getDX(oom).multiply(qp.getDX(oom))).add(plp.getDY(oom)
+//                .multiply(qp.getDY(oom))).add(plp.getDZ(oom).multiply(qp.getDZ(oom)));
+//        Math_BigRational d = (lqlp.getDX(oom).multiply(lqlp.getDX(oom))).add(lqlp.getDY(oom)
+//                .multiply(lqlp.getDY(oom))).add(lqlp.getDZ(oom).multiply(lqlp.getDZ(oom)));
+//        Math_BigRational e = (qp.getDX(oom).multiply(qp.getDX(oom))).add(qp.getDY(oom)
+//                .multiply(qp.getDY(oom))).add(qp.getDZ(oom).multiply(qp.getDZ(oom)));
 //        Math_BigRational den = (e.multiply(d)).subtract(b.multiply(b));
 //        if (den.compareTo(Math_BigRational.ZERO) == 0) {
 //            return null;
@@ -791,13 +824,13 @@ public class V3D_Line extends V3D_Geometry {
 //        // mub = ( d1343 + mua d4321 ) / d4343
 //        Math_BigRational mub = (a.add(b.multiply(mua))).divide(d);
 //        V3D_Point pi = new V3D_Point(
-//                (p.x.add(mua.multiply(qp.getDX()))),
-//                (p.y.add(mua.multiply(qp.getDY()))),
-//                (p.z.add(mua.multiply(qp.getDZ()))));
+//                (p.x.add(mua.multiply(qp.getDX(oom)))),
+//                (p.y.add(mua.multiply(qp.getDY(oom)))),
+//                (p.z.add(mua.multiply(qp.getDZ(oom)))));
 //        V3D_Point qi = new V3D_Point(
-//                (l.p.x.add(mub.multiply(lqlp.getDX()))),
-//                (l.p.y.add(mub.multiply(lqlp.getDY()))),
-//                (l.p.z.add(mub.multiply(lqlp.getDZ()))));
+//                (l.p.x.add(mub.multiply(lqlp.getDX(oom)))),
+//                (l.p.y.add(mub.multiply(lqlp.getDY(oom)))),
+//                (l.p.z.add(mub.multiply(lqlp.getDZ(oom)))));
 //        if (pi.equals(qi)) {
 //            return pi;
 //        }
@@ -809,8 +842,8 @@ public class V3D_Line extends V3D_Geometry {
      * @return a new line.
      */
     @Override
-    public V3D_Line apply(V3D_Vector v) {
-        return new V3D_Line(p.apply(v), q.apply(v), Math.min(v.oom, this.v.oom));
+    public V3D_Line apply(V3D_Vector v, int oom) {
+        return new V3D_Line(p.apply(v, oom), q.apply(v, oom), oom);
     }
 
     /**
@@ -834,8 +867,9 @@ public class V3D_Line extends V3D_Geometry {
         V3D_Vector qp = new V3D_Vector(p, this.q, oom);
         Math_BigRationalSqrt num = (pp.getCrossProduct(qp, oom)).getMagnitude();
         Math_BigRationalSqrt den = v.getMagnitude();
-        Math_BigRational res = num.divide(den).getSqrt(oom);
-        int precision = Math_BigDecimal.getOrderOfMagnitudeOfMostSignificantDigit(res.integerPart().toBigDecimal()) - oom;
+        Math_BigRational res = num.divide(den, oom).getSqrt(oom);
+        int precision = Math_BigDecimal.getOrderOfMagnitudeOfMostSignificantDigit(
+                res.integerPart().toBigDecimal(oom)) - oom;
         MathContext mc = new MathContext(precision);
         return Math_BigDecimal.round(res.toBigDecimal(mc), oom);
 //        /**
@@ -909,7 +943,7 @@ public class V3D_Line extends V3D_Geometry {
      */
     @Override
     public BigDecimal getDistance(V3D_Line l, int oom) {
-        if (isParallel(l)) {
+        if (isParallel(l, oom)) {
             //q.getDistance(l, scale, rm);
             return p.getDistance(l, oom);
             //return p.getDistance(l, oom);
@@ -921,21 +955,21 @@ public class V3D_Line extends V3D_Geometry {
              * Calculate the direction vector of the line connecting the closest
              * points by computing the cross product.
              */
-            //V3D_Vector cp = l.v.getCrossProduct2(v, oom);
+            //V3D_Vector cp = l.v.getCrossProduct(v, oom);
             V3D_Vector cp = v.getCrossProduct(l.v, oom);
             /**
              * Calculate the delta from {@link #p} and l.p
              */
-            V3D_Vector delta = new V3D_Vector(l.p, v.oom).subtract(
-                    new V3D_Vector(p, v.oom));
+            V3D_Vector delta = new V3D_Vector(l.p, oom).subtract(
+                    new V3D_Vector(p, oom), oom);
             //Math_BigRational m = Math_BigRational.valueOf(cp.getMagnitude(oom - 2));
             Math_BigRationalSqrt m = cp.getMagnitude();
             // d = cp.(delta)/m
-            Math_BigRational dp = cp.getDotProduct(delta);
+            Math_BigRational dp = cp.getDotProduct(delta, oom);
             // m should only be zero if the lines are parallel.
             //Math_BigRational d = dp.divide(m.getX());
             Math_BigRational d = dp.divide(m.getSqrt(oom - 6)).abs();
-            return Math_BigDecimal.round(d.toBigDecimal(), oom);
+            return d.toBigDecimal(oom);
         }
     }
 
@@ -947,17 +981,17 @@ public class V3D_Line extends V3D_Geometry {
      */
     public BigDecimal getDistance(V3D_Ray r, int oom) {
         //public Math_BigRational getDistance(V3D_Ray r) {
-        if (isParallel(r)) {
-            return p.getDistance(new V3D_Line(r), oom);
+        if (isParallel(r, oom)) {
+            return p.getDistance(new V3D_Line(r, oom), oom);
         } else {
             if (isIntersectedBy(r, oom)) {
                 return BigDecimal.ZERO;
             } else {
-                V3D_Line rl = new V3D_Line(r);
+                V3D_Line rl = new V3D_Line(r, oom);
                 if (isIntersectedBy(rl, oom)) {
                     getLineOfIntersection(r.p, oom).getLength().toBigDecimal(oom);
                 }
-                V3D_LineSegment li = (V3D_LineSegment) getLineOfIntersection(r);
+                V3D_LineSegment li = (V3D_LineSegment) getLineOfIntersection(r, oom);
                 if (li == null) {
                     li = getLineOfIntersection(r.p, oom);
                 }
@@ -973,21 +1007,21 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} iff this is parallel to the plane defined by x=0.
      */
     public boolean isParallelToX0() {
-        return v.getDX().compareTo(Math_BigRational.ZERO) == 0;
+        return v.dx.isZero();
     }
 
     /**
      * @return {@code true} iff this is parallel to the plane defined by y=0.
      */
     public boolean isParallelToY0() {
-        return v.getDY().compareTo(Math_BigRational.ZERO) == 0;
+        return v.dy.isZero();
     }
 
     /**
      * @return {@code true} iff this is parallel to the plane defined by z=0.
      */
     public boolean isParallelToZ0() {
-        return v.getDZ().compareTo(Math_BigRational.ZERO) == 0;
+        return v.dz.isZero();
     }
 
     @Override
@@ -1001,18 +1035,18 @@ public class V3D_Line extends V3D_Geometry {
             } else if (this.isParallelToZ0()) {
                 return false;
             } else {
-                return !this.isParallel(l);
+                return !this.isParallel(l, oom);
             }
         } else {
             if (this.isParallelToY0()) {
                 if (this.isParallelToZ0()) {
                     return false;
                 } else {
-                    return !this.isParallel(l);
+                    return !this.isParallel(l, oom);
                 }
             } else {
                 if (this.isParallelToZ0()) {
-                    return !this.isParallel(l);
+                    return !this.isParallel(l, oom);
                 } else {
                     return true;
                 }

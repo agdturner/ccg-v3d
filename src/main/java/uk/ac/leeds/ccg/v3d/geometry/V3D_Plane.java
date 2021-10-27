@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Objects;
@@ -79,9 +78,9 @@ import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
  * </ul>
  *
  * <ol>
- * <li>{@code n.getDX()(x(t)−p.x)+n.getDY()(y(t)−p.y)+n.getDZ()(z(t)−p.z) = 0}</li>
- * <li>{@code n.getDX()(x(t)−q.x)+n.getDY()(y(t)−q.y)+n.getDZ()(z(t)−q.z) = 0}</li>
- * <li>{@code n.getDX()(x(t)−r.x)+n.getDY()(y(t)−r.y)+n.getDZ()(z(t)−r.z) = 0}</li>
+ * <li>{@code n.getDX(oom)(x(t)−p.x)+n.getDY(oom)(y(t)−p.y)+n.getDZ(oom)(z(t)−p.z) = 0}</li>
+ * <li>{@code n.getDX(oom)(x(t)−q.x)+n.getDY(oom)(y(t)−q.y)+n.getDZ(oom)(z(t)−q.z) = 0}</li>
+ * <li>{@code n.getDX(oom)(x(t)−r.x)+n.getDY(oom)(y(t)−r.y)+n.getDZ(oom)(z(t)−r.z) = 0}</li>
  * </ol>
  *
  * @author Andy Turner
@@ -134,12 +133,17 @@ public class V3D_Plane extends V3D_Geometry {
     protected final V3D_Vector n;
 
     /**
+     * The Order of Magnitude for the precision of the plane.
+     */
+    protected final int oom;
+    
+    /**
      * Create a new instance.
      *
      * @param p The plane used to create this.
      */
     public V3D_Plane(V3D_Plane p) {
-        this(p.p, p.q, p.r, p.pq, p.qr, p.rp, p.n);
+        this(p.p, p.q, p.r, p.pq, p.qr, p.rp, p.n, p.oom);
     }
 
     /**
@@ -156,7 +160,7 @@ public class V3D_Plane extends V3D_Geometry {
      * for.
      */
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Vector pq,
-            V3D_Vector qr, V3D_Vector rp, V3D_Vector n) {
+            V3D_Vector qr, V3D_Vector rp, V3D_Vector n, int oom) {
         qAtOrigin = q.equals(V3D_Environment.P0P0P0);
         this.p = p;
         this.q = q;
@@ -165,6 +169,7 @@ public class V3D_Plane extends V3D_Geometry {
         this.qr = qr;
         this.rp = rp;
         this.n = n;
+        this.oom = oom;
     }
 
     /**
@@ -199,6 +204,7 @@ public class V3D_Plane extends V3D_Geometry {
                 throw new RuntimeException("The points do not define a plane.");
             }
         }
+        this.oom = oom;
     }
 
     /**
@@ -215,12 +221,12 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * An equation of the plane containing the point {@code p} with normal
      * vector {@code n} is
-     * {@code n.getDX()(x) + n.getDY()(y) + n.getDZ()(z) = d}.
+     * {@code n.getDX(oom)(x) + n.getDY(oom)(y) + n.getDZ(oom)(z) = d}.
      * 
      * @param p What {@link #p} is set to.
      * @param n What {@link #n} is set to. This cannot be the ZERO vector.
      */
-    public V3D_Plane(V3D_Point p, V3D_Vector n) {
+    public V3D_Plane(V3D_Point p, V3D_Vector n, int oom) {
         this.p = p;
         /**
          * Find a perpendicular vector using: user65203, How to find
@@ -229,9 +235,9 @@ public class V3D_Plane extends V3D_Geometry {
          * Tested in testIsIntersectedBy_V3D_Point_int()
          */
         V3D_Vector pv;
-        V3D_Vector v1 = new V3D_Vector(Math_BigRationalSqrt.ZERO, n.dz, n.dy.negate(), n.oom);
-        V3D_Vector v2 = new V3D_Vector(n.dz.negate(), Math_BigRationalSqrt.ZERO, n.dx, n.oom);
-        V3D_Vector v3 = new V3D_Vector(n.dy.negate(), n.dx, Math_BigRationalSqrt.ZERO, n.oom);
+        V3D_Vector v1 = new V3D_Vector(Math_BigRationalSqrt.ZERO, n.dz, n.dy.negate(), oom);
+        V3D_Vector v2 = new V3D_Vector(n.dz.negate(), Math_BigRationalSqrt.ZERO, n.dx, oom);
+        V3D_Vector v3 = new V3D_Vector(n.dy.negate(), n.dx, Math_BigRationalSqrt.ZERO, oom);
         Math_BigRational mv1 = v1.getMagnitudeSquared();
         Math_BigRational mv2 = v2.getMagnitudeSquared();
         Math_BigRational mv3 = v3.getMagnitudeSquared();
@@ -248,20 +254,22 @@ public class V3D_Plane extends V3D_Geometry {
                 pv = v3;
             }
         }
-        this.q = p.apply(pv);
-        V3D_Vector pvx = pv.getCrossProduct(n, n.oom);
-        this.r = p.apply(pvx);
-        pq = new V3D_Vector(p, q, n.oom);
-        qr = new V3D_Vector(q, r, n.oom);
-        rp = new V3D_Vector(r, p, n.oom);
+        this.q = p.apply(pv, oom);
+        V3D_Vector pvx = pv.getCrossProduct(n, oom);
+        this.r = p.apply(pvx, oom);
+        pq = new V3D_Vector(p, q, oom);
+        qr = new V3D_Vector(q, r, oom);
+        rp = new V3D_Vector(r, p, oom);
         qAtOrigin = q.equals(V3D_Environment.P0P0P0);
         this.n = n;
+        this.oom = oom;
     }
 
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "(p=" + p.toString()
-                + ", q=" + q.toString() + ", r=" + r.toString() + ")";
+                + ", q=" + q.toString() + ", r=" + r.toString() + 
+                ", oom=" + oom +")";
     }
 
     /**
@@ -293,8 +301,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @return a new plane.
      */
     @Override
-    public V3D_Plane apply(V3D_Vector v) {
-        return new V3D_Plane(p.apply(v), q.apply(v), r.apply(v), v.oom);
+    public V3D_Plane apply(V3D_Vector v, int oom) {
+        return new V3D_Plane(p.apply(v, oom), q.apply(v, oom), r.apply(v, oom), 
+                oom);
     }
 
     /**
@@ -313,7 +322,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} If this and {@code l} intersect.
      */
     public boolean isIntersectedBy(V3D_Line l, int oom) {
-        if (isParallel(l)) {
+        if (isParallel(l, oom)) {
             if (!isOnPlane(l, oom)) {
                 return false;
             }
@@ -367,7 +376,7 @@ public class V3D_Plane extends V3D_Geometry {
      * {@code null} a line or a point.
      */
     public V3D_Geometry getIntersection(V3D_Line l, int oom) {
-        if (this.isParallel(l)) {
+        if (this.isParallel(l, oom)) {
             if (this.isOnPlane(l, oom)) {
                 return l;
             } else {
@@ -406,30 +415,30 @@ public class V3D_Plane extends V3D_Geometry {
         m[1][0] = p.x;
         m[1][1] = q.x;
         m[1][2] = r.x;
-        m[1][3] = l.v.getDX();
+        m[1][3] = l.v.getDX(oom);
         m[2][0] = p.y;
         m[2][1] = q.y;
         m[2][2] = r.y;
-        m[2][3] = l.v.getDY();
+        m[2][3] = l.v.getDY(oom);
         m[3][0] = p.z;
         m[3][1] = q.z;
         m[3][2] = r.z;
-        m[3][3] = l.v.getDZ();
+        m[3][3] = l.v.getDZ(oom);
         Math_Matrix_BR denm = new Math_Matrix_BR(m);
         Math_BigRational t = numm.getDeterminant().divide(denm.getDeterminant()).negate();
         return new V3D_Point(
-                l.p.x.add(l.v.getDX().multiply(t)),
-                l.p.y.add(l.v.getDY().multiply(t)),
-                l.p.z.add(l.v.getDZ().multiply(t)));
+                l.p.x.add(l.v.getDX(oom).multiply(t)),
+                l.p.y.add(l.v.getDY(oom).multiply(t)),
+                l.p.z.add(l.v.getDZ(oom).multiply(t)));
 //        V3D_Vector d = new V3D_Vector(this.p, l.p, n.oom);
 //        //V3D_Vector d = new V3D_Vector(l.p, p, n.oom);
 //        Math_BigRational num = d.getDotProduct(this.n);
 //        Math_BigRational den = l.v.getDotProduct(this.n);
 //        Math_BigRational t = num.divide(den);
 //        return new V3D_Point(
-//                l.p.x.subtract(l.v.getDX().multiply(t)),
-//                l.p.y.subtract(l.v.getDY().multiply(t)),
-//                l.p.z.subtract(l.v.getDZ().multiply(t)));
+//                l.p.x.subtract(l.v.getDX(oom).multiply(t)),
+//                l.p.y.subtract(l.v.getDY(oom).multiply(t)),
+//                l.p.z.subtract(l.v.getDZ(oom).multiply(t)));
 
     }
 
@@ -479,37 +488,37 @@ public class V3D_Plane extends V3D_Geometry {
 //        m[0][0] = Math_BigRational.TWO;
 //        m[0][1] = Math_BigRational.ZERO;
 //        m[0][2] = Math_BigRational.ZERO;
-//        m[0][3] = n.getDX();
-//        m[0][4] = pl.n.getDX();
+//        m[0][3] = n.getDX(oom);
+//        m[0][4] = pl.n.getDX(oom);
 //        m[1][0] = Math_BigRational.ZERO;
 //        m[1][1] = Math_BigRational.TWO;
 //        m[1][2] = Math_BigRational.ZERO;
-//        m[1][3] = n.getDY();
-//        m[1][4] = pl.n.getDY();
+//        m[1][3] = n.getDY(oom);
+//        m[1][4] = pl.n.getDY(oom);
 //        m[2][0] = Math_BigRational.ZERO;
 //        m[2][1] = Math_BigRational.ZERO;
 //        m[2][2] = Math_BigRational.TWO;
-//        m[2][3] = n.getDZ();
-//        m[2][4] = pl.n.getDZ();
-//        m[3][0] = n.getDX();
-//        m[3][1] = n.getDY();
-//        m[3][2] = n.getDZ();
+//        m[2][3] = n.getDZ(oom);
+//        m[2][4] = pl.n.getDZ(oom);
+//        m[3][0] = n.getDX(oom);
+//        m[3][1] = n.getDY(oom);
+//        m[3][2] = n.getDZ(oom);
 //        m[3][3] = Math_BigRational.ZERO;
 //        m[3][4] = Math_BigRational.ZERO;
-//        m[4][0] = pl.n.getDX();
-//        m[4][1] = pl.n.getDY();
-//        m[4][2] = pl.n.getDZ();
+//        m[4][0] = pl.n.getDX(oom);
+//        m[4][1] = pl.n.getDY(oom);
+//        m[4][2] = pl.n.getDZ(oom);
 //        m[4][3] = Math_BigRational.ZERO;
 //        m[4][4] = Math_BigRational.ZERO;
 //        // b4 = p1(1).*n1(1) + p1(2).*n1(2) + p1(3).*n1(3);
-//        Math_BigRational b4 = p.x.multiply(n.getDX())
-//                .add(p.y.multiply(n.getDY()))
-//                .add(p.z.multiply(n.getDZ()));
+//        Math_BigRational b4 = p.x.multiply(n.getDX(oom))
+//                .add(p.y.multiply(n.getDY(oom)))
+//                .add(p.z.multiply(n.getDZ(oom)));
 //        System.out.println(b4);
 //        // b5 = p2(1).*n2(1) + p2(2).*n2(2) + p2(3).*n2(3);
-//        Math_BigRational b5 = pl.p.x.multiply(pl.n.getDX())
-//                .add(pl.p.y.multiply(pl.n.getDY()))
-//                .add(pl.p.z.multiply(pl.n.getDZ()));
+//        Math_BigRational b5 = pl.p.x.multiply(pl.n.getDX(oom))
+//                .add(pl.p.y.multiply(pl.n.getDY(oom)))
+//                .add(pl.p.z.multiply(pl.n.getDZ(oom)));
 //        System.out.println(b5);
 //        // b = [2*p0(1) ; 2*p0(2) ; 2*p0(3); b4 ; b5];
 //        m[0][5] = q.x.multiply(2);
@@ -539,26 +548,26 @@ public class V3D_Plane extends V3D_Geometry {
         // Calculate the line of intersection, where v is the line vector.
         // What to do depends on which elements of v are non-zero.
         Math_BigRational P0 = Math_BigRational.ZERO;
-        if (v.getDX().compareTo(P0) == 0) {
-            if (v.getDY().compareTo(P0) == 0) {
-                Math_BigRational z = pl.n.getDX().multiply(pl.p.x
-                        .subtract(pl.q.x)).add(n.getDY().multiply(pl.p.y
-                        .subtract(pl.q.x))).divide(v.getDZ()).add(pl.p.z);
+        if (v.getDX(oom).compareTo(P0) == 0) {
+            if (v.getDY(oom).compareTo(P0) == 0) {
+                Math_BigRational z = pl.n.getDX(oom).multiply(pl.p.x
+                        .subtract(pl.q.x)).add(n.getDY(oom).multiply(pl.p.y
+                        .subtract(pl.q.x))).divide(v.getDZ(oom)).add(pl.p.z);
                 V3D_Point pt;
-                if (n.getDX().compareTo(P0) == 0) {
+                if (n.getDX(oom).compareTo(P0) == 0) {
                     pt = new V3D_Point(pl.p.x, p.y, z);
                 } else {
                     pt = new V3D_Point(p.x, pl.p.y, z);
                 }
-                return new V3D_Line(pt, pt.apply(v), v.oom);
+                return new V3D_Line(pt, pt.apply(v, oom), oom);
                 // The intersection is at z=?
 
                 /**
-                 * n.getDX()(x(t)−p.x)+n.getDY()(y(t)−p.y)+n.getDZ()(z(t)−p.z)
+                 * n.getDX(oom)(x(t)−p.x)+n.getDY(oom)(y(t)−p.y)+n.getDZ(oom)(z(t)−p.z)
                  */
                 // where:
-                // n.getDX() = a; n.getDY() = b; n.getDZ() = c
-                // pl.n.getDX() = d; pl.n.getDY() = e; pl.n.getDZ() = f
+                // n.getDX(oom) = a; n.getDY(oom) = b; n.getDZ(oom) = c
+                // pl.n.getDX(oom) = d; pl.n.getDY(oom) = e; pl.n.getDZ(oom) = f
                 // a(x−p.x) + b(y−p.y) + c(z−p.z) = 0
                 // x = p.x + ((- b(y−p.y) - c(z−p.z)) / a)                     --- 1
                 // y = p.y + ((- a(x−p.x) - c(z−p.z)) / b)                     --- 2
@@ -576,32 +585,32 @@ public class V3D_Plane extends V3D_Geometry {
                 // x = k + ((e(l - y) - f(z - m)) / d)   --- 1p
                 // y = l + ((d(k - x) - f(z - l)) / e)   --- 2p
                 // z = m + ((d(k - x) - e(y - m)) / f)   --- 3p
-//                if (n.getDX().compareTo(e.P0) == 0) {
+//                if (n.getDX(oom).compareTo(e.P0) == 0) {
 //                    //pl.b
-//                } else if (n.getDY().compareTo(e.P0) == 0) {
+//                } else if (n.getDY(oom).compareTo(e.P0) == 0) {
 ////                    // y = l + ((- a(x − k) - c(z − l)) / b)
 //                    BigDecimal y = p.y;
 ////                    // x = k + ((e(l - y) - f(z - m)) / d)
 ////                    // z = m + ((- d(x - k) - e(y - m)) / f)
 ////                    BigDecimal x = p.x.apply(
 ////                            Math_BigDecimal.divideRoundIfNecessary(
-////                                    (pl.n.getDY().multiply(p.y.subtract(y))).subtract(pl.n.getDZ().multiply(z.subtract(pl.p.z))),
-////                                    pl.n.getDX(), scale, rm));
+////                                    (pl.n.getDY(oom).multiply(p.y.subtract(y))).subtract(pl.n.getDZ(oom).multiply(z.subtract(pl.p.z))),
+////                                    pl.n.getDX(oom), scale, rm));
 //                } else {
 //                    return e.zAxis;
 //                }
 //                //BigDecimal x = p.x
 //                BigDecimal numerator = p.z.subtract(p.y)
-//                        .subtract(n.getDZ().multiply(p.z))
-//                        .subtract(p.y.multiply(n.getDY()));
-//                BigDecimal denominator = n.getDY().subtract(n.getDZ());
+//                        .subtract(n.getDZ(oom).multiply(p.z))
+//                        .subtract(p.y.multiply(n.getDY(oom)));
+//                BigDecimal denominator = n.getDY(oom).subtract(n.getDZ(oom));
 //                if (denominator.compareTo(e.P0) == 0) {
 //                    // Case 1: The z axis
 //                    return null;
 //                } else {
 //                    // y = (p.y - c(z−p.z)) / b   --- 1          
 //                    // z = (p.z - b(y−p.y)) / c   --- 2
-//                    // n.getDX() = a; n.getDY() = b; n.getDZ() = c
+//                    // n.getDX(oom) = a; n.getDY(oom) = b; n.getDZ(oom) = c
 //                    // Let:
 //                    // p.x = k; p.y = l; p.z = m
 //                    // y = (l - c(z - m)) / b
@@ -617,34 +626,34 @@ public class V3D_Plane extends V3D_Geometry {
 //                            numerator, denominator, scale + 2, rm); // scale + 2 sensible?
 //                    // Substitute into 1
 //                    // y = (p.y - c(z−p.z)) / b   --- 1
-//                    if (n.getDY().compareTo(e.P0) == 0) {
+//                    if (n.getDY(oom).compareTo(e.P0) == 0) {
 //                        // Another case to deal with
 //                        return null;
 //                    } else {
 //                        BigDecimal y = Math_BigDecimal.divideRoundIfNecessary(
-//                                p.y.subtract(n.getDZ().multiply(z.subtract(p.z))),
-//                                n.getDY(), scale, rm);
+//                                p.y.subtract(n.getDZ(oom).multiply(z.subtract(p.z))),
+//                                n.getDY(oom), scale, rm);
 //                        return new V3D_Line(new V3D_Point(e, p.x, y, z),
-//                                new V3D_Point(e, p.x.multiply(e.N1), y.add(v.getDY()), z.add(v.getDZ())));
+//                                new V3D_Point(e, p.x.multiply(e.N1), y.add(v.getDY(oom)), z.add(v.getDZ(oom))));
 //                    }
 //                }
             } else {
-                if (v.getDZ().compareTo(P0) == 0) {
-                    Math_BigRational y = n.getDX().multiply(p.x.subtract(q.x)).add(
-                            n.getDZ().multiply(p.z.subtract(q.x)))
-                            .divide(v.getDY()).add(p.y);
+                if (v.getDZ(oom).compareTo(P0) == 0) {
+                    Math_BigRational y = n.getDX(oom).multiply(p.x.subtract(q.x)).add(
+                            n.getDZ(oom).multiply(p.z.subtract(q.x)))
+                            .divide(v.getDY(oom)).add(p.y);
                     V3D_Point pt;
-                    if (n.getDX().compareTo(P0) == 0) {
+                    if (n.getDX(oom).compareTo(P0) == 0) {
                         pt = new V3D_Point(pl.p.x, y, p.z);
                     } else {
                         pt = new V3D_Point(p.x, y, pl.p.z);
                     }
-                    return new V3D_Line(pt, pt.apply(v), v.oom);
+                    return new V3D_Line(pt, pt.apply(v, oom), oom);
                 } else {
                     // Case 3
                     // y = (p.y - c(z−p.z)) / b   --- 1          
                     // z = (p.z - b(y−p.y)) / c   --- 2
-                    // n.getDX() = a; n.getDY() = b; n.getDZ() = c
+                    // n.getDX(oom) = a; n.getDY(oom) = b; n.getDZ(oom) = c
                     // Let:
                     // p.x = k; p.y = l; p.z = m
                     // y = (l - c(z - m)) / b
@@ -657,9 +666,9 @@ public class V3D_Plane extends V3D_Geometry {
                     // z(b - c) = m - l -cm - lb
                     // z = (m - l -cm - lb) / (b - c)
                     Math_BigRational numerator = p.z.subtract(p.y)
-                            .subtract(n.getDZ().multiply(p.z))
-                            .subtract(p.y.multiply(n.getDY()));
-                    Math_BigRational denominator = n.getDY().subtract(n.getDZ());
+                            .subtract(n.getDZ(oom).multiply(p.z))
+                            .subtract(p.y.multiply(n.getDY(oom)));
+                    Math_BigRational denominator = n.getDY(oom).subtract(n.getDZ(oom));
                     if (denominator.compareTo(P0) == 0) {
                         // Another case to deal with
                         return null;
@@ -667,75 +676,75 @@ public class V3D_Plane extends V3D_Geometry {
                         Math_BigRational z = numerator.divide(denominator);
                         // Substitute into 1
                         // y = (p.y - c(z−p.z)) / b   --- 1
-                        if (n.getDY().compareTo(P0) == 0) {
+                        if (n.getDY(oom).compareTo(P0) == 0) {
                             // Another case to deal with
                             return null;
                         } else {
-                            Math_BigRational y = p.y.subtract(n.getDZ().multiply(z.subtract(p.z)))
-                                    .divide(n.getDY());
+                            Math_BigRational y = p.y.subtract(n.getDZ(oom).multiply(z.subtract(p.z)))
+                                    .divide(n.getDY(oom));
                             return new V3D_Line(
                                     new V3D_Point(P0, y, z),
-                                    new V3D_Point(P0, y.add(v.getDY()), z.add(v.getDZ())), v.oom);
+                                    new V3D_Point(P0, y.add(v.getDY(oom)), z.add(v.getDZ(oom))), oom);
                         }
                     }
                 }
             }
         } else {
-            if (v.getDY().compareTo(P0) == 0) {
-                if (v.getDZ().compareTo(P0) == 0) {
-                    Math_BigRational x = pl.n.getDY().multiply(pl.p.y.subtract(pl.q.y)).add(
-                            n.getDZ().multiply(pl.p.z.subtract(pl.q.y)))
-                            .divide(v.getDX()).add(pl.p.x);
+            if (v.getDY(oom).compareTo(P0) == 0) {
+                if (v.getDZ(oom).compareTo(P0) == 0) {
+                    Math_BigRational x = pl.n.getDY(oom).multiply(pl.p.y.subtract(pl.q.y)).add(
+                            n.getDZ(oom).multiply(pl.p.z.subtract(pl.q.y)))
+                            .divide(v.getDX(oom)).add(pl.p.x);
                     V3D_Point pt;
-                    if (n.getDY().compareTo(P0) == 0) {
-                        if (n.getDZ().compareTo(P0) == 0) {
+                    if (n.getDY(oom).compareTo(P0) == 0) {
+                        if (n.getDZ(oom).compareTo(P0) == 0) {
                             pt = new V3D_Point(x, p.y, pl.p.z);
                         } else {
                             pt = new V3D_Point(x, pl.p.y, p.z);
                         }
                     } else {
-                        if (n.getDZ().compareTo(P0) == 0) {
+                        if (n.getDZ(oom).compareTo(P0) == 0) {
                             pt = new V3D_Point(x, p.y, pl.p.z);
                         } else {
                             pt = new V3D_Point(x, p.y, pl.p.z);
                         }
                     }
-                    return new V3D_Line(pt, pt.apply(v), v.oom);
+                    return new V3D_Line(pt, pt.apply(v, oom), oom);
                 } else {
-                    Math_BigRational z = pl.n.getDX().multiply(pl.p.x.subtract(pl.q.x)).add(
-                            n.getDY().multiply(pl.p.y.subtract(pl.q.x)))
-                            .divide(v.getDZ()).add(pl.p.z);
+                    Math_BigRational z = pl.n.getDX(oom).multiply(pl.p.x.subtract(pl.q.x)).add(
+                            n.getDY(oom).multiply(pl.p.y.subtract(pl.q.x)))
+                            .divide(v.getDZ(oom)).add(pl.p.z);
                     V3D_Point pt;
-                    if (n.getDX().compareTo(P0) == 0) {
+                    if (n.getDX(oom).compareTo(P0) == 0) {
                         pt = new V3D_Point(pl.p.x, p.y, z);
                     } else {
                         pt = new V3D_Point(p.x, pl.p.y, z);
                     }
-                    return new V3D_Line(pt, pt.apply(v), v.oom);
+                    return new V3D_Line(pt, pt.apply(v, oom), oom);
                 }
             } else {
-                if (v.getDZ().compareTo(P0) == 0) {
+                if (v.getDZ(oom).compareTo(P0) == 0) {
                     // Case 6
-                    Math_BigRational y = n.getDX().multiply(p.x.subtract(q.x)).add(
-                            n.getDZ().multiply(p.z.subtract(q.x)))
-                            .divide(v.getDY()).add(p.y);
+                    Math_BigRational y = n.getDX(oom).multiply(p.x.subtract(q.x)).add(
+                            n.getDZ(oom).multiply(p.z.subtract(q.x)))
+                            .divide(v.getDY(oom)).add(p.y);
                     V3D_Point pt;
                     if (p.x.compareTo(P0) == 0) {
                         pt = new V3D_Point(p.x, y, pl.p.z); // x=1 z=0
                     } else {
                         pt = new V3D_Point(pl.p.x, y, p.z);
                     }
-                    return new V3D_Line(pt, pt.apply(v), v.oom);
+                    return new V3D_Line(pt, pt.apply(v, oom), oom);
                 } else {
                     /**
                      * Case 7: Neither plane aligns with any axis and they are
                      * not orthogonal.
                      *
-                     * n.getDX()(x(t)−p.x)+n.getDY()(y(t)−p.y)+n.getDZ()(z(t)−p.z)
+                     * n.getDX(oom)(x(t)−p.x)+n.getDY(oom)(y(t)−p.y)+n.getDZ(oom)(z(t)−p.z)
                      */
                     // where:
-                    // n.getDX() = a; n.getDY() = b; n.getDZ() = c
-                    // pl.n.getDX() = d; pl.n.getDY() = e; pl.n.getDZ() = f
+                    // n.getDX(oom) = a; n.getDY(oom) = b; n.getDZ(oom) = c
+                    // pl.n.getDX(oom) = d; pl.n.getDY(oom) = e; pl.n.getDZ(oom) = f
                     // a(x−p.x)+b(y−p.y)+c(z−p.z) = 0
                     // x = (ap.x-by+bp.y-cz+cp.z)/a
                     // x = p.x+((b(p.y−y)+c(p.z−z))/a)                    --- 1
@@ -801,24 +810,24 @@ public class V3D_Plane extends V3D_Geometry {
                     // ey-ek = dj−dx+fl−fi-fag/c+fax/c-fbh/c+fby/c
                     // x = (ey-ek-dj-fl+fi+fag/c+fbh/c-fby/c)/(fa/c−d)  ---32 x ito y
                     // Stage 2: Are any denominators 0?
-                    Math_BigRational x = n.getDY().multiply(pl.p.y.subtract(pl.q.y)).add(
-                            n.getDZ().multiply(pl.p.z.subtract(pl.q.y)))
-                            .divide(v.getDX()).add(pl.p.x);
-                    Math_BigRational y = n.getDX().multiply(p.x.subtract(q.x)).add(
-                            n.getDZ().multiply(p.z.subtract(q.x)))
-                            .divide(v.getDY()).add(p.y);
-                    Math_BigRational z = n.getDX().multiply(pl.p.x.subtract(pl.q.x)).add(
-                            n.getDY().multiply(pl.p.y.subtract(pl.q.x)))
-                            .divide(v.getDZ()).add(pl.p.z);
+                    Math_BigRational x = n.getDY(oom).multiply(pl.p.y.subtract(pl.q.y)).add(
+                            n.getDZ(oom).multiply(pl.p.z.subtract(pl.q.y)))
+                            .divide(v.getDX(oom)).add(pl.p.x);
+                    Math_BigRational y = n.getDX(oom).multiply(p.x.subtract(q.x)).add(
+                            n.getDZ(oom).multiply(p.z.subtract(q.x)))
+                            .divide(v.getDY(oom)).add(p.y);
+                    Math_BigRational z = n.getDX(oom).multiply(pl.p.x.subtract(pl.q.x)).add(
+                            n.getDY(oom).multiply(pl.p.y.subtract(pl.q.x)))
+                            .divide(v.getDZ(oom)).add(pl.p.z);
                     V3D_Point pt = new V3D_Point(x, y, z);
-                    return new V3D_Line(pt, pt.apply(v), v.oom);
+                    return new V3D_Line(pt, pt.apply(v, oom), oom);
 
-//                    BigDecimal a = n.getDX();
-//                    BigDecimal b = n.getDY();
-//                    BigDecimal c = n.getDZ();
-//                    BigDecimal d = pl.n.getDX();
-//                    BigDecimal e = pl.n.getDY();
-//                    BigDecimal f = pl.n.getDZ();
+//                    BigDecimal a = n.getDX(oom);
+//                    BigDecimal b = n.getDY(oom);
+//                    BigDecimal c = n.getDZ(oom);
+//                    BigDecimal d = pl.n.getDX(oom);
+//                    BigDecimal e = pl.n.getDY(oom);
+//                    BigDecimal f = pl.n.getDZ(oom);
 //                    BigDecimal db = d.multiply(b);
 //                    BigDecimal dc = d.multiply(c);
 //                    BigDecimal ea = e.multiply(a);
@@ -845,9 +854,9 @@ public class V3D_Plane extends V3D_Geometry {
 //                    BigDecimal denom32yitox = e.subtract(fb_div_c);
 //                    BigDecimal denom32xitoy = fa_div_c.subtract(d);
 //                    // Solve for z
-//                    // Let; n = v.getDX(); o = v.getDY(); p = v.getDZ()
-//                    // x(t) = x + v.getDX() 
-//                    // y(t) = y(0) + v.getDY() 
+//                    // Let; n = v.getDX(oom); o = v.getDY(oom); p = v.getDZ(oom)
+//                    // x(t) = x + v.getDX(oom) 
+//                    // y(t) = y(0) + v.getDY(oom) 
 //                    // z-p = z(0)
 //                    // z = (ey-dby/a-dj_dg+dbh/a+dci/a-fl-ek)/(dc/a-f)  ---12 z ito y                    
 //                    // z-p = (ey-dby/a-dj_dg+dbh/a+dci/a-fl-ek)/(dc/a-f)
@@ -916,9 +925,9 @@ public class V3D_Plane extends V3D_Geometry {
             }
         }
         // This is where the two equations of the plane are equal.
-        // n.getDX()(x(t)−p.x)+n.getDY()(y(t)−p.y)+n.getDZ()(z(t)−p.z)
+        // n.getDX(oom)(x(t)−p.x)+n.getDY(oom)(y(t)−p.y)+n.getDZ(oom)(z(t)−p.z)
         // where:
-        // n.getDX() = a; n.getDY() = b; n.getDZ() = c
+        // n.getDX(oom) = a; n.getDY(oom) = b; n.getDZ(oom) = c
         // a(x−p.x) + b(y−p.y) + c(z−p.z) = 0
         // x = (p.x - b(y−p.y) - c(z−p.z)) / a                     --- 1
         // y = (p.y - a(x−p.x) - c(z−p.z)) / b                     --- 2
@@ -942,8 +951,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @param l The line to test if it is parallel to this.
      * @return {@code true} if {@code this} is parallel to {@code l}.
      */
-    public boolean isParallel(V3D_Line l) {
-        return n.getDotProduct(l.v).isZero();
+    public boolean isParallel(V3D_Line l, int oom) {
+        return n.getDotProduct(l.v, oom).isZero();
     }
 
 //    @Override
@@ -957,7 +966,7 @@ public class V3D_Plane extends V3D_Geometry {
     public boolean equals(Object o) {
         if (o instanceof V3D_Plane) {
             V3D_Plane pl = (V3D_Plane) o;
-            return equals(pl, Math.min(this.n.oom, pl.n.oom));
+            return equals(pl, oom);
         }
         return false;
     }
@@ -1052,7 +1061,7 @@ public class V3D_Plane extends V3D_Geometry {
 //        MathContext mc = new MathContext(Math_Math_BigRationalSqrt
 //                .getOOM(Math_BigRational.ONE, oom));
         MathContext mc = new MathContext(6 - oom);
-        return v.getDotProduct(u).abs().toBigDecimal(mc);
+        return v.getDotProduct(u, oom).abs().toBigDecimal(mc);
     }
 
     /**
@@ -1067,7 +1076,7 @@ public class V3D_Plane extends V3D_Geometry {
     public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
         if (isParallel(p, oom)) {
             return this.p.getDistanceSquared((V3D_Point) p.getIntersection(
-                    new V3D_Line(this.p, n), oom));
+                    new V3D_Line(this.p, n, oom), oom));
         }
         return Math_BigRational.ZERO;
     }

@@ -30,7 +30,7 @@ public interface V3D_FiniteGeometry {
      *
      * @return The V3D_Envelope.
      */
-    public abstract V3D_Envelope getEnvelope();
+    public abstract V3D_Envelope getEnvelope(int oom);
 
     /**
      * For identifying if the geometry is intersected by point {@code p}.

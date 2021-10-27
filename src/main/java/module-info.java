@@ -22,6 +22,11 @@ module uk.ac.leeds.ccg.vector3D {
     /**
      * ccg-generic
      */
+    requires transitive ch.obermuhlner.math.big;
+
+    /**
+     * ccg-generic
+     */
     requires transitive uk.ac.leeds.ccg.generic;
 
     /**

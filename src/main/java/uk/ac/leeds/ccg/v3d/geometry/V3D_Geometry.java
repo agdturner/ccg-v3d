@@ -70,9 +70,10 @@ public abstract class V3D_Geometry implements Serializable {
 
     /**
      * @param v The vector to apply.
+     * @param oom The Order of Magnitude for the precision.
      * @return a new geometry which is {@code this} shifted by {@code v}.
      */
-    public abstract V3D_Geometry apply(V3D_Vector v);
+    public abstract V3D_Geometry apply(V3D_Vector v, int oom);
     
     /**
      * Get the distance between this and {@code p}.

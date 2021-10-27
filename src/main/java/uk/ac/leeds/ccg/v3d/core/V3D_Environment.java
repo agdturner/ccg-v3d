@@ -65,9 +65,14 @@ public class V3D_Environment extends Generic_MemoryManager {
     public static final Math_BigRational N1 = Math_BigRational.ONE.negate();
 
     /**
+     * The default Order of Magnitude.
+     */
+    public static final int DEFAULT_OOM = -1;
+    
+    /**
      * Zero vector.
      */
-    public static final V3D_Vector V0 = new V3D_Vector(P0, P0, P0, -1);
+    public static final V3D_Vector V0 = new V3D_Vector(P0, P0, P0, DEFAULT_OOM);
 
     /**
      * The point at {@code <0,0,0>}.
@@ -92,47 +97,47 @@ public class V3D_Environment extends Generic_MemoryManager {
     /**
      * Unit vector based at the origin in the x axis direction.
      */
-    public static final V3D_Vector i = new V3D_Vector(P1P0P0, -1);
+    public static final V3D_Vector i = new V3D_Vector(P1P0P0, DEFAULT_OOM);
 
     /**
      * Unit vector based at the origin in the y axis direction.
      */
-    public static final V3D_Vector j = new V3D_Vector(P0P1P0, -1);
+    public static final V3D_Vector j = new V3D_Vector(P0P1P0, DEFAULT_OOM);
 
     /**
      * Unit vector based at the origin in the z axis direction.
      */
-    public static final V3D_Vector k = new V3D_Vector(P0P0P1, -1);
+    public static final V3D_Vector k = new V3D_Vector(P0P0P1, DEFAULT_OOM);
 
     /**
      * The x axis.
      */
-    public static final V3D_Line xAxis = new V3D_Line(P0P0P0, i);
+    public static final V3D_Line xAxis = new V3D_Line(P0P0P0, i, 0);
     
     /**
      * The y axis.
      */
-    public static final V3D_Line yAxis = new V3D_Line(P0P0P0, j);
+    public static final V3D_Line yAxis = new V3D_Line(P0P0P0, j, DEFAULT_OOM);
 
     /**
      * The z axis.
      */
-    public static final V3D_Line zAxis = new V3D_Line(P0P0P0, k);
+    public static final V3D_Line zAxis = new V3D_Line(P0P0P0, k, DEFAULT_OOM);
 
     /**
      * The x = 0 plane.
      */
-    public static final V3D_Plane x0 = new V3D_Plane(P0P0P0, P0P1P0, P0P0P1, -1);
+    public static final V3D_Plane x0 = new V3D_Plane(P0P0P0, P0P1P0, P0P0P1, DEFAULT_OOM);
 
     /**
      * The y = 0 plane.
      */
-    public static final V3D_Plane y0 = new V3D_Plane(P0P0P0, P1P0P0, P0P0P1, -1);
+    public static final V3D_Plane y0 = new V3D_Plane(P0P0P0, P1P0P0, P0P0P1, DEFAULT_OOM);
 
     /**
      * The z = 0 plane.
      */
-    public static final V3D_Plane z0 = new V3D_Plane(P0P0P0, P1P0P0, P0P1P0, -1);
+    public static final V3D_Plane z0 = new V3D_Plane(P0P0P0, P1P0P0, P0P1P0, DEFAULT_OOM);
     
     /**
      * Generic_Environment.
