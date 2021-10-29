@@ -341,9 +341,13 @@ public class V3D_LineTest extends V3D_Test {
         instance = new V3D_Line(N1P1N1, P1N1P1, oom);
         result = instance.isIntersectedBy(l, oom);
         assertTrue(result);
-//        // Test 2
-//        // This test fails, the lines don't intersect, but to be sure a further 
-//        // test is needed!
+        // Test 2
+        /**
+         * This test fails, the lines don't intersect, but to be sure a further
+         * test is needed! That further test might best involve calculating the
+         * intersection and if it is not null, then the result is true (in 
+         * other words, there is an intersection as it has been computed)!
+         */
 //        l = new V3D_Line(P0N1N1, P1P1P1, oom);
 //        instance = new V3D_Line(N1P1N1, P1N1P1, oom);
 //        result = instance.isIntersectedBy(l, oom);
@@ -645,7 +649,6 @@ public class V3D_LineTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Line.
      */
     @Test
-    @Disabled
     public void testGetDistance_V3D_Ray_int() {
         System.out.println("getDistance");
         int oom = -1;
@@ -682,17 +685,18 @@ public class V3D_LineTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Line.
      */
     @Test
-    @Disabled
     public void testGetDistance_V3D_LineSegment_int() {
         System.out.println("getDistance");
-        V3D_LineSegment l = null;
-        int oom = 0;
-        V3D_Line instance = null;
-        BigDecimal expResult = null;
+        int oom = -1;
+        V3D_LineSegment l = new V3D_LineSegment(P1N2P0, P1P2P0, oom);
+        V3D_Line instance = V3D_Environment.zAxis;
+        BigDecimal expResult = BigDecimal.ONE;
         BigDecimal result = instance.getDistance(l, oom);
         assertTrue(expResult.equals(result));
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Test 2
+        l = new V3D_LineSegment(P1N2N2, P1P2P2, oom);
+        result = instance.getDistance(l, oom);
+        assertTrue(expResult.equals(result));
     }
 
     /**

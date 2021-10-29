@@ -1080,6 +1080,19 @@ public class V3D_Line extends V3D_Geometry {
      */
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (l.isIntersectedBy(this, oom)) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal lpd = getDistance(l.p, oom);
+        BigDecimal lqd = getDistance(l.q, oom);
+        BigDecimal ll = l.getLength().getSqrt(oom).toBigDecimal(oom);
+        BigDecimal min = lpd.min(lqd);
+        if (ll.compareTo(min) == 1) {
+            // Get the line of intersection and calculate the length.
+            return ((V3D_LineSegment) getLineOfIntersection(l, oom)).getLength()
+                    .getSqrt(oom).toBigDecimal(oom);
+        } else {
+            return min;
+        }
     }
 }

@@ -1120,7 +1120,10 @@ public class V3D_Plane extends V3D_Geometry {
 
     @Override
     public BigDecimal getDistance(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isIntersectedBy(l, oom)) {
+            return BigDecimal.ZERO;
+        }
+        return getDistance(l.p, oom);
     }
 
     @Override
