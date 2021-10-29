@@ -115,7 +115,6 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of apply method, of class V3D_Triangle.
      */
     @Test
-    @Disabled
     public void testApply() {
         // No test.
     }

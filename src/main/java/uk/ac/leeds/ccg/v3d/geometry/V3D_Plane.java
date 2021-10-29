@@ -136,7 +136,7 @@ public class V3D_Plane extends V3D_Geometry {
      * The Order of Magnitude for the precision of the plane.
      */
     protected final int oom;
-    
+
     /**
      * Create a new instance.
      *
@@ -222,7 +222,7 @@ public class V3D_Plane extends V3D_Geometry {
      * An equation of the plane containing the point {@code p} with normal
      * vector {@code n} is
      * {@code n.getDX(oom)(x) + n.getDY(oom)(y) + n.getDZ(oom)(z) = d}.
-     * 
+     *
      * @param p What {@link #p} is set to.
      * @param n What {@link #n} is set to. This cannot be the ZERO vector.
      */
@@ -231,8 +231,8 @@ public class V3D_Plane extends V3D_Geometry {
         /**
          * Find a perpendicular vector using: user65203, How to find
          * perpendicular vector to another vector?, URL (version: 2020-10-01):
-         * https://math.stackexchange.com/q/3821978
-         * Tested in testIsIntersectedBy_V3D_Point_int()
+         * https://math.stackexchange.com/q/3821978 Tested in
+         * testIsIntersectedBy_V3D_Point_int()
          */
         V3D_Vector pv;
         V3D_Vector v1 = new V3D_Vector(Math_BigRationalSqrt.ZERO, n.dz, n.dy.negate(), oom);
@@ -268,8 +268,8 @@ public class V3D_Plane extends V3D_Geometry {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "(p=" + p.toString()
-                + ", q=" + q.toString() + ", r=" + r.toString() + 
-                ", oom=" + oom +")";
+                + ", q=" + q.toString() + ", r=" + r.toString()
+                + ", oom=" + oom + ")";
     }
 
     /**
@@ -302,7 +302,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     @Override
     public V3D_Plane apply(V3D_Vector v, int oom) {
-        return new V3D_Plane(p.apply(v, oom), q.apply(v, oom), r.apply(v, oom), 
+        return new V3D_Plane(p.apply(v, oom), q.apply(v, oom), r.apply(v, oom),
                 oom);
     }
 
@@ -533,9 +533,46 @@ public class V3D_Plane extends V3D_Geometry {
 //        // p = x(1:3);
 //        //???
 //        // n = cross(n1, n2);
+        /**
+         * Calculate the cross product of the normal vectors to get the
+         * direction of the line.
+         */
         V3D_Vector v = n.getCrossProduct(pl.n, oom);
-        // Calculate the cross product of the normal vectors.
-        //V3D_Vector v = n.getCrossProduct(pl.n, oom);
+        /**
+         * To find a point on the line find a vector (that defines a line) from
+         * each plane that is not parallel to v, then find their intersection.
+         */
+        if (v.isZeroVector()) {
+            // The planes are parallel.
+            if (pl.equals(this)) {
+                // The planes are the same.
+                return this;
+            }
+            // There is no intersection.
+            return null;
+        }
+        /**
+         * Find a vector that is not parallel to v from a plane.
+         */
+        V3D_Point pi;
+        if (this.pq.isScalarMultiple(v, oom)) {
+            pi = (V3D_Point) pl.getIntersection(new V3D_Line(q, r, oom), oom);
+        } else {
+            pi = (V3D_Point) pl.getIntersection(new V3D_Line(p, q, oom), oom);
+        }
+        return new V3D_Line(pi, v, oom);
+    }
+    
+    private V3D_Geometry getIntersectionOld(V3D_Plane pl, int oom) {
+        /**
+         * Calculate the cross product of the normal vectors to get the
+         * direction of the line.
+         */
+        V3D_Vector v = n.getCrossProduct(pl.n, oom);
+        /**
+         * To find a point on the line find a vector (that defines a line) from
+         * each plane that is not parallel to v, then find their intersection.
+         */
         if (v.isZeroVector()) {
             // The planes are parallel.
             if (pl.equals(this)) {
@@ -548,13 +585,13 @@ public class V3D_Plane extends V3D_Geometry {
         // Calculate the line of intersection, where v is the line vector.
         // What to do depends on which elements of v are non-zero.
         Math_BigRational P0 = Math_BigRational.ZERO;
-        if (v.getDX(oom).compareTo(P0) == 0) {
-            if (v.getDY(oom).compareTo(P0) == 0) {
+        if (v.dx.isZero()) {
+            if (v.dy.isZero()) {
                 Math_BigRational z = pl.n.getDX(oom).multiply(pl.p.x
                         .subtract(pl.q.x)).add(n.getDY(oom).multiply(pl.p.y
                         .subtract(pl.q.x))).divide(v.getDZ(oom)).add(pl.p.z);
                 V3D_Point pt;
-                if (n.getDX(oom).compareTo(P0) == 0) {
+                if (n.dx.isZero()) {
                     pt = new V3D_Point(pl.p.x, p.y, z);
                 } else {
                     pt = new V3D_Point(p.x, pl.p.y, z);
@@ -638,7 +675,7 @@ public class V3D_Plane extends V3D_Geometry {
 //                    }
 //                }
             } else {
-                if (v.getDZ(oom).compareTo(P0) == 0) {
+                if (v.dz.isZero()) {
                     Math_BigRational y = n.getDX(oom).multiply(p.x.subtract(q.x)).add(
                             n.getDZ(oom).multiply(p.z.subtract(q.x)))
                             .divide(v.getDY(oom)).add(p.y);
@@ -676,7 +713,7 @@ public class V3D_Plane extends V3D_Geometry {
                         Math_BigRational z = numerator.divide(denominator);
                         // Substitute into 1
                         // y = (p.y - c(z−p.z)) / b   --- 1
-                        if (n.getDY(oom).compareTo(P0) == 0) {
+                        if (n.dy.isZero()) {
                             // Another case to deal with
                             return null;
                         } else {
@@ -690,20 +727,20 @@ public class V3D_Plane extends V3D_Geometry {
                 }
             }
         } else {
-            if (v.getDY(oom).compareTo(P0) == 0) {
-                if (v.getDZ(oom).compareTo(P0) == 0) {
+            if (v.dy.isZero()) {
+                if (v.dz.isZero()) {
                     Math_BigRational x = pl.n.getDY(oom).multiply(pl.p.y.subtract(pl.q.y)).add(
                             n.getDZ(oom).multiply(pl.p.z.subtract(pl.q.y)))
                             .divide(v.getDX(oom)).add(pl.p.x);
                     V3D_Point pt;
-                    if (n.getDY(oom).compareTo(P0) == 0) {
-                        if (n.getDZ(oom).compareTo(P0) == 0) {
+                    if (n.dy.isZero()) {
+                        if (n.dz.isZero()) {
                             pt = new V3D_Point(x, p.y, pl.p.z);
                         } else {
                             pt = new V3D_Point(x, pl.p.y, p.z);
                         }
                     } else {
-                        if (n.getDZ(oom).compareTo(P0) == 0) {
+                        if (n.dz.isZero()) {
                             pt = new V3D_Point(x, p.y, pl.p.z);
                         } else {
                             pt = new V3D_Point(x, p.y, pl.p.z);
@@ -715,7 +752,7 @@ public class V3D_Plane extends V3D_Geometry {
                             n.getDY(oom).multiply(pl.p.y.subtract(pl.q.x)))
                             .divide(v.getDZ(oom)).add(pl.p.z);
                     V3D_Point pt;
-                    if (n.getDX(oom).compareTo(P0) == 0) {
+                    if (n.dx.isZero()) {
                         pt = new V3D_Point(pl.p.x, p.y, z);
                     } else {
                         pt = new V3D_Point(p.x, pl.p.y, z);
@@ -723,7 +760,7 @@ public class V3D_Plane extends V3D_Geometry {
                     return new V3D_Line(pt, pt.apply(v, oom), oom);
                 }
             } else {
-                if (v.getDZ(oom).compareTo(P0) == 0) {
+                if (v.dz.isZero()) {
                     // Case 6
                     Math_BigRational y = n.getDX(oom).multiply(p.x.subtract(q.x)).add(
                             n.getDZ(oom).multiply(p.z.subtract(q.x)))
@@ -1088,6 +1125,8 @@ public class V3D_Plane extends V3D_Geometry {
 
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        BigDecimal lpd = getDistance(l.p, oom);
+        BigDecimal lqd = getDistance(l.q, oom);
+        return lpd.min(lqd);
     }
 }

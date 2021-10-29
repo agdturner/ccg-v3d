@@ -85,7 +85,7 @@ public abstract class V3D_Geometry implements Serializable {
     public abstract BigDecimal getDistance(V3D_Point p, int oom);
     
     /**
-     * Get the distance between this and {@code l}.
+     * Get the minimum distance between this and {@code l}.
      *
      * @param l A point.
      * @param oom The Order of Magnitude for the precision of the result.
@@ -94,7 +94,7 @@ public abstract class V3D_Geometry implements Serializable {
     public abstract BigDecimal getDistance(V3D_Line l, int oom);
     
     /**
-     * Get the distance between this and {@code l}.
+     * Get the minimum distance between this and {@code l}.
      *
      * @param l A point.
      * @param oom The Order of Magnitude for the precision of the result.

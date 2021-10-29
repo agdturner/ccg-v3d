@@ -393,12 +393,12 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
     public boolean isScalarMultiple(V3D_Vector v, int oom) {
-        if (getDX(oom).isZero()) {
-            if (v.getDX(oom).isZero()) {
-                if (getDY(oom).isZero()) {
-                    if (v.getDY(oom).isZero()) {
-                        if (getDZ(oom).isZero()) {
-                            return v.getDZ(oom).isZero();
+        if (dx.isZero()) {
+            if (v.dx.isZero()) {
+                if (dy.isZero()) {
+                    if (v.dy.isZero()) {
+                        if (dz.isZero()) {
+                            return v.dz.isZero();
                         } else {
                             return true;
                         }
@@ -406,13 +406,13 @@ public class V3D_Vector implements Serializable {
                         return false;
                     }
                 } else {
-                    if (v.getDY(oom).isZero()) {
+                    if (v.dy.isZero()) {
                         return false;
                     } else {
-                        if (getDZ(oom).isZero()) {
+                        if (dz.isZero()) {
                             return v.getDZ(oom).isZero();
                         } else {
-                            if (v.getDZ(oom).isZero()) {
+                            if (v.dz.isZero()) {
                                 return false;
                             } else {
                                 Math_BigRational sy = getDY(oom).divide(v.getDY(oom));
@@ -426,27 +426,31 @@ public class V3D_Vector implements Serializable {
                 return false;
             }
         } else {
-            if (v.getDX(oom).isZero()) {
+            if (v.dx.isZero()) {
                 return false;
             } else {
-                if (getDY(oom).isZero()) {
-                    if (v.getDY(oom).isZero()) {
-                        if (getDZ(oom).isZero()) {
-                            return v.getDZ(oom).isZero();
+                if (dy.isZero()) {
+                    if (v.dy.isZero()) {
+                        if (dz.isZero()) {
+                            return v.dz.isZero();
                         } else {
-                            Math_BigRational sx = getDX(oom).divide(v.getDX(oom));
-                            Math_BigRational sz = getDZ(oom).divide(v.getDZ(oom));
-                            return sx.compareTo(sz) == 0;
+                            if (v.dz.isZero()) {
+                                return false;
+                            } else {
+                                Math_BigRational sx = getDX(oom).divide(v.getDX(oom));
+                                Math_BigRational sz = getDZ(oom).divide(v.getDZ(oom));
+                                return sx.compareTo(sz) == 0;
+                            }
                         }
                     } else {
                         return false;
                     }
                 } else {
-                    if (v.getDY(oom).isZero()) {
+                    if (v.dy.isZero()) {
                         return false;
                     } else {
-                        if (getDZ(oom).isZero()) {
-                            if (v.getDZ(oom).isZero()) {
+                        if (dz.isZero()) {
+                            if (v.dz.isZero()) {
                                 Math_BigRational sx = getDX(oom).divide(v.getDX(oom));
                                 Math_BigRational sy = getDY(oom).divide(v.getDY(oom));
                                 return sx.compareTo(sy) == 0;
@@ -454,7 +458,7 @@ public class V3D_Vector implements Serializable {
                                 return false;
                             }
                         } else {
-                            if (v.getDZ(oom).isZero()) {
+                            if (v.dz.isZero()) {
                                 return false;
                             } else {
                                 Math_BigRational sx = getDX(oom).divide(v.getDX(oom));
