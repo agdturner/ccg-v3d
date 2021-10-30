@@ -345,8 +345,8 @@ public class V3D_LineTest extends V3D_Test {
         /**
          * This test fails, the lines don't intersect, but to be sure a further
          * test is needed! That further test might best involve calculating the
-         * intersection and if it is not null, then the result is true (in 
-         * other words, there is an intersection as it has been computed)!
+         * intersection and if it is not null, then the result is true (in other
+         * words, there is an intersection as it has been computed)!
          */
 //        l = new V3D_Line(P0N1N1, P1P1P1, oom);
 //        instance = new V3D_Line(N1P1N1, P1N1P1, oom);
@@ -551,6 +551,15 @@ public class V3D_LineTest extends V3D_Test {
                 .toBigDecimal(mc);
         result = instance.getDistance(p, oom);
         assertTrue(expResult.compareTo(result) == 0);
+        // Test 5 https://math.stackexchange.com/a/1658288/756049
+        p = P1P1P1;
+        oom = -3;
+        Math_BigRational third = Math_BigRational.valueOf(1, 3);
+        instance = new V3D_Line(new V3D_Point(N2, N4, P5), new V3D_Point(N1, N2, P3), oom);
+        V3D_Point p2 = new V3D_Point(third, Math_BigRational.valueOf(2, 3), third);
+        expResult = p2.getDistance(p, oom);
+        result = instance.getDistance(p, oom);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -596,7 +605,7 @@ public class V3D_LineTest extends V3D_Test {
         V3D_Point pt;
         V3D_Line instance;
         V3D_LineSegment expResult;
-        V3D_LineSegment result;
+        V3D_Geometry result;
         // Test 1
         pt = P0P0P0;
         instance = new V3D_Line(P1P0P0, P1P1P0, oom);
@@ -670,13 +679,20 @@ public class V3D_LineTest extends V3D_Test {
         // Test 4
         r = new V3D_Ray(P1P0P0, P2P0P0, oom);
         instance = new V3D_Line(P0P0P0, P0P1P0, oom);
-        expResult = new Math_BigRationalSqrt(2, oom, false).divide(Math_BigRational.valueOf(2), oom).toBigDecimal(oom);
+        expResult = BigDecimal.ONE;
         result = instance.getDistance(r, oom);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 5
         r = new V3D_Ray(P1P0P0, P2P0P0, oom);
         instance = new V3D_Line(P0P0P0, P0P1P0, oom);
-        expResult = BigDecimal.valueOf(0.5d);
+        expResult = BigDecimal.ONE;
+        result = instance.getDistance(r, oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 6
+        oom = -2;
+        r = new V3D_Ray(P1P0P0, P2P0P0, oom);
+        instance = new V3D_Line(P0P0P0, P1P1P0, oom);
+        expResult = new Math_BigRationalSqrt(2L, oom).getSqrt(oom).divide(2L).toBigDecimal(oom);
         result = instance.getDistance(r, oom);
         assertTrue(expResult.compareTo(result) == 0);
     }

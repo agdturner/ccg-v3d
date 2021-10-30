@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 
 /**
@@ -325,7 +326,7 @@ public class V3D_RayTest extends V3D_Test {
         V3D_Point pt;
         V3D_Ray instance;
         V3D_LineSegment expResult;
-        V3D_LineSegment result;
+        V3D_Geometry result;
         // Test 1
         pt = P0P0P0;
         instance = new V3D_Ray(P1P0P0, P1P1P0, oom);
@@ -371,10 +372,10 @@ public class V3D_RayTest extends V3D_Test {
         BigDecimal expResult;
         BigDecimal result;
         // Test 1
-        p = new V3D_Ray(P0P0P0, P1P1P1, oom);
+        p = new V3D_Ray(P0P0P0, P1P1P0, oom);
         oom = -1;
         instance = new V3D_Ray(P1P0P0, P1P1P0, oom);
-        expResult = BigDecimal.ONE;
+        expResult = new Math_BigRationalSqrt(2L, oom).getSqrt(oom).divide(2L).toBigDecimal(oom);
         result = instance.getDistance(p, oom);
         assertTrue(expResult.compareTo(result) == 0);
     }

@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
@@ -729,9 +728,9 @@ public class V3D_Line extends V3D_Geometry {
      * @return The line segment having the shortest distance between {@code pt}
      * and {@code this}.
      */
-    public V3D_LineSegment getLineOfIntersection(V3D_Point pt, int oom) {
+    public V3D_Geometry getLineOfIntersection(V3D_Point pt, int oom) {
         if (isIntersectedBy(pt, oom)) {
-            return new V3D_LineSegment(pt, pt, oom);
+            return pt;
         }
         return new V3D_LineSegment(pt, getPointOfIntersection(pt, oom), oom);
     }
@@ -748,13 +747,47 @@ public class V3D_Line extends V3D_Geometry {
         if (this.isIntersectedBy(pt, oom)) {
             return pt;
         }
-        V3D_Vector a = new V3D_Vector(pt, p, oom);
-        //V3D_Vector a = new V3D_Vector(p, pt);
-        Math_BigRational adb = a.getDotProduct(v, oom);
-        Math_BigRational vdv = v.getDotProduct(v, oom);
-        return p.apply(v.multiply(adb.divide(vdv), oom).reverse(), oom);
-        //return q.apply(v.multiply(adb.divide(vdv)));
-        //return p.apply(v.multiply(adb.divide(vdv)));
+        // a = v
+        // p1 = p
+        // p0 = pt
+        //t = (- a.x * (p1.x - p0.x) - a.y * (p1.y - p0.y) - a.z * (p1.z - p0.z)) 
+        //     / (a.x * a.x + a.y * a.y + a.z * a.z)
+        Math_BigRational vdx = v.dx.getSqrt(oom);
+        Math_BigRational t = (vdx.negate().multiply((p.x.subtract(pt.x)))
+                .subtract(v.dy.getSqrt(oom).multiply((p.y.subtract(pt.y)))) 
+                .subtract(v.dz.getSqrt(oom).multiply(p.z.subtract(pt.z)))) 
+                .divide(v.dx.getX().add(v.dy.getX()).add(v.dz.getX()));
+//        Math_BigRational t2 = (vdx.negate().multiply((q.x.subtract(pt.x)))
+//                .subtract(v.dy.getSqrt(oom).multiply((q.y.subtract(pt.y)))) 
+//                .subtract(v.dz.getSqrt(oom).multiply(q.z.subtract(pt.z)))) 
+//                .divide(v.dx.getX().add(v.dy.getX()).add(v.dz.getX()));
+        return p.apply(v.multiply(t, oom), oom);
+        
+        
+//        // P = pt
+//        // Q = p
+//        // R = q
+//        // R-Q = v
+//        // Q-P = new V3D_Vector(pt, p, oom)
+//        if (p.isOrigin()) {
+//            V3D_Vector vr = v.reverse();
+//            Math_BigRational num = vr.getDotProduct(new V3D_Vector(pt, q, oom), oom);
+//            Math_BigRational den = vr.getDotProduct(vr, oom);
+//            return q.apply(vr.multiply(num.divide(den), oom), oom);
+//        } else {
+//            Math_BigRational num = v.getDotProduct(new V3D_Vector(pt, p, oom), oom);
+//            Math_BigRational den = v.getDotProduct(v, oom);
+//            return p.apply(v.multiply(num.divide(den), oom), oom);
+//        }
+        
+        
+//        V3D_Vector a = new V3D_Vector(pt, p, oom);
+//        //V3D_Vector a = new V3D_Vector(p, pt);
+//        Math_BigRational adb = a.getDotProduct(v, oom);
+//        Math_BigRational vdv = v.getDotProduct(v, oom);
+//        return p.apply(v.multiply(adb.divide(vdv), oom).reverse(), oom);
+//        //return q.apply(v.multiply(adb.divide(vdv)));
+//        //return p.apply(v.multiply(adb.divide(vdv)));
     }
 
     /**
@@ -786,19 +819,22 @@ public class V3D_Line extends V3D_Geometry {
 
         V3D_Point tpi = p.apply(B.multiply(ma, oom), oom);
 
+        //V3D_Point lpi = l.p.apply(C.multiply(mb, oom), oom);
         V3D_Point lpi = l.p.apply(C.multiply(mb.negate(), oom), oom);
 
         return new V3D_LineSegment(tpi, lpi, oom);
 
 //        // p13
-//        V3D_Vector plp = new V3D_Vector(p, l.p);
+//        V3D_Vector plp = new V3D_Vector(p, l.p, oom);
 //        // p43
-//        V3D_Vector lqlp = l.v.reverse();//new V3D_Vector(l.q, l.p);
+//        //V3D_Vector lqlp = l.v.reverse();//new V3D_Vector(l.q, l.p);
+//        V3D_Vector lqlp = l.v;//new V3D_Vector(l.q, l.p);
 //        if (lqlp.getMagnitudeSquared().compareTo(Math_BigRational.ZERO) == 0) {
 //            return null;
 //        }
 //        // p21
-//        V3D_Vector qp = v.reverse();//new V3D_Vector(q, p);
+//        //V3D_Vector qp = v.reverse();//new V3D_Vector(q, p);
+//        V3D_Vector qp = v;//new V3D_Vector(q, p);
 //        if (qp.getMagnitudeSquared().compareTo(Math_BigRational.ZERO) == 0) {
 //            return null;
 //        }
@@ -834,7 +870,7 @@ public class V3D_Line extends V3D_Geometry {
 //        if (pi.equals(qi)) {
 //            return pi;
 //        }
-//        return new V3D_LineSegment(pi, qi);
+//        return new V3D_LineSegment(pi, qi, oom);
     }
 
     /**
@@ -980,27 +1016,37 @@ public class V3D_Line extends V3D_Geometry {
      * @return The minimum distance between {@code this} and {@code r}.
      */
     public BigDecimal getDistance(V3D_Ray r, int oom) {
-        //public Math_BigRational getDistance(V3D_Ray r) {
-        if (isParallel(r, oom)) {
-            return p.getDistance(new V3D_Line(r, oom), oom);
-        } else {
-            if (isIntersectedBy(r, oom)) {
-                return BigDecimal.ZERO;
-            } else {
-                V3D_Line rl = new V3D_Line(r, oom);
-                if (isIntersectedBy(rl, oom)) {
-                    getLineOfIntersection(r.p, oom).getLength().toBigDecimal(oom);
-                }
-                V3D_LineSegment li = (V3D_LineSegment) getLineOfIntersection(r, oom);
-                if (li == null) {
-                    li = getLineOfIntersection(r.p, oom);
-                }
-                if (r.isIntersectedBy(li.q, oom)) {
-                    return li.getLength().toBigDecimal(oom);
-                }
-                return r.p.getDistance(this, oom);
-            }
+        V3D_Geometry g = r.getLineOfIntersection(this, oom);
+        if (g == null) {
+            return getDistance(r.p, oom);
         }
+        if (g instanceof V3D_Point){
+            return BigDecimal.ZERO;
+        } else {
+            return ((V3D_LineSegment) g).getLength().getSqrt(oom).toBigDecimal(oom);
+        }
+//        //return r.getDistance(this, oom);
+//        //public Math_BigRational getDistance(V3D_Ray r) {
+//        if (isParallel(r, oom)) {
+//            return p.getDistance(new V3D_Line(r, oom), oom);
+//        } else {
+//            if (isIntersectedBy(r, oom)) {
+//                return BigDecimal.ZERO;
+//            } else {
+//                V3D_Line rl = new V3D_Line(r, oom);
+//                if (isIntersectedBy(rl, oom)) {
+//                    return getLineOfIntersection(r.p, oom).getLength().toBigDecimal(oom);
+//                }
+//                V3D_LineSegment li = (V3D_LineSegment) getLineOfIntersection(r, oom);
+//                if (li == null) {
+//                    li = getLineOfIntersection(r.p, oom);
+//                }
+//                if (r.isIntersectedBy(li.q, oom)) {
+//                    return li.getLength().toBigDecimal(oom);
+//                }
+//                return r.p.getDistance(this, oom);
+//            }
+//        }
     }
 
     /**
