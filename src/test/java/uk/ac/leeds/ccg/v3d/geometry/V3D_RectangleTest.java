@@ -150,15 +150,8 @@ public class V3D_RectangleTest extends V3D_Test {
      * Test of apply method, of class V3D_Rectangle.
      */
     @Test
-    @Disabled
     public void testApply() {
-        System.out.println("apply");
-        int oom = -1;
-        V3D_Vector v = new V3D_Vector(1,0,0, oom);
-        V3D_Rectangle instance = new V3D_Rectangle(P0P0P0, P0P1P0, P1P1P0, P1P0P0, oom);
-        V3D_Rectangle expResult = new V3D_Rectangle(P1P0P0, P1P1P0, new V3D_Point(P2,P1,P0), P2P0P0, oom);
-        V3D_Rectangle result = instance.apply(v, oom);
-        assertTrue(expResult.equals(result));
+        // No test.
     }
 
     /**

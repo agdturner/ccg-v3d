@@ -563,36 +563,19 @@ public class V3D_LineTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_Line.
+     * Test of isIntersectedBy method, of class V3D_Line covered by {@link V3D_RayTest#testIsIntersectedBy_V3D_Line()}.
      */
     @Test
-    @Disabled
     public void testIsIntersectedBy_V3D_Ray() {
-        System.out.println("isIntersectedBy");
-        int oom = -1;
-        V3D_Ray r = null;
-        V3D_Line instance = null;
-        boolean result = instance.isIntersectedBy(r, oom);
-        assertTrue(result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // No test.
     }
 
     /**
-     * Test of getIntersection method, of class V3D_Line.
+     * Test of getIntersection method, of class V3D_Line covered by {@link V3D_RayTest#testGetIntersection_V3D_Line().
      */
     @Test
-    @Disabled
     public void testGetIntersection_V3D_Ray() {
-        System.out.println("getIntersection");
-        int oom = -1;
-        V3D_Ray r = null;
-        V3D_Line instance = null;
-        V3D_Geometry expResult = null;
-        V3D_Geometry result = instance.getIntersection(r, oom);
-        assertTrue(expResult.equals(result));
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // No test.
     }
 
     /**

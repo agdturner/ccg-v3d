@@ -333,7 +333,6 @@ public class V3D_LineSegmentTest extends V3D_Test {
      * Test of isEnvelopeIntersectedBy method, of class V3D_LineSegment.
      */
     @Test
-    @Disabled
     public void testIsEnvelopeIntersectedBy() {
         // No test as this is covered by V3D_EnvelopeTest.testIsIntersectedBy_V3D_LineSegment_boolean()
     }

@@ -23,7 +23,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 /**
  * 3D representation of a point. The "*" denotes a point in 3D in the following
  * depiction: {@code
- *                                       
+ *
  *                          y           -
  *                          +          /                *p=<x0,y0,z0>
  *                          |         /                 |
@@ -64,17 +64,17 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * The x coordinate.
      */
-    public Math_BigRational x;
+    public final Math_BigRational x;
 
     /**
      * The y coordinate.
      */
-    public Math_BigRational y;
+    public final Math_BigRational y;
 
     /**
      * The z coordinate.
      */
-    public Math_BigRational z;
+    public final Math_BigRational z;
 
     /**
      * @param p The point to duplicate
@@ -96,6 +96,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 
     /**
      * Create a new instance.
+     *
      * @param v The vector.
      * @param oom The Order of Magnitude for the precision.
      */
@@ -188,12 +189,12 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @return true iff this is equal to the ORIGIN. 
+     * @return true iff this is equal to the ORIGIN.
      */
     public boolean isOrigin() {
         return equals(ORIGIN);
     }
-    
+
     /**
      * @param v The vector to apply.
      * @param oom The Order of Magnitude for the precision.
@@ -367,7 +368,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
                     .toBigDecimal(oom);
         }
     }
-    
+
     /**
      * @param r The ray to get the distance from.
      * @param oom The Order of Magnitude for the precision of the result.

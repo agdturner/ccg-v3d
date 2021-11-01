@@ -3,13 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.agdturner</groupId>
     <artifactId>ccg-vector3d</artifactId>
-    <version>0.8</version>
-    <!--
-    <version>0.8</version>
-    -->
-    <!--
     <version>0.9-SNAPSHOT</version>
-    -->
     <packaging>jar</packaging>
     
     <name>ccg-vector3d</name>
@@ -19,7 +13,7 @@
         <url>git@github.com:agdturner/ccg-vector3d.git</url>
         <connection>scm:git:git@github.com:agdturner/ccg-vector3d.git</connection>
         <developerConnection>scm:git:git@github.com:agdturner/ccg-vector3d</developerConnection>
-        <tag>ccg-vector3d-0.8</tag>
+        <tag>ccg-vector3d-0.9</tag>
     </scm>
     <licenses>
         <license>
