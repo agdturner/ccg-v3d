@@ -2,18 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.agdturner</groupId>
-    <artifactId>ccg-vector3d</artifactId>
-    <version>0.9</version>
+    <artifactId>ccg-v3d</artifactId>
+    <version>0.10-SNAPSHOT</version>
     <packaging>jar</packaging>
     
-    <name>ccg-vector3d</name>
-    <url>https://github.com/agdturner/ccg-vector3d</url>
+    <name>ccg-v3d</name>
+    <url>https://github.com/agdturner/ccg-v3d</url>
     <description>A Java Library for handling 3D spatial vector data.</description>
     <scm>
-        <url>git@github.com:agdturner/ccg-vector3d.git</url>
-        <connection>scm:git:git@github.com:agdturner/ccg-vector3d.git</connection>
-        <developerConnection>scm:git:git@github.com:agdturner/ccg-vector3d</developerConnection>
-        <tag>ccg-vector3d-0.9</tag>
+        <url>git@github.com:agdturner/ccg-v3d.git</url>
+        <connection>scm:git:git@github.com:agdturner/ccg-v3d.git</connection>
+        <developerConnection>scm:git:git@github.com:agdturner/ccg-v3d</developerConnection>
+        <tag>ccg-v3d-0.10</tag>
     </scm>
     <licenses>
         <license>

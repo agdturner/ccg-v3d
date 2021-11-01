@@ -17,10 +17,10 @@
 /**
  * Provides utility for 3D spatial geometry.
  */
-module uk.ac.leeds.ccg.vector3D {
+module uk.ac.leeds.ccg.v3d {
 
     /**
-     * ccg-generic
+     * big-math
      */
     requires transitive ch.obermuhlner.math.big;
 
