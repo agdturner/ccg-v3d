@@ -113,6 +113,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      * @param p A point that defines the triangle.
      * @param q A point that defines the triangle.
      * @param r A point that defines the triangle.
+     * @param oom The Order of Magnitude for the initialisation.
      */
     public V3D_Triangle(V3D_Point p, V3D_Point q, V3D_Point r, int oom) {
         super(p, q, r, oom);
@@ -137,6 +138,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
 
     /**
      * @param v The vector to apply.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return a new rectangle.
      */
     @Override
@@ -147,6 +149,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
 
     /**
      * @param pt The point to intersect with.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return A point or line segment.
      */
     @Override
@@ -236,7 +239,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     }
 
     /**
-     * @param oom The minimum precision scale of the result.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The area of the triangle (rounded).
      */
     @Override
@@ -246,7 +249,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     }
 
     /**
-     * @param oom The minimum precision scale of the result.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      */
     @Override
     public BigDecimal getPerimeter(int oom) {
@@ -258,6 +261,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
 
     /**
      * @param l The line to intersect with.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return A point or line segment.
      */
     @Override
@@ -365,7 +369,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     }
 
     /**
-     * @param oom The OOM for the precision.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The centroid point.
      */
     public V3D_Point getCentroid(int oom) {

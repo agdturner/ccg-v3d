@@ -64,6 +64,7 @@ public abstract class V3D_Geometry implements Serializable {
 
     /**
      * @param l The line for which intersection with the envelope is indicated.
+     * @param oom The Order of Magnitude for the precision.
      * @return {@code true} iff {@code l} intersects with the envelope.
      */
     public abstract boolean isEnvelopeIntersectedBy(V3D_Line l, int oom);

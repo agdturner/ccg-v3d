@@ -98,11 +98,11 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * {@code p} should not be equal to {@code q}. If unsure use
-     * {@link #V3D_Line(V3D_Point, V3D_Point, boolean)}.
+     * {@link #V3D_Line(V3D_Point, V3D_Point, int, boolean)}.
      *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
-     * @param oom Arbitrary, but used to initialise {@link #v}.
+     * @param oom The Order of Magnitude for initialising {@link #v}.
      */
     public V3D_Line(V3D_Point p, V3D_Point q, int oom) {
         this.p = p;
@@ -112,13 +112,13 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * {@code p} should not be equal to {@code q}. If unsure use
-     * {@link #V3D_Line(V3D_Point, V3D_Point, boolean)}.
-     *
+     * {@code p} should not be equal to {@code q}.
+     * 
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
+     * @param oom The Order of Magnitude for initialising {@link #v}.
      * @param check Ignored. It is here to distinguish with
-     * {@link #V3D_Line(V3D_Point, V3D_Point)}.
+     * {@link #V3D_Line(V3D_Point, V3D_Point, int)}.
      * @throws RuntimeException if {@code p.equals(q)}.
      */
     public V3D_Line(V3D_Point p, V3D_Point q, int oom, boolean check) {
@@ -134,10 +134,11 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * {@code v} should not be the zero vector {@code <0,0,0>}. If unsure use
-     * {@link #V3D_Line(V3D_Point, V3D_Point, boolean)}.
+     * {@link #V3D_Line(V3D_Point, V3D_Point, int, boolean)}.
      *
      * @param p What {@link #p} is set to.
      * @param v What {@link #v} is set to.
+     * @param oom The Order of Magnitude for initialising {@link #q}.
      * @throws RuntimeException if {@code v.isZeroVector()}.
      */
     public V3D_Line(V3D_Point p, V3D_Vector v, int oom) {
@@ -155,8 +156,9 @@ public class V3D_Line extends V3D_Geometry {
      *
      * @param p What {@link #p} is set to.
      * @param v What {@link #v} is set to.
+     * @param oom The Order of Magnitude for initialising {@link #q}.
      * @param check Ignored. It is here to distinguish with
-     * {@link #V3D_Line(V3D_Point, V3D_Vector)}.
+     * {@link #V3D_Line(V3D_Point, V3D_Vector, int)}.
      */
     public V3D_Line(V3D_Point p, V3D_Vector v, int oom, boolean check) {
         this.p = p;
@@ -168,8 +170,7 @@ public class V3D_Line extends V3D_Geometry {
      * Create a new instance from {@code l}
      *
      * @param l Line to create from.
-     * @param oom The Order of Magnitude for the precision of magnitude 
-     * calculations. 
+     * @param oom The Order of Magnitude for initialising {@link #v}.
      */
     public V3D_Line(V3D_Line l, int oom) {
         this.p = l.p;
@@ -194,6 +195,7 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * @param l The line to test if it is the same as {@code this}.
+     * @param oom The Order of Magnitude for the precision.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_Line l, int oom) {
@@ -210,6 +212,7 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * @param pt A point to test for intersection.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@code true} if p is on the line.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom) {
@@ -234,7 +237,8 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * @param l The line to test this with to see if they are parallel.
+     * @param l The line to test if it is parallel to this.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@code true} If this and {@code l} are parallel.
      */
     public boolean isParallel(V3D_Line l, int oom) {
@@ -242,6 +246,8 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
+     * @param l The line to test for intersection with this.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@code true} if {@code this} and {@code l} intersect and false if 
      * they may intersect, but more computation is needed.
      */
@@ -274,6 +280,7 @@ public class V3D_Line extends V3D_Geometry {
      * return {@code this}.
      *
      * @param l The line to get the intersection with {@code this}.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_Geometry getIntersection(V3D_Line l, int oom) {
@@ -706,6 +713,7 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * @param r The ray to test if it intersects with {@code this}.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@code true} If {@code this} and {@code r} intersect.
      */
     public boolean isIntersectedBy(V3D_Ray r, int oom) {
@@ -716,6 +724,7 @@ public class V3D_Line extends V3D_Geometry {
      * Intersects {@code this} with {@code r}.
      *
      * @param r The ray to get intersection with {@code this}.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The intersection between {@code this} and {@code r}.
      */
     public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
@@ -725,6 +734,7 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * @param pt A point for which the shortest line segment to this is
      * returned.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The line segment having the shortest distance between {@code pt}
      * and {@code this}.
      */
@@ -737,9 +747,10 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * Adapted from:
-     * <ahref="https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line">https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line</a>
+     * <a href="https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line">https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line</a>
      *
      * @param pt The point projected onto this.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return A point on {@code this} which is the shortest distance from
      * {@code pt}.
      */
@@ -797,6 +808,7 @@ public class V3D_Line extends V3D_Geometry {
      * <a href="http://paulbourke.net/geometry/pointlineplane/">http://paulbourke.net/geometry/pointlineplane/</a>.
      *
      * @param l The line to get the line of intersection with.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The line of intersection between {@code this} and {@code l}.
      */
     public V3D_Geometry getLineOfIntersection(V3D_Line l, int oom) {
@@ -875,6 +887,7 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * @param v The vector to apply.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return a new line.
      */
     @Override
@@ -890,8 +903,7 @@ public class V3D_Line extends V3D_Geometry {
      *
      * @param p A point for which the minimum distance from {@code this} is
      * returned.
-     *
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The minimum distance between this and {@code p}.
      */
     @Override
@@ -974,7 +986,7 @@ public class V3D_Line extends V3D_Geometry {
      *
      * @param l A line for which the minimum distance from {@code this} is
      * returned.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The minimum distance between this and {@code l}.
      */
     @Override
@@ -1012,7 +1024,7 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * @param r A ray for which the minimum distance from {@code this} is
      * returned.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The minimum distance between {@code this} and {@code r}.
      */
     public BigDecimal getDistance(V3D_Ray r, int oom) {
@@ -1115,10 +1127,6 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * An implementation of this exists:
-     * https://www.geometrictools.com/Documentation/DistanceLine3Line3.pdf
-     * https://www.geometrictools.com/GTE/Mathematics/DistSegmentSegment.h
-     *
      * @param l The line segment to return the distance from.
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance from {@code this} to {@code l} at the {@code oom}

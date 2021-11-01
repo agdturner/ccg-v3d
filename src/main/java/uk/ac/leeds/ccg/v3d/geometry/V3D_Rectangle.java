@@ -101,6 +101,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      * @param q The top left corner of the rectangle.
      * @param r The top right corner of the rectangle.
      * @param s The bottom right corner of the rectangle.
+     * @param oom The Order of Magnitude for the initialisation.
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
@@ -153,6 +154,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      * Create a new instance.
      *
      * @param r What {@code this} is created from.
+     * @param oom The Order of Magnitude for the initialisation.
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
@@ -178,6 +180,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     /**
      * @param v The vector to apply.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return a new rectangle.
      */
     @Override
@@ -188,6 +191,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     /**
      * @param pt The point to intersect with.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return A point or line segment.
      */
     @Override
@@ -323,8 +327,9 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      * Intersection test.
      *
      * @param l The line segment to test for intersection.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @param b This is a flag to distinguish this method from
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}.
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}.
      * @return {@code true} iff this rectangle is intersected by {@code l}
      */
     @Override
@@ -345,6 +350,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     /**
      * @param l The line to intersect with.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return A point or line segment.
      */
     @Override
@@ -502,8 +508,9 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      * {@code l}.
      *
      * @param l The line segment to test for intersection.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @param flag This is to distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return The intersection or {@code null} iff there is no intersection.
      */
@@ -579,7 +586,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      * Get the distance between this and {@code pl}.
      *
      * @param p A point.
-     * @param oom The order of magnitude of the precision.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The distance from {@code this} to {@code p}.
      */
     @Override

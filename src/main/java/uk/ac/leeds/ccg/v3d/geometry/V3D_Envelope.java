@@ -98,8 +98,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @param oom The Order of Magnitude used in the calculation of the
-     * magnitude of vectors.
+     * The Order of Magnitude used in the calculation of the magnitude of vectors.
      */
     private final int oom;
 
@@ -204,9 +203,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
      * @param points The points used to form the envelop.
-     * @param oom The Order of Magnitude used in the calculation of the
-     * magnitude of the vectors {@link #pq}, {@link #qr}, {@link #n}.
      */
     public V3D_Envelope(int oom, V3D_Point... points) {
         this.oom = oom;
@@ -354,6 +352,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param x The x-coordinate of a point.
      * @param y The y-coordinate of a point.
      * @param z The z-coordinate of a point.
+     * @param oom The Order of Magnitude for the precision.
      */
     public V3D_Envelope(Math_BigRational x, Math_BigRational y, Math_BigRational z, int oom) {
         this(oom, new V3D_Point(x, y, z));
@@ -366,6 +365,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param yMax What {@link yMax} is set to.
      * @param zMin What {@link zMin} is set to.
      * @param zMax What {@link zMax} is set to.
+     * @param oom The Order of Magnitude for the precision.
      */
     public V3D_Envelope(Math_BigRational xMin, Math_BigRational xMax, Math_BigRational yMin,
             Math_BigRational yMax, Math_BigRational zMin, Math_BigRational zMax, int oom) {
@@ -695,7 +695,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return either a point or line segment which is the intersection of
      * {@code li} and {@code this}.
      * @param flag To distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      */
     @Override
@@ -1043,8 +1043,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * Test if {@code this} is intersected by {@code li}.
      *
      * @param li The line to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
      * @param flag To distinguish this method from
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return {@code true} iff {@code this} is intersected by {@code li}.
      */
@@ -1108,7 +1109,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * {@link #b}, {@link #l}, {@link #r}, {@link #f}. Depending on the values
      * and the oom given. The distance may appear to be zero when it is in fact
      * greater than zero. To test if the distance is zero use
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Point)}.
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
      *
      * @param p The point to find the distance to/from.
      * @param oom The Order of Magnitude for the result precision.
@@ -1620,8 +1621,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * Get the distance between this and {@code p}.
          *
          * @param p A point.
-         * @param oom The Order of Magnitude of the precision for the initial
-         * root calculation.
          * @return The distance from {@code p} to this.
          */
         public Math_BigRationalSqrt getDistanceExact(Point p) {
@@ -1711,6 +1710,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
         /**
          * @param l The line to test this with to see if they are parallel.
+         * @param oom The Order of Magnitude for the precision.
          * @return {@code true} If this and {@code l} are parallel.
          */
         public boolean isParallel(Line l, int oom) {
@@ -1719,6 +1719,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
         /**
          * @param pt A point to test for intersection.
+         * @param oom The Order of Magnitude for the precision.
          * @return {@code true} if {@code pt} is on {@code this}.
          */
         public boolean isIntersectedBy(Point pt, int oom) {
@@ -1729,30 +1730,33 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         }
 
         /**
-     * @return {@code true} if {@code this} and {@code l} intersect and false if 
-     * they may intersect, but more computation is needed.
-     */
-    protected boolean isIntersectedBy(Line l, int oom) {
-        if (V3D_Geometrics.isCollinear(oom, this, this.p, this.q, l.p)) {
-            return true;
-        } else {
-            Plane p = new Plane(this.p, this.q, l.p, oom);
-            if (V3D_Geometrics.isCoplanar(oom, p, l.q)) {
+         * @param l The line.
+         * @param oom The Order of Magnitude for the precision.
+         * @return {@code true} if {@code this} and {@code l} intersect and
+         * false if they may intersect, but more computation is needed.
+         */
+        protected boolean isIntersectedBy(Line l, int oom) {
+            if (V3D_Geometrics.isCollinear(oom, this, this.p, this.q, l.p)) {
                 return true;
+            } else {
+                Plane p = new Plane(this.p, this.q, l.p, oom);
+                if (V3D_Geometrics.isCoplanar(oom, p, l.q)) {
+                    return true;
+                }
+            }
+            if (V3D_Geometrics.isCollinear(oom, this, this.p, this.q, l.q)) {
+                return true;
+            } else {
+                Plane p = new Plane(this.p, this.q, l.q, oom);
+                return V3D_Geometrics.isCoplanar(oom, p, l.p);
             }
         }
-        if (V3D_Geometrics.isCollinear(oom, this, this.p, this.q, l.q)) {
-            return true;
-        } else {
-            Plane p = new Plane(this.p, this.q, l.q, oom);
-            return V3D_Geometrics.isCoplanar(oom, p, l.p);
-        }
-    }
 
         /**
          * Get the intersection between two lines.
          *
          * @param l Another line.
+         * @param oom The Order of Magnitude for the precision.
          * @return The intersection between two lines or {@code null}.
          */
         public Geometry getIntersection(Line l, int oom) {
@@ -2245,7 +2249,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
         /**
          * @param pt A point to test for intersection.
-         * @param oomi
+         * @param oom The Order of Magnitude for the precision.
          * @return {@code true} if {@code pt} intersects with {@code this}.
          */
         @Override
@@ -2275,6 +2279,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * line segments do not intersect.
          *
          * @param l The line to get intersection with this.
+         * @param oom The Order of Magnitude for the precision.
          * @return The intersection between {@code this} and {@code l}.
          */
         @Override
@@ -2417,6 +2422,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
         /**
          * @param l The line to test if it is on the plane.
+         * @param oom The Order of Magnitude for the precision.
          * @return {@code true} If {@code pt} is on the plane.
          */
         public boolean isOnPlane(Line l, int oom) {
@@ -2425,6 +2431,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
         /**
          * @param pt The point to test if it is on the plane.
+         * @param oom The Order of Magnitude for the precision.
          * @return {@code true} If {@code pt} is on the plane.
          */
         public boolean isIntersectedBy(Point pt, int oom) {
@@ -2436,6 +2443,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
         /**
          * @param l The line to test for intersection with this.
+         * @param oom The Order of Magnitude for the precision.
          * @return {@code true} If this and {@code l} intersect.
          */
         public boolean isIntersectedBy(Line l, int oom) {
@@ -2451,6 +2459,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
          *
          * @param l The line to intersect with the plane.
+         * @param oom The Order of Magnitude for the precision.
          * @return The intersection of the line and the plane. This is either
          * {@code null} a line or a point.
          */
@@ -2481,7 +2490,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * Get the distance between this and {@code pl}.
          *
          * @param p A point.
-         * @param oom The order of magnitude of the precision.
+         * @param oom The Order of Magnitude for the precision.
          * @return The distance from {@code this} to {@code p}.
          */
         public BigDecimal getDistance(Point p, int oom) {

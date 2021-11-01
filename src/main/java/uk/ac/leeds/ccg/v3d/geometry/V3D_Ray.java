@@ -63,6 +63,7 @@ public class V3D_Ray extends V3D_Line {
      * Create a new instance.
      *
      * @param l What {@code this} is created from.
+     * @param oom The Order of Magnitude for initialising this.
      */
     public V3D_Ray(V3D_Ray l, int oom) {
         super(l, oom);
@@ -73,6 +74,7 @@ public class V3D_Ray extends V3D_Line {
      *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
+     * @param oom The Order of Magnitude for initialising this.
      */
     public V3D_Ray(V3D_Point p, V3D_Point q, int oom) {
         super(p, q, oom);
@@ -82,6 +84,7 @@ public class V3D_Ray extends V3D_Line {
      * Create a new instance.
      *
      * @param l What {@code this} is created from.
+     * @param oom The Order of Magnitude for initialising this.
      */
     public V3D_Ray(V3D_Line l, int oom) {
         super(l, oom);
@@ -91,6 +94,7 @@ public class V3D_Ray extends V3D_Line {
      * Create a new instance.
      *
      * @param l What {@code this} is created from.
+     * @param oom The Order of Magnitude for initialising this.
      */
     public V3D_Ray(V3D_Envelope.LineSegment l, int oom) {
         this(new V3D_Point(l.p), new V3D_Point(l.q), oom);
@@ -112,6 +116,7 @@ public class V3D_Ray extends V3D_Line {
 
     /**
      * @param l The line segment to test if it is the same as {@code this}.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_Ray l, int oom) {
@@ -128,6 +133,7 @@ public class V3D_Ray extends V3D_Line {
 
     /**
      * @param v The vector to apply to each coordinate of this.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return a new V3D_Ray which is {@code this} with the {@code v} applied.
      */
     @Override
@@ -137,8 +143,9 @@ public class V3D_Ray extends V3D_Line {
 
     /**
      * @param pt A point to test for intersection.
-     * @param oom The Order of Magnitude for the precision.
-     * @param flag To distinguish this from {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param flag To distinguish this from
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
      * @return {@code true} if {@code this} is intersected by {@code p}.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, boolean flag) {
@@ -165,75 +172,76 @@ public class V3D_Ray extends V3D_Line {
         return false;
     }
 
-    /**
-     * This compares the location of {@code pt} to the location of {@link #p}
-     * and the direction of {@link #v}. If the {@code pt} is on a side of
-     * {@link #p} and {@link #v} is moving away in any of the axial directions,
-     * then there is no chance of an intersection.
-     *
-     * @param pt The point to test for a possible intersection.
-     * @return {@code false} if there is no chance of intersection, and
-     * {@code true} otherwise.
-     */
-    private boolean isPossibleIntersection(V3D_Point pt, int oom) {
-        int ptxcpx = pt.x.compareTo(p.x);
-        int vdxc0 = v.getDX(oom).compareTo(Math_BigRational.ZERO);
-        switch (ptxcpx) {
-            case -1:
-                if (vdxc0 == -1) {
-                    return getptycpy(pt, oom);
-                } else {
-                    return false;
-                }
-            case 0:
-                return getptycpy(pt, oom);
-            default:
-                if (vdxc0 == 1) {
-                    return getptycpy(pt, oom);
-                } else {
-                    return false;
-                }
-        }
-    }
-
-    private boolean getptycpy(V3D_Point pt, int oom) {
-        int ptycpy = pt.y.compareTo(p.y);
-        int vdyc0 = v.getDY(oom).compareTo(Math_BigRational.ZERO);
-        switch (ptycpy) {
-            case -1:
-                if (vdyc0 == -1) {
-                    return getptzcpz(pt, oom);
-                } else {
-                    return false;
-                }
-            case 0:
-                return getptzcpz(pt, oom);
-            default:
-                if (vdyc0 == 1) {
-                    return getptzcpz(pt, oom);
-                } else {
-                    return false;
-                }
-        }
-    }
-
-    private boolean getptzcpz(V3D_Point pt, int oom) {
-        int ptzcpz = pt.z.compareTo(p.z);
-        int vdzc0 = v.getDZ(oom).compareTo(Math_BigRational.ZERO);
-        switch (ptzcpz) {
-            case -1:
-                return vdzc0 == -1;
-            case 0:
-                return true;
-            default:
-                return vdzc0 == 1;
-        }
-    }
-
+//    /**
+//     * This compares the location of {@code pt} to the location of {@link #p}
+//     * and the direction of {@link #v}. If the {@code pt} is on a side of
+//     * {@link #p} and {@link #v} is moving away in any of the axial directions,
+//     * then there is no chance of an intersection.
+//     *
+//     * @param pt The point to test for a possible intersection.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @return {@code false} if there is no chance of intersection, and
+//     * {@code true} otherwise.
+//     */
+//    private boolean isPossibleIntersection(V3D_Point pt, int oom) {
+//        int ptxcpx = pt.x.compareTo(p.x);
+//        int vdxc0 = v.getDX(oom).compareTo(Math_BigRational.ZERO);
+//        switch (ptxcpx) {
+//            case -1:
+//                if (vdxc0 == -1) {
+//                    return getptycpy(pt, oom);
+//                } else {
+//                    return false;
+//                }
+//            case 0:
+//                return getptycpy(pt, oom);
+//            default:
+//                if (vdxc0 == 1) {
+//                    return getptycpy(pt, oom);
+//                } else {
+//                    return false;
+//                }
+//        }
+//    }
+//
+//    private boolean getptycpy(V3D_Point pt, int oom) {
+//        int ptycpy = pt.y.compareTo(p.y);
+//        int vdyc0 = v.getDY(oom).compareTo(Math_BigRational.ZERO);
+//        switch (ptycpy) {
+//            case -1:
+//                if (vdyc0 == -1) {
+//                    return getptzcpz(pt, oom);
+//                } else {
+//                    return false;
+//                }
+//            case 0:
+//                return getptzcpz(pt, oom);
+//            default:
+//                if (vdyc0 == 1) {
+//                    return getptzcpz(pt, oom);
+//                } else {
+//                    return false;
+//                }
+//        }
+//    }
+//
+//    private boolean getptzcpz(V3D_Point pt, int oom) {
+//        int ptzcpz = pt.z.compareTo(p.z);
+//        int vdzc0 = v.getDZ(oom).compareTo(Math_BigRational.ZERO);
+//        switch (ptzcpz) {
+//            case -1:
+//                return vdzc0 == -1;
+//            case 0:
+//                return true;
+//            default:
+//                return vdzc0 == 1;
+//        }
+//    }
     /**
      * @param r A ray to test if it intersects with {@code this}.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @param flag Used to distinguish this method from
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return {@code true} iff {@code r} intersects with {@code this}.
      */
@@ -270,8 +278,9 @@ public class V3D_Ray extends V3D_Line {
 
     /**
      * @param l A line segment to test if it intersects with {@code this}.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @param flag Used to distinguish this method from
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return {@code true} iff {@code r} intersects with {@code this}.
      */
@@ -286,6 +295,7 @@ public class V3D_Ray extends V3D_Line {
 
     /**
      * @param l A line to test for intersection within the specified tolerance.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return true if p is within t of this given scale.
      */
     @Override
@@ -309,6 +319,7 @@ public class V3D_Ray extends V3D_Line {
      * intersection.
      *
      * @param l The line to get the geometrical intersection with this.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The intersection between {@code this} and {@code l}.
      */
     @Override
@@ -344,8 +355,9 @@ public class V3D_Ray extends V3D_Line {
      * returned if {@code this} and {@code r} do not intersect.
      *
      * @param r The line to get intersection with this.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @param flag To distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return The intersection between {@code this} and {@code r}.
      */
@@ -401,8 +413,9 @@ public class V3D_Ray extends V3D_Line {
      * returned if {@code this} and {@code l} do not intersect.
      *
      * @param l The line to get intersection with this.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @param flag To distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return The intersection between {@code this} and {@code l}.
      */
@@ -412,6 +425,7 @@ public class V3D_Ray extends V3D_Line {
 
     /**
      * @param pt A point for which the shortest line to this is returned.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The line having the shortest distance between {@code pt} and
      * {@code this}.
      */
@@ -468,17 +482,17 @@ public class V3D_Ray extends V3D_Line {
             }
         }
     }
-    
+
     /**
      * @param pt The point projected onto this.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return A point on {@code this} which is the shortest distance from
      * {@code pt}.
      */
     @Override
     public V3D_Point getPointOfIntersection(V3D_Point pt, int oom) {
-        
         V3D_Point poi = super.getPointOfIntersection(pt, oom);
-        if(this.isIntersectedBy(poi, oom)) {
+        if (this.isIntersectedBy(poi, oom)) {
             return poi;
         } else {
             return p;
@@ -508,8 +522,7 @@ public class V3D_Ray extends V3D_Line {
      *
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
-     *
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The minimum distance between this and {@code p}.
      */
     @Override
@@ -534,7 +547,7 @@ public class V3D_Ray extends V3D_Line {
      * they are parallel, then the distance between them does not change.
      *
      * @param r The line segment to return the distance from.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The distance from {@code this} to {@code r} at the {@code oom}
      * precision.
      */
@@ -554,29 +567,29 @@ public class V3D_Ray extends V3D_Line {
             if (g instanceof V3D_Point) {
                 return BigDecimal.ZERO;
             } else {
-            V3D_LineSegment tlrp = (V3D_LineSegment) g;
-            V3D_Line rl = new V3D_Line(r, oom);
-            //BigDecimal rldt = rl.getDistance(this, oom);
-            V3D_Geometry g2 = rl.getLineOfIntersection(p, oom);
-            if (g2 instanceof V3D_Point) {
-                return BigDecimal.ZERO;
-            } else {
-            V3D_LineSegment rltp = (V3D_LineSegment) g2;
-            if (isIntersectedBy(tlrp.q, oom)) {
-                BigDecimal tlrpl = tlrp.getLength().toBigDecimal(oom);
-                if (r.isIntersectedBy(rltp.q, oom)) {
-                    return tlrpl.min(rltp.getLength().toBigDecimal(oom));
+                V3D_LineSegment tlrp = (V3D_LineSegment) g;
+                V3D_Line rl = new V3D_Line(r, oom);
+                //BigDecimal rldt = rl.getDistance(this, oom);
+                V3D_Geometry g2 = rl.getLineOfIntersection(p, oom);
+                if (g2 instanceof V3D_Point) {
+                    return BigDecimal.ZERO;
                 } else {
-                    return tlrpl;
+                    V3D_LineSegment rltp = (V3D_LineSegment) g2;
+                    if (isIntersectedBy(tlrp.q, oom)) {
+                        BigDecimal tlrpl = tlrp.getLength().toBigDecimal(oom);
+                        if (r.isIntersectedBy(rltp.q, oom)) {
+                            return tlrpl.min(rltp.getLength().toBigDecimal(oom));
+                        } else {
+                            return tlrpl;
+                        }
+                    } else {
+                        if (r.isIntersectedBy(rltp.q, oom)) {
+                            return rltp.getLength().toBigDecimal(oom);
+                        } else {
+                            return p.getDistance(r.p, oom);
+                        }
+                    }
                 }
-            } else {
-                if (r.isIntersectedBy(rltp.q, oom)) {
-                    return rltp.getLength().toBigDecimal(oom);
-                } else {
-                    return p.getDistance(r.p, oom);
-                }
-            }
-            }
             }
         }
     }

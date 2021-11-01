@@ -253,6 +253,7 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The value of {@link #dx} as a Math_BigRational
      */
     public final Math_BigRational getDX(int oom) {
@@ -260,6 +261,7 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The value of {@link #dy} as a Math_BigRational
      */
     public final Math_BigRational getDY(int oom) {
@@ -267,6 +269,7 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The value of {@link #dz} as a Math_BigRational
      */
     public final Math_BigRational getDZ(int oom) {
@@ -275,8 +278,8 @@ public class V3D_Vector implements Serializable {
 
     /**
      * @param s The scalar value to multiply this by.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return Scaled vector.
-     * @param oom Used for initial square root calculations for magnitude.
      */
     public V3D_Vector multiply(Math_BigRational s, int oom) {
         return new V3D_Vector(dx.multiply(s, oom), dy.multiply(s, oom), 
@@ -285,6 +288,7 @@ public class V3D_Vector implements Serializable {
 
     /**
      * @param s The scalar value to multiply this by.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return Scaled vector.
      */
     public V3D_Vector divide(Math_BigRational s, int oom) {
@@ -293,7 +297,10 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * Adding or applying.
+     * 
      * @param v The vector to add.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return A new vector which is {@code this} add {@code v}.
      */
     public V3D_Vector add(V3D_Vector v, int oom) {
@@ -302,6 +309,7 @@ public class V3D_Vector implements Serializable {
 
     /**
      * @param v The vector to subtract.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return A new vector which is {@code this} minus {@code v}.
      */
     public V3D_Vector subtract(V3D_Vector v, int oom) {
@@ -323,6 +331,7 @@ public class V3D_Vector implements Serializable {
      * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
      *
      * @param v V3D_Vector
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return dot product
      */
     public Math_BigRational getDotProduct(V3D_Vector v, int oom) {
@@ -362,7 +371,8 @@ public class V3D_Vector implements Serializable {
     /**
      * Test if this is orthogonal to {@code v}.
      *
-     * @param v The
+     * @param v The vector to test for orthogonality with.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isOrthogonal(V3D_Vector v, int oom) {
@@ -390,6 +400,7 @@ public class V3D_Vector implements Serializable {
      * Test if {@code v} is a scalar multiple of {@code this}.
      *
      * @param v The vector to test if it is a scalar multiple of {@code this}.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
     public boolean isScalarMultiple(V3D_Vector v, int oom) {
@@ -502,6 +513,7 @@ public class V3D_Vector implements Serializable {
      * resulting vector is in the direction given by the right hand rule.
      *
      * @param v V3D_Vector
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return V3D_Vector
      */
     public V3D_Vector getCrossProduct(V3D_Vector v, int oom) {

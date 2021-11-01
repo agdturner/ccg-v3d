@@ -74,6 +74,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * Create a new instance.
      *
      * @param l What {@code this} is created from.
+     * @param oom The Order of Magnitude for initialising {@link #v}.
      */
     public V3D_LineSegment(V3D_LineSegment l, int oom) {
         super(l, oom);
@@ -85,6 +86,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
+     * @param oom The Order of Magnitude for initialising {@link #v}.
      */
     public V3D_LineSegment(V3D_Point p, V3D_Point q, int oom) {
         super(p, q, oom);
@@ -95,6 +97,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * Create a new instance.
      *
      * @param l What {@code this} is created from.
+     * @param oom The Order of Magnitude for initialising {@link #v}.
      */
     public V3D_LineSegment(V3D_Line l, int oom) {
         super(l, oom);
@@ -105,6 +108,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * Create a new instance.
      *
      * @param l What {@code this} is created from.
+     * @param oom The Order of Magnitude for initialising {@link #v}.
      */
     public V3D_LineSegment(V3D_Envelope.LineSegment l, int oom) {
         this(new V3D_Point(l.p), new V3D_Point(l.q), oom);
@@ -168,6 +172,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     /**
      * @param v The vector to apply to each coordinate of {@code this}.
+     * @param oom The Order of Magnitude for the calculation.
      * @return a new V3D_LineSegment which is {@code this} with the {@code v}
      * applied.
      */
@@ -192,6 +197,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
+     * @param oom The Order of Magnitude for the initialisation.
      * @return {@code new V3D_Envelope(start, end)}
      */
     @Override
@@ -204,6 +210,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     /**
      * @param p A point to test for intersection.
+     * @param oom The Order of Magnitude for the calculation.
      * @return {@code true} if {@code this} is intersected by {@code p}.
      */
     @Override
@@ -230,8 +237,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     /**
      * @param l A line segment to indicate intersection with this.
+     * @param oom The Order of Magnitude for the calculation.
      * @param flag Used to distinguish this method from
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return {@code true} iff {@code l} intersects with {@code this}.
      */
@@ -246,6 +254,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     /**
      * @param l A line to test for intersection within the specified tolerance.
+     * @param oom The Order of Magnitude for the calculation.
      * @return true if p is within t of this given scale.
      */
     @Override
@@ -269,6 +278,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * segments do not intersect.
      *
      * @param l The line to get intersection with this.
+     * @param oom The Order of Magnitude for the calculation.
      * @return The intersection between {@code this} and {@code l}.
      */
     @Override
@@ -307,8 +317,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * segments do not intersect.
      *
      * @param l The line to get intersection with this.
+     * @param oom The Order of Magnitude for the calculation.
      * @param flag To distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line)}. The
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return The intersection between {@code this} and {@code l}.
      */
@@ -440,7 +451,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      *
      * @param p A point for which the minimum distance from {@code this} is
      * returned.
-     *
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The minimum distance between this and {@code p}.
      */
@@ -458,12 +468,8 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
-     * An implementation of this exists:
-     * https://www.geometrictools.com/Documentation/DistanceLine3Line3.pdf
-     * https://www.geometrictools.com/GTE/Mathematics/DistSegmentSegment.h
-     *
      * @param l The line segment to return the distance from.
-     * @param oom The OOM for the precision of the result.
+     * @param oom The Order of Magnitude for the calculation.
      * @return The distance from {@code this} to {@code l} at the {@code oom}
      * precision.
      */
@@ -486,7 +492,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     /**
      * Calculate and return the midpoint between p and q.
      *
-     * @param oom The OOM for the precision of the result.
+     * @param oom The Order of Magnitude for the calculation.
      * @return the midpoint between p and q to the OOM precision.
      */
     public V3D_Point getMidpoint(int oom) {
