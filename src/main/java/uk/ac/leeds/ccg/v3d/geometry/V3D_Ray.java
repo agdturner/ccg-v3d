@@ -558,7 +558,7 @@ public class V3D_Ray extends V3D_Line {
             if (g instanceof V3D_Point) {
                 return BigDecimal.ZERO;
             } else {
-                return ((V3D_LineSegment) g).getLength().toBigDecimal(oom);
+                return ((V3D_LineSegment) g).getLength(oom).toBigDecimal(oom);
             }
         } else {
             V3D_Line tl = new V3D_Line(this, oom);
@@ -576,15 +576,15 @@ public class V3D_Ray extends V3D_Line {
                 } else {
                     V3D_LineSegment rltp = (V3D_LineSegment) g2;
                     if (isIntersectedBy(tlrp.q, oom)) {
-                        BigDecimal tlrpl = tlrp.getLength().toBigDecimal(oom);
+                        BigDecimal tlrpl = tlrp.getLength(oom).toBigDecimal(oom);
                         if (r.isIntersectedBy(rltp.q, oom)) {
-                            return tlrpl.min(rltp.getLength().toBigDecimal(oom));
+                            return tlrpl.min(rltp.getLength(oom).toBigDecimal(oom));
                         } else {
                             return tlrpl;
                         }
                     } else {
                         if (r.isIntersectedBy(rltp.q, oom)) {
-                            return rltp.getLength().toBigDecimal(oom);
+                            return rltp.getLength(oom).toBigDecimal(oom);
                         } else {
                             return p.getDistance(r.p, oom);
                         }

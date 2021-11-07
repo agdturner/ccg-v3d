@@ -39,7 +39,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
 
     private static final long serialVersionUID = 1L;
 
-    public V3D_EnvelopeTest() {}
+    public V3D_EnvelopeTest() {
+    }
 
     @BeforeAll
     public static void setUpClass() {
@@ -223,7 +224,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         o = new V3D_Envelope(oom, P1N1P1, P0P0P0);
         assertFalse(instance.equals(o));
     }
-    
+
     /**
      * Test of equals method, of class V3D_Envelope.
      */
@@ -265,7 +266,9 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("hashCode");
         V3D_Envelope e = new V3D_Envelope(0, P0P0P0);
         int result = e.hashCode();
-        int expResult = 1299868383;
+        int expResult = 1962134877;
+        //int expResult = 1299868383;
+        System.out.println(result);
         assertTrue(result == expResult);
     }
 
@@ -457,80 +460,80 @@ public class V3D_EnvelopeTest extends V3D_Test {
     }
 
     /**
-     * Test of getxMin method, of class V3D_Envelope.
+     * Test of getXMin method, of class V3D_Envelope.
      */
     @Test
-    public void testGetxMin() {
+    public void testGetXMin() {
         int oom = -1;
         System.out.println("getxMin");
         V3D_Envelope instance = new V3D_Envelope(oom, P0N1N1, P0N1P0, N2N2N2);
         Math_BigRational expResult = N2;
-        Math_BigRational result = instance.getxMin();
+        Math_BigRational result = instance.getXMin(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
-     * Test of getxMax method, of class V3D_Envelope.
+     * Test of getXMax method, of class V3D_Envelope.
      */
     @Test
-    public void testGetxMax() {
+    public void testGetXMax() {
         int oom = -1;
         System.out.println("getxMax");
         V3D_Envelope instance = new V3D_Envelope(oom, P0N1N1, P0N1P0, N2N2N2);
         Math_BigRational expResult = P0;
-        Math_BigRational result = instance.getxMax();
+        Math_BigRational result = instance.getXMax(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
-     * Test of getyMin method, of class V3D_Envelope.
+     * Test of getYMin method, of class V3D_Envelope.
      */
     @Test
-    public void testGetyMin() {
-         int oom = -1;
-       System.out.println("getyMin");
+    public void testGetYMin() {
+        int oom = -1;
+        System.out.println("getyMin");
         V3D_Envelope instance = new V3D_Envelope(oom, P0N1N1, P0N1P0, N2N2N2);
         Math_BigRational expResult = N2;
-        Math_BigRational result = instance.getyMin();
+        Math_BigRational result = instance.getYMin(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
-     * Test of getyMax method, of class V3D_Envelope.
+     * Test of getYMax method, of class V3D_Envelope.
      */
     @Test
-    public void testGetyMax() {
-           int oom = -1;
-     System.out.println("getyMax");
+    public void testGetYMax() {
+        int oom = -1;
+        System.out.println("getyMax");
         V3D_Envelope instance = new V3D_Envelope(oom, P0N1N1, P0N1P0, N2N2N2);
         Math_BigRational expResult = N1;
-        Math_BigRational result = instance.getyMax();
+        Math_BigRational result = instance.getYMax(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
-     * Test of getzMin method, of class V3D_Envelope.
+     * Test of getZMin method, of class V3D_Envelope.
      */
     @Test
-    public void testGetzMin() {
-          int oom = -1;
-      System.out.println("getzMin");
+    public void testGetZMin() {
+        int oom = -1;
+        System.out.println("getzMin");
         V3D_Envelope instance = new V3D_Envelope(oom, P0N1N1, P0N1P0, N2N2N2);
         Math_BigRational expResult = N2;
-        Math_BigRational result = instance.getzMin();
+        Math_BigRational result = instance.getZMin(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
-     * Test of getzMax method, of class V3D_Envelope.
+     * Test of getZMax method, of class V3D_Envelope.
      */
     @Test
-    public void testGetzMax() {
-         int oom = -1;
-       System.out.println("getzMax");
+    public void testGetZMax() {
+        int oom = -1;
+        System.out.println("getzMax");
         V3D_Envelope instance = new V3D_Envelope(oom, P0N1N1, P0N1P0, N2N2N2);
         Math_BigRational expResult = P0;
-        Math_BigRational result = instance.getzMax();
+        Math_BigRational result = instance.getZMax(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -539,8 +542,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
      */
     @Test
     public void testIsIntersectedBy_V3D_Line() {
-         int oom = -1;
-       System.out.println("isIntersectedBy");
+        int oom = -1;
+        System.out.println("isIntersectedBy");
         V3D_Line li = new V3D_Line(P0P0P0, P0P0P1, oom);
         V3D_Envelope instance = new V3D_Envelope(oom, N1N1N1, P1P1P1);
         assertTrue(instance.isIntersectedBy(li, oom));
@@ -570,8 +573,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
      */
     @Test
     public void testIsIntersectedBy_V3D_LineSegment_boolean() {
-           int oom = -1;
-     System.out.println("isIntersectedBy");
+        int oom = -1;
+        System.out.println("isIntersectedBy");
         V3D_LineSegment li = new V3D_LineSegment(N2N2N2, P0P0P0, oom);
         V3D_Envelope instance = new V3D_Envelope(oom, N1N1N1, P1P1P1);
         assertTrue(instance.isIntersectedBy(li, oom));
@@ -610,8 +613,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
      */
     @Test
     public void testIsEnvelopeIntersectedBy() {
-           int oom = -1;
-     System.out.println("isEnvelopeIntersectedBy");
+        int oom = -1;
+        System.out.println("isEnvelopeIntersectedBy");
         V3D_Line l = new V3D_Line(P0P0P0, P1P0P0, oom);
         V3D_Envelope instance = new V3D_Envelope(oom, N1N1N1, P1P1P1);
         assertTrue(instance.isEnvelopeIntersectedBy(l, oom));
@@ -626,19 +629,19 @@ public class V3D_EnvelopeTest extends V3D_Test {
      */
     @Test
     public void testApply() {
-            int oom = -1;
-    System.out.println("apply");
+        System.out.println("apply");
+        int oom = -1;
         V3D_Vector v = new V3D_Vector(P1P1P1, oom);
         V3D_Envelope instance = new V3D_Envelope(oom, P0P0P0, P1P1P1);
         V3D_Envelope expResult = new V3D_Envelope(oom, P1P1P1, P2P2P2);
         V3D_Envelope result = instance.apply(v, oom);
-        assertEquals(expResult, result);
+        assertTrue(expResult.equals(result));
         // Test 2
         v = new V3D_Vector(N1N1N1, oom);
         instance = new V3D_Envelope(oom, P0P0P0, P1P1P1);
         expResult = new V3D_Envelope(oom, N1N1N1, P0P0P0);
         result = instance.apply(v, oom);
-        assertEquals(expResult, result);
+        assertTrue(expResult.equals(result));
     }
 
     /**
@@ -728,6 +731,5 @@ public class V3D_EnvelopeTest extends V3D_Test {
         result = instance.getDistance(P0P0P2, oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
-
 
 }

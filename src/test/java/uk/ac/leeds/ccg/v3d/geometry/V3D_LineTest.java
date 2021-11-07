@@ -65,14 +65,33 @@ public class V3D_LineTest extends V3D_Test {
         System.out.println("toString");
         int oom = -1;
         V3D_Line instance = new V3D_Line(P0P0P0, P1P0P0, oom);
-        String expResult = "V3D_Line("
-                + "p=V3D_Point(x=0, y=0, z=0), q=V3D_Point(x=1, y=0, z=0), "
+        String expResult = "V3D_Line(p=V3D_Point(pos=V3D_Vector("
+                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-1)), "
+                + "offset=V3D_Vector("
+                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0))), "
+                + "q=V3D_Point(pos=V3D_Vector("
+                + "dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
+                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-1)), "
+                + "offset=V3D_Vector("
+                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0))), "
                 + "v=V3D_Vector("
                 + "dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
                 + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
                 + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
                 + "m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-1)))";
         String result = instance.toString();
+        System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
     }
 
@@ -102,7 +121,9 @@ public class V3D_LineTest extends V3D_Test {
         System.out.println("hashCode");
         V3D_Line e = V3D_Environment.xAxis;
         int result = e.hashCode();
-        int expResult = 9644914;
+        int expResult = 121834612;
+        //int expResult = 9644914;
+        //System.out.println(result);
         assertTrue(result == expResult);
     }
 
@@ -495,6 +516,7 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testGetAsMatrix() {
         System.out.println("getAsMatrix");
+        int oom = -1;
         V3D_Line instance = V3D_Environment.xAxis;
         Math_BigRational[][] m = new Math_BigRational[2][3];
         m[0][0] = Math_BigRational.ZERO;
@@ -504,7 +526,7 @@ public class V3D_LineTest extends V3D_Test {
         m[1][1] = Math_BigRational.ZERO;
         m[1][2] = Math_BigRational.ZERO;
         Math_Matrix_BR expResult = new Math_Matrix_BR(m);
-        Math_Matrix_BR result = instance.getAsMatrix();
+        Math_Matrix_BR result = instance.getAsMatrix(oom);
         assertTrue(expResult.equals(result));
     }
 

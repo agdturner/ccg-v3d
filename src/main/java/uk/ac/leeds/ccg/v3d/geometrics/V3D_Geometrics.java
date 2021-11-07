@@ -239,7 +239,7 @@ public class V3D_Geometrics {
         V3D_Line l = getLine(points);
         for (V3D_Point p : points) {
             if (!isCollinear(oom, l, p)) {
-                return new V3D_Plane(l.p, l.q, p, oom);
+                return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
             }
         }
         return null;
@@ -259,7 +259,7 @@ public class V3D_Geometrics {
         }
         for (V3D_Point p : points) {
             if (!isCollinear(oom, l, p)) {
-                return new V3D_Plane(l.p, l.q, p, oom);
+                return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
             }
         }
         return null;

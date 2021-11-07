@@ -67,14 +67,33 @@ public class V3D_LineSegmentTest extends V3D_Test {
         V3D_Point start = new V3D_Point(P0, P0, P0);
         V3D_Point end = new V3D_Point(P1, P1, P1);
         V3D_LineSegment instance = new V3D_LineSegment(start, end, oom);
-        String expResult = "V3D_LineSegment(p=V3D_Point(x=0, y=0, z=0), "
-                + "q=V3D_Point(x=1, y=1, z=1), "
+        String expResult = "V3D_LineSegment(p=V3D_Point(pos=V3D_Vector("
+                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-1)), "
+                + "offset=V3D_Vector("
+                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0))), "
+                + "q=V3D_Point(pos=V3D_Vector("
+                + "dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
+                + "dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
+                + "dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
+                + "m=Math_BigRationalSqrt(x=3, sqrtxapprox=1.7, oom=-1)), "
+                + "offset=V3D_Vector("
+                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
+                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0))), "
                 + "v=V3D_Vector("
                 + "dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
                 + "dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
                 + "dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
                 + "m=Math_BigRationalSqrt(x=3, sqrtxapprox=1.7, oom=-1)))";
         String result = instance.toString();
+        //System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
     }
 
@@ -87,7 +106,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         int oom = -2;
         V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P1P0, oom);
         Math_BigRationalSqrt expResult = new Math_BigRationalSqrt(P2, oom, false);
-        Math_BigRationalSqrt result = instance.getLength();
+        Math_BigRationalSqrt result = instance.getLength(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -371,13 +390,13 @@ public class V3D_LineSegmentTest extends V3D_Test {
         oom = -1;
         instance = new V3D_LineSegment(P0P0P0, P1P0P0, oom);
         expResult = Math_BigRational.ONE;
-        result = instance.getLength2();
+        result = instance.getLength2(oom);
         assertTrue(expResult.equals(result));
         // Test 2
         oom = -1;
         instance = new V3D_LineSegment(P0P0P0, P2P0P0, oom);
         expResult = Math_BigRational.valueOf(4);
-        result = instance.getLength2();
+        result = instance.getLength2(oom);
         assertTrue(expResult.equals(result));
     }
 
@@ -395,13 +414,13 @@ public class V3D_LineSegmentTest extends V3D_Test {
         oom = -1;
         instance = new V3D_LineSegment(P0P0P0, P1P0P0, oom);
         expResult = Math_BigRationalSqrt.ONE;
-        result = instance.getLength();
+        result = instance.getLength(oom);
         assertTrue(expResult.equals(result));
         // Test 2
         oom = -1;
         instance = new V3D_LineSegment(P0P0P0, P2P0P0, oom);
         expResult = new Math_BigRationalSqrt(4L, 2L);
-        result = instance.getLength();
+        result = instance.getLength(oom);
         assertTrue(expResult.equals(result));
     }
 

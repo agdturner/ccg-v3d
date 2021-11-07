@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of a point. The "*" denotes a point in 3D in the following
@@ -62,36 +63,37 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     public static final V3D_Point ORIGIN = new V3D_Point(0, 0, 0);
 
     /**
-     * The x coordinate.
+     * The position relative to the {@link #ORIGIN}.
      */
-    public final Math_BigRational x;
-
-    /**
-     * The y coordinate.
-     */
-    public final Math_BigRational y;
-
-    /**
-     * The z coordinate.
-     */
-    public final Math_BigRational z;
+    public final V3D_Vector pos;
 
     /**
      * @param p The point to duplicate
      */
     public V3D_Point(V3D_Point p) {
-        x = p.x;
-        y = p.y;
-        z = p.z;
+        super(new V3D_Vector(p.offset));
+        this.pos = new V3D_Vector(p.pos);
+//        super(V3D_Vector.ZERO);
+//        this.pos = p.pos.add(p.offset, p.pos.getMagnitude().getOom());
+    }
+
+    /**
+     * @param pos What {@link #pos} is set to.
+     * @param offset What {@link #offset} is set to.
+     */
+    public V3D_Point(V3D_Vector pos, V3D_Vector offset) {
+        super(new V3D_Vector(offset));
+        this.pos = new V3D_Vector(pos);
+//        super(V3D_Vector.ZERO);
+//        this.pos = pos.add(offset, pos.getMagnitude().getOom());
     }
 
     /**
      * @param p The point to duplicate
      */
     public V3D_Point(V3D_Envelope.Point p) {
-        x = p.x;
-        y = p.y;
-        z = p.z;
+        super(V3D_Vector.ZERO);
+        this.pos = new V3D_Vector(p.x, p.y, p.z, V3D_Environment.DEFAULT_OOM);
     }
 
     /**
@@ -101,9 +103,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision.
      */
     public V3D_Point(V3D_Vector v, int oom) {
-        x = v.getDX(oom);
-        y = v.getDY(oom);
-        z = v.getDZ(oom);
+        super(V3D_Vector.ZERO);
+        this.pos = new V3D_Vector(v.dx, v.dy, v.dz, v.getMagnitude());
     }
 
     /**
@@ -112,9 +113,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z What {@link #z} is set to.
      */
     public V3D_Point(Math_BigRational x, Math_BigRational y, Math_BigRational z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        super(V3D_Vector.ZERO);
+        this.pos = new V3D_Vector(x, y, z, V3D_Environment.DEFAULT_OOM);
     }
 
     /**
@@ -123,9 +123,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z What {@link #z} is set to.
      */
     public V3D_Point(BigDecimal x, BigDecimal y, BigDecimal z) {
-        this.x = Math_BigRational.valueOf(x);
-        this.y = Math_BigRational.valueOf(y);
-        this.z = Math_BigRational.valueOf(z);
+        this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
+                Math_BigRational.valueOf(z));
     }
 
     /**
@@ -134,9 +133,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z What {@link #z} is set to.
      */
     public V3D_Point(double x, double y, double z) {
-        this.x = Math_BigRational.valueOf(x);
-        this.y = Math_BigRational.valueOf(y);
-        this.z = Math_BigRational.valueOf(z);
+        this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
+                Math_BigRational.valueOf(z));
     }
 
     /**
@@ -145,15 +143,14 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z What {@link #z} is set to.
      */
     public V3D_Point(long x, long y, long z) {
-        this.x = Math_BigRational.valueOf(x);
-        this.y = Math_BigRational.valueOf(y);
-        this.z = Math_BigRational.valueOf(z);
+        this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
+                Math_BigRational.valueOf(z));
     }
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "(x=" + x.toString()
-                + ", y=" + y.toString() + ", z=" + z.toString() + ")";
+        return this.getClass().getSimpleName() + "(pos=" + pos.toString()
+                + ", offset=" + offset.toString() + ")";
     }
 
     @Override
@@ -164,14 +161,24 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 47 * hash + Objects.hashCode(this.pos);
+        hash = 47 * hash + Objects.hashCode(this.offset);
+        return hash;
+    }
+
     /**
      * @param p The point to test if it is the same as {@code this}.
      * @return {@code true} iff {@code p} is the same as {@code this}.
      */
     public boolean equals(V3D_Point p) {
-        if (p.x.compareTo(x) == 0) {
-            if (p.y.compareTo(y) == 0) {
-                if (p.z.compareTo(z) == 0) {
+        int toom = pos.getMagnitude().getOom();
+        int poom = p.pos.getMagnitude().getOom();
+        if (this.getX(toom).compareTo(p.getX(poom)) == 0) {
+            if (this.getY(toom).compareTo(p.getY(poom)) == 0) {
+                if (this.getZ(toom).compareTo(p.getZ(poom)) == 0) {
                     return true;
                 }
             }
@@ -179,13 +186,36 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         return false;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 43 * hash + Objects.hashCode(this.x);
-        hash = 43 * hash + Objects.hashCode(this.y);
-        hash = 43 * hash + Objects.hashCode(this.z);
-        return hash;
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @return The vector - {@code pos.add(offset, oom)}.
+     */
+    public V3D_Vector getVector(int oom) {
+        return pos.add(offset, oom);
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @return The x coordinate position relative to the {@link #ORIGIN}.
+     */
+    public Math_BigRational getX(int oom) {
+        return pos.getDX(oom).add(offset.getDX(oom));
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @return The y coordinate position relative to the {@link #ORIGIN}.
+     */
+    public Math_BigRational getY(int oom) {
+        return pos.getDY(oom).add(offset.getDY(oom));
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @return The z coordinate position relative to the {@link #ORIGIN}.
+     */
+    public Math_BigRational getZ(int oom) {
+        return pos.getDZ(oom).add(offset.getDZ(oom));
     }
 
     /**
@@ -196,32 +226,17 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param v The vector to apply.
-     * @param oom The Order of Magnitude for the precision.
-     * @return a new point.
-     */
-    @Override
-    public V3D_Point apply(V3D_Vector v, int oom) {
-        Math_BigRational dx = x.add(v.getDX(oom));
-        Math_BigRational dy = y.add(v.getDY(oom));
-        Math_BigRational dz = z.add(v.getDZ(oom));
-//        Math_BigRational dx = x.subtract(v.getDX());
-//        Math_BigRational dy = y.subtract(v.getDY());
-//        Math_BigRational dz = z.subtract(v.getDZ());
-        return new V3D_Point(dx, dy, dz);
-    }
-
-    /**
      * Get the distance between this and {@code p}.
      *
+     * @param oom The Order of Magnitude for the precision of the result.
      * @param p A point.
      * @return The distance from {@code p} to this.
      */
-    public Math_BigRationalSqrt getDistance(V3D_Point p) {
+    public Math_BigRationalSqrt getDistance(int oom, V3D_Point p) {
         if (this.equals(p)) {
             return Math_BigRationalSqrt.ZERO;
         }
-        return new Math_BigRationalSqrt(getDistanceSquared(p), -1);
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom), -1);
     }
 
     /**
@@ -236,7 +251,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         if (this.equals(p)) {
             return BigDecimal.ZERO;
         }
-        return new Math_BigRationalSqrt(getDistanceSquared(p), oom)
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom), oom)
                 .getSqrt(oom).toBigDecimal(oom);
     }
 
@@ -246,10 +261,10 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param p A point.
      * @return The distance squared from {@code p} to this.
      */
-    public Math_BigRational getDistanceSquared(V3D_Point p) {
-        Math_BigRational dx = this.x.subtract(p.x);
-        Math_BigRational dy = this.y.subtract(p.y);
-        Math_BigRational dz = this.z.subtract(p.z);
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
+        Math_BigRational dx = this.getX(oom).subtract(p.getX(oom));
+        Math_BigRational dy = this.getY(oom).subtract(p.getY(oom));
+        Math_BigRational dz = this.getZ(oom).subtract(p.getZ(oom));
         return dx.pow(2).add(dy.pow(2)).add(dz.pow(2));
     }
 
@@ -266,9 +281,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
             return BigDecimal.ZERO;
         }
         // Not sure what oom should be in the cross product...
-        V3D_Vector cp = new V3D_Vector(this, l.p, oom).getCrossProduct(
-                new V3D_Vector(this, l.q, oom), oom);
-        return cp.getMagnitude().divide(l.v.getMagnitude(), oom).toBigDecimal(oom);
+        V3D_Vector cp = new V3D_Vector(this, l.getP(oom), oom).getCrossProduct(
+                new V3D_Vector(this, l.getQ(oom), oom), oom);
+        return cp.getMagnitude().divide(l.getV(oom).getMagnitude(), oom).toBigDecimal(oom);
 //        return cp.getMagnitude(oom - 1).divide(l.v.getMagnitude(oom - 1), -oom,
 //                RoundingMode.HALF_UP);
     }
@@ -286,7 +301,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 
     @Override
     public V3D_Envelope getEnvelope(int oom) {
-        return new V3D_Envelope(x, y, z, oom);
+        return new V3D_Envelope(getX(oom), getY(oom), getZ(oom), oom);
     }
 
     @Override
@@ -339,9 +354,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
          *
          */
         int oom2 = oom - 2;
-        Math_BigRational l2 = l.getLength2();
-        Math_BigRational lp2 = l.p.getDistanceSquared(this);
-        Math_BigRational lq2 = l.q.getDistanceSquared(this);
+        Math_BigRational l2 = l.getLength2(oom);
+        Math_BigRational lp2 = l.getP(oom).getDistanceSquared(this, oom2);
+        Math_BigRational lq2 = l.getQ(oom).getDistanceSquared(this, oom2);
         BigDecimal lp = (new V3D_Line(l, oom)).getDistance(this, oom);
         if (lp2.compareTo(l2) == -1 && lq2.compareTo(l2) == -1) {
             return lp;
@@ -356,11 +371,11 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         //Math_BigRational pl2 = (new V3D_Line(l)).getDistanceSquared(this);
         BigDecimal pl = (new V3D_Line(l, oom)).getDistance(this, oom2);
         Math_BigRational pl2 = Math_BigRational.valueOf(pl).pow(2);
-        V3D_Vector u = l.v.getUnitVector(oom - 2);
+        V3D_Vector u = l.getV(oom).getUnitVector(oom - 2);
         V3D_Point pi = new V3D_Point(u.multiply(Math_BigRational.valueOf(
                 new Math_BigRationalSqrt(lp2.subtract(pl2), oom2)
                         .toBigDecimal(oom2)), oom2)
-                .add(new V3D_Vector(l.p, oom2), oom2), oom2);
+                .add(new V3D_Vector(l.getP(oom), oom2), oom2), oom2);
         if (l.isIntersectedBy(pi, oom)) {
             return lp;
         } else {
@@ -398,35 +413,42 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * </tbody>
      * </Table>
      */
-    public int getLocation() {
-        if (x.compareTo(Math_BigRational.ZERO) != -1) {
-            if (y.compareTo(Math_BigRational.ZERO) != -1) {
-                if (z.compareTo(Math_BigRational.ZERO) != -1) {
+    public int getLocation(int oom) {
+        if (getX(oom).compareTo(Math_BigRational.ZERO) != -1) {
+            if (getY(oom).compareTo(Math_BigRational.ZERO) != -1) {
+                if (getZ(oom).compareTo(Math_BigRational.ZERO) != -1) {
                     return 1;
                 } else {
                     return 2;
                 }
             } else {
-                if (z.compareTo(Math_BigRational.ZERO) != -1) {
+                if (getZ(oom).compareTo(Math_BigRational.ZERO) != -1) {
                     return 3;
                 } else {
                     return 4;
                 }
             }
         } else {
-            if (y.compareTo(Math_BigRational.ZERO) != -1) {
-                if (z.compareTo(Math_BigRational.ZERO) != -1) {
+            if (getY(oom).compareTo(Math_BigRational.ZERO) != -1) {
+                if (getZ(oom).compareTo(Math_BigRational.ZERO) != -1) {
                     return 5;
                 } else {
                     return 6;
                 }
             } else {
-                if (z.compareTo(Math_BigRational.ZERO) != -1) {
+                if (getZ(oom).compareTo(Math_BigRational.ZERO) != -1) {
                     return 7;
                 } else {
                     return 8;
                 }
             }
         }
+    }
+
+    @Override
+    public V3D_Point apply(V3D_Vector v, int oom) {
+        V3D_Point r = new V3D_Point(this);
+        r.offset = r.offset.add(v, oom);
+        return r;
     }
 }

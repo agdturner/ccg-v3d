@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain xxx copy of the License at
+ * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -122,6 +122,40 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
         lrp = new V3D_LineSegment(r, p, oom);
     }
 
+    /**
+     * Creates a new triangle.
+     *
+     * @param l A line segment representing one of the three edges of the
+     * triangle.
+     * @param r The other point that defines the triangle.
+     * @param oom The Order of Magnitude for the initialisation.
+     */
+    public V3D_Triangle(V3D_LineSegment l, V3D_Point r, int oom) {
+        super(l.p, l.q, r, oom);
+        lpq = l;
+        lqr = new V3D_LineSegment(q, r, oom);
+        lrp = new V3D_LineSegment(r, p, oom);
+    }
+
+    /**
+     * Creates a new triangle.
+     *
+     * @param lpq A line segment representing the edge of the triangle from p to
+     * q.
+     * @param lqr A line segment representing the edge of the triangle from q to
+     * r.
+     * @param lrp A line segment representing the edge of the triangle from r to
+     * p.
+     * @param oom The Order of Magnitude for the initialisation.
+     */
+    public V3D_Triangle(V3D_LineSegment lpq, V3D_LineSegment lqr,
+            V3D_LineSegment lrp, int oom) {
+        super(lpq.p, lpq.q, lqr.q, oom);
+        this.lpq = lpq;
+        this.lqr = lqr;
+        this.lrp = lrp;
+    }
+
     @Override
     public String toString() {
         return this.getClass().getName() + "(" + lpq.p.toString() + ", "
@@ -143,10 +177,31 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public V3D_Triangle apply(V3D_Vector v, int oom) {
-        return new V3D_Triangle(p.apply(v, oom), q.apply(v, oom), 
+        return new V3D_Triangle(p.apply(v, oom), q.apply(v, oom),
                 r.apply(v, oom), oom);
     }
-
+    
+    /**
+     * @return a copy of {@link #p} 
+     */
+    public V3D_Point getP() {
+        return new V3D_Point(p);
+    }
+    
+    /**
+     * @return a copy of {@link #q} 
+     */
+    public V3D_Point getQ() {
+        return new V3D_Point(q);
+    }
+    
+    /**
+     * @return a copy of {@link #r} 
+     */
+    public V3D_Point getR() {
+        return new V3D_Point(r);
+    }
+    
     /**
      * @param pt The point to intersect with.
      * @param oom The Order of Magnitude for the precision of the calculation.
@@ -162,7 +217,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
         return false;
     }
 
-    private boolean isIntersectedBy0(V3D_Point pt, int oom) {
+    protected boolean isIntersectedBy0(V3D_Point pt, int oom) {
         if (lpq.isIntersectedBy(pt, oom) || lqr.isIntersectedBy(pt, oom)
                 || lrp.isIntersectedBy(pt, oom)) {
             return true;
@@ -254,9 +309,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     @Override
     public BigDecimal getPerimeter(int oom) {
         int oomN1 = oom - 1;
-        return Math_BigDecimal.round(lpq.getLength().toBigDecimal(oomN1)
-                .add(lqr.getLength().toBigDecimal(oomN1))
-                .add(lrp.getLength().toBigDecimal(oomN1)), oom);
+        return Math_BigDecimal.round(lpq.getLength(oom).toBigDecimal(oomN1)
+                .add(lqr.getLength(oom).toBigDecimal(oomN1))
+                .add(lrp.getLength(oom).toBigDecimal(oomN1)), oom);
     }
 
     /**

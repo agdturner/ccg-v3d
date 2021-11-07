@@ -21,7 +21,6 @@ import java.math.MathContext;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -39,17 +38,17 @@ public class V3D_Vector implements Serializable {
     /**
      * The change in x.
      */
-    public final Math_BigRationalSqrt dx;
+    protected final Math_BigRationalSqrt dx;
 
     /**
      * The change in y.
      */
-    public final Math_BigRationalSqrt dy;
+    protected final Math_BigRationalSqrt dy;
 
     /**
      * The change in z.
      */
-    public final Math_BigRationalSqrt dz;
+    protected final Math_BigRationalSqrt dz;
 
     /**
      * The zero vector {@code <0,0,0>} where
@@ -58,11 +57,26 @@ public class V3D_Vector implements Serializable {
     public static final V3D_Vector ZERO = new V3D_Vector(0, 0, 0, 0);
 
     /**
-     * For storing the magnitude squared and getting the magnitude.
+     * The magnitude of the vector.
      */
-    public final Math_BigRationalSqrt m;
-
+    private Math_BigRationalSqrt m;
+    
     /**
+     * Create a new instance.
+     * 
+     * @param v Used to initialise this. A deep copy of all components is made 
+     * so that {@code this} is completely independent of {@code v}.
+     */
+    public V3D_Vector(V3D_Vector v) {
+        this.dx = new Math_BigRationalSqrt(v.dx);
+        this.dy = new Math_BigRationalSqrt(v.dy);
+        this.dz = new Math_BigRationalSqrt(v.dz);
+        this.m = new Math_BigRationalSqrt(v.m);
+    }
+    
+    /**
+     * Create a new instance.
+     * 
      * @param dx What {@link #dx} is set to.
      * @param dy What {@link #dy} is set to.
      * @param dz What {@link #dz} is set to.
@@ -73,7 +87,7 @@ public class V3D_Vector implements Serializable {
         this.dx = dx;
         this.dy = dy;
         this.dz = dz;
-        m = new Math_BigRationalSqrt(dx.getX().abs().add(dy.getX().abs())
+        this.m = new Math_BigRationalSqrt(dx.getX().abs().add(dy.getX().abs())
                 .add(dz.getX().abs()), oom);
     }
 
@@ -92,10 +106,10 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @param dx What {@link #dx} is set to.
-     * @param dy What {@link #dy} is set to.
-     * @param dz What {@link #dz} is set to.
-     * @param oom Used for initial square root calculations for magnitude.
+     * @param dx Used to initialise {@link #dx}.
+     * @param dy Used to initialise {@link #dy}.
+     * @param dz Used to initialise {@link #dz}.
+     * @param oom Used for initial square root calculations for {@link #m}.
      */
     public V3D_Vector(Math_BigRational dx, Math_BigRational dy,
             Math_BigRational dz, int oom) {
@@ -105,7 +119,100 @@ public class V3D_Vector implements Serializable {
         this.dx = new Math_BigRationalSqrt(dx2, dx);
         this.dy = new Math_BigRationalSqrt(dy2, dy);
         this.dz = new Math_BigRationalSqrt(dz2, dz);
-        m = new Math_BigRationalSqrt(dx2.add(dy2.add(dz2)), oom);
+        this.m = new Math_BigRationalSqrt(dx2.add(dy2.add(dz2)), oom);
+    }
+    
+    /**
+     * @param dx What {@link #dx} is set to.
+     * @param dy Used to initialise {@link #dy}.
+     * @param dz Used to initialise {@link #dz}.
+     * @param oom Used for initial square root calculations for magnitude.
+     */
+    public V3D_Vector(Math_BigRationalSqrt dx, Math_BigRational dy,
+            Math_BigRational dz, int oom) {
+        Math_BigRational dy2 = dy.pow(2);
+        Math_BigRational dz2 = dz.pow(2);
+        this.dx = dx;
+        this.dy = new Math_BigRationalSqrt(dy2, dy);
+        this.dz = new Math_BigRationalSqrt(dz2, dz);
+        m = new Math_BigRationalSqrt(dx.getX().add(dy2.add(dz2)), oom);
+    }
+    
+    /**
+     * @param dx Used to initialise {@link #dx}.
+     * @param dy What {@link #dy} is set to.
+     * @param dz Used to initialise {@link #dz}.
+     * @param oom Used for initial square root calculations for magnitude.
+     */
+    public V3D_Vector(Math_BigRational dx, Math_BigRationalSqrt dy,
+            Math_BigRational dz, int oom) {
+        Math_BigRational dx2 = dx.pow(2);
+        Math_BigRational dz2 = dz.pow(2);
+        this.dx = new Math_BigRationalSqrt(dx2, dx);
+        this.dy = dy;
+        this.dz = new Math_BigRationalSqrt(dz2, dz);
+        m = new Math_BigRationalSqrt(dx2.add(dy.getX().add(dz2)), oom);
+    }
+    
+    /**
+     * @param dx Used to initialise {@link #dx}.
+     * @param dy Used to initialise {@link #dy}.
+     * @param dz What {@link #dz} is set to.
+     * @param oom Used for initial square root calculations for magnitude.
+     */
+    public V3D_Vector(Math_BigRational dx, Math_BigRational dy,
+            Math_BigRationalSqrt dz, int oom) {
+        Math_BigRational dx2 = dx.pow(2);
+        Math_BigRational dy2 = dy.pow(2);
+        this.dx = new Math_BigRationalSqrt(dx2, dx);
+        this.dy = new Math_BigRationalSqrt(dy2, dy);
+        this.dz = dz;
+        this.m = new Math_BigRationalSqrt(dx2.add(dy2.add(dz.getX())), oom);
+    }
+    
+    /**
+     * @param dx What {@link #dx} is set to.
+     * @param dy What {@link #dy} is set to.
+     * @param dz Used to initialise {@link #dz}.
+     * @param oom Used for initial square root calculations for magnitude.
+     */
+    public V3D_Vector(Math_BigRationalSqrt dx, Math_BigRationalSqrt dy,
+            Math_BigRational dz, int oom) {
+        Math_BigRational dz2 = dz.pow(2);
+        this.dx = dx;
+        this.dy = dy;
+        this.dz = new Math_BigRationalSqrt(dz2, dz);
+        m = new Math_BigRationalSqrt(dx.getX().add(dy.getX().add(dz2)), oom);
+    }
+    
+    /**
+     * @param dx What {@link #dx} is set to.
+     * @param dy Used to initialise {@link #dy}.
+     * @param dz What {@link #dz} is set to.
+     * @param oom Used for initial square root calculations for magnitude.
+     */
+    public V3D_Vector(Math_BigRationalSqrt dx, Math_BigRational dy,
+            Math_BigRationalSqrt dz, int oom) {
+        Math_BigRational dy2 = dy.pow(2);
+        this.dx = dx;
+        this.dy = new Math_BigRationalSqrt(dy2, dy);
+        this.dz = dz;
+        m = new Math_BigRationalSqrt(dx.getX().add(dy2.add(dz.getX())), oom);
+    }
+    
+    /**
+     * @param dx Used to initialise {@link #dx}.
+     * @param dy What {@link #dy} is set to.
+     * @param dz What {@link #dz} is set to.
+     * @param oom Used for initial square root calculations for magnitude.
+     */
+    public V3D_Vector(Math_BigRational dx, Math_BigRationalSqrt dy,
+            Math_BigRationalSqrt dz, int oom) {
+        Math_BigRational dx2 = dx.pow(2);
+        this.dx = new Math_BigRationalSqrt(dx2, dx);
+        this.dy = dy;
+        this.dz = dz;
+        m = new Math_BigRationalSqrt(dx2.add(dy.getX().add(dz.getX())), oom);
     }
 
     /**
@@ -137,13 +244,14 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * Creates a vector from the origin to {@code p}
-     *
-     * @param p the point to which the vector starting at the origin goes.
+     * @param dx What {@link #dx} is set to.
+     * @param dy What {@link #dy} is set to.
+     * @param dz What {@link #dz} is set to.
      * @param oom Used for initial square root calculations for magnitude.
      */
-    public V3D_Vector(V3D_Point p, int oom) {
-        this(p.x, p.y, p.z, oom);
+    public V3D_Vector(double dx, double dy, double dz, int oom) {
+        this(Math_BigRational.valueOf(dx), Math_BigRational.valueOf(dy),
+                Math_BigRational.valueOf(dz), oom);
     }
 
     /**
@@ -164,7 +272,20 @@ public class V3D_Vector implements Serializable {
      * @param oom Used for initial square root calculations for magnitude.
      */
     public V3D_Vector(V3D_Point p, V3D_Point q, int oom) {
-        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z), oom);
+        this(q.getX(oom).subtract(p.getX(oom)),
+                q.getY(oom).subtract(p.getY(oom)),
+                q.getZ(oom).subtract(p.getZ(oom)),
+                oom);
+    }
+
+    /**
+     * Creates a vector from the Oorigin to {@code p} to {@code q}.
+     *
+     * @param p the point where the vector starts.
+     * @param oom Used for initial square root calculations for magnitude.
+     */
+    public V3D_Vector(V3D_Point p, int oom) {
+        this(p.getVector(oom));
     }
 
     /**
@@ -176,29 +297,6 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector(V3D_Envelope.Point p, V3D_Envelope.Point q, int oom) {
         this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z), oom);
-    }
-
-    /**
-     * Creates a vector from {@code p} to {@code q}.
-     *
-     * @param p the point where the vector starts.
-     * @param q the point where the vector ends.
-     * @param oom Used for initial square root calculations for magnitude.
-     */
-    public V3D_Vector(V3D_Envelope.Point p, V3D_Point q, int oom) {
-        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z), oom);
-    }
-
-    /**
-     * Creates a vector from {@code p} to {@code q}.
-     *
-     * @param p the point where the vector starts.
-     * @param q the point where the vector ends.
-     * @param m the magnitude of the vector.
-     */
-    public V3D_Vector(V3D_Envelope.Point p, V3D_Point q,
-            Math_BigRationalSqrt m) {
-        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z), m);
     }
 
     @Override
@@ -225,7 +323,7 @@ public class V3D_Vector implements Serializable {
         return dx.compareTo(v.dx) == 0 && dy.compareTo(v.dy) == 0
                 && dz.compareTo(v.dz) == 0;
     }
-
+            
     /**
      * Indicates if {@code this} is the reverse of {@code v}.
      *
@@ -254,36 +352,60 @@ public class V3D_Vector implements Serializable {
 
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return The value of {@link #dx} as a Math_BigRational
+     * @return The value of {@link #dx} as a Math_BigRational.
      */
-    public final Math_BigRational getDX(int oom) {
+    public Math_BigRational getDX(int oom) {
         return dx.getSqrt(oom);
     }
 
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return The value of {@link #dy} as a Math_BigRational
+     * @return The value of {@link #dy} as a Math_BigRational..
      */
-    public final Math_BigRational getDY(int oom) {
+    public Math_BigRational getDY(int oom) {
         return dy.getSqrt(oom);
     }
 
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return The value of {@link #dz} as a Math_BigRational
+     * @return The value of {@link #dz} as a Math_BigRational.
      */
-    public final Math_BigRational getDZ(int oom) {
+    public Math_BigRational getDZ(int oom) {
         return dz.getSqrt(oom);
     }
 
+    /**
+     * @return {@link #dx}
+     */
+    public Math_BigRationalSqrt getDX() {
+        return dx;
+    }
+
+    /**
+     * @return {@link #dy}
+     */
+    public Math_BigRationalSqrt getDY() {
+        return dy;
+    }
+
+    /**
+     * @return {@link #dz}
+     */
+    public Math_BigRationalSqrt getDZ() {
+        return dz;
+    }
+    
     /**
      * @param s The scalar value to multiply this by.
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return Scaled vector.
      */
     public V3D_Vector multiply(Math_BigRational s, int oom) {
-        return new V3D_Vector(dx.multiply(s, oom), dy.multiply(s, oom), 
-                dz.multiply(s, oom),                 m.multiply(s, oom));
+        return new V3D_Vector(
+                getDX(oom).multiply(s),
+                getDY(oom).multiply(s),
+                getDZ(oom).multiply(s),
+                oom);
     }
 
     /**
@@ -292,19 +414,26 @@ public class V3D_Vector implements Serializable {
      * @return Scaled vector.
      */
     public V3D_Vector divide(Math_BigRational s, int oom) {
-        return new V3D_Vector(dx.divide(s, oom), dy.divide(s, oom), 
-                dz.divide(s, oom), oom);
+        return new V3D_Vector(
+                getDX(oom).divide(s),
+                getDY(oom).divide(s),
+                getDZ(oom).divide(s),
+                oom);
     }
 
     /**
      * Adding or applying.
-     * 
+     *
      * @param v The vector to add.
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return A new vector which is {@code this} add {@code v}.
      */
     public V3D_Vector add(V3D_Vector v, int oom) {
-        return new V3D_Vector(dx.add(v.dx, oom), dy.add(v.dy, oom), dz.add(v.dz, oom), oom);
+        return new V3D_Vector(
+                getDX(oom).add(v.getDX(oom)),
+                getDY(oom).add(v.getDY(oom)),
+                getDZ(oom).add(v.getDZ(oom)),
+                oom);
     }
 
     /**
@@ -393,6 +522,14 @@ public class V3D_Vector implements Serializable {
      * @return The magnitude of m.
      */
     public Math_BigRationalSqrt getMagnitude() {
+        return m;
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return The magnitude of m.
+     */
+    public Math_BigRationalSqrt getMagnitude(int oom) {
         return m;
     }
 
@@ -534,10 +671,20 @@ public class V3D_Vector implements Serializable {
         if (d == null) {
             d = Math_BigRational.valueOf(m.toBigDecimal(oom));
         }
+//        return new V3D_Vector(
+//                dx.getSqrt(oom).divide(d),
+//                dy.getSqrt(oom).divide(d),
+//                dz.getSqrt(oom).divide(d), oom);
+        /**
+         * Force the magnitude to be equal to one. Behaviour in key cases is
+         * less strange this way even though the magnitude of the coordinate
+         * component vectors may not be exact and there is an error with a
+         * calculated magnitude.
+         */
         return new V3D_Vector(
-                dx.getSqrt().divide(d),
-                dy.getSqrt().divide(d),
-                dz.getSqrt().divide(d), oom);
+                dx.getSqrt(oom).divide(d),
+                dy.getSqrt(oom).divide(d),
+                dz.getSqrt(oom).divide(d), Math_BigRationalSqrt.ONE);
     }
 
     /**

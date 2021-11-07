@@ -57,9 +57,15 @@ public abstract class V3D_Geometry implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * The offset used to get the geometry relative to the {@link V3D_Point#ORIGIN}.
+     */
+    protected V3D_Vector offset;
+    
+    /**
      * Created a new V3D_Geometry.
      */
-    public V3D_Geometry() {
+    public V3D_Geometry(V3D_Vector offset) {
+        this.offset = offset;
     }
 
     /**
@@ -72,7 +78,14 @@ public abstract class V3D_Geometry implements Serializable {
     /**
      * @param v The vector to apply.
      * @param oom The Order of Magnitude for the precision.
-     * @return a new geometry which is {@code this} shifted by {@code v}.
+     */
+    public void apply(int oom, V3D_Vector v) {
+        offset = offset.add(v, oom);
+    }
+    
+    /**
+     * @param v The vector to apply.
+     * @param oom The Order of Magnitude for the precision.
      */
     public abstract V3D_Geometry apply(V3D_Vector v, int oom);
     

@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain xxx copy of the License at
+ * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -570,8 +570,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     @Override
     public BigDecimal getPerimeter(int oom) {
         int oomn2 = oom - 2;
-        return l.getLength().toBigDecimal(oomn2)
-                .add(t.getLength().toBigDecimal(oomn2))
+        return l.getLength(oom).toBigDecimal(oomn2)
+                .add(t.getLength(oom).toBigDecimal(oomn2))
                 .multiply(BigDecimal.valueOf(2));
     }
 
