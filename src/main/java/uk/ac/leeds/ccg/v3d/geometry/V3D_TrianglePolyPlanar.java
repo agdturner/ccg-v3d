@@ -46,7 +46,8 @@ public class V3D_TrianglePolyPlanar extends V3D_Plane implements V3D_2DShape {
      * @param oom The Order of Magnitude for the initialisation.
      */
     public V3D_TrianglePolyPlanar(int oom, V3D_Triangle... triangles) {
-        super(triangles[0].p, triangles[0].q, triangles[0].r, oom);
+        super(triangles[0].getP(oom), triangles[0].getQ(oom),
+                triangles[0].getR(oom), oom);
         this.triangles = triangles;
     }
 

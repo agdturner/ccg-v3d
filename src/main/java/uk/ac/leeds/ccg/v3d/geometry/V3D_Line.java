@@ -84,17 +84,17 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * A point defining the line.
      */
-    private final V3D_Point p;
+    protected final V3D_Point p;
 
     /**
      * A point defining the line.
      */
-    private final V3D_Point q;
+    protected final V3D_Point q;
 
     /**
      * The direction vector from {@link #p} in the direction of {@link #q}.
      */
-    private final V3D_Vector v;
+    protected final V3D_Vector v;
 
     /**
      * @param l Used to initialise this.

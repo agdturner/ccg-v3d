@@ -283,9 +283,12 @@ public class V3D_Plane extends V3D_Geometry {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "(p=" + p.toString()
-                + ", q=" + q.toString() + ", r=" + r.toString()
-                + ", oom=" + oom + ")";
+        return this.getClass().getSimpleName() + "(" + toString0() + ")";
+    }
+
+    protected String toString0() {
+        return "p=" + p.toString() + ", q=" + q.toString() 
+                + ", r=" + r.toString() + ", oom=" + oom;
     }
 
     public V3D_Point getP(int oom){

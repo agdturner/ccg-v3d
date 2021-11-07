@@ -171,8 +171,8 @@ public class V3D_Tetrahedron implements V3D_3DShape, Serializable {
      * @return The centroid point.
      */
     public V3D_Point getCentroid(int oom) {
-        V3D_LineSegment a = new V3D_LineSegment(pqr.getCentroid(oom), qsr.q, oom);
-        V3D_LineSegment b = new V3D_LineSegment(psq.getCentroid(oom), qsr.r, oom);
+        V3D_LineSegment a = new V3D_LineSegment(pqr.getCentroid(oom), qsr.getQ(oom), oom);
+        V3D_LineSegment b = new V3D_LineSegment(psq.getCentroid(oom), qsr.getR(oom), oom);
         return (V3D_Point) a.getIntersection(b, oom, true);
     }
 

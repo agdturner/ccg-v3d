@@ -62,10 +62,16 @@ public abstract class V3D_Geometry implements Serializable {
     protected V3D_Vector offset;
     
     /**
+     * The offset used to get the geometry relative to the {@link V3D_Point#ORIGIN}.
+     */
+    protected int oom;
+    
+    /**
      * Created a new V3D_Geometry.
      */
     public V3D_Geometry(V3D_Vector offset) {
         this.offset = offset;
+        this.oom = offset.getMagnitude().getOom();
     }
 
     /**

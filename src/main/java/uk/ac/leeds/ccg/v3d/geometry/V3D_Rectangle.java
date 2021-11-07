@@ -126,6 +126,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
         ri = new V3D_LineSegment(r, s, oom);
         b = new V3D_LineSegment(s, p, oom);
         // Check for rectangle.
+        V3D_Vector pq = getPq(oom);
+        V3D_Vector qr = getQr(oom);
         if (pq.isZeroVector()) {
             if (qr.isZeroVector()) {
                 // Rectangle is a point.
@@ -138,7 +140,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
             } else {
                 // Rectangle has area.
                 if (qAtOrigin) {
-                    if (!(pq.isOrthogonal(qs, oom))) {
+                    if (!(pq.isOrthogonal(getQs(oom), oom))) {
                         throw new RuntimeException("The points do not define a rectangle.");
                     }
                 } else {
@@ -165,15 +167,22 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "(p=" + p.toString()
-                + ", q=" + q.toString() + ", r=" + r.toString()
+        return this.getClass().getSimpleName() + "(" + toString0()
                 + ", s=" + s.toString() + ")";
     }
 
+    public V3D_Vector getQs(int oom){
+        return new V3D_Vector(qs).add(offset, oom);
+    }
+            
+    public V3D_Point getS(int oom){
+        return new V3D_Point(s).apply(offset, oom);
+    }
+            
     @Override
     public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = new V3D_Envelope(oom, p, q, r, s);
+            en = new V3D_Envelope(oom, getP(oom), getQ(oom), getR(oom), getS(oom));
         }
         return en;
     }
@@ -185,8 +194,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public V3D_Rectangle apply(V3D_Vector v, int oom) {
-        return new V3D_Rectangle(p.apply(v, oom), q.apply(v, oom), 
-                r.apply(v, oom), s.apply(v, oom), oom);
+        return new V3D_Rectangle(getP(oom).apply(v, oom), getQ(oom).apply(v, oom), 
+                getR(oom).apply(v, oom), getS(oom).apply(v, oom), oom);
     }
 
     /**
@@ -211,16 +220,20 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     private boolean isIntersectedBy0(V3D_Point pt, int oom) {
         // Special cases
-        if (this.p.equals(pt)) {
+        V3D_Point p = this.getP(oom); 
+        if (p.equals(pt)) {
             return true;
         }
-        if (this.q.equals(pt)) {
+        V3D_Point q = this.getQ(oom); 
+        if (q.equals(pt)) {
             return true;
         }
-        if (this.r.equals(pt)) {
+        V3D_Point r = this.getR(oom);
+        if (r.equals(pt)) {
             return true;
         }
-        if (this.s.equals(pt)) {
+        V3D_Point s = this.getS(oom);
+        if (s.equals(pt)) {
             return true;
         }
         if (true){
@@ -250,8 +263,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
             V3D_Vector spt = new V3D_Vector(s, pt, oom);
             V3D_Vector rs = new V3D_Vector(r, s, oom);
             V3D_Vector sp = new V3D_Vector(s, q, oom);
-            V3D_Vector cp = pq.reverse().getCrossProduct(ppt, oom);
-            V3D_Vector cq = qr.getCrossProduct(qpt, oom);
+            V3D_Vector cp = getPq(oom).reverse().getCrossProduct(ppt, oom);
+            V3D_Vector cq = getQr(oom).getCrossProduct(qpt, oom);
             V3D_Vector cr = rs.getCrossProduct(rpt, oom);
             V3D_Vector cs = sp.getCrossProduct(spt, oom);
             /**
@@ -281,8 +294,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
             V3D_Vector spt = new V3D_Vector(s, pt, oom);
             V3D_Vector rs = new V3D_Vector(r, s, oom);
             V3D_Vector sp = new V3D_Vector(s, p, oom);
-            V3D_Vector cp = pq.getCrossProduct(ppt, oom);
-            V3D_Vector cq = qr.getCrossProduct(qpt, oom);
+            V3D_Vector cp = getPq(oom).getCrossProduct(ppt, oom);
+            V3D_Vector cq = getQr(oom).getCrossProduct(qpt, oom);
             V3D_Vector cr = rs.getCrossProduct(rpt, oom);
             V3D_Vector cs = sp.getCrossProduct(spt, oom);
             /**
@@ -597,7 +610,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
         BigDecimal dp = super.getDistance(p, oom);
         BigDecimal ld = l.getDistance(p, oom);
         BigDecimal td = t.getDistance(p, oom);
-        BigDecimal rd = r.getDistance(p, oom);
+        BigDecimal rd = ri.getDistance(p, oom);
         BigDecimal bd = b.getDistance(p, oom);
         if (dp.compareTo(ld) == 0 && dp.compareTo(td) == 0
                 && dp.compareTo(rd) == 0 && dp.compareTo(bd) == 0) {
