@@ -1,4 +1,4 @@
-# [ccg-vector3d](https://github.com/agdturner/ccg-vector3d)
+# [ccg-v3d](https://github.com/agdturner/ccg-v3d)
 
 ## Description
 A modularised Java three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry) library.
@@ -22,57 +22,65 @@ Developed and tested on [Java Development Kit, version 17](https://openjdk.java.
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-vector3D</artifactId>
-    <version>0.8</version>
+    <version>0.11</version>
 </dependency>
 ```
-[JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-vector3d/0.8/agdt-java-vector3d-0.8.jar)
+[JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-vector3d/0.11/agdt-java-vector3d-0.11.jar)
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>agdt-java-vector3D</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.12-SNAPSHOT</version>
 </dependency>
 ```
 
 ## Dependencies
-- [agdt-java-generic](https://github.com/agdturner/agdt-java-generic)
-- [agdt-java-math](https://github.com/agdturner/agdt-java-math)
+- [ccg-io](https://github.com/agdturner/ccg-io)
+- [ccg-math](https://github.com/agdturner/ccg-math)
 - [BigMath](https://github.com/eobermuhlner/big-math)
-- Please see the [POM](https://github.com/agdturner/agdt-java-vector3d/blob/master/pom.xml) for details.
+- Please see the [POM](https://github.com/agdturner/ccg-v3d/blob/master/pom.xml) for details.
 
-## Main geometry implementations so far...
+## Main classes
 
-### [V3D_Point](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java)
-Instances are infinitely small. Each coordinate is stored as an immutable [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java)
+### [V3D_Vector](https://github.com/agdturner/ccg-v3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java)
+This stores 4 [Math_BigRationalSqrt](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRationalSqrt.java) representing a vector of x, y, and z coordinates, and a value for the magnitude. A vector can be applied to any geometry and use to translate or rotate geometries.
 
-### [V3D_Vector](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java)
-This is similar to a point in that it involves storing 3 [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java) numbers, but instead of representing a location relative to the origin of the axes, they define a general change in the x, y, and z coordinates. A vector can be applied to any geometry which essentailly shifts it relative to the origin.
+### [V3D_Geometry](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Geometry.java)
+An abstract class with a V3D_Vector offset, and an Order of Magnitude oom. This class extended to define geometries. The Order of Magnitude is used for the precision of calculations.
 
-### [V3D_Envelope](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Envelope.java)
-This is a [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid) with edges aligned with the axes. However, the dimensions can collapse to form a [rectangle](https://en.wikipedia.org/wiki/Rectangle), or again to form a line segment, or again to form a point. Each finite geometry has an envelope that bounds it. Envelopes can be useful for selecting geometries and performing geometry calculations for instance it can be quick to identify that two complicated polytopes do not intersect if their envelopes do not intersect (they still may not intersect, but failing fast is sometimes a big win).
+### [V3D_Point](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java)
+Extends V3D_Geometry and provides a V3D_Vector pos (which can be considered as the position relative to the origin).
 
-### [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java)
-Instances are immutable straight lines that extend infinitely. They have two points and a vector ([V3D_Vector](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java)). The vector gives the direction of the line and is calculated as the difference from one point to the other. There is some small redundancy as the line could be defined simply by two points, or by a single point and a vector. Additionally, [V3D_Vector](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java) instances also store the square of the magnitude and also the magnitude (if this can be stored precisely as a rational number). Alternative implementations may calculate these attributes as needed, but this implementation calculates these attributes so they are conveniently available. So, a [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) instance is perhaps considerably heavier than it needs to be. 
+### [V3D_Line](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java)
+Extends V3D_Geometry and represents a line that extends infinitely passing through two points. A vector of the transation from one point to the other is also provided for convenience.
 
-### [V3D_Ray](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Ray.java)
-Instances are immutable straight lines that extend infinitely from a point in one direction. Essentially, they are [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) instances with the first of the two points that define the line being the start of the ray that extends infinitely in the direction beyond the second point.
+### [V3D_Ray](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Ray.java)
+Extends V3D_Geometry and represents a line that extends infinitely from a point in one direction through another point. A vector of the transation from one point to the other is also provided for convenience.
 
-### [V3D_LineSegment](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_LineSegment.java)
-Instances are immutable and finite. Essentially, they are [V3D_Line](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) instances with the two points that define the line being the ends of the segment. A line segment is not permitted to have zero length.
+### [V3D_Plane](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Plane.java)
+Extends V3D_Geometry and represents an infinite [plane](https://en.wikipedia.org/wiki/Plane_(geometry)). The plane is defined either by: 3 different points (p, q and r) that are not [collinear](https://en.wikipedia.org/wiki/Collinearity) or coincident, or by a normal vector and a point. Either way, three points are stored along with the normal and the vectors of translation between each point.
 
-### [V3D_Plane](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Plane.java)
-Instances are immutable [Plane](https://en.wikipedia.org/wiki/Plane_(geometry))s extending infintely. They have 3 points (p, q and r) that are not [collinear](https://en.wikipedia.org/wiki/Collinearity) and two vectors (pq that gives how p is mapped onto q, and qr that gives how q is mapped onto r). The perpendicular normal vector to the plane (n) is calculated and stored. The direction of this is given by the order of the points, so each plane effectively has a front and a back. The equality of planes depends on the direction of the perpendicular normal vector as well as whether the points of each plane are [coplanar](https://en.wikipedia.org/wiki/Coplanarity).
+### [V3D_Envelope](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Envelope.java)
+Extends V3D_Geometry and represents a [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid) with edges aligned with the coordinate axes. The dimensions can collapse, so the envolope can form a [rectangle](https://en.wikipedia.org/wiki/Rectangle), or a line segment, or a point. Each finite geometry has an envelope that bounds it. Envelopes are computationally useful for selecting geometries and perfomring calculations, such as checking for potential intersection and visibility.
 
-### [V3D_Triangle](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Triangle.java)
-Instances are immutable and finite [triangle](https://en.wikipedia.org/wiki/Triangle)s. Essentially they are [V3D_Plane](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Plane.java) instances and the three points {p, q and r} are the corners of the triangle. An additional vector (rp that gives how r is mapped onto p) is stored for each triangle. Each side of the triangle is also stored as a line segment for convenience. So again, as with other geometry objects, there is some redundancy in what is stored, but these additional things are stored for convenience.
+### [V3D_LineSegment](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_LineSegment.java)
+Extends V3D_Geometry and V3D_Line, where the two points define the ends of the line segment.
 
-### [V3D_Rectangle](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Rectangle.java)
-Instances are immutable and finite [rectangle](https://en.wikipedia.org/wiki/Rectangle)s. Essentially they are [V3D_Plane](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Plane.java) instances and the three points (p, q and r) are the first three corners of the rectangle working around clockwise from the front of the plane. The other corner point of the rectangle (s) is also stored as are additional vectors (rs that gives how r is mapped onto s, and sp that gives how s is mapped onto p). Additionally the edges of the rectangle are stored as line segments for convenience. So again, as with other geometry objects, there is some redundancy in what is stored, but these additional things are stored for convenience.
+### [V3D_Triangle](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Triangle.java)
+Extends V3D_Geometry and V3D_Plane and represents a [triangle](https://en.wikipedia.org/wiki/Triangle) where the three points {p, q and r} are the corners of the triangle. Each side of the triangle can be stored as a line segment for convenience.
+
+### [V3D_Rectangle](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Rectangle.java)
+Extends V3D_Geometry and V3D_Plane and represents a [rectangle](https://en.wikipedia.org/wiki/Rectangle). The fourth point is also stored as can all the are additional vectors between this fourth point and the other points. The edges of the rectangle can be stored as line segments.
+
+### [V3D_Tetrahedron](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Tetrahedron.java)
+Extends V3D_Geometry and represents a [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron). The fourth point is not to be coplanar with the other three. The four triangles that make up the shape can be stored.
+
+## Collections
+There are classes for the collections of basic geometries.
 
 ## Development progress
-- Most of what is implemented so far is intersection and distance from a point functionality. Not all of this is yet implemented for all geometries. The implemented intersection test implementations involve no rounding. For distance calculations, the user is asked to supply an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) which is used to provide an answer rounded to or correct to this. The default rounding is to round half up.
-- The aim is to have intersection functionality for all geometries including a test of whether any two geometry instances intersect and a method to get the intersection. As the geometries become more complicated, this aim becomes harder. Additional intersection funtionality that might be considered is whether or not the geometries touch or whether they overlap oe cross through each other. Additionally robust distance methods are wanted to calculate the shortest distance between any two geometries accurate to a given [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude).  
+- Most of what is implemented so far is intersection and minimum distance from a point functionality. Not all of this is yet implemented for all geometries particularly collections. The user is asked to supply an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) for calculations. For some calculations there is no rounding, for others, rounding may be necessary. (The default rounding is to round half up.)
 
 ### Intersection
 - So far, methods for testing if there is an intersection and for retrieving the intersection are implemented for:
@@ -81,16 +89,14 @@ Instances are immutable and finite [rectangle](https://en.wikipedia.org/wiki/Rec
 -- line-line, line-ray, line-line_segment
 -- ray-ray, ray-line_segment
 -- line_segment-line_segment
-- See the respective classes in the [geometry package](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/).
 - What is next to do:
 -- plane-triangle, plane-rectangle
 -- line_segment-triangle, line_segment-rectangle
 -- triangle-triangle, triangle-rectangle
 -- rectangle-rectangle
-- It would also be good to distinguish between geometries touching and overlapping.
+- It would be good to have functionality that distinguishes between geometries touching and overlapping.
 
 ### Distance, Areas, Perimeters, Volumes
-- Methods for calculating these currently require the user to specify an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) so that the result are provided accurate to that precision.
 - So far, methods for calculating the minimum distance between geometries are implemented for:
 -- point-plane, point-line, point-ray, point-line_segment, point-rectangle, point-triangle
 -- plane-plane, plane-line, plane-ray, plane-line_segment
@@ -100,14 +106,20 @@ Instances are immutable and finite [rectangle](https://en.wikipedia.org/wiki/Rec
 
 ## Development history
 ### Origins
-The library began development in March 2020. The purpose of the library is to support making spatial models of parts of the [solar system](https://en.wikipedia.org/wiki/Solar_system).
+The library began development in March 2020. The envisaged original purpose of the library was to support making spatial models of parts of the [solar system](https://en.wikipedia.org/wiki/Solar_system).
 ### Summary of main changes
+#### 0.10 to 0.11
+- Added a offset vector to geometries.
+#### 0.9 to 0.10
+- Added tetrahedron and collections.
+#### 0.8 to 0.9
+- Change from left-handed to right handed.
 #### 0.7 to 0.8
 - Simplifications to the intersection methods removing the static methods.
-- Inclusion of a V3D_Ray class.   
+- Inclusion of a V3D_Ray class.
 
 ## Contributions
-- Welcome, but to save time and energy, please liaise and we can try to organise.
+- Welcome, but to save time and energy, please liaise and we can hopefully get organised.
 
 ## LICENCE
 - APACHE LICENSE, VERSION 2.0: https://www.apache.org/licenses/LICENSE-2.0
@@ -129,10 +141,10 @@ The library began development in March 2020. The purpose of the library is to su
 ## Handedness
 The handedness (the assignment of axes and their directions) has been changed from left-handed to right-handed. The choice is somewhat arbitrary. Left-handed was originally chosen as it is intuitive considering vertical screens and graphs and zooming in and out in terms of human perception and moving closer and further away. Left-handed is perhaps a good choice for navigation, but for physics and geography right-handedness is more common and as this library is more geared for supporting physics and geography, this change has been implemented.
 
-The reason for right-handedness in physics is to do with rules of thumb which are use to figure out the direction of forces caused by the spin we are in (the Earth, Sun and Milky Way all spin a particular way). [Handedness and chirality](https://en.wikipedia.org/wiki/Chirality_(physics)) and the choice of handedness in physics is explained in [this video](https://youtu.be/BoHQtXpWG2Y).
+Right-handed coordinates are more commonly used in much of physics ([chirality](https://en.wikipedia.org/wiki/Chirality_(physics)), [video](https://youtu.be/BoHQtXpWG2Y)).
 
 ## [origin](https://en.wikipedia.org/wiki/Origin_(mathematics))
-For a lot of physics, it might be sensible to set z=0 at the [centre of mass](https://en.wikipedia.org/wiki/Center_of_mass) (CoM). The thing is, there is typically a bigger system within which a system is based and within a system, there are smaller systems that might want to be modelled in relative terms. For each system, there can be a different CoM and it may be helpful to shift the origin and reorientate the axes for each. Some overall framework is wanted at the largest scale to position each entity relatively. What happens on Earth is influenced significantly by the relative positions of the Sun and Moon. Earth's orbit is also influenced by the orbits and masses of other solar system objects. At another scale, there could be significant effects caused by the position of the [solar system](https://en.wikipedia.org/wiki/Solar_System) in the [galactic plane](https://en.wikipedia.org/wiki/Galactic_plane).
+For a lot of physics, it might be sensible to set z=0 at the [centre of mass](https://en.wikipedia.org/wiki/Center_of_mass) (CoM) or the centre of volume. Earth is influenced significantly by the relative positions of the Sun and Moon. Earth's orbit is also influenced by the orbits and masses of other solar system objects. At another scale, there could be significant effects caused by the position of the [solar system](https://en.wikipedia.org/wiki/Solar_System) in the [galactic plane](https://en.wikipedia.org/wiki/Galactic_plane).
 
 ## Geography
 [Geographical projections](https://en.wikipedia.org/wiki/List_of_map_projections) are commonly used in geography to represent part or all of the surface of Earth as plan view maps. [Equirectangular_projection](https://en.wikipedia.org/wiki/Equirectangular_projection)s have: the Y Axis aligned with lines of [latitude](https://en.wikipedia.org/wiki/Latitude), with zero on the [equator](https://en.wikipedia.org/wiki/Equator), increasing to the [North pole](https://en.wikipedia.org/wiki/North_Pole), and decreasing to the [South pole](https://en.wikipedia.org/wiki/South_Pole); the X Axis aligned with lines of [longitude](https://en.wikipedia.org/wiki/Longitude) with zero at the [prime meridian](https://en.wikipedia.org/wiki/Prime_meridian) and increasing to the [East](https://en.wikipedia.org/wiki/East) and decreasing to the [West](https://en.wikipedia.org/wiki/West); and the Z axis represents height above [sea-level](https://en.wikipedia.org/wiki/Sea_level) or depth below sea-level. The choice of the [meridian](https://en.wikipedia.org/wiki/Meridian_(geography)) is arbitrary, and sea-level varies.
