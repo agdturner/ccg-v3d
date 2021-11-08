@@ -67,7 +67,10 @@ public abstract class V3D_Geometry implements Serializable {
     protected int oom;
     
     /**
-     * Created a new V3D_Geometry.
+     * Creates a new V3D_Geometry.
+     * 
+     * @param offset What {@link #offset} is set to.
+     * @param oom The Order of Magnitude for the precision of the calculation.
      */
     public V3D_Geometry(V3D_Vector offset, int oom) {
         this.offset = offset;
@@ -92,6 +95,7 @@ public abstract class V3D_Geometry implements Serializable {
     /**
      * @param v The vector to apply.
      * @param oom The Order of Magnitude for the precision.
+     * @return The geometry with v applied.
      */
     public abstract V3D_Geometry apply(V3D_Vector v, int oom);
     

@@ -109,9 +109,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param x What {@link #x} is set to.
-     * @param y What {@link #y} is set to.
-     * @param z What {@link #z} is set to.
+     * @param x What {@link #pos} x component is set to.
+     * @param y What {@link #pos} y component is set to.
+     * @param z What {@link #pos} z component is set to.
      */
     public V3D_Point(Math_BigRational x, Math_BigRational y, Math_BigRational z) {
         super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
@@ -119,9 +119,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param x What {@link #x} is set to.
-     * @param y What {@link #y} is set to.
-     * @param z What {@link #z} is set to.
+     * @param x What {@link #pos} x component is set to.
+     * @param y What {@link #pos} y component is set to.
+     * @param z What {@link #pos} z component is set to.
      */
     public V3D_Point(BigDecimal x, BigDecimal y, BigDecimal z) {
         this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
@@ -129,9 +129,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param x What {@link #x} is set to.
-     * @param y What {@link #y} is set to.
-     * @param z What {@link #z} is set to.
+     * @param x What {@link #pos} x component is set to.
+     * @param y What {@link #pos} y component is set to.
+     * @param z What {@link #pos} z component is set to.
      */
     public V3D_Point(double x, double y, double z) {
         this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
@@ -139,9 +139,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param x What {@link #x} is set to.
-     * @param y What {@link #y} is set to.
-     * @param z What {@link #z} is set to.
+     * @param x What {@link #pos} x component is set to.
+     * @param y What {@link #pos} y component is set to.
+     * @param z What {@link #pos} z component is set to.
      */
     public V3D_Point(long x, long y, long z) {
         this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
@@ -153,6 +153,10 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         return toString("");
     }
     
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of this.
+     */
     public String toString(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
@@ -160,6 +164,10 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
                 + pad + ")";
     }
     
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of the fields.
+     */
     protected String toStringFields(String pad) {
         return pad + "pos=" + pos.toString(pad) + "\n"
                + pad + ",\n"
@@ -208,24 +216,24 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @return The x coordinate position relative to the {@link #ORIGIN}.
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return The x component of {@link #pos} with {@link #offset} applied.
      */
     public Math_BigRational getX(int oom) {
         return pos.getDX(oom).add(offset.getDX(oom));
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @return The y coordinate position relative to the {@link #ORIGIN}.
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return The y component of {@link #pos} with {@link #offset} applied.
      */
     public Math_BigRational getY(int oom) {
         return pos.getDY(oom).add(offset.getDY(oom));
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @return The z coordinate position relative to the {@link #ORIGIN}.
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return The z component of {@link #pos} with {@link #offset} applied.
      */
     public Math_BigRational getZ(int oom) {
         return pos.getDZ(oom).add(offset.getDZ(oom));
@@ -272,6 +280,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * Get the distance squared between this and {@code p}.
      *
      * @param p A point.
+     * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance squared from {@code p} to this.
      */
     public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
@@ -408,6 +417,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision of the result.
      * @return The location of the point:
      * <Table>
      * <caption>Locations</caption>

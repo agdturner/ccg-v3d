@@ -250,6 +250,10 @@ public class V3D_Plane extends V3D_Geometry {
         return toString("");
     }
     
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of this.
+     */
     public String toString(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
@@ -257,6 +261,10 @@ public class V3D_Plane extends V3D_Geometry {
                 + pad + ")";
     }
     
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of the fields.
+     */
     protected String toStringFields(String pad) {
         return pad + "p=" + p.toString(pad) + "\n"
                + pad + ",\n"
@@ -265,30 +273,58 @@ public class V3D_Plane extends V3D_Geometry {
                + pad + "r=" + r.toString(pad);
     }
 
+    /**
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return {@link #p} with {@link #offset} applied.
+     */
     public final V3D_Point getP(int oom){
         return new V3D_Point(p).apply(offset, oom);
     }
 
+    /**
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return {@link #q} with {@link #offset} applied.
+     */
     public final V3D_Point getQ(int oom){
         return new V3D_Point(q).apply(offset, oom);
     }
     
+    /**
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return {@link #r} with {@link #offset} applied.
+     */
     public V3D_Point getR(int oom){
         return new V3D_Point(r).apply(offset, oom);
     }
     
+    /**
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return {@link #pq} with {@link #offset} applied.
+     */
     public V3D_Vector getPq(int oom){
         return new V3D_Vector(pq).add(offset, oom);
     }
     
+    /**
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return {@link #qr} with {@link #offset} applied.
+     */
     public V3D_Vector getQr(int oom){
         return new V3D_Vector(qr).add(offset, oom);
     }
     
+    /**
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return {@link #rp} with {@link #offset} applied.
+     */
     public V3D_Vector getRp(int oom){
         return new V3D_Vector(rp).add(offset, oom);
     }
     
+    /**
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return {@link #n} with {@link #offset} applied.
+     */
     public V3D_Vector getN(int oom){
         return new V3D_Vector(n).add(offset, oom);
     }

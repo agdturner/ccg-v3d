@@ -63,16 +63,7 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_LineSegmentPolyCollinear) {
-            V3D_LineSegmentPolyCollinear l = (V3D_LineSegmentPolyCollinear) o;
-            if (l.p.equals(p) && l.q.equals(q)) {
-                return true;
-            }
-            if (l.p.equals(q) && l.q.equals(p)) {
-                return true;
-            }
-        }
-        return false;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -80,7 +71,7 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_LineSegmentPolyCollinear l) {
-        return p.equals(l.p) && q.equals(l.q);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -119,14 +110,15 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
      */
     @Override
     public V3D_LineSegmentPolyCollinear apply(V3D_Vector v, int oom) {
-        V3D_LineSegment[] nt = new V3D_LineSegment[lineSegments.length];
+        V3D_LineSegment[] nl = new V3D_LineSegment[lineSegments.length];
         for (int i = 0; i < lineSegments.length; i++) {
-            nt[i] = (V3D_LineSegment) lineSegments[i].apply(v, oom);
+            nl[i] = lineSegments[i].apply(v, oom);
         }
-        return new V3D_LineSegmentPolyCollinear(oom, nt);
+        return new V3D_LineSegmentPolyCollinear(oom, nl);
     }
 
     /**
+     * @param oom The Order of Magnitude for the calculation.
      * @return The length of {@code this}.
      */
     public Math_BigRationalSqrt getLength(int oom) {
@@ -134,10 +126,15 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
     }
 
     /**
+     * @param oom The Order of Magnitude for the calculation.
      * @return The length of {@code this} squared.
      */
     public Math_BigRational getLength2(int oom) {
-        return p.getDistanceSquared(q, oom);
+        Math_BigRational r = Math_BigRational.ZERO;
+        for (V3D_LineSegment lineSegment : lineSegments) {
+            r.add(lineSegment.getLength2(oom));
+        }
+        return r;
     }
 
     /**
@@ -146,10 +143,7 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
      */
     @Override
     public V3D_Envelope getEnvelope(int oom) {
-        if (en == null) {
-            en = new V3D_Envelope(oom, p, q);
-        }
-        return en;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -159,24 +153,7 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
      */
     @Override
     public boolean isIntersectedBy(V3D_Point p, int oom) {
-        boolean ei = getEnvelope(oom).isIntersectedBy(p.getEnvelope(oom));
-        if (ei) {
-            if (super.isIntersectedBy(p, oom)) {
-                Math_BigRationalSqrt a = p.getDistance(oom, this.p);
-                if (a.getX().isZero()) {
-                    return true;
-                }
-                Math_BigRationalSqrt b = p.getDistance(oom, this.q);
-                if (b.getX().isZero()) {
-                    return true;
-                }
-                Math_BigRationalSqrt l = this.p.getDistance(oom, this.q);
-                if (a.add(b, oom).compareTo(l) != 1) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -189,11 +166,7 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
      */
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean flag) {
-        boolean ei = getEnvelope(oom).isIntersectedBy(l.getEnvelope(oom));
-        if (ei) {
-            return super.isIntersectedBy(l, oom);
-        }
-        return false;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -203,15 +176,7 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
      */
     @Override
     public boolean isIntersectedBy(V3D_Line l, int oom) {
-        V3D_Geometry i = super.getIntersection(l, oom);
-        if (i == null) {
-            return false;
-        }
-        if (i instanceof V3D_Point) {
-            return isIntersectedBy((V3D_Point) i, oom);
-        } else {
-            return true;
-        }
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**

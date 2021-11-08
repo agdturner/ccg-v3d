@@ -207,6 +207,10 @@ public class V3D_Line extends V3D_Geometry {
         return toString("");
     }
     
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of this.
+     */
     public String toString(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
@@ -214,6 +218,10 @@ public class V3D_Line extends V3D_Geometry {
                 + pad + ")";
     }
     
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of the fields.
+     */
     protected String toStringFields(String pad) {
         return pad + "p=" + p.toString(pad) + "\n"
                + pad + ",\n"
@@ -236,11 +244,11 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_Line l, int oom) {
-        boolean t1 = isIntersectedBy(l.getP(oom), oom);
-        boolean t2 = isIntersectedBy(l.getQ(oom), oom);
-        boolean t3 = l.isIntersectedBy(getP(oom), oom);
-        boolean t4 = l.isIntersectedBy(getQ(oom),oom);
-        boolean t5 = getV(oom).isScalarMultiple(l.getV(oom), oom);
+//        boolean t1 = isIntersectedBy(l.getP(oom), oom);
+//        boolean t2 = isIntersectedBy(l.getQ(oom), oom);
+//        boolean t3 = l.isIntersectedBy(getP(oom), oom);
+//        boolean t4 = l.isIntersectedBy(getQ(oom),oom);
+//        boolean t5 = getV(oom).isScalarMultiple(l.getV(oom), oom);
         return isIntersectedBy(l.getP(oom), oom) && isIntersectedBy(l.getQ(oom), oom);
     }
 
@@ -252,15 +260,26 @@ public class V3D_Line extends V3D_Geometry {
         return hash;
     }
 
-    
+    /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return {@link #p} with {@link #offset} added.
+     */
     public V3D_Point getP(int oom){
         return new V3D_Point(p).apply(offset, oom);
     }
 
+    /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return {@link #q} with {@link #offset} added.
+     */
     public V3D_Point getQ(int oom){
         return new V3D_Point(q).apply(offset, oom);
     }
     
+    /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return {@link #v} with {@link #offset} added.
+     */
     public V3D_Vector getV(int oom){
         return new V3D_Vector(v).add(offset, oom);
     }
@@ -1197,6 +1216,7 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The points that define the plan as a matrix.
      */
     public Math_Matrix_BR getAsMatrix(int oom) {

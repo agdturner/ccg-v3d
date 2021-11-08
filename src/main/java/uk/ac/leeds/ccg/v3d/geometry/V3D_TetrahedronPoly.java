@@ -37,7 +37,6 @@ public class V3D_TetrahedronPoly implements V3D_3DShape, Serializable {
      * Creates a new instance.
      *
      * @param tetrahedrons What {@link #tetrahedrons} is set to.
-     * @param oom The Order of Magnitude for the initialisation.
      */
     public V3D_TetrahedronPoly(List<V3D_Tetrahedron> tetrahedrons) {
         this.tetrahedrons = tetrahedrons;
@@ -48,7 +47,6 @@ public class V3D_TetrahedronPoly implements V3D_3DShape, Serializable {
      *
      * @param tetrahedrons One or more tetrahedron either in an array or input
      * individually.
-     * @param oom The Order of Magnitude for the initialisation.
      */
     public V3D_TetrahedronPoly(V3D_Tetrahedron... tetrahedrons) {
         this.tetrahedrons = new ArrayList<>();

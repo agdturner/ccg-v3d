@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.agdturner</groupId>
     <artifactId>ccg-v3d</artifactId>
-    <version>0.10</version>
+    <version>0.11-SNAPSHOT</version>
     <packaging>jar</packaging>
     
     <name>ccg-v3d</name>
@@ -13,7 +13,7 @@
         <url>git@github.com:agdturner/ccg-v3d.git</url>
         <connection>scm:git:git@github.com:agdturner/ccg-v3d.git</connection>
         <developerConnection>scm:git:git@github.com:agdturner/ccg-v3d</developerConnection>
-        <tag>ccg-v3d-0.10</tag>
+        <tag>ccg-v3d-0.11</tag>
     </scm>
     <licenses>
         <license>

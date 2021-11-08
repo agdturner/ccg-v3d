@@ -406,11 +406,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     @Override
     public String toString() {
         return this.getClass().getSimpleName()
-                + "(xMin=" + getXMin(oom).toString() 
+                + "(xMin=" + getXMin(oom).toString()
                 + ", xMax=" + getXMax(oom).toString()
-                + ", yMin=" + getYMin(oom).toString() 
+                + ", yMin=" + getYMin(oom).toString()
                 + ", yMax=" + getYMax(oom).toString()
-                + ", zMin=" + getZMin(oom).toString() 
+                + ", zMin=" + getZMin(oom).toString()
                 + ", zMax=" + getZMax(oom).toString() + ")";
     }
 
@@ -1567,9 +1567,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          */
         public Geometry() {
         }
-        
+
         /**
-         * 
+         * @param v The vector to apply to the geometry.
+         * @param oom The Order of Magnitude for the precision of the
+         * calculation.
+         * @return The application of the vector v.
          */
         protected abstract Geometry apply(V3D_Vector v, int oom);
     }
@@ -1653,7 +1656,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         protected Point apply(V3D_Vector v, int oom) {
             return new Point(this, v);
         }
-        
+
         /**
          * Get the distance between this and {@code p}.
          *
@@ -1737,7 +1740,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             this.v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
                     q.z.subtract(p.z), oom);
         }
-        
+
         /**
          * {@code p} should not be equal to {@code q}.
          *
@@ -1776,7 +1779,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         protected Line apply(V3D_Vector v, int oom) {
             return new Line(this, v);
         }
-        
+
         /**
          * @param l The line to test this with to see if they are parallel.
          * @param oom The Order of Magnitude for the precision.
@@ -2316,7 +2319,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         public LineSegment(LineSegment l, V3D_Vector v) {
             super(new Point(l.p, v), new Point(l.q, v), v.getMagnitude().getOom());
         }
-        
+
         /**
          * @param p What {@link #p} is set to.
          * @param q What {@link #q} is set to.
@@ -2387,7 +2390,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 return null;
             }
         }
-        
+
         @Override
         protected LineSegment apply(V3D_Vector v, int oom) {
             return new LineSegment(this, v);
@@ -2448,7 +2451,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         public Plane(Plane p) {
             this(p.p, p.q, p.r, p.pq, p.qr, p.n, p.oom);
         }
-        
+
         /**
          * Create a new instance. Immediately applying v to p.
          *
@@ -2505,7 +2508,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     + ", q=" + q.toString() + ", r=" + r.toString()
                     + ", n=" + n.toString() + ")";
         }
-        
+
         @Override
         protected Plane apply(V3D_Vector v, int oom) {
             return new Plane(this, v);
@@ -2656,7 +2659,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          */
         protected final LineSegment b;
 
-        
         /**
          * Create a new instance. Immediately applying v to p.
          *
@@ -2664,10 +2666,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * @param v The vector used to create this.
          */
         public Rectangle(Rectangle r, V3D_Vector v) {
-            this(new Point(r.p, v), new Point(r.q, v), new Point(r.r, v), 
+            this(new Point(r.p, v), new Point(r.q, v), new Point(r.r, v),
                     new Point(r.s, v), r.oom);
         }
-        
+
         /**
          * @param p The bottom left corner of the rectangle.
          * @param q The top left corner of the rectangle.
@@ -2699,7 +2701,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         protected Rectangle apply(V3D_Vector v, int oom) {
             return new Rectangle(this, v);
         }
-        
+
         /**
          * @param l The line to intersect with.
          * @return A point or line segment.

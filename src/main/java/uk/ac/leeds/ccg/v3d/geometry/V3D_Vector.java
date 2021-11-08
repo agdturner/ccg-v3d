@@ -304,6 +304,10 @@ public class V3D_Vector implements Serializable {
         return toString("");
     }
     
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of this.
+     */
     public String toString(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
@@ -311,6 +315,10 @@ public class V3D_Vector implements Serializable {
                 + pad + ")";
     }
     
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of the fields.
+     */
     protected String toStringFields(String pad) {
         return pad + "dx=" + dx + ",\n"
                 + pad + "dy=" + dy + ",\n"

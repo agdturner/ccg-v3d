@@ -198,6 +198,11 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
         return false;
     }
 
+    /**
+     * @param pt The point.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return {@code true} if this intersects with {@code pt}.
+     */
     protected boolean isIntersectedBy0(V3D_Point pt, int oom) {
         if (lpq.isIntersectedBy(pt, oom) || lqr.isIntersectedBy(pt, oom)
                 || lrp.isIntersectedBy(pt, oom)) {

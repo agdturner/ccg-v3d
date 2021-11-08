@@ -193,6 +193,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The length of {@code this}.
      */
     public Math_BigRationalSqrt getLength(int oom) {
@@ -201,6 +202,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The length of {@code this} squared.
      */
     public Math_BigRational getLength2(int oom) {

@@ -178,10 +178,18 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                + pad + "s=" + s.toString(pad);
     }
 
+    /**
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return {@link #qs} with {@link #offset} applied.
+     */
     public V3D_Vector getQs(int oom){
         return new V3D_Vector(qs).add(offset, oom);
     }
-            
+         
+    /**
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return {@link #s} with {@link #offset} applied.
+     */
     public V3D_Point getS(int oom){
         return new V3D_Point(s).apply(offset, oom);
     }
