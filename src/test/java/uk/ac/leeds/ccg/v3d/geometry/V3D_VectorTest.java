@@ -66,8 +66,7 @@ public class V3D_VectorTest extends V3D_Test {
                 + "(\n"
                 + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-1)\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + ")";
         String result = instance.toString();
         assertTrue(expResult.equalsIgnoreCase(result));
@@ -319,17 +318,17 @@ public class V3D_VectorTest extends V3D_Test {
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         oom = -100;
-        instance = new V3D_Vector(P10, P10, P10, oom);
+        instance = new V3D_Vector(P10, P10, P10);
         expResult = new Math_BigRationalSqrt(300L, oom);
         result = instance.getMagnitude();
         assertTrue(expResult.compareTo(result) == 0);
         // Test 4
-        instance = new V3D_Vector(P3, P4, N4, oom);
+        instance = new V3D_Vector(P3, P4, N4);
         expResult = new Math_BigRationalSqrt(41L, oom);
         result = instance.getMagnitude();
         assertTrue(expResult.compareTo(result) == 0);
         // Test 5
-        instance = new V3D_Vector(P7, P8, N4, oom);
+        instance = new V3D_Vector(P7, P8, N4);
         expResult = new Math_BigRationalSqrt(P7.pow(2).add(P8.pow(2).add(N4.pow(2))), oom);
         result = instance.getMagnitude();
         assertTrue(expResult.compareTo(result) == 0);
@@ -363,8 +362,8 @@ public class V3D_VectorTest extends V3D_Test {
         instance = new V3D_Vector(P0P1P1, oom);
         assertFalse(instance.isScalarMultiple(v, oom));
         // Test 4
-        v = new V3D_Vector(P0, P1, P10000, oom);
-        instance = new V3D_Vector(P0, P1, P10001, oom);
+        v = new V3D_Vector(P0, P1, P10000);
+        instance = new V3D_Vector(P0, P1, P10001);
         assertFalse(instance.isScalarMultiple(v, oom));
     }
 
@@ -425,7 +424,7 @@ public class V3D_VectorTest extends V3D_Test {
         System.out.println("isReverse");
         int oom = -1;
         V3D_Vector v = V3D_Environment.i;
-        V3D_Vector instance = new V3D_Vector(-1, 0, 0, oom);
+        V3D_Vector instance = new V3D_Vector(-1, 0, 0);
         assertTrue(instance.isReverse(v));
         // Test 2
     }
@@ -437,10 +436,10 @@ public class V3D_VectorTest extends V3D_Test {
     public void testIsZeroVector() {
         System.out.println("isZeroVector");
         int oom = -1;
-        V3D_Vector instance = new V3D_Vector(0, 0, 0, oom);
+        V3D_Vector instance = new V3D_Vector(0, 0, 0);
         assertTrue(instance.isZeroVector());
         // Test 2
-        instance = new V3D_Vector(1, 0, 0, oom);
+        instance = new V3D_Vector(1, 0, 0);
         assertFalse(instance.isZeroVector());
     }
 
@@ -452,20 +451,20 @@ public class V3D_VectorTest extends V3D_Test {
         System.out.println("multiply");
         int oom = -1;
         Math_BigRational s = Math_BigRational.ZERO;
-        V3D_Vector instance = new V3D_Vector(0, 0, 0, oom);
-        V3D_Vector expResult = new V3D_Vector(0, 0, 0, oom);
+        V3D_Vector instance = new V3D_Vector(0, 0, 0);
+        V3D_Vector expResult = new V3D_Vector(0, 0, 0);
         V3D_Vector result = instance.multiply(s, oom);
         assertEquals(expResult, result);
         // Test 2
         s = Math_BigRational.ZERO;
-        instance = new V3D_Vector(10, 10, 10, oom);
-        expResult = new V3D_Vector(0, 0, 0, oom);
+        instance = new V3D_Vector(10, 10, 10);
+        expResult = new V3D_Vector(0, 0, 0);
         result = instance.multiply(s, oom);
         assertEquals(expResult, result);
         // Test 3
         s = Math_BigRational.TWO;
-        instance = new V3D_Vector(10, 10, 10, oom);
-        expResult = new V3D_Vector(20, 20, 20, oom);
+        instance = new V3D_Vector(10, 10, 10);
+        expResult = new V3D_Vector(20, 20, 20);
         result = instance.multiply(s, oom);
         assertEquals(expResult, result);
     }
@@ -477,27 +476,27 @@ public class V3D_VectorTest extends V3D_Test {
     public void testAdd() {
         System.out.println("add");
         int oom = -1;
-        V3D_Vector instance = new V3D_Vector(0, 0, 0, oom);
-        V3D_Vector v = new V3D_Vector(0, 0, 0, oom);
-        V3D_Vector expResult = new V3D_Vector(0, 0, 0, oom);
+        V3D_Vector instance = new V3D_Vector(0, 0, 0);
+        V3D_Vector v = new V3D_Vector(0, 0, 0);
+        V3D_Vector expResult = new V3D_Vector(0, 0, 0);
         V3D_Vector result = instance.add(v, oom);
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_Vector(0, 0, 0, oom);
-        v = new V3D_Vector(1, 1, 1, oom);
-        expResult = new V3D_Vector(1, 1, 1, oom);
+        instance = new V3D_Vector(0, 0, 0);
+        v = new V3D_Vector(1, 1, 1);
+        expResult = new V3D_Vector(1, 1, 1);
         result = instance.add(v, oom);
         assertEquals(expResult, result);
         // Test 3
-        instance = new V3D_Vector(2, 3, 4, oom);
-        v = new V3D_Vector(7, 1, 11, oom);
-        expResult = new V3D_Vector(9, 4, 15, oom);
+        instance = new V3D_Vector(2, 3, 4);
+        v = new V3D_Vector(7, 1, 11);
+        expResult = new V3D_Vector(9, 4, 15);
         result = instance.add(v, oom);
         assertEquals(expResult, result);
         // Test 3
-        instance = new V3D_Vector(-2, 3, -4, oom);
-        v = new V3D_Vector(7, 1, 11, oom);
-        expResult = new V3D_Vector(5, 4, 7, oom);
+        instance = new V3D_Vector(-2, 3, -4);
+        v = new V3D_Vector(7, 1, 11);
+        expResult = new V3D_Vector(5, 4, 7);
         result = instance.add(v, oom);
         assertEquals(expResult, result);
     }
@@ -509,15 +508,15 @@ public class V3D_VectorTest extends V3D_Test {
     public void testSubtract() {
         System.out.println("subtract");
         int oom = -1;
-        V3D_Vector instance = new V3D_Vector(0, 0, 0, oom);
-        V3D_Vector v = new V3D_Vector(0, 0, 0, oom);
-        V3D_Vector expResult = new V3D_Vector(0, 0, 0, oom);
+        V3D_Vector instance = new V3D_Vector(0, 0, 0);
+        V3D_Vector v = new V3D_Vector(0, 0, 0);
+        V3D_Vector expResult = new V3D_Vector(0, 0, 0);
         V3D_Vector result = instance.subtract(v, oom);
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_Vector(0, 0, 0, oom);
-        v = new V3D_Vector(1, 1, 1, oom);
-        expResult = new V3D_Vector(-1, -1, -1, oom);
+        instance = new V3D_Vector(0, 0, 0);
+        v = new V3D_Vector(1, 1, 1);
+        expResult = new V3D_Vector(-1, -1, -1);
         result = instance.subtract(v, oom);
         //assertTrue(expResult.compareTo(result) == 0);
         assertEquals(expResult, result);
@@ -530,13 +529,13 @@ public class V3D_VectorTest extends V3D_Test {
     public void testReverse() {
         System.out.println("reverse");
         int oom = -1;
-        V3D_Vector instance = new V3D_Vector(0, 0, 0, oom);
-        V3D_Vector expResult = new V3D_Vector(0, 0, 0, oom);
+        V3D_Vector instance = new V3D_Vector(0, 0, 0);
+        V3D_Vector expResult = new V3D_Vector(0, 0, 0);
         V3D_Vector result = instance.reverse();
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_Vector(1, 1, 1, oom);
-        expResult = new V3D_Vector(-1, -1, -1, oom);
+        instance = new V3D_Vector(1, 1, 1);
+        expResult = new V3D_Vector(-1, -1, -1);
         result = instance.reverse();
         assertEquals(expResult, result);
     }
@@ -548,17 +547,17 @@ public class V3D_VectorTest extends V3D_Test {
     public void testGetMagnitudeSquared() {
         System.out.println("getMagnitudeSquared");
         int oom = -1;
-        V3D_Vector instance = new V3D_Vector(0, 0, 0, oom);
+        V3D_Vector instance = new V3D_Vector(0, 0, 0);
         Math_BigRational expResult = Math_BigRational.ZERO;
         Math_BigRational result = instance.getMagnitudeSquared();
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
-        instance = new V3D_Vector(1, 1, 1, oom);
+        instance = new V3D_Vector(1, 1, 1);
         expResult = Math_BigRational.valueOf(3);
         result = instance.getMagnitudeSquared();
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
-        instance = new V3D_Vector(2, 2, 2, oom);
+        instance = new V3D_Vector(2, 2, 2);
         expResult = Math_BigRational.valueOf(12);
         result = instance.getMagnitudeSquared();
         assertTrue(expResult.compareTo(result) == 0);
@@ -577,85 +576,78 @@ public class V3D_VectorTest extends V3D_Test {
         assertEquals(expResult, result);
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 2
-        instance = new V3D_Vector(100, 0, 0, oom);
+        instance = new V3D_Vector(100, 0, 0);
         expResult = V3D_Environment.i;
         result = instance.getUnitVector(oom);
         assertEquals(expResult, result);
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 3
-        instance = new V3D_Vector(100, 100, 0, oom);
+        instance = new V3D_Vector(100, 100, 0);
         Math_BigRational m = instance.getMagnitude().getSqrt(oom);
         expResult = new V3D_Vector(
                 instance.getDX(oom).divide(m),
                 instance.getDY(oom).divide(m),
-                instance.getDZ(oom).divide(m),
-                oom);
+                instance.getDZ(oom).divide(m));
         result = instance.getUnitVector(oom);
         assertEquals(expResult, result);
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 4
-        instance = new V3D_Vector(0, 100, 100, oom);
+        instance = new V3D_Vector(0, 100, 100);
         m = instance.getMagnitude().getSqrt(oom);
         expResult = new V3D_Vector(
                 instance.getDX(oom).divide(m),
                 instance.getDY(oom).divide(m),
-                instance.getDZ(oom).divide(m),
-                oom);
+                instance.getDZ(oom).divide(m));
         result = instance.getUnitVector(oom);
         assertEquals(expResult, result);
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 5
-        instance = new V3D_Vector(100, 100, 100, oom);
+        instance = new V3D_Vector(100, 100, 100);
         m = instance.getMagnitude().getSqrt(oom);
         expResult = new V3D_Vector(
                 instance.getDX(oom).divide(m),
                 instance.getDY(oom).divide(m),
-                instance.getDZ(oom).divide(m),
-                oom);
+                instance.getDZ(oom).divide(m));
         result = instance.getUnitVector(oom);
         assertEquals(expResult, result);
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 6
-        instance = new V3D_Vector(-100, 0, 0, oom);
+        instance = new V3D_Vector(-100, 0, 0);
         m = instance.getMagnitude().getSqrt(oom);
         expResult = new V3D_Vector(
                 instance.getDX(oom).divide(m),
                 instance.getDY(oom).divide(m),
-                instance.getDZ(oom).divide(m),
-                oom);
+                instance.getDZ(oom).divide(m));
         result = instance.getUnitVector(oom);
         assertEquals(expResult, result);
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 7
-        instance = new V3D_Vector(-100, -100, 0, oom);
+        instance = new V3D_Vector(-100, -100, 0);
         m = instance.getMagnitude().getSqrt(oom);
         expResult = new V3D_Vector(
                 instance.getDX(oom).divide(m),
                 instance.getDY(oom).divide(m),
-                instance.getDZ(oom).divide(m),
-                oom);
+                instance.getDZ(oom).divide(m));
         result = instance.getUnitVector(oom);
         assertEquals(expResult, result);
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 8
-        instance = new V3D_Vector(0, -100, -100, oom);
+        instance = new V3D_Vector(0, -100, -100);
         m = instance.getMagnitude().getSqrt(oom);
         expResult = new V3D_Vector(
                 instance.getDX(oom).divide(m),
                 instance.getDY(oom).divide(m),
-                instance.getDZ(oom).divide(m),
-                oom);
+                instance.getDZ(oom).divide(m));
         result = instance.getUnitVector(oom);
         assertEquals(expResult, result);
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 9
-        instance = new V3D_Vector(-100, -100, -100, oom);
+        instance = new V3D_Vector(-100, -100, -100);
         m = instance.getMagnitude().getSqrt(oom);
         expResult = new V3D_Vector(
                 instance.getDX(oom).divide(m),
                 instance.getDY(oom).divide(m),
-                instance.getDZ(oom).divide(m),
-                oom);
+                instance.getDZ(oom).divide(m));
         result = instance.getUnitVector(oom);
         assertEquals(expResult, result);
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);

@@ -73,16 +73,14 @@ public class V3D_LineTest extends V3D_Test {
                 + "  (\n"
                 + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + "  )\n"
                 + "  ,\n"
                 + "  offset=V3D_Vector\n"
                 + "  (\n"
                 + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + "  )\n"
                 + " )\n"
                 + " ,\n"
@@ -92,16 +90,14 @@ public class V3D_LineTest extends V3D_Test {
                 + "  (\n"
                 + "   dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
                 + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "   m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-3)\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + "  )\n"
                 + "  ,\n"
                 + "  offset=V3D_Vector\n"
                 + "  (\n"
                 + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + "  )\n"
                 + " )\n"
                 + " ,\n"
@@ -109,8 +105,7 @@ public class V3D_LineTest extends V3D_Test {
                 + " (\n"
                 + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
                 + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-3)\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + " )\n"
                 + ")";
         String result = instance.toString();
@@ -760,9 +755,9 @@ public class V3D_LineTest extends V3D_Test {
         BigDecimal result;
         // Test 1 
         // https://math.stackexchange.com/questions/2213165/find-shortest-distance-between-lines-in-3d
-        l = new V3D_Line(new V3D_Point(P2, P6, N9), new V3D_Vector(P3, P4, N4, oom), oom);
+        l = new V3D_Line(new V3D_Point(P2, P6, N9), new V3D_Vector(P3, P4, N4), oom);
         oom = -1;
-        instance = new V3D_Line(new V3D_Point(N1, N2, P3), new V3D_Vector(P2, N6, P1, oom), oom);
+        instance = new V3D_Line(new V3D_Point(N1, N2, P3), new V3D_Vector(P2, N6, P1), oom);
         expResult = new BigDecimal("4.7");
         result = instance.getDistance(l, oom);
         assertTrue(expResult.compareTo(result) == 0);

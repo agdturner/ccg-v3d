@@ -1737,8 +1737,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         public Line(Line l, V3D_Vector v) {
             this.p = new Point(l.p, v);
             this.q = new Point(l.q, v);
-            this.v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
-                    q.z.subtract(p.z), oom);
+            this.v = new V3D_Vector(
+                    q.x.subtract(p.x), 
+                    q.y.subtract(p.y),
+                    q.z.subtract(p.z));
         }
 
         /**
@@ -1751,9 +1753,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         public Line(Point p, Point q, int oom) {
             this.p = p;
             this.q = q;
-            v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
-                    q.z.subtract(p.z), oom);
-            oom = oom;
+            this.v = new V3D_Vector(
+                    q.x.subtract(p.x),
+                    q.y.subtract(p.y),
+                    q.z.subtract(p.z));
+            this.oom = oom;
         }
 
         /**
@@ -1765,8 +1769,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         public Line(Line l, int oom) {
             this.p = l.p;
             this.q = l.q;
-            v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
-                    q.z.subtract(p.z), oom);
+            this.v = new V3D_Vector(
+                    q.x.subtract(p.x), 
+                    q.y.subtract(p.y),
+                    q.z.subtract(p.z));
+            this.oom = oom;
         }
 
         @Override
@@ -1796,7 +1803,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          */
         public boolean isIntersectedBy(Point pt, int oom) {
             V3D_Vector ppt = new V3D_Vector(pt.x.subtract(p.x),
-                    pt.y.subtract(p.y), pt.z.subtract(p.z), oom);
+                    pt.y.subtract(p.y), pt.z.subtract(p.z));
             V3D_Vector cp = v.getCrossProduct(ppt, oom);
             return cp.dx.isZero() && cp.dy.isZero() && cp.dz.isZero();
         }
@@ -1841,14 +1848,14 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     return null;
                 }
             }
-            V3D_Vector plp = new V3D_Vector(p, l.p, oom);
-            V3D_Vector lqlp = new V3D_Vector(l.q, l.p, oom);
+            V3D_Vector plp = new V3D_Vector(p, l.p);
+            V3D_Vector lqlp = new V3D_Vector(l.q, l.p);
             if (lqlp.getMagnitudeSquared().compareTo(Math_BigRational.ZERO) == 0) {
                 if (isIntersectedBy(l.p, oom)) {
                     return l.p;
                 }
             }
-            V3D_Vector qp = new V3D_Vector(q, p, oom);
+            V3D_Vector qp = new V3D_Vector(q, p);
             if (qp.getMagnitudeSquared().compareTo(Math_BigRational.ZERO) == 0) {
                 if (l.isIntersectedBy(p, oom)) {
                     return p;
@@ -2260,14 +2267,16 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * @return The minimum distance between this and {@code p}.
          */
         public BigDecimal getDistance(Point p, int oom) {
-            V3D_Vector pv = new V3D_Vector(this.p, p, oom);
+            V3D_Vector pv = new V3D_Vector(this.p, p);
             V3D_Vector vu = v.getUnitVector(oom - 2);
-            BigDecimal pd = p.getDistance(new Point(vu.multiply(pv.getDotProduct(vu, oom), oom)
-                    .add(new V3D_Vector(this.p, oom), oom)), oom);
-            pv = new V3D_Vector(this.q, p, oom);
+            BigDecimal pd = p.getDistance(new Point(vu.multiply(
+                    pv.getDotProduct(vu, oom), oom)
+                    .add(new V3D_Vector(this.p), oom)), oom);
+            pv = new V3D_Vector(this.q, p);
             vu = v.reverse().getUnitVector(oom - 2);
-            BigDecimal qd = p.getDistance(new Point(vu.multiply(pv.getDotProduct(vu, oom), oom)
-                    .add(new V3D_Vector(this.q, oom), oom)), oom);
+            BigDecimal qd = p.getDistance(new Point(vu.multiply(
+                    pv.getDotProduct(vu, oom), oom)
+                    .add(new V3D_Vector(this.q), oom)), oom);
             return pd.min(qd);
         }
 
@@ -2290,8 +2299,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 /**
                  * Calculate the delta from {@link #p} and l.p
                  */
-                V3D_Vector delta = new V3D_Vector(p, oom)
-                        .subtract(new V3D_Vector(l.p, oom), oom);
+                V3D_Vector delta = new V3D_Vector(p)
+                        .subtract(new V3D_Vector(l.p), oom);
                 //Math_BigRational m = Math_BigRational.valueOf(cp.getMagnitude(oom - 2));
                 Math_BigRationalSqrt m = cp.getMagnitude();
                 // d = cp.(delta)/m
@@ -2496,10 +2505,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          */
         public Plane(Point p, Point q, Point r, int oom) {
             this(p, q, r,
-                    new V3D_Vector(p, q, oom),
-                    new V3D_Vector(q, r, oom),
-                    new V3D_Vector(p, q, oom).getCrossProduct(
-                            new V3D_Vector(q, r, oom), oom), oom);
+                    new V3D_Vector(p, q),
+                    new V3D_Vector(q, r),
+                    new V3D_Vector(p, q).getCrossProduct(
+                            new V3D_Vector(q, r), oom), oom);
         }
 
         @Override
@@ -2580,7 +2589,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             if (isIntersectedBy(l.q, oom)) {
                 return l.q;
             }
-            Math_BigRational num = new V3D_Vector(p, l.p, oom).getDotProduct(n, oom);
+            Math_BigRational num = new V3D_Vector(p, l.p).getDotProduct(n, oom);
             Math_BigRational den = l.v.getDotProduct(n, oom);
             Math_BigRational t = num.divide(den);
             return new Point(l.p.x.subtract(l.v.dx.multiply(t, oom).getSqrt(oom)),
@@ -2599,7 +2608,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             if (this.isIntersectedBy(p, oom)) {
                 return BigDecimal.ZERO;
             }
-            V3D_Vector v = new V3D_Vector(p, this.p, oom);
+            V3D_Vector v = new V3D_Vector(p, this.p);
             V3D_Vector u = this.n.getUnitVector(oom);
 //        MathContext mc = new MathContext(Math_BigRationalSqrt
 //                .getOOM(Math_BigRational.ONE, oom));

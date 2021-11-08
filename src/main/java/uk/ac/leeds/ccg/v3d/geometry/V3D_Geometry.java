@@ -59,7 +59,7 @@ public abstract class V3D_Geometry implements Serializable {
     /**
      * The offset used to get the geometry relative to the {@link V3D_Point#ORIGIN}.
      */
-    protected V3D_Vector offset;
+    public V3D_Vector offset;
     
     /**
      * The offset used to get the geometry relative to the {@link V3D_Point#ORIGIN}.

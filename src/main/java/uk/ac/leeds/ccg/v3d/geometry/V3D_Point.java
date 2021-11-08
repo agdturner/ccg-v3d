@@ -65,7 +65,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * The position relative to the {@link #ORIGIN}.
      */
-    public final V3D_Vector pos;
+    public V3D_Vector pos;
 
     /**
      * @param p The point to duplicate
@@ -94,7 +94,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public V3D_Point(V3D_Envelope.Point p) {
         super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
-        this.pos = new V3D_Vector(p.x, p.y, p.z, V3D_Environment.DEFAULT_OOM);
+        this.pos = new V3D_Vector(p.x, p.y, p.z);
     }
 
     /**
@@ -105,7 +105,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public V3D_Point(V3D_Vector v, int oom) {
         super(V3D_Vector.ZERO, oom);
-        this.pos = new V3D_Vector(v.dx, v.dy, v.dz, v.getMagnitude());
+        this.pos = new V3D_Vector(v.dx, v.dy, v.dz);
     }
 
     /**
@@ -115,7 +115,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public V3D_Point(Math_BigRational x, Math_BigRational y, Math_BigRational z) {
         super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
-        this.pos = new V3D_Vector(x, y, z, V3D_Environment.DEFAULT_OOM);
+        this.pos = new V3D_Vector(x, y, z);
     }
 
     /**

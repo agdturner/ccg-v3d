@@ -70,16 +70,14 @@ public class V3D_PointTest extends V3D_Test {
                 + " (\n"
                 + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + " )\n"
                 + " ,\n"
                 + " offset=V3D_Vector\n"
                 + " (\n"
                 + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + " )\n"
                 + ")";
         String result = instance.toString();
@@ -179,7 +177,7 @@ public class V3D_PointTest extends V3D_Test {
     public void testApply() {
         System.out.println("apply");
         int oom = -1;
-        V3D_Vector v = new V3D_Vector(P1, P1, P1, oom);
+        V3D_Vector v = new V3D_Vector(P1, P1, P1);
         V3D_Point instance = P0P0P0;
         V3D_Point expResult = P1P1P1;
         V3D_Point result = instance.apply(v, oom);

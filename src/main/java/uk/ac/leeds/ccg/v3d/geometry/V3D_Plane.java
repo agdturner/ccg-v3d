@@ -216,9 +216,9 @@ public class V3D_Plane extends V3D_Geometry {
          * testIsIntersectedBy_V3D_Point_int()
          */
         V3D_Vector pv;
-        V3D_Vector v1 = new V3D_Vector(Math_BigRationalSqrt.ZERO, n.dz, n.dy.negate(), oom);
-        V3D_Vector v2 = new V3D_Vector(n.dz.negate(), Math_BigRationalSqrt.ZERO, n.dx, oom);
-        V3D_Vector v3 = new V3D_Vector(n.dy.negate(), n.dx, Math_BigRationalSqrt.ZERO, oom);
+        V3D_Vector v1 = new V3D_Vector(Math_BigRationalSqrt.ZERO, n.dz, n.dy.negate());
+        V3D_Vector v2 = new V3D_Vector(n.dz.negate(), Math_BigRationalSqrt.ZERO, n.dx);
+        V3D_Vector v3 = new V3D_Vector(n.dy.negate(), n.dx, Math_BigRationalSqrt.ZERO);
         Math_BigRational mv1 = v1.getMagnitudeSquared();
         Math_BigRational mv2 = v2.getMagnitudeSquared();
         Math_BigRational mv3 = v3.getMagnitudeSquared();

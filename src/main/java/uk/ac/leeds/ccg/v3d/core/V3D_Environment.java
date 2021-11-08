@@ -72,7 +72,7 @@ public class V3D_Environment extends Generic_MemoryManager {
     /**
      * Zero vector.
      */
-    public static final V3D_Vector V0 = new V3D_Vector(P0, P0, P0, DEFAULT_OOM);
+    public static final V3D_Vector V0 = new V3D_Vector(P0, P0, P0);
 
     /**
      * The point at {@code <0,0,0>}.

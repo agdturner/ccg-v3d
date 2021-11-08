@@ -121,8 +121,7 @@ public class V3D_Line extends V3D_Geometry {
         this.v = new V3D_Vector(
                 q.getX(oom).subtract(p.getX(oom)),
                 q.getY(oom).subtract(p.getY(oom)),
-                q.getZ(oom).subtract(p.getZ(oom)),
-                oom);
+                q.getZ(oom).subtract(p.getZ(oom)));
     }
 
     /**
@@ -146,8 +145,7 @@ public class V3D_Line extends V3D_Geometry {
         this.v = new V3D_Vector(
                 q.getX(oom).subtract(p.getX(oom)),
                 q.getY(oom).subtract(p.getY(oom)),
-                q.getZ(oom).subtract(p.getZ(oom)),
-                oom);
+                q.getZ(oom).subtract(p.getZ(oom)));
     }
 
     /**
@@ -199,7 +197,7 @@ public class V3D_Line extends V3D_Geometry {
         this.v = new V3D_Vector(
                 q.getX(oom).subtract(p.getX(oom)), 
                 q.getY(oom).subtract(p.getY(oom)),
-                q.getZ(oom).subtract(p.getZ(oom)), oom);
+                q.getZ(oom).subtract(p.getZ(oom)));
     }
 
     @Override
@@ -304,15 +302,13 @@ public class V3D_Line extends V3D_Geometry {
             V3D_Vector ppt = new V3D_Vector(
                     pt.getX(oom).subtract(tq.getX(oomN2)),
                     pt.getY(oom).subtract(tq.getY(oomN2)),
-                    pt.getZ(oom).subtract(tq.getZ(oomN2)),
-                    oom);
+                    pt.getZ(oom).subtract(tq.getZ(oomN2)));
             cp = getV(oomN2).getCrossProduct(ppt, oomN2);
         } else {
             V3D_Vector ppt = new V3D_Vector(
                     pt.getX(oomN2).subtract(tp.getX(oomN2)),
                     pt.getY(oomN2).subtract(tp.getY(oomN2)), 
-                    pt.getZ(oomN2).subtract(tp.getZ(oomN2)),
-                    oom);
+                    pt.getZ(oomN2).subtract(tp.getZ(oomN2)));
             cp = getV(oomN2).getCrossProduct(ppt, oomN2);
         }
         //V3D_Vector cp = ppt.getCrossProduct(v, oom);
