@@ -124,7 +124,6 @@ public class V3D_Vector implements Serializable {
      * @param dx What {@link #dx} is set to.
      * @param dy Used to initialise {@link #dy}.
      * @param dz Used to initialise {@link #dz}.
-     * @param oom Used for initial square root calculations for magnitude.
      */
     public V3D_Vector(Math_BigRationalSqrt dx, Math_BigRational dy,
             Math_BigRational dz) {
@@ -139,7 +138,6 @@ public class V3D_Vector implements Serializable {
      * @param dx Used to initialise {@link #dx}.
      * @param dy What {@link #dy} is set to.
      * @param dz Used to initialise {@link #dz}.
-     * @param oom Used for initial square root calculations for magnitude.
      */
     public V3D_Vector(Math_BigRational dx, Math_BigRationalSqrt dy,
             Math_BigRational dz) {
@@ -154,7 +152,6 @@ public class V3D_Vector implements Serializable {
      * @param dx Used to initialise {@link #dx}.
      * @param dy Used to initialise {@link #dy}.
      * @param dz What {@link #dz} is set to.
-     * @param oom Used for initial square root calculations for magnitude.
      */
     public V3D_Vector(Math_BigRational dx, Math_BigRational dy,
             Math_BigRationalSqrt dz) {
@@ -261,7 +258,6 @@ public class V3D_Vector implements Serializable {
      *
      * @param p the point where the vector starts.
      * @param q the point where the vector ends.
-     * @param oom Used for initial square root calculations for magnitude.
      */
     public V3D_Vector(V3D_Envelope.Point p, V3D_Envelope.Point q) {
         this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
@@ -514,12 +510,16 @@ public class V3D_Vector implements Serializable {
         return m;
     }
     
+    /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     */
     private void initM(int oom) {
         m = new Math_BigRationalSqrt(dx.getX().add(dy.getX().add(dz.getX())),
                 oom);
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The magnitude of m.
      */
     protected Math_BigRationalSqrt getMagnitude0(int oom) {
