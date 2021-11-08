@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * Test of V3D_Rectangle class.
@@ -35,7 +36,8 @@ import uk.ac.leeds.ccg.v3d.V3D_Test;
  */
 public class V3D_RectangleTest extends V3D_Test {
 
-    public V3D_RectangleTest(){}
+    public V3D_RectangleTest() {
+    }
 
     @BeforeAll
     public static void setUpClass() {
@@ -137,12 +139,88 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        int oom = -1;
+        int oom = V3D_Environment.DEFAULT_OOM;
         V3D_Rectangle instance = new V3D_Rectangle(P0P0P0, P0P1P0, P1P1P0, P1P0P0, oom);
-        String expResult = "V3D_Rectangle(p=" + P0P0P0.toString()
-                + ", q=" + P0P1P0.toString() + ", r=" + P1P1P0.toString() 
-                + ", s=" + P1P0P0.toString() + ")";
+        String expResult = "V3D_Rectangle\n"
+                + "(\n"
+                + " p=V3D_Point\n"
+                + " (\n"
+                + "  pos=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + "  ,\n"
+                + "  offset=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + " )\n"
+                + " ,\n"
+                + " q=V3D_Point\n"
+                + " (\n"
+                + "  pos=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-3)\n"
+                + "  )\n"
+                + "  ,\n"
+                + "  offset=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + " )\n"
+                + " ,\n"
+                + " r=V3D_Point\n"
+                + " (\n"
+                + "  pos=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=2, sqrtxapprox=1.414, oom=-3)\n"
+                + "  )\n"
+                + "  ,\n"
+                + "  offset=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + " )\n"
+                + " ,\n"
+                + " s=V3D_Point\n"
+                + " (\n"
+                + "  pos=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-3)\n"
+                + "  )\n"
+                + "  ,\n"
+                + "  offset=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + " )\n"
+                + ")";
         String result = instance.toString();
+        //System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
     }
 

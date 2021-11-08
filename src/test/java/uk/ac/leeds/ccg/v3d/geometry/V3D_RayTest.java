@@ -92,7 +92,9 @@ public class V3D_RayTest extends V3D_Test {
         int oom = -1;
         V3D_Ray e = new V3D_Ray(P0P0P0, P1P1P1, oom);
         int result = e.hashCode();
-        int expResult = 17933661;
+        int expResult = 230608345;
+        //int expResult = 17933661;
+        //System.out.println(result);
         assertTrue(result == expResult);
     }
 

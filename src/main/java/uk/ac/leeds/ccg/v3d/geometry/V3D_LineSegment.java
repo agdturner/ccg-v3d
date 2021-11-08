@@ -115,8 +115,11 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
     
     @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "(" + toString0() + ")";
+    public String toString(String pad) {
+        return this.getClass().getSimpleName() + "\n"
+                + pad + "(\n"
+                + toStringFields(pad + " ") + "\n"
+                + pad + ")";
     }
 
     @Override

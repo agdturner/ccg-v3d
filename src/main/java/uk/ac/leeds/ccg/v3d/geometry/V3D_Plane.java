@@ -98,44 +98,39 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * One of the points that defines the plane.
      */
-    private final V3D_Point p;
+    protected final V3D_Point p;
 
     /**
      * One of the points that defines the plane.
      */
-    private final V3D_Point q;
+    protected final V3D_Point q;
 
     /**
      * One of the points that defines the plane.
      */
-    private final V3D_Point r;
+    protected final V3D_Point r;
 
     /**
      * The vector representing the move from {@link #p} to {@link #q}.
      */
-    private final V3D_Vector pq;
+    protected final V3D_Vector pq;
 
     /**
      * The vector representing the move from {@link #q} to {@link #r}.
      */
-    private final V3D_Vector qr;
+    protected final V3D_Vector qr;
 
     /**
      * The vector representing the move from {@link #r} to {@link #p}.
      */
-    private final V3D_Vector rp;
+    protected final V3D_Vector rp;
 
     /**
      * The normal vector. (This is perpendicular to the plane and it's direction
      * is given by order in which the two vectors {@link #pq} and {@link #qr}
      * are used in a cross product calculation when the plane is constructed.
      */
-    private final V3D_Vector n;
-
-    /**
-     * The Order of Magnitude for the precision of the plane.
-     */
-    protected final int oom;
+    protected final V3D_Vector n;
 
     /**
      * Create a new instance.
@@ -143,7 +138,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param p The plane used to create this.
      */
     public V3D_Plane(V3D_Plane p) {
-        super(V3D_Vector.ZERO);
+        super(V3D_Vector.ZERO, p.oom);
         this.qAtOrigin = p.q.equals(V3D_Environment.P0P0P0);
         this.p = new V3D_Point(p.p);
         this.q = new V3D_Point(p.q);
@@ -152,35 +147,6 @@ public class V3D_Plane extends V3D_Geometry {
         this.qr = new V3D_Vector(p.qr);
         this.rp = new V3D_Vector(p.rp);
         this.n = new V3D_Vector(p.n);
-        this.oom = p.oom;
-    }
-
-    /**
-     * Create a new instance.
-     *
-     * @param p What {@link #p} is set to.
-     * @param q What {@link #q} is set to.
-     * @param r What {@link #r} is set to.
-     * @param pq What {@link #pq} is set to.
-     * @param qr What {@link #qr} is set to.
-     * @param rp What {@link #rp} is set to.
-     * @param n What {@link #n} is set to.
-     * @param oom What {@link #oom} is set to.
-     * @throws RuntimeException If p, q and r are collinear and this is checked
-     * for.
-     */
-    public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Vector pq,
-            V3D_Vector qr, V3D_Vector rp, V3D_Vector n, int oom) {
-        super(V3D_Vector.ZERO);
-        this.qAtOrigin = q.equals(V3D_Environment.P0P0P0);
-        this.p = p;
-        this.q = q;
-        this.r = r;
-        this.pq = pq;
-        this.qr = qr;
-        this.rp = rp;
-        this.n = n;
-        this.oom = oom;
     }
 
     /**
@@ -188,9 +154,9 @@ public class V3D_Plane extends V3D_Geometry {
      * one of the other points as otherwise the cross product/normal vector
      * turns out to be the Zero vector.
      *
-     * @param p What {@link #p} is set to.
-     * @param q What {@link #q} is set to.
-     * @param r What {@link #r} is set to.
+     * @param p Used to initialise {@link #p}.
+     * @param q Used to initialise {@link #q}.
+     * @param r Used to initialise {@link #r}.
      * @param oom What {@link #oom} is set to.
      * @param checkCoplanar If {@code false} the there is no check that p, q and
      * are coplanar.
@@ -199,11 +165,11 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r, int oom,
             boolean checkCoplanar) {
-        super(V3D_Vector.ZERO);
-        this.qAtOrigin = q.equals(V3D_Environment.P0P0P0);
-        this.p = p;
-        this.q = q;
-        this.r = r;
+        super(V3D_Vector.ZERO, oom);
+        this.p = new V3D_Point(p);
+        this.q = new V3D_Point(q);
+        this.qAtOrigin = this.q.isOrigin();
+        this.r = new V3D_Point(r);
         this.pq = new V3D_Vector(this.p, this.q, oom);
         this.qr = new V3D_Vector(this.q, this.r, oom);
         this.rp = new V3D_Vector(this.r, this.p, oom);
@@ -217,7 +183,6 @@ public class V3D_Plane extends V3D_Geometry {
                 throw new RuntimeException("The points do not define a plane.");
             }
         }
-        this.oom = oom;
     }
 
     /**
@@ -237,13 +202,13 @@ public class V3D_Plane extends V3D_Geometry {
      * vector {@code n} is
      * {@code n.getDX(oom)(x) + n.getDY(oom)(y) + n.getDZ(oom)(z) = d}.
      *
-     * @param p What {@link #p} is set to.
+     * @param p Used to initialise {@link #p}.
      * @param n What {@link #n} is set to. This cannot be the ZERO vector.
      * @param oom What {@link #oom} is set to.
      */
     public V3D_Plane(V3D_Point p, V3D_Vector n, int oom) {
-        super(V3D_Vector.ZERO);
-        this.p = p;
+        super(V3D_Vector.ZERO, oom);
+        this.p = new V3D_Point(p);
         /**
          * Find a perpendicular vector using: user65203, How to find
          * perpendicular vector to another vector?, URL (version: 2020-10-01):
@@ -277,25 +242,34 @@ public class V3D_Plane extends V3D_Geometry {
         qr = new V3D_Vector(q, r, oom);
         rp = new V3D_Vector(r, p, oom);
         qAtOrigin = q.equals(V3D_Environment.P0P0P0);
-        this.n = n;
-        this.oom = oom;
+        this.n = new V3D_Vector(n);
     }
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "(" + toString0() + ")";
+        return toString("");
+    }
+    
+    public String toString(String pad) {
+        return this.getClass().getSimpleName() + "\n"
+                + pad + "(\n"
+                + toStringFields(pad + " ") + "\n"
+                + pad + ")";
+    }
+    
+    protected String toStringFields(String pad) {
+        return pad + "p=" + p.toString(pad) + "\n"
+               + pad + ",\n"
+               + pad + "q=" + q.toString(pad) + "\n"
+               + pad + ",\n"
+               + pad + "r=" + r.toString(pad);
     }
 
-    protected String toString0() {
-        return "p=" + p.toString() + ", q=" + q.toString() 
-                + ", r=" + r.toString() + ", oom=" + oom;
-    }
-
-    public V3D_Point getP(int oom){
+    public final V3D_Point getP(int oom){
         return new V3D_Point(p).apply(offset, oom);
     }
 
-    public V3D_Point getQ(int oom){
+    public final V3D_Point getQ(int oom){
         return new V3D_Point(q).apply(offset, oom);
     }
     
@@ -595,7 +569,7 @@ public class V3D_Plane extends V3D_Geometry {
          * Calculate the cross product of the normal vectors to get the
          * direction of the line.
          */
-        V3D_Vector v = n.getCrossProduct(pl.n, oom);
+        V3D_Vector v = getN(oom).getCrossProduct(pl.getN(oom), oom);
         /**
          * Check special cases.
          */
@@ -612,10 +586,11 @@ public class V3D_Plane extends V3D_Geometry {
          * Find the intersection of a line in the plane that is not parallel to v.
          */
         V3D_Point pi;
-        if (this.pq.isScalarMultiple(v, oom)) {
-            pi = (V3D_Point) pl.getIntersection(new V3D_Line(q, r, oom), oom);
+        V3D_Point tq = getQ(oom);
+        if (getPq(oom).isScalarMultiple(v, oom)) {
+            pi = (V3D_Point) pl.getIntersection(new V3D_Line(tq, getR(oom), oom), oom);
         } else {
-            pi = (V3D_Point) pl.getIntersection(new V3D_Line(p, q, oom), oom);
+            pi = (V3D_Point) pl.getIntersection(new V3D_Line(getP(oom), tq, oom), oom);
         }
         return new V3D_Line(pi, v, oom);
     }
@@ -1039,7 +1014,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public boolean isParallel(V3D_Plane p, int oom) {
         //return p.n.isScalarMultiple(n); // alternative - probably slower?
-        return n.getCrossProduct(p.n, oom).isZeroVector();
+        return getN(oom).getCrossProduct(p.getN(oom), oom).isZeroVector();
     }
 
     /**
@@ -1048,7 +1023,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} if {@code this} is parallel to {@code l}.
      */
     public boolean isParallel(V3D_Line l, int oom) {
-        return n.getDotProduct(l.getV(oom), oom).isZero();
+        return getN(oom).getDotProduct(l.getV(oom), oom).isZero();
     }
 
 //    @Override
@@ -1078,7 +1053,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
     public boolean equals(V3D_Plane pl, int oom) {
-        if (V3D_Geometrics.isCoplanar(oom, this, pl.getP(oom), pl.q, pl.r)) {
+        if (V3D_Geometrics.isCoplanar(oom, this, pl.getP(oom), pl.getQ(oom), pl.getR(oom))) {
             return true;
         }
 //        if (n.equals(pl.n)) {
@@ -1101,9 +1076,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
     public boolean isCoincident(V3D_Plane pl, int oom) {
-        if (isIntersectedBy(pl.p, oom)) {
-            if (isIntersectedBy(pl.q, oom)) {
-                if (isIntersectedBy(pl.r, oom)) {
+        if (isIntersectedBy(pl.getP(oom), oom)) {
+            if (isIntersectedBy(pl.getQ(oom), oom)) {
+                if (isIntersectedBy(pl.getR(oom), oom)) {
                     return true;
                 }
             }
@@ -1129,33 +1104,36 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The points that define the plan as a matrix.
      */
     public Math_Matrix_BR getAsMatrix() {
+        V3D_Point tp = getP(oom);
+        V3D_Point tq = getQ(oom);
+        V3D_Point tr = getR(oom);
         Math_BigRational[][] m = new Math_BigRational[3][3];
-        m[0][0] = p.getX(oom);
-        m[0][1] = p.getY(oom);
-        m[0][2] = p.getZ(oom);
-        m[1][0] = q.getX(oom);
-        m[1][1] = q.getY(oom);
-        m[1][2] = q.getZ(oom);
-        m[2][0] = r.getX(oom);
-        m[2][1] = r.getY(oom);
-        m[2][2] = r.getZ(oom);
+        m[0][0] = tp.getX(oom);
+        m[0][1] = tp.getY(oom);
+        m[0][2] = tp.getZ(oom);
+        m[1][0] = tq.getX(oom);
+        m[1][1] = tq.getY(oom);
+        m[1][2] = tq.getZ(oom);
+        m[2][0] = tr.getX(oom);
+        m[2][1] = tr.getY(oom);
+        m[2][2] = tr.getZ(oom);
         return new Math_Matrix_BR(m);
     }
 
     /**
      * Get the distance between this and {@code pl}.
      *
-     * @param p A point.
+     * @param pt A point.
      * @param oom The Order of Magnitude for the calculation.
      * @return The distance from {@code this} to {@code p}.
      */
     @Override
-    public BigDecimal getDistance(V3D_Point p, int oom) {
-        if (this.isIntersectedBy(p, oom)) {
+    public BigDecimal getDistance(V3D_Point pt, int oom) {
+        if (this.isIntersectedBy(pt, oom)) {
             return BigDecimal.ZERO;
         }
-        V3D_Vector v = new V3D_Vector(p, this.p, oom);
-        V3D_Vector u = this.n.getUnitVector(oom);
+        V3D_Vector v = new V3D_Vector(pt, getP(oom), oom);
+        V3D_Vector u = getN(oom).getUnitVector(oom);
 //        MathContext mc = new MathContext(Math_Math_BigRationalSqrt
 //                .getOOM(Math_BigRational.ONE, oom));
         MathContext mc = new MathContext(6 - oom);
@@ -1167,15 +1145,16 @@ public class V3D_Plane extends V3D_Geometry {
      * intersection on {@code p} and then return the distance squared between it
      * and {@link #p}.
      *
-     * @param p The other plane used to calculate the distance.
+     * @param pl The other plane used to calculate the distance.
      * @param oom The Order of Magnitude for the calculation.
      * @return The shortest distance between {@code this} and {@code p}. Choose
      * {@link #p}
      */
-    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
-        if (isParallel(p, oom)) {
-            return this.p.getDistanceSquared((V3D_Point) p.getIntersection(
-                    new V3D_Line(this.p, n, oom), oom), oom);
+    public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
+        if (isParallel(pl, oom)) {
+            V3D_Point tp = getP(oom);
+            return tp.getDistanceSquared((V3D_Point) pl.getIntersection(
+                    new V3D_Line(tp, getN(oom), oom), oom), oom);
         }
         return Math_BigRational.ZERO;
     }

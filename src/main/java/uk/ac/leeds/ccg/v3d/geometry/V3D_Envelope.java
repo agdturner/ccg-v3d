@@ -98,11 +98,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The Order of Magnitude used in the calculation of the magnitude of vectors.
-     */
-    private final int oom;
-
-    /**
      * The minimum x-coordinate.
      */
     private final Math_BigRational xMin;
@@ -186,8 +181,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param e An envelope.
      */
     public V3D_Envelope(V3D_Envelope e) {
-        super(V3D_Vector.ZERO);
-        this.oom = e.oom;
+        super(V3D_Vector.ZERO, e.oom);
         xMin = e.xMin.add(offset.getDX(oom));
         xMax = e.xMax.add(offset.getDX(oom));
         yMin = e.yMin.add(offset.getDX(oom));
@@ -244,8 +238,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param points The points used to form the envelop.
      */
     public V3D_Envelope(int oom, V3D_Point... points) {
-        super(V3D_Vector.ZERO);
-        this.oom = oom;
+        super(V3D_Vector.ZERO, oom);
         int len = points.length;
         switch (len) {
             case 0:
@@ -430,12 +423,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             return this;
         } else {
             return new V3D_Envelope(
-                    Math_BigRational.min(e.getXMin(e.oom), getXMin(this.oom)),
-                    Math_BigRational.max(e.getXMax(e.oom), getXMax(this.oom)),
-                    Math_BigRational.min(e.getYMin(e.oom), getYMin(this.oom)),
-                    Math_BigRational.max(e.getYMax(e.oom), getYMax(this.oom)),
-                    Math_BigRational.min(e.getZMin(e.oom), getZMin(this.oom)),
-                    Math_BigRational.max(e.getZMax(e.oom), getZMax(this.oom)),
+                    Math_BigRational.min(e.getXMin(e.oom), getXMin(oom)),
+                    Math_BigRational.max(e.getXMax(e.oom), getXMax(oom)),
+                    Math_BigRational.min(e.getYMin(e.oom), getYMin(oom)),
+                    Math_BigRational.max(e.getYMax(e.oom), getYMax(oom)),
+                    Math_BigRational.min(e.getZMin(e.oom), getZMin(oom)),
+                    Math_BigRational.max(e.getZMax(e.oom), getZMax(oom)),
                     oom);
         }
     }
@@ -447,18 +440,18 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return {@code true} if this intersects with {@code e}.
      */
     public boolean isIntersectedBy(V3D_Envelope e) {
-        if (e.getXMax(e.oom).compareTo(getXMin(this.oom)) != -1
-                && e.getXMin(e.oom).compareTo(getXMax(this.oom)) != 1
-                && getXMax(e.oom).compareTo(e.getXMin(this.oom)) != -1
-                && getXMin(e.oom).compareTo(e.getXMax(this.oom)) != 1) {
-            if (e.getYMax(e.oom).compareTo(getYMin(this.oom)) != -1
-                    && e.getYMin(e.oom).compareTo(getYMax(this.oom)) != 1
-                    && getYMax(e.oom).compareTo(e.getYMin(this.oom)) != -1
-                    && getYMin(e.oom).compareTo(e.getYMax(this.oom)) != 1) {
-                if (e.getZMax(e.oom).compareTo(getZMin(this.oom)) != -1
-                        && e.getZMin(e.oom).compareTo(getZMax(this.oom)) != 1
-                        && getZMax(e.oom).compareTo(e.getZMin(this.oom)) != -1
-                        && getZMin(e.oom).compareTo(e.getZMax(this.oom)) != 1) {
+        if (e.getXMax(e.oom).compareTo(getXMin(oom)) != -1
+                && e.getXMin(e.oom).compareTo(getXMax(oom)) != 1
+                && getXMax(e.oom).compareTo(e.getXMin(oom)) != -1
+                && getXMin(e.oom).compareTo(e.getXMax(oom)) != 1) {
+            if (e.getYMax(e.oom).compareTo(getYMin(oom)) != -1
+                    && e.getYMin(e.oom).compareTo(getYMax(oom)) != 1
+                    && getYMax(e.oom).compareTo(e.getYMin(oom)) != -1
+                    && getYMin(e.oom).compareTo(e.getYMax(oom)) != 1) {
+                if (e.getZMax(e.oom).compareTo(getZMin(oom)) != -1
+                        && e.getZMin(e.oom).compareTo(getZMax(oom)) != 1
+                        && getZMax(e.oom).compareTo(e.getZMin(oom)) != -1
+                        && getZMin(e.oom).compareTo(e.getZMax(oom)) != 1) {
                     return true;
                 }
             }
@@ -474,12 +467,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return if this is contained by {@code e}
      */
     public boolean isContainedBy(V3D_Envelope e) {
-        return getXMax(this.oom).compareTo(e.getXMax(e.oom)) != 1
-                && getXMin(this.oom).compareTo(e.getXMin(e.oom)) != -1
-                && getYMax(this.oom).compareTo(e.getYMax(e.oom)) != 1
-                && getYMin(this.oom).compareTo(e.getYMin(e.oom)) != -1
-                && getZMax(this.oom).compareTo(e.getZMax(e.oom)) != 1
-                && getZMin(this.oom).compareTo(e.getZMin(e.oom)) != -1;
+        return getXMax(oom).compareTo(e.getXMax(e.oom)) != 1
+                && getXMin(oom).compareTo(e.getXMin(e.oom)) != -1
+                && getYMax(oom).compareTo(e.getYMax(e.oom)) != 1
+                && getYMin(oom).compareTo(e.getYMin(e.oom)) != -1
+                && getZMax(oom).compareTo(e.getZMax(e.oom)) != 1
+                && getZMin(oom).compareTo(e.getZMin(e.oom)) != -1;
     }
 
     /**
@@ -499,9 +492,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public boolean isIntersectedBy(Math_BigRational x, Math_BigRational y,
             Math_BigRational z) {
-        return x.compareTo(getXMin(this.oom)) != -1 && x.compareTo(getXMax(this.oom)) != 1
-                && y.compareTo(getYMin(this.oom)) != -1 && y.compareTo(getYMax(this.oom)) != 1
-                && z.compareTo(getZMin(this.oom)) != -1 && z.compareTo(getZMax(this.oom)) != 1;
+        return x.compareTo(getXMin(oom)) != -1 && x.compareTo(getXMax(oom)) != 1
+                && y.compareTo(getYMin(oom)) != -1 && y.compareTo(getYMax(oom)) != 1
+                && z.compareTo(getZMin(oom)) != -1 && z.compareTo(getZMax(oom)) != 1;
     }
 
     /**
@@ -517,12 +510,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             return null;
         }
         return new V3D_Envelope(
-                Math_BigRational.max(getXMin(this.oom), en.getXMin(en.oom)),
-                Math_BigRational.min(getXMax(this.oom), en.getXMax(en.oom)),
-                Math_BigRational.max(getYMin(this.oom), en.getYMin(en.oom)),
-                Math_BigRational.min(getYMax(this.oom), en.getYMax(en.oom)),
-                Math_BigRational.max(getZMin(this.oom), en.getZMin(en.oom)),
-                Math_BigRational.min(getZMax(this.oom), en.getZMax(en.oom)),
+                Math_BigRational.max(getXMin(oom), en.getXMin(en.oom)),
+                Math_BigRational.min(getXMax(oom), en.getXMax(en.oom)),
+                Math_BigRational.max(getYMin(oom), en.getYMin(en.oom)),
+                Math_BigRational.min(getYMax(oom), en.getYMax(en.oom)),
+                Math_BigRational.max(getZMin(oom), en.getZMin(en.oom)),
+                Math_BigRational.min(getZMax(oom), en.getZMax(en.oom)),
                 oom);
     }
 
@@ -947,12 +940,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return {@code true} iff this and e are equal.
      */
     public boolean equals(V3D_Envelope e) {
-        return this.getXMin(this.oom).compareTo(e.getXMin(e.oom)) == 0
-                && this.getXMax(this.oom).compareTo(e.getXMax(e.oom)) == 0
-                && this.getYMin(this.oom).compareTo(e.getYMin(e.oom)) == 0
-                && this.getYMax(this.oom).compareTo(e.getYMax(e.oom)) == 0
-                && this.getZMin(this.oom).compareTo(e.getZMin(e.oom)) == 0
-                && this.getZMax(this.oom).compareTo(e.getZMax(e.oom)) == 0;
+        return this.getXMin(oom).compareTo(e.getXMin(e.oom)) == 0
+                && this.getXMax(oom).compareTo(e.getXMax(e.oom)) == 0
+                && this.getYMin(oom).compareTo(e.getYMin(e.oom)) == 0
+                && this.getYMax(oom).compareTo(e.getYMax(e.oom)) == 0
+                && this.getZMin(oom).compareTo(e.getZMin(e.oom)) == 0
+                && this.getZMax(oom).compareTo(e.getZMax(e.oom)) == 0;
     }
 
     @Override
@@ -966,7 +959,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 19 * hash + this.oom;
+        hash = 19 * hash + oom;
         hash = 19 * hash + Objects.hashCode(this.xMin);
         hash = 19 * hash + Objects.hashCode(this.xMax);
         hash = 19 * hash + Objects.hashCode(this.yMin);
@@ -1757,7 +1750,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             this.q = q;
             v = new V3D_Vector(q.x.subtract(p.x), q.y.subtract(p.y),
                     q.z.subtract(p.z), oom);
-            this.oom = oom;
+            oom = oom;
         }
 
         /**
@@ -2486,7 +2479,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             this.pq = pq;
             this.qr = qr;
             this.n = n;
-            this.oom = oom;
+            oom = oom;
         }
 
         /**

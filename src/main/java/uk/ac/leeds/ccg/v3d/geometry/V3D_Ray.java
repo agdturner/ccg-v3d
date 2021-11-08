@@ -104,12 +104,7 @@ public class V3D_Ray extends V3D_Line {
     public boolean equals(Object o) {
         if (o instanceof V3D_Ray) {
             V3D_Ray l = (V3D_Ray) o;
-            if (l.p.equals(p) && l.q.equals(q)) {
-                return true;
-            }
-            if (l.p.equals(q) && l.q.equals(p)) {
-                return true;
-            }
+            return equals(l, oom);
         }
         return false;
     }
@@ -120,7 +115,7 @@ public class V3D_Ray extends V3D_Line {
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_Ray l, int oom) {
-        return p.equals(l.p) && isIntersectedBy(l.q, oom);
+        return getP(oom).equals(l.getP(oom)) && isIntersectedBy(l.getQ(oom), oom);
     }
 
     @Override

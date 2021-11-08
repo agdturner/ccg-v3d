@@ -67,7 +67,7 @@ public class V3D_Environment extends Generic_MemoryManager {
     /**
      * The default Order of Magnitude.
      */
-    public static final int DEFAULT_OOM = -1;
+    public static final int DEFAULT_OOM = -3;
     
     /**
      * Zero vector.

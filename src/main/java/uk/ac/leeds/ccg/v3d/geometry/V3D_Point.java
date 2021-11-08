@@ -71,7 +71,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param p The point to duplicate
      */
     public V3D_Point(V3D_Point p) {
-        super(new V3D_Vector(p.offset));
+        super(new V3D_Vector(p.offset), p.oom);
         this.pos = new V3D_Vector(p.pos);
 //        super(V3D_Vector.ZERO);
 //        this.pos = p.pos.add(p.offset, p.pos.getMagnitude().getOom());
@@ -82,7 +82,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param offset What {@link #offset} is set to.
      */
     public V3D_Point(V3D_Vector pos, V3D_Vector offset) {
-        super(new V3D_Vector(offset));
+        super(new V3D_Vector(offset), Math.min(offset.getMagnitude().getOom(),
+                pos.getMagnitude().getOom()));
         this.pos = new V3D_Vector(pos);
 //        super(V3D_Vector.ZERO);
 //        this.pos = pos.add(offset, pos.getMagnitude().getOom());
@@ -92,7 +93,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param p The point to duplicate
      */
     public V3D_Point(V3D_Envelope.Point p) {
-        super(V3D_Vector.ZERO);
+        super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
         this.pos = new V3D_Vector(p.x, p.y, p.z, V3D_Environment.DEFAULT_OOM);
     }
 
@@ -103,7 +104,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision.
      */
     public V3D_Point(V3D_Vector v, int oom) {
-        super(V3D_Vector.ZERO);
+        super(V3D_Vector.ZERO, oom);
         this.pos = new V3D_Vector(v.dx, v.dy, v.dz, v.getMagnitude());
     }
 
@@ -113,7 +114,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param z What {@link #z} is set to.
      */
     public V3D_Point(Math_BigRational x, Math_BigRational y, Math_BigRational z) {
-        super(V3D_Vector.ZERO);
+        super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
         this.pos = new V3D_Vector(x, y, z, V3D_Environment.DEFAULT_OOM);
     }
 
@@ -149,8 +150,20 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "(pos=" + pos.toString()
-                + ", offset=" + offset.toString() + ")";
+        return toString("");
+    }
+    
+    public String toString(String pad) {
+        return this.getClass().getSimpleName() + "\n"
+                + pad + "(\n"
+                + toStringFields(pad + " ") + "\n"
+                + pad + ")";
+    }
+    
+    protected String toStringFields(String pad) {
+        return pad + "pos=" + pos.toString(pad) + "\n"
+               + pad + ",\n"
+               + pad + "offset=" + offset.toString(pad);
     }
 
     @Override

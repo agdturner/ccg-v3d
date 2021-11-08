@@ -62,11 +62,13 @@ public class V3D_VectorTest extends V3D_Test {
         System.out.println("toString");
         int oom = -1;
         V3D_Vector instance = new V3D_Vector(P0P0P0, oom);
-        String expResult = "V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-1))";
+        String expResult = "V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-1)\n"
+                + ")";
         String result = instance.toString();
         assertTrue(expResult.equalsIgnoreCase(result));
     }

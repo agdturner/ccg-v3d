@@ -54,7 +54,7 @@ public class V3D_Vector implements Serializable {
      * The zero vector {@code <0,0,0>} where
      * {@link #dx} = {@link #dy} = {@link #dz} = 0.
      */
-    public static final V3D_Vector ZERO = new V3D_Vector(0, 0, 0, 0);
+    public static final V3D_Vector ZERO = new V3D_Vector(0, 0, 0, V3D_Environment.DEFAULT_OOM);
 
     /**
      * The magnitude of the vector.
@@ -301,8 +301,21 @@ public class V3D_Vector implements Serializable {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "(dx=" + dx + ", dy=" + dy
-                + ", dz=" + dz + ", m=" + m + ")";
+        return toString("");
+    }
+    
+    public String toString(String pad) {
+        return this.getClass().getSimpleName() + "\n"
+                + pad + "(\n"
+                + toStringFields(pad + " ") + "\n"
+                + pad + ")";
+    }
+    
+    protected String toStringFields(String pad) {
+        return pad + "dx=" + dx + ",\n"
+                + pad + "dy=" + dy + ",\n"
+                + pad + "dz=" + dz + ",\n"
+                + pad + "m=" + m;
     }
 
     @Override
@@ -658,6 +671,10 @@ public class V3D_Vector implements Serializable {
                 dy.multiply(v.dz, oom).getSqrt(oom).subtract(dz.multiply(v.dy, oom).getSqrt(oom)),
                 dx.multiply(v.dz, oom).getSqrt(oom).subtract(dz.multiply(v.dx, oom).getSqrt(oom)).negate(),
                 dx.multiply(v.dy, oom).getSqrt(oom).subtract(v.dx.multiply(dy, oom).getSqrt(oom)), oom);
+//        return new V3D_Vector(
+//                dy.multiply(v.dz, oom).getSqrt(oom).subtract(dz.multiply(v.dy, oom).getSqrt(oom)),
+//                dx.multiply(v.dz, oom).getSqrt(oom).subtract(dz.multiply(v.dx, oom).getSqrt(oom)).negate(),
+//                dx.multiply(v.dy, oom).getSqrt(oom).subtract(v.dx.multiply(dy, oom).getSqrt(oom)), oom);
     }
 
     /**

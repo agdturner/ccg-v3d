@@ -203,7 +203,7 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Triangle instance = new V3D_Triangle(P0P0P0, P2P2P0, new V3D_Point(P4, P0, P0), oom);
         V3D_Geometry expResult = new V3D_LineSegment(P2P0P0, new V3D_Point(P2, P1, P0), oom);
         V3D_Geometry result = instance.getIntersection(l, oom, true);
-        System.out.println(result);
+        //System.out.println(result);
         System.out.println(expResult);
         assertTrue(expResult.equals(result));
     }

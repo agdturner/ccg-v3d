@@ -27,6 +27,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
+import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * Test of V3D_Plane class.
@@ -80,10 +81,67 @@ public class V3D_PlaneTest extends V3D_Test {
         System.out.println("toString");
         int oom = -1;
         V3D_Plane instance = new V3D_Plane(P0P0P0, P1P1P1, P1P0P0, oom);
-        String expResult = "V3D_Plane(p=V3D_Point(x=0, y=0, z=0), "
-                + "q=V3D_Point(x=1, y=1, z=1), r=V3D_Point(x=1, y=0, z=0),"
-                + " oom=-1)";
+        String expResult = "V3D_Plane\n"
+                + "(\n"
+                + " p=V3D_Point\n"
+                + " (\n"
+                + "  pos=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + "  ,\n"
+                + "  offset=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + " )\n"
+                + " ,\n"
+                + " q=V3D_Point\n"
+                + " (\n"
+                + "  pos=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=3, sqrtxapprox=1.732, oom=-3)\n"
+                + "  )\n"
+                + "  ,\n"
+                + "  offset=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + " )\n"
+                + " ,\n"
+                + " r=V3D_Point\n"
+                + " (\n"
+                + "  pos=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-3)\n"
+                + "  )\n"
+                + "  ,\n"
+                + "  offset=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + " )\n"
+                + ")";
         String result = instance.toString();
+        System.out.println(result);
         assertTrue(expResult.equals(result));
     }
 
@@ -2509,7 +2567,11 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testHashCode() {
         System.out.println("hashCode");
-        assertTrue(true); // Not really a test - method does not need testing.
+        V3D_Plane p = V3D_Environment.x0;
+        int result = p.hashCode();
+        int expResult = -1025233770;
+        //System.out.println(result);
+        assertTrue(result == expResult);
     }
 
     /**
@@ -2686,7 +2748,7 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_Plane_int() {
         System.out.println("getIntersection");
-        int oom = -1;
+        int oom = -3;
         V3D_Plane pl;
         V3D_Plane instance;
         V3D_Geometry expResult;
@@ -2714,20 +2776,30 @@ public class V3D_PlaneTest extends V3D_Test {
                         Math_BigRational.valueOf(-1).divide(16),
                         Math_BigRational.valueOf(-1).divide(16), oom), oom);
         result = instance.getIntersection(pl, oom);
+        assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom));
         assertTrue(expResult.equals(result));
         /**
          * The following is from:
          * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc
          * Simple.
          */
+        oom = -3;
         pl = new V3D_Plane(new V3D_Point(7, 11, 0),
                 new V3D_Vector(0, 0, 3, oom), oom);
         instance = new V3D_Plane(new V3D_Point(1, 0, 0),
                 new V3D_Vector(5, 5, 0, oom), oom);
-        expResult = new V3D_Line(new V3D_Point(0.5d, 0.5d, 0),
-                new V3D_Vector(-15, 15, 0, oom), oom);
+        V3D_Point p2 = new V3D_Point(0.5d, 0.5d, 0);
+        assertTrue(V3D_Geometrics.isCoplanar(oom, pl, p2));
+        V3D_Vector v2 = new V3D_Vector(-15, 15, 0, oom);
+        assertTrue(V3D_Geometrics.isCoplanar(oom, pl, p2.apply(v2, oom)));
+        
+        expResult = new V3D_Line(p2, v2, oom);
+        
         result = instance.getIntersection(pl, oom);
-        assertTrue(expResult.equals(result));
+        System.out.println(result);
+        result = instance.getIntersection(pl, oom);
+        assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom));
+        //assertTrue(expResult.equals(result));
         // Test V3D_Environment.x0
         pl = V3D_Environment.x0;
         // Test 1 
@@ -3173,8 +3245,16 @@ public class V3D_PlaneTest extends V3D_Test {
         m[2][2] = Math_BigRational.ONE;
         Math_Matrix_BR expResult = new Math_Matrix_BR(m);
         Math_Matrix_BR result = instance.getAsMatrix();
-        assertTrue(expResult.equals(result));
-        // Test 2
+        assertTrue(expResult.getRows().length == result.getRows().length);
+        assertTrue(expResult.getCols().length == result.getCols().length);
+        for (int i = 0; i < expResult.getRows().length; i++){
+            for (int j = 0; j < expResult.getCols().length; j++){
+//                if (expResult.getRows()[i][j].compareTo(result.getRows()[i][j]) != 0) {
+//                    int debug = 1;
+//                }
+                assertTrue(expResult.getRows()[i][j].compareTo(result.getRows()[i][j]) == 0);
+            }
+        }
     }
 
     /**

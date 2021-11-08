@@ -64,19 +64,27 @@ public class V3D_PointTest extends V3D_Test {
         Math_BigRational y = P0;
         Math_BigRational z = P0;
         V3D_Point instance = new V3D_Point(x, y, z);
-        String expResult = "V3D_Point(pos=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-1)), "
-                + "offset=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),"
-                + " m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)))";
+        String expResult = "V3D_Point\n"
+                + "(\n"
+                + " pos=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + " )\n"
+                + " ,\n"
+                + " offset=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + " )\n"
+                + ")";
         String result = instance.toString();
         //System.out.println(result);
-        assertEquals(expResult, result);
+        assertTrue(expResult.equalsIgnoreCase(result));
     }
 
     /**
@@ -159,8 +167,7 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("hashCode");
         V3D_Envelope e = P0P0P0.getEnvelope(V3D_Environment.DEFAULT_OOM);
         int result = e.hashCode();
-        int expResult = 1915088996;
-        //int expResult = 1299868383;
+        int expResult = 1820997234;
         //System.out.println(result);
         assertTrue(result == expResult);
     }

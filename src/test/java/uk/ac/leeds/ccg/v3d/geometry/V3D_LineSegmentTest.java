@@ -63,37 +63,58 @@ public class V3D_LineSegmentTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        int oom = -1;
-        V3D_Point start = new V3D_Point(P0, P0, P0);
-        V3D_Point end = new V3D_Point(P1, P1, P1);
-        V3D_LineSegment instance = new V3D_LineSegment(start, end, oom);
-        String expResult = "V3D_LineSegment(p=V3D_Point(pos=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-1)), "
-                + "offset=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0))), "
-                + "q=V3D_Point(pos=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
-                + "m=Math_BigRationalSqrt(x=3, sqrtxapprox=1.7, oom=-1)), "
-                + "offset=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0))), "
-                + "v=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
-                + "m=Math_BigRationalSqrt(x=3, sqrtxapprox=1.7, oom=-1)))";
+        int oom = V3D_Environment.DEFAULT_OOM;
+        V3D_LineSegment instance = new V3D_LineSegment(P0P0P0, P1P0P0, oom);
+        String expResult = "V3D_LineSegment\n"
+                + "(\n"
+                + " p=V3D_Point\n"
+                + " (\n"
+                + "  pos=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + "  ,\n"
+                + "  offset=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + " )\n"
+                + " ,\n"
+                + " q=V3D_Point\n"
+                + " (\n"
+                + "  pos=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-3)\n"
+                + "  )\n"
+                + "  ,\n"
+                + "  offset=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + " )\n"
+                + " ,\n"
+                + " v=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-3)\n"
+                + " )\n"
+                + ")";
         String result = instance.toString();
-        //System.out.println(result);
+        System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
     }
 

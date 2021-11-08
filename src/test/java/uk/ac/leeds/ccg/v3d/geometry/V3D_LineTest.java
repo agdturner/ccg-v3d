@@ -63,35 +63,58 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        int oom = -1;
+        int oom = V3D_Environment.DEFAULT_OOM;
         V3D_Line instance = new V3D_Line(P0P0P0, P1P0P0, oom);
-        String expResult = "V3D_Line(p=V3D_Point(pos=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-1)), "
-                + "offset=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0))), "
-                + "q=V3D_Point(pos=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-1)), "
-                + "offset=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0))), "
-                + "v=V3D_Vector("
-                + "dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0), "
-                + "dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0), "
-                + "m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-1)))";
+        String expResult = "V3D_Line\n"
+                + "(\n"
+                + " p=V3D_Point\n"
+                + " (\n"
+                + "  pos=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + "  ,\n"
+                + "  offset=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + " )\n"
+                + " ,\n"
+                + " q=V3D_Point\n"
+                + " (\n"
+                + "  pos=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-3)\n"
+                + "  )\n"
+                + "  ,\n"
+                + "  offset=V3D_Vector\n"
+                + "  (\n"
+                + "   dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "   m=Math_BigRationalSqrt(x=0, sqrtx=0, oom=-3)\n"
+                + "  )\n"
+                + " )\n"
+                + " ,\n"
+                + " v=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  m=Math_BigRationalSqrt(x=1, sqrtx=1, oom=-3)\n"
+                + " )\n"
+                + ")";
         String result = instance.toString();
-        System.out.println(result);
+        //System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
     }
 
@@ -620,6 +643,8 @@ public class V3D_LineTest extends V3D_Test {
         // Test 2
         instance = new V3D_Line(P1N1P0, P1P1P0, oom);
         expResult = new V3D_LineSegment(P0P0P0, P1P0P0, oom);
+        //result = instance.getLineOfIntersection(pt, oom);
+        //System.out.println(result);
         result = instance.getLineOfIntersection(pt, oom);
         assertTrue(expResult.equals(result));
     }
@@ -698,6 +723,8 @@ public class V3D_LineTest extends V3D_Test {
         r = new V3D_Ray(P1P0P0, P2P0P0, oom);
         instance = new V3D_Line(P0P0P0, P1P1P0, oom);
         expResult = new Math_BigRationalSqrt(2L, oom).getSqrt(oom).divide(2L).toBigDecimal(oom);
+        //result = instance.getDistance(r, oom);
+        //System.out.println(result);
         result = instance.getDistance(r, oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
