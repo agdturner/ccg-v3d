@@ -27,7 +27,7 @@ Developed and tested on [Java Development Kit, version 17](https://openjdk.java.
     <version>0.11</version>
 </dependency>
 ```
-[JAR](https://repo1.maven.org/maven2/io/github/agdturner/ccg-3d/0.11/ccg-v3d-0.11.jar)
+[JAR](https://repo1.maven.org/maven2/io/github/agdturner/ccg-v3d/0.11/ccg-v3d-0.11.jar)
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-v3d -->
 <dependency>
