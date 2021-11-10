@@ -12,25 +12,25 @@ The code development aims to be sustainable with a complete coverage of unit tes
 The current focus is to represent and provide instersection, centroid and distance calculation code for:
 - Envelopes - [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid)s with sides aligned with the coordinate axes 
 - Straight [line segment](https://en.wikipedia.org/wiki/Line_segment)s
-- [Polytope](https://en.wikipedia.org/wiki/Polytope)s (shapes with flat faces) based on [Triangle](https://en.wikipedia.org/wiki/Triangle)s that form [triangulated irregular networks](https://en.wikipedia.org/wiki/Triangulated_irregular_network) - these are either planar and if not planar the surface may or may not enclose a volume.
+- [Polytope](https://en.wikipedia.org/wiki/Polytope)s - shapes with flat faces comprised of collections of coplanar [triangle](https://en.wikipedia.org/wiki/Triangle)s. The shape may or may not completely enclose a volume.
 
 ## Latest versioned releases
 Developed and tested on [Java Development Kit, version 17](https://openjdk.java.net/projects/jdk/17/). The latest version is on GitHub.
 
 ```
-<!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
+<!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-v3d -->
 <dependency>
     <groupId>io.github.agdturner</groupId>
-    <artifactId>agdt-java-vector3D</artifactId>
+    <artifactId>ccg-v3d</artifactId>
     <version>0.11</version>
 </dependency>
 ```
-[JAR](https://repo1.maven.org/maven2/io/github/agdturner/agdt-java-vector3d/0.11/agdt-java-vector3d-0.11.jar)
+[JAR](https://repo1.maven.org/maven2/io/github/agdturner/ccg-3d/0.11/ccg-v3d-0.11.jar)
 ```
-<!-- https://mvnrepository.com/artifact/io.github.agdturner/agdt-java-vector3d -->
+<!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-v3d -->
 <dependency>
     <groupId>io.github.agdturner</groupId>
-    <artifactId>agdt-java-vector3D</artifactId>
+    <artifactId>ccg-v3d</artifactId>
     <version>0.12-SNAPSHOT</version>
 </dependency>
 ```
@@ -44,10 +44,10 @@ Developed and tested on [Java Development Kit, version 17](https://openjdk.java.
 ## Main classes
 
 ### [V3D_Vector](https://github.com/agdturner/ccg-v3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java)
-This stores 4 [Math_BigRationalSqrt](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRationalSqrt.java) representing a vector of x, y, and z coordinates, and a value for the magnitude. A vector can be applied to any geometry and use to translate or rotate geometries.
+This stores 4 [Math_BigRationalSqrt](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRationalSqrt.java) representing a vector of change in x, y, and z coordinates. The magnitude of the vector once calclated to an Or. A vector can be applied to any geometry and use to translate or rotate geometries.
 
 ### [V3D_Geometry](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Geometry.java)
-An abstract class with a V3D_Vector offset, and an Order of Magnitude oom. This class extended to define geometries. The Order of Magnitude is used for the precision of calculations.
+An abstract class with a V3D_Vector offset, and an Order of Magnitude oom. This class is extended to define geometries. The Order of Magnitude is used for the precision of calculations.
 
 ### [V3D_Point](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java)
 Extends V3D_Geometry and provides a V3D_Vector pos (which can be considered as the position relative to the origin).
@@ -65,16 +65,16 @@ Extends V3D_Geometry and represents an infinite [plane](https://en.wikipedia.org
 Extends V3D_Geometry and represents a [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid) with edges aligned with the coordinate axes. The dimensions can collapse, so the envolope can form a [rectangle](https://en.wikipedia.org/wiki/Rectangle), or a line segment, or a point. Each finite geometry has an envelope that bounds it. Envelopes are computationally useful for selecting geometries and perfomring calculations, such as checking for potential intersection and visibility.
 
 ### [V3D_LineSegment](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_LineSegment.java)
-Extends V3D_Geometry and V3D_Line, where the two points define the ends of the line segment.
+Extends V3D_Geometry and V3D_Line, and represents a finite part of a line, where the two points that define the line are the end points of the line segment. Line segments are considered equal irrespective of the order of these end points.
 
 ### [V3D_Triangle](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Triangle.java)
-Extends V3D_Geometry and V3D_Plane and represents a [triangle](https://en.wikipedia.org/wiki/Triangle) where the three points {p, q and r} are the corners of the triangle. Each side of the triangle can be stored as a line segment for convenience.
+Extends V3D_Geometry and V3D_Plane, and represents [triangle](https://en.wikipedia.org/wiki/Triangle)s. The three coplanar points {p, q and r} are the corners of the triangle. Triangle sides are constructed as needed as line segments.
 
 ### [V3D_Rectangle](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Rectangle.java)
-Extends V3D_Geometry and V3D_Plane and represents a [rectangle](https://en.wikipedia.org/wiki/Rectangle). The fourth point is also stored as can all the are additional vectors between this fourth point and the other points. The edges of the rectangle can be stored as line segments.
+Extends V3D_Geometry and V3D_Plane, and represents [rectangle](https://en.wikipedia.org/wiki/Rectangle)s. The fourth point is also stored as can all the are additional vectors between this fourth point and the other points. The edges of the rectangle can be stored as line segments.
 
 ### [V3D_Tetrahedron](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Tetrahedron.java)
-Extends V3D_Geometry and represents a [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron). The fourth point is not to be coplanar with the other three. The four triangles that make up the shape can be stored.
+Extends V3D_Geometry and represent [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron)s. The fourth point is not to be coplanar with the other three. The four triangles that make up the shape can be stored.
 
 ## Collections
 There are classes for the collections of basic geometries.
