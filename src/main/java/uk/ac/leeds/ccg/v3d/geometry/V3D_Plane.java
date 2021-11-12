@@ -25,40 +25,8 @@ import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * 3D representation of an infinite plane. The plane is defined by three points
- * {@link #p}, {@link #q} and {@link #r} that are not collinear, a normal vector
- * {@link #n} that is perpendicular to the plane, and two vectors; {@link #pq}
- * (which is the vector from {@link #p} to {@link #q}), and {@link #qr} (which
- * is the vector from {@link #q} to {@link #r}). The "*" denotes a point in 3D,
- * {@link #pq} is depicted with a line of "e" symbols, {@link #qr} is depicted
- * with a line of "f" symbols in the following depiction: {@code
- *                                       z
- *                          y           -
- *                          +          /                * p=<x0,y0,z0>
- *                          |         /                e
- *                          |        /                e
- *                          |    z0-/                e
- *                          |      /                e
- *                          |     /               e
- *                          |    /               e
- *                          |   /               e
- *                       y0-|  /               e
- *                          | /               e
- *             x2           |/         x1    e
- * x - --------/------------|-----------/---e---/---- + x
- *                         /|              e   x0
- *                        / |-y1          e
- *                    z2-/  |           e
- *                      /   |          e
- *                  z1-/    |         e
- *                    /  y2-|        e
- *                   /      | f f f * q=<x1,y1,z1>
- *                  f f f f f
- *          * f f f/        |
- *  r=<x2,y2,z2>  /         |
- *               +          -
- *              z           y
- * }
- *
+ * {@link #p}, {@link #q} and {@link #r} that are not collinear. A plane be constructed in numerous ways including with a vector
+ * perpendicular to the plane and a point on the plane.
  *
  * The equation of the plane is:
  * <ul>
