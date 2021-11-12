@@ -91,19 +91,19 @@ public class V3D_Line extends V3D_Geometry {
      */
     protected final V3D_Point q;
 
-    /**
-     * The direction vector from {@link #p} in the direction of {@link #q}.
-     */
-    protected final V3D_Vector v;
+//    /**
+//     * The direction vector from {@link #p} in the direction of {@link #q}.
+//     */
+//    protected final V3D_Vector v;
 
     /**
      * @param l Used to initialise this.
      */
     public V3D_Line(V3D_Line l) {
-        super(new V3D_Vector(l.offset), l.oom);
+        super(new V3D_Vector(l.offset), l.getOom());
         this.p = new V3D_Point(l.p);
         this.q = new V3D_Point(l.q);
-        this.v = new V3D_Vector(l.v);
+        //this.v = new V3D_Vector(l.v);
     }
 
     /**
@@ -118,10 +118,10 @@ public class V3D_Line extends V3D_Geometry {
         super(V3D_Vector.ZERO, oom);
         this.p = new V3D_Point(p);
         this.q = new V3D_Point(q);
-        this.v = new V3D_Vector(
-                q.getX(oom).subtract(p.getX(oom)),
-                q.getY(oom).subtract(p.getY(oom)),
-                q.getZ(oom).subtract(p.getZ(oom)));
+//        this.v = new V3D_Vector(
+//                q.getX(oom).subtract(p.getX(oom)),
+//                q.getY(oom).subtract(p.getY(oom)),
+//                q.getZ(oom).subtract(p.getZ(oom)));
     }
 
     /**
@@ -142,10 +142,10 @@ public class V3D_Line extends V3D_Geometry {
         }
         this.p = new V3D_Point(p);
         this.q = new V3D_Point(q);
-        this.v = new V3D_Vector(
-                q.getX(oom).subtract(p.getX(oom)),
-                q.getY(oom).subtract(p.getY(oom)),
-                q.getZ(oom).subtract(p.getZ(oom)));
+//        this.v = new V3D_Vector(
+//                q.getX(oom).subtract(p.getX(oom)),
+//                q.getY(oom).subtract(p.getY(oom)),
+//                q.getZ(oom).subtract(p.getZ(oom)));
     }
 
     /**
@@ -160,7 +160,7 @@ public class V3D_Line extends V3D_Geometry {
     public V3D_Line(V3D_Point p, V3D_Vector v, int oom) {
         super(V3D_Vector.ZERO, oom);
         this.p = new V3D_Point(p);
-        this.v = new V3D_Vector(v);
+        //this.v = new V3D_Vector(v);
         this.q = new V3D_Point(p.pos, v);
     }
 
@@ -180,7 +180,7 @@ public class V3D_Line extends V3D_Geometry {
                     + "and so cannot define a line.");
         }
         this.p = new V3D_Point(p);
-        this.v = new V3D_Vector(v);
+        //this.v = new V3D_Vector(v);
         this.q = new V3D_Point(p.pos, v);
     }
 
@@ -194,10 +194,10 @@ public class V3D_Line extends V3D_Geometry {
         super(V3D_Vector.ZERO, oom);
         this.p = new V3D_Point(l.p);
         this.q = new V3D_Point(l.q);
-        this.v = new V3D_Vector(
-                q.getX(oom).subtract(p.getX(oom)), 
-                q.getY(oom).subtract(p.getY(oom)),
-                q.getZ(oom).subtract(p.getZ(oom)));
+//        this.v = new V3D_Vector(
+//                q.getX(oom).subtract(p.getX(oom)), 
+//                q.getY(oom).subtract(p.getY(oom)),
+//                q.getZ(oom).subtract(p.getZ(oom)));
     }
 
     @Override
@@ -223,9 +223,10 @@ public class V3D_Line extends V3D_Geometry {
     protected String toStringFields(String pad) {
         return pad + "p=" + p.toString(pad) + "\n"
                + pad + ",\n"
-               + pad + "q=" + q.toString(pad) + "\n"
-               + pad + ",\n"
-               + pad + "v=" + v.toString(pad);
+               + pad + "q=" + q.toString(pad);
+//               + pad + "q=" + q.toString(pad) + "\n"
+//               + pad + ",\n"
+//               + pad + "v=" + v.toString(pad);
     }
 
     @Override
@@ -254,7 +255,7 @@ public class V3D_Line extends V3D_Geometry {
     public int hashCode() {
         int hash = 7;
         hash = 17 * hash + Objects.hashCode(this.p);
-        hash = 17 * hash + Objects.hashCode(this.v);
+        hash = 17 * hash + Objects.hashCode(this.q);
         return hash;
     }
 
@@ -279,7 +280,8 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@link #v} with {@link #offset} added.
      */
     public V3D_Vector getV(int oom){
-        return new V3D_Vector(v).add(offset, oom);
+        //return new V3D_Vector(v).add(offset, oom);
+        return new V3D_Vector(getP(oom), getQ(oom), oom);
     }
     
     /**
@@ -651,7 +653,8 @@ public class V3D_Line extends V3D_Geometry {
                                     }
                                 }
                             } else {
-                                mu = tp.getY(oom).subtract(lp.getY(oom)).divide(l.v.getDY(oom));
+                                //mu = tp.getY(oom).subtract(lp.getY(oom)).divide(l.v.getDY(oom));
+                                mu = tp.getY(oom).subtract(lp.getY(oom)).divide(l.getV(oom).getDY(oom));
                                 x = lp.getX(oom).add(lv.getDX(oom).multiply(mu));
                                 z = lp.getZ(oom).add(lv.getDZ(oom).multiply(mu));
                             }
@@ -912,8 +915,8 @@ public class V3D_Line extends V3D_Geometry {
         V3D_Point tp = getP(oom);
         V3D_Point lp = l.getP(oom);
         V3D_Vector A = new V3D_Vector(tp, lp, oom);
-        V3D_Vector B = v.reverse();
-        V3D_Vector C = l.v.reverse();
+        V3D_Vector B = getV(oom).reverse();
+        V3D_Vector C = l.getV(oom).reverse();
 
         Math_BigRational AdB = A.getDotProduct(B, oom);
         Math_BigRational AdC = A.getDotProduct(C, oom);
@@ -1103,7 +1106,7 @@ public class V3D_Line extends V3D_Geometry {
              * points by computing the cross product.
              */
             //V3D_Vector cp = l.v.getCrossProduct(v, oom);
-            V3D_Vector cp = getV(oom).getCrossProduct(l.v, oom);
+            V3D_Vector cp = getV(oom).getCrossProduct(l.getV(oom), oom);
             /**
              * Calculate the delta from {@link #p} and l.p
              */
@@ -1164,21 +1167,25 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} iff this is parallel to the plane defined by x=0.
      */
     public boolean isParallelToX0() {
-        return v.dx.isZero();
+        //return v.dx.isZero();
+        return p.getX(oom).subtract(q.getX(oom)).isZero();
     }
 
     /**
      * @return {@code true} iff this is parallel to the plane defined by y=0.
      */
     public boolean isParallelToY0() {
-        return v.dy.isZero();
+        //return v.dy.isZero();
+        return p.getY(oom).subtract(q.getY(oom)).isZero();
     }
 
     /**
      * @return {@code true} iff this is parallel to the plane defined by z=0.
      */
     public boolean isParallelToZ0() {
-        return v.dz.isZero();
+        //return v.dz.isZero();
+        return p.getZ(oom).subtract(q.getZ(oom)).isZero();
+    
     }
 
     @Override

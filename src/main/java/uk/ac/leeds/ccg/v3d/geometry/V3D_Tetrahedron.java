@@ -69,27 +69,27 @@ public class V3D_Tetrahedron implements V3D_3DShape, Serializable {
     /**
      * The pqr triangle of the tetrahedron.
      */
-    protected final V3D_Triangle pqr;
+    public final V3D_Triangle pqr;
 
     /**
      * The qsr triangle of the tetrahedron.
      */
-    protected final V3D_Triangle qsr;
+    public final V3D_Triangle qsr;
 
     /**
      * The spr triangle of the tetrahedron.
      */
-    protected final V3D_Triangle spr;
+    public final V3D_Triangle spr;
 
     /**
      * The psq triangle of the tetrahedron.
      */
-    protected final V3D_Triangle psq;
+    public final V3D_Triangle psq;
 
-    /**
-     * For storing the centroid.
-     */
-    protected V3D_Point c;
+//    /**
+//     * For storing the centroid.
+//     */
+//    protected V3D_Point c;
 
     /**
      * Create a new instance.

@@ -100,13 +100,13 @@ public class V3D_LineSegmentTest extends V3D_Test {
                 + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + "  )\n"
                 + " )\n"
-                + " ,\n"
-                + " v=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
+//                + " ,\n"
+//                + " v=V3D_Vector\n"
+//                + " (\n"
+//                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+//                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+//                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+//                + " )\n"
                 + ")";
         String result = instance.toString();
         System.out.println(result);

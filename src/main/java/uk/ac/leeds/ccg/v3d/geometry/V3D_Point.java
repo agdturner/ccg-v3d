@@ -26,7 +26,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * depiction: {@code
  *
  *                          y           -
- *                          +          /                *p=<x0,y0,z0>
+ *                          +          /                * p=<x0,y0,z0>
  *                          |         /                 |
  *                          |        /                  |
  *                          |    z0-/-------------------|
@@ -71,7 +71,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param p The point to duplicate
      */
     public V3D_Point(V3D_Point p) {
-        super(new V3D_Vector(p.offset), p.oom);
+        super(new V3D_Vector(p.offset), p.getOom());
         this.pos = new V3D_Vector(p.pos);
 //        super(V3D_Vector.ZERO);
 //        this.pos = p.pos.add(p.offset, p.pos.getMagnitude().getOom());
@@ -152,7 +152,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     public String toString() {
         return toString("");
     }
-    
+
     /**
      * @param pad A padding of spaces.
      * @return A description of this.
@@ -163,15 +163,15 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
                 + toStringFields(pad + " ") + "\n"
                 + pad + ")";
     }
-    
+
     /**
      * @param pad A padding of spaces.
      * @return A description of the fields.
      */
     protected String toStringFields(String pad) {
         return pad + "pos=" + pos.toString(pad) + "\n"
-               + pad + ",\n"
-               + pad + "offset=" + offset.toString(pad);
+                + pad + ",\n"
+                + pad + "offset=" + offset.toString(pad);
     }
 
     @Override
@@ -191,19 +191,29 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
+     * Two points are equal if they are at the same location defined by each
+     * points relative start location and translation vector.
+     *
      * @param p The point to test if it is the same as {@code this}.
      * @return {@code true} iff {@code p} is the same as {@code this}.
      */
     public boolean equals(V3D_Point p) {
-        int toom = pos.getMagnitude().getOom();
-        int poom = p.pos.getMagnitude().getOom();
-        if (this.getX(toom).compareTo(p.getX(poom)) == 0) {
-            if (this.getY(toom).compareTo(p.getY(poom)) == 0) {
-                if (this.getZ(toom).compareTo(p.getZ(poom)) == 0) {
+        if (this.getX(oom).compareTo(p.getX(oom)) == 0) {
+            if (this.getY(oom).compareTo(p.getY(oom)) == 0) {
+                if (this.getZ(oom).compareTo(p.getZ(oom)) == 0) {
                     return true;
                 }
             }
         }
+//        int toom = pos.getMagnitude().getOom();
+//        int poom = p.pos.getMagnitude().getOom();
+//        if (this.getX(toom).compareTo(p.getX(poom)) == 0) {
+//            if (this.getY(toom).compareTo(p.getY(poom)) == 0) {
+//                if (this.getZ(toom).compareTo(p.getZ(poom)) == 0) {
+//                    return true;
+//                }
+//            }
+//        }
         return false;
     }
 
@@ -319,6 +329,31 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public BigDecimal getDistance(V3D_Plane pl, int oom) {
         return pl.getDistance(this, oom);
+    }
+
+    /**
+     * Get the distance between this and {@code pl}. Nykamp DQ, “Distance from
+     * point to plane.” From Math Insight.
+     * http://mathinsight.org/distance_point_plane
+     *
+     * @param pl A plane.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The distance from {@code p} to this.
+     */
+    public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
+        V3D_Vector pq = new V3D_Vector(this, pl.p, oom);
+        if (pq.isScalarMultiple(pl.n, oom)) {
+            return pq.getMagnitudeSquared();
+        } else {
+            Math_BigRational[] coeffs = pl.getEquationCoefficients();
+            Math_BigRational num = (coeffs[0].multiply(getX(oom))
+                    .add(coeffs[1].multiply(getY(oom)))
+                    .add(coeffs[2].multiply(getZ(oom)))
+                    .add(coeffs[3])).abs();
+            Math_BigRational den = coeffs[0].pow(2).add(coeffs[1].pow(2))
+                    .add(coeffs[2].pow(2));
+            return num.divide(den);
+        }
     }
 
     @Override

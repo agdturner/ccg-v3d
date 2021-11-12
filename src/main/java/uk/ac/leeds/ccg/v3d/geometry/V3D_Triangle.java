@@ -20,16 +20,11 @@ import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
- * For representing and processing triangles in 3D. For representing and
- * processing rectangles in 3D. A triangle has a non-zero area and does not have
- * to align with any of the axes. The corner points are {@link #p}, {@link #q}
- * and {@link #r}. The vector {@link #rp} stores the vector from {@link #r} to
- * {@link #qr}. The line segment {@link #lpq} is the line segment from
- * {@link #p} to {@link #q}. The line segment {@link #lqr} is the line segment
- * from {@link #q} to {@link #r}. The line segment {@link #lrp} is the line
- * segment from {@link #r} to {@link #p}. The following depicts a generic
- * triangle (no attempt has been made to draw this three dimensionally) {@code
- *                           lpq
+ * For representing and processing triangles in 3D. A triangle has a non-zero 
+ * area. The corner points are {@link #p}, {@link #q}
+ * and {@link #r}. The following depicts a generic
+ * triangle {@code
+ *                          pq
  *  p *- - - - - - - - - - - + - - - - - - - - - - -* q
  *     \~                   mpq                   ~/
  *      \  ~                 |                 ~  /
@@ -42,8 +37,8 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  *             \          ~  |  ~          /
  *              \      ~     |     ~      /
  *               \  ~        |        ~  /
- *                +mrp       |      mqr +
- *           lrp   \         |         /  lqr
+ *                + mrp      |      mqr +
+ *             rp  \         |         /  qr
  *                  \        |        /
  *                   \       |       /
  *                    \      |      /
@@ -72,40 +67,53 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      */
     protected V3D_Envelope en;
 
-    /**
-     * The line from {@link #p} to {@link #q}.
-     */
-    private final V3D_LineSegment lpq;
+//    /**
+//     * The line from {@link #p} to {@link #q}.
+//     */
+//    private final V3D_LineSegment lpq;
+//
+//    /**
+//     * The line from {@link #q} to {@link #r}.
+//     */
+//    private final V3D_LineSegment lqr;
+//
+//    /**
+//     * The line from {@link #r} to {@link #p}.
+//     */
+//    private final V3D_LineSegment lrp;
+//
+//    /**
+//     * The midpoint between {@link #p} and {@link #q}.
+//     */
+//    private V3D_Point mpq;
+//
+//    /**
+//     * The midpoint between {@link #q} and {@link #r}.
+//     */
+//    private V3D_Point mqr;
+//
+//    /**
+//     * The midpoint between {@link #r} and {@link #p}.
+//     */
+//    private V3D_Point mrp;
+//
+//    /**
+//     * The centroid.
+//     */
+//    private V3D_Point c;
 
     /**
-     * The line from {@link #q} to {@link #r}.
+     * Creates a new triangle.
+     *
+     * @param t The triangle to clone.
+     * @param oom The Order of Magnitude for the initialisation.
      */
-    private final V3D_LineSegment lqr;
-
-    /**
-     * The line from {@link #r} to {@link #p}.
-     */
-    private final V3D_LineSegment lrp;
-
-    /**
-     * The midpoint between {@link #p} and {@link #q}.
-     */
-    private V3D_Point mpq;
-
-    /**
-     * The midpoint between {@link #q} and {@link #r}.
-     */
-    private V3D_Point mqr;
-
-    /**
-     * The midpoint between {@link #r} and {@link #p}.
-     */
-    private V3D_Point mrp;
-
-    /**
-     * The centroid.
-     */
-    private V3D_Point c;
+    public V3D_Triangle(V3D_Triangle t) {
+        super(t.p, t.q, t.r, t.getOom());
+        //lpq = new V3D_LineSegment(p, q, oom);
+        //lqr = new V3D_LineSegment(q, r, oom);
+        //lrp = new V3D_LineSegment(r, p, oom);
+    }
 
     /**
      * Creates a new triangle.
@@ -117,9 +125,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      */
     public V3D_Triangle(V3D_Point p, V3D_Point q, V3D_Point r, int oom) {
         super(p, q, r, oom);
-        lpq = new V3D_LineSegment(p, q, oom);
-        lqr = new V3D_LineSegment(q, r, oom);
-        lrp = new V3D_LineSegment(r, p, oom);
+        //lpq = new V3D_LineSegment(p, q, oom);
+        //lqr = new V3D_LineSegment(q, r, oom);
+        //lrp = new V3D_LineSegment(r, p, oom);
     }
 
     /**
@@ -132,9 +140,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      */
     public V3D_Triangle(V3D_LineSegment l, V3D_Point r, int oom) {
         super(l.p, l.q, r, oom);
-        lpq = l;
-        lqr = new V3D_LineSegment(getQ(oom), r, oom);
-        lrp = new V3D_LineSegment(r, getP(oom), oom);
+        //lpq = l;
+        //lqr = new V3D_LineSegment(getQ(oom), r, oom);
+        //lrp = new V3D_LineSegment(r, getP(oom), oom);
     }
 
     /**
@@ -151,9 +159,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     public V3D_Triangle(V3D_LineSegment lpq, V3D_LineSegment lqr,
             V3D_LineSegment lrp, int oom) {
         super(lpq.p, lpq.q, lqr.q, oom);
-        this.lpq = lpq;
-        this.lqr = lqr;
-        this.lrp = lrp;
+        //this.lpq = lpq;
+        //this.lqr = lqr;
+        //this.lrp = lrp;
     }
     
     @Override
@@ -184,6 +192,27 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     }
     
     /**
+     * @return The {@link #p}-{@link #q} triangle edge. 
+     */
+    public V3D_LineSegment getPq() {
+        return new V3D_LineSegment(getP(oom), getQ(oom), oom);
+    }
+    
+    /**
+     * @return The {@link #q}-{@link #r} triangle edge. 
+     */
+    public V3D_LineSegment getQr() {
+        return new V3D_LineSegment(getQ(oom), getR(oom), oom);
+    }
+    
+    /**
+     * @return The {@link #r}-{@link #p} triangle edge. 
+     */
+    public V3D_LineSegment getRp() {
+        return new V3D_LineSegment(getR(oom), getP(oom), oom);
+    }
+    
+    /**
      * @param pt The point to intersect with.
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return A point or line segment.
@@ -204,8 +233,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      * @return {@code true} if this intersects with {@code pt}.
      */
     protected boolean isIntersectedBy0(V3D_Point pt, int oom) {
-        if (lpq.isIntersectedBy(pt, oom) || lqr.isIntersectedBy(pt, oom)
-                || lrp.isIntersectedBy(pt, oom)) {
+        if (getPq().isIntersectedBy(pt, oom) || getQr().isIntersectedBy(pt, oom)
+                || getRp().isIntersectedBy(pt, oom)) {
             return true;
         }
         V3D_Vector ppt = new V3D_Vector(getP(oom), pt, oom);
@@ -250,13 +279,13 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
                 V3D_Point p = (V3D_Point) g;
                 return isIntersectedBy(p, oom);
             } else {
-                if (lpq.isIntersectedBy(l, oom)) {
+                if (getPq().isIntersectedBy(l, oom)) {
                     return true;
                 }
-                if (lqr.isIntersectedBy(l, oom)) {
+                if (getQr().isIntersectedBy(l, oom)) {
                     return true;
                 }
-                if (lrp.isIntersectedBy(l, oom)) {
+                if (getRp().isIntersectedBy(l, oom)) {
                     return true;
                 }
             }
@@ -295,9 +324,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
     @Override
     public BigDecimal getPerimeter(int oom) {
         int oomN1 = oom - 1;
-        return Math_BigDecimal.round(lpq.getLength(oom).toBigDecimal(oomN1)
-                .add(lqr.getLength(oom).toBigDecimal(oomN1))
-                .add(lrp.getLength(oom).toBigDecimal(oomN1)), oom);
+        return Math_BigDecimal.round(getPq().getLength(oom).toBigDecimal(oomN1)
+                .add(getQr().getLength(oom).toBigDecimal(oomN1))
+                .add(getRp().getLength(oom).toBigDecimal(oomN1)), oom);
     }
 
     /**
@@ -318,9 +347,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
         /**
          * Get the intersection of the line and each edge of the triangle.
          */
-        V3D_Geometry lpqi = lpq.getIntersection(l, oom);
-        V3D_Geometry lrpi = lrp.getIntersection(l, oom);
-        V3D_Geometry lqri = lqr.getIntersection(l, oom);
+        V3D_Geometry lpqi = getPq().getIntersection(l, oom);
+        V3D_Geometry lrpi = getRp().getIntersection(l, oom);
+        V3D_Geometry lqri = getQr().getIntersection(l, oom);
         if (lpqi == null) {
             if (lqri == null) {
                 if (lrpi == null) {
@@ -414,10 +443,10 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      * @return The centroid point.
      */
     public V3D_Point getCentroid(int oom) {
-        mpq = lpq.getMidpoint(oom);
-        mqr = lqr.getMidpoint(oom);
-        mrp = lrp.getMidpoint(oom);
-        V3D_LineSegment lmpqr = new V3D_LineSegment(mpq, lrp.p, oom);
+        V3D_Point mpq = getPq().getMidpoint(oom);
+        V3D_Point mqr = getQr().getMidpoint(oom);
+        V3D_Point mrp = getRp().getMidpoint(oom);
+        V3D_LineSegment lmpqr = new V3D_LineSegment(mpq, getRp().p, oom);
         V3D_LineSegment lmqrp = new V3D_LineSegment(mqr, getP(oom), oom);
         V3D_LineSegment lmrpq = new V3D_LineSegment(mrp, getQ(oom), oom);
         V3D_Point c0 = (V3D_Point) lmpqr.getIntersection(lmqrp, oom, true);

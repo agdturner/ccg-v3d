@@ -24,9 +24,10 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * Represents a vector or translation that may involve a change in the x
- * coordinate {@link #dx}, a change in the y coordinate {@link #dy} and/or a
- * change in the z coordinate {@link #dz}.
+ * A vector used to translate geometries. The magnitude of the vector is not 
+ * generally calculated and stored, but this is done so upon request to an
+ * Order of Magnitude. Other than the magnitude which may be calculated and 
+ * stored at higher levels of precision, instances are immutable.
  *
  * @author Andy Turner
  * @version 1.1
@@ -54,7 +55,6 @@ public class V3D_Vector implements Serializable {
      * For storing the magnitude.
      */
     protected Math_BigRationalSqrt m;
-    
     
     /**
      * The zero vector {@code <0,0,0>} where

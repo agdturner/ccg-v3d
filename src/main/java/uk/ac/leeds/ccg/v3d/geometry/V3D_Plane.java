@@ -138,7 +138,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param p The plane used to create this.
      */
     public V3D_Plane(V3D_Plane p) {
-        super(V3D_Vector.ZERO, p.oom);
+        super(V3D_Vector.ZERO, p.getOom());
         this.qAtOrigin = p.q.equals(V3D_Environment.P0P0P0);
         this.p = new V3D_Point(p.p);
         this.q = new V3D_Point(p.q);
@@ -335,6 +335,20 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The equation of the plane as a String.
      */
     public String getEquation() {
+        Math_BigRational[] coefficients = getEquationCoefficients();
+        return coefficients[0].toRationalString() + " * x + "
+                + coefficients[1].toRationalString() + " * y + "
+                + coefficients[2].toRationalString() + " * z + "
+                + coefficients[3].toRationalString() + " = 0";
+    }
+    
+    /**
+     * For getting the equation of the plane.
+     *
+     * @return The equation of the plane as a String.
+     */
+    public Math_BigRational[] getEquationCoefficients() {
+        Math_BigRational[] r = new Math_BigRational[4];
         Math_BigRational ndxsr = n.dx.getSqrt();
         Math_BigRational ndysr = n.dy.getSqrt();
         Math_BigRational ndzsr = n.dz.getSqrt();
@@ -347,10 +361,11 @@ public class V3D_Plane extends V3D_Geometry {
 //        Math_BigRational k = ndxsr.multiply(p.getX(oom))
 //                .add(ndysr.multiply(p.getY(oom)))
 //                .add(ndzsr.multiply(p.getZ(oom)));
-        return ndxsr.toRationalString() + " * x + "
-                + ndysr.toRationalString() + " * y + "
-                + ndzsr.toRationalString() + " * z + "
-                + k.toRationalString() + " = 0";
+        r[0] = ndxsr;
+        r[1] = ndysr;
+        r[2] = ndzsr;
+        r[3] = k;
+        return r;
     }
 
     /**
@@ -1189,8 +1204,9 @@ public class V3D_Plane extends V3D_Geometry {
     public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
         if (isParallel(pl, oom)) {
             V3D_Point tp = getP(oom);
-            return tp.getDistanceSquared((V3D_Point) pl.getIntersection(
-                    new V3D_Line(tp, getN(oom), oom), oom), oom);
+            return tp.getDistanceSquared(pl, oom);
+//            return tp.getDistanceSquared((V3D_Point) pl.getIntersection(
+//                    new V3D_Line(tp, getN(oom), oom), oom), oom);
         }
         return Math_BigRational.ZERO;
     }

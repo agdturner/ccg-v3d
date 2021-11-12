@@ -100,13 +100,13 @@ public class V3D_LineTest extends V3D_Test {
                 + "   dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + "  )\n"
                 + " )\n"
-                + " ,\n"
-                + " v=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
+//                + " ,\n"
+//                + " v=V3D_Vector\n"
+//                + " (\n"
+//                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+//                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+//                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+//                + " )\n"
                 + ")";
         String result = instance.toString();
         //System.out.println(result);
@@ -139,8 +139,7 @@ public class V3D_LineTest extends V3D_Test {
         System.out.println("hashCode");
         V3D_Line e = V3D_Environment.xAxis;
         int result = e.hashCode();
-        int expResult = 121834612;
-        //int expResult = 9644914;
+        int expResult = 128841795;
         //System.out.println(result);
         assertTrue(result == expResult);
     }

@@ -147,7 +147,7 @@ public class V3D_Ray extends V3D_Line {
         if (super.isIntersectedBy(pt, oom)) {
             V3D_Point poi = super.getPointOfIntersection(pt, oom);
             V3D_Ray r = new V3D_Ray(this.p, poi, oom);
-            return r.v.getDirection() == v.getDirection();
+            return r.getV(oom).getDirection() == getV(oom).getDirection();
         }
 //        boolean isPossibleIntersection = isPossibleIntersection(pt, oom);
 //        if (isPossibleIntersection) {
@@ -433,7 +433,7 @@ public class V3D_Ray extends V3D_Line {
         V3D_Geometry i = super.getLineOfIntersection(pt, oom);
         if (i instanceof V3D_Point) {
             V3D_Ray r = new V3D_Ray(pt, p, oom);
-            if (r.v.getDirection() == v.getDirection()) {
+            if (r.getV(oom).getDirection() == getV(oom).getDirection()) {
                 return i;
             } else {
                 return new V3D_LineSegment(p, pt, oom);
@@ -441,7 +441,7 @@ public class V3D_Ray extends V3D_Line {
         } else {
             V3D_LineSegment il = (V3D_LineSegment) i;
             V3D_Ray r = new V3D_Ray(pt, p, oom);
-            if (r.v.getDirection() == v.getDirection()) {
+            if (r.getV(oom).getDirection() == getV(oom).getDirection()) {
                 return i;
             } else {
                 return new V3D_LineSegment(pt, il.q, oom);
@@ -463,14 +463,14 @@ public class V3D_Ray extends V3D_Line {
         V3D_Geometry loi2 = l.getLineOfIntersection(p, oom);
         if (loi instanceof V3D_Point) {
             V3D_Ray r = new V3D_Ray(p, (V3D_Point) loi, oom);
-            if (r.v.getDirection() == v.getDirection()) {
+            if (r.getV(oom).getDirection() == getV(oom).getDirection()) {
                 return loi;
             } else {
                 return loi2;
             }
         } else {
             V3D_Ray r = new V3D_Ray(p, ((V3D_LineSegment) loi).p, oom);
-            if (r.v.getDirection() == v.getDirection()) {
+            if (r.getV(oom).getDirection() == getV(oom).getDirection()) {
                 return loi2;
             } else {
                 return loi;
