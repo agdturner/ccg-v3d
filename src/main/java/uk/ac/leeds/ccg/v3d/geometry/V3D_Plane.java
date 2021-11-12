@@ -39,9 +39,9 @@ import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
  * {@link #p}, {@link #q} or {@link #r}</li>
  * <li>{@code x0}, {@code y0} and {@code z0} represents any other point on the
  * plane</li>
- * <li>{@code A} is the {@code dx} of {@link #n}.</li>
- * <li>{@code B} is the {@code dy} of {@link #n}.</li>
- * <li>{@code C} is the {@code dz} of {@link #n}.</li>
+ * <li>{@code A} is the {@code dx} of the vector perpendicular to the plane.</li>
+ * <li>{@code B} is the {@code dy} of the vector perpendicular to the plane.</li>
+ * <li>{@code C} is the {@code dz} of the vector perpendicular to the plane.</li>
  * </ul>
  *
  * <ol>
