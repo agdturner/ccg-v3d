@@ -23,9 +23,9 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * 3D representation of a finite length line (a line segment). The line begins
- * at the point {@link #p}, travels in the direction {@link #v} and ends at the
- * point {@link #q}. The "*" denotes a point in 3D and the line is shown with a
- * line of "e" symbols in the following depiction: {@code
+ * at the point {@link #p} and ends at the point {@link #q}. The "*" denotes a
+ * point in 3D and the line is shown with a line of "e" symbols in the following
+ * depiction: {@code
  *                                       z
  *                          y           -
  *                          +          /                * p=<x0,y0,z0>
@@ -113,7 +113,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     public V3D_LineSegment(V3D_Envelope.LineSegment l, int oom) {
         this(new V3D_Point(l.p), new V3D_Point(l.q), oom);
     }
-    
+
     @Override
     public String toString(String pad) {
         return this.getClass().getSimpleName() + "\n"
@@ -145,10 +145,10 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_LineSegment l) {
-            V3D_Point p = getP(oom);
-            V3D_Point q = getQ(oom);
-            V3D_Point lp = l.getP(oom);
-            V3D_Point lq = l.getQ(oom);
+        V3D_Point p = getP(oom);
+        V3D_Point q = getQ(oom);
+        V3D_Point lp = l.getP(oom);
+        V3D_Point lq = l.getQ(oom);
         return p.equals(lp) && q.equals(lq);
     }
 
@@ -184,7 +184,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         l.apply(oom, v);
         return l;
     }
-    
+
     /**
      * @return {@code true} iff this line segment is effectively a point.
      */

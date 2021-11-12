@@ -22,9 +22,9 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
 /**
  * 3D representation of a ray - a type of infinite line that starts at a point
  * and moves only in one direction and not in the other. The line begins at the
- * point {@link #p}, travels in the direction {@link #v} and goes through the
- * point {@link #q}. The "*" denotes a point in 3D and the line is shown with a
- * line of "e" symbols in the following depiction: {@code
+ * point {@link #p} and goes through the point {@link #q}. The "*" denotes a
+ * point in 3D and the line is shown with a line of "e" symbols in the following
+ * depiction: {@code
  *                                       z
  *                          y           -
  *                          +          /                * p=<x0,y0,z0>
