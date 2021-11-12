@@ -21,7 +21,6 @@ import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
@@ -90,10 +89,10 @@ public class V3D_Plane extends V3D_Geometry {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * True iff q is at the origin.
-     */
-    protected final boolean qAtOrigin;
+//    /**
+//     * True iff q is at the origin.
+//     */
+//    protected final boolean qAtOrigin;
 
     /**
      * One of the points that defines the plane.
@@ -131,7 +130,6 @@ public class V3D_Plane extends V3D_Geometry {
 //     * are used in a cross product calculation when the plane is constructed.
 //     */
 //    protected final V3D_Vector n;
-
     /**
      * Create a new instance.
      *
@@ -139,7 +137,6 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public V3D_Plane(V3D_Plane p) {
         super(V3D_Vector.ZERO, p.getOom());
-        this.qAtOrigin = p.q.equals(V3D_Environment.P0P0P0);
         this.p = new V3D_Point(p.p);
         this.q = new V3D_Point(p.q);
         this.r = new V3D_Point(p.r);
@@ -168,7 +165,6 @@ public class V3D_Plane extends V3D_Geometry {
         super(V3D_Vector.ZERO, oom);
         this.p = new V3D_Point(p);
         this.q = new V3D_Point(q);
-        this.qAtOrigin = this.q.isOrigin();
         this.r = new V3D_Point(r);
 //        this.pq = new V3D_Vector(this.p, this.q, oom);
 //        this.qr = new V3D_Vector(this.q, this.r, oom);
@@ -241,7 +237,6 @@ public class V3D_Plane extends V3D_Geometry {
 //        pq = new V3D_Vector(p, q, oom);
 //        qr = new V3D_Vector(q, r, oom);
 //        rp = new V3D_Vector(r, p, oom);
-        qAtOrigin = q.equals(V3D_Environment.P0P0P0);
 //        this.n = new V3D_Vector(n);
     }
 
@@ -249,7 +244,7 @@ public class V3D_Plane extends V3D_Geometry {
     public String toString() {
         return toString("");
     }
-    
+
     /**
      * @param pad A padding of spaces.
      * @return A description of this.
@@ -260,24 +255,24 @@ public class V3D_Plane extends V3D_Geometry {
                 + toStringFields(pad + " ") + "\n"
                 + pad + ")";
     }
-    
+
     /**
      * @param pad A padding of spaces.
      * @return A description of the fields.
      */
     protected String toStringFields(String pad) {
         return pad + "p=" + p.toString(pad) + "\n"
-               + pad + ",\n"
-               + pad + "q=" + q.toString(pad) + "\n"
-               + pad + ",\n"
-               + pad + "r=" + r.toString(pad);
+                + pad + ",\n"
+                + pad + "q=" + q.toString(pad) + "\n"
+                + pad + ",\n"
+                + pad + "r=" + r.toString(pad);
     }
 
     /**
      * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @return {@link #p} with {@link #offset} applied.
      */
-    public final V3D_Point getP(int oom){
+    public final V3D_Point getP(int oom) {
         return p.apply(offset, oom);
     }
 
@@ -285,57 +280,64 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @return {@link #q} with {@link #offset} applied.
      */
-    public final V3D_Point getQ(int oom){
+    public final V3D_Point getQ(int oom) {
         return q.apply(offset, oom);
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @return {@link #r} with {@link #offset} applied.
      */
-    public V3D_Point getR(int oom){
+    public V3D_Point getR(int oom) {
         return r.apply(offset, oom);
     }
-    
+
     /**
-     * @param oom The Order of Magnitude for the application of {@link #offset}.
-     * @return {@link #pq} with {@link #offset} applied.
+     * @param oom The Order of Magnitude for the calculation.
+     * @return The vector from {@link #p} to {@link #q}.
      */
-    public V3D_Vector getPq(int oom){
+    public V3D_Vector getPq(int oom) {
         //return new V3D_Vector(pq).add(offset, oom);
         return new V3D_Vector(getP(oom), getQ(oom), oom);
     }
-    
+
     /**
-     * @param oom The Order of Magnitude for the application of {@link #offset}.
-     * @return {@link #qr} with {@link #offset} applied.
+     * @param oom The Order of Magnitude for the calculation.
+     * @return The vector from {@link #q} to {@link #r}.
      */
-    public V3D_Vector getQr(int oom){
+    public V3D_Vector getQr(int oom) {
         //return new V3D_Vector(qr).add(offset, oom);
         return new V3D_Vector(getQ(oom), getR(oom), oom);
     }
-    
+
     /**
-     * @param oom The Order of Magnitude for the application of {@link #offset}.
-     * @return {@link #rp} with {@link #offset} applied.
+     * @param oom The Order of Magnitude for the calculation.
+     * @return The vector from {@link #r} to {@link #p}.
      */
-    public V3D_Vector getRp(int oom){
+    public V3D_Vector getRp(int oom) {
         //return new V3D_Vector(rp).add(offset, oom);
         return new V3D_Vector(getR(oom), getP(oom), oom);
     }
+
+    /**
+     * @return {@code true} iff the point {@link #q} is at the origi 
+     */
+    public boolean isQAtOrigin() {
+        return getQ(oom).equals(V3D_Point.ORIGIN);
+    }
     
     /**
-     * @param oom The Order of Magnitude for the application of {@link #offset}.
-     * @return {@link #n} with {@link #offset} applied.
+     * @param oom The Order of Magnitude for the calculation.
+     * @return The normal vector.
      */
-    public V3D_Vector getN(int oom){
-        if (qAtOrigin) {
+    public V3D_Vector getN(int oom) {
+        if (isQAtOrigin()) {
             return getQr(oom).getCrossProduct(getRp(oom), oom);
         } else {
             return getPq(oom).getCrossProduct(getQr(oom), oom);
         }
     }
-    
+
     /**
      * For getting the equation of the plane.
      *
@@ -348,14 +350,14 @@ public class V3D_Plane extends V3D_Geometry {
                 + coefficients[2].toRationalString() + " * z + "
                 + coefficients[3].toRationalString() + " = 0";
     }
-    
+
     /**
      * For getting the equation of the plane.
      *
      * @return The equation of the plane as a String.
      */
     public Math_BigRational[] getEquationCoefficients() {
-        Math_BigRational[] r = new Math_BigRational[4];
+        Math_BigRational[] coeffs = new Math_BigRational[4];
         V3D_Vector n = getN(oom);
         Math_BigRational ndxsr = n.dx.getSqrt();
         Math_BigRational ndysr = n.dy.getSqrt();
@@ -369,11 +371,11 @@ public class V3D_Plane extends V3D_Geometry {
 //        Math_BigRational k = ndxsr.multiply(p.getX(oom))
 //                .add(ndysr.multiply(p.getY(oom)))
 //                .add(ndzsr.multiply(p.getZ(oom)));
-        r[0] = ndxsr;
-        r[1] = ndysr;
-        r[2] = ndzsr;
-        r[3] = k;
-        return r;
+        coeffs[0] = ndxsr;
+        coeffs[1] = ndysr;
+        coeffs[2] = ndzsr;
+        coeffs[3] = k;
+        return coeffs;
     }
 
     /**
@@ -534,7 +536,8 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * @param l line segment to intersect with this.
      * @param oom The Order of Magnitude for the calculation.
-     * @param flag Used to distinguish from {@link #getIntersection(V3D_Line, int)}.
+     * @param flag Used to distinguish from
+     * {@link #getIntersection(V3D_Line, int)}.
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean flag) {
@@ -642,7 +645,8 @@ public class V3D_Plane extends V3D_Geometry {
             return null;
         }
         /**
-         * Find the intersection of a line in the plane that is not parallel to v.
+         * Find the intersection of a line in the plane that is not parallel to
+         * v.
          */
         V3D_Point pi;
         V3D_Point tq = getQ(oom);
@@ -653,7 +657,7 @@ public class V3D_Plane extends V3D_Geometry {
         }
         return new V3D_Line(pi, v, oom);
     }
-    
+
 //    private V3D_Geometry getIntersectionOld(V3D_Plane pl, int oom) {
 //        /**
 //         * Calculate the cross product of the normal vectors to get the
@@ -1065,7 +1069,6 @@ public class V3D_Plane extends V3D_Geometry {
 //        // z = (pl.p.getZ(oom) - pl.a(x−pl.p.getX(oom)) - pl.b(y−pl.p.getY(oom))) / pl.c   --- 6
 //        // Sub 2 and 3 into
 //    }
-
     /**
      * @param p The plane to test if it is parallel to this.
      * @param oom The Order of Magnitude for the calculation.
@@ -1112,23 +1115,12 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
     public boolean equals(V3D_Plane pl, int oom) {
-        if (V3D_Geometrics.isCoplanar(oom, this, pl.getP(oom), pl.getQ(oom), pl.getR(oom))) {
-            return true;
-        }
-//        if (n.equals(pl.n)) {
-//            if (isIntersectedBy(pl.p)) {
-//                if (isIntersectedBy(pl.q)) {
-//                    if (isIntersectedBy(pl.r)) {
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-        return false;
+        return V3D_Geometrics.isCoplanar(oom, this, pl.getP(oom), pl.getQ(oom),
+                pl.getR(oom));
     }
 
     /**
-     * Planes are equal if they are coincident and the {@link #n} is the same.
+     * Planes are equal if the points of one are all on the other.
      *
      * @param pl The plane to check for equality with {@code this}.
      * @param oom The Order of Magnitude for the calculation.
@@ -1200,9 +1192,9 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * Using {@link #p} and {@link #n} define a line and find the point of
-     * intersection on {@code p} and then return the distance squared between it
-     * and {@link #p}.
+     * The planes are either parallel or the distance is zero. If parallel, get
+     * any point on one and find the distance squared of the other plane from
+     * it.
      *
      * @param pl The other plane used to calculate the distance.
      * @param oom The Order of Magnitude for the calculation.
