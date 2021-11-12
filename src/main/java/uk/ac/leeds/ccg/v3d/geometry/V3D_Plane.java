@@ -194,12 +194,10 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * An equation of the plane containing the point {@code p} with normal
-     * vector {@code n} is
-     * {@code n.getDX(oom)(x) + n.getDY(oom)(y) + n.getDZ(oom)(z) = d}.
+     * Create a new instance.
      *
      * @param p Used to initialise {@link #p}.
-     * @param n What {@link #n} is set to. This cannot be the ZERO vector.
+     * @param n The normal of the plane used to get two other points.
      * @param oom What {@link #oom} is set to.
      */
     public V3D_Plane(V3D_Point p, V3D_Vector n, int oom) {

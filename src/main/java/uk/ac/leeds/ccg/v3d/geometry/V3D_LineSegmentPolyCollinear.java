@@ -48,7 +48,7 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
      * Create a new instance.
      *
      * @param lineSegments What {@code #lineSegments} is set to.
-     * @param oom The Order of Magnitude for initialising {@link #v}.
+     * @param oom What {@link #oom} is set to.
      */
     public V3D_LineSegmentPolyCollinear(int oom, V3D_LineSegment... lineSegments) {
         super(lineSegments[0], oom);
@@ -109,9 +109,9 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
      */
     public Math_BigRational getLength2(int oom) {
         Math_BigRational r = Math_BigRational.ZERO;
-        for (V3D_LineSegment lineSegment : lineSegments) {
-            r.add(lineSegment.getLength2(oom));
-        }
+        lineSegments.forEach(x -> {
+            r.add(x.getLength2(oom));
+        });
         return r;
     }
 

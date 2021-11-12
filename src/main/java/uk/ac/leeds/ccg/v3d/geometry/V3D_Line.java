@@ -153,7 +153,8 @@ public class V3D_Line extends V3D_Geometry {
      *
      * @param p What {@link #p} is set to.
      * @param v The vector defining the line from {@link #p}.
-     * @param oom The Order of Magnitude for initialising {@link #q} and what {@link #oom} is set to.
+     * @param oom The Order of Magnitude for initialising {@link #q} and what
+     * {@link #oom} is set to.
      * @throws RuntimeException if {@code v.isZeroVector()}.
      */
     public V3D_Line(V3D_Point p, V3D_Vector v, int oom) {
@@ -168,7 +169,8 @@ public class V3D_Line extends V3D_Geometry {
      *
      * @param p What {@link #p} is set to.
      * @param v The vector defining the line from {@link #p}.
-     * @param oom The Order of Magnitude for initialising {@link #q} and what {@link #oom} is set to.
+     * @param oom The Order of Magnitude for initialising {@link #q} and what
+     * {@link #oom} is set to.
      * @param check Ignored. It is here to distinguish this method from
      * {@link #V3D_Line(V3D_Point, V3D_Vector, int)}.
      */
@@ -187,7 +189,7 @@ public class V3D_Line extends V3D_Geometry {
      * Create a new instance from {@code l}
      *
      * @param l Line to create from.
-     * @param oom The Order of Magnitude for initialising {@link #v}.
+     * @param oom What {@link #oom} is set to.
      */
     public V3D_Line(V3D_Line l, int oom) {
         super(V3D_Vector.ZERO, oom);
@@ -260,7 +262,7 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@link #p} with {@link #offset} added.
+     * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getP(int oom) {
         return new V3D_Point(p).apply(offset, oom);
@@ -268,7 +270,7 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@link #q} with {@link #offset} added.
+     * @return {@link #q} with {@link #offset} applied.
      */
     public V3D_Point getQ(int oom) {
         return new V3D_Point(q).apply(offset, oom);
@@ -276,7 +278,7 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@link #v} with {@link #offset} added.
+     * @return The vector from {@link #p} to {@link #q}.
      */
     public V3D_Vector getV(int oom) {
         //return new V3D_Vector(v).add(offset, oom);
