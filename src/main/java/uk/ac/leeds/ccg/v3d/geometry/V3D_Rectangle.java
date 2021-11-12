@@ -22,8 +22,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * For representing and processing rectangles in 3D. A rectangle has four corner
- * points {@link #p}, {@link #q}, {@link #r}, {@link #s}. The left of a
- * rectangle {@link #l} is the line segment from {@link #p} to {@link #q}. The
+ * points {@link #p}, {@link #q}, {@link #r}, {@link #s}. The
  * following depicts a generic rectangle {@code
  *          qr
  *  q *-------------* r
