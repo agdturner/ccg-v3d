@@ -15,7 +15,12 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.Set;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -37,7 +42,7 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
     /**
      * The collinear line segments.
      */
-    public final V3D_LineSegment[] lineSegments;
+    public final Set<V3D_LineSegment> lineSegments;
 
     /**
      * Create a new instance.
@@ -47,23 +52,36 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
      */
     public V3D_LineSegmentPolyCollinear(int oom, V3D_LineSegment... lineSegments) {
         super(lineSegments[0], oom);
-        this.lineSegments = lineSegments;
+        this.lineSegments = new HashSet<>();
+        this.lineSegments.addAll(Arrays.asList(lineSegments));
     }
 
     @Override
     public String toString() {
         String s = this.getClass().getName() + "(";
-        int i;
-        for (i = 0; i < lineSegments.length - 1; i++) {
-            s += lineSegments[i].toString() + ", ";
+        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+        if (!lineSegments.isEmpty()) {
+            s += ite.next().toString();
         }
-        s += lineSegments[i].toString() + ")";
-        return s;
+        while (ite.hasNext()) {
+            s += ", " + ite.next().toString();
+        }
+        return s + ")";
     }
 
     @Override
     public boolean equals(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (o instanceof V3D_LineSegmentPolyCollinear) {
+            return equals((V3D_LineSegmentPolyCollinear) o);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.lineSegments);
+        return hash;
     }
 
     /**
@@ -71,50 +89,10 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_LineSegmentPolyCollinear l) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    /**
-     * @param l The line segment to test if it is equal to {@code this}.
-     * @return {@code true} iff {@code this} is equal to {@code l} ignoring the
-     * direction of {@link #v}.
-     */
-    public boolean equalsIgnoreDirection(V3D_LineSegmentPolyCollinear l) {
-        if (equals(l)) {
-            return true;
-        } else {
-            return p.equals(l.q) && q.equals(l.p);
+        if (!l.lineSegments.containsAll(lineSegments)) {
+            return false;
         }
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 31 * hash + Objects.hashCode(this.p);
-        hash = 31 * hash + Objects.hashCode(this.q);
-        return hash;
-    }
-
-    /**
-     * @return {@code true} iff this line segment is effectively a point.
-     */
-    public boolean isPoint() {
-        return p.equals(q);
-    }
-
-    /**
-     * @param v The vector to apply to each coordinate of {@code this}.
-     * @param oom The Order of Magnitude for the calculation.
-     * @return a new V3D_LineSegment which is {@code this} with the {@code v}
-     * applied.
-     */
-    @Override
-    public V3D_LineSegmentPolyCollinear apply(V3D_Vector v, int oom) {
-        V3D_LineSegment[] nl = new V3D_LineSegment[lineSegments.length];
-        for (int i = 0; i < lineSegments.length; i++) {
-            nl[i] = lineSegments[i].apply(v, oom);
-        }
-        return new V3D_LineSegmentPolyCollinear(oom, nl);
+        return lineSegments.containsAll(l.lineSegments);
     }
 
     /**
@@ -146,70 +124,50 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     * @param p A point to test for intersection.
-     * @param oom The Order of Magnitude for the calculation.
-     * @return {@code true} if {@code this} is intersected by {@code p}.
-     */
+    @Override
+    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Point p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     @Override
     public boolean isIntersectedBy(V3D_Point p, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     * @param l A line segment to indicate intersection with this.
-     * @param oom The Order of Magnitude for the calculation.
-     * @param flag Used to distinguish this method from
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
-     * value is ignored.
-     * @return {@code true} iff {@code l} intersects with {@code this}.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean flag) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    /**
-     * @param l A line to test for intersection within the specified tolerance.
-     * @param oom The Order of Magnitude for the calculation.
-     * @return true if p is within t of this given scale.
-     */
     @Override
     public boolean isIntersectedBy(V3D_Line l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     * Intersects {@code this} with {@code l}. If they are equivalent then
-     * return {@code this}. If they overlap in a line return the part that
-     * overlaps (the order of points is not defined). If they intersect at a
-     * point, the point is returned. {@code null} is returned if the two line
-     * segments do not intersect.
-     *
-     * @param l The line to get intersection with this.
-     * @param oom The Order of Magnitude for the calculation.
-     * @return The intersection between {@code this} and {@code l}.
-     */
+    @Override
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     @Override
     public V3D_Geometry getIntersection(V3D_Line l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     * Intersects {@code this} with {@code l}. If they are equivalent then
-     * return {@code this}. If they overlap in a line return the part that
-     * overlaps. If they intersect only at a point, the point is returned.
-     * {@code null} is returned if {@code this} and {@code l} do not intersect.
-     *
-     * @param l The line segment to get intersection with this.
-     * @param oom The Order of Magnitude for the calculation.
-     * @param flag To distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
-     * value is ignored.
-     * @return The intersection between {@code this} and {@code l}.
-     */
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean flag) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    
 }

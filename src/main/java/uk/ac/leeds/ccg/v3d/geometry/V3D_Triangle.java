@@ -106,7 +106,6 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
      * Creates a new triangle.
      *
      * @param t The triangle to clone.
-     * @param oom The Order of Magnitude for the initialisation.
      */
     public V3D_Triangle(V3D_Triangle t) {
         super(t.p, t.q, t.r, t.getOom());

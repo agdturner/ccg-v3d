@@ -126,6 +126,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
         ri = new V3D_LineSegment(r, s, oom);
         b = new V3D_LineSegment(s, p, oom);
         // Check for rectangle.
+        V3D_Vector pq = getPq(oom);
+        V3D_Vector qr = getQr(oom);
         if (pq.isZeroVector()) {
             if (qr.isZeroVector()) {
                 // Rectangle is a point.

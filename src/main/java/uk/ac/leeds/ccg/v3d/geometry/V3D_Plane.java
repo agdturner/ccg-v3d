@@ -110,27 +110,27 @@ public class V3D_Plane extends V3D_Geometry {
      */
     protected final V3D_Point r;
 
-    /**
-     * The vector representing the move from {@link #p} to {@link #q}.
-     */
-    protected final V3D_Vector pq;
-
-    /**
-     * The vector representing the move from {@link #q} to {@link #r}.
-     */
-    protected final V3D_Vector qr;
-
-    /**
-     * The vector representing the move from {@link #r} to {@link #p}.
-     */
-    protected final V3D_Vector rp;
-
-    /**
-     * The normal vector. (This is perpendicular to the plane and it's direction
-     * is given by order in which the two vectors {@link #pq} and {@link #qr}
-     * are used in a cross product calculation when the plane is constructed.
-     */
-    protected final V3D_Vector n;
+//    /**
+//     * The vector representing the move from {@link #p} to {@link #q}.
+//     */
+//    protected final V3D_Vector pq;
+//
+//    /**
+//     * The vector representing the move from {@link #q} to {@link #r}.
+//     */
+//    protected final V3D_Vector qr;
+//
+//    /**
+//     * The vector representing the move from {@link #r} to {@link #p}.
+//     */
+//    protected final V3D_Vector rp;
+//
+//    /**
+//     * The normal vector. (This is perpendicular to the plane and it's direction
+//     * is given by order in which the two vectors {@link #pq} and {@link #qr}
+//     * are used in a cross product calculation when the plane is constructed.
+//     */
+//    protected final V3D_Vector n;
 
     /**
      * Create a new instance.
@@ -143,10 +143,10 @@ public class V3D_Plane extends V3D_Geometry {
         this.p = new V3D_Point(p.p);
         this.q = new V3D_Point(p.q);
         this.r = new V3D_Point(p.r);
-        this.pq = new V3D_Vector(p.pq);
-        this.qr = new V3D_Vector(p.qr);
-        this.rp = new V3D_Vector(p.rp);
-        this.n = new V3D_Vector(p.n);
+//        this.pq = new V3D_Vector(p.pq);
+//        this.qr = new V3D_Vector(p.qr);
+//        this.rp = new V3D_Vector(p.rp);
+//        this.n = new V3D_Vector(p.n);
     }
 
     /**
@@ -170,14 +170,14 @@ public class V3D_Plane extends V3D_Geometry {
         this.q = new V3D_Point(q);
         this.qAtOrigin = this.q.isOrigin();
         this.r = new V3D_Point(r);
-        this.pq = new V3D_Vector(this.p, this.q, oom);
-        this.qr = new V3D_Vector(this.q, this.r, oom);
-        this.rp = new V3D_Vector(this.r, this.p, oom);
-        if (qAtOrigin) {
-            this.n = this.qr.getCrossProduct(this.rp, oom);
-        } else {
-            this.n = this.pq.getCrossProduct(this.qr, oom);
-        }
+//        this.pq = new V3D_Vector(this.p, this.q, oom);
+//        this.qr = new V3D_Vector(this.q, this.r, oom);
+//        this.rp = new V3D_Vector(this.r, this.p, oom);
+//        if (qAtOrigin) {
+//            this.n = this.qr.getCrossProduct(this.rp, oom);
+//        } else {
+//            this.n = this.pq.getCrossProduct(this.qr, oom);
+//        }
         if (checkCoplanar) {
             if (V3D_Geometrics.isCoplanar(oom, p, q, r)) {
                 throw new RuntimeException("The points do not define a plane.");
@@ -238,11 +238,11 @@ public class V3D_Plane extends V3D_Geometry {
         this.q = p.apply(pv, oom);
         V3D_Vector pvx = pv.getCrossProduct(n, oom);
         this.r = p.apply(pvx, oom);
-        pq = new V3D_Vector(p, q, oom);
-        qr = new V3D_Vector(q, r, oom);
-        rp = new V3D_Vector(r, p, oom);
+//        pq = new V3D_Vector(p, q, oom);
+//        qr = new V3D_Vector(q, r, oom);
+//        rp = new V3D_Vector(r, p, oom);
         qAtOrigin = q.equals(V3D_Environment.P0P0P0);
-        this.n = new V3D_Vector(n);
+//        this.n = new V3D_Vector(n);
     }
 
     @Override
@@ -278,7 +278,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@link #p} with {@link #offset} applied.
      */
     public final V3D_Point getP(int oom){
-        return new V3D_Point(p).apply(offset, oom);
+        return p.apply(offset, oom);
     }
 
     /**
@@ -286,7 +286,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@link #q} with {@link #offset} applied.
      */
     public final V3D_Point getQ(int oom){
-        return new V3D_Point(q).apply(offset, oom);
+        return q.apply(offset, oom);
     }
     
     /**
@@ -294,7 +294,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@link #r} with {@link #offset} applied.
      */
     public V3D_Point getR(int oom){
-        return new V3D_Point(r).apply(offset, oom);
+        return r.apply(offset, oom);
     }
     
     /**
@@ -302,7 +302,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@link #pq} with {@link #offset} applied.
      */
     public V3D_Vector getPq(int oom){
-        return new V3D_Vector(pq).add(offset, oom);
+        //return new V3D_Vector(pq).add(offset, oom);
+        return new V3D_Vector(getP(oom), getQ(oom), oom);
     }
     
     /**
@@ -310,7 +311,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@link #qr} with {@link #offset} applied.
      */
     public V3D_Vector getQr(int oom){
-        return new V3D_Vector(qr).add(offset, oom);
+        //return new V3D_Vector(qr).add(offset, oom);
+        return new V3D_Vector(getQ(oom), getR(oom), oom);
     }
     
     /**
@@ -318,7 +320,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@link #rp} with {@link #offset} applied.
      */
     public V3D_Vector getRp(int oom){
-        return new V3D_Vector(rp).add(offset, oom);
+        //return new V3D_Vector(rp).add(offset, oom);
+        return new V3D_Vector(getR(oom), getP(oom), oom);
     }
     
     /**
@@ -326,7 +329,11 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@link #n} with {@link #offset} applied.
      */
     public V3D_Vector getN(int oom){
-        return new V3D_Vector(n).add(offset, oom);
+        if (qAtOrigin) {
+            return getQr(oom).getCrossProduct(getRp(oom), oom);
+        } else {
+            return getPq(oom).getCrossProduct(getQr(oom), oom);
+        }
     }
     
     /**
@@ -349,6 +356,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public Math_BigRational[] getEquationCoefficients() {
         Math_BigRational[] r = new Math_BigRational[4];
+        V3D_Vector n = getN(oom);
         Math_BigRational ndxsr = n.dx.getSqrt();
         Math_BigRational ndysr = n.dy.getSqrt();
         Math_BigRational ndzsr = n.dz.getSqrt();

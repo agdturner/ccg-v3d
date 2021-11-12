@@ -4,15 +4,20 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * Essentially this is just a collection of any V3D_Tetrahedron.
+ * A set of V3D_Tetrahedron.
  *
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_TetrahedronPoly implements V3D_3DShape, Serializable {
+public class V3D_TetrahedronPoly extends V3D_Geometry implements V3D_3DShape {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,21 +29,15 @@ public class V3D_TetrahedronPoly implements V3D_3DShape, Serializable {
     /**
      * The list of tetrahedron. Stored as a list so that the list can be 
      */
-    protected final List<V3D_Tetrahedron> tetrahedrons;
-
-    /**
-     * Create a new instance.
-     */
-    protected V3D_TetrahedronPoly() {
-        tetrahedrons = new ArrayList<>();
-    }
+    protected final Set<V3D_Tetrahedron> tetrahedrons;
 
     /**
      * Creates a new instance.
      *
      * @param tetrahedrons What {@link #tetrahedrons} is set to.
      */
-    public V3D_TetrahedronPoly(List<V3D_Tetrahedron> tetrahedrons) {
+    public V3D_TetrahedronPoly(Set<V3D_Tetrahedron> tetrahedrons) {
+        super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
         this.tetrahedrons = tetrahedrons;
     }
 
@@ -49,7 +48,8 @@ public class V3D_TetrahedronPoly implements V3D_3DShape, Serializable {
      * individually.
      */
     public V3D_TetrahedronPoly(V3D_Tetrahedron... tetrahedrons) {
-        this.tetrahedrons = new ArrayList<>();
+        super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
+        this.tetrahedrons = new HashSet<>();
         this.tetrahedrons.addAll(Arrays.asList(tetrahedrons));
     }
 
@@ -69,10 +69,10 @@ public class V3D_TetrahedronPoly implements V3D_3DShape, Serializable {
     @Override
     public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = tetrahedrons.get(0).getEnvelope(oom);
-            for (int i = 1; i < tetrahedrons.size(); i++) {
-                en = en.union(tetrahedrons.get(i).getEnvelope(oom));
-            }
+            en = tetrahedrons.stream().findAny().get().getEnvelope(oom);
+            tetrahedrons.forEach((V3D_Tetrahedron t) -> {
+                en = en.union(t.getEnvelope(oom));
+            });
         }
         return en;
     }
@@ -82,12 +82,14 @@ public class V3D_TetrahedronPoly implements V3D_3DShape, Serializable {
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return a new rectangle.
      */
+    @Override
     public V3D_TetrahedronPoly apply(V3D_Vector v, int oom) {
-        V3D_Tetrahedron[] t = new V3D_Tetrahedron[tetrahedrons.size()];
-        for (int i = 0; i < tetrahedrons.size(); i++) {
-            t[i] = tetrahedrons.get(i).apply(v, oom);
+        V3D_TetrahedronPoly r = new V3D_TetrahedronPoly(tetrahedrons.toArray(
+                new V3D_Tetrahedron[tetrahedrons.size()]));
+        for (int i = 0; i < r.tetrahedrons.size(); i++) {
+            r.apply(oom, v);
         }
-        return new V3D_TetrahedronPoly(t);
+        return r;
     }
 
     /**
@@ -97,8 +99,9 @@ public class V3D_TetrahedronPoly implements V3D_3DShape, Serializable {
     @Override
     public BigDecimal getArea(int oom) {
         BigDecimal r = BigDecimal.ZERO;
-        for (int i = 0; i < tetrahedrons.size(); i++) {
-            r = r.add(tetrahedrons.get(i).getArea(oom));
+        Iterator<V3D_Tetrahedron> ite = tetrahedrons.iterator();
+        while (ite.hasNext()) {
+            r = r.add(ite.next().getArea(oom));
         }
         return r;
     }
@@ -108,16 +111,36 @@ public class V3D_TetrahedronPoly implements V3D_3DShape, Serializable {
      */
     @Override
     public BigDecimal getVolume(int oom) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (int i = 0; i < tetrahedrons.size(); i++) {
-            sum = sum.add(tetrahedrons.get(i).getVolume(oom));
+        BigDecimal r = BigDecimal.ZERO;
+        Iterator<V3D_Tetrahedron> ite = tetrahedrons.iterator();
+        while (ite.hasNext()) {
+            r = r.add(ite.next().getVolume(oom));
         }
-        return sum;
+        return r;
+    }
+
+    @Override
+    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Point p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Point p, int oom) {
-        
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -140,9 +163,6 @@ public class V3D_TetrahedronPoly implements V3D_3DShape, Serializable {
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean flag) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public BigDecimal getDistance(V3D_Point p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
+    
 }

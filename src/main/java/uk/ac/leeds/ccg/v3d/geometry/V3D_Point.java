@@ -342,7 +342,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
         V3D_Vector pq = new V3D_Vector(this, pl.p, oom);
-        if (pq.isScalarMultiple(pl.n, oom)) {
+        if (pq.isScalarMultiple(pl.getN(oom), oom)) {
             return pq.getMagnitudeSquared();
         } else {
             Math_BigRational[] coeffs = pl.getEquationCoefficients();
