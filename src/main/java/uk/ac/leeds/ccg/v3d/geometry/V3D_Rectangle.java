@@ -21,21 +21,17 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * For representing and processing rectangles in 3D. A rectangle has four corner points
- * {@link #p}, {@link #q}, {@link #r}, {@link #s}. The left of a
+ * For representing and processing rectangles in 3D. A rectangle has four corner
+ * points {@link #p}, {@link #q}, {@link #r}, {@link #s}. The left of a
  * rectangle {@link #l} is the line segment from {@link #p} to {@link #q}. The
- * top of a rectangle {@link #t} is the line segment from {@link #q} to
- * {@link #r}. The right of a rectangle {@link #ri} is the line segment from
- * {@link #r} to {@link #s}. The bottom of a rectangle {@link #b} is the line
- * segment from {@link #s} to {@link #p}. The following depicts a generic
- * rectangle {@code
- *          t
- * q *-------------* r
- *   |             |
- * l |             | ri
- *   |             |
- * p *-------------* s
- *          b
+ * following depicts a generic rectangle {@code
+ *          qr
+ *  q *-------------* r
+ *    |             |
+ * pq |             | rs
+ *    |             |
+ *  p *-------------* s
+ *          sp
  * }
  *
  * @author Andy Turner
@@ -49,7 +45,6 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 //     * For storing if q is at the origin.
 //     */
 //    protected final boolean qAtOrigin2;
-
     /**
      * The other corner of the rectangle. The others are {@link #p}, {@link #q},
      * and {@link #r}.
@@ -63,7 +58,6 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 //     * {@link #s}.
 //     */
 //    protected final V3D_Vector qs;
-
     /**
      * For storing the envelope
      */
@@ -88,7 +82,6 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 //     * For storing the line segment from {@link #s} to {@link #p}.
 //     */
 //    protected final V3D_LineSegment b;
-
     /**
      * Create a new instance.
      *
@@ -100,7 +93,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
-    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s, 
+    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s,
             int oom) {
         super(p, q, r, oom);
         /**
@@ -168,30 +161,30 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 + toStringFields(pad + " ") + "\n"
                 + pad + ")";
     }
-    
+
     @Override
     protected String toStringFields(String pad) {
         return super.toStringFields(pad) + "\n"
-               + pad + ",\n"
-               + pad + "s=" + s.toString(pad);
+                + pad + ",\n"
+                + pad + "s=" + s.toString(pad);
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the calculation.
+     * @return The vector from {@link #q} to {@link #s}.
+     */
+    public V3D_Vector getQs(int oom) {
+        return new V3D_Vector(getQ(oom), getS(oom), oom);
     }
 
     /**
      * @param oom The Order of Magnitude for the application of {@link #offset}.
-     * @return {@link #qs} with {@link #offset} applied.
-     */
-    public V3D_Vector getQs(int oom){
-        return new V3D_Vector(getQ(oom), getS(oom), oom);
-    }
-         
-    /**
-     * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @return {@link #s} with {@link #offset} applied.
      */
-    public V3D_Point getS(int oom){
+    public V3D_Point getS(int oom) {
         return new V3D_Point(s).apply(offset, oom);
     }
-            
+
     @Override
     public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
@@ -207,7 +200,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      */
     @Override
     public V3D_Rectangle apply(V3D_Vector v, int oom) {
-        return new V3D_Rectangle(getP(oom).apply(v, oom), getQ(oom).apply(v, oom), 
+        return new V3D_Rectangle(getP(oom).apply(v, oom), getQ(oom).apply(v, oom),
                 getR(oom).apply(v, oom), getS(oom).apply(v, oom), oom);
     }
 
@@ -225,7 +218,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
         }
         return false;
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The line segment from {@link #p} to {@link #q}.
@@ -233,7 +226,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     protected V3D_LineSegment getPQ(int oom) {
         return new V3D_LineSegment(getP(oom), getQ(oom), oom);
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The line segment from {@link #q} to {@link #r}.
@@ -241,7 +234,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     protected V3D_LineSegment getQR(int oom) {
         return new V3D_LineSegment(getQ(oom), getR(oom), oom);
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The line segment from {@link #r} to {@link #s}.
@@ -249,7 +242,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     protected V3D_LineSegment getRS(int oom) {
         return new V3D_LineSegment(getR(oom), getS(oom), oom);
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The line segment from {@link #s} to {@link #p}.
@@ -257,7 +250,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     protected V3D_LineSegment getSP(int oom) {
         return new V3D_LineSegment(getS(oom), getP(oom), oom);
     }
-    
+
     private boolean isIntersectedBy0(V3D_Line ls, int oom) {
         return getQR(oom).isIntersectedBy(ls, oom) || getRS(oom).isIntersectedBy(ls, oom)
                 || getSP(oom).isIntersectedBy(ls, oom) || getPQ(oom).isIntersectedBy(ls, oom);
@@ -265,11 +258,11 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     private boolean isIntersectedBy0(V3D_Point pt, int oom) {
         // Special cases
-        V3D_Point tp = this.getP(oom); 
+        V3D_Point tp = this.getP(oom);
         if (tp.equals(pt)) {
             return true;
         }
-        V3D_Point tq = this.getQ(oom); 
+        V3D_Point tq = this.getQ(oom);
         if (tq.equals(pt)) {
             return true;
         }
@@ -281,8 +274,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
         if (ts.equals(pt)) {
             return true;
         }
-        if (true){
-        //if (V3D_Geometrics.isCoplanar(this, pt)) {
+        if (true) {
+            //if (V3D_Geometrics.isCoplanar(this, pt)) {
             // Check the areas
             // Area pqpt
             BigDecimal apqpt = new V3D_Triangle(tp, tq, pt, oom).getArea(oom);
@@ -448,7 +441,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 V3D_LineSegment rs = getRS(oom);
                 V3D_LineSegment sp = getSP(oom);
                 V3D_LineSegment pq = getPQ(oom);
-                
+
                 V3D_Geometry ti = qr.getIntersection(li, oom);
                 if (ti == null) {
                     // Check ri, b, l
