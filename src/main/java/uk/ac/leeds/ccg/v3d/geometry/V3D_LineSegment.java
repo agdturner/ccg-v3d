@@ -151,8 +151,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     /**
      * @param l The line segment to test if it is equal to {@code this}.
      * @return {@code true} iff {@code this} is equal to {@code l}. This 
-     * ignores which is the the ignoring the
-     * direction of {@link #v}.
+     * ignores the order of {@link #p} and {@link #q}.
      */
     public boolean equalsIgnoreDirection(V3D_LineSegment l) {
         if (equals(l)) {

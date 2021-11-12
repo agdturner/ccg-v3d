@@ -21,16 +21,14 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * For representing and processing rectangles in 3D. A rectangle has a non-zero
- * area and does not have to align with any of the axes. The corner points
- * {@link #p}, {@link #q}, {@link #r}, {@link #s} are arranged in a rectangular
- * fashion so that {@link #pq} is orthogonal to {@link #qr}. The left of a
+ * For representing and processing rectangles in 3D. A rectangle has four corner points
+ * {@link #p}, {@link #q}, {@link #r}, {@link #s}. The left of a
  * rectangle {@link #l} is the line segment from {@link #p} to {@link #q}. The
  * top of a rectangle {@link #t} is the line segment from {@link #q} to
  * {@link #r}. The right of a rectangle {@link #ri} is the line segment from
  * {@link #r} to {@link #s}. The bottom of a rectangle {@link #b} is the line
  * segment from {@link #s} to {@link #p}. The following depicts a generic
- * rectangle (no attempt has been made to draw this three dimensionally) {@code
+ * rectangle {@code
  *          t
  * q *-------------* r
  *   |             |
@@ -39,9 +37,6 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * p *-------------* s
  *          b
  * }
- * Although what is depicted can be imagined as aligning with the x and y axes.
- * A rectangle can be defined by any three coordinates in 3D space so long as
- * the three points are at right angles.
  *
  * @author Andy Turner
  * @version 1.0
@@ -50,10 +45,10 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * For storing if q is at the origin.
-     */
-    protected final boolean qAtOrigin2;
+//    /**
+//     * For storing if q is at the origin.
+//     */
+//    protected final boolean qAtOrigin2;
 
     /**
      * The other corner of the rectangle. The others are {@link #p}, {@link #q},
@@ -61,38 +56,38 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      */
     protected final V3D_Point s;
 
-    /**
-     * Initialised when the q provided to initialise this is at the origin and p
-     * and q have been swapped to define the plane. So, this represents the
-     * vector from the point p input (which is now stored as {@link #q}) to
-     * {@link #s}.
-     */
-    protected final V3D_Vector qs;
+//    /**
+//     * Initialised when the q provided to initialise this is at the origin and p
+//     * and q have been swapped to define the plane. So, this represents the
+//     * vector from the point p input (which is now stored as {@link #q}) to
+//     * {@link #s}.
+//     */
+//    protected final V3D_Vector qs;
 
     /**
      * For storing the envelope
      */
     protected V3D_Envelope en;
 
-    /**
-     * For storing the vector from {@link #p} to {@link #q}.
-     */
-    protected final V3D_LineSegment l;
-
-    /**
-     * For storing the line segment from {@link #q} to {@link #r}.
-     */
-    protected final V3D_LineSegment t;
-
-    /**
-     * For storing the line segment from {@link #r} to {@link #s}.
-     */
-    protected final V3D_LineSegment ri;
-
-    /**
-     * For storing the line segment from {@link #s} to {@link #p}.
-     */
-    protected final V3D_LineSegment b;
+//    /**
+//     * For storing the vector from {@link #p} to {@link #q}.
+//     */
+//    protected final V3D_LineSegment l;
+//
+//    /**
+//     * For storing the line segment from {@link #q} to {@link #r}.
+//     */
+//    protected final V3D_LineSegment t;
+//
+//    /**
+//     * For storing the line segment from {@link #r} to {@link #s}.
+//     */
+//    protected final V3D_LineSegment ri;
+//
+//    /**
+//     * For storing the line segment from {@link #s} to {@link #p}.
+//     */
+//    protected final V3D_LineSegment b;
 
     /**
      * Create a new instance.
@@ -113,7 +108,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
          * which case {@link #pq} is now representing the reverse, and
          * {@link qr} represents the vector from p to r.
          */
-        qAtOrigin2 = q.equals(V3D_Environment.P0P0P0);
+        boolean qAtOrigin2 = q.equals(V3D_Environment.P0P0P0);
+        V3D_Vector qs;
         if (qAtOrigin2) {
             qs = new V3D_Vector(p, s, oom);
         } else {
@@ -121,10 +117,10 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
         }
         this.s = s;
         //en = new V3D_Envelope(p, q, r, s); Not initialised here as it causes a StackOverflowError
-        l = new V3D_LineSegment(p, q, oom);
-        t = new V3D_LineSegment(q, r, oom);
-        ri = new V3D_LineSegment(r, s, oom);
-        b = new V3D_LineSegment(s, p, oom);
+//        l = new V3D_LineSegment(p, q, oom);
+//        t = new V3D_LineSegment(q, r, oom);
+//        ri = new V3D_LineSegment(r, s, oom);
+//        b = new V3D_LineSegment(s, p, oom);
         // Check for rectangle.
         V3D_Vector pq = getPq(oom);
         V3D_Vector qr = getQr(oom);
@@ -185,7 +181,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
      * @return {@link #qs} with {@link #offset} applied.
      */
     public V3D_Vector getQs(int oom){
-        return new V3D_Vector(qs).add(offset, oom);
+        return new V3D_Vector(getQ(oom), getS(oom), oom);
     }
          
     /**
@@ -229,10 +225,42 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
         }
         return false;
     }
-
+    
+    /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return The line segment from {@link #p} to {@link #q}.
+     */
+    protected V3D_LineSegment getPQ(int oom) {
+        return new V3D_LineSegment(getP(oom), getQ(oom), oom);
+    }
+    
+    /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return The line segment from {@link #q} to {@link #r}.
+     */
+    protected V3D_LineSegment getQR(int oom) {
+        return new V3D_LineSegment(getQ(oom), getR(oom), oom);
+    }
+    
+    /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return The line segment from {@link #r} to {@link #s}.
+     */
+    protected V3D_LineSegment getRS(int oom) {
+        return new V3D_LineSegment(getR(oom), getS(oom), oom);
+    }
+    
+    /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return The line segment from {@link #s} to {@link #p}.
+     */
+    protected V3D_LineSegment getSP(int oom) {
+        return new V3D_LineSegment(getS(oom), getP(oom), oom);
+    }
+    
     private boolean isIntersectedBy0(V3D_Line ls, int oom) {
-        return t.isIntersectedBy(ls, oom) || ri.isIntersectedBy(ls, oom)
-                || b.isIntersectedBy(ls, oom) || l.isIntersectedBy(ls, oom);
+        return getQR(oom).isIntersectedBy(ls, oom) || getRS(oom).isIntersectedBy(ls, oom)
+                || getSP(oom).isIntersectedBy(ls, oom) || getPQ(oom).isIntersectedBy(ls, oom);
     }
 
     private boolean isIntersectedBy0(V3D_Point pt, int oom) {
@@ -269,11 +297,11 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                 //return V3D_Geometrics.isCoplanar(this, pt);
             }
         }
-        if (t.isIntersectedBy(pt, oom) || ri.isIntersectedBy(pt, oom)
-                || b.isIntersectedBy(pt, oom) || l.isIntersectedBy(pt, oom)) {
+        if (getQR(oom).isIntersectedBy(pt, oom) || getRS(oom).isIntersectedBy(pt, oom)
+                || getSP(oom).isIntersectedBy(pt, oom) || getPQ(oom).isIntersectedBy(pt, oom)) {
             return true;
         }
-        if (qAtOrigin2) {
+        if (getQ(oom).equals(V3D_Environment.P0P0P0)) {
             V3D_Vector ppt = new V3D_Vector(tq, pt, oom);
             V3D_Vector qpt = new V3D_Vector(tp, pt, oom);
             V3D_Vector rpt = new V3D_Vector(tr, pt, oom);
@@ -416,16 +444,21 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                  * Get the intersection of the line and each edge of the
                  * rectangle.
                  */
-                V3D_Geometry ti = t.getIntersection(li, oom);
+                V3D_LineSegment qr = getQR(oom);
+                V3D_LineSegment rs = getRS(oom);
+                V3D_LineSegment sp = getSP(oom);
+                V3D_LineSegment pq = getPQ(oom);
+                
+                V3D_Geometry ti = qr.getIntersection(li, oom);
                 if (ti == null) {
                     // Check ri, b, l
-                    V3D_Geometry rii = ri.getIntersection(li, oom);
+                    V3D_Geometry rii = rs.getIntersection(li, oom);
                     if (rii == null) {
                         // Check b, l
-                        V3D_Geometry bi = b.getIntersection(li, oom);
+                        V3D_Geometry bi = sp.getIntersection(li, oom);
                         if (bi == null) {
                             // Check l
-                            V3D_Geometry tli = this.l.getIntersection(li, oom);
+                            V3D_Geometry tli = pq.getIntersection(li, oom);
                             if (tli == null) {
                                 return null;
                             } else {
@@ -435,7 +468,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                             return bi;
                         } else {
                             // Check l
-                            V3D_Geometry tli = this.l.getIntersection(li, oom);
+                            V3D_Geometry tli = pq.getIntersection(li, oom);
                             if (tli == null) {
                                 return bi;
                             } else {
@@ -447,10 +480,10 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                         return rii;
                     } else {
                         // Check b, l
-                        V3D_Geometry bi = b.getIntersection(li, oom);
+                        V3D_Geometry bi = sp.getIntersection(li, oom);
                         if (bi == null) {
                             // Check l
-                            V3D_Geometry tli = this.l.getIntersection(li, oom);
+                            V3D_Geometry tli = pq.getIntersection(li, oom);
                             if (tli == null) {
                                 return rii;
                             } else {
@@ -461,7 +494,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                             return bi;
                         } else {
                             // Check l
-                            V3D_Geometry tli = this.l.getIntersection(li, oom);
+                            V3D_Geometry tli = pq.getIntersection(li, oom);
                             if (tli == null) {
                                 V3D_Point riip = (V3D_Point) rii;
                                 V3D_Point bip = (V3D_Point) bi;
@@ -480,13 +513,13 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                     return ti;
                 } else {
                     // Check ri, b, l
-                    V3D_Geometry rii = ri.getIntersection(li, oom);
+                    V3D_Geometry rii = rs.getIntersection(li, oom);
                     if (rii == null) {
                         // Check b, l
-                        V3D_Geometry bi = b.getIntersection(li, oom);
+                        V3D_Geometry bi = sp.getIntersection(li, oom);
                         if (bi == null) {
                             // Check l
-                            V3D_Geometry tli = this.l.getIntersection(li, oom);
+                            V3D_Geometry tli = pq.getIntersection(li, oom);
                             if (tli == null) {
                                 return ti;
                             } else {
@@ -509,10 +542,10 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
                         V3D_Point riip = (V3D_Point) rii;
                         if (tip.equals(riip)) {
                             // Check b, l
-                            V3D_Geometry sri = b.getIntersection(li, oom);
+                            V3D_Geometry sri = sp.getIntersection(li, oom);
                             if (sri == null) {
                                 // Check l
-                                V3D_Geometry tli = this.l.getIntersection(li, oom);
+                                V3D_Geometry tli = pq.getIntersection(li, oom);
                                 if (tli == null) {
                                     return rii;
                                 } else {
@@ -600,8 +633,8 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     @Override
     public BigDecimal getPerimeter(int oom) {
         int oomn2 = oom - 2;
-        return l.getLength(oom).toBigDecimal(oomn2)
-                .add(t.getLength(oom).toBigDecimal(oomn2))
+        return getPQ(oom).getLength(oom).toBigDecimal(oomn2)
+                .add(getQR(oom).getLength(oom).toBigDecimal(oomn2))
                 .multiply(BigDecimal.valueOf(2));
     }
 
@@ -609,7 +642,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
     public BigDecimal getArea(int oom) {
 //        return Math_BigDecimal.round(l.v.getMagnitude(oomn2)
 //                .multiply(t.v.getMagnitude(oomn2)), oom);
-        return l.getV(oom).getMagnitude().multiply(t.getV(oom).getMagnitude(), oom).toBigDecimal(oom);
+        return getPQ(oom).getV(oom).getMagnitude().multiply(getQR(oom).getV(oom).getMagnitude(), oom).toBigDecimal(oom);
     }
 
     /**
@@ -625,10 +658,10 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
             return BigDecimal.ZERO;
         }
         BigDecimal dp = super.getDistance(p, oom);
-        BigDecimal ld = l.getDistance(p, oom);
-        BigDecimal td = t.getDistance(p, oom);
-        BigDecimal rd = ri.getDistance(p, oom);
-        BigDecimal bd = b.getDistance(p, oom);
+        BigDecimal ld = getPQ(oom).getDistance(p, oom);
+        BigDecimal td = getQR(oom).getDistance(p, oom);
+        BigDecimal rd = getRS(oom).getDistance(p, oom);
+        BigDecimal bd = getSP(oom).getDistance(p, oom);
         if (dp.compareTo(ld) == 0 && dp.compareTo(td) == 0
                 && dp.compareTo(rd) == 0 && dp.compareTo(bd) == 0) {
             return dp;
