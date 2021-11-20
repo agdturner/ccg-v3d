@@ -130,7 +130,7 @@ The library began development in March 2020. The original aim was to use it to c
 - The [University of Leeds](http://www.leeds.ac.uk) for supporting the development of this library and some of the dependencies.
 - Thank you to those that have and continue to develop the Java language.
 - Thank you Eric (_et al._) for the [BigMath](https://github.com/eobermuhlner/big-math) library.
-- Thank you developers and maintainers of [Apache Maven](https://maven.apache.org/), [Apache NetBeans](https://netbeans.apache.org/), [git](https://git-scm.com/) and [GitHub] for supporting the development of this code and for providing a means of creating a community of users/developers.
+- Thank you developers and maintainers of [Apache Maven](https://maven.apache.org/), [Apache NetBeans](https://netbeans.apache.org/), [git](https://git-scm.com/) and [GitHub](http://github.com) for supporting the development of this code and for providing a means of creating a community of users/developers.
 - Thank you developers, maintainers and contributors of other useful open source Java libraries and relevent information content made available on the Web. Information that has helped me develop this library is cited in the source code.
 
 # Notes
