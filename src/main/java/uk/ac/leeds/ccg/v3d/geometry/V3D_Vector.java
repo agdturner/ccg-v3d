@@ -242,7 +242,7 @@ public class V3D_Vector implements Serializable {
                 q.getY(oom).subtract(p.getY(oom)),
                 q.getZ(oom).subtract(p.getZ(oom)));
     }
-
+    
     /**
      * Creates a vector from the Origin to {@code p} to {@code q}.
      *
@@ -300,7 +300,7 @@ public class V3D_Vector implements Serializable {
     /**
      * Indicates if {@code this} and {@code v} are equal.
      *
-     * @param v The vector to compare with {@code this}.
+     * @param v The vector to test for equality with {@code this}.
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
     public boolean equals(V3D_Vector v) {
@@ -392,7 +392,7 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @param s The scalar value to multiply this by.
+     * @param s The scalar value to divide this by.
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return Scaled vector.
      */

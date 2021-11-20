@@ -92,6 +92,14 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * @param p The point to duplicate
      */
+    public V3D_Point(V3D_VPoint p, int oom) {
+        super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
+        this.pos = new V3D_Vector(p.getX(), p.getY(), p.getZ());
+    }
+
+    /**
+     * @param p The point to duplicate
+     */
     public V3D_Point(V3D_Envelope.Point p) {
         super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
         this.pos = new V3D_Vector(p.x, p.y, p.z);

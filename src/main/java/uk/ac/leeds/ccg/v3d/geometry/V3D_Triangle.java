@@ -447,7 +447,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_2DShape {
         V3D_Point mrp = getRp().getMidpoint(oom);
         V3D_LineSegment lmpqr = new V3D_LineSegment(mpq, getRp().p, oom);
         V3D_LineSegment lmqrp = new V3D_LineSegment(mqr, getP(oom), oom);
-        V3D_LineSegment lmrpq = new V3D_LineSegment(mrp, getQ(oom), oom);
+        //V3D_LineSegment lmrpq = new V3D_LineSegment(mrp, getQ(oom), oom);
         V3D_Point c0 = (V3D_Point) lmpqr.getIntersection(lmqrp, oom, true);
         //V3D_Point c1 = (V3D_Point) lmpqr.getIntersection(lmrpq, oom, true);
         //V3D_Point c2 = (V3D_Point) lmrpq.getIntersection(lmqrp, oom, true);
