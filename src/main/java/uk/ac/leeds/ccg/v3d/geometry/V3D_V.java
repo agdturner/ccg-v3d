@@ -164,8 +164,8 @@ public class V3D_V implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_V) {
-            return equals((V3D_V) o);
+        if (o instanceof V3D_V v3d_v) {
+            return equals(v3d_v);
         }
         return false;
     }

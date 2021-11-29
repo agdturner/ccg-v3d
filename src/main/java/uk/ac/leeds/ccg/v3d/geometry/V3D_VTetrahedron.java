@@ -106,7 +106,7 @@ public class V3D_VTetrahedron extends V3D_VGeometry {
      * @param spr What {@link #spr} is set to.
      * @param psq What {@link #psq} is set to.
      */
-    public V3D_VTetrahedron(V3D_V offset, V3D_VTriangle pqr, V3D_VTriangle qsr, 
+    public V3D_VTetrahedron(V3D_V offset, V3D_VTriangle pqr, V3D_VTriangle qsr,
             V3D_VTriangle spr, V3D_VTriangle psq) {
         super(offset);
         this.pqr = pqr;
@@ -144,15 +144,24 @@ public class V3D_VTetrahedron extends V3D_VGeometry {
                 + pad + ",\n"
                 + pad + "psq=" + psq.toString(pad);
     }
-    
+
     @Override
-    public V3D_VPoint getC() {
-        if (c == null) {
-            c = new V3D_VPoint(
-                    (pqr.getC().getX().add(qsr.getC().getX()).add(spr.getC().getX()).add(psq.getC().getX())).divide(4),
-                    (pqr.getC().getY().add(qsr.getC().getY()).add(spr.getC().getY()).add(psq.getC().getY())).divide(4),
-                    (pqr.getC().getZ().add(qsr.getC().getZ()).add(spr.getC().getZ()).add(psq.getC().getZ())).divide(4));
-        }
-        return c;
+    public void apply(V3D_V v) {
+        pqr.apply(v);
+        qsr.apply(v);
+        spr.apply(v);
+        psq.apply(v);
     }
+
+    @Override
+    public V3D_V getCentroid() {
+        if (centroid == null) {
+            centroid = new V3D_V(
+                    (pqr.getCentroid().x.add(qsr.getCentroid().x).add(spr.getCentroid().x).add(psq.getCentroid().x)).divide(4),
+                    (pqr.getCentroid().y.add(qsr.getCentroid().y).add(spr.getCentroid().y).add(psq.getCentroid().y)).divide(4),
+                    (pqr.getCentroid().z.add(qsr.getCentroid().z).add(spr.getCentroid().z).add(psq.getCentroid().z)).divide(4));
+        }
+        return centroid;
+    }
+
 }

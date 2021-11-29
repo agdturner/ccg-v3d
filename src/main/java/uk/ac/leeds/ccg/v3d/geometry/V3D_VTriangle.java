@@ -56,17 +56,17 @@ public class V3D_VTriangle extends V3D_VGeometry {
     /**
      * A point of the triangle.
      */
-    public V3D_VPoint p;
+    public V3D_V p;
 
     /**
      * A point of the triangle.
      */
-    public V3D_VPoint q;
+    public V3D_V q;
 
     /**
      * A point of the triangle.
      */
-    public V3D_VPoint r;
+    public V3D_V r;
 
     /**
      * Creates a new triangle.
@@ -89,9 +89,9 @@ public class V3D_VTriangle extends V3D_VGeometry {
      */
     public V3D_VTriangle(V3D_VPoint p, V3D_VPoint q, V3D_VPoint r) {
         super(V3D_V.ZERO);
-        this.p = p;
-        this.q = q;
-        this.r = r;
+        this.p = new V3D_V(p.getX(), p.getY(), p.getZ());
+        this.q = new V3D_V(q.getX(), q.getY(), q.getZ());
+        this.r = new V3D_V(r.getX(), r.getY(), r.getZ());
     }
 
     @Override
@@ -123,13 +123,18 @@ public class V3D_VTriangle extends V3D_VGeometry {
     }
 
     @Override
-    public V3D_VPoint getC() {
-        if (c == null) {
-            c = new V3D_VPoint((p.getX().add(q.getX()).add(r.getX())).divide(3),
-                    (p.getY().add(q.getY()).add(r.getY())).divide(3),
-                    (p.getZ().add(q.getZ()).add(r.getZ())).divide(3));
-        }
-        return c;
+    public V3D_V getCentroid() {
+        return new V3D_V(
+                (p.x.add(q.x).add(r.x)).divide(3).add(offset.x),
+                (p.y.add(q.y).add(r.y)).divide(3).add(offset.y),
+                (p.z.add(q.z).add(r.z)).divide(3).add(offset.z));
+    }
+    
+    @Override
+    public void apply(V3D_V v) {
+        p.apply(v);
+        q.apply(v);
+        r.apply(v);
     }
 
 }

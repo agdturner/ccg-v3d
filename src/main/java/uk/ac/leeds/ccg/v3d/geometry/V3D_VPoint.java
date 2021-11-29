@@ -57,42 +57,44 @@ public class V3D_VPoint extends V3D_VGeometry {
     private static final long serialVersionUID = 1L;
 
     public static V3D_VPoint ORIGIN = new V3D_VPoint(0, 0, 0);
+    
     /**
-     * The position relative to {@link V3D_V#ZERO}.
+     * The position relative to the original offset.
      */
-    public V3D_V pos;
+    public V3D_V rel;
 
     /**
      * @param p The coordinate vector to duplicate
      */
     public V3D_VPoint(V3D_VPoint p) {
         super(p.offset);
-        this.pos = p.pos;
+        this.rel = p.rel;
+        this.centroid = new V3D_V(p.offset, rel);
     }
 
     /**
-     * @param pos What {@link #pos} is set to.
+     * @param pos What {@link #rel} is set to.
      * @param offset What {@link #offset} is set to.
      */
     public V3D_VPoint(V3D_V pos, V3D_V offset) {
         super(offset);
-        this.pos = pos;
+        this.rel = pos;
     }
 
     /**
-     * @param x What {@link #pos} x component is set to.
-     * @param y What {@link #pos} y component is set to.
-     * @param z What {@link #pos} z component is set to.
+     * @param x What {@link #rel} x component is set to.
+     * @param y What {@link #rel} y component is set to.
+     * @param z What {@link #rel} z component is set to.
      */
     public V3D_VPoint(Math_BigRational x, Math_BigRational y, Math_BigRational z) {
         super(V3D_V.ZERO);
-        this.pos = new V3D_V(x, y, z);
+        this.rel = new V3D_V(x, y, z);
     }
 
     /**
-     * @param x What {@link #pos} x component is set to.
-     * @param y What {@link #pos} y component is set to.
-     * @param z What {@link #pos} z component is set to.
+     * @param x What {@link #rel} x component is set to.
+     * @param y What {@link #rel} y component is set to.
+     * @param z What {@link #rel} z component is set to.
      */
     public V3D_VPoint(BigDecimal x, BigDecimal y, BigDecimal z) {
         this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
@@ -100,9 +102,9 @@ public class V3D_VPoint extends V3D_VGeometry {
     }
 
     /**
-     * @param x What {@link #pos} x component is set to.
-     * @param y What {@link #pos} y component is set to.
-     * @param z What {@link #pos} z component is set to.
+     * @param x What {@link #rel} x component is set to.
+     * @param y What {@link #rel} y component is set to.
+     * @param z What {@link #rel} z component is set to.
      */
     public V3D_VPoint(double x, double y, double z) {
         this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
@@ -110,9 +112,9 @@ public class V3D_VPoint extends V3D_VGeometry {
     }
 
     /**
-     * @param x What {@link #pos} x component is set to.
-     * @param y What {@link #pos} y component is set to.
-     * @param z What {@link #pos} z component is set to.
+     * @param x What {@link #rel} x component is set to.
+     * @param y What {@link #rel} y component is set to.
+     * @param z What {@link #rel} z component is set to.
      */
     public V3D_VPoint(long x, long y, long z) {
         this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
@@ -140,7 +142,7 @@ public class V3D_VPoint extends V3D_VGeometry {
      * @return A description of the fields.
      */
     protected String toStringFields(String pad) {
-        return pad + "pos=" + pos.toString(pad) + "\n"
+        return pad + "pos=" + rel.toString(pad) + "\n"
                 + pad + ",\n"
                 + pad + "offset=" + offset.toString(pad);
     }
@@ -156,13 +158,13 @@ public class V3D_VPoint extends V3D_VGeometry {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.pos);
+        hash = 47 * hash + Objects.hashCode(this.rel);
         hash = 47 * hash + Objects.hashCode(this.offset);
         return hash;
     }
 
     /**
-     * Equal if they represent the same location defined by {@link #pos} and
+     * Equal if they represent the same location defined by {@link #rel} and
      * {@link #offset}.
      *
      * @param p The point to test if it is the same as {@code this}.
@@ -176,8 +178,8 @@ public class V3D_VPoint extends V3D_VGeometry {
                 }
             }
         }
-//        int toom = pos.getMagnitude().getOom();
-//        int poom = p.pos.getMagnitude().getOom();
+//        int toom = rel.getMagnitude().getOom();
+//        int poom = p.rel.getMagnitude().getOom();
 //        if (this.getX(toom).compareTo(p.getX(poom)) == 0) {
 //            if (this.getY(toom).compareTo(p.getY(poom)) == 0) {
 //                if (this.getZ(toom).compareTo(p.getZ(poom)) == 0) {
@@ -189,32 +191,24 @@ public class V3D_VPoint extends V3D_VGeometry {
     }
 
     /**
-     * @return The x component of {@link #pos} with {@link #offset} applied.
+     * @return The x component of {@link #rel} with {@link #offset} applied.
      */
     public Math_BigRational getX() {
-        return pos.x.add(offset.x);
+        return rel.x.add(offset.x);
     }
 
     /**
-     * @return The y component of {@link #pos} with {@link #offset} applied.
+     * @return The y component of {@link #rel} with {@link #offset} applied.
      */
     public Math_BigRational getY() {
-        return pos.y.add(offset.y);
+        return rel.y.add(offset.y);
     }
 
     /**
-     * @return The z component of {@link #pos} with {@link #offset} applied.
+     * @return The z component of {@link #rel} with {@link #offset} applied.
      */
     public Math_BigRational getZ() {
-        return pos.z.add(offset.z);
-    }
-
-    @Override
-    public V3D_VPoint getC() {
-        if (c == null) {
-            c = this;
-        }
-        return c;
+        return rel.z.add(offset.z);
     }
     
     /**
@@ -256,4 +250,17 @@ public class V3D_VPoint extends V3D_VGeometry {
         Math_BigRational dz = this.getZ().subtract(p.getZ());
         return dx.pow(2).add(dy.pow(2)).add(dz.pow(2));
     }
+
+    @Override
+    public void apply(V3D_V v) {
+        rel.apply(v);
+        centroid.apply(v);
+    }
+
+    @Override
+    public V3D_V getCentroid() {
+        return centroid;
+    }
+    
+    
 }

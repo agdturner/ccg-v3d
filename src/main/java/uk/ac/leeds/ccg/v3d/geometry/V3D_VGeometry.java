@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * For 3D Euclidean geometrical objects. The three dimensions have are
@@ -57,15 +56,15 @@ public abstract class V3D_VGeometry implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The offset used to get the geometry relative to {@link V3D_V#ZERO}.
+     * The offset used to get the original geometry relative to {@link V3D_V#ZERO}.
      */
     public V3D_V offset;
 
     /**
-     * A point defining the centroid about which the geometry is rotated.
+     * For storing the centroid.
      */
-    protected V3D_VPoint c;
-    
+    public V3D_V centroid;
+
     /**
      * Creates a new V3D_Geometry.
      * 
@@ -79,11 +78,14 @@ public abstract class V3D_VGeometry implements Serializable {
      * @param v The vector to apply.
      * @param oom The Order of Magnitude for the precision.
      */
-    public final void apply(V3D_V v) {
-        offset.apply(v);
-        //getC().apply(v);
-    }
+    public abstract void apply(V3D_V v);
     
-    public abstract V3D_VPoint getC();
+    /**
+     * @param v The vector to apply.
+     * @param oom The Order of Magnitude for the precision.
+     */
+    public abstract V3D_V getCentroid();
+    
+    
     
 }

@@ -78,12 +78,12 @@ public class V3D_VLine extends V3D_VGeometry {
     /**
      * A point defining the line.
      */
-    protected final V3D_VPoint p;
+    protected final V3D_V p;
 
     /**
      * A point defining the line.
      */
-    protected final V3D_VPoint q;
+    protected final V3D_V q;
 
     /**
      * @param l Used to initialise this.
@@ -92,14 +92,13 @@ public class V3D_VLine extends V3D_VGeometry {
         super(new V3D_V(l.offset));
         this.p = l.p;
         this.q = l.q;
-        this.c = l.c;
     }
 
     /**
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      */
-    public V3D_VLine(V3D_VPoint p, V3D_VPoint q) {
+    public V3D_VLine(V3D_V p, V3D_V q) {
         super(V3D_V.ZERO);
         this.p = p;
         this.q = q;
@@ -148,8 +147,8 @@ public class V3D_VLine extends V3D_VGeometry {
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_VLine l) {
-        return (p.equals(l.p) && q.equals(l.q)) ||
-                (p.equals(l.q) && q.equals(l.p));
+        return (p.equals(l.p) && q.equals(l.q))
+                || (p.equals(l.q) && q.equals(l.p));
     }
 
     @Override
@@ -160,15 +159,27 @@ public class V3D_VLine extends V3D_VGeometry {
         return hash;
     }
 
+//    @Override
+//    public V3D_VPoint getC() {
+//        if (c == null) {
+//            c = new V3D_VPoint(
+//                    (p.getX().add(q.getX())).divide(2),
+//                    (p.getY().add(q.getY())).divide(2),
+//                    (p.getZ().add(q.getZ())).divide(2));
+//        }
+//        return c;
+//    }
     @Override
-    public V3D_VPoint getC() {
-        if (c == null) {
-            c = new V3D_VPoint(
-                    (p.getX().add(q.getX())).divide(2),
-                    (p.getY().add(q.getY())).divide(2),
-                    (p.getZ().add(q.getZ())).divide(2));
-        }
-        return c;
+    public void apply(V3D_V v) {
+        p.apply(v);
+        q.apply(v);
     }
 
+    @Override
+    public V3D_V getCentroid() {
+        if (centroid == null) {
+            
+        }
+        return centroid;
+    }
 }
