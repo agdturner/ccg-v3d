@@ -52,9 +52,7 @@ public class V3D_V implements Serializable {
     public static final V3D_V ZERO = new V3D_V(0, 0, 0);
 
     /**
-     * @param x What {@link #x} is set to.
-     * @param y What {@link #y} is set to.
-     * @param z What {@link #z} is set to.
+     * @param v Used to construct this.
      */
     public V3D_V(V3D_V v) {
         this.x = v.x;

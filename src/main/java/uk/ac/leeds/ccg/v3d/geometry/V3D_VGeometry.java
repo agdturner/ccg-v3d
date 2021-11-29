@@ -80,10 +80,9 @@ public abstract class V3D_VGeometry implements Serializable {
     public abstract void apply(V3D_V v);
     
     /**
-     * For getting the centroid of the geometry.
+     * @return The centroid of the geometry.
      */
     public abstract V3D_V getCentroid();
-    
     
     
 }
