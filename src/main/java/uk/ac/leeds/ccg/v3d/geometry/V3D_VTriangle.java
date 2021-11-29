@@ -83,15 +83,15 @@ public class V3D_VTriangle extends V3D_VGeometry {
     /**
      * Creates a new triangle.
      *
-     * @param p A point that defines the triangle.
-     * @param q A point that defines the triangle.
-     * @param r A point that defines the triangle.
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     * @param r What {@link #r} is set to.
      */
-    public V3D_VTriangle(V3D_VPoint p, V3D_VPoint q, V3D_VPoint r) {
+    public V3D_VTriangle(V3D_V p, V3D_V q, V3D_V r) {
         super(V3D_V.ZERO);
-        this.p = new V3D_V(p.getX(), p.getY(), p.getZ());
-        this.q = new V3D_V(q.getX(), q.getY(), q.getZ());
-        this.r = new V3D_V(r.getX(), r.getY(), r.getZ());
+        this.p = p;
+        this.q = q;
+        this.r = r;
     }
 
     @Override

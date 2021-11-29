@@ -13,7 +13,7 @@
         <url>git@github.com:agdturner/ccg-v3d.git</url>
         <connection>scm:git:git@github.com:agdturner/ccg-v3d.git</connection>
         <developerConnection>scm:git:git@github.com:agdturner/ccg-v3d</developerConnection>
-        <tag>ccg-v3d-0.12</tag>
+        <tag>ccg-v3d-0.13-SNAPSHOT</tag>
     </scm>
     <licenses>
         <license>

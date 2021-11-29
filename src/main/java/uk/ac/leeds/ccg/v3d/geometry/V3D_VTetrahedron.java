@@ -90,7 +90,7 @@ public class V3D_VTetrahedron extends V3D_VGeometry {
      * @param r A point that defines the tetrahedron.
      * @param s A point that defines the tetrahedron.
      */
-    public V3D_VTetrahedron(V3D_VPoint p, V3D_VPoint q, V3D_VPoint r, V3D_VPoint s) {
+    public V3D_VTetrahedron(V3D_V p, V3D_V q, V3D_V r, V3D_V s) {
         super(V3D_V.ZERO);
         pqr = new V3D_VTriangle(p, q, r);
         qsr = new V3D_VTriangle(q, s, r);
