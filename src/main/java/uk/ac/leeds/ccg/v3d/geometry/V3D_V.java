@@ -75,9 +75,9 @@ public class V3D_V implements Serializable {
     }
 
     /**
-     * @param dx What {@link #dx} is set to.
-     * @param dy What {@link #dy} is set to.
-     * @param dz What {@link #dz} is set to.
+     * @param dx What {@link #x} is set to after conversion.
+     * @param dy What {@link #y} is set to after conversion.
+     * @param dz What {@link #z} is set to after conversion.
      */
     public V3D_V(long dx, long dy, long dz) {
         this(Math_BigRational.valueOf(dx), Math_BigRational.valueOf(dy),
@@ -85,9 +85,9 @@ public class V3D_V implements Serializable {
     }
 
     /**
-     * @param dx What {@link #dx} is set to.
-     * @param dy What {@link #dy} is set to.
-     * @param dz What {@link #dz} is set to.
+     * @param dx What {@link #x} is set to after conversion.
+     * @param dy What {@link #y} is set to after conversion.
+     * @param dz What {@link #z} is set to after conversion.
      */
     public V3D_V(double dx, double dy, double dz) {
         this(Math_BigRational.valueOf(dx), Math_BigRational.valueOf(dy),
@@ -213,7 +213,7 @@ public class V3D_V implements Serializable {
      *
      * @param s The scalar value to divide this by.
      */
-    public void divide(Math_BigRational s, int oom) {
+    public void divide(Math_BigRational s) {
         x = x.divide(s);
         y = y.divide(s);
         z = z.divide(s);
@@ -240,7 +240,7 @@ public class V3D_V implements Serializable {
         y = y.subtract(s.y);
         z = z.subtract(s.z);
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The magnitude.
@@ -248,7 +248,7 @@ public class V3D_V implements Serializable {
     public Math_BigRational getMagnitude(int oom) {
         return new Math_BigRationalSqrt(x.pow(2).add(y.pow(2)).add(z.pow(2)), oom).getSqrt(oom);
     }
-        
+
     /**
      * Calculate and return the
      * <A href="https://en.wikipedia.org/wiki/Cross_product">cross product</A>.
@@ -265,12 +265,13 @@ public class V3D_V implements Serializable {
                 z.multiply(v.x).subtract(x.multiply(v.z)),
                 x.multiply(v.y).subtract(v.x.multiply(y)));
     }
-    
+
     /**
-     * Scales by {@link #m} to give a unit vector with length 1.
+     * Scales by the magnitude to give a unit vector. (N.B. There is no check to
+     * be sure that the resulting vector has a magnitude of less than 1).
      *
      * @param oom The order of magnitude for the precision of the result.
-     * @return this scaled by {@link #m}.
+     * @return this scaled by the magnitude.
      */
     public V3D_V getUnitVector(int oom) {
         Math_BigRational d = getMagnitude(oom);
@@ -281,25 +282,24 @@ public class V3D_V implements Serializable {
         if (r.getMagnitude(oom).compareTo(Math_BigRational.ONE) == 1) {
             d = d.subtract(Math_BigRational.ONE.divide(oom));
             r = new V3D_V(
-                x.divide(d),
-                y.divide(d),
-                z.divide(d));
+                    x.divide(d),
+                    y.divide(d),
+                    z.divide(d));
         }
         return r;
     }
-    
+
     /**
      * Calculate and return the
      * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
      *
      * @param v V3D_V
-     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return dot product
      */
     public Math_BigRational getDotProduct(V3D_V v) {
         return (v.x.multiply(x)).add(v.y.multiply(y)).add(v.z.multiply(z));
     }
-    
+
     /**
      * Get the distance between this and {@code p} assuming both are points.
      *
@@ -312,7 +312,7 @@ public class V3D_V implements Serializable {
                 .add(y.subtract(p.y).pow(2))
                 .add(y.subtract(p.y).pow(2)), oom).getSqrt(oom);
     }
-    
+
     /**
      * @return A new vector which is the opposite to {@code this}.
      */

@@ -16,10 +16,9 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.util.Objects;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
- * 3D representation of an finite length line. The line passes through the point
+ * 3D representation of a moveable finite length line. The line passes through the point
  * {@link #p} and is travelling through point {@link #q}. The "*" denotes a
  * point in 3D and the line is shown with a line of "e" symbols in the following
  * depiction: {@code
@@ -135,15 +134,14 @@ public class V3D_VLine extends V3D_VGeometry {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_VLine) {
-            return equals((V3D_VLine) o);
+        if (o instanceof V3D_VLine v3D_VLine) {
+            return equals(v3D_VLine);
         }
         return false;
     }
 
     /**
      * @param l The line to test if it is the same as {@code this}.
-     * @param oom The Order of Magnitude for the precision.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_VLine l) {

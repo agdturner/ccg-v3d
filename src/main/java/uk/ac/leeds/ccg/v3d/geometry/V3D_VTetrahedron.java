@@ -101,6 +101,7 @@ public class V3D_VTetrahedron extends V3D_VGeometry {
     /**
      * Create a new instance.
      *
+     * @param offset What {@link #offset} is set to.
      * @param pqr What {@link #pqr} is set to.
      * @param qsr What {@link #qsr} is set to.
      * @param spr What {@link #spr} is set to.

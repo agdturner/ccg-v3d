@@ -76,13 +76,11 @@ public abstract class V3D_VGeometry implements Serializable {
 
     /**
      * @param v The vector to apply.
-     * @param oom The Order of Magnitude for the precision.
      */
     public abstract void apply(V3D_V v);
     
     /**
-     * @param v The vector to apply.
-     * @param oom The Order of Magnitude for the precision.
+     * For getting the centroid of the geometry.
      */
     public abstract V3D_V getCentroid();
     

@@ -21,8 +21,8 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
- * 3D representation of a point. The "*" denotes a point in 3D in the following
- * depiction: {@code
+ * 3D representation of a moveable point. The "*" denotes a point in 3D in the
+ * following depiction: {@code
  *
  *                          y           -
  *                          +          /                * p=<x0,y0,z0>
@@ -56,10 +56,13 @@ public class V3D_VPoint extends V3D_VGeometry {
 
     private static final long serialVersionUID = 1L;
 
-    public static V3D_VPoint ORIGIN = new V3D_VPoint(0, 0, 0);
-    
     /**
-     * The position relative to the original offset.
+     * The coordinate origin.
+     */
+    public static V3D_VPoint ORIGIN = new V3D_VPoint(0, 0, 0);
+
+    /**
+     * The position relative to {@link #offset}.
      */
     public V3D_V rel;
 
@@ -149,8 +152,8 @@ public class V3D_VPoint extends V3D_VGeometry {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_VPoint) {
-            return equals((V3D_VPoint) o);
+        if (o instanceof V3D_VPoint v3D_VPoint) {
+            return equals(v3D_VPoint);
         }
         return false;
     }
@@ -210,7 +213,7 @@ public class V3D_VPoint extends V3D_VGeometry {
     public Math_BigRational getZ() {
         return rel.z.add(offset.z);
     }
-    
+
     /**
      * Get the distance between this and {@code p}.
      *
@@ -261,6 +264,5 @@ public class V3D_VPoint extends V3D_VGeometry {
     public V3D_V getCentroid() {
         return centroid;
     }
-    
-    
+
 }
