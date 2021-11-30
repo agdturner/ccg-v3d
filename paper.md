@@ -2,12 +2,10 @@
 title: 'Development of a Modularised Java library for 3D Euclidean geometry'
 tags:
   - Java
-  - geometry
-  - cartesian
+  - Euclidean geometry
+  - 3D
   - arbitrary precision
   - order of magnitude
-  - intersection
-  - distance
 authors:
   - name: Andy Turner^[corresponding author]
     orcid: 0000-0002-6098-6313
@@ -21,17 +19,23 @@ bibliography: paper.bib
 
 # Summary
 
-This paper introduces a modularised Java library for three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry).
+This paper introduces [ccg-v3d](https://github.com/agdturner/ccg-v3d) - a modularised Java library for three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry).
 
-In addition to Java 15, the library is dependent on two mathematics libraries and a general library: [@agdt-java-math], [@big-math] and [@agdt-java-generic].
+The library is dependent on a light-weight mathematics library: [@ccg-math]
 
-Point positions in space are defined using [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinates. The axes X, Y and Z meet at the origin point <x,y,z> where x=y=z=0. Cartesian coordinates are currently stored as [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java) numbers - a subset of [rational numbers](https://en.wikipedia.org/wiki/Rational_number). Conceptually, from the origin, the X Axis runs in a positive direction to the right, the Y Axis runs in a positive direction up, and the Z Axis runs in a positive direction in (or forwards). These choices are arbitrary, but this is regarded as being "left handed". This is intuitive in that many 2D graphs have the X axis running positive and towards the right, and the Y axis running positive in an upwards direction on a vertical screen. People look at a screen and move closer to it to zoom in and move backward to zoom out.
+Point positions in space are defined using 3D [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinates. The axes X, Y and Z meet at the origin, a point <x,y,z> where x=y=z=0. Cartesian coordinates are currently stored as [Math_BigRational](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRational.java) numbers - a subset of [rational numbers](https://en.wikipedia.org/wiki/Rational_number). The coordinate system is "right handed", (see [Orientation](https://en.wikipedia.org/wiki/Orientation_(vector_space)) for details of handedness).
 
-The library has reached a level of maturity where it might be useful to others, some of who might want to develop it.
+The library has reached a level of maturity where it might be useful to others, that may also want to develop it. The functionality may be best merged into [Apache Commons Geometry](https://commons.apache.org/proper/commons-geometry/) which seems to be developing along similar lines for arbitrary precision geometry. 
 
 There are methods which test if geometries intersect and methods that return the geometry of the intersection. The methods that test for intersection involve no rounding. To calculate geometries of intersection, sometimes rounding seems necessary, but this might be overcome by allowing coordinates to be stored as [algebraic number](https://en.wikipedia.org/wiki/Algebraic_number)s. There are perhaps usage scenarios that invovle differentiating between intersecting geometries that touch or that touch and pass through each other.
 
-The library does not yet have geometry implementations for any volumes other than [V3D_Envelope](https://github.com/agdturner/agdt-java-vector3D/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Envelope.java) - a [rectangular cuboid](https://en.wikipedia.org/wiki/Rectangular_cubiod) aligned with the axes. All finite geometries have a V3D_Envelope and these are referred to as envelopes or bounding boxes. It can be quick to test if two envelopes intersect, if they do, then there is a chance that the geometries they contain intersect in some way. Also if the envelopes intersect it can be easy to test if the geometries are within a specific distance of each other without making detailed calculations. In many cases the relations of bounding boxes can be used for computational advantage.
+There are lighter moveable geometries and heavier fixed geometries.
+
+Lighter geometries use [V3D_V](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_V.java) which can be thought of as a vertex or vector with x, y, and z Math_BigRational components. The [uk.ac.leeds.ccg.v3d.geometry.light](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/) package contains finite moveable point, line, triangle and tetrahedra classes: [V3D_VPoint](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VPoint.java), [V3D_VLine](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VLine.java), [V3D_VTriangle](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VTriangle.java), [V3D_VTetrahedra](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VTetrahedra.java).
+
+Heavier geometries...
+
+The library does not yet have geometry implementations for any volumes other than [V3D_Envelope](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Envelope.java) - a [rectangular cuboid](https://en.wikipedia.org/wiki/Rectangular_cubiod) aligned with the axes. All finite geometries have a V3D_Envelope and these are referred to as envelopes or bounding boxes. It can be quick to test if two envelopes intersect, if they do, then there is a chance that the geometries they contain intersect in some way. Also if the envelopes intersect it can be easy to test if the geometries are within a specific distance of each other without making detailed calculations. In many cases the relations of bounding boxes can be used for computational advantage.
 
 It is planned to implement:
 1. Some [polyhedra](https://en.wikipedia.org/wiki/Polyhedra) beginning with [tetrahedra](https://en.wikipedia.org/wiki/Tetrahedra) and rectangular cuboids that do not necessarily align with the axes.
