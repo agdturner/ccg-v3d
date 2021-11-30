@@ -36,7 +36,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Rectangle extends V3D_Plane implements V3D_2DShape {
+public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
 
     private static final long serialVersionUID = 1L;
 

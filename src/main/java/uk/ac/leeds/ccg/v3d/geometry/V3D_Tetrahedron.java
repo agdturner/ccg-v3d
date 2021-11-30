@@ -57,7 +57,7 @@ import java.math.BigDecimal;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Tetrahedron implements V3D_3DShape, Serializable {
+public class V3D_Tetrahedron implements V3D_Volume, Serializable {
 
     private static final long serialVersionUID = 1L;
 

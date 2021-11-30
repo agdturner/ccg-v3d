@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Andy Turner, University of Leeds.
+ * Copyright 2020 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.core;
+package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
- * Vector Object
+ * V3D_Face
  *
  * @author Andy Turner
- * @version 1.0.0
+ * @version 1.0
  */
-public class V3D_Object implements Serializable {
+public interface V3D_Face extends V3D_FiniteGeometry {
 
     /**
-     * V3D_Environment
+     * For calculating and returning the perimeter.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The Perimeter.
      */
-    public V3D_Environment e;
+    public abstract BigDecimal getPerimeter(int oom);
 
     /**
-     * @param e What {@link e} is set to.
+     * For calculating and returning the area.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The area.
      */
-    public V3D_Object(V3D_Environment e) {
-        this.e = e;
-    }
-
+    public abstract BigDecimal getArea(int oom);
 }

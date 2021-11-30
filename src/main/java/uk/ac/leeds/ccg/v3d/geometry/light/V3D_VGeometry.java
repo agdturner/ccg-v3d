@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.light;
 
 import java.io.Serializable;
 
@@ -61,11 +61,6 @@ public abstract class V3D_VGeometry implements Serializable {
     public V3D_V offset;
 
     /**
-     * For storing the centroid.
-     */
-    public V3D_V centroid;
-
-    /**
      * Creates a new V3D_Geometry.
      * 
      * @param offset What {@link #offset} is set to.
@@ -78,11 +73,5 @@ public abstract class V3D_VGeometry implements Serializable {
      * @param v The vector to apply.
      */
     public abstract void apply(V3D_V v);
-    
-    /**
-     * @return The centroid of the geometry.
-     */
-    public abstract V3D_V getCentroid();
-    
     
 }

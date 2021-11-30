@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.agdturner</groupId>
     <artifactId>ccg-v3d</artifactId>
-    <version>0.13</version>
+    <version>0.14-SNAPSHOT</version>
     <packaging>jar</packaging>
     
     <name>ccg-v3d</name>
@@ -13,7 +13,7 @@
         <url>git@github.com:agdturner/ccg-v3d.git</url>
         <connection>scm:git:git@github.com:agdturner/ccg-v3d.git</connection>
         <developerConnection>scm:git:git@github.com:agdturner/ccg-v3d</developerConnection>
-        <tag>ccg-v3d-0.13</tag>
+        <tag>ccg-v3d-0.14</tag>
     </scm>
     <licenses>
         <license>
@@ -40,10 +40,12 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--
         <ccg-generic.version>2.1</ccg-generic.version>
         <ccg-io.version>1.1.0</ccg-io.version>
-        <ccg-math.version>2.0.10</ccg-math.version>
         <big-math.version>2.3.0</big-math.version>
+        -->
+        <ccg-math.version>2.0.10</ccg-math.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.version>3.8.1</maven.version>
@@ -51,30 +53,30 @@
     </properties>
     
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-generic -->
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-generic
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>ccg-generic</artifactId>
             <version>${ccg-generic.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-io -->
+        </dependency> -->
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-io
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>ccg-io</artifactId>
             <version>${ccg-io.version}</version>
-        </dependency>
+        </dependency> -->
         <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-math -->
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>ccg-math</artifactId>
             <version>${ccg-math.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/ch.obermuhlner/big-math -->
+        <!-- https://mvnrepository.com/artifact/ch.obermuhlner/big-math
         <dependency>
             <groupId>ch.obermuhlner</groupId>
             <artifactId>big-math</artifactId>
             <version>${big-math.version}</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>

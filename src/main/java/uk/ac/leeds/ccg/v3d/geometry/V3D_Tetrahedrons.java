@@ -17,7 +17,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_TetrahedronPoly extends V3D_Geometry implements V3D_3DShape {
+public class V3D_Tetrahedrons extends V3D_Geometry implements V3D_Volume {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,7 @@ public class V3D_TetrahedronPoly extends V3D_Geometry implements V3D_3DShape {
      *
      * @param tetrahedrons What {@link #tetrahedrons} is set to.
      */
-    public V3D_TetrahedronPoly(Set<V3D_Tetrahedron> tetrahedrons) {
+    public V3D_Tetrahedrons(Set<V3D_Tetrahedron> tetrahedrons) {
         super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
         this.tetrahedrons = tetrahedrons;
     }
@@ -47,7 +47,7 @@ public class V3D_TetrahedronPoly extends V3D_Geometry implements V3D_3DShape {
      * @param tetrahedrons One or more tetrahedron either in an array or input
      * individually.
      */
-    public V3D_TetrahedronPoly(V3D_Tetrahedron... tetrahedrons) {
+    public V3D_Tetrahedrons(V3D_Tetrahedron... tetrahedrons) {
         super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
         this.tetrahedrons = new HashSet<>();
         this.tetrahedrons.addAll(Arrays.asList(tetrahedrons));
@@ -83,8 +83,8 @@ public class V3D_TetrahedronPoly extends V3D_Geometry implements V3D_3DShape {
      * @return a new rectangle.
      */
     @Override
-    public V3D_TetrahedronPoly apply(V3D_Vector v, int oom) {
-        V3D_TetrahedronPoly r = new V3D_TetrahedronPoly(tetrahedrons.toArray(
+    public V3D_Tetrahedrons apply(V3D_Vector v, int oom) {
+        V3D_Tetrahedrons r = new V3D_Tetrahedrons(tetrahedrons.toArray(
                 new V3D_Tetrahedron[tetrahedrons.size()]));
         for (int i = 0; i < r.tetrahedrons.size(); i++) {
             r.apply(oom, v);

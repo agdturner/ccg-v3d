@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.light;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -71,17 +71,16 @@ public class V3D_VPoint extends V3D_VGeometry {
      */
     public V3D_VPoint(V3D_VPoint p) {
         super(p.offset);
-        this.rel = p.rel;
-        this.centroid = new V3D_V(p.offset, rel);
+        this.rel = new V3D_V(p.rel);
     }
 
     /**
-     * @param pos What {@link #rel} is set to.
      * @param offset What {@link #offset} is set to.
+     * @param rel What {@link #rel} is set to.
      */
-    public V3D_VPoint(V3D_V pos, V3D_V offset) {
+    public V3D_VPoint(V3D_V offset, V3D_V rel) {
         super(offset);
-        this.rel = pos;
+        this.rel = rel;
     }
 
     /**
@@ -257,12 +256,6 @@ public class V3D_VPoint extends V3D_VGeometry {
     @Override
     public void apply(V3D_V v) {
         rel.apply(v);
-        centroid.apply(v);
-    }
-
-    @Override
-    public V3D_V getCentroid() {
-        return centroid;
     }
 
 }

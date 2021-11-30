@@ -30,7 +30,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_FiniteGeometry {
+public class V3D_LineSegmentsCollinear extends V3D_Line implements V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
 
@@ -50,7 +50,7 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
      * @param lineSegments What {@code #lineSegments} is set to.
      * @param oom What {@link #oom} is set to.
      */
-    public V3D_LineSegmentPolyCollinear(int oom, V3D_LineSegment... lineSegments) {
+    public V3D_LineSegmentsCollinear(int oom, V3D_LineSegment... lineSegments) {
         super(lineSegments[0], oom);
         this.lineSegments = new HashSet<>();
         this.lineSegments.addAll(Arrays.asList(lineSegments));
@@ -71,8 +71,8 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_LineSegmentPolyCollinear) {
-            return equals((V3D_LineSegmentPolyCollinear) o);
+        if (o instanceof V3D_LineSegmentsCollinear) {
+            return equals((V3D_LineSegmentsCollinear) o);
         }
         return false;
     }
@@ -88,7 +88,7 @@ public class V3D_LineSegmentPolyCollinear extends V3D_Line implements V3D_Finite
      * @param l The line segment to test if it is the same as {@code this}.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
-    public boolean equals(V3D_LineSegmentPolyCollinear l) {
+    public boolean equals(V3D_LineSegmentsCollinear l) {
         if (!l.lineSegments.containsAll(lineSegments)) {
             return false;
         }

@@ -20,21 +20,6 @@
 module uk.ac.leeds.ccg.v3d {
 
     /**
-     * big-math
-     */
-    requires transitive ch.obermuhlner.math.big;
-
-    /**
-     * ccg-generic
-     */
-    requires transitive uk.ac.leeds.ccg.generic;
-
-    /**
-     * ccg-io
-     */
-    requires transitive uk.ac.leeds.ccg.io;
-
-    /**
      * ccg-math
      */
     requires transitive uk.ac.leeds.ccg.math;
@@ -45,5 +30,5 @@ module uk.ac.leeds.ccg.v3d {
     exports uk.ac.leeds.ccg.v3d.core;
     exports uk.ac.leeds.ccg.v3d.geometrics;
     exports uk.ac.leeds.ccg.v3d.geometry;
-    exports uk.ac.leeds.ccg.v3d.io;
+    exports uk.ac.leeds.ccg.v3d.geometry.light;
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.light;
 
 import java.util.Objects;
 
@@ -89,8 +89,8 @@ public class V3D_VLine extends V3D_VGeometry {
      */
     public V3D_VLine(V3D_VLine l) {
         super(new V3D_V(l.offset));
-        this.p = l.p;
-        this.q = l.q;
+        this.p = new V3D_V(l.p);
+        this.q = new V3D_V(l.q);
     }
 
     /**
@@ -171,13 +171,5 @@ public class V3D_VLine extends V3D_VGeometry {
     public void apply(V3D_V v) {
         p.apply(v);
         q.apply(v);
-    }
-
-    @Override
-    public V3D_V getCentroid() {
-        if (centroid == null) {
-            
-        }
-        return centroid;
     }
 }

@@ -16,6 +16,15 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Face;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Triangle;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 //import java.util.ArrayList;
 
 /**
@@ -24,7 +33,7 @@ import java.math.BigDecimal;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_TrianglePolyPlanar extends V3D_Plane implements V3D_2DShape {
+public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
 
     private static final long serialVersionUID = 1L;
 
@@ -45,7 +54,7 @@ public class V3D_TrianglePolyPlanar extends V3D_Plane implements V3D_2DShape {
      * @param triangles A non-empty list of coplanar triangles.
      * @param oom The Order of Magnitude for the initialisation.
      */
-    public V3D_TrianglePolyPlanar(int oom, V3D_Triangle... triangles) {
+    public V3D_TrianglesCoplanar(int oom, V3D_Triangle... triangles) {
         super(triangles[0].getP(oom), triangles[0].getQ(oom),
                 triangles[0].getR(oom), oom);
         this.triangles = triangles;
@@ -79,12 +88,12 @@ public class V3D_TrianglePolyPlanar extends V3D_Plane implements V3D_2DShape {
      * @return a new rectangle.
      */
     @Override
-    public V3D_TrianglePolyPlanar apply(V3D_Vector v, int oom) {
+    public V3D_TrianglesCoplanar apply(V3D_Vector v, int oom) {
         V3D_Triangle[] nt = new V3D_Triangle[triangles.length];
         for (int i = 0; i < triangles.length; i++) {
             nt[i] = triangles[i].apply(v, oom);
         }
-        return new V3D_TrianglePolyPlanar(oom, nt);
+        return new V3D_TrianglesCoplanar(oom, nt);
     }
 
     /**

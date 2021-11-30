@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.light;
 
 /**
  *
@@ -154,15 +154,15 @@ public class V3D_VTetrahedron extends V3D_VGeometry {
         psq.apply(v);
     }
 
-    @Override
-    public V3D_V getCentroid() {
-        if (centroid == null) {
-            centroid = new V3D_V(
-                    (pqr.getCentroid().x.add(qsr.getCentroid().x).add(spr.getCentroid().x).add(psq.getCentroid().x)).divide(4),
-                    (pqr.getCentroid().y.add(qsr.getCentroid().y).add(spr.getCentroid().y).add(psq.getCentroid().y)).divide(4),
-                    (pqr.getCentroid().z.add(qsr.getCentroid().z).add(spr.getCentroid().z).add(psq.getCentroid().z)).divide(4));
-        }
-        return centroid;
-    }
+//    @Override
+//    public V3D_V getCentroid() {
+//        if (centroid == null) {
+//            centroid = new V3D_V(
+//                    (pqr.getCentroid().x.add(qsr.getCentroid().x).add(spr.getCentroid().x).add(psq.getCentroid().x)).divide(4),
+//                    (pqr.getCentroid().y.add(qsr.getCentroid().y).add(spr.getCentroid().y).add(psq.getCentroid().y)).divide(4),
+//                    (pqr.getCentroid().z.add(qsr.getCentroid().z).add(spr.getCentroid().z).add(psq.getCentroid().z)).divide(4));
+//        }
+//        return centroid;
+//    }
 
 }
