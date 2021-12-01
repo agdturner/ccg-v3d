@@ -19,7 +19,7 @@ bibliography: paper.bib
 
 # Summary
 
-[ccg-v3d](https://github.com/agdturner/ccg-v3d) is a three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry) library. It is pure modularised Java, based on [openJDK 17](https://openjdk.java.net/projects/jdk/17/). The only additional dependency is [@ccg-math] - a stand alone mathematics library.
+A three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry) library, [ccg-v3d](https://github.com/agdturner/ccg-v3d), is pure modularised Java, based on [openJDK 17](https://openjdk.java.net/projects/jdk/17/). The only additional dependency is [@ccg-math] - a stand alone mathematics library.
 
 Point locations in space are defined using 3D [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinates with [orthogonal](https://en.wikipedia.org/wiki/Orthogonality) X, Y and Z axes that meet at the origin - a point <x,y,z> where x=y=z=0. The coordinate system is "right handed", so if X increases to the right of this page and Y increases towards the top of this page, then Z increases out from the page, (see [orientation](https://en.wikipedia.org/wiki/Orientation_(vector_space)) for details of handedness, essentially there are two choices - a "left handed" system would have the Z direction of increase reversed). Right handed is more commonly used in both physics and geography.
 
