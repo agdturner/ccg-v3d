@@ -572,9 +572,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     V3D_Geometry bil = (new V3D_Rectangle(
                                             (Rectangle) b, oom))
                                             .getIntersection(li, oom);
+//                                    return new V3D_LineSegment(
+//                                            (V3D_Point) til,
+//                                            (V3D_Point) bil,
+//                                            oom);
                                     return new V3D_LineSegment(
-                                            (V3D_Point) til,
-                                            (V3D_Point) bil,
+                                            ((V3D_Point) til).getVector(oom),
+                                            ((V3D_Point) bil).getVector(oom),
                                             oom);
                                 }
                             } else {
@@ -657,9 +661,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     }
                                 }
                             } else {
+//                                return new V3D_LineSegment(
+//                                        (V3D_Point) lil,
+//                                        (V3D_Point) ril,
+//                                        oom);
                                 return new V3D_LineSegment(
-                                        (V3D_Point) lil,
-                                        (V3D_Point) ril,
+                                        ((V3D_Point) lil).getVector(oom),
+                                        ((V3D_Point) ril).getVector(oom),
                                         oom);
                             }
                         } else {
@@ -689,9 +697,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                         oom);
                             }
                         } else {
+//                            return new V3D_LineSegment(
+//                                    (V3D_Point) fil,
+//                                    (V3D_Point) ail,
+//                                    oom);
                             return new V3D_LineSegment(
-                                    (V3D_Point) fil,
-                                    (V3D_Point) ail,
+                                    ((V3D_Point) fil).getVector(oom),
+                                    ((V3D_Point) ail).getVector(oom),
                                     oom);
                         }
                     } else {
@@ -769,9 +781,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                                 li, lipi);
                                     }
                                 } else {
+//                                    return new V3D_LineSegment(
+//                                            (V3D_Point) til,
+//                                            (V3D_Point) bil,
+//                                            oom);
                                     return new V3D_LineSegment(
-                                            (V3D_Point) til,
-                                            (V3D_Point) bil,
+                                            ((V3D_Point) til).getVector(oom),
+                                            ((V3D_Point) bil).getVector(oom),
                                             oom);
                                 }
                             } else {
@@ -857,9 +873,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                     }
                                 }
                             } else {
-                                return new V3D_LineSegment(
-                                        (V3D_Point) lil,
-                                        (V3D_Point) ril,
+//                                return new V3D_LineSegment(
+//                                        (V3D_Point) lil,
+//                                        (V3D_Point) ril,
+//                                        oom);
+                               return new V3D_LineSegment(
+                                        ((V3D_Point) lil).getVector(oom),
+                                        ((V3D_Point) ril).getVector(oom),
                                         oom);
                             }
                         } else {
@@ -891,8 +911,14 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                         oom);
                             }
                         } else {
-                            return new V3D_LineSegment((V3D_Point) fil,
-                                    (V3D_Point) ail, oom);
+//                            return new V3D_LineSegment(
+//                                    (V3D_Point) fil,
+//                                    (V3D_Point) ail,
+//                                    oom);
+                            return new V3D_LineSegment(
+                                    ((V3D_Point) fil).getVector(oom),
+                                    ((V3D_Point) ail).getVector(oom),
+                                    oom);
                         }
                     } else {
                         if (ail == null) {
@@ -1548,12 +1574,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public V3D_Envelope apply(V3D_Vector v, int oom) {
-        V3D_Envelope e = new V3D_Envelope(this);
-        e.apply(oom, v);
-        return e;
-    }
+//    @Override
+//    public V3D_Envelope apply(V3D_Vector v, int oom) {
+//        V3D_Envelope e = new V3D_Envelope(this);
+//        e.apply(oom, v);
+//        return e;
+//    }
 
     /**
      * Abstract Geometry class for geometries aligning with axes.

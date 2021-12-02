@@ -57,10 +57,28 @@ public class V3D_Vector implements Serializable {
     protected Math_BigRationalSqrt m;
     
     /**
-     * The zero vector {@code <0,0,0>} where
+     * The zero vector {@code <0,0,0>} where:
      * {@link #dx} = {@link #dy} = {@link #dz} = 0.
      */
     public static final V3D_Vector ZERO = new V3D_Vector(0, 0, 0);
+
+    /**
+     * The I vector {@code <1,0,0>} where:
+     * {@link #dx} = 1; {@link #dy} = {@link #dz} = 0.
+     */
+    public static final V3D_Vector I = new V3D_Vector(1, 0, 0);
+
+    /**
+     * The J vector {@code <0,1,0>} where:
+     * {@link #dy} = 1; {@link #dx} = {@link #dz} = 0.
+     */
+    public static final V3D_Vector J = new V3D_Vector(0, 1, 0);
+
+    /**
+     * The K vector {@code <0,0,1>} where:
+     * {@link #dy} = 1; {@link #dx} = {@link #dz} = 0.
+     */
+    public static final V3D_Vector K = new V3D_Vector(0, 0, 1);
 
     /**
      * Create a new instance.
@@ -69,9 +87,9 @@ public class V3D_Vector implements Serializable {
      * so that {@code this} is completely independent of {@code v}.
      */
     public V3D_Vector(V3D_Vector v) {
-        this.dx = new Math_BigRationalSqrt(v.dx);
-        this.dy = new Math_BigRationalSqrt(v.dy);
-        this.dz = new Math_BigRationalSqrt(v.dz);
+        this.dx = v.dx;
+        this.dy = v.dy;
+        this.dz = v.dz;
     }
     
     /**
@@ -111,12 +129,7 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector(Math_BigRational dx, Math_BigRational dy,
             Math_BigRational dz, Math_BigRationalSqrt m) {
-        Math_BigRational dx2 = dx.pow(2);
-        Math_BigRational dy2 = dy.pow(2);
-        Math_BigRational dz2 = dz.pow(2);
-        this.dx = new Math_BigRationalSqrt(dx2, dx);
-        this.dy = new Math_BigRationalSqrt(dy2, dy);
-        this.dz = new Math_BigRationalSqrt(dz2, dz);
+        this(dx, dy, dz);
         this.m = m;
     }
     
@@ -291,8 +304,8 @@ public class V3D_Vector implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_Vector) {
-            return equals((V3D_Vector) o);
+        if (o instanceof V3D_Vector v3D_Vector) {
+            return equals(v3D_Vector);
         }
         return false;
     }
@@ -331,7 +344,7 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} if {@code this.equals(e.zeroVector)}
      */
     public boolean isZeroVector() {
-        return this.equals(V3D_Environment.V0);
+        return this.equals(ZERO);
     }
 
     /**

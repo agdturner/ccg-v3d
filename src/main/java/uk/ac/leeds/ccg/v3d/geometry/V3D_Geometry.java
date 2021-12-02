@@ -77,6 +77,11 @@ public abstract class V3D_Geometry implements Serializable {
         this.oom = oom;
     }
     
+    public String toString(String pad) {
+        return pad + "offset=" + offset.toStringFields(pad + " ") + ",\n"
+                + "oom=" + oom;
+    }
+    
     /**
      * @return {@link #oom}
      */
@@ -106,12 +111,12 @@ public abstract class V3D_Geometry implements Serializable {
         offset = offset.add(v, oom);
     }
     
-    /**
-     * @param v The vector to apply.
-     * @param oom The Order of Magnitude for the precision.
-     * @return The geometry with v applied.
-     */
-    public abstract V3D_Geometry apply(V3D_Vector v, int oom);
+//    /**
+//     * @param v The vector to apply.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @return The geometry with v applied.
+//     */
+//    public abstract V3D_Geometry apply(V3D_Vector v, int oom);
     
     /**
      * Get the distance between this and {@code p}.

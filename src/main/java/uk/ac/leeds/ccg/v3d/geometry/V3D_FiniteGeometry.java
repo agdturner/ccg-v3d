@@ -106,7 +106,8 @@ public interface V3D_FiniteGeometry {
         if (p.equals(q)) {
             return p;
         } else {
-            return new V3D_LineSegment(p, q, oom);
+            //return new V3D_LineSegment(p, q, oom);
+            return new V3D_LineSegment(p.getVector(oom), q.getVector(oom), oom);
         }
     }
 

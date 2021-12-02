@@ -66,28 +66,28 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * The position relative to the {@link #ORIGIN}.
      */
-    public V3D_Vector pos;
+    public V3D_Vector rel;
 
     /**
      * @param p The point to duplicate
      */
     public V3D_Point(V3D_Point p) {
         super(new V3D_Vector(p.offset), p.getOom());
-        this.pos = new V3D_Vector(p.pos);
+        this.rel = new V3D_Vector(p.rel);
 //        super(V3D_Vector.ZERO);
-//        this.pos = p.pos.add(p.offset, p.pos.getMagnitude().getOom());
+//        this.rel = p.rel.add(p.offset, p.rel.getMagnitude().getOom());
     }
 
     /**
-     * @param pos What {@link #pos} is set to.
+     * @param pos What {@link #rel} is set to.
      * @param offset What {@link #offset} is set to.
      */
     public V3D_Point(V3D_Vector pos, V3D_Vector offset) {
         super(new V3D_Vector(offset), Math.min(offset.getMagnitude().getOom(),
                 pos.getMagnitude().getOom()));
-        this.pos = new V3D_Vector(pos);
+        this.rel = new V3D_Vector(pos);
 //        super(V3D_Vector.ZERO);
-//        this.pos = pos.add(offset, pos.getMagnitude().getOom());
+//        this.rel = rel.add(offset, rel.getMagnitude().getOom());
     }
 
     /**
@@ -95,7 +95,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public V3D_Point(V3D_VPoint p) {
         super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
-        this.pos = new V3D_Vector(p.getX(), p.getY(), p.getZ());
+        this.rel = new V3D_Vector(p.getX(), p.getY(), p.getZ());
     }
 
     /**
@@ -103,7 +103,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public V3D_Point(V3D_Envelope.Point p) {
         super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
-        this.pos = new V3D_Vector(p.x, p.y, p.z);
+        this.rel = new V3D_Vector(p.x, p.y, p.z);
     }
 
     /**
@@ -114,23 +114,23 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public V3D_Point(V3D_Vector v, int oom) {
         super(V3D_Vector.ZERO, oom);
-        this.pos = new V3D_Vector(v.dx, v.dy, v.dz);
+        this.rel = new V3D_Vector(v.dx, v.dy, v.dz);
     }
 
     /**
-     * @param x What {@link #pos} x component is set to.
-     * @param y What {@link #pos} y component is set to.
-     * @param z What {@link #pos} z component is set to.
+     * @param x What {@link #rel} x component is set to.
+     * @param y What {@link #rel} y component is set to.
+     * @param z What {@link #rel} z component is set to.
      */
     public V3D_Point(Math_BigRational x, Math_BigRational y, Math_BigRational z) {
         super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
-        this.pos = new V3D_Vector(x, y, z);
+        this.rel = new V3D_Vector(x, y, z);
     }
 
     /**
-     * @param x What {@link #pos} x component is set to.
-     * @param y What {@link #pos} y component is set to.
-     * @param z What {@link #pos} z component is set to.
+     * @param x What {@link #rel} x component is set to.
+     * @param y What {@link #rel} y component is set to.
+     * @param z What {@link #rel} z component is set to.
      */
     public V3D_Point(BigDecimal x, BigDecimal y, BigDecimal z) {
         this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
@@ -138,9 +138,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param x What {@link #pos} x component is set to.
-     * @param y What {@link #pos} y component is set to.
-     * @param z What {@link #pos} z component is set to.
+     * @param x What {@link #rel} x component is set to.
+     * @param y What {@link #rel} y component is set to.
+     * @param z What {@link #rel} z component is set to.
      */
     public V3D_Point(double x, double y, double z) {
         this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
@@ -148,9 +148,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param x What {@link #pos} x component is set to.
-     * @param y What {@link #pos} y component is set to.
-     * @param z What {@link #pos} z component is set to.
+     * @param x What {@link #rel} x component is set to.
+     * @param y What {@link #rel} y component is set to.
+     * @param z What {@link #rel} z component is set to.
      */
     public V3D_Point(long x, long y, long z) {
         this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
@@ -166,6 +166,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param pad A padding of spaces.
      * @return A description of this.
      */
+    @Override
     public String toString(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
@@ -178,15 +179,15 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return A description of the fields.
      */
     protected String toStringFields(String pad) {
-        return pad + "pos=" + pos.toString(pad) + "\n"
+        return pad + "pos=" + rel.toString(pad) + "\n"
                 + pad + ",\n"
                 + pad + "offset=" + offset.toString(pad);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_Point) {
-            return equals((V3D_Point) o);
+        if (o instanceof V3D_Point v3D_Point) {
+            return equals(v3D_Point);
         }
         return false;
     }
@@ -194,7 +195,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.pos);
+        hash = 47 * hash + Objects.hashCode(this.rel);
         hash = 47 * hash + Objects.hashCode(this.offset);
         return hash;
     }
@@ -214,8 +215,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
                 }
             }
         }
-//        int toom = pos.getMagnitude().getOom();
-//        int poom = p.pos.getMagnitude().getOom();
+//        int toom = rel.getMagnitude().getOom();
+//        int poom = p.rel.getMagnitude().getOom();
 //        if (this.getX(toom).compareTo(p.getX(poom)) == 0) {
 //            if (this.getY(toom).compareTo(p.getY(poom)) == 0) {
 //                if (this.getZ(toom).compareTo(p.getZ(poom)) == 0) {
@@ -228,34 +229,34 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 
     /**
      * @param oom The Order of Magnitude for the precision.
-     * @return The vector - {@code pos.add(offset, oom)}.
+     * @return The vector - {@code rel.add(offset, oom)}.
      */
     public V3D_Vector getVector(int oom) {
-        return pos.add(offset, oom);
+        return rel.add(offset, oom);
     }
 
     /**
      * @param oom The Order of Magnitude for the application of {@link #offset}.
-     * @return The x component of {@link #pos} with {@link #offset} applied.
+     * @return The x component of {@link #rel} with {@link #offset} applied.
      */
     public Math_BigRational getX(int oom) {
-        return pos.getDX(oom).add(offset.getDX(oom));
+        return rel.getDX(oom).add(offset.getDX(oom));
     }
 
     /**
      * @param oom The Order of Magnitude for the application of {@link #offset}.
-     * @return The y component of {@link #pos} with {@link #offset} applied.
+     * @return The y component of {@link #rel} with {@link #offset} applied.
      */
     public Math_BigRational getY(int oom) {
-        return pos.getDY(oom).add(offset.getDY(oom));
+        return rel.getDY(oom).add(offset.getDY(oom));
     }
 
     /**
      * @param oom The Order of Magnitude for the application of {@link #offset}.
-     * @return The z component of {@link #pos} with {@link #offset} applied.
+     * @return The z component of {@link #rel} with {@link #offset} applied.
      */
     public Math_BigRational getZ(int oom) {
-        return pos.getDZ(oom).add(offset.getDZ(oom));
+        return rel.getDZ(oom).add(offset.getDZ(oom));
     }
 
     /**
@@ -350,7 +351,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return The distance from {@code p} to this.
      */
     public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
-        V3D_Vector pq = new V3D_Vector(this, pl.p, oom);
+        //V3D_Vector pq = new V3D_Vector(this, pl.p, oom);
+        V3D_Vector pq = pl.p.subtract(this.getVector(oom), oom);
         if (pq.isScalarMultiple(pl.getN(oom), oom)) {
             return pq.getMagnitudeSquared();
         } else {
@@ -512,10 +514,10 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         }
     }
 
-    @Override
-    public V3D_Point apply(V3D_Vector v, int oom) {
-        V3D_Point r = new V3D_Point(this);
-        r.offset = r.offset.add(v, oom);
-        return r;
-    }
+//    @Override
+//    public V3D_Point apply(V3D_Vector v, int oom) {
+//        V3D_Point r = new V3D_Point(this);
+//        r.offset = r.offset.add(v, oom);
+//        return r;
+//    }
 }

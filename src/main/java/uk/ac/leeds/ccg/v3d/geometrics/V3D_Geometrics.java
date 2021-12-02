@@ -115,7 +115,7 @@ public class V3D_Geometrics {
      */
     private static boolean isCollinear0(int oom, V3D_Point... points) {
         // Get a line
-        V3D_Line l = getLine(points);
+        V3D_Line l = getLine(oom, points);
         return isCollinear(oom, l, points);
     }
     
@@ -125,11 +125,12 @@ public class V3D_Geometrics {
      * @param points Any number of points, but with two being different.
      * @return A line defined by any two different points or null if the points are coincident.
      */
-    public static V3D_Line getLine(V3D_Point... points) {
+    public static V3D_Line getLine(int oom, V3D_Point... points) {
         V3D_Point p0 = points[0];
         for (V3D_Point p1 : points) {
             if (!p1.equals(p0)) {
-                return new V3D_Line(p0, p1, -1);
+                //return new V3D_Line(p0, p1, -1);
+                return new V3D_Line(p0.getVector(oom), p1.getVector(oom), oom);
             }
         }
         return null;
@@ -236,10 +237,11 @@ public class V3D_Geometrics {
      * collinear.
      */
     private static V3D_Plane getPlane0(int oom, V3D_Point... points) {
-        V3D_Line l = getLine(points);
+        V3D_Line l = getLine(oom, points);
         for (V3D_Point p : points) {
             if (!isCollinear(oom, l, p)) {
-                return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
+                //return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
+                return new V3D_Plane(l.getP(oom).getVector(oom), l.getQ(oom).getVector(oom), p.getVector(oom), oom);
             }
         }
         return null;
@@ -253,13 +255,14 @@ public class V3D_Geometrics {
      * collinear).
      */
     public static V3D_Plane getPlane(int oom, V3D_Point... points) {
-        V3D_Line l = getLine(points);
+        V3D_Line l = getLine(oom, points);
         if (l == null) {
             return null;
         }
         for (V3D_Point p : points) {
             if (!isCollinear(oom, l, p)) {
-                return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
+                //return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
+                return new V3D_Plane(l.getP(oom).getVector(oom), l.getQ(oom).getVector(oom), p.getVector(oom), oom);
             }
         }
         return null;
