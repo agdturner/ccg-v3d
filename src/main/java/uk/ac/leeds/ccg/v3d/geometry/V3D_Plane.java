@@ -26,8 +26,9 @@ import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * 3D representation of an infinite plane. The plane is defined by three points
- * {@link #p}, {@link #q} and {@link #r} that are not collinear. A plane be constructed in numerous ways including with a vector
- * perpendicular to the plane and a point on the plane.
+ * {@link #p}, {@link #q} and {@link #r} that are not collinear. A plane be
+ * constructed in numerous ways including with a vector perpendicular to the
+ * plane and a point on the plane.
  *
  * The equation of the plane is:
  * <ul>
@@ -40,9 +41,12 @@ import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
  * {@link #p}, {@link #q} or {@link #r}</li>
  * <li>{@code x0}, {@code y0} and {@code z0} represents any other point on the
  * plane</li>
- * <li>{@code A} is the {@code dx} of the vector perpendicular to the plane.</li>
- * <li>{@code B} is the {@code dy} of the vector perpendicular to the plane.</li>
- * <li>{@code C} is the {@code dz} of the vector perpendicular to the plane.</li>
+ * <li>{@code A} is the {@code dx} of the vector perpendicular to the
+ * plane.</li>
+ * <li>{@code B} is the {@code dy} of the vector perpendicular to the
+ * plane.</li>
+ * <li>{@code C} is the {@code dz} of the vector perpendicular to the
+ * plane.</li>
  * </ul>
  *
  * <ol>
@@ -61,24 +65,25 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * The x = 0 plane.
      */
-    public static final V3D_Plane X0 = new V3D_Plane(V3D_Vector.ZERO, V3D_Vector.J, V3D_Vector.K, DEFAULT_OOM);
+    public static final V3D_Plane X0 = new V3D_Plane(V3D_Vector.ZERO,
+            V3D_Vector.ZERO, V3D_Vector.J, V3D_Vector.K, DEFAULT_OOM);
 
     /**
      * The y = 0 plane.
      */
-    public static final V3D_Plane Y0 = new V3D_Plane(V3D_Vector.ZERO, V3D_Vector.I, V3D_Vector.K, DEFAULT_OOM);
+    public static final V3D_Plane Y0 = new V3D_Plane(V3D_Vector.ZERO,
+            V3D_Vector.ZERO, V3D_Vector.I, V3D_Vector.K, DEFAULT_OOM);
 
     /**
      * The z = 0 plane.
      */
-    public static final V3D_Plane Z0 = new V3D_Plane(V3D_Vector.ZERO, V3D_Vector.I, V3D_Vector.J, DEFAULT_OOM);
-    
-    
+    public static final V3D_Plane Z0 = new V3D_Plane(V3D_Vector.ZERO,
+            V3D_Vector.ZERO, V3D_Vector.I, V3D_Vector.J, DEFAULT_OOM);
+
 //    /**
 //     * True iff q is at the origin.
 //     */
-//    protected final boolean qAtOrigin;
-
+//    protected boolean qAtOrigin;
     /**
      * One of the points that defines the plane.
      */
@@ -94,27 +99,28 @@ public class V3D_Plane extends V3D_Geometry {
      */
     protected final V3D_Vector r;
 
-//    /**
-//     * The vector representing the move from {@link #p} to {@link #q}.
-//     */
-//    protected final V3D_Vector pq;
-//
-//    /**
-//     * The vector representing the move from {@link #q} to {@link #r}.
-//     */
-//    protected final V3D_Vector qr;
-//
-//    /**
-//     * The vector representing the move from {@link #r} to {@link #p}.
-//     */
-//    protected final V3D_Vector rp;
-//
-//    /**
-//     * The normal vector. (This is perpendicular to the plane and it's direction
-//     * is given by order in which the two vectors {@link #pq} and {@link #qr}
-//     * are used in a cross product calculation when the plane is constructed.
-//     */
-//    protected final V3D_Vector n;
+    /**
+     * The vector representing the move from {@link #p} to {@link #q}.
+     */
+    protected V3D_Vector pq;
+
+    /**
+     * The vector representing the move from {@link #q} to {@link #r}.
+     */
+    protected V3D_Vector qr;
+
+    /**
+     * The vector representing the move from {@link #r} to {@link #p}.
+     */
+    protected V3D_Vector rp;
+
+    /**
+     * The normal vector. (This is perpendicular to the plane and it's direction
+     * is given by order in which the two vectors {@link #pq} and {@link #qr}
+     * are used in a cross product calculation when the plane is constructed.
+     */
+    protected V3D_Vector n;
+
     /**
      * Create a new instance.
      *
@@ -128,50 +134,74 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * Create a new instance. If {@code q} is at the origin, then swap this with
-     * one of the other points as otherwise the cross product/normal vector
-     * turns out to be the Zero vector.
-     *
-     * @param p Used to initialise {@link #p}.
-     * @param q Used to initialise {@link #q}.
-     * @param r Used to initialise {@link #r}.
-     * @param oom What {@link #oom} is set to.
-     * @param checkCoplanar If {@code false} the there is no check that p, q and
-     * are coplanar.
-     * @throws RuntimeException If p, q and r are not coplanar and this is
-     * checked for.
-     */
-    public V3D_Plane(V3D_Vector p, V3D_Vector q, V3D_Vector r, int oom,
-            boolean checkCoplanar) {
-        super(V3D_Vector.ZERO, oom);
-        this.p = p;
-        this.q = q;
-        this.r = r;
-//        this.pq = new V3D_Vector(this.p, this.q, oom);
-//        this.qr = new V3D_Vector(this.q, this.r, oom);
-//        this.rp = new V3D_Vector(this.r, this.p, oom);
-//        if (qAtOrigin) {
-//            this.n = this.qr.getCrossProduct(this.rp, oom);
-//        } else {
-//            this.n = this.pq.getCrossProduct(this.qr, oom);
-//        }
-        if (checkCoplanar) {
-            if (V3D_Geometrics.isCoplanar(oom, getP(oom), getQ(oom), getR(oom))) {
-                throw new RuntimeException("The points do not define a plane.");
-            }
-        }
-    }
-
-    /**
-     * Create a new instance. This assumes that p, q and r are not collinear.
+     * Default {@link #offset} to {@link V3D_Vector#ZERO}.
      *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
      * @param oom What {@link #oom} is set to.
+     * @param check If {@code true} then if p, q and r are coincident or
+     * collinear then a RuntimeException is thrown.
      */
-    public V3D_Plane(V3D_Vector p, V3D_Vector q, V3D_Vector r, int oom) {
-        this(p, q, r, oom, false);
+    public V3D_Plane(V3D_Vector p, V3D_Vector q, V3D_Vector r, int oom,
+            boolean check) {
+        this(V3D_Vector.ZERO, p, q, r, oom, check);
+    }
+
+    /**
+     * Create a new instance. If {@code q} is at the origin, then swap this with
+     * one of the other points as otherwise the cross product/normal vector
+     * turns out to be the Zero vector.
+     *
+     * @param offset What {@link #offset} is set to.
+     * @param p Used to initialise {@link #p}.
+     * @param q Used to initialise {@link #q}.
+     * @param r Used to initialise {@link #r}.
+     * @param oom What {@link #oom} is set to.
+     * @param check Ignored.
+     * @throws RuntimeException if p, q and r are coincident or
+     * collinear.
+     */
+    public V3D_Plane(V3D_Vector offset, V3D_Vector p, V3D_Vector q,
+            V3D_Vector r, int oom, boolean check) {
+        super(offset, oom);
+        this.p = p;
+        this.q = q;
+        this.r = r;
+            if (V3D_Geometrics.isCoplanar(oom, p, q, r)) {
+                throw new RuntimeException("The points do not define a plane.");
+            }
+    }
+
+    /**
+     * Create a new instance. This assumes that p, q and r are not collinear.
+     * {@link #offset} is set to {@link V3D_Vector#ZERO}.
+     * 
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     * @param r What {@link #r} is set to.
+     * @param oom What {@link #oom} is set to.
+     */
+    public V3D_Plane(V3D_Vector p, V3D_Vector q,
+            V3D_Vector r, int oom) {
+        this(V3D_Vector.ZERO, p, q, r, oom);
+    }
+    
+    /**
+     * Create a new instance. This assumes that p, q and r are not collinear.
+     *
+     * @param offset What {@link #offset} is set to.
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     * @param r What {@link #r} is set to.
+     * @param oom What {@link #oom} is set to.
+     */
+    public V3D_Plane(V3D_Vector offset, V3D_Vector p, V3D_Vector q,
+            V3D_Vector r, int oom) {
+        super(offset, oom);
+        this.p = p;
+        this.q = q;
+        this.r = r;
     }
 
     /**
@@ -182,9 +212,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom What {@link #oom} is set to.
      */
     public V3D_Plane(V3D_Point p, V3D_Vector n, int oom) {
-        super(V3D_Vector.ZERO, oom);
+        super(p.offset, oom);
         //this.p = new V3D_Point(p);
-        this.p = p.getVector(oom);
+        this.p = p.rel;
         /**
          * Find a perpendicular vector using: user65203, How to find
          * perpendicular vector to another vector?, URL (version: 2020-10-01):
@@ -219,7 +249,7 @@ public class V3D_Plane extends V3D_Geometry {
 //        pq = new V3D_Vector(p, q, oom);
 //        qr = new V3D_Vector(q, r, oom);
 //        rp = new V3D_Vector(r, p, oom);
-//        this.n = new V3D_Vector(n);
+        this.n = n;
     }
 
     @Override
@@ -273,7 +303,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @return {@link #r} with {@link #offset} applied.
      */
-    public V3D_Point getR(int oom) {
+    public final V3D_Point getR(int oom) {
         //return r.apply(offset, oom);
         return new V3D_Point(r, offset);
     }
@@ -283,8 +313,10 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The vector from {@link #p} to {@link #q}.
      */
     public V3D_Vector getPq(int oom) {
-        //return new V3D_Vector(pq).add(offset, oom);
-        return new V3D_Vector(getP(oom), getQ(oom), oom);
+        if (pq == null) {
+            pq = q.subtract(p, oom);
+        }
+        return pq;
     }
 
     /**
@@ -292,8 +324,10 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The vector from {@link #q} to {@link #r}.
      */
     public V3D_Vector getQr(int oom) {
-        //return new V3D_Vector(qr).add(offset, oom);
-        return new V3D_Vector(getQ(oom), getR(oom), oom);
+        if (qr == null) {
+            qr = r.subtract(q, oom);
+        }
+        return qr;
     }
 
     /**
@@ -301,27 +335,32 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The vector from {@link #r} to {@link #p}.
      */
     public V3D_Vector getRp(int oom) {
-        //return new V3D_Vector(rp).add(offset, oom);
-        return new V3D_Vector(getR(oom), getP(oom), oom);
+        if (rp == null) {
+            rp = p.subtract(r, oom);
+        }
+        return rp;
     }
 
     /**
-     * @return {@code true} iff the point {@link #q} is at the origin 
+     * @return {@code true} iff the point {@link #q} is at the origin
      */
     public boolean isQAtOrigin() {
         return getQ(oom).equals(V3D_Point.ORIGIN);
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the calculation.
      * @return The normal vector.
      */
     public V3D_Vector getN(int oom) {
-        if (isQAtOrigin()) {
-            return getQr(oom).getCrossProduct(getRp(oom), oom);
-        } else {
-            return getPq(oom).getCrossProduct(getQr(oom), oom);
+        if (n == null) {
+            if (isQAtOrigin()) {
+                n = getQr(oom).getCrossProduct(getRp(oom), oom);
+            } else {
+                n = getPq(oom).getCrossProduct(getQr(oom), oom);
+            }
         }
+        return n;
     }
 
     /**
@@ -378,7 +417,6 @@ public class V3D_Plane extends V3D_Geometry {
 //        return new V3D_Plane(p.apply(v, oom), q.apply(v, oom), r.apply(v, oom),
 //                oom);
 //    }
-
     /**
      * @param pl The plane to test for intersection with this.
      * @param oom The Order of Magnitude for the calculation.
@@ -1131,8 +1169,7 @@ public class V3D_Plane extends V3D_Geometry {
 //    }
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_Plane) {
-            V3D_Plane pl = (V3D_Plane) o;
+        if (o instanceof V3D_Plane pl) {
             return equals(pl, oom);
         }
         return false;

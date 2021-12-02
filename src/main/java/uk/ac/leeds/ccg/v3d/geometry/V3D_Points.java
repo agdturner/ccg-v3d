@@ -76,11 +76,6 @@ public class V3D_Points extends V3D_Geometry {
     }
 
     @Override
-    public V3D_Geometry apply(V3D_Vector v, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

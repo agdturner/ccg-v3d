@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
  * 3D representation of a moveable point. The "*" denotes a point in 3D in the
@@ -211,6 +212,13 @@ public class V3D_VPoint extends V3D_VGeometry {
      */
     public Math_BigRational getZ() {
         return rel.z.add(offset.z);
+    }
+    
+    /**
+     * @return The z component of {@link #rel} with {@link #offset} applied.
+     */
+    public V3D_Vector getOffsetVector() {
+        return new V3D_Vector(offset);
     }
 
     /**

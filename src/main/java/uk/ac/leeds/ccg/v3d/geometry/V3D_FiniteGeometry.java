@@ -133,7 +133,8 @@ public interface V3D_FiniteGeometry {
                 if (r.equals(p)) {
                     return getGeometry(r, q, oom);
                 } else {
-                    return new V3D_Triangle(p, q, r, oom);
+                    return new V3D_Triangle(V3D_Vector.ZERO, p.getVector(oom), 
+                            q.getVector(oom), r.getVector(oom), oom);
                 }
             }
         }

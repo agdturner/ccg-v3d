@@ -78,21 +78,6 @@ public class V3D_Tetrahedrons extends V3D_Geometry implements V3D_Volume {
     }
 
     /**
-     * @param v The vector to apply.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return a new rectangle.
-     */
-    @Override
-    public V3D_Tetrahedrons apply(V3D_Vector v, int oom) {
-        V3D_Tetrahedrons r = new V3D_Tetrahedrons(tetrahedrons.toArray(
-                new V3D_Tetrahedron[tetrahedrons.size()]));
-        for (int i = 0; i < r.tetrahedrons.size(); i++) {
-            r.apply(oom, v);
-        }
-        return r;
-    }
-
-    /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The area of the triangle (rounded).
      */

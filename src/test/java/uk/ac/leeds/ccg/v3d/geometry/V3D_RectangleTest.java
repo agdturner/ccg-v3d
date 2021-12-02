@@ -73,22 +73,22 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Envelope expResult;
         V3D_Envelope result;
         instance = new V3D_Rectangle(N1P1P0, P1P1P0, P1N1P0, N1N1P0, oom);
-        expResult = new V3D_Envelope(oom, N1N1P0, P1P1P0);
+        expResult = new V3D_Envelope(oom, pN1N1P0, pP1P1P0);
         result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result));
         // Test 2
         instance = new V3D_Rectangle(N1P1P1, P1P1P0, P1N1P0, N1N1P1, oom);
-        expResult = new V3D_Envelope(oom, N1N1P0, P1P1P1);
+        expResult = new V3D_Envelope(oom, pN1N1P0, pP1P1P1);
         result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result));
         // Test 3
         instance = new V3D_Rectangle(N1P1P1, P1P1N1, P1N1N1, N1N1P1, oom);
-        expResult = new V3D_Envelope(oom, N1N1N1, P1P1P1);
+        expResult = new V3D_Envelope(oom, pN1N1N1, pP1P1P1);
         result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result));
         // Test 4
         instance = new V3D_Rectangle(N1N1N1, P1N1N1, P1P1N1, N1P1N1, oom);
-        expResult = new V3D_Envelope(oom, N1N1N1, P1P1N1);
+        expResult = new V3D_Envelope(oom, pN1N1N1, pP1P1N1);
         result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result));
     }
@@ -100,7 +100,7 @@ public class V3D_RectangleTest extends V3D_Test {
     public void testIsIntersectedBy_V3D_Point_int() {
         System.out.println("isIntersectedBy");
         int oom = -1;
-        V3D_Point pt = P0P0P0;
+        V3D_Point pt = pP0P0P0;
         V3D_Rectangle instance = new V3D_Rectangle(N1P1P0, P1P1P0, P1N1P0, N1N1P0, oom);
         assertTrue(instance.isIntersectedBy(pt, oom));
         // Test 2
@@ -128,7 +128,7 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Geometry expResult;
         V3D_Geometry result;
         instance = new V3D_Rectangle(N1P1P0, P1P1P0, P1N1P0, N1N1P0, oom);
-        expResult = P0P0P0;
+        expResult = pP0P0P0;
         result = instance.getIntersection(l, oom);
         assertTrue(expResult.equals(result));
     }

@@ -64,7 +64,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     public static final V3D_Point ORIGIN = new V3D_Point(0, 0, 0);
 
     /**
-     * The position relative to the {@link #ORIGIN}.
+     * The position relative to the {@link #offset}.
      */
     public V3D_Vector rel;
 
@@ -77,25 +77,31 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 //        super(V3D_Vector.ZERO);
 //        this.rel = p.rel.add(p.offset, p.rel.getMagnitude().getOom());
     }
+    
+    /**
+     * {@link #offset} is set to {@link V3D_Vector#ZERO}
+     * @param rel What {@link #rel} is set to.
+     */
+    public V3D_Point(V3D_Vector rel) {
+        this(V3D_Vector.ZERO, rel);
+    }
 
     /**
-     * @param pos What {@link #rel} is set to.
      * @param offset What {@link #offset} is set to.
+     * @param rel What {@link #rel} is set to.
      */
-    public V3D_Point(V3D_Vector pos, V3D_Vector offset) {
-        super(new V3D_Vector(offset), Math.min(offset.getMagnitude().getOom(),
-                pos.getMagnitude().getOom()));
-        this.rel = new V3D_Vector(pos);
-//        super(V3D_Vector.ZERO);
-//        this.rel = rel.add(offset, rel.getMagnitude().getOom());
+    public V3D_Point(V3D_Vector offset, V3D_Vector rel) {
+        super(offset, Math.min(offset.getMagnitude().getOom(),
+                rel.getMagnitude().getOom()));
+        this.rel = rel;
     }
 
     /**
      * @param p The point to duplicate
      */
     public V3D_Point(V3D_VPoint p) {
-        super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
-        this.rel = new V3D_Vector(p.getX(), p.getY(), p.getZ());
+        super(p.getOffsetVector(), V3D_Environment.DEFAULT_OOM);
+        this.rel = new V3D_Vector(p.rel);
     }
 
     /**
@@ -103,7 +109,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public V3D_Point(V3D_Envelope.Point p) {
         super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
-        this.rel = new V3D_Vector(p.x, p.y, p.z);
+        this.rel = new V3D_Vector(p);
     }
 
     /**
@@ -114,7 +120,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public V3D_Point(V3D_Vector v, int oom) {
         super(V3D_Vector.ZERO, oom);
-        this.rel = new V3D_Vector(v.dx, v.dy, v.dz);
+        this.rel = v;
     }
 
     /**

@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
 
@@ -59,12 +60,12 @@ public class V3D_GeometricsTest extends V3D_Test {
     public void testIsCoincident() {
         System.out.println("isCoincident");
         V3D_Point[] points = new V3D_Point[2];
-        points[0] = P0P0P0;
-        points[1] = P0P0P0;
+        points[0] = new V3D_Point(P0P0P0);
+        points[1] = new V3D_Point(P0P0P0);
         assertTrue(V3D_Geometrics.isCoincident(points));
-        points[1] = P0P0P1;
+        points[1] = new V3D_Point(P0P0P1);
         assertFalse(V3D_Geometrics.isCoincident(points));
-        points[0] = P0P0P1;
+        points[0] = new V3D_Point(P0P0P1);
         assertTrue(V3D_Geometrics.isCoincident(points));
     }
 
@@ -80,14 +81,14 @@ public class V3D_GeometricsTest extends V3D_Test {
         // Test 1
         oom = -2;
         l = new V3D_Line(N1N1N1, P1P1P1, -1);
-        points[0] = P2P2P2;
-        points[1] = N2N2N2;
+        points[0] = new V3D_Point(P2P2P2);
+        points[1] = new V3D_Point(N2N2N2);
         assertTrue(V3D_Geometrics.isCollinear(oom, l, points));
         // Test 2
-        points[1] = N2N2N1;
+        points[1] = new V3D_Point(N2N2N1);
         assertFalse(V3D_Geometrics.isCollinear(oom, l, points));
         // Test 3
-        points[0] = N1N2N1;
+        points[0] = new V3D_Point(N1N2N1);
         assertFalse(V3D_Geometrics.isCollinear(oom, l, points));
     }
 
@@ -99,61 +100,61 @@ public class V3D_GeometricsTest extends V3D_Test {
         System.out.println("isCollinear");
         int oom = -2;
         V3D_Point[] points = new V3D_Point[3];
-        points[0] = P2P2P2;
-        points[1] = P2P2P1;
-        points[2] = P2P2P0;
+        points[0] = new V3D_Point(P2P2P2);
+        points[1] = new V3D_Point(P2P2P1);
+        points[2] = new V3D_Point(P2P2P0);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
-        points[2] = P2P2N1;
+        points[2] = new V3D_Point(P2P2N1);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
-        points[2] = P2P2N2;
+        points[2] = new V3D_Point(P2P2N2);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
         // P2P1*
-        points[0] = P2P1P2;
-        points[1] = P2P1P1;
-        points[2] = P2P1P0;
+        points[0] = new V3D_Point(P2P1P2);
+        points[1] = new V3D_Point(P2P1P1);
+        points[2] = new V3D_Point(P2P1P0);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
-        points[2] = P2P1N1;
+        points[2] = new V3D_Point(P2P1N1);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
-        points[2] = P2P1N2;
+        points[2] = new V3D_Point(P2P1N2);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
         // P2P0*
-        points[0] = P2P0P2;
-        points[1] = P2P0P1;
-        points[2] = P2P0P0;
+        points[0] = new V3D_Point(P2P0P2);
+        points[1] = new V3D_Point(P2P0P1);
+        points[2] = new V3D_Point(P2P0P0);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
-        points[2] = P2P0N1;
+        points[2] = new V3D_Point(P2P0N1);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
-        points[2] = P2P0N2;
+        points[2] = new V3D_Point(P2P0N2);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
         // P2N1*
-        points[0] = P2N1P2;
-        points[1] = P2N1P1;
-        points[2] = P2N1P0;
+        points[0] = new V3D_Point(P2N1P2);
+        points[1] = new V3D_Point(P2N1P1);
+        points[2] = new V3D_Point(P2N1P0);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
-        points[2] = P2N1N1;
+        points[2] = new V3D_Point(P2N1N1);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
-        points[2] = P2N1N2;
+        points[2] = new V3D_Point(P2N1N2);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
         // P2N2*
-        points[0] = P2N2P2;
-        points[1] = P2N2P1;
-        points[2] = P2N2P0;
+        points[0] = new V3D_Point(P2N2P2);
+        points[1] = new V3D_Point(P2N2P1);
+        points[2] = new V3D_Point(P2N2P0);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
-        points[2] = P2N2N1;
+        points[2] = new V3D_Point(P2N2N1);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
-        points[2] = P2N2N2;
+        points[2] = new V3D_Point(P2N2N2);
         // Others
         points = new V3D_Point[3];
-        points[0] = P2P2P2;
-        points[1] = N2N2N2;
-        points[2] = N1N1N1;
+        points[0] = new V3D_Point(P2P2P2);
+        points[1] = new V3D_Point(N2N2N2);
+        points[2] = new V3D_Point(N1N1N1);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
-        points[1] = P1P1P0;
+        points[1] = new V3D_Point(P1P1P0);
         assertFalse(V3D_Geometrics.isCollinear(oom, points));
         points = new V3D_Point[3];
-        points[0] = P2P2P2;
-        points[1] = N2N2N2;
-        points[2] = P1P1P1;
+        points[0] = new V3D_Point(P2P2P2);
+        points[1] = new V3D_Point(N2N2N2);
+        points[2] = new V3D_Point(P1P1P1);
         assertTrue(V3D_Geometrics.isCollinear(oom, points));
     }
 
@@ -166,7 +167,8 @@ public class V3D_GeometricsTest extends V3D_Test {
         System.out.println("getLine");
         V3D_Point[] points = null;
         V3D_Line expResult = null;
-        V3D_Line result = V3D_Geometrics.getLine(points);
+        int oom = V3D_Environment.DEFAULT_OOM;
+        V3D_Line result = V3D_Geometrics.getLine(oom, points);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -185,21 +187,21 @@ public class V3D_GeometricsTest extends V3D_Test {
         oom = -2;
         p = new V3D_Plane(P0P0P0, P1P0P0, P0P1P0, oom);
         points = new V3D_Point[3];
-        points[0] = P2P2P0;
-        points[1] = N2P2P0;
-        points[2] = P2N2P0;
+        points[0] = new V3D_Point(P2P2P0);
+        points[1] = new V3D_Point(N2P2P0);
+        points[2] = new V3D_Point(P2N2P0);
         assertTrue(V3D_Geometrics.isCoplanar(oom, p, points));
         // Test 2
-        points[2] = P2N2P1;
+        points[2] = new V3D_Point(P2N2P1);
         assertFalse(V3D_Geometrics.isCoplanar(oom, p, points));
         // Test 3
         p = new V3D_Plane(P0P0P0, P0P1P0, P0P0P1, oom);
-        points[0] = P0P2P2;
-        points[1] = P0N2P2;
-        points[2] = P0P2N2;
+        points[0] = new V3D_Point(P0P2P2);
+        points[1] = new V3D_Point(P0N2P2);
+        points[2] = new V3D_Point(P0P2N2);
         assertTrue(V3D_Geometrics.isCoplanar(oom, p, points));
         // Test 4
-        points[2] = P2N2P1;
+        points[2] = new V3D_Point(P2N2P1);
         assertFalse(V3D_Geometrics.isCoplanar(oom, p, points));
     }
 
@@ -211,15 +213,15 @@ public class V3D_GeometricsTest extends V3D_Test {
         System.out.println("isCoplanar");
         int oom = -2;
         V3D_Point[] points = new V3D_Point[6];
-        points[0] = P0P0P0;
-        points[1] = P0P1P0;
-        points[2] = P0P0P1;
-        points[3] = P0P2P2;
-        points[4] = P0N2P2;
-        points[5] = P0P2N2;
+        points[0] = new V3D_Point(P0P0P0);
+        points[1] = new V3D_Point(P0P1P0);
+        points[2] = new V3D_Point(P0P0P1);
+        points[3] = new V3D_Point(P0P2P2);
+        points[4] = new V3D_Point(P0N2P2);
+        points[5] = new V3D_Point(P0P2N2);
         assertTrue(V3D_Geometrics.isCoplanar(oom, points));
         // Test 2
-        points[2] = P2N2P1;
+        points[2] = new V3D_Point(P2N2P1);
         assertFalse(V3D_Geometrics.isCoplanar(oom, points));
     }
 

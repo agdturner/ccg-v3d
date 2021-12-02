@@ -22,6 +22,7 @@ import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope.Point;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
  * A class for geometrics.
@@ -36,6 +37,20 @@ public class V3D_Geometrics {
      */
     public V3D_Geometrics(){}
     
+    /**
+     * @param points The points to test if they are coincident.
+     * @return {@code true} iff all the points are coincident.
+     */
+    public static boolean isCoincident(V3D_Vector... points) {
+        V3D_Vector p0 = points[0];
+        for (V3D_Vector p1 : points) {
+            if (!p1.equals(p0)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * @param points The points to test if they are coincident.
      * @return {@code true} iff all the points are coincident.
@@ -80,6 +95,22 @@ public class V3D_Geometrics {
     }
 
     /**
+     * @param l The line to test points are collinear with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param points The points to test if they are collinear with l.
+     * @return {@code true} iff all points are collinear with l.
+     */
+    public static boolean isCollinear(int oom, V3D_Line l, V3D_Vector... points) {
+        V3D_Vector lv = l.getV(oom);
+        for (V3D_Vector p : points) {
+            if (!lv.isScalarMultiple(p, oom)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * @param oom The Order of Magnitude for the precision.
      * @param l The line to test points are collinear with.
      * @param points The points to test if they are collinear with l.
@@ -94,6 +125,31 @@ public class V3D_Geometrics {
         return true;
     }
 
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param points The points to test if they are collinear.
+     * @return {@code false} if all points are coincident. {@code true} iff all
+     * the points are collinear.
+     */
+    public static boolean isCollinear(int oom, V3D_Vector... points) {
+        // For the points to be in a line at least two must be different. 
+        if (isCoincident(points)) {
+            return false;
+        }
+        return isCollinear0(oom, points);
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param points The points to test if they are collinear.
+     * @return {@code true} iff all the points are collinear or coincident.
+     */
+    private static boolean isCollinear0(int oom, V3D_Vector... points) {
+        // Get a line
+        V3D_Line l = getLine(oom, points);
+        return isCollinear(oom, l, points);
+    }
+    
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param points The points to test if they are collinear.
@@ -131,6 +187,23 @@ public class V3D_Geometrics {
             if (!p1.equals(p0)) {
                 //return new V3D_Line(p0, p1, -1);
                 return new V3D_Line(p0.getVector(oom), p1.getVector(oom), oom);
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * There should be at least two different points.
+     *
+     * @param points Any number of points, but with two being different.
+     * @return A line defined by any two different points or null if the points are coincident.
+     */
+    public static V3D_Line getLine(int oom, V3D_Vector... points) {
+        V3D_Vector p0 = points[0];
+        for (V3D_Vector p1 : points) {
+            if (!p1.equals(p0)) {
+                //return new V3D_Line(p0, p1, -1);
+                return new V3D_Line(p0, p1, oom);
             }
         }
         return null;
@@ -202,6 +275,22 @@ public class V3D_Geometrics {
      * @param points The points to test if they are coplanar with p.
      * @return {@code true} iff all points are coplanar with p.
      */
+    private static boolean isCoplanar(int oom, V3D_Plane p, V3D_Vector... points) {
+        for (V3D_Vector pt : points) {
+            V3D_Point point = new V3D_Point(p.offset, pt);
+            if (!p.isIntersectedBy(point, oom)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param p The plane to test points are coplanar with.
+     * @param points The points to test if they are coplanar with p.
+     * @return {@code true} iff all points are coplanar with p.
+     */
     public static boolean isCoplanar(int oom, Plane p, Point... points) {
         for (Point pt : points) {
             if (!p.isIntersectedBy(pt, oom)) {
@@ -228,6 +317,24 @@ public class V3D_Geometrics {
         }
         return false;
     }
+    
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param points The points to test if they are coplanar.
+     * @return {@code false} if points are coincident or collinear. {@code true}
+     * iff all points are coplanar.
+     */
+    public static boolean isCoplanar(int oom, V3D_Vector... points) {
+        // For the points to be in a plane at least one must not be collinear.
+        if (isCoincident(points)) {
+            return false;
+        }
+        if (!isCollinear0(oom, points)) {
+            V3D_Plane p = getPlane0(oom, points);
+            return isCoplanar(oom, p, points);
+        }
+        return false;
+    }
 
     /**
      * @param oom The Order of Magnitude for the precision.
@@ -241,12 +348,30 @@ public class V3D_Geometrics {
         for (V3D_Point p : points) {
             if (!isCollinear(oom, l, p)) {
                 //return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
-                return new V3D_Plane(l.getP(oom).getVector(oom), l.getQ(oom).getVector(oom), p.getVector(oom), oom);
+                return new V3D_Plane(V3D_Vector.ZERO, l.getP(oom).getVector(oom), l.getQ(oom).getVector(oom), p.getVector(oom), oom);
             }
         }
         return null;
     }
 
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param points The points from which a plane is to be derived.
+     * @return A plane that may or may not contain all the points or
+     * {@code null} if there is no such plane. This does not test if the points are coincident or
+     * collinear.
+     */
+    private static V3D_Plane getPlane0(int oom, V3D_Vector... points) {
+        V3D_Line l = getLine(oom, points);
+        for (V3D_Vector p : points) {
+            if (!isCollinear(oom, l, p)) {
+                //return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
+                return new V3D_Plane(l.offset, l.getP(), l.getQ(), p, oom);
+            }
+        }
+        return null;
+    }
+    
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param points The points from which a plane is to be derived.

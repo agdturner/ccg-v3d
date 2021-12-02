@@ -100,8 +100,8 @@ public class V3D_Tetrahedron implements V3D_Volume, Serializable {
      * @param s A point that defines the tetrahedron.
      * @param oom The Order of Magnitude for the initialisation.
      */
-    public V3D_Tetrahedron(V3D_Point p, V3D_Point q, V3D_Point r,
-            V3D_Point s, int oom) {
+    public V3D_Tetrahedron(V3D_Vector p, V3D_Vector q, V3D_Vector r,
+            V3D_Vector s, int oom) {
         pqr = new V3D_Triangle(p, q, r, oom);
         qsr = new V3D_Triangle(q, s, r, oom);
         spr = new V3D_Triangle(s, p, r, oom);
@@ -140,16 +140,6 @@ public class V3D_Tetrahedron implements V3D_Volume, Serializable {
     }
 
     /**
-     * @param v The vector to apply.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return a new rectangle.
-     */
-    public V3D_Tetrahedron apply(V3D_Vector v, int oom) {
-        return new V3D_Tetrahedron(pqr.apply(v, oom), qsr.apply(v, oom), 
-                spr.apply(v, oom), psq.apply(v, oom));
-    }
-                
-    /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The area of the triangle (rounded).
      */
@@ -171,8 +161,8 @@ public class V3D_Tetrahedron implements V3D_Volume, Serializable {
      * @return The centroid point.
      */
     public V3D_Point getCentroid(int oom) {
-        V3D_LineSegment a = new V3D_LineSegment(pqr.getCentroid(oom), qsr.getQ(oom), oom);
-        V3D_LineSegment b = new V3D_LineSegment(psq.getCentroid(oom), qsr.getR(oom), oom);
+        V3D_LineSegment a = new V3D_LineSegment(pqr.getCentroid(oom).getVector(oom), qsr.getQ(oom).getVector(oom), oom);
+        V3D_LineSegment b = new V3D_LineSegment(psq.getCentroid(oom).getVector(oom), qsr.getR(oom).getVector(oom), oom);
         return (V3D_Point) a.getIntersection(b, oom, true);
     }
 

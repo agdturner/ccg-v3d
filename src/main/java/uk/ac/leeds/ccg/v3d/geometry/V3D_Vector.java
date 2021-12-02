@@ -22,6 +22,7 @@ import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.geometry.light.V3D_V;
 
 /**
  * A vector used to translate geometries. The magnitude of the vector is not 
@@ -274,6 +275,15 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector(V3D_Envelope.Point p, V3D_Envelope.Point q) {
         this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
+    }
+
+    /**
+     * Creates a vector from {@code v}.
+     *
+     * @param v the V3D_V vector.
+     */
+    public V3D_Vector(V3D_V v) {
+        this(v.x, v.y, v.z);
     }
 
     @Override

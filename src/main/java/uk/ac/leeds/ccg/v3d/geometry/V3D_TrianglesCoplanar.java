@@ -16,15 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Face;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Triangle;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 //import java.util.ArrayList;
 
 /**
@@ -55,8 +46,8 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * @param oom The Order of Magnitude for the initialisation.
      */
     public V3D_TrianglesCoplanar(int oom, V3D_Triangle... triangles) {
-        super(triangles[0].getP(oom), triangles[0].getQ(oom),
-                triangles[0].getR(oom), oom);
+        super(triangles[0].offset, triangles[0].p, triangles[0].q,
+                triangles[0].r, oom);
         this.triangles = triangles;
     }
 
@@ -80,20 +71,6 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
             }
         }
         return en;
-    }
-
-    /**
-     * @param v The vector to apply.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return a new rectangle.
-     */
-    @Override
-    public V3D_TrianglesCoplanar apply(V3D_Vector v, int oom) {
-        V3D_Triangle[] nt = new V3D_Triangle[triangles.length];
-        for (int i = 0; i < triangles.length; i++) {
-            nt[i] = triangles[i].apply(v, oom);
-        }
-        return new V3D_TrianglesCoplanar(oom, nt);
     }
 
     /**

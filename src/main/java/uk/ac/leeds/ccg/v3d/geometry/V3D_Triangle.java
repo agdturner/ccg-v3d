@@ -108,25 +108,36 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      * @param t The triangle to clone.
      */
     public V3D_Triangle(V3D_Triangle t) {
-        super(t.p, t.q, t.r, t.getOom());
-        //lpq = new V3D_LineSegment(p, q, oom);
-        //lqr = new V3D_LineSegment(q, r, oom);
-        //lrp = new V3D_LineSegment(r, p, oom);
+        super(t);
+    }
+    
+
+    /**
+     * Creates a new triangle.
+     * {@link #offset} is set to {@link V3D_Vector#ZERO}.
+     * 
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     * @param r What {@link #r} is set to.
+     * @param oom What {@link #oom} is set to.
+     */
+    public V3D_Triangle(V3D_Vector p, V3D_Vector q,
+            V3D_Vector r, int oom) {
+        super(V3D_Vector.ZERO, p, q, r, oom);
     }
 
     /**
      * Creates a new triangle.
      *
-     * @param p A point that defines the triangle.
-     * @param q A point that defines the triangle.
-     * @param r A point that defines the triangle.
-     * @param oom The Order of Magnitude for the initialisation.
+     * @param offset What {@link #offset} is set to.
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     * @param r What {@link #r} is set to.
+     * @param oom What {@link #oom} is set to.
      */
-    public V3D_Triangle(V3D_Point p, V3D_Point q, V3D_Point r, int oom) {
-        super(p, q, r, oom);
-        //lpq = new V3D_LineSegment(p, q, oom);
-        //lqr = new V3D_LineSegment(q, r, oom);
-        //lrp = new V3D_LineSegment(r, p, oom);
+    public V3D_Triangle(V3D_Vector offset, V3D_Vector p, V3D_Vector q,
+            V3D_Vector r, int oom) {
+        super(offset, p, q, r, oom);
     }
 
     /**
@@ -134,14 +145,11 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      *
      * @param l A line segment representing one of the three edges of the
      * triangle.
-     * @param r The other point that defines the triangle.
+     * @param r Defines the other point relative l.offset that defines the triangle.
      * @param oom The Order of Magnitude for the initialisation.
      */
-    public V3D_Triangle(V3D_LineSegment l, V3D_Point r, int oom) {
-        super(l.p, l.q, r, oom);
-        //lpq = l;
-        //lqr = new V3D_LineSegment(getQ(oom), r, oom);
-        //lrp = new V3D_LineSegment(r, getP(oom), oom);
+    public V3D_Triangle(V3D_LineSegment l, V3D_Vector r, int oom) {
+        super(l.offset, l.p, l.q, r, oom);
     }
 
     /**
@@ -157,10 +165,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      */
     public V3D_Triangle(V3D_LineSegment lpq, V3D_LineSegment lqr,
             V3D_LineSegment lrp, int oom) {
-        super(lpq.p, lpq.q, lqr.q, oom);
-        //this.lpq = lpq;
-        //this.lqr = lqr;
-        //this.lrp = lrp;
+        super(V3D_Vector.ZERO, lpq.getP(oom).getVector(oom), 
+                lpq.getQ(oom).getVector(oom), lqr.getQ(oom).getVector(oom), oom);
     }
     
     @Override
@@ -179,36 +185,36 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         return en;
     }
 
-    /**
-     * @param v The vector to apply.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return a new rectangle.
-     */
-    @Override
-    public V3D_Triangle apply(V3D_Vector v, int oom) {
-        return new V3D_Triangle(getP(oom).apply(v, oom), 
-                getQ(oom).apply(v, oom), getR(oom).apply(v, oom), oom);
-    }
+//    /**
+//     * @param v The vector to apply.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @return a new rectangle.
+//     */
+//    @Override
+//    public V3D_Triangle apply(V3D_Vector v, int oom) {
+//        return new V3D_Triangle(getP(oom).apply(v, oom), 
+//                getQ(oom).apply(v, oom), getR(oom).apply(v, oom), oom);
+//    }
     
     /**
      * @return The {@link #p}-{@link #q} triangle edge. 
      */
     public V3D_LineSegment getPq() {
-        return new V3D_LineSegment(getP(oom), getQ(oom), oom);
+        return new V3D_LineSegment(offset, p, q, oom);
     }
     
     /**
      * @return The {@link #q}-{@link #r} triangle edge. 
      */
     public V3D_LineSegment getQr() {
-        return new V3D_LineSegment(getQ(oom), getR(oom), oom);
+        return new V3D_LineSegment(offset, q, r, oom);
     }
     
     /**
      * @return The {@link #r}-{@link #p} triangle edge. 
      */
     public V3D_LineSegment getRp() {
-        return new V3D_LineSegment(getR(oom), getP(oom), oom);
+        return new V3D_LineSegment(offset, r, p, oom);
     }
     
     /**
@@ -359,21 +365,24 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
             } else if (lqri instanceof V3D_LineSegment) {
                 return lqri;
             } else {
-                return new V3D_LineSegment((V3D_Point) lqri,
-                        (V3D_Point) lrpi, oom);
+                return new V3D_LineSegment(
+                        ((V3D_Point) lqri).getVector(oom),
+                        ((V3D_Point) lrpi).getVector(oom), oom);
             }
         } else if (lpqi instanceof V3D_LineSegment) {
             return lpqi;
         } else {
             if (lqri == null) {
-                return new V3D_LineSegment((V3D_Point) lpqi,
-                        (V3D_Point) lrpi, oom);
+                return new V3D_LineSegment(
+                        ((V3D_Point) lpqi).getVector(oom),
+                        ((V3D_Point) lrpi).getVector(oom), oom);
             } else if (lqri instanceof V3D_LineSegment) {
                 return lqri;
             } else {
                 if (lrpi == null) {
-                    return new V3D_LineSegment((V3D_Point) lqri,
-                            (V3D_Point) lpqi, oom);
+                    return new V3D_LineSegment(
+                            ((V3D_Point) lqri).getVector(oom),
+                            ((V3D_Point) lpqi).getVector(oom), oom);
                 } else if (lrpi instanceof V3D_LineSegment) {
                     return lrpi;
                 } else {
@@ -386,21 +395,26 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
-        boolean lip = isIntersectedBy(l.p, oom);
-        boolean liq = isIntersectedBy(l.q, oom);
+        V3D_Point lp = l.getP(oom);
+        V3D_Point lq = l.getQ(oom);
+//        boolean lip = isIntersectedBy(l.p, oom);
+//        boolean liq = isIntersectedBy(l.q, oom);
+        boolean lip = isIntersectedBy(lp, oom);
+        boolean liq = isIntersectedBy(lq, oom);
         if (lip) {
             if (liq) {
                 return l;
             } else {
                 V3D_Geometry li = getIntersection(l, oom);
                 if (li instanceof V3D_Point) {
-                    return l.p;
+//                    return l.p;
+                    return lp;
                 } else {
                     V3D_LineSegment lli = (V3D_LineSegment) li;
                     if (lli.p.equals(l.p)) {
-                        return new V3D_LineSegment(l.p, lli.q, oom);
+                        return new V3D_LineSegment(l.offset, l.p, lli.q, oom);
                     } else {
-                        return new V3D_LineSegment(l.p, lli.p, oom);
+                        return new V3D_LineSegment(l.offset, l.p, lli.p, oom);
                     }
                 }
             }
@@ -408,18 +422,18 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
             V3D_Geometry li = getIntersection(l, oom);
             if (liq) {
                 if (li instanceof V3D_Point) {
-                    return l.q;
+                    //return l.q;
+                    return lq;
                 } else {
                     V3D_LineSegment lli = (V3D_LineSegment) li;
                     if (lli.q.equals(l.q)) {
-                        return new V3D_LineSegment(l.q, lli.q, oom);
+                        return new V3D_LineSegment(l.offset, l.q, lli.q, oom);
                     } else {
-                        return new V3D_LineSegment(l.q, lli.p, oom);
+                        return new V3D_LineSegment(l.offset, l.q, lli.p, oom);
                     }
                 }
             } else {
-                if (li instanceof V3D_Point) {
-                    V3D_Point pli = (V3D_Point) li;
+                if (li instanceof V3D_Point pli) {
                     if (l.isIntersectedBy(pli, oom)) {
                         return pli;
                     } else {
@@ -445,8 +459,10 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         V3D_Point mpq = getPq().getMidpoint(oom);
         V3D_Point mqr = getQr().getMidpoint(oom);
         V3D_Point mrp = getRp().getMidpoint(oom);
-        V3D_LineSegment lmpqr = new V3D_LineSegment(mpq, getRp().p, oom);
-        V3D_LineSegment lmqrp = new V3D_LineSegment(mqr, getP(oom), oom);
+//        V3D_LineSegment lmpqr = new V3D_LineSegment(mpq, getRp().p, oom);
+//        V3D_LineSegment lmqrp = new V3D_LineSegment(mqr, getP(oom), oom);
+        V3D_LineSegment lmpqr = new V3D_LineSegment(offset, mpq.rel, getRp().p, oom);
+        V3D_LineSegment lmqrp = new V3D_LineSegment(offset, mqr.rel, p, oom);
         //V3D_LineSegment lmrpq = new V3D_LineSegment(mrp, getQ(oom), oom);
         V3D_Point c0 = (V3D_Point) lmpqr.getIntersection(lmqrp, oom, true);
         //V3D_Point c1 = (V3D_Point) lmpqr.getIntersection(lmrpq, oom, true);

@@ -86,7 +86,7 @@ public class V3D_Line extends V3D_Geometry {
      * The x axis.
      */
     public static final V3D_Line X_AXIS = new V3D_Line(V3D_Vector.ZERO, DEFAULT_OOM, V3D_Vector.I);
-    
+
     /**
      * The y axis.
      */
@@ -96,7 +96,7 @@ public class V3D_Line extends V3D_Geometry {
      * The z axis.
      */
     public static final V3D_Line Z_AXIS = new V3D_Line(V3D_Vector.ZERO, DEFAULT_OOM, V3D_Vector.K);
-    
+
     /**
      * A point relative to {@link #offset} that defines the line.
      */
@@ -131,33 +131,60 @@ public class V3D_Line extends V3D_Geometry {
         this.q = l.q;
         this.v = l.v;
     }
-    
+
     /**
-     * {@code p} should not be equal to {@code q}. If unsure use
-     * {@link #V3D_Line(V3D_Point, V3D_Point, int, boolean)}.
+     * {@code p} should not be equal to {@code q}.
+     * {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param oom What {@link #oom} is set to.
      */
     public V3D_Line(V3D_Vector p, V3D_Vector q, int oom) {
-        super(V3D_Vector.ZERO, oom);
-        this.p = p;
-        this.q = q;
+        this(V3D_Vector.ZERO, p, q, oom);
     }
 
     /**
      * {@code p} should not be equal to {@code q}.
      *
+     * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param oom What {@link #oom} is set to.
-     * @param check Ignored. It is here to distinguish with
-     * {@link #V3D_Line(V3D_Point, V3D_Point, int)}.
+     */
+    public V3D_Line(V3D_Vector offset, V3D_Vector p, V3D_Vector q, int oom) {
+        super(offset, oom);
+        this.p = p;
+        this.q = q;
+    }
+
+    /**
+     * If {@code p} equals {@code q} then a RuntimeException is thrown. 
+     * {@link #offset} is set to
+     * {@link V3D_Vector#ZERO}.
+     *
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     * @param oom What {@link #oom} is set to.
+     * @param check Ignored.
      * @throws RuntimeException if {@code p.equals(q)}.
      */
     public V3D_Line(V3D_Vector p, V3D_Vector q, int oom, boolean check) {
-        super(V3D_Vector.ZERO, oom);
+        this(V3D_Vector.ZERO, p, q, oom, check);
+    }
+
+    /**
+     * If {@code p} equals {@code q} then a RuntimeException is thrown. 
+     *
+     * @param offset What {@link #offset} is set to.
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     * @param oom What {@link #oom} is set to.
+     * @param check Ignored.
+     * @throws RuntimeException if {@code p.equals(q)}.
+     */
+    public V3D_Line(V3D_Vector offset, V3D_Vector p, V3D_Vector q, int oom, boolean check) {
+        super(offset, oom);
         if (p.equals(q)) {
             throw new RuntimeException("Points " + p + " and " + q
                     + " are the same and so do not define a line.");
@@ -167,25 +194,54 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * {@code v} should not be the zero vector {@code <0,0,0>}. If unsure use
-     * {@link #V3D_Line(V3D_Point, V3D_Point, int, boolean)}.
+     * {@code v} should not be the zero vector {@code <0,0,0>}.
+     * {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
      * @param p What {@link #p} is set to.
-     * @param v The vector defining the line from {@link #p}.
+     * @param v The vector defining the line from {@link #p}. What {@link #v} is set to.
+     * @param oom The Order of Magnitude for initialising {@link #q} and what
+     * {@link #oom} is set to.
+     */
+    public V3D_Line(V3D_Vector p, int oom, V3D_Vector v) {
+        this(V3D_Vector.ZERO, p, oom, v);
+    }
+
+    /**
+     * {@code v} should not be the zero vector {@code <0,0,0>}.
+     *
+     * @param offset What {@link #offset} is set to.
+     * @param p What {@link #p} is set to.
+     * @param v The vector defining the line from {@link #p}. What {@link #v} is set to.
      * @param oom The Order of Magnitude for initialising {@link #q} and what
      * {@link #oom} is set to.
      * @throws RuntimeException if {@code v.isZeroVector()}.
      */
-    public V3D_Line(V3D_Vector p, int oom, V3D_Vector v) {
-        super(V3D_Vector.ZERO, oom);
+    public V3D_Line(V3D_Vector offset, V3D_Vector p, int oom, V3D_Vector v) {
+        super(offset, oom);
         this.p = p;
         //this.q = p.add(v, oom);
         this.v = v;
     }
 
     /**
+     * Checks to ensure v is not the zero vector {@code <0,0,0>}. Defaults
+     * {@link #offset} to {@link V3D_Vector#ZERO}.
+     *
+     * @param p What {@link #p} is set to.
+     * @param v The vector defining the line from {@link #p}. What {@link #v} is set to.
+     * @param oom The Order of Magnitude for initialising {@link #q} and what
+     * {@link #oom} is set to.
+     * @param check Ignored.
+     * @throws RuntimeException if {@code v.isZeroVector()}.
+     */
+    public V3D_Line(V3D_Vector p, int oom, V3D_Vector v, boolean check) {
+        this(V3D_Vector.ZERO, p, oom, v, check);
+    }
+
+    /**
      * Checks to ensure v is not the zero vector {@code <0,0,0>}.
      *
+     * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is set to.
      * @param v The vector defining the line from {@link #p}.
      * @param oom The Order of Magnitude for initialising {@link #q} and what
@@ -193,8 +249,8 @@ public class V3D_Line extends V3D_Geometry {
      * @param check Ignored. It is here to distinguish this method from
      * {@link #V3D_Line(V3D_Point, V3D_Vector, int)}.
      */
-    public V3D_Line(V3D_Vector p, int oom, V3D_Vector v, boolean check) {
-        super(V3D_Vector.ZERO, oom);
+    public V3D_Line(V3D_Vector offset, V3D_Vector p, int oom, V3D_Vector v, boolean check) {
+        super(offset, oom);
         if (v.isZeroVector()) {
             throw new RuntimeException("Vector " + v + " is the zero vector "
                     + "and so cannot define a line.");
@@ -203,7 +259,7 @@ public class V3D_Line extends V3D_Geometry {
         //this.q = p.add(v, oom);
         this.v = v;
     }
-    
+
     @Override
     public String toString() {
         return toString("");
@@ -271,7 +327,7 @@ public class V3D_Line extends V3D_Geometry {
     public V3D_Vector getPV(int oom) {
         return p.add(offset, oom);
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@link #p} with {@link #offset} applied.
@@ -281,12 +337,26 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
+     * @return {@link #p}.
+     */
+    public V3D_Vector getP() {
+        return p;
+    }
+
+    /**
+     * @return {@link #q}.
+     */
+    public V3D_Vector getQ() {
+        return q;
+    }
+
+    /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@link #q} with {@link #offset} applied.
      */
     public V3D_Vector getQV(int oom) {
         if (q == null) {
-            return p.add(v, oom).add(offset, oom);            
+            return p.add(v, oom).add(offset, oom);
         } else {
             return q.add(offset, oom);
         }
@@ -298,7 +368,7 @@ public class V3D_Line extends V3D_Geometry {
      */
     public V3D_Point getQ(int oom) {
         if (q == null) {
-            return new V3D_Point(p.add(v, oom), offset);            
+            return new V3D_Point(p.add(v, oom), offset);
         } else {
             return new V3D_Point(q, offset);
         }
@@ -372,7 +442,8 @@ public class V3D_Line extends V3D_Geometry {
             return true;
         } else {
             //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
-            V3D_Plane pl = new V3D_Plane(tp.getVector(oom), tq.getVector(oom), lp.getVector(oom), oom);
+            V3D_Plane pl = new V3D_Plane(V3D_Vector.ZERO, tp.getVector(oom),
+                    tq.getVector(oom), lp.getVector(oom), oom);
             if (V3D_Geometrics.isCoplanar(oom, pl, l.getQ(oom))) {
                 if (!isParallel(l, oom)) {
                     return true;
@@ -384,7 +455,8 @@ public class V3D_Line extends V3D_Geometry {
             return true;
         } else {
             //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
-            V3D_Plane pl = new V3D_Plane(tp.getVector(oom), tq.getVector(oom), lp.getVector(oom), oom);
+            V3D_Plane pl = new V3D_Plane(V3D_Vector.ZERO, tp.getVector(oom),
+                    tq.getVector(oom), lp.getVector(oom), oom);
             if (V3D_Geometrics.isCoplanar(oom, pl, lq)) {
                 if (!isParallel(l, oom)) {
                     return true;
@@ -1033,7 +1105,6 @@ public class V3D_Line extends V3D_Geometry {
 //        l.offset = l.offset.add(v, oom);
 //        return l;
 //    }
-
     /**
      * <a href="https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line">https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line</a>
      * Weisstein, Eric W. "Point-Line Distance--3-Dimensional." From
