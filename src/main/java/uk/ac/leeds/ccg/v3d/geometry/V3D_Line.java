@@ -248,8 +248,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param v The vector defining the line from {@link #p}.
      * @param oom The Order of Magnitude for initialising {@link #q} and what
      * {@link #oom} is set to.
-     * @param check Ignored. It is here to distinguish this method from
-     * {@link #V3D_Line(V3D_Point, V3D_Vector, int)}.
+     * @param check Ignored.
      */
     public V3D_Line(V3D_Vector offset, V3D_Vector p, int oom, V3D_Vector v, boolean check) {
         super(offset, oom);

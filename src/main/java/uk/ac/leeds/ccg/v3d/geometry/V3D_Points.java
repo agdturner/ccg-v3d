@@ -40,8 +40,9 @@ public class V3D_Points extends V3D_Geometry {
     /**
      * Create a new instance.
      *
-     * @param triangles A non-empty list of coplanar triangles.
+     * @param offset The offset.
      * @param oom The Order of Magnitude for the initialisation.
+     * @param rels The point locations relative to the offset. 
      */
     public V3D_Points(V3D_Vector offset, int oom, V3D_Vector... rels) {
         super(offset, oom);
@@ -59,7 +60,11 @@ public class V3D_Points extends V3D_Geometry {
         return s;
     }
 
-    //@Override
+    /**
+     * 
+     * @param oom The Order of Magnitude for the precision.
+     * @return The Envelope
+     */
     public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
             en = new V3D_Envelope(oom, new V3D_Point(offset, rels[0]));
