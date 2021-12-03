@@ -133,8 +133,8 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * {@code p} should not be equal to {@code q}.
-     * {@link #offset} is set to {@link V3D_Vector#ZERO}.
+     * {@code p} should not be equal to {@code q}. {@link #offset} is set to
+     * {@link V3D_Vector#ZERO}.
      *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
@@ -159,9 +159,8 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * If {@code p} equals {@code q} then a RuntimeException is thrown. 
-     * {@link #offset} is set to
-     * {@link V3D_Vector#ZERO}.
+     * If {@code p} equals {@code q} then a RuntimeException is thrown.
+     * {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
@@ -174,7 +173,7 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * If {@code p} equals {@code q} then a RuntimeException is thrown. 
+     * If {@code p} equals {@code q} then a RuntimeException is thrown.
      *
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is set to.
@@ -194,11 +193,12 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * {@code v} should not be the zero vector {@code <0,0,0>}.
-     * {@link #offset} is set to {@link V3D_Vector#ZERO}.
+     * {@code v} should not be the zero vector {@code <0,0,0>}. {@link #offset}
+     * is set to {@link V3D_Vector#ZERO}.
      *
      * @param p What {@link #p} is set to.
-     * @param v The vector defining the line from {@link #p}. What {@link #v} is set to.
+     * @param v The vector defining the line from {@link #p}. What {@link #v} is
+     * set to.
      * @param oom The Order of Magnitude for initialising {@link #q} and what
      * {@link #oom} is set to.
      */
@@ -211,7 +211,8 @@ public class V3D_Line extends V3D_Geometry {
      *
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is set to.
-     * @param v The vector defining the line from {@link #p}. What {@link #v} is set to.
+     * @param v The vector defining the line from {@link #p}. What {@link #v} is
+     * set to.
      * @param oom The Order of Magnitude for initialising {@link #q} and what
      * {@link #oom} is set to.
      * @throws RuntimeException if {@code v.isZeroVector()}.
@@ -228,7 +229,8 @@ public class V3D_Line extends V3D_Geometry {
      * {@link #offset} to {@link V3D_Vector#ZERO}.
      *
      * @param p What {@link #p} is set to.
-     * @param v The vector defining the line from {@link #p}. What {@link #v} is set to.
+     * @param v The vector defining the line from {@link #p}. What {@link #v} is
+     * set to.
      * @param oom The Order of Magnitude for initialising {@link #q} and what
      * {@link #oom} is set to.
      * @param check Ignored.
@@ -282,12 +284,29 @@ public class V3D_Line extends V3D_Geometry {
      * @return A description of the fields.
      */
     protected String toStringFields(String pad) {
-        return pad + "p=" + p.toString(pad) + "\n"
-                + pad + ",\n"
-                + pad + "q=" + q.toString(pad);
-//               + pad + "q=" + q.toString(pad) + "\n"
-//               + pad + ",\n"
-//               + pad + "v=" + v.toString(pad);
+        String r;
+        if (q == null) {
+            r = pad + "p=" + p.toString(pad) + "\n"
+                    + pad + ",\n"
+                    + pad + "q=null" + "\n"
+                    + pad + ",\n"
+                    + pad + "v=" + v.toString(pad);
+        } else {
+            if (v == null) {
+                r = pad + "p=" + p.toString(pad) + "\n"
+                    + pad + ",\n"
+                    + pad + "q=" + q.toString(pad) + "\n"
+                    + pad + ",\n"
+                    + pad + "v=null";
+            } else {
+                r = pad + "p=" + p.toString(pad) + "\n"
+                    + pad + ",\n"
+                    + pad + "q=" + q.toString(pad) + "\n"
+                    + pad + ",\n"
+                    + pad + "v=" + v.toString(pad);
+            }
+        }
+        return r;
     }
 
     @Override
@@ -333,7 +352,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getP(int oom) {
-        return new V3D_Point(p, offset);
+        return new V3D_Point(offset, p);
     }
 
     /**
@@ -347,6 +366,9 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@link #q}.
      */
     public V3D_Vector getQ() {
+        if (q == null) {
+            q = p.add(v, oom);
+        }
         return q;
     }
 
@@ -368,10 +390,9 @@ public class V3D_Line extends V3D_Geometry {
      */
     public V3D_Point getQ(int oom) {
         if (q == null) {
-            return new V3D_Point(p.add(v, oom), offset);
-        } else {
-            return new V3D_Point(q, offset);
+            q = p.add(v, oom);
         }
+        return new V3D_Point(offset, q);
     }
 
     /**

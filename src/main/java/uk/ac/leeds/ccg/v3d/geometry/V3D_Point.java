@@ -185,9 +185,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return A description of the fields.
      */
     protected String toStringFields(String pad) {
-        return pad + "pos=" + rel.toString(pad) + "\n"
+        return pad + "offset=" + offset.toString(pad) + "\n"
                 + pad + ",\n"
-                + pad + "offset=" + offset.toString(pad);
+                + pad + "rel=" + rel.toString(pad);
     }
 
     @Override

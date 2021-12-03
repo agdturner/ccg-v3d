@@ -526,6 +526,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         //V3D_Vector pmpq = v.divide(Math_BigRational.valueOf(l));
         V3D_Vector pmpq = getV(oom).divide(Math_BigRational.valueOf(2), oom);
         //return getP(oom).apply(pmpq, oom);
-        return new V3D_Point(p.add(pmpq, oom), offset);
+        return new V3D_Point(offset, p.add(pmpq, oom));
     }
 }

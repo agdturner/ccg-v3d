@@ -181,7 +181,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
      * @return {@link #s} with {@link #offset} applied.
      */
     public V3D_Point getS(int oom) {
-        return new V3D_Point(s, offset);
+        return new V3D_Point(offset, s);
     }
 
     @Override

@@ -80,9 +80,11 @@ public class V3D_LineSegmentTest extends V3D_Test {
                 + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + " )\n"
+                + " ,\n"
+                + " v=null\n"
                 + ")";
         String result = instance.toString();
-        //System.out.println(result);
+        System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
     }
 
