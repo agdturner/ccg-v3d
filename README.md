@@ -23,6 +23,8 @@ Point positions in space are defined using 3D [cartesian](https://en.wikipedia.o
     <version>0.14-SNAPSHOT</version>
 </dependency>
 ```
+[JAR](https://oss.sonatype.org/content/repositories/snapshots/io/github/agdturner/ccg-v3d/ccg-v3d-0.14-SNAPSHOT.jar)
+
 ## Details
 Lighter geometries are in the [uk.ac.leeds.ccg.v3d.geometry.light](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/) package. These use [V3D_V](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_V.java) which have three Math_BigRational components related to each respective axis. Most classes extend [V3D_VGeometry](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VGeometry.java) - an abstract class that holds a V3D_V "offset" which can be thought of as the offset of the centroid of the geometry:
 - [V3D_VPoint](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VPoint.java) - for representing points. A V3D_V instances called rel gives the location of the point relative to the offset.
