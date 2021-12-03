@@ -14,7 +14,7 @@ Point positions in space are defined using 3D [cartesian](https://en.wikipedia.o
     <version>0.13</version>
 </dependency>
 ```
-[JAR](https://repo1.maven.org/maven2/io/github/agdturner/ccg-v3d/1.0/ccg-v3d-0.13.jar)
+[JAR](https://repo1.maven.org/maven2/io/github/agdturner/ccg-v3d/0.13/ccg-v3d-0.13.jar)
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-v3d -->
 <dependency>
