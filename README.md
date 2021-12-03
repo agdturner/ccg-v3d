@@ -3,9 +3,7 @@
 ## Description
 A three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry)  Java library (that is modularised and based on [openJDK 17](https://openjdk.java.net/projects/jdk/17/). The only other dependency is [ccg-math](https://github.com/agdturner/ccg-math) - a stand alone modularised mathematics library.
 
-Point positions in space are defined using 3D [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinates with [orthogonal](https://en.wikipedia.org/wiki/Orthogonality) X, Y and Z axes that meet at the origin - a point <x,y,z> where x=y=z=0. Coordinates are either stored as [Math_BigRational](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRational.java) numbers - a subset of [rational numbers](https://en.wikipedia.org/wiki/Rational_number), or [Math_BigRationalSqrt](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRationalSqrt.java) - that also allowing for square roots (calculated to a given [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) precision (OOM) as required). The coordinate system is "right handed", so if X increases to the right of this page, Y increases towards the top of this page, then Z increases out from the page, (see [Orientation](https://en.wikipedia.org/wiki/Orientation_(vector_space)) for details of handedness and the [note on the choice of right over left handedness](#handedness). This library originally began developement with a view to supporting 3D Geography and Earth Science applications, but it may support a range of other uses too. Notes about the [origin](#origin), and [geography](#geography) are also provided below.
-
-There are more light weight geometries suited to applications involving rendering moving objects in real time, and heavier geometries for applications requiring extremely accurate calculations of distances and intersection.
+Point positions in space are defined using 3D [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinates with [orthogonal](https://en.wikipedia.org/wiki/Orthogonality) X, Y and Z axes that meet at the origin - a point <x,y,z> where x=y=z=0. Coordinates are either stored as [Math_BigRational](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRational.java) numbers - a subset of [rational numbers](https://en.wikipedia.org/wiki/Rational_number), or [Math_BigRationalSqrt](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRationalSqrt.java) - that also allowing for square roots (calculated to a given [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) (OOM) precision as required). The coordinate system is "right handed", so if X increases to the right of this page, Y increases towards the top of this page, then Z increases out from the page, (see [Orientation](https://en.wikipedia.org/wiki/Orientation_(vector_space)) for details of handedness and the [note on the choice of right over left handedness](#handedness). This library originally began developement with a view to supporting 3D Geography and Earth Science applications, but it may support other scientific and non-scientific aplications. Notes about the [origin](#origin), and [geography](#geography) are also provided below.
 
 ## Latest versioned releases
 ```
@@ -26,15 +24,14 @@ There are more light weight geometries suited to applications involving renderin
 </dependency>
 ```
 ## Details
-
-Lighter geometries are in the [uk.ac.leeds.ccg.v3d.geometry.light](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/) package. These use [V3D_V](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_V.java) which have three Math_BigRational components. There are classes that extend [V3D_VGeometry](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VGeometry.java) - an abstract class that holds a V3D_V "offset" which can be thought of as the offset of the centroid of the geometry:
+Lighter geometries are in the [uk.ac.leeds.ccg.v3d.geometry.light](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/) package. These use [V3D_V](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_V.java) which have three Math_BigRational components related to each respective axis. Most classes extend [V3D_VGeometry](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VGeometry.java) - an abstract class that holds a V3D_V "offset" which can be thought of as the offset of the centroid of the geometry:
 - [V3D_VPoint](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VPoint.java) - for representing points. A V3D_V instances called rel gives the location of the point relative to the offset.
 - [V3D_VLine](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VLine.java) - for representing finite straight lines. V3D_V instances p and q gives the relative location of each end of the line.
 - [V3D_VTriangle](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VTriangle.java) - for representing triangles. V3D_V instances p, q and r give the relative location of each point of the triangle.
 - [V3D_VTetrahedron](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VTetrahedron.java) - for representing [tetrahedron]https://en.wikipedia.org/wiki/Tetrahedron. V3D_V instances p, q, r and s give the relative location of each point of the tetrahedron.
 
 Heavier geometries use [V3D_Vector](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Vector.java)
-which can be thought of as a vertex or vector with x, y, and z Math_BigRationalSqrt components. The magnitude can be calculated and stored to an [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude#Uses). A vector can be applied to geometries to translate and rotate them. [V3D_Geometry](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Geometry.java) is an abstract class with a V3D_Vector offset, and an [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude#Uses) (OOM). This class is extended to define the following geometries:
+which can be thought of as a vertex or vector with x, y, and z Math_BigRationalSqrt components. The magnitude can be calculated and stored to an [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude#Uses). [V3D_Geometry](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Geometry.java) is an abstract class with a V3D_Vector offset, and an [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude#Uses) (OOM). This class is extended to define the following geometries:
 - [V3D_Point](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Point.java) - a point geometry where a V3D_Vector gives the position relative to the offset.
 - [V3D_Line](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) - an infinitte line geometry that passes through two defined points.
 - [V3D_Ray](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Ray.java) - an infinite line geometry that extends from a point in one direction through another point.
@@ -52,8 +49,7 @@ Geometry collections of the same types of geometry are being supported, includin
 
 ## Development plans and progress
 - There is functionality for calculating the intersection and minimum distance between most, but not all geometries.
-
-The current focus is to provide fast and robust instersection tests and computations, and centroid and distance computations
+- For a 1.0 release, the aim is to provide robust instersection tests and computations, and centroid and distance computations:
 
 ### Intersection
 - So far, methods for testing if there is an intersection and for retrieving the intersection are implemented for:
@@ -67,7 +63,7 @@ The current focus is to provide fast and robust instersection tests and computat
 -- line_segment-triangle, line_segment-rectangle
 -- triangle-triangle, triangle-rectangle
 -- rectangle-rectangle
-- It would be good to have functionality that distinguishes between geometries touching and overlapping.
+- It would be good to have functionality that distinguishes between geometries that touch at a point, along a line or over an area; or that overlap crossing all or part of the other geometries.
 
 ### Distance, Areas, Perimeters, Volumes
 - So far, methods for calculating the minimum distance between geometries are implemented for:
@@ -78,16 +74,16 @@ The current focus is to provide fast and robust instersection tests and computat
 -- line_segment-line_segment
 
 ## Development
-[Apache Commons Geometry](https://commons.apache.org/proper/commons-geometry/) (see also: [Apache Commons Geometry GitHub Repository](https://github.com/apache/commons-geometry)) appears to be developing similar arbitrary precision functionality.
-
+- Whilst translating geometries is now supported, it is not possible to scale or rotate or warp them. It would be good to have these things for modelling things in reality. Perhaps the next progression is to support rotation about the centroid in line with each axis.
+- [Apache Commons Geometry](https://commons.apache.org/proper/commons-geometry/) (see also: [Apache Commons Geometry GitHub Repository](https://github.com/apache/commons-geometry)) appears to be developing similar arbitrary precision geometrical functionality... 
 
 ### Origins
 The library began development in March 2020 as a pet project to try to create a simple gravitational model of our [solar system](https://en.wikipedia.org/wiki/Solar_system) and learn more about 3D modelling.
 ### Summary of changes
 #### 0.13 to 0.14
-- Added lightweight geometries for interactive visualisation of objects.
+- Added a package of lightweight geometries.
 #### 0.10 to 0.13
-- Added an offset vector for geometries to allow them to be rotated and translated.
+- Added an offset vector for geometries to allow them to be translated.
 #### 0.9 to 0.10
 - Added V3D_Tetrahedron class, and V3D_TetrahedronPoly, V3D_TrianglePolyPlanar and V3D_LineSegmentPolyCollinear collection classes.
 #### 0.8 to 0.9
@@ -97,7 +93,7 @@ The library began development in March 2020 as a pet project to try to create a 
 - Added a V3D_Ray class.
 
 ## Contributions
-- Welcome, but let's save time and energy by organising :)
+- Welcome, but let's communicate and organise :)
 
 ## LICENCE
 - APACHE LICENSE, VERSION 2.0: https://www.apache.org/licenses/LICENSE-2.0
