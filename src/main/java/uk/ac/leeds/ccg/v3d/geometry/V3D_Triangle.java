@@ -180,7 +180,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     @Override
     public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = new V3D_Envelope(oom, getP(oom), getQ(oom), getR(oom));
+            en = new V3D_Envelope(oom, getP(), getQ(), getR());
         }
         return en;
     }
@@ -242,9 +242,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 || getRp().isIntersectedBy(pt, oom)) {
             return true;
         }
-        V3D_Vector ppt = new V3D_Vector(getP(oom), pt, oom);
-        V3D_Vector qpt = new V3D_Vector(getQ(oom), pt, oom);
-        V3D_Vector rpt = new V3D_Vector(getR(oom), pt, oom);
+        V3D_Vector ppt = new V3D_Vector(getP(), pt, oom);
+        V3D_Vector qpt = new V3D_Vector(getQ(), pt, oom);
+        V3D_Vector rpt = new V3D_Vector(getR(), pt, oom);
         V3D_Vector cp = getPq(oom).getCrossProduct(ppt, oom);
         V3D_Vector cq = getQr(oom).getCrossProduct(qpt, oom);
         V3D_Vector cr = getRp(oom).getCrossProduct(rpt, oom);

@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * For 3D Euclidean geometrical objects. The three dimensions have are
@@ -61,8 +62,24 @@ public abstract class V3D_Geometry implements Serializable {
      */
     public V3D_Vector offset;
     
+//    Options for rotation include:
+//    Rotation Matrix https://en.wikipedia.org/wiki/Rotation_matrix
+//    Quaternions https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
+//    /**
+//     * The axis of rotation of the geometry passing through the offset point 
+//     * used to rotate geometries. 
+//     */
+//    public V3D_Vector axisOfRotation;
+//    
+//    /**
+//     * The angleOfRotation around the axis, the sine and the cosine of which 
+//     * help to calculate actual coordinates.
+//     */
+//    public Math_BigRational theta;
+//    Rotation_matrix_from_axis_and_angle https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
+    
     /**
-     * The Order of Magnitude set for the geometry.
+     * The Order of Magnitude for the precision.
      */
     protected int oom;
     

@@ -177,17 +177,16 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
     }
 
     /**
-     * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @return {@link #s} with {@link #offset} applied.
      */
-    public V3D_Point getS(int oom) {
+    public V3D_Point getS() {
         return new V3D_Point(offset, s);
     }
 
     @Override
     public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = new V3D_Envelope(oom, getP(oom), getQ(oom), getR(oom), getS(oom));
+            en = new V3D_Envelope(oom, getP(), getQ(), getR(), getS());
         }
         return en;
     }
@@ -246,19 +245,19 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
 
     private boolean isIntersectedBy0(V3D_Point pt, int oom) {
         // Special cases
-        V3D_Point tp = this.getP(oom);
+        V3D_Point tp = this.getP();
         if (tp.equals(pt)) {
             return true;
         }
-        V3D_Point tq = this.getQ(oom);
+        V3D_Point tq = this.getQ();
         if (tq.equals(pt)) {
             return true;
         }
-        V3D_Point tr = this.getR(oom);
+        V3D_Point tr = this.getR();
         if (tr.equals(pt)) {
             return true;
         }
-        V3D_Point ts = this.getS(oom);
+        V3D_Point ts = this.getS();
         if (ts.equals(pt)) {
             return true;
         }
@@ -286,7 +285,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
                 || getSP(oom).isIntersectedBy(pt, oom) || getPQ(oom).isIntersectedBy(pt, oom)) {
             return true;
         }
-        if (getQ(oom).equals(V3D_Point.ORIGIN)) {
+        if (getQ().equals(V3D_Point.ORIGIN)) {
             V3D_Vector ppt = new V3D_Vector(tq, pt, oom);
             V3D_Vector qpt = new V3D_Vector(tp, pt, oom);
             V3D_Vector rpt = new V3D_Vector(tr, pt, oom);

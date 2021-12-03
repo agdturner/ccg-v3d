@@ -282,29 +282,23 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @return {@link #p} with {@link #offset} applied.
      */
-    public final V3D_Point getP(int oom) {
-        //return p.apply(offset, oom);
+    public final V3D_Point getP() {
         return new V3D_Point(offset, p);
     }
 
     /**
-     * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @return {@link #q} with {@link #offset} applied.
      */
-    public final V3D_Point getQ(int oom) {
-        //return q.apply(offset, oom);
+    public final V3D_Point getQ() {
         return new V3D_Point(offset, q);
     }
 
     /**
-     * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @return {@link #r} with {@link #offset} applied.
      */
-    public final V3D_Point getR(int oom) {
-        //return r.apply(offset, oom);
+    public final V3D_Point getR() {
         return new V3D_Point(offset, r);
     }
 
@@ -345,7 +339,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} iff the point {@link #q} is at the origin
      */
     public boolean isQAtOrigin() {
-        return getQ(oom).equals(V3D_Point.ORIGIN);
+        return getQ().equals(V3D_Point.ORIGIN);
     }
 
     /**
@@ -391,7 +385,7 @@ public class V3D_Plane extends V3D_Geometry {
 //        Math_BigRational k = (ndxsr.multiply(p.getX(oom))
 //                .add(ndysr.multiply(p.getY(oom)))
 //                .add(ndzsr.multiply(p.getZ(oom)))).negate();
-        V3D_Point tp = getP(oom);
+        V3D_Point tp = getP();
         Math_BigRational k = (ndxsr.multiply(tp.getX(oom))
                 .add(ndysr.multiply(tp.getY(oom)))
                 .add(ndzsr.multiply(tp.getZ(oom)))).negate();
@@ -465,17 +459,17 @@ public class V3D_Plane extends V3D_Geometry {
 //        m[0][2] = r.getX(oom);
 //        m[1][2] = r.getY(oom);
 //        m[2][2] = r.getZ(oom);
-        V3D_Point tp = getP(oom);
+        V3D_Point tp = getP();
         m[0][0] = tp.getX(oom);
         m[1][0] = tp.getY(oom);
         m[2][0] = tp.getZ(oom);
         m[3][0] = Math_BigRational.ONE;
-        V3D_Point tq = getQ(oom);
+        V3D_Point tq = getQ();
         m[0][1] = tq.getX(oom);
         m[1][1] = tq.getY(oom);
         m[2][1] = tq.getZ(oom);
         m[3][1] = Math_BigRational.ONE;
-        V3D_Point tr = getR(oom);
+        V3D_Point tr = getR();
         m[0][2] = tr.getX(oom);
         m[1][2] = tr.getY(oom);
         m[2][2] = tr.getZ(oom);
@@ -543,9 +537,9 @@ public class V3D_Plane extends V3D_Geometry {
 //        m[3][1] = q.getZ(oom);
 //        m[3][2] = r.getZ(oom);
 //        m[3][3] = lp.getZ(oom);
-        V3D_Point tp = getP(oomN2);
-        V3D_Point tq = getQ(oomN2);
-        V3D_Point tr = getR(oomN2);
+        V3D_Point tp = getP();
+        V3D_Point tq = getQ();
+        V3D_Point tr = getR();
         m[1][0] = tp.getX(oomN2);
         m[1][1] = tq.getX(oomN2);
         m[1][2] = tr.getX(oomN2);
@@ -721,13 +715,13 @@ public class V3D_Plane extends V3D_Geometry {
          * v.
          */
         V3D_Point pi;
-        V3D_Point tq = getQ(oom);
+        V3D_Point tq = getQ();
         if (getPq(oom).isScalarMultiple(v, oom)) {
             //pi = (V3D_Point) pl.getIntersection(new V3D_Line(tq, getR(oom), oom), oom);
-            pi = (V3D_Point) pl.getIntersection(new V3D_Line(tq.getVector(oom), getR(oom).getVector(oom), oom), oom);
+            pi = (V3D_Point) pl.getIntersection(new V3D_Line(tq.getVector(oom), getR().getVector(oom), oom), oom);
         } else {
             //pi = (V3D_Point) pl.getIntersection(new V3D_Line(getP(oom), tq, oom), oom);
-            pi = (V3D_Point) pl.getIntersection(new V3D_Line(getP(oom).getVector(oom), tq.getVector(oom), oom), oom);
+            pi = (V3D_Point) pl.getIntersection(new V3D_Line(getP().getVector(oom), tq.getVector(oom), oom), oom);
         }
         //return new V3D_Line(pi, v, oom);
         return new V3D_Line(pi.getVector(oom), oom, v);
@@ -1189,8 +1183,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
     public boolean equals(V3D_Plane pl, int oom) {
-        return V3D_Geometrics.isCoplanar(oom, this, pl.getP(oom), pl.getQ(oom),
-                pl.getR(oom));
+        return V3D_Geometrics.isCoplanar(oom, this, pl.getP(), pl.getQ(),
+                pl.getR());
     }
 
     /**
@@ -1201,9 +1195,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
     public boolean isCoincident(V3D_Plane pl, int oom) {
-        if (isIntersectedBy(pl.getP(oom), oom)) {
-            if (isIntersectedBy(pl.getQ(oom), oom)) {
-                if (isIntersectedBy(pl.getR(oom), oom)) {
+        if (isIntersectedBy(pl.getP(), oom)) {
+            if (isIntersectedBy(pl.getQ(), oom)) {
+                if (isIntersectedBy(pl.getR(), oom)) {
                     return true;
                 }
             }
@@ -1229,9 +1223,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The points that define the plan as a matrix.
      */
     public Math_Matrix_BR getAsMatrix() {
-        V3D_Point tp = getP(oom);
-        V3D_Point tq = getQ(oom);
-        V3D_Point tr = getR(oom);
+        V3D_Point tp = getP();
+        V3D_Point tq = getQ();
+        V3D_Point tr = getR();
         Math_BigRational[][] m = new Math_BigRational[3][3];
         m[0][0] = tp.getX(oom);
         m[0][1] = tp.getY(oom);
@@ -1257,7 +1251,7 @@ public class V3D_Plane extends V3D_Geometry {
         if (this.isIntersectedBy(pt, oom)) {
             return BigDecimal.ZERO;
         }
-        V3D_Vector v = new V3D_Vector(pt, getP(oom), oom);
+        V3D_Vector v = new V3D_Vector(pt, getP(), oom);
         V3D_Vector u = getN(oom).getUnitVector(oom);
 //        MathContext mc = new MathContext(Math_Math_BigRationalSqrt
 //                .getOOM(Math_BigRational.ONE, oom));
@@ -1277,7 +1271,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
         if (isParallel(pl, oom)) {
-            V3D_Point tp = getP(oom);
+            V3D_Point tp = getP();
             return tp.getDistanceSquared(pl, oom);
 //            return tp.getDistanceSquared((V3D_Point) pl.getIntersection(
 //                    new V3D_Line(tp, getN(oom), oom), oom), oom);

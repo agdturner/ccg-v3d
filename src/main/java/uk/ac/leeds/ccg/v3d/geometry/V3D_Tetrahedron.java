@@ -161,8 +161,8 @@ public class V3D_Tetrahedron implements V3D_Volume, Serializable {
      * @return The centroid point.
      */
     public V3D_Point getCentroid(int oom) {
-        V3D_LineSegment a = new V3D_LineSegment(pqr.getCentroid(oom).getVector(oom), qsr.getQ(oom).getVector(oom), oom);
-        V3D_LineSegment b = new V3D_LineSegment(psq.getCentroid(oom).getVector(oom), qsr.getR(oom).getVector(oom), oom);
+        V3D_LineSegment a = new V3D_LineSegment(pqr.getCentroid(oom).getVector(oom), qsr.getQ().getVector(oom), oom);
+        V3D_LineSegment b = new V3D_LineSegment(psq.getCentroid(oom).getVector(oom), qsr.getR().getVector(oom), oom);
         return (V3D_Point) a.getIntersection(b, oom, true);
     }
 
