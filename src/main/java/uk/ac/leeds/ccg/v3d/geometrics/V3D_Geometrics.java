@@ -178,7 +178,7 @@ public class V3D_Geometrics {
     /**
      * There should be at least two different points.
      *
-     * @para oom The Order of Magnitude for the precision.
+     * @param oom The Order of Magnitude for the precision.
      * @param points Any number of points, but with two being different.
      * @return A line defined by any two different points or null if the points are coincident.
      */
@@ -196,7 +196,7 @@ public class V3D_Geometrics {
     /**
      * There should be at least two different points.
      *
-     * @para oom The Order of Magnitude for the precision.
+     * @param oom The Order of Magnitude for the precision.
      * @param points Any number of points, but with two being different.
      * @return A line defined by any two different points or null if the points are coincident.
      */
