@@ -140,7 +140,7 @@ public abstract class V3D_Geometry implements Serializable {
 
     /**
      * @param v The vector to rotate about the origin.
-     * @param theta The angle of rotation around the {@link #axisOfRotation}.
+     * @param theta The angle of rotation around the {@link #axisOfRotation} in radians.
      * Options for rotation include:
      * <ul>
      * <li>Rotation Matrix https://en.wikipedia.org/wiki/Rotation_matrix</li>
@@ -155,6 +155,7 @@ public abstract class V3D_Geometry implements Serializable {
      * <li>https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula</li>
      * <li>https://en.wikipedia.org/wiki/3D_rotation_group</li>
      * </ul>
+     * @return The vector v rotated about the axisOfRotation by theta radians.
      */
     public V3D_Vector rotate(V3D_Vector v, double theta) {
         if (theta == 0.0d) {

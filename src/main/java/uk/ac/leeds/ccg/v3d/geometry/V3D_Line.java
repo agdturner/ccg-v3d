@@ -355,7 +355,6 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * @param theta The angle of rotation about {@link #axisOfRotation}
      * @return {@link #p}.
      */
     public V3D_Vector getP() {
