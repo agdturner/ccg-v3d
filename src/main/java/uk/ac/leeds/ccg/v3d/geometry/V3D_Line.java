@@ -351,14 +351,16 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getP(int oom) {
-        return new V3D_Point(offset, p);
+        return new V3D_Point(offset, getP());
     }
 
     /**
+     * @param theta The angle of rotation about {@link #axisOfRotation}
      * @return {@link #p}.
      */
     public V3D_Vector getP() {
-        return p;
+        return rotate(p, theta);
+        //return p;
     }
 
     /**
@@ -368,7 +370,8 @@ public class V3D_Line extends V3D_Geometry {
         if (q == null) {
             q = p.add(v, oom);
         }
-        return q;
+        return rotate(q, theta);
+        //return q;
     }
 
     /**
@@ -391,7 +394,7 @@ public class V3D_Line extends V3D_Geometry {
         if (q == null) {
             q = p.add(v, oom);
         }
-        return new V3D_Point(offset, q);
+        return new V3D_Point(offset, getQ());
     }
 
     /**
@@ -1391,4 +1394,5 @@ public class V3D_Line extends V3D_Geometry {
             return min;
         }
     }
+
 }

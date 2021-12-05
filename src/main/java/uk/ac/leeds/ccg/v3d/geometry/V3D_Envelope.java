@@ -241,7 +241,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         super(V3D_Vector.ZERO, oom);
         int len = points.length;
         switch (len) {
-            case 0 -> throw new RuntimeException("Cannot create envelope from an empty "
+            case 0 ->
+                throw new RuntimeException("Cannot create envelope from an empty "
                         + "collection of points.");
             case 1 -> {
                 xMin = points[0].getX(oom);
@@ -582,10 +583,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 //                                            (V3D_Point) til,
 //                                            (V3D_Point) bil,
 //                                            oom);
-return new V3D_LineSegment(
-        ((V3D_Point) til).getVector(oom),
-        ((V3D_Point) bil).getVector(oom),
-        oom);
+                                    return new V3D_LineSegment(
+                                            ((V3D_Point) til).getVector(oom),
+                                            ((V3D_Point) bil).getVector(oom),
+                                            oom);
                                 }
                             } else {
                                 if (til == null) {
@@ -671,10 +672,10 @@ return new V3D_LineSegment(
 //                                        (V3D_Point) lil,
 //                                        (V3D_Point) ril,
 //                                        oom);
-return new V3D_LineSegment(
-        ((V3D_Point) lil).getVector(oom),
-        ((V3D_Point) ril).getVector(oom),
-        oom);
+                                return new V3D_LineSegment(
+                                        ((V3D_Point) lil).getVector(oom),
+                                        ((V3D_Point) ril).getVector(oom),
+                                        oom);
                             }
                         } else {
                             return V3D_FiniteGeometry.getGeometry(
@@ -707,10 +708,10 @@ return new V3D_LineSegment(
 //                                    (V3D_Point) fil,
 //                                    (V3D_Point) ail,
 //                                    oom);
-return new V3D_LineSegment(
-        ((V3D_Point) fil).getVector(oom),
-        ((V3D_Point) ail).getVector(oom),
-        oom);
+                            return new V3D_LineSegment(
+                                    ((V3D_Point) fil).getVector(oom),
+                                    ((V3D_Point) ail).getVector(oom),
+                                    oom);
                         }
                     } else {
                         if (ail == null) {
@@ -799,10 +800,10 @@ return new V3D_LineSegment(
 //                                            (V3D_Point) til,
 //                                            (V3D_Point) bil,
 //                                            oom);
-return new V3D_LineSegment(
-        ((V3D_Point) til).getVector(oom),
-        ((V3D_Point) bil).getVector(oom),
-        oom);
+                                    return new V3D_LineSegment(
+                                            ((V3D_Point) til).getVector(oom),
+                                            ((V3D_Point) bil).getVector(oom),
+                                            oom);
                                 }
                             } else {
                                 if (til == null) {
@@ -891,10 +892,10 @@ return new V3D_LineSegment(
 //                                        (V3D_Point) lil,
 //                                        (V3D_Point) ril,
 //                                        oom);
-return new V3D_LineSegment(
-        ((V3D_Point) lil).getVector(oom),
-        ((V3D_Point) ril).getVector(oom),
-        oom);
+                                return new V3D_LineSegment(
+                                        ((V3D_Point) lil).getVector(oom),
+                                        ((V3D_Point) ril).getVector(oom),
+                                        oom);
                             }
                         } else {
                             return V3D_FiniteGeometry.getGeometry(
@@ -929,10 +930,10 @@ return new V3D_LineSegment(
 //                                    (V3D_Point) fil,
 //                                    (V3D_Point) ail,
 //                                    oom);
-return new V3D_LineSegment(
-        ((V3D_Point) fil).getVector(oom),
-        ((V3D_Point) ail).getVector(oom),
-        oom);
+                            return new V3D_LineSegment(
+                                    ((V3D_Point) fil).getVector(oom),
+                                    ((V3D_Point) ail).getVector(oom),
+                                    oom);
                         }
                     } else {
                         if (ail == null) {
@@ -1611,7 +1612,6 @@ return new V3D_LineSegment(
 //        e.apply(oom, v);
 //        return e;
 //    }
-
     /**
      * Abstract Geometry class for geometries aligning with axes.
      */
@@ -1795,7 +1795,7 @@ return new V3D_LineSegment(
             this.p = new Point(l.p, v);
             this.q = new Point(l.q, v);
             this.v = new V3D_Vector(
-                    q.x.subtract(p.x), 
+                    q.x.subtract(p.x),
                     q.y.subtract(p.y),
                     q.z.subtract(p.z));
         }
@@ -1827,7 +1827,7 @@ return new V3D_LineSegment(
             this.p = l.p;
             this.q = l.q;
             this.v = new V3D_Vector(
-                    q.x.subtract(p.x), 
+                    q.x.subtract(p.x),
                     q.y.subtract(p.y),
                     q.z.subtract(p.z));
             this.oom = oom;

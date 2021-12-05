@@ -282,24 +282,24 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * @return {@link #p} with {@link #offset} applied.
+     * @return {@link #p} with {@link #offset} and rotation applied.
      */
     public final V3D_Point getP() {
-        return new V3D_Point(offset, p);
+        return new V3D_Point(offset, rotate(p, theta));
     }
 
     /**
      * @return {@link #q} with {@link #offset} applied.
      */
     public final V3D_Point getQ() {
-        return new V3D_Point(offset, q);
+        return new V3D_Point(offset, rotate(q, theta));
     }
 
     /**
      * @return {@link #r} with {@link #offset} applied.
      */
     public final V3D_Point getR() {
-        return new V3D_Point(offset, r);
+        return new V3D_Point(offset, rotate(r, theta));
     }
 
     /**
@@ -310,7 +310,8 @@ public class V3D_Plane extends V3D_Geometry {
         if (pq == null) {
             pq = q.subtract(p, oom);
         }
-        return pq;
+        return rotate(pq, theta);
+        //return pq;
     }
 
     /**
@@ -321,7 +322,8 @@ public class V3D_Plane extends V3D_Geometry {
         if (qr == null) {
             qr = r.subtract(q, oom);
         }
-        return qr;
+        return rotate(qr, theta);
+        //return qr;
     }
 
     /**
@@ -332,7 +334,8 @@ public class V3D_Plane extends V3D_Geometry {
         if (rp == null) {
             rp = p.subtract(r, oom);
         }
-        return rp;
+        return rotate(rp, theta);
+        //return rp;
     }
 
     /**
@@ -354,7 +357,8 @@ public class V3D_Plane extends V3D_Geometry {
                 n = getPq(oom).getCrossProduct(getQr(oom), oom);
             }
         }
-        return n;
+        return rotate(n, theta);
+        //return n;
     }
 
     /**

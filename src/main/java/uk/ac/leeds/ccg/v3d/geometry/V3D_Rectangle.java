@@ -173,14 +173,14 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
      * @return The vector from {@link #q} to {@link #s}.
      */
     public V3D_Vector getQs(int oom) {
-        return s.subtract(q, oom);
+        return rotate(s.subtract(q, oom), theta);
     }
 
     /**
      * @return {@link #s} with {@link #offset} applied.
      */
     public V3D_Point getS() {
-        return new V3D_Point(offset, s);
+        return new V3D_Point(offset, rotate(s, theta));
     }
 
     @Override
@@ -211,7 +211,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
      * @return The line segment from {@link #p} to {@link #q}.
      */
     protected V3D_LineSegment getPQ(int oom) {
-        return new V3D_LineSegment(offset, p, q, oom);
+        return new V3D_LineSegment(offset, rotate(p, theta), rotate(q, theta), oom);
     }
 
     /**
@@ -219,7 +219,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
      * @return The line segment from {@link #q} to {@link #r}.
      */
     protected V3D_LineSegment getQR(int oom) {
-        return new V3D_LineSegment(offset, q, r, oom);
+        return new V3D_LineSegment(offset, rotate(q, theta), rotate(r, theta), oom);
     }
 
     /**
@@ -227,7 +227,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
      * @return The line segment from {@link #r} to {@link #s}.
      */
     protected V3D_LineSegment getRS(int oom) {
-        return new V3D_LineSegment(offset, r, s, oom);
+        return new V3D_LineSegment(offset, rotate(r, theta), rotate(s, theta), oom);
     }
 
     /**
@@ -235,7 +235,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
      * @return The line segment from {@link #s} to {@link #p}.
      */
     protected V3D_LineSegment getSP(int oom) {
-        return new V3D_LineSegment(offset, s, p, oom);
+        return new V3D_LineSegment(offset, rotate(s, theta), rotate(p, theta), oom);
     }
 
     private boolean isIntersectedBy0(V3D_Line ls, int oom) {

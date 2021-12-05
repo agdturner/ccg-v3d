@@ -234,11 +234,18 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
+     * @return rel rotated. 
+     */
+    public V3D_Vector getRel() {
+        return rotate(rel, theta);
+    }
+    
+    /**
      * @param oom The Order of Magnitude for the precision.
      * @return The vector - {@code rel.add(offset, oom)}.
      */
     public V3D_Vector getVector(int oom) {
-        return rel.add(offset, oom);
+        return getRel().add(offset, oom);
     }
 
     /**
@@ -246,7 +253,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return The x component of {@link #rel} with {@link #offset} applied.
      */
     public Math_BigRational getX(int oom) {
-        return rel.getDX(oom).add(offset.getDX(oom));
+        return getRel().getDX(oom).add(offset.getDX(oom));
     }
 
     /**
@@ -254,7 +261,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return The y component of {@link #rel} with {@link #offset} applied.
      */
     public Math_BigRational getY(int oom) {
-        return rel.getDY(oom).add(offset.getDY(oom));
+        return getRel().getDY(oom).add(offset.getDY(oom));
     }
 
     /**
@@ -262,7 +269,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return The z component of {@link #rel} with {@link #offset} applied.
      */
     public Math_BigRational getZ(int oom) {
-        return rel.getDZ(oom).add(offset.getDZ(oom));
+        return getRel().getDZ(oom).add(offset.getDZ(oom));
     }
 
     /**
@@ -519,11 +526,4 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
             }
         }
     }
-
-//    @Override
-//    public V3D_Point apply(V3D_Vector v, int oom) {
-//        V3D_Point r = new V3D_Point(this);
-//        r.offset = r.offset.add(v, oom);
-//        return r;
-//    }
 }
