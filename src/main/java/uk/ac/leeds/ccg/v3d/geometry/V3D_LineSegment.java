@@ -410,10 +410,10 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
                 // Cases 1, 5, 16
                 if (l.isIntersectedBy(tp, oom)) {
                     // Cases 5
-                    return new V3D_LineSegment(l.p, p, oom);
+                    return new V3D_LineSegment(l.getP(), getP(), oom);
                 } else {
                     // Cases 1, 16
-                    return new V3D_LineSegment(l.p, q, oom);
+                    return new V3D_LineSegment(l.getP(), getQ(), oom);
                 }
             }
         } else {
@@ -428,14 +428,14 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
                         return this;
                     } else {
                         // Cases 4, 13
-                        return new V3D_LineSegment(p, l.q, oom);
+                        return new V3D_LineSegment(getP(), l.getQ(), oom);
                     }
                 } else {
                     // Cases 8, 9, 10
                     V3D_Point tq = getQ(oom);
                     if (l.isIntersectedBy(tq, oom)) {
                         // Cases 8, 9
-                        return new V3D_LineSegment(q, l.q, oom);
+                        return new V3D_LineSegment(getQ(), l.getQ(), oom);
                     } else {
                         // Cases 10                      
                         return l;
@@ -452,7 +452,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
                         return this;
                     } else {
                         // Cases 12                 
-                        return new V3D_LineSegment(p, l.p, oom);
+                        return new V3D_LineSegment(getP(), l.getP(), oom);
                     }
                 } else {
                     // Cases 7
@@ -526,6 +526,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         //V3D_Vector pmpq = v.divide(Math_BigRational.valueOf(l));
         V3D_Vector pmpq = getV(oom).divide(Math_BigRational.valueOf(2), oom);
         //return getP(oom).apply(pmpq, oom);
-        return new V3D_Point(offset, p.add(pmpq, oom));
+        return new V3D_Point(offset, getP().add(pmpq, oom));
     }
 }

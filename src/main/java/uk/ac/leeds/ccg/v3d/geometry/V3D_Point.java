@@ -66,7 +66,12 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * The position relative to the {@link #offset}.
      */
-    public V3D_Vector rel;
+    private final V3D_Vector rel;
+
+//    /**
+//     * The position relative to the {@link #offset}.
+//     */
+//    public V3D_Vector relTemp;
 
     /**
      * @param p The point to duplicate
@@ -77,9 +82,10 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 //        super(V3D_Vector.ZERO);
 //        this.rel = p.rel.add(p.offset, p.rel.getMagnitude().getOom());
     }
-    
+
     /**
      * {@link #offset} is set to {@link V3D_Vector#ZERO}
+     *
      * @param rel What {@link #rel} is set to.
      */
     public V3D_Point(V3D_Vector rel) {
@@ -234,12 +240,18 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * @return rel rotated. 
+     * @return rel rotated.
      */
     public V3D_Vector getRel() {
-        return rotate(rel, theta);
+        return rel;
+//        if (relTemp == null) {
+//            relTemp = rel;
+//        }
+//        return relTemp;
+        //return rotate(relTemp, theta);
+        //return rotate(rel, theta);
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @return The vector - {@code rel.add(offset, oom)}.
@@ -365,7 +377,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
         //V3D_Vector pq = new V3D_Vector(this, pl.p, oom);
-        V3D_Vector pq = pl.p.subtract(this.getVector(oom), oom);
+        //V3D_Vector pq = pl.p.subtract(this.getVector(oom), oom);
+        V3D_Vector pq = pl.getP().getVector(oom).subtract(this.getVector(oom), oom);
         if (pq.isScalarMultiple(pl.getN(oom), oom)) {
             return pq.getMagnitudeSquared();
         } else {

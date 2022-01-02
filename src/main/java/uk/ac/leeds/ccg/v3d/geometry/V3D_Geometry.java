@@ -17,7 +17,9 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_Quaternion_BigRational;
 
 /**
  * For 3D Euclidean geometrical objects. The three dimensions have are
@@ -64,25 +66,29 @@ public abstract class V3D_Geometry implements Serializable {
     public V3D_Vector offset;
 
     /**
-     * The axis of rotation unit vector passing through the offset point
-     * used to rotate geometries.
+     * Axis of rotation unit vector based at {@link #offset}.
      */
     public V3D_Vector axisOfRotation;
 
     /**
-     * The angle of rotation around the {@link #axisOfRotation}.
+     * The angle of rotation around {@link #axisOfRotation}.
      */
-    public double theta;
-
+    public Math_BigRational theta;
+    
     /**
-     * For storing the cosine of {@link #theta}.
+     * An instance that helps with calculations involving Taylor series.
      */
-    Math_BigRational cosTheta;
+    public final Math_BigInteger bI;
 
-    /**
-     * For storing the sine of {@link #theta}.
-     */
-    Math_BigRational sinTheta;
+//    /**
+//     * For storing the cosine of {@link #theta}.
+//     */
+//    Math_BigRational cosTheta;
+//
+//    /**
+//     * For storing the sine of {@link #theta}.
+//     */
+//    Math_BigRational sinTheta;
 
     /**
      * The Order of Magnitude for the precision.
@@ -98,6 +104,8 @@ public abstract class V3D_Geometry implements Serializable {
     public V3D_Geometry(V3D_Vector offset, int oom) {
         this.offset = offset;
         this.oom = oom;
+        bI = new Math_BigInteger();
+        theta = Math_BigRational.ZERO;
     }
 
     /**
@@ -140,8 +148,8 @@ public abstract class V3D_Geometry implements Serializable {
 
     /**
      * @param v The vector to rotate about the origin.
-     * @param theta The angle of rotation around the {@link #axisOfRotation} in radians.
-     * Options for rotation include:
+     * @param theta The angle of rotation around the {@link #axisOfRotation} in
+     * radians. Options for rotation include:
      * <ul>
      * <li>Rotation Matrix https://en.wikipedia.org/wiki/Rotation_matrix</li>
      * <li>Quaternions
@@ -157,24 +165,30 @@ public abstract class V3D_Geometry implements Serializable {
      * </ul>
      * @return The vector v rotated about the axisOfRotation by theta radians.
      */
-    public V3D_Vector rotate(V3D_Vector v, double theta) {
-        if (theta == 0.0d) {
+    public V3D_Vector rotate(V3D_Vector v, Math_BigInteger bi, Math_BigRational theta) {
+        if (theta.compareTo(Math_BigRational.ZERO) == 0) {
             return v;
         }
-        if (this.theta != theta) {
-            this.theta = theta;
-            cosTheta = Math_BigRational.valueOf(Math.cos(theta));
-            sinTheta = Math_BigRational.valueOf(Math.sin(theta));
-        }
+        this.theta = theta;
+//        Math_BigRational cosTheta = Math_BigRational.valueOf(Math.cos(theta));
+//        Math_BigRational sinTheta = Math_BigRational.valueOf(Math.sin(theta));
+        Math_BigRational cosTheta = theta.cos(bi, oom);
+        Math_BigRational sinTheta = theta.sin(bi, oom);
+//        }
         // Use the https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
-        V3D_Vector r = v.multiply(cosTheta, oom)
+        return v.multiply(cosTheta, oom)
                 .add(axisOfRotation.getCrossProduct(v, oom)
                         .multiply(sinTheta, oom), oom)
                 .add(axisOfRotation.multiply(
                         axisOfRotation.getDotProduct(v, oom), oom)
-                        .multiply(Math_BigRational.ONE.subtract(cosTheta), oom)
-                        , oom);
-        return r;
+                        .multiply(Math_BigRational.ONE.subtract(cosTheta), oom),
+                        oom);
+//        Math_Quaternion_BigRational q1 = new Math_Quaternion_BigRational(
+//               theta, axisOfRotation.getDX(oom), axisOfRotation.getDY(oom), axisOfRotation.getDZ(oom));
+//        Math_Quaternion_BigRational q2 = new Math_Quaternion_BigRational(
+//                Math_BigRational.ZERO, v.getDX(oom), v.getDY(oom), v.getDZ(oom));
+        
+
     }
 
     /**

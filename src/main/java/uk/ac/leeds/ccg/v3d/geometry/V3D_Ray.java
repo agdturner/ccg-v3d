@@ -144,7 +144,7 @@ public class V3D_Ray extends V3D_Line {
     public boolean isIntersectedBy(V3D_Point pt, int oom, boolean flag) {
         if (super.isIntersectedBy(pt, oom)) {
             V3D_Point poi = super.getPointOfIntersection(pt, oom);
-            V3D_Ray r = new V3D_Ray(this.p, poi.getVector(oom), oom);
+            V3D_Ray r = new V3D_Ray(getP(), poi.getVector(oom), oom);
             return r.getV(oom).getDirection() == getV(oom).getDirection();
         }
 //        boolean isPossibleIntersection = isPossibleIntersection(pt, oom);
@@ -239,7 +239,7 @@ public class V3D_Ray extends V3D_Line {
      * @return {@code true} iff {@code r} intersects with {@code this}.
      */
     public boolean isIntersectedBy(V3D_Ray r, int oom, boolean flag) {
-        if (p.equals(r.p)) {
+        if (getP().equals(r.getP())) {
             return true;
         }
         V3D_Line tl = new V3D_Line(this, oom);
@@ -282,7 +282,7 @@ public class V3D_Ray extends V3D_Line {
         if (!isIntersectedBy(rlpq, oom)) {
             return false;
         }
-        V3D_Ray rlqp = new V3D_Ray(l.q, l.p, oom);
+        V3D_Ray rlqp = new V3D_Ray(l.getQ(), l.getP(), oom);
         return isIntersectedBy(rlqp, oom);
     }
 
@@ -383,7 +383,7 @@ public class V3D_Ray extends V3D_Line {
                  */
                 if (isIntersectedBy(r.getP(oom), oom)) {
                     if (r.isIntersectedBy(getP(oom), oom)) {
-                        return new V3D_LineSegment(r.p, p, oom);
+                        return new V3D_LineSegment(r.getP(), getP(), oom);
                     } else {
                         return r;
                     }
@@ -424,7 +424,7 @@ public class V3D_Ray extends V3D_Line {
     @Override
     public V3D_Geometry getLineOfIntersection(V3D_Point pt, int oom) {
         // Special case
-        V3D_Vector pv = p.add(offset, oom);
+        V3D_Vector pv = getPV(oom);
         V3D_Vector ptv = pt.getVector(oom);
         if (ptv.equals(pv)) {
             return pt;
@@ -471,7 +471,7 @@ public class V3D_Ray extends V3D_Line {
                 return loi2;
             }
         } else {
-            V3D_Ray r = new V3D_Ray(p, ((V3D_LineSegment) loi).p, oom);
+            V3D_Ray r = new V3D_Ray(getP(), ((V3D_LineSegment) loi).getP(), oom);
             if (r.getV(oom).getDirection() == getV(oom).getDirection()) {
                 return loi2;
             } else {

@@ -21,6 +21,7 @@ import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.math.number.Math_Quaternion_BigRational;
 import static uk.ac.leeds.ccg.v3d.core.V3D_Environment.DEFAULT_OOM;
 import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
@@ -90,16 +91,31 @@ public class V3D_Plane extends V3D_Geometry {
     protected final V3D_Vector p;
 
     /**
+     * {@link #p} with rotations applied.
+     */
+    protected V3D_Vector pTemp;
+
+    /**
      * One of the points that defines the plane.
      */
     protected final V3D_Vector q;
+
+    /**
+     * {@link #q} with rotations applied.
+     */
+    protected V3D_Vector qTemp;
 
     /**
      * One of the points that defines the plane.
      */
     protected final V3D_Vector r;
 
-    /**
+        /**
+     * {@link #r} with rotations applied.
+     */
+    protected V3D_Vector rTemp;
+
+/**
      * The vector representing the move from {@link #p} to {@link #q}.
      */
     protected V3D_Vector pq;
@@ -214,7 +230,9 @@ public class V3D_Plane extends V3D_Geometry {
     public V3D_Plane(V3D_Point p, V3D_Vector n, int oom) {
         super(p.offset, oom);
         //this.p = new V3D_Point(p);
-        this.p = p.rel;
+        //this.p = new V3D_Vector(p, oom);
+        this.p = new V3D_Vector(p, oom - 1);
+        //this.p = p.getRel();
         /**
          * Find a perpendicular vector using: user65203, How to find
          * perpendicular vector to another vector?, URL (version: 2020-10-01):
@@ -282,62 +300,118 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * @return {@link #p} with {@link #offset} and rotation applied.
+     * @return {@link #p} with rotations applied.
+     */
+    public final V3D_Vector getPV() {
+        if (pTemp == null) {
+            pTemp = p;
+        }
+        pTemp = rotate(pTemp, bI, theta);
+        return pTemp;
+    }
+
+    /**
+     * @return {@link #p} with {@link #offset} and rotations applied.
      */
     public final V3D_Point getP() {
-        return new V3D_Point(offset, rotate(p, theta));
+        return new V3D_Point(offset, getPV());
     }
 
     /**
-     * @return {@link #q} with {@link #offset} applied.
+     * @return {@link #q} with rotations applied.
+     */
+    public final V3D_Vector getQV() {
+        //return new V3D_Point(offset, rotate(q, theta));
+        if (qTemp == null) {
+            qTemp = q;
+        }
+        qTemp = rotate(qTemp, bI, theta);
+        return qTemp;
+    }
+
+    /**
+     * @return {@link #q} with {@link #offset} and rotations applied.
      */
     public final V3D_Point getQ() {
-        return new V3D_Point(offset, rotate(q, theta));
+        return new V3D_Point(offset, getQV());
     }
 
     /**
-     * @return {@link #r} with {@link #offset} applied.
+     * @return {@link #r} with rotations applied.
+     */
+    public final V3D_Vector getRV() {
+        //return new V3D_Point(offset, rotate(r, theta));
+        if (rTemp == null) {
+            rTemp = r;
+        }
+        rTemp = rotate(rTemp, bI, theta);
+        return rTemp;
+    }
+
+    /**
+     * @return {@link #r} with {@link #offset} and rotations applied.
      */
     public final V3D_Point getR() {
-        return new V3D_Point(offset, rotate(r, theta));
+        return new V3D_Point(offset, getRV());
     }
 
     /**
-     * @param oom The Order of Magnitude for the calculation.
      * @return The vector from {@link #p} to {@link #q}.
      */
-    public V3D_Vector getPq(int oom) {
+    public V3D_Vector getPQV() {
         if (pq == null) {
             pq = q.subtract(p, oom);
         }
-        return rotate(pq, theta);
+        return rotate(pq, bI, theta);
         //return pq;
     }
 
     /**
-     * @param oom The Order of Magnitude for the calculation.
      * @return The vector from {@link #q} to {@link #r}.
      */
-    public V3D_Vector getQr(int oom) {
+    public V3D_Vector getQRV() {
         if (qr == null) {
             qr = r.subtract(q, oom);
         }
-        return rotate(qr, theta);
+        return rotate(qr, bI, theta);
         //return qr;
     }
 
     /**
-     * @param oom The Order of Magnitude for the calculation.
      * @return The vector from {@link #r} to {@link #p}.
      */
-    public V3D_Vector getRp(int oom) {
+    public V3D_Vector getRPV() {
         if (rp == null) {
             rp = p.subtract(r, oom);
         }
-        return rotate(rp, theta);
+        return rotate(rp, bI, theta);
         //return rp;
     }
 
+    /**
+     * @return The {@link #p}-{@link #q} triangle edge. 
+     */
+    public V3D_LineSegment getPQ() {
+        //return new V3D_LineSegment(offset, p, q, oom);
+        return new V3D_LineSegment(offset, getPV(), getQV(), oom);
+    }
+    
+    /**
+     * @return The {@link #q}-{@link #r} triangle edge. 
+     */
+    public V3D_LineSegment getQR() {
+        //return new V3D_LineSegment(offset, q, r, oom);
+        return new V3D_LineSegment(offset, getQV(), getRV(), oom);
+    }
+    
+    /**
+     * @return The {@link #r}-{@link #p} triangle edge. 
+     */
+    public V3D_LineSegment getRP() {
+        //return new V3D_LineSegment(offset, r, p, oom);
+        return new V3D_LineSegment(offset, getRV(), getPV(), oom);
+    }
+    
     /**
      * @return {@code true} iff the point {@link #q} is at the origin
      */
@@ -352,12 +426,12 @@ public class V3D_Plane extends V3D_Geometry {
     public V3D_Vector getN(int oom) {
         if (n == null) {
             if (isQAtOrigin()) {
-                n = getQr(oom).getCrossProduct(getRp(oom), oom);
+                n = getQRV().getCrossProduct(getRPV(), oom);
             } else {
-                n = getPq(oom).getCrossProduct(getQr(oom), oom);
+                n = getPQV().getCrossProduct(getQRV(), oom);
             }
         }
-        return rotate(n, theta);
+        return rotate(n, bI, theta);
         //return n;
     }
 
@@ -697,11 +771,13 @@ public class V3D_Plane extends V3D_Geometry {
 //        // p = x(1:3);
 //        //???
 //        // n = cross(n1, n2);
+    
+        int oomN5 = oom -5;
         /**
          * Calculate the cross product of the normal vectors to get the
          * direction of the line.
          */
-        V3D_Vector v = getN(oom).getCrossProduct(pl.getN(oom), oom);
+        V3D_Vector v = getN(oomN5).getCrossProduct(pl.getN(oomN5), oomN5);
         /**
          * Check special cases.
          */
@@ -720,15 +796,15 @@ public class V3D_Plane extends V3D_Geometry {
          */
         V3D_Point pi;
         V3D_Point tq = getQ();
-        if (getPq(oom).isScalarMultiple(v, oom)) {
+        if (getPQV().isScalarMultiple(v, oomN5)) {
             //pi = (V3D_Point) pl.getIntersection(new V3D_Line(tq, getR(oom), oom), oom);
-            pi = (V3D_Point) pl.getIntersection(new V3D_Line(tq.getVector(oom), getR().getVector(oom), oom), oom);
+            pi = (V3D_Point) pl.getIntersection(new V3D_Line(tq.getVector(oomN5), getR().getVector(oomN5), oomN5), oomN5);
         } else {
             //pi = (V3D_Point) pl.getIntersection(new V3D_Line(getP(oom), tq, oom), oom);
-            pi = (V3D_Point) pl.getIntersection(new V3D_Line(getP().getVector(oom), tq.getVector(oom), oom), oom);
+            pi = (V3D_Point) pl.getIntersection(new V3D_Line(getP().getVector(oomN5), tq.getVector(oomN5), oomN5), oomN5);
         }
         //return new V3D_Line(pi, v, oom);
-        return new V3D_Line(pi.getVector(oom), oom, v);
+        return new V3D_Line(pi.getVector(oomN5), oomN5, v);
     }
 
 //    private V3D_Geometry getIntersectionOld(V3D_Plane pl, int oom) {
