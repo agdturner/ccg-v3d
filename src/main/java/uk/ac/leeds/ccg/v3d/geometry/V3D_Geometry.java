@@ -60,7 +60,7 @@ public abstract class V3D_Geometry implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The offset used to get the geometry relative to the
+     * The offset used to position a geometry object relative to the
      * {@link V3D_Point#ORIGIN}.
      */
     public V3D_Vector offset;

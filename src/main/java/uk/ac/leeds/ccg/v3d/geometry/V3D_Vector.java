@@ -19,16 +19,18 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import java.io.Serializable;
 import java.math.MathContext;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.math.number.Math_Quaternion_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometry.light.V3D_V;
 
 /**
- * A vector used to translate geometries. The magnitude of the vector is not 
- * generally calculated and stored, but this is done so upon request to an
- * Order of Magnitude. Other than the magnitude which may be calculated and 
- * stored at higher levels of precision, instances are immutable.
+ * A vector used to translate geometries. The magnitude of the vector is not
+ * generally calculated and stored, but this is done so upon request to an Order
+ * of Magnitude. Other than the magnitude which may be calculated and stored at
+ * higher levels of precision, instances are immutable.
  *
  * @author Andy Turner
  * @version 1.1
@@ -56,7 +58,7 @@ public class V3D_Vector implements Serializable {
      * For storing the magnitude.
      */
     protected Math_BigRationalSqrt m;
-    
+
     /**
      * The zero vector {@code <0,0,0>} where:
      * {@link #dx} = {@link #dy} = {@link #dz} = 0.
@@ -83,8 +85,8 @@ public class V3D_Vector implements Serializable {
 
     /**
      * Create a new instance.
-     * 
-     * @param v Used to initialise this. A deep copy of all components is made 
+     *
+     * @param v Used to initialise this. A deep copy of all components is made
      * so that {@code this} is completely independent of {@code v}.
      */
     public V3D_Vector(V3D_Vector v) {
@@ -92,10 +94,10 @@ public class V3D_Vector implements Serializable {
         this.dy = v.dy;
         this.dz = v.dz;
     }
-    
+
     /**
      * Create a new instance.
-     * 
+     *
      * @param dx What {@link #dx} is set to.
      * @param dy What {@link #dy} is set to.
      * @param dz What {@link #dz} is set to.
@@ -121,7 +123,7 @@ public class V3D_Vector implements Serializable {
         this.dy = new Math_BigRationalSqrt(dy2, dy);
         this.dz = new Math_BigRationalSqrt(dz2, dz);
     }
-    
+
     /**
      * @param dx Used to initialise {@link #dx}.
      * @param dy Used to initialise {@link #dy}.
@@ -133,7 +135,7 @@ public class V3D_Vector implements Serializable {
         this(dx, dy, dz);
         this.m = m;
     }
-    
+
     /**
      * @param dx What {@link #dx} is set to.
      * @param dy Used to initialise {@link #dy}.
@@ -147,7 +149,7 @@ public class V3D_Vector implements Serializable {
         this.dy = new Math_BigRationalSqrt(dy2, dy);
         this.dz = new Math_BigRationalSqrt(dz2, dz);
     }
-    
+
     /**
      * @param dx Used to initialise {@link #dx}.
      * @param dy What {@link #dy} is set to.
@@ -161,7 +163,7 @@ public class V3D_Vector implements Serializable {
         this.dy = dy;
         this.dz = new Math_BigRationalSqrt(dz2, dz);
     }
-    
+
     /**
      * @param dx Used to initialise {@link #dx}.
      * @param dy Used to initialise {@link #dy}.
@@ -175,7 +177,7 @@ public class V3D_Vector implements Serializable {
         this.dy = new Math_BigRationalSqrt(dy2, dy);
         this.dz = dz;
     }
-    
+
     /**
      * @param dx What {@link #dx} is set to.
      * @param dy What {@link #dy} is set to.
@@ -188,7 +190,7 @@ public class V3D_Vector implements Serializable {
         this.dy = dy;
         this.dz = new Math_BigRationalSqrt(dz2, dz);
     }
-    
+
     /**
      * @param dx What {@link #dx} is set to.
      * @param dy Used to initialise {@link #dy}.
@@ -201,7 +203,7 @@ public class V3D_Vector implements Serializable {
         this.dy = new Math_BigRationalSqrt(dy2, dy);
         this.dz = dz;
     }
-    
+
     /**
      * @param dx Used to initialise {@link #dx}.
      * @param dy What {@link #dy} is set to.
@@ -256,7 +258,7 @@ public class V3D_Vector implements Serializable {
                 q.getY(oom).subtract(p.getY(oom)),
                 q.getZ(oom).subtract(p.getZ(oom)));
     }
-    
+
     /**
      * Creates a vector from the Origin to {@code p} to {@code q}.
      *
@@ -290,7 +292,7 @@ public class V3D_Vector implements Serializable {
     public String toString() {
         return toString("");
     }
-    
+
     /**
      * @param pad A padding of spaces.
      * @return A description of this.
@@ -301,7 +303,7 @@ public class V3D_Vector implements Serializable {
                 + toStringFields(pad + " ") + "\n"
                 + pad + ")";
     }
-    
+
     /**
      * @param pad A padding of spaces.
      * @return A description of the fields.
@@ -330,7 +332,7 @@ public class V3D_Vector implements Serializable {
         return dx.compareTo(v.dx) == 0 && dy.compareTo(v.dy) == 0
                 && dz.compareTo(v.dz) == 0;
     }
-            
+
     /**
      * Indicates if {@code this} is the reverse of {@code v}.
      *
@@ -401,7 +403,7 @@ public class V3D_Vector implements Serializable {
     public Math_BigRationalSqrt getDZ() {
         return dz;
     }
-    
+
     /**
      * @param s The scalar value to multiply this by.
      * @param oom The Order of Magnitude for the precision of the calculation.
@@ -523,7 +525,7 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @return The magnitude of m. {@link V3D_Environment#DEFAULT_OOM} is used 
+     * @return The magnitude of m. {@link V3D_Environment#DEFAULT_OOM} is used
      * to initialise the result.
      */
     public Math_BigRationalSqrt getMagnitude() {
@@ -532,7 +534,7 @@ public class V3D_Vector implements Serializable {
         }
         return m;
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      */
@@ -659,9 +661,13 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * Find the dot product of the vectors. Divide the dot product with the
-     * magnitude of the first vector. Divide the resultant with the magnitude of
-     * the second vector.
+     * Compute and return the angle (in radians) between {@link #this} and
+     * {@code v}. The algorithm is to:
+     * <ol>
+     * <li>Find the dot product of the vectors.</li>
+     * <li>Divide the dot product with the magnitude of the first vector.</li>
+     * <li>the second vector.</li>
+     * </ol>
      *
      * @param v The vector to find the angle between.
      * @param oom The Order of Magnitude for the precision of the result.
@@ -674,6 +680,45 @@ public class V3D_Vector implements Serializable {
         MathContext mc = new MathContext(-oom); // This is almost certainly wrong and needs to be checked!
         return Math_BigRational.valueOf(BigDecimalMath.acos(dp.divide(m2.multiply(vm2)).toBigDecimal(mc), mc));
         //return null;
+    }
+
+    /**
+     * Calculate and return {@link #this} rotated using the parameters. (see
+     * Doug (https://math.stackexchange.com/users/102399/doug), How do you
+     * rotate a vector by a unit quaternion?, URL (version: 2019-06-12):
+     * https://math.stackexchange.com/q/535223)
+     *
+     * @param axisOfRotation The axis of rotation. This should be a unit vector 
+     * accurate to a sufficient precision.
+     * @param theta The angle of rotation.
+     * @param bI For the Taylor series for trigonometry calculations.
+     * @param oom The Order of Magnitude for the precision of the result
+     * components.
+     * @return The vector which is {@link #this} rotated using the parameters.
+     */
+    public V3D_Vector rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+            Math_BigInteger bI, int oom) {
+        int oomt = oom - 2;
+        Math_BigRational adx = axisOfRotation.getDX(oomt);
+        Math_BigRational ady = axisOfRotation.getDY(oomt);
+        Math_BigRational adz = axisOfRotation.getDZ(oomt);
+        Math_BigRational thetaDiv2 = theta.divide(2);
+        Math_BigRational sinThetaDiv2 = thetaDiv2.sin(bI, oomt);
+        Math_BigRational w = thetaDiv2.cos(bI, oomt);
+        Math_BigRational x = sinThetaDiv2.multiply(adx);
+        Math_BigRational y = sinThetaDiv2.multiply(ady);
+        Math_BigRational z = sinThetaDiv2.multiply(adz);
+        Math_Quaternion_BigRational r = new Math_Quaternion_BigRational(
+                w, x, y, z);
+        // R'=rR
+        Math_Quaternion_BigRational rR = new Math_Quaternion_BigRational(
+                w, x.negate(), y.negate(), z.negate());
+        Math_Quaternion_BigRational p = new Math_Quaternion_BigRational(
+                Math_BigRational.ZERO, this.getDX(oomt), this.getDY(oomt), 
+                this.getDZ(oomt));
+        // P'=pP
+        Math_Quaternion_BigRational pP = r.multiply(p).multiply(rR);
+        return new V3D_Vector(pP.x.round(oom), pP.y.round(oom), pP.z.round(oom));
     }
 
     /**

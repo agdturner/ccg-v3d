@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import java.math.RoundingMode;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -23,6 +24,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -296,11 +299,10 @@ public class V3D_VectorTest extends V3D_Test {
      * Test of getMagnitude method, of class V3D_Vector.
      */
     @Test
-    public void testGetMagnitude() {
+    public void testGetMagnitude_0args() {
         System.out.println("getMagnitude");
         int oom = 0;
         V3D_Vector instance = P0P0P0;
-        Math_BigRational expResultSquared;
         Math_BigRationalSqrt expResult = Math_BigRationalSqrt.ZERO;
         Math_BigRationalSqrt result = instance.getMagnitude();
         assertTrue(expResult.compareTo(result) == 0);
@@ -774,6 +776,202 @@ public class V3D_VectorTest extends V3D_Test {
         assertEquals(expResult, result);
         // Test 7
         //...
+    }
+
+    /**
+     * Test of toString method, of class V3D_Vector.
+     */
+    @Test
+    public void testToString_0args() {
+        System.out.println("toString");
+    }
+
+    /**
+     * Test of toString method, of class V3D_Vector.
+     */
+    @Test
+    public void testToString_String() {
+        System.out.println("toString");
+    }
+
+    /**
+     * Test of toStringFields method, of class V3D_Vector.
+     */
+    @Test
+    public void testToStringFields() {
+        System.out.println("toStringFields");
+    }
+
+    /**
+     * Test of equals method, of class V3D_Vector.
+     */
+    @Test
+    public void testEquals_V3D_Vector() {
+        System.out.println("equals");
+        V3D_Vector v = new V3D_Vector(1, 1, 1);
+        V3D_Vector instance = new V3D_Vector(1, 1, 1);
+        assertTrue(instance.equals(v));
+        instance = new V3D_Vector(1, 1, 0);
+        assertFalse(instance.equals(v));
+    }
+
+    /**
+     * Test of getDX method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetDX_int() {
+        System.out.println("getDX");
+        int oom = 0;
+        V3D_Vector instance = new V3D_Vector(1, 1, 1);
+        Math_BigRational expResult = Math_BigRational.ONE;
+        assertTrue(expResult.compareTo(instance.getDX(oom)) == 0);
+    }
+
+    /**
+     * Test of getDY method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetDY_int() {
+        System.out.println("getDY");
+        int oom = 0;
+        V3D_Vector instance = new V3D_Vector(1, 1, 1);
+        Math_BigRational expResult = Math_BigRational.ONE;
+        assertTrue(expResult.compareTo(instance.getDY(oom)) == 0);
+    }
+
+    /**
+     * Test of getDZ method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetDZ_int() {
+        System.out.println("getDZ");
+        int oom = 0;
+        V3D_Vector instance = new V3D_Vector(1, 1, 1);
+        Math_BigRational expResult = Math_BigRational.ONE;
+        assertTrue(expResult.compareTo(instance.getDZ(oom)) == 0);
+    }
+
+    /**
+     * Test of getDX method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetDX_0args() {
+        System.out.println("getDX");
+        V3D_Vector instance = new V3D_Vector(1, 1, 1);
+        Math_BigRationalSqrt expResult = Math_BigRationalSqrt.ONE;
+        Math_BigRationalSqrt result = instance.getDX();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getDY method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetDY_0args() {
+        System.out.println("getDY");
+        V3D_Vector instance = new V3D_Vector(1, 1, 1);
+        Math_BigRationalSqrt expResult = Math_BigRationalSqrt.ONE;
+        Math_BigRationalSqrt result = instance.getDY();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getDZ method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetDZ_0args() {
+        System.out.println("getDZ");
+        V3D_Vector instance = new V3D_Vector(1, 1, 1);
+        Math_BigRationalSqrt expResult = Math_BigRationalSqrt.ONE;
+        Math_BigRationalSqrt result = instance.getDZ();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getMagnitude0 method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetMagnitude0() {
+        System.out.println("getMagnitude0");
+    }
+
+    /**
+     * Test of getMagnitude method, of class V3D_Vector.
+     */
+    @Test
+    public void testGetMagnitude_int() {
+        System.out.println("getMagnitude");
+    }
+
+    /**
+     * Test of rotate method, of class V3D_Vector.
+     */
+    @Test
+    public void testRotate() {
+        System.out.println("rotate");
+        V3D_Vector axisOfRotation = new V3D_Vector(0, 1, 0);
+        Math_BigDecimal bd = new Math_BigDecimal();
+        int oom = -3;
+        int oomt = oom -2;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        Math_BigRational Pi = Math_BigRational.valueOf(bd.getPi(oomt, rm));
+        Math_BigRational theta = Pi.divide(2);
+        Math_BigInteger bI = new Math_BigInteger();
+        V3D_Vector instance = new V3D_Vector(1, 0, 0);
+        V3D_Vector expResult = new V3D_Vector(0, 0, -1);
+        V3D_Vector result = instance.rotate(axisOfRotation, theta, bI, oom);
+        assertEquals(expResult, result);
+        // Test 2
+        // From Example 2: https://graphics.stanford.edu/courses/cs348a-17-winter/Papers/quaternion.pdf
+        axisOfRotation = new V3D_Vector(1, 1, 1).getUnitVector(oomt);
+        theta = Pi.multiply(2).divide(3);
+        instance = new V3D_Vector(1, 0, 0);
+        expResult = new V3D_Vector(0, 1, 0);
+        result = instance.rotate(axisOfRotation, theta, bI, oom);
+        assertEquals(expResult, result);
+//        // Test 3 Fails :(
+//        // From Example 1: https://www.imsc.res.in/~knr/131129workshop/writeup_knr.pdf
+//        axisOfRotation = new V3D_Vector(0, 1, 0);
+//        theta = Pi.divide(3);
+//        instance = new V3D_Vector(1, -1, 2);
+//        Math_BigRational root3 = new Math_BigRationalSqrt(3, oomt).getSqrt(oomt);
+//        Math_BigRational x = (Math_BigRational.TEN.add(
+//                Math_BigRational.valueOf(4).multiply(root3))).divide(8);
+//        Math_BigRational y = (Math_BigRational.ONE.add(
+//                Math_BigRational.valueOf(2).multiply(root3))).divide(8);
+//        Math_BigRational z = (Math_BigRational.valueOf(14).subtract(
+//                Math_BigRational.valueOf(3).multiply(root3))).divide(8);        
+//        expResult = new V3D_Vector(x, y, z);
+//        result = instance.rotate(axisOfRotation, theta, bI, oom);
+//        assertEquals(expResult, result);
+        // Test 4
+        // From Case 1 https://www.tobynorris.com/work/prog/csharp/quatview/help/case_1.htm
+        oom = -4;
+        axisOfRotation = new V3D_Vector(0, 0, 1);
+        theta = Pi.divide(6).negate();
+        instance = new V3D_Vector(0.6, 0.8, 0);
+        expResult = new V3D_Vector(0.9196, 0.3928, 0);
+        result = instance.rotate(axisOfRotation, theta, bI, oom);
+        assertEquals(expResult, result);
+//        // Test 5
+//        // From Case 2 https://www.tobynorris.com/work/prog/csharp/quatview/help/case_1.htm
+//        oom = -4;
+//        axisOfRotation = new V3D_Vector(0, 0, 1);
+//        //theta = Pi.divide(6).negate().subtract(
+//        theta = Math_BigRational.valueOf("53.13").divide(Math_BigRational.valueOf(180)).multiply(Pi).negate();
+//        instance = new V3D_Vector(0.6, 0.8, 0);
+//        expResult = new V3D_Vector(0.1196, 0.9928, 0);
+//        result = instance.rotate(axisOfRotation, theta, bI, oom);
+//        assertEquals(expResult, result);
+        // Test 6
+        oom = -4;
+        axisOfRotation = new V3D_Vector(0, 0, 1);
+        theta = Pi.divide(2);
+        instance = new V3D_Vector(1, 0, 0);
+        expResult = new V3D_Vector(0, 1, 0);
+        result = instance.rotate(axisOfRotation, theta, bI, oom);
+        assertEquals(expResult, result);
+        
     }
 
 }

@@ -64,7 +64,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     public static final V3D_Point ORIGIN = new V3D_Point(0, 0, 0);
 
     /**
-     * The position relative to the {@link #offset}.
+     * The position relative to the {@link #offset}. Whilst the {@link #offset}
+     * can change. {@code rel} cannot.
      */
     private final V3D_Vector rel;
 
