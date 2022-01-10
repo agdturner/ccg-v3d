@@ -299,15 +299,22 @@ public class V3D_Plane extends V3D_Geometry {
                 + pad + "r=" + r.toString(pad);
     }
 
+//    /**
+//     * @return {@link #p} with rotations applied.
+//     */
+//    public final V3D_Vector getPV() {
+//        if (pTemp == null) {
+//            pTemp = p;
+//        }
+//        pTemp = rotate(pTemp, bI, theta);
+//        return pTemp;
+//    }
+    
     /**
-     * @return {@link #p} with rotations applied.
+     * @return {@link #p}.
      */
     public final V3D_Vector getPV() {
-        if (pTemp == null) {
-            pTemp = p;
-        }
-        pTemp = rotate(pTemp, bI, theta);
-        return pTemp;
+        return p;
     }
 
     /**
@@ -317,16 +324,22 @@ public class V3D_Plane extends V3D_Geometry {
         return new V3D_Point(offset, getPV());
     }
 
+//    /**
+//     * @return {@link #q} with rotations applied.
+//     */
+//    public final V3D_Vector getQV() {
+//        if (qTemp == null) {
+//            qTemp = q;
+//        }
+//        qTemp = rotate(qTemp, bI, theta);
+//        return qTemp;
+//    }
+
     /**
-     * @return {@link #q} with rotations applied.
+     * @return {@link #q}.
      */
     public final V3D_Vector getQV() {
-        //return new V3D_Point(offset, rotate(q, theta));
-        if (qTemp == null) {
-            qTemp = q;
-        }
-        qTemp = rotate(qTemp, bI, theta);
-        return qTemp;
+        return q;
     }
 
     /**
@@ -336,18 +349,25 @@ public class V3D_Plane extends V3D_Geometry {
         return new V3D_Point(offset, getQV());
     }
 
+//    /**
+//     * @return {@link #r} with rotations applied.
+//     */
+//    public final V3D_Vector getRV() {
+//        //return new V3D_Point(offset, rotate(r, theta));
+//        if (rTemp == null) {
+//            rTemp = r;
+//        }
+//        rTemp = rotate(rTemp, bI, theta);
+//        return rTemp;
+//    }
+
     /**
-     * @return {@link #r} with rotations applied.
+     * @return {@link #r}.
      */
     public final V3D_Vector getRV() {
-        //return new V3D_Point(offset, rotate(r, theta));
-        if (rTemp == null) {
-            rTemp = r;
-        }
-        rTemp = rotate(rTemp, bI, theta);
-        return rTemp;
+        return r;
     }
-
+    
     /**
      * @return {@link #r} with {@link #offset} and rotations applied.
      */
@@ -362,8 +382,8 @@ public class V3D_Plane extends V3D_Geometry {
         if (pq == null) {
             pq = q.subtract(p, oom);
         }
-        return rotate(pq, bI, theta);
-        //return pq;
+        //return rotate(pq, bI, theta);
+        return pq;
     }
 
     /**
@@ -373,8 +393,8 @@ public class V3D_Plane extends V3D_Geometry {
         if (qr == null) {
             qr = r.subtract(q, oom);
         }
-        return rotate(qr, bI, theta);
-        //return qr;
+        //return rotate(qr, bI, theta);
+        return qr;
     }
 
     /**
@@ -384,8 +404,8 @@ public class V3D_Plane extends V3D_Geometry {
         if (rp == null) {
             rp = p.subtract(r, oom);
         }
-        return rotate(rp, bI, theta);
-        //return rp;
+        //return rotate(rp, bI, theta);
+        return rp;
     }
 
     /**
@@ -431,8 +451,8 @@ public class V3D_Plane extends V3D_Geometry {
                 n = getPQV().getCrossProduct(getQRV(), oom);
             }
         }
-        return rotate(n, bI, theta);
-        //return n;
+        //return rotate(n, bI, theta);
+        return n;
     }
 
     /**
@@ -1372,5 +1392,10 @@ public class V3D_Plane extends V3D_Geometry {
         BigDecimal lpd = getDistance(l.getP(oom), oom);
         BigDecimal lqd = getDistance(l.getQ(oom), oom);
         return lpd.min(lqd);
+    }
+
+    @Override
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

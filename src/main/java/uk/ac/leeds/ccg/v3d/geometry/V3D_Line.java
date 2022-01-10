@@ -102,20 +102,20 @@ public class V3D_Line extends V3D_Geometry {
      */
     protected final V3D_Vector p;
     
-    /**
-     * {@link #p} rotated about {@link #axisOfRotation} by {@link #theta} radians.
-     */
-    protected V3D_Vector pTemp;
+//    /**
+//     * {@link #p} rotated about {@link #axisOfRotation} by {@link #theta} radians.
+//     */
+//    protected V3D_Vector pTemp;
 
     /**
      * A second point relative to {@link #offset} that may define the line.
      */
     protected final V3D_Vector q;
 
-    /**
-     * {@link #q} rotated about {@link #axisOfRotation} by {@link #theta} radians.
-     */
-    protected V3D_Vector qTemp;
+//    /**
+//     * {@link #q} rotated about {@link #axisOfRotation} by {@link #theta} radians.
+//     */
+//    protected V3D_Vector qTemp;
 
     /**
      * A vector that may define the line from p.
@@ -137,14 +137,14 @@ public class V3D_Line extends V3D_Geometry {
      */
     public V3D_Line(V3D_Line l, int oom) {
         super(l.offset, oom);
-        this.axisOfRotation = l.axisOfRotation;
-        this.theta = l.theta;
+//        this.axisOfRotation = l.axisOfRotation;
+//        this.theta = l.theta;
         //this.sinTheta = l.sinTheta;
         //this.cosTheta = l.cosTheta;
         this.p = l.p;
-        this.pTemp = l.pTemp;
+        //this.pTemp = l.pTemp;
         this.q = l.q;
-        this.qTemp = l.qTemp;
+        //this.qTemp = l.qTemp;
         this.v = l.v;
     }
 
@@ -374,26 +374,26 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@link #p}.
      */
     public V3D_Vector getP() {
-        if (pTemp == null) {
-            pTemp = p;
-        }
-        pTemp = rotate(pTemp, bI, theta);
-        return pTemp;
+//        if (pTemp == null) {
+//            pTemp = p;
+//        }
+//        pTemp = rotate(pTemp, bI, theta);
+//        return pTemp;
         //return rotate(p, theta);
-        //return p;
+        return p;
     }
 
     /**
      * @return {@link #q}.
      */
     public V3D_Vector getQ() {
-        if (qTemp == null) {
-            qTemp = q;
-        }
-        qTemp = rotate(qTemp, bI, theta);
-        return qTemp;        
+//        if (qTemp == null) {
+//            qTemp = q;
+//        }
+//        qTemp = rotate(qTemp, bI, theta);
+//        return qTemp;        
         //return rotate(q, theta);
-        //return q;
+        return q;
     }
 
     /**
@@ -432,7 +432,8 @@ public class V3D_Line extends V3D_Geometry {
      * @return The vector from {@link #p} to {@link #q}.
      */
     public V3D_Vector getV(int oom) {
-        return rotate(getV(), bI, theta).add(offset, oom);
+        return getV().add(offset, oom);
+//        return rotate(getV(), bI, theta).add(offset, oom);
     }
 
     /**
@@ -1419,6 +1420,11 @@ public class V3D_Line extends V3D_Geometry {
         } else {
             return min;
         }
+    }
+
+    @Override
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

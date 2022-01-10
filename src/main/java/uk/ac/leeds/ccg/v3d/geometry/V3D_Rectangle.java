@@ -49,10 +49,10 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
      */
     protected final V3D_Vector s;
     
-    /**
-     * {@link #s} with rotations applied.
-     */
-    protected V3D_Vector sTemp;
+//    /**
+//     * {@link #s} with rotations applied.
+//     */
+//    protected V3D_Vector sTemp;
 
 //    /**
 //     * Initialised when the q provided to initialise this is at the origin and p
@@ -172,24 +172,31 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
                 + pad + "s=" + s.toString(pad);
     }
 
-    /**
-     * @param oom The Order of Magnitude for the calculation.
-     * @return The vector from {@link #q} to {@link #s}.
-     */
-    public V3D_Vector getQs(int oom) {
-        return rotate(s.subtract(q, oom), bI, theta);
-    }
+//    /**
+//     * @param oom The Order of Magnitude for the calculation.
+//     * @return The vector from {@link #q} to {@link #s}.
+//     */
+//    public V3D_Vector getQS(int oom) {
+//        return rotate(s.subtract(q, oom), bI, theta);
+//    }
 
+//    /**
+//     * @return {@link #sTemp} rotated.
+//     */
+//    public V3D_Vector getSV() {
+//        //return new V3D_Point(offset, rotate(s, theta));
+//        if (sTemp == null) {
+//            sTemp = s;
+//        }
+//        sTemp = rotate(sTemp, bI, theta);
+//        return sTemp;
+//    }
+    
     /**
      * @return {@link #sTemp} rotated.
      */
     public V3D_Vector getSV() {
-        //return new V3D_Point(offset, rotate(s, theta));
-        if (sTemp == null) {
-            sTemp = s;
-        }
-        sTemp = rotate(sTemp, bI, theta);
-        return sTemp;
+        return s;
     }
     
     /**

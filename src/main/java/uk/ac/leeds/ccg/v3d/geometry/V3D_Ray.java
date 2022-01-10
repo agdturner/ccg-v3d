@@ -489,7 +489,7 @@ public class V3D_Ray extends V3D_Line {
     @Override
     public V3D_Point getPointOfIntersection(V3D_Point pt, int oom) {
         V3D_Point poi = super.getPointOfIntersection(pt, oom);
-        if (this.isIntersectedBy(poi, oom)) {
+        if (this.isIntersectedBy(poi, oom, true)) {
             return poi;
         } else {
             //return p;

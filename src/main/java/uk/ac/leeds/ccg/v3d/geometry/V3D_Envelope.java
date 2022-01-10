@@ -1606,6 +1606,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 //    @Override
 //    public V3D_Envelope apply(V3D_Vector v, int oom) {
 //        V3D_Envelope e = new V3D_Envelope(this);

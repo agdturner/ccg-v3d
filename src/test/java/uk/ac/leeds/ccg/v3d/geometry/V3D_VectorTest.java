@@ -971,7 +971,46 @@ public class V3D_VectorTest extends V3D_Test {
         expResult = new V3D_Vector(0, 1, 0);
         result = instance.rotate(axisOfRotation, theta, bI, oom);
         assertEquals(expResult, result);
-        
+        // Test 7
+        oom = -4;
+        axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt);
+        theta = Pi;
+        instance = new V3D_Vector(1, 0, 0);
+        expResult = new V3D_Vector(0, 1, 0);
+        result = instance.rotate(axisOfRotation, theta, bI, oom);
+        assertEquals(expResult, result);
+        // Test 8
+        oom = -4;
+        axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt);
+        theta = Pi;
+        instance = new V3D_Vector(2, 0, 0);
+        expResult = new V3D_Vector(0, 2, 0);
+        result = instance.rotate(axisOfRotation, theta, bI, oom);
+        assertEquals(expResult, result);
+        // Test 9
+        oom = -4;
+        axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt);
+        theta = Pi;
+        instance = new V3D_Vector(3, 1, 0);
+        expResult = new V3D_Vector(1, 3, 0);
+        result = instance.rotate(axisOfRotation, theta, bI, oom);
+        assertEquals(expResult, result);
+        // Test 10
+        oom = -4;
+        axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt);
+        theta = Pi;
+        instance = new V3D_Vector(3, 2, 1);
+        expResult = new V3D_Vector(2, 3, -1);
+        result = instance.rotate(axisOfRotation, theta, bI, oom);
+        assertEquals(expResult, result);
+        // Test 11
+        oom = -4;
+        axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt);
+        theta = Pi.multiply(2);
+        instance = new V3D_Vector(3, 2, 1);
+        expResult = new V3D_Vector(3, 2, 1);
+        result = instance.rotate(axisOfRotation, theta, bI, oom);
+        assertEquals(expResult, result);
     }
 
 }

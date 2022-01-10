@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * Essentially this is just a collection of coplanar V3D_Triangles.
@@ -92,6 +93,11 @@ public class V3D_Points extends V3D_Geometry {
 
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

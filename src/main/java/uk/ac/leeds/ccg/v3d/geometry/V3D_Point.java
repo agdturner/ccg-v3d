@@ -67,15 +67,16 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * The position relative to the {@link #offset}. Whilst the {@link #offset}
      * can change. {@code rel} cannot.
      */
-    private final V3D_Vector rel;
+    protected V3D_Vector rel;
 
 //    /**
 //     * The position relative to the {@link #offset}.
 //     */
 //    public V3D_Vector relTemp;
-
     /**
-     * @param p The point to duplicate
+     * Create a new instance which is completely independent of {@code p}.
+     *
+     * @param p The point to duplicate.
      */
     public V3D_Point(V3D_Point p) {
         super(new V3D_Vector(p.offset), p.getOom());
@@ -513,6 +514,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         if (getX(oom).compareTo(Math_BigRational.ZERO) != -1) {
             if (getY(oom).compareTo(Math_BigRational.ZERO) != -1) {
                 if (getZ(oom).compareTo(Math_BigRational.ZERO) != -1) {
+                    if (isOrigin()) {
+                        return 0;
+                    }
                     return 1;
                 } else {
                     return 2;
@@ -539,5 +543,40 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
                 }
             }
         }
+    }
+
+    /**
+     * Change {@link #offset} without changing the overall point vector by also
+     * adjusting {@link #rel}.
+     *
+     * @param offset What {@link #offset} is set to.
+     */
+    public void setOffset(V3D_Vector offset) {
+        rel = getVector(oom).subtract(offset, oom);
+        this.offset = offset;
+    }
+
+    /**
+     * Change {@link #rel} without changing the overall point vector by also
+     * adjusting {@link #offset}.
+     *
+     * @param rel What {@link #rel} is set to.
+     */
+    public void setRel(V3D_Vector rel) {
+        offset = getVector(oom).subtract(rel, oom);
+        this.rel = rel;
+    }
+
+    /**
+     * Rotates the point about {@link offset}.
+     *
+     * @param axisOfRotation The axis of rotation.
+     * @param theta The angle of rotation.
+     */
+    @Override
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+        rel = rel.rotate(axisOfRotation, theta, bI, oom);
+//        V3D_Vector relt = rel.rotate(axisOfRotation, theta, bI, oom);
+//        offset = offset.subtract(rel.subtract(relt, oom), oom);
     }
 }
