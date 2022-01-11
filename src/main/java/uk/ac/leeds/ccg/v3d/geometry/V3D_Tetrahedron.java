@@ -337,11 +337,29 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Change {@link #offset} without changing the overall line.
+     *
+     * @param offset What {@link #offset} is set to.
+     */
+    public void setOffset(V3D_Vector offset) {
+        p = p.add(offset, oom).subtract(this.offset, oom);
+        q = q.add(offset, oom).subtract(this.offset, oom);
+        r = r.add(offset, oom).subtract(this.offset, oom);
+        s = s.add(offset, oom).subtract(this.offset, oom);
+        this.offset = offset;
+    }
+    
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        this.pqr.rotate(axisOfRotation, theta);
-        this.psq.rotate(axisOfRotation, theta);
-        this.spr.rotate(axisOfRotation, theta);
-        this.qsr.rotate(axisOfRotation, theta);
+        p = p.rotate(axisOfRotation, theta, bI, oom);
+        q = q.rotate(axisOfRotation, theta, bI, oom);
+        r = r.rotate(axisOfRotation, theta, bI, oom);
+        s = s.rotate(axisOfRotation, theta, bI, oom);
+        pqr = null;
+        psq = null;
+        spr = null;
+        qsr = null;
+        en = null;
     }
 }

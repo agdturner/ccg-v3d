@@ -1380,6 +1380,18 @@ public class V3D_Plane extends V3D_Geometry {
         return lpd.min(lqd);
     }
 
+    /**
+     * Change {@link #offset} without changing the overall line.
+     *
+     * @param offset What {@link #offset} is set to.
+     */
+    public void setOffset(V3D_Vector offset) {
+        p = p.add(offset, oom).subtract(this.offset, oom);
+        q = q.add(offset, oom).subtract(this.offset, oom);
+        r = r.add(offset, oom).subtract(this.offset, oom);
+        this.offset = offset;
+    }
+    
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         p = p.rotate(axisOfRotation, theta, bI, oom);

@@ -69,17 +69,17 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //    /**
 //     * The line from {@link #p} to {@link #q}.
 //     */
-//    private final V3D_LineSegment lpq;
+//    private V3D_LineSegment lpq;
 //
 //    /**
 //     * The line from {@link #q} to {@link #r}.
 //     */
-//    private final V3D_LineSegment lqr;
+//    private V3D_LineSegment lqr;
 //
 //    /**
 //     * The line from {@link #r} to {@link #p}.
 //     */
-//    private final V3D_LineSegment lrp;
+//    private V3D_LineSegment lrp;
 //
 //    /**
 //     * The midpoint between {@link #p} and {@link #q}.
@@ -488,5 +488,11 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         } else {
             return false;
         }
+    }
+    
+    @Override
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+        super.rotate(axisOfRotation, theta);
+        en = null;
     }
 }

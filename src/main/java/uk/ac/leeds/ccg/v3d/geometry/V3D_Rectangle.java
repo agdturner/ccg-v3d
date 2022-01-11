@@ -676,6 +676,17 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
         }
     }
     
+    /**
+     * Change {@link #offset} without changing the overall line.
+     *
+     * @param offset What {@link #offset} is set to.
+     */
+    @Override
+    public void setOffset(V3D_Vector offset) {
+        super.setOffset(offset);
+        s = s.add(offset, oom).subtract(this.offset, oom);
+    }
+    
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         super.rotate(axisOfRotation, theta);

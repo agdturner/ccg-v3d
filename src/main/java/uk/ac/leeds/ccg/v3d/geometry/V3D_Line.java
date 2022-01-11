@@ -366,7 +366,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getP(int oom) {
-        return new V3D_Point(offset, getP());
+        return new V3D_Point(offset, p);
     }
 
     /**
@@ -1422,6 +1422,17 @@ public class V3D_Line extends V3D_Geometry {
         } else {
             return min;
         }
+    }
+    
+    /**
+     * Change {@link #offset} without changing the overall line.
+     *
+     * @param offset What {@link #offset} is set to.
+     */
+    public void setOffset(V3D_Vector offset) {
+        p = p.add(offset, oom).subtract(this.offset, oom);
+        q = q.add(offset, oom).subtract(this.offset, oom);
+        this.offset = offset;
     }
 
     @Override
