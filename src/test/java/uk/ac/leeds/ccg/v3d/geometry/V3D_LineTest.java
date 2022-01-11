@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
@@ -61,12 +63,21 @@ public class V3D_LineTest extends V3D_Test {
      * Test of toString method, of class V3D_Line.
      */
     @Test
-    public void testToString() {
+    public void testToString_0args() {
         System.out.println("toString");
         int oom = V3D_Environment.DEFAULT_OOM;
         V3D_Line instance = new V3D_Line(P0P0P0, P1P0P0, oom);
         String expResult = "V3D_Line\n"
                 + "(\n"
+                + " offset=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " oom=-3\n"
+                + " ,\n"
                 + " p=V3D_Vector\n"
                 + " (\n"
                 + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
@@ -84,7 +95,7 @@ public class V3D_LineTest extends V3D_Test {
                 + " v=null\n"
                 + ")";
         String result = instance.toString();
-        System.out.println(result);
+        //System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
     }
 
@@ -123,7 +134,7 @@ public class V3D_LineTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Line.
      */
     @Test
-    public void testIsIntersectedBy_V3D_Point() {
+    public void testIsIntersectedBy_V3D_Point_int() {
         System.out.println("isIntersectedBy");
         int oom = -1;
         V3D_Point pt = pP0P0P0;
@@ -343,7 +354,7 @@ public class V3D_LineTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Line.
      */
     @Test
-    public void testIsIntersectedBy_V3D_Line() {
+    public void testIsIntersectedBy_V3D_Line_int() {
         System.out.println("isIntersectedBy");
         int oom = -1;
         V3D_Line l;
@@ -401,7 +412,7 @@ public class V3D_LineTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Line.
      */
     @Test
-    public void testGetIntersection_V3D_Line() {
+    public void testGetIntersection_V3D_Line_int() {
         System.out.println("getIntersection");
         int oom = -1;
         V3D_Line l = new V3D_Line(P0P0P0, P1P1P1, oom);
@@ -576,27 +587,10 @@ public class V3D_LineTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_Line covered by
-     * {@link V3D_RayTest#testIsIntersectedBy_V3D_Line()}.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_Ray() {
-        // No test.
-    }
-
-    /**
-     * Test of getIntersection method, of class V3D_Line covered by {@link V3D_RayTest#testGetIntersection_V3D_Line().
-     */
-    @Test
-    public void testGetIntersection_V3D_Ray() {
-        // No test.
-    }
-
-    /**
      * Test of getLineOfIntersection method, of class V3D_Line.
      */
     @Test
-    public void testGetLineOfIntersection_V3D_Point() {
+    public void testGetLineOfIntersection_V3D_Point_int() {
         System.out.println("getLineOfIntersection");
         int oom = -1;
         V3D_Point pt;
@@ -639,7 +633,7 @@ public class V3D_LineTest extends V3D_Test {
      * Test of getLineOfIntersection method, of class V3D_Line.
      */
     @Test
-    public void testGetLineOfIntersection_V3D_Line_V3D_Line() {
+    public void testGetLineOfIntersection_V3D_Line_int() {
         System.out.println("getLineOfIntersection");
         int oom = -1;
         V3D_Line l0 = new V3D_Line(P1P0P0, P1P1P0, oom);
@@ -742,5 +736,284 @@ public class V3D_LineTest extends V3D_Test {
         expResult = BigDecimal.valueOf(2).sqrt(new MathContext(1 - oom));
         result = instance.getDistance(l, oom);
         assertTrue(expResult.compareTo(result) == 0);
+    }
+
+    /**
+     * Test of toString method, of class V3D_Line.
+     */
+    @Test
+    public void testToString_String() {
+        System.out.println("toString");
+        String pad = "";
+        V3D_Line instance = V3D_Line.X_AXIS;
+        String expResult = "V3D_Line\n"
+                + "(\n"
+                + " offset=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " oom=-3\n"
+                + " ,\n"
+                + " p=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " q=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " v=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + ")";
+        String result = instance.toString(pad);
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of toStringFields method, of class V3D_Line.
+     */
+    @Test
+    public void testToStringFields() {
+        System.out.println("toStringFields");
+        String pad = "";
+        V3D_Line instance = V3D_Line.X_AXIS;
+        String expResult = "offset=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + ")\n"
+                + ",\n"
+                + "oom=-3\n"
+                + ",\n"
+                + "p=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + ")\n"
+                + ",\n"
+                + "q=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + ")\n"
+                + ",\n"
+                + "v=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + ")";
+        String result = instance.toStringFields(pad);
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of equals method, of class V3D_Line.
+     */
+    @Test
+    public void testEquals_V3D_Line_int() {
+        System.out.println("equals");
+        V3D_Line l = V3D_Line.X_AXIS;
+        int oom = 0;
+        V3D_Line instance = V3D_Line.X_AXIS;
+        assertTrue(instance.equals(l, oom));
+        // Test 2
+        instance = V3D_Line.Y_AXIS;
+        assertFalse(instance.equals(l, oom));
+    }
+
+    /**
+     * Test of getPV method, of class V3D_Line.
+     */
+    @Test
+    public void testGetPV() {
+        System.out.println("getPV");
+        int oom = -1;
+        V3D_Line instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(1, 0, 0), oom);
+        V3D_Vector expResult = new V3D_Vector(0, 0, 0);
+        V3D_Vector result = instance.getPV(oom);
+        assertTrue(expResult.isScalarMultiple(result, oom));
+    }
+
+    /**
+     * Test of getP method, of class V3D_Line.
+     */
+    @Test
+    public void testGetP_int() {
+        System.out.println("getP");
+        int oom = -1;
+        V3D_Line instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(1, 0, 0), oom);
+        V3D_Point expResult = new V3D_Point(0, 0, 0);
+        V3D_Point result = instance.getP(oom);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getP method, of class V3D_Line.
+     */
+    @Test
+    public void testGetP_0args() {
+        System.out.println("getP");
+        int oom = -1;
+        V3D_Line instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(1, 0, 0), oom);
+        V3D_Vector expResult = new V3D_Vector(0, 0, 0);
+        V3D_Vector result = instance.getP();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getQ method, of class V3D_Line.
+     */
+    @Test
+    public void testGetQ_0args() {
+        System.out.println("getQ");
+        int oom = -1;
+        V3D_Line instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(1, 0, 0), oom);
+        V3D_Vector expResult = new V3D_Vector(1, 0, 0);
+        V3D_Vector result = instance.getQ();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getQV method, of class V3D_Line.
+     */
+    @Test
+    public void testGetQV() {
+        System.out.println("getQV");
+        int oom = -1;
+        V3D_Line instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(1, 0, 0), oom);
+        V3D_Vector expResult = new V3D_Vector(1, 0, 0);
+        V3D_Vector result = instance.getQV(oom);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getQ method, of class V3D_Line.
+     */
+    @Test
+    public void testGetQ_int() {
+        System.out.println("getQ");
+        int oom = 0;
+        V3D_Line instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(1, 0, 0), oom);
+        V3D_Point expResult = new V3D_Point(1, 0, 0);
+        V3D_Point result = instance.getQ(oom);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getV method, of class V3D_Line.
+     */
+    @Test
+    public void testGetV_0args() {
+        System.out.println("getV");
+        int oom = 0;
+        V3D_Line instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(1, 0, 0), oom);
+        V3D_Vector expResult = new V3D_Vector(1, 0, 0);
+        V3D_Vector result = instance.getV();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getV method, of class V3D_Line.
+     */
+    @Test
+    public void testGetV_int() {
+        System.out.println("getV");
+        int oom = -1;
+        V3D_Line instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(1, 0, 0), oom);
+        V3D_Vector expResult = new V3D_Vector(1, 0, 0);
+        V3D_Vector result = instance.getV(oom);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Line covered by
+     * {@link V3D_RayTest#testIsIntersectedBy_V3D_Line()}.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_Ray_int() {
+        System.out.println("isIntersectedBy");
+//        V3D_Ray r = null;
+//        int oom = 0;
+//        V3D_Line instance = null;
+//        boolean expResult = false;
+//        boolean result = instance.isIntersectedBy(r, oom);
+//        assertEquals(expResult, result);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Line covered by null null
+     * null null     {@link V3D_RayTest#testGetIntersection_V3D_Line().
+     */
+    @Test
+    public void testGetIntersection_V3D_Ray_int() {
+        System.out.println("getIntersection");
+//        V3D_Ray r = null;
+//        int oom = 0;
+//        V3D_Line instance = null;
+//        V3D_Geometry expResult = null;
+//        V3D_Geometry result = instance.getIntersection(r, oom);
+//        assertEquals(expResult, result);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of rotate method, of class V3D_Line.
+     */
+    @Test
+    public void testRotate() {
+        System.out.println("rotate");
+        V3D_Vector axisOfRotation = new V3D_Vector(1, 0, 0);
+        int oom = -3;
+        int oomt = oom - 2;
+        Math_BigRational Pi = Math_BigRational.valueOf(
+                new Math_BigDecimal().getPi(oomt, RoundingMode.HALF_UP));
+        Math_BigRational theta = Pi.divide(2);
+        V3D_Line instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(1, 0, 0), oom);
+        V3D_Line expResult = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(1, 0, 0), oom);
+        instance.rotate(axisOfRotation, theta);
+        assertEquals(expResult, instance);
+        // Test 2
+        axisOfRotation = new V3D_Vector(0, 1, 0).getUnitVector(oom);
+        theta = Pi.divide(2);
+        instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(1, 0, 0), oom);
+        expResult = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, 1), oom);
+        instance.rotate(axisOfRotation, theta);
+        assertEquals(expResult, instance);
+        // Test 3
+        axisOfRotation = new V3D_Vector(0, 1, 0).getUnitVector(oom);
+        theta = Pi.divide(2);
+        instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(5, 0, 0), oom);
+        expResult = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, 5), oom);
+        instance.rotate(axisOfRotation, theta);
+        assertEquals(expResult, instance);
+        // Test 4
+        axisOfRotation = new V3D_Vector(0, 1, 0).getUnitVector(oom);
+        theta = Pi;
+        instance = new V3D_Line(new V3D_Vector(3, 2, 0), new V3D_Vector(5, 0, 0), oom);
+        expResult = new V3D_Line(new V3D_Vector(-3, 2, 0), new V3D_Vector(-5, 0, 0), oom);
+        instance.rotate(axisOfRotation, theta);
+        assertEquals(expResult, instance);
     }
 }

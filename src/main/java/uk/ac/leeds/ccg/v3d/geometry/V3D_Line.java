@@ -100,23 +100,21 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * A point relative to {@link #offset} that defines the line.
      */
-    protected final V3D_Vector p;
-    
+    protected V3D_Vector p;
+
 //    /**
 //     * {@link #p} rotated about {@link #axisOfRotation} by {@link #theta} radians.
 //     */
 //    protected V3D_Vector pTemp;
-
     /**
      * A second point relative to {@link #offset} that may define the line.
      */
-    protected final V3D_Vector q;
+    protected V3D_Vector q;
 
 //    /**
 //     * {@link #q} rotated about {@link #axisOfRotation} by {@link #theta} radians.
 //     */
 //    protected V3D_Vector qTemp;
-
     /**
      * A vector that may define the line from p.
      */
@@ -286,7 +284,6 @@ public class V3D_Line extends V3D_Geometry {
      * @param pad A padding of spaces.
      * @return A description of this.
      */
-    @Override
     public String toString(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
@@ -298,27 +295,29 @@ public class V3D_Line extends V3D_Geometry {
      * @param pad A padding of spaces.
      * @return A description of the fields.
      */
+    @Override
     protected String toStringFields(String pad) {
-        String r;
+        String r = super.toStringFields(pad) + "\n"
+                + pad + ",\n";
         if (q == null) {
-            r = pad + "p=" + getP().toString(pad) + "\n"
+            r += pad + "p=" + getP().toString(pad) + "\n"
                     + pad + ",\n"
                     + pad + "q=null" + "\n"
                     + pad + ",\n"
                     + pad + "v=" + v.toString(pad);
         } else {
             if (v == null) {
-                r = pad + "p=" + getP().toString(pad) + "\n"
-                    + pad + ",\n"
-                    + pad + "q=" + getQ().toString(pad) + "\n"
-                    + pad + ",\n"
-                    + pad + "v=null";
+                r += pad + "p=" + getP().toString(pad) + "\n"
+                        + pad + ",\n"
+                        + pad + "q=" + getQ().toString(pad) + "\n"
+                        + pad + ",\n"
+                        + pad + "v=null";
             } else {
-                r = pad + "p=" + getP().toString(pad) + "\n"
-                    + pad + ",\n"
-                    + pad + "q=" + getQ().toString(pad) + "\n"
-                    + pad + ",\n"
-                    + pad + "v=" + v.toString(pad);
+                r += pad + "p=" + getP().toString(pad) + "\n"
+                        + pad + ",\n"
+                        + pad + "q=" + getQ().toString(pad) + "\n"
+                        + pad + ",\n"
+                        + pad + "v=" + v.toString(pad);
             }
         }
         return r;
@@ -423,8 +422,11 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * @return The vector from {@link #p} to {@link #q}.
      */
-    public V3D_Vector getV() {
-        return q.subtract(p, oom);
+    protected V3D_Vector getV() {
+        if (v == null) {
+            v = q.subtract(p, oom);
+        }
+        return v;
     }
 
     /**
@@ -1424,7 +1426,10 @@ public class V3D_Line extends V3D_Geometry {
 
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        p = p.rotate(axisOfRotation, theta, bI, oom);
+        q = q.rotate(axisOfRotation, theta, bI, oom);
+        v = null;
+        //v = getV(oom);
     }
 
 }

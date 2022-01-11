@@ -21,7 +21,6 @@ import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.math.number.Math_Quaternion_BigRational;
 import static uk.ac.leeds.ccg.v3d.core.V3D_Environment.DEFAULT_OOM;
 import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
@@ -88,34 +87,19 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * One of the points that defines the plane.
      */
-    protected final V3D_Vector p;
-
-    /**
-     * {@link #p} with rotations applied.
-     */
-    protected V3D_Vector pTemp;
+    protected V3D_Vector p;
 
     /**
      * One of the points that defines the plane.
      */
-    protected final V3D_Vector q;
-
-    /**
-     * {@link #q} with rotations applied.
-     */
-    protected V3D_Vector qTemp;
+    protected V3D_Vector q;
 
     /**
      * One of the points that defines the plane.
      */
-    protected final V3D_Vector r;
+    protected V3D_Vector r;
 
-        /**
-     * {@link #r} with rotations applied.
-     */
-    protected V3D_Vector rTemp;
-
-/**
+    /**
      * The vector representing the move from {@link #p} to {@link #q}.
      */
     protected V3D_Vector pq;
@@ -279,7 +263,6 @@ public class V3D_Plane extends V3D_Geometry {
      * @param pad A padding of spaces.
      * @return A description of this.
      */
-    @Override
     public String toString(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
@@ -291,8 +274,11 @@ public class V3D_Plane extends V3D_Geometry {
      * @param pad A padding of spaces.
      * @return A description of the fields.
      */
+    @Override
     protected String toStringFields(String pad) {
-        return pad + "p=" + p.toString(pad) + "\n"
+        return super.toStringFields(pad) + "\n"
+                + pad + ",\n"
+                + pad + "p=" + p.toString(pad) + "\n"
                 + pad + ",\n"
                 + pad + "q=" + q.toString(pad) + "\n"
                 + pad + ",\n"
@@ -1396,6 +1382,12 @@ public class V3D_Plane extends V3D_Geometry {
 
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        p = p.rotate(axisOfRotation, theta, bI, oom);
+        q = q.rotate(axisOfRotation, theta, bI, oom);
+        r = r.rotate(axisOfRotation, theta, bI, oom);
+        pq = null;
+        qr = null;
+        rp = null;
+        n = null;
     }
 }

@@ -213,13 +213,6 @@ public class V3D_VPoint extends V3D_VGeometry {
     public Math_BigRational getZ() {
         return rel.z.add(offset.z);
     }
-    
-    /**
-     * @return The z component of {@link #rel} with {@link #offset} applied.
-     */
-    public V3D_Vector getOffsetVector() {
-        return new V3D_Vector(offset);
-    }
 
     /**
      * Get the distance between this and {@code p}.

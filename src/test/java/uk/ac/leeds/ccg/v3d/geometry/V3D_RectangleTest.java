@@ -292,4 +292,141 @@ public class V3D_RectangleTest extends V3D_Test {
         assertTrue(expResult.compareTo(result) == 0);
     }
 
+    /**
+     * Test of toStringFields method, of class V3D_Rectangle.
+     */
+    @Test
+    public void testToStringFields() {
+        System.out.println("toStringFields");
+        String pad = "";
+        V3D_Rectangle instance = null;
+        String expResult = "";
+        String result = instance.toStringFields(pad);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getSV method, of class V3D_Rectangle.
+     */
+    @Test
+    public void testGetSV() {
+        System.out.println("getSV");
+        V3D_Rectangle instance = null;
+        V3D_Vector expResult = null;
+        V3D_Vector result = instance.getSV();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getS method, of class V3D_Rectangle.
+     */
+    @Test
+    public void testGetS() {
+        System.out.println("getS");
+        V3D_Rectangle instance = null;
+        V3D_Point expResult = null;
+        V3D_Point result = instance.getS();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getRS method, of class V3D_Rectangle.
+     */
+    @Test
+    public void testGetRS() {
+        System.out.println("getRS");
+        V3D_Rectangle instance = null;
+        V3D_LineSegment expResult = null;
+        V3D_LineSegment result = instance.getRS();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getSP method, of class V3D_Rectangle.
+     */
+    @Test
+    public void testGetSP() {
+        System.out.println("getSP");
+        V3D_Rectangle instance = null;
+        V3D_LineSegment expResult = null;
+        V3D_LineSegment result = instance.getSP();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Rectangle.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_Line_int() {
+        System.out.println("isIntersectedBy");
+        V3D_Line l = null;
+        int oom = 0;
+        V3D_Rectangle instance = null;
+        boolean expResult = false;
+        boolean result = instance.isIntersectedBy(l, oom);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Rectangle.
+     */
+    @Test
+    public void testIsIntersectedBy_3args() {
+        System.out.println("isIntersectedBy");
+        V3D_LineSegment l = null;
+        int oom = 0;
+        boolean b = false;
+        V3D_Rectangle instance = null;
+        boolean expResult = false;
+        boolean result = instance.isIntersectedBy(l, oom, b);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Rectangle.
+     */
+    @Test
+    public void testGetIntersection_V3D_Line_int() {
+        System.out.println("getIntersection");
+        V3D_Line l = null;
+        int oom = 0;
+        V3D_Rectangle instance = null;
+        V3D_Geometry expResult = null;
+        V3D_Geometry result = instance.getIntersection(l, oom);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Rectangle.
+     */
+    @Test
+    public void testGetIntersection_3args() {
+        System.out.println("getIntersection");
+        V3D_LineSegment l = null;
+        int oom = 0;
+        boolean flag = false;
+        V3D_Rectangle instance = null;
+        V3D_Geometry expResult = null;
+        V3D_Geometry result = instance.getIntersection(l, oom, flag);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
 }

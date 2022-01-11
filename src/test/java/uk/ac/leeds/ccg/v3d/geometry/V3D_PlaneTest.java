@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -83,6 +85,15 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Plane instance = new V3D_Plane(P0P0P0, P1P1P1, P1P0P0, oom);
         String expResult = "V3D_Plane\n"
                 + "(\n"
+                + " offset=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " oom=-1\n"
+                + " ,\n"
                 + " p=V3D_Vector\n"
                 + " (\n"
                 + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
@@ -2672,7 +2683,7 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of isParallel method, of class V3D_Plane.
      */
     @Test
-    public void testIsParallel_V3D_Line() {
+    public void testIsParallel_V3D_Line_int() {
         System.out.println("isParallel");
         int oom = -1;
         V3D_Line l = V3D_Line.X_AXIS;
@@ -2750,9 +2761,10 @@ public class V3D_PlaneTest extends V3D_Test {
         /**
          * The following is from:
          * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc
-         * Simple.
+         * Simple. Something is not right with this test which had worked at
+         * some stage... :(
          */
-        oom = -3;
+        oom = -8;
         pl = new V3D_Plane(
                 new V3D_Point(7, 11, 0),
                 new V3D_Vector(0, 0, 3), oom);
@@ -2772,8 +2784,9 @@ public class V3D_PlaneTest extends V3D_Test {
 
         result = instance.getIntersection(pl, oom);
         System.out.println(result);
+        System.out.println(expResult);
         result = instance.getIntersection(pl, oom);
-//        assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom));
+        //assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom));
         //assertTrue(expResult.equals(result));
         // Test V3D_Plane.X0
         pl = V3D_Plane.X0;
@@ -3247,10 +3260,18 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Vector v = V3D_Vector.I;
         instance = new V3D_Plane(V3D_Plane.X0);
         instance.apply(oom, v);
-        expResult = Math_BigRational.ONE;
+        expResult = Math_BigRational.ZERO;
         result = instance.getDistanceSquared(p, oom);
         assertTrue(expResult.equals(result));
         // Test 3
+        v = V3D_Vector.J;
+        instance = new V3D_Plane(V3D_Plane.X0);
+        instance.apply(oom, v);
+        expResult = Math_BigRational.ZERO;
+        result = instance.getDistanceSquared(p, oom);
+        assertTrue(expResult.equals(result));
+        // Test 4
+        v = V3D_Vector.K;
         instance = new V3D_Plane(V3D_Plane.X0);
         instance.apply(oom, v);
         expResult = Math_BigRational.ONE;
@@ -3349,5 +3370,445 @@ public class V3D_PlaneTest extends V3D_Test {
         BigDecimal expResult = BigDecimal.TEN;
         BigDecimal result = instance.getDistance(l, oom);
         assertTrue(expResult.compareTo(result) == 0);
+    }
+
+    /**
+     * Test of toString method, of class V3D_Plane.
+     */
+    @Test
+    public void testToString_0args() {
+        System.out.println("toString");
+        V3D_Plane instance = V3D_Plane.X0;
+        String expResult = "V3D_Plane\n"
+                + "(\n"
+                + " offset=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " oom=-3\n"
+                + " ,\n"
+                + " p=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " q=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " r=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0)\n"
+                + " )\n"
+                + ")";
+        String result = instance.toString();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of toString method, of class V3D_Plane.
+     */
+    @Test
+    public void testToString_String() {
+        System.out.println("toString");
+        String pad = "";
+        V3D_Plane instance = V3D_Plane.X0;
+        String expResult = "V3D_Plane\n"
+                + "(\n"
+                + " offset=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " oom=-3\n"
+                + " ,\n"
+                + " p=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " q=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " r=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0)\n"
+                + " )\n"
+                + ")";
+        String result = instance.toString(pad);
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of toStringFields method, of class V3D_Plane.
+     */
+    @Test
+    public void testToStringFields() {
+        System.out.println("toStringFields");
+        String pad = "";
+        V3D_Plane instance = V3D_Plane.X0;
+        String expResult = "offset=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + ")\n"
+                + ",\n"
+                + "oom=-3\n"
+                + ",\n"
+                + "p=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + ")\n"
+                + ",\n"
+                + "q=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + ")\n"
+                + ",\n"
+                + "r=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + ")";
+        String result = instance.toStringFields(pad);
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getPV method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetPV() {
+        System.out.println("getPV");
+        V3D_Plane instance = V3D_Plane.X0;
+        //int oom = -3;
+        V3D_Vector expResult = V3D_Vector.ZERO;
+        V3D_Vector result = instance.getPV();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = V3D_Plane.Y0;
+        expResult = V3D_Vector.ZERO;
+        result = instance.getPV();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+        // Test 3
+        instance = V3D_Plane.Z0;
+        expResult = V3D_Vector.ZERO;
+        result = instance.getPV();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getP method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetP() {
+        System.out.println("getP");
+        V3D_Plane instance = V3D_Plane.X0;
+        V3D_Point expResult = V3D_Point.ORIGIN;
+        V3D_Point result = instance.getP();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getQV method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetQV() {
+        System.out.println("getQV");
+        V3D_Plane instance = V3D_Plane.X0;
+        //int oom = -3;
+        V3D_Vector expResult = V3D_Vector.J;
+        V3D_Vector result = instance.getQV();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = V3D_Plane.Y0;
+        expResult = V3D_Vector.I;
+        result = instance.getQV();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+        // Test 3
+        instance = V3D_Plane.Z0;
+        expResult = V3D_Vector.I;
+        result = instance.getQV();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getQ method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetQ() {
+        System.out.println("getQ");
+        V3D_Plane instance = V3D_Plane.X0;
+        V3D_Point expResult = new V3D_Point(P0P0P0, P0P1P0);
+        V3D_Point result = instance.getQ();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getRV method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetRV() {
+        System.out.println("getRV");
+        V3D_Plane instance = V3D_Plane.X0;
+        //int oom = -3;
+        V3D_Vector expResult = V3D_Vector.K;
+        V3D_Vector result = instance.getRV();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = V3D_Plane.Y0;
+        expResult = V3D_Vector.K;
+        result = instance.getRV();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+        // Test 3
+        instance = V3D_Plane.Z0;
+        expResult = V3D_Vector.J;
+        result = instance.getRV();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getR method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetR() {
+        System.out.println("getR");
+        V3D_Plane instance = V3D_Plane.X0;
+        V3D_Point expResult = new V3D_Point(P0P0P0, P0P0P1);
+        V3D_Point result = instance.getR();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getPQV method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetPQV() {
+        System.out.println("getPQV");
+        V3D_Plane instance = V3D_Plane.X0;
+        V3D_Vector expResult = P0P1P0;
+        V3D_Vector result = instance.getPQV();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getQRV method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetQRV() {
+        System.out.println("getQRV");
+        V3D_Plane instance = V3D_Plane.X0;
+        V3D_Vector expResult = P0N1P1;
+        V3D_Vector result = instance.getQRV();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getRPV method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetRPV() {
+        System.out.println("getRPV");
+        V3D_Plane instance = V3D_Plane.X0;
+        V3D_Vector expResult = P0P0N1;
+        V3D_Vector result = instance.getRPV();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getPQ method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetPQ() {
+        System.out.println("getPQ");
+        V3D_Plane instance = V3D_Plane.X0;
+        int oom = -3;
+        V3D_LineSegment expResult = new V3D_LineSegment(V3D_Vector.ZERO,
+                V3D_Vector.ZERO, P0P1P0, oom);
+        V3D_LineSegment result = instance.getPQ();
+        System.out.println(result.toString());
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getQR method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetQR() {
+        System.out.println("getQR");
+        V3D_Plane instance = V3D_Plane.X0;
+        int oom = -3;
+        V3D_LineSegment expResult = new V3D_LineSegment(V3D_Vector.ZERO,
+                P0P1P0, P0P0P1, oom);
+        V3D_LineSegment result = instance.getQR();
+        System.out.println(result.toString());
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getRP method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetRP() {
+        System.out.println("getRP");
+        V3D_Plane instance = V3D_Plane.X0;
+        int oom = -3;
+        V3D_LineSegment expResult = new V3D_LineSegment(V3D_Vector.ZERO,
+                P0P0P1, V3D_Vector.ZERO, oom);
+        V3D_LineSegment result = instance.getRP();
+        System.out.println(result.toString());
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of isQAtOrigin method, of class V3D_Plane.
+     */
+    @Test
+    public void testIsQAtOrigin() {
+        System.out.println("isQAtOrigin");
+        V3D_Plane instance = V3D_Plane.X0;
+        assertFalse(instance.isQAtOrigin());
+        // Test 2
+        instance = new V3D_Plane(P2P2P2, P0P0P0, P1P1P0, 0);
+        assertTrue(instance.isQAtOrigin());
+    }
+
+    /**
+     * Test of getN method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetN() {
+        System.out.println("getN");
+        int oom = 0;
+        V3D_Plane instance = V3D_Plane.X0;
+        V3D_Vector expResult = V3D_Vector.I;
+        V3D_Vector result = instance.getN(oom);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = V3D_Plane.Y0;
+        expResult = V3D_Vector.J.reverse();
+        result = instance.getN(oom);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = V3D_Plane.Z0;
+        expResult = V3D_Vector.K;
+        result = instance.getN(oom);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getEquationCoefficients method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetEquationCoefficients() {
+        System.out.println("getEquationCoefficients");
+        int oom = -3;
+        V3D_Plane instance = instance = new V3D_Plane(P0P0P0, P1P1P1, P1P0P0, oom);
+        Math_BigRational[] expResult = new Math_BigRational[4];
+        expResult[0] = Math_BigRational.ZERO;
+        expResult[1] = Math_BigRational.ONE;
+        expResult[2] = Math_BigRational.ONE.negate();
+        expResult[3] = Math_BigRational.ZERO;
+        Math_BigRational[] result = instance.getEquationCoefficients();
+//        for (int i = 0; i < result.length; i ++) {
+//            System.out.println(i + " " + result[i].toRationalString());
+//        }
+        assertArrayEquals(expResult, result);
+    }
+
+    /**
+     * Test of rotate method, of class V3D_Plane.
+     */
+    @Test
+    public void testRotate() {
+        System.out.println("rotate");
+        int oom = -3;
+        int oomt = oom - 2;
+        Math_BigRational Pi = Math_BigRational.valueOf(new Math_BigDecimal().getPi(oomt, RoundingMode.HALF_UP));
+        V3D_Vector axisOfRotation = V3D_Vector.I;
+        Math_BigRational theta = Pi.divide(2);
+        V3D_Plane instance = V3D_Plane.X0;
+        instance.rotate(axisOfRotation, theta);
+        assertEquals(V3D_Plane.X0, instance);
+        // Test 2
+        axisOfRotation = V3D_Vector.J;
+        instance = V3D_Plane.X0;
+        instance.rotate(axisOfRotation, theta);
+        //System.out.println(instance.toString());
+        assertEquals(V3D_Plane.Z0, instance);
+        // Test 3
+        axisOfRotation = V3D_Vector.K;
+        instance = V3D_Plane.X0;
+        instance.rotate(axisOfRotation, theta);
+        //System.out.println(instance.toString());
+        assertEquals(V3D_Plane.Z0, instance);
+        // Test 4
+        axisOfRotation = V3D_Vector.I;
+        theta = Pi;
+        instance = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom);
+        instance.rotate(axisOfRotation, theta);
+        //System.out.println(instance.toString());
+        assertEquals(new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom), instance);
+        // Test 5
+        axisOfRotation = V3D_Vector.J;
+        theta = Pi;
+        instance = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom);
+        instance.rotate(axisOfRotation, theta);
+        V3D_Plane expResult = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2N2, oom);
+        //System.out.println(instance.toString());
+        assertEquals(expResult, instance);
+        // Test 5
+        axisOfRotation = V3D_Vector.K;
+        theta = Pi;
+        instance = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom);
+        instance.rotate(axisOfRotation, theta);
+        expResult = new V3D_Plane(P1P0P0, P0P0P0, P0N2P0, P0N2P2, oom);
+        //System.out.println(instance.toString());
+        assertEquals(expResult, instance);
+        //assertEquals(new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom), instance);
     }
 }

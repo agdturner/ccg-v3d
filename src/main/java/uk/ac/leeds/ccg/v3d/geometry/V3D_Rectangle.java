@@ -47,12 +47,7 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
      * The other corner of the rectangle. The others are {@link #p}, {@link #q},
      * and {@link #r}.
      */
-    protected final V3D_Vector s;
-    
-//    /**
-//     * {@link #s} with rotations applied.
-//     */
-//    protected V3D_Vector sTemp;
+    protected V3D_Vector s;
 
 //    /**
 //     * Initialised when the q provided to initialise this is at the origin and p
@@ -679,5 +674,11 @@ public class V3D_Rectangle extends V3D_Plane implements V3D_Face {
         } else {
             return Math_BigDecimal.min(ld, td, rd, bd);
         }
+    }
+    
+    @Override
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+        super.rotate(axisOfRotation, theta);
+        s = s.rotate(axisOfRotation, theta, bI, oom);
     }
 }

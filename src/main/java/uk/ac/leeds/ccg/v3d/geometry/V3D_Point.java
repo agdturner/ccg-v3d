@@ -99,16 +99,19 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param rel What {@link #rel} is set to.
      */
     public V3D_Point(V3D_Vector offset, V3D_Vector rel) {
-        super(offset, Math.min(offset.getMagnitude().getOom(),
+        super(new V3D_Vector(offset), Math.min(offset.getMagnitude().getOom(),
                 rel.getMagnitude().getOom()));
-        this.rel = rel;
+        this.rel = new V3D_Vector(rel);
+//        super(offset, Math.min(offset.getMagnitude().getOom(),
+//                rel.getMagnitude().getOom()));
+//        this.rel = rel;
     }
 
     /**
      * @param p The point to duplicate
      */
     public V3D_Point(V3D_VPoint p) {
-        super(p.getOffsetVector(), V3D_Environment.DEFAULT_OOM);
+        super(new V3D_Vector(p.offset), V3D_Environment.DEFAULT_OOM);
         this.rel = new V3D_Vector(p.rel);
     }
 
@@ -180,7 +183,6 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param pad A padding of spaces.
      * @return A description of this.
      */
-    @Override
     public String toString(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
@@ -192,8 +194,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param pad A padding of spaces.
      * @return A description of the fields.
      */
+    @Override
     protected String toStringFields(String pad) {
-        return pad + "offset=" + offset.toString(pad) + "\n"
+        return super.toStringFields(pad) + "\n"
                 + pad + ",\n"
                 + pad + "rel=" + rel.toString(pad);
     }

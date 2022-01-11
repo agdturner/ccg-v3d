@@ -20,10 +20,9 @@ import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
- * For representing and processing triangles in 3D. A triangle has a non-zero 
- * area. The corner points are {@link #p}, {@link #q}
- * and {@link #r}. The following depicts a generic
- * triangle {@code
+ * For representing and processing triangles in 3D. A triangle has a non-zero
+ * area. The corner points are {@link #p}, {@link #q} and {@link #r}. The
+ * following depicts a generic triangle {@code
  *                          pq
  *  p *- - - - - - - - - - - + - - - - - - - - - - -* q
  *     \~                   mpq                   ~/
@@ -101,7 +100,6 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //     * The centroid.
 //     */
 //    private V3D_Point c;
-
     /**
      * Creates a new triangle.
      *
@@ -110,12 +108,11 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     public V3D_Triangle(V3D_Triangle t) {
         super(t);
     }
-    
 
     /**
-     * Creates a new triangle.
-     * {@link #offset} is set to {@link V3D_Vector#ZERO}.
-     * 
+     * Creates a new triangle. {@link #offset} is set to
+     * {@link V3D_Vector#ZERO}.
+     *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
@@ -145,7 +142,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      *
      * @param l A line segment representing one of the three edges of the
      * triangle.
-     * @param r Defines the other point relative l.offset that defines the triangle.
+     * @param r Defines the other point relative l.offset that defines the
+     * triangle.
      * @param oom The Order of Magnitude for the initialisation.
      */
     public V3D_Triangle(V3D_LineSegment l, V3D_Vector r, int oom) {
@@ -165,18 +163,15 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      */
     public V3D_Triangle(V3D_LineSegment lpq, V3D_LineSegment lqr,
             V3D_LineSegment lrp, int oom) {
-        super(V3D_Vector.ZERO, lpq.getP(oom).getVector(oom), 
+        super(V3D_Vector.ZERO, lpq.getP(oom).getVector(oom),
                 lpq.getQ(oom).getVector(oom), lqr.getQ(oom).getVector(oom), oom);
     }
-    
-    @Override
-    public String toString(String pad) {
-        return this.getClass().getSimpleName() + "\n"
-                + pad + "(\n"
-                + toStringFields(pad + " ") + "\n"
-                + pad + ")";
-    }
 
+    @Override
+    public String toString() {
+        return toString("");
+    }
+    
     @Override
     public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
@@ -195,7 +190,6 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //        return new V3D_Triangle(getP(oom).apply(v, oom), 
 //                getQ(oom).apply(v, oom), getR(oom).apply(v, oom), oom);
 //    }
-    
     /**
      * @param pt The point to intersect with.
      * @param oom The Order of Magnitude for the precision of the calculation.
@@ -456,5 +450,43 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //        //System.out.println("c2=" + c2.toString());
 //        return c0;
         return new V3D_Point(getPV().add(getQV(), oom).add(getRV(), oom).divide(Math_BigRational.valueOf(3), oom));
+    }
+
+    /**
+     * Test if two triangles are equal. Two triangles are equal if they have 3
+     * coincident points, so even if the order is different and one is clockwise
+     * and the other anticlockwise.
+     *
+     * @param t The other triangle to test for equality.
+     * @return {@code true} iff {@code this} is equal to {@code t}.
+     */
+    public boolean equals(V3D_Triangle t) {
+        if (t.p.equals(p)) {
+            if (t.q.equals(q)) {
+                return t.r.equals(r);
+            } else if (t.q.equals(r)) {
+                return t.r.equals(q);
+            } else {
+                return false;
+            }
+        } else if (t.p.equals(q)) {
+            if (t.q.equals(r)) {
+                return t.r.equals(p);
+            } else if (t.q.equals(p)) {
+                return t.r.equals(r);
+            } else {
+                return false;
+            }
+        } else if (t.p.equals(r)) {
+            if (t.q.equals(p)) {
+                return t.r.equals(q);
+            } else if (t.q.equals(p)) {
+                return t.r.equals(q);
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }

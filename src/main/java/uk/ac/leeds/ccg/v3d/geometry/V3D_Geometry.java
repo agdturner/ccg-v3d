@@ -111,9 +111,10 @@ public abstract class V3D_Geometry implements Serializable {
      * @param pad The padding.
      * @return A padded description.
      */
-    public String toString(String pad) {
-        return pad + "offset=" + offset.toStringFields(pad + " ") + ",\n"
-                + "oom=" + oom;
+    protected String toStringFields(String pad) {
+        return pad + "offset=" + offset.toString(pad) + "\n"
+                + pad + ",\n"
+                + pad + "oom=" + oom;
     }
 
     /**

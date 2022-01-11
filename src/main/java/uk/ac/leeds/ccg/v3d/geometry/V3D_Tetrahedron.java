@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  *
@@ -57,7 +58,7 @@ import java.math.BigDecimal;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Tetrahedron implements V3D_Volume, Serializable {
+public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -67,29 +68,44 @@ public class V3D_Tetrahedron implements V3D_Volume, Serializable {
     protected V3D_Envelope en;
 
     /**
-     * The pqr triangle of the tetrahedron.
+     * For defining one of the points that defines the tetrahedron.
      */
-    public final V3D_Triangle pqr;
+    public V3D_Vector p;
 
     /**
-     * The qsr triangle of the tetrahedron.
+     * For defining one of the points that defines the tetrahedron.
      */
-    public final V3D_Triangle qsr;
+    public V3D_Vector q;
 
     /**
-     * The spr triangle of the tetrahedron.
+     * For defining one of the points that defines the tetrahedron.
      */
-    public final V3D_Triangle spr;
+    public V3D_Vector r;
 
     /**
-     * The psq triangle of the tetrahedron.
+     * For defining one of the points that defines the tetrahedron.
      */
-    public final V3D_Triangle psq;
+    public V3D_Vector s;
 
-//    /**
-//     * For storing the centroid.
-//     */
-//    protected V3D_Point c;
+    /**
+     * For storing the pqr triangle of the tetrahedron.
+     */
+    public V3D_Triangle pqr;
+
+    /**
+     * For storing the qsr triangle of the tetrahedron.
+     */
+    public V3D_Triangle qsr;
+
+    /**
+     * For storing the spr triangle of the tetrahedron.
+     */
+    public V3D_Triangle spr;
+
+    /**
+     * For storing the psq triangle of the tetrahedron.
+     */
+    public V3D_Triangle psq;
 
     /**
      * Create a new instance.
@@ -100,52 +116,162 @@ public class V3D_Tetrahedron implements V3D_Volume, Serializable {
      * @param s A point that defines the tetrahedron.
      * @param oom The Order of Magnitude for the initialisation.
      */
-    public V3D_Tetrahedron(V3D_Vector p, V3D_Vector q, V3D_Vector r,
-            V3D_Vector s, int oom) {
-        pqr = new V3D_Triangle(p, q, r, oom);
-        qsr = new V3D_Triangle(q, s, r, oom);
-        spr = new V3D_Triangle(s, p, r, oom);
-        psq = new V3D_Triangle(p, s, q, oom);
+    public V3D_Tetrahedron(V3D_Vector offset, int oom, V3D_Vector p,
+            V3D_Vector q, V3D_Vector r, V3D_Vector s) {
+        super(offset, oom);
+        this.p = p;
+        this.q = q;
+        this.r = r;
+        this.s = s;
     }
 
-    /**
-     * Create a new instance.
-     * 
-     * @param pqr What {@link #pqr} is set to.
-     * @param qsr What {@link #qsr} is set to.
-     * @param spr What {@link #spr} is set to.
-     * @param psq What {@link #psq} is set to. 
-     */
-    public V3D_Tetrahedron(V3D_Triangle pqr, V3D_Triangle qsr, V3D_Triangle spr,
-            V3D_Triangle psq) {
-        this.pqr = pqr;
-        this.qsr = qsr;
-        this.spr = spr;
-        this.psq = psq;
-    }
+//    /**
+//     * Create a new instance.
+//     *
+//     * @param pqr What {@link #pqr} is set to.
+//     * @param qsr What {@link #qsr} is set to.
+//     * @param spr What {@link #spr} is set to.
+//     * @param psq What {@link #psq} is set to.
+//     */
+//    public V3D_Tetrahedron(V3D_Vector offset, int oom, V3D_Triangle pqr,
+//            V3D_Triangle qsr, V3D_Triangle spr, V3D_Triangle psq) {
+//        super(offset, oom);
+//        this.pqr = pqr;
+//        this.qsr = qsr;
+//        this.spr = spr;
+//        this.psq = psq;
+//    }
 
     @Override
     public String toString() {
-        return this.getClass().getName() + "(" + pqr.toString() + ", "
-                + qsr.toString() + ", " + spr.toString() + ", "
-                + psq.toString() + ")";
+        return toString("");
+    }
+    
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of this.
+     */
+    public String toString(String pad) {
+        return this.getClass().getSimpleName() + "\n"
+                + pad + "(\n"
+                + toStringFields(pad + " ") + "\n"
+                + pad + ")";
+    }
+
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of the fields.
+     */
+    @Override
+    protected String toStringFields(String pad) {
+        String r = super.toStringFields(pad);
+        r += pad + ",\n";
+        r += pad + "p=" + p.toString(pad) + "\n";
+        r += pad + ",\n";
+        r += pad + "q=" + q.toString(pad) + "\n";
+        r += pad + ",\n";
+        r += pad + "r=" + this.r.toString(pad) + "\n";
+        r += pad + ",\n";
+        r += pad + "s=" + s.toString(pad) + "\n";
+        return r;
     }
 
     @Override
     public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = pqr.getEnvelope(oom).union(qsr.getEnvelope(oom));
+//            en = pqr.getEnvelope(oom).union(qsr.getEnvelope(oom));
+            en = getP(oom).getEnvelope(oom)
+                    .union(getQ(oom).getEnvelope(oom))
+                    .union(getR(oom).getEnvelope(oom))
+                    .union(getS(oom).getEnvelope(oom));
         }
         return en;
     }
 
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return The area of the triangle (rounded).
+     * @return {@link #p} with {@link #offset} applied.
+     */
+    public V3D_Point getP(int oom) {
+        return new V3D_Point(offset, p);
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return {@link #p} with {@link #offset} applied.
+     */
+    public V3D_Point getQ(int oom) {
+        return new V3D_Point(offset, q);
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return {@link #p} with {@link #offset} applied.
+     */
+    public V3D_Point getR(int oom) {
+        return new V3D_Point(offset, r);
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return {@link #p} with {@link #offset} applied.
+     */
+    public V3D_Point getS(int oom) {
+        return new V3D_Point(offset, s);
+    }
+
+    /**
+     * If {@code null} initialise {@link #pqr} and return it.
+     */
+    public V3D_Triangle getPqr() {
+        if (pqr == null) {
+            pqr = new V3D_Triangle(p, q, r, oom);
+        }
+        return pqr;
+    }
+    
+    /**
+     * If {@code null} initialise {@link #qsr} and return it.
+     */
+    public V3D_Triangle getQsr() {
+        if (qsr == null) {
+            qsr = new V3D_Triangle(q, s, r, oom);
+            }
+        return qsr;
+    }
+    
+    /**
+     * If {@code null} initialise {@link #spr} and return it.
+     */
+    public V3D_Triangle getSpr() {
+        if (spr == null) {
+            spr = new V3D_Triangle(s, p, r, oom);
+            }
+        return spr;
+    }
+    
+    /**
+     * If {@code null} initialise {@link #psq} and return it.
+     */
+    public V3D_Triangle getPsq() {
+        if (psq == null) {
+            psq = new V3D_Triangle(p, s, q, oom);
+            }
+        return psq;
+    }
+    
+    /**
+     * For calculating and returning the surface area.
+     * 
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return The outer surface area of the tetrahedron (rounded).
      */
     @Override
     public BigDecimal getArea(int oom) {
-        return pqr.getArea(oom).add(qsr.getArea(oom)).add(spr.getArea(oom)).add(psq.getArea(oom));
+        return getPqr().getArea(oom)
+                .add(getQsr().getArea(oom))
+                .add(getSpr().getArea(oom))
+                .add(getPsq().getArea(oom));
     }
 
     /**
@@ -194,5 +320,28 @@ public class V3D_Tetrahedron implements V3D_Volume, Serializable {
     @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+        this.pqr.rotate(axisOfRotation, theta);
+        this.psq.rotate(axisOfRotation, theta);
+        this.spr.rotate(axisOfRotation, theta);
+        this.qsr.rotate(axisOfRotation, theta);
     }
 }

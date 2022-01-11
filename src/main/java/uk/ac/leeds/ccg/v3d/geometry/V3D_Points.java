@@ -98,6 +98,8 @@ public class V3D_Points extends V3D_Geometry {
 
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (V3D_Vector rel : rels) {
+            rel.rotate(axisOfRotation, theta, bI, oom);
+        }
     }
 }
