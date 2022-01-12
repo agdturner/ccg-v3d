@@ -193,11 +193,11 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     /**
      * @param pt The point to intersect with.
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @param flag Distinguishes this from
+     * @param b Distinguishes this from
      * {@link V3D_Plane#isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
      * @return A point or line segment.
      */
-    public boolean isIntersectedBy(V3D_Point pt, int oom, boolean flag) {
+    public boolean isIntersectedBy(V3D_Point pt, int oom, boolean b) {
         if (getEnvelope(oom).isIntersectedBy(pt, oom)) {
             if (isIntersectedBy(pt, oom)) {
                 return isIntersectedBy0(pt, oom);
@@ -253,14 +253,15 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     /**
      * @param l The line to test for intersection with this.
      * @param oom The Order of Magnitude for the calculation.
-     * @param b To distinguish this from {@link V3D_Plane#isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}.
+     * @param b To distinguish this from
+     * {@link V3D_Plane#isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}.
      * @return {@code true} If this and {@code l} intersect.
      */
     public boolean isIntersectedBy(V3D_Line l, int oom, boolean b) {
         if (super.isIntersectedBy(l, oom)) {
             V3D_Geometry g = super.getIntersection(l, oom);
             if (g instanceof V3D_Point pt) {
-                return isIntersectedBy(pt, oom);
+                return isIntersectedBy(pt, oom, b);
             } else {
                 if (getPQ().isIntersectedBy(l, oom)) {
                     return true;
@@ -281,10 +282,14 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         if (this.getEnvelope(oom).isIntersectedBy(l.getEnvelope(oom))) {
             if (isIntersectedBy(l, oom)) {
                 V3D_Geometry g = super.getIntersection(l, oom, b);
-                if (g instanceof V3D_Point pt) {
-                    return l.isIntersectedBy(pt, oom);
+                if (g == null) {
+                    return false;
                 } else {
-                    return l.isIntersectedBy((V3D_LineSegment) g, oom, b);
+                    if (g instanceof V3D_Point pt) {
+                        return l.isIntersectedBy(pt, oom);
+                    } else {
+                        return l.isIntersectedBy((V3D_LineSegment) g, oom, b);
+                    }
                 }
             }
         }
@@ -343,24 +348,21 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
             } else if (lqri instanceof V3D_LineSegment) {
                 return lqri;
             } else {
-                return new V3D_LineSegment(
-                        ((V3D_Point) lqri).getVector(oom),
-                        ((V3D_Point) lrpi).getVector(oom), oom);
+                return getGeometry(((V3D_Point) lqri).getVector(oom),
+                        ((V3D_Point) lrpi).getVector(oom));
             }
         } else if (lpqi instanceof V3D_LineSegment) {
             return lpqi;
         } else {
             if (lqri == null) {
-                return new V3D_LineSegment(
-                        ((V3D_Point) lpqi).getVector(oom),
-                        ((V3D_Point) lrpi).getVector(oom), oom);
+                return getGeometry(((V3D_Point) lpqi).getVector(oom),
+                        ((V3D_Point) lrpi).getVector(oom));
             } else if (lqri instanceof V3D_LineSegment) {
                 return lqri;
             } else {
                 if (lrpi == null) {
-                    return new V3D_LineSegment(
-                            ((V3D_Point) lqri).getVector(oom),
-                            ((V3D_Point) lpqi).getVector(oom), oom);
+                    return getGeometry(((V3D_Point) lqri).getVector(oom),
+                            ((V3D_Point) lpqi).getVector(oom));
                 } else if (lrpi instanceof V3D_LineSegment) {
                     return lrpi;
                 } else {
@@ -371,14 +373,29 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         }
     }
 
+    /**
+     * If {@code v1} and {@code v2} are the same, then return a point with
+     * offset set to {@link V3D_Vector#ZERO}, otherwise return a line segment.
+     *
+     * @param v1 A vector.
+     * @param v2 A vector.
+     */
+    public V3D_Geometry getGeometry(V3D_Vector v1, V3D_Vector v2) {
+        if (v1.equals(v2)) {
+            return new V3D_Point(v1);
+        } else {
+            return new V3D_LineSegment(v1, v2, oom);
+        }
+    }
+
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
         V3D_Point lp = l.getP(oom);
         V3D_Point lq = l.getQ(oom);
 //        boolean lip = isIntersectedBy(l.p, oom);
 //        boolean liq = isIntersectedBy(l.q, oom);
-        boolean lip = isIntersectedBy(lp, oom);
-        boolean liq = isIntersectedBy(lq, oom);
+        boolean lip = isIntersectedBy(lp, oom, b);
+        boolean liq = isIntersectedBy(lq, oom, b);
         if (lip) {
             if (liq) {
                 return l;
@@ -495,6 +512,17 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         }
     }
 
+//    /**
+//     * Change {@link #offset} without changing the overall line.
+//     *
+//     * @param offset What {@link #offset} is set to.
+//     */
+//    @Override
+//    public void setOffset(V3D_Vector offset) {
+//        super.setOffset(offset);
+//        lpq = null;
+//    }
+    
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         super.rotate(axisOfRotation, theta);
