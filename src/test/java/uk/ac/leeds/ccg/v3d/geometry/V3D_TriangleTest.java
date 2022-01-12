@@ -123,19 +123,7 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Triangle.
      */
     @Test
-    public void testIsIntersectedBy_V3D_Point() {
-        System.out.println("isIntersectedBy");
-        int oom = -1;
-        V3D_Point pt = pP0P0P0;
-        V3D_Triangle instance = new V3D_Triangle(P0P0P0, P0P1P0, P1P0P0, oom);
-        assertTrue(instance.isIntersectedBy(pt, oom));
-    }
-
-    /**
-     * Test of isIntersectedBy method, of class V3D_Triangle.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_Line() {
+    public void testIsIntersectedBy_V3D_Line_int() {
         System.out.println("isIntersectedBy");
         int oom = -1;
         V3D_Line l = new V3D_Line(P0P0P0, P2P2P2, oom);
@@ -233,10 +221,212 @@ public class V3D_TriangleTest extends V3D_Test {
         // Test
         oom = -3; //-2 fails!
         instance = new V3D_Triangle(P0P0P0, P1P0P0, P1P1P0, oom);
-        expResult = new V3D_Point(Math_BigRational.valueOf(2, 3), 
+        expResult = new V3D_Point(Math_BigRational.valueOf(2, 3),
                 Math_BigRational.valueOf(1, 3), Math_BigRational.ZERO);
         result = instance.getCentroid(oom);
         assertTrue(expResult.equals(result));
+    }
+
+    /**
+     * Test of toString method, of class V3D_Triangle.
+     */
+    @Test
+    public void testToString() {
+        System.out.println("toString");
+        V3D_Triangle instance = new V3D_Triangle(P0P0P0, P1P0P0, P0P1P0, P0P0P1, -3);
+        String expResult = "V3D_Triangle\n"
+                + "(\n"
+                + " offset=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " oom=-3\n"
+                + " ,\n"
+                + " p=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " q=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " r=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0)\n"
+                + " )\n"
+                + ")";
+        String result = instance.toString();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Triangle.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_Point_int() {
+        System.out.println("isIntersectedBy");
+        V3D_Point pt = null;
+        int oom = -3;
+        V3D_Triangle instance = null;
+        instance = new V3D_Triangle(P0P0P0, P1P0P0, P0P1P0, P0P0P1, oom);
+        // Test 1
+        pt = new V3D_Point(P0P0P0, P1P0P0);
+        assertTrue(instance.isIntersectedBy(pt, oom));
+        // Test 2
+        pt = new V3D_Point(P0P0P0, P0P1P0);
+        assertTrue(instance.isIntersectedBy(pt, oom));
+        // Test 3
+        pt = new V3D_Point(P0P0P0, P0P0P1);
+        assertTrue(instance.isIntersectedBy(pt, oom));
+        // Test 4
+        pt = new V3D_Point(P1P0P0, P0P0P0);
+        assertTrue(instance.isIntersectedBy(pt, oom));
+        // Test 5
+        pt = new V3D_Point(P0P1P0, P0P0P0);
+        assertTrue(instance.isIntersectedBy(pt, oom));
+        // Test 6
+        pt = new V3D_Point(P0P0P1, P0P0P0);
+        assertTrue(instance.isIntersectedBy(pt, oom));
+        // Test 7
+        pt = new V3D_Point(P1P0P0, P1P0P0);
+        assertFalse(instance.isIntersectedBy(pt, oom));
+        // Test 8
+        pt = new V3D_Point(P0P1P0, P0P1P0);
+        assertFalse(instance.isIntersectedBy(pt, oom));
+        // Test 9
+        pt = new V3D_Point(P0P0P1, P0P0P1);
+        assertFalse(instance.isIntersectedBy(pt, oom));
+        // Test 10
+        instance = new V3D_Triangle(P0P0P0, P1P0P0, P1P2P0, P2P0P0, oom);
+        pt = new V3D_Point(P0P0P0, new V3D_Vector(P1, P3, P0));
+        assertFalse(instance.isIntersectedBy(pt, oom));
+        pt = new V3D_Point(P0P0P0, P1P2P0);
+        assertTrue(instance.isIntersectedBy(pt, oom));
+        pt = new V3D_Point(P0P0P0, P1P1P0);
+        assertTrue(instance.isIntersectedBy(pt, oom));
+        pt = new V3D_Point(P0P0P0, P0P0P0);
+        assertFalse(instance.isIntersectedBy(pt, oom));
+        pt = new V3D_Point(P0P0P0, new V3D_Vector(Math_BigRational.valueOf(1.5d), P1, P0));
+        assertTrue(instance.isIntersectedBy(pt, oom));
+    }
+
+    /**
+     * Test of isIntersectedBy0 method, of class V3D_Triangle covered by
+     * {@link #testIsIntersectedBy_V3D_Point_int()}.
+     */
+    @Test
+    public void testIsIntersectedBy0() {
+        System.out.println("isIntersectedBy0");
+//        V3D_Point pt = null;
+//        int oom = 0;
+//        V3D_Triangle instance = null;
+//        boolean expResult = false;
+//        boolean result = instance.isIntersectedBy0(pt, oom);
+//        assertEquals(expResult, result);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Triangle.
+     */
+    @Test
+    public void testIsIntersectedBy_3args() {
+        System.out.println("isIntersectedBy");
+        V3D_LineSegment l = null;
+        int oom = -3;
+        boolean b = false;
+        V3D_Triangle instance = null;
+        // Test 1
+        instance = new V3D_Triangle(P0P0P0, P1P0P0, P1P2P0, P2P0P0, oom);
+        l = new V3D_LineSegment(P0P0P0, P0P0P0, P1P0P0, oom);
+        assertTrue(instance.isIntersectedBy(l, oom, b));
+        // Test 2
+        l = new V3D_LineSegment(P0P0P0, P0P0P0, new V3D_Vector(Math_BigRational.valueOf(0.5d), P0, P0), oom);
+        assertFalse(instance.isIntersectedBy(l, oom, b));
+        // Test 3
+        l = new V3D_LineSegment(P0P0P0, P1P0P1, P1P0P0, oom);
+        assertTrue(instance.isIntersectedBy(l, oom, b));
+        // Test 4
+        l = new V3D_LineSegment(P0P0P0, P1P0P1, P1P0N1, oom);
+        assertTrue(instance.isIntersectedBy(l, oom, b));
+        // Test 5
+        l = new V3D_LineSegment(P0P0P0, P1P0P1, new V3D_Vector(P1, P0, Math_BigRational.valueOf(0.5d)), oom);
+        assertFalse(instance.isIntersectedBy(l, oom, b));
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Triangle.
+     */
+    @Test
+    public void testGetIntersection_V3D_Line_int() {
+        System.out.println("getIntersection");
+        V3D_Line l = null;
+        int oom = 0;
+        V3D_Triangle instance = null;
+        V3D_Geometry expResult = null;
+        V3D_Geometry result = instance.getIntersection(l, oom);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Triangle.
+     */
+    @Test
+    public void testGetIntersection_3args() {
+        System.out.println("getIntersection");
+        V3D_LineSegment l = null;
+        int oom = 0;
+        boolean b = false;
+        V3D_Triangle instance = null;
+        V3D_Geometry expResult = null;
+        V3D_Geometry result = instance.getIntersection(l, oom, b);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of equals method, of class V3D_Triangle.
+     */
+    @Test
+    public void testEquals() {
+        System.out.println("equals");
+        V3D_Triangle t = null;
+        V3D_Triangle instance = null;
+        boolean expResult = false;
+        boolean result = instance.equals(t);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of rotate method, of class V3D_Triangle.
+     */
+    @Test
+    public void testRotate() {
+        System.out.println("rotate");
+        V3D_Vector axisOfRotation = null;
+        Math_BigRational theta = null;
+        V3D_Triangle instance = null;
+        instance.rotate(axisOfRotation, theta);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
 }
