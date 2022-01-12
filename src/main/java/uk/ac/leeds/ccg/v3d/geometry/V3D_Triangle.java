@@ -328,10 +328,13 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         if (g == null) {
             return null;
         }
-        V3D_Geometry enil = getEnvelope(oom).getIntersection(l, oom);
-        if (enil == null) {
+        if (!getEnvelope(oom).isIntersectedBy(l, oom)) {
             return null;
         }
+//        V3D_Geometry enil = getEnvelope(oom).getIntersection(l, oom);
+//        if (enil == null) {
+//            return null;
+//        }
         /**
          * Get the intersection of the line and each edge of the triangle.
          */
@@ -355,8 +358,12 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
             return lpqi;
         } else {
             if (lqri == null) {
-                return getGeometry(((V3D_Point) lpqi).getVector(oom),
-                        ((V3D_Point) lrpi).getVector(oom));
+                if (lrpi == null) {
+                    return (V3D_Point) lpqi;
+                } else {
+                    return getGeometry(((V3D_Point) lpqi).getVector(oom),
+                            ((V3D_Point) lrpi).getVector(oom));
+                }
             } else if (lqri instanceof V3D_LineSegment) {
                 return lqri;
             } else {
@@ -522,7 +529,6 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //        super.setOffset(offset);
 //        lpq = null;
 //    }
-    
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         super.rotate(axisOfRotation, theta);

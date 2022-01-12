@@ -71,8 +71,8 @@ public class V3D_LineSegmentsCollinear extends V3D_Line implements V3D_FiniteGeo
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_LineSegmentsCollinear) {
-            return equals((V3D_LineSegmentsCollinear) o);
+        if (o instanceof V3D_LineSegmentsCollinear lsc) {
+            return equals(lsc);
         }
         return false;
     }

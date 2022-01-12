@@ -16,6 +16,9 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 //import java.util.ArrayList;
 
 /**
@@ -36,8 +39,8 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     /**
      * The collection of triangles.
      */
-    //protected final List<V3D_Triangle> triangles;
-    protected final V3D_Triangle[] triangles;
+    protected final List<V3D_Triangle> triangles;
+    //protected final V3D_Triangle[] triangles;
 
     /**
      * Create a new instance.
@@ -48,26 +51,26 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     public V3D_TrianglesCoplanar(int oom, V3D_Triangle... triangles) {
         super(triangles[0].offset, triangles[0].p, triangles[0].q,
                 triangles[0].r, oom);
-        this.triangles = triangles;
+        this.triangles = Arrays.asList(triangles);
     }
 
     @Override
     public String toString() {
         String s = this.getClass().getName() + "(";
-        int i;
-        for (i = 0; i < triangles.length - 1; i++) {
-            s += triangles[i].toString() + ", ";
+        s += triangles.get(0).toString();
+        for (int i = 1; i < triangles.size(); i++) {
+            s += ", " + triangles.get(i);
         }
-        s += triangles[i].toString() + ")";
+        s += ")";
         return s;
     }
 
     @Override
     public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = triangles[0].getEnvelope(oom);
-            for (int i = 1; i < triangles.length; i++) {
-                en = en.union(triangles[i].getEnvelope(oom));
+            en = triangles.get(0).getEnvelope(oom);
+            for (int i = 1; i < triangles.size(); i++) {
+                en = en.union(triangles.get(i).getEnvelope(oom));
             }
         }
         return en;
@@ -106,10 +109,8 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     @Override
     public boolean isIntersectedBy(V3D_Line l, int oom) {
         if (super.isIntersectedBy(l, oom)) {
-            for (V3D_Triangle triangle : triangles) {
-                if (triangle.isIntersectedBy(l, oom)) {
-                    return true;
-                }
+            if (triangles.stream().anyMatch(triangle -> (triangle.isIntersectedBy(l, oom)))) {
+                return true;
             }
             return false;
             //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy(l, oom)));
@@ -168,17 +169,31 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * @return A point or line segment.
      */
     @Override
-    public V3D_Geometry getIntersection(V3D_Line l, int oom) {    
+    public V3D_Geometry getIntersection(V3D_Line l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
         return getEnvelope(oom).isIntersectedBy(l, oom);
+    }
+    
+    /**
+     * For this to work as expected, all triangles should have the same offset 
+     * (point for the rotation).
+     * 
+     * @param axisOfRotation
+     * @param theta 
+     */
+    @Override
+     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+        for (V3D_Triangle t : triangles) {
+            t.rotate(axisOfRotation, theta);
+        }
     }
 }

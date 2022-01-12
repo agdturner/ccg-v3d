@@ -151,8 +151,10 @@ public class V3D_Tetrahedrons extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+        for (V3D_Tetrahedron t : tetrahedrons) {
+            t.rotate(axisOfRotation, theta);
+        }
     }
     
     
