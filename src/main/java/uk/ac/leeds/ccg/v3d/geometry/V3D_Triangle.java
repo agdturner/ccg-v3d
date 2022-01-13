@@ -351,6 +351,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
             } else if (lqri instanceof V3D_LineSegment) {
                 return lqri;
             } else {
+                if (lrpi == null) {
+                    return lqri;
+                }
                 return getGeometry(((V3D_Point) lqri).getVector(oom),
                         ((V3D_Point) lrpi).getVector(oom));
             }
@@ -359,7 +362,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         } else {
             if (lqri == null) {
                 if (lrpi == null) {
-                    return (V3D_Point) lpqi;
+                    return lpqi;
                 } else {
                     return getGeometry(((V3D_Point) lpqi).getVector(oom),
                             ((V3D_Point) lrpi).getVector(oom));
@@ -375,6 +378,10 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 } else {
                     return V3D_FiniteGeometry.getGeometry((V3D_Point) lpqi,
                             (V3D_Point) lrpi, (V3D_Point) lrpi, oom);
+//                    return V3D_FiniteGeometry.getGeometry((V3D_Point) lpqi,
+//                            (V3D_Point) lrpi, (V3D_Point) lqri, oom);
+//                    return V3D_FiniteGeometry.getGeometry((V3D_Point) lpqi,
+//                            (V3D_Point) lrpi, (V3D_Point) lqri, oom);
                 }
             }
         }

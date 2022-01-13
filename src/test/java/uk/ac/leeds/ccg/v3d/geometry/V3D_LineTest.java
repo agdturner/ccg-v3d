@@ -410,6 +410,8 @@ public class V3D_LineTest extends V3D_Test {
 
     /**
      * Test of getIntersection method, of class V3D_Line.
+     * A useful tool for creating test cases:
+     * https://www.mathepower.com/en/lineintersection.php
      */
     @Test
     public void testGetIntersection_V3D_Line_int() {
@@ -432,6 +434,13 @@ public class V3D_LineTest extends V3D_Test {
         expResult = pP0P0P0;
         result = instance.getIntersection(l, oom);
         assertTrue(expResult.equals(result));
+        // Test 4
+        instance = new V3D_Line(N1P1P1, P1N1P1, oom);
+        l = new V3D_Line(P0P2P1, P1P1P1, oom);
+        //expResult = null;
+        result = instance.getIntersection(l, oom);
+        //System.out.println(result);
+        assertNull(result);
     }
 
     /**

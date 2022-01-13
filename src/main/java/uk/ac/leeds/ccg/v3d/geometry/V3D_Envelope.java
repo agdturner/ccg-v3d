@@ -852,6 +852,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                             oom);
                                 }
                             } else {
+                                if (ail instanceof V3D_LineSegment) {
+                                    return ail;
+                                }
                                 return V3D_FiniteGeometry.getGeometry(
                                         (V3D_Point) ail, (V3D_Point) ril,
                                         oom);

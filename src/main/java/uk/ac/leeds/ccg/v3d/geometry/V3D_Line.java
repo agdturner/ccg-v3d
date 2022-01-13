@@ -533,6 +533,8 @@ public class V3D_Line extends V3D_Geometry {
             if (tp.isIntersectedBy(l, oom)) {
                 // If lines are coincident return this.
                 return this;
+            } else {
+                return null;
             }
         }
         V3D_Point tq = getQ(oom);

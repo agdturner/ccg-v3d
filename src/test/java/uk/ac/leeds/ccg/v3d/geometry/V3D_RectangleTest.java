@@ -420,7 +420,10 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Line l = new V3D_Line(P0P0P0, P0P0P0, P1P0P0, oom);
         V3D_Rectangle instance = new V3D_Rectangle(P0P0P0, P0P0P0, P1P0P0, P1P1P0, P0P1P0, oom);
         V3D_Geometry expResult = new V3D_LineSegment(P0P0P0, P0P0P0, P1P0P0, oom);
+        //V3D_Geometry expResult = new V3D_LineSegment(P0P0P0, P1P0P0, P1P1P0, oom);
         V3D_Geometry result = instance.getIntersection(l, oom);
+        System.out.println(result);
+        result = instance.getIntersection(l, oom);
         assertEquals(expResult, result);
     }
 
@@ -436,6 +439,8 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Rectangle instance = new V3D_Rectangle(P0P0P0, P0P0P0, P1P0P0, P1P1P0, P0P1P0, oom);
         V3D_Geometry expResult = new V3D_LineSegment(P0P0P0, P0P0P0, P1P0P0, oom);
         V3D_Geometry result = instance.getIntersection(l, oom, b);
+        System.out.println(result);
+        result = instance.getIntersection(l, oom, b);
         assertEquals(expResult, result);
     }
 
@@ -465,5 +470,4 @@ public class V3D_RectangleTest extends V3D_Test {
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
-
 }
