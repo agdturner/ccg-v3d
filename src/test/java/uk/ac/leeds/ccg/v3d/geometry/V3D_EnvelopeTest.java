@@ -315,7 +315,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_Line() {
         System.out.println("getIntersection");
-        int oom = -1;
+        int oom = -3;
         V3D_Line li = new V3D_Line(P0P0P0, P0P0P1, oom);
         V3D_Envelope instance = new V3D_Envelope(oom, pN1N1N1, pP1P1P1);
         V3D_Geometry expResult = new V3D_LineSegment(P0P0N1, P0P0P1, oom);
@@ -392,7 +392,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_LineSegment_boolean() {
         System.out.println("getIntersection");
-        int oom = -1;
+        int oom = -3;
         V3D_LineSegment li = new V3D_LineSegment(N2N2N2, P0P0P0, oom);
         V3D_Envelope instance = new V3D_Envelope(oom, pN1N1N1, pP1P1P1);
         V3D_Geometry expResult = new V3D_LineSegment(N1N1N1, P0P0P0, oom);

@@ -424,6 +424,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
             }
         } else {
             V3D_Geometry li = getIntersection(l, oom);
+            if (li == null) {
+                return null;
+            }
             if (liq) {
                 if (li instanceof V3D_Point) {
                     //return l.q;

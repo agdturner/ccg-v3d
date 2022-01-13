@@ -246,8 +246,16 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
                     return true;
                 }
                 Math_BigRationalSqrt l = tp.getDistance(oom, tq);
-                if (a.add(b, oom).compareTo(l) != 1) {
-                    return true;
+                Math_BigRationalSqrt apb = a.add(b, oom);
+                if (apb == null) {
+                    int oomt = oom - 2;
+                    if (a.getSqrt(oomt).add(b.getSqrt(oomt)).compareTo(l.getSqrt(oomt)) != 1) {
+                        return true;
+                    }
+                } else {
+                    if (apb.compareTo(l) != 1) {
+                        return true;
+                    }
                 }
             }
         }
