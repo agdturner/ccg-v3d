@@ -280,7 +280,7 @@ public class V3D_RectangleTest extends V3D_Test {
     public void testGetDistance() {
         System.out.println("getDistance");
         int oom = -1;
-        V3D_Point p = new V3D_Point(N1N1P0);
+        V3D_Point p = new V3D_Point(N1N1P0, oom);
         V3D_Rectangle instance = new V3D_Rectangle(P0P0P0, P0P0P0, P0P1P0, P1P1P0, P1P0P0, oom);
         BigDecimal expResult = new Math_BigRationalSqrt(2, oom).toBigDecimal(oom);
         BigDecimal result = instance.getDistance(p, oom);

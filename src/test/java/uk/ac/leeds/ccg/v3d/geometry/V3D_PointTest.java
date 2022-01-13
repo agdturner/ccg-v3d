@@ -785,7 +785,7 @@ public class V3D_PointTest extends V3D_Test {
         V3D_Vector axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt);
         V3D_Vector offset = new V3D_Vector(1, 0, 0);
         V3D_Vector rel = new V3D_Vector(1, 0, 0);
-        V3D_Point instance = new V3D_Point(offset, rel);
+        V3D_Point instance = new V3D_Point(offset, rel, oom);
         Math_BigRational theta = Pi;
         instance.rotate(axisOfRotation, theta);
         V3D_Point expResult = new V3D_Point(1, 1, 0);
@@ -794,7 +794,7 @@ public class V3D_PointTest extends V3D_Test {
         axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt);
         offset = new V3D_Vector(0, 0, 0);
         rel = new V3D_Vector(1, 0, 0);
-        instance = new V3D_Point(offset, rel);
+        instance = new V3D_Point(offset, rel, oom);
         theta = Pi;
         instance.rotate(axisOfRotation, theta);
         expResult = new V3D_Point(0, 1, 0);
@@ -803,7 +803,7 @@ public class V3D_PointTest extends V3D_Test {
         axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt);
         offset = new V3D_Vector(2, 0, 0);
         rel = new V3D_Vector(1, 0, 0);
-        instance = new V3D_Point(offset, rel);
+        instance = new V3D_Point(offset, rel, oom);
         theta = Pi;
         instance.rotate(axisOfRotation, theta);
         expResult = new V3D_Point(2, 1, 0);
@@ -812,7 +812,7 @@ public class V3D_PointTest extends V3D_Test {
         axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt);
         offset = new V3D_Vector(1, 0, 0);
         rel = new V3D_Vector(2, 0, 0);
-        instance = new V3D_Point(offset, rel);
+        instance = new V3D_Point(offset, rel, oom);
         theta = Pi;
         instance.rotate(axisOfRotation, theta);
         expResult = new V3D_Point(1, 2, 0);

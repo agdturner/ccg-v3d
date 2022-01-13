@@ -86,7 +86,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
     public void testToString() {
         System.out.println("toString");
         int oom = -1;
-        V3D_Envelope instance = new V3D_Envelope(oom, new V3D_Point(P0P0P0));
+        V3D_Envelope instance = new V3D_Envelope(oom, new V3D_Point(P0P0P0, oom));
         String expResult = "V3D_Envelope(xMin=0, xMax=0, yMin=0, yMax=0"
                 + ", zMin=0, zMax=0)";
         String result = instance.toString();
@@ -100,9 +100,11 @@ public class V3D_EnvelopeTest extends V3D_Test {
     public void testEnvelope() {
         System.out.println("envelope");
         int oom = -1;
-        V3D_Envelope e1 = new V3D_Envelope(oom, new V3D_Point(P0P0P0));
-        V3D_Envelope instance = new V3D_Envelope(oom, new V3D_Point(P1P1P1));
-        V3D_Envelope expResult = new V3D_Envelope(oom, new V3D_Point(P0P0P0), new V3D_Point(P1P1P1));
+        V3D_Envelope e1 = new V3D_Envelope(oom, new V3D_Point(P0P0P0, oom));
+        V3D_Envelope instance = new V3D_Envelope(oom, 
+                new V3D_Point(P1P1P1, oom));
+        V3D_Envelope expResult = new V3D_Envelope(oom, 
+                new V3D_Point(P0P0P0, oom), new V3D_Point(P1P1P1, oom));
         V3D_Envelope result = instance.union(e1);
         assertEquals(expResult, result);
     }

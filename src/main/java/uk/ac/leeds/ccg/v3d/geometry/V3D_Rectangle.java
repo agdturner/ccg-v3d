@@ -192,7 +192,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @return {@link #sTemp} rotated and with {@link #offset} applied.
      */
     public V3D_Point getS() {
-        return new V3D_Point(offset, getSV());
+        return new V3D_Point(offset, getSV(), oom);
     }
 
     @Override

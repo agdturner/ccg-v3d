@@ -69,14 +69,26 @@ public class V3D_Ray extends V3D_Line {
     }
 
     /**
-     * Create a new instance.
+     * Create a new instance. {@link #offset} is set to {@link #V3D_Vector.ZERO}.
      *
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param oom The Order of Magnitude for initialising this.
      */
     public V3D_Ray(V3D_Vector p, V3D_Vector q, int oom) {
-        super(p, q, oom);
+        this(V3D_Vector.ZERO, p, q, oom);
+    }
+            
+    /**
+     * Create a new instance.
+     *
+     * @param offset What {@link #offset} is set to.
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     * @param oom The Order of Magnitude for initialising this.
+     */
+    public V3D_Ray(V3D_Vector offset, V3D_Vector p, V3D_Vector q, int oom) {
+        super(offset, p, q, oom);
     }
 
     /**

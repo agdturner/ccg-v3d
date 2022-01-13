@@ -2775,7 +2775,7 @@ public class V3D_PlaneTest extends V3D_Test {
         assertTrue(V3D_Geometrics.isCoplanar(oom, pl, p2));
         V3D_Vector v2 = new V3D_Vector(-15, 15, 0);
         //assertTrue(V3D_Geometrics.isCoplanar(oom, pl, p2.apply(v2, oom)));
-        assertTrue(V3D_Geometrics.isCoplanar(oom, pl, new V3D_Point(p2.offset, p2.getRel().add(v2, oom))));
+        assertTrue(V3D_Geometrics.isCoplanar(oom, pl, new V3D_Point(p2.offset, p2.getRel().add(v2, oom), oom)));
         //assertTrue(V3D_Geometrics.isCoplanar(oom, pl, new V3D_Point(p2.offset.add(v2, oom), p2.rel)));
 
         //expResult = new V3D_Line(p2, v2, oom);
@@ -3574,8 +3574,9 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetQ() {
         System.out.println("getQ");
+        int oom = V3D_Environment.DEFAULT_OOM;
         V3D_Plane instance = V3D_Plane.X0;
-        V3D_Point expResult = new V3D_Point(P0P0P0, P0P1P0);
+        V3D_Point expResult = new V3D_Point(P0P0P0, P0P1P0, oom);
         V3D_Point result = instance.getQ();
         //System.out.println(result);
         assertEquals(expResult, result);
@@ -3613,8 +3614,9 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetR() {
         System.out.println("getR");
+        int oom = V3D_Environment.DEFAULT_OOM;
         V3D_Plane instance = V3D_Plane.X0;
-        V3D_Point expResult = new V3D_Point(P0P0P0, P0P0P1);
+        V3D_Point expResult = new V3D_Point(P0P0P0, P0P0P1, oom);
         V3D_Point result = instance.getR();
         //System.out.println(result);
         assertEquals(expResult, result);

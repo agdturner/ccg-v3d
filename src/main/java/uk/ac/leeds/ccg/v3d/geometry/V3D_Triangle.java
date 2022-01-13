@@ -396,7 +396,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      */
     public V3D_Geometry getGeometry(V3D_Vector v1, V3D_Vector v2) {
         if (v1.equals(v2)) {
-            return new V3D_Point(v1);
+            return new V3D_Point(v1, oom);
         } else {
             return new V3D_LineSegment(v1, v2, oom);
         }
@@ -488,7 +488,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //        //System.out.println("c1=" + c1.toString());
 //        //System.out.println("c2=" + c2.toString());
 //        return c0;
-        return new V3D_Point(getPV().add(getQV(), oom).add(getRV(), oom).divide(Math_BigRational.valueOf(3), oom));
+        return new V3D_Point(getPV().add(getQV(), oom).add(getRV(), oom)
+                .divide(Math_BigRational.valueOf(3), oom), oom);
     }
 
     /**

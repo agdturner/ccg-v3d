@@ -532,7 +532,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     public V3D_Geometry getIntersection(V3D_Line li, int oom) {
         switch (type) {
             case 0 -> {
-                V3D_Point fp = new V3D_Point((Point) f);
+                V3D_Point fp = new V3D_Point((Point) f, oom);
                 if (li.isIntersectedBy(fp, oom)) {
                     return fp;
                 } else {
@@ -747,7 +747,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         }
         switch (type) {
             case 0 -> {
-                V3D_Point fp = new V3D_Point((Point) f);
+                V3D_Point fp = new V3D_Point((Point) f, oom);
                 if (li.isIntersectedBy(fp, oom)) {
                     return fp;
                 } else {
@@ -1075,7 +1075,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     public boolean isIntersectedBy(V3D_Line li, int oom) {
         switch (type) {
             case 0 -> {
-                return li.isIntersectedBy(new V3D_Point((Point) f), oom);
+                return li.isIntersectedBy(new V3D_Point((Point) f, oom), oom);
             }
             case 1 -> {
                 return new V3D_LineSegment((LineSegment) l, oom).isIntersectedBy(li, oom);
@@ -1135,7 +1135,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         if (le.isIntersectedBy(this)) {
             switch (type) {
                 case 0 -> {
-                    return li.isIntersectedBy(new V3D_Point((Point) f), oom);
+                    return li.isIntersectedBy(new V3D_Point((Point) f, oom), oom);
                 }
                 case 1 -> {
                     return new V3D_LineSegment((LineSegment) l, oom).isIntersectedBy(li, oom);

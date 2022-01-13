@@ -366,7 +366,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getP(int oom) {
-        return new V3D_Point(offset, p);
+        return new V3D_Point(offset, p, oom);
     }
 
     /**
@@ -416,7 +416,7 @@ public class V3D_Line extends V3D_Geometry {
 //        if (q == null) {
 //            q = p.add(v, oom);
 //        }
-        return new V3D_Point(offset, getQ());
+        return new V3D_Point(offset, getQ(), oom);
     }
 
     /**

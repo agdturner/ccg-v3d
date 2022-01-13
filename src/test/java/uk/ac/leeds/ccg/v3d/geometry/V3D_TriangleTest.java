@@ -272,43 +272,43 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Triangle instance;
         instance = new V3D_Triangle(P0P0P0, P1P0P0, P0P1P0, P0P0P1, oom);
         // Test 1
-        pt = new V3D_Point(P0P0P0, P1P0P0);
+        pt = new V3D_Point(P0P0P0, P1P0P0, oom);
         assertTrue(instance.isIntersectedBy(pt, oom, b));
         // Test 2
-        pt = new V3D_Point(P0P0P0, P0P1P0);
+        pt = new V3D_Point(P0P0P0, P0P1P0, oom);
         assertTrue(instance.isIntersectedBy(pt, oom, b));
         // Test 3
-        pt = new V3D_Point(P0P0P0, P0P0P1);
+        pt = new V3D_Point(P0P0P0, P0P0P1, oom);
         assertTrue(instance.isIntersectedBy(pt, oom, b));
         // Test 4
-        pt = new V3D_Point(P1P0P0, P0P0P0);
+        pt = new V3D_Point(P1P0P0, P0P0P0, oom);
         assertTrue(instance.isIntersectedBy(pt, oom, b));
         // Test 5
-        pt = new V3D_Point(P0P1P0, P0P0P0);
+        pt = new V3D_Point(P0P1P0, P0P0P0, oom);
         assertTrue(instance.isIntersectedBy(pt, oom, b));
         // Test 6
-        pt = new V3D_Point(P0P0P1, P0P0P0);
+        pt = new V3D_Point(P0P0P1, P0P0P0, oom);
         assertTrue(instance.isIntersectedBy(pt, oom, b));
         // Test 7
-        pt = new V3D_Point(P1P0P0, P1P0P0);
+        pt = new V3D_Point(P1P0P0, P1P0P0, oom);
         assertFalse(instance.isIntersectedBy(pt, oom, b));
         // Test 8
-        pt = new V3D_Point(P0P1P0, P0P1P0);
+        pt = new V3D_Point(P0P1P0, P0P1P0, oom);
         assertFalse(instance.isIntersectedBy(pt, oom, b));
         // Test 9
-        pt = new V3D_Point(P0P0P1, P0P0P1);
+        pt = new V3D_Point(P0P0P1, P0P0P1, oom);
         assertFalse(instance.isIntersectedBy(pt, oom, b));
         // Test 10
         instance = new V3D_Triangle(P0P0P0, P1P0P0, P1P2P0, P2P0P0, oom);
-        pt = new V3D_Point(P0P0P0, new V3D_Vector(P1, P3, P0));
+        pt = new V3D_Point(P0P0P0, new V3D_Vector(P1, P3, P0), oom);
         assertFalse(instance.isIntersectedBy(pt, oom, b));
-        pt = new V3D_Point(P0P0P0, P1P2P0);
+        pt = new V3D_Point(P0P0P0, P1P2P0, oom);
         assertTrue(instance.isIntersectedBy(pt, oom, b));
-        pt = new V3D_Point(P0P0P0, P1P1P0);
+        pt = new V3D_Point(P0P0P0, P1P1P0, oom);
         assertTrue(instance.isIntersectedBy(pt, oom, b));
-        pt = new V3D_Point(P0P0P0, P0P0P0);
+        pt = new V3D_Point(P0P0P0, P0P0P0, oom);
         assertFalse(instance.isIntersectedBy(pt, oom, b));
-        pt = new V3D_Point(P0P0P0, new V3D_Vector(Math_BigRational.valueOf(1.5d), P1, P0));
+        pt = new V3D_Point(P0P0P0, new V3D_Vector(Math_BigRational.valueOf(1.5d), P1, P0), oom);
         assertTrue(instance.isIntersectedBy(pt, oom, b));
     }
 
@@ -335,10 +335,10 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_3args() {
         System.out.println("isIntersectedBy");
-        V3D_LineSegment l = null;
+        V3D_LineSegment l;
         int oom = -3;
         boolean b = false;
-        V3D_Triangle instance = null;
+        V3D_Triangle instance;
         // Test 1
         instance = new V3D_Triangle(P0P0P0, P1P0P0, P1P2P0, P2P0P0, oom);
         l = new V3D_LineSegment(P0P0P0, P0P0P0, P1P0P0, oom);
@@ -363,15 +363,15 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_Line_int() {
         System.out.println("getIntersection");
-        V3D_Line l = null;
+        V3D_Line l;
         int oom = -3;
-        V3D_Triangle instance = null;
-        V3D_Geometry expResult = null;
-        V3D_Geometry result = null;
+        V3D_Triangle instance;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
         // Test 1
         instance = new V3D_Triangle(P0P0P0, P1P0P0, P1P2P0, P2P0P0, oom);
         l = new V3D_Line(P0P0P0, P1P0P1, P1P0N1, oom);
-        expResult = new V3D_Point(P0P0P0, P1P0P0);
+        expResult = new V3D_Point(P0P0P0, P1P0P0, oom);
         result = instance.getIntersection(l, oom);
         //System.out.println(result);
         //System.out.println(expResult);
@@ -394,16 +394,16 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetIntersection_3args() {
         System.out.println("getIntersection");
-        V3D_LineSegment l = null;
+        V3D_LineSegment l;
         int oom = -3;
         boolean b = false;
-        V3D_Triangle instance = null;
-        V3D_Geometry expResult = null;
-        V3D_Geometry result = null;
+        V3D_Triangle instance;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
         // Test 1
         instance = new V3D_Triangle(P0P0P0, P1P0P0, P1P2P0, P2P0P0, oom);
         l = new V3D_LineSegment(P0P0P0, P1P0P1, P1P0N1, oom);
-        expResult = new V3D_Point(P0P0P0, P1P0P0);
+        expResult = new V3D_Point(P0P0P0, P1P0P0, oom);
         result = instance.getIntersection(l, oom, b);
         //System.out.println(result);
         //System.out.println(expResult);
@@ -465,14 +465,14 @@ public class V3D_TriangleTest extends V3D_Test {
         v1 = P0P0P0;
         v2 = P0P0P0;
         result = instance.getGeometry(v1, v2);
-        expResult = new V3D_Point(P0P0P0, P0P0P0);
+        expResult = new V3D_Point(P0P0P0, P0P0P0, oom);
         assertEquals(expResult, result);
         // Test 2
         v1 = P0P0P0;
         v2 = P0P0P0;
         instance = new V3D_Triangle(P0P0P0, P1P0P0, P0P1P0, P1P1P0, oom);
         result = instance.getGeometry(v1, v2);
-        expResult = new V3D_Point(P0P0P0, P0P0P0);
+        expResult = new V3D_Point(P0P0P0, P0P0P0, oom);
         assertEquals(expResult, result);
     }
 
@@ -487,32 +487,32 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Triangle instance;
         V3D_Triangle expResult;
         int oom = -3;
-        int oomt = oom -2;
+        int oomt = oom - 2;
         Math_BigRational Pi = Math_BigRational.valueOf(
                 new Math_BigDecimal().getPi(oomt, RoundingMode.HALF_UP));
         // Test 1
         instance = new V3D_Triangle(P0P0P0, P1P0P0, P0P1P0, P1P1P0, oom);
         axisOfRotation = V3D_Vector.I;
-        theta = Pi;                
+        theta = Pi;
         instance.rotate(axisOfRotation, theta);
         expResult = new V3D_Triangle(P0P0P0, P1P0P0, P0N1P0, P1N1P0, oom);
         //System.out.println(instance);
         assertEquals(expResult, instance);
         // Test 2
-        theta = Pi.divide(2);                
+        theta = Pi.divide(2);
         instance.rotate(axisOfRotation, theta);
         expResult = new V3D_Triangle(P0P0P0, P1P0P0, P0P0P1, P1P0P1, oom);
         //System.out.println(instance);
         assertEquals(expResult, instance);
         // Test 3
         instance = new V3D_Triangle(P0P0P0, P2P0P0, P0P2P0, P2P2P0, oom);
-        theta = Pi;                
+        theta = Pi;
         instance.rotate(axisOfRotation, theta);
         expResult = new V3D_Triangle(P0P0P0, P1N1P0, P0N2P0, P1N2P0, oom);
         System.out.println(instance);
         assertEquals(expResult, instance);
         // Test 4
-        theta = Pi.divide(2);                
+        theta = Pi.divide(2);
         instance.rotate(axisOfRotation, theta);
         expResult = new V3D_Triangle(P0P0P0, P1P0P1, P0P0P2, P1P0P2, oom);
         System.out.println(instance);
@@ -521,7 +521,7 @@ public class V3D_TriangleTest extends V3D_Test {
         instance = new V3D_Triangle(P0P0P0, P1P0P0, P0P1P0, P1P1P0, oom);
         instance.setOffset(P1P0P0);
         axisOfRotation = V3D_Vector.I;
-        theta = Pi;                
+        theta = Pi;
         instance.rotate(axisOfRotation, theta);
         expResult = new V3D_Triangle(P0P0P0, P0P1P0, P1P1P0, P1P2P0, oom);
         System.out.println(instance);

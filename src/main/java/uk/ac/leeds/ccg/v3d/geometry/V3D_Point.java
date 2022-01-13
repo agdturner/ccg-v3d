@@ -64,77 +64,72 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     public static final V3D_Point ORIGIN = new V3D_Point(0, 0, 0);
 
     /**
-     * The position relative to the {@link #offset}. Whilst the {@link #offset}
-     * can change. {@code rel} cannot.
+     * The position relative to the {@link #offset}. Taken together with
+     * {@link #offset}, this gives the point location.
      */
     protected V3D_Vector rel;
 
-//    /**
-//     * The position relative to the {@link #offset}.
-//     */
-//    public V3D_Vector relTemp;
     /**
      * Create a new instance which is completely independent of {@code p}.
      *
-     * @param p The point to duplicate.
+     * @param p The point to clone/duplicate.
      */
     public V3D_Point(V3D_Point p) {
         super(new V3D_Vector(p.offset), p.getOom());
         this.rel = new V3D_Vector(p.rel);
-//        super(V3D_Vector.ZERO);
-//        this.rel = p.rel.add(p.offset, p.rel.getMagnitude().getOom());
     }
 
     /**
-     * {@link #offset} is set to {@link V3D_Vector#ZERO}
+     * Create a new instance with {@link #offset} set to
+     * {@link V3D_Vector#ZERO}.
      *
-     * @param rel What {@link #rel} is set to.
+     * @param rel Cloned to initialise {@link #rel}.
+     * @param oom What {@link #oom} is set to.
      */
-    public V3D_Point(V3D_Vector rel) {
-        this(V3D_Vector.ZERO, rel);
-    }
-
-    /**
-     * @param offset What {@link #offset} is set to.
-     * @param rel What {@link #rel} is set to.
-     */
-    public V3D_Point(V3D_Vector offset, V3D_Vector rel) {
-        super(new V3D_Vector(offset), Math.min(offset.getMagnitude().getOom(),
-                rel.getMagnitude().getOom()));
-        this.rel = new V3D_Vector(rel);
-//        super(offset, Math.min(offset.getMagnitude().getOom(),
-//                rel.getMagnitude().getOom()));
-//        this.rel = rel;
-    }
-
-    /**
-     * @param p The point to duplicate
-     */
-    public V3D_Point(V3D_VPoint p) {
-        super(new V3D_Vector(p.offset), V3D_Environment.DEFAULT_OOM);
-        this.rel = new V3D_Vector(p.rel);
-    }
-
-    /**
-     * @param p The point to duplicate
-     */
-    public V3D_Point(V3D_Envelope.Point p) {
-        super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
-        this.rel = new V3D_Vector(p);
+    public V3D_Point(V3D_Vector rel, int oom) {
+        this(V3D_Vector.ZERO, rel, oom);
     }
 
     /**
      * Create a new instance.
      *
-     * @param v The vector.
-     * @param oom The Order of Magnitude for the precision.
+     * @param offset Cloned to initialise {@link #offset}.
+     * @param rel Cloned to initialise {@link #rel}.
+     * @param oom What {@link #oom} is set to.
      */
-    public V3D_Point(V3D_Vector v, int oom) {
-        super(V3D_Vector.ZERO, oom);
-        this.rel = v;
+    public V3D_Point(V3D_Vector offset, V3D_Vector rel, int oom) {
+//        super(new V3D_Vector(offset), Math.min(offset.getMagnitude().getOom(),
+//                rel.getMagnitude().getOom()));
+        super(new V3D_Vector(offset), oom);
+        this.rel = new V3D_Vector(rel);
     }
 
     /**
+     * Create a new instance.
+     *
+     * @param p The point to clone/duplicate.
+     * @param oom What {@link #oom} is set to.
+     */
+    public V3D_Point(V3D_VPoint p, int oom) {
+        super(new V3D_Vector(p.offset), V3D_Environment.DEFAULT_OOM);
+        this.rel = new V3D_Vector(p.rel);
+    }
+
+    /**
+     * Create a new instance with {@link #offset} set to {@link V3D_Vector#ZERO}.
+     *
+     * @param p Used to initialise {@link #rel}.
+     * @param oom What {@link #oom} is set to.
+     */
+    public V3D_Point(V3D_Envelope.Point p, int oom) {
+        super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
+        this.rel = new V3D_Vector(p);
+    }
+
+    /**
+     * Create a new instance with {@link #offset} set to {@link V3D_Vector#ZERO}
+     * and {@link #oom} set to {@link V3D_Environment#DEFAULT_OOM}.
+     *
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
@@ -145,6 +140,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
+     * Create a new instance with {@link #offset} set to {@link V3D_Vector#ZERO}
+     * and {@link #oom} set to {@link V3D_Environment#DEFAULT_OOM}.
+     *
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
@@ -155,6 +153,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
+     * Create a new instance with {@link #offset} set to {@link V3D_Vector#ZERO}
+     * and {@link #oom} set to {@link V3D_Environment#DEFAULT_OOM}.
+     *
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
@@ -165,6 +166,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
+     * Create a new instance with {@link #offset} set to {@link V3D_Vector#ZERO}
+     * and {@link #oom} set to {@link V3D_Environment#DEFAULT_OOM}.
+     *
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.

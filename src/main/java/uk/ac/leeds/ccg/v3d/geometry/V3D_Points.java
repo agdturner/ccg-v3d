@@ -68,9 +68,9 @@ public class V3D_Points extends V3D_Geometry {
      */
     public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = new V3D_Envelope(oom, new V3D_Point(offset, rels[0]));
+            en = new V3D_Envelope(oom, new V3D_Point(offset, rels[0], oom));
             for (int i = 1; i < rels.length; i++) {
-                en = en.getIntersection(new V3D_Envelope(oom, new V3D_Point(offset, rels[0])));
+                en = en.getIntersection(new V3D_Envelope(oom, new V3D_Point(offset, rels[0], oom)));
             }
         }
         return en;

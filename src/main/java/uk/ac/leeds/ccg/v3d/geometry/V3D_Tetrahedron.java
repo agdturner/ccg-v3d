@@ -193,7 +193,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getP(int oom) {
-        return new V3D_Point(offset, p);
+        return new V3D_Point(offset, p, oom);
     }
 
     /**
@@ -201,7 +201,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getQ(int oom) {
-        return new V3D_Point(offset, q);
+        return new V3D_Point(offset, q, oom);
     }
 
     /**
@@ -209,7 +209,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getR(int oom) {
-        return new V3D_Point(offset, r);
+        return new V3D_Point(offset, r, oom);
     }
 
     /**
@@ -217,7 +217,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getS(int oom) {
-        return new V3D_Point(offset, s);
+        return new V3D_Point(offset, s, oom);
     }
 
     /**

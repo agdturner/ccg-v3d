@@ -279,7 +279,7 @@ public class V3D_Geometrics {
      */
     private static boolean isCoplanar(int oom, V3D_Plane p, V3D_Vector... points) {
         for (V3D_Vector pt : points) {
-            V3D_Point point = new V3D_Point(p.offset, pt);
+            V3D_Point point = new V3D_Point(p.offset, pt, oom);
             if (!p.isIntersectedBy(point, oom)) {
                 return false;
             }

@@ -307,7 +307,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@link #p} with {@link #offset} and rotations applied.
      */
     public final V3D_Point getP() {
-        return new V3D_Point(offset, getPV());
+        return new V3D_Point(offset, getPV(), oom);
     }
 
 //    /**
@@ -332,7 +332,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@link #q} with {@link #offset} and rotations applied.
      */
     public final V3D_Point getQ() {
-        return new V3D_Point(offset, getQV());
+        return new V3D_Point(offset, getQV(), oom);
     }
 
 //    /**
@@ -358,7 +358,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@link #r} with {@link #offset} and rotations applied.
      */
     public final V3D_Point getR() {
-        return new V3D_Point(offset, getRV());
+        return new V3D_Point(offset, getRV(), oom);
     }
 
     /**
