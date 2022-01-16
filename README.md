@@ -11,19 +11,19 @@ Point positions in space are defined using 3D [cartesian](https://en.wikipedia.o
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>ccg-v3d</artifactId>
-    <version>0.13</version>
+    <version>0.14</version>
 </dependency>
 ```
-[JAR](https://repo1.maven.org/maven2/io/github/agdturner/ccg-v3d/0.13/ccg-v3d-0.13.jar)
+[JAR](https://repo1.maven.org/maven2/io/github/agdturner/ccg-v3d/0.14/ccg-v3d-0.14.jar)
 ```
 <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-v3d -->
 <dependency>
     <groupId>io.github.agdturner</groupId>
     <artifactId>ccg-v3d</artifactId>
-    <version>0.14-SNAPSHOT</version>
+    <version>0.15-SNAPSHOT</version>
 </dependency>
 ```
-[Sonatype SNAPSHOT Directory](https://oss.sonatype.org/content/repositories/snapshots/io/github/agdturner/ccg-v3d/0.14-SNAPSHOT/)
+[Sonatype SNAPSHOT Directory](https://oss.sonatype.org/content/repositories/snapshots/io/github/agdturner/ccg-v3d/0.15-SNAPSHOT/)
 
 ## Details
 Lighter geometries are in the [uk.ac.leeds.ccg.v3d.geometry.light](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/) package. These use [V3D_V](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_V.java) which have three Math_BigRational components related to each respective axis. Most classes extend [V3D_VGeometry](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VGeometry.java) - an abstract class that holds a V3D_V "offset" which can be thought of as the offset of the centroid of the geometry:
