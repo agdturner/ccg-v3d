@@ -111,11 +111,12 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
     /**
      * Create a new instance.
      *
+     * @param e What {@link #e} is set to.
+     * @param offset What {@link #offset} is set to.
      * @param p A point that defines the tetrahedron.
      * @param q A point that defines the tetrahedron.
      * @param r A point that defines the tetrahedron.
      * @param s A point that defines the tetrahedron.
-     * @param oom The Order of Magnitude for the initialisation.
      */
     public V3D_Tetrahedron(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r, V3D_Vector s) {
@@ -142,12 +143,11 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
 //        this.spr = spr;
 //        this.psq = psq;
 //    }
-
     @Override
     public String toString() {
         return toString("");
     }
-    
+
     /**
      * @param pad A padding of spaces.
      * @return A description of this.
@@ -223,6 +223,8 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
 
     /**
      * If {@code null} initialise {@link #pqr} and return it.
+     *
+     * @return {@link #pqr}
      */
     public V3D_Triangle getPqr() {
         if (pqr == null) {
@@ -230,40 +232,46 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
         }
         return pqr;
     }
-    
+
     /**
      * If {@code null} initialise {@link #qsr} and return it.
+     *
+     * @return {@link #qsr}
      */
     public V3D_Triangle getQsr() {
         if (qsr == null) {
             qsr = new V3D_Triangle(e, offset, q, s, r);
-            }
+        }
         return qsr;
     }
-    
+
     /**
      * If {@code null} initialise {@link #spr} and return it.
+     *
+     * @return {@link #spr}
      */
     public V3D_Triangle getSpr() {
         if (spr == null) {
             spr = new V3D_Triangle(e, offset, s, p, r);
-            }
+        }
         return spr;
     }
-    
+
     /**
      * If {@code null} initialise {@link #psq} and return it.
+     *
+     * @return {@link #psq}
      */
     public V3D_Triangle getPsq() {
         if (psq == null) {
             psq = new V3D_Triangle(e, offset, p, s, q);
-            }
+        }
         return psq;
     }
-    
+
     /**
      * For calculating and returning the surface area.
-     * 
+     *
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The outer surface area of the tetrahedron (rounded).
      */
@@ -352,7 +360,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
         s = s.add(offset, e.oom).subtract(this.offset, e.oom);
         this.offset = offset;
     }
-    
+
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         p = p.rotate(axisOfRotation, theta, e.bI, e.oom);

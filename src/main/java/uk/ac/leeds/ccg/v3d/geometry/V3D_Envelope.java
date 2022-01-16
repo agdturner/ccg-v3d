@@ -181,7 +181,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * Create a new instance.
      *
-     * @param oom The Order of Magnitude for the precision.
+     * @param e What {@link #e} is set to.
      * @param points The points used to form the envelop.
      */
     public V3D_Envelope(V3D_Environment e, V3D_Point... points) {
@@ -329,10 +329,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * Create a new instance.
      *
+     * @param e What {@link #e} is set to.
      * @param x The x-coordinate of a point.
      * @param y The y-coordinate of a point.
      * @param z The z-coordinate of a point.
-     * @param oom The Order of Magnitude for the precision.
      */
     public V3D_Envelope(V3D_Environment e, Math_BigRational x,
             Math_BigRational y, Math_BigRational z) {
@@ -342,13 +342,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * Create a new instance.
      *
+     * @param e What {@link #e} is set to.
      * @param xMin What {@link xMin} is set to.
      * @param xMax What {@link xMax} is set to.
      * @param yMin What {@link yMin} is set to.
      * @param yMax What {@link yMax} is set to.
      * @param zMin What {@link zMin} is set to.
      * @param zMax What {@link zMax} is set to.
-     * @param oom The Order of Magnitude for the precision.
      */
     public V3D_Envelope(
             V3D_Environment e,
@@ -363,23 +363,22 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * Create a new instance.
      *
      * @param offset What {@link #offset} is set to.
-     * @param oom The Order of Magnitude for the precision.
-     * @param e An envelope to base this on.
+     * @param en An envelope to base this on.
      */
-    public V3D_Envelope(V3D_Vector offset, V3D_Envelope e) {
-        this(e.e,
-                e.xMin.subtract(e.offset.getDX(e.e.oom))
-                        .add(offset.getDX(e.e.oom)),
-                e.xMax.subtract(e.offset.getDX(e.e.oom))
-                        .add(offset.getDX(e.e.oom)),
-                e.yMin.subtract(e.offset.getDY(e.e.oom))
-                        .add(offset.getDY(e.e.oom)),
-                e.yMax.subtract(e.offset.getDY(e.e.oom))
-                        .add(offset.getDY(e.e.oom)),
-                e.zMin.subtract(e.offset.getDZ(e.e.oom))
-                        .add(offset.getDZ(e.e.oom)),
-                e.zMax.subtract(e.offset.getDZ(e.e.oom))
-                        .add(offset.getDZ(e.e.oom)));
+    public V3D_Envelope(V3D_Vector offset, V3D_Envelope en) {
+        this(en.e,
+                en.xMin.subtract(en.offset.getDX(en.e.oom))
+                        .add(offset.getDX(en.e.oom)),
+                en.xMax.subtract(en.offset.getDX(en.e.oom))
+                        .add(offset.getDX(en.e.oom)),
+                en.yMin.subtract(en.offset.getDY(en.e.oom))
+                        .add(offset.getDY(en.e.oom)),
+                en.yMax.subtract(en.offset.getDY(en.e.oom))
+                        .add(offset.getDY(en.e.oom)),
+                en.zMin.subtract(en.offset.getDZ(en.e.oom))
+                        .add(offset.getDZ(en.e.oom)),
+                en.zMax.subtract(en.offset.getDZ(en.e.oom))
+                        .add(offset.getDZ(en.e.oom)));
     }
 
     @Override
@@ -402,12 +401,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             return this;
         } else {
             return new V3D_Envelope(this.e,
-                    Math_BigRational.min(e.getXMin(e.getOom()), getXMin(this.e.oom)),
-                    Math_BigRational.max(e.getXMax(e.getOom()), getXMax(this.e.oom)),
-                    Math_BigRational.min(e.getYMin(e.getOom()), getYMin(this.e.oom)),
-                    Math_BigRational.max(e.getYMax(e.getOom()), getYMax(this.e.oom)),
-                    Math_BigRational.min(e.getZMin(e.getOom()), getZMin(this.e.oom)),
-                    Math_BigRational.max(e.getZMax(e.getOom()), getZMax(this.e.oom)));
+                    Math_BigRational.min(e.getXMin(this.e.oom), getXMin(this.e.oom)),
+                    Math_BigRational.max(e.getXMax(this.e.oom), getXMax(this.e.oom)),
+                    Math_BigRational.min(e.getYMin(this.e.oom), getYMin(this.e.oom)),
+                    Math_BigRational.max(e.getYMax(this.e.oom), getYMax(this.e.oom)),
+                    Math_BigRational.min(e.getZMin(this.e.oom), getZMin(this.e.oom)),
+                    Math_BigRational.max(e.getZMax(this.e.oom), getZMax(this.e.oom)));
         }
     }
 
@@ -418,18 +417,18 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return {@code true} if this intersects with {@code e}.
      */
     public boolean isIntersectedBy(V3D_Envelope e) {
-        if (e.getXMax(e.getOom()).compareTo(getXMin(this.e.oom)) != -1
-                && e.getXMin(e.getOom()).compareTo(getXMax(this.e.oom)) != 1
-                && getXMax(e.getOom()).compareTo(e.getXMin(this.e.oom)) != -1
-                && getXMin(e.getOom()).compareTo(e.getXMax(this.e.oom)) != 1) {
-            if (e.getYMax(e.getOom()).compareTo(getYMin(this.e.oom)) != -1
-                    && e.getYMin(e.getOom()).compareTo(getYMax(this.e.oom)) != 1
-                    && getYMax(e.getOom()).compareTo(e.getYMin(this.e.oom)) != -1
-                    && getYMin(e.getOom()).compareTo(e.getYMax(this.e.oom)) != 1) {
-                if (e.getZMax(e.getOom()).compareTo(getZMin(this.e.oom)) != -1
-                        && e.getZMin(e.getOom()).compareTo(getZMax(this.e.oom)) != 1
-                        && getZMax(e.getOom()).compareTo(e.getZMin(this.e.oom)) != -1
-                        && getZMin(e.getOom()).compareTo(e.getZMax(this.e.oom)) != 1) {
+        if (e.getXMax(this.e.oom).compareTo(getXMin(this.e.oom)) != -1
+                && e.getXMin(this.e.oom).compareTo(getXMax(this.e.oom)) != 1
+                && getXMax(this.e.oom).compareTo(e.getXMin(this.e.oom)) != -1
+                && getXMin(this.e.oom).compareTo(e.getXMax(this.e.oom)) != 1) {
+            if (e.getYMax(this.e.oom).compareTo(getYMin(this.e.oom)) != -1
+                    && e.getYMin(this.e.oom).compareTo(getYMax(this.e.oom)) != 1
+                    && getYMax(this.e.oom).compareTo(e.getYMin(this.e.oom)) != -1
+                    && getYMin(this.e.oom).compareTo(e.getYMax(this.e.oom)) != 1) {
+                if (e.getZMax(this.e.oom).compareTo(getZMin(this.e.oom)) != -1
+                        && e.getZMin(this.e.oom).compareTo(getZMax(this.e.oom)) != 1
+                        && getZMax(this.e.oom).compareTo(e.getZMin(this.e.oom)) != -1
+                        && getZMin(this.e.oom).compareTo(e.getZMax(this.e.oom)) != 1) {
                     return true;
                 }
             }
@@ -445,12 +444,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return if this is contained by {@code e}
      */
     public boolean isContainedBy(V3D_Envelope e) {
-        return getXMax(this.e.oom).compareTo(e.getXMax(e.getOom())) != 1
-                && getXMin(this.e.oom).compareTo(e.getXMin(e.getOom())) != -1
-                && getYMax(this.e.oom).compareTo(e.getYMax(e.getOom())) != 1
-                && getYMin(this.e.oom).compareTo(e.getYMin(e.getOom())) != -1
-                && getZMax(this.e.oom).compareTo(e.getZMax(e.getOom())) != 1
-                && getZMin(this.e.oom).compareTo(e.getZMin(e.getOom())) != -1;
+        return getXMax(this.e.oom).compareTo(e.getXMax(this.e.oom)) != 1
+                && getXMin(this.e.oom).compareTo(e.getXMin(this.e.oom)) != -1
+                && getYMax(this.e.oom).compareTo(e.getYMax(this.e.oom)) != 1
+                && getYMin(this.e.oom).compareTo(e.getYMin(this.e.oom)) != -1
+                && getZMax(this.e.oom).compareTo(e.getZMax(this.e.oom)) != 1
+                && getZMin(this.e.oom).compareTo(e.getZMin(this.e.oom)) != -1;
     }
 
     /**
@@ -488,12 +487,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             return null;
         }
         return new V3D_Envelope(this.e,
-                Math_BigRational.max(getXMin(this.e.oom), en.getXMin(en.getOom())),
-                Math_BigRational.min(getXMax(this.e.oom), en.getXMax(en.getOom())),
-                Math_BigRational.max(getYMin(this.e.oom), en.getYMin(en.getOom())),
-                Math_BigRational.min(getYMax(this.e.oom), en.getYMax(en.getOom())),
-                Math_BigRational.max(getZMin(this.e.oom), en.getZMin(en.getOom())),
-                Math_BigRational.min(getZMax(this.e.oom), en.getZMax(en.getOom())));
+                Math_BigRational.max(getXMin(this.e.oom), en.getXMin(this.e.oom)),
+                Math_BigRational.min(getXMax(this.e.oom), en.getXMax(this.e.oom)),
+                Math_BigRational.max(getYMin(this.e.oom), en.getYMin(this.e.oom)),
+                Math_BigRational.min(getYMax(this.e.oom), en.getYMax(this.e.oom)),
+                Math_BigRational.max(getZMin(this.e.oom), en.getZMin(this.e.oom)),
+                Math_BigRational.min(getZMax(this.e.oom), en.getZMax(this.e.oom)));
     }
 
     /**
@@ -933,18 +932,18 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return {@code true} iff this and e are equal.
      */
     public boolean equals(V3D_Envelope e) {
-        return this.getXMin(this.e.oom).compareTo(e.getXMin(e.getOom())) == 0
-                && this.getXMax(this.e.oom).compareTo(e.getXMax(e.getOom())) == 0
-                && this.getYMin(this.e.oom).compareTo(e.getYMin(e.getOom())) == 0
-                && this.getYMax(this.e.oom).compareTo(e.getYMax(e.getOom())) == 0
-                && this.getZMin(this.e.oom).compareTo(e.getZMin(e.getOom())) == 0
-                && this.getZMax(this.e.oom).compareTo(e.getZMax(e.getOom())) == 0;
+        return this.getXMin(this.e.oom).compareTo(e.getXMin(this.e.oom)) == 0
+                && this.getXMax(this.e.oom).compareTo(e.getXMax(this.e.oom)) == 0
+                && this.getYMin(this.e.oom).compareTo(e.getYMin(this.e.oom)) == 0
+                && this.getYMax(this.e.oom).compareTo(e.getYMax(this.e.oom)) == 0
+                && this.getZMin(this.e.oom).compareTo(e.getZMin(this.e.oom)) == 0
+                && this.getZMax(this.e.oom).compareTo(e.getZMax(this.e.oom)) == 0;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_Envelope e) {
-            return equals(e);
+        if (o instanceof V3D_Envelope en) {
+            return equals(en);
         }
         return false;
     }
@@ -1561,12 +1560,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-//    @Override
-//    public V3D_Envelope apply(V3D_Vector v, int oom) {
-//        V3D_Envelope e = new V3D_Envelope(this);
-//        e.apply(oom, v);
-//        return e;
-//    }
     /**
      * Abstract Geometry class for geometries aligning with axes.
      */
@@ -1643,6 +1636,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         /**
          * Create a new instance from {@code x}, {@code y}, {@code z}.
          *
+     * @param e What {@link #e} is set to.
          * @param x What {@link #x} is set to.
          * @param y What {@link #y} is set to.
          * @param z What {@link #z} is set to.
@@ -1658,6 +1652,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         /**
          * Create a new instance from {@code v}.
          *
+     * @param e What {@link #e} is set to.
          * @param v The vector.
          */
         public Point(V3D_Environment e, V3D_Vector v) {
@@ -1764,7 +1759,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          *
          * @param p What {@link #p} is set to.
          * @param q What {@link #q} is set to.
-         * @param oom Used in the calculation of the magnitude of {@link #v}.
          */
         public Line(Point p, Point q) {
             super(p.e);
@@ -1780,7 +1774,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * Create a new instance from {@code l}
          *
          * @param l Line to create from.
-         * @param oom Used in the calculation of the magnitude of {@link #v}.
          */
         public Line(Line l) {
             super(l.e);
@@ -2348,7 +2341,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         /**
          * @param p What {@link #p} is set to.
          * @param q What {@link #q} is set to.
-         * @param oom Used in the calculation of the magnitude of {@link #v}.
          */
         public LineSegment(Point p, Point q) {
             super(p, q);
@@ -2490,8 +2482,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * @param pq What {@link #pq} is set to.
          * @param qr What {@link #qr} is set to.
          * @param n What {@link #n} is set to.
-         * @param oom The Order of Magnitude used in the calculation of the
-         * magnitude of the vectors {@link #pq}, {@link #qr}, {@link #n}.
          */
         public Plane(Point p, Point q, Point r, V3D_Vector pq, V3D_Vector qr,
                 V3D_Vector n) {
@@ -2510,8 +2500,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * @param p What {@link #p} is set to.
          * @param q What {@link #q} is set to.
          * @param r What {@link #r} is set to.
-         * @param oom The Order of Magnitude used in the calculation of the
-         * magnitude of the vectors {@link #pq}, {@link #qr}, {@link #n}.
          */
         public Plane(Point p, Point q, Point r) {
             this(p, q, r,
@@ -2695,8 +2683,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * @param q The top left corner of the rectangle.
          * @param r The top right corner of the rectangle.
          * @param s The bottom right corner of the rectangle.
-         * @param oom The Order of Magnitude used in the calculation of the
-         * magnitude of the vectors {@link #pq}, {@link #qr}, {@link #n}.
          * @throws java.lang.RuntimeException iff the points do not define a
          * rectangle.
          */

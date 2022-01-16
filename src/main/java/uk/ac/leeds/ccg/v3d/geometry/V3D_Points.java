@@ -42,8 +42,8 @@ public class V3D_Points extends V3D_Geometry {
     /**
      * Create a new instance.
      *
+     * @param e What {@link #e} is set to.
      * @param offset The offset.
-     * @param oom The Order of Magnitude for the initialisation.
      * @param rels The point locations relative to the offset. 
      */
     public V3D_Points(V3D_Environment e, V3D_Vector offset, V3D_Vector... rels) {
@@ -63,8 +63,6 @@ public class V3D_Points extends V3D_Geometry {
     }
 
     /**
-     * 
-     * @param oom The Order of Magnitude for the precision.
      * @return The Envelope
      */
     public V3D_Envelope getEnvelope() {

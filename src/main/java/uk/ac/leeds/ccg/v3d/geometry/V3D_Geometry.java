@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
@@ -71,20 +70,19 @@ public abstract class V3D_Geometry implements Serializable {
     public V3D_Vector offset;
     
     /**
-     * Creates a new V3D_Geometry.
+     * Creates a new instance.
      *
-     * @param offset What {@link #offset} is set to.
-     * @param oom What {@link #oom} is set to.
+     * @param e What {@link #e} is set to.
      */
     public V3D_Geometry(V3D_Environment e) {
         this(e, V3D_Vector.ZERO);
     }
 
     /**
-     * Creates a new V3D_Geometry.
+     * Creates a new instance.
      *
      * @param offset What {@link #offset} is set to.
-     * @param oom What {@link #oom} is set to.
+     * @param e What {@link #e} is set to.
      */
     public V3D_Geometry(V3D_Environment e, V3D_Vector offset) {
         this.e = e;
@@ -99,20 +97,6 @@ public abstract class V3D_Geometry implements Serializable {
         return e.toStringFields(pad) + "\n"
                 + pad + ",\n"
                 + pad + "offset=" + offset.toString(pad);
-    }
-
-    /**
-     * @return {@link #oom}
-     */
-    public int getOom() {
-        return e.oom;
-    }
-
-    /**
-     * @param oom What {@link #oom} is set to.
-     */
-    public void setOom(int oom) {
-        e.oom = oom;
     }
 
     /**
@@ -133,7 +117,7 @@ public abstract class V3D_Geometry implements Serializable {
     /**
      * For rotating a geometry about the {@link #offset}.
      * @param axisOfRotation The axis of rotation.
-     * @param theta The angle of rotation around the {@link #axisOfRotation} in
+     * @param theta The angle of rotation around the {@code axisOfRotation} in
      * radians. Options for rotation include:
      * <ul>
      * <li>Rotation Matrix https://en.wikipedia.org/wiki/Rotation_matrix</li>
@@ -148,7 +132,6 @@ public abstract class V3D_Geometry implements Serializable {
      * <li>https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula</li>
      * <li>https://en.wikipedia.org/wiki/3D_rotation_group</li>
      * </ul>
-     * @return The geometry rotated about the axisOfRotation by theta radians.
      */
     public abstract void rotate(V3D_Vector axisOfRotation, Math_BigRational theta);
     

@@ -79,17 +79,17 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     /**
      * Create a new instance.
      *
+     * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p The bottom left corner of the rectangle.
      * @param q The top left corner of the rectangle.
      * @param r The top right corner of the rectangle.
      * @param s The bottom right corner of the rectangle.
-     * @param oom The Order of Magnitude for the initialisation.
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
-    public V3D_Rectangle(V3D_Environment e, V3D_Vector offset, V3D_Vector p, V3D_Vector q,
-            V3D_Vector r, V3D_Vector s) {
+    public V3D_Rectangle(V3D_Environment e, V3D_Vector offset, V3D_Vector p, 
+            V3D_Vector q, V3D_Vector r, V3D_Vector s) {
         super(e, offset, p, q, r);
         /**
          * p and q get swapped if q is at the origin in defining the plane, in
@@ -140,7 +140,6 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * Create a new instance.
      *
      * @param r What {@code this} is created from.
-     * @param oom The Order of Magnitude for the initialisation.
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
@@ -178,34 +177,16 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
                 + pad + ",\n"
                 + pad + "s=" + s.toString(pad);
     }
-
-//    /**
-//     * @param oom The Order of Magnitude for the calculation.
-//     * @return The vector from {@link #q} to {@link #s}.
-//     */
-//    public V3D_Vector getQS(int oom) {
-//        return rotate(s.subtract(q, oom), bI, theta);
-//    }
-//    /**
-//     * @return {@link #sTemp} rotated.
-//     */
-//    public V3D_Vector getSV() {
-//        //return new V3D_Point(offset, rotate(s, theta));
-//        if (sTemp == null) {
-//            sTemp = s;
-//        }
-//        sTemp = rotate(sTemp, bI, theta);
-//        return sTemp;
-//    }
+    
     /**
-     * @return {@link #sTemp} rotated.
+     * @return {@link #s}.
      */
     public V3D_Vector getSV() {
         return s;
     }
 
     /**
-     * @return {@link #sTemp} rotated and with {@link #offset} applied.
+     * @return {@link #s} with {@link #offset} applied.
      */
     public V3D_Point getS() {
         return new V3D_Point(e,offset, getSV());
@@ -235,7 +216,6 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The line segment from {@link #r} to {@link #s}.
      */
     protected V3D_LineSegment getRS() {
@@ -244,7 +224,6 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The line segment from {@link #s} to {@link #p}.
      */
     protected V3D_LineSegment getSP() {
@@ -422,7 +401,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             if (i2 == null) {
                 return i1;
             } else {
-                return join(i1, i2, oom);
+                return join(i1, i2);
             }
         }
 //        V3D_Geometry g = new V3D_Plane(this).getIntersection(l, oom);
@@ -603,14 +582,14 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @return A point or line segment.
      */
     protected V3D_Geometry join(V3D_Geometry pointOrLineSegment1,
-            V3D_Geometry pointOrLineSegment2, int oom) {
+            V3D_Geometry pointOrLineSegment2) {
         if (pointOrLineSegment1 instanceof V3D_LineSegment l1) {
             if (pointOrLineSegment2 instanceof V3D_LineSegment l2) {
-                if (l1.getP(oom).equals(l2.getP(oom))) {
+                if (l1.getP(e.oom).equals(l2.getP(e.oom))) {
                     return new V3D_LineSegment(e,offset, l1.q, l2.q);
-                } else if (l1.getP(oom).equals(l2.getQ(oom))) {
+                } else if (l1.getP(e.oom).equals(l2.getQ(e.oom))) {
                     return new V3D_LineSegment(e,offset, l1.q, l2.p);
-                } else if (l1.getQ(oom).equals(l2.getP(oom))) {
+                } else if (l1.getQ(e.oom).equals(l2.getP(e.oom))) {
                     return new V3D_LineSegment(e,offset, l1.p, l2.q);
                 } else {
                     //if (l1.getQ(oom).equals(l2.getQ(oom))) {
@@ -650,7 +629,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             if (i2 == null) {
                 return i1;
             } else {
-                return join(i1, i2, oom);
+                return join(i1, i2);
             }
         }
 //        V3D_Point lp = l.getP(oom);

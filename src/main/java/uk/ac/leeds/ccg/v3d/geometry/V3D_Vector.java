@@ -661,7 +661,7 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * Compute and return the angle (in radians) between {@link #this} and
+     * Compute and return the angle (in radians) between {@code #this} and
      * {@code v}. The algorithm is to:
      * <ol>
      * <li>Find the dot product of the vectors.</li>
@@ -683,7 +683,7 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * Calculate and return {@link #this} rotated using the parameters. (see
+     * Calculate and return {@code #this} rotated using the parameters. (see
      * Doug (https://math.stackexchange.com/users/102399/doug), How do you
      * rotate a vector by a unit quaternion?, URL (version: 2019-06-12):
      * https://math.stackexchange.com/q/535223)
@@ -694,7 +694,7 @@ public class V3D_Vector implements Serializable {
      * @param bI For the Taylor series for trigonometry calculations.
      * @param oom The Order of Magnitude for the precision of the result
      * components.
-     * @return The vector which is {@link #this} rotated using the parameters.
+     * @return The vector which is {@code #this} rotated using the parameters.
      */
     public V3D_Vector rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
             Math_BigInteger bI, int oom) {

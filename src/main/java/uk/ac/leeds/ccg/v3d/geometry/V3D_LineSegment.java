@@ -75,7 +75,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * Create a new instance.
      *
      * @param l What {@code this} is cloned from.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_LineSegment(V3D_LineSegment l) {
         super(l);
@@ -84,9 +83,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     /**
      * Create a new instance. {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
+     * @param e What {@link #e} is set to.
      * @param p What {@link #p} is cloned from.
      * @param q What {@link #q} is cloned from.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_LineSegment(V3D_Environment e, V3D_Vector p, V3D_Vector q) {
         super(e, V3D_Vector.ZERO, p, q);
@@ -95,10 +94,10 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     /**
      * Create a new instance.
      *
+     * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is cloned from.
      * @param q What {@link #q} is cloned from.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_LineSegment(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q) {
@@ -108,10 +107,8 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     /**
      * Create a new instance.
      *
-     * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is cloned from.
      * @param q What {@link #q} is cloned from.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_LineSegment(V3D_Point p, V3D_Point q) {
         super(p, q);
@@ -121,7 +118,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * Create a new instance.
      *
      * @param l What {@code this} is created from.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_LineSegment(V3D_Line l) {
         super(l);
@@ -131,7 +127,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      * Create a new instance.
      *
      * @param l What {@code this} is created from.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_LineSegment(V3D_Envelope.LineSegment l) {
         this(l.e, new V3D_Vector(l.p), new V3D_Vector(l.q));
@@ -228,7 +223,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     }
 
     /**
-     * @param oom The Order of Magnitude for the initialisation.
      * @return {@code new V3D_Envelope(start, end)}
      */
     @Override

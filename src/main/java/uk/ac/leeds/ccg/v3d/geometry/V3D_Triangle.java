@@ -114,10 +114,10 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      * Creates a new triangle. {@link #offset} is set to
      * {@link V3D_Vector#ZERO}.
      *
+     * @param e What {@link #e} is set to.
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_Triangle(V3D_Environment e, V3D_Vector p, V3D_Vector q,
             V3D_Vector r) {
@@ -127,13 +127,13 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     /**
      * Creates a new triangle.
      *
+     * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
-     * @param oom What {@link #oom} is set to.
      */
-    public V3D_Triangle(V3D_Environment e, V3D_Vector offset, V3D_Vector p, 
+    public V3D_Triangle(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r) {
         super(e, offset, p, q, r);
     }
@@ -145,7 +145,6 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      * triangle.
      * @param r Defines the other point relative l.offset that defines the
      * triangle.
-     * @param oom The Order of Magnitude for the initialisation.
      */
     public V3D_Triangle(V3D_LineSegment l, V3D_Vector r) {
         super(l.e, l.offset, l.getP(), l.getQ(), r);
@@ -160,16 +159,15 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      * r.
      * @param lrp A line segment representing the edge of the triangle from r to
      * p.
-     * @param oom The Order of Magnitude for the initialisation.
      */
     public V3D_Triangle(V3D_LineSegment lpq, V3D_LineSegment lqr,
             V3D_LineSegment lrp) {
-        super(lpq.e, V3D_Vector.ZERO, 
+        super(lpq.e, V3D_Vector.ZERO,
                 lpq.getP(lpq.e.oom).getVector(lpq.e.oom),
-                lpq.getQ(lpq.e.oom).getVector(lpq.e.oom), 
+                lpq.getQ(lpq.e.oom).getVector(lpq.e.oom),
                 lqr.getQ(lpq.e.oom).getVector(lpq.e.oom));
     }
-    
+
     /**
      * Creates a new instance.
      *
@@ -409,12 +407,13 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      *
      * @param v1 A vector.
      * @param v2 A vector.
+     * @return Either a line segment or a point.
      */
     public V3D_Geometry getGeometry(V3D_Vector v1, V3D_Vector v2) {
         if (v1.equals(v2)) {
-            return new V3D_Point(e,v1);
+            return new V3D_Point(e, v1);
         } else {
-            return new V3D_LineSegment(e,v1, v2);
+            return new V3D_LineSegment(e, v1, v2);
         }
     }
 
@@ -439,9 +438,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                     V3D_Vector llip = lli.getP();
                     V3D_Vector lpp = l.getP();
                     if (llip.equals(lpp)) {
-                        return new V3D_LineSegment(e,l.offset, lpp, lli.getQ());
+                        return new V3D_LineSegment(e, l.offset, lpp, lli.getQ());
                     } else {
-                        return new V3D_LineSegment(e,l.offset, lpp, llip);
+                        return new V3D_LineSegment(e, l.offset, lpp, llip);
                     }
                 }
             }
@@ -459,9 +458,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                     V3D_Vector lliq = lli.getQ();
                     V3D_Vector lqq = l.getQ();
                     if (lliq.equals(lqq)) {
-                        return new V3D_LineSegment(e,l.offset, lqq, lli.getP());
+                        return new V3D_LineSegment(e, l.offset, lqq, lli.getP());
                     } else {
-                        return new V3D_LineSegment(e,l.offset, lqq, lliq);
+                        return new V3D_LineSegment(e, l.offset, lqq, lliq);
                     }
                 }
             } else {

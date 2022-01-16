@@ -128,9 +128,9 @@ public class V3D_Line extends V3D_Geometry {
      * {@code p} should not be equal to {@code q}. {@link #offset} is set to
      * {@link V3D_Vector#ZERO}.
      *
+     * @param e What {@link #e} is set to.
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_Line(V3D_Environment e, V3D_Vector p, V3D_Vector q) {
         this(e, V3D_Vector.ZERO, p, q);
@@ -139,10 +139,10 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * {@code p} should not be equal to {@code q}.
      *
+     * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_Line(V3D_Environment e, V3D_Vector offset, V3D_Vector p, 
             V3D_Vector q) {
@@ -155,9 +155,9 @@ public class V3D_Line extends V3D_Geometry {
      * If {@code p} equals {@code q} then a RuntimeException is thrown.
      * {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
+     * @param e What {@link #e} is set to.
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
-     * @param oom What {@link #oom} is set to.
      * @param b Ignored.
      * @throws RuntimeException if {@code p.equals(q)}.
      */
@@ -168,10 +168,10 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * If {@code p} equals {@code q} then a RuntimeException is thrown.
      *
+     * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is cloned from.
      * @param p What {@link #p} is cloned from.
      * @param q What {@link #q} is cloned from.
-     * @param oom What {@link #oom} is set to.
      * @param b Ignored.
      * @throws RuntimeException if {@code p.equals(q)}.
      */
@@ -193,8 +193,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param p What {@link #p} is cloned from.
      * @param v The vector defining the line from {@link #p}. What {@link #v} is
      * cloned from.
-     * @param oom The Order of Magnitude for initialising {@link #q} and what
-     * {@link #oom} is set to.
+     * @param e What {@link #e} is set to.
      */
     public V3D_Line(V3D_Vector p, V3D_Vector v, V3D_Environment e) {
         this(V3D_Vector.ZERO, p, v, e);
@@ -207,8 +206,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param p What {@link #p} is set to.
      * @param v The vector defining the line from {@link #p}. What {@link #v} is
      * set to.
-     * @param oom The Order of Magnitude for initialising {@link #q} and what
-     * {@link #oom} is set to.
+     * @param e What {@link #e} is set to.
      */
     public V3D_Line(V3D_Vector offset, V3D_Vector p, V3D_Vector v, V3D_Environment e) {
         super(e, offset);
@@ -224,8 +222,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param p What {@link #p} is set to.
      * @param v The vector defining the line from {@link #p}. What {@link #v} is
      * set to.
-     * @param oom The Order of Magnitude for initialising {@link #q} and what
-     * {@link #oom} is set to.
+     * @param e What {@link #e} is set to.
      * @param check Ignored.
      * @throws RuntimeException if {@code v.isZeroVector()}.
      */
@@ -240,8 +237,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is set to.
      * @param v The vector defining the line from {@link #p}.
-     * @param oom The Order of Magnitude for initialising {@link #q} and what
-     * {@link #oom} is set to.
+     * @param e What {@link #e} is set to.
      * @param check Ignored.
      * @throws RuntimeException if {@code v.isZeroVector()}.
      */
@@ -260,10 +256,8 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * Create a new instance.
      *
-     * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is cloned from.
      * @param q What {@link #q} is cloned from.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_Line(V3D_Point p, V3D_Point q) {
         super(p.e);

@@ -28,7 +28,6 @@ public interface V3D_FiniteGeometry {
     /**
      * For getting the envelope of the geometry
      *
-     * @param oom The Order of Magnitude for the precision.
      * @return The V3D_Envelope.
      */
     public abstract V3D_Envelope getEnvelope();
@@ -99,7 +98,6 @@ public interface V3D_FiniteGeometry {
      *
      * @param p A point.
      * @param q Another possibly equal point.
-     * @param oom The Order of Magnitude for the precision.
      * @return either {@code p} or {@code new V3D_LineSegment(p, q)}
      */
     public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q) {
@@ -118,8 +116,8 @@ public interface V3D_FiniteGeometry {
      * @param p A point.
      * @param q Another possibly equal point.
      * @param r Another possibly equal point.
-     * @param oom The Order of Magnitude for the precision.
-     * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or {@code new V3D_Triangle(p, q, r)}
+     * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or 
+     * {@code new V3D_Triangle(p, q, r)}
      */
     public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q, 
             V3D_Point r) {

@@ -83,8 +83,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
      *
+     * @param e What {@link #e} is set to.
      * @param rel Cloned to initialise {@link #rel}.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_Point(V3D_Environment e, V3D_Vector rel) {
         this(e, V3D_Vector.ZERO, rel);
@@ -93,9 +93,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * Create a new instance.
      *
+     * @param e What {@link #e} is set to.
      * @param offset Cloned to initialise {@link #offset}.
      * @param rel Cloned to initialise {@link #rel}.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_Point(V3D_Environment e, V3D_Vector offset, V3D_Vector rel) {
 //        super(new V3D_Vector(offset), Math.min(offset.getMagnitude().getOom(),
@@ -107,8 +107,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * Create a new instance.
      *
+     * @param e What {@link #e} is set to.
      * @param p The point to clone/duplicate.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_Point(V3D_Environment e, V3D_VPoint p) {
         super(e, new V3D_Vector(p.offset));
@@ -116,10 +116,10 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * Create a new instance with {@link #offset} set to {@link V3D_Vector#ZERO}.
+     * Create a new instance with {@link #offset} set to
+     * {@link V3D_Vector#ZERO}.
      *
-     * @param p Used to initialise {@link #rel}.
-     * @param oom What {@link #oom} is set to.
+     * @param p Used to initialise {@link #rel} and {@link #e}.
      */
     public V3D_Point(V3D_Envelope.Point p) {
         super(p.e, V3D_Vector.ZERO);
@@ -127,37 +127,40 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * Create a new instance with {@link #offset} set to {@link V3D_Vector#ZERO}
-     * and {@link #oom} set to {@link V3D_Environment#DEFAULT_OOM}.
+     * Create a new instance with {@link #offset} set to
+     * {@link V3D_Vector#ZERO}.
      *
+     * @param e What {@link #e} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(V3D_Environment e, Math_BigRational x, Math_BigRational y, 
+    public V3D_Point(V3D_Environment e, Math_BigRational x, Math_BigRational y,
             Math_BigRational z) {
         super(e, V3D_Vector.ZERO);
         this.rel = new V3D_Vector(x, y, z);
     }
 
     /**
-     * Create a new instance with {@link #offset} set to {@link V3D_Vector#ZERO}
-     * and {@link #oom} set to {@link V3D_Environment#DEFAULT_OOM}.
+     * Create a new instance with {@link #offset} set to
+     * {@link V3D_Vector#ZERO}.
      *
+     * @param e What {@link #e} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(V3D_Environment e, BigDecimal x, BigDecimal y, 
+    public V3D_Point(V3D_Environment e, BigDecimal x, BigDecimal y,
             BigDecimal z) {
         this(e, Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
                 Math_BigRational.valueOf(z));
     }
 
     /**
-     * Create a new instance with {@link #offset} set to {@link V3D_Vector#ZERO}
-     * and {@link #oom} set to {@link V3D_Environment#DEFAULT_OOM}.
+     * Create a new instance with {@link #offset} set to
+     * {@link V3D_Vector#ZERO}.
      *
+     * @param e What {@link #e} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
@@ -168,9 +171,10 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     /**
-     * Create a new instance with {@link #offset} set to {@link V3D_Vector#ZERO}
-     * and {@link #oom} set to {@link V3D_Environment#DEFAULT_OOM}.
+     * Create a new instance with {@link #offset} set to
+     * {@link V3D_Vector#ZERO}.
      *
+     * @param e What {@link #e} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
@@ -262,7 +266,6 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
 //        //return rotate(relTemp, theta);
 //        //return rotate(rel, theta);
 //    }
-
     /**
      * @param oom The Order of Magnitude for the precision.
      * @return The vector - {@code rel.add(offset, oom)}.

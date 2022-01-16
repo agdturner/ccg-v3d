@@ -48,7 +48,6 @@ public class V3D_LineSegmentsCollinear extends V3D_Line implements V3D_FiniteGeo
      * Create a new instance.
      *
      * @param lineSegments What {@code #lineSegments} is set to.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_LineSegmentsCollinear(V3D_LineSegment... lineSegments) {
         super(lineSegments[0]);
@@ -115,10 +114,6 @@ public class V3D_LineSegmentsCollinear extends V3D_Line implements V3D_FiniteGeo
         return r;
     }
 
-    /**
-     * @param oom The Order of Magnitude for the initialisation.
-     * @return {@code new V3D_Envelope(start, end)}
-     */
     @Override
     public V3D_Envelope getEnvelope() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

@@ -136,10 +136,10 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * Default {@link #offset} to {@link V3D_Vector#ZERO}.
      *
+     * @param e What {@link #e} is set to.
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
-     * @param oom What {@link #oom} is set to.
      * @param check If {@code true} then if p, q and r are coincident or
      * collinear then a RuntimeException is thrown.
      */
@@ -153,11 +153,11 @@ public class V3D_Plane extends V3D_Geometry {
      * one of the other points as otherwise the cross product/normal vector
      * turns out to be the Zero vector.
      *
+     * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p Used to initialise {@link #p}.
      * @param q Used to initialise {@link #q}.
      * @param r Used to initialise {@link #r}.
-     * @param oom What {@link #oom} is set to.
      * @param check Ignored.
      * @throws RuntimeException if p, q and r are coincident or collinear.
      */
@@ -176,10 +176,10 @@ public class V3D_Plane extends V3D_Geometry {
      * Create a new instance. This assumes that p, q and r are not collinear.
      * {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
+     * @param e What {@link #e} is set to.
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_Plane(V3D_Environment e, V3D_Vector p, V3D_Vector q,
             V3D_Vector r) {
@@ -189,11 +189,11 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * Create a new instance. This assumes that p, q and r are not collinear.
      *
+     * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_Plane(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r) {
@@ -208,7 +208,6 @@ public class V3D_Plane extends V3D_Geometry {
      *
      * @param p Used to initialise {@link #p}.
      * @param n The normal of the plane used to get two other points.
-     * @param oom What {@link #oom} is set to.
      */
     public V3D_Plane(V3D_Point p, V3D_Vector n) {
         super(p.e, p.offset);

@@ -64,7 +64,6 @@ public class V3D_Ray extends V3D_Line {
      * Create a new instance.
      *
      * @param l What {@code this} is created from.
-     * @param oom The Order of Magnitude for initialising this.
      */
     public V3D_Ray(V3D_Ray l) {
         super(l);
@@ -72,11 +71,11 @@ public class V3D_Ray extends V3D_Line {
 
     /**
      * Create a new instance. {@link #offset} is set to
-     * {@link #V3D_Vector.ZERO}.
+     * {@link V3D_Vector#ZERO}.
      *
+     * @param e What {@link #e} is set to.
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
-     * @param oom The Order of Magnitude for initialising this.
      */
     public V3D_Ray(V3D_Environment e, V3D_Vector p, V3D_Vector q) {
         this(e, V3D_Vector.ZERO, p, q);
@@ -85,12 +84,12 @@ public class V3D_Ray extends V3D_Line {
     /**
      * Create a new instance.
      *
+     * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
-     * @param oom The Order of Magnitude for initialising this.
      */
-    public V3D_Ray(V3D_Environment e, V3D_Vector offset, V3D_Vector p, 
+    public V3D_Ray(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q) {
         super(e, offset, p, q);
     }
@@ -99,7 +98,6 @@ public class V3D_Ray extends V3D_Line {
      * Create a new instance.
      *
      * @param l What {@code this} is created from.
-     * @param oom The Order of Magnitude for initialising this.
      */
     public V3D_Ray(V3D_Line l) {
         super(l);
@@ -108,8 +106,8 @@ public class V3D_Ray extends V3D_Line {
     /**
      * Create a new instance.
      *
+     * @param e What {@link #e} is set to.
      * @param l What {@code this} is created from.
-     * @param oom The Order of Magnitude for initialising this.
      */
     public V3D_Ray(V3D_Environment e, V3D_Envelope.LineSegment l) {
         this(e, new V3D_Vector(l.p), new V3D_Vector(l.q));
@@ -124,7 +122,7 @@ public class V3D_Ray extends V3D_Line {
     public V3D_Ray(V3D_Point p, V3D_Point q) {
         super(p, q);
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Ray r) {

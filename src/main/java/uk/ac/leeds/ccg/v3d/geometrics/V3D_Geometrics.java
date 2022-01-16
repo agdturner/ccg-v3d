@@ -81,8 +81,8 @@ public class V3D_Geometrics {
     }
 
     /**
+     * @param e The V3D_Environment.
      * @param l The line to test points are collinear with.
-     * @param oom The Order of Magnitude for the precision.
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
@@ -97,8 +97,8 @@ public class V3D_Geometrics {
     }
 
     /**
+     * @param e The V3D_Environment.
      * @param l The line to test points are collinear with.
-     * @param oom The Order of Magnitude for the precision.
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
@@ -114,7 +114,7 @@ public class V3D_Geometrics {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param l The line to test points are collinear with.
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
@@ -130,7 +130,7 @@ public class V3D_Geometrics {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param points The points to test if they are collinear.
      * @return {@code false} if all points are coincident. {@code true} iff all
      * the points are collinear.
@@ -144,7 +144,7 @@ public class V3D_Geometrics {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param points The points to test if they are collinear.
      * @return {@code true} iff all the points are collinear or coincident.
      */
@@ -155,7 +155,7 @@ public class V3D_Geometrics {
     }
     
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param points The points to test if they are collinear.
      * @return {@code false} if all points are coincident. {@code true} iff all
      * the points are collinear.
@@ -169,7 +169,7 @@ public class V3D_Geometrics {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param points The points to test if they are collinear.
      * @return {@code true} iff all the points are collinear or coincident.
      */
@@ -182,7 +182,7 @@ public class V3D_Geometrics {
     /**
      * There should be at least two different points.
      *
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param points Any number of points, but with two being different.
      * @return A line defined by any two different points or null if the points are coincident.
      */
@@ -200,7 +200,7 @@ public class V3D_Geometrics {
     /**
      * There should be at least two different points.
      *
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param points Any number of points, but with two being different.
      * @return A line defined by any two different points or null if the points are coincident.
      */
@@ -216,8 +216,8 @@ public class V3D_Geometrics {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param e The Envelope.
+     * @param e The V3D_Environment.
+     * @param en The Envelope.
      * @param points The points to test if they are collinear.
      * @return {@code false} if all points are coincident. {@code true} iff all
      * the points are collinear.
@@ -231,21 +231,20 @@ public class V3D_Geometrics {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param em The Envelope.
+     * @param e The V3D_Environment.
+     * @param en The Envelope.
      * @param points The points to test if they are collinear.
      * @return {@code true} iff all the points are collinear or coincident.
      */
-    private static boolean isCollinear0(V3D_Environment e, V3D_Envelope em, Point... points) {
+    private static boolean isCollinear0(V3D_Environment e, V3D_Envelope en, Point... points) {
         // Get a line
-        Line l = getLine(em, points);
+        Line l = getLine(en, points);
         return isCollinear(e, l, points);
     }
 
     /**
      * There should be at least two different points.
      *
-     * @param oom The Order of Magnitude for the precision.
      * @param en The Envelope.
      * @param points Any number of points, but with two being different.
      * @return A line defined by any two different points or null if the points are coincident.
@@ -261,7 +260,7 @@ public class V3D_Geometrics {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param p The plane to test points are coplanar with.
      * @param points The points to test if they are coplanar with p.
      * @return {@code true} iff all points are coplanar with p.
@@ -277,7 +276,7 @@ public class V3D_Geometrics {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param p The plane to test points are coplanar with.
      * @param points The points to test if they are coplanar with p.
      * @return {@code true} iff all points are coplanar with p.
@@ -294,7 +293,7 @@ public class V3D_Geometrics {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param p The plane to test points are coplanar with.
      * @param points The points to test if they are coplanar with p.
      * @return {@code true} iff all points are coplanar with p.
@@ -310,7 +309,7 @@ public class V3D_Geometrics {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param points The points to test if they are coplanar.
      * @return {@code false} if points are coincident or collinear. {@code true}
      * iff all points are coplanar.
@@ -328,7 +327,7 @@ public class V3D_Geometrics {
     }
     
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param points The points to test if they are coplanar.
      * @return {@code false} if points are coincident or collinear. {@code true}
      * iff all points are coplanar.
@@ -346,7 +345,7 @@ public class V3D_Geometrics {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param points The points from which a plane is to be derived.
      * @return A plane that may or may not contain all the points or
      * {@code null} if there is no such plane. This does not test if the points are coincident or
@@ -366,7 +365,7 @@ public class V3D_Geometrics {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param points The points from which a plane is to be derived.
      * @return A plane that may or may not contain all the points or
      * {@code null} if there is no such plane. This does not test if the points are coincident or
@@ -384,7 +383,7 @@ public class V3D_Geometrics {
     }
     
     /**
-     * @param oom The Order of Magnitude for the precision.
+     * @param e The V3D_Environment.
      * @param points The points from which a plane is to be derived.
      * @return A plane that may or may not contain all the points or
      * {@code null} if there is no such plane (if the points are coincident or

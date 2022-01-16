@@ -46,7 +46,6 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * Create a new instance.
      *
      * @param triangles A non-empty list of coplanar triangles.
-     * @param oom The Order of Magnitude for the initialisation.
      */
     public V3D_TrianglesCoplanar(V3D_Triangle... triangles) {
         super(triangles[0].e, triangles[0].offset, triangles[0].p, 
@@ -187,8 +186,8 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * For this to work as expected, all triangles should have the same offset 
      * (point for the rotation).
      * 
-     * @param axisOfRotation
-     * @param theta 
+     * @param axisOfRotation The axis of rotation.
+     * @param theta The angle in radians.
      */
     @Override
      public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
