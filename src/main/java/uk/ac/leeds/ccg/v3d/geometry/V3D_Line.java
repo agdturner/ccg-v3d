@@ -22,7 +22,7 @@ import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
-import static uk.ac.leeds.ccg.v3d.core.V3D_Environment.DEFAULT_OOM;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
@@ -85,38 +85,33 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * The x axis.
      */
-    public static final V3D_Line X_AXIS = new V3D_Line(V3D_Vector.ZERO, DEFAULT_OOM, V3D_Vector.I);
+    public static final V3D_Line X_AXIS = new V3D_Line(
+            new V3D_Environment(), V3D_Vector.ZERO, V3D_Vector.I);
 
     /**
      * The y axis.
      */
-    public static final V3D_Line Y_AXIS = new V3D_Line(V3D_Vector.ZERO, DEFAULT_OOM, V3D_Vector.J);
+    public static final V3D_Line Y_AXIS = new V3D_Line(
+            new V3D_Environment(), V3D_Vector.ZERO, V3D_Vector.J);
 
     /**
      * The z axis.
      */
-    public static final V3D_Line Z_AXIS = new V3D_Line(V3D_Vector.ZERO, DEFAULT_OOM, V3D_Vector.K);
+    public static final V3D_Line Z_AXIS = new V3D_Line(
+            new V3D_Environment(), V3D_Vector.ZERO, V3D_Vector.K);
 
     /**
      * A point relative to {@link #offset} that defines the line.
      */
     protected V3D_Vector p;
 
-//    /**
-//     * {@link #p} rotated about {@link #axisOfRotation} by {@link #theta} radians.
-//     */
-//    protected V3D_Vector pTemp;
     /**
      * A second point relative to {@link #offset} that may define the line.
      */
     protected V3D_Vector q;
 
-//    /**
-//     * {@link #q} rotated about {@link #axisOfRotation} by {@link #theta} radians.
-//     */
-//    protected V3D_Vector qTemp;
     /**
-     * A vector that may define the line from p.
+     * For storing the vector that defines the line from {@link #p}.
      */
     protected V3D_Vector v;
 
@@ -124,26 +119,9 @@ public class V3D_Line extends V3D_Geometry {
      * @param l Used to initialise this.
      */
     public V3D_Line(V3D_Line l) {
-        this(l, l.getOom());
-    }
-
-    /**
-     * Create a new instance from {@code l}
-     *
-     * @param l Line to create from.
-     * @param oom What {@link #oom} is set to.
-     */
-    public V3D_Line(V3D_Line l, int oom) {
-        super(l.offset, oom);
-//        this.axisOfRotation = l.axisOfRotation;
-//        this.theta = l.theta;
-        //this.sinTheta = l.sinTheta;
-        //this.cosTheta = l.cosTheta;
-        this.p = l.p;
-        //this.pTemp = l.pTemp;
-        this.q = l.q;
-        //this.qTemp = l.qTemp;
-        this.v = l.v;
+        super(l.e, l.offset);
+        this.p = new V3D_Vector(l.p);
+        this.q = new V3D_Vector(l.q);
     }
 
     /**
@@ -154,8 +132,8 @@ public class V3D_Line extends V3D_Geometry {
      * @param q What {@link #q} is set to.
      * @param oom What {@link #oom} is set to.
      */
-    public V3D_Line(V3D_Vector p, V3D_Vector q, int oom) {
-        this(V3D_Vector.ZERO, p, q, oom);
+    public V3D_Line(V3D_Environment e, V3D_Vector p, V3D_Vector q) {
+        this(e, V3D_Vector.ZERO, p, q);
     }
 
     /**
@@ -166,10 +144,11 @@ public class V3D_Line extends V3D_Geometry {
      * @param q What {@link #q} is set to.
      * @param oom What {@link #oom} is set to.
      */
-    public V3D_Line(V3D_Vector offset, V3D_Vector p, V3D_Vector q, int oom) {
-        super(offset, oom);
-        this.p = p;
-        this.q = q;
+    public V3D_Line(V3D_Environment e, V3D_Vector offset, V3D_Vector p, 
+            V3D_Vector q) {
+        super(e, offset);
+        this.p = new V3D_Vector(p);
+        this.q = new V3D_Vector(q);
     }
 
     /**
@@ -179,45 +158,46 @@ public class V3D_Line extends V3D_Geometry {
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param oom What {@link #oom} is set to.
-     * @param check Ignored.
+     * @param b Ignored.
      * @throws RuntimeException if {@code p.equals(q)}.
      */
-    public V3D_Line(V3D_Vector p, V3D_Vector q, int oom, boolean check) {
-        this(V3D_Vector.ZERO, p, q, oom, check);
+    public V3D_Line(V3D_Environment e, V3D_Vector p, V3D_Vector q, boolean b) {
+        this(e, V3D_Vector.ZERO, p, q, b);
     }
 
     /**
      * If {@code p} equals {@code q} then a RuntimeException is thrown.
      *
-     * @param offset What {@link #offset} is set to.
-     * @param p What {@link #p} is set to.
-     * @param q What {@link #q} is set to.
+     * @param offset What {@link #offset} is cloned from.
+     * @param p What {@link #p} is cloned from.
+     * @param q What {@link #q} is cloned from.
      * @param oom What {@link #oom} is set to.
-     * @param check Ignored.
+     * @param b Ignored.
      * @throws RuntimeException if {@code p.equals(q)}.
      */
-    public V3D_Line(V3D_Vector offset, V3D_Vector p, V3D_Vector q, int oom, boolean check) {
-        super(offset, oom);
+    public V3D_Line(V3D_Environment e, V3D_Vector offset, V3D_Vector p, 
+            V3D_Vector q, boolean b) {
+        super(e, offset);
         if (p.equals(q)) {
             throw new RuntimeException("Points " + p + " and " + q
                     + " are the same and so do not define a line.");
         }
-        this.p = p;
-        this.q = q;
+        this.p = new V3D_Vector(p);
+        this.q = new V3D_Vector(q);
     }
 
     /**
      * {@code v} should not be the zero vector {@code <0,0,0>}. {@link #offset}
      * is set to {@link V3D_Vector#ZERO}.
      *
-     * @param p What {@link #p} is set to.
+     * @param p What {@link #p} is cloned from.
      * @param v The vector defining the line from {@link #p}. What {@link #v} is
-     * set to.
+     * cloned from.
      * @param oom The Order of Magnitude for initialising {@link #q} and what
      * {@link #oom} is set to.
      */
-    public V3D_Line(V3D_Vector p, int oom, V3D_Vector v) {
-        this(V3D_Vector.ZERO, p, oom, v);
+    public V3D_Line(V3D_Vector p, V3D_Vector v, V3D_Environment e) {
+        this(V3D_Vector.ZERO, p, v, e);
     }
 
     /**
@@ -229,13 +209,12 @@ public class V3D_Line extends V3D_Geometry {
      * set to.
      * @param oom The Order of Magnitude for initialising {@link #q} and what
      * {@link #oom} is set to.
-     * @throws RuntimeException if {@code v.isZeroVector()}.
      */
-    public V3D_Line(V3D_Vector offset, V3D_Vector p, int oom, V3D_Vector v) {
-        super(offset, oom);
-        this.p = p;
-        this.q = p.add(v, oom);
-        this.v = v;
+    public V3D_Line(V3D_Vector offset, V3D_Vector p, V3D_Vector v, V3D_Environment e) {
+        super(e, offset);
+        this.p = new V3D_Vector(p);
+        this.q = p.add(v, e.oom);
+        this.v = new V3D_Vector(v);
     }
 
     /**
@@ -250,8 +229,9 @@ public class V3D_Line extends V3D_Geometry {
      * @param check Ignored.
      * @throws RuntimeException if {@code v.isZeroVector()}.
      */
-    public V3D_Line(V3D_Vector p, int oom, V3D_Vector v, boolean check) {
-        this(V3D_Vector.ZERO, p, oom, v, check);
+    public V3D_Line(V3D_Vector p, V3D_Vector v, V3D_Environment e, 
+            boolean check) {
+        this(V3D_Vector.ZERO, p, v, e, check);
     }
 
     /**
@@ -263,16 +243,35 @@ public class V3D_Line extends V3D_Geometry {
      * @param oom The Order of Magnitude for initialising {@link #q} and what
      * {@link #oom} is set to.
      * @param check Ignored.
+     * @throws RuntimeException if {@code v.isZeroVector()}.
      */
-    public V3D_Line(V3D_Vector offset, V3D_Vector p, int oom, V3D_Vector v, boolean check) {
-        super(offset, oom);
+    public V3D_Line(V3D_Vector offset, V3D_Vector p, V3D_Vector v, 
+            V3D_Environment e, boolean check) {
+        super(e, offset);
         if (v.isZeroVector()) {
             throw new RuntimeException("Vector " + v + " is the zero vector "
                     + "and so cannot define a line.");
         }
-        this.p = p;
-        this.q = p.add(v, oom);
-        this.v = v;
+        this.p = new V3D_Vector(p);
+        this.q = p.add(v, e.oom);
+        this.v = new V3D_Vector(v);
+    }
+
+    /**
+     * Create a new instance.
+     *
+     * @param offset What {@link #offset} is set to.
+     * @param p What {@link #p} is cloned from.
+     * @param q What {@link #q} is cloned from.
+     * @param oom What {@link #oom} is set to.
+     */
+    public V3D_Line(V3D_Point p, V3D_Point q) {
+        super(p.e);
+        V3D_Point q2 = new V3D_Point(q);
+        q2.setOffset(p.offset);
+        this.offset = new V3D_Vector(p.offset);
+        this.p = new V3D_Vector(p.rel);
+        this.q = q2.rel;
     }
 
     @Override
@@ -325,8 +324,8 @@ public class V3D_Line extends V3D_Geometry {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_Line v3D_Line) {
-            return equals(v3D_Line, this.oom);
+        if (o instanceof V3D_Line l) {
+            return equals(l, e.oom);
         }
         return false;
     }
@@ -366,7 +365,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getP(int oom) {
-        return new V3D_Point(offset, p, oom);
+        return new V3D_Point(e, offset, p);
     }
 
     /**
@@ -416,7 +415,7 @@ public class V3D_Line extends V3D_Geometry {
 //        if (q == null) {
 //            q = p.add(v, oom);
 //        }
-        return new V3D_Point(offset, getQ(), oom);
+        return new V3D_Point(e, offset, getQ());
     }
 
     /**
@@ -424,7 +423,7 @@ public class V3D_Line extends V3D_Geometry {
      */
     protected V3D_Vector getV() {
         if (v == null) {
-            v = q.subtract(p, oom);
+            v = q.subtract(p, e.oom);
         }
         return v;
     }
@@ -490,26 +489,26 @@ public class V3D_Line extends V3D_Geometry {
         V3D_Point tp = getP(oom);
         V3D_Point tq = getQ(oom);
         V3D_Point lp = l.getP(oom);
-        if (V3D_Geometrics.isCollinear(oom, tp, tq, lp)) {
+        if (V3D_Geometrics.isCollinear(e, tp, tq, lp)) {
             return true;
         } else {
             //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
-            V3D_Plane pl = new V3D_Plane(V3D_Vector.ZERO, tp.getVector(oom),
-                    tq.getVector(oom), lp.getVector(oom), oom);
-            if (V3D_Geometrics.isCoplanar(oom, pl, l.getQ(oom))) {
+            V3D_Plane pl = new V3D_Plane(e, V3D_Vector.ZERO, tp.getVector(oom),
+                    tq.getVector(oom), lp.getVector(oom));
+            if (V3D_Geometrics.isCoplanar(e, pl, l.getQ(oom))) {
                 if (!isParallel(l, oom)) {
                     return true;
                 }
             }
         }
         V3D_Point lq = l.getQ(oom);
-        if (V3D_Geometrics.isCollinear(oom, tp, tq, lq)) {
+        if (V3D_Geometrics.isCollinear(e, tp, tq, lq)) {
             return true;
         } else {
             //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
-            V3D_Plane pl = new V3D_Plane(V3D_Vector.ZERO, tp.getVector(oom),
-                    tq.getVector(oom), lp.getVector(oom), oom);
-            if (V3D_Geometrics.isCoplanar(oom, pl, lq)) {
+            V3D_Plane pl = new V3D_Plane(e, V3D_Vector.ZERO, tp.getVector(oom),
+                    tq.getVector(oom), lp.getVector(oom));
+            if (V3D_Geometrics.isCoplanar(e, pl, lq)) {
                 if (!isParallel(l, oom)) {
                     return true;
                 }
@@ -518,6 +517,18 @@ public class V3D_Line extends V3D_Geometry {
         return false;
     }
 
+    /**
+     * {@code p.getIntersection(this, oom)}
+     * 
+     * @param p The plane to intersect.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return {@code null} if there is no intersection and the geometry of 
+     * intersection otherwise.
+     */
+    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
+        return p.getIntersection(this, oom);
+    }
+    
     /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
      * return {@code this}.
@@ -926,13 +937,13 @@ public class V3D_Line extends V3D_Geometry {
                 //p.getX(oom) + v.getDX(oom) * lamda = l.p.getX(oom) + l.v.getDX(oom) * mu
                 //p.getY(oom) + v.getDY(oom) * lamda = l.p.getY(oom) + l.v.getDY(oom) * mu
                 //p.getZ(oom) + v.getDZ(oom) * lamda = l.p.getZ(oom) + l.v.getDZ(oom) * mu
-                return new V3D_Point(x, y, z);
+                return new V3D_Point(this.e, x, y, z);
             }
             return null;
         }
         Math_BigRational mua = num.divide(den);
         Math_BigRational mub = (a.add(b.multiply(mua))).divide(d).negate();
-        V3D_Point pi = new V3D_Point(
+        V3D_Point pi = new V3D_Point(this.e,
                 //                (p.getX(oom).add(mua.multiply(qp.getDX(oom)))),
                 //                (p.getY(oom).add(mua.multiply(qp.getDY(oom)))),
                 //                (p.getZ(oom).add(mua.multiply(qp.getDZ(oom)))));
@@ -943,7 +954,7 @@ public class V3D_Line extends V3D_Geometry {
         if (isIntersectedBy(pi, oom) && l.isIntersectedBy(pi, oom)) {
             return pi;
         }
-        V3D_Point qi = new V3D_Point(
+        V3D_Point qi = new V3D_Point(this.e,
                 (lp.getX(oom).add(mub.multiply(lqlp.getDX(oom)))),
                 (lp.getY(oom).add(mub.multiply(lqlp.getDY(oom)))),
                 (lp.getZ(oom).add(mub.multiply(lqlp.getDZ(oom)))));
@@ -995,8 +1006,8 @@ public class V3D_Line extends V3D_Geometry {
         if (isIntersectedBy(pt, oom)) {
             return pt;
         }
-        //return new V3D_LineSegment(pt, getPointOfIntersection(pt, oom), oom);
-        return new V3D_LineSegment(pt.getVector(oom), getPointOfIntersection(pt, oom).getVector(oom), oom);
+        return new V3D_LineSegment(pt, getPointOfIntersection(pt, oom));
+        //return new V3D_LineSegment(pt.getVector(oom), getPointOfIntersection(pt, oom).getVector(oom), oom);
     }
 
     /**
@@ -1032,7 +1043,7 @@ public class V3D_Line extends V3D_Geometry {
         //return new V3D_Point(p.getVector(oom).add(v.multiply(t, oom), oom), oom);
         //return new V3D_Point(p.rel, p.offset.add(v.multiply(t, oom), oom));
         //return tp.apply(tv.multiply(t, oom), oom);
-        return new V3D_Point(tp.getVector(oom).add(tv.multiply(t, oom), oom), oom);
+        return new V3D_Point(e, tp.getVector(oom).add(tv.multiply(t, oom), oom));
 
 //        // P = pt
 //        // Q = p
@@ -1097,7 +1108,7 @@ public class V3D_Line extends V3D_Geometry {
 
         //return new V3D_LineSegment(tpi, lpi, oom);
         //return new V3D_LineSegment(tpi.getVector(oom), lpi.getVector(oom), oom);
-        return new V3D_LineSegment(tpi, lpi, oom);
+        return new V3D_LineSegment(e, tpi, lpi);
 
 //        // p13
 //        V3D_Vector plp = new V3D_Vector(p, l.p, oom);
@@ -1334,7 +1345,7 @@ public class V3D_Line extends V3D_Geometry {
     public boolean isParallelToX0() {
         //return v.dx.isZero();
         //return p.getX(oom).subtract(q.getX(oom)).isZero();
-        return getP().getDX(oom).subtract(getQ().getDX(oom)).isZero();
+        return getP().getDX(e.oom).subtract(getQ().getDX(e.oom)).isZero();
     }
 
     /**
@@ -1343,7 +1354,7 @@ public class V3D_Line extends V3D_Geometry {
     public boolean isParallelToY0() {
         //return v.dy.isZero();
         //return p.getY(oom).subtract(q.getY(oom)).isZero();
-        return getP().getDY(oom).subtract(getQ().getDY(oom)).isZero();
+        return getP().getDY(e.oom).subtract(getQ().getDY(e.oom)).isZero();
     }
 
     /**
@@ -1352,7 +1363,7 @@ public class V3D_Line extends V3D_Geometry {
     public boolean isParallelToZ0() {
         //return v.dz.isZero();
         //return p.getZ(oom).subtract(q.getZ(oom)).isZero();
-        return getP().getDZ(oom).subtract(getQ().getDZ(oom)).isZero();
+        return getP().getDZ(e.oom).subtract(getQ().getDZ(e.oom)).isZero();
     }
 
     @Override
@@ -1432,15 +1443,15 @@ public class V3D_Line extends V3D_Geometry {
      * @param offset What {@link #offset} is set to.
      */
     public void setOffset(V3D_Vector offset) {
-        p = p.add(offset, oom).subtract(this.offset, oom);
-        q = q.add(offset, oom).subtract(this.offset, oom);
+        p = p.add(offset, e.oom).subtract(this.offset, e.oom);
+        q = q.add(offset, e.oom).subtract(this.offset, e.oom);
         this.offset = offset;
     }
 
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        p = p.rotate(axisOfRotation, theta, bI, oom);
-        q = q.rotate(axisOfRotation, theta, bI, oom);
+        p = p.rotate(axisOfRotation, theta, e.bI, e.oom);
+        q = q.rotate(axisOfRotation, theta, e.bI, e.oom);
         v = null;
         //v = getV(oom);
     }

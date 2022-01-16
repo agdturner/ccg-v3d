@@ -15,11 +15,8 @@
  */
 package uk.ac.leeds.ccg.v3d.core;
 
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
  * V3D_Environment
@@ -58,8 +55,42 @@ public class V3D_Environment {
      * The default Order of Magnitude.
      */
     public static final int DEFAULT_OOM = -3;
+    
+    /**
+     * An instance that helps with calculations involving Taylor series.
+     */
+    public final Math_BigInteger bI;
+
+    /**
+     * The Order of Magnitude for the precision.
+     */
+    public int oom;
+    
     /**
      * Creates a new instance.
      */
-    public V3D_Environment(){}
+    public V3D_Environment(){
+        oom = V3D_Environment.DEFAULT_OOM;
+        bI = new Math_BigInteger();
+    }
+    
+    /**
+     * Creates a new instance.
+     *
+     * @param oom What {@link #oom} is set to.
+     * @param bI What {@link #bI} is set to.
+     */
+    public V3D_Environment(int oom, Math_BigInteger bI) {
+        this.oom = oom;
+        this.bI = bI;
+    }
+    
+    /**
+     * @param pad The padding.
+     * @return A padded description.
+     */
+    public String toStringFields(String pad) {
+        return pad + "oom=" + oom;
+    }
+    
 }

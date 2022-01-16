@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  *
@@ -116,9 +117,9 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      * @param s A point that defines the tetrahedron.
      * @param oom The Order of Magnitude for the initialisation.
      */
-    public V3D_Tetrahedron(V3D_Vector offset, int oom, V3D_Vector p,
+    public V3D_Tetrahedron(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r, V3D_Vector s) {
-        super(offset, oom);
+        super(e, offset);
         this.p = p;
         this.q = q;
         this.r = r;
@@ -177,13 +178,13 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom) {
+    public V3D_Envelope getEnvelope() {
         if (en == null) {
 //            en = pqr.getEnvelope(oom).union(qsr.getEnvelope(oom));
-            en = getP(oom).getEnvelope(oom)
-                    .union(getQ(oom).getEnvelope(oom))
-                    .union(getR(oom).getEnvelope(oom))
-                    .union(getS(oom).getEnvelope(oom));
+            en = getP(e.oom).getEnvelope()
+                    .union(getQ(e.oom).getEnvelope())
+                    .union(getR(e.oom).getEnvelope())
+                    .union(getS(e.oom).getEnvelope());
         }
         return en;
     }
@@ -193,7 +194,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getP(int oom) {
-        return new V3D_Point(offset, p, oom);
+        return new V3D_Point(e, offset, p);
     }
 
     /**
@@ -201,7 +202,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getQ(int oom) {
-        return new V3D_Point(offset, q, oom);
+        return new V3D_Point(e, offset, q);
     }
 
     /**
@@ -209,7 +210,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getR(int oom) {
-        return new V3D_Point(offset, r, oom);
+        return new V3D_Point(e, offset, r);
     }
 
     /**
@@ -217,7 +218,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getS(int oom) {
-        return new V3D_Point(offset, s, oom);
+        return new V3D_Point(e, offset, s);
     }
 
     /**
@@ -225,7 +226,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      */
     public V3D_Triangle getPqr() {
         if (pqr == null) {
-            pqr = new V3D_Triangle(p, q, r, oom);
+            pqr = new V3D_Triangle(e, offset, p, q, r);
         }
         return pqr;
     }
@@ -235,7 +236,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      */
     public V3D_Triangle getQsr() {
         if (qsr == null) {
-            qsr = new V3D_Triangle(q, s, r, oom);
+            qsr = new V3D_Triangle(e, offset, q, s, r);
             }
         return qsr;
     }
@@ -245,7 +246,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      */
     public V3D_Triangle getSpr() {
         if (spr == null) {
-            spr = new V3D_Triangle(s, p, r, oom);
+            spr = new V3D_Triangle(e, offset, s, p, r);
             }
         return spr;
     }
@@ -255,7 +256,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      */
     public V3D_Triangle getPsq() {
         if (psq == null) {
-            psq = new V3D_Triangle(p, s, q, oom);
+            psq = new V3D_Triangle(e, offset, p, s, q);
             }
         return psq;
     }
@@ -287,8 +288,10 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      * @return The centroid point.
      */
     public V3D_Point getCentroid(int oom) {
-        V3D_LineSegment a = new V3D_LineSegment(pqr.getCentroid(oom).getVector(oom), qsr.getQ().getVector(oom), oom);
-        V3D_LineSegment b = new V3D_LineSegment(psq.getCentroid(oom).getVector(oom), qsr.getR().getVector(oom), oom);
+        V3D_LineSegment a = new V3D_LineSegment(e,
+                pqr.getCentroid(oom).getVector(oom), qsr.getQ().getVector(oom));
+        V3D_LineSegment b = new V3D_LineSegment(e,
+                psq.getCentroid(oom).getVector(oom), qsr.getR().getVector(oom));
         return (V3D_Point) a.getIntersection(b, oom, true);
     }
 
@@ -343,19 +346,19 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      * @param offset What {@link #offset} is set to.
      */
     public void setOffset(V3D_Vector offset) {
-        p = p.add(offset, oom).subtract(this.offset, oom);
-        q = q.add(offset, oom).subtract(this.offset, oom);
-        r = r.add(offset, oom).subtract(this.offset, oom);
-        s = s.add(offset, oom).subtract(this.offset, oom);
+        p = p.add(offset, e.oom).subtract(this.offset, e.oom);
+        q = q.add(offset, e.oom).subtract(this.offset, e.oom);
+        r = r.add(offset, e.oom).subtract(this.offset, e.oom);
+        s = s.add(offset, e.oom).subtract(this.offset, e.oom);
         this.offset = offset;
     }
     
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        p = p.rotate(axisOfRotation, theta, bI, oom);
-        q = q.rotate(axisOfRotation, theta, bI, oom);
-        r = r.rotate(axisOfRotation, theta, bI, oom);
-        s = s.rotate(axisOfRotation, theta, bI, oom);
+        p = p.rotate(axisOfRotation, theta, e.bI, e.oom);
+        q = q.rotate(axisOfRotation, theta, e.bI, e.oom);
+        r = r.rotate(axisOfRotation, theta, e.bI, e.oom);
+        s = s.rotate(axisOfRotation, theta, e.bI, e.oom);
         pqr = null;
         psq = null;
         spr = null;

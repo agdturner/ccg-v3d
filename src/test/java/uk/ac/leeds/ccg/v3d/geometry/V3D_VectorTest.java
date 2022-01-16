@@ -714,11 +714,10 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testDivide() {
         System.out.println("divide");
-        int oom = -1;
         Math_BigRational s = Math_BigRational.TWO;
         V3D_Vector instance = V3D_Vector.I;
-        V3D_Vector expResult = new V3D_Vector(new V3D_Point(0.5d, 0d, 0d), -2);
-        V3D_Vector result = instance.divide(s, oom);
+        V3D_Vector expResult = new V3D_Vector(new V3D_Point(e, 0.5d, 0d, 0d), -2);
+        V3D_Vector result = instance.divide(s, e.oom);
         assertEquals(expResult, result);
     }
 

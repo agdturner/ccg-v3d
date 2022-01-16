@@ -61,13 +61,13 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     /**
      * The origin of the Euclidean space.
      */
-    public static final V3D_Point ORIGIN = new V3D_Point(0, 0, 0);
+    public static final V3D_Point ORIGIN = new V3D_Point(new V3D_Environment(), 0, 0, 0);
 
     /**
      * The position relative to the {@link #offset}. Taken together with
      * {@link #offset}, this gives the point location.
      */
-    protected V3D_Vector rel;
+    public V3D_Vector rel;
 
     /**
      * Create a new instance which is completely independent of {@code p}.
@@ -75,7 +75,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param p The point to clone/duplicate.
      */
     public V3D_Point(V3D_Point p) {
-        super(new V3D_Vector(p.offset), p.getOom());
+        super(p.e, new V3D_Vector(p.offset));
         this.rel = new V3D_Vector(p.rel);
     }
 
@@ -86,8 +86,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param rel Cloned to initialise {@link #rel}.
      * @param oom What {@link #oom} is set to.
      */
-    public V3D_Point(V3D_Vector rel, int oom) {
-        this(V3D_Vector.ZERO, rel, oom);
+    public V3D_Point(V3D_Environment e, V3D_Vector rel) {
+        this(e, V3D_Vector.ZERO, rel);
     }
 
     /**
@@ -97,10 +97,10 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param rel Cloned to initialise {@link #rel}.
      * @param oom What {@link #oom} is set to.
      */
-    public V3D_Point(V3D_Vector offset, V3D_Vector rel, int oom) {
+    public V3D_Point(V3D_Environment e, V3D_Vector offset, V3D_Vector rel) {
 //        super(new V3D_Vector(offset), Math.min(offset.getMagnitude().getOom(),
 //                rel.getMagnitude().getOom()));
-        super(new V3D_Vector(offset), oom);
+        super(e, new V3D_Vector(offset));
         this.rel = new V3D_Vector(rel);
     }
 
@@ -110,8 +110,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param p The point to clone/duplicate.
      * @param oom What {@link #oom} is set to.
      */
-    public V3D_Point(V3D_VPoint p, int oom) {
-        super(new V3D_Vector(p.offset), V3D_Environment.DEFAULT_OOM);
+    public V3D_Point(V3D_Environment e, V3D_VPoint p) {
+        super(e, new V3D_Vector(p.offset));
         this.rel = new V3D_Vector(p.rel);
     }
 
@@ -121,8 +121,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param p Used to initialise {@link #rel}.
      * @param oom What {@link #oom} is set to.
      */
-    public V3D_Point(V3D_Envelope.Point p, int oom) {
-        super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
+    public V3D_Point(V3D_Envelope.Point p) {
+        super(p.e, V3D_Vector.ZERO);
         this.rel = new V3D_Vector(p);
     }
 
@@ -134,8 +134,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(Math_BigRational x, Math_BigRational y, Math_BigRational z) {
-        super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
+    public V3D_Point(V3D_Environment e, Math_BigRational x, Math_BigRational y, 
+            Math_BigRational z) {
+        super(e, V3D_Vector.ZERO);
         this.rel = new V3D_Vector(x, y, z);
     }
 
@@ -147,8 +148,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(BigDecimal x, BigDecimal y, BigDecimal z) {
-        this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
+    public V3D_Point(V3D_Environment e, BigDecimal x, BigDecimal y, 
+            BigDecimal z) {
+        this(e, Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
                 Math_BigRational.valueOf(z));
     }
 
@@ -160,8 +162,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(double x, double y, double z) {
-        this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
+    public V3D_Point(V3D_Environment e, double x, double y, double z) {
+        this(e, Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
                 Math_BigRational.valueOf(z));
     }
 
@@ -173,8 +175,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(long x, long y, long z) {
-        this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
+    public V3D_Point(V3D_Environment e, long x, long y, long z) {
+        this(e, Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
                 Math_BigRational.valueOf(z));
     }
 
@@ -229,9 +231,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return {@code true} iff {@code p} is the same as {@code this}.
      */
     public boolean equals(V3D_Point p) {
-        if (this.getX(oom).compareTo(p.getX(oom)) == 0) {
-            if (this.getY(oom).compareTo(p.getY(oom)) == 0) {
-                if (this.getZ(oom).compareTo(p.getZ(oom)) == 0) {
+        if (this.getX(e.oom).compareTo(p.getX(e.oom)) == 0) {
+            if (this.getY(e.oom).compareTo(p.getY(e.oom)) == 0) {
+                if (this.getZ(e.oom).compareTo(p.getZ(e.oom)) == 0) {
                     return true;
                 }
             }
@@ -248,25 +250,25 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         return false;
     }
 
-    /**
-     * @return rel rotated.
-     */
-    public V3D_Vector getRel() {
-        return rel;
-//        if (relTemp == null) {
-//            relTemp = rel;
-//        }
-//        return relTemp;
-        //return rotate(relTemp, theta);
-        //return rotate(rel, theta);
-    }
+//    /**
+//     * @return {@link #rel}.
+//     */
+//    public V3D_Vector getRel() {
+//        return rel;
+////        if (relTemp == null) {
+////            relTemp = rel;
+////        }
+////        return relTemp;
+//        //return rotate(relTemp, theta);
+//        //return rotate(rel, theta);
+//    }
 
     /**
      * @param oom The Order of Magnitude for the precision.
      * @return The vector - {@code rel.add(offset, oom)}.
      */
     public V3D_Vector getVector(int oom) {
-        return getRel().add(offset, oom);
+        return rel.add(offset, oom);
     }
 
     /**
@@ -274,7 +276,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return The x component of {@link #rel} with {@link #offset} applied.
      */
     public Math_BigRational getX(int oom) {
-        return getRel().getDX(oom).add(offset.getDX(oom));
+        return rel.getDX(oom).add(offset.getDX(oom));
     }
 
     /**
@@ -282,7 +284,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return The y component of {@link #rel} with {@link #offset} applied.
      */
     public Math_BigRational getY(int oom) {
-        return getRel().getDY(oom).add(offset.getDY(oom));
+        return rel.getDY(oom).add(offset.getDY(oom));
     }
 
     /**
@@ -290,7 +292,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @return The z component of {@link #rel} with {@link #offset} applied.
      */
     public Math_BigRational getZ(int oom) {
-        return getRel().getDZ(oom).add(offset.getDZ(oom));
+        return rel.getDZ(oom).add(offset.getDZ(oom));
     }
 
     /**
@@ -403,8 +405,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom) {
-        return new V3D_Envelope(getX(oom), getY(oom), getZ(oom), oom);
+    public V3D_Envelope getEnvelope() {
+        return new V3D_Envelope(e, getX(e.oom), getY(e.oom), getZ(e.oom));
     }
 
     @Override
@@ -460,7 +462,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         Math_BigRational l2 = l.getLength2(oom);
         Math_BigRational lp2 = l.getP(oom).getDistanceSquared(this, oom2);
         Math_BigRational lq2 = l.getQ(oom).getDistanceSquared(this, oom2);
-        BigDecimal lp = (new V3D_Line(l, oom)).getDistance(this, oom);
+        BigDecimal lp = (new V3D_Line(l)).getDistance(this, oom);
         if (lp2.compareTo(l2) == -1 && lq2.compareTo(l2) == -1) {
             return lp;
         }
@@ -472,13 +474,13 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
          * point to the ends of the line segment.
          */
         //Math_BigRational pl2 = (new V3D_Line(l)).getDistanceSquared(this);
-        BigDecimal pl = (new V3D_Line(l, oom)).getDistance(this, oom2);
+        BigDecimal pl = (new V3D_Line(l)).getDistance(this, oom2);
         Math_BigRational pl2 = Math_BigRational.valueOf(pl).pow(2);
         V3D_Vector u = l.getV(oom).getUnitVector(oom - 2);
-        V3D_Point pi = new V3D_Point(u.multiply(Math_BigRational.valueOf(
+        V3D_Point pi = new V3D_Point(e, u.multiply(Math_BigRational.valueOf(
                 new Math_BigRationalSqrt(lp2.subtract(pl2), oom2)
                         .toBigDecimal(oom2)), oom2)
-                .add(new V3D_Vector(l.getP(oom), oom2), oom2), oom2);
+                .add(new V3D_Vector(l.getP(oom), oom2), oom2));
         if (l.isIntersectedBy(pi, oom)) {
             return lp;
         } else {
@@ -559,7 +561,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param offset What {@link #offset} is set to.
      */
     public void setOffset(V3D_Vector offset) {
-        rel = getVector(oom).subtract(offset, oom);
+        rel = getVector(e.oom).subtract(offset, e.oom);
         this.offset = offset;
     }
 
@@ -570,7 +572,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param rel What {@link #rel} is set to.
      */
     public void setRel(V3D_Vector rel) {
-        offset = getVector(oom).subtract(rel, oom);
+        offset = getVector(e.oom).subtract(rel, e.oom);
         this.rel = rel;
     }
 
@@ -582,7 +584,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      */
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        rel = rel.rotate(axisOfRotation, theta, bI, oom);
+        rel = rel.rotate(axisOfRotation, theta, e.bI, e.oom);
 //        V3D_Vector relt = rel.rotate(axisOfRotation, theta, bI, oom);
 //        offset = offset.subtract(rel.subtract(relt, oom), oom);
     }

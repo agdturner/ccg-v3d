@@ -38,7 +38,7 @@ public class V3D_Tetrahedrons extends V3D_Geometry implements V3D_Volume {
      * @param tetrahedrons What {@link #tetrahedrons} is set to.
      */
     public V3D_Tetrahedrons(Set<V3D_Tetrahedron> tetrahedrons) {
-        super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
+        super(tetrahedrons.stream().findFirst().get().e, tetrahedrons.stream().findFirst().get().offset);
         this.tetrahedrons = tetrahedrons;
     }
 
@@ -49,7 +49,7 @@ public class V3D_Tetrahedrons extends V3D_Geometry implements V3D_Volume {
      * individually.
      */
     public V3D_Tetrahedrons(V3D_Tetrahedron... tetrahedrons) {
-        super(V3D_Vector.ZERO, V3D_Environment.DEFAULT_OOM);
+        super(tetrahedrons[0].e, tetrahedrons[0].offset);
         this.tetrahedrons = new HashSet<>();
         this.tetrahedrons.addAll(Arrays.asList(tetrahedrons));
     }
@@ -68,11 +68,11 @@ public class V3D_Tetrahedrons extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom) {
+    public V3D_Envelope getEnvelope() {
         if (en == null) {
-            en = tetrahedrons.stream().findAny().get().getEnvelope(oom);
+            en = tetrahedrons.stream().findAny().get().getEnvelope();
             tetrahedrons.forEach((V3D_Tetrahedron t) -> {
-                en = en.union(t.getEnvelope(oom));
+                en = en.union(t.getEnvelope());
             });
         }
         return en;

@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * Essentially this is just a collection of coplanar V3D_Triangles.
@@ -45,8 +46,8 @@ public class V3D_Points extends V3D_Geometry {
      * @param oom The Order of Magnitude for the initialisation.
      * @param rels The point locations relative to the offset. 
      */
-    public V3D_Points(V3D_Vector offset, int oom, V3D_Vector... rels) {
-        super(offset, oom);
+    public V3D_Points(V3D_Environment e, V3D_Vector offset, V3D_Vector... rels) {
+        super(e, offset);
         this.rels = rels;
     }
 
@@ -66,11 +67,12 @@ public class V3D_Points extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision.
      * @return The Envelope
      */
-    public V3D_Envelope getEnvelope(int oom) {
+    public V3D_Envelope getEnvelope() {
         if (en == null) {
-            en = new V3D_Envelope(oom, new V3D_Point(offset, rels[0], oom));
+            en = new V3D_Envelope(e, new V3D_Point(e, offset, rels[0]));
             for (int i = 1; i < rels.length; i++) {
-                en = en.getIntersection(new V3D_Envelope(oom, new V3D_Point(offset, rels[0], oom)));
+                en = en.getIntersection(new V3D_Envelope(e, 
+                        new V3D_Point(e, offset, rels[0])));
             }
         }
         return en;
@@ -99,7 +101,7 @@ public class V3D_Points extends V3D_Geometry {
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         for (V3D_Vector rel : rels) {
-            rel.rotate(axisOfRotation, theta, bI, oom);
+            rel.rotate(axisOfRotation, theta, e.bI, e.oom);
         }
     }
 }

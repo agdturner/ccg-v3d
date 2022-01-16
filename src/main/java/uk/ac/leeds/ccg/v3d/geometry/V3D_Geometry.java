@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * For 3D Euclidean geometrical objects. The three dimensions have are
@@ -59,40 +60,25 @@ public abstract class V3D_Geometry implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * A reference to the environment.
+     */
+    public final V3D_Environment e;
+
+    /**
      * The offset used to position a geometry object relative to the
      * {@link V3D_Point#ORIGIN}.
      */
     public V3D_Vector offset;
-
-//    /**
-//     * Axis of rotation unit vector based at {@link #offset}.
-//     */
-//    public V3D_Vector axisOfRotation;
-//
-//    /**
-//     * The angle of rotation around {@link #axisOfRotation}.
-//     */
-//    public Math_BigRational theta;
     
     /**
-     * An instance that helps with calculations involving Taylor series.
+     * Creates a new V3D_Geometry.
+     *
+     * @param offset What {@link #offset} is set to.
+     * @param oom What {@link #oom} is set to.
      */
-    public final Math_BigInteger bI;
-
-//    /**
-//     * For storing the cosine of {@link #theta}.
-//     */
-//    Math_BigRational cosTheta;
-//
-//    /**
-//     * For storing the sine of {@link #theta}.
-//     */
-//    Math_BigRational sinTheta;
-
-    /**
-     * The Order of Magnitude for the precision.
-     */
-    protected int oom;
+    public V3D_Geometry(V3D_Environment e) {
+        this(e, V3D_Vector.ZERO);
+    }
 
     /**
      * Creates a new V3D_Geometry.
@@ -100,11 +86,9 @@ public abstract class V3D_Geometry implements Serializable {
      * @param offset What {@link #offset} is set to.
      * @param oom What {@link #oom} is set to.
      */
-    public V3D_Geometry(V3D_Vector offset, int oom) {
-        this.offset = offset;
-        this.oom = oom;
-        bI = new Math_BigInteger();
-        //theta = Math_BigRational.ZERO;
+    public V3D_Geometry(V3D_Environment e, V3D_Vector offset) {
+        this.e = e;
+        this.offset = new V3D_Vector(offset);
     }
 
     /**
@@ -112,23 +96,23 @@ public abstract class V3D_Geometry implements Serializable {
      * @return A padded description.
      */
     protected String toStringFields(String pad) {
-        return pad + "offset=" + offset.toString(pad) + "\n"
+        return e.toStringFields(pad) + "\n"
                 + pad + ",\n"
-                + pad + "oom=" + oom;
+                + pad + "offset=" + offset.toString(pad);
     }
 
     /**
      * @return {@link #oom}
      */
     public int getOom() {
-        return oom;
+        return e.oom;
     }
 
     /**
      * @param oom What {@link #oom} is set to.
      */
     public void setOom(int oom) {
-        this.oom = oom;
+        e.oom = oom;
     }
 
     /**

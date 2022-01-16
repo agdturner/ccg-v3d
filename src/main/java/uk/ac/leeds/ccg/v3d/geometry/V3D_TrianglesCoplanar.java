@@ -48,9 +48,9 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * @param triangles A non-empty list of coplanar triangles.
      * @param oom The Order of Magnitude for the initialisation.
      */
-    public V3D_TrianglesCoplanar(int oom, V3D_Triangle... triangles) {
-        super(triangles[0].offset, triangles[0].p, triangles[0].q,
-                triangles[0].r, oom);
+    public V3D_TrianglesCoplanar(V3D_Triangle... triangles) {
+        super(triangles[0].e, triangles[0].offset, triangles[0].p, 
+                triangles[0].q,                triangles[0].r);
         this.triangles = Arrays.asList(triangles);
     }
 
@@ -66,11 +66,11 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom) {
+    public V3D_Envelope getEnvelope() {
         if (en == null) {
-            en = triangles.get(0).getEnvelope(oom);
+            en = triangles.get(0).getEnvelope();
             for (int i = 1; i < triangles.size(); i++) {
-                en = en.union(triangles.get(i).getEnvelope(oom));
+                en = en.union(triangles.get(i).getEnvelope());
             }
         }
         return en;
@@ -83,7 +83,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      */
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom) {
-        if (getEnvelope(oom).isIntersectedBy(pt, oom)) {
+        if (getEnvelope().isIntersectedBy(pt, oom)) {
             if (super.isIntersectedBy(pt, oom)) {
                 return isIntersectedBy0(pt, oom);
             }
@@ -120,7 +120,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
 
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
-        if (this.getEnvelope(oom).isIntersectedBy(l.getEnvelope(oom))) {
+        if (getEnvelope().isIntersectedBy(l.getEnvelope())) {
             if (super.isIntersectedBy(l, oom)) {
                 for (V3D_Triangle triangle : triangles) {
                     if (triangle.isIntersectedBy(l, oom, b)) {
@@ -180,7 +180,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
 
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        return getEnvelope(oom).isIntersectedBy(l, oom);
+        return getEnvelope().isIntersectedBy(l, oom);
     }
     
     /**

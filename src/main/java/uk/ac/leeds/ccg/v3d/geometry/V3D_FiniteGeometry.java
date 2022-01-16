@@ -31,7 +31,7 @@ public interface V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision.
      * @return The V3D_Envelope.
      */
-    public abstract V3D_Envelope getEnvelope(int oom);
+    public abstract V3D_Envelope getEnvelope();
 
     /**
      * For identifying if the geometry is intersected by point {@code p}.
@@ -102,12 +102,11 @@ public interface V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision.
      * @return either {@code p} or {@code new V3D_LineSegment(p, q)}
      */
-    public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q, int oom) {
+    public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q) {
         if (p.equals(q)) {
             return p;
         } else {
-            //return new V3D_LineSegment(p, q, oom);
-            return new V3D_LineSegment(p.getVector(oom), q.getVector(oom), oom);
+            return new V3D_LineSegment(p, q);
         }
     }
 
@@ -123,18 +122,19 @@ public interface V3D_FiniteGeometry {
      * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or {@code new V3D_Triangle(p, q, r)}
      */
     public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q, 
-            V3D_Point r, int oom) {
+            V3D_Point r) {
         if (p.equals(q)) {
-            return getGeometry(p, r, oom);
+            return getGeometry(p, r);
         } else {
             if (q.equals(r)) {
-                return getGeometry(q, p, oom);
+                return getGeometry(q, p);
             } else {
                 if (r.equals(p)) {
-                    return getGeometry(r, q, oom);
+                    return getGeometry(r, q);
                 } else {
-                    return new V3D_Triangle(V3D_Vector.ZERO, p.getVector(oom), 
-                            q.getVector(oom), r.getVector(oom), oom);
+                    return new V3D_Triangle(p.e, V3D_Vector.ZERO, 
+                            p.getVector(p.e.oom), 
+                            q.getVector(p.e.oom), r.getVector(p.e.oom));
                 }
             }
         }
