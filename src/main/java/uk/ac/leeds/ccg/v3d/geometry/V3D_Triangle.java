@@ -459,9 +459,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                     V3D_Vector lliq = lli.getQ();
                     V3D_Vector lqq = l.getQ();
                     if (lliq.equals(lqq)) {
-                        return new V3D_LineSegment(e,l.offset, lqq, lliq);
-                    } else {
                         return new V3D_LineSegment(e,l.offset, lqq, lli.getP());
+                    } else {
+                        return new V3D_LineSegment(e,l.offset, lqq, lliq);
                     }
                 }
             } else {

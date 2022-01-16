@@ -106,12 +106,12 @@ public class V3D_RectangleTest extends V3D_Test {
         assertTrue(instance.isIntersectedBy(pt, e.oom));
         // Test 3
         Math_BigRational half = Math_BigRational.ONE.divide(2);
-        pt = new V3D_Point(e,half, half, P0);
+        pt = new V3D_Point(e, half, half, P0);
         assertTrue(instance.isIntersectedBy(pt, e.oom));
         // Test 3
-        int oom = -12;
-        pt = new V3D_Point(e,half.add(Math_BigRational.valueOf("0.00000000001")), half, P0);
-        assertFalse(instance.isIntersectedBy(pt, oom));
+        e.oom = -12;
+        pt = new V3D_Point(e, half.add(Math_BigRational.valueOf("0.00000000001")), half, P0);
+        assertFalse(instance.isIntersectedBy(pt, e.oom));
     }
 
     /**
@@ -139,14 +139,14 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         String expResult = "V3D_Rectangle\n"
                 + "(\n"
+                + " oom=-3\n"
+                + " ,\n"
                 + " offset=V3D_Vector\n"
                 + " (\n"
                 + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + " )\n"
-                + " ,\n"
-                + " oom=-3\n"
                 + " ,\n"
                 + " p=V3D_Vector\n"
                 + " (\n"
@@ -283,15 +283,16 @@ public class V3D_RectangleTest extends V3D_Test {
     public void testToStringFields() {
         System.out.println("toStringFields");
         String pad = "";
+        e.oom = -3;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0);
-        String expResult = "offset=V3D_Vector\n"
+        String expResult = "oom=-3\n"
+                + ",\n"
+                + "offset=V3D_Vector\n"
                 + "(\n"
                 + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + ")\n"
-                + ",\n"
-                + "oom=-3\n"
                 + ",\n"
                 + "p=V3D_Vector\n"
                 + "(\n"
@@ -321,7 +322,7 @@ public class V3D_RectangleTest extends V3D_Test {
                 + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + ")";
         String result = instance.toStringFields(pad);
-        //System.out.println(result);
+        System.out.println(result);
         assertEquals(expResult, result);
     }
 
@@ -407,7 +408,7 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Geometry expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         //V3D_Geometry expResult = new V3D_LineSegment(P0P0P0, P1P0P0, P1P1P0, oom);
         V3D_Geometry result = instance.getIntersection(l, e.oom);
-        System.out.println(result);
+        //System.out.println(result);
         result = instance.getIntersection(l, e.oom);
         assertEquals(expResult, result);
     }
@@ -423,7 +424,7 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0);
         V3D_Geometry expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         V3D_Geometry result = instance.getIntersection(l, e.oom, b);
-        System.out.println(result);
+        //System.out.println(result);
         result = instance.getIntersection(l, e.oom, b);
         assertEquals(expResult, result);
     }

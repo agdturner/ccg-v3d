@@ -365,14 +365,16 @@ public class V3D_RayTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_3args_1() {
         System.out.println("isIntersectedBy");
-        V3D_Point pt = null;
-        boolean flag = false;
-        V3D_Ray instance = null;
-        boolean expResult = false;
-        boolean result = instance.isIntersectedBy(pt, e.oom, flag);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_Point pt = pP1P0P0;
+        boolean b = false;
+        V3D_Ray instance = new V3D_Ray(pP0P0P0, pP1P0P0);
+        assertTrue(instance.isIntersectedBy(pt, e.oom, b));
+        // Test 2
+        pt = pP2P0P0;
+        assertTrue(instance.isIntersectedBy(pt, e.oom, b));
+        // Test 3
+        pt = pN2P0P0;
+        assertFalse(instance.isIntersectedBy(pt, e.oom, b));
     }
 
     /**
@@ -381,15 +383,13 @@ public class V3D_RayTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_3args_2() {
         System.out.println("isIntersectedBy");
-        V3D_Ray r = null;
-        int oom = 0;
-        boolean flag = false;
-        V3D_Ray instance = null;
-        boolean expResult = false;
-        boolean result = instance.isIntersectedBy(r, oom, flag);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_Ray r = new V3D_Ray(pP0P0P0, pP1P0P0);
+        boolean b = false;
+        V3D_Ray instance = new V3D_Ray(pP1P1P0, pP1P0P0);
+        assertTrue(instance.isIntersectedBy(r, e.oom, b));
+        // Test 2
+        instance = new V3D_Ray(pP1P1P0, pP1P2P0);
+        assertFalse(instance.isIntersectedBy(r, e.oom, b));
     }
 
     /**
@@ -398,15 +398,13 @@ public class V3D_RayTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_3args_3() {
         System.out.println("isIntersectedBy");
-        V3D_LineSegment l = null;
-        int oom = 0;
-        boolean flag = false;
-        V3D_Ray instance = null;
-        boolean expResult = false;
-        boolean result = instance.isIntersectedBy(l, oom, flag);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        boolean b = false;
+        V3D_Ray instance = new V3D_Ray(pP1P1P0, pP1P0P0);
+        assertTrue(instance.isIntersectedBy(l, e.oom, b));
+        // Test 2
+        instance = new V3D_Ray(pP1P1P0, pP1P2P0);
+        assertFalse(instance.isIntersectedBy(l, e.oom, b));
     }
 
     /**
@@ -429,8 +427,9 @@ public class V3D_RayTest extends V3D_Test {
         // Test 2
         instance = new V3D_Ray(e, P0P0P0, N1P0P0, N2P0P0);
         p = V3D_Plane.X0;
+        expResult = pP0P0P0;
         result = p.getIntersection(instance, e.oom);
-        assertNull(result);
+        assertTrue(expResult.equals(result));
 //        // Test 2
 //        instance = V3D_Line.Y_AXIS;
 //        p = V3D_Plane.Y0;
@@ -507,7 +506,7 @@ public class V3D_RayTest extends V3D_Test {
         // Test 4: Collinear pointing opposite ways overlapping at a point.
         r = new V3D_Ray(e, P0P0P0, P0P0P0, P1P0P0);
         instance = new V3D_Ray(e, P0P0P0, P0P0P0, N1P0P0);
-        expResult = new V3D_Point(e, P0P0P0, P0P0P0);
+        expResult = pP0P0P0;
         result = instance.getIntersection(r, e.oom, b);
         assertTrue(expResult.equals(result));
         // Test 4: Collinear pointing opposite ways not overlapping.

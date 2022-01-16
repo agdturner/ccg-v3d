@@ -818,13 +818,15 @@ public class V3D_Plane extends V3D_Geometry {
         V3D_Point tq = getQ();
         if (getPQV().isScalarMultiple(v, oomN5)) {
             //pi = (V3D_Point) pl.getIntersection(new V3D_Line(tq, getR(oom), oom), oom);
-            pi = (V3D_Point) pl.getIntersection(new V3D_Line(e, tq.getVector(oomN5), getR().getVector(oomN5)), oomN5);
+            pi = (V3D_Point) pl.getIntersection(
+                    new V3D_Line(e, tq.getVector(oomN5), getR().getVector(oomN5)), oomN5);
         } else {
             //pi = (V3D_Point) pl.getIntersection(new V3D_Line(getP(oom), tq, oom), oom);
-            pi = (V3D_Point) pl.getIntersection(new V3D_Line(e, getP().getVector(oomN5), tq.getVector(oomN5)), oomN5);
+            pi = (V3D_Point) pl.getIntersection(
+                    new V3D_Line(e, getP().getVector(oomN5), tq.getVector(oomN5)), oomN5);
         }
         //return new V3D_Line(pi, v, oom);
-        return new V3D_Line(e, pi.getVector(oomN5), v);
+        return new V3D_Line(pi.offset, pi.getVector(oomN5), v, e);
     }
 
 //    private V3D_Geometry getIntersectionOld(V3D_Plane pl, int oom) {

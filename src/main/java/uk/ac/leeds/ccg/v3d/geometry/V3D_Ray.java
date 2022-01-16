@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import java.math.BigDecimal;
 import java.util.Objects;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * 3D representation of a ray - a type of infinite line that starts at a point
@@ -162,11 +163,18 @@ public class V3D_Ray extends V3D_Line {
     /**
      * @param pt A point to test for intersection.
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @param flag To distinguish this from
+     * @param b To distinguish this from
      * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
      * @return {@code true} if {@code this} is intersected by {@code p}.
      */
-    public boolean isIntersectedBy(V3D_Point pt, int oom, boolean flag) {
+    public boolean isIntersectedBy(V3D_Point pt, int oom, boolean b) {
+        if (pt.equals(this.getP(oom))) {
+            return true;
+        }
+        // The following if statement is not necessary, but it may be computationally advantageous.
+        if (pt.equals(this.getQ(oom))) {
+            return true;
+        }
         if (super.isIntersectedBy(pt, oom)) {
             V3D_Point poi = super.getPointOfIntersection(pt, oom);
             V3D_Ray r = new V3D_Ray(e, getP(), poi.getVector(oom));
@@ -258,12 +266,12 @@ public class V3D_Ray extends V3D_Line {
     /**
      * @param r A ray to test if it intersects with {@code this}.
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @param flag Used to distinguish this method from
+     * @param b Used to distinguish this method from
      * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return {@code true} iff {@code r} intersects with {@code this}.
      */
-    public boolean isIntersectedBy(V3D_Ray r, int oom, boolean flag) {
+    public boolean isIntersectedBy(V3D_Ray r, int oom, boolean b) {
         if (getP().equals(r.getP())) {
             return true;
         }
@@ -291,24 +299,24 @@ public class V3D_Ray extends V3D_Line {
                 return true;
             }
         }
-        return isIntersectedBy((V3D_Point) getIntersection(r, oom, flag), oom);
+        return isIntersectedBy((V3D_Point) getIntersection(r, oom, b), oom);
     }
 
     /**
      * @param l A line segment to test if it intersects with {@code this}.
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @param flag Used to distinguish this method from
+     * @param b Used to distinguish this method from
      * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return {@code true} iff {@code r} intersects with {@code this}.
      */
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean flag) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
         V3D_Ray rlpq = new V3D_Ray(l);
-        if (!isIntersectedBy(rlpq, oom)) {
+        if (!isIntersectedBy(rlpq, oom, b)) {
             return false;
         }
         V3D_Ray rlqp = new V3D_Ray(e, l.getQ(), l.getP());
-        return isIntersectedBy(rlqp, oom);
+        return isIntersectedBy(rlqp, oom, b);
     }
 
     /**
@@ -437,8 +445,9 @@ public class V3D_Ray extends V3D_Line {
                 if (isIntersectedBy(rp, oom, b)) {
                     V3D_Point tp = getP(oom);
                     if (r.isIntersectedBy(tp, oom, b)) {
-                        return new V3D_LineSegment(e, rp.getVector(oom),
-                                tp.getVector(oom));
+                        return V3D_FiniteGeometry.getGeometry(rp, tp);
+//                        return new V3D_LineSegment(e, rp.getVector(oom),
+//                                tp.getVector(oom));
                     } else {
                         return r;
                     }
