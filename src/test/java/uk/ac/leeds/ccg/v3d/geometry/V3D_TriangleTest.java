@@ -401,8 +401,8 @@ public class V3D_TriangleTest extends V3D_Test {
                 new V3D_Vector(P4, P0, P0));
         expResult = new V3D_LineSegment(pP2P0P0, pP2P1P0);
         result = instance.getIntersection(l, e.oom, b);
-        System.out.println(result);
-        System.out.println(expResult);
+        //System.out.println(result);
+        //System.out.println(expResult);
         assertTrue(expResult.equals(result));
     }
 
@@ -484,13 +484,13 @@ public class V3D_TriangleTest extends V3D_Test {
         theta = Pi;
         instance.rotate(axisOfRotation, theta);
         expResult = new V3D_Triangle(pP1N1P0, pP0N2P0, pP1N2P0);
-        System.out.println(instance);
+        //System.out.println(instance);
         assertEquals(expResult, instance);
         // Test 4
         theta = Pi.divide(2);
         instance.rotate(axisOfRotation, theta);
         expResult = new V3D_Triangle(pP1P0P1, pP0P0P2, pP1P0P2);
-        System.out.println(instance);
+        //System.out.println(instance);
         assertEquals(expResult, instance);
         // Test 5
         instance = new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0);
@@ -499,7 +499,7 @@ public class V3D_TriangleTest extends V3D_Test {
         theta = Pi;
         instance.rotate(axisOfRotation, theta);
         expResult = new V3D_Triangle(pP0P1P0, pP1P1P0, pP1P2P0);
-        System.out.println(instance);
+        //System.out.println(instance);
         assertEquals(expResult, instance);
     }
 

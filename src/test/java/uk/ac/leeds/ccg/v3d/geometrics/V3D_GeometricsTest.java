@@ -227,7 +227,6 @@ public class V3D_GeometricsTest extends V3D_Test {
     @Disabled
     public void testGetPlane() {
         System.out.println("getPlane");
-        int oom = 0;
         V3D_Point[] points = null;
         V3D_Plane expResult = null;
         V3D_Plane result = V3D_Geometrics.getPlane(e, points);

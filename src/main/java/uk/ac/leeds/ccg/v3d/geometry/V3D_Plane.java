@@ -718,6 +718,17 @@ public class V3D_Plane extends V3D_Geometry {
         }
         return null;
     }
+    
+    /**
+     * @param r The ray to intersect with this.
+     * @param oom The Order of Magnitude for the calculation.
+     * @param flag Used to distinguish from
+     * {@link #getIntersection(V3D_Line, int)}.
+     * @return The intersection between {@code this} and {@code l}.
+     */
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom, boolean flag) {
+        return r.getIntersection(this, oom);
+    }
 
     /**
      * https://www.microsoft.com/en-us/research/publication/intersection-of-two-planes/

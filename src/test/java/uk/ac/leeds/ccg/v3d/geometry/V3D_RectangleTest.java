@@ -322,7 +322,7 @@ public class V3D_RectangleTest extends V3D_Test {
                 + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + ")";
         String result = instance.toStringFields(pad);
-        System.out.println(result);
+        //System.out.println(result);
         assertEquals(expResult, result);
     }
 

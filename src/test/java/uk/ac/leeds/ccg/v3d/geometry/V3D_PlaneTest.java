@@ -909,8 +909,6 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Point_int() {
         System.out.println("intersects");
-        int oom = -1;
-        V3D_Point pt;
         V3D_Plane instance;
         // x=0
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P0P0P1);
@@ -2540,7 +2538,7 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Plane p = V3D_Plane.X0;
         int result = p.hashCode();
         int expResult = 336337519;
-        System.out.println(result);
+        //System.out.println(result);
         assertTrue(result == expResult);
     }
 
@@ -2620,7 +2618,6 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Line_int() {
         System.out.println("intersects");
-        int oom = -1;
         V3D_Line l = new V3D_Line(pP0P0P0, pP0P1P0); // Y axis
         V3D_Plane instance = new V3D_Plane(e, P1P0P1, P0P0P1, N1P0N1); // Y=0 plane
         assertTrue(instance.isIntersectedBy(l, e.oom));
@@ -2640,7 +2637,6 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsParallel_V3D_Plane_int() {
         System.out.println("isParallel");
-        int oom = -1;
         V3D_Plane p = new V3D_Plane(e, P1P1P0, P1N1P0, N1P1P0);
         V3D_Plane instance = new V3D_Plane(e, P1P1P1, P1N1P1, N1P1P1);
         assertTrue(instance.isParallel(p, e.oom));
@@ -2680,7 +2676,6 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsParallel_V3D_Line_int() {
         System.out.println("isParallel");
-        int oom = -1;
         V3D_Line l = V3D_Line.X_AXIS;
         V3D_Plane instance = V3D_Plane.Y0;
         assertTrue(instance.isParallel(l, e.oom));
@@ -2713,8 +2708,8 @@ public class V3D_PlaneTest extends V3D_Test {
     }
 
     /**
-     * Test of getIntersection method, of class V3D_Plane.
-     * The following can be used for creating test cases:
+     * Test of getIntersection method, of class V3D_Plane. The following can be
+     * used for creating test cases:
      * http://www.ambrsoft.com/TrigoCalc/Plan3D/Plane3D_.htm
      */
     @Test
@@ -2778,8 +2773,8 @@ public class V3D_PlaneTest extends V3D_Test {
         //expResult = new V3D_Line(p2.offset, p2.rel, v2, oom);
 
         result = instance.getIntersection(pl, e.oom);
-        System.out.println(result);
-        System.out.println(expResult);
+        //System.out.println(result);
+        //System.out.println(expResult);
         result = instance.getIntersection(pl, e.oom);
         //assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, e.oom));
         //assertTrue(expResult.equals(result));
@@ -2878,7 +2873,7 @@ public class V3D_PlaneTest extends V3D_Test {
         instance = new V3D_Plane(pP1P0P1, pP0N1P1, pP0P0P1); // z=1
         expResult = new V3D_Line(pP1P1P1, pP0P1P1);    // y=1, z=1
         result = instance.getIntersection(pl, e.oom);
-       assertTrue(expResult.equals(result));
+        assertTrue(expResult.equals(result));
         // Test 18 to 19
         pl = new V3D_Plane(pP1P0P1, pP0N1P1, pP0P0P1); // z=1
         // Test 18
@@ -3255,7 +3250,7 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Vector v = V3D_Vector.I;
         instance = new V3D_Plane(V3D_Plane.X0);
         instance.apply(oom, v);
-        expResult = Math_BigRational.ZERO;
+        expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(p, oom);
         assertTrue(expResult.equals(result));
         // Test 3
@@ -3269,7 +3264,7 @@ public class V3D_PlaneTest extends V3D_Test {
         v = V3D_Vector.K;
         instance = new V3D_Plane(V3D_Plane.X0);
         instance.apply(oom, v);
-        expResult = Math_BigRational.ONE;
+        expResult = Math_BigRational.ZERO;
         result = instance.getDistanceSquared(p, oom);
         assertTrue(expResult.equals(result));
     }
@@ -3280,7 +3275,6 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testEquals_V3D_Plane_int() {
         System.out.println("equals");
-        int oom = -1;
         V3D_Plane p;
         V3D_Plane instance;
         // Test 1
@@ -3487,12 +3481,12 @@ public class V3D_PlaneTest extends V3D_Test {
                 + ",\n"
                 + "r=V3D_Vector\n"
                 + "(\n"
-                + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0)\n"
                 + ")";
         String result = instance.toStringFields(pad);
-        System.out.println(result);
+        //System.out.println(result);
         assertEquals(expResult, result);
     }
 
@@ -3661,7 +3655,7 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Plane instance = V3D_Plane.X0;
         V3D_LineSegment expResult = new V3D_LineSegment(pP0P0P0, pP0P1P0);
         V3D_LineSegment result = instance.getPQ();
-        System.out.println(result.toString());
+        //System.out.println(result.toString());
         assertEquals(expResult, result);
     }
 
@@ -3674,7 +3668,7 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Plane instance = V3D_Plane.X0;
         V3D_LineSegment expResult = new V3D_LineSegment(pP0P1P0, pP0P0P1);
         V3D_LineSegment result = instance.getQR();
-        System.out.println(result.toString());
+        //System.out.println(result.toString());
         assertEquals(expResult, result);
     }
 
@@ -3687,7 +3681,7 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Plane instance = V3D_Plane.X0;
         V3D_LineSegment expResult = new V3D_LineSegment(pP0P0P1, pP0P0P0);
         V3D_LineSegment result = instance.getRP();
-        System.out.println(result.toString());
+        //System.out.println(result.toString());
         assertEquals(expResult, result);
     }
 
@@ -3756,21 +3750,21 @@ public class V3D_PlaneTest extends V3D_Test {
                 new Math_BigDecimal().getPi(oomt, RoundingMode.HALF_UP));
         V3D_Vector axisOfRotation = V3D_Vector.I;
         Math_BigRational theta = Pi.divide(2);
-        V3D_Plane instance = V3D_Plane.X0;
+        V3D_Plane instance = new V3D_Plane(V3D_Plane.X0);
         instance.rotate(axisOfRotation, theta);
         assertEquals(V3D_Plane.X0, instance);
         // Test 2
         axisOfRotation = V3D_Vector.J;
-        instance = V3D_Plane.X0;
+        instance = new V3D_Plane(V3D_Plane.X0);
         instance.rotate(axisOfRotation, theta);
         //System.out.println(instance.toString());
         assertEquals(V3D_Plane.Z0, instance);
         // Test 3
         axisOfRotation = V3D_Vector.K;
-        instance = V3D_Plane.X0;
+        instance = new V3D_Plane(V3D_Plane.X0);
         instance.rotate(axisOfRotation, theta);
         //System.out.println(instance.toString());
-        assertEquals(V3D_Plane.Z0, instance);
+        assertEquals(V3D_Plane.Y0, instance);
         // Test 4
         axisOfRotation = V3D_Vector.I;
         theta = Pi;

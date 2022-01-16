@@ -420,7 +420,7 @@ public class V3D_Ray extends V3D_Line {
         if (rtl == null) {
             return null;
         } else if (rtl instanceof V3D_Point pt) {
-            if (r.isIntersectedBy(pt, oom)) {
+            if (r.isIntersectedBy(pt, oom, b)) {
                 return pt;
             } else {
                 return null;
@@ -452,10 +452,14 @@ public class V3D_Ray extends V3D_Line {
                         return r;
                     }
                 } else {
-                    if (isIntersectedBy(r.getP(oom), oom)) {
+                    if (isIntersectedBy(r.getQ(oom), oom, b)) {
                         return this;
                     } else {
-                        return null;
+                        if (r.getV().getDirection() == getV().getDirection()) {
+                            return this;
+                        } else {
+                            return null;
+                        }
                     }
                 }
             }
@@ -484,6 +488,42 @@ public class V3D_Ray extends V3D_Line {
                 return pt;
             } else {
                 return null;
+            }
+        } else if (g instanceof V3D_Ray r) {
+            V3D_Point rp = r.getP(oom);
+            V3D_Point lp = l.getP(oom);
+            V3D_Point lq = l.getQ(oom);
+            V3D_LineSegment lsrplq = new V3D_LineSegment(rp, lq);
+            int rvdirection = r.getV().getDirection();
+            if (rp.equals(lp)) {
+                if (lsrplq.getV().getDirection() == rvdirection) {
+                    return l;
+                } else {
+                    return rp;
+                }
+            } else {
+                V3D_LineSegment lsrplp = new V3D_LineSegment(rp, lp);
+                if (rp.equals(lq)) {
+                    if (lsrplp.getV().getDirection() == rvdirection) {
+                        return l;
+                    } else {
+                        return rp;
+                    }
+                } else {
+                    if (lsrplq.getV().getDirection() == rvdirection) {
+                        if (lsrplp.getV().getDirection() == rvdirection) {
+                            return l;
+                        } else {
+                            return new V3D_LineSegment(rp, lq);
+                        }
+                    } else {
+                        if (lsrplp.getV().getDirection() == rvdirection) {
+                            return new V3D_LineSegment(rp, lp);
+                        } else {
+                            return null;
+                        }
+                    }
+                }
             }
         } else {
             V3D_LineSegment ls = (V3D_LineSegment) g;

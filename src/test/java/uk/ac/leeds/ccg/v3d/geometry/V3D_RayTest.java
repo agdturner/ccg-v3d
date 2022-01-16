@@ -94,7 +94,7 @@ public class V3D_RayTest extends V3D_Test {
         V3D_Ray r = new V3D_Ray(pP0P0P0, pP1P1P1);
         int result = r.hashCode();
         int expResult = 4801333;
-        System.out.println(result);
+        //System.out.println(result);
         assertTrue(result == expResult);
     }
 
@@ -421,14 +421,20 @@ public class V3D_RayTest extends V3D_Test {
         // Test 1
         instance = new V3D_Ray(e,P0P0P0, N2P0P0, N1P0P0);
         p = V3D_Plane.X0;
+//        p = new V3D_Plane(new V3D_Environment(),
+//            V3D_Vector.ZERO, V3D_Vector.ZERO, V3D_Vector.J, V3D_Vector.K);
+        //expResult = new V3D_Point(e, P0P0P0);
         expResult = pP0P0P0;
-        result = p.getIntersection(instance, e.oom);
+        result = instance.getIntersection(p, e.oom);
         assertTrue(expResult.equals(result));
         // Test 2
         instance = new V3D_Ray(e, P0P0P0, N1P0P0, N2P0P0);
         p = V3D_Plane.X0;
+//        p = new V3D_Plane(new V3D_Environment(),
+//            V3D_Vector.ZERO, V3D_Vector.ZERO, V3D_Vector.J, V3D_Vector.K);
+        //expResult = new V3D_Point(e, P0P0P0);
         expResult = pP0P0P0;
-        result = p.getIntersection(instance, e.oom);
+        result = instance.getIntersection(p, e.oom);
         assertTrue(expResult.equals(result));
 //        // Test 2
 //        instance = V3D_Line.Y_AXIS;
