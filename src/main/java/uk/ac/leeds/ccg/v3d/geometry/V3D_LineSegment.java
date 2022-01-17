@@ -273,13 +273,13 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     /**
      * @param l A line segment to indicate intersection with this.
      * @param oom The Order of Magnitude for the calculation.
-     * @param flag Used to distinguish this method from
+     * @param b Used to distinguish this method from
      * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return {@code true} iff {@code l} intersects with {@code this}.
      */
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean flag) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
         boolean ei = getEnvelope().isIntersectedBy(l.getEnvelope());
         if (ei) {
             return super.isIntersectedBy(l, oom);
@@ -542,5 +542,10 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         V3D_Vector pmpq = getV(oom).divide(Math_BigRational.valueOf(2), oom);
         //return getP(oom).apply(pmpq, oom);
         return new V3D_Point(e, offset, getP().add(pmpq, oom));
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

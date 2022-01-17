@@ -62,6 +62,15 @@ public interface V3D_FiniteGeometry {
     public abstract boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b);
 
     /**
+     * For identifying if the geometry is intersected by plane {@code p}.
+     *
+     * @param p The plane to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @return {@code true} iff the geometry is intersected by {@code p}.
+     */
+    public abstract boolean isIntersectedBy(V3D_Plane p, int oom);
+    
+    /**
      * For getting the intersection between the geometry and the line {@code l}.
      *
      * @param l The line to intersect with.

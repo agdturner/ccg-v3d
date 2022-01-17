@@ -164,5 +164,10 @@ public class V3D_LineSegmentsCollinear extends V3D_Line implements V3D_FiniteGeo
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public boolean isIntersectedBy(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     
 }

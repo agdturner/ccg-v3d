@@ -105,7 +105,7 @@ public abstract class V3D_Geometry implements Serializable {
      * @return {@code true} iff {@code l} intersects with the envelope.
      */
     public abstract boolean isEnvelopeIntersectedBy(V3D_Line l, int oom);
-
+    
     /**
      * @param v The vector to apply.
      * @param oom The Order of Magnitude for the precision.

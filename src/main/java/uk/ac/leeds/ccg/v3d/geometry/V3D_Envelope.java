@@ -26,9 +26,10 @@ import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * An envelope contains all the extreme values with respect to the X, Y and Z
- * axes. It is an axis aligned bounding box, which may have length of zero in
- * any direction. For a point the envelope is essentially the point. The
- * envelope may also be a line. In any case it has:
+ * axes. Some call this an Axis Aligned Bounding Box (AABB). In this
+ * implementation, it may have length of zero in any direction. For a point the
+ * envelope is essentially the point. The envelope may also be a line. In any
+ * case it has:
  * <ul>
  * <li>a top ({@link #t}) aligned with {@link #yMax}</li>
  * <li>a bottom ({@link #b}) aligned with {@link #yMin}</li>
@@ -159,6 +160,46 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     protected final Geometry b;
 
     /**
+     * For storing the left top fore point.
+     */
+    protected final Point ltf;
+
+    /**
+     * For storing the left top aft point.
+     */
+    protected Point lta;
+
+    /**
+     * For storing the right top aft point.
+     */
+    protected Point rta;
+
+    /**
+     * For storing the right top fore point.
+     */
+    protected Point rtf;
+
+    /**
+     * For storing the left bottom fore point.
+     */
+    protected Point lbf;
+
+    /**
+     * For storing the left bottom aft point.
+     */
+    protected Point lba;
+
+    /**
+     * For storing the right bottom aft point.
+     */
+    protected Point rba;
+
+    /**
+     * For storing the right bottom fore point.
+     */
+    protected Point rbf;
+
+    /**
      * <table>
      * <caption>Types</caption>
      * <thead>
@@ -198,12 +239,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 yMax = points[0].getY(e.oom);
                 zMin = points[0].getZ(e.oom);
                 zMax = points[0].getZ(e.oom);
-                f = new Point(points[0]);
-                l = f;
-                a = f;
-                r = f;
-                t = f;
-                b = f;
+                ltf = lbf = rbf = rtf = lta = lba = rba = rta = new Point(points[0]);
+                f = l = a = r = t = b = ltf;
                 type = 0; // f, l, a, r, t, b Point
             }
             default -> {
@@ -224,75 +261,72 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 if (xmin.compareTo(xmax) == 0) {
                     if (ymin.compareTo(ymax) == 0) {
                         if (zmin.compareTo(zmax) == 0) {
-                            f = new Point(this.e, xmin, ymin, zmin);
-                            l = f;
-                            a = f;
-                            r = f;
-                            t = f;
-                            b = f;
+                            ltf = lbf = rbf = rtf = lta = lba = rba = rta
+                                    = new Point(this.e, xmin, ymin, zmin);
+                            f = l = a = r = t = b = ltf;
                             type = 0; // f, l, a, r, t, b Point
                         } else {
-                            Point fp = new Point(this.e, xmin, ymin, zmin);
-                            Point ap = new Point(this.e, xmin, ymax, zmin);
-                            f = fp;
-                            l = new LineSegment(ap, fp);
-                            a = ap;
-                            r = new LineSegment(fp, ap);
+                            ltf = lbf = rbf = rtf = new Point(this.e, xmin, ymin, zmin);
+                            lta = lba = rba = rta = new Point(this.e, xmin, ymax, zmin);
+                            f = ltf;
+                            l = new LineSegment(lta, ltf);
+                            a = lta;
+                            r = new LineSegment(ltf, lta);
                             t = r;
                             b = l;
                             type = 1; // f, a Point; l, r, t, b LineSegment
                         }
                     } else {
-                        Point bf = new Point(this.e, xmin, ymin, zmin);
-                        Point tf = new Point(this.e, xmin, ymax, zmin);
+                        lbf = rbf = new Point(this.e, xmin, ymin, zmin);
+                        ltf = rtf = new Point(this.e, xmin, ymax, zmin);
                         if (zmin.compareTo(zmax) == 0) {
-                            f = new LineSegment(bf, tf);
+                            f = new LineSegment(lbf, ltf);
                             l = f;
                             a = f;
                             r = f;
-                            t = tf;
-                            b = bf;
+                            t = ltf;
+                            b = lbf;
                             type = 3; // t, b Point; f, l, a, r LineSegment
                         } else {
-                            Point ta = new Point(this.e, xmin, ymax, zmax);
-                            Point ba = new Point(this.e, xmin, ymin, zmax);
-                            f = new LineSegment(bf, tf);
-                            l = new Rectangle(ba, ta, tf, bf);
-                            a = new LineSegment(ba, ta);
-                            r = new Rectangle(bf, tf, ta, ba);
-                            t = new LineSegment(tf, ta);
-                            b = new LineSegment(ba, bf);
+                            lta = rta = new Point(this.e, xmin, ymax, zmax);
+                            lba = rba = new Point(this.e, xmin, ymin, zmax);
+                            f = new LineSegment(lbf, ltf);
+                            l = new Rectangle(lba, lta, ltf, lbf);
+                            a = new LineSegment(lba, lta);
+                            r = new Rectangle(lbf, ltf, lta, lba);
+                            t = new LineSegment(ltf, lta);
+                            b = new LineSegment(lba, lbf);
                             type = 5; // 1, r Rectangle; f, a, t, b LineSegment
                         }
                     }
                 } else {
                     if (ymin.compareTo(ymax) == 0) {
-                        Point lf = new Point(this.e, xmin, ymin, zmin);
-                        Point rf = new Point(this.e, xmax, ymin, zmin);
+                        ltf = lbf = new Point(this.e, xmin, ymin, zmin);
+                        rtf = rbf = new Point(this.e, xmax, ymin, zmin);
                         if (zmin.compareTo(zmax) == 0) {
-                            f = new LineSegment(lf, rf);
-                            l = lf;
-                            a = new LineSegment(rf, lf);
-                            r = rf;
+                            f = new LineSegment(ltf, rtf);
+                            l = ltf;
+                            a = new LineSegment(rtf, ltf);
+                            r = rtf;
                             t = f;
                             b = f;
                             type = 2; // 1, r Point; f, a, t, b LineSegment
                         } else {
-                            Point la = new Point(this.e, xmin, ymin, zmax);
-                            Point ra = new Point(this.e, xmax, ymin, zmax);
-                            f = new LineSegment(lf, rf);
-                            l = new LineSegment(la, lf);
-                            a = new LineSegment(ra, la);
-                            r = new LineSegment(rf, ra);
-                            t = new Rectangle(lf, la, ra, rf);
-                            b = new Rectangle(la, lf, rf, ra);
+                            lta = lba = new Point(this.e, xmin, ymin, zmax);
+                            rta = rba = new Point(this.e, xmax, ymin, zmax);
+                            f = new LineSegment(ltf, rtf);
+                            l = new LineSegment(lta, ltf);
+                            a = new LineSegment(rta, lta);
+                            r = new LineSegment(rtf, rta);
+                            t = new Rectangle(ltf, lta, rta, rtf);
+                            b = new Rectangle(lta, ltf, rtf, rta);
                             type = 6; // t, b Rectangle; f, l, a, r LineSegment
                         }
                     } else {
-                        Point lbf = new Point(this.e, xmin, ymin, zmin);
-                        Point ltf = new Point(this.e, xmin, ymax, zmin);
-                        Point rtf = new Point(this.e, xmax, ymax, zmin);
-                        Point rbf = new Point(this.e, xmax, ymin, zmin);
+                        lbf = new Point(this.e, xmin, ymin, zmin);
+                        ltf = new Point(this.e, xmin, ymax, zmin);
+                        rtf = new Point(this.e, xmax, ymax, zmin);
+                        rbf = new Point(this.e, xmax, ymin, zmin);
                         if (zmin.compareTo(zmax) == 0) {
                             f = new Rectangle(lbf, ltf, rtf, rbf);
                             l = new LineSegment(lbf, ltf);
@@ -302,10 +336,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             b = new LineSegment(lbf, rbf);
                             type = 4; // f, a Rectangle; l, r, t, b LineSegment
                         } else {
-                            Point lba = new Point(this.e, xmin, ymin, zmax);
-                            Point lta = new Point(this.e, xmin, ymax, zmax);
-                            Point rta = new Point(this.e, xmax, ymax, zmax);
-                            Point rba = new Point(this.e, xmax, ymin, zmax);
+                            lba = new Point(this.e, xmin, ymin, zmax);
+                            lta = new Point(this.e, xmin, ymax, zmax);
+                            rta = new Point(this.e, xmax, ymax, zmax);
+                            rba = new Point(this.e, xmax, ymin, zmax);
                             f = new Rectangle(lbf, ltf, rtf, rbf);
                             l = new Rectangle(lba, lta, ltf, lbf);
                             a = new Rectangle(rba, rta, lta, lba);
@@ -429,6 +463,21 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         && e.getZMin(this.e.oom).compareTo(getZMax(this.e.oom)) != 1
                         && getZMax(this.e.oom).compareTo(e.getZMin(this.e.oom)) != -1
                         && getZMin(this.e.oom).compareTo(e.getZMax(this.e.oom)) != 1) {
+                    return true;
+                }
+            }
+        } else if (getXMax(this.e.oom).compareTo(e.getXMin(this.e.oom)) != -1
+                && getXMin(this.e.oom).compareTo(e.getXMax(this.e.oom)) != 1
+                && e.getXMax(this.e.oom).compareTo(getXMin(this.e.oom)) != -1
+                && e.getXMin(this.e.oom).compareTo(getXMax(this.e.oom)) != 1) {
+            if (getYMax(this.e.oom).compareTo(e.getYMin(this.e.oom)) != -1
+                    && getYMin(this.e.oom).compareTo(e.getYMax(this.e.oom)) != 1
+                    && e.getYMax(this.e.oom).compareTo(getYMin(this.e.oom)) != -1
+                    && e.getYMin(this.e.oom).compareTo(getYMax(this.e.oom)) != 1) {
+                if (getZMax(this.e.oom).compareTo(e.getZMin(this.e.oom)) != -1
+                        && getZMin(this.e.oom).compareTo(e.getZMax(this.e.oom)) != 1
+                        && e.getZMax(this.e.oom).compareTo(getZMin(this.e.oom)) != -1
+                        && e.getZMin(this.e.oom).compareTo(getZMax(this.e.oom)) != 1) {
                     return true;
                 }
             }
@@ -1061,19 +1110,352 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         }
     }
 
+    @Override
+    public boolean isIntersectedBy(V3D_Plane p, int oom) {
+        /**
+         * Some alternatives for doing this are explained here:
+         * https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
+         * This implements the approach outlined here:
+         * https://stackoverflow.com/a/15691064/1998054 That is: The normal
+         * vector of the plane points into one half. The dot product is positive
+         * if the point is there, negative otherwise. Zero if it is exactly on
+         * the plane. So, the idea is to test the vertices and if we find an
+         * intersection return true.
+         */
+        V3D_Vector n = p.getN(oom);
+        if (type == 0) {
+            return p.isIntersectedBy(new V3D_Point(ltf), oom);
+        }
+        Math_BigRational ltfv = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(ltf), oom), oom);
+        int ltfvc = ltfv.compareTo(Math_BigRational.ZERO);
+        if (ltfvc == 0) {
+            return true;
+        } else if (ltfvc > 0) {
+            Math_BigRational ltav = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(lta), oom), oom);
+            int ltavc = ltav.compareTo(Math_BigRational.ZERO);
+            if (ltavc == 0) {
+                return true;
+            } else if (ltfvc > 0) {
+                Math_BigRational lbfv = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(lbf), oom), oom);
+                int lbfvc = lbfv.compareTo(Math_BigRational.ZERO);
+                if (lbfvc == 0) {
+                    return true;
+                } else if (lbfvc > 0) {
+                    Math_BigRational lbav = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(lba), oom), oom);
+                    int lbavc = lbav.compareTo(Math_BigRational.ZERO);
+                    if (lbavc == 0) {
+                        return true;
+                    } else if (lbavc > 0) {
+                        Math_BigRational rtfv = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(rtf), oom), oom);
+                        int rtfvc = rtfv.compareTo(Math_BigRational.ZERO);
+                        if (rtfvc == 0) {
+                            return true;
+                        } else if (rtfvc > 0) {
+                            Math_BigRational rtav = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(rta), oom), oom);
+                            int rtavc = rtav.compareTo(Math_BigRational.ZERO);
+                            if (rtavc == 0) {
+                                return true;
+                            } else if (rtavc > 0) {
+                                Math_BigRational rbfv = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(rbf), oom), oom);
+                                int rbfvc = rbfv.compareTo(Math_BigRational.ZERO);
+                                if (rbfvc == 0) {
+                                    return true;
+                                } else if (rbfvc > 0) {
+                                    Math_BigRational rbav = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(rba), oom), oom);
+                                    int rbavc = rbav.compareTo(Math_BigRational.ZERO);
+                                    if (rbavc == 0) {
+                                        return true;
+                                    } else {
+                                        return rbavc <= 0;
+                                    }
+                                } else {
+                                    return true;
+                                }
+                            } else {
+                                return true;
+                            }
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        } else {
+            Math_BigRational ltav = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(lta), oom), oom);
+            int ltavc = ltav.compareTo(Math_BigRational.ZERO);
+            if (ltavc == 0) {
+                return true;
+            } else if (ltfvc > 0) {
+                return true;
+            } else {
+                Math_BigRational lbfv = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(lbf), oom), oom);
+                int lbfvc = lbfv.compareTo(Math_BigRational.ZERO);
+                if (lbfvc == 0) {
+                    return true;
+                } else if (lbfvc > 0) {
+                    return true;
+                } else {
+                    Math_BigRational lbav = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(lba), oom), oom);
+                    int lbavc = lbav.compareTo(Math_BigRational.ZERO);
+                    if (lbavc == 0) {
+                        return true;
+                    } else if (lbavc > 0) {
+                        return true;
+                    } else {
+                        Math_BigRational rtfv = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(rtf), oom), oom);
+                        int rtfvc = rtfv.compareTo(Math_BigRational.ZERO);
+                        if (rtfvc == 0) {
+                            return true;
+                        } else if (rtfvc > 0) {
+                            return true;
+                        } else {
+                            Math_BigRational rtav = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(rta), oom), oom);
+                            int rtavc = rtav.compareTo(Math_BigRational.ZERO);
+                            if (rtavc == 0) {
+                                return true;
+                            } else if (rtavc > 0) {
+                                return true;
+                            } else {
+                                Math_BigRational rbfv = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(rbf), oom), oom);
+                                int rbfvc = rbfv.compareTo(Math_BigRational.ZERO);
+                                if (rbfvc == 0) {
+                                    return true;
+                                } else if (rbfvc > 0) {
+                                    return true;
+                                } else {
+                                    Math_BigRational rbav = n.getDotProduct(new V3D_Vector(p.getP(), new V3D_Point(rba), oom), oom);
+                                    int rbavc = rbav.compareTo(Math_BigRational.ZERO);
+                                    if (rbavc == 0) {
+                                        return true;
+                                    } else {
+                                        return rbavc > 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * For testing if {@code this} is intersected by {@code t}.
+     *
+     * https://stackoverflow.com/questions/17458562/efficient-aabb-triangle-intersection-in-c-sharp
+     *
+     * @param t The triangle to be tested for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param b Ignored, but used to distinguish this method from
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Plane, int)}.
+     * @return {@code true} iff the geometry is intersected by {@code p}.
+     */
+    public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
+        /**
+         * Test the envelopes for intersection.
+         */
+        if (t.getEnvelope().isIntersectedBy(this)) {
+            /**
+             * Test the plane for intersection. This is not needed and may not
+             * be computationally advantageous!
+             */
+            if (isIntersectedBy(t, oom)) {
+                /**
+                 * Test the edges of the triangle for intersection. This is not
+                 * needed and may not be computationally advantageous!
+                 */
+                if (this.isIntersectedBy(t.getPQ(), oom, b)) {
+                    return true;
+                }
+                if (this.isIntersectedBy(t.getQR(), oom, b)) {
+                    return true;
+                }
+                if (this.isIntersectedBy(t.getRP(), oom, b)) {
+                    return true;
+                }
+                /**
+                 * <table>
+                 * <caption>Types</caption>
+                 * <thead>
+                 * <tr><td>type</td><td>description</td></tr>
+                 * </thead>
+                 * <tbody>
+                 * <tr><td>0</td><td>f, l, a, r, t, b Point</td></tr>
+                 * <tr><td>1</td><td>f, a Point; l, r, t, b
+                 * LineSegment</td></tr>
+                 * <tr><td>2</td><td>1, r Point; f, a, t, b
+                 * LineSegment</td></tr>
+                 * <tr><td>3</td><td>t, b Point; f, l, a, r
+                 * LineSegment</td></tr>
+                 * <tr><td>4</td><td>f, a Rectangle; l, r, t, b
+                 * LineSegment</td></tr>
+                 * <tr><td>5</td><td>1, r Rectangle; f, a, t, b
+                 * LineSegment</td></tr>
+                 * <tr><td>6</td><td>t, b Rectangle; f, l, a, r
+                 * LineSegment</td></tr>
+                 * <tr><td>7</td><td>f, l, a, r, t, b Rectangle</td></tr>
+                 * </tbody>
+                 * </table>
+                 */
+                switch (type) {
+                    case 0:
+                        return true;
+                    case 1:
+                        return t.isIntersectedBy(new V3D_LineSegment((LineSegment) l), oom, b);
+                    case 2:
+                        return t.isIntersectedBy(new V3D_LineSegment((LineSegment) f), oom, b);
+                    case 3:
+                        return t.isIntersectedBy(new V3D_LineSegment((LineSegment) f), oom, b);
+                    case 5:
+                        if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) f), oom, b)) {
+                            return true;
+                        } else {
+                            if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) a), oom, b)) {
+                                return true;
+                            } else {
+                                if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) this.t), oom, b)) {
+                                    return true;
+                                } else {
+                                    return t.isIntersectedBy(new V3D_LineSegment((LineSegment) this.b), oom, b);
+                                }
+                            }
+                        }
+                    case 6:
+                        if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) f), oom, b)) {
+                            return true;
+                        } else {
+                            if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) l), oom, b)) {
+                                return true;
+                            } else {
+                                if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) a), oom, b)) {
+                                    return true;
+                                } else {
+                                    return t.isIntersectedBy(new V3D_LineSegment((LineSegment) r), oom, b);
+                                }
+                            }
+                        }
+                    default:
+                        /**
+                         * For the case when the triangle is outside and non of
+                         * the edges cut through the triangle?
+                         */
+                        boolean check = checkIntersectionWithSide((Rectangle) l, t, oom);
+                        if (check) {
+                            return true;
+                        } else {
+                            check = checkIntersectionWithSide((Rectangle) a, t, oom);
+                            if (check) {
+                                return true;
+                            } else {
+                                check = checkIntersectionWithSide((Rectangle) r, t, oom);
+                                if (check) {
+                                    return true;
+                                } else {
+                                    check = checkIntersectionWithSide((Rectangle) f, t, oom);
+                                    if (check) {
+                                        return true;
+                                    } else {
+                                        check = checkIntersectionWithSide((Rectangle) this.t, t, oom);
+                                        if (check) {
+                                            return true;
+                                        } else {
+                                            check = checkIntersectionWithSide((Rectangle) this.b, t, oom);
+                                            return check;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkIntersectionWithSide(Rectangle r, V3D_Triangle t, int oom) {
+        V3D_Vector n;
+        n = new V3D_Rectangle(r).getN(oom);
+        int tpnc = t.p.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+        if (tpnc == 0) {
+            return true;
+        } else if (tpnc == 1) {
+            int tqnc = t.q.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+            if (tqnc != 1) {
+                return true;
+            } else {
+                int trnc = t.r.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+                if (trnc == 0) {
+                    return true;
+                } else return trnc != 1;
+            }
+        } else {
+            int tqnc = t.q.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+            if (tqnc != -1) {
+                return true;
+            } else {
+                int trnc = t.r.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+                if (trnc == 0) {
+                    return true;
+                } else return trnc == 1;
+            }
+        }
+    }
+
+//    /**
+//     * For testing if {@code this} is intersected by {@code t}
+//     *
+//     * @param r The rectangle to be tested for intersection.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param b Ignored, but used to distinguish this method from
+//     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Plane, int)}.
+//     * @return {@code true} iff the geometry is intersected by {@code p}.
+//     */
+//    public boolean isIntersectedBy(V3D_Rectangle r, int oom, boolean b) {
+//        /**
+//         * The following if statement is thought to be a computational
+//         * optimisation, but whether it is depends and should probably be
+//         * tested.
+//         */
+//        if (r.getEnvelope().isIntersectedBy(this)) {
+//            /**
+//             * The following if statement is thought to be a computational
+//             * optimisation, but whether it is depends and should probably be
+//             * tested.
+//             */
+//            if (isIntersectedBy(r, oom)) {
+//                if (this.isIntersectedBy(r.getPQ(), oom)) {
+//                    return true;
+//                }
+//                if (this.isIntersectedBy(r.getQR(), oom)) {
+//                    return true;
+//                }
+//                if (this.isIntersectedBy(r.getRP(), oom)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
+
     /**
      *
      * Test if {@code this} is intersected by {@code li}.
      *
      * @param li The line to test for intersection.
      * @param oom The Order of Magnitude for the precision.
-     * @param flag To distinguish this method from
+     * @param b To distinguish this method from
      * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return {@code true} iff {@code this} is intersected by {@code li}.
      */
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment li, int oom, boolean flag) {
+    public boolean isIntersectedBy(V3D_LineSegment li, int oom, boolean b) {
         V3D_Envelope le = li.getEnvelope();
         if (le.isIntersectedBy(this)) {
             switch (type) {
@@ -1081,22 +1463,22 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     return li.isIntersectedBy(new V3D_Point((Point) f), oom);
                 }
                 case 1 -> {
-                    return new V3D_LineSegment((LineSegment) l).isIntersectedBy(li, oom);
+                    return new V3D_LineSegment((LineSegment) l).isIntersectedBy(li, oom, b);
                 }
                 case 2 -> {
-                    return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li, oom);
+                    return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li, oom, b);
                 }
                 case 3 -> {
-                    return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li, oom);
+                    return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li, oom, b);
                 }
                 case 4 -> {
-                    return new V3D_Rectangle((Rectangle) f).isIntersectedBy(li, oom);
+                    return new V3D_Rectangle((Rectangle) f).isIntersectedBy(li, oom, b);
                 }
                 case 5 -> {
-                    return new V3D_Rectangle((Rectangle) l).isIntersectedBy(li, oom);
+                    return new V3D_Rectangle((Rectangle) l).isIntersectedBy(li, oom, b);
                 }
                 case 6 -> {
-                    return new V3D_Rectangle((Rectangle) t).isIntersectedBy(li, oom);
+                    return new V3D_Rectangle((Rectangle) t).isIntersectedBy(li, oom, b);
                 }
                 default -> {
                     /**
@@ -1104,18 +1486,18 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                      * An alternative method might test three orthogonal sides
                      * and the additional corner that is on none of these sides.
                      */
-                    if (new V3D_Rectangle((Rectangle) f).isIntersectedBy(li, oom)) {
+                    if (new V3D_Rectangle((Rectangle) f).isIntersectedBy(li, oom, b)) {
                         return true;
-                    } else if (new V3D_Rectangle((Rectangle) l).isIntersectedBy(li, oom)) {
+                    } else if (new V3D_Rectangle((Rectangle) l).isIntersectedBy(li, oom, b)) {
                         return true;
-                    } else if (new V3D_Rectangle((Rectangle) a).isIntersectedBy(li, oom)) {
+                    } else if (new V3D_Rectangle((Rectangle) a).isIntersectedBy(li, oom, b)) {
                         return true;
-                    } else if (new V3D_Rectangle((Rectangle) r).isIntersectedBy(li, oom)) {
+                    } else if (new V3D_Rectangle((Rectangle) r).isIntersectedBy(li, oom, b)) {
                         return true;
-                    } else if (new V3D_Rectangle((Rectangle) t).isIntersectedBy(li, oom)) {
+                    } else if (new V3D_Rectangle((Rectangle) t).isIntersectedBy(li, oom, b)) {
                         return true;
                     } else {
-                        return new V3D_Rectangle((Rectangle) b).isIntersectedBy(li, oom);
+                        return new V3D_Rectangle((Rectangle) this.b).isIntersectedBy(li, oom, b);
                     }
                 }
             }
@@ -1636,7 +2018,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         /**
          * Create a new instance from {@code x}, {@code y}, {@code z}.
          *
-     * @param e What {@link #e} is set to.
+         * @param e What {@link #e} is set to.
          * @param x What {@link #x} is set to.
          * @param y What {@link #y} is set to.
          * @param z What {@link #z} is set to.
@@ -1652,7 +2034,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         /**
          * Create a new instance from {@code v}.
          *
-     * @param e What {@link #e} is set to.
+         * @param e What {@link #e} is set to.
          * @param v The vector.
          */
         public Point(V3D_Environment e, V3D_Vector v) {
