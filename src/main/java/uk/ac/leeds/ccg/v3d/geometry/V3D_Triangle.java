@@ -307,7 +307,16 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         }
         return false;
     }
-    
+
+    /**
+     * For checking if {@code t} intersects {@code this}.
+     *
+     * @param t The triangle to test for intersection with this.
+     * @param oom The Order of Magnitude for the precision.
+     * @param b To distinguish this method from
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Plane, int)}.
+     * @return {@code true} iff the geometry is intersected by {@code l}.
+     */
     public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
         if (getEnvelope().isIntersectedBy(t.getEnvelope())) {
             if (isIntersectedBy(t, oom)) {
@@ -320,12 +329,75 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                     } else if (g instanceof V3D_LineSegment l) {
                         return t.isIntersectedBy(l, oom, b);
                     } else {
-                        return t.isIntersectedBy((V3D_Triangle) g, oom, b);
+                        /**
+                         * Check for a line that goes between the triangles. For
+                         * each side of one triangle. Compute the dot product of
+                         * the corners of the other triangle with the normal of
+                         * the side. Test that all these have the same side.
+                         */
+                        V3D_Vector nn = getN(oom);
+                        if (checkSide(t, nn, getPQV(), oom)) {
+                            return true;
+                        }
+                        if (checkSide(t, nn, getQRV(), oom)) {
+                            return true;
+                        }
+                        return checkSide(t, nn, getRPV(), oom);
                     }
                 }
             }
         }
         return false;
+    }
+
+    /**
+     *
+     * @param t The triangle
+     * @param n The normal of the other triangle (although that is the same - as
+     * they are in the same plane).
+     * @param v The vector of the line to check.
+     * @param oom The Order of Magnitude for the precision.
+     * @return {@code true} if an intersection is found and {@code false}
+     * otherwise.
+     */
+    protected boolean checkSide(V3D_Triangle t, V3D_Vector n, V3D_Vector v, int oom) {
+        V3D_Vector cp = n.getCrossProduct(v, oom);
+        int cpv = v.getDotProduct(cp, oom).compareTo(Math_BigRational.ZERO);
+        if (cpv == 0) {
+            return true;
+        } else if (cpv == 1) {
+            int cqv = t.getQV().getDotProduct(cp, oom).compareTo(Math_BigRational.ZERO);
+            if (cqv == 0) {
+                return true;
+            } else {
+                if (cqv == 1) {
+                    int crv = t.getRV().getDotProduct(cp, oom).compareTo(Math_BigRational.ZERO);
+                    if (crv == 0) {
+                        return true;
+                    } else {
+                        return crv != 1;
+                    }
+                } else {
+                    return true;
+                }
+            }
+        } else {
+            int cqv = t.getQV().getDotProduct(cp, oom).compareTo(Math_BigRational.ZERO);
+            if (cqv == 0) {
+                return true;
+            } else {
+                if (cqv == 1) {
+                    return true;
+                } else {
+                    int crv = t.getRV().getDotProduct(cp, oom).compareTo(Math_BigRational.ZERO);
+                    if (crv == 0) {
+                        return true;
+                    } else {
+                        return crv == 1;
+                    }
+                }
+            }
+        }
     }
 
     /**

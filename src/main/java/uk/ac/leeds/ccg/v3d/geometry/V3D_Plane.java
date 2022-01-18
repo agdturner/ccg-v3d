@@ -758,7 +758,7 @@ public class V3D_Plane extends V3D_Geometry {
         if (rit instanceof V3D_Line) {
             return r;
         }
-        if (r.getV().getDirection() == new V3D_Vector(r.getP(oom), 
+        if (r.getV().getDirection() == new V3D_Vector(r.getP(oom),
                 (V3D_Point) rit, oom).getDirection()) {
             return rit;
         }
@@ -845,7 +845,7 @@ public class V3D_Plane extends V3D_Geometry {
          */
         V3D_Vector v = getN(oomN5).getCrossProduct(pl.getN(oomN5), oomN5);
         //V3D_Vector v = pl.getN(oomN5).getCrossProduct(getN(oomN5), oomN5);
-        
+
         /**
          * Check special cases.
          */
@@ -882,7 +882,7 @@ public class V3D_Plane extends V3D_Geometry {
 //            pi = (V3D_Point) pl.getIntersection(
 //                    new V3D_Line(getP(), getQ()), oomN5);
 //        }
-        
+
         if (pl.getPQV().isScalarMultiple(v, oomN5)) {
             pi = (V3D_Point) getIntersection(
                     new V3D_Line(pl.getP(), pl.getR()), oomN5);
@@ -890,7 +890,7 @@ public class V3D_Plane extends V3D_Geometry {
             pi = (V3D_Point) getIntersection(
                     new V3D_Line(pl.getP(), pl.getQ()), oomN5);
         }
-        
+
         //return new V3D_Line(pi, v, oom);
         return new V3D_Line(pi.offset, pi.getVector(oomN5), v, e);
     }
@@ -1328,10 +1328,10 @@ public class V3D_Plane extends V3D_Geometry {
         } else {
             // (pi instanceof V3D_Line)
             V3D_Geometry gPQ = getIntersection(t.getPQ(), oom, true);
-            V3D_Geometry gQR = getIntersection(t.getQR(), oom, true);
-            V3D_Geometry gRP = getIntersection(t.getRP(), oom, true);
             if (gPQ == null) {
+                V3D_Geometry gQR = getIntersection(t.getQR(), oom, true);
                 if (gQR == null) {
+                    V3D_Geometry gRP = getIntersection(t.getRP(), oom, true);
                     if (gRP == null) {
                         return null;
                     } else {
@@ -1339,6 +1339,7 @@ public class V3D_Plane extends V3D_Geometry {
                                 (V3D_Point) gQR, (V3D_Point) gRP);
                     }
                 } else {
+                    V3D_Geometry gRP = getIntersection(t.getRP(), oom, true);
                     if (gRP == null) {
                         return gQR;
                     } else {
@@ -1349,7 +1350,9 @@ public class V3D_Plane extends V3D_Geometry {
             } else if (gPQ instanceof V3D_LineSegment) {
                 return gPQ;
             } else {
+                V3D_Geometry gQR = getIntersection(t.getQR(), oom, true);
                 if (gQR == null) {
+                    V3D_Geometry gRP = getIntersection(t.getRP(), oom, true);
                     if (gRP == null) {
                         return (V3D_Point) gPQ;
                     } else if (gRP instanceof V3D_LineSegment) {
@@ -1360,7 +1363,7 @@ public class V3D_Plane extends V3D_Geometry {
                     }
                 } else {
                     return V3D_FiniteGeometry.getGeometry((V3D_Point) gPQ,
-                                (V3D_Point) gQR);
+                            (V3D_Point) gQR);
                 }
             }
         }

@@ -515,4 +515,23 @@ public class V3D_TriangleTest extends V3D_Test {
         assertEquals(expResult, instance);
     }
 
+    /**
+     * Test of isIntersectedBy method, of class V3D_Triangle.
+     */
+    @Test
+    public void testIsIntersectedBy_3args_4() {
+        System.out.println("isIntersectedBy");
+        V3D_Triangle t;
+        boolean b = false;
+        V3D_Triangle instance;
+        // Test 1
+        t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
+        instance =  new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0);
+        assertTrue(instance.isIntersectedBy(t, e.oom, b));
+        // Test 2
+        t = new V3D_Triangle(pN1P0P0, pP0P1P0, pP1P0P0);
+        instance =  new V3D_Triangle(pN2P0P0, pP0P2P0, pP2P0P0);
+        assertTrue(instance.isIntersectedBy(t, e.oom, b));
+    }
+
 }
