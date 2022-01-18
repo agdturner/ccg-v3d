@@ -536,6 +536,24 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
+     * @param l The line segment to test for intersection with this.
+     * @param oom The Order of Magnitude for the calculation.
+     * @return {@code true} If this and {@code l} intersect.
+     */
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
+        V3D_Line ll = new V3D_Line(l);
+        if (isIntersectedBy(ll, oom)) {
+            V3D_Geometry g = getIntersection(l, oom);
+            if (g instanceof V3D_Point pt) {
+                return l.isIntersectedBy(pt, oom);
+            } else {
+                return l.isIntersectedBy((V3D_LineSegment) g, oom);
+            }
+        }
+        return false;
+    }
+
+    /**
      * This uses matrices as per the answer to this:
      * <a href="https://math.stackexchange.com/questions/684141/check-if-a-point-is-on-a-plane-minimize-the-use-of-multiplications-and-divisio">https://math.stackexchange.com/questions/684141/check-if-a-point-is-on-a-plane-minimize-the-use-of-multiplications-and-divisio</a>
      *
@@ -699,34 +717,46 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * @param l line segment to intersect with this.
      * @param oom The Order of Magnitude for the calculation.
-     * @param flag Used to distinguish from
+     * @param b Used to distinguish from
      * {@link #getIntersection(V3D_Line, int)}.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean flag) {
-        V3D_Geometry li = getIntersection(l, oom);
-        if (li == null) {
+    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
+        V3D_Geometry g = getIntersection(l, oom);
+        if (g == null) {
             return null;
         }
-        if (li instanceof V3D_Line) {
+        if (g instanceof V3D_Line) {
             return l;
+        } else {
+            V3D_Point pt = (V3D_Point) g;
+            if (l.isIntersectedBy(pt, oom)) {
+                return pt;
+            }
+            return null;
         }
-        V3D_Point pt = (V3D_Point) li;
-        if (l.isIntersectedBy(pt, oom)) {
-            return pt;
-        }
-        return null;
     }
-    
+
     /**
      * @param r The ray to intersect with this.
      * @param oom The Order of Magnitude for the calculation.
-     * @param flag Used to distinguish from
+     * @param b Used to distinguish from
      * {@link #getIntersection(V3D_Line, int)}.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry getIntersection(V3D_Ray r, int oom, boolean flag) {
-        return r.getIntersection(this, oom);
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom, boolean b) {
+        V3D_Geometry rit = r.getIntersection(this, oom);
+        if (rit == null) {
+            return rit;
+        }
+        if (rit instanceof V3D_Line) {
+            return r;
+        }
+        if (r.getV().getDirection() == new V3D_Vector(r.getP(oom), 
+                (V3D_Point) rit, oom).getDirection()) {
+            return rit;
+        }
+        return null;
     }
 
     /**
@@ -808,6 +838,8 @@ public class V3D_Plane extends V3D_Geometry {
          * direction of the line.
          */
         V3D_Vector v = getN(oomN5).getCrossProduct(pl.getN(oomN5), oomN5);
+        //V3D_Vector v = pl.getN(oomN5).getCrossProduct(getN(oomN5), oomN5);
+        
         /**
          * Check special cases.
          */
@@ -825,16 +857,34 @@ public class V3D_Plane extends V3D_Geometry {
          * v.
          */
         V3D_Point pi;
-        V3D_Point tq = getQ();
-        if (getPQV().isScalarMultiple(v, oomN5)) {
-            //pi = (V3D_Point) pl.getIntersection(new V3D_Line(tq, getR(oom), oom), oom);
-            pi = (V3D_Point) pl.getIntersection(
-                    new V3D_Line(e, tq.getVector(oomN5), getR().getVector(oomN5)), oomN5);
+//        V3D_Point tq = getQ();
+//        if (getPQV().isScalarMultiple(v, oomN5)) {
+//        //if (pl.getPQV().isScalarMultiple(v, oomN5)) {
+//            //pi = (V3D_Point) pl.getIntersection(new V3D_Line(tq, getR(oom), oom), oom);
+////            pi = (V3D_Point) pl.getIntersection(
+////                    new V3D_Line(e, tq.getVector(oomN5), getR().getVector(oomN5)), oomN5);
+////            pi = (V3D_Point) pl.getIntersection(
+////                    new V3D_Line(tq.getVector(oomN5), getR().getVector(oomN5)), oomN5);
+//            pi = (V3D_Point) pl.getIntersection(
+//                    new V3D_Line(getP(), getR()), oomN5);
+//        } else {
+//            //pi = (V3D_Point) pl.getIntersection(new V3D_Line(getP(oom), tq, oom), oom);
+////            pi = (V3D_Point) pl.getIntersection(
+////                    new V3D_Line(e, getP().getVector(oomN5), getR().getVector(oomN5)), oomN5);
+////            pi = (V3D_Point) getIntersection(
+////                    new V3D_Line(e, pl.getP().getVector(oomN5), pl.getQ().getVector(oomN5)), oomN5);
+//            pi = (V3D_Point) pl.getIntersection(
+//                    new V3D_Line(getP(), getQ()), oomN5);
+//        }
+        
+        if (pl.getPQV().isScalarMultiple(v, oomN5)) {
+            pi = (V3D_Point) getIntersection(
+                    new V3D_Line(pl.getP(), pl.getR()), oomN5);
         } else {
-            //pi = (V3D_Point) pl.getIntersection(new V3D_Line(getP(oom), tq, oom), oom);
-            pi = (V3D_Point) pl.getIntersection(
-                    new V3D_Line(e, getP().getVector(oomN5), tq.getVector(oomN5)), oomN5);
+            pi = (V3D_Point) getIntersection(
+                    new V3D_Line(pl.getP(), pl.getQ()), oomN5);
         }
+        
         //return new V3D_Line(pi, v, oom);
         return new V3D_Line(pi.offset, pi.getVector(oomN5), v, e);
     }
@@ -1251,6 +1301,66 @@ public class V3D_Plane extends V3D_Geometry {
 //        // Sub 2 and 3 into
 //    }
     /**
+     * Calculate and return the intersection between {@code this} and {@code t}.
+     * A question about how to do this:
+     * https://stackoverflow.com/questions/3142469/determining-the-intersection-of-a-triangle-and-a-plane
+     *
+     * @param t The triangle to intersect.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param b Used to distinguish from
+     * {@link #getIntersection(V3D_Plane, int)}.
+     * @return The intersection between {@code this} and {@code t}.
+     */
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
+        // If t were a plane what is the intersection?
+        V3D_Geometry pi = getIntersection(t, oom);
+        if (pi == null) {
+            return null;
+        }
+        if (pi instanceof V3D_Plane) {
+            return t;
+        } else {
+            // (pi instanceof V3D_Line)
+            V3D_Geometry gPQ = getIntersection(t.getPQ(), oom, true);
+            V3D_Geometry gQR = getIntersection(t.getQR(), oom, true);
+            V3D_Geometry gRP = getIntersection(t.getRP(), oom, true);
+            if (gPQ == null) {
+                if (gQR == null) {
+                    if (gRP == null) {
+                        return null;
+                    } else {
+                        return V3D_FiniteGeometry.getGeometry((V3D_Point) gPQ,
+                                (V3D_Point) gQR, (V3D_Point) gRP);
+                    }
+                } else {
+                    if (gRP == null) {
+                        return gQR;
+                    } else {
+                        return V3D_FiniteGeometry.getGeometry((V3D_Point) gQR,
+                                (V3D_Point) gRP);
+                    }
+                }
+            } else if (gPQ instanceof V3D_LineSegment) {
+                return gPQ;
+            } else {
+                if (gQR == null) {
+                    if (gRP == null) {
+                        return (V3D_Point) gPQ;
+                    } else if (gRP instanceof V3D_LineSegment) {
+                        return gRP;
+                    } else {
+                        return V3D_FiniteGeometry.getGeometry((V3D_Point) gPQ,
+                                (V3D_Point) gRP);
+                    }
+                } else {
+                    return V3D_FiniteGeometry.getGeometry((V3D_Point) gPQ,
+                                (V3D_Point) gQR);
+                }
+            }
+        }
+    }
+
+    /**
      * @param p The plane to test if it is parallel to this.
      * @param oom The Order of Magnitude for the calculation.
      * @return {@code true} if {@code this} is parallel to {@code p}.
@@ -1412,9 +1522,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @param offset What {@link #offset} is set to.
      */
     public void setOffset(V3D_Vector offset) {
-        p = p.add(offset, e.oom).subtract(this.offset, e.oom);
-        q = q.add(offset, e.oom).subtract(this.offset, e.oom);
-        r = r.add(offset, e.oom).subtract(this.offset, e.oom);
+        //p = p.add(offset, e.oom).subtract(this.offset, e.oom);
+        //q = q.add(offset, e.oom).subtract(this.offset, e.oom);
+        //r = r.add(offset, e.oom).subtract(this.offset, e.oom);
         this.offset = offset;
     }
 

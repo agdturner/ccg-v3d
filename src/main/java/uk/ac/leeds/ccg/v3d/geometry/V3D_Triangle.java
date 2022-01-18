@@ -307,6 +307,26 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         }
         return false;
     }
+    
+    public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
+        if (getEnvelope().isIntersectedBy(t.getEnvelope())) {
+            if (isIntersectedBy(t, oom)) {
+                V3D_Geometry g = super.getIntersection(t, oom, b);
+                if (g == null) {
+                    return false;
+                } else {
+                    if (g instanceof V3D_Point pt) {
+                        return t.isIntersectedBy(pt, oom);
+                    } else if (g instanceof V3D_LineSegment l) {
+                        return t.isIntersectedBy(l, oom, b);
+                    } else {
+                        return t.isIntersectedBy((V3D_Triangle) g, oom, b);
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
