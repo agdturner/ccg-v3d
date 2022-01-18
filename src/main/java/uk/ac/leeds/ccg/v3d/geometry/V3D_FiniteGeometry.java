@@ -85,12 +85,12 @@ public interface V3D_FiniteGeometry {
      *
      * @param l The line segment to intersect with.
      * @param oom The Order of Magnitude for the precision.
-     * @param flag To distinguish this method from
+     * @param b To distinguish this method from
      * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
      * value is ignored.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean flag);
+    public abstract V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b);
 
     /**
      * For getting the minimum distance to {@code p}.

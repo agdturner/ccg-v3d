@@ -538,16 +538,22 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * @param l The line segment to test for intersection with this.
      * @param oom The Order of Magnitude for the calculation.
+     * @param b To distinguish this method from
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
+     * value is ignored.
      * @return {@code true} If this and {@code l} intersect.
      */
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
         V3D_Line ll = new V3D_Line(l);
         if (isIntersectedBy(ll, oom)) {
-            V3D_Geometry g = getIntersection(l, oom);
+            V3D_Geometry g = getIntersection(ll, oom);
+            if (g == null) {
+                return false;
+            }
             if (g instanceof V3D_Point pt) {
                 return l.isIntersectedBy(pt, oom);
             } else {
-                return l.isIntersectedBy((V3D_LineSegment) g, oom);
+                return l.isIntersectedBy((V3D_Line) g, oom);
             }
         }
         return false;

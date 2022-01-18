@@ -3795,21 +3795,22 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Plane.
      */
     @Test
-    public void testIsIntersectedBy_V3D_LineSegment_int() {
+    public void testIsIntersectedBy_3args() {
         System.out.println("isIntersectedBy");
+        boolean b = true;
         V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         V3D_Plane instance = V3D_Plane.X0;
-        assertTrue(instance.isIntersectedBy(l, e.oom));
+        assertTrue(instance.isIntersectedBy(l, e.oom, b));
         // Test 2
         instance = V3D_Plane.Y0;
-        assertTrue(instance.isIntersectedBy(l, e.oom));
+        assertTrue(instance.isIntersectedBy(l, e.oom, b));
         // Test 3
         instance = V3D_Plane.Z0;
-        assertTrue(instance.isIntersectedBy(l, e.oom));
+        assertTrue(instance.isIntersectedBy(l, e.oom, b));
         // Test 4
         l = new V3D_LineSegment(pP0P0P2, pP1P0P2);
         instance = V3D_Plane.Z0;
-        assertFalse(instance.isIntersectedBy(l, e.oom));
+        assertFalse(instance.isIntersectedBy(l, e.oom, b));
     }
 
     /**
