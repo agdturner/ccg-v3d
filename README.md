@@ -38,7 +38,7 @@ which can be thought of as a vertex or vector with x, y, and z [Math_BigRational
 - [V3D_Line](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Line.java) - an infinitte line geometry that passes through two defined points.
 - [V3D_Ray](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Ray.java) - an infinite line geometry that extends from a point in one direction through another point.
 - [V3D_Plane](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Plane.java) - an infinite [plane geometry](https://en.wikipedia.org/wiki/Plane_(geometry)). The plane is defined either by: 3 points (p, q and r) that are not [collinear](https://en.wikipedia.org/wiki/Collinearity) or coincident, or by a normal vector and a point (where all points orthogonal to the normal vector at the point are on the plane).
-- [V3D_Envelope](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Envelope.java) - represents a [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid) with edges aligned with the coordinate axes. The dimensions can collapse, so the envelope can form: a [rectangle](https://en.wikipedia.org/wiki/Rectangle) with all the x, or all the y, or all the z being the same; or a line segment with all the x and all the y being the same, or all the x and all the z being the same, or all the y and all the z being the same; or a point where all the x and all the y and all the z are the same. Envelopes are computationally useful for testing and calculating intersections and visibilities.
+- [V3D_Envelope](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Envelope.java) - represents a [rectangular cuboid](https://en.wikipedia.org/wiki/Cuboid#Rectangular_cuboid) with edges aligned with the coordinate axes. This is sometimes known as an Axis Aligned Bounding Box or AABB, or an Orientation Bounding Box. The dimensions can collapse in that the envelope can be: a [rectangle](https://en.wikipedia.org/wiki/Rectangle) with all the x, or all the y, or all the z being the same; or a line segment with all the x and all the y being the same, or all the x and all the z being the same, or all the y and all the z being the same; or a point where all the x and all the y and all the z are the same. Envelopes are computationally useful for testing and calculating intersections and visibilities.
 - [V3D_LineSegment](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_LineSegment.java) - represents a single continuous finite part of a line. Line segments are considered equal irrespective of the order of the end points. The centroid of a line segment can be computed and stored.
 - [V3D_Triangle](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Triangle.java) - a triangular part of a plane. The three coplanar points {p, q and r} are the corners of the triangle. Triangle sides can be stored as line segments. The centroid of a triangle can be computed and stored.
 - [V3D_Tetrahedron](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Tetrahedron.java) - represents a [tetrahedron](https://en.wikipedia.org/wiki/Tetrahedron). Any selection of three points are not coplanar with the fourth. A tetrahedron surface can be thought of as compising of four triangles. The [centroid](https://en.wikipedia.org/wiki/Centroid#Of_a_tetrahedron_and_n-dimensional_simplex) and the [volume](https://en.wikipedia.org/wiki/Tetrahedron#Volume) can be computed and stored.
@@ -53,7 +53,7 @@ Geometry collections of the same types of geometry are being supported, includin
 
 ## Development plans and progress
 - There is functionality for calculating the intersection and minimum distance between most, but not all geometries.
-- For a 1.0 release, the aim is to provide robust instersection tests and computations, and centroid and distance computations:
+- For a 1.0 release, the aim is to provide robust methods that detect and compute instersections, and compute minimum distances and their lines of intersection:
 
 ### Intersection
 - So far, methods for testing if there is an intersection and for retrieving the intersection are implemented for:
@@ -78,12 +78,16 @@ Geometry collections of the same types of geometry are being supported, includin
 -- line_segment-line_segment
 
 ## Development
-- Whilst translating geometries is now supported, it is not possible to scale or rotate or warp them. It would be good to have these things for modelling things in reality. Perhaps the next progression is to support rotation about the centroid in line with each axis.
+- Translating (moving) geometries to new locations is supported.
+- Rotating geometries is supported.
+- Scaling and warping geometries is not yet supported. There are modelling use cases for these things, so ideally these will be supported in due course.
 - [Apache Commons Geometry](https://commons.apache.org/proper/commons-geometry/) (see also: [Apache Commons Geometry GitHub Repository](https://github.com/apache/commons-geometry)) appears to be developing similar arbitrary precision geometrical functionality... 
 
 ### Origins
 The library began development in March 2020 as a pet project to try to create a simple gravitational model of our [solar system](https://en.wikipedia.org/wiki/Solar_system) and learn more about 3D modelling.
 ### Summary of changes
+#### 0.14 to 0.15
+- Added more tests for intersections.
 #### 0.13 to 0.14
 - Added a package of lightweight geometries.
 - Enabled some rotation using quaternions.
