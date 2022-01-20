@@ -1398,7 +1398,7 @@ public class V3D_Plane extends V3D_Geometry {
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Plane pl) {
-            return equals(pl, e.oom);
+            return equals(pl);
         }
         return false;
     }
@@ -1410,10 +1410,9 @@ public class V3D_Plane extends V3D_Geometry {
      * even if they are defined by different points.
      *
      * @param pl The plane to check for equality with {@code this}.
-     * @param oom The Order of Magnitude for the calculation.
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
-    public boolean equals(V3D_Plane pl, int oom) {
+    public boolean equals(V3D_Plane pl) {
         return V3D_Geometrics.isCoplanar(e, this, pl.getP(), pl.getQ(),
                 pl.getR());
     }
@@ -1531,9 +1530,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @param offset What {@link #offset} is set to.
      */
     public void setOffset(V3D_Vector offset) {
-        //p = p.add(offset, e.oom).subtract(this.offset, e.oom);
-        //q = q.add(offset, e.oom).subtract(this.offset, e.oom);
-        //r = r.add(offset, e.oom).subtract(this.offset, e.oom);
+        p = p.add(this.offset, e.oom).subtract(offset, e.oom);
+        q = q.add(this.offset, e.oom).subtract(offset, e.oom);
+        r = r.add(this.offset, e.oom).subtract(offset, e.oom);
         this.offset = offset;
     }
 

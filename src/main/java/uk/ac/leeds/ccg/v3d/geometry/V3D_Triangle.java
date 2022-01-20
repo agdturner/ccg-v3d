@@ -16,9 +16,11 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * For representing and processing triangles in 3D. A triangle has a non-zero
@@ -351,11 +353,13 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     }
 
     /**
+     * Check a side for intersection.
      *
-     * @param t The triangle
-     * @param n The normal of the other triangle (although that is the same - as
-     * they are in the same plane).
-     * @param v The vector of the line to check.
+     * @param t The triangle to check the points to see if they are all on the
+     * same side of a line that intersects the edge of another triangle.
+     * @param n The normal of the other triangle (the same as the normal of
+     * {@code t} - as the triangles are already known to be in the same plane).
+     * @param v The vector of the line.
      * @param oom The Order of Magnitude for the precision.
      * @return {@code true} if an intersection is found and {@code false}
      * otherwise.
@@ -569,6 +573,133 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         }
     }
 
+    /**
+     * Computes and returns the intersection between {@code this} and {@code t}.
+     *
+     * @param t The triangle to test for intersection with this.
+     * @param oom The Order of Magnitude for the precision.
+     * @param b To distinguish this method from
+     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Plane, int)}.
+     * @return The intersection between {@code t} and {@code this} or
+     * {@code null} if there is no intersection.
+     */
+    @Override
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
+        if (getEnvelope().isIntersectedBy(t.getEnvelope())) {
+            if (isIntersectedBy(t, oom)) {
+                V3D_Geometry g = super.getIntersection(t, oom, b);
+                if (g == null) {
+                    return g;
+                } else {
+                    if (g instanceof V3D_Point pt) {
+                        if (t.isIntersectedBy(pt, oom)) {
+                            return pt;
+                        } else {
+                            return null;
+                        }
+                    } else if (g instanceof V3D_LineSegment l) {
+                        return t.getIntersection(l, oom, b);
+                    } else {
+                        /**
+                         * The two triangles are in the same plane Get
+                         * intersections between the triangle edges. If there
+                         * are none, then return t. If there are some, then in
+                         * some cases the result is a single triangle, and in
+                         * others it is a polygon which can be represented as a
+                         * set of coplanar triangles.
+                         */
+                        V3D_Geometry gpq = t.getIntersection(getPQ(), oom, b);
+                        V3D_Geometry gqr = t.getIntersection(getQR(), oom, b);
+                        V3D_Geometry grp = t.getIntersection(getRP(), oom, b);
+                        if (gpq == null) {
+                            if (gqr == null) {
+                                if (grp == null) {
+                                    return t;
+                                } else {
+                                    return grp;
+                                }
+                            } else if (gqr instanceof V3D_Point gqrp) {
+                                if (grp == null) {
+                                    return gqr;
+                                } else if (grp instanceof V3D_Point grpp) {
+                                    return V3D_FiniteGeometry.getGeometry(gqrp, grpp);
+                                } else {
+                                    V3D_LineSegment ls = (V3D_LineSegment) grp;
+                                    return V3D_FiniteGeometry.getGeometry(gqrp, ls.getP(oom), ls.getQ(oom));
+                                }
+                            } else {
+                                if (grp == null) {
+                                    return gqr;
+                                } else if (grp instanceof V3D_Point grpp) {
+                                    V3D_LineSegment ls = (V3D_LineSegment) gqr;
+                                    return V3D_FiniteGeometry.getGeometry(grpp, ls.getP(oom), ls.getQ(oom));
+                                } else {
+                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (two line segments).
+                                }
+                            }
+                        } else if (gpq instanceof V3D_Point gpqp) {
+                            if (gqr == null) {
+                                if (grp == null) {
+                                    return gpq;
+                                } else if (grp instanceof V3D_Point grpp) {
+                                    return V3D_FiniteGeometry.getGeometry(gpqp, grpp);
+                                } else {
+                                    V3D_LineSegment ls = (V3D_LineSegment) grp;
+                                    return V3D_FiniteGeometry.getGeometry(gpqp, ls.getP(oom), ls.getQ(oom));
+                                }
+                            } else if (gqr instanceof V3D_Point gqrp) {
+                                if (grp == null) {
+                                    return gqr;
+                                } else if (grp instanceof V3D_Point grpp) {
+                                    return V3D_FiniteGeometry.getGeometry(gqrp, grpp); // Check!
+                                } else {
+                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (two points and a line segment).
+                                }
+                            } else {
+                                if (grp == null) {
+                                    V3D_LineSegment ls = (V3D_LineSegment) gqr;
+                                    return V3D_FiniteGeometry.getGeometry(gpqp, ls.getP(oom), ls.getQ(oom));
+                                } else if (grp instanceof V3D_Point grpp) {
+                                    return null; // TODO: Figure out the geometry (two points and a line segment).
+                                } else {
+                                    return null; // TODO: Figure out the geometry (point and two line segments).
+                                }
+                            }
+                        } else {
+                            V3D_LineSegment ls = (V3D_LineSegment) gpq;
+                            if (gqr == null) {
+                                if (grp == null) {
+                                    return gpq;
+                                } else if (grp instanceof V3D_Point grpp) {
+                                    return V3D_FiniteGeometry.getGeometry(grpp, ls.getP(oom), ls.getQ(oom));
+                                } else {
+                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (two line segments).
+                                }
+                            } else if (gqr instanceof V3D_Point gqrp) {
+                                if (grp == null) {
+                                    return V3D_FiniteGeometry.getGeometry(gqrp, ls.getP(oom), ls.getQ(oom));
+                                } else if (grp instanceof V3D_Point grpp) {
+                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (two points and a line segment).
+                                } else {
+                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (point and two line segments).
+                                }
+                            } else {
+                                if (grp == null) {
+                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (two line segments).
+                                } else if (grp instanceof V3D_Point grpp) {
+                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (point and two line segments).
+                                } else {
+                                    return V3D_FiniteGeometry.getGeometry((V3D_LineSegment) gpq, (V3D_LineSegment) gqr, (V3D_LineSegment) grp);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
         return getEnvelope().isIntersectedBy(l, oom);
@@ -599,36 +730,62 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 .divide(Math_BigRational.valueOf(3), oom));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (super.equals(o)) {
+            if (o instanceof V3D_Triangle t) {
+                return equals(t, true);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.en);
+        return hash;
+    }
+
     /**
      * Test if two triangles are equal. Two triangles are equal if they have 3
      * coincident points, so even if the order is different and one is clockwise
      * and the other anticlockwise.
      *
      * @param t The other triangle to test for equality.
+     * @param b To distinguish this method from
+     * {@link #equals(uk.ac.leeds.ccg.v3d.geometry.V3D_Plane)}. The value is
+     * ignored.
      * @return {@code true} iff {@code this} is equal to {@code t}.
      */
-    public boolean equals(V3D_Triangle t) {
-        if (t.p.equals(p)) {
-            if (t.q.equals(q)) {
-                return t.r.equals(r);
-            } else if (t.q.equals(r)) {
-                return t.r.equals(q);
+    public boolean equals(V3D_Triangle t, boolean b) {
+        V3D_Point tp = t.getP();
+        V3D_Point thisp = getP();
+        V3D_Point tq = t.getQ();
+        V3D_Point thisq = getQ();
+        V3D_Point tr = t.getR();
+        V3D_Point thisr = getR();
+        if (tp.equals(thisp)) {
+            if (tq.equals(thisq)) {
+                return tr.equals(thisr);
+            } else if (tq.equals(thisr)) {
+                return tr.equals(thisq);
             } else {
                 return false;
             }
-        } else if (t.p.equals(q)) {
-            if (t.q.equals(r)) {
-                return t.r.equals(p);
-            } else if (t.q.equals(p)) {
-                return t.r.equals(r);
+        } else if (tp.equals(thisq)) {
+            if (tq.equals(thisr)) {
+                return tr.equals(thisp);
+            } else if (tq.equals(thisp)) {
+                return tr.equals(thisr);
             } else {
                 return false;
             }
-        } else if (t.p.equals(r)) {
-            if (t.q.equals(p)) {
-                return t.r.equals(q);
-            } else if (t.q.equals(p)) {
-                return t.r.equals(q);
+        } else if (tp.equals(thisr)) {
+            if (tq.equals(thisp)) {
+                return tr.equals(thisq);
+            } else if (tq.equals(thisp)) {
+                return tr.equals(thisq);
             } else {
                 return false;
             }

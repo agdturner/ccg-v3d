@@ -203,7 +203,8 @@ public class V3D_PlaneTest extends V3D_Test {
         assertTrue(instance.equals(o));
         // Test 6
         instance = new V3D_Triangle(pP0P0P0, pP2P0P0, pP0P2P0);
-        assertTrue(instance.equals(o));
+        assertFalse(instance.equals(o));
+        assertTrue(o.equals(instance));
         // Test 7
         o = new V3D_Line(pP0P0P0, pP1P0P0);
         assertFalse(instance.equals(o));
@@ -3280,24 +3281,24 @@ public class V3D_PlaneTest extends V3D_Test {
         // Test 1
         p = V3D_Plane.X0;
         instance = V3D_Plane.X0;
-        assertTrue(p.equals(instance, e.oom));
+        assertTrue(p.equals(instance));
         // Test 2
         p = new V3D_Plane(e, P0P1P0, P1P1P1, P1P0P0);
         instance = new V3D_Plane(e, P0P1P0, P1P1P1, P1P0P0);
-        assertTrue(instance.equals(p, e.oom));
+        assertTrue(instance.equals(p));
         instance = new V3D_Plane(e, P1P1P0, P1P1P1, P1P0P0);
-        assertFalse(instance.equals(p, e.oom));
+        assertFalse(instance.equals(p));
         instance = new V3D_Plane(e, P1P1P1, P1P0P0, P0P1P0);
-        assertTrue(instance.equals(p, e.oom));
+        assertTrue(instance.equals(p));
         instance = new V3D_Plane(e, P1P0P0, P0P1P0, P1P1P1);
-        assertTrue(instance.equals(p, e.oom));
+        assertTrue(instance.equals(p));
         // Test 3
         p = new V3D_Plane(e, P0P0P0, P1P0P0, P0P1P0);
         instance = new V3D_Plane(e, P0P0P0, P2P0P0, P0P2P0);
-        assertTrue(instance.equals(p, e.oom));
+        assertTrue(instance.equals(p));
         // Test 6
         instance = new V3D_Triangle(e, P0P0P0, P2P0P0, P0P2P0);
-        assertTrue(instance.equals(p, e.oom));
+        assertTrue(instance.equals(p));
     }
 
     /**
@@ -3904,7 +3905,7 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Plane instance = new V3D_Plane(V3D_Plane.X0);
         instance.setOffset(offset);
         V3D_Plane expResult = new V3D_Plane(new V3D_Environment(),
-                V3D_Vector.I, V3D_Vector.ZERO, V3D_Vector.J, V3D_Vector.K);
+                V3D_Vector.I, N1P0P0, N1P1P0, N1P0P1);
         assertEquals(expResult, instance);
     }
 }

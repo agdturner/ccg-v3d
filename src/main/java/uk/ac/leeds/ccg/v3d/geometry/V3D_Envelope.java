@@ -1956,6 +1956,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
         /**
          * Created a new Geometry.
+         * 
+         * @param e What {@link #e} is set to.
          */
         public Geometry(V3D_Environment e) {
             this.e = e;

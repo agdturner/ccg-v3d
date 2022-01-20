@@ -242,30 +242,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
                 }
             }
         }
-//        int toom = rel.getMagnitude().getOom();
-//        int poom = p.rel.getMagnitude().getOom();
-//        if (this.getX(toom).compareTo(p.getX(poom)) == 0) {
-//            if (this.getY(toom).compareTo(p.getY(poom)) == 0) {
-//                if (this.getZ(toom).compareTo(p.getZ(poom)) == 0) {
-//                    return true;
-//                }
-//            }
-//        }
         return false;
     }
-
-//    /**
-//     * @return {@link #rel}.
-//     */
-//    public V3D_Vector getRel() {
-//        return rel;
-////        if (relTemp == null) {
-////            relTemp = rel;
-////        }
-////        return relTemp;
-//        //return rotate(relTemp, theta);
-//        //return rotate(rel, theta);
-//    }
+    
     /**
      * @param oom The Order of Magnitude for the precision.
      * @return The vector - {@code rel.add(offset, oom)}.

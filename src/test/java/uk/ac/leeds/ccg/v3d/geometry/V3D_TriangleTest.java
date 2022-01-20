@@ -374,7 +374,7 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Triangle.
      */
     @Test
-    public void testGetIntersection_3args() {
+    public void testGetIntersection_3args_1() {
         System.out.println("getIntersection");
         V3D_LineSegment l;
         boolean b = false;
@@ -422,20 +422,25 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of equals method, of class V3D_Triangle.
      */
     @Test
-    public void testEquals() {
+    public void testEquals_V3D_Triangle_boolean() {
         System.out.println("equals");
+        boolean b = true;
         V3D_Triangle t = new V3D_Triangle(pP1P0P0, pP1P2P0, pP2P0P0);
         V3D_Triangle instance = new V3D_Triangle(e, P1P0P0, P0P0P0, P0P2P0, P1P0P0);
-        assertEquals(t, instance);
+        boolean result = instance.equals(t, b);
+        assertTrue(result);
         // Test 2
         instance = new V3D_Triangle(e, P1P0P0, P0P2P0, P0P0P0, P1P0P0);
-        assertEquals(t, instance);
+        result = instance.equals(t, b);
+        assertTrue(result);
         // Test 3
         instance = new V3D_Triangle(e, P1P0P0, P0P2P0, P1P0P0, P0P0P0);
-        assertEquals(t, instance);
+        result = instance.equals(t, b);
+        assertTrue(result);
         // Test 4
         instance = new V3D_Triangle(e, P1P0P0, P1P0P0, P0P2P0, P0P0P0);
-        assertEquals(t, instance);
+        result = instance.equals(t, b);
+        assertFalse(result);
     }
 
     /**
@@ -486,6 +491,7 @@ public class V3D_TriangleTest extends V3D_Test {
         //System.out.println(instance);
         assertEquals(expResult, instance);
         // Test 2
+        instance = new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0);
         theta = Pi.divide(2);
         instance.rotate(axisOfRotation, theta);
         expResult = new V3D_Triangle(pP1P0P0, pP0P0P1, pP1P0P1);
@@ -495,13 +501,14 @@ public class V3D_TriangleTest extends V3D_Test {
         instance = new V3D_Triangle(pP2P0P0, pP0P2P0, pP2P2P0);
         theta = Pi;
         instance.rotate(axisOfRotation, theta);
-        expResult = new V3D_Triangle(pP1N1P0, pP0N2P0, pP1N2P0);
+        expResult = new V3D_Triangle(pP2P0P0, pP0N2P0, pP2N2P0);
         //System.out.println(instance);
         assertEquals(expResult, instance);
         // Test 4
+        instance = new V3D_Triangle(pP2P0P0, pP0P2P0, pP2P2P0);
         theta = Pi.divide(2);
         instance.rotate(axisOfRotation, theta);
-        expResult = new V3D_Triangle(pP1P0P1, pP0P0P2, pP1P0P2);
+        expResult = new V3D_Triangle(pP2P0P0, pP0P0P2, pP2P0P2);
         //System.out.println(instance);
         assertEquals(expResult, instance);
         // Test 5
@@ -510,7 +517,7 @@ public class V3D_TriangleTest extends V3D_Test {
         axisOfRotation = V3D_Vector.I;
         theta = Pi;
         instance.rotate(axisOfRotation, theta);
-        expResult = new V3D_Triangle(pP0P1P0, pP1P1P0, pP1P2P0);
+        expResult = new V3D_Triangle(pP1P0P0, pP0N1P0, pP1N1P0);
         //System.out.println(instance);
         assertEquals(expResult, instance);
     }
@@ -534,4 +541,71 @@ public class V3D_TriangleTest extends V3D_Test {
         assertTrue(instance.isIntersectedBy(t, e.oom, b));
     }
 
+    /**
+     * Test of checkSide method, of class V3D_Triangle.
+     */
+    @Test
+    @Disabled
+    public void testCheckSide() {
+        System.out.println("checkSide");
+//        V3D_Triangle t = new V3D_Triangle(pN2P0P0, pP0P2P0, pP2P0P0);
+//        V3D_Vector n = t.getN(e.oom);
+//        V3D_Triangle instance = new V3D_Triangle(pN2P1P0, pP0P2P0, pP2P1P0);
+//        V3D_Vector v = instance.getRPV();
+//        assertTrue(instance.checkSide(t, n, v, e.oom));
+//        // Test 2
+//         t = new V3D_Triangle(pN2N2P0, pP0P0P0, pP2N2P0);
+//         n = t.getN(e.oom);
+//         instance = new V3D_Triangle(pN2P2P0, pP0P1P0, pP2P2P0);
+//         v = instance.getRPV();
+//        assertFalse(instance.checkSide(t, n, v, e.oom));
+    }
+
+    /**
+     * Test of equals method, of class V3D_Triangle.
+     */
+    @Test
+    public void testEquals_Object() {
+        System.out.println("equals");
+        Object o = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
+        V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
+        assertTrue(instance.equals(o));
+        // Test 2
+        o = new V3D_Triangle(pP0P0P0, pP0P1P0, pP2P0P0);
+        assertFalse(instance.equals(o));
+        // Test 3
+        o = new V3D_Plane(pP0P0P0, pP0P1P0, pP1P0P0);
+        assertFalse(instance.equals(o));
+    }
+
+    /**
+     * Test of hashCode method, of class V3D_Triangle.
+     */
+    @Test
+    public void testHashCode() {
+        System.out.println("hashCode");
+        V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
+        int expResult = 679;
+        int result = instance.hashCode();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of getIntersection method, of class V3D_Triangle.
+     * 
+     * Look for some examples here:
+     * https://math.stackexchange.com/questions/1220102/how-do-i-find-the-intersection-of-two-3d-triangles
+     */
+    @Test
+    public void testGetIntersection_3args_2() {
+        System.out.println("getIntersection");
+        V3D_Triangle t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
+        boolean b = false;
+        V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
+        V3D_Geometry expResult = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
+        V3D_Geometry result = instance.getIntersection(t, e.oom, b);
+        assertEquals(expResult, result);
+        // Test 2
+    }
 }
