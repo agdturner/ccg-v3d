@@ -562,20 +562,17 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     }
     
     /**
-     * Calculate and return the intersection between {@code this} and {@code t}.
+     * Calculate and return the intersection between {@code this} and {@code p}.
      * A question about how to do this:
      * https://stackoverflow.com/questions/3142469/determining-the-intersection-of-a-triangle-and-a-plane
      *
-     * @param this The triangle to intersect.
+     * @param p The plane to intersect with.
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @param b Used to distinguish from
-     * {@link #getIntersection(V3D_Plane, int)}.
-     * @return The intersection between {@code this} and {@code t}.
+     * @return The intersection between {@code this} and {@code p}.
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
-        // If t were a plane what is the intersection?
-        //V3D_Geometry pi = super.getIntersection(p, oom);
+        // Get intersection it this were a plane
         V3D_Geometry pi = p.getIntersection(this, oom);
         if (pi == null) {
             return null;
