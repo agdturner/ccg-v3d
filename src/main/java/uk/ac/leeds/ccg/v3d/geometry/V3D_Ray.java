@@ -443,7 +443,7 @@ public class V3D_Ray extends V3D_Line {
                 if (isIntersectedBy(rp, oom, b)) {
                     V3D_Point tp = getP(oom);
                     if (r.isIntersectedBy(tp, oom, b)) {
-                        return V3D_FiniteGeometry.getGeometry(rp, tp);
+                        return V3D_LineSegment.getGeometry(rp, tp);
 //                        return new V3D_LineSegment(e, rp.getVector(oom),
 //                                tp.getVector(oom));
                     } else {

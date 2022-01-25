@@ -16,6 +16,8 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
@@ -322,7 +324,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
         if (getEnvelope().isIntersectedBy(t.getEnvelope())) {
             if (isIntersectedBy(t, oom)) {
-                V3D_Geometry g = super.getIntersection(t, oom, b);
+                V3D_Geometry g = super.getIntersection(t, oom);
                 if (g == null) {
                     return false;
                 } else {
@@ -484,7 +486,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 } else if (lrpi instanceof V3D_LineSegment) {
                     return lrpi;
                 } else {
-                    return V3D_FiniteGeometry.getGeometry((V3D_Point) lpqi,
+                    return getGeometry((V3D_Point) lpqi,
                             (V3D_Point) lqri, (V3D_Point) lrpi);
 //                    return V3D_FiniteGeometry.getGeometry((V3D_Point) lpqi,
 //                            (V3D_Point) lrpi, (V3D_Point) lrpi);
@@ -530,14 +532,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //                    return l.p;
                     return lp;
                 } else {
-                    V3D_LineSegment lli = (V3D_LineSegment) li;
-                    V3D_Vector llip = lli.getP();
-                    V3D_Vector lpp = l.getP();
-                    if (llip.equals(lpp)) {
-                        return new V3D_LineSegment(e, l.offset, lpp, lli.getQ());
-                    } else {
-                        return new V3D_LineSegment(e, l.offset, lpp, llip);
-                    }
+                    return ((V3D_LineSegment) li).getIntersection(l, oom, b);
                 }
             }
         } else {
@@ -550,14 +545,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                     //return l.q;
                     return lq;
                 } else {
-                    V3D_LineSegment lli = (V3D_LineSegment) li;
-                    V3D_Vector lliq = lli.getQ();
-                    V3D_Vector lqq = l.getQ();
-                    if (lliq.equals(lqq)) {
-                        return new V3D_LineSegment(e, l.offset, lqq, lli.getP());
-                    } else {
-                        return new V3D_LineSegment(e, l.offset, lqq, lliq);
-                    }
+                    return ((V3D_LineSegment) li).getIntersection(l, oom, b);
                 }
             } else {
                 if (li instanceof V3D_Point pli) {
@@ -568,6 +556,71 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                     }
                 } else {
                     return ((V3D_LineSegment) li).getIntersection(l, oom, b);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Calculate and return the intersection between {@code this} and {@code t}.
+     * A question about how to do this:
+     * https://stackoverflow.com/questions/3142469/determining-the-intersection-of-a-triangle-and-a-plane
+     *
+     * @param this The triangle to intersect.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param b Used to distinguish from
+     * {@link #getIntersection(V3D_Plane, int)}.
+     * @return The intersection between {@code this} and {@code t}.
+     */
+    @Override
+    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
+        // If t were a plane what is the intersection?
+        //V3D_Geometry pi = super.getIntersection(p, oom);
+        V3D_Geometry pi = p.getIntersection(this, oom);
+        if (pi == null) {
+            return null;
+        }
+        if (pi instanceof V3D_Plane) {
+            return this;
+        } else {
+            // (pi instanceof V3D_Line)
+            V3D_Geometry gPQ = p.getIntersection(getPQ(), oom, true);
+            if (gPQ == null) {
+                V3D_Geometry gQR = p.getIntersection(getQR(), oom, true);
+                if (gQR == null) {
+                    V3D_Geometry gRP = p.getIntersection(this.getRP(), oom, true);
+                    if (gRP == null) {
+                        return null;
+                    } else {
+                        return getGeometry((V3D_Point) gPQ,
+                                (V3D_Point) gQR, (V3D_Point) gRP);
+                    }
+                } else {
+                    V3D_Geometry gRP = p.getIntersection(getRP(), oom, true);
+                    if (gRP == null) {
+                        return gQR;
+                    } else {
+                        return V3D_LineSegment.getGeometry((V3D_Point) gQR,
+                                (V3D_Point) gRP);
+                    }
+                }
+            } else if (gPQ instanceof V3D_LineSegment) {
+                return gPQ;
+            } else {
+                V3D_Geometry gQR = p.getIntersection(getQR(), oom, true);
+                if (gQR == null) {
+                    V3D_Geometry gRP = p.getIntersection(getRP(), oom, true);
+                    if (gRP == null) {
+                        return (V3D_Point) gPQ;
+                    } else if (gRP instanceof V3D_LineSegment) {
+                        return gRP;
+                    } else {
+                        return V3D_LineSegment.getGeometry((V3D_Point) gPQ,
+                                (V3D_Point) gRP);
+                    }
+                } else {
+                    return V3D_LineSegment.getGeometry((V3D_Point) gPQ,
+                            (V3D_Point) gQR);
                 }
             }
         }
@@ -583,11 +636,11 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      * @return The intersection between {@code t} and {@code this} or
      * {@code null} if there is no intersection.
      */
-    @Override
     public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
         if (getEnvelope().isIntersectedBy(t.getEnvelope())) {
             if (isIntersectedBy(t, oom)) {
-                V3D_Geometry g = super.getIntersection(t, oom, b);
+                V3D_Geometry g = super.getIntersection(this, oom);
+                //V3D_Geometry g = this.getIntersection(t, oom);
                 if (g == null) {
                     return g;
                 } else {
@@ -614,7 +667,13 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                         if (gpq == null) {
                             if (gqr == null) {
                                 if (grp == null) {
-                                    return t;
+                                    // Return the smaller of the triangles
+//                                    if (t.getArea(oom).compareTo(getArea(oom)) == 1) {
+                                    if (t.getPerimeter(oom).compareTo(getPerimeter(oom)) == 1) {
+                                        return this;
+                                    } else {
+                                        return t;
+                                    }
                                 } else {
                                     return grp;
                                 }
@@ -622,19 +681,23 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                                 if (grp == null) {
                                     return gqr;
                                 } else if (grp instanceof V3D_Point grpp) {
-                                    return V3D_FiniteGeometry.getGeometry(gqrp, grpp);
+                                    return V3D_LineSegment.getGeometry(
+                                            gqrp, grpp);
                                 } else {
                                     V3D_LineSegment ls = (V3D_LineSegment) grp;
-                                    return V3D_FiniteGeometry.getGeometry(gqrp, ls.getP(oom), ls.getQ(oom));
+                                    return getGeometry(
+                                            gqrp, ls.getP(oom), ls.getQ(oom));
                                 }
                             } else {
                                 if (grp == null) {
                                     return gqr;
                                 } else if (grp instanceof V3D_Point grpp) {
                                     V3D_LineSegment ls = (V3D_LineSegment) gqr;
-                                    return V3D_FiniteGeometry.getGeometry(grpp, ls.getP(oom), ls.getQ(oom));
+                                    return getGeometry(
+                                            grpp, ls.getP(oom), ls.getQ(oom));
                                 } else {
-                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (two line segments).
+                                    return getGeometry(
+                                            (V3D_LineSegment) gqr, (V3D_LineSegment) grp);
                                 }
                             }
                         } else if (gpq instanceof V3D_Point gpqp) {
@@ -642,23 +705,25 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                                 if (grp == null) {
                                     return gpq;
                                 } else if (grp instanceof V3D_Point grpp) {
-                                    return V3D_FiniteGeometry.getGeometry(gpqp, grpp);
+                                    return V3D_LineSegment.getGeometry(
+                                            gpqp, grpp);
                                 } else {
                                     V3D_LineSegment ls = (V3D_LineSegment) grp;
-                                    return V3D_FiniteGeometry.getGeometry(gpqp, ls.getP(oom), ls.getQ(oom));
+                                    return getGeometry(
+                                            gpqp, ls.getP(oom), ls.getQ(oom));
                                 }
                             } else if (gqr instanceof V3D_Point gqrp) {
                                 if (grp == null) {
                                     return gqr;
                                 } else if (grp instanceof V3D_Point grpp) {
-                                    return V3D_FiniteGeometry.getGeometry(gqrp, grpp); // Check!
+                                    return V3D_LineSegment.getGeometry(gqrp, grpp); // Check!
                                 } else {
                                     throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (two points and a line segment).
                                 }
                             } else {
                                 if (grp == null) {
                                     V3D_LineSegment ls = (V3D_LineSegment) gqr;
-                                    return V3D_FiniteGeometry.getGeometry(gpqp, ls.getP(oom), ls.getQ(oom));
+                                    return getGeometry(gpqp, ls.getP(oom), ls.getQ(oom));
                                 } else if (grp instanceof V3D_Point grpp) {
                                     return null; // TODO: Figure out the geometry (two points and a line segment).
                                 } else {
@@ -671,13 +736,13 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                                 if (grp == null) {
                                     return gpq;
                                 } else if (grp instanceof V3D_Point grpp) {
-                                    return V3D_FiniteGeometry.getGeometry(grpp, ls.getP(oom), ls.getQ(oom));
+                                    return getGeometry(grpp, ls.getP(oom), ls.getQ(oom));
                                 } else {
-                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (two line segments).
+                                    return getGeometry(ls, (V3D_LineSegment) grp);
                                 }
                             } else if (gqr instanceof V3D_Point gqrp) {
                                 if (grp == null) {
-                                    return V3D_FiniteGeometry.getGeometry(gqrp, ls.getP(oom), ls.getQ(oom));
+                                    return getGeometry(gqrp, ls.getP(oom), ls.getQ(oom));
                                 } else if (grp instanceof V3D_Point grpp) {
                                     throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (two points and a line segment).
                                 } else {
@@ -689,7 +754,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                                 } else if (grp instanceof V3D_Point grpp) {
                                     throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (point and two line segments).
                                 } else {
-                                    return V3D_FiniteGeometry.getGeometry((V3D_LineSegment) gpq, (V3D_LineSegment) gqr, (V3D_LineSegment) grp);
+                                    return getGeometry((V3D_LineSegment) gpq, (V3D_LineSegment) gqr, (V3D_LineSegment) grp);
                                 }
                             }
                         }
@@ -808,5 +873,147 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         super.rotate(axisOfRotation, theta);
         en = null;
+    }
+    
+    /**
+     * If p, q and r are equal then the point is returned. If two of the points
+     * are the same, then a line segment is returned. If all points are
+     * different then a triangle is returned.
+     *
+     * @param p A point.
+     * @param q Another possibly equal point.
+     * @param r Another possibly equal point.
+     * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or
+     * {@code new V3D_Triangle(p, q, r)}
+     */
+    public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q, V3D_Point r) {
+        if (p.equals(q)) {
+            return V3D_LineSegment.getGeometry(p, r);
+        } else {
+            if (q.equals(r)) {
+                return V3D_LineSegment.getGeometry(q, p);
+            } else {
+                if (r.equals(p)) {
+                    return V3D_LineSegment.getGeometry(r, q);
+                } else {
+                    return new V3D_Triangle(p.e, V3D_Vector.ZERO,
+                            p.getVector(p.e.oom),
+                            q.getVector(p.e.oom), r.getVector(p.e.oom));
+                }
+            }
+        }
+    }
+
+    /**
+     * This may be called when there is an intersection of two triangles.
+     * If l1, l2 and l3 are equal then the line segment is returned. If there
+     * are 3 unique points then a triangle is returned. If there are 4 or more
+     * unique points, then contiguous coplanar triangles are returned.
+     *
+     * @param l1 A line segment.
+     * @param l2 A line segment.
+     * @param l3 A line segment.
+     * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or
+     * {@code new V3D_Triangle(p, q, r)}
+     */
+    protected V3D_Geometry getGeometry(V3D_LineSegment l1, V3D_LineSegment l2,
+            V3D_LineSegment l3) {
+        V3D_Environment e = l1.e;
+        V3D_Point l1p = l1.getP(e.oom);
+        V3D_Point l1q = l1.getQ(e.oom);
+        V3D_Point l2p = l2.getP(e.oom);
+        V3D_Point l2q = l2.getQ(e.oom);
+        V3D_Point l3p = l3.getP(e.oom);
+        V3D_Point l3q = l3.getQ(e.oom);
+        HashSet<V3D_Point> points = new HashSet<>();
+        points.add(l1p);
+        points.add(l1q);
+        points.add(l2p);
+        points.add(l2q);
+        points.add(l3p);
+        points.add(l3q);
+        Iterator<V3D_Point> ite = points.iterator();
+        int n = points.size();
+        if (n == 2) {
+            return l1;
+        } else if (n == 3) {
+            return getGeometry(ite.next(), ite.next(), ite.next());
+        } else if (n == 4) {
+            // Case: closed polygon with 4 sides
+            V3D_Triangle t1;
+            V3D_Triangle t2;
+//            if (l2.isIntersectedBy(l1p, e.oom)) {
+//                t1 = new V3D_Triangle(l2p, l2q, l1q);
+//                if (l3.isIntersectedBy(l2p, e.oom)) {
+//                    t2 = new V3D_Triangle(l3p, l3q, l1q);
+//                    // May need to do something else to be sure this is a closed polygon before returning!
+//                } else {
+//                    if (l3.isIntersectedBy(l2q, e.oom)) {
+//                        t2 = new V3D_Triangle(l3p, l3q, l1p);
+//                    } else {
+//                        if ()
+//                    }
+//                }                
+//            } else {
+//                if (l2.isIntersectedBy(l1q, e.oom)) {
+//                    V3D_Triangle t1 = new V3D_Triangle(l3p, l3q, l1p);
+//                    V3D_Triangle t2 = new V3D_Triangle(l2p, l2q, l1p);
+//                    return new V3D_TrianglesCoplanar(t1, t2);
+//                } else {
+//                    if (l3.isIntersectedBy(l1p, e.oom)) {
+//                        V3D_Triangle t1 = new V3D_Triangle(l3p, l3q, l1q);
+//                        if () {
+//                            
+//                        } else {
+//                            
+//                        }
+//                        V3D_Triangle t2 = new V3D_Triangle(l2p, l2q, l1q);
+//                        return new V3D_TrianglesCoplanar(t1, t2);
+//                    } else {
+//                        if (l3.isIntersectedBy(l1q, e.oom)) {
+//                            V3D_Triangle t1 = new V3D_Triangle(l3p, l3q, l1p);
+//                            V3D_Triangle t2 = new V3D_Triangle(l2p, l2q, l1p);
+//                            return new V3D_TrianglesCoplanar(t1, t2);
+//                        } else {
+//
+//                        }
+//                    }
+//                }
+//            }
+//            return new V3D_TrianglesCoplanar(t1, t2);
+            throw new UnsupportedOperationException("Not supported yet.");
+        } else if (n == 5) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        } else {
+            // n = 6
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
+
+    /**
+     * This may be called when there is an intersection of two triangles.
+     * If l1 and l2 are two sides of a triangle, return the triangle.
+     *
+     * @param l1 A line segment and triangle edge.
+     * @param l2 A line segment and triangle edge.
+     * @return a triangle for which l1 and l2 are edges
+     */
+    protected V3D_Geometry getGeometry(V3D_LineSegment l1, V3D_LineSegment l2) {
+        V3D_Point p = (V3D_Point) l1.getIntersection(l2, l1.e.oom, true);
+        V3D_Point l1p = l1.getP(l1.e.oom);
+        V3D_Point l2p = l2.getP(l1.e.oom);
+        if (l1p.equals(p)) {
+            if (l2p.equals(p)) {
+                return new V3D_Triangle(p, l1.getQ(l1.e.oom), l2.getQ(l1.e.oom));
+            } else {
+                return new V3D_Triangle(p, l1.getQ(l1.e.oom), l2p);
+            }
+        } else {
+            if (l2p.equals(p)) {
+                return new V3D_Triangle(p, l1p, l2.getQ(l1.e.oom));
+            } else {
+                return new V3D_Triangle(p, l1p, l2p);
+            }
+        }
     }
 }

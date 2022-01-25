@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Iterator;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * V3D_FiniteGeometry
@@ -103,76 +104,4 @@ public interface V3D_FiniteGeometry {
      */
     public abstract BigDecimal getDistance(V3D_Point p, int oom);
 
-    /**
-     * If p and q are equal then the point is returned otherwise the line
-     * segment is returned
-     *
-     * @param p A point.
-     * @param q Another possibly equal point.
-     * @return either {@code p} or {@code new V3D_LineSegment(p, q)}
-     */
-    public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q) {
-        if (p.equals(q)) {
-            return p;
-        } else {
-            return new V3D_LineSegment(p, q);
-        }
-    }
-
-    /**
-     * If p, q and r are equal then the point is returned. If two of the points
-     * are the same, then a line segment is returned. If all points are
-     * different then a triangle is returned.
-     *
-     * @param p A point.
-     * @param q Another possibly equal point.
-     * @param r Another possibly equal point.
-     * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or
-     * {@code new V3D_Triangle(p, q, r)}
-     */
-    public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q,
-            V3D_Point r) {
-        if (p.equals(q)) {
-            return getGeometry(p, r);
-        } else {
-            if (q.equals(r)) {
-                return getGeometry(q, p);
-            } else {
-                if (r.equals(p)) {
-                    return getGeometry(r, q);
-                } else {
-                    return new V3D_Triangle(p.e, V3D_Vector.ZERO,
-                            p.getVector(p.e.oom),
-                            q.getVector(p.e.oom), r.getVector(p.e.oom));
-                }
-            }
-        }
-    }
-
-    /**
-     * If l1, l2 and l3 are equal then the line segment is returned. If there
-     * are 3 unique points then a triangle is returned. If there are 4 or more
-     * unique points, then contiguous coplanar triangles are returned.
-     *
-     * @param l1 A line segment.
-     * @param l2 A line segment.
-     * @param l3 A line segment.
-     * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or
-     * {@code new V3D_Triangle(p, q, r)}
-     */
-    public static V3D_Geometry getGeometry(V3D_LineSegment l1, V3D_LineSegment l2,
-            V3D_LineSegment l3) {
-        HashSet<V3D_Point> points = new HashSet<>();
-        points.add(l1.getP(l1.e.oom));
-        points.add(l1.getQ(l1.e.oom));
-        points.add(l2.getP(l2.e.oom));
-        points.add(l2.getQ(l2.e.oom));
-        points.add(l3.getP(l3.e.oom));
-        points.add(l3.getQ(l3.e.oom));
-        Iterator<V3D_Point> ite = points.iterator();
-        if (points.size() == 3) {
-            return getGeometry(ite.next(), ite.next(), ite.next());
-        }
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

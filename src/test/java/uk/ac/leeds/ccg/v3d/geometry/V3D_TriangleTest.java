@@ -593,6 +593,47 @@ public class V3D_TriangleTest extends V3D_Test {
     
     /**
      * Test of getIntersection method, of class V3D_Triangle.
+     */
+    @Test
+    public void testGetIntersection_V3D_Plane_int() {
+        System.out.println("getIntersection");
+        V3D_Triangle instance;
+        V3D_Plane p;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
+        instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
+        // Test 1
+        p = V3D_Plane.X0;
+        expResult = new V3D_LineSegment(pP0P0P0, pP0P1P0);
+        result = instance.getIntersection(p, e.oom);
+        assertEquals(expResult, result);
+        // Test 2
+        p = V3D_Plane.Y0;
+        expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        result = instance.getIntersection(p, e.oom);
+        assertEquals(expResult, result);
+        // Test 3
+        p = V3D_Plane.Z0;
+        expResult = instance;
+        result = instance.getIntersection(p, e.oom);
+        assertEquals(expResult, result);
+        // Test 4
+        instance = new V3D_Triangle(pN1P0P0, pP1P0P0, pP0P1P0);
+        p = V3D_Plane.X0;
+        expResult = new V3D_LineSegment(pP0P0P0, pP0P1P0);
+        result = instance.getIntersection(p, e.oom);
+        assertEquals(expResult, result);
+        // Test 5
+        instance = new V3D_Triangle(pN2N2N2, pN2N2P2, pP2P0P0);
+        p = V3D_Plane.X0;
+        expResult = new V3D_LineSegment(pP0N1P1, pP0N1N1);
+        result = instance.getIntersection(p, e.oom);
+        assertEquals(expResult, result);
+    }
+
+    
+    /**
+     * Test of getIntersection method, of class V3D_Triangle.
      * 
      * Look for some examples here:
      * https://math.stackexchange.com/questions/1220102/how-do-i-find-the-intersection-of-two-3d-triangles
@@ -607,5 +648,29 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Geometry result = instance.getIntersection(t, e.oom, b);
         assertEquals(expResult, result);
         // Test 2
+        t = new V3D_Triangle(pN1N1P0, pP0P2P0, new V3D_Point(e, N3, N1, P0));
+        instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
+        expResult = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
+        result = instance.getIntersection(t, e.oom, b);
+        assertEquals(expResult, result);
+        // Test 3
+        t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
+        instance = new V3D_Triangle(pN1N1P0, pP0P2P0, new V3D_Point(e, N3, N1, P0));
+        expResult = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
+        result = instance.getIntersection(t, e.oom, b);
+        assertEquals(expResult, result);
+        // Test 4
+        t = new V3D_Triangle(pP0P0P0, pP2P0P0, pP2P2P0);
+        instance = new V3D_Triangle(pP1P0P0, new V3D_Point(e, P3, P0, P0), new V3D_Point(e, P3, P2, P0));
+        expResult = new V3D_Triangle(pP1P0P0, pP2P0P0, pP2P1P0);
+        result = instance.getIntersection(t, e.oom, b);
+        assertEquals(expResult, result);
+//        // Test 5
+//        t = new V3D_Triangle(new V3D_Point(e, P2, N3, P0), new V3D_Point(e, P6, P1, P0), new V3D_Point(e, P2, P5, P0));
+//        instance = new V3D_Triangle(pP1P0P0, new V3D_Point(e, P3, P0, P0), new V3D_Point(e, P3, P2, P0));
+//        expResult = new V3D_Triangle(new V3D_Point(e, P2, N3, P0), new V3D_Point(e, P6, P1, P0), new V3D_Point(e, P2, P5, P0));
+//        result = instance.getIntersection(t, e.oom, b);
+//        assertEquals(expResult, result);
+        
     }
 }

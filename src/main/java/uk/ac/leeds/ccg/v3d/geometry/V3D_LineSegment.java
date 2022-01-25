@@ -543,6 +543,22 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
         //return getP(oom).apply(pmpq, oom);
         return new V3D_Point(e, offset, getP().add(pmpq, oom));
     }
+    
+    /**
+     * If p and q are equal then the point is returned otherwise the line
+     * segment is returned
+     *
+     * @param p A point.
+     * @param q Another possibly equal point.
+     * @return either {@code p} or {@code new V3D_LineSegment(p, q)}
+     */
+    public static V3D_Geometry getGeometry(V3D_Point p, V3D_Point q) {
+        if (p.equals(q)) {
+            return p;
+        } else {
+            return new V3D_LineSegment(p, q);
+        }
+    }
 
     @Override
     public boolean isIntersectedBy(V3D_Plane p, int oom) {

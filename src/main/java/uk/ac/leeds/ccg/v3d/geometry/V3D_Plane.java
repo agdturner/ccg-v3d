@@ -1306,68 +1306,6 @@ public class V3D_Plane extends V3D_Geometry {
 //        // z = (pl.p.getZ(oom) - pl.a(x−pl.p.getX(oom)) - pl.b(y−pl.p.getY(oom))) / pl.c   --- 6
 //        // Sub 2 and 3 into
 //    }
-    /**
-     * Calculate and return the intersection between {@code this} and {@code t}.
-     * A question about how to do this:
-     * https://stackoverflow.com/questions/3142469/determining-the-intersection-of-a-triangle-and-a-plane
-     *
-     * @param t The triangle to intersect.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @param b Used to distinguish from
-     * {@link #getIntersection(V3D_Plane, int)}.
-     * @return The intersection between {@code this} and {@code t}.
-     */
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
-        // If t were a plane what is the intersection?
-        V3D_Geometry pi = getIntersection(t, oom);
-        if (pi == null) {
-            return null;
-        }
-        if (pi instanceof V3D_Plane) {
-            return t;
-        } else {
-            // (pi instanceof V3D_Line)
-            V3D_Geometry gPQ = getIntersection(t.getPQ(), oom, true);
-            if (gPQ == null) {
-                V3D_Geometry gQR = getIntersection(t.getQR(), oom, true);
-                if (gQR == null) {
-                    V3D_Geometry gRP = getIntersection(t.getRP(), oom, true);
-                    if (gRP == null) {
-                        return null;
-                    } else {
-                        return V3D_FiniteGeometry.getGeometry((V3D_Point) gPQ,
-                                (V3D_Point) gQR, (V3D_Point) gRP);
-                    }
-                } else {
-                    V3D_Geometry gRP = getIntersection(t.getRP(), oom, true);
-                    if (gRP == null) {
-                        return gQR;
-                    } else {
-                        return V3D_FiniteGeometry.getGeometry((V3D_Point) gQR,
-                                (V3D_Point) gRP);
-                    }
-                }
-            } else if (gPQ instanceof V3D_LineSegment) {
-                return gPQ;
-            } else {
-                V3D_Geometry gQR = getIntersection(t.getQR(), oom, true);
-                if (gQR == null) {
-                    V3D_Geometry gRP = getIntersection(t.getRP(), oom, true);
-                    if (gRP == null) {
-                        return (V3D_Point) gPQ;
-                    } else if (gRP instanceof V3D_LineSegment) {
-                        return gRP;
-                    } else {
-                        return V3D_FiniteGeometry.getGeometry((V3D_Point) gPQ,
-                                (V3D_Point) gRP);
-                    }
-                } else {
-                    return V3D_FiniteGeometry.getGeometry((V3D_Point) gPQ,
-                            (V3D_Point) gQR);
-                }
-            }
-        }
-    }
 
     /**
      * @param p The plane to test if it is parallel to this.
