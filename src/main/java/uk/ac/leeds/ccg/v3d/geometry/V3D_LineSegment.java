@@ -559,6 +559,21 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
             return new V3D_LineSegment(p, q);
         }
     }
+    
+    /**
+     * For returning the other end of the line segment as a point.
+     * 
+     * @param a One or other point of {@code this}.
+     * @return The other point that is not equal to a.
+     */
+    public V3D_Point getOtherPoint(V3D_Point a) {
+        V3D_Point p =  getP(e.oom);    
+        if (p.equals(a)) {
+            return getQ(e.oom);
+        } else {
+            return p;
+        }
+    }
 
     @Override
     public boolean isIntersectedBy(V3D_Plane p, int oom) {

@@ -54,7 +54,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
+public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Comparable<V3D_Point> {
 
     private static final long serialVersionUID = 1L;
 
@@ -244,7 +244,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         }
         return false;
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @return The vector - {@code rel.add(offset, oom)}.
@@ -559,7 +559,8 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
      * @param rel What {@link #rel} is set to.
      */
     public void setRel(V3D_Vector rel) {
-        offset = getVector(e.oom).subtract(rel, e.oom);
+        //offset = getVector(e.oom).subtract(rel, e.oom);
+        offset = offset.subtract(rel, e.oom).add(this.rel, e.oom);
         this.rel = rel;
     }
 
@@ -574,5 +575,26 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry {
         rel = rel.rotate(axisOfRotation, theta, e.bI, e.oom);
 //        V3D_Vector relt = rel.rotate(axisOfRotation, theta, bI, oom);
 //        offset = offset.subtract(rel.subtract(relt, oom), oom);
+    }
+
+    @Override
+    public int compareTo(V3D_Point o) {
+        int cx = getX(e.oom).compareTo(o.getX(e.oom));
+        switch (cx) {
+            case 1 -> {
+                return 1;
+            }
+            case 0 -> {
+                int cy = getY(e.oom).compareTo(o.getY(e.oom));
+                return switch (cy) {
+                    case 1 -> 1;
+                    case 0 -> getZ(e.oom).compareTo(o.getZ(e.oom));
+                    default -> -1;
+                };
+            }
+            default -> {
+                return -1;
+            }
+        }
     }
 }

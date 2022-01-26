@@ -62,7 +62,7 @@ import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Triangle extends V3D_Plane implements V3D_Face {
+public class V3D_Triangle extends V3D_Plane implements V3D_Face, Comparable<V3D_Triangle> {
 
     private static final long serialVersionUID = 1L;
 
@@ -560,7 +560,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
             }
         }
     }
-    
+
     /**
      * Calculate and return the intersection between {@code this} and {@code p}.
      * A question about how to do this:
@@ -846,8 +846,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         } else if (tp.equals(thisr)) {
             if (tq.equals(thisp)) {
                 return tr.equals(thisq);
-            } else if (tq.equals(thisp)) {
-                return tr.equals(thisq);
+            } else if (tq.equals(thisq)) {
+                return tr.equals(thisp);
             } else {
                 return false;
             }
@@ -871,7 +871,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         super.rotate(axisOfRotation, theta);
         en = null;
     }
-    
+
     /**
      * If p, q and r are equal then the point is returned. If two of the points
      * are the same, then a line segment is returned. If all points are
@@ -902,10 +902,10 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     }
 
     /**
-     * This may be called when there is an intersection of two triangles.
-     * If l1, l2 and l3 are equal then the line segment is returned. If there
-     * are 3 unique points then a triangle is returned. If there are 4 or more
-     * unique points, then contiguous coplanar triangles are returned.
+     * This may be called when there is an intersection of two triangles. If l1,
+     * l2 and l3 are equal then the line segment is returned. If there are 3
+     * unique points then a triangle is returned. If there are 4 or more unique
+     * points, then contiguous coplanar triangles are returned.
      *
      * @param l1 A line segment.
      * @param l2 A line segment.
@@ -915,7 +915,6 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      */
     protected V3D_Geometry getGeometry(V3D_LineSegment l1, V3D_LineSegment l2,
             V3D_LineSegment l3) {
-        V3D_Environment e = l1.e;
         V3D_Point l1p = l1.getP(e.oom);
         V3D_Point l1q = l1.getQ(e.oom);
         V3D_Point l2p = l2.getP(e.oom);
@@ -929,58 +928,75 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         points.add(l2q);
         points.add(l3p);
         points.add(l3q);
-        Iterator<V3D_Point> ite = points.iterator();
         int n = points.size();
         if (n == 2) {
             return l1;
         } else if (n == 3) {
+            Iterator<V3D_Point> ite = points.iterator();
             return getGeometry(ite.next(), ite.next(), ite.next());
         } else if (n == 4) {
-            // Case: closed polygon with 4 sides
             V3D_Triangle t1;
             V3D_Triangle t2;
-//            if (l2.isIntersectedBy(l1p, e.oom)) {
-//                t1 = new V3D_Triangle(l2p, l2q, l1q);
-//                if (l3.isIntersectedBy(l2p, e.oom)) {
-//                    t2 = new V3D_Triangle(l3p, l3q, l1q);
-//                    // May need to do something else to be sure this is a closed polygon before returning!
-//                } else {
-//                    if (l3.isIntersectedBy(l2q, e.oom)) {
-//                        t2 = new V3D_Triangle(l3p, l3q, l1p);
-//                    } else {
-//                        if ()
-//                    }
-//                }                
-//            } else {
-//                if (l2.isIntersectedBy(l1q, e.oom)) {
-//                    V3D_Triangle t1 = new V3D_Triangle(l3p, l3q, l1p);
-//                    V3D_Triangle t2 = new V3D_Triangle(l2p, l2q, l1p);
-//                    return new V3D_TrianglesCoplanar(t1, t2);
-//                } else {
-//                    if (l3.isIntersectedBy(l1p, e.oom)) {
-//                        V3D_Triangle t1 = new V3D_Triangle(l3p, l3q, l1q);
-//                        if () {
-//                            
-//                        } else {
-//                            
-//                        }
-//                        V3D_Triangle t2 = new V3D_Triangle(l2p, l2q, l1q);
-//                        return new V3D_TrianglesCoplanar(t1, t2);
-//                    } else {
-//                        if (l3.isIntersectedBy(l1q, e.oom)) {
-//                            V3D_Triangle t1 = new V3D_Triangle(l3p, l3q, l1p);
-//                            V3D_Triangle t2 = new V3D_Triangle(l2p, l2q, l1p);
-//                            return new V3D_TrianglesCoplanar(t1, t2);
-//                        } else {
-//
-//                        }
-//                    }
-//                }
-//            }
-//            return new V3D_TrianglesCoplanar(t1, t2);
-            throw new UnsupportedOperationException("Not supported yet.");
+            // Case: closed polygon with 4 sides
+            // Find the two unique points
+            V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, e.oom, true);
+            V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, e.oom, true);
+            V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, e.oom, true);
+            if (illl2 == null) {
+                V3D_Point op1 = l1.getOtherPoint(illl3);
+                V3D_Point op2 = l2.getOtherPoint(il2l3);
+                t1 = new V3D_Triangle(op1, op2, l3p);
+                t2 = new V3D_Triangle(l3p, l3q, op2);
+            } else {
+                V3D_Point op1 = l1.getOtherPoint(illl2);
+                V3D_Point op3;
+                if (illl3 == null) {
+                    op3 = l3.getOtherPoint(il2l3);
+                    t1 = new V3D_Triangle(op1, op3, illl2);
+                    t2 = new V3D_Triangle(l3p, l3q, illl2);
+                } else {
+                    op3 = l3.getOtherPoint(illl3);
+                    t1 = new V3D_Triangle(op1, op3, illl2);
+                    t2 = new V3D_Triangle(l3p, l3q, illl2);
+                }
+            }
+            return new V3D_TrianglesCoplanar(t1, t2);
+            //throw new UnsupportedOperationException("Not supported yet.");
         } else if (n == 5) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            V3D_Triangle t1;
+            V3D_Triangle t2;
+            V3D_Triangle t3;
+            // Case: closed polygon with 4 sides
+            // Find the two unique points
+            V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, e.oom, true);
+            V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, e.oom, true);
+            V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, e.oom, true);
+            // Find the two lines that intersect
+            if (illl2 == null) {
+                if (illl3 == null) {
+                    // l2 and l3 intersect
+                    V3D_Point op1 = l1.getOtherPoint(illl3);
+                    V3D_Point op3 = l3.getOtherPoint(illl3);
+                    t1 = new V3D_Triangle(op1, op3, illl3);
+                    t2 = new V3D_Triangle(op1, op3, l2p); // This might be twisted?
+                    t3 = new V3D_Triangle(op3, l2p, l2q);
+                } else {
+                    // l2 and l3 intersect
+                    V3D_Point op2 = l2.getOtherPoint(il2l3);
+                    V3D_Point op3 = l3.getOtherPoint(il2l3);
+                    t1 = new V3D_Triangle(op2, op3, il2l3);
+                    t2 = new V3D_Triangle(op2, op3, l1p); // This might be twisted?
+                    t3 = new V3D_Triangle(op3, l1p, l1q);
+                }
+            } else {
+                // l1 and l2 intersect
+                V3D_Point op1 = l1.getOtherPoint(illl2);
+                V3D_Point op2 = l2.getOtherPoint(illl2);
+                t1 = new V3D_Triangle(op1, op2, illl2);
+                t2 = new V3D_Triangle(op1, op2, l3p); // This might be twisted?
+                t3 = new V3D_Triangle(op2, l3p, l3q);
+            }
+            return new V3D_TrianglesCoplanar(t1, t2, t3);
         } else {
             // n = 6
             throw new UnsupportedOperationException("Not supported yet.");
@@ -988,8 +1004,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     }
 
     /**
-     * This may be called when there is an intersection of two triangles.
-     * If l1 and l2 are two sides of a triangle, return the triangle.
+     * This may be called when there is an intersection of two triangles. If l1
+     * and l2 are two sides of a triangle, return the triangle.
      *
      * @param l1 A line segment and triangle edge.
      * @param l2 A line segment and triangle edge.
@@ -1012,5 +1028,10 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 return new V3D_Triangle(p, l1p, l2p);
             }
         }
+    }
+
+    @Override
+    public int compareTo(V3D_Triangle o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

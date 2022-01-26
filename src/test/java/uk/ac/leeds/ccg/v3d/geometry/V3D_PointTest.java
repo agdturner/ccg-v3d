@@ -797,4 +797,55 @@ public class V3D_PointTest extends V3D_Test {
         assertEquals(expResult, instance);
     }
 
+    /**
+     * Test of getDistance method, of class V3D_Point covered by
+     * {@link V3D_PlaneTest#testGetDistance_V3D_Point_int}.
+     */
+    @Test
+    public void testGetDistance_V3D_Plane_int() {
+        //System.out.println("getDistance");
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Point covered by
+     * {@link V3D_PlaneTest#testIsIntersectedBy_V3D_Point_int}.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_Plane_int() {
+        //System.out.println("isIntersectedBy");
+    }
+
+    /**
+     * Test of isEnvelopeIntersectedBy method, of class V3D_Point covered by
+     * {@link V3D_LineTest#testIsIntersectedBy_V3D_Point_int()}
+     */
+    @Test
+    public void testIsEnvelopeIntersectedBy() {
+        //System.out.println("isEnvelopeIntersectedBy");
+    }
+
+    /**
+     * Test of setOffset method, of class V3D_Point.
+     */
+    @Test
+    public void testSetOffset() {
+        System.out.println("setOffset");
+        V3D_Vector offset = P0P0P1;
+        V3D_Point instance = new V3D_Point(pP0P0P0);
+        instance.setOffset(offset);
+        assertEquals(instance, pP0P0P0);
+    }
+
+    /**
+     * Test of setRel method, of class V3D_Point.
+     */
+    @Test
+    public void testSetRel() {
+        System.out.println("setRel");
+        V3D_Vector rel = P0P0P1;
+        V3D_Point instance = new V3D_Point(pP0P0P0);
+        instance.setRel(rel);
+        assertEquals(instance, pP0P0P0);
+    }
+
 }

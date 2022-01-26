@@ -17,7 +17,11 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Iterator;
+//import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 //import java.util.ArrayList;
 
@@ -39,7 +43,8 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     /**
      * The collection of triangles.
      */
-    protected final List<V3D_Triangle> triangles;
+    protected final Set<V3D_Triangle> triangles;
+    //protected final List<V3D_Triangle> triangles;
     //protected final V3D_Triangle[] triangles;
 
     /**
@@ -50,27 +55,88 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     public V3D_TrianglesCoplanar(V3D_Triangle... triangles) {
         super(triangles[0].e, triangles[0].offset, triangles[0].p, 
                 triangles[0].q,                triangles[0].r);
-        this.triangles = Arrays.asList(triangles);
+        this.triangles = new HashSet<>();
+        this.triangles.addAll(Arrays.asList(triangles));
     }
 
     @Override
     public String toString() {
         String s = this.getClass().getName() + "(";
-        s += triangles.get(0).toString();
-        for (int i = 1; i < triangles.size(); i++) {
-            s += ", " + triangles.get(i);
+        Iterator<V3D_Triangle> ite = triangles.iterator();
+        s += ite.next().toString();
+        while(ite.hasNext()) {
+            s += ", " + ite.next();
         }
+//        s += triangles.get(0).toString();
+//        for (int i = 1; i < triangles.size(); i++) {
+//            s += ", " + triangles.get(i);
+//        }
         s += ")";
         return s;
     }
 
     @Override
+    public boolean equals(Object o) {
+        // Think about the case when there is a single triangle and whether this is equal to that triangle...
+        if (o instanceof V3D_TrianglesCoplanar i) {
+            return equals(i);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.triangles);
+        return hash;
+    }
+    
+    /**
+     * Check if {@code this} is equal to {@code i}.
+     * 
+     * @param i An instance to compare for equality.
+     * @return {@code true} iff all the triangles are the same.
+     */
+    public boolean equals(V3D_TrianglesCoplanar i) {
+        // Think about the case when there is a single triangle and whether this is equal to that triangle...
+        if (this.triangles.size() == i.triangles.size()) {
+            Iterator<V3D_Triangle> ite = triangles.iterator();
+            Iterator<V3D_Triangle> iite = i.triangles.iterator();       
+            while(ite.hasNext()) {
+                
+                V3D_Triangle t = ite.next();
+                V3D_Triangle it = iite.next();
+                System.out.println(t);
+                System.out.println(it);
+                if (!t.equals(it, true)) {
+                    t.equals(it, true);
+                    return false;
+                } else {
+                    int debug = 1;
+                }                
+                
+                
+//                if (!ite.next().equals(iite.next(), true)) {
+//                    return false;
+//                }                
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
-            en = triangles.get(0).getEnvelope();
-            for (int i = 1; i < triangles.size(); i++) {
-                en = en.union(triangles.get(i).getEnvelope());
+            Iterator<V3D_Triangle> ite = triangles.iterator();
+            en = ite.next().getEnvelope();
+            while(ite.hasNext()) {
+                en = en.union(ite.next().getEnvelope());
             }
+//            en = triangles.get(0).getEnvelope();
+//            for (int i = 1; i < triangles.size(); i++) {
+//                en = en.union(triangles.get(i).getEnvelope());
+//            }
         }
         return en;
     }
