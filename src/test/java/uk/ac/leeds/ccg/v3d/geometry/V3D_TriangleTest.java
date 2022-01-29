@@ -683,7 +683,6 @@ public class V3D_TriangleTest extends V3D_Test {
         Math_BigRational N4_3 = Math_BigRational.valueOf(-4).divide(3);
         V3D_Point m = new V3D_Point(e, Math_BigRational.TWO.divide(3), N4_3, P0);
         V3D_Point n = new V3D_Point(e, Math_BigRational.TEN.divide(3), N4_3, P0);
-
         expResult = new V3D_TrianglesCoplanar(
                 new V3D_Triangle(pP2P0P0, m, n),
                 //new V3D_Triangle(m, n, pP1N2P0),
@@ -693,8 +692,24 @@ public class V3D_TriangleTest extends V3D_Test {
                         n));
         result = instance.getIntersection(t, e.oom, b);
         System.out.println(result);
-        boolean e = expResult.equals(result);
+        //boolean equals = expResult.equals(result);
         assertEquals(expResult, result);
+        // Test 6: 6 sides
+        t = new V3D_Triangle(pP0P0P0, new V3D_Point(e, P6, P0, P0), new V3D_Point(e, P3, N3, P0));
+        instance = new V3D_Triangle(pP0N2P0, new V3D_Point(e, P3, P1, P0), new V3D_Point(e, P6, N2, P0));
+        expResult = new V3D_TrianglesCoplanar(
+                new V3D_Triangle(pP2P0P0, new V3D_Point(e, P4, P0, P0), pP1N1P0),
+                new V3D_Triangle(pP1N1P0, pP2N2P0, new V3D_Point(e, P4, N2, P0)),
+                new V3D_Triangle(
+                        new V3D_Point(e, P4, P0, P0), 
+                        new V3D_Point(e, P4, N2, P0), 
+                        new V3D_Point(e, P5, N1, P0)),
+                new V3D_Triangle(new V3D_Point(e, P4, P0, P0), pP1N1P0,
+                        new V3D_Point(e, P4, N2, P0)));
+        result = instance.getIntersection(t, e.oom, b);
+        System.out.println(result);
+        boolean e = expResult.equals(result);
+//        assertEquals(expResult, result);
 
     }
 }

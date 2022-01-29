@@ -497,10 +497,38 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
-        BigDecimal d = super.getDistance(p, oom);
-        BigDecimal l = this.getLength(oom).toBigDecimal(oom);
-        BigDecimal a = p.getDistance(getP(oom), oom);
-        BigDecimal b = p.getDistance(getQ(oom), oom);
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
+//        BigDecimal d = super.getDistance(p, oom);
+//        BigDecimal l = this.getLength(oom).toBigDecimal(oom);
+//        BigDecimal a = p.getDistance(getP(oom), oom);
+//        BigDecimal b = p.getDistance(getQ(oom), oom);
+//        if (d.compareTo(a) == -1 && d.compareTo(b) == -1 && a.compareTo(l) == 1
+//                && b.compareTo(l) == 1) {
+//            return a.min(b);
+//        }
+//        return d;
+    }
+    
+    /**
+     * If the distance from a point to the line is less than the distance of the
+     * point from either end of the line and the distance from either end of the
+     * line is greater than the length of the line then the distance is the
+     * shortest of the distances from the point to the points at either end of
+     * the line segment. In all other cases, the distance is the distance
+     * between the point and the line.
+     *
+     * @param p A point for which the minimum distance from {@code this} is
+     * returned.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The minimum distance between this and {@code p}.
+     */
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
+        Math_BigRational d = super.getDistanceSquared(p, oom);
+        Math_BigRational l = this.getLength2(oom);
+        Math_BigRational a = p.getDistanceSquared(getP(oom), oom);
+        Math_BigRational b = p.getDistanceSquared(getQ(oom), oom);
         if (d.compareTo(a) == -1 && d.compareTo(b) == -1 && a.compareTo(l) == 1
                 && b.compareTo(l) == 1) {
             return a.min(b);

@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
@@ -902,8 +903,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face, Comparable<V3D_
     }
 
     /**
-     * This may be called when there is an intersection of two triangles. If l1,
-     * l2 and l3 are equal then the line segment is returned. If there are 3
+     * Used in intersecting two triangles to give the overall intersection. If
+     * l1, l2 and l3 are equal then the line segment is returned. If there are 3
      * unique points then a triangle is returned. If there are 4 or more unique
      * points, then contiguous coplanar triangles are returned.
      *
@@ -999,7 +1000,119 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face, Comparable<V3D_
             return new V3D_TrianglesCoplanar(t1, t2, t3);
         } else {
             // n = 6
-            throw new UnsupportedOperationException("Not supported yet.");
+            V3D_Triangle t1;
+            V3D_Triangle t2;
+            V3D_Triangle t3;
+            V3D_Triangle t4;
+            /**
+             * Find the two points that are the minimum distance between any two
+             * lines. This will be an extra side to the triangle.
+             */
+            // dl1l2
+            Math_BigRational dl1pl2p = l1p.getDistanceSquared(l2p, e.oom);
+            Math_BigRational dl1pl2q = l1p.getDistanceSquared(l2q, e.oom);
+            Math_BigRational dl1ql2p = l1q.getDistanceSquared(l2p, e.oom);
+            Math_BigRational dl1ql2q = l1q.getDistanceSquared(l2q, e.oom);
+            // dl1l3
+            Math_BigRational dl1pl3p = l1p.getDistanceSquared(l3p, e.oom);
+            Math_BigRational dl1pl3q = l1p.getDistanceSquared(l3q, e.oom);
+            Math_BigRational dl1ql3p = l1q.getDistanceSquared(l3p, e.oom);
+            Math_BigRational dl1ql3q = l1q.getDistanceSquared(l3q, e.oom);
+            // dl2l3
+            Math_BigRational dl2pl3p = l2p.getDistanceSquared(l3p, e.oom);
+            Math_BigRational dl2pl3q = l2p.getDistanceSquared(l3q, e.oom);
+            Math_BigRational dl2ql3p = l2q.getDistanceSquared(l3p, e.oom);
+            Math_BigRational dl2ql3q = l2q.getDistanceSquared(l3q, e.oom);
+            if (dl1pl2p.compareTo(dl1pl2q) == -1) {
+                if (dl1pl2p.compareTo(dl1ql2q) == -1) {
+                    t1 = new V3D_Triangle(l1p, l1q, l2p);
+                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
+                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
+                            t3 = new V3D_Triangle(l3q, l2p, l1q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        } else {
+                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+                            t4 = new V3D_Triangle(l3p, l2p, l1q);
+                        }
+                    } else {
+                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
+                            t3 = new V3D_Triangle(l3q, l2p, l1q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        } else {
+                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        }
+                    }
+                } else {
+                    t1 = new V3D_Triangle(l1p, l1q, l2p);
+                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
+                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
+                            t3 = new V3D_Triangle(l1p, l2p, l3q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        } else {
+                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        }
+                    } else {
+                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
+                            t3 = new V3D_Triangle(l3q, l2p, l1q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        } else {
+                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        }
+                    }
+                }
+            } else {
+                if (dl1pl2p.compareTo(dl1ql2q) == -1) {
+                    t1 = new V3D_Triangle(l1p, l1q, l2p);
+                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
+                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
+                            t3 = new V3D_Triangle(l3q, l2p, l1q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        } else {
+                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+                            t4 = new V3D_Triangle(l3p, l2p, l1q);
+                        }
+                    } else {
+                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
+                            t3 = new V3D_Triangle(l3q, l2p, l1q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        } else {
+                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        }
+                    }
+                } else {
+                    t1 = new V3D_Triangle(l1p, l1q, l2p);
+                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
+                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
+                            t3 = new V3D_Triangle(l1p, l2p, l3q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        } else {
+                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        }
+                    } else {
+                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
+                            t3 = new V3D_Triangle(l3q, l2p, l1q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        } else {
+                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                        }
+                    }
+                }
+            }
+            return new V3D_TrianglesCoplanar(t1, t2, t3, t4);
         }
     }
 

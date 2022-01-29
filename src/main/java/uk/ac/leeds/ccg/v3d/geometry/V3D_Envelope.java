@@ -1256,6 +1256,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Plane, int)}.
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
+    @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
         /**
          * Test the envelopes for intersection.
@@ -1392,7 +1393,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 int trnc = t.r.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
                 if (trnc == 0) {
                     return true;
-                } else return trnc != 1;
+                } else {
+                    return trnc != 1;
+                }
             }
         } else {
             int tqnc = t.q.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
@@ -1402,7 +1405,9 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 int trnc = t.r.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
                 if (trnc == 0) {
                     return true;
-                } else return trnc == 1;
+                } else {
+                    return trnc == 1;
+                }
             }
         }
     }
@@ -1442,7 +1447,6 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 //        }
 //        return false;
 //    }
-
     /**
      *
      * Test if {@code this} is intersected by {@code li}.
@@ -1533,9 +1537,453 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         if (this.isIntersectedBy(p, oom)) {
             return BigDecimal.ZERO;
         }
+        Math_BigRational d2 = getDistanceSquared(p, true, oom);
+        return new Math_BigRationalSqrt(d2, oom).getSqrt(oom).toBigDecimal(oom);
+//        // Special case where Envelope is infinitesimally small.
+//        if (l instanceof Point && t instanceof Point) {
+//            return ((Point) l).getDistance(new Point(p), oom);
+//        }
+//        int xcmin = p.getX(oom).compareTo(getXMin(oom));
+//        int ycmin = p.getY(oom).compareTo(getYMin(oom));
+//        int zcmin = p.getZ(oom).compareTo(getZMin(oom));
+//        if (xcmin == -1) {
+//            if (ycmin == -1) {
+//                if (zcmin == -1) {
+//                    // lbf
+//                    if (f instanceof Rectangle rectangle) {
+//                        return rectangle.p.getDistance(new Point(p), oom);
+//                    } else if (f instanceof LineSegment lineSegment) {
+//                        return lineSegment.p
+//                                .getDistance(new Point(p), oom);
+//                    } else {
+//                        return ((Point) f)
+//                                .getDistance(new Point(p), oom);
+//                    }
+//                } else {
+//                    int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                    if (zcmax == 1) {
+//                        // bla
+//                        if (l instanceof Rectangle rectangle) {
+//                            return rectangle.p
+//                                    .getDistance(new Point(p), oom);
+//                        } else if (l instanceof LineSegment lineSegment) {
+//                            return lineSegment.p
+//                                    .getDistance(new Point(p), oom);
+//                        } else {
+//                            return ((Point) l)
+//                                    .getDistance(new Point(p), oom);
+//                        }
+//                    } else {
+//                        // lba - lbf
+//                        if (l instanceof Rectangle rectangle) {
+//                            return new Line(rectangle.b)
+//                                    .getDistance(new Point(p), oom);
+//                        } else if (l instanceof LineSegment) {
+//                            return ((Line) l)
+//                                    .getDistance(new Point(p), oom);
+//                        } else {
+//                            return ((Point) l)
+//                                    .getDistance(new Point(p), oom);
+//                        }
+//                    }
+//                }
+//            } else {
+//                int ycmax = p.getY(oom).compareTo(getYMax(oom));
+//                if (ycmax == 1) {
+//                    if (zcmin == -1) {
+//                        // ltf
+//                        if (f instanceof Rectangle rectangle) {
+//                            return rectangle.q
+//                                    .getDistance(new Point(p), oom);
+//                        } else if (f instanceof LineSegment lineSegment) {
+//                            return lineSegment.p
+//                                    .getDistance(new Point(p), oom);
+//                        } else {
+//                            return ((Point) f)
+//                                    .getDistance(new Point(p), oom);
+//                        }
+//                    } else {
+//                        int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                        if (zcmax == 1) {
+//                            // lta
+//                            if (l instanceof Rectangle rectangle) {
+//                                return rectangle.q
+//                                        .getDistance(new Point(p), oom);
+//                            } else if (l instanceof LineSegment lineSegment) {
+//                                return lineSegment.p
+//                                        .getDistance(new Point(p), oom);
+//                            } else {
+//                                return ((Point) l)
+//                                        .getDistance(new Point(p), oom);
+//                            }
+//                        } else {
+//                            // lta - ltf
+//                            if (l instanceof Rectangle rectangle) {
+//                                return new Line(rectangle.t)
+//                                        .getDistance(new Point(p), oom);
+//                            } else if (l instanceof LineSegment) {
+//                                return ((Line) l)
+//                                        .getDistance(new Point(p), oom);
+//                            } else {
+//                                return ((Point) l)
+//                                        .getDistance(new Point(p), oom);
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    if (zcmin == -1) {
+//                        // lbf - ltf
+//                        if (l instanceof Rectangle rectangle) {
+//                            return new Line(rectangle.ri)
+//                                    .getDistance(new Point(p), oom);
+//                        } else if (l instanceof LineSegment) {
+//                            return ((Line) l)
+//                                    .getDistance(new Point(p), oom);
+//                        } else {
+//                            return ((Point) l)
+//                                    .getDistance(new Point(p), oom);
+//                        }
+//                    } else {
+//                        int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                        if (zcmax == 1) {
+//                            // lba - lta
+//                            if (l instanceof Rectangle rectangle) {
+//                                return new Line(rectangle.l)
+//                                        .getDistance(new Point(p), oom);
+//                            } else if (l instanceof LineSegment) {
+//                                return ((Line) l)
+//                                        .getDistance(new Point(p), oom);
+//                            } else {
+//                                return ((Point) l)
+//                                        .getDistance(new Point(p), oom);
+//                            }
+//                        } else {
+//                            // lba - lta - ltf - lbf
+//                            if (l instanceof Rectangle rectangle) {
+//                                return new Plane(rectangle)
+//                                        .getDistance(new Point(p), oom);
+//                            } else if (l instanceof LineSegment) {
+//                                return ((Line) l)
+//                                        .getDistance(new Point(p), oom);
+//                            } else {
+//                                return ((Point) l)
+//                                        .getDistance(new Point(p), oom);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        } else {
+//            int xcmax = p.getX(oom).compareTo(getXMax(oom));
+//            if (xcmax == 1) {
+//                if (ycmin == -1) {
+//                    if (zcmin == -1) {
+//                        // rbf
+//                        if (f instanceof Rectangle rectangle) {
+//                            return rectangle.s
+//                                    .getDistance(new Point(p), oom);
+//                        } else if (f instanceof LineSegment lineSegment) {
+//                            return lineSegment.q
+//                                    .getDistance(new Point(p), oom);
+//                        } else {
+//                            return ((Point) f)
+//                                    .getDistance(new Point(p), oom);
+//                        }
+//                    } else {
+//                        int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                        if (zcmax == 1) {
+//                            // rba
+//                            if (a instanceof Rectangle rectangle) {
+//                                return rectangle.p
+//                                        .getDistance(new Point(p), oom);
+//                            } else if (a instanceof LineSegment lineSegment) {
+//                                return lineSegment.p
+//                                        .getDistance(new Point(p), oom);
+//                            } else {
+//                                return ((Point) a)
+//                                        .getDistance(new Point(p), oom);
+//                            }
+//                        } else {
+//                            // rbf - rba
+//                            if (r instanceof Rectangle rectangle) {
+//                                return new Line(rectangle.b)
+//                                        .getDistance(new Point(p), oom);
+//                            } else if (r instanceof LineSegment) {
+//                                return ((Line) r).getDistance(new Point(p), oom);
+//                            } else {
+//                                return ((Point) r).getDistance(new Point(p), oom);
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    int ycmax = p.getY(oom).compareTo(getYMax(oom));
+//                    if (ycmax == 1) {
+//                        if (zcmin == -1) {
+//                            // rtf
+//                            if (f instanceof Rectangle rectangle) {
+//                                return rectangle.r
+//                                        .getDistance(new Point(p), oom);
+//                            } else if (f instanceof LineSegment lineSegment) {
+//                                return lineSegment.q
+//                                        .getDistance(new Point(p), oom);
+//                            } else {
+//                                return ((Point) f)
+//                                        .getDistance(new Point(p), oom);
+//                            }
+//                        } else {
+//                            int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                            if (zcmax == 1) {
+//                                // rta
+//                                if (a instanceof Rectangle rectangle) {
+//                                    return rectangle.q
+//                                            .getDistance(new Point(p), oom);
+//                                } else if (a instanceof LineSegment lineSegment) {
+//                                    return lineSegment.p
+//                                            .getDistance(new Point(p), oom);
+//                                } else {
+//                                    return ((Point) a)
+//                                            .getDistance(new Point(p), oom);
+//                                }
+//                            } else {
+//                                // rtf - rta
+//                                if (r instanceof Rectangle rectangle) {
+//                                    return new Line(rectangle.t)
+//                                            .getDistance(new Point(p), oom);
+//                                } else if (r instanceof LineSegment) {
+//                                    return ((Line) r)
+//                                            .getDistance(new Point(p), oom);
+//                                } else {
+//                                    return ((Point) r)
+//                                            .getDistance(new Point(p), oom);
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        if (zcmin == -1) {
+//                            // rbf - rtf
+//                            if (f instanceof Rectangle rectangle) {
+//                                return new Line(rectangle.ri)
+//                                        .getDistance(new Point(p), oom);
+//                            } else if (f instanceof LineSegment) {
+//                                return ((Line) f)
+//                                        .getDistance(new Point(p), oom);
+//                            } else {
+//                                return ((Point) f)
+//                                        .getDistance(new Point(p), oom);
+//                            }
+//                        } else {
+//                            int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                            if (zcmax == 1) {
+//                                // rba - rta
+//                                if (a instanceof Rectangle rectangle) {
+//                                    return new Line(rectangle.l)
+//                                            .getDistance(new Point(p), oom);
+//                                } else if (a instanceof LineSegment) {
+//                                    return ((Line) a)
+//                                            .getDistance(new Point(p), oom);
+//                                } else {
+//                                    return ((Point) a)
+//                                            .getDistance(new Point(p), oom);
+//                                }
+//                            } else {
+//                                // rbf - rtf - rta - rba
+//                                if (r instanceof Rectangle rectangle) {
+//                                    return new Plane(rectangle)
+//                                            .getDistance(new Point(p), oom);
+//                                } else if (r instanceof LineSegment) {
+//                                    return ((Line) r)
+//                                            .getDistance(new Point(p), oom);
+//                                } else {
+//                                    return ((Point) r)
+//                                            .getDistance(new Point(p), oom);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            } else {
+//                if (ycmin == -1) {
+//                    if (zcmin == -1) {
+//                        // lbf - rbf
+//                        if (f instanceof Rectangle rectangle) {
+//                            return new Line(rectangle.b)
+//                                    .getDistance(new Point(p), oom);
+//                        } else if (f instanceof LineSegment) {
+//                            return ((Line) f)
+//                                    .getDistance(new Point(p), oom);
+//                        } else {
+//                            return ((Point) f)
+//                                    .getDistance(new Point(p), oom);
+//                        }
+//                    } else {
+//                        int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                        if (zcmax == 1) {
+//                            // rba - lba
+//                            if (a instanceof Rectangle rectangle) {
+//                                return new Line(rectangle.b)
+//                                        .getDistance(new Point(p), oom);
+//                            } else if (a instanceof LineSegment) {
+//                                return ((Line) a)
+//                                        .getDistance(new Point(p), oom);
+//                            } else {
+//                                return ((Point) a)
+//                                        .getDistance(new Point(p), oom);
+//                            }
+//                        } else {
+//                            // lba - lbf - rbf - rba
+//                            if (b instanceof Rectangle rectangle) {
+//                                return new Plane(rectangle)
+//                                        .getDistance(new Point(p), oom);
+//                            } else if (b instanceof LineSegment) {
+//                                return ((Line) b)
+//                                        .getDistance(new Point(p), oom);
+//                            } else {
+//                                return ((Point) b)
+//                                        .getDistance(new Point(p), oom);
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    int ycmax = p.getY(oom).compareTo(getYMax(oom));
+//                    if (ycmax == 1) {
+//                        if (zcmin == -1) {
+//                            // ltf - rtf
+//                            if (f instanceof Rectangle rectangle) {
+//                                return rectangle.t
+//                                        .getDistance(new Point(p), oom);
+//                            } else if (f instanceof LineSegment lineSegment) {
+//                                return lineSegment.q
+//                                        .getDistance(new Point(p), oom);
+//                            } else {
+//                                return ((Point) f)
+//                                        .getDistance(new Point(p), oom);
+//                            }
+//                        } else {
+//                            int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                            if (zcmax == 1) {
+//                                // rta - lta
+//                                if (a instanceof Rectangle rectangle) {
+//                                    return new Line(rectangle.t)
+//                                            .getDistance(new Point(p), oom);
+//                                } else if (a instanceof LineSegment) {
+//                                    return ((Line) a)
+//                                            .getDistance(new Point(p), oom);
+//                                } else {
+//                                    return ((Point) a)
+//                                            .getDistance(new Point(p), oom);
+//                                }
+//                            } else {
+//                                // ltf - lta - rta - rtf
+//                                if (t instanceof Rectangle rectangle) {
+//                                    return new Plane(rectangle)
+//                                            .getDistance(new Point(p), oom);
+//                                } else if (r instanceof LineSegment) {
+//                                    return ((Line) t)
+//                                            .getDistance(new Point(p), oom);
+//                                } else {
+//                                    return ((Point) t)
+//                                            .getDistance(new Point(p), oom);
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        if (zcmin == -1) {
+//                            // lbf - ltf - rtf - rbf
+//                            if (f instanceof Rectangle rectangle) {
+//                                return new Plane(rectangle)
+//                                        .getDistance(new Point(p), oom);
+//                            } else if (f instanceof LineSegment) {
+//                                return ((Line) f)
+//                                        .getDistance(new Point(p), oom);
+//                            } else {
+//                                return ((Point) f)
+//                                        .getDistance(new Point(p), oom);
+//                            }
+//                        } else {
+//                            int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                            if (zcmax == 1) {
+//                                // rba - rta - lta - lba
+//                                if (a instanceof Rectangle rectangle) {
+//                                    return new Plane(rectangle)
+//                                            .getDistance(new Point(p), oom);
+//                                } else if (a instanceof LineSegment) {
+//                                    return ((Line) a)
+//                                            .getDistance(new Point(p), oom);
+//                                } else {
+//                                    return ((Point) a)
+//                                            .getDistance(new Point(p), oom);
+//                                }
+//                            } else {
+//                                // lba - lbf - rbf - rba
+//                                if (r instanceof Rectangle) {
+//                                    return new Plane((Rectangle) b)
+//                                            .getDistance(new Point(p), oom);
+//                                } else if (r instanceof LineSegment) {
+//                                    return ((LineSegment) b)
+//                                            .getDistance(new Point(p), oom);
+//                                } else {
+//                                    return ((Point) b)
+//                                            .getDistance(new Point(p), oom);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+    }
+
+    /**
+     * A point within the Envelope currently returns a distance of zero. This
+     * could be changed in future to provide a negative distance which would be
+     * the distance inside the envelope. To calculate the distance outside the
+     * envelope, there are a number of different cases. The first cases are when
+     * the closest point on the Envelope to the point {@code p} is one of the
+     * corners. The next cases are when it is a point on one of the edges of
+     * {@link #t}, {@link #b}, {@link #l}, {@link #r}, {@link #f}. The next
+     * cases are when it is a point on one of the faces of {@link #t},
+     * {@link #b}, {@link #l}, {@link #r}, {@link #f}. Depending on the values
+     * and the oom given. The distance may appear to be zero when it is in fact
+     * greater than zero. To test if the distance is zero use
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
+     *
+     * @param p The point to find the distance to/from.
+     * @param oom The Order of Magnitude for the result precision.
+     * @return The approximate or exact distance at the given {@code oom}.
+     */
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
+        if (this.isIntersectedBy(p, oom)) {
+            return Math_BigRational.ZERO;
+        }
+        return getDistanceSquared(p, true, oom);
+    }
+    
+    /**
+     * A point within the Envelope currently returns a distance of zero. This
+     * could be changed in future to provide a negative distance which would be
+     * the distance inside the envelope. To calculate the distance outside the
+     * envelope, there are a number of different cases. The first cases are when
+     * the closest point on the Envelope to the point {@code p} is one of the
+     * corners. The next cases are when it is a point on one of the edges of
+     * {@link #t}, {@link #b}, {@link #l}, {@link #r}, {@link #f}. The next
+     * cases are when it is a point on one of the faces of {@link #t},
+     * {@link #b}, {@link #l}, {@link #r}, {@link #f}. Depending on the values
+     * and the oom given. The distance may appear to be zero when it is in fact
+     * greater than zero. To test if the distance is zero use
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
+     *
+     * @param p The point to find the distance to/from.
+     * @param noInt This is ignored, but it distinguishes this method from 
+     * {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
+     * @param oom The Order of Magnitude for the result precision.
+     * @return The approximate or exact distance at the given {@code oom}.
+     */
+    protected Math_BigRational getDistanceSquared(V3D_Point p, boolean noInt, 
+            int oom) {
         // Special case where Envelope is infinitesimally small.
         if (l instanceof Point && t instanceof Point) {
-            return ((Point) l).getDistance(new Point(p), oom);
+            return ((Point) l).getDistanceSquared(new Point(p));
         }
         int xcmin = p.getX(oom).compareTo(getXMin(oom));
         int ycmin = p.getY(oom).compareTo(getYMin(oom));
@@ -1545,39 +1993,34 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                 if (zcmin == -1) {
                     // lbf
                     if (f instanceof Rectangle rectangle) {
-                        return rectangle.p.getDistance(new Point(p), oom);
+                        return rectangle.p.getDistanceSquared(new Point(p));
                     } else if (f instanceof LineSegment lineSegment) {
-                        return lineSegment.p
-                                .getDistance(new Point(p), oom);
+                        return lineSegment.p.getDistanceSquared(new Point(p));
                     } else {
-                        return ((Point) f)
-                                .getDistance(new Point(p), oom);
+                        return ((Point) f).getDistanceSquared(new Point(p));
                     }
                 } else {
                     int zcmax = p.getZ(oom).compareTo(getZMax(oom));
                     if (zcmax == 1) {
                         // bla
                         if (l instanceof Rectangle rectangle) {
-                            return rectangle.p
-                                    .getDistance(new Point(p), oom);
+                            return rectangle.p.getDistanceSquared(new Point(p));
                         } else if (l instanceof LineSegment lineSegment) {
-                            return lineSegment.p
-                                    .getDistance(new Point(p), oom);
+                            return lineSegment.p.getDistanceSquared(
+                                    new Point(p));
                         } else {
-                            return ((Point) l)
-                                    .getDistance(new Point(p), oom);
+                            return ((Point) l).getDistanceSquared(new Point(p));
                         }
                     } else {
                         // lba - lbf
                         if (l instanceof Rectangle rectangle) {
-                            return new Line(rectangle.b)
-                                    .getDistance(new Point(p), oom);
+                            return new Line(rectangle.b).getDistanceSquared(
+                                    new Point(p), oom);
                         } else if (l instanceof LineSegment) {
-                            return ((Line) l)
-                                    .getDistance(new Point(p), oom);
+                            return ((Line) l).getDistanceSquared(
+                                    new Point(p), oom);
                         } else {
-                            return ((Point) l)
-                                    .getDistance(new Point(p), oom);
+                            return ((Point) l).getDistanceSquared(new Point(p));
                         }
                     }
                 }
@@ -1587,40 +2030,38 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     if (zcmin == -1) {
                         // ltf
                         if (f instanceof Rectangle rectangle) {
-                            return rectangle.q
-                                    .getDistance(new Point(p), oom);
+                            return rectangle.q.getDistanceSquared(new Point(p));
                         } else if (f instanceof LineSegment lineSegment) {
-                            return lineSegment.p
-                                    .getDistance(new Point(p), oom);
+                            return lineSegment.p.getDistanceSquared(
+                                    new Point(p));
                         } else {
-                            return ((Point) f)
-                                    .getDistance(new Point(p), oom);
+                            return ((Point) f).getDistanceSquared(new Point(p));
                         }
                     } else {
                         int zcmax = p.getZ(oom).compareTo(getZMax(oom));
                         if (zcmax == 1) {
                             // lta
                             if (l instanceof Rectangle rectangle) {
-                                return rectangle.q
-                                        .getDistance(new Point(p), oom);
+                                return rectangle.q.getDistanceSquared(
+                                        new Point(p));
                             } else if (l instanceof LineSegment lineSegment) {
-                                return lineSegment.p
-                                        .getDistance(new Point(p), oom);
+                                return lineSegment.p.getDistanceSquared(
+                                        new Point(p));
                             } else {
-                                return ((Point) l)
-                                        .getDistance(new Point(p), oom);
+                                return ((Point) l).getDistanceSquared(
+                                        new Point(p));
                             }
                         } else {
                             // lta - ltf
                             if (l instanceof Rectangle rectangle) {
-                                return new Line(rectangle.t)
-                                        .getDistance(new Point(p), oom);
+                                return new Line(rectangle.t).getDistanceSquared(
+                                        new Point(p), oom);
                             } else if (l instanceof LineSegment) {
-                                return ((Line) l)
-                                        .getDistance(new Point(p), oom);
+                                return ((Line) l).getDistanceSquared(
+                                        new Point(p), oom);
                             } else {
-                                return ((Point) l)
-                                        .getDistance(new Point(p), oom);
+                                return ((Point) l).getDistanceSquared(
+                                        new Point(p));
                             }
                         }
                     }
@@ -1628,40 +2069,39 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     if (zcmin == -1) {
                         // lbf - ltf
                         if (l instanceof Rectangle rectangle) {
-                            return new Line(rectangle.ri)
-                                    .getDistance(new Point(p), oom);
+                            return new Line(rectangle.ri).getDistanceSquared(
+                                    new Point(p), oom);
                         } else if (l instanceof LineSegment) {
-                            return ((Line) l)
-                                    .getDistance(new Point(p), oom);
+                            return ((Line) l).getDistanceSquared(
+                                    new Point(p), oom);
                         } else {
-                            return ((Point) l)
-                                    .getDistance(new Point(p), oom);
+                            return ((Point) l).getDistanceSquared(new Point(p));
                         }
                     } else {
                         int zcmax = p.getZ(oom).compareTo(getZMax(oom));
                         if (zcmax == 1) {
                             // lba - lta
                             if (l instanceof Rectangle rectangle) {
-                                return new Line(rectangle.l)
-                                        .getDistance(new Point(p), oom);
+                                return new Line(rectangle.l).getDistanceSquared(
+                                        new Point(p), oom);
                             } else if (l instanceof LineSegment) {
-                                return ((Line) l)
-                                        .getDistance(new Point(p), oom);
+                                return ((Line) l).getDistanceSquared(
+                                        new Point(p), oom);
                             } else {
-                                return ((Point) l)
-                                        .getDistance(new Point(p), oom);
+                                return ((Point) l).getDistanceSquared(
+                                        new Point(p));
                             }
                         } else {
                             // lba - lta - ltf - lbf
                             if (l instanceof Rectangle rectangle) {
-                                return new Plane(rectangle)
-                                        .getDistance(new Point(p), oom);
+                                return new Plane(rectangle).getDistanceSquared(
+                                        new Point(p), oom);
                             } else if (l instanceof LineSegment) {
-                                return ((Line) l)
-                                        .getDistance(new Point(p), oom);
+                                return ((Line) l).getDistanceSquared(
+                                        new Point(p), oom);
                             } else {
-                                return ((Point) l)
-                                        .getDistance(new Point(p), oom);
+                                return ((Point) l).getDistanceSquared(
+                                        new Point(p));
                             }
                         }
                     }
@@ -1674,38 +2114,38 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     if (zcmin == -1) {
                         // rbf
                         if (f instanceof Rectangle rectangle) {
-                            return rectangle.s
-                                    .getDistance(new Point(p), oom);
+                            return rectangle.s.getDistanceSquared(new Point(p));
                         } else if (f instanceof LineSegment lineSegment) {
-                            return lineSegment.q
-                                    .getDistance(new Point(p), oom);
+                            return lineSegment.q.getDistanceSquared(
+                                    new Point(p));
                         } else {
-                            return ((Point) f)
-                                    .getDistance(new Point(p), oom);
+                            return ((Point) f).getDistanceSquared(new Point(p));
                         }
                     } else {
                         int zcmax = p.getZ(oom).compareTo(getZMax(oom));
                         if (zcmax == 1) {
                             // rba
                             if (a instanceof Rectangle rectangle) {
-                                return rectangle.p
-                                        .getDistance(new Point(p), oom);
+                                return rectangle.p.getDistanceSquared(
+                                        new Point(p));
                             } else if (a instanceof LineSegment lineSegment) {
-                                return lineSegment.p
-                                        .getDistance(new Point(p), oom);
+                                return lineSegment.p.getDistanceSquared(
+                                        new Point(p));
                             } else {
-                                return ((Point) a)
-                                        .getDistance(new Point(p), oom);
+                                return ((Point) a).getDistanceSquared(
+                                        new Point(p));
                             }
                         } else {
                             // rbf - rba
                             if (r instanceof Rectangle rectangle) {
-                                return new Line(rectangle.b)
-                                        .getDistance(new Point(p), oom);
+                                return new Line(rectangle.b).getDistanceSquared(
+                                        new Point(p), oom);
                             } else if (r instanceof LineSegment) {
-                                return ((Line) r).getDistance(new Point(p), oom);
+                                return ((Line) r).getDistanceSquared(
+                                        new Point(p), oom);
                             } else {
-                                return ((Point) r).getDistance(new Point(p), oom);
+                                return ((Point) r).getDistanceSquared(
+                                        new Point(p));
                             }
                         }
                     }
@@ -1715,40 +2155,41 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         if (zcmin == -1) {
                             // rtf
                             if (f instanceof Rectangle rectangle) {
-                                return rectangle.r
-                                        .getDistance(new Point(p), oom);
+                                return rectangle.r.getDistanceSquared(
+                                        new Point(p));
                             } else if (f instanceof LineSegment lineSegment) {
-                                return lineSegment.q
-                                        .getDistance(new Point(p), oom);
+                                return lineSegment.q.getDistanceSquared(
+                                        new Point(p));
                             } else {
-                                return ((Point) f)
-                                        .getDistance(new Point(p), oom);
+                                return ((Point) f).getDistanceSquared(
+                                        new Point(p));
                             }
                         } else {
                             int zcmax = p.getZ(oom).compareTo(getZMax(oom));
                             if (zcmax == 1) {
                                 // rta
                                 if (a instanceof Rectangle rectangle) {
-                                    return rectangle.q
-                                            .getDistance(new Point(p), oom);
+                                    return rectangle.q.getDistanceSquared(
+                                            new Point(p));
                                 } else if (a instanceof LineSegment lineSegment) {
-                                    return lineSegment.p
-                                            .getDistance(new Point(p), oom);
+                                    return lineSegment.p.getDistanceSquared(
+                                            new Point(p));
                                 } else {
-                                    return ((Point) a)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Point) a).getDistanceSquared(
+                                            new Point(p));
                                 }
                             } else {
                                 // rtf - rta
                                 if (r instanceof Rectangle rectangle) {
                                     return new Line(rectangle.t)
-                                            .getDistance(new Point(p), oom);
+                                            .getDistanceSquared(
+                                                    new Point(p), oom);
                                 } else if (r instanceof LineSegment) {
-                                    return ((Line) r)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Line) r).getDistanceSquared(
+                                            new Point(p), oom);
                                 } else {
-                                    return ((Point) r)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Point) r).getDistanceSquared(
+                                            new Point(p));
                                 }
                             }
                         }
@@ -1757,13 +2198,13 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                             // rbf - rtf
                             if (f instanceof Rectangle rectangle) {
                                 return new Line(rectangle.ri)
-                                        .getDistance(new Point(p), oom);
+                                        .getDistanceSquared(new Point(p), oom);
                             } else if (f instanceof LineSegment) {
-                                return ((Line) f)
-                                        .getDistance(new Point(p), oom);
+                                return ((Line) f).getDistanceSquared(
+                                        new Point(p), oom);
                             } else {
-                                return ((Point) f)
-                                        .getDistance(new Point(p), oom);
+                                return ((Point) f).getDistanceSquared(
+                                        new Point(p));
                             }
                         } else {
                             int zcmax = p.getZ(oom).compareTo(getZMax(oom));
@@ -1771,25 +2212,27 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 // rba - rta
                                 if (a instanceof Rectangle rectangle) {
                                     return new Line(rectangle.l)
-                                            .getDistance(new Point(p), oom);
+                                            .getDistanceSquared(new Point(p),
+                                                    oom);
                                 } else if (a instanceof LineSegment) {
-                                    return ((Line) a)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Line) a).getDistanceSquared(
+                                            new Point(p), oom);
                                 } else {
-                                    return ((Point) a)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Point) a).getDistanceSquared(
+                                            new Point(p));
                                 }
                             } else {
                                 // rbf - rtf - rta - rba
                                 if (r instanceof Rectangle rectangle) {
                                     return new Plane(rectangle)
-                                            .getDistance(new Point(p), oom);
+                                            .getDistanceSquared(new Point(p),
+                                                    oom);
                                 } else if (r instanceof LineSegment) {
-                                    return ((Line) r)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Line) r).getDistanceSquared(
+                                            new Point(p), oom);
                                 } else {
-                                    return ((Point) r)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Point) r).getDistanceSquared(
+                                            new Point(p));
                                 }
                             }
                         }
@@ -1800,40 +2243,39 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                     if (zcmin == -1) {
                         // lbf - rbf
                         if (f instanceof Rectangle rectangle) {
-                            return new Line(rectangle.b)
-                                    .getDistance(new Point(p), oom);
+                            return new Line(rectangle.b).getDistanceSquared(
+                                    new Point(p), oom);
                         } else if (f instanceof LineSegment) {
-                            return ((Line) f)
-                                    .getDistance(new Point(p), oom);
+                            return ((Line) f).getDistanceSquared(new Point(p),
+                                    oom);
                         } else {
-                            return ((Point) f)
-                                    .getDistance(new Point(p), oom);
+                            return ((Point) f).getDistanceSquared(new Point(p));
                         }
                     } else {
                         int zcmax = p.getZ(oom).compareTo(getZMax(oom));
                         if (zcmax == 1) {
                             // rba - lba
                             if (a instanceof Rectangle rectangle) {
-                                return new Line(rectangle.b)
-                                        .getDistance(new Point(p), oom);
+                                return new Line(rectangle.b).getDistanceSquared(
+                                        new Point(p), oom);
                             } else if (a instanceof LineSegment) {
-                                return ((Line) a)
-                                        .getDistance(new Point(p), oom);
+                                return ((Line) a).getDistanceSquared(
+                                        new Point(p), oom);
                             } else {
-                                return ((Point) a)
-                                        .getDistance(new Point(p), oom);
+                                return ((Point) a).getDistanceSquared(
+                                        new Point(p));
                             }
                         } else {
                             // lba - lbf - rbf - rba
                             if (b instanceof Rectangle rectangle) {
-                                return new Plane(rectangle)
-                                        .getDistance(new Point(p), oom);
+                                return new Plane(rectangle).getDistanceSquared(
+                                        new Point(p), oom);
                             } else if (b instanceof LineSegment) {
-                                return ((Line) b)
-                                        .getDistance(new Point(p), oom);
+                                return ((Line) b).getDistanceSquared(
+                                        new Point(p), oom);
                             } else {
-                                return ((Point) b)
-                                        .getDistance(new Point(p), oom);
+                                return ((Point) b).getDistanceSquared(
+                                        new Point(p));
                             }
                         }
                     }
@@ -1843,14 +2285,14 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         if (zcmin == -1) {
                             // ltf - rtf
                             if (f instanceof Rectangle rectangle) {
-                                return rectangle.t
-                                        .getDistance(new Point(p), oom);
+                                return rectangle.t.getDistanceSquared(
+                                        new Point(p), oom);
                             } else if (f instanceof LineSegment lineSegment) {
-                                return lineSegment.q
-                                        .getDistance(new Point(p), oom);
+                                return lineSegment.q.getDistanceSquared(
+                                        new Point(p));
                             } else {
-                                return ((Point) f)
-                                        .getDistance(new Point(p), oom);
+                                return ((Point) f).getDistanceSquared(
+                                        new Point(p));
                             }
                         } else {
                             int zcmax = p.getZ(oom).compareTo(getZMax(oom));
@@ -1858,25 +2300,27 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 // rta - lta
                                 if (a instanceof Rectangle rectangle) {
                                     return new Line(rectangle.t)
-                                            .getDistance(new Point(p), oom);
+                                            .getDistanceSquared(new Point(p), 
+                                                    oom);
                                 } else if (a instanceof LineSegment) {
-                                    return ((Line) a)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Line) a).getDistanceSquared(
+                                            new Point(p), oom);
                                 } else {
-                                    return ((Point) a)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Point) a).getDistanceSquared(
+                                            new Point(p));
                                 }
                             } else {
                                 // ltf - lta - rta - rtf
                                 if (t instanceof Rectangle rectangle) {
                                     return new Plane(rectangle)
-                                            .getDistance(new Point(p), oom);
+                                            .getDistanceSquared(new Point(p), 
+                                                    oom);
                                 } else if (r instanceof LineSegment) {
-                                    return ((Line) t)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Line) t).getDistanceSquared(
+                                            new Point(p), oom);
                                 } else {
-                                    return ((Point) t)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Point) t).getDistanceSquared(
+                                            new Point(p));
                                 }
                             }
                         }
@@ -1884,14 +2328,14 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                         if (zcmin == -1) {
                             // lbf - ltf - rtf - rbf
                             if (f instanceof Rectangle rectangle) {
-                                return new Plane(rectangle)
-                                        .getDistance(new Point(p), oom);
+                                return new Plane(rectangle).getDistanceSquared(
+                                        new Point(p), oom);
                             } else if (f instanceof LineSegment) {
-                                return ((Line) f)
-                                        .getDistance(new Point(p), oom);
+                                return ((Line) f).getDistanceSquared(
+                                        new Point(p), oom);
                             } else {
-                                return ((Point) f)
-                                        .getDistance(new Point(p), oom);
+                                return ((Point) f).getDistanceSquared(
+                                        new Point(p));
                             }
                         } else {
                             int zcmax = p.getZ(oom).compareTo(getZMax(oom));
@@ -1899,25 +2343,27 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
                                 // rba - rta - lta - lba
                                 if (a instanceof Rectangle rectangle) {
                                     return new Plane(rectangle)
-                                            .getDistance(new Point(p), oom);
+                                            .getDistanceSquared(new Point(p),
+                                                    oom);
                                 } else if (a instanceof LineSegment) {
-                                    return ((Line) a)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Line) a).getDistanceSquared(
+                                            new Point(p), oom);
                                 } else {
-                                    return ((Point) a)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Point) a).getDistanceSquared(
+                                            new Point(p));
                                 }
                             } else {
                                 // lba - lbf - rbf - rba
                                 if (r instanceof Rectangle) {
                                     return new Plane((Rectangle) b)
-                                            .getDistance(new Point(p), oom);
+                                            .getDistanceSquared(new Point(p),
+                                                    oom);
                                 } else if (r instanceof LineSegment) {
-                                    return ((LineSegment) b)
-                                            .getDistance(new Point(p), oom);
+                                    return ((LineSegment) b).getDistanceSquared(
+                                            new Point(p), oom);
                                 } else {
-                                    return ((Point) b)
-                                            .getDistance(new Point(p), oom);
+                                    return ((Point) b).getDistanceSquared(
+                                            new Point(p));
                                 }
                             }
                         }
@@ -1942,6 +2388,66 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     /**
      * Abstract Geometry class for geometries aligning with axes.
      */
@@ -1956,7 +2462,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
         /**
          * Created a new Geometry.
-         * 
+         *
          * @param e What {@link #e} is set to.
          */
         public Geometry(V3D_Environment e) {
@@ -2660,16 +3166,43 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * @return The minimum distance between this and {@code p}.
          */
         public BigDecimal getDistance(Point p, int oom) {
+//            V3D_Vector pv = new V3D_Vector(this.p, p);
+//            V3D_Vector vu = v.getUnitVector(oom - 2);
+//            BigDecimal pd = p.getDistance(new Point(this.e, vu.multiply(
+//                    pv.getDotProduct(vu, oom), oom)
+//                    .add(new V3D_Vector(this.p), oom)), oom);
+//            pv = new V3D_Vector(this.q, p);
+//            vu = v.reverse().getUnitVector(oom - 2);
+//            BigDecimal qd = p.getDistance(new Point(this.e, vu.multiply(
+//                    pv.getDotProduct(vu, oom), oom)
+//                    .add(new V3D_Vector(this.q), oom)), oom);
+//            return pd.min(qd);
+              Math_BigRational d2 = getDistanceSquared(p, oom);
+              return (new Math_BigRationalSqrt(d2, oom)).getSqrt(oom).toBigDecimal(oom);
+        }
+
+        /**
+         * https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+         *
+         * @param p A point for which the minimum distance from {@code this} is
+         * returned.
+         *
+         * @param oom The Order of Magnitude for the precision of the result.
+         * @return The minimum distance between this and {@code p}.
+         */
+        public Math_BigRational getDistanceSquared(Point p, int oom) {
             V3D_Vector pv = new V3D_Vector(this.p, p);
             V3D_Vector vu = v.getUnitVector(oom - 2);
-            BigDecimal pd = p.getDistance(new Point(this.e, vu.multiply(
-                    pv.getDotProduct(vu, oom), oom)
-                    .add(new V3D_Vector(this.p), oom)), oom);
+            Math_BigRational pd = p.getDistanceSquared(
+                    new Point(this.e,
+                            vu.multiply(pv.getDotProduct(vu, oom), oom)
+                                    .add(new V3D_Vector(this.p), oom)));
             pv = new V3D_Vector(this.q, p);
             vu = v.reverse().getUnitVector(oom - 2);
-            BigDecimal qd = p.getDistance(new Point(this.e, vu.multiply(
-                    pv.getDotProduct(vu, oom), oom)
-                    .add(new V3D_Vector(this.q), oom)), oom);
+            Math_BigRational qd = p.getDistanceSquared(
+                    new Point(this.e,
+                            vu.multiply(pv.getDotProduct(vu, oom), oom)
+                                    .add(new V3D_Vector(this.q), oom)));
             return pd.min(qd);
         }
 
@@ -2991,14 +3524,41 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
             if (this.isIntersectedBy(p, oom)) {
                 return BigDecimal.ZERO;
             }
-            V3D_Vector v = new V3D_Vector(p, this.p);
-            V3D_Vector u = this.n.getUnitVector(oom);
+            Math_BigRational d2 = getDistanceSquared(p, true, oom);
 //        MathContext mc = new MathContext(Math_BigRationalSqrt
 //                .getOOM(Math_BigRational.ONE, oom));
             MathContext mc = new MathContext(6 - oom);
-            return v.getDotProduct(u, oom).abs().toBigDecimal(mc);
+            return d2.toBigDecimal(mc);
         }
 
+        /**
+         * Get the distance between this and {@code p}.
+         *
+         * @param p A point.
+         * @param oom The Order of Magnitude for the precision.
+         * @return The distance from {@code this} to {@code p}.
+         */
+        public Math_BigRational getDistanceSquared(Point p, int oom) {
+            if (this.isIntersectedBy(p, oom)) {
+                return Math_BigRational.ZERO;
+            }
+            return getDistanceSquared(p, true, oom);
+        }
+        
+        /**
+         * Get the distance between this and {@code p}.
+         *
+         * @param p A point.
+         * @param noInt To distinguish this from {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope.Point, int)}
+         * @param oom The Order of Magnitude for the precision.
+         * @return The distance from {@code this} to {@code p}.
+         */
+        protected Math_BigRational getDistanceSquared(Point p, boolean noInt, 
+                int oom) {
+            V3D_Vector v = new V3D_Vector(p, this.p);
+            V3D_Vector u = this.n.getUnitVector(oom);
+            return v.getDotProduct(u, oom).abs();
+        }
     }
 
     /**

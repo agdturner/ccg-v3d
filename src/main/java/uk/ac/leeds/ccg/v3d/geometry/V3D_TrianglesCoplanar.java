@@ -53,8 +53,8 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * @param triangles A non-empty list of coplanar triangles.
      */
     public V3D_TrianglesCoplanar(V3D_Triangle... triangles) {
-        super(triangles[0].e, triangles[0].offset, triangles[0].p, 
-                triangles[0].q,                triangles[0].r);
+        super(triangles[0].e, triangles[0].offset, triangles[0].p,
+                triangles[0].q, triangles[0].r);
         this.triangles = new HashSet<>();
         this.triangles.addAll(Arrays.asList(triangles));
     }
@@ -64,7 +64,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
         String s = this.getClass().getName() + "(";
         Iterator<V3D_Triangle> ite = triangles.iterator();
         s += ite.next().toString();
-        while(ite.hasNext()) {
+        while (ite.hasNext()) {
             s += ", " + ite.next();
         }
 //        s += triangles.get(0).toString();
@@ -90,32 +90,41 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
         hash = 53 * hash + Objects.hashCode(this.triangles);
         return hash;
     }
-    
+
     /**
      * Check if {@code this} is equal to {@code i}.
-     * 
+     *
      * @param i An instance to compare for equality.
      * @return {@code true} iff all the triangles are the same.
      */
     public boolean equals(V3D_TrianglesCoplanar i) {
         // Think about the case when there is a single triangle and whether this is equal to that triangle...
+        /**
+         * For a polygon, the triangularisation might be different. If we get
+         * the intersection of a triangle in this with i, it should be the same
+         * as that triangle. Likewise, if we get the intersection of a triangle
+         * in i with this, it should be the same as that triangle. So, this is a
+         * way to test. The test may be sped up by first checking for identical
+         * triangles in each. These can be removed and the resulting ones that
+         * are difference can be tested to see if they cover exactly the same
+         * areas.
+         */
         if (this.triangles.size() == i.triangles.size()) {
             Iterator<V3D_Triangle> ite = triangles.iterator();
-            Iterator<V3D_Triangle> iite = i.triangles.iterator();       
-            while(ite.hasNext()) {
-                
+            Iterator<V3D_Triangle> iite = i.triangles.iterator();
+            while (ite.hasNext()) {
+
                 V3D_Triangle t = ite.next();
                 V3D_Triangle it = iite.next();
-                System.out.println(t);
-                System.out.println(it);
+//                System.out.println(t);
+//                System.out.println(it);
                 if (!t.equals(it, true)) {
                     t.equals(it, true);
                     return false;
-                } else {
-                    int debug = 1;
-                }                
-                
-                
+//                } else {
+//                    int debug = 1;
+                }
+
 //                if (!ite.next().equals(iite.next(), true)) {
 //                    return false;
 //                }                
@@ -124,13 +133,13 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
         }
         return false;
     }
-    
+
     @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
             Iterator<V3D_Triangle> ite = triangles.iterator();
             en = ite.next().getEnvelope();
-            while(ite.hasNext()) {
+            while (ite.hasNext()) {
                 en = en.union(ite.next().getEnvelope());
             }
 //            en = triangles.get(0).getEnvelope();
@@ -247,16 +256,16 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
         return getEnvelope().isIntersectedBy(l, oom);
     }
-    
+
     /**
-     * For this to work as expected, all triangles should have the same offset 
+     * For this to work as expected, all triangles should have the same offset
      * (point for the rotation).
-     * 
+     *
      * @param axisOfRotation The axis of rotation.
      * @param theta The angle in radians.
      */
     @Override
-     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         for (V3D_Triangle t : triangles) {
             t.rotate(axisOfRotation, theta);
         }

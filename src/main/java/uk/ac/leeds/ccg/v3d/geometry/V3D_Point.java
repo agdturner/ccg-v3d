@@ -321,6 +321,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance squared from {@code p} to this.
      */
+    @Override
     public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
         Math_BigRational dx = this.getX(oom).subtract(p.getX(oom));
         Math_BigRational dy = this.getY(oom).subtract(p.getY(oom));
@@ -355,6 +356,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance from {@code p} to this.
      */
+    @Override
     public BigDecimal getDistance(V3D_Plane pl, int oom) {
         return pl.getDistance(this, oom);
     }
@@ -368,6 +370,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance from {@code p} to this.
      */
+    @Override
     public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
         //V3D_Vector pq = new V3D_Vector(this, pl.p, oom);
         //V3D_Vector pq = pl.p.subtract(this.getVector(oom), oom);
@@ -596,5 +599,60 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
                 return -1;
             }
         }
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
