@@ -348,6 +348,27 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
 //        return cp.getMagnitude(oom - 1).divide(l.v.getMagnitude(oom - 1), -oom,
 //                RoundingMode.HALF_UP);
     }
+    
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
+        if (l.isIntersectedBy(this, oom)) {
+            return Math_BigRational.ZERO;
+        }
+        return getDistanceSquared(l, oom, true);
+    }
+
+    /**
+     * 
+     * @param l
+     * @param oom
+     * @param b
+     * @return 
+     */
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, boolean b) {
+        V3D_Vector cp = new V3D_Vector(this, l.getP(oom), oom).getCrossProduct(
+                new V3D_Vector(this, l.getQ(oom), oom), oom);
+        return cp.getMagnitudeSquared().divide(l.getV(oom).getMagnitudeSquared());
+    }
 
     /**
      * Get the distance between this and {@code pl}.
@@ -623,11 +644,6 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
 
     @Override
     public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

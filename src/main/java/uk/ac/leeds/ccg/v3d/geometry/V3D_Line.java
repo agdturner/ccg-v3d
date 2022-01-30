@@ -574,7 +574,7 @@ public class V3D_Line extends V3D_Geometry {
         Math_BigRational d = lqlp.dx.multiply(lqlp.dx, oom).getSqrt(oom)
                 .add(lqlp.dy.multiply(lqlp.dy, oom).getSqrt(oom))
                 .add(lqlp.dz.multiply(lqlp.dz, oom).getSqrt(oom));
-        Math_BigRational e = qp.dx.multiply(qp.dx, oom).getSqrt(oom)
+        Math_BigRational eb = qp.dx.multiply(qp.dx, oom).getSqrt(oom)
                 .add(qp.dy.multiply(qp.dy, oom).getSqrt(oom))
                 .add(qp.dz.multiply(qp.dz, oom).getSqrt(oom));
 //        Math_BigRational a = (plp.dx.multiply(lqlp.dx)).add(plp.dy
@@ -587,7 +587,7 @@ public class V3D_Line extends V3D_Geometry {
 //                .multiply(lqlp.dy)).add(lqlp.dz.multiply(lqlp.dz)).getSqrt(oom);
 //        Math_BigRational e = (qp.dx.multiply(qp.dx)).add(qp.dy
 //                .multiply(qp.dy)).add(qp.dz.multiply(qp.dz)).getSqrt(oom);
-        Math_BigRational den = (e.multiply(d)).subtract(b.multiply(b));
+        Math_BigRational den = (eb.multiply(d)).subtract(b.multiply(b));
         Math_BigRational num = (a.multiply(b)).subtract(c.multiply(d));
         if (den.compareTo(Math_BigRational.ZERO) == 0) {
             if (num.compareTo(Math_BigRational.ZERO) == 0) {
@@ -1072,7 +1072,7 @@ public class V3D_Line extends V3D_Geometry {
      * two lines must not intersect or be parallel for this to work. Part
      * adapted from
      * <a href="http://paulbourke.net/geometry/pointlineplane/">http://paulbourke.net/geometry/pointlineplane/</a>.
-     *
+     * The re
      * @param l The line to get the line of intersection with.
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The line of intersection between {@code this} and {@code l}.
@@ -1106,8 +1106,8 @@ public class V3D_Line extends V3D_Geometry {
 
         //return new V3D_LineSegment(tpi, lpi, oom);
         //return new V3D_LineSegment(tpi.getVector(oom), lpi.getVector(oom), oom);
-        return new V3D_LineSegment(e, tpi, lpi);
-
+        //return new V3D_LineSegment(e, tpi, lpi);
+        return V3D_LineSegment.getGeometry(new V3D_Point(e, tpi), new V3D_Point(e, lpi));
 //        // p13
 //        V3D_Vector plp = new V3D_Vector(p, l.p, oom);
 //        // p43
@@ -1169,10 +1169,14 @@ public class V3D_Line extends V3D_Geometry {
 //        return l;
 //    }
     /**
-     * <a href="https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line">https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line</a>
-     * Weisstein, Eric W. "Point-Line Distance--3-Dimensional." From
+     * Calculate and return the distance from {@code this} to {@code pt} rounded
+     * to {@code oom} precision. See:
+     * <ul>
+     * <li>https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line</li>
+     * <li>Weisstein, Eric W. "Point-Line Distance--3-Dimensional." From
      * MathWorld--A Wolfram Web Resource.
-     * https://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
+     * https://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html</li>
+     * </ul>
      *
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
@@ -1216,9 +1220,7 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * Calculates and returns the squared distance from this to pt. This should 
-     * only be used if it is known that this does not intersect with pt (in 
-     * which case an error will be thrown).
+     * Calculates and returns the squared distance from this to pt.
      *
      * See:
      * <ul>
@@ -1227,7 +1229,7 @@ public class V3D_Line extends V3D_Geometry {
      * MathWorld--A Wolfram Web Resource.
      * https://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html</li>
      * </ul>
-     * 
+     *
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
      * @param oom The Order of Magnitude for the precision of the calculation.
@@ -1243,9 +1245,9 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * Calculates and returns the squared distance from this to pt. This should 
-     * only be used if it is known that this does not intersect with pt (in 
-     * which case an error will be thrown).
+     * Calculates and returns the squared distance from {@code this} to
+     * {@code pt}. This should only be used if it is known that {@code this}
+     * does not intersect with {@code pt} (in which case an error is thrown).
      *
      * See:
      * <ul>
@@ -1257,7 +1259,7 @@ public class V3D_Line extends V3D_Geometry {
      *
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
-     * @param noInt This is ignored, but it distinguishes this method from 
+     * @param noInt This is ignored, but it distinguishes this method from
      * {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The minimum distance between this and {@code p}.
@@ -1319,14 +1321,46 @@ public class V3D_Line extends V3D_Geometry {
      */
     @Override
     public BigDecimal getDistance(V3D_Line l, int oom) {
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
+//        V3D_Point tp = getP(oom);
+//        if (isParallel(l, oom)) {
+//            //q.getDistance(l, scale, rm);
+//            return tp.getDistance(l, oom);
+//            //return p.getDistance(l, oom);
+////            V3D_Vector v2 = new V3D_Vector(l.p, q);
+////            return v2.subtract(v.multiply((v2.getDotProduct(v))
+////                    .divide(v.getMagnitudeSquared()))).getMagnitude(scale, rm);
+//        } else {
+//            /**
+//             * Calculate the direction vector of the line connecting the closest
+//             * points by computing the cross product.
+//             */
+//            //V3D_Vector cp = l.v.getCrossProduct(v, oom);
+//            V3D_Vector cp = getV(oom).getCrossProduct(l.getV(oom), oom);
+//            /**
+//             * Calculate the delta from {@link #p} and l.p
+//             */
+////            V3D_Vector delta = new V3D_Vector(l.p, oom).subtract(
+////                    new V3D_Vector(tp, oom), oom);
+//            V3D_Vector delta = l.getPV(oom).subtract(
+//                    new V3D_Vector(tp, oom), oom);
+//            //Math_BigRational m = Math_BigRational.valueOf(cp.getMagnitude(oom - 2));
+//            Math_BigRationalSqrt m = cp.getMagnitude();
+//            // d = cp.(delta)/m
+//            Math_BigRational dp = cp.getDotProduct(delta, oom);
+//            // m should only be zero if the lines are parallel.
+//            //Math_BigRational d = dp.divide(m.getX());
+//            Math_BigRational d = dp.divide(m.getSqrt(oom - 6)).abs();
+//            return d.toBigDecimal(oom);
+//        }
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
         V3D_Point tp = getP(oom);
         if (isParallel(l, oom)) {
-            //q.getDistance(l, scale, rm);
-            return tp.getDistance(l, oom);
-            //return p.getDistance(l, oom);
-//            V3D_Vector v2 = new V3D_Vector(l.p, q);
-//            return v2.subtract(v.multiply((v2.getDotProduct(v))
-//                    .divide(v.getMagnitudeSquared()))).getMagnitude(scale, rm);
+            return tp.getDistanceSquared(l, oom);
         } else {
             /**
              * Calculate the direction vector of the line connecting the closest
@@ -1343,15 +1377,12 @@ public class V3D_Line extends V3D_Geometry {
                     new V3D_Vector(tp, oom), oom);
             //Math_BigRational m = Math_BigRational.valueOf(cp.getMagnitude(oom - 2));
             Math_BigRationalSqrt m = cp.getMagnitude();
-            // d = cp.(delta)/m
             Math_BigRational dp = cp.getDotProduct(delta, oom);
             // m should only be zero if the lines are parallel.
-            //Math_BigRational d = dp.divide(m.getX());
-            Math_BigRational d = dp.divide(m.getSqrt(oom - 6)).abs();
-            return d.toBigDecimal(oom);
+            return (dp.pow(2).divide(m.getX())).abs();
         }
     }
-
+    
     /**
      * @param r A ray for which the minimum distance from {@code this} is
      * returned.
@@ -1509,59 +1540,69 @@ public class V3D_Line extends V3D_Geometry {
         //v = getV(oom);
     }
 
+    /**
+     * For returning the other end of the line segment as a point.
+     *
+     * @param a A point equal to one or other point of {@code this}.
+     * @return The other point that is not equal to a.
+     */
+    public V3D_Point getOtherPoint(V3D_Point a) {
+        V3D_Point pt = getP(e.oom);
+        if (pt.equals(a)) {
+            return getQ(e.oom);
+        } else {
+            return pt;
+        }
+    }
+
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return l.isIntersectedBy(this, oom);
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Plane p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return p.isIntersectedBy(this, oom);
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return t.isIntersectedBy(this, oom, b);
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return t.isIntersectedBy(this, oom);
     }
 
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return l.getIntersection(this, oom);
     }
 
     @Override
     public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return t.getIntersection(this, oom);
     }
 
     @Override
     public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return t.getIntersection(this, oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return l.getDistanceSquared(this, oom);
     }
 
     @Override
     public BigDecimal getDistance(V3D_Plane p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return p.getDistance(this, oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return p.getDistanceSquared(this, oom);
     }
 
     @Override

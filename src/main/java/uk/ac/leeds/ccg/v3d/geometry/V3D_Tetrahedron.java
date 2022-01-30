@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -59,7 +58,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Serializable {
+public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
 
     private static final long serialVersionUID = 1L;
 
@@ -165,16 +164,16 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume, Seriali
      */
     @Override
     protected String toStringFields(String pad) {
-        String r = super.toStringFields(pad);
-        r += pad + ",\n";
-        r += pad + "p=" + p.toString(pad) + "\n";
-        r += pad + ",\n";
-        r += pad + "q=" + q.toString(pad) + "\n";
-        r += pad + ",\n";
-        r += pad + "r=" + this.r.toString(pad) + "\n";
-        r += pad + ",\n";
-        r += pad + "s=" + s.toString(pad) + "\n";
-        return r;
+        String st = super.toStringFields(pad);
+        st += pad + ",\n";
+        st += pad + "p=" + p.toString(pad) + "\n";
+        st += pad + ",\n";
+        st += pad + "q=" + q.toString(pad) + "\n";
+        st += pad + ",\n";
+        st += pad + "r=" + this.r.toString(pad) + "\n";
+        st += pad + ",\n";
+        st += pad + "s=" + s.toString(pad) + "\n";
+        return st;
     }
 
     @Override

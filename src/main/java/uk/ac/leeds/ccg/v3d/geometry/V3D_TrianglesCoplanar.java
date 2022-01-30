@@ -55,7 +55,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_FiniteGeometry, V3D_Face {
+public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
 
     private static final long serialVersionUID = 1L;
 
@@ -213,8 +213,42 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_FiniteGeomet
     }
 
     /**
-     * If the triangles can be simplified then a simplified version is returned.
-     * This may be a single triangle or a V3D_TrianglesCoplanar.
+     * If the triangles can be simply simplified then a simplified version is
+     * returned. This may be a single triangle or a V3D_TrianglesCoplanar. There
+     * are cases of simplification that this will not handle. It is called
+     * simply simplifying as it only works on simplifying triangles that have a
+     * joining line segment. If those two triangles themselves form a triangle,
+     * then a simplification takes place and this is done iteratively until all
+     * such simplification is done. This however does not simplify the following
+     * case where it can be seen that the 4 triangles represent an area that can
+     * be given as a single triangle: null null null null null     {@code
+     * *------*------*
+     * |     /|     /
+     * |    / |    /
+     * |   /  |   /
+     * |  /   |  /
+     * | /    | /
+     * |/     |/
+     * *------*
+     * |     /
+     * |    /
+     * |   /
+     * |  /
+     * | /
+     * |/
+     * *
+     * }
+     * Fortunately in simple triangle triangle intersection resulting in a
+     * hexagon, pentagon or quadrilateral, whatever way these are represented
+     * with triangles, when each triangle in the representation is intersected
+     * with the other representation, the result can be simplified back to the
+     * original and tested for equality. To simplify in a more comprehensive way
+     * there are several strategies that could be adopted. One way is to
+     * calculate convex hulls for subsets of triangles and see if these
+     * themselves are triangles defining the same area as their constituent
+     * parts. In the case above where the simple simplifying algorithm does not
+     * work, there is still some alignment of constituent triangles which might
+     * help...
      *
      * @param triangles The triangles to attempt to simplify.
      * @param oom The Order of Magnitude for the precision of the calculation.

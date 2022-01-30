@@ -1428,7 +1428,8 @@ public class V3D_Plane extends V3D_Geometry {
 //        MathContext mc = new MathContext(Math_Math_BigRationalSqrt
 //                .getOOM(Math_BigRational.ONE, oom));
         MathContext mc = new MathContext(6 - oom);
-        return getDistanceSquared(pt, true, oom).toBigDecimal(mc);
+        return new Math_BigRationalSqrt(getDistanceSquared(pt, true, oom), oom)
+                .getSqrt(oom).toBigDecimal(mc);
     }
 
     /**
@@ -1458,7 +1459,7 @@ public class V3D_Plane extends V3D_Geometry {
     public Math_BigRational getDistanceSquared(V3D_Point pt, boolean noInt, int oom) {
         V3D_Vector v = new V3D_Vector(pt, getP(), oom);
         V3D_Vector u = getN(oom).getUnitVector(oom);
-        return v.getDotProduct(u, oom).abs();
+        return v.getDotProduct(u, oom).pow(2);
     }
 
     /**
@@ -1471,6 +1472,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The shortest distance between {@code this} and {@code p}. Choose
      * {@link #p}
      */
+    @Override
     public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
         if (isParallel(pl, oom)) {
             V3D_Point tp = getP();
@@ -1490,12 +1492,29 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     @Override
-    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
-        BigDecimal lpd = getDistance(l.getP(oom), oom);
-        BigDecimal lqd = getDistance(l.getQ(oom), oom);
-        return lpd.min(lqd);
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
+        if (isIntersectedBy(l, oom)) {
+            return Math_BigRational.ZERO;
+        }
+        return getDistanceSquared(l.getP(oom), true, oom);
     }
 
+    @Override
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
+//        BigDecimal lpd = getDistance(l.getP(oom), oom);
+//        BigDecimal lqd = getDistance(l.getQ(oom), oom);
+//        return lpd.min(lqd);
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
+        Math_BigRational lpd = getDistanceSquared(l.getP(oom), oom);
+        Math_BigRational lqd = getDistanceSquared(l.getQ(oom), oom);
+        return lpd.min(lqd);
+    }
+    
     /**
      * Change {@link #offset} without changing the overall line.
      *
@@ -1536,16 +1555,6 @@ public class V3D_Plane extends V3D_Geometry {
 
     @Override
     public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

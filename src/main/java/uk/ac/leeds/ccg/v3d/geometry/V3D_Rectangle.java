@@ -21,9 +21,10 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * For representing and processing rectangles in 3D. A rectangle has four corner
- * points {@link #p}, {@link #q}, {@link #r}, {@link #s}. The following depicts
- * a generic rectangle {@code
+ * For representing and processing rectangles in 3D. A rectangle is a right
+ * angled quadrilateral. The four corners are the points
+ * {@link #p}, {@link #q}, {@link #r} and {@link #s}. The following depicts a
+ * rectangle {@code
  *          qr
  *  q *-------------* r
  *    |             |
@@ -32,6 +33,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *  p *-------------* s
  *          sp
  * }
+ * The angles PQR, QRS, RSP, SPQ are all 90 degrees or Pi/2 radians.
  *
  * @author Andy Turner
  * @version 1.0
@@ -88,7 +90,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
-    public V3D_Rectangle(V3D_Environment e, V3D_Vector offset, V3D_Vector p, 
+    public V3D_Rectangle(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r, V3D_Vector s) {
         super(e, offset, p, q, r);
         /**
@@ -147,7 +149,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         this(r.e, V3D_Vector.ZERO, new V3D_Vector(r.p), new V3D_Vector(r.q),
                 new V3D_Vector(r.r), new V3D_Vector(r.s));
     }
-    
+
     /**
      * Creates a new instance
      *
@@ -177,7 +179,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
                 + pad + ",\n"
                 + pad + "s=" + s.toString(pad);
     }
-    
+
     /**
      * @return {@link #s}.
      */
@@ -189,13 +191,13 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @return {@link #s} with {@link #offset} applied.
      */
     public V3D_Point getS() {
-        return new V3D_Point(e,offset, getSV());
+        return new V3D_Point(e, offset, getSV());
     }
 
     @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
-            en = new V3D_Envelope(e,getP(), getQ(), getR(), getS());
+            en = new V3D_Envelope(e, getP(), getQ(), getR(), getS());
         }
         return en;
     }
@@ -228,7 +230,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     protected V3D_LineSegment getSP() {
         //return new V3D_LineSegment(offset, rotate(s, theta), rotate(p, theta), oom);
-        return new V3D_LineSegment(e,offset, getSV(), getPV());
+        return new V3D_LineSegment(e, offset, getSV(), getPV());
     }
 
     private boolean isIntersectedBy0(V3D_Line ls, int oom) {
@@ -262,13 +264,13 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             BigDecimal apqpt = new V3D_Triangle(e, tp.getVector(oom),
                     tq.getVector(oom), pt.getVector(oom)).getArea(oom);
             // Area qrpt
-            BigDecimal aqrpt = new V3D_Triangle(e,tq.getVector(oom),
+            BigDecimal aqrpt = new V3D_Triangle(e, tq.getVector(oom),
                     tr.getVector(oom), pt.getVector(oom)).getArea(oom);
             // Area rspt
-            BigDecimal arspt = new V3D_Triangle(e,tr.getVector(oom),
+            BigDecimal arspt = new V3D_Triangle(e, tr.getVector(oom),
                     ts.getVector(oom), pt.getVector(oom)).getArea(oom);
             // Area sppt
-            BigDecimal asppt = new V3D_Triangle(e,ts.getVector(oom),
+            BigDecimal asppt = new V3D_Triangle(e, ts.getVector(oom),
                     tp.getVector(oom), pt.getVector(oom)).getArea(oom);
             if (this.getArea(oom).compareTo(apqpt.add(aqrpt).add(arspt).add(asppt)) == 0) {
                 return true;
@@ -393,7 +395,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     @Override
     public V3D_Geometry getIntersection(V3D_Line l, int oom) {
         V3D_Geometry i1 = super.getIntersection(l, oom);
-        V3D_Triangle t2 = new V3D_Triangle(e,offset, p, r, s);
+        V3D_Triangle t2 = new V3D_Triangle(e, offset, p, r, s);
         V3D_Geometry i2 = t2.getIntersection(l, oom);
         if (i1 == null) {
             return i2;
@@ -586,14 +588,14 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         if (pointOrLineSegment1 instanceof V3D_LineSegment l1) {
             if (pointOrLineSegment2 instanceof V3D_LineSegment l2) {
                 if (l1.getP(e.oom).equals(l2.getP(e.oom))) {
-                    return new V3D_LineSegment(e,offset, l1.q, l2.q);
+                    return new V3D_LineSegment(e, offset, l1.q, l2.q);
                 } else if (l1.getP(e.oom).equals(l2.getQ(e.oom))) {
-                    return new V3D_LineSegment(e,offset, l1.q, l2.p);
+                    return new V3D_LineSegment(e, offset, l1.q, l2.p);
                 } else if (l1.getQ(e.oom).equals(l2.getP(e.oom))) {
-                    return new V3D_LineSegment(e,offset, l1.p, l2.q);
+                    return new V3D_LineSegment(e, offset, l1.p, l2.q);
                 } else {
                     //if (l1.getQ(oom).equals(l2.getQ(oom))) {
-                    return new V3D_LineSegment(e,offset, l1.p, l2.p);
+                    return new V3D_LineSegment(e, offset, l1.p, l2.p);
                 }
             } else {
                 return l1;
@@ -621,7 +623,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
         V3D_Geometry i1 = super.getIntersection(l, oom, b);
-        V3D_Triangle t2 = new V3D_Triangle(e,offset, p, r, s);
+        V3D_Triangle t2 = new V3D_Triangle(e, offset, p, r, s);
         V3D_Geometry i2 = t2.getIntersection(l, oom, b);
         if (i1 == null) {
             return i2;
