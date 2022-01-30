@@ -21,9 +21,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
-import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * For representing and processing triangles in 3D. A triangle has a non-zero
@@ -322,6 +320,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face, Comparable<V3D_
      * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Plane, int)}.
      * @return {@code true} iff the geometry is intersected by {@code l}.
      */
+    @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
         if (getEnvelope().isIntersectedBy(t.getEnvelope())) {
             if (isIntersectedBy(t, oom)) {
@@ -426,10 +425,6 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face, Comparable<V3D_
         return Math_BigDecimal.round(getPQ().getLength(oom).toBigDecimal(oomN1)
                 .add(getQR().getLength(oom).toBigDecimal(oomN1))
                 .add(getRP().getLength(oom).toBigDecimal(oomN1)), oom);
-    }
-    
-    public boolean isCoplanar(V3D_Plane pl) {
-        return super.equals(pl);
     }
     
     /**
@@ -1130,20 +1125,20 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face, Comparable<V3D_
      * @return a triangle for which l1 and l2 are edges
      */
     protected V3D_Geometry getGeometry(V3D_LineSegment l1, V3D_LineSegment l2) {
-        V3D_Point p = (V3D_Point) l1.getIntersection(l2, l1.e.oom, true);
+        V3D_Point pt = (V3D_Point) l1.getIntersection(l2, l1.e.oom, true);
         V3D_Point l1p = l1.getP(l1.e.oom);
         V3D_Point l2p = l2.getP(l1.e.oom);
-        if (l1p.equals(p)) {
-            if (l2p.equals(p)) {
-                return new V3D_Triangle(p, l1.getQ(l1.e.oom), l2.getQ(l1.e.oom));
+        if (l1p.equals(pt)) {
+            if (l2p.equals(pt)) {
+                return new V3D_Triangle(pt, l1.getQ(l1.e.oom), l2.getQ(l1.e.oom));
             } else {
-                return new V3D_Triangle(p, l1.getQ(l1.e.oom), l2p);
+                return new V3D_Triangle(pt, l1.getQ(l1.e.oom), l2p);
             }
         } else {
-            if (l2p.equals(p)) {
-                return new V3D_Triangle(p, l1p, l2.getQ(l1.e.oom));
+            if (l2p.equals(pt)) {
+                return new V3D_Triangle(pt, l1p, l2.getQ(l1.e.oom));
             } else {
-                return new V3D_Triangle(p, l1p, l2p);
+                return new V3D_Triangle(pt, l1p, l2p);
             }
         }
     }

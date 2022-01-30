@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -214,11 +213,10 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_FiniteGeomet
     }
 
     /**
-     * If the triangles can be simplified the a simplified version is returned.
+     * If the triangles can be simplified then a simplified version is returned.
      * This may be a single triangle or a V3D_TrianglesCoplanar.
      *
-     * @param t1 A triangle.
-     * @param t2 Another triangle.
+     * @param triangles The triangles to attempt to simplify.
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return Either a triangle or a V3D_TrianglesCoplanar.
      */
