@@ -16,9 +16,11 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 //import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -26,12 +28,35 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
 //import java.util.ArrayList;
 
 /**
- * Essentially this is just a collection of coplanar V3D_Triangles.
+ * Essentially this is just a collection of coplanar V3D_Triangles. Geographers
+ * might consider this as a polygon or multi-polygon. For simplicity, let us
+ * call these flat many sided shapes 'polygons'. Now, there can be different
+ * ways to represent the same polygon as a set of triangles. Consider for
+ * example four sided polygons (quadrilaterals). There are several types of
+ * these, but three main ones in terms of different triangulations are:
+ * <ol>
+ * <li>Equal to their convex hull</li>
+ * <li>Concave and not self intersecting</li>
+ * <li>Concave and self intersecting</li>
+ * </ol>
+ * There is only one way to divide those that are concave and not self
+ * intersecting into two triangles (not adding any further points): the division
+ * of the quadrilateral is from the concave corner (to the opposite corner). For
+ * those equal to their convex hull, there are two ways to divide the
+ * quadrilateral into two triangles. One uses one pair of opposite corner
+ * points. The other using the other pair of opposite corner points. Self
+ * intersecting quadrilaterals can already be regarded as two triangles, but for
+ * the triangulation an additional point, the point of intersection is needed.
+ * Two polygons are equal if they completely intersect and cover exactly the
+ * same area. It is possible that two polygons are equal even if one polygon has
+ * more points than another. So, there is complication in testing if two
+ * polygons are the same in that it is much more complicated to testing if two
+ * triangles are the same.
  *
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
+public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_FiniteGeometry, V3D_Face {
 
     private static final long serialVersionUID = 1L;
 
@@ -95,43 +120,46 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * Check if {@code this} is equal to {@code i}.
      *
      * @param i An instance to compare for equality.
+     * @param b To distinguish the method from
+     * {@link #equals(uk.ac.leeds.ccg.v3d.geometry.V3D_Plane)}.
      * @return {@code true} iff all the triangles are the same.
      */
-    public boolean equals(V3D_TrianglesCoplanar i) {
-        // Think about the case when there is a single triangle and whether this is equal to that triangle...
+    public boolean equals(V3D_TrianglesCoplanar i, boolean b) {
         /**
-         * For a polygon, the triangularisation might be different. If we get
-         * the intersection of a triangle in this with i, it should be the same
-         * as that triangle. Likewise, if we get the intersection of a triangle
-         * in i with this, it should be the same as that triangle. So, this is a
-         * way to test. The test may be sped up by first checking for identical
-         * triangles in each. These can be removed and the resulting ones that
-         * are difference can be tested to see if they cover exactly the same
-         * areas.
+         * The triangularisation of this and i might be different and the number
+         * of points in each might be different, but the areas they define might
+         * be the same. For the areas to be the same each triangle from each
+         * must either be in the other, or it must fully intersect the other.
          */
-        if (this.triangles.size() == i.triangles.size()) {
-            Iterator<V3D_Triangle> ite = triangles.iterator();
-            Iterator<V3D_Triangle> iite = i.triangles.iterator();
-            while (ite.hasNext()) {
-
-                V3D_Triangle t = ite.next();
-                V3D_Triangle it = iite.next();
-//                System.out.println(t);
-//                System.out.println(it);
-                if (!t.equals(it, true)) {
-                    t.equals(it, true);
+        if (!this.equals(i)) {
+            // If they are not in the same plane, they are unequal!
+            return false;
+        }
+        Iterator<V3D_Triangle> ite = triangles.iterator();
+        while (ite.hasNext()) {
+            V3D_Triangle t = ite.next();
+            V3D_Geometry g = i.getIntersection(t, e.oom, b);
+            if (g instanceof V3D_Triangle gt) {
+                if (!t.equals(gt, true)) {
                     return false;
 //                } else {
 //                    int debug = 1;
                 }
-
-//                if (!ite.next().equals(iite.next(), true)) {
-//                    return false;
-//                }                
             }
-            return true;
         }
-        return false;
+        Iterator<V3D_Triangle> iite = i.triangles.iterator();
+        while (iite.hasNext()) {
+            V3D_Triangle t = iite.next();
+            V3D_Geometry g = getIntersection(t, e.oom, b);
+            if (g instanceof V3D_Triangle gt) {
+                if (!t.equals(gt, true)) {
+                    return false;
+//                } else {
+//                    int debug = 1;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -148,6 +176,83 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
 //            }
         }
         return en;
+    }
+
+    /**
+     * If the triangles are the same or their area can be simplified/represented
+     * as a single triangle, then that triangle is returned, otherwise a
+     * V3D_TrianglesCoplanar is returned.
+     *
+     * @param t1 A triangle.
+     * @param t2 Another triangle.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return Either a triangle or a V3D_TrianglesCoplanar.
+     */
+    public static V3D_Geometry getGeometry(V3D_Triangle t1, V3D_Triangle t2, int oom) {
+        if (t1.equals(t2, true)) {
+            return t1;
+        }
+        if (t1.equals(t2)) {
+            // Coplanar
+            V3D_Geometry i = t1.getIntersection(t2, 0, true);
+            if (i instanceof V3D_LineSegment l) {
+                V3D_Point t1o = t1.getOpposite(l);
+                V3D_Point t2o = t2.getOpposite(l);
+                V3D_LineSegment lt = new V3D_LineSegment(t1o, t2o);
+                V3D_Point lp = l.getP(oom);
+                V3D_Point lq = l.getQ(oom);
+                if (lt.isIntersectedBy(lp, oom)) {
+                    return new V3D_Triangle(t1o, t2o, lq);
+                } else {
+                    if (lt.isIntersectedBy(lq, oom)) {
+                        return new V3D_Triangle(t1o, t2o, lp);
+                    }
+                }
+            }
+        }
+        return new V3D_TrianglesCoplanar(t1, t2);
+    }
+
+    /**
+     * If the triangles can be simplified the a simplified version is returned.
+     * This may be a single triangle or a V3D_TrianglesCoplanar.
+     *
+     * @param t1 A triangle.
+     * @param t2 Another triangle.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return Either a triangle or a V3D_TrianglesCoplanar.
+     */
+    public static V3D_Geometry getGeometry(int oom, V3D_Triangle... triangles) {
+        boolean look = true;
+        boolean simplified = false;
+        List<V3D_Triangle> triangleList = Arrays.asList(triangles);
+        while (look) {
+            for (int i = 0; i < triangles.length; i++) {
+                V3D_Triangle t1 = triangles[i];
+                for (int j = i; j < triangles.length; j++) {
+                    V3D_Triangle t2 = triangles[j];
+                    V3D_Geometry g = getGeometry(t1, t2, oom);
+                    if (g instanceof V3D_Triangle gt) {
+                        triangleList.remove(i);
+                        triangleList.remove(j);
+                        triangleList.add(gt);
+                        simplified = true;
+                    }
+                }
+            }
+            if (simplified) {
+                simplified = false;
+            } else {
+                look = false;
+            }
+        }
+        int tls = triangleList.size();
+        if (tls == 1) {
+            return triangleList.get(0);
+        } else {
+            return new V3D_TrianglesCoplanar(triangleList.toArray(
+                    new V3D_Triangle[tls]));
+        }
     }
 
     /**
@@ -250,6 +355,33 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
+        HashSet<V3D_Triangle> t2s = new HashSet<>();
+        for (V3D_Triangle t2 : this.triangles) {
+            if (t2.isIntersectedBy(t, oom, b)) {
+                t2s.add(t2);
+            }
+        }
+        int size = t2s.size();
+        switch (size) {
+            case 0:
+                return null;
+            case 1:
+                return t2s.iterator().next();
+            case 2:
+                Iterator<V3D_Triangle> ite = t2s.iterator();
+                return getGeometry(ite.next(), ite.next(), oom);
+            default:
+                return getGeometry(oom, t2s.toArray(new V3D_Triangle[t2s.size()]));
+        }
     }
 
     @Override

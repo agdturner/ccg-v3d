@@ -427,7 +427,11 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face, Comparable<V3D_
                 .add(getQR().getLength(oom).toBigDecimal(oomN1))
                 .add(getRP().getLength(oom).toBigDecimal(oomN1)), oom);
     }
-
+    
+    public boolean isCoplanar(V3D_Plane pl) {
+        return super.equals(pl);
+    }
+    
     /**
      * @param l The line to intersect with.
      * @param oom The Order of Magnitude for the precision of the calculation.
@@ -634,6 +638,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face, Comparable<V3D_
      * @return The intersection between {@code t} and {@code this} or
      * {@code null} if there is no intersection.
      */
+    @Override
     public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
         if (getEnvelope().isIntersectedBy(t.getEnvelope())) {
             if (isIntersectedBy(t, oom)) {
@@ -1018,11 +1023,11 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face, Comparable<V3D_
             Math_BigRational dl1pl3q = l1p.getDistanceSquared(l3q, e.oom);
             Math_BigRational dl1ql3p = l1q.getDistanceSquared(l3p, e.oom);
             Math_BigRational dl1ql3q = l1q.getDistanceSquared(l3q, e.oom);
-            // dl2l3
-            Math_BigRational dl2pl3p = l2p.getDistanceSquared(l3p, e.oom);
-            Math_BigRational dl2pl3q = l2p.getDistanceSquared(l3q, e.oom);
-            Math_BigRational dl2ql3p = l2q.getDistanceSquared(l3p, e.oom);
-            Math_BigRational dl2ql3q = l2q.getDistanceSquared(l3q, e.oom);
+//            // dl2l3
+//            Math_BigRational dl2pl3p = l2p.getDistanceSquared(l3p, e.oom);
+//            Math_BigRational dl2pl3q = l2p.getDistanceSquared(l3q, e.oom);
+//            Math_BigRational dl2ql3p = l2q.getDistanceSquared(l3p, e.oom);
+//            Math_BigRational dl2ql3q = l2q.getDistanceSquared(l3q, e.oom);
             if (dl1pl2p.compareTo(dl1pl2q) == -1) {
                 if (dl1pl2p.compareTo(dl1ql2q) == -1) {
                     t1 = new V3D_Triangle(l1p, l1q, l2p);
@@ -1090,7 +1095,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face, Comparable<V3D_
                         }
                     }
                 } else {
-                    t1 = new V3D_Triangle(l1p, l1q, l2p);
+                    t1 = new V3D_Triangle(l1p, l1q, l2q);
                     if (dl1pl2p.compareTo(dl1ql2q) == -1) {
                         t2 = new V3D_Triangle(l3q, l2p, l2q);
                         if (dl1ql3p.compareTo(dl1ql3q) == -1) {
@@ -1101,13 +1106,13 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face, Comparable<V3D_
                             t4 = new V3D_Triangle(l3q, l2p, l1q);
                         }
                     } else {
-                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+                        t2 = new V3D_Triangle(l3p, l2p, l2q);
                         if (dl1pl3p.compareTo(dl1pl3q) == -1) {
                             t3 = new V3D_Triangle(l3q, l2p, l1q);
                             t4 = new V3D_Triangle(l3q, l2p, l1q);
                         } else {
-                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+                            t3 = new V3D_Triangle(l3p, l3q, l1q);
+                            t4 = new V3D_Triangle(l3p, l2p, l1q);
                         }
                     }
                 }
@@ -1143,6 +1148,23 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face, Comparable<V3D_
         }
     }
 
+    /**
+     * @param l a line segment either equal to {@link #getPQ()}, 
+     * {@link #getQR()} or {@link #getRP()}.
+     * @return The point of {@code this} that does not intersect with {@code l}.
+     */
+    public V3D_Point getOpposite(V3D_LineSegment l) {
+        if (getPQ().equals(l)) {
+            return getR();
+        } else {
+            if (getQR().equals(l)) {
+                return getP();
+            } else {
+                return getQ();
+            }
+        }
+    }
+    
     @Override
     public int compareTo(V3D_Triangle o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
