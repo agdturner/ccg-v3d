@@ -205,6 +205,45 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //        return new V3D_Triangle(getP(oom).apply(v, oom), 
 //                getQ(oom).apply(v, oom), getR(oom).apply(v, oom), oom);
 //    }
+    
+//    /**
+//     * 
+//     * @param pt The point to intersect with.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @param b Distinguishes this from
+//     * {@link V3D_Plane#isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
+//     * @return A point or line segment.
+//     */
+//    public boolean isIntersectedBy(V3D_Point pt, int oom, boolean b) {
+//        if (super.isIntersectedBy(pt, oom)) {
+//            /**
+//             * The point p has to be on the same side of the each edge as the
+//             * other point in the triangle.
+//             */
+//            V3D_Point pt2 = new V3D_Point(pt2);
+//            pt2.setOffset(offset);
+//            V3D_Vector cp = getN(oom).getCrossProduct(pt2.rel, oom);
+//            int cpv = pt2.rel.getDotProduct(cp, oom).compareTo(Math_BigRational.ZERO);
+//            if (checkPoint(getPV(), cp, cpv, oom)) {
+//                if (checkPoint(getQV(), cp, cpv, oom)) {
+//                    if (checkPoint(getRV(), cp, cpv, oom)) {
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
+//        return false;
+//    }
+//
+//    protected boolean checkPoint(V3D_Vector v, V3D_Vector cp, int cpv, int oom) {
+//        int cv = v.getDotProduct(cp, oom).compareTo(Math_BigRational.ZERO);
+//        if (cv == 0) {
+//            return true;
+//        } else {
+//            return cv == cpv;
+//        }
+//    }
+    
     /**
      * @param pt The point to intersect with.
      * @param oom The Order of Magnitude for the precision of the calculation.
@@ -426,7 +465,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 .add(getQR().getLength(oom).toBigDecimal(oomN1))
                 .add(getRP().getLength(oom).toBigDecimal(oomN1)), oom);
     }
-    
+
     /**
      * @param l The line to intersect with.
      * @param oom The Order of Magnitude for the precision of the calculation.
@@ -1144,7 +1183,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     }
 
     /**
-     * @param l a line segment either equal to {@link #getPQ()}, 
+     * @param l a line segment either equal to {@link #getPQ()},
      * {@link #getQR()} or {@link #getRP()}.
      * @return The point of {@code this} that does not intersect with {@code l}.
      */
@@ -1161,38 +1200,49 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Point p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public boolean isIntersectedBy(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return super.isIntersectedBy(l, oom);
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Plane p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return super.isIntersectedBy(p, oom);
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return super.isIntersectedBy(t, oom);
     }
 
     @Override
     public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return super.getIntersection(t, oom);
     }
 
     @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.        
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        V3D_Point pt = new V3D_Point(p);
+        pt.setOffset(offset);
+        V3D_Point poi = (new V3D_Plane(this)).getPointOfProjectedIntersection(p, oom);
+        Math_BigRational poid2 = poi.getDistanceSquared(pt, oom);
+        if (getEnvelope().isIntersectedBy(pt, oom)) {
+            if (isIntersectedBy(poi, oom, true)) {
+                return poid2;
+            }
+        }
+        Math_BigRational pqd = getPQ().getDistanceSquared(p, oom);
+        Math_BigRational qrd = getQR().getDistanceSquared(p, oom);
+        Math_BigRational rpd = getRP().getDistanceSquared(p, oom);
+        if (pqd.compareTo(qrd) == -1) {
+            return rpd.min(pqd);
+        } else {
+            return rpd.min(qrd);            
+        }
     }
 
     @Override
@@ -1207,7 +1257,6 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
-        
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

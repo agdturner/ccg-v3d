@@ -707,8 +707,8 @@ public class V3D_TriangleTest extends V3D_Test {
                 new V3D_Triangle(new V3D_Point(e, P4, P0, P0), pP1N1P0,
                         new V3D_Point(e, P4, N2, P0)));
         result = instance.getIntersection(t, e.oom, b);
-        System.out.println(result);
-        boolean equals = expResult.equals(result);
+        //System.out.println(result);
+        //boolean equals = expResult.equals(result);
         assertEquals(expResult, result);
         // Test 6b: 6 sides
         t = new V3D_Triangle(new V3D_Point(e, P6, P0, P0), pP0P0P0, new V3D_Point(e, P3, N3, P0));

@@ -351,6 +351,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
     
     @Override
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
+//        return l.getDistanceSquared(this, oom);
         if (l.isIntersectedBy(this, oom)) {
             return Math_BigRational.ZERO;
         }
@@ -360,9 +361,9 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
     /**
      * 
      * @param l
-     * @param oom
-     * @param b
-     * @return 
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param b 
+     * @return The distance squared between {@code this} and {@code l}.
      */
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom, boolean b) {
         V3D_Vector cp = new V3D_Vector(this, l.getP(oom), oom).getCrossProduct(
@@ -474,7 +475,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
         Math_BigRational lp2 = l.getP(oom).getDistanceSquared(this, oom2);
         Math_BigRational lq2 = l.getQ(oom).getDistanceSquared(this, oom2);
         BigDecimal lp = (new V3D_Line(l)).getDistance(this, oom);
-        if (lp2.compareTo(l2) == -1 && lq2.compareTo(l2) == -1) {
+        if (lp2.compareTo(l2) != 1 || lq2.compareTo(l2) != 1) {
             return lp;
         }
         /**

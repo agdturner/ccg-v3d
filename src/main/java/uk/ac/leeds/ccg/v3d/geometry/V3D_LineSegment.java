@@ -525,10 +525,16 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      */
     @Override
     public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
-        Math_BigRational d = super.getDistanceSquared(p, oom);
-        Math_BigRational l = this.getLength2(oom);
+        if (this.isIntersectedBy(p, oom)) {
+            return Math_BigRational.ZERO;
+        }
         Math_BigRational a = p.getDistanceSquared(getP(oom), oom);
         Math_BigRational b = p.getDistanceSquared(getQ(oom), oom);
+        if (super.isIntersectedBy(p, oom)) {
+            return a.min(b);
+        }
+        Math_BigRational d = super.getDistanceSquared(p, oom);
+        Math_BigRational l = this.getLength2(oom);
         if (d.compareTo(a) == -1 && d.compareTo(b) == -1 && a.compareTo(l) == 1
                 && b.compareTo(l) == 1) {
             return a.min(b);

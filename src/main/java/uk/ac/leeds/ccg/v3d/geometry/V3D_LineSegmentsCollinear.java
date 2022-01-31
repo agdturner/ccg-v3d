@@ -114,6 +114,121 @@ public class V3D_LineSegmentsCollinear extends V3D_Line implements V3D_FiniteGeo
         return r;
     }
 
+    /**
+     * 
+     * @param l1 A line segment collinear with {@code l2}
+     * @param l2 A line segment collinear with {@code l1}
+     * @return A V3D_LineSegmentsCollinear if {@code l1} and {@code l2} do not 
+     * intersect, otherwise a single V3D_LineSegment
+     */
+    public static V3D_Geometry getGeometry(V3D_LineSegment l1, V3D_LineSegment l2, int oom) {
+        if (!l1.isIntersectedBy(l2, oom, true)) {
+            return new V3D_LineSegmentsCollinear(l1, l2);
+        }
+        /**
+         * Check the type of intersection. {@code
+         * 1)   p ---------- q
+         *         l.p ---------- l.q
+         * 2)   p ------------------------ q
+         *         l.p ---------- l.q
+         * 3)        p ---------- q
+         *    l.p ------------------------ l.q
+         * 4)        p ---------- q
+         *    l.p ---------- l.q
+         * 5)   q ---------- p
+         *         l.p ---------- l.q
+         * 6)   q ------------------------ p
+         *         l.p ---------- l.q
+         * 7)        q ---------- p
+         *    l.p ------------------------ l.q
+         * 8)        q ---------- p
+         *    l.p ---------- l.q
+         * 9)   p ---------- q
+         *         l.q ---------- l.p
+         * 10)   p ------------------------ q
+         *         l.q ---------- l.p
+         * 11)       p ---------- q
+         *    l.q ------------------------ l.p
+         * 12)       p ---------- q
+         *    l.q ---------- l.p
+         * 13)  q ---------- p
+         *         l.q ---------- l.p
+         * 14)  q ------------------------ p
+         *         l.q ---------- l.p
+         * 15)       q ---------- p
+         *    l.q ------------------------ l.p
+         * 16)       q ---------- p
+         *    l.q ---------- l.p
+         * }
+         */
+        V3D_Point lp = l1.getP(oom);
+        V3D_Point lq = l1.getQ(oom);
+        if (l2.isIntersectedBy(lp, oom)) {
+            // Cases 1, 2, 5, 6, 14, 16
+            if (l2.isIntersectedBy(lq, oom)) {
+                // Cases 2, 6, 14
+                /**
+                 * The line segments are effectively the same although the start
+                 * and end points may be opposite.
+                 */
+                return l1;
+            } else {
+                V3D_Point tp = l2.getP(oom);
+                // Cases 1, 5, 16
+                if (l1.isIntersectedBy(tp, oom)) {
+                    // Cases 5
+                    return new V3D_LineSegment(l1.getP(oom), l2.getP(oom));
+                } else {
+                    // Cases 1, 16
+                    return new V3D_LineSegment(l1.getP(oom), l2.getQ(oom));
+                }
+            }
+        } else {
+            // Cases 3, 4, 7, 8, 9, 10, 11, 12, 13, 15
+            if (l2.isIntersectedBy(lq, oom)) {
+                V3D_Point tp = l2.getP(oom);
+                // Cases 4, 8, 9, 10, 11
+                if (l1.isIntersectedBy(tp, oom)) {
+                    // Cases 4, 11, 13
+                    if (l1.isIntersectedBy(l2.getQ(oom), oom)) {
+                        // Cases 11
+                        return l2;
+                    } else {
+                        // Cases 4, 13
+                        return new V3D_LineSegment(l2.getP(oom), l1.getQ(oom));
+                    }
+                } else {
+                    // Cases 8, 9, 10
+                    V3D_Point tq = l2.getQ(oom);
+                    if (l1.isIntersectedBy(tq, oom)) {
+                        // Cases 8, 9
+                        return new V3D_LineSegment(l2.getQ(oom), l1.getQ(oom));
+                    } else {
+                        // Cases 10                      
+                        return l1;
+                    }
+                }
+            } else {
+                // Cases 3, 7, 12, 15
+                V3D_Point tp = l2.getP(oom);
+                if (l1.isIntersectedBy(tp, oom)) {
+                    // Cases 3, 12, 15
+                    V3D_Point tq = l2.getQ(oom);
+                    if (l1.isIntersectedBy(tq, oom)) {
+                        // Cases 3, 15
+                        return l2;
+                    } else {
+                        // Cases 12                 
+                        return new V3D_LineSegment(l2.getP(oom), l1.getP(oom));
+                    }
+                } else {
+                    // Cases 7
+                    return l2;
+                }
+            }
+        }
+    }
+    
     @Override
     public V3D_Envelope getEnvelope() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

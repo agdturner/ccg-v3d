@@ -1188,7 +1188,8 @@ public class V3D_Line extends V3D_Geometry {
         if (isIntersectedBy(pt, oom)) {
             return BigDecimal.ZERO;
         }
-        Math_BigRational res = getDistanceSquared(pt, true, oom);
+        Math_BigRational res = new Math_BigRationalSqrt(
+                getDistanceSquared(pt, true, oom), oom).getSqrt(oom);
         int precision = Math_BigDecimal.getOrderOfMagnitudeOfMostSignificantDigit(
                 res.integerPart().toBigDecimal(oom)) - oom;
         MathContext mc = new MathContext(precision);
@@ -1266,14 +1267,15 @@ public class V3D_Line extends V3D_Geometry {
      */
     protected Math_BigRational getDistanceSquared(V3D_Point pt, boolean noInt,
             int oom) {
-        if (isIntersectedBy(pt, oom)) {
-            return Math_BigRational.ZERO;
-        }
-        V3D_Vector pp = new V3D_Vector(pt, getP(oom), oom);
-        V3D_Vector qp = new V3D_Vector(pt, getQ(oom), oom);
-        Math_BigRationalSqrt num = (pp.getCrossProduct(qp, oom)).getMagnitude();
-        Math_BigRationalSqrt den = getV(oom).getMagnitude();
-        return num.divide(den, oom).getSqrt(oom);
+        return pt.getDistanceSquared(this, oom);
+//        if (isIntersectedBy(pt, oom)) {
+//            return Math_BigRational.ZERO;
+//        }
+//        V3D_Vector pp = new V3D_Vector(pt, getP(oom), oom);
+//        V3D_Vector qp = new V3D_Vector(pt, getQ(oom), oom);
+//        Math_BigRational num = (pp.getCrossProduct(qp, oom)).getMagnitudeSquared();
+//        Math_BigRational den = getV(oom).getMagnitudeSquared();
+//        return num.divide(den);
     }
 
 //    /**

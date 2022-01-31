@@ -1514,7 +1514,7 @@ public class V3D_Plane extends V3D_Geometry {
         Math_BigRational lqd = getDistanceSquared(l.getQ(oom), oom);
         return lpd.min(lqd);
     }
-    
+
     /**
      * Change {@link #offset} without changing the overall line.
      *
@@ -1536,6 +1536,25 @@ public class V3D_Plane extends V3D_Geometry {
         qr = null;
         rp = null;
         n = null;
+    }
+
+    /**
+     * Compute a return the line of intersection between {@code pt} and
+     * {@code this}. See also:
+     * {@code https://stackoverflow.com/questions/23472048/projecting-3d-points-to-2d-plane}
+     *
+     * @param pt The point which when projected onto the plane using the normal
+     * to the plane forms the end of the returned line of intersection.
+     * @param oom The Order of Magnitude for the calculation.
+     * @return The line of intersection between {@code pt} and {@code this} or
+     * {@code null} if {@code pt} is on {@code this}. The point p on the result is the point of intersection
+     */
+    public V3D_Point getPointOfProjectedIntersection(V3D_Point pt, int oom) {
+        V3D_Point pt2 = new V3D_Point(pt);
+        pt2.setOffset(offset);
+        V3D_Vector nn = getN(oom);
+        V3D_Line l = new V3D_Line(pt2.rel, nn, e);
+        return (V3D_Point) getIntersection(l, oom);
     }
 
     @Override
