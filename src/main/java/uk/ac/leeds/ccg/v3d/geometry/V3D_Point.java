@@ -588,6 +588,15 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
         offset = offset.subtract(rel, e.oom).add(this.rel, e.oom);
         this.rel = rel;
     }
+    
+    /**
+     * Move the line.
+     *
+     * @param v What is added to {@link #offset}.
+     */
+    public void translate(V3D_Vector v) {
+        this.offset = offset.add(v, e.oom);
+    }
 
     /**
      * Rotates the point about {@link offset}.

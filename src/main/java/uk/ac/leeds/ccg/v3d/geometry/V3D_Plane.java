@@ -1462,6 +1462,12 @@ public class V3D_Plane extends V3D_Geometry {
         return v.getDotProduct(u, oom).pow(2);
     }
 
+    @Override
+    public BigDecimal getDistance(V3D_Plane p, int oom) {
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
+    }
+
     /**
      * The planes are either parallel or the distance is zero. If parallel, get
      * any point on one and find the distance squared of the other plane from
@@ -1469,8 +1475,7 @@ public class V3D_Plane extends V3D_Geometry {
      *
      * @param pl The other plane used to calculate the distance.
      * @param oom The Order of Magnitude for the calculation.
-     * @return The shortest distance between {@code this} and {@code p}. Choose
-     * {@link #p}
+     * @return The shortest distance between {@code this} and {@code pl}.
      */
     @Override
     public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
@@ -1527,6 +1532,17 @@ public class V3D_Plane extends V3D_Geometry {
         this.offset = offset;
     }
 
+    /**
+     * Move the plane.
+     *
+     * @param v What is added to {@link #p}, {@link #q}, {@link #r}.
+     */
+    public void translate(V3D_Vector v) {
+        p = p.add(v, e.oom);
+        q = q.add(v, e.oom);
+        r = r.add(v, e.oom);
+    }
+
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         p = p.rotate(axisOfRotation, theta, e.bI, e.oom);
@@ -1547,7 +1563,8 @@ public class V3D_Plane extends V3D_Geometry {
      * to the plane forms the end of the returned line of intersection.
      * @param oom The Order of Magnitude for the calculation.
      * @return The line of intersection between {@code pt} and {@code this} or
-     * {@code null} if {@code pt} is on {@code this}. The point p on the result is the point of intersection
+     * {@code null} if {@code pt} is on {@code this}. The point p on the result
+     * is the point of intersection
      */
     public V3D_Point getPointOfProjectedIntersection(V3D_Point pt, int oom) {
         V3D_Point pt2 = new V3D_Point(pt);
@@ -1559,26 +1576,97 @@ public class V3D_Plane extends V3D_Geometry {
 
     @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isIntersectedBy(t.getPQ(), oom, b)) {
+            return true;
+        } else {
+            return isIntersectedBy(t.getQR(), oom, b);
+        }
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // Only need to test 3 of the four triangle faces of t.
+        if(this.isIntersectedBy(t.getPqr(), oom)) {
+            return true;
+        }
+        if(this.isIntersectedBy(t.getQsr(), oom)) {
+            return true;
+        }
+        return this.isIntersectedBy(t.getSpr(), oom);
     }
 
     @Override
     public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        V3D_Geometry tpqi = getIntersection(t.getPQ(), oom, b);
+        V3D_Geometry tqri = getIntersection(t.getQR(), oom, b);
+        if (tpqi == null) {
+            if (tqri == null) {
+                return null;
+            } else {
+                V3D_Geometry trpi = getIntersection(t.getRP(), oom, b);
+                if (trpi == null) {
+                    return tqri;
+                } else {
+                    if (tqri instanceof V3D_Point tqrip) {
+                        if (trpi instanceof V3D_Point trpip) {
+                            return V3D_LineSegment.getGeometry(tqrip, trpip);
+                        } else {
+                            return trpi;
+                        }
+                    } else {
+                        // tqri instanceof V3D_LineSegment
+                        return tqri;
+                    }
+                }
+            }
+        } else {
+            V3D_Geometry trpi = getIntersection(t.getRP(), oom, b);
+            if (tqri == null) {
+                if (trpi == null) {
+                    return tpqi;
+                } else {
+                    if (tpqi instanceof V3D_Point tpqip) {
+                        if (trpi instanceof V3D_Point trpip) {
+                            return V3D_LineSegment.getGeometry(tpqip, trpip);
+                        } else {
+                            // trpi instanceof V3D_LineSegment
+                            return trpi;
+                        }
+                    } else {
+                        // tpqi instanceof V3D_LineSegment
+                        return tpqi;
+                    }
+                }
+            } else {
+                if (trpi == null) {
+                    if (tpqi instanceof V3D_Point tpqip) {
+                        if (trpi instanceof V3D_Point trpip) {
+                            return V3D_LineSegment.getGeometry(tpqip, trpip);
+                        } else {
+                            // tpqi instanceof V3D_LineSegment
+                            return tpqi;
+                        }
+                    } else {
+                        // trpi instanceof V3D_LineSegment
+                        return trpi;
+                    }
+                } else {
+                    if (trpi instanceof V3D_Point) {
+                        if(tpqi instanceof V3D_Point) {
+                            return tqri;
+                        } else {
+                            return tpqi;
+                        }
+                    } else {
+                        return t;
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Plane p, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

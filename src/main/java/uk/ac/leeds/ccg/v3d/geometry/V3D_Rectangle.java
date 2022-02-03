@@ -51,12 +51,12 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * and {@link #r}.
      */
     protected V3D_Vector s;
-    
+
     /**
-     * For storing the other triangle that makes up the rectangle. 
+     * For storing the other triangle that makes up the rectangle.
      */
     protected V3D_Triangle rsp;
-    
+
     /**
      * @return {@link #rsp} initialising it first if it is {@code null}
      */
@@ -755,8 +755,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         Math_BigRational d2 = getRSP().getDistanceSquared(p, oom);
         return d1.min(d2);
     }
-    
-    
+
     /**
      * Change {@link #offset} without changing the overall line.
      *
@@ -766,6 +765,17 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     public void setOffset(V3D_Vector offset) {
         super.setOffset(offset);
         s = s.add(offset, e.oom).subtract(this.offset, e.oom);
+    }
+
+    /**
+     * Move the rectangle.
+     *
+     * @param v What is added to {@link #p}, {@link #q}, {@link #r}, {@link #s}.
+     */
+    @Override
+    public void translate(V3D_Vector v) {
+        super.translate(v);
+        s = s.add(v, e.oom);
     }
 
     @Override
@@ -822,11 +832,11 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         }
         if (t1i instanceof V3D_Point) {
             return t2i;
-        } else if (t1i instanceof V3D_LineSegment t1il ) {
+        } else if (t1i instanceof V3D_LineSegment t1il) {
             if (t2i instanceof V3D_Point) {
                 return t1i;
             } else {
-                return V3D_LineSegmentsCollinear.getGeometry(t1il, 
+                return V3D_LineSegmentsCollinear.getGeometry(t1il,
                         (V3D_LineSegment) t2i, oom);
             }
         } else {
@@ -846,7 +856,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         }
         if (t1i instanceof V3D_Point) {
             return t2i;
-        } else if (t1i instanceof V3D_LineSegment t1il ) {
+        } else if (t1i instanceof V3D_LineSegment t1il) {
             if (t2i instanceof V3D_Point) {
                 return t1i;
             } else if (t2i instanceof V3D_LineSegment t2il) {

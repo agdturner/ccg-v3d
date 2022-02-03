@@ -895,17 +895,18 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
             return false;
         }
     }
-
-//    /**
-//     * Change {@link #offset} without changing the overall line.
-//     *
-//     * @param offset What {@link #offset} is set to.
-//     */
-//    @Override
-//    public void setOffset(V3D_Vector offset) {
-//        super.setOffset(offset);
-//        lpq = null;
-//    }
+    
+    /**
+     * Move the plane.
+     *
+     * @param v What is added to {@link #p}, {@link #q}, {@link #r}.
+     */
+    @Override
+    public void translate(V3D_Vector v) {
+        super.translate(v);
+        en = null;
+    }
+    
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         super.rotate(axisOfRotation, theta);
