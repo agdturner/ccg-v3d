@@ -333,7 +333,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean flag) {
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -394,7 +394,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
+    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

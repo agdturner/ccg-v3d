@@ -4022,54 +4022,69 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Plane.
      */
     @Test
-    public void testIsIntersectedBy_3args_2() {
+    public void testIsIntersectedBy_V3D_Triangle_int() {
         System.out.println("isIntersectedBy");
         V3D_Triangle t;
-        boolean b = false;
         V3D_Plane instance;
         // Test 1
         t = new V3D_Triangle(pP1P0P0, pP1P1P0, pP0P1P0);
         instance = V3D_Plane.X0;
-        assertTrue(instance.isIntersectedBy(t, e.oom, b));
+        assertTrue(instance.isIntersectedBy(t, e.oom));
         // Test 2
         instance = new V3D_Plane(V3D_Plane.X0);
         instance.translate(P2P0P0);
-        assertFalse(instance.isIntersectedBy(t, e.oom, b));
+        assertFalse(instance.isIntersectedBy(t, e.oom));
     }
 
-//    /**
-//     * Test of isIntersectedBy method, of class V3D_Plane.
-//     */
-//    @Test
-//    public void testIsIntersectedBy_V3D_Tetrahedron_int() {
-//        System.out.println("isIntersectedBy");
-//        V3D_Tetrahedron t = null;
-//        int oom = 0;
-//        V3D_Plane instance = null;
-//        boolean expResult = false;
-//        boolean result = instance.isIntersectedBy(t, oom);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getIntersection method, of class V3D_Plane.
-//     */
-//    @Test
-//    public void testGetIntersection_3args_3() {
-//        System.out.println("getIntersection");
-//        V3D_Triangle t = null;
-//        int oom = 0;
-//        boolean b = false;
-//        V3D_Plane instance = null;
-//        V3D_Geometry expResult = null;
-//        V3D_Geometry result = instance.getIntersection(t, oom, b);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+    /**
+     * Test of isIntersectedBy method, of class V3D_Plane.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_Tetrahedron_int() {
+        System.out.println("isIntersectedBy");
+        V3D_Tetrahedron t;
+        V3D_Plane instance;
+        // Test 1
+        t = new V3D_Tetrahedron(e, P0P0P0, P1P0P0, P0P1P0, P1P1P0, P1P1P1);
+        instance = V3D_Plane.X0;
+        assertTrue(instance.isIntersectedBy(t, e.oom));        
+        // Test 1
+        t = new V3D_Tetrahedron(e, P0P0P0, P1P0P0, P0P1P0, P1P1P0, P1P1P1);
+        instance = new V3D_Plane(V3D_Plane.X0);
+        instance.translate(new V3D_Vector(0.5d, 0, 0));
+        assertTrue(instance.isIntersectedBy(t, e.oom));
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Plane.
+     */
+    @Test
+    public void testGetIntersection_V3D_Triangle_int() {
+        System.out.println("getIntersection");
+        V3D_Triangle t;
+        //boolean b = false;
+        V3D_Plane instance;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
+        // Test 1
+        t = new V3D_Triangle(e, P0P0P0, P1P0P0, P0P1P0, P1P1P0);
+        instance = V3D_Plane.X0;
+        expResult = pP0P1P0;
+        result = instance.getIntersection(t, e.oom);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = new V3D_Plane(V3D_Plane.X0);
+        instance.translate(P1P0P0);
+        expResult = new V3D_LineSegment(pP1P0P0, pP1P1P0);
+        result = instance.getIntersection(t, e.oom);
+        assertEquals(expResult, result);
+        // Test 3
+        instance = new V3D_Plane(V3D_Plane.Z0);
+        expResult = new V3D_Triangle(t);
+        result = instance.getIntersection(t, e.oom);
+        assertEquals(expResult, result);
+    }
+
 //    /**
 //     * Test of getIntersection method, of class V3D_Plane.
 //     */

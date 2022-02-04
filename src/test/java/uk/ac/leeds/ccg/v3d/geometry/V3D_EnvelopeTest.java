@@ -735,23 +735,22 @@ public class V3D_EnvelopeTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Envelope.
      */
     @Test
-    public void testIsIntersectedBy_3args_3() {
+    public void testIsIntersectedBy_V3D_Triangle_int() {
         System.out.println("isIntersectedBy");
-        boolean b = true;
         V3D_Triangle t;
         V3D_Envelope instance;
         // Test 1
         t = new V3D_Triangle(pN2P2P0, pN2N2P0, pP2P0P0);
         instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
-        assertTrue(instance.isIntersectedBy(t, e.oom, b));
+        assertTrue(instance.isIntersectedBy(t, e.oom));
         // Test 2
         t = new V3D_Triangle(new V3D_Point(e, N10, P2, P0), new V3D_Point(e, N10, N2, P0), pP2P0P0);
         instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
-        assertTrue(instance.isIntersectedBy(t, e.oom, b));
+        assertTrue(instance.isIntersectedBy(t, e.oom));
         // Test 2
         t = new V3D_Triangle(new V3D_Point(e, N10, P10, P0), new V3D_Point(e, N10, N10, P0), new V3D_Point(e, P10, P0, P0));
         instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
-        assertTrue(instance.isIntersectedBy(t, e.oom, b));
+        assertTrue(instance.isIntersectedBy(t, e.oom));
     }
 
     /**

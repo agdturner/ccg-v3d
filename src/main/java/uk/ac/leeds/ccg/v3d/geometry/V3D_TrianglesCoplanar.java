@@ -137,7 +137,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
         Iterator<V3D_Triangle> ite = triangles.iterator();
         while (ite.hasNext()) {
             V3D_Triangle t = ite.next();
-            V3D_Geometry g = i.getIntersection(t, e.oom, b);
+            V3D_Geometry g = i.getIntersection(t, e.oom);
             if (g instanceof V3D_Triangle gt) {
                 if (!t.equals(gt, true)) {
                     return false;
@@ -149,7 +149,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
         Iterator<V3D_Triangle> iite = i.triangles.iterator();
         while (iite.hasNext()) {
             V3D_Triangle t = iite.next();
-            V3D_Geometry g = getIntersection(t, e.oom, b);
+            V3D_Geometry g = getIntersection(t, e.oom);
             if (g instanceof V3D_Triangle gt) {
                 if (!t.equals(gt, true)) {
                     return false;
@@ -193,7 +193,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
         }
         if (t1.equals(t2)) {
             // Coplanar
-            V3D_Geometry i = t1.getIntersection(t2, 0, true);
+            V3D_Geometry i = t1.getIntersection(t2, 0);
             if (i instanceof V3D_LineSegment l) {
                 V3D_Point t1o = t1.getOpposite(l);
                 V3D_Point t2o = t2.getOpposite(l);
@@ -395,10 +395,10 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
         HashSet<V3D_Triangle> t2s = new HashSet<>();
         for (V3D_Triangle t2 : this.triangles) {
-            if (t2.isIntersectedBy(t, oom, b)) {
+            if (t2.isIntersectedBy(t, oom)) {
                 t2s.add(t2);
             }
         }

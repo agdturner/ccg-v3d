@@ -1252,12 +1252,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
      *
      * @param t The triangle to be tested for intersection.
      * @param oom The Order of Magnitude for the precision.
-     * @param b Ignored, but used to distinguish this method from
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Plane, int)}.
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
     @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
+    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
+        boolean b = true;
         /**
          * Test the envelopes for intersection.
          */
@@ -1266,18 +1265,18 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
              * Test the plane for intersection. This is not needed and may not
              * be computationally advantageous!
              */
-            if (isIntersectedBy(t, oom)) {
+            if (isIntersectedBy(new V3D_Plane(t), oom)) {
                 /**
                  * Test the edges of the triangle for intersection. This is not
                  * needed and may not be computationally advantageous!
                  */
-                if (this.isIntersectedBy(t.getPQ(), oom, b)) {
+                if (isIntersectedBy(t.getPQ(), oom, b)) {
                     return true;
                 }
-                if (this.isIntersectedBy(t.getQR(), oom, b)) {
+                if (isIntersectedBy(t.getQR(), oom, b)) {
                     return true;
                 }
-                if (this.isIntersectedBy(t.getRP(), oom, b)) {
+                if (isIntersectedBy(t.getRP(), oom, b)) {
                     return true;
                 }
                 /**
@@ -2399,7 +2398,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

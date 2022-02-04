@@ -1575,7 +1575,8 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
+    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
+        boolean b = true;
         if (isIntersectedBy(t.getPQ(), oom, b)) {
             return true;
         } else {
@@ -1596,73 +1597,74 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
-        V3D_Geometry tpqi = getIntersection(t.getPQ(), oom, b);
-        V3D_Geometry tqri = getIntersection(t.getQR(), oom, b);
-        if (tpqi == null) {
-            if (tqri == null) {
-                return null;
-            } else {
-                V3D_Geometry trpi = getIntersection(t.getRP(), oom, b);
-                if (trpi == null) {
-                    return tqri;
-                } else {
-                    if (tqri instanceof V3D_Point tqrip) {
-                        if (trpi instanceof V3D_Point trpip) {
-                            return V3D_LineSegment.getGeometry(tqrip, trpip);
-                        } else {
-                            return trpi;
-                        }
-                    } else {
-                        // tqri instanceof V3D_LineSegment
-                        return tqri;
-                    }
-                }
-            }
-        } else {
-            V3D_Geometry trpi = getIntersection(t.getRP(), oom, b);
-            if (tqri == null) {
-                if (trpi == null) {
-                    return tpqi;
-                } else {
-                    if (tpqi instanceof V3D_Point tpqip) {
-                        if (trpi instanceof V3D_Point trpip) {
-                            return V3D_LineSegment.getGeometry(tpqip, trpip);
-                        } else {
-                            // trpi instanceof V3D_LineSegment
-                            return trpi;
-                        }
-                    } else {
-                        // tpqi instanceof V3D_LineSegment
-                        return tpqi;
-                    }
-                }
-            } else {
-                if (trpi == null) {
-                    if (tpqi instanceof V3D_Point tpqip) {
-                        if (trpi instanceof V3D_Point trpip) {
-                            return V3D_LineSegment.getGeometry(tpqip, trpip);
-                        } else {
-                            // tpqi instanceof V3D_LineSegment
-                            return tpqi;
-                        }
-                    } else {
-                        // trpi instanceof V3D_LineSegment
-                        return trpi;
-                    }
-                } else {
-                    if (trpi instanceof V3D_Point) {
-                        if(tpqi instanceof V3D_Point) {
-                            return tqri;
-                        } else {
-                            return tpqi;
-                        }
-                    } else {
-                        return t;
-                    }
-                }
-            }
-        }
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+        return t.getIntersection(this, oom);
+//        V3D_Geometry tpqi = getIntersection(t.getPQ(), oom, b);
+//        V3D_Geometry tqri = getIntersection(t.getQR(), oom, b);
+//        if (tpqi == null) {
+//            if (tqri == null) {
+//                return null;
+//            } else {
+//                V3D_Geometry trpi = getIntersection(t.getRP(), oom, b);
+//                if (trpi == null) {
+//                    return tqri;
+//                } else {
+//                    if (tqri instanceof V3D_Point tqrip) {
+//                        if (trpi instanceof V3D_Point trpip) {
+//                            return V3D_LineSegment.getGeometry(tqrip, trpip);
+//                        } else {
+//                            return trpi;
+//                        }
+//                    } else {
+//                        // tqri instanceof V3D_LineSegment
+//                        return tqri;
+//                    }
+//                }
+//            }
+//        } else {
+//            V3D_Geometry trpi = getIntersection(t.getRP(), oom, b);
+//            if (tqri == null) {
+//                if (trpi == null) {
+//                    return tpqi;
+//                } else {
+//                    if (tpqi instanceof V3D_Point tpqip) {
+//                        if (trpi instanceof V3D_Point trpip) {
+//                            return V3D_LineSegment.getGeometry(tpqip, trpip);
+//                        } else {
+//                            // trpi instanceof V3D_LineSegment
+//                            return trpi;
+//                        }
+//                    } else {
+//                        // tpqi instanceof V3D_LineSegment
+//                        return tpqi;
+//                    }
+//                }
+//            } else {
+//                if (trpi == null) {
+//                    if (tpqi instanceof V3D_Point tpqip) {
+//                        if (trpi instanceof V3D_Point trpip) {
+//                            return V3D_LineSegment.getGeometry(tpqip, trpip);
+//                        } else {
+//                            // tpqi instanceof V3D_LineSegment
+//                            return tpqi;
+//                        }
+//                    } else {
+//                        // trpi instanceof V3D_LineSegment
+//                        return trpi;
+//                    }
+//                } else {
+//                    if (trpi instanceof V3D_Point) {
+//                        if(tpqi instanceof V3D_Point) {
+//                            return tqri;
+//                        } else {
+//                            return tpqi;
+//                        }
+//                    } else {
+//                        return t;
+//                    }
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -1672,21 +1674,21 @@ public class V3D_Plane extends V3D_Geometry {
 
     @Override
     public BigDecimal getDistance(V3D_Triangle t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return t.getDistance(this, oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return t.getDistanceSquared(this, oom);
     }
 
     @Override
     public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return t.getDistance(this, oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return t.getDistanceSquared(this, oom);
     }
 }

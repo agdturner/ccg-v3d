@@ -116,12 +116,14 @@ public class V3D_LineSegmentsCollinear extends V3D_Line implements V3D_FiniteGeo
 
     /**
      * 
-     * @param l1 A line segment collinear with {@code l2}
-     * @param l2 A line segment collinear with {@code l1}
+     * @param l1 A line segment collinear with {@code l2}.
+     * @param l2 A line segment collinear with {@code l1}.
+     * @param oom The Order of Magnitude for the calculation.
      * @return A V3D_LineSegmentsCollinear if {@code l1} and {@code l2} do not 
-     * intersect, otherwise a single V3D_LineSegment
+     * intersect, otherwise a single V3D_LineSegment.
      */
-    public static V3D_Geometry getGeometry(V3D_LineSegment l1, V3D_LineSegment l2, int oom) {
+    public static V3D_Geometry getGeometry(V3D_LineSegment l1,
+            V3D_LineSegment l2, int oom) {
         if (!l1.isIntersectedBy(l2, oom, true)) {
             return new V3D_LineSegmentsCollinear(l1, l2);
         }

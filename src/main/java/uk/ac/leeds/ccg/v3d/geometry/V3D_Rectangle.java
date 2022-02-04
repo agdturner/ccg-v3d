@@ -803,11 +803,11 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b) {
-        if (super.isIntersectedBy(t, oom, b)) {
+    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
+        if (super.isIntersectedBy(t, oom)) {
             return true;
         } else {
-            return getRSP().isIntersectedBy(t, oom, b);
+            return getRSP().isIntersectedBy(t, oom);
         }
     }
 
@@ -845,7 +845,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b) {
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
         V3D_Geometry t1i = super.getIntersection(t, oom);
         V3D_Geometry t2i = getRSP().getIntersection(t, oom);
         if (t1i == null) {

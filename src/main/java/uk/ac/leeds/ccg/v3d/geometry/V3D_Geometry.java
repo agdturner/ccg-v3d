@@ -183,11 +183,9 @@ public abstract class V3D_Geometry implements Serializable {
      *
      * @param t The triangle to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
-     * @param b To distinguish this method from
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Plane, int)}.
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
-    public abstract boolean isIntersectedBy(V3D_Triangle t, int oom, boolean b);
+    public abstract boolean isIntersectedBy(V3D_Triangle t, int oom);
 
     /**
      * Identify if the geometry is intersected by plane {@code p}.
@@ -234,12 +232,9 @@ public abstract class V3D_Geometry implements Serializable {
      *
      * @param t The triangle to intersect with.
      * @param oom The Order of Magnitude for the precision.
-     * @param b To distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Plane, int)}. The
-     * value is ignored.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_Geometry getIntersection(V3D_Triangle t, int oom, boolean b);
+    public abstract V3D_Geometry getIntersection(V3D_Triangle t, int oom);
 
     /**
      * Get the intersection between the geometry and the tetrahedron {@code t}.
