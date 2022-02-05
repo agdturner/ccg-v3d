@@ -398,6 +398,13 @@ public class V3D_LineTest extends V3D_Test {
         // Test 2
         instance = new V3D_Line(pP1P1P1, pP0P0P0);
         assertTrue(instance.equals(l));
+        // Test 3
+         l = V3D_Line.X_AXIS;
+         instance = V3D_Line.X_AXIS;
+        assertTrue(instance.equals(l));
+        // Test 4
+        instance = V3D_Line.Y_AXIS;
+        assertFalse(instance.equals(l));
     }
 
     /**
@@ -803,21 +810,6 @@ public class V3D_LineTest extends V3D_Test {
         String result = instance.toStringFields(pad);
         //System.out.println(result);
         assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of equals method, of class V3D_Line.
-     */
-    @Test
-    public void testEquals_V3D_Line_int() {
-        System.out.println("equals");
-        V3D_Line l = V3D_Line.X_AXIS;
-        int oom = 0;
-        V3D_Line instance = V3D_Line.X_AXIS;
-        assertTrue(instance.equals(l, oom));
-        // Test 2
-        instance = V3D_Line.Y_AXIS;
-        assertFalse(instance.equals(l, oom));
     }
 
     /**

@@ -139,7 +139,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
             V3D_Triangle t = ite.next();
             V3D_Geometry g = i.getIntersection(t, e.oom);
             if (g instanceof V3D_Triangle gt) {
-                if (!t.equals(gt, true)) {
+                if (!t.equals(gt)) {
                     return false;
 //                } else {
 //                    int debug = 1;
@@ -151,7 +151,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
             V3D_Triangle t = iite.next();
             V3D_Geometry g = getIntersection(t, e.oom);
             if (g instanceof V3D_Triangle gt) {
-                if (!t.equals(gt, true)) {
+                if (!t.equals(gt)) {
                     return false;
 //                } else {
 //                    int debug = 1;
@@ -188,7 +188,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * @return Either a triangle or a V3D_TrianglesCoplanar.
      */
     public static V3D_Geometry getGeometry(V3D_Triangle t1, V3D_Triangle t2, int oom) {
-        if (t1.equals(t2, true)) {
+        if (t1.equals(t2)) {
             return t1;
         }
         if (t1.equals(t2)) {

@@ -69,8 +69,7 @@ public class V3D_Ray extends V3D_Line {
     }
 
     /**
-     * Create a new instance. {@link #offset} is set to
-     * {@link V3D_Vector#ZERO}.
+     * Create a new instance. {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
      * @param e What {@link #e} is set to.
      * @param p What {@link #p} is set to.
@@ -167,7 +166,10 @@ public class V3D_Ray extends V3D_Line {
         if (pt.equals(getP(oom))) {
             return true;
         }
-        // The following if statement is not necessary, but it may be computationally advantageous.
+        /**
+         * The following if statement is not necessary, but it may be
+         * computationally advantageous.
+         */
         if (pt.equals(getQ(oom))) {
             return true;
         }

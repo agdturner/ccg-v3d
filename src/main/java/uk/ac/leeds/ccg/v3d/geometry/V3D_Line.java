@@ -319,23 +319,22 @@ public class V3D_Line extends V3D_Geometry {
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Line l) {
-            return equals(l, e.oom);
+            return equals(l);
         }
         return false;
     }
 
     /**
      * @param l The line to test if it is the same as {@code this}.
-     * @param oom The Order of Magnitude for the precision.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
-    public boolean equals(V3D_Line l, int oom) {
+    public boolean equals(V3D_Line l) {
 //        boolean t1 = isIntersectedBy(l.getP(oom), oom);
 //        boolean t2 = isIntersectedBy(l.getQ(oom), oom);
 //        boolean t3 = l.isIntersectedBy(getP(oom), oom);
 //        boolean t4 = l.isIntersectedBy(getQ(oom),oom);
 //        boolean t5 = getV(oom).isScalarMultiple(l.getV(oom), oom);
-        return isIntersectedBy(l.getP(oom), oom) && isIntersectedBy(l.getQ(oom), oom);
+        return isIntersectedBy(l.getP(e.oom), e.oom) && isIntersectedBy(l.getQ(e.oom), e.oom);
     }
 
     @Override
@@ -1073,6 +1072,7 @@ public class V3D_Line extends V3D_Geometry {
      * adapted from
      * <a href="http://paulbourke.net/geometry/pointlineplane/">http://paulbourke.net/geometry/pointlineplane/</a>.
      * The re
+     *
      * @param l The line to get the line of intersection with.
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The line of intersection between {@code this} and {@code l}.
@@ -1384,7 +1384,7 @@ public class V3D_Line extends V3D_Geometry {
             return (dp.pow(2).divide(m.getX())).abs();
         }
     }
-    
+
     /**
      * @param r A ray for which the minimum distance from {@code this} is
      * returned.

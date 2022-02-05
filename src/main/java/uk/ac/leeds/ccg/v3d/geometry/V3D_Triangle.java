@@ -206,7 +206,6 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //        return new V3D_Triangle(getP(oom).apply(v, oom), 
 //                getQ(oom).apply(v, oom), getR(oom).apply(v, oom), oom);
 //    }
-    
 //    /**
 //     * 
 //     * @param pt The point to intersect with.
@@ -244,7 +243,6 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //            return cv == cpv;
 //        }
 //    }
-    
     /**
      * @param pt The point to intersect with.
      * @param oom The Order of Magnitude for the precision of the calculation.
@@ -505,7 +503,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 if (lrpi == null) {
                     return lqri;
                 }
-                return getGeometry(((V3D_Point) lqri).getVector(oom),
+                return getGeometry(e, ((V3D_Point) lqri).getVector(oom),
                         ((V3D_Point) lrpi).getVector(oom));
             }
         } else if (lpqi instanceof V3D_LineSegment) {
@@ -515,14 +513,14 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 if (lrpi == null) {
                     return lpqi;
                 } else {
-                    return getGeometry(((V3D_Point) lpqi).getVector(oom),
+                    return getGeometry(e, ((V3D_Point) lpqi).getVector(oom),
                             ((V3D_Point) lrpi).getVector(oom));
                 }
             } else if (lqri instanceof V3D_LineSegment) {
                 return lqri;
             } else {
                 if (lrpi == null) {
-                    return getGeometry(((V3D_Point) lqri).getVector(oom),
+                    return getGeometry(e, ((V3D_Point) lqri).getVector(oom),
                             ((V3D_Point) lpqi).getVector(oom));
                 } else if (lrpi instanceof V3D_LineSegment) {
                     return lrpi;
@@ -541,14 +539,17 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     }
 
     /**
-     * If {@code v1} and {@code v2} are the same, then return a point with
-     * offset set to {@link V3D_Vector#ZERO}, otherwise return a line segment.
+     * If {@code v1} and {@code v2} are the same, then return a point, otherwise
+     * return a line segment. In both instance offset is set to
+     * {@link V3D_Vector#ZERO}.
      *
+     * @param e The environment
      * @param v1 A vector.
      * @param v2 A vector.
      * @return Either a line segment or a point.
      */
-    public V3D_Geometry getGeometry(V3D_Vector v1, V3D_Vector v2) {
+    public static V3D_Geometry getGeometry(V3D_Environment e, V3D_Vector v1,
+            V3D_Vector v2) {
         if (v1.equals(v2)) {
             return new V3D_Point(e, v1);
         } else {
@@ -731,7 +732,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                                     return gqr;
                                 } else if (grp instanceof V3D_Point grpp) {
                                     V3D_LineSegment ls = (V3D_LineSegment) gqr;
-                                    return getGeometry(grpp, ls.getP(oom), 
+                                    return getGeometry(grpp, ls.getP(oom),
                                             ls.getQ(oom));
                                 } else {
                                     return getGeometry((V3D_LineSegment) gqr,
@@ -837,7 +838,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     public boolean equals(Object o) {
         if (super.equals(o)) {
             if (o instanceof V3D_Triangle t) {
-                return equals(t, true);
+                return equals(t);
             }
         }
         return false;
@@ -856,12 +857,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      * and the other anticlockwise.
      *
      * @param t The other triangle to test for equality.
-     * @param b To distinguish this method from
-     * {@link #equals(uk.ac.leeds.ccg.v3d.geometry.V3D_Plane)}. The value is
-     * ignored.
      * @return {@code true} iff {@code this} is equal to {@code t}.
      */
-    public boolean equals(V3D_Triangle t, boolean b) {
+    public boolean equals(V3D_Triangle t) {
         V3D_Point tp = t.getP();
         V3D_Point thisp = getP();
         V3D_Point tq = t.getQ();
@@ -896,7 +894,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
             return false;
         }
     }
-    
+
     /**
      * Move the plane.
      *
@@ -907,7 +905,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         super.translate(v);
         en = null;
     }
-    
+
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         super.rotate(axisOfRotation, theta);
@@ -935,9 +933,10 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 if (r.equals(p)) {
                     return V3D_LineSegment.getGeometry(r, q);
                 } else {
-                    return new V3D_Triangle(p.e, V3D_Vector.ZERO,
-                            p.getVector(p.e.oom),
-                            q.getVector(p.e.oom), r.getVector(p.e.oom));
+                    return new V3D_Triangle(p,q,r);
+//                    return new V3D_Triangle(p.e, V3D_Vector.ZERO,
+//                            p.getVector(p.e.oom),
+//                            q.getVector(p.e.oom), r.getVector(p.e.oom));
                 }
             }
         }
@@ -1219,9 +1218,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
         if (super.isIntersectedBy(t, oom)) {
             /**
-             * If this is inside t then they intersect. First implement 
+             * If this is inside t then they intersect. First implement
              * V3D_Tetrahedron.isIntersectedBy(V3D_Point)
-            */
+             */
             /**
              * If this intersects any of the faces of t, then they intersect.
              */
@@ -1234,7 +1233,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
         V3D_Geometry pi = super.getIntersection(t, oom);
         if (pi != null) {
-            
+
         }
         return pi;
     }
@@ -1242,7 +1241,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
         return new Math_BigRationalSqrt(getDistanceSquared(p, oom), oom)
-                .getSqrt(oom).toBigDecimal(oom);      
+                .getSqrt(oom).toBigDecimal(oom);
     }
 
     @Override
@@ -1262,7 +1261,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         if (pqd2.compareTo(qrd2) == -1) {
             return rpd2.min(pqd2);
         } else {
-            return rpd2.min(qrd2);            
+            return rpd2.min(qrd2);
         }
     }
 
@@ -1277,48 +1276,81 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         Math_BigRational dpq2 = getPQ().getDistanceSquared(l, oom);
         Math_BigRational dqr2 = getQR().getDistanceSquared(l, oom);
         Math_BigRational drp2 = getRP().getDistanceSquared(l, oom);
-        return Math_BigRational.min(dpq2, dqr2, drp2);        
+        return Math_BigRational.min(dpq2, dqr2, drp2);
     }
 
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
-        // Figure out what the situation is.
-        // Is one of the end points of l closest to a corner of this, a part of an edge of this, of some part of the face of this?
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isIntersectedBy(l, oom)) {
+            return Math_BigRational.ZERO;
+        }
+//        V3D_Line ll = new V3D_Line(l);
+//        Math_BigRational dl2 = getDistanceSquared(new V3D_Line(ll), oom);
+        Math_BigRational dlpq2 = l.getDistanceSquared(getPQ(), oom);
+        Math_BigRational dlqr2 = l.getDistanceSquared(getQR(), oom);
+        Math_BigRational dlrp2 = l.getDistanceSquared(getRP(), oom);
+        //Math_BigRational dlmin = Math_BigRational.min(dlpq2, dlqr2, dlrp2);
+        Math_BigRational dtlp2 = getDistanceSquared(l.getP(oom), oom);
+        Math_BigRational dtlq2 = getDistanceSquared(l.getQ(oom), oom);
+        //Math_BigRational dtmin = Math_BigRational.min(dtlp2, dtlq2);
+        return Math_BigRational.min(dlpq2, dlqr2, dlrp2, dtlp2, dtlq2);
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Plane p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public BigDecimal getDistance(V3D_Plane pl, int oom) {
+        return new Math_BigRationalSqrt(getDistanceSquared(pl, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
+        Math_BigRational dplpq2 = pl.getDistanceSquared(getPQ(), oom);
+        Math_BigRational dplqr2 = pl.getDistanceSquared(getQR(), oom);
+        Math_BigRational dplrp2 = pl.getDistanceSquared(getRP(), oom);
+        return Math_BigRational.min(dplpq2, dplqr2, dplrp2);
     }
 
     @Override
     public BigDecimal getDistance(V3D_Triangle t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalSqrt(getDistanceSquared(t, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isIntersectedBy(t, oom)) {
+            return Math_BigRational.ZERO;
+        }
+        Math_BigRational dtpq2 = t.getDistanceSquared(getPQ(), oom);
+        Math_BigRational dtqr2 = t.getDistanceSquared(getQR(), oom);
+        Math_BigRational dtrp2 = t.getDistanceSquared(getRP(), oom);
+        Math_BigRational dpq2 = getDistanceSquared(t.getPQ(), oom);
+        Math_BigRational dqr2 = getDistanceSquared(t.getQR(), oom);
+        Math_BigRational drp2 = getDistanceSquared(t.getRP(), oom);
+        return Math_BigRational.min(dtpq2, dtqr2, dtrp2, dpq2, dqr2, drp2);
     }
 
     @Override
     public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalSqrt(getDistanceSquared(t, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isIntersectedBy(t, oom)) {
+            return Math_BigRational.ZERO;
+        }
+        Math_BigRational drpqr = getDistanceSquared(t.getPqr(), oom);
+        Math_BigRational drpsq = getDistanceSquared(t.getPsq(), oom);
+        Math_BigRational drqsr = getDistanceSquared(t.getQsr(), oom);
+        Math_BigRational drspr = getDistanceSquared(t.getSpr(), oom);
+        return Math_BigRational.min(drpqr, drpsq, drqsr, drspr);
     }
 }

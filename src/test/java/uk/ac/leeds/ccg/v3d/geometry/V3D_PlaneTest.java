@@ -2751,7 +2751,7 @@ public class V3D_PlaneTest extends V3D_Test {
                         Math_BigRational.valueOf(-1).divide(16)));
         //, oomN5);
         result = instance.getIntersection(pl, e.oom);
-        assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, e.oom));
+        assertTrue(((V3D_Line) expResult).equals((V3D_Line) result));
         assertTrue(expResult.equals(result));
         /**
          * The following is from:
