@@ -124,7 +124,7 @@ public class V3D_LineSegmentsCollinear extends V3D_Line implements V3D_FiniteGeo
      */
     public static V3D_Geometry getGeometry(V3D_LineSegment l1,
             V3D_LineSegment l2, int oom) {
-        if (!l1.isIntersectedBy(l2, oom, true)) {
+        if (!l1.isIntersectedBy(l2, oom)) {
             return new V3D_LineSegmentsCollinear(l1, l2);
         }
         /**
@@ -267,7 +267,7 @@ public class V3D_LineSegmentsCollinear extends V3D_Line implements V3D_FiniteGeo
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -277,7 +277,7 @@ public class V3D_LineSegmentsCollinear extends V3D_Line implements V3D_FiniteGeo
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean flag) {
+    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

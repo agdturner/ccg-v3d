@@ -1558,7 +1558,7 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         return l.isIntersectedBy(this, oom);
     }
 
@@ -1569,8 +1569,7 @@ public class V3D_Line extends V3D_Geometry {
 
     @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom) {
-        boolean b = true;
-        return t.isIntersectedBy(this, oom, b);
+        return t.isIntersectedBy(this, oom);
     }
 
     @Override
@@ -1579,7 +1578,7 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
+    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
         return l.getIntersection(this, oom);
     }
 

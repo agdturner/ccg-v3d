@@ -163,11 +163,9 @@ public abstract class V3D_Geometry implements Serializable {
      *
      * @param l The line segment to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
-     * @param b To distinguish this method from
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}.
      * @return {@code true} iff the geometry is intersected by {@code l}.
      */
-    public abstract boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b);
+    public abstract boolean isIntersectedBy(V3D_LineSegment l, int oom);
 
     /**
      * Identify if the geometry is intersected by plane {@code p}.
@@ -211,12 +209,9 @@ public abstract class V3D_Geometry implements Serializable {
      *
      * @param l The line segment to intersect with.
      * @param oom The Order of Magnitude for the precision.
-     * @param b To distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
-     * value is ignored.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b);
+    public abstract V3D_Geometry getIntersection(V3D_LineSegment l, int oom);
 
     /**
      * Get the intersection between the geometry and the plane {@code p}.

@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -273,13 +272,10 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
     /**
      * @param l A line segment to indicate intersection with this.
      * @param oom The Order of Magnitude for the calculation.
-     * @param b Used to distinguish this method from
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
-     * value is ignored.
      * @return {@code true} iff {@code l} intersects with {@code this}.
      */
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         boolean ei = getEnvelope().isIntersectedBy(l.getEnvelope());
         if (ei) {
             return super.isIntersectedBy(l, oom);
@@ -353,13 +349,10 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
      *
      * @param l The line to get intersection with this.
      * @param oom The Order of Magnitude for the calculation.
-     * @param b To distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
-     * value is ignored.
      * @return The intersection between {@code this} and {@code l}.
      */
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
+    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
         V3D_Envelope ren = getEnvelope().getIntersection(l.getEnvelope());
         if (ren == null) {
             return null;
@@ -616,7 +609,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     @Override
     public boolean isIntersectedBy(V3D_Plane p, int oom) {
-        return p.isIntersectedBy(this, oom, true);
+        return p.isIntersectedBy(this, oom);
     }
 
     @Override
@@ -636,7 +629,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
 
     @Override
     public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
-        return t.getIntersection(this, oom, true);
+        return t.getIntersection(this, oom);
     }
 
     @Override

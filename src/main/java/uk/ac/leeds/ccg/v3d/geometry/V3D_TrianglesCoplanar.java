@@ -330,11 +330,11 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         if (getEnvelope().isIntersectedBy(l.getEnvelope())) {
             if (super.isIntersectedBy(l, oom)) {
                 for (V3D_Triangle triangle : triangles) {
-                    if (triangle.isIntersectedBy(l, oom, b)) {
+                    if (triangle.isIntersectedBy(l, oom)) {
                         return true;
                     }
                 }
@@ -385,7 +385,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
+    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

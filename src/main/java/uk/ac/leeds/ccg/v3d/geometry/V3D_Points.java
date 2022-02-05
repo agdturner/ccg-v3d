@@ -119,7 +119,7 @@ public class V3D_Points extends V3D_Geometry {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -144,7 +144,7 @@ public class V3D_Points extends V3D_Geometry {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
+    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

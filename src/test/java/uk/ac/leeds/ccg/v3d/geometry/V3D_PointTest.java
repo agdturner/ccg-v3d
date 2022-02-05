@@ -666,22 +666,21 @@ public class V3D_PointTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Point.
      */
     @Test
-    public void testGetIntersection_3args() {
+    public void testGetIntersection_V3D_LineSegment_int() {
         System.out.println("getIntersection");
-        boolean b = false;
         V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         V3D_Point instance = pP0P0P0;
         V3D_Geometry expResult = pP0P0P0;
-        V3D_Geometry result = instance.getIntersection(l, e.oom, b);
+        V3D_Geometry result = instance.getIntersection(l, e.oom);
         assertEquals(expResult, result);
         // Test 2
         instance = pP1P0P0;
         expResult = pP1P0P0;
-        result = instance.getIntersection(l, e.oom, b);
+        result = instance.getIntersection(l, e.oom);
         assertEquals(expResult, result);
         // Test 3
         instance = pN1P0P0;
-        assertNull(instance.getIntersection(l, e.oom, b));
+        assertNull(instance.getIntersection(l, e.oom));
     }
 
     /**

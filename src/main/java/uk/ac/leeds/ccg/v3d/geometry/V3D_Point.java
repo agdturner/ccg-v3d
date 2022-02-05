@@ -426,7 +426,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         return l.isIntersectedBy(this, oom);
     }
 
@@ -449,7 +449,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
+    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
         if (l.isIntersectedBy(this, oom)) {
             return this;
         }

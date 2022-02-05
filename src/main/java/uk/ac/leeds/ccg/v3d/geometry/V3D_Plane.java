@@ -540,13 +540,10 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * @param l The line segment to test for intersection with this.
      * @param oom The Order of Magnitude for the calculation.
-     * @param b To distinguish this method from
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
-     * value is ignored.
      * @return {@code true} If this and {@code l} intersect.
      */
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         V3D_Line ll = new V3D_Line(l);
         if (isIntersectedBy(ll, oom)) {
             V3D_Geometry g = getIntersection(ll, oom);
@@ -728,13 +725,11 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * @param l line segment to intersect with this.
      * @param oom The Order of Magnitude for the calculation.
-     * @param b Used to distinguish from
-     * {@link #getIntersection(V3D_Line, int)}.
      * @return The intersection between {@code this} and {@code l}.
      */
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean b) {
-        V3D_Geometry g = getIntersection(l, oom);
+    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
+        V3D_Geometry g = getIntersection(new V3D_Line(l), oom);
         if (g == null) {
             return null;
         }
@@ -752,11 +747,9 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * @param r The ray to intersect with this.
      * @param oom The Order of Magnitude for the calculation.
-     * @param b Used to distinguish from
-     * {@link #getIntersection(V3D_Line, int)}.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry getIntersection(V3D_Ray r, int oom, boolean b) {
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
         V3D_Geometry rit = r.getIntersection(this, oom);
         if (rit == null) {
             return rit;
@@ -1576,11 +1569,10 @@ public class V3D_Plane extends V3D_Geometry {
 
     @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom) {
-        boolean b = true;
-        if (isIntersectedBy(t.getPQ(), oom, b)) {
+        if (isIntersectedBy(t.getPQ(), oom)) {
             return true;
         } else {
-            return isIntersectedBy(t.getQR(), oom, b);
+            return isIntersectedBy(t.getQR(), oom);
         }
     }
 

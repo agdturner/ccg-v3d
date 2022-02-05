@@ -99,51 +99,50 @@ public class V3D_RectangleTest extends V3D_Test {
     public void testIsIntersectedBy_V3D_Point_int() {
         System.out.println("isIntersectedBy");
         V3D_Point pt = pP0P0P0;
-        boolean b = true;
         V3D_Rectangle instance = new V3D_Rectangle(pN1P1P0, pP1P1P0, pP1N1P0, pN1N1P0);
-        assertTrue(instance.isIntersectedBy(pt, e.oom, b));
+        assertTrue(instance.isIntersectedBy(pt, e.oom));
         // Test 2
         instance = new V3D_Rectangle(pN1P0P0, pP0P1P0, pP1P0P0, pP0N1P0);
-        assertTrue(instance.isIntersectedBy(pt, e.oom, b));
+        assertTrue(instance.isIntersectedBy(pt, e.oom));
         // Test 3
         Math_BigRational half = Math_BigRational.ONE.divide(2);
         pt = new V3D_Point(e, half, half, P0);
-        assertTrue(instance.isIntersectedBy(pt, e.oom, b));
+        assertTrue(instance.isIntersectedBy(pt, e.oom));
         // Test 4
         Math_BigRational epsilon = Math_BigRational.valueOf("0.00000000001");
         Math_BigRational halfpe = half.add(epsilon);
         Math_BigRational halfne = half.subtract(epsilon);
         e.oom = -12;
         pt = new V3D_Point(e, halfpe, half, P0);
-        assertFalse(instance.isIntersectedBy(pt, e.oom, b));
+        assertFalse(instance.isIntersectedBy(pt, e.oom));
         // Test 5
         e.oom = -12;
         pt = new V3D_Point(e, halfpe.negate(), half, P0);
-        assertFalse(instance.isIntersectedBy(pt, e.oom, b));
+        assertFalse(instance.isIntersectedBy(pt, e.oom));
         // Test 6
         e.oom = -12;
         pt = new V3D_Point(e, half, halfpe, P0);
-        assertFalse(instance.isIntersectedBy(pt, e.oom, b));
+        assertFalse(instance.isIntersectedBy(pt, e.oom));
         // Test 7
         e.oom = -12;
         pt = new V3D_Point(e, half, halfpe.negate(), P0);
-        assertFalse(instance.isIntersectedBy(pt, e.oom, b));
+        assertFalse(instance.isIntersectedBy(pt, e.oom));
         // Test 8
         e.oom = -12;
         pt = new V3D_Point(e, halfne, half, P0);
-        assertTrue(instance.isIntersectedBy(pt, e.oom, b));
+        assertTrue(instance.isIntersectedBy(pt, e.oom));
         // Test 9
         e.oom = -12;
         pt = new V3D_Point(e, halfne.negate(), half, P0);
-        assertTrue(instance.isIntersectedBy(pt, e.oom, b));
+        assertTrue(instance.isIntersectedBy(pt, e.oom));
         // Test 10
         e.oom = -12;
         pt = new V3D_Point(e, half, halfne, P0);
-        assertTrue(instance.isIntersectedBy(pt, e.oom, b));
+        assertTrue(instance.isIntersectedBy(pt, e.oom));
         // Test 11
         e.oom = -12;
         pt = new V3D_Point(e, half, halfne.negate(), P0);
-        assertTrue(instance.isIntersectedBy(pt, e.oom, b));
+        assertTrue(instance.isIntersectedBy(pt, e.oom));
     }
 
     /**
@@ -255,7 +254,7 @@ public class V3D_RectangleTest extends V3D_Test {
         System.out.println("getIntersection");
         V3D_LineSegment l = new V3D_LineSegment(pN1N1P0, pP2P2P0);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
-        V3D_Geometry result = instance.getIntersection(l, e.oom, true);
+        V3D_Geometry result = instance.getIntersection(l, e.oom);
         V3D_Geometry expResult = new V3D_LineSegment(pP0P0P0, pP1P1P0);
         assertTrue(expResult.equals(result));
     }
@@ -423,10 +422,9 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_3args() {
         System.out.println("isIntersectedBy");
-        boolean b = true;
         V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0);
-        assertTrue(instance.isIntersectedBy(l, e.oom, b));
+        assertTrue(instance.isIntersectedBy(l, e.oom));
     }
 
     /**
@@ -452,12 +450,12 @@ public class V3D_RectangleTest extends V3D_Test {
     public void testGetIntersection_3args() {
         System.out.println("getIntersection");
         V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
-        boolean b = false;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0);
         V3D_Geometry expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0);
-        V3D_Geometry result = instance.getIntersection(l, e.oom, b);
+        V3D_Geometry result;
+        //result = instance.getIntersection(l, e.oom);
         //System.out.println(result);
-        result = instance.getIntersection(l, e.oom, b);
+        result = instance.getIntersection(l, e.oom);
         assertEquals(expResult, result);
     }
 

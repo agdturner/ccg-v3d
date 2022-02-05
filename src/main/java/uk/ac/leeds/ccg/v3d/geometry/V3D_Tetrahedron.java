@@ -299,7 +299,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
                 pqr.getCentroid(oom).getVector(oom), qsr.getQ().getVector(oom));
         V3D_LineSegment b = new V3D_LineSegment(e,
                 psq.getCentroid(oom).getVector(oom), qsr.getR().getVector(oom));
-        return (V3D_Point) a.getIntersection(b, oom, true);
+        return (V3D_Point) a.getIntersection(b, oom);
     }
 
     @Override
@@ -313,7 +313,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, boolean b) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -323,7 +323,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom, boolean flag) {
+    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
