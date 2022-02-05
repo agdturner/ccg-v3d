@@ -160,8 +160,6 @@ public class V3D_Ray extends V3D_Line {
     /**
      * @param pt A point to test for intersection.
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @param b To distinguish this from
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
      * @return {@code true} if {@code this} is intersected by {@code p}.
      */
     @Override
@@ -467,9 +465,6 @@ public class V3D_Ray extends V3D_Line {
      *
      * @param l The line to get intersection with this.
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @param b To distinguish this method from
-     * {@link #getIntersection(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int)}. The
-     * value is ignored.
      * @return The intersection between {@code this} and {@code l}.
      */
     @Override
