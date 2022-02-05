@@ -28,6 +28,7 @@ import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * Test of V3D_Triangle class.
@@ -130,7 +131,7 @@ public class V3D_TriangleTest extends V3D_Test {
         l = new V3D_Line(pP1P1P1, pP1P1P0);
         assertFalse(instance.isIntersectedBy(l, e.oom));
     }
-    
+
     /**
      * Test of isIntersectedBy method, of class V3D_Triangle.
      */
@@ -328,8 +329,6 @@ public class V3D_TriangleTest extends V3D_Test {
 //        fail("The test case is a prototype.");
     }
 
-    
-
     /**
      * Test of getIntersection method, of class V3D_Triangle.
      */
@@ -411,7 +410,7 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of equals method, of class V3D_Triangle.
      */
     @Test
-    public void testEquals_V3D_Triangle_boolean() {
+    public void testEquals_V3D_Triangle() {
         System.out.println("equals");
         V3D_Triangle t = new V3D_Triangle(pP1P0P0, pP1P2P0, pP2P0P0);
         V3D_Triangle instance = new V3D_Triangle(e, P1P0P0, P0P0P0, P0P2P0, P1P0P0);
@@ -661,8 +660,8 @@ public class V3D_TriangleTest extends V3D_Test {
                 new V3D_Triangle(pP2P0P0, new V3D_Point(e, P4, P0, P0), pP1N1P0),
                 new V3D_Triangle(pP1N1P0, pP2N2P0, new V3D_Point(e, P4, N2, P0)),
                 new V3D_Triangle(
-                        new V3D_Point(e, P4, P0, P0), 
-                        new V3D_Point(e, P4, N2, P0), 
+                        new V3D_Point(e, P4, P0, P0),
+                        new V3D_Point(e, P4, N2, P0),
                         new V3D_Point(e, P5, N1, P0)),
                 new V3D_Triangle(new V3D_Point(e, P4, P0, P0), pP1N1P0,
                         new V3D_Point(e, P4, N2, P0)));
@@ -677,8 +676,8 @@ public class V3D_TriangleTest extends V3D_Test {
                 new V3D_Triangle(pP2P0P0, new V3D_Point(e, P4, P0, P0), pP1N1P0),
                 new V3D_Triangle(pP1N1P0, pP2N2P0, new V3D_Point(e, P4, N2, P0)),
                 new V3D_Triangle(
-                        new V3D_Point(e, P4, P0, P0), 
-                        new V3D_Point(e, P4, N2, P0), 
+                        new V3D_Point(e, P4, P0, P0),
+                        new V3D_Point(e, P4, N2, P0),
                         new V3D_Point(e, P5, N1, P0)),
                 new V3D_Triangle(new V3D_Point(e, P4, P0, P0), pP1N1P0,
                         new V3D_Point(e, P4, N2, P0)));
@@ -707,7 +706,7 @@ public class V3D_TriangleTest extends V3D_Test {
         assertEquals(expResult, result);
         // Test 2
         v2 = P1P0P0;
-        expResult = new V3D_LineSegment(e, P0P0P0,P0P0P0,P1P0P0);
+        expResult = new V3D_LineSegment(e, P0P0P0, P0P0P0, P1P0P0);
         result = V3D_Triangle.getGeometry(e, v1, v2);
         assertEquals(expResult, result);
     }
@@ -731,36 +730,83 @@ public class V3D_TriangleTest extends V3D_Test {
         assertTrue(expResult.equals(instance));
     }
 
-//    /**
-//     * Test of getGeometry method, of class V3D_Triangle.
-//     */
-//    @Test
-//    public void testGetGeometry_3args_1() {
-//        System.out.println("getGeometry");
-//        V3D_Point p = null;
-//        V3D_Point q = null;
-//        V3D_Point r = null;
-//        V3D_Geometry expResult = null;
-//        V3D_Geometry result;
-//        // Test 1
-//        result = V3D_Triangle.getGeometry(p, q, r);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+    /**
+     * Test of getGeometry method, of class V3D_Triangle.
+     */
+    @Test
+    public void testGetGeometry_3args_1() {
+        System.out.println("getGeometry");
+        V3D_Point p;
+        V3D_Point q;
+        V3D_Point r;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
+        // Test 1
+        p = new V3D_Point(pP0P0P0);
+        q = new V3D_Point(pP0P0P0);
+        r = new V3D_Point(pP0P0P0);
+        expResult = new V3D_Point(pP0P0P0);
+        result = V3D_Triangle.getGeometry(p, q, r);
+        assertEquals(expResult, result);
+        // Test 2
+        p = new V3D_Point(pP1P0P0);
+        q = new V3D_Point(pP0P0P0);
+        r = new V3D_Point(pP0P0P0);
+        expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        result = V3D_Triangle.getGeometry(p, q, r);
+        assertEquals(expResult, result);
+        // Test 2
+        p = new V3D_Point(pP1P0P0);
+        q = new V3D_Point(pP0P1P0);
+        r = new V3D_Point(pP0P0P0);
+        expResult = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
+        result = V3D_Triangle.getGeometry(p, q, r);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getGeometry method, of class V3D_Triangle.
+     */
+    @Test
+    public void testGetGeometry_4args() {
+        System.out.println("getGeometry");
+        V3D_LineSegment l1;
+        V3D_LineSegment l2;
+        V3D_LineSegment l3;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
+        // Test 1
+        l1 = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        l2 = new V3D_LineSegment(pP1P0P0, pP1P1P0);
+        l3 = new V3D_LineSegment(pP1P1P0, pP0P0P0);
+        expResult = new V3D_Triangle(pP0P0P0, pP1P0P0, pP1P1P0);
+        result = V3D_Triangle.getGeometry(e, l1, l2, l3);
+        assertEquals(expResult, result);
+        // Test 2
+        l1 = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        l2 = new V3D_LineSegment(pP1P1P0, pP0P2P0);
+        l3 = new V3D_LineSegment(pN1P2P0, pN1P1P0);
+        expResult = new V3D_TrianglesCoplanar(
+                new V3D_Triangle(pP0P0P0, pP1P0P0, pP1P1P0),
+                new V3D_Triangle(pP1P1P0, pP0P2P0, pN1P2P0),
+                new V3D_Triangle(pP0P0P0, pN1P1P0, pN1P2P0),
+                new V3D_Triangle(pP0P0P0, pP1P1P0, pN1P2P0)
+        );
+        result = V3D_Triangle.getGeometry(e, l1, l2, l3);
+        assertEquals(expResult, result);
+    }
+
 //    /**
 //     * Test of getGeometry method, of class V3D_Triangle.
 //     */
 //    @Test
 //    public void testGetGeometry_3args_2() {
 //        System.out.println("getGeometry");
-//        V3D_LineSegment l1 = null;
-//        V3D_LineSegment l2 = null;
-//        V3D_LineSegment l3 = null;
-//        V3D_Triangle instance = null;
+//        V3D_Environment e = null;
+//        V3D_Vector v1 = null;
+//        V3D_Vector v2 = null;
 //        V3D_Geometry expResult = null;
-//        V3D_Geometry result = instance.getGeometry(l1, l2, l3);
+//        V3D_Geometry result = V3D_Triangle.getGeometry(e, v1, v2);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -1036,4 +1082,5 @@ public class V3D_TriangleTest extends V3D_Test {
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
+
 }

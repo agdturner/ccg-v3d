@@ -793,7 +793,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                                 } else if (grp instanceof V3D_Point grpp) {
                                     throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (point and two line segments).
                                 } else {
-                                    return getGeometry((V3D_LineSegment) gpq, (V3D_LineSegment) gqr, (V3D_LineSegment) grp);
+                                    return getGeometry(e, (V3D_LineSegment) gpq, (V3D_LineSegment) gqr, (V3D_LineSegment) grp);
                                 }
                             }
                         }
@@ -954,8 +954,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or
      * {@code new V3D_Triangle(p, q, r)}
      */
-    protected V3D_Geometry getGeometry(V3D_LineSegment l1, V3D_LineSegment l2,
-            V3D_LineSegment l3) {
+    protected static V3D_Geometry getGeometry(V3D_Environment e, 
+            V3D_LineSegment l1, V3D_LineSegment l2,            V3D_LineSegment l3) {
         V3D_Point l1p = l1.getP(e.oom);
         V3D_Point l1q = l1.getQ(e.oom);
         V3D_Point l2p = l2.getP(e.oom);
