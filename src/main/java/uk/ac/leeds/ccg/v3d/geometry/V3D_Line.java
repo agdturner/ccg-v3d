@@ -1098,11 +1098,13 @@ public class V3D_Line extends V3D_Geometry {
         Math_BigRational mb = ((ma.multiply(CdB)).add(AdC)).divide(CdC);
 
         //V3D_Point tpi = tp.apply(B.multiply(ma, oom), oom);
-        V3D_Vector tpi = tp.getVector(oom).add(B.multiply(ma, oom), oom);
+        //V3D_Vector tpi = tp.getVector(oom).add(B.multiply(ma, oom), oom);
+        V3D_Vector tpi = tp.getVector(oom).subtract(B.multiply(ma, oom), oom);
 
         //V3D_Point lpi = l.p.apply(C.multiply(mb, oom), oom);
         //V3D_Point lpi = lp.apply(C.multiply(mb.negate(), oom), oom);
-        V3D_Vector lpi = lp.getVector(oom).add(C.multiply(mb.negate(), oom), oom);
+        //V3D_Vector lpi = lp.getVector(oom).add(C.multiply(mb.negate(), oom), oom);
+        V3D_Vector lpi = lp.getVector(oom).subtract(C.multiply(mb, oom), oom);
 
         //return new V3D_LineSegment(tpi, lpi, oom);
         //return new V3D_LineSegment(tpi.getVector(oom), lpi.getVector(oom), oom);
