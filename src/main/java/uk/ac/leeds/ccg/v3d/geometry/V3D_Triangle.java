@@ -1164,7 +1164,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      * @param l2 A line segment and triangle edge.
      * @return a triangle for which l1 and l2 are edges
      */
-    protected V3D_Geometry getGeometry(V3D_LineSegment l1, V3D_LineSegment l2) {
+    protected static V3D_Geometry getGeometry(V3D_LineSegment l1, 
+            V3D_LineSegment l2) {
         V3D_Point pt = (V3D_Point) l1.getIntersection(l2, l1.e.oom);
         V3D_Point l1p = l1.getP(l1.e.oom);
         V3D_Point l2p = l2.getP(l1.e.oom);
@@ -1184,6 +1185,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     }
 
     /**
+     * For getting the point opposite a side of a triangle given the side.
+     * 
      * @param l a line segment either equal to {@link #getPQ()},
      * {@link #getQR()} or {@link #getRP()}.
      * @return The point of {@code this} that does not intersect with {@code l}.
@@ -1250,7 +1253,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         pt.setOffset(offset);
         V3D_Point poi = (new V3D_Plane(this)).getPointOfProjectedIntersection(p, oom);
         Math_BigRational poid2 = poi.getDistanceSquared(pt, oom);
-        if (getEnvelope().isIntersectedBy(pt, oom)) {
+        if (getEnvelope().isIntersectedBy(poi, oom)) {
             if (isIntersectedBy(poi, oom)) {
                 return poid2;
             }
