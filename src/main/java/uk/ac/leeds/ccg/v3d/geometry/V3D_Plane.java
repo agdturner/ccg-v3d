@@ -1824,6 +1824,31 @@ public class V3D_Plane extends V3D_Geometry
         return t.getDistanceSquared(this, oom);
     }
     
-    
+    /**
+     * Check a and b are on the same side of this. If either are on the boundary then return {@code true}.
+     *
+     * @param a A point.
+     * @param b Another point.
+     * The triangle to check the points to see if they are all on the
+     * same side of a line that intersects the edge of another triangle.
+     * @param n The normal of this plane.
+     * @param oom The Order of Magnitude for the precision.
+     * @return {@code true} if an intersection is found and {@code false}
+     * otherwise.
+     */
+    public static boolean checkOnSameSide(V3D_Point a, V3D_Point b, V3D_Vector n, int oom) {
+        V3D_Vector av = a.getVector(oom);
+        int avd = n.getDotProduct(av, oom).compareTo(Math_BigRational.ZERO);
+        if (avd == 0) {
+            return true;
+        } else {
+            V3D_Vector bv = b.getVector(oom);
+            int bvd = n.getDotProduct(bv, oom).compareTo(Math_BigRational.ZERO);
+            if (bvd == 0) {
+                return true;
+            }
+            return avd == bvd;
+        }
+    }
     
 }

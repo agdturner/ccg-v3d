@@ -16,7 +16,9 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -126,22 +128,29 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
         this.s = s;
     }
 
-//    /**
-//     * Create a new instance.
-//     *
-//     * @param pqr What {@link #pqr} is set to.
-//     * @param qsr What {@link #qsr} is set to.
-//     * @param spr What {@link #spr} is set to.
-//     * @param psq What {@link #psq} is set to.
-//     */
-//    public V3D_Tetrahedron(V3D_Vector offset, int oom, V3D_Triangle pqr,
-//            V3D_Triangle qsr, V3D_Triangle spr, V3D_Triangle psq) {
-//        super(offset, oom);
-//        this.pqr = pqr;
-//        this.qsr = qsr;
-//        this.spr = spr;
-//        this.psq = psq;
-//    }
+    /**
+     * Create a new instance. {@code p}, {@code q}, {@code r}, {@code s} must
+     * all be different and not coplanar. No test is done to check these things.
+     *
+     * @param p Used to set {@link #p}, {@link #e} and {@link #offset}.
+     * @param q Used to set {@link #q}.
+     * @param r Used to set {@link #r}.
+     * @param s Used to set {@link #s}.
+     */
+    public V3D_Tetrahedron(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s) {
+        super(p.e, p.offset);
+        this.p = new V3D_Vector(p.rel);
+        V3D_Point qp = new V3D_Point(q);
+        qp.setOffset(offset);
+        this.q = qp.rel;
+        V3D_Point rp = new V3D_Point(r);
+        rp.setOffset(offset);
+        this.r = rp.rel;
+        V3D_Point sp = new V3D_Point(s);
+        sp.setOffset(offset);
+        this.s = sp.rel;
+    }
+
     @Override
     public String toString() {
         return toString("");
@@ -172,7 +181,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
         st += pad + ",\n";
         st += pad + "r=" + this.r.toString(pad) + "\n";
         st += pad + ",\n";
-        st += pad + "s=" + s.toString(pad) + "\n";
+        st += pad + "s=" + s.toString(pad);// + "\n";
         return st;
     }
 
@@ -283,11 +292,21 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     }
 
     /**
+     * Calculate and return the volume.
+     * https://en.wikipedia.org/wiki/Tetrahedron#Volume
+     * This implementation is currently a bit rough and ready.
      * @param oom The Order of Magnitude for the precision of the calculation.
      */
     @Override
     public BigDecimal getVolume(int oom) {
-        return null;
+        V3D_Triangle tpqr = getPqr();
+        V3D_Point ts = getS(oom);
+        int oomn6 = oom - 6;
+        BigDecimal hd3 = new Math_BigRationalSqrt(
+                tpqr.getPointOfProjectedIntersection(ts, oom)
+                .getDistanceSquared(ts, oomn6), oomn6).getSqrt(oom).divide(3)
+                .toBigDecimal(oomn6);
+        return Math_BigDecimal.round(tpqr.getArea(oom - 3).multiply(hd3), oom);
     }
 
     /**
@@ -296,15 +315,38 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
      */
     public V3D_Point getCentroid(int oom) {
         V3D_LineSegment a = new V3D_LineSegment(e,
-                pqr.getCentroid(oom).getVector(oom), qsr.getQ().getVector(oom));
+                getPqr().getCentroid(oom).getVector(oom), 
+                getQsr().getQ().getVector(oom));
         V3D_LineSegment b = new V3D_LineSegment(e,
-                psq.getCentroid(oom).getVector(oom), qsr.getR().getVector(oom));
+                getPsq().getCentroid(oom).getVector(oom), 
+                getQsr().getR().getVector(oom));
         return (V3D_Point) a.getIntersection(b, oom);
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Point p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean isIntersectedBy(V3D_Point pt, int oom) {
+        if (V3D_Plane.checkOnSameSide(pt, getP(oom), getQsr().getN(oom), oom)) {
+            if (V3D_Plane.checkOnSameSide(pt, getQ(oom), getSpr().getN(oom), oom)) {
+                if (V3D_Plane.checkOnSameSide(pt, getR(oom), getPsq().getN(oom), oom)) {
+                    if (V3D_Plane.checkOnSameSide(pt, getS(oom), getPqr().getN(oom), oom)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        if (getQsr().isIntersectedBy(pt, oom)) {
+            return true;
+        }
+        if (getSpr().isIntersectedBy(pt, oom)) {
+            return true;
+        }
+        if (getPsq().isIntersectedBy(pt, oom)) {
+            return true;
+        }
+        if (getPqr().isIntersectedBy(pt, oom)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
