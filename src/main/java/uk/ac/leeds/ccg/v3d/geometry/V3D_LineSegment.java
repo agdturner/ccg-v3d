@@ -56,7 +56,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
+public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry, 
+        V3D_IntersectionAndDistanceCalculations {
 
     private static final long serialVersionUID = 1L;
 

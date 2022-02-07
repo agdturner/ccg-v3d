@@ -30,7 +30,8 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_LineSegmentsCollinear extends V3D_Line implements V3D_FiniteGeometry {
+public class V3D_LineSegmentsCollinear extends V3D_Line 
+        implements V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
 

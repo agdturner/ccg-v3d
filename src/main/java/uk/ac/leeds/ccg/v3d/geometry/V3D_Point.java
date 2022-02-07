@@ -54,7 +54,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Comparable<V3D_Point> {
+public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, 
+        V3D_IntersectionAndDistanceCalculations, Comparable<V3D_Point> {
 
     private static final long serialVersionUID = 1L;
 
@@ -675,17 +676,20 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, Compa
 
     @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return t.isIntersectedBy(this, oom);
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return t.isIntersectedBy(this, oom);
     }
 
     @Override
     public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (p.isIntersectedBy(this, oom)) {
+            return this;
+        }
+        return null;
     }
 
     @Override
