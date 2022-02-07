@@ -22,7 +22,6 @@ import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * An envelope contains all the extreme values with respect to the X, Y and Z
@@ -98,6 +97,51 @@ import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * @param e The V3D_Environment.
+     * @param en The Envelope.
+     * @param points The points to test if they are collinear.
+     * @return {@code true} iff all the points are collinear or coincident.
+     */
+    private static boolean isCollinear0(V3D_Environment e, V3D_Envelope en, V3D_Envelope.Point... points) {
+        // Get a line
+        V3D_Envelope.Line l = getLine(en, points);
+        return V3D_Line.isCollinear(e, l, points);
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param en The Envelope.
+     * @param points The points to test if they are collinear.
+     * @return {@code false} if all points are coincident. {@code true} iff all
+     * the points are collinear.
+     */
+    public static boolean isCollinear(V3D_Environment e, V3D_Envelope en, V3D_Envelope.Point... points) {
+        // For the points to be in a line at least two must be different.
+        if (V3D_Point.isCoincident(points)) {
+            return false;
+        }
+        return isCollinear0(e, en, points);
+    }
+
+    /**
+     * There should be at least two different points.
+     *
+     * @param en The Envelope.
+     * @param points Any number of points, but with two being different.
+     * @return A line defined by any two different points or null if the points
+     * are coincident.
+     */
+    public static V3D_Envelope.Line getLine(V3D_Envelope en, V3D_Envelope.Point... points) {
+        V3D_Envelope.Point p0 = points[0];
+        for (V3D_Envelope.Point p1 : points) {
+            if (!p1.equals(p0)) {
+                return en.new Line(p0, p1);
+            }
+        }
+        return null;
+    }
 
     /**
      * The minimum x-coordinate.
@@ -2706,19 +2750,19 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry {
          * false if they may intersect, but more computation is needed.
          */
         protected boolean isIntersectedBy(Line l, int oom) {
-            if (V3D_Geometrics.isCollinear(e, this, this.p, this.q, l.p)) {
+            if (V3D_Line.isCollinear(e, this, this.p, this.q, l.p)) {
                 return true;
             } else {
                 Plane pl = new Plane(this.p, this.q, l.p);
-                if (V3D_Geometrics.isCoplanar(e, pl, l.q)) {
+                if (V3D_Plane.isCoplanar(e, pl, l.q)) {
                     return true;
                 }
             }
-            if (V3D_Geometrics.isCollinear(e, this, this.p, this.q, l.q)) {
+            if (V3D_Line.isCollinear(e, this, this.p, this.q, l.q)) {
                 return true;
             } else {
                 Plane pl = new Plane(this.p, this.q, l.q);
-                return V3D_Geometrics.isCoplanar(e, pl, l.p);
+                return V3D_Plane.isCoplanar(e, pl, l.p);
             }
         }
 

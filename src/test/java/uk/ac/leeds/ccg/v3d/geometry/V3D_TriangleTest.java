@@ -28,7 +28,6 @@ import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * Test of V3D_Triangle class.
@@ -780,7 +779,7 @@ public class V3D_TriangleTest extends V3D_Test {
         l2 = new V3D_LineSegment(pP1P0P0, pP1P1P0);
         l3 = new V3D_LineSegment(pP1P1P0, pP0P0P0);
         expResult = new V3D_Triangle(pP0P0P0, pP1P0P0, pP1P1P0);
-        result = V3D_Triangle.getGeometry(e, l1, l2, l3);
+        result = V3D_Triangle.getGeometry(l1, l2, l3, e.oom);
         assertEquals(expResult, result);
         // Test 2
         l1 = new V3D_LineSegment(pP0P0P0, pP1P0P0);
@@ -792,7 +791,7 @@ public class V3D_TriangleTest extends V3D_Test {
                 new V3D_Triangle(pP0P0P0, pN1P1P0, pN1P2P0),
                 new V3D_Triangle(pP0P0P0, pP1P1P0, pN1P2P0)
         );
-        result = V3D_Triangle.getGeometry(e, l1, l2, l3);
+        result = V3D_Triangle.getGeometry(l1, l2, l3, e.oom);
         assertEquals(expResult, result);
     }
 
@@ -860,19 +859,19 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Plane pl;
         V3D_Triangle instance;
         // Test 1
-        pl  = new V3D_Plane(V3D_Plane.Y0);
+        pl = new V3D_Plane(V3D_Plane.Y0);
         pl.translate(P0P1P0);
-        instance  = new V3D_Triangle(pP0P0P0, pP2P0P0, pP0P2P0);
+        instance = new V3D_Triangle(pP0P0P0, pP2P0P0, pP0P2P0);
         assertTrue(instance.isIntersectedBy(pl, e.oom));
         // Test 2
-        pl  = V3D_Plane.X0;
-        instance  = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
+        pl = V3D_Plane.X0;
+        instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
         assertTrue(instance.isIntersectedBy(pl, e.oom));
         // Test 3
-        pl  = V3D_Plane.Y0;
+        pl = V3D_Plane.Y0;
         assertTrue(instance.isIntersectedBy(pl, e.oom));
         // Test 4
-        pl  = V3D_Plane.Z0;
+        pl = V3D_Plane.Z0;
         assertTrue(instance.isIntersectedBy(pl, e.oom));
     }
 //
@@ -909,7 +908,7 @@ public class V3D_TriangleTest extends V3D_Test {
 //    }
 
     /**
-     * Test of getDistance method, of class V3D_Triangle covered by 
+     * Test of getDistance method, of class V3D_Triangle covered by
      * {@link #testGetDistanceSquared_V3D_Point_int()}.
      */
     @Test
@@ -928,26 +927,26 @@ public class V3D_TriangleTest extends V3D_Test {
         Math_BigRational expResult;
         // Test 1
         p = pP0P0P0;
-        instance  = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
+        instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
         expResult = Math_BigRational.ZERO;
         Math_BigRational result = instance.getDistanceSquared(p, e.oom);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         p = pP1P1P0;
-        instance  = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
-        expResult = Math_BigRational.valueOf(1,2);
+        instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
+        expResult = Math_BigRational.valueOf(1, 2);
         result = instance.getDistanceSquared(p, e.oom);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         p = pN1N1P1;
-        instance  = new V3D_Triangle(pN2N2P0, pP2N2P0, pN2P2P0);
+        instance = new V3D_Triangle(pN2N2P0, pP2N2P0, pN2P2P0);
         expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(p, e.oom);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
-     * Test of getDistance method, of class V3D_Triangle covered by 
+     * Test of getDistance method, of class V3D_Triangle covered by
      * {@link #testGetDistanceSquared_V3D_Line_int()}.
      */
     @Test
@@ -967,20 +966,20 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Triangle instance;
         // Test 1
         l = new V3D_Line(pP0P0P0, pP1P0P0);
-        instance  = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
+        instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
         expResult = Math_BigRational.ZERO;
         result = instance.getDistanceSquared(l, e.oom);
         assertEquals(expResult, result);
         // Test 2
         l = new V3D_Line(pP0P0P1, pP1P0P1);
-        instance  = new V3D_Triangle(pN2N2P0, pP2N2P0, pN2P2P0);
+        instance = new V3D_Triangle(pN2N2P0, pP2N2P0, pN2P2P0);
         expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(l, e.oom);
         assertEquals(expResult, result);
     }
 
     /**
-     * Test of getDistance method, of class V3D_Triangle covered by 
+     * Test of getDistance method, of class V3D_Triangle covered by
      * {@link #testGetDistanceSquared_V3D_LineSegment_int()}.
      */
     @Test
@@ -1000,20 +999,20 @@ public class V3D_TriangleTest extends V3D_Test {
         Math_BigRational result;
         // Test 1
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
-        instance =  new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
-                expResult = Math_BigRational.ZERO;
+        instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
+        expResult = Math_BigRational.ZERO;
         result = instance.getDistanceSquared(l, e.oom);
         assertEquals(expResult, result);
         // Test 2
         l = new V3D_LineSegment(pP0P0P1, pP1P0P1);
-        instance  = new V3D_Triangle(pN2N2P0, pP2N2P0, pN2P2P0);
+        instance = new V3D_Triangle(pN2N2P0, pP2N2P0, pN2P2P0);
         expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(l, e.oom);
         assertEquals(expResult, result);
     }
 
     /**
-     * Test of getDistance method, of class V3D_Triangle covered by 
+     * Test of getDistance method, of class V3D_Triangle covered by
      * {@link #testGetDistanceSquared_V3D_Plane_int()}.
      */
     @Test
@@ -1046,7 +1045,7 @@ public class V3D_TriangleTest extends V3D_Test {
     }
 
     /**
-     * Test of getDistance method, of class V3D_Triangle covered by 
+     * Test of getDistance method, of class V3D_Triangle covered by
      * {@link #testGetDistanceSquared_V3D_Triangle_int()}.
      */
     @Test
@@ -1069,31 +1068,31 @@ public class V3D_TriangleTest extends V3D_Test {
         instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
         expResult = Math_BigRational.ZERO;
         result = instance.getDistanceSquared(t, e.oom);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         t = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
         instance = new V3D_Triangle(pP0P0P1, pP1P0P1, pP0P1P1);
         expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(t, e.oom);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         t = new V3D_Triangle(pN2N2P0, pP2N2P0, pN2P2P0);
         instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
         expResult = Math_BigRational.ZERO;
         result = instance.getDistanceSquared(t, e.oom);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 4
         t = new V3D_Triangle(pN2N2P0, pP2N2P0, pN2P2P0);
         instance = new V3D_Triangle(pP0P0P1, pP1P0P1, pP0P1P1);
         expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(t, e.oom);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 5
         t = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
         instance = new V3D_Triangle(pN1P0P0, pN1P0P1, pN1P1P0);
         expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(t, e.oom);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -1111,7 +1110,7 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_Tetrahedron_int() {
         System.out.println("getDistanceSquared");
-        V3D_Tetrahedron t ;
+        V3D_Tetrahedron t;
         V3D_Triangle instance;
         Math_BigRational expResult;
         Math_BigRational result;
@@ -1120,11 +1119,11 @@ public class V3D_TriangleTest extends V3D_Test {
         instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
         expResult = Math_BigRational.ZERO;
         result = instance.getDistanceSquared(t, e.oom);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         instance = new V3D_Triangle(pN1P1P0, pN1P0P0, pN1P0P1);
         expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(t, e.oom);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 }

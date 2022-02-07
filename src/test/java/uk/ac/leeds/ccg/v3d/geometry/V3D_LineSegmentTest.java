@@ -93,18 +93,6 @@ public class V3D_LineSegmentTest extends V3D_Test {
     }
 
     /**
-     * Test of getLength method, of class V3D_LineSegment.
-     */
-    @Test
-    public void testGetLength() {
-        System.out.println("getLength");
-        V3D_LineSegment instance = new V3D_LineSegment(pP0P0P0, pP1P1P0);
-        Math_BigRationalSqrt expResult = new Math_BigRationalSqrt(P2, e.oom, false);
-        Math_BigRationalSqrt result = instance.getLength(e.oom);
-        assertTrue(expResult.compareTo(result) == 0);
-    }
-
-    /**
      * Test of getEnvelope method, of class V3D_LineSegment.
      */
     @Test
@@ -343,23 +331,14 @@ public class V3D_LineSegmentTest extends V3D_Test {
     }
 
     /**
-     * Test of getDistance method, of class V3D_LineSegment.
+     * Test of getLength method, of class V3D_LineSegment covered by 
+     * {@link #testGetLength2()}.
      */
     @Test
-    public void testGetDistance() {
-        System.out.println("getDistance");
-        V3D_Point p;
-        V3D_LineSegment instance;
-        BigDecimal expResult;
-        BigDecimal result;
-        // Test 1
-        p = pP0P0P0;
-        instance = new V3D_LineSegment(pP1P0P0, pP1P1P0);
-        expResult = BigDecimal.ONE;
-        result = instance.getDistance(p, e.oom);
-        assertTrue(expResult.compareTo(result) == 0);
+    public void testGetLength() {
+        System.out.println("getLength");
     }
-
+    
     /**
      * Test of getLength2 method, of class V3D_LineSegment.
      */
@@ -380,49 +359,101 @@ public class V3D_LineSegmentTest extends V3D_Test {
         result = instance.getLength2(e.oom);
         assertTrue(expResult.equals(result));
     }
-
-    /**
-     * Test of getDistance method, of class V3D_LineSegment.
+    
+/**
+     * Test of getDistance method, of class V3D_LineSegment covered by 
+     * {@link #testGetDistanceSquared_V3D_Point_int()}.
      */
     @Test
     public void testGetDistance_V3D_Point_int() {
         System.out.println("getDistance");
+    }
+    
+    /**
+     * Test of getDistance method, of class V3D_LineSegment.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_Point_int() {
+        System.out.println("getDistance");
         V3D_LineSegment instance;
-        Math_BigRationalSqrt expResult;
-        Math_BigRationalSqrt result;
+        V3D_Point p;
+        Math_BigRational expResult;
+        Math_BigRational result;
         // Test 1
         instance = new V3D_LineSegment(pP0P0P0, pP1P0P0);
-        expResult = Math_BigRationalSqrt.ONE;
-        result = instance.getLength(e.oom);
+        p = pP0P0P0;
+        expResult = Math_BigRational.ZERO;
+        result = instance.getDistanceSquared(p, e.oom);
         assertTrue(expResult.equals(result));
         // Test 2
-        instance = new V3D_LineSegment(pP0P0P0, pP2P0P0);
-        expResult = new Math_BigRationalSqrt(4L, 2L);
-        result = instance.getLength(e.oom);
+        p = pP1P0P0;
+        expResult = Math_BigRational.ZERO;
+        result = instance.getDistanceSquared(p, e.oom);
         assertTrue(expResult.equals(result));
+        // Test 3
+        instance = new V3D_LineSegment(pP0P0P0, pP2P0P0);
+        p = pP1P0P0;
+        expResult = Math_BigRational.ZERO;
+        result = instance.getDistanceSquared(p, e.oom);
+        assertTrue(expResult.equals(result));
+        // Test 4
+        p = pP1P0P1;
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(p, e.oom);
+        assertTrue(expResult.equals(result));
+        // Test 5
+        p = pN1P0P1;
+        expResult = Math_BigRational.valueOf(2);
+        result = instance.getDistanceSquared(p, e.oom);
+        assertTrue(expResult.equals(result));
+    }
+    
+    /**
+     * Test of getDistance method, of class V3D_LineSegment covered by 
+     * {@link #testGetDistanceSquared_V3D_LineSegment_int()}.
+     */
+    @Test
+    public void testGetDistance_V3D_LineSegment_int() {
+        System.out.println("getDistance");
     }
 
     /**
      * Test of getDistance method, of class V3D_LineSegment.
      */
     @Test
-    public void testGetDistance_V3D_LineSegment_int() {
-        System.out.println("getDistance");
+    public void testGetDistanceSquared_V3D_LineSegment_int() {
+        System.out.println("getDistanceSquared");
         V3D_LineSegment l;
         V3D_LineSegment instance;
-        BigDecimal expResult;
-        BigDecimal result;
+        Math_BigRational expResult;
+        Math_BigRational result;
         // Test 1
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         instance = new V3D_LineSegment(pP0P1P0, pP1P1P0);
-        expResult = BigDecimal.ONE;
-        result = instance.getDistance(l, e.oom);
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(l, e.oom);
         assertTrue(expResult.equals(result));
         // Test 2
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         instance = new V3D_LineSegment(pN1P0P0, pN1P1P0);
-        expResult = BigDecimal.ONE;
-        result = instance.getDistance(l, e.oom);
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(l, e.oom);
+        assertTrue(expResult.equals(result));
+        // Test 3
+        expResult = Math_BigRational.ONE;
+        result = l.getDistanceSquared(instance, e.oom);
+        assertTrue(expResult.equals(result));
+        // Test 4
+        l = new V3D_LineSegment(pP1P0P0, pP0P1P0);
+        instance = new V3D_LineSegment(pN1P0P1, pN1P1P0);
+        expResult = Math_BigRational.ONE;
+        result = l.getDistanceSquared(instance, e.oom);
+        assertTrue(expResult.equals(result));
+        // Test 5
+        instance = new V3D_LineSegment(pP1P0P0, pP0P1P0);
+        l = new V3D_LineSegment(pN1P0P1, pN1P1P0);
+        expResult = Math_BigRational.ONE;
+        result = l.getDistanceSquared(instance, e.oom);
         assertTrue(expResult.equals(result));
     }
 
@@ -442,4 +473,61 @@ public class V3D_LineSegmentTest extends V3D_Test {
         assertTrue(expResult.equals(result));
     }
 
+    /**
+     * Test of getLineOfIntersection method, of class V3D_Line.
+     */
+    @Test
+    public void testGetLineOfIntersection_V3D_Line_int() {
+        System.out.println("getLineOfIntersection");
+        V3D_LineSegment l0 = new V3D_LineSegment(pP1P0P0, pP1P1P0);
+        V3D_Line l1 = new V3D_Line(pP0P0P0, pP0P0P1);
+        V3D_Geometry expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        V3D_Geometry result = l0.getLineOfIntersection(l1, e.oom);
+        assertTrue(expResult.equals(result));
+        // Test 2
+        l1 = new V3D_Line(pP0P0P0, pP0P1P0);
+        result = l0.getLineOfIntersection(l1, e.oom);
+        assertNull(result);
+        // Test 3
+        l0 = new V3D_LineSegment(pP1P0P1, pP1P0P2);
+        l1 = new V3D_Line(pN1P0P0, pN2P0P0);
+        expResult = new V3D_LineSegment(pP1P0P0, pP1P0P1);
+        result = l0.getLineOfIntersection(l1, e.oom);
+        assertTrue(expResult.equals(result));
+        // Test 4
+        l0 = new V3D_LineSegment(pP1P0P0, pP0P1P0);
+        l1 = new V3D_Line(pN1P0P1, pN1P1P0);
+        expResult = new V3D_LineSegment(pN1P1P0, pP0P1P0);
+        result = l0.getLineOfIntersection(l1, e.oom);
+        assertTrue(expResult.equals(result));
+    }
+    
+    /**
+     * Test of getLineOfIntersection method, of class V3D_Line.
+     */
+    @Test
+    public void testGetLineOfIntersection_V3D_LineSegment_int() {
+        System.out.println("getLineOfIntersection");
+        V3D_LineSegment l0 = new V3D_LineSegment(pP1P0P0, pP1P1P0);
+        V3D_LineSegment l1 = new V3D_LineSegment(pP0P0P0, pP0P0P1);
+        V3D_Geometry expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        V3D_Geometry result = l0.getLineOfIntersection(l1, e.oom);
+        assertTrue(expResult.equals(result));
+        // Test 2
+        l1 = new V3D_LineSegment(pP0P0P0, pP0P1P0);
+        result = l0.getLineOfIntersection(l1, e.oom);
+        assertNull(result);
+        // Test 3
+        l0 = new V3D_LineSegment(pP1P0P1, pP1P0P2);
+        l1 = new V3D_LineSegment(pN1P0P0, pN2P0P0);
+        expResult = new V3D_LineSegment(pN1P0P0, pP1P0P1);
+        result = l0.getLineOfIntersection(l1, e.oom);
+        assertTrue(expResult.equals(result));
+        // Test 4
+        l0 = new V3D_LineSegment(pP1P0P0, pP0P1P0);
+        l1 = new V3D_LineSegment(pN1P0P1, pN1P1P0);
+        expResult = new V3D_LineSegment(pN1P1P0, pP0P1P0);
+        result = l0.getLineOfIntersection(l1, e.oom);
+        assertTrue(expResult.equals(result));
+    }
 }

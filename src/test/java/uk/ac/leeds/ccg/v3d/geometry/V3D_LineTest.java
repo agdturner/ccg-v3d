@@ -980,4 +980,121 @@ public class V3D_LineTest extends V3D_Test {
         instance.rotate(axisOfRotation, theta);
         assertEquals(expResult, instance);
     }
+    
+    /**
+     * Test of isCoincident method, of class V3D_Geometrics.
+     */
+    @Test
+    public void testIsCoincident() {
+        System.out.println("isCoincident");
+        V3D_Point[] points = new V3D_Point[2];
+        points[0] = pP0P0P0;
+        points[1] = pP0P0P0;
+        assertTrue(V3D_Point.isCoincident(points));
+        points[1] = pP0P0P1;
+        assertFalse(V3D_Point.isCoincident(points));
+        points[0] = pP0P0P1;
+        assertTrue(V3D_Point.isCoincident(points));
+    }
+
+    /**
+     * Test of isCollinear method, of class V3D_Geometrics.
+     */
+    @Test
+    public void testIsCollinear_V3D_Line_V3D_PointArr() {
+        System.out.println("isCollinear");
+        V3D_Line l;
+        V3D_Point[] points = new V3D_Point[2];
+        // Test 1
+        l = new V3D_Line(pN1N1N1, pP1P1P1);
+        points[0] = pP2P2P2;
+        points[1] = pN2N2N2;
+        assertTrue(V3D_Line.isCollinear(e, l, points));
+        // Test 2
+        points[1] = pN2N2N1;
+        assertFalse(V3D_Line.isCollinear(e, l, points));
+        // Test 3
+        points[0] = pN1N2N1;
+        assertFalse(V3D_Line.isCollinear(e, l, points));
+    }
+
+    /**
+     * Test of isCollinear method, of class V3D_Geometrics.
+     */
+    @Test
+    public void testIsCollinear_V3D_PointArr() {
+        System.out.println("isCollinear");
+        V3D_Point[] points = new V3D_Point[3];
+        points[0] = pP2P2P2;
+        points[1] = pP2P2P1;
+        points[2] = pP2P2P0;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        points[2] = pP2P2N1;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        points[2] = pP2P2N2;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        // P2P1*
+        points[0] = pP2P1P2;
+        points[1] = pP2P1P1;
+        points[2] = pP2P1P0;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        points[2] = pP2P1N1;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        points[2] = pP2P1N2;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        // P2P0*
+        points[0] = pP2P0P2;
+        points[1] = pP2P0P1;
+        points[2] = pP2P0P0;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        points[2] = pP2P0N1;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        points[2] = pP2P0N2;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        // P2N1*
+        points[0] = pP2N1P2;
+        points[1] = pP2N1P1;
+        points[2] = pP2N1P0;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        points[2] = pP2N1N1;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        points[2] = pP2N1N2;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        // P2N2*
+        points[0] = pP2N2P2;
+        points[1] = pP2N2P1;
+        points[2] = pP2N2P0;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        points[2] = pP2N2N1;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        points[2] = pP2N2N2;
+        // Others
+        points = new V3D_Point[3];
+        points[0] = pP2P2P2;
+        points[1] = pN2N2N2;
+        points[2] = pN1N1N1;
+        assertTrue(V3D_Line.isCollinear(e, points));
+        points[1] = pP1P1P0;
+        assertFalse(V3D_Line.isCollinear(e, points));
+        points = new V3D_Point[3];
+        points[0] = pP2P2P2;
+        points[1] = pN2N2N2;
+        points[2] = pP1P1P1;
+        assertTrue(V3D_Line.isCollinear(e, points));
+    }
+
+    /**
+     * Test of getLine method, of class V3D_Geometrics. No test needed.
+     */
+    @Test
+    @Disabled
+    public void testGetLine() {
+        System.out.println("getLine");
+        V3D_Point[] points = null;
+        V3D_Line expResult = null;
+        V3D_Line result = V3D_Line.getLine(e, points);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
 }

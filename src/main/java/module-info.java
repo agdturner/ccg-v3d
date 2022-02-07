@@ -28,7 +28,6 @@ module uk.ac.leeds.ccg.v3d {
      * Exports.
      */
     exports uk.ac.leeds.ccg.v3d.core;
-    exports uk.ac.leeds.ccg.v3d.geometrics;
     exports uk.ac.leeds.ccg.v3d.geometry;
     exports uk.ac.leeds.ccg.v3d.geometry.light;
 }

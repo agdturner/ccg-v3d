@@ -22,7 +22,6 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * 3D representation of an infinite plane. The plane is defined by three points
@@ -79,6 +78,145 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public static final V3D_Plane Z0 = new V3D_Plane(new V3D_Environment(),
             V3D_Vector.ZERO, V3D_Vector.ZERO, V3D_Vector.I, V3D_Vector.J);
+
+    /**
+     * @param e The V3D_Environment.
+     * @param p The plane to test points are coplanar with.
+     * @param points The points to test if they are coplanar with p.
+     * @return {@code true} iff all points are coplanar with p.
+     */
+    public static boolean isCoplanar(V3D_Environment e, V3D_Plane p, V3D_Point... points) {
+        for (V3D_Point pt : points) {
+            if (!p.isIntersectedBy(pt, e.oom)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param p The plane to test points are coplanar with.
+     * @param points The points to test if they are coplanar with p.
+     * @return {@code true} iff all points are coplanar with p.
+     */
+    private static boolean isCoplanar(V3D_Environment e, V3D_Plane p, V3D_Vector... points) {
+        for (V3D_Vector pt : points) {
+            V3D_Point point = new V3D_Point(e, p.offset, pt);
+            if (!p.isIntersectedBy(point, e.oom)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param p The plane to test points are coplanar with.
+     * @param points The points to test if they are coplanar with p.
+     * @return {@code true} iff all points are coplanar with p.
+     */
+    public static boolean isCoplanar(V3D_Environment e, V3D_Envelope.Plane p, V3D_Envelope.Point... points) {
+        for (V3D_Envelope.Point pt : points) {
+            if (!p.isIntersectedBy(pt, e.oom)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param points The points to test if they are coplanar.
+     * @return {@code false} if points are coincident or collinear. {@code true}
+     * iff all points are coplanar.
+     */
+    public static boolean isCoplanar(V3D_Environment e, V3D_Point... points) {
+        // For the points to be in a plane at least one must not be collinear.
+        if (V3D_Point.isCoincident(points)) {
+            return false;
+        }
+        if (!V3D_Line.isCollinear0(e, points)) {
+            V3D_Plane p = getPlane0(e, points);
+            return isCoplanar(e, p, points);
+        }
+        return false;
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param points The points to test if they are coplanar.
+     * @return {@code false} if points are coincident or collinear. {@code true}
+     * iff all points are coplanar.
+     */
+    public static boolean isCoplanar(V3D_Environment e, V3D_Vector... points) {
+        // For the points to be in a plane at least one must not be collinear.
+        if (V3D_Point.isCoincident(points)) {
+            return false;
+        }
+        if (!V3D_Line.isCollinear0(e, points)) {
+            V3D_Plane p = getPlane0(e, points);
+            return isCoplanar(e, p, points);
+        }
+        return false;
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param points The points from which a plane is to be derived.
+     * @return A plane that may or may not contain all the points or
+     * {@code null} if there is no such plane (if the points are coincident or
+     * collinear).
+     */
+    public static V3D_Plane getPlane(V3D_Environment e, V3D_Point... points) {
+        V3D_Line l = V3D_Line.getLine(e, points);
+        if (l == null) {
+            return null;
+        }
+        for (V3D_Point p : points) {
+            if (!V3D_Line.isCollinear(e, l, p)) {
+                //return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
+                return new V3D_Plane(e, l.getP(e.oom).getVector(e.oom), l.getQ(e.oom).getVector(e.oom), p.getVector(e.oom));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param points The points from which a plane is to be derived.
+     * @return A plane that may or may not contain all the points or
+     * {@code null} if there is no such plane. This does not test if the points are coincident or
+     * collinear.
+     */
+    private static V3D_Plane getPlane0(V3D_Environment e, V3D_Point... points) {
+        V3D_Line l = V3D_Line.getLine(e, points);
+        for (V3D_Point p : points) {
+            if (!V3D_Line.isCollinear(e, l, p)) {
+                //return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
+                return new V3D_Plane(e, V3D_Vector.ZERO, l.getP(e.oom).getVector(e.oom), l.getQ(e.oom).getVector(e.oom), p.getVector(e.oom));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param points The points from which a plane is to be derived.
+     * @return A plane that may or may not contain all the points or
+     * {@code null} if there is no such plane. This does not test if the points are coincident or
+     * collinear.
+     */
+    private static V3D_Plane getPlane0(V3D_Environment e, V3D_Vector... points) {
+        V3D_Line l = V3D_Line.getLine(e, points);
+        for (V3D_Vector p : points) {
+            if (!V3D_Line.isCollinear(e, l, p)) {
+                //return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
+                return new V3D_Plane(e, l.offset, l.getP(), l.getQ(), p);
+            }
+        }
+        return null;
+    }
 
 //    /**
 //     * True iff q is at the origin.
@@ -167,7 +305,7 @@ public class V3D_Plane extends V3D_Geometry {
         this.p = p;
         this.q = q;
         this.r = r;
-        if (V3D_Geometrics.isCoplanar(e, p, q, r)) {
+        if (isCoplanar(e, p, q, r)) {
             throw new RuntimeException("The points do not define a plane.");
         }
     }
@@ -1351,7 +1489,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
     public boolean equals(V3D_Plane pl) {
-        return V3D_Geometrics.isCoplanar(e, this, pl.getP(), pl.getQ(),
+        return isCoplanar(e, this, pl.getP(), pl.getQ(),
                 pl.getR());
     }
 
@@ -1684,4 +1822,7 @@ public class V3D_Plane extends V3D_Geometry {
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
         return t.getDistanceSquared(this, oom);
     }
+    
+    
+    
 }

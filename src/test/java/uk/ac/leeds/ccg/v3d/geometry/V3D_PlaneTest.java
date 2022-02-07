@@ -29,7 +29,6 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
-import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * Test of V3D_Plane class.
@@ -2763,10 +2762,10 @@ public class V3D_PlaneTest extends V3D_Test {
         pl = new V3D_Plane(new V3D_Point(e, 7, 11, 0), new V3D_Vector(0, 0, 3));
         instance = new V3D_Plane(new V3D_Point(e, 1, 0, 0), new V3D_Vector(5, 5, 0));
         V3D_Point p2 = new V3D_Point(e, 0.5d, 0.5d, 0);
-        assertTrue(V3D_Geometrics.isCoplanar(e, pl, p2));
+        assertTrue(V3D_Plane.isCoplanar(e, pl, p2));
         V3D_Vector v2 = new V3D_Vector(-15, 15, 0);
         //assertTrue(V3D_Geometrics.isCoplanar(oom, pl, p2.apply(v2, oom)));
-        assertTrue(V3D_Geometrics.isCoplanar(e, pl, new V3D_Point(e, p2.offset, p2.rel.add(v2, e.oom))));
+        assertTrue(V3D_Plane.isCoplanar(e, pl, new V3D_Point(e, p2.offset, p2.rel.add(v2, e.oom))));
         //assertTrue(V3D_Geometrics.isCoplanar(oom, pl, new V3D_Point(p2.offset.add(v2, oom), p2.rel)));
 
         //expResult = new V3D_Line(p2, v2, oom);
@@ -4150,4 +4149,67 @@ public class V3D_PlaneTest extends V3D_Test {
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
+    
+    /**
+     * Test of isCoplanar method, of class V3D_Geometrics.
+     */
+    @Test
+    public void testIsCoplanar_3args() {
+        System.out.println("isCoplanar");
+        V3D_Plane p;
+        V3D_Point[] points;
+        // Test 1
+        p = new V3D_Plane(pP0P0P0, pP1P0P0, pP0P1P0);
+        points = new V3D_Point[3];
+        points[0] = pP2P2P0;
+        points[1] = pN2P2P0;
+        points[2] = pP2N2P0;
+        assertTrue(V3D_Plane.isCoplanar(e, p, points));
+        // Test 2
+        points[2] = pP2N2P1;
+        assertFalse(V3D_Plane.isCoplanar(e, p, points));
+        // Test 3
+        p = new V3D_Plane(pP0P0P0, pP0P1P0, pP0P0P1);
+        points[0] = pP0P2P2;
+        points[1] = pP0N2P2;
+        points[2] = pP0P2N2;
+        assertTrue(V3D_Plane.isCoplanar(e, p, points));
+        // Test 4
+        points[2] = pP2N2P1;
+        assertFalse(V3D_Plane.isCoplanar(e, p, points));
+    }
+
+    /**
+     * Test of isCoplanar method, of class V3D_Geometrics.
+     */
+    @Test
+    public void testIsCoplanar_int_V3D_PointArr() {
+        System.out.println("isCoplanar");
+        V3D_Point[] points = new V3D_Point[6];
+        points[0] = pP0P0P0;
+        points[1] = pP0P1P0;
+        points[2] = pP0P0P1;
+        points[3] = pP0P2P2;
+        points[4] = pP0N2P2;
+        points[5] = pP0P2N2;
+        assertTrue(V3D_Plane.isCoplanar(e, points));
+        // Test 2
+        points[2] = pP2N2P1;
+        assertFalse(V3D_Plane.isCoplanar(e, points));
+    }
+
+    /**
+     * Test of getPlane method, of class V3D_Geometrics. No test needed.
+     */
+    @Test
+    @Disabled
+    public void testGetPlane() {
+        System.out.println("getPlane");
+        V3D_Point[] points = null;
+        V3D_Plane expResult = null;
+        V3D_Plane result = V3D_Plane.getPlane(e, points);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
 }

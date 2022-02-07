@@ -796,7 +796,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                                 } else if (grp instanceof V3D_Point grpp) {
                                     throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (point and two line segments).
                                 } else {
-                                    return getGeometry(e, (V3D_LineSegment) gpq, (V3D_LineSegment) gqr, (V3D_LineSegment) grp);
+                                    return getGeometry((V3D_LineSegment) gpq, 
+                                            (V3D_LineSegment) gqr, 
+                                            (V3D_LineSegment) grp, e.oom);
                                 }
                             }
                         }
@@ -936,7 +938,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 if (r.equals(p)) {
                     return V3D_LineSegment.getGeometry(r, q);
                 } else {
-                    return new V3D_Triangle(p,q,r);
+                    return new V3D_Triangle(p, q, r);
 //                    return new V3D_Triangle(p.e, V3D_Vector.ZERO,
 //                            p.getVector(p.e.oom),
 //                            q.getVector(p.e.oom), r.getVector(p.e.oom));
@@ -951,20 +953,22 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      * unique points then a triangle is returned. If there are 4 or more unique
      * points, then contiguous coplanar triangles are returned.
      *
+     * 
      * @param l1 A line segment.
      * @param l2 A line segment.
      * @param l3 A line segment.
+     * @param oom The Order of Magnitude for the precision.
      * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or
      * {@code new V3D_Triangle(p, q, r)}
      */
-    protected static V3D_Geometry getGeometry(V3D_Environment e, 
-            V3D_LineSegment l1, V3D_LineSegment l2,            V3D_LineSegment l3) {
-        V3D_Point l1p = l1.getP(e.oom);
-        V3D_Point l1q = l1.getQ(e.oom);
-        V3D_Point l2p = l2.getP(e.oom);
-        V3D_Point l2q = l2.getQ(e.oom);
-        V3D_Point l3p = l3.getP(e.oom);
-        V3D_Point l3q = l3.getQ(e.oom);
+    protected static V3D_Geometry getGeometry(V3D_LineSegment l1, 
+            V3D_LineSegment l2, V3D_LineSegment l3, int oom) {
+        V3D_Point l1p = l1.getP(oom);
+        V3D_Point l1q = l1.getQ(oom);
+        V3D_Point l2p = l2.getP(oom);
+        V3D_Point l2q = l2.getQ(oom);
+        V3D_Point l3p = l3.getP(oom);
+        V3D_Point l3q = l3.getQ(oom);
         HashSet<V3D_Point> points = new HashSet<>();
         points.add(l1p);
         points.add(l1q);
@@ -983,9 +987,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
             V3D_Triangle t2;
             // Case: closed polygon with 4 sides
             // Find the two unique points
-            V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, e.oom);
-            V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, e.oom);
-            V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, e.oom);
+            V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, oom);
+            V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, oom);
+            V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, oom);
             if (illl2 == null) {
                 V3D_Point op1 = l1.getOtherPoint(illl3);
                 V3D_Point op2 = l2.getOtherPoint(il2l3);
@@ -1012,9 +1016,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
             V3D_Triangle t3;
             // Case: closed polygon with 4 sides
             // Find the two unique points
-            V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, e.oom);
-            V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, e.oom);
-            V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, e.oom);
+            V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, oom);
+            V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, oom);
+            V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, oom);
             // Find the two lines that intersect
             if (illl2 == null) {
                 if (illl3 == null) {
@@ -1052,20 +1056,20 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
              * lines. This will be an extra side to the triangle.
              */
             // dl1l2
-            Math_BigRational dl1pl2p = l1p.getDistanceSquared(l2p, e.oom);
-            Math_BigRational dl1pl2q = l1p.getDistanceSquared(l2q, e.oom);
-            Math_BigRational dl1ql2p = l1q.getDistanceSquared(l2p, e.oom);
-            Math_BigRational dl1ql2q = l1q.getDistanceSquared(l2q, e.oom);
+            Math_BigRational dl1pl2p = l1p.getDistanceSquared(l2p, oom);
+            Math_BigRational dl1pl2q = l1p.getDistanceSquared(l2q, oom);
+            Math_BigRational dl1ql2p = l1q.getDistanceSquared(l2p, oom);
+            Math_BigRational dl1ql2q = l1q.getDistanceSquared(l2q, oom);
             // dl1l3
-            Math_BigRational dl1pl3p = l1p.getDistanceSquared(l3p, e.oom);
-            Math_BigRational dl1pl3q = l1p.getDistanceSquared(l3q, e.oom);
-            Math_BigRational dl1ql3p = l1q.getDistanceSquared(l3p, e.oom);
-            Math_BigRational dl1ql3q = l1q.getDistanceSquared(l3q, e.oom);
+            Math_BigRational dl1pl3p = l1p.getDistanceSquared(l3p, oom);
+            Math_BigRational dl1pl3q = l1p.getDistanceSquared(l3q, oom);
+            Math_BigRational dl1ql3p = l1q.getDistanceSquared(l3p, oom);
+            Math_BigRational dl1ql3q = l1q.getDistanceSquared(l3q, oom);
 //            // dl2l3
-//            Math_BigRational dl2pl3p = l2p.getDistanceSquared(l3p, e.oom);
-//            Math_BigRational dl2pl3q = l2p.getDistanceSquared(l3q, e.oom);
-//            Math_BigRational dl2ql3p = l2q.getDistanceSquared(l3p, e.oom);
-//            Math_BigRational dl2ql3q = l2q.getDistanceSquared(l3q, e.oom);
+//            Math_BigRational dl2pl3p = l2p.getDistanceSquared(l3p, oom);
+//            Math_BigRational dl2pl3q = l2p.getDistanceSquared(l3q, oom);
+//            Math_BigRational dl2ql3p = l2q.getDistanceSquared(l3p, oom);
+//            Math_BigRational dl2ql3q = l2q.getDistanceSquared(l3q, oom);
             if (dl1pl2p.compareTo(dl1pl2q) == -1) {
                 if (dl1pl2p.compareTo(dl1ql2q) == -1) {
                     t1 = new V3D_Triangle(l1p, l1q, l2p);
@@ -1167,7 +1171,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      * @param l2 A line segment and triangle edge.
      * @return a triangle for which l1 and l2 are edges
      */
-    protected static V3D_Geometry getGeometry(V3D_LineSegment l1, 
+    protected static V3D_Geometry getGeometry(V3D_LineSegment l1,
             V3D_LineSegment l2) {
         V3D_Point pt = (V3D_Point) l1.getIntersection(l2, l1.e.oom);
         V3D_Point l1p = l1.getP(l1.e.oom);
@@ -1189,7 +1193,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 
     /**
      * For getting the point opposite a side of a triangle given the side.
-     * 
+     *
      * @param l a line segment either equal to {@link #getPQ()},
      * {@link #getQR()} or {@link #getRP()}.
      * @return The point of {@code this} that does not intersect with {@code l}.
@@ -1254,6 +1258,16 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
         V3D_Point pt = new V3D_Point(p);
         pt.setOffset(offset);
+        if (isCoplanar(e, new V3D_Plane(this), p)) {
+            if (isIntersectedBy(pt, oom)) {
+                return Math_BigRational.ZERO;
+            } else {
+                Math_BigRational pqd2 = getPQ().getDistanceSquared(p, oom);
+                Math_BigRational qrd2 = getQR().getDistanceSquared(p, oom);
+                Math_BigRational rpd2 = getRP().getDistanceSquared(p, oom);
+                return Math_BigRational.min(pqd2, qrd2, rpd2);
+            }
+        }
         V3D_Point poi = (new V3D_Plane(this)).getPointOfProjectedIntersection(p, oom);
         Math_BigRational poid2 = poi.getDistanceSquared(pt, oom);
         if (getEnvelope().isIntersectedBy(poi, oom)) {

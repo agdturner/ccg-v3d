@@ -23,7 +23,6 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.geometrics.V3D_Geometrics;
 
 /**
  * 3D representation of an infinite length line. The line passes through the
@@ -99,6 +98,143 @@ public class V3D_Line extends V3D_Geometry {
      */
     public static final V3D_Line Z_AXIS = new V3D_Line(
             new V3D_Environment(), V3D_Vector.ZERO, V3D_Vector.K);
+
+    /**
+     * @param e The V3D_Environment.
+     * @param l The line to test points are collinear with.
+     * @param points The points to test if they are collinear with l.
+     * @return {@code true} iff all points are collinear with l.
+     */
+    public static boolean isCollinear(V3D_Environment e, V3D_Line l, V3D_Point... points) {
+        for (V3D_Point p : points) {
+            if (!l.isIntersectedBy(p, e.oom)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param l The line to test points are collinear with.
+     * @param points The points to test if they are collinear with l.
+     * @return {@code true} iff all points are collinear with l.
+     */
+    public static boolean isCollinear(V3D_Environment e, V3D_Line l, V3D_Vector... points) {
+        V3D_Vector lv = l.getV(e.oom);
+        for (V3D_Vector p : points) {
+            if (!lv.isScalarMultiple(p, e.oom)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param l The line to test points are collinear with.
+     * @param points The points to test if they are collinear with l.
+     * @return {@code true} iff all points are collinear with l.
+     */
+    public static boolean isCollinear(V3D_Environment e, V3D_Envelope.Line l, V3D_Envelope.Point... points) {
+        for (V3D_Envelope.Point p : points) {
+            if (!l.isIntersectedBy(p, e.oom)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param points The points to test if they are collinear.
+     * @return {@code false} if all points are coincident. {@code true} iff all
+     * the points are collinear.
+     */
+    public static boolean isCollinear(V3D_Environment e, V3D_Vector... points) {
+        // For the points to be in a line at least two must be different.
+        if (V3D_Point.isCoincident(points)) {
+            return false;
+        }
+        return isCollinear0(e, points);
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param points The points to test if they are collinear.
+     * @return {@code false} if all points are coincident. {@code true} iff all
+     * the points are collinear.
+     */
+    public static boolean isCollinear(V3D_Environment e, V3D_Point... points) {
+        // For the points to be in a line at least two must be different.
+        if (V3D_Point.isCoincident(points)) {
+            return false;
+        }
+        return isCollinear0(e, points);
+    }
+
+
+    /**
+     * @param e The V3D_Environment.
+     * @param points The points to test if they are collinear.
+     * @return {@code true} iff all the points are collinear or coincident.
+     */
+    public static boolean isCollinear0(V3D_Environment e, V3D_Vector... points) {
+        // Get a line
+        V3D_Line l = getLine(e, points);
+        return isCollinear(e, l, points);
+    }
+
+    /**
+     * @param e The V3D_Environment.
+     * @param points The points to test if they are collinear.
+     * @return {@code true} iff all the points are collinear or coincident.
+     */
+    public static boolean isCollinear0(V3D_Environment e, V3D_Point... points) {
+        // Get a line
+        V3D_Line l = getLine(e, points);
+        return isCollinear(e, l, points);
+    }
+
+
+    /**
+     * There should be at least two different points.
+     *
+     * @param e The V3D_Environment.
+     * @param points Any number of points, but with two being different.
+     * @return A line defined by any two different points or null if the points
+     * are coincident.
+     */
+    public static V3D_Line getLine(V3D_Environment e, V3D_Point... points) {
+        V3D_Point p0 = points[0];
+        for (V3D_Point p1 : points) {
+            if (!p1.equals(p0)) {
+                //return new V3D_Line(p0, p1, -1);
+                return new V3D_Line(e, p0.getVector(e.oom), p1.getVector(e.oom));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * There should be at least two different points.
+     *
+     * @param e The V3D_Environment.
+     * @param points Any number of points, but with two being different.
+     * @return A line defined by any two different points or null if the points
+     * are coincident.
+     */
+    public static V3D_Line getLine(V3D_Environment e, V3D_Vector... points) {
+        V3D_Vector p0 = points[0];
+        for (V3D_Vector p1 : points) {
+            if (!p1.equals(p0)) {
+                //return new V3D_Line(p0, p1, -1);
+                return new V3D_Line(e, p0, p1);
+            }
+        }
+        return null;
+    }
+
 
     /**
      * A point relative to {@link #offset} that defines the line.
@@ -484,26 +620,26 @@ public class V3D_Line extends V3D_Geometry {
         V3D_Point tp = getP(oom);
         V3D_Point tq = getQ(oom);
         V3D_Point lp = l.getP(oom);
-        if (V3D_Geometrics.isCollinear(e, tp, tq, lp)) {
+        if (isCollinear(e, tp, tq, lp)) {
             return true;
         } else {
             //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
             V3D_Plane pl = new V3D_Plane(e, V3D_Vector.ZERO, tp.getVector(oom),
                     tq.getVector(oom), lp.getVector(oom));
-            if (V3D_Geometrics.isCoplanar(e, pl, l.getQ(oom))) {
+            if (V3D_Plane.isCoplanar(e, pl, l.getQ(oom))) {
                 if (!isParallel(l, oom)) {
                     return true;
                 }
             }
         }
         V3D_Point lq = l.getQ(oom);
-        if (V3D_Geometrics.isCollinear(e, tp, tq, lq)) {
+        if (isCollinear(e, tp, tq, lq)) {
             return true;
         } else {
             //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
             V3D_Plane pl = new V3D_Plane(e, V3D_Vector.ZERO, tp.getVector(oom),
                     tq.getVector(oom), lp.getVector(oom));
-            if (V3D_Geometrics.isCoplanar(e, pl, lq)) {
+            if (V3D_Plane.isCoplanar(e, pl, lq)) {
                 if (!isParallel(l, oom)) {
                     return true;
                 }
@@ -1110,7 +1246,7 @@ public class V3D_Line extends V3D_Geometry {
         //return new V3D_LineSegment(tpi.getVector(oom), lpi.getVector(oom), oom);
         //return new V3D_LineSegment(e, tpi, lpi);
         return V3D_LineSegment.getGeometry(new V3D_Point(e, tpi), new V3D_Point(e, lpi));
-        
+
 //        // p13
 //        //V3D_Vector plp = new V3D_Vector(p, lp, oom);
 //        V3D_Vector plp = new V3D_Vector(tp, lp, oom);
@@ -1511,20 +1647,21 @@ public class V3D_Line extends V3D_Geometry {
      */
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
-        if (l.isIntersectedBy(this, oom)) {
-            return BigDecimal.ZERO;
-        }
-        BigDecimal lpd = getDistance(l.getP(oom), oom);
-        BigDecimal lqd = getDistance(l.getQ(oom), oom);
-        BigDecimal ll = l.getLength(oom).getSqrt(oom).toBigDecimal(oom);
-        BigDecimal min = lpd.min(lqd);
-        if (ll.compareTo(min) == 1) {
-            // Get the line of intersection and calculate the length.
-            return ((V3D_LineSegment) getLineOfIntersection(l, oom)).getLength(oom)
-                    .getSqrt(oom).toBigDecimal(oom);
-        } else {
-            return min;
-        }
+        return l.getDistance(this, oom);
+//        if (l.isIntersectedBy(this, oom)) {
+//            return BigDecimal.ZERO;
+//        }
+//        BigDecimal lpd = getDistance(l.getP(oom), oom);
+//        BigDecimal lqd = getDistance(l.getQ(oom), oom);
+//        BigDecimal ll = l.getLength(oom).getSqrt(oom).toBigDecimal(oom);
+//        BigDecimal min = lpd.min(lqd);
+//        if (ll.compareTo(min) == 1) {
+//            // Get the line of intersection and calculate the length.
+//            return ((V3D_LineSegment) getLineOfIntersection(l, oom)).getLength(oom)
+//                    .getSqrt(oom).toBigDecimal(oom);
+//        } else {
+//            return min;
+//        }
     }
 
     /**
