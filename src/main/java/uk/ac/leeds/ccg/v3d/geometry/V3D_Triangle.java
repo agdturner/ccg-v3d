@@ -659,8 +659,11 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                                 (V3D_Point) gRP);
                     }
                 } else {
-                    return V3D_LineSegment.getGeometry((V3D_Point) gPQ,
-                            (V3D_Point) gQR);
+                    if (gQR instanceof V3D_Point gQRp) {
+                        return V3D_LineSegment.getGeometry((V3D_Point) gPQ, gQRp);
+                    } else {
+                        return gQR;
+                    }
                 }
             }
         }

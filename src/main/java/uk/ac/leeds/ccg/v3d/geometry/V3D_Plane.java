@@ -253,7 +253,8 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * Creates a new instance.
+     * Creates a new instance. {@link p}, {@link q} and {@link r} must all be 
+     * different. 
      *
      * @param p Used to initialise {@link #e}, {@link #offset} and {@link #p}.
      * @param q Used to initialise {@link #q}.

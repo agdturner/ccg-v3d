@@ -1110,8 +1110,10 @@ public class V3D_Line extends V3D_Geometry {
         //return new V3D_LineSegment(tpi.getVector(oom), lpi.getVector(oom), oom);
         //return new V3D_LineSegment(e, tpi, lpi);
         return V3D_LineSegment.getGeometry(new V3D_Point(e, tpi), new V3D_Point(e, lpi));
+        
 //        // p13
-//        V3D_Vector plp = new V3D_Vector(p, l.p, oom);
+//        //V3D_Vector plp = new V3D_Vector(p, lp, oom);
+//        V3D_Vector plp = new V3D_Vector(tp, lp, oom);
 //        // p43
 //        //V3D_Vector lqlp = l.v.reverse();//new V3D_Vector(l.q, l.p);
 //        V3D_Vector lqlp = l.v;//new V3D_Vector(l.q, l.p);

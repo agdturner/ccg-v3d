@@ -418,6 +418,12 @@ public class V3D_LineSegmentTest extends V3D_Test {
         expResult = BigDecimal.ONE;
         result = instance.getDistance(l, e.oom);
         assertTrue(expResult.equals(result));
+        // Test 2
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        instance = new V3D_LineSegment(pN1P0P0, pN1P1P0);
+        expResult = BigDecimal.ONE;
+        result = instance.getDistance(l, e.oom);
+        assertTrue(expResult.equals(result));
     }
 
     /**

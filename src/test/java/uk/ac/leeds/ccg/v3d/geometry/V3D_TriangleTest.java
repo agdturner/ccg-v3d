@@ -1082,43 +1082,49 @@ public class V3D_TriangleTest extends V3D_Test {
         expResult = Math_BigRational.ZERO;
         result = instance.getDistanceSquared(t, e.oom);
         assertEquals(expResult, result);
-        // Test 3
+        // Test 4
         t = new V3D_Triangle(pN2N2P0, pP2N2P0, pN2P2P0);
         instance = new V3D_Triangle(pP0P0P1, pP1P0P1, pP0P1P1);
         expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(t, e.oom);
         assertEquals(expResult, result);
+        // Test 5
+        t = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
+        instance = new V3D_Triangle(pN1P0P0, pN1P0P1, pN1P1P0);
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(t, e.oom);
+        assertEquals(expResult, result);
     }
 
-//    /**
-//     * Test of getDistance method, of class V3D_Triangle.
-//     */
-//    @Test
-//    public void testGetDistance_V3D_Tetrahedron_int() {
-//        System.out.println("getDistance");
-//        V3D_Tetrahedron t = null;
-//        int oom = 0;
-//        V3D_Triangle instance = null;
-//        BigDecimal expResult = null;
-//        BigDecimal result = instance.getDistance(t, oom);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getDistanceSquared method, of class V3D_Triangle.
-//     */
-//    @Test
-//    public void testGetDistanceSquared_V3D_Tetrahedron_int() {
-//        System.out.println("getDistanceSquared");
-//        V3D_Tetrahedron t = null;
-//        int oom = 0;
-//        V3D_Triangle instance = null;
-//        Math_BigRational expResult = null;
-//        Math_BigRational result = instance.getDistanceSquared(t, oom);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    /**
+     * Test of getDistance method, of class V3D_Triangle covered by
+     * {@link #testGetDistanceSquared_V3D_Tetrahedron_int()}.
+     */
+    @Test
+    public void testGetDistance_V3D_Tetrahedron_int() {
+        System.out.println("getDistance");
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_Triangle.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_Tetrahedron_int() {
+        System.out.println("getDistanceSquared");
+        V3D_Tetrahedron t ;
+        V3D_Triangle instance;
+        Math_BigRational expResult;
+        Math_BigRational result;
+        // Test 1
+        t = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0);
+        expResult = Math_BigRational.ZERO;
+        result = instance.getDistanceSquared(t, e.oom);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = new V3D_Triangle(pN1P1P0, pN1P0P0, pN1P0P1);
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(t, e.oom);
+        assertEquals(expResult, result);
+    }
 }

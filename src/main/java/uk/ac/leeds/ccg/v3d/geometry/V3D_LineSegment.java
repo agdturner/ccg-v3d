@@ -575,6 +575,18 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry {
                     l.getDistanceSquared(getP(oom), oom),
                     l.getDistanceSquared(getQ(oom), oom));
         } else {
+            if (loi instanceof V3D_Point loip) {
+                /**
+                 * The two lines intersect at a point that is on one of the
+                 * lines, so the shortest distance is from that point to the
+                 * non-intersection line segment.
+                 */
+                if (loip.isIntersectedBy(l, oom)) {
+                    return loip.getDistanceSquared(this, oom);
+                } else {
+                    return loip.getDistanceSquared(l, oom);
+                }
+            }
             //return loi.getDistanceSquared(l, oom);
             return ((V3D_LineSegment) loi).getLength2(oom);
         }
