@@ -354,22 +354,21 @@ public class V3D_TetrahedronTest extends V3D_Test {
         assertEquals(expResult, result);
     }
 
-//    /**
-//     * Test of getCentroid method, of class V3D_Tetrahedron.
-//     */
-//    @Test
-//    public void testGetCentroid() {
-//        System.out.println("getCentroid");
-//        int oomn6 = e.oom - 6;
-//        V3D_Tetrahedron instance = new V3D_Tetrahedron(
-//                pN2N2N2, pP2N2N2,
-//                new V3D_Point(e, (new Math_BigRationalSqrt(Math_BigRational.TWO, oomn6))
-//                        .getSqrt(oomn6).multiply(2), P2, N2),
-//                new V3D_Point(e, P0, P0, P4));
-//        V3D_Point expResult = new V3D_Point(e, P0, P0, P2);
-//        V3D_Point result = instance.getCentroid(e.oom);
-//        assertEquals(expResult, result);
-//    }
+    /**
+     * Test of getCentroid method, of class V3D_Tetrahedron.
+     */
+    @Test
+    public void testGetCentroid() {
+        System.out.println("getCentroid");
+        V3D_Tetrahedron instance = new V3D_Tetrahedron(
+                pN2N2N2, pP2N2N2, pP0P2N2,
+                new V3D_Point(e, P0, P0, P4));
+        V3D_Point expResult = new V3D_Point(e, P0P0P0, new V3D_Vector(
+                Math_BigRational.ZERO, Math_BigRational.valueOf(1, 2).negate(), 
+                Math_BigRational.valueOf(1, 2).negate()));
+        V3D_Point result = instance.getCentroid(e.oom);
+        assertEquals(expResult, result);
+    }
 
     /**
      * Test of isIntersectedBy method, of class V3D_Tetrahedron.
@@ -396,38 +395,54 @@ public class V3D_TetrahedronTest extends V3D_Test {
         assertFalse(instance.isIntersectedBy(pt, e.oom));
     }
 
-//    /**
-//     * Test of isIntersectedBy method, of class V3D_Tetrahedron.
-//     */
-//    @Test
-//    public void testIsIntersectedBy_V3D_Line_int() {
-//        System.out.println("isIntersectedBy");
-//        V3D_Line l = null;
-//        int oom = 0;
-//        V3D_Tetrahedron instance = null;
-//        boolean expResult = false;
-//        boolean result = instance.isIntersectedBy(l, oom);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of isIntersectedBy method, of class V3D_Tetrahedron.
-//     */
-//    @Test
-//    public void testIsIntersectedBy_V3D_LineSegment_int() {
-//        System.out.println("isIntersectedBy");
-//        V3D_LineSegment l = null;
-//        int oom = 0;
-//        V3D_Tetrahedron instance = null;
-//        boolean expResult = false;
-//        boolean result = instance.isIntersectedBy(l, oom);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+    /**
+     * Test of isIntersectedBy method, of class V3D_Tetrahedron.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_Line_int() {
+        System.out.println("isIntersectedBy");
+        V3D_Line l;
+        V3D_Tetrahedron instance;
+        // Test 1
+        l = new V3D_Line(pP0P0P0, pP1P0P0);
+        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        assertTrue(instance.isIntersectedBy(l, e.oom));        
+        // Test 2
+        l = new V3D_Line(pN2P0P0, pN1P0P0);
+        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        assertTrue(instance.isIntersectedBy(l, e.oom));
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Tetrahedron.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_LineSegment_int() {
+        System.out.println("isIntersectedBy");
+        V3D_LineSegment l;
+        V3D_Tetrahedron instance;
+        // Test 1
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        assertTrue(instance.isIntersectedBy(l, e.oom));
+        // Test 2
+        l = new V3D_LineSegment(pN1P0P0, pP0P0P0);
+        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        assertTrue(instance.isIntersectedBy(l, e.oom));
+        // Test 3
+        l = new V3D_LineSegment(pN2P0P0, pN1P0P0);
+        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        assertFalse(instance.isIntersectedBy(l, e.oom));
+        // Test 4
+        l = new V3D_LineSegment(pN2P0P0, pP2P0P0);
+        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        assertTrue(instance.isIntersectedBy(l, e.oom));
+        // Test 5
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        assertTrue(instance.isIntersectedBy(l, e.oom));
+    }
+
 //    /**
 //     * Test of getIntersection method, of class V3D_Tetrahedron.
 //     */

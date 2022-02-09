@@ -796,8 +796,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                                 } else if (grp instanceof V3D_Point grpp) {
                                     throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (point and two line segments).
                                 } else {
-                                    return getGeometry((V3D_LineSegment) gpq, 
-                                            (V3D_LineSegment) gqr, 
+                                    return getGeometry((V3D_LineSegment) gpq,
+                                            (V3D_LineSegment) gqr,
                                             (V3D_LineSegment) grp, e.oom);
                                 }
                             }
@@ -815,6 +815,10 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     }
 
     /**
+     * Calculate and return the centroid as a point. The original implementation
+     * used intersection, but it is simpler to get the average of the x, y and z
+     * coordinates from the points at each vertex.
+     *
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The centroid point.
      */
@@ -835,8 +839,16 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //        //System.out.println("c1=" + c1.toString());
 //        //System.out.println("c2=" + c2.toString());
 //        return c0;
-        return new V3D_Point(e, getPV().add(getQV(), oom).add(getRV(), oom)
-                .divide(Math_BigRational.valueOf(3), oom));
+//        return new V3D_Point(e, offset, getPV().add(getQV(), oom)
+//                .add(getRV(), oom).divide(Math_BigRational.valueOf(3), oom));
+        int oomn6 = oom - 6;
+        Math_BigRational dx = (p.getDX(oomn6).add(q.getDX(oomn6))
+                .add(r.getDX(oomn6))).divide(3).round(oom);
+        Math_BigRational dy = (p.getDY(oomn6).add(q.getDY(oomn6))
+                .add(r.getDY(oomn6))).divide(3).round(oom);
+        Math_BigRational dz = (p.getDZ(oomn6).add(q.getDZ(oomn6))
+                .add(r.getDZ(oomn6))).divide(3).round(oom);
+        return new V3D_Point(e, offset, new V3D_Vector(dx, dy, dz));
     }
 
     @Override
@@ -953,7 +965,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      * unique points then a triangle is returned. If there are 4 or more unique
      * points, then contiguous coplanar triangles are returned.
      *
-     * 
+     *
      * @param l1 A line segment.
      * @param l2 A line segment.
      * @param l3 A line segment.
@@ -961,7 +973,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or
      * {@code new V3D_Triangle(p, q, r)}
      */
-    protected static V3D_Geometry getGeometry(V3D_LineSegment l1, 
+    protected static V3D_Geometry getGeometry(V3D_LineSegment l1,
             V3D_LineSegment l2, V3D_LineSegment l3, int oom) {
         V3D_Point l1p = l1.getP(oom);
         V3D_Point l1q = l1.getQ(oom);

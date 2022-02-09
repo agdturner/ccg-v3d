@@ -293,8 +293,9 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
 
     /**
      * Calculate and return the volume.
-     * https://en.wikipedia.org/wiki/Tetrahedron#Volume
-     * This implementation is currently a bit rough and ready.
+     * https://en.wikipedia.org/wiki/Tetrahedron#Volume This implementation is
+     * currently a bit rough and ready.
+     *
      * @param oom The Order of Magnitude for the precision of the calculation.
      */
     @Override
@@ -304,23 +305,37 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
         int oomn6 = oom - 6;
         BigDecimal hd3 = new Math_BigRationalSqrt(
                 tpqr.getPointOfProjectedIntersection(ts, oom)
-                .getDistanceSquared(ts, oomn6), oomn6).getSqrt(oom).divide(3)
+                        .getDistanceSquared(ts, oomn6), oomn6).getSqrt(oom).divide(3)
                 .toBigDecimal(oomn6);
         return Math_BigDecimal.round(tpqr.getArea(oom - 3).multiply(hd3), oom);
     }
 
     /**
+     * Calculate and return the centroid as a point.
+     *
+     * The original implementation used intersection, but it is simpler to get
+     * the average of the x, y and z coordinates from the points at each vertex.
+     * https://www.globalspec.com/reference/52702/203279/4-8-the-centroid-of-a-tetrahedron
+     *
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The centroid point.
      */
     public V3D_Point getCentroid(int oom) {
-        V3D_LineSegment a = new V3D_LineSegment(e,
-                getPqr().getCentroid(oom).getVector(oom), 
-                getQsr().getQ().getVector(oom));
-        V3D_LineSegment b = new V3D_LineSegment(e,
-                getPsq().getCentroid(oom).getVector(oom), 
-                getQsr().getR().getVector(oom));
-        return (V3D_Point) a.getIntersection(b, oom);
+        int oomn6 = oom - 6;
+//        V3D_LineSegment a = new V3D_LineSegment(e,
+//                getPqr().getCentroid(oom).getVector(oom), 
+//                getQsr().getQ().getVector(oom));
+//        V3D_LineSegment b = new V3D_LineSegment(e,
+//                getPsq().getCentroid(oom).getVector(oom), 
+//                getQsr().getR().getVector(oom));
+//        return (V3D_Point) a.getIntersection(b, oom);
+        Math_BigRational dx = (p.getDX(oomn6).add(q.getDX(oomn6))
+                .add(r.getDX(oomn6)).add(s.getDX(oomn6))).divide(4).round(oom);
+        Math_BigRational dy = (p.getDY(oomn6).add(q.getDY(oomn6))
+                .add(r.getDY(oomn6)).add(s.getDY(oomn6))).divide(4).round(oom);
+        Math_BigRational dz = (p.getDZ(oomn6).add(q.getDZ(oomn6))
+                .add(r.getDZ(oomn6)).add(s.getDZ(oomn6))).divide(4).round(oom);
+        return new V3D_Point(e, offset, new V3D_Vector(dx, dy, dz));
     }
 
     @Override
@@ -351,12 +366,48 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
 
     @Override
     public boolean isIntersectedBy(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (getPqr().isIntersectedBy(l, oom)) {
+            return true;
+        } else {
+            if (getPsq().isIntersectedBy(l, oom)) {
+                return true;
+            } else {
+                return getQsr().isIntersectedBy(l, oom);
+//                // No need for the final test
+//                if (getQsr().isIntersectedBy(l, oom)) {
+//                    return true;
+//                } else {
+//                    return getSpr().isIntersectedBy(l, oom);
+//                }
+            }
+        }
     }
 
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isIntersectedBy(l.getP(oom), oom)) {
+            return true;
+        } else {
+            if (isIntersectedBy(l.getQ(oom), oom)) {
+                return true;
+            } else {
+                if (getPqr().isIntersectedBy(l, oom)) {
+                    return true;
+                } else {
+                    if (getPsq().isIntersectedBy(l, oom)) {
+                        return true;
+                    } else {
+                        return getQsr().isIntersectedBy(l, oom);
+//                        // No need for the final test
+//                        if (getQsr().isIntersectedBy(l, oom)) {
+//                            return true;
+//                        } else {
+//                            return getSpr().isIntersectedBy(l, oom);
+//                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override

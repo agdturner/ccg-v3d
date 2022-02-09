@@ -422,10 +422,11 @@ public class V3D_Vector implements Serializable {
      * @return Scaled vector.
      */
     public V3D_Vector divide(Math_BigRational s, int oom) {
+        int oomn5 = oom - 5;
         return new V3D_Vector(
-                getDX(oom).divide(s),
-                getDY(oom).divide(s),
-                getDZ(oom).divide(s));
+                getDX(oomn5).divide(s).round(oom),
+                getDY(oomn5).divide(s).round(oom),
+                getDZ(oomn5).divide(s).round(oom));
     }
 
     /**
