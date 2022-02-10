@@ -493,7 +493,19 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         if (lpqi == null) {
             if (lqri == null) {
                 if (lrpi == null) {
-                    return null;
+                    if (g instanceof V3D_Line gl) {
+                        if (isIntersectedBy(gl, oom)) {
+                            return g;
+                        } else {
+                            return null;
+                        }
+                    } else {
+                        if (isIntersectedBy((V3D_Point) g, oom)) {
+                            return g;
+                        } else {
+                            return null;
+                        }
+                    }
                 } else {
                     return lrpi;
                 }
@@ -950,6 +962,19 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 if (r.equals(p)) {
                     return V3D_LineSegment.getGeometry(r, q);
                 } else {
+                    if (V3D_Line.isCollinear(p.e, p, q, r)) {
+                        V3D_LineSegment pq = new V3D_LineSegment(p, q);
+                        if (pq.isIntersectedBy(r, p.e.oom)) {
+                            return pq;
+                        } else {
+                            V3D_LineSegment qr = new V3D_LineSegment(q, r);
+                            if (qr.isIntersectedBy(p, p.e.oom)) {
+                                return qr;
+                            } else {
+                                return new V3D_LineSegment(p, r);
+                            }
+                        }
+                    }
                     return new V3D_Triangle(p, q, r);
 //                    return new V3D_Triangle(p.e, V3D_Vector.ZERO,
 //                            p.getVector(p.e.oom),

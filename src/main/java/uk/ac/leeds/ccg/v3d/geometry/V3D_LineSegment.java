@@ -72,6 +72,13 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
     protected Math_BigRational len2;
 
     /**
+     * @param e What {@link #e} is set to.
+     */
+    public V3D_LineSegment(V3D_Environment e) {
+        super(e);
+    }
+    
+    /**
      * Create a new instance.
      *
      * @param l What {@code this} is cloned from.
@@ -112,6 +119,32 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
      */
     public V3D_LineSegment(V3D_Point p, V3D_Point q) {
         super(p, q);
+    }
+    
+    /**
+     * Create a new instance that intersects all points.
+     * 
+     * @param points Any number of collinear points, with two being different.
+     */
+    public V3D_LineSegment(V3D_Point... points) {
+        super(points[0].e);
+        V3D_Point p0 = points[0];
+        V3D_Point p1 = points[1];
+        V3D_LineSegment l = new V3D_LineSegment(p0, p1);
+        for (int i = 2; i < points.length; i ++) {
+            if (!l.isIntersectedBy(points[i], p0.e.oom)) {
+                V3D_LineSegment l2 = new V3D_LineSegment(l.getP(p0.e.oom), points[i]);
+                V3D_Point lq = l.getQ(p0.e.oom);
+                if (l2.isIntersectedBy(lq, i)) {
+                    l = l2;
+                } else {
+                    l = new V3D_LineSegment(l.getQ(p0.e.oom), points[i]);
+                }
+            }
+        }
+        this.offset = l.offset;
+        this.p = l.getP();
+        this.q = l.getQ();
     }
 
     /**
@@ -631,7 +664,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
             return new V3D_LineSegment(p, q);
         }
     }
-
+    
     /**
      * Get the line of intersection (the shortest line) between {@code this} and
      * {@code l}.
