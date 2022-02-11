@@ -467,22 +467,36 @@ public class V3D_TetrahedronTest extends V3D_Test {
         assertTrue(expResult.equals(result));
     }
 
-//    /**
-//     * Test of getIntersection method, of class V3D_Tetrahedron.
-//     */
-//    @Test
-//    public void testGetIntersection_V3D_LineSegment_int() {
-//        System.out.println("getIntersection");
-//        V3D_LineSegment l = null;
-//        int oom = 0;
-//        V3D_Tetrahedron instance = null;
-//        V3D_Geometry expResult = null;
-//        V3D_Geometry result = instance.getIntersection(l, oom);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+    /**
+     * Test of getIntersection method, of class V3D_Tetrahedron.
+     */
+    @Test
+    public void testGetIntersection_V3D_LineSegment_int() {
+        System.out.println("getIntersection");
+        V3D_LineSegment l;
+        V3D_Tetrahedron instance;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
+        // Test 1
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        result = instance.getIntersection(l, e.oom);
+        assertTrue(expResult.equals(result));
+        // Test 2
+        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        l = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(e.oom));
+        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(e.oom));
+        result = instance.getIntersection(l, e.oom);
+        assertTrue(expResult.equals(result));
+        // Test 3
+        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        l = new V3D_LineSegment(e, P0P0P0, N2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(e.oom).rel.multiply(P2, e.oom).add(P2P2P0, e.oom));
+        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(e.oom));
+        result = instance.getIntersection(l, e.oom);
+        assertTrue(expResult.equals(result));
+    }
+
 //    /**
 //     * Test of getIntersection method, of class V3D_Tetrahedron.
 //     */
