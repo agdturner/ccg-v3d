@@ -358,10 +358,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
         if (getPsq().isIntersectedBy(pt, oom)) {
             return true;
         }
-        if (getPqr().isIntersectedBy(pt, oom)) {
-            return true;
-        }
-        return false;
+        return getPqr().isIntersectedBy(pt, oom);
     }
 
     @Override
@@ -869,42 +866,70 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
 
     @Override
     public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
+        // The intersection will be a null, a point, a line segment or a triangle...
+        V3D_Geometry pqri = getPqr().getIntersection(p, oom);
+        if (pqri == null) {
+            V3D_Geometry psqi = getPsq().getIntersection(p, oom);
+            if (psqi == null) {
+                return null;
+            } else {
+                return psqi;
+            }
+        } else {
+            if (pqri instanceof V3D_Point) {
+                return pqri;
+            } else {
+                // pqri is a line segment
+                V3D_Geometry psqi = getPsq().getIntersection(p, oom);
+                if (psqi == null) {
+                    V3D_Geometry qsri = getQsr().getIntersection(p, oom);
+                    if (qsri instanceof V3D_Point qsrip) {
+                        V3D_LineSegment pqril = (V3D_LineSegment) pqri;
+                        return new V3D_Triangle(pqril.getP(oom), pqril.getQ(oom), qsrip);
+                    } else {
+                        // pqri and qsri are line segments
+                        return V3D_Triangle.getGeometry((V3D_LineSegment) pqri,
+                                (V3D_LineSegment) qsri);
+                    }
+                } else if (psqi instanceof V3D_Point psqip) {
+                    return new V3D_Triangle((V3D_LineSegment) pqri, psqip);                    
+                } else {
+                    // pqri and psqi are line segments
+                    return V3D_Triangle.getGeometry((V3D_LineSegment) pqri,
+                            (V3D_LineSegment) psqi);
+                }
+            }
+        }
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+        // The intersection will be a null, a point, a line segment, a triangle, quadrilateral, pentagon or hexagon...
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom
-    ) {
+    public BigDecimal getDistance(V3D_Point p, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Point p, int oom
-    ) {
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Point p, int oom
-    ) {
+    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom
-    ) {
+    public BigDecimal getDistance(V3D_Line l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Line l, int oom
-    ) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_LineSegment l, int oom
-    ) {
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -935,13 +960,56 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Plane p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean isIntersectedBy(V3D_Plane pl, int oom) {
+        if (getPqr().isIntersectedBy(pl, oom)) {
+            return true;
+        } else {
+            return getPsq().isIntersectedBy(pl, oom);
+        }
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        V3D_Plane pl = new V3D_Plane(t);
+        if (isIntersectedBy(pl, oom)) {
+            if (isIntersectedBy(t.getP(), oom) || isIntersectedBy(t.getQ(), oom)
+                    || isIntersectedBy(t.getR(), oom)) {
+                return true;
+            } else {
+                if (getPqr().isIntersectedBy(t, oom)) {
+                    return true;
+                } else {
+                    if (getPsq().isIntersectedBy(t, oom)) {
+                        return true;
+                    } else {
+                        if (getQsr().isIntersectedBy(t, oom)) {
+                            return true;
+                        } else {
+                            if (getSpr().isIntersectedBy(t, oom)) {
+                                return true;
+                            } else {
+                                /**
+                                 * The points of t are around the outside of
+                                 * this, but none of the edges intersect. The
+                                 * intersection of the plane of t and this can
+                                 * give a point or a triangle. If that point or
+                                 * triangle intersects t, then t intersects this
+                                 * otherwise it does not.
+                                 */
+                                V3D_Geometry g = getIntersection(pl, oom);
+                                if (g instanceof V3D_Point gp) {
+                                    return t.isIntersectedBy(gp, oom);
+                                } else {
+                                    return t.isIntersectedBy((V3D_Triangle) g, oom);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -950,47 +1018,56 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
+    public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Plane p, int oom) {
+    public BigDecimal getDistance(V3D_Plane p, int oom
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Triangle t, int oom) {
+    public BigDecimal getDistance(V3D_Triangle t, int oom
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
+    public BigDecimal getDistance(V3D_Tetrahedron t, int oom
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

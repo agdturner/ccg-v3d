@@ -147,11 +147,23 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      *
      * @param l A line segment representing one of the three edges of the
      * triangle.
-     * @param r Defines the other point relative l.offset that defines the
+     * @param r Defines the other point relative to l.offset that defines the
      * triangle.
      */
     public V3D_Triangle(V3D_LineSegment l, V3D_Vector r) {
         super(l.e, l.offset, l.getP(), l.getQ(), r);
+    }
+
+    /**
+     * Creates a new triangle.
+     *
+     * @param l A line segment representing one of the three edges of the
+     * triangle.
+     * @param r Defines the other point relative to l.offset that defines the
+     * triangle.
+     */
+    public V3D_Triangle(V3D_LineSegment l, V3D_Point r) {
+        super(l.getP(l.e.oom), l.getQ(l.e.oom), r);
     }
 
     /**
