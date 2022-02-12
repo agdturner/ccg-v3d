@@ -605,14 +605,14 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Geometry result = instance.getIntersection(t, e.oom);
         assertEquals(expResult, result);
         // Test 2
-        t = new V3D_Triangle(pN1N1P0, pP0P2P0, new V3D_Point(e, N3, N1, P0));
+        t = new V3D_Triangle(pN1N1P0, pP0P2P0, new V3D_Point(e, P3, N1, P0));
         instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
         expResult = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
         result = instance.getIntersection(t, e.oom);
         assertEquals(expResult, result);
         // Test 3
         t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
-        instance = new V3D_Triangle(pN1N1P0, pP0P2P0, new V3D_Point(e, N3, N1, P0));
+        instance = new V3D_Triangle(pN1N1P0, pP0P2P0, new V3D_Point(e, P3, N1, P0));
         expResult = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0);
         result = instance.getIntersection(t, e.oom);
         assertEquals(expResult, result);

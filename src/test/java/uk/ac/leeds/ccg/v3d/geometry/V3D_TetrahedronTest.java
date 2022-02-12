@@ -513,7 +513,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         expResult = new V3D_Triangle(pP0P0P0, pP0P0P2, pP0N2P0);
         result = instance.getIntersection(p, e.oom);
         assertEquals(expResult, result);
-        // Test 1
+        // Test 2
         p = new V3D_Plane(V3D_Plane.X0);
         p.translate(P1P0P0);
         instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
@@ -522,22 +522,42 @@ public class V3D_TetrahedronTest extends V3D_Test {
         assertEquals(expResult, result);
     }
 
-//    /**
-//     * Test of getIntersection method, of class V3D_Tetrahedron.
-//     */
-//    @Test
-//    public void testGetIntersection_V3D_Triangle_int() {
-//        System.out.println("getIntersection");
-//        V3D_Triangle t = null;
-//        int oom = 0;
-//        V3D_Tetrahedron instance = null;
-//        V3D_Geometry expResult = null;
-//        V3D_Geometry result = instance.getIntersection(t, oom);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+    /**
+     * Test of getIntersection method, of class V3D_Tetrahedron.
+     */
+    @Test
+    public void testGetIntersection_V3D_Triangle_int() {
+        System.out.println("getIntersection");
+        V3D_Triangle t;
+        V3D_Tetrahedron instance;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
+        // Test 1
+        t = new V3D_Triangle(pP0N2P0, pP0P2P0, pP0P0P2);
+        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        expResult = new V3D_Triangle(pP0P0P0, pP0P0P2, pP0N2P0);
+        result = instance.getIntersection(t, e.oom);
+        assertEquals(expResult, result);
+        // Test 2
+        t = new V3D_Triangle(pP1N2P0, pP1P2P0, pP1P0P2);
+        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        expResult = new V3D_Triangle(e, P0P0P0, P1N2P0, P1N1P0, P1N1P1);
+        result = instance.getIntersection(t, e.oom);
+        assertEquals(expResult, result);
+        // Test 3
+        t = new V3D_Triangle(pP1N1P0, pP1P1P0, pP1P0P1);
+        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        expResult = new V3D_Point(e, P0P0P0, P1N1P0);
+        result = instance.getIntersection(t, e.oom);
+        assertEquals(expResult, result);
+        // Test 4
+        t = new V3D_Triangle(pN1N1P0, pP1N1P0, pN1P1P0);
+        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        expResult = new V3D_Triangle(pN1N1P0, pP1N1P0, pN1P1P0);
+        result = instance.getIntersection(t, e.oom);
+        assertEquals(expResult, result);
+    }
+
 //    /**
 //     * Test of getDistance method, of class V3D_Tetrahedron.
 //     */

@@ -705,8 +705,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
         if (getEnvelope().isIntersectedBy(t.getEnvelope())) {
             if (isIntersectedBy(new V3D_Plane(t), oom)) {
-                V3D_Geometry g = super.getIntersection(this, oom);
-                //V3D_Geometry g = this.getIntersection(t, oom);
+                V3D_Geometry g = (new V3D_Plane(this)).getIntersection(t, oom);
                 if (g == null) {
                     return g;
                 } else {
@@ -727,22 +726,35 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                          * others it is a polygon which can be represented as a
                          * set of coplanar triangles.
                          */
+                        // Check if vertices intersect
+                        boolean pi = isIntersectedBy(t.getP(), oom);
+                        boolean qi = isIntersectedBy(t.getQ(), oom);
+                        boolean ri = isIntersectedBy(t.getR(), oom);
+                        if (pi && qi && ri) {
+                            return t;
+                        }
+                        boolean pit = t.isIntersectedBy(getP(), oom);
+                        boolean qit = t.isIntersectedBy(getQ(), oom);
+                        boolean rit = t.isIntersectedBy(getR(), oom);
+                        if (pit && qit && rit) {
+                            return this;
+                        }
                         V3D_Geometry gpq = t.getIntersection(getPQ(), oom);
                         V3D_Geometry gqr = t.getIntersection(getQR(), oom);
                         V3D_Geometry grp = t.getIntersection(getRP(), oom);
                         if (gpq == null) {
                             if (gqr == null) {
-                                if (grp == null) {
-                                    // Return the smaller of the triangles
-//                                    if (t.getArea(oom).compareTo(getArea(oom)) == 1) {
-                                    if (t.getPerimeter(oom).compareTo(getPerimeter(oom)) == 1) {
-                                        return this;
-                                    } else {
-                                        return t;
-                                    }
-                                } else {
+//                                if (grp == null) {
+//                                    // Return the smaller of the triangles
+////                                    if (t.getArea(oom).compareTo(getArea(oom)) == 1) {
+//                                    if (t.getPerimeter(oom).compareTo(getPerimeter(oom)) == 1) {
+//                                        return this;
+//                                    } else {
+//                                        return t;
+//                                    }
+//                                } else {
                                     return grp;
-                                }
+//                                }
                             } else if (gqr instanceof V3D_Point gqrp) {
                                 if (grp == null) {
                                     return gqr;

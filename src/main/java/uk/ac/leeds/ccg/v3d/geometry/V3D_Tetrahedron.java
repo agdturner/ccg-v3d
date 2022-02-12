@@ -866,7 +866,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
 
     @Override
     public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
-        // The intersection will be a null, a point, a line segment or a triangle...
+        // The intersection will be null, a point, a line segment or a triangle...
         V3D_Geometry pqri = getPqr().getIntersection(p, oom);
         if (pqri == null) {
             V3D_Geometry psqi = getPsq().getIntersection(p, oom);
@@ -878,34 +878,49 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
         } else {
             if (pqri instanceof V3D_Point) {
                 return pqri;
-            } else {
-                // pqri is a line segment
+            } else if (pqri instanceof V3D_LineSegment pqril) {
                 V3D_Geometry psqi = getPsq().getIntersection(p, oom);
                 if (psqi == null) {
                     V3D_Geometry qsri = getQsr().getIntersection(p, oom);
                     if (qsri instanceof V3D_Point qsrip) {
-                        V3D_LineSegment pqril = (V3D_LineSegment) pqri;
-                        return new V3D_Triangle(pqril.getP(oom), pqril.getQ(oom), qsrip);
+                        return new V3D_Triangle(pqril, qsrip);
+                    } else if (qsri instanceof V3D_LineSegment qsril) {
+                        return V3D_Triangle.getGeometry(pqril,                                qsril);
                     } else {
-                        // pqri and qsri are line segments
-                        return V3D_Triangle.getGeometry((V3D_LineSegment) pqri,
-                                (V3D_LineSegment) qsri);
+                        return qsri;
                     }
                 } else if (psqi instanceof V3D_Point psqip) {
-                    return new V3D_Triangle((V3D_LineSegment) pqri, psqip);                    
+                    return new V3D_Triangle(pqril, psqip);                    
+                } else if (psqi instanceof V3D_LineSegment psqil) {
+                    return V3D_Triangle.getGeometry(pqril, psqil);
                 } else {
-                    // pqri and psqi are line segments
-                    return V3D_Triangle.getGeometry((V3D_LineSegment) pqri,
-                            (V3D_LineSegment) psqi);
+                    return psqi;
                 }
+            } else {
+                return pqri;
             }
         }
     }
 
     @Override
     public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
-        // The intersection will be a null, a point, a line segment, a triangle, quadrilateral, pentagon or hexagon...
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // The intersection will be null, a point, a line segment, a triangle, quadrilateral, pentagon or hexagon...
+        V3D_Geometry pi = getIntersection(new V3D_Plane(t), oom);
+        if (pi == null) {
+            return null;
+        } else {
+            if (pi instanceof V3D_Point pip) {
+                if (t.isIntersectedBy(pip, oom)) {
+                    return pi;
+                } else {
+                    return null;
+                }
+            } else if (pi instanceof V3D_LineSegment pil) {
+                return t.getIntersection(pil, oom);
+            } else {
+                return ((V3D_Triangle) pi).getIntersection(t, oom);
+            }
+        }
     }
 
     @Override
