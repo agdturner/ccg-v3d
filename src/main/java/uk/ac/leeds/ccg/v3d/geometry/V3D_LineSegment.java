@@ -56,7 +56,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry, 
+public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
         V3D_IntersectionAndDistanceCalculations {
 
     private static final long serialVersionUID = 1L;
@@ -77,7 +77,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
     public V3D_LineSegment(V3D_Environment e) {
         super(e);
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -120,10 +120,10 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
     public V3D_LineSegment(V3D_Point p, V3D_Point q) {
         super(p, q);
     }
-    
+
     /**
      * Create a new instance that intersects all points.
-     * 
+     *
      * @param points Any number of collinear points, with two being different.
      */
     public V3D_LineSegment(V3D_Point... points) {
@@ -131,7 +131,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
         V3D_Point p0 = points[0];
         V3D_Point p1 = points[1];
         V3D_LineSegment l = new V3D_LineSegment(p0, p1);
-        for (int i = 2; i < points.length; i ++) {
+        for (int i = 2; i < points.length; i++) {
             if (!l.isIntersectedBy(points[i], p0.e.oom)) {
                 V3D_LineSegment l2 = new V3D_LineSegment(l.getP(p0.e.oom), points[i]);
                 V3D_Point lq = l.getQ(p0.e.oom);
@@ -301,7 +301,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
         }
         return false;
     }
-            
+
     /**
      * @param l A line to test for intersection within the specified tolerance.
      * @param oom The Order of Magnitude for the calculation.
@@ -319,7 +319,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
             return true;
         }
     }
-    
+
     /**
      * @param l A line segment to test if it intersects with this.
      * @param oom The Order of Magnitude for the calculation.
@@ -343,7 +343,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
     public boolean isIntersectedBy(V3D_Ray r, int oom) {
         return r.isIntersectedBy(this, oom);
     }
-    
+
     /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
      * return {@code this}. If they overlap in a line return the part that
@@ -391,9 +391,9 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
     @Override
     public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
         return r.getIntersection(this, oom);
-                }
-    
-        /**
+    }
+
+    /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
      * return {@code this}. If they overlap in a line return the part that
      * overlaps (the order of points is not defined). If they intersect at a
@@ -527,7 +527,6 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
 //    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
 //        return getEnvelope().isIntersectedBy(l, oom);
 //    }
-
     /**
      * If the distance from a point to the line is less than the distance of the
      * point from either end of the line and the distance from either end of the
@@ -684,7 +683,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
             return new V3D_LineSegment(p, q);
         }
     }
-    
+
     /**
      * Get the line of intersection (the shortest line) between {@code this} and
      * {@code l}.
