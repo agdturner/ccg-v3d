@@ -132,14 +132,14 @@ public abstract class V3D_Geometry implements Serializable,
      */
     public abstract void rotate(V3D_Vector axisOfRotation, Math_BigRational theta);
     
-    /**
-     * Identify if the envelope of this is intersected by {@code l}.
-     * 
-     * @param l The line for which intersection with the envelope is indicated.
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} iff {@code l} intersects with the envelope.
-     */
-    public abstract boolean isEnvelopeIntersectedBy(V3D_Line l, int oom);
+//    /**
+//     * Identify if the envelope of this is intersected by {@code l}.
+//     * 
+//     * @param l The line for which intersection with the envelope is indicated.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @return {@code true} iff {@code l} intersects with the envelope.
+//     */
+//    public abstract boolean isEnvelopeIntersectedBy(V3D_Line l, int oom);
 //    
 //    /**
 //     * Identify if the geometry is intersected by point {@code p}.

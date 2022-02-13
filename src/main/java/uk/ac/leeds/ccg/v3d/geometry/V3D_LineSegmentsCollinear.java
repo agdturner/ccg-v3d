@@ -30,7 +30,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_LineSegmentsCollinear extends V3D_Line 
+public class V3D_LineSegmentsCollinear extends V3D_Line
         implements V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
@@ -116,11 +116,11 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
     }
 
     /**
-     * 
+     *
      * @param l1 A line segment collinear with {@code l2}.
      * @param l2 A line segment collinear with {@code l1}.
      * @param oom The Order of Magnitude for the calculation.
-     * @return A V3D_LineSegmentsCollinear if {@code l1} and {@code l2} do not 
+     * @return A V3D_LineSegmentsCollinear if {@code l1} and {@code l2} do not
      * intersect, otherwise a single V3D_LineSegment.
      */
     public static V3D_Geometry getGeometry(V3D_LineSegment l1,
@@ -231,61 +231,241 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
             }
         }
     }
-    
-    @Override
-    public V3D_Envelope getEnvelope() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
-    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public V3D_Envelope getEnvelope() {
+        if (en == null) {
+            Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+            en = ite.next().getEnvelope();
+            while (ite.hasNext()) {
+                en = en.union(ite.next().getEnvelope());
+            }
+        }
+        return en;
     }
 
     @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
+        if (isIntersectedBy(p, oom)) {
+            return Math_BigRational.ZERO;
+        }
+        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+        Math_BigRational d = ite.next().getDistanceSquared(p, oom);
+        while (ite.hasNext()) {
+            d = d.min(ite.next().getDistanceSquared(p, oom));
+        }
+        return d;
     }
 
     @Override
     public BigDecimal getDistance(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
+        if (isIntersectedBy(l, oom)) {
+            return Math_BigRational.ZERO;
+        }
+        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+        Math_BigRational d = ite.next().getDistanceSquared(l, oom);
+        while (ite.hasNext()) {
+            d = d.min(ite.next().getDistanceSquared(l, oom));
+        }
+        return d;
     }
 
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Point p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
+        if (isIntersectedBy(l, oom)) {
+            return Math_BigRational.ZERO;
+        }
+        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+        Math_BigRational d = ite.next().getDistanceSquared(l, oom);
+        while (ite.hasNext()) {
+            d = d.min(ite.next().getDistanceSquared(l, oom));
+        }
+        return d;
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Point pt, int oom) {
+        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+        while (ite.hasNext()) {
+            if (ite.next().isIntersectedBy(pt, oom)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+        while (ite.hasNext()) {
+            if (ite.next().isIntersectedBy(l, oom)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+        while (ite.hasNext()) {
+            if (ite.next().isIntersectedBy(l, oom)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public V3D_Geometry getIntersection(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+        V3D_Geometry g = ite.next().getIntersection(l, oom);
+        if (g == null) {
+            while (ite.hasNext()) {
+                g = ite.next().getIntersection(l, oom);
+                if (g instanceof V3D_Point) {
+                    return g;
+                }
+            }
+            return null;
+        } else if (g instanceof V3D_Point) {
+            return g;
+        } else {
+            return this;
+        }
     }
 
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+        V3D_Geometry g = ite.next().getIntersection(l, oom);
+        if (g == null) {
+            while (ite.hasNext()) {
+                g = ite.next().getIntersection(l, oom);
+                if (g instanceof V3D_Point) {
+                    return g;
+                }
+            }
+            return null;
+        } else if (g instanceof V3D_Point) {
+            return g;
+        } else {
+            return this;
+        }
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Plane p, int oom) {
+        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+        V3D_Geometry g = ite.next().getIntersection(p, oom);
+        if (g == null) {
+            while (ite.hasNext()) {
+                g = ite.next().getIntersection(p, oom);
+                if (g instanceof V3D_Point) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
+        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+        V3D_LineSegment l = ite.next();
+        if (t.isIntersectedBy(new V3D_Line(l), oom)) {
+            if (t.isIntersectedBy(l, oom)) {
+                return true;
+            }
+            while (ite.hasNext()) {
+                if (t.isIntersectedBy(ite.next(), oom)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
+        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+        V3D_LineSegment l = ite.next();
+        if (t.isIntersectedBy(new V3D_Line(l), oom)) {
+            if (t.isIntersectedBy(l, oom)) {
+                return true;
+            }
+            while (ite.hasNext()) {
+                if (t.isIntersectedBy(ite.next(), oom)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
+    @Override
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

@@ -259,16 +259,16 @@ public class V3D_RectangleTest extends V3D_Test {
         assertTrue(expResult.equals(result));
     }
 
-    /**
-     * Test of isEnvelopeIntersectedBy method, of class V3D_Rectangle.
-     */
-    @Test
-    public void testIsEnvelopeIntersectedBy() {
-        System.out.println("isEnvelopeIntersectedBy");
-        V3D_Line l = new V3D_LineSegment(pN1N1P0, pP2P2P0);
-        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
-        assertTrue(instance.isEnvelopeIntersectedBy(l, e.oom));
-    }
+//    /**
+//     * Test of isEnvelopeIntersectedBy method, of class V3D_Rectangle.
+//     */
+//    @Test
+//    public void testIsEnvelopeIntersectedBy() {
+//        System.out.println("isEnvelopeIntersectedBy");
+//        V3D_Line l = new V3D_LineSegment(pN1N1P0, pP2P2P0);
+//        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+//        assertTrue(instance.isEnvelopeIntersectedBy(l, e.oom));
+//    }
 
     /**
      * Test of getPerimeter method, of class V3D_Rectangle.

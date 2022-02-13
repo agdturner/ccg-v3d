@@ -301,21 +301,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
         }
         return false;
     }
-
-    /**
-     * @param l A line segment to indicate intersection with this.
-     * @param oom The Order of Magnitude for the calculation.
-     * @return {@code true} iff {@code l} intersects with {@code this}.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
-        boolean ei = getEnvelope().isIntersectedBy(l.getEnvelope());
-        if (ei) {
-            return super.isIntersectedBy(l, oom);
-        }
-        return false;
-    }
-
+            
     /**
      * @param l A line to test for intersection within the specified tolerance.
      * @param oom The Order of Magnitude for the calculation.
@@ -323,7 +309,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
      */
     @Override
     public boolean isIntersectedBy(V3D_Line l, int oom) {
-        V3D_Geometry i = super.getIntersection(l, oom);
+        V3D_Geometry i = new V3D_Line(this).getIntersection(l, oom);
         if (i == null) {
             return false;
         }
@@ -333,7 +319,31 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
             return true;
         }
     }
+    
+    /**
+     * @param l A line segment to test if it intersects with this.
+     * @param oom The Order of Magnitude for the calculation.
+     * @return {@code true} iff {@code l} intersects with {@code this}.
+     */
+    @Override
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
+        boolean ei = getEnvelope().isIntersectedBy(l.getEnvelope());
+        if (ei) {
+            return new V3D_Line(this).isIntersectedBy(l, oom);
+        }
+        return false;
+    }
 
+    /**
+     * @param r A ray to test if it intersects with this.
+     * @param oom The Order of Magnitude for the calculation.
+     * @return {@code true} iff {@code l} intersects with {@code this}.
+     */
+    @Override
+    public boolean isIntersectedBy(V3D_Ray r, int oom) {
+        return r.isIntersectedBy(this, oom);
+    }
+    
     /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
      * return {@code this}. If they overlap in a line return the part that
@@ -374,6 +384,16 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
     }
 
     /**
+     * @param r The ray to get intersection with this.
+     * @param oom The Order of Magnitude for the calculation.
+     * @return The intersection between {@code this} and {@code r}.
+     */
+    @Override
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
+        return r.getIntersection(this, oom);
+                }
+    
+        /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
      * return {@code this}. If they overlap in a line return the part that
      * overlaps (the order of points is not defined). If they intersect at a
@@ -503,10 +523,10 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
         }
     }
 
-    @Override
-    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        return getEnvelope().isIntersectedBy(l, oom);
-    }
+//    @Override
+//    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
+//        return getEnvelope().isIntersectedBy(l, oom);
+//    }
 
     /**
      * If the distance from a point to the line is less than the distance of the

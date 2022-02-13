@@ -499,10 +499,10 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
         return null;
     }
 
-    @Override
-    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        return l.isIntersectedBy(this, oom);
-    }
+//    @Override
+//    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
+//        return l.isIntersectedBy(this, oom);
+//    }
 
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {

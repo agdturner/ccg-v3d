@@ -1546,10 +1546,10 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
         return false;
     }
 
-    @Override
-    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        return isIntersectedBy(l, oom);
-    }
+//    @Override
+//    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
+//        return isIntersectedBy(l, oom);
+//    }
 
     /**
      * A point within the Envelope currently returns a distance of zero. This

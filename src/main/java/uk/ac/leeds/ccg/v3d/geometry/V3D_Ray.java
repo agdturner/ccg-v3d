@@ -302,7 +302,7 @@ public class V3D_Ray extends V3D_Line {
     /**
      * @param l A line segment to test if it intersects with {@code this}.
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@code true} iff {@code r} intersects with {@code this}.
+     * @return {@code true} iff {@code l} intersects with {@code this}.
      */
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
@@ -315,9 +315,9 @@ public class V3D_Ray extends V3D_Line {
     }
 
     /**
-     * @param l A line to test for intersection within the specified tolerance.
+     * @param l A line to test for intersection.
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return true if p is within t of this given scale.
+     * @return {@code true} iff {@code l} intersects with {@code this}.
      */
     @Override
     public boolean isIntersectedBy(V3D_Line l, int oom) {
@@ -333,27 +333,129 @@ public class V3D_Ray extends V3D_Line {
     }
 
     /**
+     * @param pl A plane to test for intersection.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return {@code true} iff {@code pl} intersects with {@code this}.
+     */
+    @Override
+    public boolean isIntersectedBy(V3D_Plane pl, int oom) {
+        V3D_Geometry i = new V3D_Line(this).getIntersection(pl, oom);
+        if (i == null) {
+            return false;
+        }
+        if (i instanceof V3D_Point pt) {
+            return isIntersectedBy(pt, oom);
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * @param t A triangle to test for intersection.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return {@code true} iff {@code t} intersects with {@code this}.
+     */
+    @Override
+    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
+        V3D_Geometry i = new V3D_Line(this).getIntersection(t, oom);
+        if (i == null) {
+            return false;
+        }
+        if (i instanceof V3D_Point pt) {
+            return isIntersectedBy(pt, oom);
+        } else {
+            return isIntersectedBy((V3D_LineSegment) i, oom);
+        }
+    }
+
+    /**
      * Intersects {@code this} with {@code p}. {@code null} is returned if there
      * is no intersection.
      *
-     * @param p The plane to get the geometrical intersection with this.
+     * @param pl The plane to get the geometrical intersection with this.
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The intersection between {@code this} and {@code p}.
      */
     @Override
-    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
-        V3D_Geometry g = super.getIntersection(p, oom);
+    public V3D_Geometry getIntersection(V3D_Plane pl, int oom) {
+        V3D_Geometry g = new V3D_Line(this).getIntersection(pl, oom);
         if (g == null) {
             return g;
         } else {
-            if (g instanceof V3D_Line) {
-                return this;
-            } else {
-                V3D_Point pt = (V3D_Point) g;
+            if (g instanceof V3D_Point pt) {
                 if (isIntersectedBy(pt, oom)) {
                     return pt;
                 } else {
                     return null;
+                }
+            } else {
+                V3D_Point pt = getP(oom);
+                V3D_Line gl = (V3D_Line) g;
+                V3D_Point glp = gl.getP(oom);
+                if (isIntersectedBy(pt, oom)) {
+                    int dir = getV(oom).getDirection();
+                    if (pt.equals(glp)) {
+                        V3D_Point glq = gl.getQ(oom);
+                        V3D_Vector ptglq = new V3D_Vector(pt, glq, oom);
+                        int dir_ptglq = ptglq.getDirection();
+                        if (dir == dir_ptglq) {
+                            return new V3D_LineSegment(pt, glq);
+                        } else {
+                            return pt;
+                        }
+                    } else {
+                        V3D_Vector ptglp = new V3D_Vector(pt, glp, oom);
+                        int dir_ptglp = ptglp.getDirection();
+                        if (dir == dir_ptglp) {
+                            return new V3D_LineSegment(pt, glp);
+                        } else {
+                            return V3D_LineSegment.getGeometry(pt, gl.getQ(oom));
+                        }
+                    }
+                } else {
+                    int dir = getV(oom).getDirection();
+                    V3D_Vector ptglp = new V3D_Vector(pt, glp, oom);
+                    int dir_ptglp = ptglp.getDirection();
+                    if (dir == dir_ptglp) {
+                        return this;
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Intersects {@code this} with {@code t}. {@code null} is returned if there
+     * is no intersection.
+     *
+     * @param t The triangle to get the geometrical intersection with this.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return The intersection between {@code this} and {@code t}.
+     */
+    @Override
+    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+        V3D_Geometry g = getIntersection(new V3D_Plane(t), oom);
+        if (g == null) {
+            return g;
+        } else {
+            if (g instanceof V3D_Point pt) {
+                if (isIntersectedBy(pt, oom)) {
+                    return pt;
+                } else {
+                    return null;
+                }
+            } else {
+                V3D_Geometry g2 = t.getIntersection(new V3D_Line(this), oom);
+                if (g2 instanceof V3D_Point g2p) {
+                    if (isIntersectedBy(g2p, oom)) {
+                        return g2p;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    return getIntersection((V3D_LineSegment) g2, oom);
                 }
             }
         }

@@ -845,10 +845,10 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         return null;
     }
 
-    @Override
-    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        return getEnvelope().isIntersectedBy(l, oom);
-    }
+//    @Override
+//    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
+//        return getEnvelope().isIntersectedBy(l, oom);
+//    }
 
     /**
      * Calculate and return the centroid as a point. The original implementation

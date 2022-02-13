@@ -198,16 +198,16 @@ public class V3D_TriangleTest extends V3D_Test {
         assertTrue(expResult.equals(result));
     }
 
-    /**
-     * Test of isEnvelopeIntersectedBy method, of class V3D_Triangle.
-     */
-    @Test
-    public void testIsEnvelopeIntersectedBy() {
-        System.out.println("isEnvelopeIntersectedBy");
-        V3D_Line l = new V3D_Line(pP1N1P0, pP1P2P0);
-        V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP1P1P0, pP2P0P0);
-        assertTrue(instance.isEnvelopeIntersectedBy(l, e.oom));
-    }
+//    /**
+//     * Test of isEnvelopeIntersectedBy method, of class V3D_Triangle.
+//     */
+//    @Test
+//    public void testIsEnvelopeIntersectedBy() {
+//        System.out.println("isEnvelopeIntersectedBy");
+//        V3D_Line l = new V3D_Line(pP1N1P0, pP1P2P0);
+//        V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP1P1P0, pP2P0P0);
+//        assertTrue(instance.isEnvelopeIntersectedBy(l, e.oom));
+//    }
 
     /**
      * Test of getCentroid method, of class V3D_Triangle.

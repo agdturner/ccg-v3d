@@ -717,10 +717,10 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 //        }
     }
 
-    @Override
-    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        return getEnvelope().isIntersectedBy(l, oom);
-    }
+//    @Override
+//    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
+//        return getEnvelope().isIntersectedBy(l, oom);
+//    }
 
     @Override
     public BigDecimal getPerimeter(int oom) {

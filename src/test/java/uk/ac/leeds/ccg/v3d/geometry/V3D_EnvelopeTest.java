@@ -595,20 +595,20 @@ public class V3D_EnvelopeTest extends V3D_Test {
         // To do: add some false test cases.
     }
 
-    /**
-     * Test of isEnvelopeIntersectedBy method, of class V3D_Envelope.
-     */
-    @Test
-    public void testIsEnvelopeIntersectedBy() {
-        System.out.println("isEnvelopeIntersectedBy");
-        V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0);
-        V3D_Envelope instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
-        assertTrue(instance.isEnvelopeIntersectedBy(l, e.oom));
-        // Test 2
-        l = new V3D_Line(pN1N1N1, pN1N1P0);
-        instance = new V3D_Envelope(e, pP0P0P0, pP1P1P1);
-        assertFalse(instance.isEnvelopeIntersectedBy(l, e.oom));
-    }
+//    /**
+//     * Test of isEnvelopeIntersectedBy method, of class V3D_Envelope.
+//     */
+//    @Test
+//    public void testIsEnvelopeIntersectedBy() {
+//        System.out.println("isEnvelopeIntersectedBy");
+//        V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0);
+//        V3D_Envelope instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
+//        assertTrue(instance.isEnvelopeIntersectedBy(l, e.oom));
+//        // Test 2
+//        l = new V3D_Line(pN1N1N1, pN1N1P0);
+//        instance = new V3D_Envelope(e, pP0P0P0, pP1P1P1);
+//        assertFalse(instance.isEnvelopeIntersectedBy(l, e.oom));
+//    }
 
     /**
      * Test of apply method, of class V3D_Envelope.

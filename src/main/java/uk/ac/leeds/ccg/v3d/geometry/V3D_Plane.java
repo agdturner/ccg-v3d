@@ -1521,11 +1521,6 @@ public class V3D_Plane extends V3D_Geometry
         return hash;
     }
 
-    @Override
-    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        return true;
-    }
-
     /**
      * @return The points that define the plan as a matrix.
      */

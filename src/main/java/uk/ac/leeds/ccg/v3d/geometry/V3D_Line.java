@@ -1463,35 +1463,35 @@ public class V3D_Line extends V3D_Geometry
         return getP().getDZ(e.oom).subtract(getQ().getDZ(e.oom)).isZero();
     }
 
-    @Override
-    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        if (this.isIntersectedBy(l, oom)) {
-            return true;
-        }
-        if (this.isParallelToX0()) {
-            if (this.isParallelToY0()) {
-                return false;
-            } else if (this.isParallelToZ0()) {
-                return false;
-            } else {
-                return !this.isParallel(l, oom);
-            }
-        } else {
-            if (this.isParallelToY0()) {
-                if (this.isParallelToZ0()) {
-                    return false;
-                } else {
-                    return !this.isParallel(l, oom);
-                }
-            } else {
-                if (this.isParallelToZ0()) {
-                    return !this.isParallel(l, oom);
-                } else {
-                    return true;
-                }
-            }
-        }
-    }
+//    //@Override
+//    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
+//        if (this.isIntersectedBy(l, oom)) {
+//            return true;
+//        }
+//        if (this.isParallelToX0()) {
+//            if (this.isParallelToY0()) {
+//                return false;
+//            } else if (this.isParallelToZ0()) {
+//                return false;
+//            } else {
+//                return !this.isParallel(l, oom);
+//            }
+//        } else {
+//            if (this.isParallelToY0()) {
+//                if (this.isParallelToZ0()) {
+//                    return false;
+//                } else {
+//                    return !this.isParallel(l, oom);
+//                }
+//            } else {
+//                if (this.isParallelToZ0()) {
+//                    return !this.isParallel(l, oom);
+//                } else {
+//                    return true;
+//                }
+//            }
+//        }
+//    }
 
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.

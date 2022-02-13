@@ -416,10 +416,10 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
         }
     }
 
-    @Override
-    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-        return getEnvelope().isIntersectedBy(l, oom);
-    }
+//    @Override
+//    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
+//        return getEnvelope().isIntersectedBy(l, oom);
+//    }
 
     /**
      * For this to work as expected, all triangles should have the same offset
