@@ -57,25 +57,29 @@ Geometry collections of the same types of geometry are being supported, includin
 
 ### Intersection
 - So far, methods for testing if there is an intersection and for retrieving the intersection are implemented for:
--- point-plane, point-line, point-ray, point-line_segement, point-rectangle, point-triangle
--- plane-plane, plane-line, plane-ray, plane-line_segment
--- line-line, line-ray, line-line_segment
--- ray-ray, ray-line_segment
--- line_segment-line_segment
+-- line-point, line-line
+-- ray-point, ray-line, ray-ray
+-- line_segment-point, line_segment-line, line_segment-ray, line_segment-line_segment
+-- plane-point, plane-line, plane-ray, plane-line_segment, plane-plane
+-- triangle-point, triangle-line, triangle-ray, triangle-line_segment, triangle-plane, triangle-triangle
+-- tetrahedron-point, tetrahedron-line, tetrahedron-line_segment, tetrahedron-plane, tetrahedron-triangle
 - What is next to do:
--- plane-triangle, plane-rectangle
--- line_segment-triangle, line_segment-rectangle
--- triangle-triangle, triangle-rectangle
--- rectangle-rectangle
-- It would be good to have functionality that distinguishes between geometries that touch at a point, along a line or over an area; or that overlap crossing all or part of the other geometries.
+-- tetrahedron-ray, tetrahedron-tetrahedron
+-- Distinguish between geometries that touch at a point, along a line or line_segment or over an area; and those that overlap (all or part of) the other geometry.
 
 ### Distance, Areas, Perimeters, Volumes
 - So far, methods for calculating the minimum distance between geometries are implemented for:
--- point-plane, point-line, point-ray, point-line_segment, point-rectangle, point-triangle
--- plane-plane, plane-line, plane-ray, plane-line_segment
--- line-line, line-ray, line-line_segment
--- ray-ray, ray-line_segment
--- line_segment-line_segment
+-- point-point
+-- line-point, line-line
+-- ray-point, ray-line, ray-ray
+-- line_segment-point, line_segment-line, line_segment-ray, line_segment-line_segment
+-- plane-point, plane-line, plane-line_segment, plane-plane
+-- triangle-point, triangle-line, triangle-line_segment, triangle-plane, triangle-triangle
+- What is next to do:
+-- line_segment-ray
+-- plane-ray
+-- triangle-ray
+-- tetrahedron-point, tetrahedron-line, tetrahedron-ray, tetrahedron-line_segment, tetrahedron-plane, tetrahedron-triangle
 
 ## Development
 - Translating (moving) geometries to new locations is supported.
