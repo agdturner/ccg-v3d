@@ -1640,8 +1640,7 @@ public class V3D_Plane extends V3D_Geometry
 
     @Override
     public BigDecimal getDistance(V3D_Ray r, int oom) {
-        return new Math_BigRationalSqrt(getDistanceSquared(r, oom), oom)
-                .getSqrt(oom).toBigDecimal(oom);
+        return r.getDistance(this, oom);
     }
 
     @Override

@@ -373,7 +373,16 @@ public class V3D_Ray extends V3D_Line {
 
     @Override
     public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isIntersectedBy(t.getPqr(), oom)) {
+            return true;
+        }
+        if (isIntersectedBy(t.getPsq(), oom)) {
+            return true;
+        }
+        if (isIntersectedBy(t.getQsr(), oom)) {
+            return true;
+        }
+        return isIntersectedBy(t.getSpr(), oom);
     }
     
     /**
@@ -802,13 +811,77 @@ public class V3D_Ray extends V3D_Line {
      */
     @Override
     public BigDecimal getDistance(V3D_Ray r, int oom) {
+        return new Math_BigRationalSqrt(getDistanceSquared(r, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
+//        if (isParallel(r, oom)) {
+//            //V3D_Geometry g = getLineOfIntersection(r.p, oom);
+//            V3D_Geometry g = getLineOfIntersection(r.getP(oom), oom);
+//            if (g instanceof V3D_Point) {
+//                return BigDecimal.ZERO;
+//            } else {
+//                return ((V3D_LineSegment) g).getLength(oom).toBigDecimal(oom);
+//            }
+//        } else {
+//            V3D_Line tl = new V3D_Line(this);
+//            //BigDecimal tldr = tl.getDistance(r, oom);
+//            //V3D_Geometry g = tl.getLineOfIntersection(r.p, oom);
+//            V3D_Geometry g = tl.getLineOfIntersection(r.getP(oom), oom);
+//            if (g instanceof V3D_Point) {
+//                return BigDecimal.ZERO;
+//            } else {
+//                V3D_LineSegment tlrp = (V3D_LineSegment) g;
+//                V3D_Line rl = new V3D_Line(r);
+//                //BigDecimal rldt = rl.getDistance(this, oom);
+//                //V3D_Geometry g2 = rl.getLineOfIntersection(p, oom);
+//                V3D_Geometry g2 = rl.getLineOfIntersection(getP(oom), oom);
+//                if (g2 instanceof V3D_Point) {
+//                    return BigDecimal.ZERO;
+//                } else {
+//                    V3D_LineSegment rltp = (V3D_LineSegment) g2;
+//                    //if (isIntersectedBy(tlrp.q, oom)) {
+//                    if (isIntersectedBy(tlrp.getQ(oom), oom)) {
+//                        BigDecimal tlrpl = tlrp.getLength(oom).toBigDecimal(oom);
+//                        //if (r.isIntersectedBy(rltp.q, oom)) {
+//                        if (r.isIntersectedBy(rltp.getQ(oom), oom)) {
+//                            return tlrpl.min(rltp.getLength(oom).toBigDecimal(oom));
+//                        } else {
+//                            return tlrpl;
+//                        }
+//                    } else {
+//                        //if (r.isIntersectedBy(rltp.q, oom)) {
+//                        if (r.isIntersectedBy(rltp.getQ(oom), oom)) {
+//                            return rltp.getLength(oom).toBigDecimal(oom);
+//                        } else {
+//                            //return p.getDistance(r.p, oom);
+//                            return getP(oom).getDistance(r.getP(oom), oom);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+    }
+    
+    /**
+     * This is for calculating the minimum distance between {@code this} and
+     * {@code r}. If the rays intersect, the distance is zero. If they are going
+     * away from each other, the distance is the distance between their start
+     * points. If the rays get closer, then calculate the closest they come. If
+     * they are parallel, then the distance between them does not change.
+     *
+     * @param r The line segment to return the distance from.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return The distance from {@code this} to {@code r} at the {@code oom}
+     * precision.
+     */
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
         if (isParallel(r, oom)) {
             //V3D_Geometry g = getLineOfIntersection(r.p, oom);
             V3D_Geometry g = getLineOfIntersection(r.getP(oom), oom);
             if (g instanceof V3D_Point) {
-                return BigDecimal.ZERO;
+                return Math_BigRational.ZERO;
             } else {
-                return ((V3D_LineSegment) g).getLength(oom).toBigDecimal(oom);
+                return ((V3D_LineSegment) g).getLength2(oom);
             }
         } else {
             V3D_Line tl = new V3D_Line(this);
@@ -816,7 +889,7 @@ public class V3D_Ray extends V3D_Line {
             //V3D_Geometry g = tl.getLineOfIntersection(r.p, oom);
             V3D_Geometry g = tl.getLineOfIntersection(r.getP(oom), oom);
             if (g instanceof V3D_Point) {
-                return BigDecimal.ZERO;
+                return Math_BigRational.ZERO;
             } else {
                 V3D_LineSegment tlrp = (V3D_LineSegment) g;
                 V3D_Line rl = new V3D_Line(r);
@@ -824,25 +897,25 @@ public class V3D_Ray extends V3D_Line {
                 //V3D_Geometry g2 = rl.getLineOfIntersection(p, oom);
                 V3D_Geometry g2 = rl.getLineOfIntersection(getP(oom), oom);
                 if (g2 instanceof V3D_Point) {
-                    return BigDecimal.ZERO;
+                    return Math_BigRational.ZERO;
                 } else {
                     V3D_LineSegment rltp = (V3D_LineSegment) g2;
                     //if (isIntersectedBy(tlrp.q, oom)) {
                     if (isIntersectedBy(tlrp.getQ(oom), oom)) {
-                        BigDecimal tlrpl = tlrp.getLength(oom).toBigDecimal(oom);
+                        Math_BigRational tlrpl = tlrp.getLength2(oom);
                         //if (r.isIntersectedBy(rltp.q, oom)) {
                         if (r.isIntersectedBy(rltp.getQ(oom), oom)) {
-                            return tlrpl.min(rltp.getLength(oom).toBigDecimal(oom));
+                            return tlrpl.min(rltp.getLength2(oom));
                         } else {
                             return tlrpl;
                         }
                     } else {
                         //if (r.isIntersectedBy(rltp.q, oom)) {
                         if (r.isIntersectedBy(rltp.getQ(oom), oom)) {
-                            return rltp.getLength(oom).toBigDecimal(oom);
+                            return rltp.getLength2(oom);
                         } else {
                             //return p.getDistance(r.p, oom);
-                            return getP(oom).getDistance(r.getP(oom), oom);
+                            return getP(oom).getDistanceSquared(r.getP(oom), oom);
                         }
                     }
                 }
@@ -867,6 +940,16 @@ public class V3D_Ray extends V3D_Line {
         } else {
             return ((V3D_LineSegment) g).getLength2(oom);
         }
+    }
+    
+    @Override
+    public BigDecimal getDistance(V3D_Plane pl, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override

@@ -1359,6 +1359,16 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         Math_BigRational drp2 = getRP().getDistanceSquared(l, oom);
         return Math_BigRational.min(dpq2, dqr2, drp2);
     }
+    
+    @Override
+    public BigDecimal getDistance(V3D_Ray r, int oom) {
+        return r.getDistance(this, oom);
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
+        return r.getDistanceSquared(this, oom);
+    }
 
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
