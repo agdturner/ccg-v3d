@@ -778,9 +778,9 @@ public class V3D_Ray extends V3D_Line {
     }
 
     /**
-     * @param r The ray to get the distance from.
+     * @param pt The point to get the distance squared from.
      * @param oom The Order of Magnitude for the precision of the result.
-     * @return The minimum distance between {@code this} and {@code r}.
+     * @return The minimum distance between {@code this} and {@code pt}.
      */
     @Override
     public Math_BigRational getDistanceSquared(V3D_Point pt, int oom) {
@@ -852,12 +852,21 @@ public class V3D_Ray extends V3D_Line {
     
     @Override
     public BigDecimal getDistance(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        V3D_Geometry g = getLineOfIntersection(l, oom);
+        if (g == null) {
+            return l.getDistanceSquared(getP(oom), oom);
+        }
+        if (g instanceof V3D_Point) {
+            return Math_BigRational.ZERO;
+        } else {
+            return ((V3D_LineSegment) g).getLength2(oom);
+        }
     }
     
     @Override

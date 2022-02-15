@@ -51,7 +51,7 @@ public interface V3D_IntersectionAndDistanceCalculations {
      * @param oom The Order of Magnitude for the precision.
      * @return {@code true} iff the geometry is intersected by {@code r}.
      */
-    public abstract boolean isIntersectedBy(V3D_Ray l, int oom);
+    public abstract boolean isIntersectedBy(V3D_Ray r, int oom);
 
     /**
      * Identify if the geometry is intersected by line segment {@code l}.
@@ -215,7 +215,7 @@ public interface V3D_IntersectionAndDistanceCalculations {
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The minimum distance squared to {@code r}.
      */
-    public abstract Math_BigRational getDistanceSquared(V3D_Ray l, int oom);
+    public abstract Math_BigRational getDistanceSquared(V3D_Ray r, int oom);
 
     /**
      * Get the minimum distance to {@code p}.
