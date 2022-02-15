@@ -226,6 +226,26 @@ public class V3D_Tetrahedrons extends V3D_Geometry implements V3D_Volume {
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Ray l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Ray l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     
 }

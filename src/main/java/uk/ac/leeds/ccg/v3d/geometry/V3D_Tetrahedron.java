@@ -381,6 +381,11 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
+    public boolean isIntersectedBy(V3D_Ray r, int oom) {
+        return r.isIntersectedBy(this, oom);
+    }
+    
+    @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         if (isIntersectedBy(l.getP(oom), oom)) {
             return true;
@@ -588,6 +593,11 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
                 }
             }
         }
+    }
+    
+    @Override
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
+        return r.getIntersection(this, oom);
     }
 
     @Override
@@ -949,9 +959,32 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
+    public BigDecimal getDistance(V3D_Ray r, int oom) {
+        return r.getDistance(this, oom);
+    }
+    
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
+        return r.getDistanceSquared(this, oom);
+    }
+
+    @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom), oom)
                 .getSqrt(oom).toBigDecimal(oom);
+    }
+    
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
+        if (isIntersectedBy(l, oom)) {
+            return Math_BigRational.ZERO;
+        } else {
+            return Math_BigRational.min(
+                    getPqr().getDistanceSquared(l, oom),
+                    getPsq().getDistanceSquared(l, oom),
+                    getQsr().getDistanceSquared(l, oom),
+                    getSpr().getDistanceSquared(l, oom));
+        }
     }
 
     /**
@@ -1165,19 +1198,6 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
-        if (isIntersectedBy(l, oom)) {
-            return Math_BigRational.ZERO;
-        } else {
-            return Math_BigRational.min(
-                    getPqr().getDistanceSquared(l, oom),
-                    getPsq().getDistanceSquared(l, oom),
-                    getQsr().getDistanceSquared(l, oom),
-                    getSpr().getDistanceSquared(l, oom));
-        }
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
         if (isIntersectedBy(l, oom)) {
             return Math_BigRational.ZERO;
         } else {

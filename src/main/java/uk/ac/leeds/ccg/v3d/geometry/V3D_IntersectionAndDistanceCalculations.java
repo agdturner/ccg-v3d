@@ -45,7 +45,16 @@ public interface V3D_IntersectionAndDistanceCalculations {
     public abstract boolean isIntersectedBy(V3D_Line l, int oom);
 
     /**
-     * Identify if the geometry is intersected by line {@code l}.
+     * Identify if the geometry is intersected by ray {@code r}.
+     *
+     * @param r The ray to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @return {@code true} iff the geometry is intersected by {@code r}.
+     */
+    public abstract boolean isIntersectedBy(V3D_Ray l, int oom);
+
+    /**
+     * Identify if the geometry is intersected by line segment {@code l}.
      *
      * @param l The line segment to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
@@ -88,6 +97,16 @@ public interface V3D_IntersectionAndDistanceCalculations {
      * @return The V3D_Geometry.
      */
     public abstract V3D_Geometry getIntersection(V3D_Line l, int oom);
+
+    /**
+     * Get the intersection between the geometry and the ray
+     * {@code r}.
+     *
+     * @param r The ray to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @return The V3D_Geometry.
+     */
+    public abstract V3D_Geometry getIntersection(V3D_Ray r, int oom);
 
     /**
      * Get the intersection between the geometry and the line segment
@@ -179,6 +198,24 @@ public interface V3D_IntersectionAndDistanceCalculations {
      * @return The minimum distance squared to {@code l}.
      */
     public abstract Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom);
+
+    /**
+     * Get the minimum distance to {@code r}.
+     *
+     * @param r A ray.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The minimum distance to {@code r}.
+     */
+    public abstract BigDecimal getDistance(V3D_Ray r, int oom);
+
+    /**
+     * Get the minimum distance squared to {@code r}.
+     *
+     * @param r A ray.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The minimum distance squared to {@code r}.
+     */
+    public abstract Math_BigRational getDistanceSquared(V3D_Ray l, int oom);
 
     /**
      * Get the minimum distance to {@code p}.

@@ -394,11 +394,11 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
     
     @Override
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
-//        return l.getDistanceSquared(this, oom);
-        if (l.isIntersectedBy(this, oom)) {
-            return Math_BigRational.ZERO;
-        }
-        return getDistanceSquared(l, true, oom);
+        return l.getDistanceSquared(this, oom);
+//        if (l.isIntersectedBy(this, oom)) {
+//            return Math_BigRational.ZERO;
+//        }
+//        return getDistanceSquared(l, true, oom);
     }
 
     /**
@@ -469,6 +469,11 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
     }
 
     @Override
+    public boolean isIntersectedBy(V3D_Ray r, int oom) {
+        return r.isIntersectedBy(this, oom);
+    }
+
+    @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         return l.isIntersectedBy(this, oom);
     }
@@ -492,17 +497,20 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
     }
 
     @Override
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
+        if (r.isIntersectedBy(this, oom)) {
+            return this;
+        }
+        return null;
+    }
+
+    @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
         if (l.isIntersectedBy(this, oom)) {
             return this;
         }
         return null;
     }
-
-//    @Override
-//    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-//        return l.isIntersectedBy(this, oom);
-//    }
 
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
@@ -548,9 +556,22 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The minimum distance between {@code this} and {@code r}.
      */
+    @Override
     public BigDecimal getDistance(V3D_Ray r, int oom) {
-        V3D_Point pt = r.getPointOfIntersection(this, oom);
-        return pt.getDistance(this, oom);
+        return new Math_BigRationalSqrt(getDistanceSquared(r, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
+    }
+
+    /**
+     * @param r The ray to get the distance from.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @return The minimum distance between {@code this} and {@code r}.
+     */
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
+        return r.getDistanceSquared(this, oom);
+//        V3D_Point pt = r.getPointOfIntersection(this, oom);
+//        return pt.getDistanceSquared(this, oom);
     }
 
     /**

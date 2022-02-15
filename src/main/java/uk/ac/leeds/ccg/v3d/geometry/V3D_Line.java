@@ -77,7 +77,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Line extends V3D_Geometry 
+public class V3D_Line extends V3D_Geometry
         implements V3D_IntersectionAndDistanceCalculations {
 
     private static final long serialVersionUID = 1L;
@@ -984,6 +984,7 @@ public class V3D_Line extends V3D_Geometry
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@code true} If {@code this} and {@code r} intersect.
      */
+    @Override
     public boolean isIntersectedBy(V3D_Ray r, int oom) {
         return r.isIntersectedBy(this, oom);
     }
@@ -995,6 +996,7 @@ public class V3D_Line extends V3D_Geometry
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The intersection between {@code this} and {@code r}.
      */
+    @Override
     public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
         return r.getIntersection(this, oom);
     }
@@ -1024,7 +1026,7 @@ public class V3D_Line extends V3D_Geometry
      * {@code pt}.
      */
     public V3D_Point getPointOfIntersection(V3D_Point pt, int oom) {
-        if (this.isIntersectedBy(pt, oom)) {
+        if (isIntersectedBy(pt, oom)) {
             return pt;
         }
         // a = v
@@ -1278,15 +1280,15 @@ public class V3D_Line extends V3D_Geometry
      */
     protected Math_BigRational getDistanceSquared(V3D_Point pt, boolean noInt,
             int oom) {
-        return pt.getDistanceSquared(this, oom);
+//        return pt.getDistanceSquared(this, oom);
 //        if (isIntersectedBy(pt, oom)) {
 //            return Math_BigRational.ZERO;
 //        }
-//        V3D_Vector pp = new V3D_Vector(pt, getP(oom), oom);
-//        V3D_Vector qp = new V3D_Vector(pt, getQ(oom), oom);
-//        Math_BigRational num = (pp.getCrossProduct(qp, oom)).getMagnitudeSquared();
-//        Math_BigRational den = getV(oom).getMagnitudeSquared();
-//        return num.divide(den);
+        V3D_Vector pp = new V3D_Vector(pt, getP(oom), oom);
+        V3D_Vector qp = new V3D_Vector(pt, getQ(oom), oom);
+        Math_BigRational num = (pp.getCrossProduct(qp, oom)).getMagnitudeSquared();
+        Math_BigRational den = getV(oom).getMagnitudeSquared();
+        return num.divide(den);
     }
 
 //    /**
@@ -1402,16 +1404,19 @@ public class V3D_Line extends V3D_Geometry
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The minimum distance between {@code this} and {@code r}.
      */
+    @Override
     public BigDecimal getDistance(V3D_Ray r, int oom) {
-        V3D_Geometry g = r.getLineOfIntersection(this, oom);
-        if (g == null) {
-            return getDistance(r.getP(oom), oom);
-        }
-        if (g instanceof V3D_Point) {
-            return BigDecimal.ZERO;
-        } else {
-            return ((V3D_LineSegment) g).getLength(oom).getSqrt(oom).toBigDecimal(oom);
-        }
+        return r.getDistance(this, oom);
+//        V3D_Geometry g = r.getLineOfIntersection(this, oom);
+//        if (g == null) {
+//            return getDistance(r.getP(oom), oom);
+//        }
+//        if (g instanceof V3D_Point) {
+//            return BigDecimal.ZERO;
+//        } else {
+//            return ((V3D_LineSegment) g).getLength(oom).getSqrt(oom).toBigDecimal(oom);
+//        }
+//
 //        //return r.getDistance(this, oom);
 //        //public Math_BigRational getDistance(V3D_Ray r) {
 //        if (isParallel(r, oom)) {
@@ -1436,6 +1441,11 @@ public class V3D_Line extends V3D_Geometry
 //        }
     }
 
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
+        return r.getDistanceSquared(this, oom);
+    }
+    
     /**
      * @return {@code true} iff this is parallel to the plane defined by x=0.
      */
@@ -1534,6 +1544,11 @@ public class V3D_Line extends V3D_Geometry
 //            return min;
 //        }
     }
+    
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
+        return l.getDistanceSquared(this, oom);
+    }
 
     /**
      * Change {@link #offset} without changing the overall line.
@@ -1603,12 +1618,7 @@ public class V3D_Line extends V3D_Geometry
     public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
         return t.getIntersection(this, oom);
     }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
-        return l.getDistanceSquared(this, oom);
-    }
-
+    
     @Override
     public BigDecimal getDistance(V3D_Plane p, int oom) {
         return p.getDistance(this, oom);

@@ -677,6 +677,11 @@ public class V3D_Plane extends V3D_Geometry
         return true;
     }
 
+    @Override
+    public boolean isIntersectedBy(V3D_Ray r, int oom) {
+        return r.isIntersectedBy(this, oom);
+    }
+
     /**
      * @param l The line segment to test for intersection with this.
      * @param oom The Order of Magnitude for the calculation.
@@ -889,6 +894,7 @@ public class V3D_Plane extends V3D_Geometry
      * @param oom The Order of Magnitude for the calculation.
      * @return The intersection between {@code this} and {@code l}.
      */
+    @Override
     public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
         V3D_Geometry rit = r.getIntersection(this, oom);
         if (rit == null) {
@@ -1630,6 +1636,17 @@ public class V3D_Plane extends V3D_Geometry
             return Math_BigRational.ZERO;
         }
         return getDistanceSquared(l.getP(oom), true, oom);
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Ray r, int oom) {
+        return new Math_BigRationalSqrt(getDistanceSquared(r, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
+        return r.getDistanceSquared(this, oom);
     }
 
     @Override

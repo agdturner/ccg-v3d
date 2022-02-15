@@ -42,10 +42,6 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 
     private static final long serialVersionUID = 1L;
 
-//    /**
-//     * For storing if q is at the origin.
-//     */
-//    protected final boolean qAtOrigin2;
     /**
      * The other corner of the rectangle. The others are {@link #p}, {@link #q},
      * and {@link #r}.
@@ -68,13 +64,6 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
 //    /**
-//     * Initialised when the q provided to initialise this is at the origin and p
-//     * and q have been swapped to define the plane. So, this represents the
-//     * vector from the point p input (which is now stored as {@link #q}) to
-//     * {@link #s}.
-//     */
-//    protected final V3D_Vector qs;
-//    /**
 //     * For storing the vector from {@link #p} to {@link #q}.
 //     */
 //    protected V3D_LineSegment l;
@@ -93,6 +82,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 //     * For storing the line segment from {@link #s} to {@link #p}.
 //     */
 //    protected V3D_LineSegment b;
+    
     /**
      * Create a new instance.
      *
@@ -247,9 +237,18 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         return new V3D_LineSegment(e, offset, getSV(), getPV());
     }
 
+    private boolean isIntersectedBy0(V3D_Ray ray, int oom) {
+        return getQR().isIntersectedBy(ray, oom) 
+                || getRS().isIntersectedBy(ray, oom)
+                || getSP().isIntersectedBy(ray, oom) 
+                || getPQ().isIntersectedBy(ray, oom);
+    }
+
     private boolean isIntersectedBy0(V3D_Line ls, int oom) {
-        return getQR().isIntersectedBy(ls, oom) || getRS().isIntersectedBy(ls, oom)
-                || getSP().isIntersectedBy(ls, oom) || getPQ().isIntersectedBy(ls, oom);
+        return getQR().isIntersectedBy(ls, oom) 
+                || getRS().isIntersectedBy(ls, oom)
+                || getSP().isIntersectedBy(ls, oom) 
+                || getPQ().isIntersectedBy(ls, oom);
     }
 
     @Override
@@ -370,6 +369,20 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
                 return isIntersectedBy0(v3D_Point, oom);
             } else {
                 return isIntersectedBy0((V3D_Line) g, oom);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Ray ray, int oom) {
+        V3D_Plane pl = new V3D_Plane(this);
+        if (pl.isIntersectedBy(ray, oom)) {
+            V3D_Geometry g = pl.getIntersection(ray, oom);
+            if (g instanceof V3D_Point v3D_Point) {
+                return isIntersectedBy0(v3D_Point, oom);
+            } else {
+                return isIntersectedBy0((V3D_Ray) g, oom);
             }
         }
         return false;
