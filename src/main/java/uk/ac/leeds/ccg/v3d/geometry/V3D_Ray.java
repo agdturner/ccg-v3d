@@ -20,6 +20,7 @@ import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import static uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment.getGeometry;
 
 /**
  * 3D representation of a ray - a type of infinite line that starts at a point
@@ -870,28 +871,163 @@ public class V3D_Ray extends V3D_Line {
 //        }
     }
 
+//    @Override
+//    public V3D_Geometry getLineOfIntersection(V3D_Line l, int oom) {
+//        V3D_Geometry loi = new V3D_Line(this).getLineOfIntersection(l, oom);
+//        if (loi == null) {
+//            return loi;
+//        }
+//        //V3D_Geometry loi2 = l.getLineOfIntersection(p, oom);
+//        V3D_Geometry loi2 = l.getLineOfIntersection(getP(oom), oom);
+//        if (loi instanceof V3D_Point v3D_Point) {
+//            //V3D_Ray r = new V3D_Ray(p, v3D_Point, oom);
+//            V3D_Ray r = new V3D_Ray(e, getPV(oom), v3D_Point.getVector(oom));
+//            if (r.getV(oom).getDirection() == getV(oom).getDirection()) {
+//                return loi;
+//            } else {
+//                return loi2;
+//            }
+//        } else {
+//            V3D_Ray r = new V3D_Ray(e, getP(), ((V3D_LineSegment) loi).getP());
+//            if (r.getV(oom).getDirection() == getV(oom).getDirection()) {
+//                return loi2;
+//            } else {
+//                return loi;
+//            }
+//        }
+//    }
+    
+    /**
+     * Get the line of intersection (the shortest line) between {@code this} and
+     * {@code l}.
+     *
+     * @param l The line to get the line of intersection with.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return The line of intersection between {@code this} and {@code l}.
+     */
     @Override
     public V3D_Geometry getLineOfIntersection(V3D_Line l, int oom) {
-        V3D_Geometry loi = super.getLineOfIntersection(l, oom);
+        V3D_Line tl = new V3D_Line(this);
+        V3D_Geometry loi = tl.getLineOfIntersection(l, oom);
+        /**
+         * If the loi is a line segment with one point on this and one point on
+         * l, then this is a success. However, if one of the points is not on
+         * this, then the other point is that point of this closest to that
+         * point.
+         */
         if (loi == null) {
             return loi;
         }
-        //V3D_Geometry loi2 = l.getLineOfIntersection(p, oom);
-        V3D_Geometry loi2 = l.getLineOfIntersection(getP(oom), oom);
-        if (loi instanceof V3D_Point v3D_Point) {
-            //V3D_Ray r = new V3D_Ray(p, v3D_Point, oom);
-            V3D_Ray r = new V3D_Ray(e, getPV(oom), v3D_Point.getVector(oom));
-            if (r.getV(oom).getDirection() == getV(oom).getDirection()) {
-                return loi;
+        if (loi instanceof V3D_Point loip) {
+            if (isIntersectedBy(loip, oom)) {
+                return null;
             } else {
-                return loi2;
+                return l.getLineOfIntersection(getNearestPoint(loip, oom), oom);
             }
         } else {
-            V3D_Ray r = new V3D_Ray(e, getP(), ((V3D_LineSegment) loi).getP());
-            if (r.getV(oom).getDirection() == getV(oom).getDirection()) {
-                return loi2;
+            V3D_LineSegment loil = (V3D_LineSegment) loi;
+            if (isIntersectedBy(loil, oom)) {
+                return loil;
             } else {
-                return loi;
+                V3D_Point loilp = loil.getP(oom);
+                //V3D_Point loilq = loil.getQ(oom);
+                V3D_Point tp = getP(oom);
+                V3D_Point tq = getQ(oom);
+                if (isIntersectedBy(loilp, oom)) {
+                    return new V3D_LineSegment(tp, l.getPointOfIntersection(tp, oom));
+                } else {
+                    return new V3D_LineSegment(tq, l.getPointOfIntersection(tq, oom));
+                }
+            }
+        }
+    }
+    
+    /**
+     * @param pt Point.
+     * @return The nearest point on {@code this} to {@code pt}.
+     */
+    private V3D_Point getNearestPoint(V3D_Point pt, int oom) {
+        V3D_Point poi = new V3D_Line(this).getPointOfIntersection(pt, oom);
+        if (isIntersectedBy(poi, oom)) {
+            return poi;
+        } else {
+            return getP(oom);
+        }
+    }
+
+    /**
+     * Get the line of intersection (the shortest line) between {@code this} and
+     * {@code l}.
+     *
+     * @param l The line segment to get the line of intersection with.
+     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @return The line of intersection between {@code this} and {@code l}.
+     */
+    public V3D_Geometry getLineOfIntersection(V3D_LineSegment l, int oom) {
+        V3D_Line tl = new V3D_Line(this);
+        V3D_Geometry tloi = tl.getLineOfIntersection(l, oom);
+        V3D_Line ll = new V3D_Line(l);
+        V3D_Geometry lloi = getLineOfIntersection(ll, oom);
+        if (tloi == null) {
+            if (lloi == null) {
+                return null;
+            } else if (lloi instanceof V3D_Point lloip) {
+                return new V3D_LineSegment(getNearestPoint(lloip, oom), lloip);
+            } else {
+                // lloi instanceof V3D_LineSegment
+                return null;
+            }
+        } else if (tloi instanceof V3D_Point tloip) {
+            if (lloi == null) {
+                return new V3D_LineSegment(getNearestPoint(tloip, oom), tloip);
+            } else {
+                V3D_Point lp = l.getP(oom);
+                V3D_Point lq = l.getQ(oom);
+                if (lloi instanceof V3D_Point lloip) {
+                    return getGeometry(lloip, tloip);
+                } else {
+                    V3D_LineSegment lloil = (V3D_LineSegment) lloi;
+                    V3D_Point lloilp = lloil.getP(oom);
+                    V3D_Point lloilq = lloil.getQ(oom);
+                    if (isIntersectedBy(lloilp, oom)) {
+                        return new V3D_LineSegment(lloilp, V3D_LineSegment.getNearestPoint(l, lloilq, oom));
+                    } else {
+                        return new V3D_LineSegment(lloilq, V3D_LineSegment.getNearestPoint(l, lloilp, oom));
+                    }
+                }
+            }
+        } else {
+            if (lloi == null) {
+                return null;
+            } else {
+                V3D_LineSegment tloil = (V3D_LineSegment) tloi;
+                V3D_Point tloilp = tloil.getP(oom);
+                V3D_Point tloilq = tloil.getQ(oom);
+                if (lloi instanceof V3D_Point lloip) {
+                    if (isIntersectedBy(tloilp, oom)) {
+                        return new V3D_LineSegment(tloilp, getNearestPoint(tloilq, oom));
+                    } else {
+                        return new V3D_LineSegment(tloilq, getNearestPoint(tloilp, oom));
+                    }
+                } else {
+                    V3D_LineSegment lloil = (V3D_LineSegment) lloi;
+                    V3D_Point lloilp = lloil.getP(oom);
+                    V3D_Point lloilq = lloil.getQ(oom);
+                    if (tl.isIntersectedBy(tloilp, oom)) {
+                        if (ll.isIntersectedBy(lloilp, oom)) {
+                            return getGeometry(V3D_LineSegment.getNearestPoint(l, lloilp, oom), tloilp);
+                        } else {
+                            return getGeometry(V3D_LineSegment.getNearestPoint(l, lloilq, oom),
+                                    getNearestPoint(tloilq, oom));
+                        }
+                    } else {
+                        if (ll.isIntersectedBy(lloilp, oom)) {
+                            return getGeometry(V3D_LineSegment.getNearestPoint(l, lloilp, oom), tloilq);
+                        } else {
+                            return getGeometry(V3D_LineSegment.getNearestPoint(l, lloilq, oom), tloilp);
+                        }
+                    }
+                }
             }
         }
     }
@@ -1113,32 +1249,79 @@ public class V3D_Ray extends V3D_Line {
     }
 
     @Override
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
+        V3D_Geometry g = getLineOfIntersection(l, oom);
+        if (g == null) {
+            return l.getDistanceSquared(getP(oom), oom);
+        }
+        if (g instanceof V3D_Point) {
+            return Math_BigRational.ZERO;
+        } else {
+            return ((V3D_LineSegment) g).getLength2(oom);
+        }
+    }
+
+    @Override
     public BigDecimal getDistance(V3D_Plane pl, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalSqrt(getDistanceSquared(pl, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isIntersectedBy(pl, oom)) {
+            return Math_BigRational.ZERO;
+        } else {
+            Math_BigRational ld2 = new V3D_Line(this).getDistanceSquared(pl, oom);
+            if (ld2.compareTo(Math_BigRational.ZERO) == 0) {
+                return getP(oom).getDistanceSquared(pl, oom);
+            } else {
+                return ld2;
+            }
+        }
     }
 
     @Override
     public BigDecimal getDistance(V3D_Triangle t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalSqrt(getDistanceSquared(t, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isIntersectedBy(t, oom)) {
+            return Math_BigRational.ZERO;
+        } else {
+            Math_BigRational pqd2 = ((V3D_LineSegment) getLineOfIntersection(t.getPQ(), oom)).getLength2(oom);
+            Math_BigRational qrd2 = ((V3D_LineSegment) getLineOfIntersection(t.getQR(), oom)).getLength2(oom);
+            Math_BigRational rpd2 = ((V3D_LineSegment) getLineOfIntersection(t.getRP(), oom)).getLength2(oom);
+            Math_BigRational ld2 = t.getDistanceSquared(getP(oom), oom);
+            return Math_BigRational.min(pqd2, qrd2, rpd2, ld2);
+        }
     }
 
     @Override
     public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalSqrt(getDistanceSquared(t, oom), oom)
+                .getSqrt(oom).toBigDecimal(oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isIntersectedBy(t, oom)) {
+            return Math_BigRational.ZERO;
+        } else {
+            Math_BigRational pqrd2 = t.getPqr().getDistanceSquared(this, oom);
+            Math_BigRational psqd2 = t.getPsq().getDistanceSquared(this, oom);
+            Math_BigRational qsrd2 = t.getQsr().getDistanceSquared(this, oom);
+            Math_BigRational sprd2 = t.getSpr().getDistanceSquared(this, oom);
+            return Math_BigRational.min(pqrd2, psqd2, qsrd2, sprd2);
+        }
     }
 }

@@ -717,7 +717,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
                 return loil;
             } else {
                 V3D_Point loilp = loil.getP(oom);
-                V3D_Point loilq = loil.getQ(oom);
+                //V3D_Point loilq = loil.getQ(oom);
                 V3D_Point tp = getP(oom);
                 V3D_Point tq = getQ(oom);
                 if (isIntersectedBy(loilp, oom)) {
@@ -811,7 +811,7 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
      * @param p Is on the line of {@code l}, but not on {@code l}.
      * @return The nearest point on {@code l} to {@code p}.
      */
-    private V3D_Point getNearestPoint(V3D_LineSegment l, V3D_Point p, int oom) {
+    protected static V3D_Point getNearestPoint(V3D_LineSegment l, V3D_Point p, int oom) {
         V3D_Point lp = l.getP(oom);
         V3D_Point lq = l.getQ(oom);
         Math_BigRational dlpp = lp.getDistanceSquared(p, oom);
