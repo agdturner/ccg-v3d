@@ -566,38 +566,73 @@ public class V3D_RayTest extends V3D_Test {
         assertTrue(instance.isIntersectedBy(t, e.oom));
     }
 
-//    /**
-//     * Test of getIntersection method, of class V3D_Ray.
-//     */
-//    @Test
-//    public void testGetIntersection_V3D_Triangle_int() {
-//        System.out.println("getIntersection");
-//        V3D_Triangle t = null;
-//        int oom = 0;
-//        V3D_Ray instance = null;
-//        V3D_Geometry expResult = null;
-//        V3D_Geometry result = instance.getIntersection(t, oom);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getIntersection method, of class V3D_Ray.
-//     */
-//    @Test
-//    public void testGetIntersection_V3D_Tetrahedron_int() {
-//        System.out.println("getIntersection");
-//        V3D_Tetrahedron t = null;
-//        int oom = 0;
-//        V3D_Ray instance = null;
-//        V3D_Geometry expResult = null;
-//        V3D_Geometry result = instance.getIntersection(t, oom);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+    /**
+     * Test of getIntersection method, of class V3D_Ray.
+     */
+    @Test
+    public void testGetIntersection_V3D_Triangle_int() {
+        System.out.println("getIntersection");
+        V3D_Triangle t;
+        V3D_Ray instance;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
+        // Test 1
+        t = new V3D_Triangle(pP0P1P0, pP1P0P0, pP1P1P0);
+        instance = new V3D_Ray(pP0P0P0, pP1P0P0);
+        result = instance.getIntersection(t, e.oom);
+        expResult = pP1P0P0;
+        assertEquals(expResult, result);
+        // Test 2
+        t = new V3D_Triangle(pP0N2P0, pP0P2P0, pP2P0P0);
+        instance = new V3D_Ray(pP1P0P0, pP2P0P0);
+        result = instance.getIntersection(t, e.oom);
+        expResult = new V3D_LineSegment(pP1P0P0, pP2P0P0);
+        assertEquals(expResult, result);
+        // Test 3
+        t = new V3D_Triangle(pP0N2P0, pP0P2P0, pP2P0P0);
+        instance = new V3D_Ray(pN1P0P0, pP2P0P0);
+        result = instance.getIntersection(t, e.oom);
+        expResult = new V3D_LineSegment(pP0P0P0, pP2P0P0);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Ray.
+     */
+    @Test
+    public void testGetIntersection_V3D_Tetrahedron_int() {
+        System.out.println("getIntersection");
+        V3D_Tetrahedron t;
+        V3D_Ray instance ;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
+        // Test 1
+        t = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        instance = new V3D_Ray(pN1P0P0, pP0P0P0);
+        expResult = new V3D_LineSegment(pN1P0P0, pP0P0P0);
+        result = instance.getIntersection(t, e.oom);
+        assertEquals(expResult, result);
+        // Test 2
+        t = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        instance = new V3D_Ray(pN1P1P0, pP0P1P0);
+        expResult = pN1P1P0;
+        result = instance.getIntersection(t, e.oom);
+        assertEquals(expResult, result);
+        // Test 3
+        t = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        instance = new V3D_Ray(pN1P0P1, pP0P0P1);
+        expResult = new V3D_LineSegment(pN1P0P1, pP0P0P1);
+        result = instance.getIntersection(t, e.oom);
+        assertEquals(expResult, result);
+        // Test 4
+        t = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        V3D_Point pNHP0P1 = new V3D_Point(e, Math_BigRational.valueOf(-1,2),P0, P1);
+        instance = new V3D_Ray(pNHP0P1, pP0P0P1);
+        expResult = new V3D_LineSegment(pNHP0P1, pP0P0P1);
+        result = instance.getIntersection(t, e.oom);
+        assertEquals(expResult, result);
+    }
+
 //    /**
 //     * Test of getIntersection method, of class V3D_Ray.
 //     */
