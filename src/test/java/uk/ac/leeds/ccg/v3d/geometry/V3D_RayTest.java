@@ -808,4 +808,275 @@ public class V3D_RayTest extends V3D_Test {
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
+
+    /**
+     * Test of getIntersection method, of class V3D_Ray.
+     */
+    @Test
+    public void testGetIntersection_V3D_LineSegment_int() {
+        System.out.println("getIntersection");
+        V3D_LineSegment l;
+        V3D_Ray instance;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
+        // Test 1
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray(pP0P0P0, pP1P0P0);
+        expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        result = instance.getIntersection(l, e.oom);
+        assertEquals(expResult, result);
+        // Test 2
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray(pP0P0P0, pN1P0P0);
+        expResult = pP0P0P0;
+        result = instance.getIntersection(l, e.oom);
+        assertEquals(expResult, result);
+        // Test 3
+        l = new V3D_LineSegment(pP0P0P0, pP2P0P0);
+        instance = new V3D_Ray(pP1P0P0, pP2P0P0);
+        expResult = new V3D_LineSegment(pP1P0P0, pP2P0P0);
+        result = instance.getIntersection(l, e.oom);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getLineOfIntersection method, of class V3D_Ray.
+     */
+    @Test
+    public void testGetLineOfIntersection_V3D_LineSegment_int() {
+        System.out.println("getLineOfIntersection");
+        V3D_LineSegment l;
+        V3D_Ray instance;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
+        // Test 1
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray(pP0P0P0, pP1P0P0);
+        result = instance.getLineOfIntersection(l, e.oom);
+        assertTrue(result instanceof V3D_Point);
+        // Test 2
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray(pP0P1P0, pP1P1P0);
+        expResult = new V3D_LineSegment(pP0P0P0, pP0P1P0);
+        result = instance.getLineOfIntersection(l, e.oom);
+        assertEquals(expResult, result);
+        // Test 3
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray(pP0P1P0, pP1P2P0);
+        expResult = new V3D_LineSegment(pP0P0P0, pP0P1P0);
+        result = instance.getLineOfIntersection(l, e.oom);
+        assertEquals(expResult, result);
+        
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_Ray.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_Point_int() {
+        System.out.println("getDistanceSquared");
+        V3D_Point pt;
+        V3D_Ray instance;
+        Math_BigRational expResult;
+        Math_BigRational result;
+        // Test 1
+        pt = pP0P1P0;
+        instance = new V3D_Ray(pP0P0P0, pP1P0P0);
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(pt, e.oom);
+        assertEquals(expResult, result);
+        // Test 2
+        pt = pP0P1P0;
+        instance = new V3D_Ray(pP0P0P0, pP0N1P0);
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(pt, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_Ray.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_Ray_int() {
+        System.out.println("getDistanceSquared");
+        V3D_Ray r;
+        V3D_Ray instance;
+        Math_BigRational expResult;
+        Math_BigRational result;
+        // Test 1
+        r = new V3D_Ray(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray(pP0P1P0, pP1P1P0);
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(r, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Ray covered by 
+     * {#link #testGetDistanceSquared_V3D_Line_int()}.
+     */
+    @Test
+    public void testGetDistance_V3D_Line_int() {
+        System.out.println("getDistance");
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_Ray.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_Line_int() {
+        System.out.println("getDistanceSquared");
+        V3D_Line l ;
+        V3D_Ray instance ;
+        Math_BigRational expResult;
+        Math_BigRational result;
+        // Test 1
+        l = new V3D_Line(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray(pP0P0P0, pP1P0P0);
+        expResult = Math_BigRational.ZERO;
+        result = instance.getDistanceSquared(l, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 2
+        l = new V3D_Line(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray(pP0P1P0, pP1P1P0);
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(l, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 3
+        l = new V3D_Line(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray(pP0P1P0, pP0P2P0);
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(l, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Ray covered by
+     * {#link #testGetDistanceSquared_V3D_LineSegment_int()}.
+     */
+    @Test
+    public void testGetDistance_V3D_LineSegment_int() {
+        System.out.println("getDistance");
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_Ray.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_LineSegment_int() {
+        System.out.println("getDistanceSquared");
+        V3D_LineSegment l;
+        V3D_Ray instance;
+        Math_BigRational expResult;
+        Math_BigRational result;
+        // Test 1
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray(pP0P1P0, pP0P2P0);
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(l, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 2
+        l = new V3D_LineSegment(pP1P0P0, pP2P0P0);
+        instance = new V3D_Ray(pP0P1P0, pP0P2P0);
+        expResult = Math_BigRational.TWO;
+        result = instance.getDistanceSquared(l, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Ray covered by
+     * {@link #testGetDistanceSquared_V3D_Plane_int()}.
+     */
+    @Test
+    public void testGetDistance_V3D_Plane_int() {
+        System.out.println("getDistance");
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_Ray.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_Plane_int() {
+        System.out.println("getDistanceSquared");
+        V3D_Plane pl;
+        V3D_Ray instance;
+        Math_BigRational expResult;
+        Math_BigRational result;
+        // Test 1
+        pl = V3D_Plane.X0;
+        instance = new V3D_Ray(pP0P1P0, pP0P2P0);
+        expResult = Math_BigRational.ZERO;
+        result = instance.getDistanceSquared(pl, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 2
+        instance = new V3D_Ray(pP1P1P0, pP1P2P0);
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(pl, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 3
+        instance = new V3D_Ray(pP1P1P0, pP2P2P0);
+        expResult = Math_BigRational.ONE;
+        result = instance.getDistanceSquared(pl, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Ray covered by
+     * {@link #testGetDistanceSquared_V3D_Triangle_int()}.
+     */
+    @Test
+    public void testGetDistance_V3D_Triangle_int() {
+        System.out.println("getDistance");
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_Ray.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_Triangle_int() {
+        System.out.println("getDistanceSquared");
+        V3D_Triangle t;
+        V3D_Ray instance;
+        Math_BigRational expResult;
+        Math_BigRational result;
+        // Test 1
+        t = new V3D_Triangle(pP0P1P0, pP0P0P1, pP0P1P1);
+        instance = new V3D_Ray(pP0P1P0, pP0P2P0);
+        expResult = Math_BigRational.ZERO;
+        result = instance.getDistanceSquared(t, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 2
+        t = new V3D_Triangle(pP0P1P0, pP0P0P1, pP0P1P1);
+        instance = new V3D_Ray(pP1P0P0, pP2P0P0);
+        expResult = Math_BigRational.valueOf(3, 2);
+        result = instance.getDistanceSquared(t, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_Ray covered by
+     * {@link #testGetDistanceSquared_V3D_Tetrahedron_int()}.
+     */
+    @Test
+    public void testGetDistance_V3D_Tetrahedron_int() {
+        System.out.println("getDistance");
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_Ray.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_Tetrahedron_int() {
+        System.out.println("getDistanceSquared");
+        V3D_Tetrahedron t;
+        V3D_Ray instance;
+        Math_BigRational expResult;
+        Math_BigRational result;
+        // Test 1
+        t = new V3D_Tetrahedron(e, P0P0P0, P0P1P0, P0P0P1, P0P1P1, P1P1P1);
+        instance = new V3D_Ray(pP1P0P0, pP2P0P0);
+        expResult = Math_BigRational.valueOf(3, 2);
+        result = instance.getDistanceSquared(t, e.oom);
+        assertTrue(expResult.compareTo(result) == 0);
+    }
 }

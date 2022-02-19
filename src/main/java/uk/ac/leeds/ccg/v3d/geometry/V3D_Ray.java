@@ -970,7 +970,10 @@ public class V3D_Ray extends V3D_Line {
         V3D_Geometry lloi = getLineOfIntersection(ll, oom);
         if (tloi == null) {
             if (lloi == null) {
-                return null;
+                V3D_Point poi = getPointOfIntersection(l.getP(oom), oom);
+                V3D_Point poi2 = l.getPointOfIntersection(poi, oom);                
+                return getGeometry(poi, poi2);
+//                return null;
             } else if (lloi instanceof V3D_Point lloip) {
                 return new V3D_LineSegment(getNearestPoint(lloip, oom), lloip);
             } else {
