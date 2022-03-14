@@ -7,7 +7,7 @@ tags:
   - arbitrary precision
   - order of magnitude
 authors:
-  - name: Andy Turner^[corresponding author]
+  - name: Andy Turner[corresponding author]
     orcid: 0000-0002-6098-6313
     affiliation: 1
 affiliations:
