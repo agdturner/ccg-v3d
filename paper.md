@@ -7,13 +7,13 @@ tags:
   - arbitrary precision
   - order of magnitude
 authors:
-  - name: Andy Turner[corresponding author]
+  - name: Andy Turner^[corresponding author]
     orcid: 0000-0002-6098-6313
     affiliation: 1
 affiliations:
  - name: CCG, School of Geography, University of Leeds
    index: 1
-date: 30 October 2021
+date: 14 March 2022
 bibliography: paper.bib
 ---
 
