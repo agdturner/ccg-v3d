@@ -1,5 +1,5 @@
 ---
-title: 'Development of a Modularised Java library for 3D Euclidean geometry'
+title: 'A Modularised Java library for 3D Euclidean geometry'
 tags:
   - Java
   - Euclidean geometry
