@@ -12,7 +12,7 @@ authors:
     affiliation: 1
 affiliations:
  - name: CCG, School of Geography, University of Leeds
- - index: 1
+   index: 1
 date: 30 October 2021
 bibliography: paper.bib
 ---
