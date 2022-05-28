@@ -594,6 +594,9 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 return l;
             } else {
                 V3D_Geometry li = getIntersection(new V3D_Line(l), oom);
+                if (li == null) {
+                    return null;
+                }
                 if (li instanceof V3D_Point) {
 //                    return l.p;
                     return lp;
@@ -753,7 +756,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //                                        return t;
 //                                    }
 //                                } else {
-                                    return grp;
+                                return grp;
 //                                }
                             } else if (gqr instanceof V3D_Point gqrp) {
                                 if (grp == null) {
@@ -849,7 +852,6 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
 //        return getEnvelope().isIntersectedBy(l, oom);
 //    }
-
     /**
      * Calculate and return the centroid as a point. The original implementation
      * used intersection, but it is simpler to get the average of the x, y and z
@@ -1359,7 +1361,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         Math_BigRational drp2 = getRP().getDistanceSquared(l, oom);
         return Math_BigRational.min(dpq2, dqr2, drp2);
     }
-    
+
     @Override
     public BigDecimal getDistance(V3D_Ray r, int oom) {
         return r.getDistance(this, oom);
