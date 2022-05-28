@@ -25,6 +25,9 @@ Point positions in space are defined using [cartesian](https://en.wikipedia.org/
 ```
 [Sonatype SNAPSHOT Directory](https://oss.sonatype.org/content/repositories/snapshots/io/github/agdturner/ccg-v3d/0.15-SNAPSHOT/)
 
+## Getting Started
+It is advised that you load this as a [Maven project](https://maven.apache.org/) in your favourite IDE. This should make it easy to download the dependencies and run the tests. The tests provide some indication of how you might used the library for example to determine the intersection of two geometries.
+
 ## Details
 Slightly more lightweight geometries are in the [uk.ac.leeds.ccg.v3d.geometry.light](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/) package. These use [V3D_V](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_V.java) which have three Math_BigRational components related to each respective axis. Most classes extend [V3D_VGeometry](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VGeometry.java) - an abstract class that holds a V3D_V "offset" which can be thought of as the offset of the centroid of the geometry:
 - [V3D_VPoint](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/light/V3D_VPoint.java) - for representing points. A V3D_V instances called rel gives the location of the point relative to the offset.
@@ -48,7 +51,7 @@ Geometry collections of the same types of geometry are being supported, includin
 - [V3D_LineSegments](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_LineSegments.java) - for collections of line segments. 
 - [V3D_LineSegmentsCollinear](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_LineSegmentsCollinear.java) - for collections of collinear line segments. 
 - [V3D_Triangles](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Triangles.java) - for collections of triangles.
-- [V3D_TrianglesCoplanar](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Triangles.java) - for collections of coplanar triangles.
+- [V3D_TrianglesCoplanar](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_TrianglesCoplanar.java) - for collections of coplanar triangles.
 - [V3D_Tetrahedrons](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Tetrahedrons.java) - for collections of tetrahedrons.
 
 ## Development plans and progress
