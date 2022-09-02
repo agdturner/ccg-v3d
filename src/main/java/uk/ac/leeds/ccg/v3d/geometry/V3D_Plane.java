@@ -1496,8 +1496,7 @@ public class V3D_Plane extends V3D_Geometry
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
     public boolean equals(V3D_Plane pl) {
-        return isCoplanar(e, this, pl.getP(), pl.getQ(),
-                pl.getR());
+        return isCoplanar(e, this, pl.getP(), pl.getQ(), pl.getR());
     }
 
     /**

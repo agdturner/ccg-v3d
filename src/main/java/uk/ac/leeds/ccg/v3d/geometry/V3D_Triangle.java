@@ -799,7 +799,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                                 } else if (grp instanceof V3D_Point grpp) {
                                     return V3D_LineSegment.getGeometry(gqrp, grpp); // Check!
                                 } else {
-                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (two points and a line segment).
+                                    throw new UnsupportedOperationException("Not supported yet."); 
+                                    // TODO: Figure out the geometry (two points and a line segment).
                                 }
                             } else {
                                 if (grp == null) {
@@ -917,31 +918,32 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     public boolean equals(V3D_Triangle t) {
         V3D_Point tp = t.getP();
         V3D_Point thisp = getP();
-        V3D_Point tq = t.getQ();
-        V3D_Point thisq = getQ();
-        V3D_Point tr = t.getR();
-        V3D_Point thisr = getR();
         if (tp.equals(thisp)) {
+            V3D_Point tq = t.getQ();
+            V3D_Point thisq = getQ();
             if (tq.equals(thisq)) {
-                return tr.equals(thisr);
-            } else if (tq.equals(thisr)) {
-                return tr.equals(thisq);
+                return t.getR().equals(getR());
+            } else if (tq.equals(getR())) {
+                return t.getR().equals(thisq);
             } else {
                 return false;
             }
-        } else if (tp.equals(thisq)) {
+        } else if (tp.equals(getQ())) {
+            V3D_Point tq = t.getQ();
+            V3D_Point thisr = getR();
             if (tq.equals(thisr)) {
-                return tr.equals(thisp);
+                return t.getR().equals(thisp);
             } else if (tq.equals(thisp)) {
-                return tr.equals(thisr);
+                return t.getR().equals(thisr);
             } else {
                 return false;
             }
-        } else if (tp.equals(thisr)) {
+        } else if (tp.equals(getR())) {
+            V3D_Point tq = t.getQ();
             if (tq.equals(thisp)) {
-                return tr.equals(thisq);
-            } else if (tq.equals(thisq)) {
-                return tr.equals(thisp);
+                return t.getR().equals(getQ());
+            } else if (tq.equals(getQ())) {
+                return t.getR().equals(thisp);
             } else {
                 return false;
             }

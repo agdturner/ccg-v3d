@@ -933,6 +933,61 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
         }
     }
 
+    //@Override
+    public V3D_Geometry getIntersection(V3D_Rectangle r, int oom) {
+        V3D_Triangle r_pqr = r.getPQR();
+        V3D_Triangle r_rsp = r.getRSP();
+        V3D_Geometry i_pqr = getIntersection(r_pqr, oom);
+        V3D_Geometry i_rsp = getIntersection(r_rsp, oom);
+        /** 
+         * The intersections will be null, a point, a line segment, a triangle, 
+         * a quadrilateral, a pentagon or a hexagon. 
+         * 
+         */
+        if (i_pqr == null) {
+            return i_rsp;
+        } else {
+            if (i_pqr instanceof V3D_Point i_pqr_p) {
+                if (i_rsp == null) {
+                    return i_pqr_p;
+                } else {
+                    return i_rsp;
+                }
+            } else if (i_pqr instanceof V3D_LineSegment) {
+                if (i_rsp == null) {
+                    return i_pqr;
+                } else if (i_rsp instanceof V3D_Point) {
+                    return i_pqr;
+                } else {
+                    return i_rsp;
+                }
+            } else if (i_pqr instanceof V3D_Triangle i_pqr_t) {
+                if (i_rsp == null) {
+                    return i_pqr_t;
+                } else if (i_rsp instanceof V3D_Point) {
+                    return i_pqr_t;
+                } else if (i_rsp instanceof V3D_LineSegment) {
+                    return i_pqr_t;
+                } else if (i_rsp instanceof V3D_Triangle i_rsp_t) {
+                    
+                    return new V3D_TrianglesCoplanar(i_pqr_t, i_rsp_t);
+                } else if (i_rsp instanceof V3D_Triangle i_rsp_t) {
+                    return new V3D_TrianglesCoplanar(i_pqr_t, i_rsp_t);
+                    
+                }
+                if (t.isIntersectedBy(pip, oom)) {
+                    return pi;
+                } else {
+                    return null;
+                }
+            } else if (pi instanceof V3D_LineSegment pil) {
+                return t.getIntersection(pil, oom);
+            } else {
+                return ((V3D_Triangle) pi).getIntersection(t, oom);
+            }
+        }
+    }
+
     @Override
     public BigDecimal getDistance(V3D_Point p, int oom) {
         return new Math_BigRationalSqrt(getDistanceSquared(p, oom), oom)

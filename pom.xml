@@ -223,7 +223,7 @@
         <repository>
             <id>github</id>
             <name>GitHub agdturner Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/agdturner/ccg-vector3d</url>
+            <url>https://maven.pkg.github.com/agdturner/ccg-v3d</url>
         </repository>
         <!--
         <repository>

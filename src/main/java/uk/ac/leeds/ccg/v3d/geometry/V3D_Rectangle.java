@@ -16,7 +16,9 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalRoot;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
@@ -54,6 +56,11 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     protected V3D_Triangle rsp;
 
     /**
+     * For storing this as a triangle.
+     */
+    protected V3D_Triangle pqr;
+
+    /**
      * @return {@link #rsp} initialising it first if it is {@code null}
      */
     public V3D_Triangle getRSP() {
@@ -63,6 +70,16 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         return rsp;
     }
 
+    /**
+     * @return A new V3D_Triangle {@link #rsp} initialising it first if it is {@code null}
+     */
+    public V3D_Triangle getPQR() {
+        if (pqr == null) {
+            pqr = new V3D_Triangle(this);
+        }
+        return pqr;
+    }
+    
 //    /**
 //     * For storing the vector from {@link #p} to {@link #q}.
 //     */
@@ -897,56 +914,106 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 
     @Override
     public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
+        //V3D_Triangle
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public BigDecimal getDistance(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalRoot(getDistanceSquared(l, oom), 2, oom)
+                .toBigDecimal(oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getRSP().getDistanceSquared(l, oom).min(
+                getPQR().getDistanceSquared(l, oom));
     }
 
     @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalRoot(getDistanceSquared(l, oom), 2, oom)
+                .toBigDecimal(oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getRSP().getDistanceSquared(l, oom).min(
+                getPQR().getDistanceSquared(l, oom));
     }
 
     @Override
     public BigDecimal getDistance(V3D_Plane p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalRoot(getDistanceSquared(p, oom), 2, oom)
+                .toBigDecimal(oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getRSP().getDistanceSquared(p, oom).min(
+                getPQR().getDistanceSquared(p, oom));
     }
 
     @Override
     public BigDecimal getDistance(V3D_Triangle t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalRoot(getDistanceSquared(t, oom), 2, oom)
+                .toBigDecimal(oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getRSP().getDistanceSquared(t, oom).min(
+                getPQR().getDistanceSquared(t, oom));
     }
 
     @Override
     public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Math_BigRationalRoot(getDistanceSquared(t, oom), 2, oom)
+                .toBigDecimal(oom);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getRSP().getDistanceSquared(t, oom).min(
+                getPQR().getDistanceSquared(t, oom));
+    }
+    
+    /**
+     * Test for equality.
+     * 
+     * @param o The object to test if it is equal to this.
+     * @return True iff this and o represent the same rectangle.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof V3D_Rectangle r) {
+            return equals(r);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + Objects.hashCode(this.s);
+        hash = 71 * hash + Objects.hashCode(this.rsp);
+        return hash;
+    }
+    
+    /**
+     * @param r The rectangle to test if it is equal to this.
+     * @return {@code true} iff this is equal to r.
+     */
+    public boolean equals(V3D_Rectangle r) {
+        V3D_TrianglesCoplanar t = this.toTrianglesCoplanar();
+        return t.equals(r.toTrianglesCoplanar(), true);
+    }
+    
+    /**
+     * Converts this into a V3D_TrianglesCoplanar.
+     * @return V3D_TrianglesCoplanar equivalent to this.
+     */
+    public V3D_TrianglesCoplanar toTrianglesCoplanar() {
+        return new V3D_TrianglesCoplanar(this.getRSP(), this.getPQR());
     }
 }

@@ -130,13 +130,11 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
          * be the same. For the areas to be the same each triangle from each
          * must either be in the other, or it must fully intersect the other.
          */
-        if (!this.equals(i)) {
+        if (!new V3D_Plane(this).equals(new V3D_Plane(i))) {
             // If they are not in the same plane, they are unequal!
             return false;
         }
-        Iterator<V3D_Triangle> ite = triangles.iterator();
-        while (ite.hasNext()) {
-            V3D_Triangle t = ite.next();
+        for (V3D_Triangle t : triangles) {
             V3D_Geometry g = i.getIntersection(t, e.oom);
             if (g instanceof V3D_Triangle gt) {
                 if (!t.equals(gt)) {
@@ -146,9 +144,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
                 }
             }
         }
-        Iterator<V3D_Triangle> iite = i.triangles.iterator();
-        while (iite.hasNext()) {
-            V3D_Triangle t = iite.next();
+        for (V3D_Triangle t : i.triangles) {
             V3D_Geometry g = getIntersection(t, e.oom);
             if (g instanceof V3D_Triangle gt) {
                 if (!t.equals(gt)) {
@@ -320,11 +316,8 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     @Override
     public boolean isIntersectedBy(V3D_Line l, int oom) {
         if (super.isIntersectedBy(l, oom)) {
-            if (triangles.stream().anyMatch(triangle -> (triangle.isIntersectedBy(l, oom)))) {
-                return true;
-            }
-            return false;
-            //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy(l, oom)));
+            //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy(l, oom)));        
+            return triangles.stream().anyMatch(t -> (t.isIntersectedBy(l, oom)));
         }
         return false;
     }
@@ -404,16 +397,30 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
         }
         int size = t2s.size();
         switch (size) {
-            case 0:
+            case 0 -> {
                 return null;
-            case 1:
+            }
+            case 1 -> {
                 return t2s.iterator().next();
-            case 2:
+            }
+            case 2 -> {
                 Iterator<V3D_Triangle> ite = t2s.iterator();
                 return getGeometry(ite.next(), ite.next(), oom);
-            default:
-                return getGeometry(oom, t2s.toArray(new V3D_Triangle[t2s.size()]));
+            }
+            default -> {
+                return getGeometry(oom, t2s.toArray(V3D_Triangle[]::new));
+            }
         }
+//        switch (size) {
+//            case 0:
+//                return null;
+//            case 1:
+//                return t2s.iterator().next();
+//            case 2:
+//                Iterator<V3D_Triangle> ite = t2s.iterator();
+//                return getGeometry(ite.next(), ite.next(), oom);
+//            default:
+//                return getGeometry(oom, t2s.toArray(V3D_Triangle[]::new));
     }
 
 //    @Override
@@ -433,5 +440,20 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
         for (V3D_Triangle t : triangles) {
             t.rotate(axisOfRotation, theta);
         }
+    }
+    
+    public Set<V3D_Point> getConvexHull() {
+        
+    }
+    
+    /**
+     * If all {@link #triangles} form a single triangle return true
+     * @return 
+     */
+    public boolean isTriangle() {
+        for (V3D_Triangle t: triangles) {
+            t.
+        }
+        
     }
 }

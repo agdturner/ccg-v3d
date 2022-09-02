@@ -16,11 +16,10 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.Set;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -43,7 +42,7 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
     /**
      * The collinear line segments.
      */
-    public final Set<V3D_LineSegment> lineSegments;
+    public ArrayList<V3D_LineSegment> lineSegments;
 
     /**
      * Create a new instance.
@@ -52,7 +51,7 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
      */
     public V3D_LineSegmentsCollinear(V3D_LineSegment... lineSegments) {
         super(lineSegments[0]);
-        this.lineSegments = new HashSet<>();
+        this.lineSegments = new ArrayList<>();
         this.lineSegments.addAll(Arrays.asList(lineSegments));
     }
 
@@ -421,6 +420,81 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
             }
         }
         return false;
+    }
+
+    /**
+     * Combines overlapping line into single line segments. If there is only one
+     * line segment, then a V3D_LineSegment is returned, otherwise a
+     * V3D_LineSegmentsCollinear is returned.
+     *
+     * @return Either a V3D_LineSegment or a V3D_LineSegmentsCollinear which is
+     * a simplified version of this with overlapping line segments replaced with
+     * a single line segment.
+     */
+    public V3D_Geometry simplify() {
+        simplify0(0);
+        if (lineSegments.size() == 1) {
+            return lineSegments.get(0);
+        } else {
+            return this;
+        }
+    }
+
+    protected void simplify0(int i) {
+        V3D_LineSegment l0 = lineSegments.get(i);
+        ArrayList<V3D_LineSegment> dummy = new ArrayList<>();
+        ArrayList<Integer> removeIndexes = new ArrayList<>();
+        dummy.addAll(lineSegments);
+        for (int j = i; j < dummy.size(); j++) {
+            V3D_LineSegment l1 = lineSegments.get(j);
+            if (l0.isIntersectedBy(l1, e.oom)) {
+                V3D_Point l0p = l0.getP(e.oom);
+                if (l0p.isIntersectedBy(l1, e.oom)) {
+                    V3D_Point l0q = l0.getQ(e.oom);
+                    if (l0q.isIntersectedBy(l1, e.oom)) {
+                        // l0 is completely overlapped by l1
+                        removeIndexes.add(i);
+                    } else {
+                        V3D_Point l1p = l1.getP(e.oom);
+                        V3D_Point l1q = l1.getQ(e.oom);
+                        if (l1p.isIntersectedBy(l0, e.oom)) {
+                            removeIndexes.add(i);
+                            removeIndexes.add(j);
+                            dummy.add(new V3D_LineSegment(l1q, l0q));
+                        } else {
+                            removeIndexes.add(i);
+                            removeIndexes.add(j);
+                            dummy.add(new V3D_LineSegment(l1q, l1p));
+                        }
+                    }
+                } else {
+                    V3D_Point l0q = l0.getQ(e.oom);
+                    if (l0q.isIntersectedBy(l1, e.oom)) {
+                        V3D_Point l1p = l1.getP(e.oom);
+                        V3D_Point l1q = l1.getQ(e.oom);
+                        if (l1.getP(e.oom).isIntersectedBy(l0, e.oom)) {
+                            removeIndexes.add(i);
+                            removeIndexes.add(j);
+                            dummy.add(new V3D_LineSegment(l1q, l0p));
+                        } else {
+                            removeIndexes.add(i);
+                            removeIndexes.add(j);
+                            dummy.add(new V3D_LineSegment(l1p, l0p));
+                        }
+                    } else {
+                        // l1 is completely overlapped by l0
+                        removeIndexes.add(j);
+                    }
+                }
+            }
+        }
+        for (int j = removeIndexes.size() -1; j >= 0; j --) {
+            dummy.remove(removeIndexes.get(j).intValue());
+        }
+        lineSegments = dummy;
+        if (i < lineSegments.size() - 2) {
+            simplify0(i + 1);
+        }
     }
 
     @Override
