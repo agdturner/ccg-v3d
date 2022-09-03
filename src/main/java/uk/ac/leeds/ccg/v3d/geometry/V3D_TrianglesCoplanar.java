@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -442,8 +443,11 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
         }
     }
     
-    public Set<V3D_Point> getConvexHull() {
-        
+    /**
+     * @return The convex hull. 
+     */
+    public ArrayList<V3D_Point> getConvexHull() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     /**
@@ -451,9 +455,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * @return 
      */
     public boolean isTriangle() {
-        for (V3D_Triangle t: triangles) {
-            t.
-        }
-        
+        ArrayList<V3D_Point> ch = getConvexHull();
+        return ch.size() == 3;
     }
 }

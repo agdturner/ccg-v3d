@@ -42,7 +42,7 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
     /**
      * The collinear line segments.
      */
-    public ArrayList<V3D_LineSegment> lineSegments;
+    public final ArrayList<V3D_LineSegment> lineSegments;
 
     /**
      * Create a new instance.
@@ -423,8 +423,8 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
     }
 
     /**
-     * Combines overlapping line into single line segments. If there is only one
-     * line segment, then a V3D_LineSegment is returned, otherwise a
+     * Combines overlapping line segments into single line segments. If there is
+     * only one line segment, then a V3D_LineSegment is returned, otherwise a
      * V3D_LineSegmentsCollinear is returned.
      *
      * @return Either a V3D_LineSegment or a V3D_LineSegmentsCollinear which is
@@ -432,21 +432,23 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
      * a single line segment.
      */
     public V3D_Geometry simplify() {
-        simplify0(0);
-        if (lineSegments.size() == 1) {
-            return lineSegments.get(0);
+        ArrayList<V3D_LineSegment> dummy = new ArrayList<>();
+        dummy.addAll(lineSegments);
+        ArrayList<V3D_LineSegment> r = simplify0(dummy, 0);
+        if (r.size() == 1) {
+            return r.get(0);
         } else {
-            return this;
+            return new V3D_LineSegmentsCollinear(r.toArray(V3D_LineSegment[]::new));
         }
     }
 
-    protected void simplify0(int i) {
-        V3D_LineSegment l0 = lineSegments.get(i);
+    protected ArrayList<V3D_LineSegment> simplify0(ArrayList<V3D_LineSegment> ls, int i) {
+        V3D_LineSegment l0 = ls.get(i);
         ArrayList<V3D_LineSegment> dummy = new ArrayList<>();
         ArrayList<Integer> removeIndexes = new ArrayList<>();
-        dummy.addAll(lineSegments);
+        dummy.addAll(ls);
         for (int j = i; j < dummy.size(); j++) {
-            V3D_LineSegment l1 = lineSegments.get(j);
+            V3D_LineSegment l1 = ls.get(j);
             if (l0.isIntersectedBy(l1, e.oom)) {
                 V3D_Point l0p = l0.getP(e.oom);
                 if (l0p.isIntersectedBy(l1, e.oom)) {
@@ -488,13 +490,14 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
                 }
             }
         }
-        for (int j = removeIndexes.size() -1; j >= 0; j --) {
+        for (int j = removeIndexes.size() - 1; j >= 0; j--) {
             dummy.remove(removeIndexes.get(j).intValue());
         }
-        lineSegments = dummy;
-        if (i < lineSegments.size() - 2) {
-            simplify0(i + 1);
+        ArrayList<V3D_LineSegment> r = dummy;
+        if (i < ls.size() - 2) {
+            r = simplify0(r, i + 1);
         }
+        return r;
     }
 
     @Override
