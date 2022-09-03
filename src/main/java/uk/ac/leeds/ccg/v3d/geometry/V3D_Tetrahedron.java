@@ -384,7 +384,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     public boolean isIntersectedBy(V3D_Ray r, int oom) {
         return r.isIntersectedBy(this, oom);
     }
-    
+
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         if (isIntersectedBy(l.getP(oom), oom)) {
@@ -594,7 +594,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
             }
         }
     }
-    
+
     @Override
     public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
         return r.getIntersection(this, oom);
@@ -939,51 +939,50 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
         V3D_Triangle r_rsp = r.getRSP();
         V3D_Geometry i_pqr = getIntersection(r_pqr, oom);
         V3D_Geometry i_rsp = getIntersection(r_rsp, oom);
-        /** 
-         * The intersections will be null, a point, a line segment, a triangle, 
-         * a quadrilateral, a pentagon or a hexagon. 
-         * 
+        /**
+         * The intersections will be null, a point, a line segment, a triangle,
+         * a quadrilateral, a pentagon or a hexagon.
+         *
          */
         if (i_pqr == null) {
             return i_rsp;
-        } else {
-            if (i_pqr instanceof V3D_Point i_pqr_p) {
-                if (i_rsp == null) {
-                    return i_pqr_p;
-                } else {
-                    return i_rsp;
-                }
-            } else if (i_pqr instanceof V3D_LineSegment) {
-                if (i_rsp == null) {
-                    return i_pqr;
-                } else if (i_rsp instanceof V3D_Point) {
-                    return i_pqr;
-                } else {
-                    return i_rsp;
-                }
-            } else if (i_pqr instanceof V3D_Triangle i_pqr_t) {
-                if (i_rsp == null) {
-                    return i_pqr_t;
-                } else if (i_rsp instanceof V3D_Point) {
-                    return i_pqr_t;
-                } else if (i_rsp instanceof V3D_LineSegment) {
-                    return i_pqr_t;
-                } else if (i_rsp instanceof V3D_Triangle i_rsp_t) {
-                    
-                    return new V3D_TrianglesCoplanar(i_pqr_t, i_rsp_t);
-                } else if (i_rsp instanceof V3D_Triangle i_rsp_t) {
-                    return new V3D_TrianglesCoplanar(i_pqr_t, i_rsp_t);
-                    
-                }
-                if (t.isIntersectedBy(pip, oom)) {
-                    return pi;
-                } else {
-                    return null;
-                }
-            } else if (pi instanceof V3D_LineSegment pil) {
-                return t.getIntersection(pil, oom);
+        } else if (i_pqr instanceof V3D_Point i_pqr_p) {
+            if (i_rsp == null) {
+                return i_pqr_p;
             } else {
-                return ((V3D_Triangle) pi).getIntersection(t, oom);
+                return i_rsp;
+            }
+        } else if (i_pqr instanceof V3D_LineSegment) {
+            if (i_rsp == null) {
+                return i_pqr;
+            } else if (i_rsp instanceof V3D_Point) {
+                return i_pqr;
+            } else {
+                return i_rsp;
+            }
+        } else {
+            // i_pqr instanceof V3D_Triangle
+            if (i_rsp == null) {
+                return i_pqr;
+            } else if (i_rsp instanceof V3D_Point) {
+                return i_pqr;
+            } else if (i_rsp instanceof V3D_LineSegment) {
+                return i_pqr;
+            } else {
+                // i_rsp instanceof V3D_Triangle i_rsp_t
+                V3D_TrianglesCoplanar tc = new V3D_TrianglesCoplanar(
+                        (V3D_Triangle) i_pqr, 
+                        (V3D_Triangle) i_rsp);
+                if (tc.isTriangle()) {
+                    return new V3D_Triangle(tc.convexHull.get(0),
+                            tc.convexHull.get(1), tc.convexHull.get(2));
+                } else if (tc.isRectangle()){
+                    return new V3D_Rectangle(tc.convexHull.get(0),
+                            tc.convexHull.get(1), tc.convexHull.get(2),
+                            tc.convexHull.get(3));
+                } else {
+                    return tc;
+                }
             }
         }
     }
@@ -1017,7 +1016,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     public BigDecimal getDistance(V3D_Ray r, int oom) {
         return r.getDistance(this, oom);
     }
-    
+
     @Override
     public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
         return r.getDistanceSquared(this, oom);
@@ -1028,7 +1027,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom), oom)
                 .getSqrt(oom).toBigDecimal(oom);
     }
-    
+
     @Override
     public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
         if (isIntersectedBy(l, oom)) {

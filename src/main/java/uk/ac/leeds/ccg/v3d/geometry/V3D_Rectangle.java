@@ -1016,4 +1016,27 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     public V3D_TrianglesCoplanar toTrianglesCoplanar() {
         return new V3D_TrianglesCoplanar(this.getRSP(), this.getPQR());
     }
+    
+    /**
+     * For testing if four points form a rectangle.
+     * 
+     * @param p First clockwise or anti-clockwise point.
+     * @param q Second clockwise or anti-clockwise point.
+     * @param r Third clockwise or anti-clockwise point.
+     * @param s Fourth clockwise or anti-clockwise point.
+     * @return {@code true} iff p, q, r and s form a rectangle.
+     */
+    public static boolean isRectangle(V3D_Point p, V3D_Point q, 
+            V3D_Point r, V3D_Point s) {
+        V3D_LineSegment pq = new V3D_LineSegment(p, q);
+        V3D_LineSegment qr = new V3D_LineSegment(q, r);
+        V3D_LineSegment rs = new V3D_LineSegment(r, s);
+        V3D_LineSegment sp = new V3D_LineSegment(s, p);
+        if(pq.isParallel(rs, p.e.oom)) {
+            if(qr.isParallel(sp, p.e.oom)) {
+                return true;
+            }
+        }
+        return false;        
+    }
 }

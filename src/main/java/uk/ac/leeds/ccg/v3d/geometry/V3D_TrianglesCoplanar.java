@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 //import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 //import java.util.ArrayList;
 
@@ -68,10 +67,15 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     /**
      * The collection of triangles.
      */
-    protected final Set<V3D_Triangle> triangles;
+    protected final ArrayList<V3D_Triangle> triangles;
     //protected final List<V3D_Triangle> triangles;
     //protected final V3D_Triangle[] triangles;
 
+    /**
+     * For storing the convex hull.
+     */
+    protected ArrayList<V3D_Point> convexHull;
+            
     /**
      * Create a new instance.
      *
@@ -80,7 +84,7 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
     public V3D_TrianglesCoplanar(V3D_Triangle... triangles) {
         super(triangles[0].e, triangles[0].offset, triangles[0].p,
                 triangles[0].q, triangles[0].r);
-        this.triangles = new HashSet<>();
+        this.triangles = new ArrayList<>();
         this.triangles.addAll(Arrays.asList(triangles));
     }
 
@@ -447,7 +451,11 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * @return The convex hull. 
      */
     public ArrayList<V3D_Point> getConvexHull() {
+        if (convexHull == null) {
+            convexHull = new ArrayList<>();
+        }
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //return convexHull;
     }
     
     /**
@@ -455,7 +463,19 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * @return 
      */
     public boolean isTriangle() {
-        ArrayList<V3D_Point> ch = getConvexHull();
-        return ch.size() == 3;
+        return getConvexHull().size() == 3;
+    }
+    
+    /**
+     * If all {@link #triangles} form a single triangle return true
+     * @return 
+     */
+    public boolean isRectangle() {
+        getConvexHull();
+        if (convexHull.size() == 4) {
+            V3D_Rectangle.isRectangle(convexHull.get(0), convexHull.get(1),
+                    convexHull.get(2), convexHull.get(3));
+        }
+        return false;
     }
 }

@@ -20,7 +20,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * Essentially this is just a collection of coplanar V3D_Triangles.
+ * A collection of V3D_Point instances.
  *
  * @author Andy Turner
  * @version 1.0
@@ -66,6 +66,7 @@ public class V3D_Points extends V3D_Geometry implements V3D_FiniteGeometry,
     /**
      * @return The Envelope
      */
+    @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
             en = new V3D_Envelope(e, new V3D_Point(e, offset, rels[0]));
