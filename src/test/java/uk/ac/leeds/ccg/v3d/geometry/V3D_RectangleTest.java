@@ -458,33 +458,6 @@ public class V3D_RectangleTest extends V3D_Test {
         result = instance.getIntersection(l, e.oom);
         assertEquals(expResult, result);
     }
-    
-//    /**
-//     * Test of setOffset method, of class V3D_Rectangle.
-//     */
-//    @Test
-//    public void testSetOffset() {
-//        System.out.println("setOffset");
-//        V3D_Vector offset = null;
-//        V3D_Rectangle instance = null;
-//        instance.setOffset(offset);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of rotate method, of class V3D_Rectangle.
-//     */
-//    @Test
-//    public void testRotate() {
-//        System.out.println("rotate");
-//        V3D_Vector axisOfRotation = null;
-//        Math_BigRational theta = null;
-//        V3D_Rectangle instance = null;
-//        instance.rotate(axisOfRotation, theta);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 
     /**
      * Test of getRSP method, of class V3D_Rectangle.
@@ -492,12 +465,7 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testGetRSP() {
         System.out.println("getRSP");
-        V3D_Rectangle instance = null;
-        V3D_Triangle expResult = null;
-        V3D_Triangle result = instance.getRSP();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // No test
     }
 
     /**
@@ -506,12 +474,7 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testGetPQR() {
         System.out.println("getPQR");
-        V3D_Rectangle instance = null;
-        V3D_Triangle expResult = null;
-        V3D_Triangle result = instance.getPQR();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // No test
     }
 
     /**
@@ -520,14 +483,7 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy0() {
         System.out.println("isIntersectedBy0");
-        V3D_Point pt = null;
-        int oom = -3;
-        V3D_Rectangle instance = null;
-        boolean expResult = false;
-        boolean result = instance.isIntersectedBy0(pt, oom);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // No test
     }
 
     /**
@@ -536,14 +492,12 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Ray_int() {
         System.out.println("isIntersectedBy");
-        V3D_Ray ray = null;
+        V3D_Ray ray = new V3D_Ray(pP0P0P0, pP1P0P0);
         int oom = -3;
-        V3D_Rectangle instance = null;
-        boolean expResult = false;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0);
+        boolean expResult = true;
         boolean result = instance.isIntersectedBy(ray, oom);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -552,30 +506,23 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_LineSegment_int() {
         System.out.println("isIntersectedBy");
-        V3D_LineSegment l = null;
+        V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         int oom = -3;
-        V3D_Rectangle instance = null;
-        boolean expResult = false;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0);
+        boolean expResult = true;
         boolean result = instance.isIntersectedBy(l, oom);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of join method, of class V3D_Rectangle.
+     * Test of join method, of class V3D_Rectangle covered by
+     * {@link #testGetIntersection_V3D_LineSegment_int()} and
+     * {@link #testGetIntersection_V3D_Line_int()}.
      */
     @Test
     public void testJoin() {
         System.out.println("join");
-        V3D_Geometry pointOrLineSegment1 = null;
-        V3D_Geometry pointOrLineSegment2 = null;
-        V3D_Rectangle instance = null;
-        V3D_Geometry expResult = null;
-        V3D_Geometry result = instance.join(pointOrLineSegment1, pointOrLineSegment2);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // No test.
     }
 
     /**
@@ -598,14 +545,17 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testGetDistance_V3D_Point_int() {
         System.out.println("getDistance");
-        V3D_Point p = null;
+        V3D_Point p = pP0P0P0;
         int oom = -3;
-        V3D_Rectangle instance = null;
-        BigDecimal expResult = null;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP2P1P0, pP2P0P0);
+        BigDecimal expResult = BigDecimal.ZERO;
         BigDecimal result = instance.getDistance(p, oom);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Test 2
+        p = pN1P0P0;
+        expResult = BigDecimal.ONE;
+        result = instance.getDistance(p, oom);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -614,14 +564,17 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_Point_int() {
         System.out.println("getDistanceSquared");
-        V3D_Point p = null;
+        V3D_Point p = pP0P0P0;
         int oom = -3;
-        V3D_Rectangle instance = null;
-        Math_BigRational expResult = null;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+        Math_BigRational expResult = Math_BigRational.ZERO;
         Math_BigRational result = instance.getDistanceSquared(p, oom);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Test 2
+        p = pN1N1P0;
+        expResult = Math_BigRational.TWO;
+        result = instance.getDistanceSquared(p, oom);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -630,11 +583,12 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testSetOffset() {
         System.out.println("setOffset");
-        V3D_Vector offset = null;
-        V3D_Rectangle instance = null;
-        instance.setOffset(offset);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // No test.
+//        V3D_Vector offset = P1P1P1;
+//        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+//        instance.setOffset(offset);
+//        V3D_Rectangle instance2 = new V3D_Rectangle(pP1P1P1, pP1P2P1, pP2P2P1, pP2P1P1);
+//        assertEquals(instance, instance2);
     }
 
     /**
@@ -643,11 +597,11 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testTranslate() {
         System.out.println("translate");
-        V3D_Vector v = null;
-        V3D_Rectangle instance = null;
+        V3D_Vector v = P1P1P1;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         instance.translate(v);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_Rectangle instance2 = new V3D_Rectangle(pP1P1P1, pP1P2P1, pP2P2P1, pP2P1P1);
+        assertEquals(instance, instance2);
     }
 
     /**
@@ -656,12 +610,12 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testRotate() {
         System.out.println("rotate");
-        V3D_Vector axisOfRotation = null;
-        Math_BigRational theta = null;
-        V3D_Rectangle instance = null;
+        V3D_Vector axisOfRotation = new V3D_Vector(pP0P0P0, pP1P0P0, pP0P0P0.e.oom);
+        Math_BigRational theta = Math_BigRational.ZERO;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         instance.rotate(axisOfRotation, theta);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        V3D_Rectangle instance2 = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+        assertEquals(instance, instance2);
     }
 
     /**
@@ -670,14 +624,12 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Plane_int() {
         System.out.println("isIntersectedBy");
-        V3D_Plane p = null;
+        V3D_Plane p = new V3D_Plane(pP0P0P0, pP1P0P0, pP1P1P0);
         int oom = -3;
-        V3D_Rectangle instance = null;
-        boolean expResult = false;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+        boolean expResult = true;
         boolean result = instance.isIntersectedBy(p, oom);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -686,14 +638,12 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Triangle_int() {
         System.out.println("isIntersectedBy");
-        V3D_Triangle t = null;
+        V3D_Triangle t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P1P0);
         int oom = -3;
-        V3D_Rectangle instance = null;
-        boolean expResult = false;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+        boolean expResult = true;
         boolean result = instance.isIntersectedBy(t, oom);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -702,14 +652,12 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Tetrahedron_int() {
         System.out.println("isIntersectedBy");
-        V3D_Tetrahedron t = null;
+        V3D_Tetrahedron t = new V3D_Tetrahedron(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1);
         int oom = -3;
-        V3D_Rectangle instance = null;
-        boolean expResult = false;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+        boolean expResult = true;
         boolean result = instance.isIntersectedBy(t, oom);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -718,14 +666,12 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_Plane_int() {
         System.out.println("getIntersection");
-        V3D_Plane p = null;
+        V3D_Plane p = new V3D_Plane(pP0P0P0, pP0P1P0, pP1P1P0);
         int oom = -3;
-        V3D_Rectangle instance = null;
-        V3D_Geometry expResult = null;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+        V3D_Geometry expResult = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         V3D_Geometry result = instance.getIntersection(p, oom);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -734,14 +680,12 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_Triangle_int() {
         System.out.println("getIntersection");
-        V3D_Triangle t = null;
+        V3D_Triangle t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P1P0);
         int oom = -3;
-        V3D_Rectangle instance = null;
-        V3D_Geometry expResult = null;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+        V3D_Geometry expResult = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P1P0);
         V3D_Geometry result = instance.getIntersection(t, oom);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -749,15 +693,13 @@ public class V3D_RectangleTest extends V3D_Test {
      */
     @Test
     public void testGetIntersection_V3D_Tetrahedron_int() {
-        System.out.println("getIntersection");
-        V3D_Tetrahedron t = null;
-        int oom = -3;
-        V3D_Rectangle instance = null;
-        V3D_Geometry expResult = null;
-        V3D_Geometry result = instance.getIntersection(t, oom);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+//        System.out.println("getIntersection");
+//        V3D_Tetrahedron t = new V3D_Tetrahedron(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1);
+//        int oom = -3;
+//        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+//        V3D_Geometry expResult = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P1P0);
+//        V3D_Geometry result = instance.getIntersection(t, oom);
+//        assertEquals(expResult, result);
     }
 
     /**
@@ -869,14 +811,12 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_Triangle_int() {
         System.out.println("getDistanceSquared");
-        V3D_Triangle t = null;
+        V3D_Triangle t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P1P0);
         int oom = -3;
-        V3D_Rectangle instance = null;
-        Math_BigRational expResult = null;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+        Math_BigRational expResult = Math_BigRational.ZERO;
         Math_BigRational result = instance.getDistanceSquared(t, oom);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -885,14 +825,12 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testGetDistance_V3D_Tetrahedron_int() {
         System.out.println("getDistance");
-        V3D_Tetrahedron t = null;
+        V3D_Tetrahedron t = new V3D_Tetrahedron(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1);
         int oom = -3;
-        V3D_Rectangle instance = null;
-        BigDecimal expResult = null;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+        BigDecimal expResult = BigDecimal.ZERO;
         BigDecimal result = instance.getDistance(t, oom);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -901,14 +839,12 @@ public class V3D_RectangleTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_Tetrahedron_int() {
         System.out.println("getDistanceSquared");
-        V3D_Tetrahedron t = null;
+        V3D_Tetrahedron t = new V3D_Tetrahedron(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1);
         int oom = -3;
-        V3D_Rectangle instance = null;
-        Math_BigRational expResult = null;
+        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+        Math_BigRational expResult = Math_BigRational.ZERO;
         Math_BigRational result = instance.getDistanceSquared(t, oom);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -983,6 +919,30 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_TrianglesCoplanar expResult = new V3D_TrianglesCoplanar(
                 instance.getPQR(), instance.getRSP());
         V3D_TrianglesCoplanar result = instance.toTrianglesCoplanar();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of isRectangle method, of class V3D_Rectangle.
+     */
+    @Test
+    public void testIsRectangle() {
+        System.out.println("isRectangle");
+        V3D_Point p = pP0P0P0;
+        V3D_Point q = pP1P0P0;
+        V3D_Point r = pP1P1P0;
+        V3D_Point s = pP0P1P0;
+        boolean expResult = true;
+        boolean result = V3D_Rectangle.isRectangle(p, q, r, s);
+        assertEquals(expResult, result);
+        // Test 2
+        expResult = true;
+        result = V3D_Rectangle.isRectangle(p, s, r, q);
+        assertEquals(expResult, result);
+        // Test 2
+        p = pN1P0P0;
+        expResult = false;
+        result = V3D_Rectangle.isRectangle(p, q, r, s);
         assertEquals(expResult, result);
     }
 }

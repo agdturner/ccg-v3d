@@ -875,7 +875,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             if (t2i instanceof V3D_Point) {
                 return t1i;
             } else {
-                return V3D_LineSegmentsCollinear.getGeometry(t1il,
+                return V3D_LineSegmentsCollinear.getUnion(t1il,
                         (V3D_LineSegment) t2i, oom);
             }
         } else {
@@ -899,7 +899,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             if (t2i instanceof V3D_Point) {
                 return t1i;
             } else if (t2i instanceof V3D_LineSegment t2il) {
-                return V3D_LineSegmentsCollinear.getGeometry(t1il, t2il, oom);
+                return V3D_LineSegmentsCollinear.getUnion(t1il, t2il, oom);
             } else {
                 return t2i;
             }
@@ -914,7 +914,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 
     @Override
     public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
-        //V3D_Triangle
+        V3D_Geometry i_pqr = getPQR().getIntersection(t, oom);
+        V3D_Geometry i_rsp = getRSP().getIntersection(t, oom);
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

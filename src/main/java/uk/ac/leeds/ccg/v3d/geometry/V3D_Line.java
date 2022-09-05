@@ -1655,6 +1655,31 @@ public class V3D_Line extends V3D_Geometry
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
+    public boolean isCollinear(V3D_Point pt) {
+        return this.isIntersectedBy(pt, e.oom);
+    }
+    
+    /**
+     * @param e The V3D_Environment.
+     * @param l The line to test points are collinear with.
+     * @param points The points to test if they are collinear with l.
+     * @return {@code true} iff all points are collinear with l.
+     */
+    public boolean isCollinear(V3D_Line l) {
+        if (isCollinear(l.getP(e.oom))) {
+            if (isCollinear(l.getQ(e.oom))) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * @param e The V3D_Environment.
+     * @param l The line to test points are collinear with.
+     * @param points The points to test if they are collinear with l.
+     * @return {@code true} iff all points are collinear with l.
+     */
     public static boolean isCollinear(V3D_Environment e, V3D_Line l, V3D_Point... points) {
         for (V3D_Point p : points) {
             if (!l.isIntersectedBy(p, e.oom)) {

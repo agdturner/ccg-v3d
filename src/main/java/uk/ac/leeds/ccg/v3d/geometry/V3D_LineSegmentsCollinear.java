@@ -25,6 +25,11 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * For representing multiple collinear line segments.
+ * 
+ * Things to do:
+ * <ol>
+ * <li>Find extremes.</li>
+ * </ol>
  *
  * @author Andy Turner
  * @version 1.0
@@ -95,26 +100,6 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
     }
 
     /**
-     * @param oom The Order of Magnitude for the calculation.
-     * @return The length of {@code this}.
-     */
-    public Math_BigRationalSqrt getLength(int oom) {
-        return new Math_BigRationalSqrt(getLength2(oom), oom);
-    }
-
-    /**
-     * @param oom The Order of Magnitude for the calculation.
-     * @return The length of {@code this} squared.
-     */
-    public Math_BigRational getLength2(int oom) {
-        Math_BigRational r = Math_BigRational.ZERO;
-        lineSegments.forEach(x -> {
-            r.add(x.getLength2(oom));
-        });
-        return r;
-    }
-
-    /**
      *
      * @param l1 A line segment collinear with {@code l2}.
      * @param l2 A line segment collinear with {@code l1}.
@@ -122,89 +107,93 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
      * @return A V3D_LineSegmentsCollinear if {@code l1} and {@code l2} do not
      * intersect, otherwise a single V3D_LineSegment.
      */
-    public static V3D_Geometry getGeometry(V3D_LineSegment l1,
+    public static V3D_Geometry getUnion(V3D_LineSegment l1,
             V3D_LineSegment l2, int oom) {
         if (!l1.isIntersectedBy(l2, oom)) {
             return new V3D_LineSegmentsCollinear(l1, l2);
         }
         /**
          * Check the type of intersection. {@code
-         * 1)   p ---------- q
-         *         l.p ---------- l.q
-         * 2)   p ------------------------ q
-         *         l.p ---------- l.q
-         * 3)        p ---------- q
-         *    l.p ------------------------ l.q
-         * 4)        p ---------- q
-         *    l.p ---------- l.q
-         * 5)   q ---------- p
-         *         l.p ---------- l.q
-         * 6)   q ------------------------ p
-         *         l.p ---------- l.q
-         * 7)        q ---------- p
-         *    l.p ------------------------ l.q
-         * 8)        q ---------- p
-         *    l.p ---------- l.q
-         * 9)   p ---------- q
-         *         l.q ---------- l.p
-         * 10)   p ------------------------ q
-         *         l.q ---------- l.p
-         * 11)       p ---------- q
-         *    l.q ------------------------ l.p
-         * 12)       p ---------- q
-         *    l.q ---------- l.p
-         * 13)  q ---------- p
-         *         l.q ---------- l.p
-         * 14)  q ------------------------ p
-         *         l.q ---------- l.p
-         * 15)       q ---------- p
-         *    l.q ------------------------ l.p
-         * 16)       q ---------- p
-         *    l.q ---------- l.p
+         * 1)   l1p ---------- l1q
+         *         l2p ---------- l2q
+         * 2)   l1p ------------------------ l1q
+         *         l2p ---------- l2q
+         * 3)        l1p ---------- l1q
+         *    l2p ------------------------ l2q
+         * 4)        l1p ---------- l1q
+         *    l2p ---------- l2q
+         * 5)   l1q ---------- l1p
+         *         l2p ---------- l2q
+         * 6)   l1q ------------------------ l1p
+         *         l2p ---------- l2q
+         * 7)        l1q ---------- l1p
+         *    l2p ------------------------ l2q
+         * 8)        l1q ---------- l1p
+         *    l2p ---------- l2q
+         * 9)   l1p ---------- l1q
+         *         l2q ---------- l2p
+         * 10)   l1p ------------------------ l1q
+         *         l2q ---------- l2p
+         * 11)       l1p ---------- l1q
+         *    l2q ------------------------ l2p
+         * 12)       l1p ---------- l1q
+         *    l2q ---------- l2p
+         * 13)  l1q ---------- l1p
+         *         l2q ---------- l2p
+         * 14)  l1q ------------------------ l1p
+         *         l2q ---------- l2p
+         * 15)       l1q ---------- l1p
+         *    l2q ------------------------ l2p
+         * 16)       l1q ---------- l1p
+         *    l2q ---------- l2p
          * }
          */
-        V3D_Point lp = l1.getP(oom);
-        V3D_Point lq = l1.getQ(oom);
-        if (l2.isIntersectedBy(lp, oom)) {
+        V3D_Point l1p = l1.getP(oom);
+        V3D_Point l1q = l1.getQ(oom);
+        if (l2.isIntersectedBy(l1p, oom)) {
             // Cases 1, 2, 5, 6, 14, 16
-            if (l2.isIntersectedBy(lq, oom)) {
+            if (l2.isIntersectedBy(l1q, oom)) {
                 // Cases 2, 6, 14
                 /**
                  * The line segments are effectively the same although the start
                  * and end points may be opposite.
                  */
-                return l1;
+                //return l1;
+                return l2;
             } else {
-                V3D_Point tp = l2.getP(oom);
+                V3D_Point l2p = l2.getP(oom);
                 // Cases 1, 5, 16
-                if (l1.isIntersectedBy(tp, oom)) {
+                if (l1.isIntersectedBy(l2p, oom)) {
                     // Cases 5
-                    return new V3D_LineSegment(l1.getP(oom), l2.getP(oom));
+                    //return new V3D_LineSegment(l1p, l2.getP(oom));
+                    return new V3D_LineSegment(l1p, l1q);
                 } else {
                     // Cases 1, 16
-                    return new V3D_LineSegment(l1.getP(oom), l2.getQ(oom));
+                    //return new V3D_LineSegment(l1p, l2.getQ(oom));
+                    return new V3D_LineSegment(l2p, l1q);
                 }
             }
         } else {
             // Cases 3, 4, 7, 8, 9, 10, 11, 12, 13, 15
-            if (l2.isIntersectedBy(lq, oom)) {
-                V3D_Point tp = l2.getP(oom);
+            if (l2.isIntersectedBy(l1q, oom)) {
+                V3D_Point l2p = l2.getP(oom);
                 // Cases 4, 8, 9, 10, 11
-                if (l1.isIntersectedBy(tp, oom)) {
+                if (l1.isIntersectedBy(l2p, oom)) {
                     // Cases 4, 11, 13
                     if (l1.isIntersectedBy(l2.getQ(oom), oom)) {
                         // Cases 11
                         return l2;
                     } else {
                         // Cases 4, 13
-                        return new V3D_LineSegment(l2.getP(oom), l1.getQ(oom));
+                        //return new V3D_LineSegment(l2.getP(oom), l1.getQ(oom));
+                        return new V3D_LineSegment(l1p, l2.getQ(oom));
                     }
                 } else {
                     // Cases 8, 9, 10
                     V3D_Point tq = l2.getQ(oom);
                     if (l1.isIntersectedBy(tq, oom)) {
                         // Cases 8, 9
-                        return new V3D_LineSegment(l2.getQ(oom), l1.getQ(oom));
+                        return new V3D_LineSegment(l2.getQ(oom), l1q);
                     } else {
                         // Cases 10                      
                         return l1;
@@ -218,10 +207,11 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
                     V3D_Point tq = l2.getQ(oom);
                     if (l1.isIntersectedBy(tq, oom)) {
                         // Cases 3, 15
-                        return l2;
+                        //return l2;
+                        return l1;
                     } else {
                         // Cases 12                 
-                        return new V3D_LineSegment(l2.getP(oom), l1.getP(oom));
+                        return new V3D_LineSegment(l2.getP(oom), l1p);
                     }
                 } else {
                     // Cases 7
@@ -352,54 +342,77 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
         }
     }
 
+    /**
+     * This is complicated in that the result of the intersection could be
+     * comprised of points and line segments. Line segments have to have
+     * different start and end points.
+     *
+     * @param l The line segment to intersect with.
+     * @param oom The order of magnitude for the precision.
+     * @return The intersection of this and l.
+     */
     @Override
     public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
-        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-        V3D_Geometry g = ite.next().getIntersection(l, oom);
-        if (g == null) {
-            while (ite.hasNext()) {
-                g = ite.next().getIntersection(l, oom);
-                if (g instanceof V3D_Point) {
-                    return g;
+        if (isIntersectedBy(l, oom)) {
+            if (isCollinear(l)) {
+                ArrayList<V3D_Point> ps = new ArrayList<>();
+                ArrayList<V3D_LineSegment> ls = new ArrayList<>();
+                Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+                while (ite.hasNext()) {
+                    V3D_Geometry g = ite.next().getIntersection(l, oom);
+                    if (g != null) {
+                        if (g instanceof V3D_Point gp) {
+                            ps.add(gp);
+                        } else {
+                            ls.add((V3D_LineSegment) g);
+                        }
+                    }
                 }
+                if (!ps.isEmpty()) {
+                    // Need to handle cases where we have points.
+                    throw new UnsupportedOperationException();
+                } else {
+                    if (ls.size() == 1) {
+                        return ls.get(0);
+                    } else {
+                        V3D_LineSegmentsCollinear r
+                                = new V3D_LineSegmentsCollinear(
+                                        ls.toArray(V3D_LineSegment[]::new));
+                        return r.simplify();
+                    }
+                }
+            } else {
+                // Find the point of intersection if there is one.
+                Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+                while (ite.hasNext()) {
+                    V3D_Geometry g = ite.next().getIntersection(l, oom);
+                    if (g != null) {
+                        return g;
+                    }
+                }
+                // Return null if there is no point of intersection.
+                return null;
             }
-            return null;
-        } else if (g instanceof V3D_Point) {
-            return g;
         } else {
-            return this;
+            return null;
         }
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Plane p, int oom) {
-        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-        V3D_Geometry g = ite.next().getIntersection(p, oom);
-        if (g == null) {
-            while (ite.hasNext()) {
-                g = ite.next().getIntersection(p, oom);
-                if (g instanceof V3D_Point) {
-                    return true;
-                }
+        for (V3D_LineSegment l : lineSegments) {
+            if (p.isIntersectedBy(l, oom)) {
+                return true;
             }
-            return false;
-        } else {
-            return true;
         }
+        return false;
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom) {
-        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-        V3D_LineSegment l = ite.next();
-        if (t.isIntersectedBy(new V3D_Line(l), oom)) {
+        for (V3D_LineSegment l : lineSegments) {
             if (t.isIntersectedBy(l, oom)) {
                 return true;
-            }
-            while (ite.hasNext()) {
-                if (t.isIntersectedBy(ite.next(), oom)) {
-                    return true;
-                }
             }
         }
         return false;
@@ -407,16 +420,9 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
 
     @Override
     public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
-        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-        V3D_LineSegment l = ite.next();
-        if (t.isIntersectedBy(new V3D_Line(l), oom)) {
+        for (V3D_LineSegment l : lineSegments) {
             if (t.isIntersectedBy(l, oom)) {
                 return true;
-            }
-            while (ite.hasNext()) {
-                if (t.isIntersectedBy(ite.next(), oom)) {
-                    return true;
-                }
             }
         }
         return false;
@@ -444,10 +450,10 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
 
     protected ArrayList<V3D_LineSegment> simplify0(ArrayList<V3D_LineSegment> ls, int i) {
         V3D_LineSegment l0 = ls.get(i);
-        ArrayList<V3D_LineSegment> dummy = new ArrayList<>();
+        ArrayList<V3D_LineSegment> r = new ArrayList<>();
         ArrayList<Integer> removeIndexes = new ArrayList<>();
-        dummy.addAll(ls);
-        for (int j = i; j < dummy.size(); j++) {
+        r.addAll(ls);
+        for (int j = i; j < ls.size(); j++) {
             V3D_LineSegment l1 = ls.get(j);
             if (l0.isIntersectedBy(l1, e.oom)) {
                 V3D_Point l0p = l0.getP(e.oom);
@@ -462,11 +468,11 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
                         if (l1p.isIntersectedBy(l0, e.oom)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
-                            dummy.add(new V3D_LineSegment(l1q, l0q));
+                            r.add(new V3D_LineSegment(l1q, l0q));
                         } else {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
-                            dummy.add(new V3D_LineSegment(l1q, l1p));
+                            r.add(new V3D_LineSegment(l1q, l1p));
                         }
                     }
                 } else {
@@ -477,11 +483,11 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
                         if (l1.getP(e.oom).isIntersectedBy(l0, e.oom)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
-                            dummy.add(new V3D_LineSegment(l1q, l0p));
+                            r.add(new V3D_LineSegment(l1q, l0p));
                         } else {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
-                            dummy.add(new V3D_LineSegment(l1p, l0p));
+                            r.add(new V3D_LineSegment(l1p, l0p));
                         }
                     } else {
                         // l1 is completely overlapped by l0
@@ -490,10 +496,9 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
                 }
             }
         }
-        for (int j = removeIndexes.size() - 1; j >= 0; j--) {
-            dummy.remove(removeIndexes.get(j).intValue());
+        for (int j = removeIndexes.size() - 1; j >= 1; j--) {
+            r.remove(removeIndexes.get(j).intValue());
         }
-        ArrayList<V3D_LineSegment> r = dummy;
         if (i < ls.size() - 2) {
             r = simplify0(r, i + 1);
         }

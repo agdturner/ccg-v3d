@@ -799,15 +799,15 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                                 } else if (grp instanceof V3D_Point grpp) {
                                     return V3D_LineSegment.getGeometry(gqrp, grpp); // Check!
                                 } else {
-                                    throw new UnsupportedOperationException("Not supported yet."); 
-                                    // TODO: Figure out the geometry (two points and a line segment).
+                                    V3D_LineSegment grpl = (V3D_LineSegment) grp;
+                                    return getGeometry(grpl, gqrp, gpqp);
                                 }
                             } else {
+                                V3D_LineSegment ls = (V3D_LineSegment) gqr;
                                 if (grp == null) {
-                                    V3D_LineSegment ls = (V3D_LineSegment) gqr;
-                                    return getGeometry(gpqp, ls.getP(oom), ls.getQ(oom));
+                                    return getGeometry(ls, gpqp);
                                 } else if (grp instanceof V3D_Point grpp) {
-                                    return null; // TODO: Figure out the geometry (two points and a line segment).
+                                    return getGeometry(ls, grpp, gpqp);
                                 } else {
                                     return null; // TODO: Figure out the geometry (point and two line segments).
                                 }
@@ -1257,6 +1257,40 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     }
 
     /**
+     * This may be called when there is an intersection of two triangles where l
+     * is a side of a triangle and p is a point.
+     * 
+     * @param l A line segment.
+     * @param p1 A point that is either not collinear to l or intersects l.
+     * @param p2 A point that is either not collinear to l or intersects l.
+     * @return a triangle for which l is an edge and p is a vertex.
+     */
+    protected static V3D_Geometry getGeometry(V3D_LineSegment l,
+            V3D_Point p1, V3D_Point p2) {
+        if (l.isIntersectedBy(p1, l.e.oom)) {
+            return getGeometry(l, p2);
+        } else {
+            return new V3D_Triangle(p1, l.getP(l.e.oom), l.getQ(l.e.oom));
+        }
+    }
+    
+    /**
+     * This may be called when there is an intersection of two triangles where l
+     * is a side of a triangle and p is a point that is not collinear to l.
+     * 
+     * @param l A line segment.
+     * @param p A point that is not collinear to l.
+     * @return a triangle for which l is an edge and p is a vertex.
+     */
+    protected static V3D_Geometry getGeometry(V3D_LineSegment l,
+            V3D_Point p) {
+        if (l.isIntersectedBy(p, l.e.oom)) {
+            return l;
+        }
+        return new V3D_Triangle(p, l.getP(l.e.oom), l.getQ(l.e.oom));
+    }
+    
+    /**
      * For getting the point opposite a side of a triangle given the side.
      *
      * @param l a line segment either equal to {@link #getPQ()},
@@ -1296,9 +1330,30 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
              * If this is inside t then they intersect. First implement
              * V3D_Tetrahedron.isIntersectedBy(V3D_Point)
              */
+            if (t.isIntersectedBy(getP(), oom)) {
+                return true;
+            }
+            if (t.isIntersectedBy(getQ(), oom)) {
+                return true;
+            }
+            if (t.isIntersectedBy(getR(), oom)) {
+                return true;
+            }
             /**
              * If this intersects any of the faces of t, then they intersect.
              */
+            if (this.isIntersectedBy(t.getPqr(), oom)) {
+                return true;
+            }
+            if (this.isIntersectedBy(t.getQsr(), oom)) {
+                return true;
+            }
+            if (this.isIntersectedBy(t.getSpr(), oom)) {
+                return true;
+            }
+            if (this.isIntersectedBy(t.getPsq(), oom)) {
+                return true;
+            }
             // Otherwise there is no intersection.
         }
         return false;

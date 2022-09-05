@@ -25,7 +25,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Points extends V3D_Geometry implements V3D_FiniteGeometry, 
+public class V3D_PointsCollinear extends V3D_Geometry implements V3D_FiniteGeometry, 
         V3D_IntersectionAndDistanceCalculations {
 
     private static final long serialVersionUID = 1L;
@@ -47,7 +47,7 @@ public class V3D_Points extends V3D_Geometry implements V3D_FiniteGeometry,
      * @param offset The offset.
      * @param rels The point locations relative to the offset. 
      */
-    public V3D_Points(V3D_Environment e, V3D_Vector offset, V3D_Vector... rels) {
+    public V3D_PointsCollinear(V3D_Environment e, V3D_Vector offset, V3D_Vector... rels) {
         super(e, offset);
         this.rels = rels;
     }
