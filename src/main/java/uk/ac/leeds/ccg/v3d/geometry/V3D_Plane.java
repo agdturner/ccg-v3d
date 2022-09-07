@@ -187,8 +187,8 @@ public class V3D_Plane extends V3D_Geometry
      * @param e The V3D_Environment.
      * @param points The points from which a plane is to be derived.
      * @return A plane that may or may not contain all the points or
-     * {@code null} if there is no such plane. This does not test if the points are coincident or
-     * collinear.
+     * {@code null} if there is no such plane. This does not test if the points
+     * are coincident or collinear.
      */
     private static V3D_Plane getPlane0(V3D_Environment e, V3D_Point... points) {
         V3D_Line l = V3D_Line.getLine(e, points);
@@ -205,8 +205,8 @@ public class V3D_Plane extends V3D_Geometry
      * @param e The V3D_Environment.
      * @param points The points from which a plane is to be derived.
      * @return A plane that may or may not contain all the points or
-     * {@code null} if there is no such plane. This does not test if the points are coincident or
-     * collinear.
+     * {@code null} if there is no such plane. This does not test if the points
+     * are coincident or collinear.
      */
     private static V3D_Plane getPlane0(V3D_Environment e, V3D_Vector... points) {
         V3D_Line l = V3D_Line.getLine(e, points);
@@ -392,8 +392,8 @@ public class V3D_Plane extends V3D_Geometry
     }
 
     /**
-     * Creates a new instance. {@link p}, {@link q} and {@link r} must all be 
-     * different. 
+     * Creates a new instance. {@link p}, {@link q} and {@link r} must all be
+     * different.
      *
      * @param p Used to initialise {@link #e}, {@link #offset} and {@link #p}.
      * @param q Used to initialise {@link #q}.
@@ -1669,10 +1669,12 @@ public class V3D_Plane extends V3D_Geometry
      * @param offset What {@link #offset} is set to.
      */
     public void setOffset(V3D_Vector offset) {
-        p = p.add(this.offset, e.oom).subtract(offset, e.oom);
-        q = q.add(this.offset, e.oom).subtract(offset, e.oom);
-        r = r.add(this.offset, e.oom).subtract(offset, e.oom);
-        this.offset = offset;
+        if (!this.offset.equals(offset)) {
+            p = p.add(this.offset, e.oom).subtract(offset, e.oom);
+            q = q.add(this.offset, e.oom).subtract(offset, e.oom);
+            r = r.add(this.offset, e.oom).subtract(offset, e.oom);
+            this.offset = offset;
+        }
     }
 
     /**
@@ -1729,10 +1731,10 @@ public class V3D_Plane extends V3D_Geometry
     @Override
     public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
         // Only need to test 3 of the four triangle faces of t.
-        if(this.isIntersectedBy(t.getPqr(), oom)) {
+        if (this.isIntersectedBy(t.getPqr(), oom)) {
             return true;
         }
-        if(this.isIntersectedBy(t.getQsr(), oom)) {
+        if (this.isIntersectedBy(t.getQsr(), oom)) {
             return true;
         }
         return this.isIntersectedBy(t.getSpr(), oom);
@@ -1833,14 +1835,15 @@ public class V3D_Plane extends V3D_Geometry
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
         return t.getDistanceSquared(this, oom);
     }
-    
+
     /**
-     * Check a and b are on the same side of this. If either are on the boundary then return {@code true}.
+     * Check a and b are on the same side of this. If either are on the boundary
+     * then return {@code true}.
      *
      * @param a A point.
-     * @param b Another point.
-     * The triangle to check the points to see if they are all on the
-     * same side of a line that intersects the edge of another triangle.
+     * @param b Another point. The triangle to check the points to see if they
+     * are all on the same side of a line that intersects the edge of another
+     * triangle.
      * @param n The normal of this plane.
      * @param oom The Order of Magnitude for the precision.
      * @return {@code true} if an intersection is found and {@code false}
@@ -1860,5 +1863,5 @@ public class V3D_Plane extends V3D_Geometry
             return avd == bvd;
         }
     }
-    
+
 }

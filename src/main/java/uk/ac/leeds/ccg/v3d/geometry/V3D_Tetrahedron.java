@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
@@ -974,12 +975,12 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
                         (V3D_Triangle) i_pqr, 
                         (V3D_Triangle) i_rsp);
                 if (tc.isTriangle()) {
-                    return new V3D_Triangle(tc.convexHull.get(0),
-                            tc.convexHull.get(1), tc.convexHull.get(2));
+                    ArrayList<V3D_Point> ch = tc.getConvexHull();
+                    return new V3D_Triangle(ch.get(0), ch.get(1), ch.get(2));
                 } else if (tc.isRectangle()){
-                    return new V3D_Rectangle(tc.convexHull.get(0),
-                            tc.convexHull.get(1), tc.convexHull.get(2),
-                            tc.convexHull.get(3));
+                    ArrayList<V3D_Point> ch = tc.getConvexHull();
+                    return new V3D_Rectangle(ch.get(0), ch.get(2), ch.get(1), 
+                            ch.get(3));
                 } else {
                     return tc;
                 }

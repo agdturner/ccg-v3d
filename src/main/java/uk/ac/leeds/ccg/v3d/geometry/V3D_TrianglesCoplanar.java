@@ -23,7 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 //import java.util.List;
 import java.util.Objects;
+import java.util.TreeSet;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 //import java.util.ArrayList;
 
 /**
@@ -75,7 +77,12 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * For storing the convex hull.
      */
     protected ArrayList<V3D_Point> convexHull;
-            
+
+    /**
+     * For storing the points.
+     */
+    protected HashSet<V3D_Point> points;
+
     /**
      * Create a new instance.
      *
@@ -85,7 +92,11 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
         super(triangles[0].e, triangles[0].offset, triangles[0].p,
                 triangles[0].q, triangles[0].r);
         this.triangles = new ArrayList<>();
-        this.triangles.addAll(Arrays.asList(triangles));
+        // Ensure all triangles have the same offset as the first.
+        for (V3D_Triangle t : triangles) {
+            t.setOffset(triangles[0].offset);
+            this.triangles.add(t);
+        }
     }
 
     @Override
@@ -222,7 +233,9 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * then a simplification takes place and this is done iteratively until all
      * such simplification is done. This however does not simplify the following
      * case where it can be seen that the 4 triangles represent an area that can
-     * be given as a single triangle: null null null null null     {@code
+     * be given as a single triangle: null null null null null null null null
+     * null null null null null null null null null null null null null null
+     * null null null null null null     {@code
      * *------*------*
      * |     /|     /
      * |    / |    /
@@ -432,7 +445,6 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
 //    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
 //        return getEnvelope().isIntersectedBy(l, oom);
 //    }
-
     /**
      * For this to work as expected, all triangles should have the same offset
      * (point for the rotation).
@@ -446,35 +458,314 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
             t.rotate(axisOfRotation, theta);
         }
     }
-    
+
     /**
-     * @return The convex hull. 
+     * @return Get the relPoints.
+     */
+    public HashSet<V3D_Point> getPoints() {
+        if (points == null) {
+            points = new HashSet<>();
+            for (V3D_Triangle t : triangles) {
+                t.setOffset(offset);
+                points.add(t.getP());
+                points.add(t.getQ());
+                points.add(t.getR());
+            }
+        }
+        return points;
+    }
+
+    /**
+     * Return the convex hull calculating it first if it has not already been
+     * calculated. Below is the basic algorithm:
+     * <ol>
+     * <li>Partition the points:
+     * <ul>
+     * <li>Calculate the distances between the points with the minimum and
+     * maximum x, the minimum and maximum y, and the minimum and maximum z
+     * values.</li>
+     * <li>Choose the points that have the largest distance between them to
+     * define the dividing plane that is orthogonal to the plane of the
+     * polygon.</li>
+     * <li>Let the points on one side of the dividing plane be one group and
+     * those on the other be the another group.</li>
+     * </ul></li>
+     * <li>Add the two end points of the partition to the convex hull.</li>
+     * <li>Deal with each group of points in turn.</li>
+     * <li>If there is only one other point on a side of the partition then add
+     * it to the convex hull.</li>
+     * <li>If there are more than one, then find the one with the biggest
+     * distance from the partition and add this to the convex hull.</li>
+     * <li>We can now ignore all the other points that intersect the triangle
+     * given by the 3 points now in the convex hull.</li>
+     * <li>Create a new plane dividing the remaining points on this side of the
+     * first dividing plane. Two points on the plane are the last point added to
+     * the convex hull and the closest point on the line defined by the other
+     * two points in the convex hull. The new dividing plane is orthogonal to
+     * the first dividing plane.</li>
+     * <li>Let the points in this group that are on one side of the dividing
+     * plane be another group and those on the other be the another group.</li>
+     * <li>Repeat the process dealing with each group in turn (Steps 3 to 9) in
+     * a depth first manner.</li>
+     * </ol>
+     *
+     * @return Get the convex hull.
      */
     public ArrayList<V3D_Point> getConvexHull() {
         if (convexHull == null) {
             convexHull = new ArrayList<>();
+            points = getPoints();
+            ArrayList<V3D_Point> pts = new ArrayList<>();
+            pts.addAll(points);
+            getN(e.oom);
+            V3D_Vector v0 = pts.get(0).rel;
+            Math_BigRationalSqrt xmin = v0.dx;
+            Math_BigRationalSqrt xmax = v0.dx;
+            Math_BigRationalSqrt ymin = v0.dy;
+            Math_BigRationalSqrt ymax = v0.dy;
+            Math_BigRationalSqrt zmin = v0.dz;
+            Math_BigRationalSqrt zmax = v0.dz;
+            int xminIndex = 0;
+            int xmaxIndex = 0;
+            int yminIndex = 0;
+            int ymaxIndex = 0;
+            int zminIndex = 0;
+            int zmaxIndex = 0;
+            for (int i = 1; i < pts.size(); i++) {
+                V3D_Point pt = pts.get(i);
+                Math_BigRationalSqrt x = pt.rel.getDX();
+                Math_BigRationalSqrt y = pt.rel.getDY();
+                Math_BigRationalSqrt z = pt.rel.getDZ();
+                if (x.compareTo(xmin) == -1) {
+                    xmin = x;
+                    xminIndex = i;
+                }
+                if (x.compareTo(xmax) == 1) {
+                    xmax = x;
+                    xmaxIndex = i;
+                }
+                if (y.compareTo(ymin) == -1) {
+                    ymin = y;
+                    yminIndex = i;
+                }
+                if (y.compareTo(ymax) == 1) {
+                    ymax = y;
+                    ymaxIndex = i;
+                }
+                if (z.compareTo(zmin) == -1) {
+                    zmin = z;
+                    zminIndex = i;
+                }
+                if (z.compareTo(zmax) == 1) {
+                    zmax = z;
+                    zmaxIndex = i;
+                }
+            }
+            V3D_Point xminp = pts.get(xminIndex);
+            V3D_Point xmaxp = pts.get(xmaxIndex);
+            V3D_Point yminp = pts.get(yminIndex);
+            V3D_Point ymaxp = pts.get(ymaxIndex);
+            V3D_Point zminp = pts.get(zminIndex);
+            V3D_Point zmaxp = pts.get(zmaxIndex);
+            if (xminIndex == xmaxIndex) {
+                V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp);
+                V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp);
+                Math_BigRational ydl2 = yd.getLength2(e.oom);
+                Math_BigRational zdl2 = zd.getLength2(e.oom);
+                if (ydl2.compareTo(zdl2) == 1) {
+                    convexHull.add(yminp);
+                    convexHull.add(ymaxp);
+                    getConvexHull0(pts, yminp, ymaxp, n);
+                } else {
+                    convexHull.add(zminp);
+                    convexHull.add(zmaxp);
+                    getConvexHull0(pts, zminp, zmaxp, n);
+                }
+            } else if (yminIndex == ymaxIndex) {
+                V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp);
+                V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp);
+                Math_BigRational xdl2 = xd.getLength2(e.oom);
+                Math_BigRational zdl2 = zd.getLength2(e.oom);
+                if (xdl2.compareTo(zdl2) == 1) {
+                    convexHull.add(xminp);
+                    convexHull.add(xmaxp);
+                    getConvexHull0(pts, xminp, xmaxp, n);
+                } else {
+                    convexHull.add(zminp);
+                    convexHull.add(zmaxp);
+                    getConvexHull0(pts, zminp, zmaxp, n);
+                }
+            } else if (zminIndex == zmaxIndex) {
+                V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp);
+                V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp);
+                Math_BigRational xdl2 = xd.getLength2(e.oom);
+                Math_BigRational ydl2 = yd.getLength2(e.oom);
+                if (xdl2.compareTo(ydl2) == 1) {
+                    convexHull.add(xminp);
+                    convexHull.add(xmaxp);
+                    getConvexHull0(pts, xminp, xmaxp, n);
+                } else {
+                    convexHull.add(yminp);
+                    convexHull.add(ymaxp);
+                    getConvexHull0(pts, yminp, ymaxp, n);
+                }
+            } else {
+                V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp);
+                V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp);
+                V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp);
+                Math_BigRational xdl2 = xd.getLength2(e.oom);
+                Math_BigRational ydl2 = yd.getLength2(e.oom);
+                Math_BigRational zdl2 = zd.getLength2(e.oom);
+                if (xdl2.compareTo(ydl2) == 1) {
+                    if (xdl2.compareTo(zdl2) == 1) {
+                        convexHull.add(xminp);
+                        convexHull.add(xmaxp);
+                        getConvexHull0(pts, xminp, xmaxp, n);
+                    } else {
+                        convexHull.add(zminp);
+                        convexHull.add(zmaxp);
+                        getConvexHull0(pts, zminp, zmaxp, n);
+                    }
+                } else {
+                    if (ydl2.compareTo(zdl2) == 1) {
+                        convexHull.add(yminp);
+                        convexHull.add(ymaxp);
+                        getConvexHull0(pts, yminp, ymaxp, n);
+                    } else {
+                        convexHull.add(zminp);
+                        convexHull.add(zmaxp);
+                        getConvexHull0(pts, zminp, zmaxp, n);
+                    }
+                }
+            }
         }
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        //return convexHull;
+        return convexHull;
     }
-    
+
+    public void getConvexHull0(ArrayList<V3D_Point> pts, V3D_Point p0,
+            V3D_Point p1, V3D_Vector n) {
+        V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(e,
+                offset, p0.rel.add(n, e.oom)));
+        AboveAndBelow ab = new AboveAndBelow(pts, pl);
+        // Process ab.a
+        {
+            V3D_Point apt = ab.a.get(ab.maxaIndex);
+            convexHull.add(apt);
+            V3D_Triangle atr = new V3D_Triangle(p0, p1, apt);
+            TreeSet<Integer> removeIndexes = new TreeSet<>();
+            for (int i = 0; i < ab.a.size(); i++) {
+                if (atr.isIntersectedBy(ab.a.get(i), e.oom)) {
+                    removeIndexes.add(i);
+                }
+            }
+            Iterator<Integer> ite = removeIndexes.descendingIterator();
+            while (ite.hasNext()) {
+                ab.a.remove(ite.next().intValue());
+            }
+            if (!ab.a.isEmpty()) {
+                if (ab.a.size() == 1) {
+                    convexHull.add(ab.a.get(0));
+                } else {
+                    // Divide again
+                    V3D_Line l = new V3D_Line(p0, p1);
+                    V3D_Point proj = l.getPointOfIntersection(apt, e.oom);
+                    getConvexHull0(ab.a, apt, proj, n);
+                }
+            }
+        }
+        // Process ab.b
+        {
+            V3D_Point bpt = ab.b.get(ab.maxbIndex);
+            convexHull.add(bpt);
+            V3D_Triangle btr = new V3D_Triangle(p0, p1, bpt);
+            TreeSet<Integer> removeIndexes = new TreeSet<>();
+            for (int i = 0; i < ab.b.size(); i++) {
+                if (btr.isIntersectedBy(ab.b.get(i), e.oom)) {
+                    removeIndexes.add(i);
+                }
+            }
+            Iterator<Integer> ite = removeIndexes.descendingIterator();
+            while (ite.hasNext()) {
+                ab.b.remove(ite.next().intValue());
+            }
+            if (!ab.b.isEmpty()) {
+                if (ab.b.size() == 1) {
+                    convexHull.add(ab.b.get(0));
+                } else {
+                    // Divide again
+                    V3D_Line l = new V3D_Line(p0, p1);
+                    V3D_Point proj = l.getPointOfIntersection(bpt, e.oom);
+                    getConvexHull0(ab.b, bpt, proj, n);
+                }
+            }
+        }
+    }
+
+    public class AboveAndBelow {
+
+        // Above
+        public ArrayList<V3D_Point> a;
+        int maxaIndex;
+
+        // Below
+        public ArrayList<V3D_Point> b;
+        int maxbIndex;
+
+        public AboveAndBelow(ArrayList<V3D_Point> pts, V3D_Plane p) {
+            a = new ArrayList<>();
+            b = new ArrayList<>();
+            V3D_Vector n = p.getN(e.oom);
+            Math_BigRational maxads = Math_BigRational.ZERO;
+            Math_BigRational maxbds = Math_BigRational.ZERO;
+            for (int i = 0; i < pts.size(); i++) {
+                V3D_Point pt = pts.get(i);
+                Math_BigRational t = p.getPV().subtract(pt.rel, e.oom).getDotProduct(n, e.oom);
+                Math_BigRational ds = pts.get(i).getDistanceSquared(p, e.oom);
+                System.out.println(pt.toString() + " " + t);
+                switch (t.compareTo(Math_BigRational.ZERO)) {
+                    case 1:
+                        if (ds.compareTo(maxads) == 1) {
+                            maxads = ds;
+                            maxaIndex = a.size();
+                        }
+                        a.add(pt);
+                        System.out.println("Above the plane.");
+                        break;
+                    case -1:
+                        if (ds.compareTo(maxbds) == 1) {
+                            maxbds = ds;
+                            maxbIndex = b.size();
+                        }
+                        b.add(pt);
+                        System.out.println("Below the plane.");
+                        break;
+                    default:
+                        System.out.println("On the plane.");
+                        break;
+                }
+            }
+        }
+
+    }
+
     /**
      * If all {@link #triangles} form a single triangle return true
-     * @return 
+     *
+     * @return
      */
     public boolean isTriangle() {
         return getConvexHull().size() == 3;
     }
-    
+
     /**
      * If all {@link #triangles} form a single triangle return true
-     * @return 
+     *
+     * @return
      */
     public boolean isRectangle() {
-        getConvexHull();
-        if (convexHull.size() == 4) {
-            V3D_Rectangle.isRectangle(convexHull.get(0), convexHull.get(1),
-                    convexHull.get(2), convexHull.get(3));
+        if (getConvexHull().size() == 4) {
+            return V3D_Rectangle.isRectangle(convexHull.get(0),
+                    convexHull.get(1), convexHull.get(2), convexHull.get(3));
         }
         return false;
     }

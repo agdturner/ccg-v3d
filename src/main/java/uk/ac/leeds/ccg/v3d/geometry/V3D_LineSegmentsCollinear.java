@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.TreeSet;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -451,7 +452,7 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
     protected ArrayList<V3D_LineSegment> simplify0(ArrayList<V3D_LineSegment> ls, int i) {
         V3D_LineSegment l0 = ls.get(i);
         ArrayList<V3D_LineSegment> r = new ArrayList<>();
-        ArrayList<Integer> removeIndexes = new ArrayList<>();
+        TreeSet<Integer> removeIndexes = new TreeSet<>();
         r.addAll(ls);
         for (int j = i; j < ls.size(); j++) {
             V3D_LineSegment l1 = ls.get(j);
@@ -496,10 +497,11 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
                 }
             }
         }
-        for (int j = removeIndexes.size() - 1; j >= 1; j--) {
-            r.remove(removeIndexes.get(j).intValue());
+        Iterator<Integer> ite = removeIndexes.descendingIterator();
+        while(ite.hasNext()) {
+            r.remove(ite.next().intValue());
         }
-        if (i < ls.size() - 2) {
+        if (i < r.size() - 1) {
             r = simplify0(r, i + 1);
         }
         return r;
