@@ -508,6 +508,8 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
      * <li>Repeat the process dealing with each group in turn (Steps 3 to 9) in
      * a depth first manner.</li>
      * </ol>
+     * The convex hull is returned in an order effectively tracing out a 
+     * polygon.
      *
      * @return Get the convex hull.
      */
@@ -575,11 +577,11 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
                 if (ydl2.compareTo(zdl2) == 1) {
                     convexHull.add(yminp);
                     convexHull.add(ymaxp);
-                    getConvexHull0(pts, yminp, ymaxp, n);
+                    getConvexHull0(pts, yminp, ymaxp, n, 1);
                 } else {
                     convexHull.add(zminp);
                     convexHull.add(zmaxp);
-                    getConvexHull0(pts, zminp, zmaxp, n);
+                    getConvexHull0(pts, zminp, zmaxp, n, 1);
                 }
             } else if (yminIndex == ymaxIndex) {
                 V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp);
@@ -589,11 +591,11 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
                 if (xdl2.compareTo(zdl2) == 1) {
                     convexHull.add(xminp);
                     convexHull.add(xmaxp);
-                    getConvexHull0(pts, xminp, xmaxp, n);
+                    getConvexHull0(pts, xminp, xmaxp, n, 1);
                 } else {
                     convexHull.add(zminp);
                     convexHull.add(zmaxp);
-                    getConvexHull0(pts, zminp, zmaxp, n);
+                    getConvexHull0(pts, zminp, zmaxp, n, 1);
                 }
             } else if (zminIndex == zmaxIndex) {
                 V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp);
@@ -603,11 +605,11 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
                 if (xdl2.compareTo(ydl2) == 1) {
                     convexHull.add(xminp);
                     convexHull.add(xmaxp);
-                    getConvexHull0(pts, xminp, xmaxp, n);
+                    getConvexHull0(pts, xminp, xmaxp, n, 1);
                 } else {
                     convexHull.add(yminp);
                     convexHull.add(ymaxp);
-                    getConvexHull0(pts, yminp, ymaxp, n);
+                    getConvexHull0(pts, yminp, ymaxp, n, 1);
                 }
             } else {
                 V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp);
@@ -620,21 +622,21 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
                     if (xdl2.compareTo(zdl2) == 1) {
                         convexHull.add(xminp);
                         convexHull.add(xmaxp);
-                        getConvexHull0(pts, xminp, xmaxp, n);
+                        getConvexHull0(pts, xminp, xmaxp, n, 1);
                     } else {
                         convexHull.add(zminp);
                         convexHull.add(zmaxp);
-                        getConvexHull0(pts, zminp, zmaxp, n);
+                        getConvexHull0(pts, zminp, zmaxp, n, 1);
                     }
                 } else {
                     if (ydl2.compareTo(zdl2) == 1) {
                         convexHull.add(yminp);
                         convexHull.add(ymaxp);
-                        getConvexHull0(pts, yminp, ymaxp, n);
+                        getConvexHull0(pts, yminp, ymaxp, n, 1);
                     } else {
                         convexHull.add(zminp);
                         convexHull.add(zmaxp);
-                        getConvexHull0(pts, zminp, zmaxp, n);
+                        getConvexHull0(pts, zminp, zmaxp, n, 1);
                     }
                 }
             }
@@ -642,15 +644,25 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
         return convexHull;
     }
 
+    /**
+     * 
+     * @param pts
+     * @param p0
+     * @param p1
+     * @param n
+     * @param index
+     * @return the number of points added.
+     */
     public void getConvexHull0(ArrayList<V3D_Point> pts, V3D_Point p0,
-            V3D_Point p1, V3D_Vector n) {
+            V3D_Point p1, V3D_Vector n, int index) {
         V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(e,
                 offset, p0.rel.add(n, e.oom)));
         AboveAndBelow ab = new AboveAndBelow(pts, pl);
         // Process ab.a
         {
             V3D_Point apt = ab.a.get(ab.maxaIndex);
-            convexHull.add(apt);
+            convexHull.add(index, apt);
+            index ++;
             V3D_Triangle atr = new V3D_Triangle(p0, p1, apt);
             TreeSet<Integer> removeIndexes = new TreeSet<>();
             for (int i = 0; i < ab.a.size(); i++) {
@@ -663,20 +675,23 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
                 ab.a.remove(ite.next().intValue());
             }
             if (!ab.a.isEmpty()) {
-                if (ab.a.size() == 1) {
-                    convexHull.add(ab.a.get(0));
-                } else {
+//                if (ab.a.size() == 1) {
+//                    convexHull.add(index + 1, ab.a.get(0));
+//                    addedCount ++;
+//                    r ++;
+//                } else {
                     // Divide again
                     V3D_Line l = new V3D_Line(p0, p1);
                     V3D_Point proj = l.getPointOfIntersection(apt, e.oom);
-                    getConvexHull0(ab.a, apt, proj, n);
-                }
+                    getConvexHull0(ab.a, apt, proj, n, index);
+//                }
             }
         }
+        index ++;
         // Process ab.b
         {
             V3D_Point bpt = ab.b.get(ab.maxbIndex);
-            convexHull.add(bpt);
+            convexHull.add(index, bpt);
             V3D_Triangle btr = new V3D_Triangle(p0, p1, bpt);
             TreeSet<Integer> removeIndexes = new TreeSet<>();
             for (int i = 0; i < ab.b.size(); i++) {
@@ -689,14 +704,14 @@ public class V3D_TrianglesCoplanar extends V3D_Plane implements V3D_Face {
                 ab.b.remove(ite.next().intValue());
             }
             if (!ab.b.isEmpty()) {
-                if (ab.b.size() == 1) {
-                    convexHull.add(ab.b.get(0));
-                } else {
+//                if (ab.b.size() == 1) {
+//                    convexHull.add(ab.b.get(0));
+//                } else {
                     // Divide again
                     V3D_Line l = new V3D_Line(p0, p1);
                     V3D_Point proj = l.getPointOfIntersection(bpt, e.oom);
-                    getConvexHull0(ab.b, bpt, proj, n);
-                }
+                    getConvexHull0(ab.b, bpt, proj, n, index);
+//                }
             }
         }
     }

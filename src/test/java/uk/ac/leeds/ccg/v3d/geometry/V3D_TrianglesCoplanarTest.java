@@ -32,22 +32,22 @@ import uk.ac.leeds.ccg.v3d.V3D_Test;
  * @author Andy Turner
  */
 public class V3D_TrianglesCoplanarTest extends V3D_Test {
-    
+
     public V3D_TrianglesCoplanarTest() {
     }
-    
+
     @BeforeAll
     public static void setUpClass() {
     }
-    
+
     @AfterAll
     public static void tearDownClass() {
     }
-    
+
     @BeforeEach
     public void setUp() {
     }
-    
+
     @AfterEach
     public void tearDown() {
     }
@@ -62,11 +62,103 @@ public class V3D_TrianglesCoplanarTest extends V3D_Test {
                 new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P1P0),
                 new V3D_Triangle(pP0P0P0, pP2P2P0, pP0P2P0),
                 new V3D_Triangle(pP0P0P0, pP0P2P0, pN1P2P0));
-        String expResult = "";
+        String expResult = "uk.ac.leeds.ccg.v3d.geometry.V3D_TrianglesCoplanar(V3D_Triangle\n"
+                + "(\n"
+                + " oom=-3\n"
+                + " ,\n"
+                + " offset=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " p=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " q=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " r=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + "), V3D_Triangle\n"
+                + "(\n"
+                + " oom=-3\n"
+                + " ,\n"
+                + " offset=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " p=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " q=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " r=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + "), V3D_Triangle\n"
+                + "(\n"
+                + " oom=-3\n"
+                + " ,\n"
+                + " offset=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " p=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " q=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + " ,\n"
+                + " r=V3D_Vector\n"
+                + " (\n"
+                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=-1, oom=0),\n"
+                + "  dy=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0),\n"
+                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + " )\n"
+                + "))";
+        //System.out.println(instance);
         String result = instance.toString();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -350,12 +442,30 @@ public class V3D_TrianglesCoplanarTest extends V3D_Test {
                 new V3D_Triangle(pN2N2P0, pP2P2P0, pP2P0P0),
                 new V3D_Triangle(pN2N2P0, pP2P0P0, pP2N1P0));
         ArrayList<V3D_Point> expResult = new ArrayList<>();
+//        expResult.add(pN2N2P0);
+//        expResult.add(pP2P2P0);
+//        expResult.add(pP2N1P0);
+//        expResult.add(pP0P1P0);
         expResult.add(pN2N2P0);
-        expResult.add(pP2P2P0);
         expResult.add(pP2N1P0);
+        expResult.add(pP2P2P0);
         expResult.add(pP0P1P0);
         ArrayList<V3D_Point> result = instance.getConvexHull();
         assertEquals(expResult, result);
+        // Test 2
+        instance = new V3D_TrianglesCoplanar(
+                new V3D_Triangle(pN2N2P0, pN2P0P0, pP0P1P0),
+                new V3D_Triangle(pN2N2P0, pP0P1P0, pP1P1P0),
+                new V3D_Triangle(pN2N2P0, pP1P1P0, pP2P2P0),
+                new V3D_Triangle(pN2N2P0, pP2P2P0, pP2P0P0),
+                new V3D_Triangle(pN2N2P0, pP2P0P0, pP2N1P0),
+                new V3D_Triangle(pN2N2P0, pP2N1P0, pP1N2P0));
+        expResult = new ArrayList<>();
+        expResult.add(pN2N2P0);
+        expResult.add(pN2P0P0);
+        expResult.add(pP2P2P0);
+        expResult.add(pP2N1P0);
+        expResult.add(pP1N2P0);
     }
 
     /**
@@ -385,5 +495,5 @@ public class V3D_TrianglesCoplanarTest extends V3D_Test {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
-    
+
 }
