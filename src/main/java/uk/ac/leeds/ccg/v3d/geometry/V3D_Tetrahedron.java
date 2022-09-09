@@ -513,18 +513,18 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
                                     V3D_LineSegment pq = new V3D_LineSegment(p, q);
                                     V3D_LineSegment rs = new V3D_LineSegment(r, s);
                                     if (pq.isIntersectedBy(rs, p.e.oom)) {
-                                        return new V3D_TrianglesCoplanar(
+                                        return new V3D_Polygon(
                                                 new V3D_Triangle(p, q, r),
                                                 new V3D_Triangle(p, q, s));
                                     } else {
                                         V3D_LineSegment pr = new V3D_LineSegment(p, r);
                                         V3D_LineSegment qs = new V3D_LineSegment(q, s);
                                         if (pr.isIntersectedBy(qs, p.e.oom)) {
-                                            return new V3D_TrianglesCoplanar(
+                                            return new V3D_Polygon(
                                                     new V3D_Triangle(p, r, q),
                                                     new V3D_Triangle(p, r, s));
                                         } else {
-                                            return new V3D_TrianglesCoplanar(
+                                            return new V3D_Polygon(
                                                     new V3D_Triangle(p, q, s),
                                                     new V3D_Triangle(p, r, s));
                                         }
@@ -915,7 +915,10 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
 
     @Override
     public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
-        // The intersection will be null, a point, a line segment, a triangle, quadrilateral, pentagon or hexagon...
+        /**
+         * The intersection will be null, a point, a line segment, a triangle,
+         * quadrilateral, pentagon or hexagon...
+         */
         V3D_Geometry pi = getIntersection(new V3D_Plane(t), oom);
         if (pi == null) {
             return null;
@@ -971,18 +974,16 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
                 return i_pqr;
             } else {
                 // i_rsp instanceof V3D_Triangle i_rsp_t
-                V3D_TrianglesCoplanar tc = new V3D_TrianglesCoplanar(
-                        (V3D_Triangle) i_pqr, 
+                V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(
+                        (V3D_Triangle) i_pqr,
                         (V3D_Triangle) i_rsp);
-                if (tc.isTriangle()) {
-                    ArrayList<V3D_Point> ch = tc.getConvexHull();
-                    return new V3D_Triangle(ch.get(0), ch.get(1), ch.get(2));
-                } else if (tc.isRectangle()){
-                    ArrayList<V3D_Point> ch = tc.getConvexHull();
-                    return new V3D_Rectangle(ch.get(0), ch.get(2), ch.get(1), 
-                            ch.get(3));
+                if (ch.isTriangle()) {
+                    return ch.triangles.get(0);
+                } else if (ch.isRectangle()) {
+                    return new V3D_Rectangle(ch.points.get(0), ch.points.get(2),
+                            ch.points.get(1), ch.points.get(3));
                 } else {
-                    return tc;
+                    return ch;
                 }
             }
         }

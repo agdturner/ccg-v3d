@@ -872,53 +872,40 @@ public class V3D_RectangleTest extends V3D_Test {
      * Test of equals method, of class V3D_Rectangle.
      */
     @Test
-    public void testEquals_V3D_Rectangle() {
+    public void testEquals_V3D_Rectangle_int() {
         System.out.println("equals");
         V3D_Rectangle r = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         boolean expResult = true;
-        boolean result = instance.equals(r);
+        boolean result = instance.equals(r, true);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_Rectangle(pP0P1P0, pP1P1P0, pP1P0P0, pP0P0P0);
-        result = instance.equals(r);
+        result = instance.equals(r, true);
         assertEquals(expResult, result);
         // Test 3
         instance = new V3D_Rectangle(pP1P1P0, pP1P0P0, pP0P0P0, pP0P1P0);
-        result = instance.equals(r);
+        result = instance.equals(r, true);
         assertEquals(expResult, result);
         // Test 4
         instance = new V3D_Rectangle(pP1P0P0, pP0P0P0, pP0P1P0, pP1P1P0);
-        result = instance.equals(r);
+        result = instance.equals(r, true);
         assertEquals(expResult, result);
         // Test 5
         instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0);
-        result = instance.equals(r);
+        result = instance.equals(r, true);
         assertEquals(expResult, result);
         // Test 6
         instance = new V3D_Rectangle(pP1P0P0, pP1P1P0, pP0P1P0, pP0P0P0);
-        result = instance.equals(r);
+        result = instance.equals(r, true);
         assertEquals(expResult, result);
         // Test 7
         instance = new V3D_Rectangle(pP1P1P0, pP0P1P0, pP0P0P0, pP1P0P0);
-        result = instance.equals(r);
+        result = instance.equals(r, true);
         assertEquals(expResult, result);
         // Test 8
         instance = new V3D_Rectangle(pP0P1P0, pP0P0P0, pP1P0P0, pP1P1P0);
-        result = instance.equals(r);
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of toTrianglesCoplanar method, of class V3D_Rectangle.
-     */
-    @Test
-    public void testToTrianglesCoplanar() {
-        System.out.println("toTrianglesCoplanar");
-        V3D_Rectangle instance = new V3D_Rectangle(pP0P1P0, pP0P0P0, pP1P0P0, pP1P1P0);
-        V3D_TrianglesCoplanar expResult = new V3D_TrianglesCoplanar(
-                instance.getPQR(), instance.getRSP());
-        V3D_TrianglesCoplanar result = instance.toTrianglesCoplanar();
+        result = instance.equals(r, true);
         assertEquals(expResult, result);
     }
 

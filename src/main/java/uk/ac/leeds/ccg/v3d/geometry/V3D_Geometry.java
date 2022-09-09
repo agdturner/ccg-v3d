@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 

@@ -156,6 +156,10 @@ public class V3D_Line extends V3D_Geometry
         super(e, offset);
         this.p = new V3D_Vector(p);
         this.q = new V3D_Vector(q);
+        if (p.equals(q)) {
+            throw new RuntimeException("Points " + p + " and " + q
+                    + " are the same and so do not define a line.");
+        }
     }
 
     /**

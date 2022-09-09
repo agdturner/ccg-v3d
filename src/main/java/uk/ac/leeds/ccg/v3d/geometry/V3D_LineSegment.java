@@ -453,6 +453,11 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
          *    l.q ------------------------ l.p
          * 16)       q ---------- p
          *    l.q ---------- l.p
+         *
+         * 17)             p ---------- q
+         *    l.p ---------- l.q
+         * 18)  q ---------- p
+         *              l.q ---------- l.p
          * }
          */
         V3D_Point lp = l.getP(oom);
@@ -478,18 +483,26 @@ public class V3D_LineSegment extends V3D_Line implements V3D_FiniteGeometry,
                 }
             }
         } else {
-            // Cases 3, 4, 7, 8, 9, 10, 11, 12, 13, 15
+            // Cases 3, 4, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18
             if (this.isIntersectedBy(lq, oom)) {
                 V3D_Point tp = getP(oom);
                 // Cases 4, 8, 9, 10, 11
                 if (l.isIntersectedBy(tp, oom)) {
                     // Cases 4, 11, 13
-                    if (l.isIntersectedBy(getQ(oom), oom)) {
+                    V3D_Point tq = getQ(oom);
+                    if (l.isIntersectedBy(tq, oom)) {
                         // Cases 11
                         return this;
                     } else {
-                        // Cases 4, 13
-                        return new V3D_LineSegment(e, getP(), l.getQ());
+                        // Cases 4, 13, 17, 18
+                        if (getP().equals(l.getQ())) {
+                            return tp;
+                        } else {
+                            // Cases 4, 13, 
+                            return new V3D_LineSegment(e, getP(), l.getQ());
+                            //return new V3D_LineSegment(e, getQ(), l.getP());
+                            //return new V3D_LineSegment(e, getP(), l.getQ());
+                        }
                     }
                 } else {
                     // Cases 8, 9, 10

@@ -61,6 +61,11 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     protected V3D_Triangle pqr;
 
     /**
+     * For storing the convex hull
+     */
+    protected V3D_ConvexHullCoplanar convexHull;
+
+    /**
      * @return {@link #rsp} initialising it first if it is {@code null}
      */
     public V3D_Triangle getRSP() {
@@ -71,7 +76,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     /**
-     * @return A new V3D_Triangle {@link #rsp} initialising it first if it is {@code null}
+     * @return A new V3D_Triangle {@link #rsp} initialising it first if it is
+     * {@code null}
      */
     public V3D_Triangle getPQR() {
         if (pqr == null) {
@@ -79,7 +85,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         }
         return pqr;
     }
-    
+
 //    /**
 //     * For storing the vector from {@link #p} to {@link #q}.
 //     */
@@ -99,7 +105,6 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 //     * For storing the line segment from {@link #s} to {@link #p}.
 //     */
 //    protected V3D_LineSegment b;
-    
     /**
      * Create a new instance.
      *
@@ -255,16 +260,16 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     private boolean isIntersectedBy0(V3D_Ray ray, int oom) {
-        return getQR().isIntersectedBy(ray, oom) 
+        return getQR().isIntersectedBy(ray, oom)
                 || getRS().isIntersectedBy(ray, oom)
-                || getSP().isIntersectedBy(ray, oom) 
+                || getSP().isIntersectedBy(ray, oom)
                 || getPQ().isIntersectedBy(ray, oom);
     }
 
     private boolean isIntersectedBy0(V3D_Line ls, int oom) {
-        return getQR().isIntersectedBy(ls, oom) 
+        return getQR().isIntersectedBy(ls, oom)
                 || getRS().isIntersectedBy(ls, oom)
-                || getSP().isIntersectedBy(ls, oom) 
+                || getSP().isIntersectedBy(ls, oom)
                 || getPQ().isIntersectedBy(ls, oom);
     }
 
@@ -751,7 +756,6 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 //    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
 //        return getEnvelope().isIntersectedBy(l, oom);
 //    }
-
     @Override
     public BigDecimal getPerimeter(int oom) {
         int oomn2 = oom - 2;
@@ -875,7 +879,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             if (t2i instanceof V3D_Point) {
                 return t1i;
             } else {
-                return V3D_LineSegmentsCollinear.getUnion(t1il,
+                return V3D_LineSegmentsCollinear.getGeometry(t1il,
                         (V3D_LineSegment) t2i, oom);
             }
         } else {
@@ -899,13 +903,13 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             if (t2i instanceof V3D_Point) {
                 return t1i;
             } else if (t2i instanceof V3D_LineSegment t2il) {
-                return V3D_LineSegmentsCollinear.getUnion(t1il, t2il, oom);
+                return V3D_LineSegmentsCollinear.getGeometry(t1il, t2il, oom);
             } else {
                 return t2i;
             }
         } else {
             if (t2i instanceof V3D_Triangle t2it) {
-                return V3D_TrianglesCoplanar.getGeometry((V3D_Triangle) t1i, t2it, oom);
+                return new V3D_ConvexHullCoplanar((V3D_Triangle) t1i, t2it);
             } else {
                 return t1i;
             }
@@ -914,8 +918,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 
     @Override
     public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
-        V3D_Geometry i_pqr = getPQR().getIntersection(t, oom);
-        V3D_Geometry i_rsp = getRSP().getIntersection(t, oom);
+//        V3D_Geometry i_pqr = getPQR().getIntersection(t, oom);
+//        V3D_Geometry i_rsp = getRSP().getIntersection(t, oom);
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -978,10 +982,10 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         return getRSP().getDistanceSquared(t, oom).min(
                 getPQR().getDistanceSquared(t, oom));
     }
-    
+
     /**
      * Test for equality.
-     * 
+     *
      * @param o The object to test if it is equal to this.
      * @return True iff this and o represent the same rectangle.
      */
@@ -1000,44 +1004,47 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         hash = 71 * hash + Objects.hashCode(this.rsp);
         return hash;
     }
-    
+
     /**
      * @param r The rectangle to test if it is equal to this.
      * @return {@code true} iff this is equal to r.
      */
-    public boolean equals(V3D_Rectangle r) {
-        V3D_TrianglesCoplanar t = this.toTrianglesCoplanar();
-        return t.equals(r.toTrianglesCoplanar(), true);
+    //@Overrides
+    public boolean equals(V3D_Rectangle r, boolean b) {
+        return getConvexHull().equals(r.getConvexHull(), b);
     }
-    
+
     /**
-     * Converts this into a V3D_TrianglesCoplanar.
-     * @return V3D_TrianglesCoplanar equivalent to this.
+     * Initialises {@link #convexHull} if it is {@code null} and returns it.
+     * @return {@link #convexHull} initialising it if it is {@code null}.
      */
-    public V3D_TrianglesCoplanar toTrianglesCoplanar() {
-        return new V3D_TrianglesCoplanar(this.getRSP(), this.getPQR());
+    public V3D_ConvexHullCoplanar getConvexHull() {
+        if (convexHull == null) {
+            convexHull = new V3D_ConvexHullCoplanar(getPQR(), getRSP());
+        }
+        return convexHull;
     }
-    
+
     /**
      * For testing if four points form a rectangle.
-     * 
+     *
      * @param p First clockwise or anti-clockwise point.
      * @param q Second clockwise or anti-clockwise point.
      * @param r Third clockwise or anti-clockwise point.
      * @param s Fourth clockwise or anti-clockwise point.
      * @return {@code true} iff p, q, r and s form a rectangle.
      */
-    public static boolean isRectangle(V3D_Point p, V3D_Point q, 
+    public static boolean isRectangle(V3D_Point p, V3D_Point q,
             V3D_Point r, V3D_Point s) {
         V3D_LineSegment pq = new V3D_LineSegment(p, q);
         V3D_LineSegment qr = new V3D_LineSegment(q, r);
         V3D_LineSegment rs = new V3D_LineSegment(r, s);
         V3D_LineSegment sp = new V3D_LineSegment(s, p);
-        if(pq.isParallel(rs, p.e.oom)) {
-            if(qr.isParallel(sp, p.e.oom)) {
+        if (pq.isParallel(rs, p.e.oom)) {
+            if (qr.isParallel(sp, p.e.oom)) {
                 return true;
             }
         }
-        return false;        
+        return false;
     }
 }

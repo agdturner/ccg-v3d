@@ -463,8 +463,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
      */
     @Override
     public BigDecimal getArea(int oom) {
-        return getPQV().getCrossProduct(getRPV().reverse(), oom).getMagnitude()
-                .divide(Math_BigRational.TWO, oom).toBigDecimal(oom);
+        return getPQV().getCrossProduct(getRPV().reverse(), e.oom)
+                .getMagnitude().divide(Math_BigRational.TWO, e.oom).toBigDecimal(oom);
     }
 
     /**
@@ -698,6 +698,8 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 
     /**
      * Computes and returns the intersection between {@code this} and {@code t}.
+     * The intersection could be: null, a point, a line segment, a triangle, a
+     * quadrangle, a convex pentagon, or a convex hexagon.
      *
      * @param t The triangle to test for intersection with this.
      * @param oom The Order of Magnitude for the precision.
@@ -813,32 +815,59 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                                 }
                             }
                         } else {
-                            V3D_LineSegment ls = (V3D_LineSegment) gpq;
+                            V3D_LineSegment gpql = (V3D_LineSegment) gpq;
                             if (gqr == null) {
                                 if (grp == null) {
                                     return gpq;
                                 } else if (grp instanceof V3D_Point grpp) {
-                                    return getGeometry(grpp, ls.getP(oom), ls.getQ(oom));
+                                    return getGeometry(grpp, gpql.getP(oom), gpql.getQ(oom));
                                 } else {
-                                    return getGeometry(ls, (V3D_LineSegment) grp);
+                                    return getGeometry(gpql, (V3D_LineSegment) grp);
                                 }
                             } else if (gqr instanceof V3D_Point gqrp) {
                                 if (grp == null) {
-                                    return getGeometry(gqrp, ls.getP(oom), ls.getQ(oom));
+                                    if (gqr.isIntersectedBy(gpql, oom)) {
+                                        return gpql;
+                                    } else {
+                                        return new V3D_ConvexHullCoplanar(
+                                                getN(e.oom),
+                                                gpql.getP(e.oom), gpql.getQ(e.oom),
+                                                gqrp);
+                                    }
                                 } else if (grp instanceof V3D_Point grpp) {
-                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (two points and a line segment).
+                                    return new V3D_ConvexHullCoplanar(
+                                            getN(e.oom),
+                                            gpql.getP(e.oom), gpql.getQ(e.oom),
+                                            gqrp,
+                                            grpp);
                                 } else {
-                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (point and two line segments).
+                                    V3D_LineSegment grpl = (V3D_LineSegment) grp;
+                                    return new V3D_ConvexHullCoplanar(
+                                            getN(e.oom),
+                                            gpql.getP(e.oom), gpql.getQ(e.oom),
+                                            gqrp,
+                                            grpl.getP(e.oom), grpl.getQ(e.oom));
                                 }
                             } else {
+                                V3D_LineSegment gqrl = (V3D_LineSegment) gqr;
                                 if (grp == null) {
-                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (two line segments).
+                                    return new V3D_ConvexHullCoplanar(
+                                            getN(e.oom),
+                                            gpql.getP(e.oom), gpql.getQ(e.oom),
+                                            gqrl.getP(e.oom), gqrl.getQ(e.oom));
                                 } else if (grp instanceof V3D_Point grpp) {
-                                    throw new UnsupportedOperationException("Not supported yet."); // TODO: Figure out the geometry (point and two line segments).
+                                    return new V3D_ConvexHullCoplanar(
+                                            getN(e.oom),
+                                            gpql.getP(e.oom), gpql.getQ(e.oom),
+                                            gqrl.getP(e.oom), gqrl.getQ(e.oom),
+                                            grpp);
                                 } else {
-                                    return getGeometry((V3D_LineSegment) gpq,
-                                            (V3D_LineSegment) gqr,
-                                            (V3D_LineSegment) grp, e.oom);
+                                    V3D_LineSegment grpl = (V3D_LineSegment) grp;
+                                    return new V3D_ConvexHullCoplanar(
+                                            getN(e.oom),
+                                            gpql.getP(e.oom), gpql.getQ(e.oom),
+                                            gqrl.getP(e.oom), gqrl.getQ(e.oom),
+                                            grpl.getP(e.oom), grpl.getQ(e.oom));
                                 }
                             }
                         }
@@ -1050,8 +1079,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         } else if (n == 4) {
             V3D_Triangle t1;
             V3D_Triangle t2;
-            // Case: closed polygon with 4 sides
-            // Find the two unique points
+            // Case: quadrangle (closed polygon with 4 sides)
             V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, oom);
             V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, oom);
             V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, oom);
@@ -1073,14 +1101,13 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                     t2 = new V3D_Triangle(l3p, l3q, illl2);
                 }
             }
-            return new V3D_TrianglesCoplanar(t1, t2);
+            return new V3D_Polygon(t1, t2);
             //throw new UnsupportedOperationException("Not supported yet.");
         } else if (n == 5) {
             V3D_Triangle t1;
             V3D_Triangle t2;
             V3D_Triangle t3;
-            // Case: closed polygon with 4 sides
-            // Find the two unique points
+            // Case: convex pentagon (closed polygon with 5 sides)
             V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, oom);
             V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, oom);
             V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, oom);
@@ -1109,7 +1136,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                 t2 = new V3D_Triangle(op1, op2, l3p); // This might be twisted?
                 t3 = new V3D_Triangle(op2, l3p, l3q);
             }
-            return new V3D_TrianglesCoplanar(t1, t2, t3);
+            return new V3D_Polygon(t1, t2, t3);
         } else {
             // n = 6
             V3D_Triangle t1;
@@ -1224,7 +1251,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                     }
                 }
             }
-            return new V3D_TrianglesCoplanar(t1, t2, t3, t4);
+            return new V3D_Polygon(t1, t2, t3, t4);
         }
     }
 
@@ -1259,7 +1286,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
     /**
      * This may be called when there is an intersection of two triangles where l
      * is a side of a triangle and p is a point.
-     * 
+     *
      * @param l A line segment.
      * @param p1 A point that is either not collinear to l or intersects l.
      * @param p2 A point that is either not collinear to l or intersects l.
@@ -1273,11 +1300,11 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
             return new V3D_Triangle(p1, l.getP(l.e.oom), l.getQ(l.e.oom));
         }
     }
-    
+
     /**
      * This may be called when there is an intersection of two triangles where l
      * is a side of a triangle and p is a point that is not collinear to l.
-     * 
+     *
      * @param l A line segment.
      * @param p A point that is not collinear to l.
      * @return a triangle for which l is an edge and p is a vertex.
@@ -1289,7 +1316,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         }
         return new V3D_Triangle(p, l.getP(l.e.oom), l.getQ(l.e.oom));
     }
-    
+
     /**
      * For getting the point opposite a side of a triangle given the side.
      *
@@ -1502,5 +1529,25 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         Math_BigRational drqsr = getDistanceSquared(t.getQsr(), oom);
         Math_BigRational drspr = getDistanceSquared(t.getSpr(), oom);
         return Math_BigRational.min(drpqr, drpsq, drqsr, drspr);
+    }
+
+    /**
+     * For retrieving a Set of points that are the corners of the triangles.
+     *
+     * @param triangles The input.
+     * @return A Set of points that are the corners of the triangles.
+     */
+    //public static ArrayList<V3D_Point> getPoints(V3D_Triangle[] triangles) {
+    public static V3D_Point[] getPoints(V3D_Triangle[] triangles) {
+        HashSet<V3D_Point> s = new HashSet<>();
+        for (var t : triangles) {
+            s.add(t.getP());
+            s.add(t.getQ());
+            s.add(t.getR());
+        }
+//        ArrayList<V3D_Point> r = new ArrayList<>();
+//        r.addAll(s);
+//        return r;
+        return s.toArray(V3D_Point[]::new);
     }
 }

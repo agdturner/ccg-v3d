@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.core;
 
+import java.io.Serializable;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
@@ -24,7 +25,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Environment {
+public class V3D_Environment implements Serializable {
 
     /**
      * 0

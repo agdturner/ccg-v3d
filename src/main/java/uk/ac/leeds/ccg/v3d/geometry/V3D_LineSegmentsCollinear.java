@@ -108,7 +108,7 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
      * @return A V3D_LineSegmentsCollinear if {@code l1} and {@code l2} do not
      * intersect, otherwise a single V3D_LineSegment.
      */
-    public static V3D_Geometry getUnion(V3D_LineSegment l1,
+    public static V3D_Geometry getGeometry(V3D_LineSegment l1,
             V3D_LineSegment l2, int oom) {
         if (!l1.isIntersectedBy(l2, oom)) {
             return new V3D_LineSegmentsCollinear(l1, l2);
