@@ -325,7 +325,79 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         if (pl.isIntersectedBy(l, oom)) {
             V3D_Geometry g = pl.getIntersection(l, oom);
             if (g instanceof V3D_Point pt) {
-                return isIntersectedBy(pt, oom);
+                /**
+                 * Logically, if the point is on the triangle than it
+                 * intersects. However, the point is only given accurately to
+                 * the given precision, so testing if the point is on the
+                 * triangle does not work. The option is to use the direction of
+                 * the line vector to define planes using each edge of the
+                 * triangle. We can then test that the point is on the same side
+                 * of these planes to know it is on the triangle. The commented
+                 * out line below seems logical, but does not work. It is left
+                 * in the code just in case.
+                 */
+                if (isIntersectedBy(pt, oom)) {
+                    return true;
+//                } else {
+//                    return false; // This seems logical, but does not work for all cases in practice.
+                }
+                // Find the direction of the line towards the triangle and use:
+                // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+//                V3D_Point p = getP();
+//                V3D_Point q = getQ();
+//                V3D_Point r = getR();
+//                V3D_Point qp = new V3D_Point(e, q.offset, getQV().add(l.v, oom));
+//                V3D_Plane a = new V3D_Plane(p, q, qp);
+//                V3D_Point rp = new V3D_Point(e, r.offset, getRV().add(l.v, oom));
+//                V3D_Plane b = new V3D_Plane(q, r, rp);
+//  //              V3D_Point pp = new V3D_Point(e, p.offset, getPV().add(l.v, oom));
+//                V3D_Plane c = new V3D_Plane(r, p, rp);
+//                Math_BigRational apt = a.getSideOfPlane(pt);
+//                Math_BigRational bpt = b.getSideOfPlane(pt);
+//                Math_BigRational cpt = c.getSideOfPlane(pt);
+//                if (apt.compareTo(Math_BigRational.ZERO) == 1) {
+//                    if (bpt.compareTo(Math_BigRational.ZERO) == 1) {
+//                        if (cpt.compareTo(Math_BigRational.ZERO) == 1) {
+//                            return true;
+//                        }
+//                    }
+//                } else if (apt.compareTo(Math_BigRational.ZERO) == 0) {
+//                    if (bpt.compareTo(Math_BigRational.ZERO) == 0) {
+//                        if (cpt.compareTo(Math_BigRational.ZERO) == 0) {
+//                            return true;
+//                        }
+//                    }
+//                } else {
+//                    if (bpt.compareTo(Math_BigRational.ZERO) == -1) {
+//                        if (cpt.compareTo(Math_BigRational.ZERO) == -1) {
+//                            return true;
+//                        }
+//                    }
+//                }
+//                return false;
+                // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+                //Math_BigRational EPSILON = Math_BigRational.ONE.divide(1000000);
+                Math_BigRational EPSILON = Math_BigRational.ZERO;
+                V3D_Vector edge1 = getPQV();
+                V3D_Vector edge2 = getRPV().reverse();
+                V3D_Vector h = l.v.getCrossProduct(edge2, oom);
+                Math_BigRational f = Math_BigRational.ONE.divide(edge1.getDotProduct(h, oom));
+                V3D_Vector s = l.p.subtract(getPV(), oom);
+                Math_BigRational u = f.multiply(s.getDotProduct(h, oom));
+                if (u.compareTo(Math_BigRational.ZERO) == -1 || u.compareTo(Math_BigRational.ONE) == 1) {
+                    return false;
+                }
+                V3D_Vector q = s.getCrossProduct(edge1, oom);
+                Math_BigRational v = f.multiply(l.v.getDotProduct(q, oom));
+                if (v.compareTo(Math_BigRational.ZERO) == -1 || u.add(v).compareTo(Math_BigRational.ONE) == 1) {
+                    return false;
+                }
+                Math_BigRational t = f.multiply(edge2.getDotProduct(q, oom));
+                if (t.compareTo(EPSILON) == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 if (getPQ().isIntersectedBy(l, oom)) {
                     return true;
@@ -339,6 +411,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
 //                }
             }
         }
+
         return false;
     }
 
@@ -505,19 +578,29 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
         if (lpqi == null) {
             if (lqri == null) {
                 if (lrpi == null) {
-                    if (g instanceof V3D_Line gl) {
-                        if (isIntersectedBy(gl, oom)) {
-                            return g;
-                        } else {
-                            return null;
-                        }
-                    } else {
-                        if (isIntersectedBy((V3D_Point) g, oom)) {
-                            return g;
-                        } else {
-                            return null;
-                        }
+                    // g can only be a point
+                    if (isIntersectedBy(l, oom)) {
+                            return (V3D_Point) g;
                     }
+                    return null;
+//                    if (g instanceof V3D_Point gp) {
+//                        if (isIntersectedBy(l, oom)) {
+//                            return gp;
+//                        }
+//                    }
+//                    if (g instanceof V3D_Line gl) {
+//                        if (isIntersectedBy(gl, oom)) {
+//                            return g;
+//                        } else {
+//                            return null;
+//                        }
+//                    } else {
+//                        if (isIntersectedBy((V3D_Point) g, oom)) {
+//                            return g;
+//                        } else {
+//                            return null;
+//                        }
+//                    }
                 } else {
                     return lrpi;
                 }

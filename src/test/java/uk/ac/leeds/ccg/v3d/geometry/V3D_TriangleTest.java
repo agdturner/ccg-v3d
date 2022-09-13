@@ -129,6 +129,19 @@ public class V3D_TriangleTest extends V3D_Test {
         // Test 2
         l = new V3D_Line(pP1P1P1, pP1P1P0);
         assertFalse(instance.isIntersectedBy(l, e.oom));
+        // Test 3
+        // line
+        // x = 0, y = 0, z = t
+        // points (0, 0, 0), (0, 0, 1) 
+        l = new V3D_Line(new V3D_Point(e, 0, 0, -120),
+                new V3D_Point(e, 0, 3, 0));
+        // plane
+        // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
+        instance = new V3D_Triangle(
+                new V3D_Point(e, -40, -30, 6),
+                new V3D_Point(e, 0, 30, 5),
+                new V3D_Point(e, 40, 30, 5));
+        assertTrue(instance.isIntersectedBy(l, e.oom));
     }
 
     /**

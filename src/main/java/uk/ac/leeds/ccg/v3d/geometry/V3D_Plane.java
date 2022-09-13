@@ -1863,5 +1863,15 @@ public class V3D_Plane extends V3D_Geometry
             return avd == bvd;
         }
     }
-
+    
+    public Math_BigRational getSideOfPlane(V3D_Point pt) {
+        V3D_Vector v = getPQV().subtract(pt.rel, e.oom);
+        if (v.isZeroVector()) {
+            v = getQRV().subtract(pt.rel, e.oom);
+//            if (v.isZeroVector()) {
+//                v = getRPV().subtract(pt.rel, e.oom);                
+//            }
+        }
+        return getN(e.oom).getDotProduct(v, e.oom);
+    }
 }
