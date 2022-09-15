@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
@@ -111,7 +110,10 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     public V3D_Triangle psq;
 
     /**
-     * Create a new instance.
+     * Create a new instance. {@code p}, {@code q}, {@code r} and {@code s} must
+     * all be different, not the zero vector and collectively they must be three
+     * dimensional. This is generally the fastest way to construct a 
+     * tetrahedron.
      *
      * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
@@ -130,7 +132,7 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
     }
 
     /**
-     * Create a new instance. {@code p}, {@code q}, {@code r}, {@code s} must
+     * Create a new instance. {@code p}, {@code q}, {@code r} and {@code s} must
      * all be different and not coplanar. No test is done to check these things.
      *
      * @param p Used to set {@link #p}, {@link #e} and {@link #offset}.
@@ -150,6 +152,17 @@ public class V3D_Tetrahedron extends V3D_Geometry implements V3D_Volume {
         V3D_Point sp = new V3D_Point(s);
         sp.setOffset(offset);
         this.s = sp.rel;
+    }
+
+    /**
+     * Create a new instance. {@code p}, must not be coplanar to t. No test is 
+     * done to check this is the case.
+     * 
+     * @param p Used to set {@link #p}, {@link #e} and {@link #offset}.
+     * @param t Used to set {@link #q}, {@link #r} and {@link #s}.
+     */
+    public V3D_Tetrahedron(V3D_Point p, V3D_Triangle t) {
+        this(p, t.getP(), t.getQ(), t.getR());
     }
 
     @Override

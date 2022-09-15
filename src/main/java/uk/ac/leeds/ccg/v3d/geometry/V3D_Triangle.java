@@ -742,8 +742,7 @@ public class V3D_Triangle extends V3D_Plane implements V3D_Face {
                     if (gRP == null) {
                         return null;
                     } else {
-                        return getGeometry((V3D_Point) gPQ,
-                                (V3D_Point) gQR, (V3D_Point) gRP);
+                        return gRP;
                     }
                 } else {
                     V3D_Geometry gRP = pl.getIntersection(getRP(), oom);
