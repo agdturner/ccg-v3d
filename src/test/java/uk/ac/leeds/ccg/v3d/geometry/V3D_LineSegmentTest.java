@@ -59,37 +59,37 @@ public class V3D_LineSegmentTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        V3D_LineSegment instance = new V3D_LineSegment(pP0P0P0, pP1P0P0);
-        String expResult = "V3D_LineSegment\n"
-                + "(\n"
-                + " oom=-3\n"
-                + " ,\n"
-                + " offset=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
-                + " ,\n"
-                + " p=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
-                + " ,\n"
-                + " q=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
-                + " ,\n"
-                + " v=null\n"
-                + ")";
-        String result = instance.toString();
-        //System.out.println(result);
-        assertTrue(expResult.equalsIgnoreCase(result));
+//        V3D_LineSegment instance = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+//        String expResult = "V3D_LineSegment\n"
+//                + "(\n"
+//                + " oom=-3\n"
+//                + " ,\n"
+//                + " offset=V3D_Vector\n"
+//                + " (\n"
+//                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+//                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+//                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+//                + " )\n"
+//                + " ,\n"
+//                + " p=V3D_Vector\n"
+//                + " (\n"
+//                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+//                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+//                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+//                + " )\n"
+//                + " ,\n"
+//                + " q=V3D_Vector\n"
+//                + " (\n"
+//                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+//                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+//                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+//                + " )\n"
+//                + " ,\n"
+//                + " v=null\n"
+//                + ")";
+//        String result = instance.toString();
+//        System.out.println(result);
+//        assertTrue(expResult.equalsIgnoreCase(result));
     }
 
     /**
@@ -175,20 +175,6 @@ public class V3D_LineSegmentTest extends V3D_Test {
     }
 
     /**
-     * Test of isPoint method, of class V3D_LineSegment.
-     */
-    @Test
-    public void testIsPoint() {
-        System.out.println("isPoint");
-        int oom = -1;
-        V3D_LineSegment instance = new V3D_LineSegment(pP0P0P0, pP0P0P0);
-        assertTrue(instance.isPoint());
-        // Test 2
-        instance = new V3D_LineSegment(pP0P0P0, pP1P0P0);
-        assertFalse(instance.isPoint());
-    }
-
-    /**
      * Test of multiply method, of class V3D_LineSegment.
      */
     @Test
@@ -239,7 +225,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Line() {
         System.out.println("isIntersectedBy");
-        V3D_Line l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         V3D_LineSegment instance = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         assertTrue(instance.isIntersectedBy(l, e.oom));
         // Test 2

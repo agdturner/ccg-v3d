@@ -873,7 +873,7 @@ public class V3D_Plane extends V3D_Geometry
      * @return The intersection between {@code this} and {@code l}.
      */
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom) {
         V3D_Geometry g = getIntersection(new V3D_Line(l), oom);
         if (g == null) {
             return null;
@@ -1676,7 +1676,7 @@ public class V3D_Plane extends V3D_Geometry
             this.offset = offset;
         }
     }
-
+    
     /**
      * Move the plane.
      *
@@ -1721,10 +1721,10 @@ public class V3D_Plane extends V3D_Geometry
 
     @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom) {
-        if (isIntersectedBy(t.getPQ(), oom)) {
+        if (isIntersectedBy(t.p.getPQ(), oom)) {
             return true;
         } else {
-            return isIntersectedBy(t.getQR(), oom);
+            return isIntersectedBy(t.p.getQR(), oom);
         }
     }
 
@@ -1741,7 +1741,7 @@ public class V3D_Plane extends V3D_Geometry
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
         return t.getIntersection(this, oom);
 //        V3D_Geometry tpqi = getIntersection(t.getPQ(), oom, b);
 //        V3D_Geometry tqri = getIntersection(t.getQR(), oom, b);
@@ -1812,7 +1812,7 @@ public class V3D_Plane extends V3D_Geometry
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
         return t.getIntersection(this, oom);
     }
 

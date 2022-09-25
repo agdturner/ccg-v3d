@@ -35,15 +35,9 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_LineSegmentsCollinear extends V3D_Line
-        implements V3D_FiniteGeometry {
+public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * For storing the envelope of this.
-     */
-    protected V3D_Envelope en;
 
     /**
      * The collinear line segments.
@@ -56,11 +50,23 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
      * @param lineSegments What {@code #lineSegments} is set to.
      */
     public V3D_LineSegmentsCollinear(V3D_LineSegment... lineSegments) {
-        super(lineSegments[0]);
+        super(lineSegments[0].e);
         this.lineSegments = new ArrayList<>();
         this.lineSegments.addAll(Arrays.asList(lineSegments));
     }
 
+    @Override
+    public V3D_Point[] getPoints() {
+        int nl = lineSegments.size();
+        V3D_Point[] r = new V3D_Point[nl * 2];
+        for(int i = 0; i < nl; i ++) {
+            V3D_LineSegment l = lineSegments.get(i);
+            r[i] = l.getP(e.oom);
+            r[i + nl] = l.getQ(e.oom);
+        }
+        return r;
+    }
+    
     @Override
     public String toString() {
         String s = this.getClass().getName() + "(";
@@ -108,7 +114,7 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
      * @return A V3D_LineSegmentsCollinear if {@code l1} and {@code l2} do not
      * intersect, otherwise a single V3D_LineSegment.
      */
-    public static V3D_Geometry getGeometry(V3D_LineSegment l1,
+    public static V3D_FiniteGeometry getGeometry(V3D_LineSegment l1,
             V3D_LineSegment l2, int oom) {
         if (!l1.isIntersectedBy(l2, oom)) {
             return new V3D_LineSegmentsCollinear(l1, l2);
@@ -348,24 +354,24 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
      * comprised of points and line segments. Line segments have to have
      * different start and end points.
      *
-     * @param l The line segment to intersect with.
+     * ls l The line segment to intersect with.
      * @param oom The order of magnitude for the precision.
      * @return The intersection of this and l.
      */
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
-        if (isIntersectedBy(l, oom)) {
-            if (isCollinear(l)) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment ls, int oom) {
+        if (isIntersectedBy(ls, oom)) {
+            if (lineSegments.get(0).l.isCollinear(ls.l)) {
                 ArrayList<V3D_Point> ps = new ArrayList<>();
-                ArrayList<V3D_LineSegment> ls = new ArrayList<>();
+                ArrayList<V3D_LineSegment> lse = new ArrayList<>();
                 Iterator<V3D_LineSegment> ite = lineSegments.iterator();
                 while (ite.hasNext()) {
-                    V3D_Geometry g = ite.next().getIntersection(l, oom);
+                    V3D_Geometry g = ite.next().getIntersection(ls, oom);
                     if (g != null) {
                         if (g instanceof V3D_Point gp) {
                             ps.add(gp);
                         } else {
-                            ls.add((V3D_LineSegment) g);
+                            lse.add((V3D_LineSegment) g);
                         }
                     }
                 }
@@ -373,12 +379,12 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
                     // Need to handle cases where we have points.
                     throw new UnsupportedOperationException();
                 } else {
-                    if (ls.size() == 1) {
-                        return ls.get(0);
+                    if (lse.size() == 1) {
+                        return lse.get(0);
                     } else {
                         V3D_LineSegmentsCollinear r
                                 = new V3D_LineSegmentsCollinear(
-                                        ls.toArray(V3D_LineSegment[]::new));
+                                        lse.toArray(V3D_LineSegment[]::new));
                         return r.simplify();
                     }
                 }
@@ -386,7 +392,7 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
                 // Find the point of intersection if there is one.
                 Iterator<V3D_LineSegment> ite = lineSegments.iterator();
                 while (ite.hasNext()) {
-                    V3D_Geometry g = ite.next().getIntersection(l, oom);
+                    V3D_FiniteGeometry g = ite.next().getIntersection(ls, oom);
                     if (g != null) {
                         return g;
                     }
@@ -438,7 +444,7 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
      * a simplified version of this with overlapping line segments replaced with
      * a single line segment.
      */
-    public V3D_Geometry simplify() {
+    public V3D_FiniteGeometry simplify() {
         ArrayList<V3D_LineSegment> dummy = new ArrayList<>();
         dummy.addAll(lineSegments);
         ArrayList<V3D_LineSegment> r = simplify0(dummy, 0);
@@ -513,12 +519,12 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -550,6 +556,31 @@ public class V3D_LineSegmentsCollinear extends V3D_Line
     @Override
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

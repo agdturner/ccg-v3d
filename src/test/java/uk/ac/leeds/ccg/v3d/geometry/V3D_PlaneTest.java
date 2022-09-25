@@ -150,33 +150,33 @@ public class V3D_PlaneTest extends V3D_Test {
         // Test 1 to 9 lines segments in line with axes
         V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         V3D_Plane instance = V3D_Plane.X0;
-        assertFalse(instance.isOnPlane(l, e.oom));
+        assertFalse(instance.isOnPlane(l.l, e.oom));
         // Test 2
         instance = V3D_Plane.Y0;
-        assertTrue(instance.isOnPlane(l, e.oom));
+        assertTrue(instance.isOnPlane(l.l, e.oom));
         // Test 3
         instance = V3D_Plane.Z0;
-        assertTrue(instance.isOnPlane(l, e.oom));
+        assertTrue(instance.isOnPlane(l.l, e.oom));
         // Test 4
         l = new V3D_LineSegment(pP0P0P0, pP0P1P0);
         instance = V3D_Plane.X0;
-        assertTrue(instance.isOnPlane(l, e.oom));
+        assertTrue(instance.isOnPlane(l.l, e.oom));
         // Test 5
         instance = V3D_Plane.Y0;
-        assertFalse(instance.isOnPlane(l, e.oom));
+        assertFalse(instance.isOnPlane(l.l, e.oom));
         // Test 6
         instance = V3D_Plane.Z0;
-        assertTrue(instance.isOnPlane(l, e.oom));
+        assertTrue(instance.isOnPlane(l.l, e.oom));
         // Test 7
         l = new V3D_LineSegment(pP0P0P0, pP0P0P1);
         instance = V3D_Plane.X0;
-        assertTrue(instance.isOnPlane(l, e.oom));
+        assertTrue(instance.isOnPlane(l.l, e.oom));
         // Test 8
         instance = V3D_Plane.Y0;
-        assertTrue(instance.isOnPlane(l, e.oom));
+        assertTrue(instance.isOnPlane(l.l, e.oom));
         // Test 9
         instance = V3D_Plane.Z0;
-        assertFalse(instance.isOnPlane(l, e.oom));
+        assertFalse(instance.isOnPlane(l.l, e.oom));
     }
 
     /**
@@ -202,8 +202,8 @@ public class V3D_PlaneTest extends V3D_Test {
         instance = new V3D_Plane(pP0P0P0, pP2P0P0, pP0P2P0);
         assertTrue(instance.equals(o));
         // Test 6
-        instance = new V3D_Triangle(pP0P0P0, pP2P0P0, pP0P2P0);
-        assertFalse(instance.equals(o));
+        instance = new V3D_Triangle(pP0P0P0, pP2P0P0, pP0P2P0).p;
+        //assertFalse(instance.equals(o));
         assertTrue(o.equals(instance));
         // Test 7
         o = new V3D_Line(pP0P0P0, pP1P0P0);
@@ -3296,7 +3296,7 @@ public class V3D_PlaneTest extends V3D_Test {
         instance = new V3D_Plane(e, P0P0P0, P2P0P0, P0P2P0);
         assertTrue(instance.equals(p));
         // Test 6
-        instance = new V3D_Triangle(e, P0P0P0, P2P0P0, P0P2P0);
+        instance = new V3D_Triangle(e, P0P0P0, P2P0P0, P0P2P0).p;
         assertTrue(instance.equals(p));
     }
 

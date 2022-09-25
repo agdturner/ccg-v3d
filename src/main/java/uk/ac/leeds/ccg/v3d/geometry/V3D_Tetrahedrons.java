@@ -13,14 +13,9 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Tetrahedrons extends V3D_Geometry implements V3D_Volume {
+public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * For storing the envelope.
-     */
-    protected V3D_Envelope en;
 
     /**
      * The list of tetrahedron. Stored as a list so that the list can be 
@@ -73,6 +68,23 @@ public class V3D_Tetrahedrons extends V3D_Geometry implements V3D_Volume {
         return en;
     }
 
+    @Override
+    public V3D_Point[] getPoints() {
+        int np = tetrahedrons.size() * 4;
+        V3D_Point[] r = new V3D_Point[np];
+        int i = 0;
+        for (var x: tetrahedrons) {
+            r[i] = x.getP();
+            i ++;
+            r[i] = x.getQ();
+            i ++;
+            r[i] = x.getR();
+            i ++;
+            r[i] = x.getS();
+        }
+        return r;
+    }
+    
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The area of the triangle (rounded).
@@ -141,12 +153,12 @@ public class V3D_Tetrahedrons extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Line l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -173,17 +185,17 @@ public class V3D_Tetrahedrons extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -233,7 +245,7 @@ public class V3D_Tetrahedrons extends V3D_Geometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Ray r, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

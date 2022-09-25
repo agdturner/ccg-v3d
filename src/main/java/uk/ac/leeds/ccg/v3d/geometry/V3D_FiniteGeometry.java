@@ -15,19 +15,51 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+
 /**
  * V3D_FiniteGeometry for representing finite geometries.
  *
  * @author Andy Turner
  * @version 1.0
  */
-public interface V3D_FiniteGeometry {
+public abstract class V3D_FiniteGeometry extends V3D_Geometry 
+        implements V3D_FiniteGeometryInterface {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * For getting the envelope of the geometry
-     *
-     * @return The V3D_Envelope.
+     * For storing the envelope.
      */
-    public abstract V3D_Envelope getEnvelope();
+    protected V3D_Envelope en;
     
+    /**
+     * Creates a new instance.
+     *
+     * @param e What {@link #e} is set to.
+     */
+    public V3D_FiniteGeometry(V3D_Environment e) {
+        super(e);
+    }
+    
+    /**
+     * Creates a new instance.
+     *
+     * @param offset What {@link #offset} is set to.
+     * @param e What {@link #e} is set to.
+     */
+    public V3D_FiniteGeometry(V3D_Environment e, V3D_Vector offset) {
+        super(e, offset);
+    }
+    
+    public static V3D_Point[] getPoints(V3D_FiniteGeometry... gs) {
+        ArrayList<V3D_Point> list = new ArrayList<>();
+        for (var x: gs) {
+            V3D_Point[] pts = x.getPoints();
+            list.addAll(Arrays.asList(pts));
+        }
+        return list.toArray(V3D_Point[]::new);
+    }
 }

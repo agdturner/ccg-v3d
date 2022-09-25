@@ -25,15 +25,10 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_PointsCoplanar extends V3D_Geometry implements V3D_FiniteGeometry, 
+public class V3D_PointsCoplanar extends V3D_FiniteGeometry implements
         V3D_IntersectionAndDistanceCalculations {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * For storing the envelope.
-     */
-    protected V3D_Envelope en;
 
     /**
      * The collection of points.
@@ -76,6 +71,16 @@ public class V3D_PointsCoplanar extends V3D_Geometry implements V3D_FiniteGeomet
             }
         }
         return en;
+    }
+
+    @Override
+    public V3D_Point[] getPoints() {
+        int n = rels.length;
+        V3D_Point[] r = new V3D_Point[n];
+        for(int i = 0; i < n; i ++) {
+            r[i] = new V3D_Point(e, offset, rels[i]);
+        }
+        return r;
     }
 
     @Override
@@ -136,27 +141,27 @@ public class V3D_PointsCoplanar extends V3D_Geometry implements V3D_FiniteGeomet
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Line l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

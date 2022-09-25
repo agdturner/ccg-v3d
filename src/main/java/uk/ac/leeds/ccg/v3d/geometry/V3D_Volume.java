@@ -22,7 +22,7 @@ import java.math.BigDecimal;
  * 
  * @author Andy Turner
  */
-public interface V3D_Volume extends V3D_FiniteGeometry {
+public interface V3D_Volume {
     
     /**
      * For calculating and returning the area.

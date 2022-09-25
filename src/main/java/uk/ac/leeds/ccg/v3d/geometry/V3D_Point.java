@@ -54,7 +54,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry, 
+public class V3D_Point extends V3D_FiniteGeometry implements 
         V3D_IntersectionAndDistanceCalculations, Comparable<V3D_Point> {
 
     private static final long serialVersionUID = 1L;
@@ -287,6 +287,13 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
         }
         return false;
     }
+    
+    @Override
+    public V3D_Point[] getPoints() {
+        V3D_Point[] r = new V3D_Point[1];
+        r[0] = this;
+        return r;
+    }
 
     /**
      * @param oom The Order of Magnitude for the precision.
@@ -489,7 +496,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
      * {@code null}.
      */
     @Override
-    public V3D_Geometry getIntersection(V3D_Line l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom) {
         if (l.isIntersectedBy(this, oom)) {
             return this;
         }
@@ -497,7 +504,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Ray r, int oom) {
         if (r.isIntersectedBy(this, oom)) {
             return this;
         }
@@ -505,7 +512,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom) {
         if (l.isIntersectedBy(this, oom)) {
             return this;
         }
@@ -538,7 +545,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
         //Math_BigRational pl2 = (new V3D_Line(l)).getDistanceSquared(this);
         BigDecimal pl = (new V3D_Line(l)).getDistance(this, oom2);
         Math_BigRational pl2 = Math_BigRational.valueOf(pl).pow(2);
-        V3D_Vector u = l.getV(oom).getUnitVector(oom - 2);
+        V3D_Vector u = l.l.getV(oom).getUnitVector(oom - 2);
         V3D_Point pi = new V3D_Point(e, u.multiply(Math_BigRational.valueOf(
                 new Math_BigRationalSqrt(lp2.subtract(pl2), oom2)
                         .toBigDecimal(oom2)), oom2)
@@ -706,7 +713,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom) {
         if (p.isIntersectedBy(this, oom)) {
             return this;
         }
@@ -714,7 +721,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
         if (t.isIntersectedBy(this, oom)) {
             return this;
         }
@@ -722,7 +729,7 @@ public class V3D_Point extends V3D_Geometry implements V3D_FiniteGeometry,
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
         if (t.isIntersectedBy(this, oom)) {
             return this;
         }

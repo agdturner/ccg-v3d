@@ -227,7 +227,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
         V3D_Point expResult = pP0P0P0;
-        V3D_Point result = instance.getP(oom);
+        V3D_Point result = instance.getP();
         assertEquals(expResult, result);
     }
 
@@ -240,7 +240,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
         V3D_Point expResult = pP1P0P0;
-        V3D_Point result = instance.getQ(e.oom);
+        V3D_Point result = instance.getQ();
         assertEquals(expResult, result);
     }
 
@@ -253,7 +253,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
         V3D_Point expResult = pP0P1P0;
-        V3D_Point result = instance.getR(e.oom);
+        V3D_Point result = instance.getR();
         assertEquals(expResult, result);
     }
 
@@ -266,7 +266,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
         V3D_Point expResult = pP0P1P1;
-        V3D_Point result = instance.getS(e.oom);
+        V3D_Point result = instance.getS();
         assertEquals(expResult, result);
     }
 

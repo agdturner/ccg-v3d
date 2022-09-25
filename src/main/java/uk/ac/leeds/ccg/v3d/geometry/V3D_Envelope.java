@@ -94,8 +94,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
-        V3D_IntersectionAndDistanceCalculations {
+public class V3D_Envelope extends V3D_Geometry implements
+        V3D_FiniteGeometryInterface, V3D_IntersectionAndDistanceCalculations {
 
     private static final long serialVersionUID = 1L;
 
@@ -781,7 +781,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
             }
         }
     }
-    
+
     /**
      * Returns {@code null} if {@code this} does not intersect {@code r};
      * otherwise returns the intersection which is either a point or a line
@@ -981,7 +981,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
      * {@code li} and {@code this}.
      */
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment li, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment li, int oom) {
         // Special case where both ends of li are within Envelope
         boolean lipi = isIntersectedBy(li.getP(oom), oom);
         if (lipi && isIntersectedBy(li.getQ(oom), oom)) {
@@ -1088,8 +1088,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
                                             (V3D_Point) ail, (V3D_Point) til);
                                 }
                             } else {
-                                if (ail instanceof V3D_LineSegment) {
-                                    return ail;
+                                if (ail instanceof V3D_LineSegment aill) {
+                                    return aill;
                                 }
                                 return V3D_LineSegment.getGeometry(
                                         (V3D_Point) ail, (V3D_Point) ril);
@@ -1182,7 +1182,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
         }
     }
 
-    private V3D_Geometry getIntersection(V3D_Point pi, V3D_LineSegment li,
+    private V3D_FiniteGeometry getIntersection(V3D_Point pi, V3D_LineSegment li,
             boolean lipi) {
         if (lipi) {
             return V3D_LineSegment.getGeometry(li.getP(e.oom), pi);
@@ -1499,18 +1499,18 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
              * Test the plane for intersection. This is not needed and may not
              * be computationally advantageous!
              */
-            if (isIntersectedBy(new V3D_Plane(t), oom)) {
+            if (isIntersectedBy(t.p, oom)) {
                 /**
                  * Test the edges of the triangle for intersection. This is not
                  * needed and may not be computationally advantageous!
                  */
-                if (isIntersectedBy(t.getPQ(), oom)) {
+                if (isIntersectedBy(t.p.getPQ(), oom)) {
                     return true;
                 }
-                if (isIntersectedBy(t.getQR(), oom)) {
+                if (isIntersectedBy(t.p.getQR(), oom)) {
                     return true;
                 }
-                if (isIntersectedBy(t.getRP(), oom)) {
+                if (isIntersectedBy(t.p.getRP(), oom)) {
                     return true;
                 }
                 /**
@@ -1614,16 +1614,16 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
 
     private boolean checkIntersectionWithSide(Rectangle r, V3D_Triangle t, int oom) {
         V3D_Vector n;
-        n = new V3D_Rectangle(r).getN(oom);
-        int tpnc = t.p.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+        n = new V3D_Rectangle(r).p.getN(oom);
+        int tpnc = t.p.p.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
         if (tpnc == 0) {
             return true;
         } else if (tpnc == 1) {
-            int tqnc = t.q.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+            int tqnc = t.p.q.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
             if (tqnc != 1) {
                 return true;
             } else {
-                int trnc = t.r.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+                int trnc = t.p.r.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
                 if (trnc == 0) {
                     return true;
                 } else {
@@ -1631,11 +1631,11 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
                 }
             }
         } else {
-            int tqnc = t.q.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+            int tqnc = t.p.q.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
             if (tqnc != -1) {
                 return true;
             } else {
-                int trnc = t.r.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+                int trnc = t.p.r.getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
                 if (trnc == 0) {
                     return true;
                 } else {
@@ -1699,7 +1699,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
             }
         }
     }
-    
+
     /**
      *
      * Test if {@code this} is intersected by {@code li}.
@@ -2203,7 +2203,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
         }
         return getDistanceSquared(p, true, oom);
     }
-    
+
     /**
      * A point within the Envelope currently returns a distance of zero. This
      * could be changed in future to provide a negative distance which would be
@@ -2219,12 +2219,12 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
      * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
      *
      * @param p The point to find the distance to/from.
-     * @param noInt This is ignored, but it distinguishes this method from 
+     * @param noInt This is ignored, but it distinguishes this method from
      * {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
      * @param oom The Order of Magnitude for the result precision.
      * @return The approximate or exact distance at the given {@code oom}.
      */
-    protected Math_BigRational getDistanceSquared(V3D_Point p, boolean noInt, 
+    protected Math_BigRational getDistanceSquared(V3D_Point p, boolean noInt,
             int oom) {
         // Special case where Envelope is infinitesimally small.
         if (l instanceof Point && t instanceof Point) {
@@ -2545,7 +2545,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
                                 // rta - lta
                                 if (a instanceof Rectangle rectangle) {
                                     return new Line(rectangle.t)
-                                            .getDistanceSquared(new Point(p), 
+                                            .getDistanceSquared(new Point(p),
                                                     oom);
                                 } else if (a instanceof LineSegment) {
                                     return ((Line) a).getDistanceSquared(
@@ -2558,7 +2558,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
                                 // ltf - lta - rta - rtf
                                 if (t instanceof Rectangle rectangle) {
                                     return new Plane(rectangle)
-                                            .getDistanceSquared(new Point(p), 
+                                            .getDistanceSquared(new Point(p),
                                                     oom);
                                 } else if (r instanceof LineSegment) {
                                     return ((Line) t).getDistanceSquared(
@@ -2639,17 +2639,17 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -2701,6 +2701,20 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
     @Override
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public V3D_Point[] getPoints() {
+        V3D_Point[] r = new V3D_Point[8];
+        r[0] = new V3D_Point(lba);
+        r[1] = new V3D_Point(lbf);
+        r[2] = new V3D_Point(lta);
+        r[3] = new V3D_Point(ltf);
+        r[4] = new V3D_Point(rba);
+        r[5] = new V3D_Point(rbf);
+        r[6] = new V3D_Point(rta);
+        r[7] = new V3D_Point(rtf);
+        return r;
     }
 
     /**
@@ -3432,8 +3446,8 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
 //                    pv.getDotProduct(vu, oom), oom)
 //                    .add(new V3D_Vector(this.q), oom)), oom);
 //            return pd.min(qd);
-              Math_BigRational d2 = getDistanceSquared(p, oom);
-              return (new Math_BigRationalSqrt(d2, oom)).getSqrt(oom).toBigDecimal(oom);
+            Math_BigRational d2 = getDistanceSquared(p, oom);
+            return (new Math_BigRationalSqrt(d2, oom)).getSqrt(oom).toBigDecimal(oom);
         }
 
         /**
@@ -3799,16 +3813,17 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
             }
             return getDistanceSquared(p, true, oom);
         }
-        
+
         /**
          * Get the distance between this and {@code p}.
          *
          * @param p A point.
-         * @param noInt To distinguish this from {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope.Point, int)}
+         * @param noInt To distinguish this from
+         * {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope.Point, int)}
          * @param oom The Order of Magnitude for the precision.
          * @return The distance from {@code this} to {@code p}.
          */
-        protected Math_BigRational getDistanceSquared(Point p, boolean noInt, 
+        protected Math_BigRational getDistanceSquared(Point p, boolean noInt,
                 int oom) {
             V3D_Vector v = new V3D_Vector(p, this.p);
             V3D_Vector u = this.n.getUnitVector(oom);
@@ -3906,7 +3921,7 @@ public class V3D_Envelope extends V3D_Geometry implements V3D_FiniteGeometry,
         protected Rectangle apply(V3D_Vector v) {
             return new Rectangle(this, v);
         }
-        
+
         /**
          * @param l The line to intersect with.
          * @return A point or line segment.

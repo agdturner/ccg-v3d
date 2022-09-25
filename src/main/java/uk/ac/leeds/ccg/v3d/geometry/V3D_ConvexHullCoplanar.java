@@ -28,9 +28,9 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * A class for representing and using coplanar convex hulls. These are a special
- * type of polygon: They have no holes and all the angles are convex. Below is
- * a basic algorithm for generating a convex hull from a set of coplanar
- * points known as the "quick hull" algorithm (see 
+ * type of polygon: They have no holes and all the angles are convex. Below is a
+ * basic algorithm for generating a convex hull from a set of coplanar points
+ * known as the "quick hull" algorithm (see
  * <a href="https://en.wikipedia.org/wiki/Quickhull">
  * https://en.wikipedia.org/wiki/Quickhull</a>) :
  * <ol>
@@ -65,24 +65,20 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
+public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry 
+        implements V3D_Face {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * For storing the envelope.
-     */
-    protected V3D_Envelope en;
-
-    /**
      * The collection of triangles.
      */
-    protected ArrayList<V3D_Triangle> triangles;
+    protected final ArrayList<V3D_Triangle> triangles;
 
     /**
      * The collection of points.
      */
-    public final ArrayList<V3D_Point> points;
+    protected final ArrayList<V3D_Point> points;
 
     /**
      * Create a new instance.
@@ -90,32 +86,20 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
      * @param triangles A non-empty list of coplanar triangles.
      */
     public V3D_ConvexHullCoplanar(V3D_Triangle... triangles) {
-        this(triangles[0].getN(triangles[0].e.oom), V3D_Triangle.getPoints(triangles));
+        this(triangles[0].p.n, V3D_Triangle.getPoints(triangles));
     }
-    
+
     /**
      * Create a new instance.
      *
-     * @param p A point that along with q and r form a triangle.
-     * @param q A point that along with r and p form a triangle.
-     * @param r A point that along with p and q form a triangle.
-     */
-    public V3D_ConvexHullCoplanar(V3D_Point p, V3D_Point q, V3D_Point r) {
-        this(new V3D_Plane(p, q, r).getN(p.e.oom), p, q, r);
-    }
-        
-    /**
-     * Create a new instance.
-     *
-     * @param n The normal vector to the plane.
      * @param points A non-empty list of points in a plane given by n.
      */
     public V3D_ConvexHullCoplanar(V3D_Vector n, V3D_Point... points) {
-        super(points[0], n);
+        super(points[0].e);
         this.points = new ArrayList<>();
+        this.triangles = new ArrayList<>();
         ArrayList<V3D_Point> pts = new ArrayList<>();
         pts.addAll(Arrays.asList(points));
-        getN(e.oom);
         V3D_Vector v0 = pts.get(0).rel;
         Math_BigRationalSqrt xmin = v0.dx;
         Math_BigRationalSqrt xmax = v0.dx;
@@ -236,20 +220,46 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
                 }
             }
         }
+        V3D_Point pt = this.points.get(0);
+        for (int i = 1; i < this.points.size() - 2; i++) {
+            V3D_Point qt = this.points.get(i);
+            V3D_Point rt = this.points.get(i + 1);
+            triangles.add(new V3D_Triangle(pt, qt, rt));
+        }
+    }
+
+    /**
+     * Create a new instance.
+     */
+    public V3D_ConvexHullCoplanar(V3D_ConvexHullCoplanar... gs) {
+        this(gs[0].triangles.get(0).p.n, V3D_FiniteGeometry.getPoints(gs));
+    }
+
+    /**
+     * Create a new instance.
+     */
+    public V3D_ConvexHullCoplanar(V3D_ConvexHullCoplanar ch, V3D_Triangle t) {
+        this(ch.triangles.get(0).p.n, V3D_FiniteGeometry.getPoints(ch, t));
+    }
+
+    @Override
+    public V3D_Point[] getPoints() {
+        int np = points.size();
+        V3D_Point[] re = new V3D_Point[np];
+        for (int i = 0; i < np; i++) {
+            re[i] = new V3D_Point(points.get(i));
+        }
+        return re;
     }
 
     @Override
     public String toString() {
         String s = this.getClass().getName() + "(";
-        Iterator<V3D_Triangle> ite = triangles.iterator();
+        Iterator<V3D_Point> ite = points.iterator();
         s += ite.next().toString();
         while (ite.hasNext()) {
             s += ", " + ite.next();
         }
-//        s += triangles.get(0).toString();
-//        for (int i = 1; i < triangles.size(); i++) {
-//            s += ", " + triangles.get(i);
-//        }
         s += ")";
         return s;
     }
@@ -266,7 +276,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.triangles);
+        hash = 53 * hash + Objects.hashCode(this.points);
         return hash;
     }
 
@@ -285,19 +295,22 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
          * be the same. For the areas to be the same each triangle from each
          * must either be in the other, or it must fully intersect the other.
          */
-        if (!new V3D_Plane(this).equals(new V3D_Plane(i))) {
+        if (!this.triangles.get(0).p.equals(i.triangles.get(0).p)) {
             // If they are not in the same plane, they are unequal!
             return false;
         }
-        for (V3D_Triangle t : getTriangles()) {
+        for (V3D_Triangle t : triangles) {
             V3D_Geometry g = i.getIntersection(t, e.oom);
             if (g instanceof V3D_Triangle gt) {
                 if (!t.equals(gt)) {
+//                    System.out.println(gt);
+//                    System.out.println(t);
+//                    t.equals(gt);
                     return false;
                 }
             }
         }
-        for (V3D_Triangle t : i.getTriangles()) {
+        for (V3D_Triangle t : i.triangles) {
             V3D_Geometry g = getIntersection(t, e.oom);
             if (g instanceof V3D_Triangle gt) {
                 if (!t.equals(gt)) {
@@ -311,17 +324,31 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
     @Override
     public V3D_Envelope getEnvelope() {
         if (en == null) {
-//            Iterator<V3D_Triangle> ite = triangles.iterator();
-//            en = ite.next().getEnvelope();
-//            while (ite.hasNext()) {
-//                en = en.union(ite.next().getEnvelope());
-//            }
-            en = triangles.get(0).getEnvelope();
-            for (int i = 1; i < triangles.size(); i++) {
-                en = en.union(triangles.get(i).getEnvelope());
+            en = points.get(0).getEnvelope();
+            for (int i = 1; i < points.size(); i++) {
+                en = en.union(points.get(i).getEnvelope());
             }
         }
         return en;
+    }
+
+    /**
+     * If this is effectively a triangle, the triangle is returned. If this is
+     * effectively a rectangle, the rectangle is returned. Otherwise this is
+     * returned.
+     *
+     * @return Either a triangle, rectangle or this.
+     */
+    public V3D_FiniteGeometry simplify() {
+        if (isTriangle()) {
+            return new V3D_Triangle(points.get(0), points.get(1),
+                    points.get(2));
+        } else if (isRectangle()) {
+            return new V3D_Rectangle(points.get(0), points.get(2),
+                    points.get(1), points.get(3));
+        } else {
+            return this;
+        }
     }
 
     /**
@@ -332,7 +359,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom) {
         if (getEnvelope().isIntersectedBy(pt, oom)) {
-            if (super.isIntersectedBy(pt, oom)) {
+            if (triangles.get(0).p.isIntersectedBy(pt, oom)) {
                 return isIntersectedBy0(pt, oom);
             }
         }
@@ -356,7 +383,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
 
     @Override
     public boolean isIntersectedBy(V3D_Line l, int oom) {
-        if (super.isIntersectedBy(l, oom)) {
+        if (triangles.get(0).p.isIntersectedBy(l, oom)) {
             //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy(l, oom)));        
             return triangles.stream().anyMatch(t -> (t.isIntersectedBy(l, oom)));
         }
@@ -366,7 +393,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         if (getEnvelope().isIntersectedBy(l.getEnvelope())) {
-            if (super.isIntersectedBy(l, oom)) {
+            if (triangles.get(0).p.isIntersectedBy(l, oom)) {
                 for (V3D_Triangle triangle : triangles) {
                     if (triangle.isIntersectedBy(l, oom)) {
                         return true;
@@ -419,7 +446,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -429,30 +456,17 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
         // Create a set all the intersecting triangles from this.
-        HashSet<V3D_Triangle> ts = new HashSet<>();
-        for (V3D_Triangle t2 : getTriangles()) {
-            if (t2.isIntersectedBy(t, oom)) {
-                ts.add(t2);
-            }
+        HashSet<V3D_Point> ts = new HashSet<>();
+        for (V3D_Triangle t2 : triangles) {
+            V3D_FiniteGeometry i = t2.getIntersection(t, oom);
+            ts.addAll(Arrays.asList(t2.getPoints()));
         }
-        int size = ts.size();
-        switch (size) {
-            case 0 -> {
-                return null;
-            }
-            case 1 -> {
-                return ts.iterator().next();
-            }
-            default -> {
-                V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(
-                        ts.toArray(V3D_Triangle[]::new));
-                if (ch.getTriangles().size() == 1) {
-                    return ch.triangles.get(0);
-                }
-                return ch;
-            }
+        if (ts.size() == 0) {
+            return null;
+        } else {
+            return new V3D_ConvexHullCoplanar(t.p.n, ts.toArray(V3D_Point[]::new)).simplify();
         }
 //        switch (size) {
 //            case 0:
@@ -466,7 +480,6 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
 //                return getGeometry(oom, t2s.toArray(V3D_Triangle[]::new));
     }
 
-    
 //    @Override
 //    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
 //        return getEnvelope().isIntersectedBy(l, oom);
@@ -547,6 +560,106 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
         }
     }
 
+    @Override
+    public boolean isIntersectedBy(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Point p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public class AboveAndBelow {
 
         // Above
@@ -591,27 +704,6 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
                 }
             }
         }
-
-    }
-
-    /**
-     * If {@link #triangles} is {@code null} this creates the triangles and
-     * returns them.
-     *
-     * @return {@link #triangles} creating it first if it is null.
-     */
-    public ArrayList<V3D_Triangle> getTriangles() {
-        if (triangles == null) {
-            int np = this.points.size();
-            if (np > 2) {
-                triangles = new ArrayList<>();
-                for (int i = 0; i < np - 2; i++) {
-                    triangles.add(new V3D_Triangle(points.get(i),
-                            points.get(i + 1), points.get(i + 2)));
-                }
-            }
-        }
-        return triangles;
     }
 
     /**
@@ -619,7 +711,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
      *
      * @return
      */
-    public boolean isTriangle() {
+    public final boolean isTriangle() {
         return points.size() == 3;
     }
 
@@ -635,5 +727,5 @@ public class V3D_ConvexHullCoplanar extends V3D_Plane implements V3D_Face {
         }
         return false;
     }
-    
+
 }

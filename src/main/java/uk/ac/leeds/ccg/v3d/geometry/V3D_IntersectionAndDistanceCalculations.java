@@ -116,7 +116,7 @@ public interface V3D_IntersectionAndDistanceCalculations {
      * @param oom The Order of Magnitude for the precision.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_Geometry getIntersection(V3D_LineSegment l, int oom);
+    public abstract V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom);
 
     /**
      * Get the intersection between the geometry and the plane {@code p}.
@@ -134,7 +134,7 @@ public interface V3D_IntersectionAndDistanceCalculations {
      * @param oom The Order of Magnitude for the precision.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_Geometry getIntersection(V3D_Triangle t, int oom);
+    public abstract V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom);
 
     /**
      * Get the intersection between the geometry and the tetrahedron {@code t}.
@@ -143,7 +143,7 @@ public interface V3D_IntersectionAndDistanceCalculations {
      * @param oom The Order of Magnitude for the precision.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom);
+    public abstract V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom);
 
     /**
      * Get the distance to {@code p}.

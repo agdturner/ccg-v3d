@@ -32,14 +32,9 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Polygon extends V3D_Plane implements V3D_Face {
+public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * For storing the envelope.
-     */
-    protected V3D_Envelope en;
 
     /**
      * The collection of non-holes.
@@ -64,7 +59,7 @@ public class V3D_Polygon extends V3D_Plane implements V3D_Face {
      */
     public V3D_Polygon(ArrayList<V3D_ConvexHullCoplanar> parts,
             ArrayList<V3D_ConvexHullCoplanar> holes) {
-        super(parts.get(0).triangles.get(0));
+        super(parts.get(0).triangles.get(0).e);
         this.parts = parts;
         this.holes = holes;
     }
@@ -75,7 +70,7 @@ public class V3D_Polygon extends V3D_Plane implements V3D_Face {
      * @param triangles A non-empty list of coplanar triangles.
      */
     public V3D_Polygon(V3D_Triangle... parts) {
-        super(parts[0]);
+        super(parts[0].e);
         this.parts = new ArrayList<>();
         this.holes = null;
     }
@@ -106,6 +101,33 @@ public class V3D_Polygon extends V3D_Plane implements V3D_Face {
         s += "\n)";
         return s;
     }
+
+    @Override
+    public V3D_Point[] getPoints() {
+        int np = 0;
+        for (var x: parts) {
+            np += x.points.size();
+        }
+        for (var x: holes) {
+            np += x.points.size();
+        }
+        V3D_Point[] r = new V3D_Point[np];
+        int i = 0;
+        for (var x: parts) {
+            for(var y: x.points) {
+                r[i] = new V3D_Point(y);
+                i ++;
+            }
+        }
+        for (var x: holes) {
+            for(var y: x.points) {
+                r[i] = new V3D_Point(y);
+                i ++;
+            }
+        }
+        return r;
+    }
+    
 
 //    @Override
 //    public boolean equals(Object o) {
@@ -187,7 +209,7 @@ public class V3D_Polygon extends V3D_Plane implements V3D_Face {
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom) {
         if (getEnvelope().isIntersectedBy(pt, oom)) {
-            if (super.isIntersectedBy(pt, oom)) {
+            if (parts.get(0).triangles.get(0).p.isIntersectedBy(pt, oom)) {
                 return isIntersectedBy0(pt, oom);
             }
         }
@@ -281,22 +303,22 @@ public class V3D_Polygon extends V3D_Plane implements V3D_Face {
      * @return A point or line segment.
      */
     @Override
-    public V3D_Geometry getIntersection(V3D_Line l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
         throw new UnsupportedOperationException();
 //        // Create a set all the intersecting triangles from this.
 //        HashSet<V3D_Triangle> t2s = new HashSet<>();
@@ -369,8 +391,108 @@ public class V3D_Polygon extends V3D_Plane implements V3D_Face {
             for (var x : parts) {
                 pts.addAll(x.points);
             }
-            convexHull = new V3D_ConvexHullCoplanar(n, pts.toArray(V3D_Point[]::new));
+            convexHull = new V3D_ConvexHullCoplanar(parts.get(0).triangles.get(0).p.n, pts.toArray(V3D_Point[]::new));
         }
         return convexHull;
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Point p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

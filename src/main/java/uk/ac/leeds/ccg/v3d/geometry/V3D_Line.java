@@ -132,6 +132,15 @@ public class V3D_Line extends V3D_Geometry
     }
 
     /**
+     * @param l Used to initialise this.
+     */
+    public V3D_Line(V3D_LineSegment l) {
+        super(l.e, l.offset);
+        this.p = new V3D_Vector(l.l.p);
+        this.q = new V3D_Vector(l.l.q);
+    }
+
+    /**
      * {@code p} should not be equal to {@code q}. {@link #offset} is set to
      * {@link V3D_Vector#ZERO}.
      *
@@ -1012,7 +1021,7 @@ public class V3D_Line extends V3D_Geometry
      * @return The line segment having the shortest distance between {@code pt}
      * and {@code this}.
      */
-    public V3D_Geometry getLineOfIntersection(V3D_Point pt, int oom) {
+    public V3D_FiniteGeometry getLineOfIntersection(V3D_Point pt, int oom) {
         if (isIntersectedBy(pt, oom)) {
             return pt;
         }
@@ -1090,7 +1099,7 @@ public class V3D_Line extends V3D_Geometry
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The line of intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry getLineOfIntersection(V3D_Line l, int oom) {
+    public V3D_FiniteGeometry getLineOfIntersection(V3D_Line l, int oom) {
         if (isParallel(l, oom)) {
             return null;
         }
@@ -1609,17 +1618,17 @@ public class V3D_Line extends V3D_Geometry
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_LineSegment l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom) {
         return l.getIntersection(this, oom);
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Triangle t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
         return t.getIntersection(this, oom);
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Tetrahedron t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
         return t.getIntersection(this, oom);
     }
     

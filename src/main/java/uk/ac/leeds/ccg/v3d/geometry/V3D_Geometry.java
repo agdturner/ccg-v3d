@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
@@ -105,7 +106,7 @@ public abstract class V3D_Geometry implements Serializable,
      * @param v The vector to apply.
      * @param oom The Order of Magnitude for the precision.
      */
-    public final void apply(int oom, V3D_Vector v) {
+    public void apply(int oom, V3D_Vector v) {
         offset = offset.add(v, oom);
     }
 

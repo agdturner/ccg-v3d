@@ -15,27 +15,29 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
- * V3D_Face
+ * V3D_FiniteGeometry for representing finite geometries.
  *
  * @author Andy Turner
  * @version 1.0
  */
-public interface V3D_Face extends V3D_IntersectionAndDistanceCalculations {
+public interface V3D_FiniteGeometryInterface {
 
     /**
-     * For calculating and returning the perimeter.
-     * @param oom The Order of Magnitude for the precision of the result.
-     * @return The Perimeter.
+     * For getting the envelope of the geometry
+     *
+     * @return The V3D_Envelope.
      */
-    public abstract BigDecimal getPerimeter(int oom);
-
+    public abstract V3D_Envelope getEnvelope();
+    
     /**
-     * For calculating and returning the area.
-     * @param oom The Order of Magnitude for the precision of the result.
-     * @return The area.
+     * For getting a copy of the points of the geometry.
+     *
+     * @return The V3D_Envelope.
      */
-    public abstract BigDecimal getArea(int oom);
+    public abstract V3D_Point[] getPoints();
+    
 }

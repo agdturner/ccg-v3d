@@ -486,7 +486,7 @@ public class V3D_TriangleTest extends V3D_Test {
         assertEquals(expResult, instance);
         // Test 5
         instance = new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0);
-        instance.setOffset(P1P0P0);
+        instance.p.setOffset(P1P0P0);
         axisOfRotation = V3D_Vector.I;
         theta = Pi;
         instance.rotate(axisOfRotation, theta);
