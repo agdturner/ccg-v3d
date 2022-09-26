@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  *
@@ -393,6 +394,17 @@ public class V3D_TetrahedronTest extends V3D_Test {
         // Test 4
         pt = new V3D_Point(e, -0.5, 0, 0);
         assertFalse(instance.isIntersectedBy(pt, e.oom));
+        // Test 5
+        instance = new V3D_Tetrahedron(
+                new V3D_Point(e, 0, 0, -75), 
+                new V3D_Point(e, -50, -37.5, 10),
+                new V3D_Point(e, 50, 37.5, 10),
+                new V3D_Point(e, -50, 37.5, 10));
+        //pt = new V3D_Point(e, -24, -19, 0);
+        //pt = new V3D_Point(e, 0, 0, -74);
+        //pt = new V3D_Point(e, 1, 1, 0);
+        pt = new V3D_Point(e, -11, 11, 0);
+        assertTrue(instance.isIntersectedBy(pt, e.oom));
     }
 
     /**

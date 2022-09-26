@@ -346,25 +346,29 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom) {
-        if (V3D_Plane.checkOnSameSide(pt, getP(), getQsr().p.getN(oom), oom)) {
-            if (V3D_Plane.checkOnSameSide(pt, getQ(), getSpr().p.getN(oom), oom)) {
-                if (V3D_Plane.checkOnSameSide(pt, getR(), getPsq().p.getN(oom), oom)) {
-                    if (V3D_Plane.checkOnSameSide(pt, getS(), getPqr().p.getN(oom), oom)) {
+        pqr = getPqr();
+        psq = getPsq();
+        spr = getSpr();
+        qsr = getQsr();
+        if (pqr.p.checkOnSameSide(pt, getS(), oom)) {
+            if (psq.p.checkOnSameSide(pt, getR(), oom)) {
+                if (spr.p.checkOnSameSide(pt, getQ(), oom)) {
+                    if (qsr.p.checkOnSameSide(pt, getP(), oom)) {
                         return true;
                     }
                 }
             }
         }
-        if (getQsr().isIntersectedBy(pt, oom)) {
+        if (qsr.isIntersectedBy(pt, oom)) {
             return true;
         }
-        if (getSpr().isIntersectedBy(pt, oom)) {
+        if (spr.isIntersectedBy(pt, oom)) {
             return true;
         }
-        if (getPsq().isIntersectedBy(pt, oom)) {
+        if (psq.isIntersectedBy(pt, oom)) {
             return true;
         }
-        return getPqr().isIntersectedBy(pt, oom);
+        return pqr.isIntersectedBy(pt, oom);
     }
 
     @Override

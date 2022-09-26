@@ -168,7 +168,7 @@ public class V3D_RectangleTest extends V3D_Test {
     public void testToString() {
         System.out.println("toString");
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
-        String expResult = "V3D_Rectangle\n"
+        String expResult = "V3D_Rectangle(V3D_Plane\n"
                 + "(\n"
                 + " oom=-3\n"
                 + " ,\n"
@@ -199,14 +199,7 @@ public class V3D_RectangleTest extends V3D_Test {
                 + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
                 + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + " )\n"
-                + " ,\n"
-                + " s=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
-                + ")";
+                + "))";
         String result = instance.toString();
         //System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
@@ -269,7 +262,6 @@ public class V3D_RectangleTest extends V3D_Test {
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
 //        assertTrue(instance.isEnvelopeIntersectedBy(l, e.oom));
 //    }
-
     /**
      * Test of getPerimeter method, of class V3D_Rectangle.
      */
@@ -325,27 +317,6 @@ public class V3D_RectangleTest extends V3D_Test {
                 + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + ")\n"
                 + ",\n"
-                + "p=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")\n"
-                + ",\n"
-                + "q=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")\n"
-                + ",\n"
-                + "r=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")\n"
-                + ",\n"
                 + "s=V3D_Vector\n"
                 + "(\n"
                 + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
@@ -353,7 +324,7 @@ public class V3D_RectangleTest extends V3D_Test {
                 + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + ")";
         String result = instance.toStringFields(pad);
-        //System.out.println(result);
+        System.out.println(result);
         assertEquals(expResult, result);
     }
 

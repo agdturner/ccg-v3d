@@ -388,8 +388,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom) {
         // Check if infinite lines intersect.
-        V3D_Geometry i = this.l.getIntersection(
-                new V3D_Line(l), oom);
+        V3D_Geometry i = this.l.getIntersection(l, oom);
         if (i == null) {
             // There is no intersection.
             return null;

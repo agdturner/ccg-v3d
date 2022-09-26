@@ -221,7 +221,6 @@ public class V3D_TriangleTest extends V3D_Test {
 //        V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP1P1P0, pP2P0P0);
 //        assertTrue(instance.isEnvelopeIntersectedBy(l, e.oom));
 //    }
-
     /**
      * Test of getCentroid method, of class V3D_Triangle.
      */
@@ -247,7 +246,7 @@ public class V3D_TriangleTest extends V3D_Test {
     public void testToString() {
         System.out.println("toString");
         V3D_Triangle instance = new V3D_Triangle(e, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
-        String expResult = "V3D_Triangle\n"
+        String expResult = "V3D_Triangle(V3D_Plane\n"
                 + "(\n"
                 + " oom=-3\n"
                 + " ,\n"
@@ -278,9 +277,9 @@ public class V3D_TriangleTest extends V3D_Test {
                 + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + "  dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0)\n"
                 + " )\n"
-                + ")";
+                + "))";
         String result = instance.toString();
-        //System.out.println(result);
+        System.out.println(result);
         assertEquals(expResult, result);
     }
 

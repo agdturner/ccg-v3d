@@ -4068,6 +4068,9 @@ public class V3D_PlaneTest extends V3D_Test {
         instance = new V3D_Plane(V3D_Plane.Z0);
         expResult = new V3D_Triangle(t);
         result = instance.getIntersection(t, e.oom);
+        System.out.println(expResult.toString());
+        System.out.println(result.toString());
+        boolean b = expResult.equals(result);
         assertEquals(expResult, result);
     }
 

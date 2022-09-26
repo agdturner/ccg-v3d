@@ -86,7 +86,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @param triangles A non-empty list of coplanar triangles.
      */
     public V3D_ConvexHullCoplanar(V3D_Triangle... triangles) {
-        this(triangles[0].p.n, V3D_Triangle.getPoints(triangles));
+        this(triangles[0].p.getN(triangles[0].e.oom), V3D_Triangle.getPoints(triangles));
     }
 
     /**
@@ -148,7 +148,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         V3D_Point yminp = pts.get(yminIndex);
         V3D_Point ymaxp = pts.get(ymaxIndex);
         V3D_Point zminp = pts.get(zminIndex);
-        V3D_Point zmaxp = pts.get(zmaxIndex);
+        V3D_Point zmaxp = pts.get(zmaxIndex);        
+        this.offset = xminp.offset;
         if (xminIndex == xmaxIndex) {
             V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp);
             V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp);
@@ -189,7 +190,12 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             } else {
                 this.points.add(yminp);
                 this.points.add(ymaxp);
+                
+                try {
                 getConvexHull0(pts, yminp, ymaxp, n, 1);
+                } catch (Exception e) {
+                    getConvexHull0(pts, yminp, ymaxp, n, 1);
+                }
             }
         } else {
             V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp);
@@ -232,14 +238,14 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * Create a new instance.
      */
     public V3D_ConvexHullCoplanar(V3D_ConvexHullCoplanar... gs) {
-        this(gs[0].triangles.get(0).p.n, V3D_FiniteGeometry.getPoints(gs));
+        this(gs[0].triangles.get(0).p.getN(gs[0].e.oom), V3D_FiniteGeometry.getPoints(gs));
     }
 
     /**
      * Create a new instance.
      */
     public V3D_ConvexHullCoplanar(V3D_ConvexHullCoplanar ch, V3D_Triangle t) {
-        this(ch.triangles.get(0).p.n, V3D_FiniteGeometry.getPoints(ch, t));
+        this(ch.triangles.get(0).p.getN(ch.e.oom), V3D_FiniteGeometry.getPoints(ch, t));
     }
 
     @Override
@@ -461,12 +467,12 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         HashSet<V3D_Point> ts = new HashSet<>();
         for (V3D_Triangle t2 : triangles) {
             V3D_FiniteGeometry i = t2.getIntersection(t, oom);
-            ts.addAll(Arrays.asList(t2.getPoints()));
+            ts.addAll(Arrays.asList(i.getPoints()));
         }
         if (ts.size() == 0) {
             return null;
         } else {
-            return new V3D_ConvexHullCoplanar(t.p.n, ts.toArray(V3D_Point[]::new)).simplify();
+            return new V3D_ConvexHullCoplanar(t.p.getN(oom), ts.toArray(V3D_Point[]::new)).simplify();
         }
 //        switch (size) {
 //            case 0:
@@ -514,6 +520,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         AboveAndBelow ab = new AboveAndBelow(pts, pl);
         // Process ab.a
         {
+                if (!ab.a.isEmpty()) {
             V3D_Point apt = ab.a.get(ab.maxaIndex);
             points.add(index, apt);
             index++;
@@ -534,10 +541,12 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 V3D_Point proj = l.getPointOfIntersection(apt, e.oom);
                 getConvexHull0(ab.a, apt, proj, n, index);
             }
+                }
         }
         index++;
         // Process ab.b
         {
+                if (!ab.b.isEmpty()) {
             V3D_Point bpt = ab.b.get(ab.maxbIndex);
             points.add(index, bpt);
             V3D_Triangle btr = new V3D_Triangle(p0, p1, bpt);
@@ -557,6 +566,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 V3D_Point proj = l.getPointOfIntersection(bpt, e.oom);
                 getConvexHull0(ab.b, bpt, proj, n, index);
             }
+                }
         }
     }
 

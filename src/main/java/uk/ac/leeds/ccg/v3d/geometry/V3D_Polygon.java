@@ -391,7 +391,9 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
             for (var x : parts) {
                 pts.addAll(x.points);
             }
-            convexHull = new V3D_ConvexHullCoplanar(parts.get(0).triangles.get(0).p.n, pts.toArray(V3D_Point[]::new));
+            convexHull = new V3D_ConvexHullCoplanar(
+                    parts.get(0).triangles.get(0).p.getN(e.oom),
+                    pts.toArray(V3D_Point[]::new));
         }
         return convexHull;
     }

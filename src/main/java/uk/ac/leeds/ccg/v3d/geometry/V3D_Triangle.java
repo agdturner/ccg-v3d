@@ -69,7 +69,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public V3D_Plane p;
 
 //    /**
-//     * The line from {@link #p} to {@link #q}.
+//     * For storing the line segment from {@link #p} to {@link #q}.
 //     */
 //    private V3D_LineSegment lpq;
 //
@@ -568,9 +568,9 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         if (g == null) {
             return null;
         }
-        if (!getEnvelope().isIntersectedBy(l, oom)) {
-            return null;
-        }
+//        if (!getEnvelope().isIntersectedBy(l, oom)) {
+//            return null;
+//        }
 //        V3D_Geometry enil = getEnvelope(oom).getIntersection(l, oom);
 //        if (enil == null) {
 //            return null;
@@ -682,7 +682,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
             if (liq) {
                 return l;
             } else {
-                V3D_Geometry li = getIntersection(new V3D_Line(l), oom);
+                V3D_Geometry li = getIntersection(l.l, oom);
                 if (li == null) {
                     return null;
                 }
@@ -694,7 +694,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                 }
             }
         } else {
-            V3D_Geometry li = getIntersection(new V3D_Line(l), oom);
+            V3D_Geometry li = getIntersection(l.l, oom);
             if (li == null) {
                 return null;
             }
@@ -1009,10 +1009,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
     @Override
     public boolean equals(Object o) {
-        if (super.equals(o)) {
-            if (o instanceof V3D_Triangle t) {
-                return equals(t);
-            }
+        if (o instanceof V3D_Triangle t) {
+            return equals(t);
         }
         return false;
     }
@@ -1083,6 +1081,11 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         p.rotate(axisOfRotation, theta);
         en = null;
+    }
+    
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "(" + p.toString() + ")";
     }
 
     /**

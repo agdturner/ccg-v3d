@@ -733,7 +733,6 @@ public class V3D_Line extends V3D_Geometry
                         lamda = lp.getX(oom).subtract(tp.getX(oom)).divide(tv.getDX(oom));
                         x = lp.getX(oom);
                         if (tv.dy.isZero()) {
-                            mu = (tp.getY(oom).subtract(lp.getY(oom))).divide(lv.getDY(oom));
                             y = tp.getY(oom);
                             if (tv.dz.isZero()) {
                                 z = tp.getZ(oom);
@@ -741,6 +740,7 @@ public class V3D_Line extends V3D_Geometry
                                 if (lv.dz.isZero()) {
                                     z = lp.getZ(oom);
                                 } else {
+                                    mu = tp.getY(oom).subtract(lp.getY(oom)).divide(lv.getDY(oom));
                                     z = lp.getZ(oom).add(lv.getDZ(oom).multiply(mu));
                                 }
                             }
