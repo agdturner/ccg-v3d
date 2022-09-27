@@ -984,12 +984,15 @@ public class V3D_Plane extends V3D_Geometry
 //        //???
 //        // n = cross(n1, n2);
 
-        int oomN5 = oom - 5;
+        //int oomN5 = oom - 5;
+        //int oome = oomN5;
+        int oomN6 = oom - 6;
+        int oome = oomN6;
         /**
          * Calculate the cross product of the normal vectors to get the
          * direction of the line.
          */
-        V3D_Vector v = getN(oomN5).getCrossProduct(pl.getN(oomN5), oomN5);
+        V3D_Vector v = getN(oome).getCrossProduct(pl.getN(oome), oome);
         //V3D_Vector v = pl.getN(oomN5).getCrossProduct(getN(oomN5), oomN5);
 
         /**
@@ -1029,16 +1032,20 @@ public class V3D_Plane extends V3D_Geometry
 //                    new V3D_Line(getP(), getQ()), oomN5);
 //        }
 
-        if (pl.getPQV().isScalarMultiple(v, oomN5)) {
+        if (pl.getPQV().isScalarMultiple(v, oome)) {
             pi = (V3D_Point) getIntersection(
-                    new V3D_Line(pl.getP(), pl.getR()), oomN5);
+                    new V3D_Line(pl.getP(), pl.getR()), oome);
         } else {
             pi = (V3D_Point) getIntersection(
-                    new V3D_Line(pl.getP(), pl.getQ()), oomN5);
+                    new V3D_Line(pl.getP(), pl.getQ()), oome);
         }
-
         //return new V3D_Line(pi, v, oom);
-        return new V3D_Line(pi.offset, pi.getVector(oomN5), v, e);
+        
+        if (pi == null) { // Hack.
+            return null;
+        }
+        
+        return new V3D_Line(pi.offset, pi.getVector(oome), v, e);
     }
 
 //    private V3D_Geometry getIntersectionOld(V3D_Plane pl, int oom) {

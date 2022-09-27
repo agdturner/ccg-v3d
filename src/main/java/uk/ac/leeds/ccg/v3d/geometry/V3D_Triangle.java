@@ -1427,6 +1427,11 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public boolean isIntersectedBy(V3D_Plane pl, int oom) {
         if (p.isIntersectedBy(pl, oom)) {
             V3D_Geometry g = p.getIntersection(pl, oom);
+            
+            if (g == null) { // Hack.
+                return false;
+            }
+            
             if (g instanceof V3D_Line l) {
                 return isIntersectedBy(l, oom);
             } else {
