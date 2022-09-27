@@ -1849,7 +1849,7 @@ public class V3D_Plane extends V3D_Geometry
      * @return {@code true} if an intersection is found and {@code false}
      * otherwise.
      */
-    public boolean checkOnSameSide(V3D_Point a, V3D_Point b, int oom) {
+    public boolean isOnSameSide(V3D_Point a, V3D_Point b, int oom) {
         n = getN(oom);
         V3D_Vector av = a.getVector(oom);
         //int avd = n.getDotProduct(av.add(this.p.reverse(), oom), oom).compareTo(Math_BigRational.ZERO);

@@ -350,10 +350,10 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         psq = getPsq();
         spr = getSpr();
         qsr = getQsr();
-        if (pqr.p.checkOnSameSide(pt, getS(), oom)) {
-            if (psq.p.checkOnSameSide(pt, getR(), oom)) {
-                if (spr.p.checkOnSameSide(pt, getQ(), oom)) {
-                    if (qsr.p.checkOnSameSide(pt, getP(), oom)) {
+        if (pqr.p.isOnSameSide(pt, getS(), oom)) {
+            if (psq.p.isOnSameSide(pt, getR(), oom)) {
+                if (spr.p.isOnSameSide(pt, getQ(), oom)) {
+                    if (qsr.p.isOnSameSide(pt, getP(), oom)) {
                         return true;
                     }
                 }
@@ -987,8 +987,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                     return ch.simplify();
                 } else {
                     // i_rsp instanceof V3D_ConvexHullCoplanar
-                    V3D_ConvexHullCoplanar ch = (V3D_ConvexHullCoplanar) i_rsp;
-                    ch.triangles.add(i_pqrt);
+                    V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(
+                            (V3D_ConvexHullCoplanar) i_rsp, i_pqrt);
                     return ch.simplify();
                 }
             }

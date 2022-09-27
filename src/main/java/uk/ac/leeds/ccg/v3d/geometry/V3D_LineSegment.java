@@ -64,7 +64,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
     /**
      * For storing the line.
      */
-    protected final V3D_Line l;
+    public final V3D_Line l;
 
     /**
      * For storing the length of the line squared.

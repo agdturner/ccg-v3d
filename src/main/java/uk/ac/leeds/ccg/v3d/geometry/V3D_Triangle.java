@@ -65,7 +65,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
     private static final long serialVersionUID = 1L;
-    
+
     public V3D_Plane p;
 
 //    /**
@@ -206,8 +206,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         }
         return en;
     }
-    
-@Override
+
+    @Override
     public V3D_Point[] getPoints() {
         V3D_Point[] re = new V3D_Point[3];
         re[0] = p.getP();
@@ -215,7 +215,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         re[2] = p.getR();
         return re;
     }
-    
+
 //    /**
 //     * @param v The vector to apply.
 //     * @param oom The Order of Magnitude for the precision of the calculation.
@@ -332,79 +332,72 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         if (p.isIntersectedBy(l, oom)) {
             V3D_Geometry g = p.getIntersection(l, oom);
             if (g instanceof V3D_Point pt) {
-                /**
-                 * Logically, if the point is on the triangle than it
-                 * intersects. However, the point is only given accurately to
-                 * the given precision, so testing if the point is on the
-                 * triangle does not work. The option is to use the direction of
-                 * the line vector to define planes using each edge of the
-                 * triangle. We can then test that the point is on the same side
-                 * of these planes to know it is on the triangle. The commented
-                 * out line below seems logical, but does not work. It is left
-                 * in the code just in case.
-                 */
                 if (isIntersectedBy(pt, oom)) {
                     return true;
+                    /**
+                     * Logically, if the point of the line plane intersection is
+                     * on the triangle then it intersects. However, the point is
+                     * only given accurately to the given precision, so testing
+                     * if the point is on the triangle does not work. The
+                     * commented out else clause and this comment is in the code
+                     * on purpose.
+                     */
 //                } else {
 //                    return false; // This seems logical, but does not work for all cases in practice.
                 }
-                // Find the direction of the line towards the triangle and use:
-                // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-//                V3D_Point p = getP();
-//                V3D_Point q = getQ();
-//                V3D_Point r = getR();
-//                V3D_Point qp = new V3D_Point(e, q.offset, getQV().add(l.v, oom));
-//                V3D_Plane a = new V3D_Plane(p, q, qp);
-//                V3D_Point rp = new V3D_Point(e, r.offset, getRV().add(l.v, oom));
-//                V3D_Plane b = new V3D_Plane(q, r, rp);
-//  //              V3D_Point pp = new V3D_Point(e, p.offset, getPV().add(l.v, oom));
-//                V3D_Plane c = new V3D_Plane(r, p, rp);
-//                Math_BigRational apt = a.getSideOfPlane(pt);
-//                Math_BigRational bpt = b.getSideOfPlane(pt);
-//                Math_BigRational cpt = c.getSideOfPlane(pt);
-//                if (apt.compareTo(Math_BigRational.ZERO) == 1) {
-//                    if (bpt.compareTo(Math_BigRational.ZERO) == 1) {
-//                        if (cpt.compareTo(Math_BigRational.ZERO) == 1) {
-//                            return true;
-//                        }
-//                    }
-//                } else if (apt.compareTo(Math_BigRational.ZERO) == 0) {
-//                    if (bpt.compareTo(Math_BigRational.ZERO) == 0) {
-//                        if (cpt.compareTo(Math_BigRational.ZERO) == 0) {
-//                            return true;
-//                        }
-//                    }
-//                } else {
-//                    if (bpt.compareTo(Math_BigRational.ZERO) == -1) {
-//                        if (cpt.compareTo(Math_BigRational.ZERO) == -1) {
+                /**
+                 * An option is to use the direction of the line vector to
+                 * define planes for each edge of the triangle and test that the
+                 * point of intersection is on the same side of these planes to
+                 * the other point of the triangle in all cases. This option is
+                 * commented out as it is thought this is slower than the option
+                 * given below. Some timed tests should be done to measure which
+                 * is faster...
+                 */
+//                V3D_Point pp = p.getP();
+//                V3D_Point pq = p.getQ();
+//                V3D_Point pr = p.getR();
+//                V3D_Point qp = new V3D_Point(e, pq.offset, p.getQV().add(l.v, oom));
+//                V3D_Plane a = new V3D_Plane(pp, pq, qp);
+//                V3D_Point rp = new V3D_Point(e, pr.offset, p.getRV().add(l.v, oom));
+//                V3D_Plane b = new V3D_Plane(pq, pr, rp);
+//                V3D_Point ppt = new V3D_Point(e, p.offset, p.getPV().add(l.v, oom));
+//                V3D_Plane c = new V3D_Plane(pr, ppt, rp);
+//                if (a.isOnSameSide(pt, rp, oom)){
+//                    if (b.isOnSameSide(pt, pp, oom)) {
+//                        if (c.isOnSameSide(pt, pq, oom)) {
 //                            return true;
 //                        }
 //                    }
 //                }
 //                return false;
-                // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-                //Math_BigRational EPSILON = Math_BigRational.ONE.divide(1000000);
-                Math_BigRational EPSILON = Math_BigRational.ZERO;
+                /**
+                 * Another option is to use:
+                 * https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+                 * It is thought this is faster than the option commented out
+                 * above. Some timed tests should be done to measure which is
+                 * faster...
+                 */
                 V3D_Vector edge1 = p.getPQV();
                 V3D_Vector edge2 = p.getRPV().reverse();
                 V3D_Vector h = l.v.getCrossProduct(edge2, oom);
-                Math_BigRational f = Math_BigRational.ONE.divide(edge1.getDotProduct(h, oom));
+                Math_BigRational f = Math_BigRational.ONE.divide(
+                        edge1.getDotProduct(h, oom));
                 V3D_Vector s = l.p.subtract(p.getPV(), oom);
                 Math_BigRational u = f.multiply(s.getDotProduct(h, oom));
-                if (u.compareTo(Math_BigRational.ZERO) == -1 || u.compareTo(Math_BigRational.ONE) == 1) {
+                if (u.compareTo(Math_BigRational.ZERO) == -1
+                        || u.compareTo(Math_BigRational.ONE) == 1) {
                     return false;
                 }
                 V3D_Vector q = s.getCrossProduct(edge1, oom);
                 Math_BigRational v = f.multiply(l.v.getDotProduct(q, oom));
-                if (v.compareTo(Math_BigRational.ZERO) == -1 || u.add(v).compareTo(Math_BigRational.ONE) == 1) {
+                if (v.compareTo(Math_BigRational.ZERO) == -1
+                        || u.add(v).compareTo(Math_BigRational.ONE) == 1) {
                     return false;
                 }
-                Math_BigRational t = f.multiply(edge2.getDotProduct(q, oom));
-                if (t.compareTo(EPSILON) == 1) {
-                    return true;
-                } else {
-                    return false;
-                }
+                Math_BigRational t
+                        = f.multiply(edge2.getDotProduct(q, oom));
+                return t.compareTo(Math_BigRational.ZERO) == 1;
             } else {
                 if (p.getPQ().isIntersectedBy(l, oom)) {
                     return true;
@@ -412,13 +405,15 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                 if (p.getQR().isIntersectedBy(l, oom)) {
                     return true;
                 }
-//This test is not necessary.
-//                if (getRP().isIntersectedBy(l, oom)) {
-//                    return true;
-//                }
+                /**
+                 * The following statement is not necessary, but the commented
+                 * out code is left here for clarity.
+                 */
+                // if (getRP().isIntersectedBy(l, oom)) {
+                //      return true;
+                // }
             }
         }
-
         return false;
     }
 
@@ -426,7 +421,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
         if (getEnvelope().isIntersectedBy(l.getEnvelope())) {
             if (p.isIntersectedBy(l, oom)) {
-                V3D_FiniteGeometry g = p.getIntersection(l, oom);
+                V3D_FiniteGeometry g
+                        = p.getIntersection(l, oom);
                 if (g == null) {
                     return false;
                 } else {
@@ -449,7 +445,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @return {@code true} iff the geometry is intersected by {@code l}.
      */
     @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
+    public boolean isIntersectedBy(V3D_Triangle t, int oom
+    ) {
         if (getEnvelope().isIntersectedBy(t.getEnvelope())) {
             V3D_Plane plt = t.p;
             if (isIntersectedBy(plt, oom)) {
@@ -568,9 +565,9 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         if (g == null) {
             return null;
         }
-//        if (!getEnvelope().isIntersectedBy(l, oom)) {
-//            return null;
-//        }
+        if (!getEnvelope().isIntersectedBy(l, oom)) {
+            return null;
+        }
 //        V3D_Geometry enil = getEnvelope(oom).getIntersection(l, oom);
 //        if (enil == null) {
 //            return null;
@@ -586,7 +583,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                 if (lrpi == null) {
                     // g can only be a point
                     if (isIntersectedBy(l, oom)) {
-                            return (V3D_Point) g;
+                        return (V3D_Point) g;
                     }
                     return null;
 //                    if (g instanceof V3D_Point gp) {
@@ -1082,7 +1079,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         p.rotate(axisOfRotation, theta);
         en = null;
     }
-    
+
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "(" + p.toString() + ")";
@@ -1505,6 +1502,9 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
             }
         }
         V3D_Point poi = p.getPointOfProjectedIntersection(pt, oom);
+        if (poi == null) {
+            return pt.getDistanceSquared(p, oom);
+        }
         Math_BigRational poid2 = poi.getDistanceSquared(pt2, oom);
         if (getEnvelope().isIntersectedBy(poi, oom)) {
             if (isIntersectedBy(poi, oom)) {
@@ -1649,11 +1649,10 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
-    
+
     /**
      * Translate (move relative to the origin).
-     * 
+     *
      * @param v The vector to apply.
      * @param oom The Order of Magnitude for the precision.
      */

@@ -190,12 +190,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             } else {
                 this.points.add(yminp);
                 this.points.add(ymaxp);
-                
-                try {
                 getConvexHull0(pts, yminp, ymaxp, n, 1);
-                } catch (Exception e) {
-                    getConvexHull0(pts, yminp, ymaxp, n, 1);
-                }
             }
         } else {
             V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp);
@@ -227,7 +222,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             }
         }
         V3D_Point pt = this.points.get(0);
-        for (int i = 1; i < this.points.size() - 2; i++) {
+        for (int i = 1; i < this.points.size() - 1; i++) {
             V3D_Point qt = this.points.get(i);
             V3D_Point rt = this.points.get(i + 1);
             triangles.add(new V3D_Triangle(pt, qt, rt));
@@ -469,7 +464,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             V3D_FiniteGeometry i = t2.getIntersection(t, oom);
             ts.addAll(Arrays.asList(i.getPoints()));
         }
-        if (ts.size() == 0) {
+        if (ts.isEmpty()) {
             return null;
         } else {
             return new V3D_ConvexHullCoplanar(t.p.getN(oom), ts.toArray(V3D_Point[]::new)).simplify();
@@ -692,25 +687,25 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 Math_BigRational ds = pts.get(i).getDistanceSquared(p, e.oom);
                 System.out.println(pt.toString() + " " + t);
                 switch (t.compareTo(Math_BigRational.ZERO)) {
-                    case 1:
+                    case 1 -> {
                         if (ds.compareTo(maxads) == 1) {
                             maxads = ds;
                             maxaIndex = a.size();
                         }
                         a.add(pt);
-                        System.out.println("Above the plane.");
-                        break;
-                    case -1:
+                        //System.out.println("Above the plane.");
+                    }
+                    case -1 -> {
                         if (ds.compareTo(maxbds) == 1) {
                             maxbds = ds;
                             maxbIndex = b.size();
                         }
                         b.add(pt);
-                        System.out.println("Below the plane.");
-                        break;
-                    default:
-                        System.out.println("On the plane.");
-                        break;
+                        //System.out.println("Below the plane.");
+                    }
+                    default -> {
+                        //System.out.println("On the plane.");
+                    }
                 }
             }
         }
