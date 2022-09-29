@@ -685,7 +685,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 V3D_Point pt = pts.get(i);
                 Math_BigRational t = p.getPV().subtract(pt.rel, e.oom).getDotProduct(n, e.oom);
                 Math_BigRational ds = pts.get(i).getDistanceSquared(p, e.oom);
-                System.out.println(pt.toString() + " " + t);
+                //System.out.println(pt.toString() + " " + t);
                 switch (t.compareTo(Math_BigRational.ZERO)) {
                     case 1 -> {
                         if (ds.compareTo(maxads) == 1) {
@@ -733,4 +733,5 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         return false;
     }
 
+    
 }

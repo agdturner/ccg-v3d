@@ -300,8 +300,8 @@ public class V3D_Plane extends V3D_Geometry
      * @param check Ignored.
      * @throws RuntimeException if p, q and r are coincident or collinear.
      */
-    public V3D_Plane(V3D_Environment e, V3D_Vector offset, V3D_Vector p, V3D_Vector q,
-            V3D_Vector r, boolean check) {
+    public V3D_Plane(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
+            V3D_Vector q, V3D_Vector r, boolean check) {
         super(e, offset);
         this.p = p;
         this.q = q;
@@ -1040,11 +1040,11 @@ public class V3D_Plane extends V3D_Geometry
                     new V3D_Line(pl.getP(), pl.getQ()), oome);
         }
         //return new V3D_Line(pi, v, oom);
-        
+
         if (pi == null) { // Hack.
             return null;
         }
-        
+
         return new V3D_Line(pi.offset, pi.getVector(oome), v, e);
     }
 
@@ -1683,7 +1683,7 @@ public class V3D_Plane extends V3D_Geometry
             this.offset = offset;
         }
     }
-    
+
     /**
      * Move the plane.
      *
@@ -1874,7 +1874,7 @@ public class V3D_Plane extends V3D_Geometry
             return avd == bvd;
         }
     }
-    
+
     public Math_BigRational getSideOfPlane(V3D_Point pt) {
         V3D_Vector v = getPQV().subtract(pt.rel, e.oom);
         if (v.isZeroVector()) {

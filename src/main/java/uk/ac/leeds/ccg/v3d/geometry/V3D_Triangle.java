@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
@@ -319,6 +320,27 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //                return true;
 //            }
 //        }
+        return false;
+    }
+
+    /**
+     * @param p The point to check if it is in alignment.
+     * @param oom The order of magnitude for the precision.
+     * @return {
+     * @ceode true} iff p is aligned with this.
+     */
+    public boolean isAligned(V3D_Point p, int oom) {
+        V3D_Vector n = this.p.getN(oom);
+        V3D_Plane lp = new V3D_Plane(e, offset, this.p.p, this.p.q, this.p.p.add(n, oom), false);
+        if (lp.isOnSameSide(p, this.p.getR(), oom)) {
+            V3D_Plane lq = new V3D_Plane(e, offset, this.p.q, this.p.r, this.p.q.add(n, oom), false);
+            if (lq.isOnSameSide(p, this.p.getP(), oom)) {
+                V3D_Plane lr = new V3D_Plane(e, offset, this.p.r, this.p.p, this.p.r.add(n, oom), false);
+                if (lr.isOnSameSide(p, this.p.getQ(), oom)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -783,8 +805,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
     /**
      * Computes and returns the intersection between {@code this} and {@code t}.
-     * The intersection could be: null, a point, a line segment, a triangle, a
-     * quadrangle, a convex pentagon, or a convex hexagon.
+     * The intersection could be: null, a point, a line segment, a triangle, or
+     * a V3D_ConvexHullCoplanar (with 4, 5, or 6 sides).
      *
      * @param t The triangle to test for intersection with this.
      * @param oom The Order of Magnitude for the precision.
@@ -1132,7 +1154,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * Used in intersecting two triangles to give the overall intersection. If
      * l1, l2 and l3 are equal then the line segment is returned. If there are 3
      * unique points then a triangle is returned. If there are 4 or more unique
-     * points, then contiguous coplanar triangles are returned.
+     * points, then a V3D_ConvexHullCoplanar is returned.
      *
      *
      * @param l1 A line segment.
@@ -1163,182 +1185,233 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         } else if (n == 3) {
             Iterator<V3D_Point> ite = points.iterator();
             return getGeometry(ite.next(), ite.next(), ite.next());
-        } else if (n == 4) {
-            V3D_Triangle t1;
-            V3D_Triangle t2;
-            // Case: quadrangle (closed polygon with 4 sides)
-            V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, oom);
-            V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, oom);
-            V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, oom);
-            if (illl2 == null) {
-                V3D_Point op1 = l1.l.getOtherPoint(illl3);
-                V3D_Point op2 = l2.l.getOtherPoint(il2l3);
-                t1 = new V3D_Triangle(op1, op2, l3p);
-                t2 = new V3D_Triangle(l3p, l3q, op2);
-            } else {
-                V3D_Point op1 = l1.l.getOtherPoint(illl2);
-                V3D_Point op3;
-                if (illl3 == null) {
-                    op3 = l3.l.getOtherPoint(il2l3);
-                    t1 = new V3D_Triangle(op1, op3, illl2);
-                    t2 = new V3D_Triangle(l3p, l3q, illl2);
-                } else {
-                    op3 = l3.l.getOtherPoint(illl3);
-                    t1 = new V3D_Triangle(op1, op3, illl2);
-                    t2 = new V3D_Triangle(l3p, l3q, illl2);
-                }
-            }
-            return new V3D_Polygon(t1, t2);
-            //throw new UnsupportedOperationException("Not supported yet.");
-        } else if (n == 5) {
-            V3D_Triangle t1;
-            V3D_Triangle t2;
-            V3D_Triangle t3;
-            // Case: convex pentagon (closed polygon with 5 sides)
-            V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, oom);
-            V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, oom);
-            V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, oom);
-            // Find the two lines that intersect
-            if (illl2 == null) {
-                if (illl3 == null) {
-                    // l2 and l3 intersect
-                    V3D_Point op1 = l1.l.getOtherPoint(illl3);
-                    V3D_Point op3 = l3.l.getOtherPoint(illl3);
-                    t1 = new V3D_Triangle(op1, op3, illl3);
-                    t2 = new V3D_Triangle(op1, op3, l2p); // This might be twisted?
-                    t3 = new V3D_Triangle(op3, l2p, l2q);
-                } else {
-                    // l2 and l3 intersect
-                    V3D_Point op2 = l2.l.getOtherPoint(il2l3);
-                    V3D_Point op3 = l3.l.getOtherPoint(il2l3);
-                    t1 = new V3D_Triangle(op2, op3, il2l3);
-                    t2 = new V3D_Triangle(op2, op3, l1p); // This might be twisted?
-                    t3 = new V3D_Triangle(op3, l1p, l1q);
-                }
-            } else {
-                // l1 and l2 intersect
-                V3D_Point op1 = l1.l.getOtherPoint(illl2);
-                V3D_Point op2 = l2.l.getOtherPoint(illl2);
-                t1 = new V3D_Triangle(op1, op2, illl2);
-                t2 = new V3D_Triangle(op1, op2, l3p); // This might be twisted?
-                t3 = new V3D_Triangle(op2, l3p, l3q);
-            }
-            return new V3D_Polygon(t1, t2, t3);
         } else {
-            // n = 6
-            V3D_Triangle t1;
-            V3D_Triangle t2;
-            V3D_Triangle t3;
-            V3D_Triangle t4;
-            /**
-             * Find the two points that are the minimum distance between any two
-             * lines. This will be an extra side to the triangle.
-             */
-            // dl1l2
-            Math_BigRational dl1pl2p = l1p.getDistanceSquared(l2p, oom);
-            Math_BigRational dl1pl2q = l1p.getDistanceSquared(l2q, oom);
-            Math_BigRational dl1ql2p = l1q.getDistanceSquared(l2p, oom);
-            Math_BigRational dl1ql2q = l1q.getDistanceSquared(l2q, oom);
-            // dl1l3
-            Math_BigRational dl1pl3p = l1p.getDistanceSquared(l3p, oom);
-            Math_BigRational dl1pl3q = l1p.getDistanceSquared(l3q, oom);
-            Math_BigRational dl1ql3p = l1q.getDistanceSquared(l3p, oom);
-            Math_BigRational dl1ql3q = l1q.getDistanceSquared(l3q, oom);
-//            // dl2l3
-//            Math_BigRational dl2pl3p = l2p.getDistanceSquared(l3p, oom);
-//            Math_BigRational dl2pl3q = l2p.getDistanceSquared(l3q, oom);
-//            Math_BigRational dl2ql3p = l2q.getDistanceSquared(l3p, oom);
-//            Math_BigRational dl2ql3q = l2q.getDistanceSquared(l3q, oom);
-            if (dl1pl2p.compareTo(dl1pl2q) == -1) {
-                if (dl1pl2p.compareTo(dl1ql2q) == -1) {
-                    t1 = new V3D_Triangle(l1p, l1q, l2p);
-                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
-                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
-                            t3 = new V3D_Triangle(l3q, l2p, l1q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        } else {
-                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-                            t4 = new V3D_Triangle(l3p, l2p, l1q);
-                        }
-                    } else {
-                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
-                            t3 = new V3D_Triangle(l3q, l2p, l1q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        } else {
-                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        }
-                    }
-                } else {
-                    t1 = new V3D_Triangle(l1p, l1q, l2p);
-                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
-                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
-                            t3 = new V3D_Triangle(l1p, l2p, l3q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        } else {
-                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        }
-                    } else {
-                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
-                            t3 = new V3D_Triangle(l3q, l2p, l1q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        } else {
-                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        }
-                    }
-                }
-            } else {
-                if (dl1pl2p.compareTo(dl1ql2q) == -1) {
-                    t1 = new V3D_Triangle(l1p, l1q, l2p);
-                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
-                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
-                            t3 = new V3D_Triangle(l3q, l2p, l1q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        } else {
-                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-                            t4 = new V3D_Triangle(l3p, l2p, l1q);
-                        }
-                    } else {
-                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
-                            t3 = new V3D_Triangle(l3q, l2p, l1q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        } else {
-                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        }
-                    }
-                } else {
-                    t1 = new V3D_Triangle(l1p, l1q, l2q);
-                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
-                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
-                            t3 = new V3D_Triangle(l1p, l2p, l3q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        } else {
-                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        }
-                    } else {
-                        t2 = new V3D_Triangle(l3p, l2p, l2q);
-                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
-                            t3 = new V3D_Triangle(l3q, l2p, l1q);
-                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-                        } else {
-                            t3 = new V3D_Triangle(l3p, l3q, l1q);
-                            t4 = new V3D_Triangle(l3p, l2p, l1q);
-                        }
-                    }
-                }
+            V3D_Point[] pts = new V3D_Point[points.size()];
+            int i = 0;
+            for (var p : points) {
+                pts[i] = p;
+                i++;
             }
-            return new V3D_Polygon(t1, t2, t3, t4);
+            V3D_Plane pl = new V3D_Plane(pts[0], pts[1], pts[2]);
+            return new V3D_ConvexHullCoplanar(pl.getN(oom), pts);
+        }
+//       // This way returned polygons.
+//       } else if (n == 4) {
+//            V3D_Triangle t1;
+//            V3D_Triangle t2;
+//            // Case: quadrangle (closed polygon with 4 sides)
+//            V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, oom);
+//            V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, oom);
+//            V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, oom);
+//            if (illl2 == null) {
+//                V3D_Point op1 = l1.l.getOtherPoint(illl3);
+//                V3D_Point op2 = l2.l.getOtherPoint(il2l3);
+//                t1 = new V3D_Triangle(op1, op2, l3p);
+//                t2 = new V3D_Triangle(l3p, l3q, op2);
+//            } else {
+//                V3D_Point op1 = l1.l.getOtherPoint(illl2);
+//                V3D_Point op3;
+//                if (illl3 == null) {
+//                    op3 = l3.l.getOtherPoint(il2l3);
+//                    t1 = new V3D_Triangle(op1, op3, illl2);
+//                    t2 = new V3D_Triangle(l3p, l3q, illl2);
+//                } else {
+//                    op3 = l3.l.getOtherPoint(illl3);
+//                    t1 = new V3D_Triangle(op1, op3, illl2);
+//                    t2 = new V3D_Triangle(l3p, l3q, illl2);
+//                }
+//            }
+//            return new V3D_Polygon(t1, t2); // 
+//            //throw new UnsupportedOperationException("Not supported yet.");
+//        } else if (n == 5) {
+//            V3D_Triangle t1;
+//            V3D_Triangle t2;
+//            V3D_Triangle t3;
+//            // Case: convex pentagon (closed polygon with 5 sides)
+//            V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, oom);
+//            V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, oom);
+//            V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, oom);
+//            // Find the two lines that intersect
+//            if (illl2 == null) {
+//                if (illl3 == null) {
+//                    // l2 and l3 intersect
+//                    V3D_Point op1 = l1.l.getOtherPoint(illl3);
+//                    V3D_Point op3 = l3.l.getOtherPoint(illl3);
+//                    t1 = new V3D_Triangle(op1, op3, illl3);
+//                    t2 = new V3D_Triangle(op1, op3, l2p); // This might be twisted?
+//                    t3 = new V3D_Triangle(op3, l2p, l2q);
+//                } else {
+//                    // l2 and l3 intersect
+//                    V3D_Point op2 = l2.l.getOtherPoint(il2l3);
+//                    V3D_Point op3 = l3.l.getOtherPoint(il2l3);
+//                    t1 = new V3D_Triangle(op2, op3, il2l3);
+//                    t2 = new V3D_Triangle(op2, op3, l1p); // This might be twisted?
+//                    t3 = new V3D_Triangle(op3, l1p, l1q);
+//                }
+//            } else {
+//                // l1 and l2 intersect
+//                V3D_Point op1 = l1.l.getOtherPoint(illl2);
+//                V3D_Point op2 = l2.l.getOtherPoint(illl2);
+//                t1 = new V3D_Triangle(op1, op2, illl2);
+//                t2 = new V3D_Triangle(op1, op2, l3p); // This might be twisted?
+//                t3 = new V3D_Triangle(op2, l3p, l3q);
+//            }
+//            return new V3D_Polygon(t1, t2, t3);
+//        } else {
+//            // n = 6
+//            V3D_Triangle t1;
+//            V3D_Triangle t2;
+//            V3D_Triangle t3;
+//            V3D_Triangle t4;
+//            /**
+//             * Find the two points that are the minimum distance between any two
+//             * lines. This will be an extra side to the triangle.
+//             */
+//            // dl1l2
+//            Math_BigRational dl1pl2p = l1p.getDistanceSquared(l2p, oom);
+//            Math_BigRational dl1pl2q = l1p.getDistanceSquared(l2q, oom);
+//            Math_BigRational dl1ql2p = l1q.getDistanceSquared(l2p, oom);
+//            Math_BigRational dl1ql2q = l1q.getDistanceSquared(l2q, oom);
+//            // dl1l3
+//            Math_BigRational dl1pl3p = l1p.getDistanceSquared(l3p, oom);
+//            Math_BigRational dl1pl3q = l1p.getDistanceSquared(l3q, oom);
+//            Math_BigRational dl1ql3p = l1q.getDistanceSquared(l3p, oom);
+//            Math_BigRational dl1ql3q = l1q.getDistanceSquared(l3q, oom);
+////            // dl2l3
+////            Math_BigRational dl2pl3p = l2p.getDistanceSquared(l3p, oom);
+////            Math_BigRational dl2pl3q = l2p.getDistanceSquared(l3q, oom);
+////            Math_BigRational dl2ql3p = l2q.getDistanceSquared(l3p, oom);
+////            Math_BigRational dl2ql3q = l2q.getDistanceSquared(l3q, oom);
+//            if (dl1pl2p.compareTo(dl1pl2q) == -1) {
+//                if (dl1pl2p.compareTo(dl1ql2q) == -1) {
+//                    t1 = new V3D_Triangle(l1p, l1q, l2p);
+//                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
+//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+//                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
+//                            t3 = new V3D_Triangle(l3q, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        } else {
+//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3p, l2p, l1q);
+//                        }
+//                    } else {
+//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+//                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
+//                            t3 = new V3D_Triangle(l3q, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        } else {
+//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        }
+//                    }
+//                } else {
+//                    t1 = new V3D_Triangle(l1p, l1q, l2p);
+//                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
+//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+//                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
+//                            t3 = new V3D_Triangle(l1p, l2p, l3q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        } else {
+//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        }
+//                    } else {
+//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+//                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
+//                            t3 = new V3D_Triangle(l3q, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        } else {
+//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        }
+//                    }
+//                }
+//            } else {
+//                if (dl1pl2p.compareTo(dl1ql2q) == -1) {
+//                    t1 = new V3D_Triangle(l1p, l1q, l2p);
+//                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
+//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+//                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
+//                            t3 = new V3D_Triangle(l3q, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        } else {
+//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3p, l2p, l1q);
+//                        }
+//                    } else {
+//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+//                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
+//                            t3 = new V3D_Triangle(l3q, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        } else {
+//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        }
+//                    }
+//                } else {
+//                    t1 = new V3D_Triangle(l1p, l1q, l2q);
+//                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
+//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
+//                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
+//                            t3 = new V3D_Triangle(l1p, l2p, l3q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        } else {
+//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        }
+//                    } else {
+//                        t2 = new V3D_Triangle(l3p, l2p, l2q);
+//                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
+//                            t3 = new V3D_Triangle(l3q, l2p, l1q);
+//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
+//                        } else {
+//                            t3 = new V3D_Triangle(l3p, l3q, l1q);
+//                            t4 = new V3D_Triangle(l3p, l2p, l1q);
+//                        }
+//                    }
+//                }
+//            }
+//            return new V3D_Polygon(t1, t2, t3, t4);
+//        }
+    }
+
+    /**
+     * Used in intersecting a triangle and a tetrahedron. If there are 3 unique
+     * points then a triangle is returned. If there are 4 points, then a
+     * V3D_ConvexHullCoplanar is returned.
+     *
+     * @param l1 A line segment.
+     * @param l2 A line segment.
+     * @param oom The Order of Magnitude for the precision.
+     * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or
+     * {@code new V3D_Triangle(p, q, r)}
+     */
+    protected static V3D_FiniteGeometry getGeometry(V3D_LineSegment l1,
+            V3D_LineSegment l2, int oom) {
+        V3D_Point l1p = l1.getP(oom);
+        V3D_Point l1q = l1.getQ(oom);
+        V3D_Point l2p = l2.getP(oom);
+        V3D_Point l2q = l2.getQ(oom);
+        HashSet<V3D_Point> points = new HashSet<>();
+        points.add(l1p);
+        points.add(l1q);
+        points.add(l2p);
+        points.add(l2q);
+        int n = points.size();
+        if (n == 2) {
+            return l1;
+        } else if (n == 3) {
+            Iterator<V3D_Point> ite = points.iterator();
+            return getGeometry(ite.next(), ite.next(), ite.next());
+        } else {
+            V3D_Point[] pts = new V3D_Point[points.size()];
+            int i = 0;
+            for (var p : points) {
+                pts[i] = p;
+                i++;
+            }
+            V3D_Plane pl = new V3D_Plane(pts[0], pts[1], pts[2]);
+            return new V3D_ConvexHullCoplanar(pl.getN(oom), pts);
         }
     }
 
@@ -1427,11 +1500,11 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public boolean isIntersectedBy(V3D_Plane pl, int oom) {
         if (p.isIntersectedBy(pl, oom)) {
             V3D_Geometry g = p.getIntersection(pl, oom);
-            
+
             if (g == null) { // Hack.
                 return false;
             }
-            
+
             if (g instanceof V3D_Line l) {
                 return isIntersectedBy(l, oom);
             } else {
@@ -1479,11 +1552,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
-        V3D_FiniteGeometry pi = p.getIntersection(t, oom);
-        if (pi != null) {
-
-        }
-        return pi;
+        return t.getIntersection(this, oom);
     }
 
     @Override
