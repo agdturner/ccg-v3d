@@ -874,11 +874,10 @@ public class V3D_Plane extends V3D_Geometry
      */
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom) {
-        V3D_Geometry g = getIntersection(new V3D_Line(l), oom);
+        V3D_Geometry g = getIntersection(l.l, oom);
         if (g == null) {
             return null;
-        }
-        if (g instanceof V3D_Line) {
+        } else if (g instanceof V3D_Line) {
             return l;
         } else {
             V3D_Point pt = (V3D_Point) g;

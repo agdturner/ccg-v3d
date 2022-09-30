@@ -886,7 +886,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     /**
      * The intersection will be null, a point, a line segment, a triangle or a
-     * quadrilateral.
+     * quadrilateral. It should be that any points of intersection are within 
+     * this.
      */
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom) {
@@ -1148,7 +1149,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                 /**
                  * If all the points of t are within the planes of it, then
                  * return t. If any of lines of the t intersect it, then further
-                 * intersections are needed to derive the final shape. Otherwise return it.
+                 * intersections are needed to derive the final shape. Otherwise
+                 * return it.
                  */
                 V3D_Point tp = t.p.getP();
                 V3D_Point tq = t.p.getQ();
@@ -1163,6 +1165,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                 V3D_Plane itqpl = new V3D_Plane(itq, itr, itqp);
                 V3D_Point itrp = new V3D_Point(e, itr.offset.add(itn, oom), itr.rel);
                 V3D_Plane itrpl = new V3D_Plane(itr, itp, itrp);
+                // There are 512 cases to deal with.
                 if (itppl.isOnSameSide(tp, itr, oom)) {
                     if (itppl.isOnSameSide(tq, itr, oom)) {
                         if (itppl.isOnSameSide(tr, itr, oom)) {
@@ -1423,41 +1426,51 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         }
     }
 
+    /**
+     * https://stackoverflow.com/questions/24097540/testing-tetrahedron-triangle-intersection
+     *
+     * @param t Triangle
+     * @param oom The order of magnitude for the precision.
+     * @return {@code true} iff this and triangle intersect.
+     */
     @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom) {
         if (isIntersectedBy(t.p, oom)) {
+            // If any of the points of the triangle are in this return true.
             if (isIntersectedBy(t.p.getP(), oom) || isIntersectedBy(t.p.getQ(), oom)
                     || isIntersectedBy(t.p.getR(), oom)) {
                 return true;
             } else {
+                /**
+                 * If any of the faces of this are intersected by the triangle
+                 * return true.
+                 */
                 if (getPqr().isIntersectedBy(t, oom)) {
                     return true;
+                } else if (getPsq().isIntersectedBy(t, oom)) {
+                    return true;
+                } else if (getQsr().isIntersectedBy(t, oom)) {
+                    return true;
+                } else if (getSpr().isIntersectedBy(t, oom)) {
+                    return true;
                 } else {
-                    if (getPsq().isIntersectedBy(t, oom)) {
-                        return true;
+                    /**
+                     * The points of t may be around the outside of this, but
+                     * none of the edges intersect. The intersection of the
+                     * plane of t and this can give a point, line segment or a
+                     * triangle. The cases of point and line segment are already 
+                     * taken care of by the face intersection. The remaining 
+                     * case is to deal with the triangle.
+                     */
+                    V3D_FiniteGeometry g = getIntersection(t.p, oom);
+                    if (g instanceof V3D_Point gp) {
+                        return t.isAligned(gp, oom);
+                        //return t.isIntersectedBy(gp, oom);
                     } else {
-                        if (getQsr().isIntersectedBy(t, oom)) {
-                            return true;
-                        } else {
-                            if (getSpr().isIntersectedBy(t, oom)) {
-                                return true;
-                            } else {
-                                /**
-                                 * The points of t are around the outside of
-                                 * this, but none of the edges intersect. The
-                                 * intersection of the plane of t and this can
-                                 * give a point or a triangle. If that point or
-                                 * triangle intersects t, then t intersects this
-                                 * otherwise it does not.
-                                 */
-                                V3D_FiniteGeometry g = getIntersection(t.p, oom);
-                                if (g instanceof V3D_Point gp) {
-                                    return t.isIntersectedBy(gp, oom);
-                                } else {
-                                    return t.isIntersectedBy((V3D_Triangle) g, oom);
-                                }
-                            }
-                        }
+                        /**
+                         * This might not work as 
+                         */
+                        return t.isIntersectedBy((V3D_Triangle) g, oom);
                     }
                 }
             }
@@ -1466,10 +1479,18 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         }
     }
 
+    /**
+     * To check if this and y intersect.
+     *
+     * @param t A tetrahedron
+     * @param oom The order of magnitude for the precision.
+     * @return {@code true} iff this and t intersect.
+     */
     @Override
     public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
         if (getEnvelope().isIntersectedBy(t.getEnvelope())) {
-            // Check points
+            // 1. Check points
+            // If any point of t are in this return true.
             if (isIntersectedBy(t.getP(), oom)) {
                 return true;
             }
@@ -1482,6 +1503,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
             if (isIntersectedBy(t.getS(), oom)) {
                 return true;
             }
+            // If any point of this are in t return true.
             if (t.isIntersectedBy(getP(), oom)) {
                 return true;
             }
@@ -1494,7 +1516,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
             if (t.isIntersectedBy(getS(), oom)) {
                 return true;
             }
-            // Check faces
+            // 2. Check faces
+            // If this intersects any face of t return true.
             if (isIntersectedBy(t.getPqr(), oom)) {
                 return true;
             }
@@ -1507,6 +1530,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
             if (isIntersectedBy(t.getSpr(), oom)) {
                 return true;
             }
+            // If t intersects any face of this return true.
             if (t.isIntersectedBy(getPqr(), oom)) {
                 return true;
             }

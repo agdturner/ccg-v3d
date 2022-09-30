@@ -65,48 +65,6 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     public static final V3D_Point ORIGIN = new V3D_Point(new V3D_Environment(), 0, 0, 0);
 
     /**
-     * @param points The points to test if they are coincident.
-     * @return {@code true} iff all the points are coincident.
-     */
-    public static boolean isCoincident(V3D_Vector... points) {
-        V3D_Vector p0 = points[0];
-        for (V3D_Vector p1 : points) {
-            if (!p1.equals(p0)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @param points The points to test if they are coincident.
-     * @return {@code true} iff all the points are coincident.
-     */
-    public static boolean isCoincident(V3D_Point... points) {
-        V3D_Point p0 = points[0];
-        for (V3D_Point p1 : points) {
-            if (!p1.equals(p0)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @param points The points to test if they are coincident.
-     * @return {@code true} iff all the points are coincident.
-     */
-    public static boolean isCoincident(V3D_Envelope.Point... points) {
-        V3D_Envelope.Point p0 = points[0];
-        for (V3D_Envelope.Point p1 : points) {
-            if (!p1.equals(p0)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * The position relative to the {@link #offset}. Taken together with
      * {@link #offset}, this gives the point location.
      */
@@ -759,5 +717,48 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     @Override
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
         return t.getDistanceSquared(this, oom);
+    }
+    
+    
+    /**
+     * @param points The points to test if they are coincident.
+     * @return {@code true} iff all the points are coincident.
+     */
+    public static boolean isCoincident(V3D_Vector... points) {
+        V3D_Vector p0 = points[0];
+        for (V3D_Vector p1 : points) {
+            if (!p1.equals(p0)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param points The points to test if they are coincident.
+     * @return {@code true} iff all the points are coincident.
+     */
+    public static boolean isCoincident(V3D_Point... points) {
+        V3D_Point p0 = points[0];
+        for (V3D_Point p1 : points) {
+            if (!p1.equals(p0)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param points The points to test if they are coincident.
+     * @return {@code true} iff all the points are coincident.
+     */
+    public static boolean isCoincident(V3D_Envelope.Point... points) {
+        V3D_Envelope.Point p0 = points[0];
+        for (V3D_Envelope.Point p1 : points) {
+            if (!p1.equals(p0)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

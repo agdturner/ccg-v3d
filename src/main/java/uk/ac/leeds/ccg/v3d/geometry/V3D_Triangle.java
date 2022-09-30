@@ -324,18 +324,26 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     /**
+     * A point aligns with this if the planes given by each triangle edge given 
+     * by the normal find the point to the same side as the other point of the 
+     * triangle. The normal may be imprecisely calculated, so the calculated 
+     * points on the planes and the definition of the planes may be imprecise. 
+     * Greater precision can be gained using a smaller oom.
+     * 
      * @param p The point to check if it is in alignment.
      * @param oom The order of magnitude for the precision.
-     * @return {
-     * @ceode true} iff p is aligned with this.
+     * @return {@code true} iff p is aligned with this.
      */
     public boolean isAligned(V3D_Point p, int oom) {
         V3D_Vector n = this.p.getN(oom);
-        V3D_Plane lp = new V3D_Plane(e, offset, this.p.p, this.p.q, this.p.p.add(n, oom), false);
+        V3D_Plane lp = new V3D_Plane(e, offset, this.p.p, this.p.q, 
+                this.p.p.add(n, oom), false);
         if (lp.isOnSameSide(p, this.p.getR(), oom)) {
-            V3D_Plane lq = new V3D_Plane(e, offset, this.p.q, this.p.r, this.p.q.add(n, oom), false);
+            V3D_Plane lq = new V3D_Plane(e, offset, this.p.q, this.p.r, 
+                    this.p.q.add(n, oom), false);
             if (lq.isOnSameSide(p, this.p.getP(), oom)) {
-                V3D_Plane lr = new V3D_Plane(e, offset, this.p.r, this.p.p, this.p.r.add(n, oom), false);
+                V3D_Plane lr = new V3D_Plane(e, offset, this.p.r, this.p.p, 
+                        this.p.r.add(n, oom), false);
                 if (lr.isOnSameSide(p, this.p.getQ(), oom)) {
                     return true;
                 }
@@ -754,8 +762,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         V3D_Geometry pi = pl.getIntersection(p, oom);
         if (pi == null) {
             return null;
-        }
-        if (pi instanceof V3D_Plane) {
+        } else if (pi instanceof V3D_Plane) {
             return this;
         } else {
             // (pi instanceof V3D_Line)
