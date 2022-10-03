@@ -16,10 +16,10 @@
 package uk.ac.leeds.ccg.v3d.geometry.light;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
  * 3D representation of a moveable point. The "*" denotes a point in 3D in the
@@ -221,11 +221,11 @@ public class V3D_VPoint extends V3D_VGeometry {
      * @param p A point.
      * @return The distance from {@code p} to this.
      */
-    public Math_BigRationalSqrt getDistance(int oom, V3D_VPoint p) {
+    public Math_BigRationalSqrt getDistance(int oom, RoundingMode rm, V3D_VPoint p) {
         if (this.equals(p)) {
             return Math_BigRationalSqrt.ZERO;
         }
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom), -1);
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm);
     }
 
     /**
@@ -235,9 +235,9 @@ public class V3D_VPoint extends V3D_VGeometry {
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance from {@code p} to this.
      */
-    public BigDecimal getDistance(V3D_VPoint p, int oom) {
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom), oom)
-                .getSqrt(oom).toBigDecimal(oom);
+    public BigDecimal getDistance(V3D_VPoint p, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
+                .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
     /**
@@ -247,7 +247,7 @@ public class V3D_VPoint extends V3D_VGeometry {
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance squared from {@code p} to this.
      */
-    public Math_BigRational getDistanceSquared(V3D_VPoint p, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_VPoint p, int oom, RoundingMode rm) {
         Math_BigRational dx = this.getX().subtract(p.getX());
         Math_BigRational dy = this.getY().subtract(p.getY());
         Math_BigRational dz = this.getZ().subtract(p.getZ());

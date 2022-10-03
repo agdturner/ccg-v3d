@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VPoint;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
@@ -215,7 +216,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Point v3D_Point) {
-            return equals(v3D_Point);
+            return equals(v3D_Point, e.oom, e.rm);
         }
         return false;
     }
@@ -230,15 +231,18 @@ public class V3D_Point extends V3D_FiniteGeometry implements
 
     /**
      * Two points are equal if they are at the same location defined by each
-     * points relative start location and translation vector.
+     * points relative start location and translation vector at the given oom 
+     * and rm precision.
      *
      * @param p The point to test if it is the same as {@code this}.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff {@code p} is the same as {@code this}.
      */
-    public boolean equals(V3D_Point p) {
-        if (this.getX(e.oom).compareTo(p.getX(e.oom)) == 0) {
-            if (this.getY(e.oom).compareTo(p.getY(e.oom)) == 0) {
-                if (this.getZ(e.oom).compareTo(p.getZ(e.oom)) == 0) {
+    public boolean equals(V3D_Point p, int oom, RoundingMode rm) {
+        if (this.getX(oom, rm).compareTo(p.getX(oom, rm)) == 0) {
+            if (this.getY(oom, rm).compareTo(p.getY(oom, rm)) == 0) {
+                if (this.getZ(oom, rm).compareTo(p.getZ(oom, rm)) == 0) {
                     return true;
                 }
             }
@@ -257,32 +261,57 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @param oom The Order of Magnitude for the precision.
      * @return The vector - {@code rel.add(offset, oom)}.
      */
-    public V3D_Vector getVector(int oom) {
-        return rel.add(offset, oom);
+    public V3D_Vector getVector(int oom, RoundingMode rm) {
+        return rel.add(offset, oom, rm);
     }
 
     /**
-     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @return The x component of {@link #rel} with {@link #offset} applied. The
+     * Order of Magnitude for the precision.
+     */
+    public Math_BigRational getX() {
+        return getX(e.oom, e.rm);
+    }
+    
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The x component of {@link #rel} with {@link #offset} applied.
      */
-    public Math_BigRational getX(int oom) {
-        return rel.getDX(oom).add(offset.getDX(oom));
+    public Math_BigRational getX(int oom, RoundingMode rm) {
+        return rel.getDX(oom, rm).add(offset.getDX(oom, rm));
     }
 
     /**
-     * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @return The y component of {@link #rel} with {@link #offset} applied.
      */
-    public Math_BigRational getY(int oom) {
-        return rel.getDY(oom).add(offset.getDY(oom));
+    public Math_BigRational getY() {
+        return getY(e.oom, e.rm);
+    }
+    
+    /**
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The y component of {@link #rel} with {@link #offset} applied.
+     */
+    public Math_BigRational getY(int oom, RoundingMode rm) {
+        return rel.getDY(oom, rm).add(offset.getDY(oom, rm));
     }
 
     /**
-     * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @return The z component of {@link #rel} with {@link #offset} applied.
      */
-    public Math_BigRational getZ(int oom) {
-        return rel.getDZ(oom).add(offset.getDZ(oom));
+    public Math_BigRational getZ() {
+        return getZ(e.oom, e.rm);
+    }
+    
+    /**
+     * @param oom The Order of Magnitude for the application of {@link #offset}.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The z component of {@link #rel} with {@link #offset} applied.
+     */
+    public Math_BigRational getZ(int oom, RoundingMode rm) {
+        return rel.getDZ(oom, rm).add(offset.getDZ(oom, rm));
     }
 
     /**
@@ -299,11 +328,11 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @param p A point.
      * @return The distance from {@code p} to this.
      */
-    public Math_BigRationalSqrt getDistance(int oom, V3D_Point p) {
+    public Math_BigRationalSqrt getDistance(int oom, RoundingMode rm, V3D_Point p) {
         if (this.equals(p)) {
             return Math_BigRationalSqrt.ZERO;
         }
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom), -1);
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm);
     }
 
     /**
@@ -311,29 +340,32 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      *
      * @param p A point.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The distance from {@code p} to this.
      */
     @Override
-    public BigDecimal getDistance(V3D_Point p, int oom) {
+    public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
         if (this.equals(p)) {
             return BigDecimal.ZERO;
         }
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom), oom)
-                .getSqrt(oom).toBigDecimal(oom);
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
+                .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
     /**
      * Get the distance squared between this and {@code p}.
      *
      * @param p A point.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared from {@code p} to this.
      */
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
-        Math_BigRational dx = this.getX(oom).subtract(p.getX(oom));
-        Math_BigRational dy = this.getY(oom).subtract(p.getY(oom));
-        Math_BigRational dz = this.getZ(oom).subtract(p.getZ(oom));
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom, 
+            RoundingMode rm) {
+        Math_BigRational dx = this.getX(oom, rm).subtract(p.getX(oom, rm));
+        Math_BigRational dy = this.getY(oom, rm).subtract(p.getY(oom, rm));
+        Math_BigRational dz = this.getZ(oom, rm).subtract(p.getZ(oom, rm));
         return dx.pow(2).add(dy.pow(2)).add(dz.pow(2));
     }
 
@@ -345,25 +377,33 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @return The distance from {@code p} to this.
      */
     @Override
-    public BigDecimal getDistance(V3D_Line l, int oom) {
-        if (l.isIntersectedBy(this, oom)) {
+    public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
+        if (l.isIntersectedBy(this, oom, rm)) {
             return BigDecimal.ZERO;
         }
         // Not sure what oom should be in the cross product...
-        V3D_Vector cp = new V3D_Vector(this, l.getP(oom), oom).getCrossProduct(
-                new V3D_Vector(this, l.getQ(oom), oom), oom);
-        return cp.getMagnitude().divide(l.getV(oom).getMagnitude(), oom).toBigDecimal(oom);
+        V3D_Vector cp = new V3D_Vector(this, l.getP(), oom, rm)
+                .getCrossProduct(new V3D_Vector(this, l.getQ(), oom, rm),
+                        oom, rm);
+        return cp.getMagnitude().divide(l.getV(oom, rm).getMagnitude(), oom, rm).toBigDecimal(oom, rm);
 //        return cp.getMagnitude(oom - 1).divide(l.v.getMagnitude(oom - 1), -oom,
 //                RoundingMode.HALF_UP);
     }
     
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
-        return l.getDistanceSquared(this, oom);
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, 
+            RoundingMode rm) {
+        return l.getDistanceSquared(this, oom, rm);
 //        if (l.isIntersectedBy(this, oom)) {
 //            return Math_BigRational.ZERO;
 //        }
 //        return getDistanceSquared(l, true, oom);
+    }
+
+    @Override
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom, 
+            RoundingMode rm) {
+        return r.getDistanceSquared(this, oom, rm);
     }
 
     /**
@@ -372,10 +412,12 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @param noInt A flag to indicate that {@code this} is not on {@code l}.
      * @return The distance squared between {@code this} and {@code l}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Line l, boolean noInt, int oom) {
-        V3D_Vector cp = new V3D_Vector(this, l.getP(oom), oom).getCrossProduct(
-                new V3D_Vector(this, l.getQ(oom), oom), oom);
-        return cp.getMagnitudeSquared().divide(l.getV(oom).getMagnitudeSquared());
+    public Math_BigRational getDistanceSquared(V3D_Line l, boolean noInt, 
+            int oom, RoundingMode rm) {
+        V3D_Vector cp = new V3D_Vector(this, l.getP(), oom, rm)
+                .getCrossProduct(new V3D_Vector(this, l.getQ(), oom, rm),
+                        oom, rm);
+        return cp.getMagnitudeSquared().divide(l.getV(oom, rm).getMagnitudeSquared());
     }
 
     /**
@@ -386,8 +428,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @return The distance from {@code p} to this.
      */
     @Override
-    public BigDecimal getDistance(V3D_Plane pl, int oom) {
-        return pl.getDistance(this, oom);
+    public BigDecimal getDistance(V3D_Plane pl, int oom, RoundingMode rm) {
+        return pl.getDistance(this, oom, rm);
     }
 
     /**
@@ -400,52 +442,53 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @return The distance from {@code p} to this.
      */
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom, 
+            RoundingMode rm) {
         //V3D_Vector pq = new V3D_Vector(this, pl.p, oom);
         //V3D_Vector pq = pl.p.subtract(this.getVector(oom), oom);
-        V3D_Vector pq = pl.getP().getVector(oom).subtract(this.getVector(oom), oom);
-        if (pq.isScalarMultiple(pl.getN(oom), oom)) {
+        V3D_Vector pq = pl.getP().getVector(oom, rm).subtract(this.getVector(oom, rm), oom, rm);
+        if (pq.isScalarMultiple(pl.getN(oom, rm), oom, rm)) {
             return pq.getMagnitudeSquared();
         } else {
             Math_BigRational[] coeffs = pl.getEquationCoefficients();
-            Math_BigRational num = (coeffs[0].multiply(getX(oom))
-                    .add(coeffs[1].multiply(getY(oom)))
-                    .add(coeffs[2].multiply(getZ(oom)))
+            Math_BigRational num = (coeffs[0].multiply(getX(oom, rm))
+                    .add(coeffs[1].multiply(getY(oom, rm)))
+                    .add(coeffs[2].multiply(getZ(oom, rm)))
                     .add(coeffs[3])).abs();
             Math_BigRational den = coeffs[0].pow(2).add(coeffs[1].pow(2))
                     .add(coeffs[2].pow(2));
-            return num.divide(den);
+            return num.divide(den).round(oom, rm);
         }
     }
 
     @Override
     public V3D_Envelope getEnvelope() {
-        return new V3D_Envelope(e, getX(e.oom), getY(e.oom), getZ(e.oom));
+        return new V3D_Envelope(e, getX(), getY(), getZ());
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Point p, int oom) {
-        return this.equals(p);
+    public boolean isIntersectedBy(V3D_Point p, int oom, RoundingMode rm) {
+        return this.equals(p, oom, rm);
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom) {
-        return l.isIntersectedBy(this, oom);
+    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
+        return l.isIntersectedBy(this, oom, rm);
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Ray r, int oom) {
-        return r.isIntersectedBy(this, oom);
+    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
+        return r.isIntersectedBy(this, oom, rm);
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
-        return l.isIntersectedBy(this, oom);
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
+        return l.isIntersectedBy(this, oom, rm);
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Plane p, int oom) {
-        return p.isIntersectedBy(this, oom);
+    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
+        return p.isIntersectedBy(this, oom, rm);
     }
 
     /**
@@ -454,31 +497,34 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * {@code null}.
      */
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom) {
-        if (l.isIntersectedBy(this, oom)) {
+    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom,
+            RoundingMode rm) {
+        if (l.isIntersectedBy(this, oom, rm)) {
             return this;
         }
         return null;
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Ray r, int oom) {
-        if (r.isIntersectedBy(this, oom)) {
+    public V3D_FiniteGeometry getIntersection(V3D_Ray r, int oom,
+            RoundingMode rm) {
+        if (r.isIntersectedBy(this, oom, rm)) {
             return this;
         }
         return null;
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom) {
-        if (l.isIntersectedBy(this, oom)) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom,
+            RoundingMode rm) {
+        if (l.isIntersectedBy(this, oom, rm)) {
             return this;
         }
         return null;
     }
 
     @Override
-    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+    public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
         /**
          * Get the distance from the ends of the line segment to the point. If
          * both these distances is less than the length of the line segment then
@@ -486,10 +532,10 @@ public class V3D_Point extends V3D_FiniteGeometry implements
          *
          */
         int oom2 = oom - 2;
-        Math_BigRational l2 = l.getLength2(oom);
-        Math_BigRational lp2 = l.getP(oom).getDistanceSquared(this, oom2);
-        Math_BigRational lq2 = l.getQ(oom).getDistanceSquared(this, oom2);
-        BigDecimal lp = (new V3D_Line(l)).getDistance(this, oom);
+        Math_BigRational l2 = l.getLength2(oom, rm);
+        Math_BigRational lp2 = l.getP().getDistanceSquared(this, oom2, rm);
+        Math_BigRational lq2 = l.getQ().getDistanceSquared(this, oom2, rm);
+        BigDecimal lp = (new V3D_Line(l)).getDistance(this, oom, rm);
         if (lp2.compareTo(l2) != 1 || lq2.compareTo(l2) != 1) {
             return lp;
         }
@@ -501,18 +547,18 @@ public class V3D_Point extends V3D_FiniteGeometry implements
          * point to the ends of the line segment.
          */
         //Math_BigRational pl2 = (new V3D_Line(l)).getDistanceSquared(this);
-        BigDecimal pl = (new V3D_Line(l)).getDistance(this, oom2);
+        BigDecimal pl = (new V3D_Line(l)).getDistance(this, oom2, rm);
         Math_BigRational pl2 = Math_BigRational.valueOf(pl).pow(2);
-        V3D_Vector u = l.l.getV(oom).getUnitVector(oom - 2);
+        V3D_Vector u = l.l.getV(oom, rm).getUnitVector(oom - 2, rm);
         V3D_Point pi = new V3D_Point(e, u.multiply(Math_BigRational.valueOf(
-                new Math_BigRationalSqrt(lp2.subtract(pl2), oom2)
-                        .toBigDecimal(oom2)), oom2)
-                .add(new V3D_Vector(l.getP(oom), oom2), oom2));
-        if (l.isIntersectedBy(pi, oom)) {
+                new Math_BigRationalSqrt(lp2.subtract(pl2), oom2, rm)
+                        .toBigDecimal(oom2, rm)), oom2, rm)
+                .add(new V3D_Vector(l.getP(), oom2, rm), oom2, rm));
+        if (l.isIntersectedBy(pi, oom, rm)) {
             return lp;
         } else {
-            return new Math_BigRationalSqrt(Math_BigRational.min(lp2, lq2), oom2)
-                    .toBigDecimal(oom);
+            return new Math_BigRationalSqrt(Math_BigRational.min(lp2, lq2),
+                    oom2, rm).toBigDecimal(oom, rm);
         }
     }
 
@@ -522,21 +568,9 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @return The minimum distance between {@code this} and {@code r}.
      */
     @Override
-    public BigDecimal getDistance(V3D_Ray r, int oom) {
-        return new Math_BigRationalSqrt(getDistanceSquared(r, oom), oom)
-                .getSqrt(oom).toBigDecimal(oom);
-    }
-
-    /**
-     * @param r The ray to get the distance from.
-     * @param oom The Order of Magnitude for the precision of the result.
-     * @return The minimum distance between {@code this} and {@code r}.
-     */
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
-        return r.getDistanceSquared(this, oom);
-//        V3D_Point pt = r.getPointOfIntersection(this, oom);
-//        return pt.getDistanceSquared(this, oom);
+    public BigDecimal getDistance(V3D_Ray r, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(r, oom, rm), oom, rm)
+                .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
     /**
@@ -559,10 +593,10 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * </tbody>
      * </Table>
      */
-    public int getLocation(int oom) {
-        if (getX(oom).compareTo(Math_BigRational.ZERO) != -1) {
-            if (getY(oom).compareTo(Math_BigRational.ZERO) != -1) {
-                if (getZ(oom).compareTo(Math_BigRational.ZERO) != -1) {
+    public int getLocation(int oom, RoundingMode rm) {
+        if (getX(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
+            if (getY(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
+                if (getZ(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
                     if (isOrigin()) {
                         return 0;
                     }
@@ -571,21 +605,21 @@ public class V3D_Point extends V3D_FiniteGeometry implements
                     return 2;
                 }
             } else {
-                if (getZ(oom).compareTo(Math_BigRational.ZERO) != -1) {
+                if (getZ(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
                     return 3;
                 } else {
                     return 4;
                 }
             }
         } else {
-            if (getY(oom).compareTo(Math_BigRational.ZERO) != -1) {
-                if (getZ(oom).compareTo(Math_BigRational.ZERO) != -1) {
+            if (getY(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
+                if (getZ(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
                     return 5;
                 } else {
                     return 6;
                 }
             } else {
-                if (getZ(oom).compareTo(Math_BigRational.ZERO) != -1) {
+                if (getZ(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
                     return 7;
                 } else {
                     return 8;
@@ -601,7 +635,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @param offset What {@link #offset} is set to.
      */
     public void setOffset(V3D_Vector offset) {
-        rel = getVector(e.oom).subtract(offset, e.oom);
+        rel = getVector(e.oom, e.rm).subtract(offset, e.oom, e.rm);
         this.offset = offset;
     }
 
@@ -613,7 +647,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      */
     public void setRel(V3D_Vector rel) {
         //offset = getVector(e.oom).subtract(rel, e.oom);
-        offset = offset.subtract(rel, e.oom).add(this.rel, e.oom);
+        offset = offset.subtract(rel, e.oom, e.rm).add(this.rel, e.oom, e.rm);
         this.rel = rel;
     }
     
@@ -623,7 +657,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @param v What is added to {@link #offset}.
      */
     public void translate(V3D_Vector v) {
-        this.offset = offset.add(v, e.oom);
+        this.offset = offset.add(v, e.oom, e.rm);
     }
 
     /**
@@ -634,23 +668,23 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      */
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        rel = rel.rotate(axisOfRotation, theta, e.bI, e.oom);
+        rel = rel.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
 //        V3D_Vector relt = rel.rotate(axisOfRotation, theta, bI, oom);
 //        offset = offset.subtract(rel.subtract(relt, oom), oom);
     }
 
     @Override
     public int compareTo(V3D_Point o) {
-        int cx = getX(e.oom).compareTo(o.getX(e.oom));
+        int cx = getX().compareTo(o.getX());
         switch (cx) {
             case 1 -> {
                 return 1;
             }
             case 0 -> {
-                int cy = getY(e.oom).compareTo(o.getY(e.oom));
+                int cy = getY().compareTo(o.getY());
                 return switch (cy) {
                     case 1 -> 1;
-                    case 0 -> getZ(e.oom).compareTo(o.getZ(e.oom));
+                    case 0 -> getZ().compareTo(o.getZ());
                     default -> -1;
                 };
             }
@@ -661,62 +695,69 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
-        return t.isIntersectedBy(this, oom);
+    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
+        return t.isIntersectedBy(this, oom, rm);
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
-        return t.isIntersectedBy(this, oom);
+    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, 
+            RoundingMode rm) {
+        return t.isIntersectedBy(this, oom, rm);
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom) {
-        if (p.isIntersectedBy(this, oom)) {
+    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, 
+            RoundingMode rm) {
+        if (p.isIntersectedBy(this, oom, rm)) {
             return this;
         }
         return null;
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
-        if (t.isIntersectedBy(this, oom)) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, 
+            RoundingMode rm) {
+        if (t.isIntersectedBy(this, oom, rm)) {
             return this;
         }
         return null;
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
-        if (t.isIntersectedBy(this, oom)) {
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, 
+            RoundingMode rm) {
+        if (t.isIntersectedBy(this, oom, rm)) {
             return this;
         }
         return null;
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
-        return l.getDistanceSquared(this, oom);
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, 
+            RoundingMode rm) {
+        return l.getDistanceSquared(this, oom, rm);
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Triangle t, int oom) {
-        return t.getDistance(this, oom);
+    public BigDecimal getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
+        return t.getDistance(this, oom, rm);
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
-        return t.getDistanceSquared(this, oom);
+    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, 
+            RoundingMode rm) {
+        return t.getDistanceSquared(this, oom, rm);
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
-        return t.getDistance(this, oom);
+    public BigDecimal getDistance(V3D_Tetrahedron t, int oom, RoundingMode rm) {
+        return t.getDistance(this, oom, rm);
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
-        return t.getDistanceSquared(this, oom);
+    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, 
+            RoundingMode rm) {
+        return t.getDistanceSquared(this, oom, rm);
     }
     
     

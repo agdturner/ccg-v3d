@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
@@ -207,10 +208,10 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      * @return A point or line segment.
      */
     @Override
-    public boolean isIntersectedBy(V3D_Point pt, int oom) {
-        if (getEnvelope().isIntersectedBy(pt, oom)) {
-            if (parts.get(0).triangles.get(0).p.isIntersectedBy(pt, oom)) {
-                return isIntersectedBy0(pt, oom);
+    public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
+        if (getEnvelope().isIntersectedBy(pt, oom, rm)) {
+            if (parts.get(0).triangles.get(0).p.isIntersectedBy(pt, oom, rm)) {
+                return isIntersectedBy0(pt, oom, rm);
             }
         }
         return false;
@@ -221,18 +222,18 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@code true} if this intersects with {@code pt}.
      */
-    protected boolean isIntersectedBy0(V3D_Point pt, int oom) {
+    protected boolean isIntersectedBy0(V3D_Point pt, int oom, RoundingMode rm) {
         // Holes and parts could be checked in parallel.
         // Check holes first
         if (holes != null) {
             for (V3D_ConvexHullCoplanar h : holes) {
-                if (h.isIntersectedBy0(pt, oom)) {
+                if (h.isIntersectedBy0(pt, oom, rm)) {
                     return false;
                 }
             }
         }
         for (V3D_ConvexHullCoplanar pa : parts) {
-            if (pa.isIntersectedBy0(pt, oom)) {
+            if (pa.isIntersectedBy0(pt, oom, rm)) {
                 return true;
             }
         }
@@ -240,7 +241,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom) {
+    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException();
 //        if (super.isIntersectedBy(l, oom)) {
 //            //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy(l, oom)));        
@@ -250,7 +251,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException();
 //        if (getEnvelope().isIntersectedBy(l.getEnvelope())) {
 //            if (super.isIntersectedBy(l, oom)) {
@@ -273,7 +274,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      * @return The area of the triangle (rounded).
      */
     @Override
-    public BigDecimal getArea(int oom) {
+    public BigDecimal getArea(int oom, RoundingMode rm) {
         throw new UnsupportedOperationException();
 //        BigDecimal sum = BigDecimal.ZERO;
 //        for (var t : triangles) {
@@ -288,7 +289,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      * @param oom The Order of Magnitude for the precision of the calculation.
      */
     @Override
-    public BigDecimal getPerimeter(int oom) {
+    public BigDecimal getPerimeter(int oom, RoundingMode rm) {
         throw new UnsupportedOperationException();
 //        BigDecimal sum = BigDecimal.ZERO;
 //        for (var t : triangles) {
@@ -303,22 +304,22 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      * @return A point or line segment.
      */
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException();
 //        // Create a set all the intersecting triangles from this.
 //        HashSet<V3D_Triangle> t2s = new HashSet<>();
@@ -392,109 +393,109 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
                 pts.addAll(x.points);
             }
             convexHull = new V3D_ConvexHullCoplanar(
-                    parts.get(0).triangles.get(0).p.getN(e.oom),
+                    parts.get(0).triangles.get(0).p.getN(e.oom, e.rm),
                     pts.toArray(V3D_Point[]::new));
         }
         return convexHull;
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Ray r, int oom) {
+    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Plane p, int oom) {
+    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
+    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
+    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Point p, int oom) {
+    public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Line l, int oom) {
+    public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+    public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Ray r, int oom) {
+    public BigDecimal getDistance(V3D_Ray r, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Plane p, int oom) {
+    public BigDecimal getDistance(V3D_Plane p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Triangle t, int oom) {
+    public BigDecimal getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
+    public BigDecimal getDistance(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
@@ -31,72 +32,88 @@ public interface V3D_IntersectionAndDistanceCalculations {
      *
      * @param p The point to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
-    public abstract boolean isIntersectedBy(V3D_Point p, int oom);
+    public abstract boolean isIntersectedBy(V3D_Point p, int oom, 
+            RoundingMode rm);
 
     /**
      * Identify if the geometry is intersected by line {@code l}.
      *
      * @param l The line to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff the geometry is intersected by {@code l}.
      */
-    public abstract boolean isIntersectedBy(V3D_Line l, int oom);
+    public abstract boolean isIntersectedBy(V3D_Line l, int oom, 
+            RoundingMode rm);
 
     /**
      * Identify if the geometry is intersected by ray {@code r}.
      *
      * @param r The ray to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff the geometry is intersected by {@code r}.
      */
-    public abstract boolean isIntersectedBy(V3D_Ray r, int oom);
+    public abstract boolean isIntersectedBy(V3D_Ray r, int oom, 
+            RoundingMode rm);
 
     /**
      * Identify if the geometry is intersected by line segment {@code l}.
      *
      * @param l The line segment to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff the geometry is intersected by {@code l}.
      */
-    public abstract boolean isIntersectedBy(V3D_LineSegment l, int oom);
+    public abstract boolean isIntersectedBy(V3D_LineSegment l, int oom, 
+            RoundingMode rm);
 
     /**
      * Identify if the geometry is intersected by plane {@code p}.
      *
      * @param p The plane to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
-    public abstract boolean isIntersectedBy(V3D_Plane p, int oom);
+    public abstract boolean isIntersectedBy(V3D_Plane p, int oom, 
+            RoundingMode rm);
 
     /**
      * Identify if the geometry is intersected by plane {@code p}.
      *
      * @param t The triangle to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
-    public abstract boolean isIntersectedBy(V3D_Triangle t, int oom);
+    public abstract boolean isIntersectedBy(V3D_Triangle t, int oom, 
+            RoundingMode rm);
 
     /**
      * Identify if the geometry is intersected by plane {@code p}.
      *
      * @param t The tetrahedron to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
-    public abstract boolean isIntersectedBy(V3D_Tetrahedron t, int oom);
+    public abstract boolean isIntersectedBy(V3D_Tetrahedron t, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the intersection between the geometry and the line {@code l}.
      *
      * @param l The line to intersect with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_Geometry getIntersection(V3D_Line l, int oom);
+    public abstract V3D_Geometry getIntersection(V3D_Line l, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the intersection between the geometry and the ray
@@ -104,9 +121,11 @@ public interface V3D_IntersectionAndDistanceCalculations {
      *
      * @param r The ray to intersect with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_Geometry getIntersection(V3D_Ray r, int oom);
+    public abstract V3D_Geometry getIntersection(V3D_Ray r, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the intersection between the geometry and the line segment
@@ -114,160 +133,196 @@ public interface V3D_IntersectionAndDistanceCalculations {
      *
      * @param l The line segment to intersect with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom);
+    public abstract V3D_FiniteGeometry getIntersection(V3D_LineSegment l, 
+            int oom, RoundingMode rm);
 
     /**
      * Get the intersection between the geometry and the plane {@code p}.
      *
      * @param p The plane to intersect with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_Geometry getIntersection(V3D_Plane p, int oom);
+    public abstract V3D_Geometry getIntersection(V3D_Plane p, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the intersection between the geometry and the triangle {@code t}.
      *
      * @param t The triangle to intersect with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom);
+    public abstract V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the intersection between the geometry and the tetrahedron {@code t}.
      *
      * @param t The tetrahedron to intersect with.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom);
+    public abstract V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, 
+            int oom, RoundingMode rm);
 
     /**
      * Get the distance to {@code p}.
      *
      * @param p A point.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The distance to {@code p}.
      */
-    public abstract BigDecimal getDistance(V3D_Point p, int oom);
+    public abstract BigDecimal getDistance(V3D_Point p, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the distance squared to {@code p}.
      *
      * @param p A point.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared to {@code p}.
      */
-    public abstract Math_BigRational getDistanceSquared(V3D_Point p, int oom);
+    public abstract Math_BigRational getDistanceSquared(V3D_Point p, int oom,
+            RoundingMode rm);
 
     /**
      * Get the minimum distance to {@code l}.
      *
      * @param l A line.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code l}.
      */
-    public abstract BigDecimal getDistance(V3D_Line l, int oom);
+    public abstract BigDecimal getDistance(V3D_Line l, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the minimum distance squared to {@code l}.
      *
      * @param l A line.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code l}.
      */
-    public abstract Math_BigRational getDistanceSquared(V3D_Line l, int oom);
+    public abstract Math_BigRational getDistanceSquared(V3D_Line l, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the minimum distance to {@code l}.
      *
      * @param l A line segment.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code l}.
      */
-    public abstract BigDecimal getDistance(V3D_LineSegment l, int oom);
+    public abstract BigDecimal getDistance(V3D_LineSegment l, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the minimum distance squared to {@code l}.
      *
      * @param l A line segment.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code l}.
      */
-    public abstract Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom);
+    public abstract Math_BigRational getDistanceSquared(V3D_LineSegment l, 
+            int oom, RoundingMode rm);
 
     /**
      * Get the minimum distance to {@code r}.
      *
      * @param r A ray.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code r}.
      */
-    public abstract BigDecimal getDistance(V3D_Ray r, int oom);
+    public abstract BigDecimal getDistance(V3D_Ray r, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the minimum distance squared to {@code r}.
      *
      * @param r A ray.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code r}.
      */
-    public abstract Math_BigRational getDistanceSquared(V3D_Ray r, int oom);
+    public abstract Math_BigRational getDistanceSquared(V3D_Ray r, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the minimum distance to {@code p}.
      *
      * @param p A plane.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code p}.
      */
-    public abstract BigDecimal getDistance(V3D_Plane p, int oom);
+    public abstract BigDecimal getDistance(V3D_Plane p, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the minimum distance squared to {@code p}.
      *
      * @param p A plane.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code p}.
      */
-    public abstract Math_BigRational getDistanceSquared(V3D_Plane p, int oom);
+    public abstract Math_BigRational getDistanceSquared(V3D_Plane p, int oom, 
+            RoundingMode rm);
 
     /**
      * Get the minimum distance to {@code t}.
      *
      * @param t A triangle.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code t}.
      */
-    public abstract BigDecimal getDistance(V3D_Triangle t, int oom);
+    public abstract BigDecimal getDistance(V3D_Triangle t, int oom, 
+            RoundingMode rm);
     
     /**
      * Get the minimum distance squared to {@code t}.
      *
      * @param t A triangle.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code t}.
      */
-    public abstract Math_BigRational getDistanceSquared(V3D_Triangle t, int oom);
+    public abstract Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, 
+            RoundingMode rm);
     
     /**
      * Get the minimum distance to {@code t}.
      *
      * @param t A tetrahedron.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code t}.
      */
-    public abstract BigDecimal getDistance(V3D_Tetrahedron t, int oom);
+    public abstract BigDecimal getDistance(V3D_Tetrahedron t, int oom, 
+            RoundingMode rm);
     
     /**
      * Get the minimum distance squared to {@code t}.
      *
      * @param t A tetrahedron.
      * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code t}.
      */
-    public abstract Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom);
+    public abstract Math_BigRational getDistanceSquared(V3D_Tetrahedron t, 
+            int oom, RoundingMode rm);
 }

@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d;
 
+import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -29,8 +30,8 @@ import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
  */
 public abstract class V3D_Test {
     
-    public static final V3D_Environment e = new V3D_Environment(-3, 
-            new Math_BigInteger());
+    public static final V3D_Environment e = new V3D_Environment(
+            new Math_BigInteger(), -3, RoundingMode.HALF_UP);
 
     public static final Math_BigRational P0 = Math_BigRational.ZERO;
     public static final Math_BigRational P1 = Math_BigRational.ONE;

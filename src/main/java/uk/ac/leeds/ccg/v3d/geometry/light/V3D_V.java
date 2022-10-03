@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry.light;
 
 import java.io.Serializable;
+import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
@@ -98,16 +99,16 @@ public class V3D_V implements Serializable {
      * @param p A point to construct from.
      * @param oom The Order of Magnitude for the precision.
      */
-    public V3D_V(V3D_Point p, int oom) {
-        this(p.getX(oom), p.getY(oom), p.getZ(oom));
+    public V3D_V(V3D_Point p, int oom, RoundingMode rm) {
+        this(p.getX(oom, rm), p.getY(oom, rm), p.getZ(oom, rm));
     }
 
     /**
      * @param v A vector to construct from.
      * @param oom The Order of Magnitude for the precision.
      */
-    public V3D_V(V3D_Vector v, int oom) {
-        this(v.getDX(oom), v.getDY(oom), v.getDZ(oom));
+    public V3D_V(V3D_Vector v, int oom, RoundingMode rm) {
+        this(v.getDX(oom, rm), v.getDY(oom, rm), v.getDZ(oom, rm));
     }
 
     /**
@@ -245,8 +246,8 @@ public class V3D_V implements Serializable {
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The magnitude.
      */
-    public Math_BigRational getMagnitude(int oom) {
-        return new Math_BigRationalSqrt(x.pow(2).add(y.pow(2)).add(z.pow(2)), oom).getSqrt(oom);
+    public Math_BigRational getMagnitude(int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(x.pow(2).add(y.pow(2)).add(z.pow(2)), oom, rm).getSqrt(oom, rm);
     }
 
     /**
@@ -273,19 +274,12 @@ public class V3D_V implements Serializable {
      * @param oom The order of magnitude for the precision of the result.
      * @return this scaled by the magnitude.
      */
-    public V3D_V getUnitVector(int oom) {
-        Math_BigRational d = getMagnitude(oom);
+    public V3D_V getUnitVector(int oom, RoundingMode rm) {
+        Math_BigRational d = getMagnitude(oom, RoundingMode.UP);
         V3D_V r = new V3D_V(
                 x.divide(d),
                 y.divide(d),
                 z.divide(d));
-        if (r.getMagnitude(oom).compareTo(Math_BigRational.ONE) == 1) {
-            d = d.subtract(Math_BigRational.ONE.divide(oom));
-            r = new V3D_V(
-                    x.divide(d),
-                    y.divide(d),
-                    z.divide(d));
-        }
         return r;
     }
 
@@ -307,10 +301,10 @@ public class V3D_V implements Serializable {
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The distance from {@code p} to this.
      */
-    public Math_BigRational getDistance(V3D_V p, int oom) {
+    public Math_BigRational getDistance(V3D_V p, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(x.subtract(p.x).pow(2)
                 .add(y.subtract(p.y).pow(2))
-                .add(y.subtract(p.y).pow(2)), oom).getSqrt(oom);
+                .add(y.subtract(p.y).pow(2)), oom, rm).getSqrt(oom, rm);
     }
 
     /**

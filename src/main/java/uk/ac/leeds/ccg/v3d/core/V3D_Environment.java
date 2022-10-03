@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.core;
 
 import java.io.Serializable;
+import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
@@ -53,37 +54,50 @@ public class V3D_Environment implements Serializable {
     public static final Math_BigRational N1 = Math_BigRational.ONE.negate();
 
     /**
+     * An instance that helps with calculations involving Taylor series.
+     */
+    public final Math_BigInteger bI;
+    
+    /**
      * The default Order of Magnitude.
      */
     public static final int DEFAULT_OOM = -3;
     
-    /**
-     * An instance that helps with calculations involving Taylor series.
-     */
-    public final Math_BigInteger bI;
-
     /**
      * The Order of Magnitude for the precision.
      */
     public int oom;
     
     /**
+     * The default Order of Magnitude.
+     */
+    public static final RoundingMode DEFAULT_RM = RoundingMode.HALF_UP;
+
+    /**
+     * The RoundingMode for the precision.
+     */
+    public RoundingMode rm;
+    
+    /**
      * Creates a new instance.
      */
     public V3D_Environment(){
-        oom = V3D_Environment.DEFAULT_OOM;
         bI = new Math_BigInteger();
+        oom = DEFAULT_OOM;
+        rm = DEFAULT_RM;
     }
     
     /**
      * Creates a new instance.
      *
-     * @param oom What {@link #oom} is set to.
      * @param bI What {@link #bI} is set to.
+     * @param oom What {@link #oom} is set to.
+     * @param rm What {@link #rm} is set to.
      */
-    public V3D_Environment(int oom, Math_BigInteger bI) {
-        this.oom = oom;
+    public V3D_Environment(Math_BigInteger bI, int oom, RoundingMode rm) {
         this.bI = bI;
+        this.oom = oom;
+        this.rm = rm;
     }
     
     /**

@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
@@ -84,144 +85,144 @@ public class V3D_PointsCoplanar extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Point p, int oom) {
+    public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Line l, int oom) {
+    public BigDecimal getDistance(V3D_Line l, int oo, RoundingMode rmm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
+    public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         for (V3D_Vector rel : rels) {
-            rel.rotate(axisOfRotation, theta, e.bI, e.oom);
+            rel.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
         }
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Point p, int oom) {
+    public boolean isIntersectedBy(V3D_Point p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom) {
+    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Plane p, int oom) {
+    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
+    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
+    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Plane p, int oom) {
+    public BigDecimal getDistance(V3D_Plane p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Triangle t, int oom) {
+    public BigDecimal getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
+    public BigDecimal getDistance(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Ray l, int oom) {
+    public boolean isIntersectedBy(V3D_Ray l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Ray r, int oom) {
+    public BigDecimal getDistance(V3D_Ray r, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Ray l, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Ray l, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

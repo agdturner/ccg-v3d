@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -61,8 +62,8 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
         V3D_Point[] r = new V3D_Point[nl * 2];
         for(int i = 0; i < nl; i ++) {
             V3D_LineSegment l = lineSegments.get(i);
-            r[i] = l.getP(e.oom);
-            r[i + nl] = l.getQ(e.oom);
+            r[i] = l.getP();
+            r[i + nl] = l.getQ();
         }
         return r;
     }
@@ -115,8 +116,8 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * intersect, otherwise a single V3D_LineSegment.
      */
     public static V3D_FiniteGeometry getGeometry(V3D_LineSegment l1,
-            V3D_LineSegment l2, int oom) {
-        if (!l1.isIntersectedBy(l2, oom)) {
+            V3D_LineSegment l2, int oom, RoundingMode rm) {
+        if (!l1.isIntersectedBy(l2, oom, rm)) {
             return new V3D_LineSegmentsCollinear(l1, l2);
         }
         /**
@@ -155,11 +156,11 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
          *    l2q ---------- l2p
          * }
          */
-        V3D_Point l1p = l1.getP(oom);
-        V3D_Point l1q = l1.getQ(oom);
-        if (l2.isIntersectedBy(l1p, oom)) {
+        V3D_Point l1p = l1.getP();
+        V3D_Point l1q = l1.getQ();
+        if (l2.isIntersectedBy(l1p, oom, rm)) {
             // Cases 1, 2, 5, 6, 14, 16
-            if (l2.isIntersectedBy(l1q, oom)) {
+            if (l2.isIntersectedBy(l1q, oom, rm)) {
                 // Cases 2, 6, 14
                 /**
                  * The line segments are effectively the same although the start
@@ -168,39 +169,39 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                 //return l1;
                 return l2;
             } else {
-                V3D_Point l2p = l2.getP(oom);
+                V3D_Point l2p = l2.getP();
                 // Cases 1, 5, 16
-                if (l1.isIntersectedBy(l2p, oom)) {
+                if (l1.isIntersectedBy(l2p, oom, rm)) {
                     // Cases 5
-                    //return new V3D_LineSegment(l1p, l2.getP(oom));
+                    //return new V3D_LineSegment(l1p, l2.getP());
                     return new V3D_LineSegment(l1p, l1q);
                 } else {
                     // Cases 1, 16
-                    //return new V3D_LineSegment(l1p, l2.getQ(oom));
+                    //return new V3D_LineSegment(l1p, l2.getQ());
                     return new V3D_LineSegment(l2p, l1q);
                 }
             }
         } else {
             // Cases 3, 4, 7, 8, 9, 10, 11, 12, 13, 15
-            if (l2.isIntersectedBy(l1q, oom)) {
-                V3D_Point l2p = l2.getP(oom);
+            if (l2.isIntersectedBy(l1q, oom, rm)) {
+                V3D_Point l2p = l2.getP();
                 // Cases 4, 8, 9, 10, 11
-                if (l1.isIntersectedBy(l2p, oom)) {
+                if (l1.isIntersectedBy(l2p, oom, rm)) {
                     // Cases 4, 11, 13
-                    if (l1.isIntersectedBy(l2.getQ(oom), oom)) {
+                    if (l1.isIntersectedBy(l2.getQ(), oom, rm)) {
                         // Cases 11
                         return l2;
                     } else {
                         // Cases 4, 13
-                        //return new V3D_LineSegment(l2.getP(oom), l1.getQ(oom));
-                        return new V3D_LineSegment(l1p, l2.getQ(oom));
+                        //return new V3D_LineSegment(l2.getP(), l1.getQ());
+                        return new V3D_LineSegment(l1p, l2.getQ());
                     }
                 } else {
                     // Cases 8, 9, 10
-                    V3D_Point tq = l2.getQ(oom);
-                    if (l1.isIntersectedBy(tq, oom)) {
+                    V3D_Point tq = l2.getQ();
+                    if (l1.isIntersectedBy(tq, oom, rm)) {
                         // Cases 8, 9
-                        return new V3D_LineSegment(l2.getQ(oom), l1q);
+                        return new V3D_LineSegment(l2.getQ(), l1q);
                     } else {
                         // Cases 10                      
                         return l1;
@@ -208,17 +209,17 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                 }
             } else {
                 // Cases 3, 7, 12, 15
-                V3D_Point tp = l2.getP(oom);
-                if (l1.isIntersectedBy(tp, oom)) {
+                V3D_Point tp = l2.getP();
+                if (l1.isIntersectedBy(tp, oom, rm)) {
                     // Cases 3, 12, 15
-                    V3D_Point tq = l2.getQ(oom);
-                    if (l1.isIntersectedBy(tq, oom)) {
+                    V3D_Point tq = l2.getQ();
+                    if (l1.isIntersectedBy(tq, oom, rm)) {
                         // Cases 3, 15
                         //return l2;
                         return l1;
                     } else {
                         // Cases 12                 
-                        return new V3D_LineSegment(l2.getP(oom), l1p);
+                        return new V3D_LineSegment(l2.getP(), l1p);
                     }
                 } else {
                     // Cases 7
@@ -241,67 +242,67 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Point p, int oom) {
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom), oom)
-                .getSqrt(oom).toBigDecimal(oom);
+    public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
+                .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
-        if (isIntersectedBy(p, oom)) {
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom, RoundingMode rm) {
+        if (isIntersectedBy(p, oom, rm)) {
             return Math_BigRational.ZERO;
         }
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-        Math_BigRational d = ite.next().getDistanceSquared(p, oom);
+        Math_BigRational d = ite.next().getDistanceSquared(p, oom, rm);
         while (ite.hasNext()) {
-            d = d.min(ite.next().getDistanceSquared(p, oom));
+            d = d.min(ite.next().getDistanceSquared(p, oom, rm));
         }
         return d;
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Line l, int oom) {
-        return new Math_BigRationalSqrt(getDistanceSquared(l, oom), oom)
-                .getSqrt(oom).toBigDecimal(oom);
+    public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
+                .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
-        if (isIntersectedBy(l, oom)) {
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
+        if (isIntersectedBy(l, oom, rm)) {
             return Math_BigRational.ZERO;
         }
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-        Math_BigRational d = ite.next().getDistanceSquared(l, oom);
+        Math_BigRational d = ite.next().getDistanceSquared(l, oom, rm);
         while (ite.hasNext()) {
-            d = d.min(ite.next().getDistanceSquared(l, oom));
+            d = d.min(ite.next().getDistanceSquared(l, oom, rm));
         }
         return d;
     }
 
     @Override
-    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
-        return new Math_BigRationalSqrt(getDistanceSquared(l, oom), oom)
-                .getSqrt(oom).toBigDecimal(oom);
+    public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
+                .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
-        if (isIntersectedBy(l, oom)) {
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
+        if (isIntersectedBy(l, oom, rm)) {
             return Math_BigRational.ZERO;
         }
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-        Math_BigRational d = ite.next().getDistanceSquared(l, oom);
+        Math_BigRational d = ite.next().getDistanceSquared(l, oom, rm);
         while (ite.hasNext()) {
-            d = d.min(ite.next().getDistanceSquared(l, oom));
+            d = d.min(ite.next().getDistanceSquared(l, oom, rm));
         }
         return d;
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Point pt, int oom) {
+    public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
         while (ite.hasNext()) {
-            if (ite.next().isIntersectedBy(pt, oom)) {
+            if (ite.next().isIntersectedBy(pt, oom, rm)) {
                 return true;
             }
         }
@@ -309,10 +310,10 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom) {
+    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
         while (ite.hasNext()) {
-            if (ite.next().isIntersectedBy(l, oom)) {
+            if (ite.next().isIntersectedBy(l, oom, rm)) {
                 return true;
             }
         }
@@ -320,10 +321,10 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
         while (ite.hasNext()) {
-            if (ite.next().isIntersectedBy(l, oom)) {
+            if (ite.next().isIntersectedBy(l, oom, rm)) {
                 return true;
             }
         }
@@ -331,12 +332,12 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Line l, int oom) {
+    public V3D_Geometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-        V3D_Geometry g = ite.next().getIntersection(l, oom);
+        V3D_Geometry g = ite.next().getIntersection(l, oom, rm);
         if (g == null) {
             while (ite.hasNext()) {
-                g = ite.next().getIntersection(l, oom);
+                g = ite.next().getIntersection(l, oom, rm);
                 if (g instanceof V3D_Point) {
                     return g;
                 }
@@ -359,14 +360,14 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * @return The intersection of this and l.
      */
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_LineSegment ls, int oom) {
-        if (isIntersectedBy(ls, oom)) {
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment ls, int oom, RoundingMode rm) {
+        if (isIntersectedBy(ls, oom, rm)) {
             if (lineSegments.get(0).l.isCollinear(ls.l)) {
                 ArrayList<V3D_Point> ps = new ArrayList<>();
                 ArrayList<V3D_LineSegment> lse = new ArrayList<>();
                 Iterator<V3D_LineSegment> ite = lineSegments.iterator();
                 while (ite.hasNext()) {
-                    V3D_Geometry g = ite.next().getIntersection(ls, oom);
+                    V3D_Geometry g = ite.next().getIntersection(ls, oom, rm);
                     if (g != null) {
                         if (g instanceof V3D_Point gp) {
                             ps.add(gp);
@@ -392,7 +393,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                 // Find the point of intersection if there is one.
                 Iterator<V3D_LineSegment> ite = lineSegments.iterator();
                 while (ite.hasNext()) {
-                    V3D_FiniteGeometry g = ite.next().getIntersection(ls, oom);
+                    V3D_FiniteGeometry g = ite.next().getIntersection(ls, oom, rm);
                     if (g != null) {
                         return g;
                     }
@@ -406,9 +407,9 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Plane p, int oom) {
+    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
         for (V3D_LineSegment l : lineSegments) {
-            if (p.isIntersectedBy(l, oom)) {
+            if (p.isIntersectedBy(l, oom, rm)) {
                 return true;
             }
         }
@@ -416,9 +417,9 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
+    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
         for (V3D_LineSegment l : lineSegments) {
-            if (t.isIntersectedBy(l, oom)) {
+            if (t.isIntersectedBy(l, oom, rm)) {
                 return true;
             }
         }
@@ -426,9 +427,9 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
+    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         for (V3D_LineSegment l : lineSegments) {
-            if (t.isIntersectedBy(l, oom)) {
+            if (t.isIntersectedBy(l, oom, rm)) {
                 return true;
             }
         }
@@ -462,17 +463,17 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
         r.addAll(ls);
         for (int j = i; j < ls.size(); j++) {
             V3D_LineSegment l1 = ls.get(j);
-            if (l0.isIntersectedBy(l1, e.oom)) {
-                V3D_Point l0p = l0.getP(e.oom);
-                if (l0p.isIntersectedBy(l1, e.oom)) {
-                    V3D_Point l0q = l0.getQ(e.oom);
-                    if (l0q.isIntersectedBy(l1, e.oom)) {
+            if (l0.isIntersectedBy(l1, e.oom, e.rm)) {
+                V3D_Point l0p = l0.getP();
+                if (l0p.isIntersectedBy(l1, e.oom, e.rm)) {
+                    V3D_Point l0q = l0.getQ();
+                    if (l0q.isIntersectedBy(l1, e.oom, e.rm)) {
                         // l0 is completely overlapped by l1
                         removeIndexes.add(i);
                     } else {
-                        V3D_Point l1p = l1.getP(e.oom);
-                        V3D_Point l1q = l1.getQ(e.oom);
-                        if (l1p.isIntersectedBy(l0, e.oom)) {
+                        V3D_Point l1p = l1.getP();
+                        V3D_Point l1q = l1.getQ();
+                        if (l1p.isIntersectedBy(l0, e.oom, e.rm)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
                             r.add(new V3D_LineSegment(l1q, l0q));
@@ -483,11 +484,11 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                         }
                     }
                 } else {
-                    V3D_Point l0q = l0.getQ(e.oom);
-                    if (l0q.isIntersectedBy(l1, e.oom)) {
-                        V3D_Point l1p = l1.getP(e.oom);
-                        V3D_Point l1q = l1.getQ(e.oom);
-                        if (l1.getP(e.oom).isIntersectedBy(l0, e.oom)) {
+                    V3D_Point l0q = l0.getQ();
+                    if (l0q.isIntersectedBy(l1, e.oom, e.rm)) {
+                        V3D_Point l1p = l1.getP();
+                        V3D_Point l1q = l1.getQ();
+                        if (l1.getP().isIntersectedBy(l0, e.oom, e.rm)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
                             r.add(new V3D_LineSegment(l1q, l0p));
@@ -514,47 +515,47 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Plane p, int oom) {
+    public V3D_Geometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Plane p, int oom) {
+    public BigDecimal getDistance(V3D_Plane p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Triangle t, int oom) {
+    public BigDecimal getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
+    public BigDecimal getDistance(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -564,22 +565,22 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Ray r, int oom) {
+    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public V3D_Geometry getIntersection(V3D_Ray r, int oom) {
+    public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Ray r, int oom) {
+    public BigDecimal getDistance(V3D_Ray r, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom) {
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

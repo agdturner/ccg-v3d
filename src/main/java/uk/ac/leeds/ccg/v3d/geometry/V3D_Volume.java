@@ -15,27 +15,29 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * V3D_Volume
  * 
  * @author Andy Turner
  */
-public interface V3D_Volume {
+public interface V3D_Volume extends Serializable {
     
     /**
      * For calculating and returning the area.
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The area.
      */
-    public abstract BigDecimal getArea(int oom);
+    public abstract BigDecimal getArea(int oom, RoundingMode rm);
     
     /**
      * For calculating and returning the perimeter.
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The Perimeter.
      */
-    public abstract BigDecimal getVolume(int oom);
+    public abstract BigDecimal getVolume(int oom, RoundingMode rm);
     
 }

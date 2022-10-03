@@ -114,62 +114,62 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("isIntersectedBy");
         V3D_Envelope instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
         // Test 1 the centre
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
         // Test 2 to 9 the corners
         // Test 2
-        assertTrue(instance.isIntersectedBy(pP1P1P1, e.oom));
+        assertTrue(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
         // Test 3
-        assertTrue(instance.isIntersectedBy(pN1N1N1, e.oom));
+        assertTrue(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
         // Test 4
-        assertTrue(instance.isIntersectedBy(pN1N1P1, e.oom));
+        assertTrue(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
         // Test 5
-        assertTrue(instance.isIntersectedBy(pN1P1N1, e.oom));
+        assertTrue(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
         // Test 6
-        assertTrue(instance.isIntersectedBy(pP1N1N1, e.oom));
+        assertTrue(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
         // Test 7
-        assertTrue(instance.isIntersectedBy(pP1P1N1, e.oom));
+        assertTrue(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
         // Test 8
-        assertTrue(instance.isIntersectedBy(pP1N1P1, e.oom));
+        assertTrue(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
         // Test 9
-        assertTrue(instance.isIntersectedBy(pN1P1P1, e.oom));
+        assertTrue(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
         // Test 10 to 21 edge mid points
         // Test 10
-        assertTrue(instance.isIntersectedBy(pN1N1P0, e.oom));
+        assertTrue(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
         // Test 11
-        assertTrue(instance.isIntersectedBy(pN1P0N1, e.oom));
+        assertTrue(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
         // Test 12
-        assertTrue(instance.isIntersectedBy(pP0N1N1, e.oom));
+        assertTrue(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
         // Test 13
-        assertTrue(instance.isIntersectedBy(pP1P1P0, e.oom));
+        assertTrue(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
         // Test 14
-        assertTrue(instance.isIntersectedBy(pP1P0P1, e.oom));
+        assertTrue(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
         // Test 15
-        assertTrue(instance.isIntersectedBy(pP0P1P1, e.oom));
+        assertTrue(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
         // Test 16
-        assertTrue(instance.isIntersectedBy(pP0N1P1, e.oom));
+        assertTrue(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
         // Test 17
-        assertTrue(instance.isIntersectedBy(pN1P1P0, e.oom));
+        assertTrue(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
         // Test 18
-        assertTrue(instance.isIntersectedBy(pP1P0N1, e.oom));
+        assertTrue(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
         // Test 19
-        assertTrue(instance.isIntersectedBy(pP0P1N1, e.oom));
+        assertTrue(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
         // Test 20
-        assertTrue(instance.isIntersectedBy(pP1N1P0, e.oom));
+        assertTrue(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
         // Test 21
-        assertTrue(instance.isIntersectedBy(pN1P0P1, e.oom));
+        assertTrue(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
         // Test 22 to 28 face mid points
         // Test 22
-        assertTrue(instance.isIntersectedBy(pP0P0P1, e.oom));
+        assertTrue(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
         // Test 23
-        assertTrue(instance.isIntersectedBy(pP0P1P0, e.oom));
+        assertTrue(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
         // Test 24
-        assertTrue(instance.isIntersectedBy(pP1P0P0, e.oom));
+        assertTrue(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
         // Test 25
-        assertTrue(instance.isIntersectedBy(pP0P0N1, e.oom));
+        assertTrue(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
         // Test 26
-        assertTrue(instance.isIntersectedBy(pP0N1P0, e.oom));
+        assertTrue(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
         // Test 27
-        assertTrue(instance.isIntersectedBy(pN1P0P0, e.oom));
+        assertTrue(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
     }
 
     /**
@@ -290,37 +290,37 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Line li = new V3D_Line(pP0P0P0, pP0P0P1);
         V3D_Envelope instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
         V3D_Geometry expResult = new V3D_LineSegment(pP0P0N1, pP0P0P1);
-        V3D_Geometry result = instance.getIntersection(li, e.oom);
+        V3D_Geometry result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 2
         li = new V3D_Line(pP0P0P0, pP0P1P0);
         expResult = new V3D_LineSegment(pP0N1P0, pP0P1P0);
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 3
         li = new V3D_Line(pP0P0P0, pP1P0P0);
         expResult = new V3D_LineSegment(pN1P0P0, pP1P0P0);
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 4
         li = new V3D_Line(pP1P1P1, pP0P2P1);
         expResult = pP1P1P1;
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 5
         li = new V3D_Line(pP1P1P1, pP0P2P1);
         expResult = pP1P1P1;
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 6 Intersection of a corner at a point
         li = new V3D_Line(pP1P1P1, pP0P2P1);
         expResult = pP1P1P1;
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 6 Intersection of an edge at a point
         li = new V3D_Line(pP1P1P0, pP0P2P2);
         expResult = pP1P1P0;
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // To do: add some expResult = null test cases
     }
@@ -364,52 +364,52 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_LineSegment li = new V3D_LineSegment(pN2N2N2, pP0P0P0);
         V3D_Envelope instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
         V3D_Geometry expResult = new V3D_LineSegment(pN1N1N1, pP0P0P0);
-        V3D_Geometry result = instance.getIntersection(li, e.oom);
+        V3D_Geometry result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 2
         li = new V3D_LineSegment(pP0P0P0, pP0P1P0);
         expResult = new V3D_LineSegment(pP0P0P0, pP0P1P0);
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 3
         li = new V3D_LineSegment(pP0N1P0, pP0P1P0);
         expResult = new V3D_LineSegment(pP0N1P0, pP0P1P0);
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 4
         li = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0);
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 5
         li = new V3D_LineSegment(pN1P0P0, pP1P0P0);
         expResult = new V3D_LineSegment(pN1P0P0, pP1P0P0);
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 6
         li = new V3D_LineSegment(pN2P0P0, pP1P0P0);
         expResult = new V3D_LineSegment(pN1P0P0, pP1P0P0);
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 7
         li = new V3D_LineSegment(pP1P1P1, pP0P2P1);
         expResult = pP1P1P1;
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 8
         li = new V3D_LineSegment(pP1P1P1, pP0P2P1);
         expResult = pP1P1P1;
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 9 Intersection of a corner at a point
         li = new V3D_LineSegment(pP1P1P1, pP0P2P1);
         expResult = pP1P1P1;
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // Test 10 Intersection of an edge at a point
         li = new V3D_LineSegment(pP1P1P0, pP2P2P0);
         expResult = pP1P1P0;
-        result = instance.getIntersection(li, e.oom);
+        result = instance.getIntersection(li, e.oom, e.rm);
         assertEquals(expResult, result);
         // To do: add some expResult = null test cases.
     }
@@ -434,7 +434,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("getxMin");
         V3D_Envelope instance = new V3D_Envelope(e, pP0N1N1, pP0N1P0, pN2N2N2);
         Math_BigRational expResult = N2;
-        Math_BigRational result = instance.getXMin(e.oom);
+        Math_BigRational result = instance.getXMin(e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -446,7 +446,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("getxMax");
         V3D_Envelope instance = new V3D_Envelope(e, pP0N1N1, pP0N1P0, pN2N2N2);
         Math_BigRational expResult = P0;
-        Math_BigRational result = instance.getXMax(e.oom);
+        Math_BigRational result = instance.getXMax(e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -458,7 +458,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("getyMin");
         V3D_Envelope instance = new V3D_Envelope(e, pP0N1N1, pP0N1P0, pN2N2N2);
         Math_BigRational expResult = N2;
-        Math_BigRational result = instance.getYMin(e.oom);
+        Math_BigRational result = instance.getYMin(e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -470,7 +470,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("getyMax");
         V3D_Envelope instance = new V3D_Envelope(e, pP0N1N1, pP0N1P0, pN2N2N2);
         Math_BigRational expResult = N1;
-        Math_BigRational result = instance.getYMax(e.oom);
+        Math_BigRational result = instance.getYMax(e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -482,7 +482,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("getzMin");
         V3D_Envelope instance = new V3D_Envelope(e, pP0N1N1, pP0N1P0, pN2N2N2);
         Math_BigRational expResult = N2;
-        Math_BigRational result = instance.getZMin(e.oom);
+        Math_BigRational result = instance.getZMin(e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -494,7 +494,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("getzMax");
         V3D_Envelope instance = new V3D_Envelope(e, pP0N1N1, pP0N1P0, pN2N2N2);
         Math_BigRational expResult = P0;
-        Math_BigRational result = instance.getZMax(e.oom);
+        Math_BigRational result = instance.getZMax(e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -506,33 +506,33 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("isIntersectedBy");
         V3D_Line li = new V3D_Line(pP0P0P0, pP0P0P1);
         V3D_Envelope instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 2
         li = new V3D_Line(pP0P0P0, pP0P1P0);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 3
         li = new V3D_Line(pP0P0P0, pP1P0P0);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 4
         li = new V3D_Line(pP1P1P1, pP0P2P1);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 5
         li = new V3D_Line(pP1P1P1, pP0P2P1);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 6 Intersection of a corner at a point
         li = new V3D_Line(pP1P1P1, pP0P2P1);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 6 Intersection of an edge at a point
         li = new V3D_Line(pP1P1P0, pP0P2P2);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 7 Internal
         instance = new V3D_Envelope(e, pN2N2N2, pP2P2P2);
         li = new V3D_Line(pP0P0P0, pP0P1P0);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // To do: add some false test cases.
         li = V3D_Line.X_AXIS;
         instance = new V3D_Envelope(e, pP0P0P0);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
     }
 
     /**
@@ -564,34 +564,34 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("isIntersectedBy");
         V3D_LineSegment li = new V3D_LineSegment(pN2N2N2, pP0P0P0);
         V3D_Envelope instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 2
         li = new V3D_LineSegment(pP0P0P0, pP0P1P0);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 3
         li = new V3D_LineSegment(pP0N1P0, pP0P1P0);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 4
         li = new V3D_LineSegment(pP0P0P0, pP1P0P0);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 5
         li = new V3D_LineSegment(pN1P0P0, pP1P0P0);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 6
         li = new V3D_LineSegment(pN2P0P0, pP1P0P0);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 7
         li = new V3D_LineSegment(pP1P1P1, pP0P2P1);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 8
         li = new V3D_LineSegment(pP1P1P1, pP0P2P1);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 9 Intersection of a corner at a point
         li = new V3D_LineSegment(pP1P1P1, pP0P2P1);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // Test 10 Intersection of an edge at a point
         li = new V3D_LineSegment(pP1P1P0, pP0P2P2);
-        assertTrue(instance.isIntersectedBy(li, e.oom));
+        assertTrue(instance.isIntersectedBy(li, e.oom, e.rm));
         // To do: add some false test cases.
     }
 
@@ -603,11 +603,11 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        System.out.println("isEnvelopeIntersectedBy");
 //        V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0);
 //        V3D_Envelope instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
-//        assertTrue(instance.isEnvelopeIntersectedBy(l, e.oom));
+//        assertTrue(instance.isEnvelopeIntersectedBy(l, e.oom, e.rm));
 //        // Test 2
 //        l = new V3D_Line(pN1N1N1, pN1N1P0);
 //        instance = new V3D_Envelope(e, pP0P0P0, pP1P1P1);
-//        assertFalse(instance.isEnvelopeIntersectedBy(l, e.oom));
+//        assertFalse(instance.isEnvelopeIntersectedBy(l, e.oom, e.rm));
 //    }
 
     /**
@@ -619,13 +619,13 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Vector v = P1P1P1;
         V3D_Envelope instance = new V3D_Envelope(e, pP0P0P0, pP1P1P1);
         V3D_Envelope expResult = new V3D_Envelope(e, pP1P1P1, pP2P2P2);
-        instance.apply(e.oom, v);
+        instance.apply(v, e.oom, e.rm);
         assertTrue(expResult.equals(instance));
         // Test 2
         v = N1N1N1;
         instance = new V3D_Envelope(e, pP0P0P0, pP1P1P1);
         expResult = new V3D_Envelope(e, pN1N1N1, pP0P0P0);
-        instance.apply(e.oom, v);
+        instance.apply(v, e.oom, e.rm);
         assertTrue(expResult.equals(instance));
     }
 
@@ -637,82 +637,82 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("getDistance");
         V3D_Point p = pP0P0P0;
         V3D_Envelope instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
-        BigDecimal expResult = new Math_BigRationalSqrt(0, e.oom).toBigDecimal(e.oom);
-        BigDecimal result = instance.getDistance(p, e.oom);
+        BigDecimal expResult = new Math_BigRationalSqrt(0, e.oom, e.rm).toBigDecimal(e.oom, e.rm);
+        BigDecimal result = instance.getDistance(p, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test
         instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
         // Corners
         // Test 2
-        result = instance.getDistance(pN2N2N2, e.oom);
-        expResult = new Math_BigRationalSqrt(3, e.oom).toBigDecimal(e.oom);
+        result = instance.getDistance(pN2N2N2, e.oom, e.rm);
+        expResult = new Math_BigRationalSqrt(3, e.oom, e.rm).toBigDecimal(e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
-        result = instance.getDistance(pN2N2P2, e.oom);
+        result = instance.getDistance(pN2N2P2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 4
-        result = instance.getDistance(pN2P2N2, e.oom);
+        result = instance.getDistance(pN2P2N2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 5
-        result = instance.getDistance(pN2P2P2, e.oom);
+        result = instance.getDistance(pN2P2P2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 6
-        result = instance.getDistance(pP2N2N2, e.oom);
+        result = instance.getDistance(pP2N2N2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 7
-        result = instance.getDistance(pP2N2P2, e.oom);
+        result = instance.getDistance(pP2N2P2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 8
-        result = instance.getDistance(pP2P2N2, e.oom);
+        result = instance.getDistance(pP2P2N2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 9
-        result = instance.getDistance(pP2P2P2, e.oom);
+        result = instance.getDistance(pP2P2P2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Edges
         // Test 10
-        expResult = new Math_BigRationalSqrt(2, e.oom).toBigDecimal(e.oom);
-        result = instance.getDistance(pN2N2P0, e.oom);
+        expResult = new Math_BigRationalSqrt(2, e.oom, e.rm).toBigDecimal(e.oom, e.rm);
+        result = instance.getDistance(pN2N2P0, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 11
-        result = instance.getDistance(pN2P2P0, e.oom);
+        result = instance.getDistance(pN2P2P0, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 12
-        result = instance.getDistance(pN2P0N2, e.oom);
+        result = instance.getDistance(pN2P0N2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 13
-        result = instance.getDistance(pN2P0P2, e.oom);
+        result = instance.getDistance(pN2P0P2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 14
-        result = instance.getDistance(pP0N2P2, e.oom);
+        result = instance.getDistance(pP0N2P2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 15
-        result = instance.getDistance(pP0P2N2, e.oom);
+        result = instance.getDistance(pP0P2N2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 16
-        result = instance.getDistance(pP2P0N2, e.oom);
+        result = instance.getDistance(pP2P0N2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 17
-        result = instance.getDistance(pP2N2P0, e.oom);
+        result = instance.getDistance(pP2N2P0, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // 6 planes
         // Test 18
-        expResult = new Math_BigRationalSqrt(1, e.oom).toBigDecimal(e.oom);
-        result = instance.getDistance(pN2P0P0, e.oom);
+        expResult = new Math_BigRationalSqrt(1, e.oom, e.rm).toBigDecimal(e.oom, e.rm);
+        result = instance.getDistance(pN2P0P0, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 19
-        result = instance.getDistance(pP0N2P0, e.oom);
+        result = instance.getDistance(pP0N2P0, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 20
-        result = instance.getDistance(pP0P0N2, e.oom);
+        result = instance.getDistance(pP0P0N2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 21
-        result = instance.getDistance(pP2P0P0, e.oom);
+        result = instance.getDistance(pP2P0P0, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 22
-        result = instance.getDistance(pP0P2P0, e.oom);
+        result = instance.getDistance(pP0P2P0, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 23
-        result = instance.getDistance(pP0P0P2, e.oom);
+        result = instance.getDistance(pP0P0P2, e.oom, e.rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -724,10 +724,10 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("isIntersectedBy");
         V3D_Point p = V3D_Point.ORIGIN;
         V3D_Envelope instance = new V3D_Envelope(e, pP0P0P0);
-        assertTrue(instance.isIntersectedBy(p, e.oom));
+        assertTrue(instance.isIntersectedBy(p, e.oom, e.rm));
         // Test 2
         instance = new V3D_Envelope(e, pP1P0P0);
-        assertFalse(instance.isIntersectedBy(p, e.oom));
+        assertFalse(instance.isIntersectedBy(p, e.oom, e.rm));
     }
 
     /**
@@ -741,15 +741,15 @@ public class V3D_EnvelopeTest extends V3D_Test {
         // Test 1
         t = new V3D_Triangle(pN2P2P0, pN2N2P0, pP2P0P0);
         instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
-        assertTrue(instance.isIntersectedBy(t, e.oom));
+        assertTrue(instance.isIntersectedBy(t, e.oom, e.rm));
         // Test 2
         t = new V3D_Triangle(new V3D_Point(e, N10, P2, P0), new V3D_Point(e, N10, N2, P0), pP2P0P0);
         instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
-        assertTrue(instance.isIntersectedBy(t, e.oom));
+        assertTrue(instance.isIntersectedBy(t, e.oom, e.rm));
         // Test 2
         t = new V3D_Triangle(new V3D_Point(e, N10, P10, P0), new V3D_Point(e, N10, N10, P0), new V3D_Point(e, P10, P0, P0));
         instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
-        assertTrue(instance.isIntersectedBy(t, e.oom));
+        assertTrue(instance.isIntersectedBy(t, e.oom, e.rm));
     }
 
     /**
@@ -760,12 +760,12 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("isIntersectedBy");
         V3D_Plane p = V3D_Plane.X0;
         V3D_Envelope instance = new V3D_Envelope(e, pP0P0P0);
-        assertTrue(instance.isIntersectedBy(p, e.oom));
+        assertTrue(instance.isIntersectedBy(p, e.oom, e.rm));
         // Test 2
         instance = new V3D_Envelope(e, pN1N1N1, pP1P1P1);
-        assertTrue(instance.isIntersectedBy(p, e.oom));
+        assertTrue(instance.isIntersectedBy(p, e.oom, e.rm));
         // Test 3
         p = new V3D_Plane(pN2P2P0, pP2N2P0, pP0P0P2);
-        assertTrue(instance.isIntersectedBy(p, e.oom));
+        assertTrue(instance.isIntersectedBy(p, e.oom, e.rm));
     }
 }

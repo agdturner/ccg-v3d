@@ -15,7 +15,9 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * V3D_Face
@@ -23,19 +25,20 @@ import java.math.BigDecimal;
  * @author Andy Turner
  * @version 1.0
  */
-public interface V3D_Face extends V3D_IntersectionAndDistanceCalculations {
+public interface V3D_Face extends V3D_IntersectionAndDistanceCalculations, 
+        Serializable {
 
     /**
      * For calculating and returning the perimeter.
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The Perimeter.
      */
-    public abstract BigDecimal getPerimeter(int oom);
+    public abstract BigDecimal getPerimeter(int oom, RoundingMode rm);
 
     /**
      * For calculating and returning the area.
      * @param oom The Order of Magnitude for the precision of the result.
      * @return The area.
      */
-    public abstract BigDecimal getArea(int oom);
+    public abstract BigDecimal getArea(int oom, RoundingMode rm);
 }

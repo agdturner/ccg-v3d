@@ -16,9 +16,9 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
-import uk.ac.leeds.ccg.math.number.Math_BigRationalRoot;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
@@ -128,7 +128,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         boolean qAtOrigin2 = this.p.getQ().equals(V3D_Point.ORIGIN);
         V3D_Vector qs;
         if (qAtOrigin2) {
-            qs = s.subtract(p, e.oom);
+            qs = s.subtract(p, e.oom, e.rm);
         } else {
             qs = null;
         }
@@ -153,11 +153,11 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             } else {
                 // Rectangle has area.
                 if (qAtOrigin2) {
-                    if (!(tpq.isOrthogonal(qs, e.oom))) {
+                    if (!(tpq.isOrthogonal(qs, e.oom, e.rm))) {
                         throw new RuntimeException("The points do not define a rectangle.");
                     }
                 } else {
-                    if (!(tpq.isOrthogonal(tqr, e.oom))) {
+                    if (!(tpq.isOrthogonal(tqr, e.oom, e.rm))) {
                         throw new RuntimeException("The points do not define a rectangle.");
                     }
                 }
@@ -244,11 +244,11 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @return A point or line segment.
      */
     @Override
-    public boolean isIntersectedBy(V3D_Point pt, int oom) {
-        if (super.isIntersectedBy(pt, oom)) {
+    public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
+        if (super.isIntersectedBy(pt, oom, rm)) {
             return true;
         } else {
-            return getRSP().isIntersectedBy(pt, oom);
+            return getRSP().isIntersectedBy(pt, oom, rm);
         }
     }
 
@@ -268,22 +268,22 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         return new V3D_LineSegment(e, offset, getSV(), p.getPV());
     }
 
-    private boolean isIntersectedBy0(V3D_Ray ray, int oom) {
-        return p.getQR().isIntersectedBy(ray, oom)
-                || getRS().isIntersectedBy(ray, oom)
-                || getSP().isIntersectedBy(ray, oom)
-                || p.getPQ().isIntersectedBy(ray, oom);
+    private boolean isIntersectedBy0(V3D_Ray ray, int oom, RoundingMode rm) {
+        return p.getQR().isIntersectedBy(ray, oom, rm)
+                || getRS().isIntersectedBy(ray, oom, rm)
+                || getSP().isIntersectedBy(ray, oom, rm)
+                || p.getPQ().isIntersectedBy(ray, oom, rm);
     }
 
-    private boolean isIntersectedBy0(V3D_Line ls, int oom) {
-        return p.getQR().isIntersectedBy(ls, oom)
-                || getRS().isIntersectedBy(ls, oom)
-                || getSP().isIntersectedBy(ls, oom)
-                || p.getPQ().isIntersectedBy(ls, oom);
+    private boolean isIntersectedBy0(V3D_Line ls, int oom, RoundingMode rm) {
+        return p.getQR().isIntersectedBy(ls, oom, rm)
+                || getRS().isIntersectedBy(ls, oom, rm)
+                || getSP().isIntersectedBy(ls, oom, rm)
+                || p.getPQ().isIntersectedBy(ls, oom, rm);
     }
 
     @Override
-    protected boolean isIntersectedBy0(V3D_Point pt, int oom) {
+    protected boolean isIntersectedBy0(V3D_Point pt, int oom, RoundingMode rm) {
         // Special cases
         V3D_Point tp = p.getP();
         if (tp.equals(pt)) {
@@ -305,83 +305,83 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             //if (V3D_Geometrics.isCoplanar(this, pt)) {
             // Check the areas
             // Area pqpt
-            BigDecimal apqpt = new V3D_Triangle(e, tp.getVector(oom),
-                    tq.getVector(oom), pt.getVector(oom)).getArea(oom);
+            BigDecimal apqpt = new V3D_Triangle(e, tp.getVector(oom, rm),
+                    tq.getVector(oom, rm), pt.getVector(oom, rm)).getArea(oom, rm);
             // Area qrpt
-            BigDecimal aqrpt = new V3D_Triangle(e, tq.getVector(oom),
-                    tr.getVector(oom), pt.getVector(oom)).getArea(oom);
+            BigDecimal aqrpt = new V3D_Triangle(e, tq.getVector(oom, rm),
+                    tr.getVector(oom, rm), pt.getVector(oom, rm)).getArea(oom, rm);
             // Area rspt
-            BigDecimal arspt = new V3D_Triangle(e, tr.getVector(oom),
-                    ts.getVector(oom), pt.getVector(oom)).getArea(oom);
+            BigDecimal arspt = new V3D_Triangle(e, tr.getVector(oom, rm),
+                    ts.getVector(oom, rm), pt.getVector(oom, rm)).getArea(oom, rm);
             // Area sppt
-            BigDecimal asppt = new V3D_Triangle(e, ts.getVector(oom),
-                    tp.getVector(oom), pt.getVector(oom)).getArea(oom);
-            if (this.getArea(oom).compareTo(apqpt.add(aqrpt).add(arspt).add(asppt)) == 0) {
+            BigDecimal asppt = new V3D_Triangle(e, ts.getVector(oom, rm),
+                    tp.getVector(oom, rm), pt.getVector(oom, rm)).getArea(oom, rm);
+            if (this.getArea(oom, rm).compareTo(apqpt.add(aqrpt).add(arspt).add(asppt)) == 0) {
                 return true;
                 //return V3D_Geometrics.isCoplanar(this, pt);
             }
         }
-        if (p.getQR().isIntersectedBy(pt, oom) || getRS().isIntersectedBy(pt, oom)
-                || getSP().isIntersectedBy(pt, oom) || p.getPQ().isIntersectedBy(pt, oom)) {
+        if (p.getQR().isIntersectedBy(pt, oom, rm) || getRS().isIntersectedBy(pt, oom, rm)
+                || getSP().isIntersectedBy(pt, oom, rm) || p.getPQ().isIntersectedBy(pt, oom, rm)) {
             return true;
         }
         if (p.getQ().equals(V3D_Point.ORIGIN)) {
-            V3D_Vector ppt = new V3D_Vector(tq, pt, oom);
-            V3D_Vector qpt = new V3D_Vector(tp, pt, oom);
-            V3D_Vector rpt = new V3D_Vector(tr, pt, oom);
-            V3D_Vector spt = new V3D_Vector(ts, pt, oom);
-            V3D_Vector rs = new V3D_Vector(tr, ts, oom);
-            V3D_Vector sp = new V3D_Vector(ts, tq, oom);
-            V3D_Vector cp = p.getPQV().reverse().getCrossProduct(ppt, oom);
-            V3D_Vector cq = p.getQRV().getCrossProduct(qpt, oom);
-            V3D_Vector cr = rs.getCrossProduct(rpt, oom);
-            V3D_Vector cs = sp.getCrossProduct(spt, oom);
+            V3D_Vector ppt = new V3D_Vector(tq, pt, oom, rm);
+            V3D_Vector qpt = new V3D_Vector(tp, pt, oom, rm);
+            V3D_Vector rpt = new V3D_Vector(tr, pt, oom, rm);
+            V3D_Vector spt = new V3D_Vector(ts, pt, oom, rm);
+            V3D_Vector rs = new V3D_Vector(tr, ts, oom, rm);
+            V3D_Vector sp = new V3D_Vector(ts, tq, oom, rm);
+            V3D_Vector cp = p.getPQV().reverse().getCrossProduct(ppt, oom, rm);
+            V3D_Vector cq = p.getQRV().getCrossProduct(qpt, oom, rm);
+            V3D_Vector cr = rs.getCrossProduct(rpt, oom, rm);
+            V3D_Vector cs = sp.getCrossProduct(spt, oom, rm);
             /**
              * If cp, cq, cr, and cs are all in the same direction then pt
              * intersects.
              */
             Math_BigRational mp = cp.getMagnitudeSquared();
             Math_BigRational mq = cq.getMagnitudeSquared();
-            V3D_Vector cpq = cp.add(cq, oom);
+            V3D_Vector cpq = cp.add(cq, oom, rm);
             Math_BigRational mpq = cpq.getMagnitudeSquared();
             if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
                 Math_BigRational mr = cr.getMagnitudeSquared();
-                V3D_Vector cpqr = cpq.add(cr, oom);
+                V3D_Vector cpqr = cpq.add(cr, oom, rm);
                 Math_BigRational mpqr = cpqr.getMagnitudeSquared();
                 if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
                     Math_BigRational ms = cs.getMagnitudeSquared();
-                    Math_BigRational mpqrs = cpqr.add(cs, oom).getMagnitudeSquared();
+                    Math_BigRational mpqrs = cpqr.add(cs, oom, rm).getMagnitudeSquared();
                     if (mpqrs.compareTo(ms) == 1 && mpqrs.compareTo(mpqr) == 1) {
                         return true;
                     }
                 }
             }
         } else {
-            V3D_Vector ppt = new V3D_Vector(tp, pt, oom);
-            V3D_Vector qpt = new V3D_Vector(tq, pt, oom);
-            V3D_Vector rpt = new V3D_Vector(tr, pt, oom);
-            V3D_Vector spt = new V3D_Vector(ts, pt, oom);
-            V3D_Vector rs = new V3D_Vector(tr, ts, oom);
-            V3D_Vector sp = new V3D_Vector(ts, tp, oom);
-            V3D_Vector cp = p.getPQV().getCrossProduct(ppt, oom);
-            V3D_Vector cq = p.getQRV().getCrossProduct(qpt, oom);
-            V3D_Vector cr = rs.getCrossProduct(rpt, oom);
-            V3D_Vector cs = sp.getCrossProduct(spt, oom);
+            V3D_Vector ppt = new V3D_Vector(tp, pt, oom, rm);
+            V3D_Vector qpt = new V3D_Vector(tq, pt, oom, rm);
+            V3D_Vector rpt = new V3D_Vector(tr, pt, oom, rm);
+            V3D_Vector spt = new V3D_Vector(ts, pt, oom, rm);
+            V3D_Vector rs = new V3D_Vector(tr, ts, oom, rm);
+            V3D_Vector sp = new V3D_Vector(ts, tp, oom, rm);
+            V3D_Vector cp = p.getPQV().getCrossProduct(ppt, oom, rm);
+            V3D_Vector cq = p.getQRV().getCrossProduct(qpt, oom, rm);
+            V3D_Vector cr = rs.getCrossProduct(rpt, oom, rm);
+            V3D_Vector cs = sp.getCrossProduct(spt, oom, rm);
             /**
              * If cp, cq, cr, and cs are all in the same direction then pt
              * intersects.
              */
             Math_BigRational mp = cp.getMagnitudeSquared();
             Math_BigRational mq = cq.getMagnitudeSquared();
-            V3D_Vector cpq = cp.add(cq, oom);
+            V3D_Vector cpq = cp.add(cq, oom, rm);
             Math_BigRational mpq = cpq.getMagnitudeSquared();
             if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
                 Math_BigRational mr = cr.getMagnitudeSquared();
-                V3D_Vector cpqr = cpq.add(cr, oom);
+                V3D_Vector cpqr = cpq.add(cr, oom, rm);
                 Math_BigRational mpqr = cpqr.getMagnitudeSquared();
                 if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
                     Math_BigRational ms = cs.getMagnitudeSquared();
-                    Math_BigRational mpqrs = cpqr.add(cs, oom).getMagnitudeSquared();
+                    Math_BigRational mpqrs = cpqr.add(cs, oom, rm).getMagnitudeSquared();
                     if (mpqrs.compareTo(ms) == 1 && mpqrs.compareTo(mpqr) == 1) {
                         return true;
                     }
@@ -392,26 +392,26 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom) {
-        if (p.isIntersectedBy(l, oom)) {
-            V3D_Geometry g = p.getIntersection(l, oom);
+    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
+        if (p.isIntersectedBy(l, oom, rm)) {
+            V3D_Geometry g = p.getIntersection(l, oom, rm);
             if (g instanceof V3D_Point v3D_Point) {
-                return isIntersectedBy0(v3D_Point, oom);
+                return isIntersectedBy0(v3D_Point, oom, rm);
             } else {
-                return isIntersectedBy0((V3D_Line) g, oom);
+                return isIntersectedBy0((V3D_Line) g, oom, rm);
             }
         }
         return false;
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Ray ray, int oom) {
-        if (p.isIntersectedBy(ray, oom)) {
-            V3D_Geometry g = p.getIntersection(ray, oom);
+    public boolean isIntersectedBy(V3D_Ray ray, int oom, RoundingMode rm) {
+        if (p.isIntersectedBy(ray, oom, rm)) {
+            V3D_Geometry g = p.getIntersection(ray, oom, rm);
             if (g instanceof V3D_Point v3D_Point) {
-                return isIntersectedBy0(v3D_Point, oom);
+                return isIntersectedBy0(v3D_Point, oom, rm);
             } else {
-                return isIntersectedBy0((V3D_Ray) g, oom);
+                return isIntersectedBy0((V3D_Ray) g, oom, rm);
             }
         }
         return false;
@@ -425,28 +425,28 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @return {@code true} iff this rectangle is intersected by {@code l}
      */
     @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom) {
+    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
         if (getEnvelope().isIntersectedBy(l.getEnvelope())) {
-            if (p.isIntersectedBy(l, oom)) {
-                V3D_Geometry pli = p.getIntersection(l, oom);
+            if (p.isIntersectedBy(l, oom, rm)) {
+                V3D_Geometry pli = p.getIntersection(l, oom, rm);
                 if (pli instanceof V3D_Point plip) {
-                    return isIntersectedBy(plip, oom);
+                    return isIntersectedBy(plip, oom, rm);
                 } else {
                     /**
                      * If the two points on the line segment are on the same
                      * side of all of the edges then there is no intersection
                      * otherwise there is.
                      */
-                    if (l.isIntersectedBy(p.getPQ(), oom)) {
+                    if (l.isIntersectedBy(p.getPQ(), oom, rm)) {
                         return true;
                     }
-                    if (l.isIntersectedBy(p.getQR(), oom)) {
+                    if (l.isIntersectedBy(p.getQR(), oom, rm)) {
                         return true;
                     }
-                    if (l.isIntersectedBy(getRS(), oom)) {
+                    if (l.isIntersectedBy(getRS(), oom, rm)) {
                         return true;
                     }
-                    if (l.isIntersectedBy(getSP(), oom)) {
+                    if (l.isIntersectedBy(getSP(), oom, rm)) {
                         return true;
                     }
 //                    if (super.isIntersectedBy(l, oom)) {
@@ -467,10 +467,10 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @return A point or line segment.
      */
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom) {
-        if (p.isIntersectedBy(l, oom)) {
-            V3D_FiniteGeometry i1 = getPQR().getIntersection(l, oom);
-            V3D_FiniteGeometry i2 = getRSP().getIntersection(l, oom);
+    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
+        if (p.isIntersectedBy(l, oom, rm)) {
+            V3D_FiniteGeometry i1 = getPQR().getIntersection(l, oom, rm);
+            V3D_FiniteGeometry i2 = getRSP().getIntersection(l, oom, rm);
             if (i1 == null) {
                 if (i2 == null) {
                     return null;
@@ -671,11 +671,11 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         }
         if (pointOrLineSegment1 instanceof V3D_LineSegment l1) {
             if (pointOrLineSegment2 instanceof V3D_LineSegment l2) {
-                if (l1.getP(e.oom).equals(l2.getP(e.oom))) {
+                if (l1.getP().equals(l2.getP())) {
                     return new V3D_LineSegment(e, offset, l1.l.q, l2.l.q);
-                } else if (l1.getP(e.oom).equals(l2.getQ(e.oom))) {
+                } else if (l1.getP().equals(l2.getQ())) {
                     return new V3D_LineSegment(e, offset, l1.l.q, l2.l.p);
-                } else if (l1.getQ(e.oom).equals(l2.getP(e.oom))) {
+                } else if (l1.getQ().equals(l2.getP())) {
                     return new V3D_LineSegment(e, offset, l1.l.p, l2.l.q);
                 } else {
                     //if (l1.getQ(oom).equals(l2.getQ(oom))) {
@@ -702,9 +702,9 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @return The intersection or {@code null} iff there is no intersection.
      */
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom) {
-        V3D_FiniteGeometry i1 = new V3D_Triangle(this).getIntersection(l, oom);
-        V3D_FiniteGeometry i2 = getRSP().getIntersection(l, oom);
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom, RoundingMode rm) {
+        V3D_FiniteGeometry i1 = new V3D_Triangle(this).getIntersection(l, oom, rm);
+        V3D_FiniteGeometry i2 = getRSP().getIntersection(l, oom, rm);
         if (i1 == null) {
             return i2;
         } else {
@@ -770,18 +770,19 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 //        return getEnvelope().isIntersectedBy(l, oom);
 //    }
     @Override
-    public BigDecimal getPerimeter(int oom) {
-        int oomn2 = oom - 2;
-        return p.getPQ().getLength(oom).toBigDecimal(oomn2)
-                .add(p.getQR().getLength(oom).toBigDecimal(oomn2))
+    public BigDecimal getPerimeter(int oom, RoundingMode rm) {
+        oom -= 2;
+        return p.getPQ().getLength(oom, rm).toBigDecimal(oom, rm)
+                .add(p.getQR().getLength(oom, rm).toBigDecimal(oom, rm))
                 .multiply(BigDecimal.valueOf(2));
     }
 
     @Override
-    public BigDecimal getArea(int oom) {
+    public BigDecimal getArea(int oom, RoundingMode rm) {
 //        return Math_BigDecimal.roundDown(l.v.getMagnitude(oomn2)
 //                .multiply(t.v.getMagnitude(oomn2)), oom);
-        return p.getPQ().l.getV(oom).getMagnitude().multiply(p.getQR().l.getV(oom).getMagnitude(), oom).toBigDecimal(oom);
+        return p.getPQ().l.getV(oom, rm).getMagnitude().multiply(p.getQR()
+                .l.getV(oom, rm).getMagnitude(), oom, rm).toBigDecimal(oom, rm);
     }
 
     /**
@@ -792,9 +793,9 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @return The distance from {@code this} to {@code p}.
      */
     @Override
-    public BigDecimal getDistance(V3D_Point p, int oom) {
-        return (new Math_BigRationalSqrt(getDistanceSquared(p, oom), oom))
-                .getSqrt(oom).toBigDecimal(oom);
+    public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
+        return (new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm))
+                .getSqrt(oom, rm).toBigDecimal(oom, rm);
 //        if (this.isIntersectedBy(p, oom, true)) {
 //            return BigDecimal.ZERO;
 //        }
@@ -812,12 +813,12 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Point p, int oom) {
-        Math_BigRational d1 = super.getDistanceSquared(p, oom);
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom, RoundingMode rm) {
+        Math_BigRational d1 = super.getDistanceSquared(p, oom, rm);
         if (d1.compareTo(Math_BigRational.ZERO) == 0) {
             return d1;
         }
-        Math_BigRational d2 = getRSP().getDistanceSquared(p, oom);
+        Math_BigRational d2 = getRSP().getDistanceSquared(p, oom, rm);
         return d1.min(d2);
     }
 
@@ -828,7 +829,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     public void setOffset(V3D_Vector offset) {
         p.setOffset(offset);
-        s = s.add(offset, e.oom).subtract(this.offset, e.oom);
+        s = s.add(offset, e.oom, e.rm).subtract(this.offset, e.oom, e.rm);
         en = null;
     }
 
@@ -840,48 +841,48 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     @Override
     public void translate(V3D_Vector v) {
         super.translate(v);
-        s = s.add(v, e.oom);
+        s = s.add(v, e.oom, e.rm);
         en = null;
     }
 
     @Override
     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
         super.rotate(axisOfRotation, theta);
-        s = s.rotate(axisOfRotation, theta, e.bI, e.oom);
+        s = s.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
         en = null;
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Plane p, int oom) {
-        if (super.isIntersectedBy(p, oom)) {
+    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
+        if (super.isIntersectedBy(p, oom, rm)) {
             return true;
         } else {
-            return getRSP().isIntersectedBy(p, oom);
+            return getRSP().isIntersectedBy(p, oom, rm);
         }
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom) {
-        if (super.isIntersectedBy(t, oom)) {
+    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
+        if (super.isIntersectedBy(t, oom, rm)) {
             return true;
         } else {
-            return getRSP().isIntersectedBy(t, oom);
+            return getRSP().isIntersectedBy(t, oom, rm);
         }
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom) {
-        if (super.isIntersectedBy(t, oom)) {
+    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
+        if (super.isIntersectedBy(t, oom, rm)) {
             return true;
         } else {
-            return getRSP().isIntersectedBy(t, oom);
+            return getRSP().isIntersectedBy(t, oom, rm);
         }
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom) {
-        V3D_FiniteGeometry t1i = super.getIntersection(p, oom);
-        V3D_FiniteGeometry t2i = getRSP().getIntersection(p, oom);
+    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {
+        V3D_FiniteGeometry t1i = super.getIntersection(p, oom, rm);
+        V3D_FiniteGeometry t2i = getRSP().getIntersection(p, oom, rm);
         if (t1i == null) {
             return t2i;
         }
@@ -895,7 +896,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
                 return t1i;
             } else {
                 return V3D_LineSegmentsCollinear.getGeometry(t1il,
-                        (V3D_LineSegment) t2i, oom);
+                        (V3D_LineSegment) t2i, oom, rm);
             }
         } else {
             return this;
@@ -903,9 +904,9 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom) {
-        V3D_FiniteGeometry t1i = getPQR().getIntersection(t, oom);
-        V3D_FiniteGeometry t2i = getRSP().getIntersection(t, oom);
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, RoundingMode rm) {
+        V3D_FiniteGeometry t1i = getPQR().getIntersection(t, oom, rm);
+        V3D_FiniteGeometry t2i = getRSP().getIntersection(t, oom, rm);
         if (t1i == null) {
             return t2i;
         }
@@ -918,7 +919,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             if (t2i instanceof V3D_Point) {
                 return t1i;
             } else if (t2i instanceof V3D_LineSegment t2il) {
-                return V3D_LineSegmentsCollinear.getGeometry(t1il, t2il, oom);
+                return V3D_LineSegmentsCollinear.getGeometry(t1il, t2il, oom, rm);
             } else {
                 return t2i;
             }
@@ -932,70 +933,70 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom) {
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, RoundingMode rm) {
 //        V3D_Geometry i_pqr = getPQR().getIntersection(t, oom);
 //        V3D_Geometry i_rsp = getRSP().getIntersection(t, oom);
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Line l, int oom) {
-        return new Math_BigRationalRoot(getDistanceSquared(l, oom), 2, oom)
-                .toBigDecimal(oom);
+    public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
+                .toBigDecimal(oom, rm);
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom) {
-        return getRSP().getDistanceSquared(l, oom).min(
-                getPQR().getDistanceSquared(l, oom));
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
+        return getRSP().getDistanceSquared(l, oom, rm).min(
+                getPQR().getDistanceSquared(l, oom, rm));
     }
 
     @Override
-    public BigDecimal getDistance(V3D_LineSegment l, int oom) {
-        return new Math_BigRationalRoot(getDistanceSquared(l, oom), 2, oom)
-                .toBigDecimal(oom);
+    public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
+                .toBigDecimal(oom, rm);
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom) {
-        return getRSP().getDistanceSquared(l, oom).min(
-                getPQR().getDistanceSquared(l, oom));
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
+        return getRSP().getDistanceSquared(l, oom, rm).min(
+                getPQR().getDistanceSquared(l, oom, rm));
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Plane p, int oom) {
-        return new Math_BigRationalRoot(getDistanceSquared(p, oom), 2, oom)
-                .toBigDecimal(oom);
+    public BigDecimal getDistance(V3D_Plane p, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
+                .toBigDecimal(oom, rm);
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom) {
-        return getRSP().getDistanceSquared(p, oom).min(
-                getPQR().getDistanceSquared(p, oom));
+    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom, RoundingMode rm) {
+        return getRSP().getDistanceSquared(p, oom, rm).min(
+                getPQR().getDistanceSquared(p, oom, rm));
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Triangle t, int oom) {
-        return new Math_BigRationalRoot(getDistanceSquared(t, oom), 2, oom)
-                .toBigDecimal(oom);
+    public BigDecimal getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(t, oom, rm), oom, rm)
+                .toBigDecimal(oom, rm);
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom) {
-        return getRSP().getDistanceSquared(t, oom).min(
-                getPQR().getDistanceSquared(t, oom));
+    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
+        return getRSP().getDistanceSquared(t, oom, rm).min(
+                getPQR().getDistanceSquared(t, oom, rm));
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Tetrahedron t, int oom) {
-        return new Math_BigRationalRoot(getDistanceSquared(t, oom), 2, oom)
-                .toBigDecimal(oom);
+    public BigDecimal getDistance(V3D_Tetrahedron t, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(t, oom, rm), oom, rm)
+                .toBigDecimal(oom, rm);
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom) {
-        return getRSP().getDistanceSquared(t, oom).min(
-                getPQR().getDistanceSquared(t, oom));
+    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
+        return getRSP().getDistanceSquared(t, oom, rm).min(
+                getPQR().getDistanceSquared(t, oom, rm));
     }
 
     /**
@@ -1056,8 +1057,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         V3D_LineSegment qr = new V3D_LineSegment(q, r);
         V3D_LineSegment rs = new V3D_LineSegment(r, s);
         V3D_LineSegment sp = new V3D_LineSegment(s, p);
-        if (pq.l.isParallel(rs.l, p.e.oom)) {
-            if (qr.l.isParallel(sp.l, p.e.oom)) {
+        if (pq.l.isParallel(rs.l, p.e.oom, p.e.rm)) {
+            if (qr.l.isParallel(sp.l, p.e.oom, p.e.rm)) {
                 return true;
             }
         }
