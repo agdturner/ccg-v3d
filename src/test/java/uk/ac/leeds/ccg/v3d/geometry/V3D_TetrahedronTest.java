@@ -563,7 +563,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         result = instance.getIntersection(t, e.oom, e.rm);
         System.out.println("expResult " + expResult);
         System.out.println("result " + result);
-//        assertEquals(expResult, result);
+        assertEquals(expResult, result);
         // Test 4
         t = new V3D_Triangle(pN1N1P0, pP1N1P0, pN1P1P0);
         instance = new V3D_Tetrahedron(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2);

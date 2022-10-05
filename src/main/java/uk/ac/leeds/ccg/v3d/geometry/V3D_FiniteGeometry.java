@@ -36,12 +36,12 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry
     protected V3D_Envelope en;
     
     /**
-     * Creates a new instance.
+     * Creates a new instance with offset V3D_Vector.ZERO
      *
      * @param e What {@link #e} is set to.
      */
     public V3D_FiniteGeometry(V3D_Environment e) {
-        super(e);
+        this(e, V3D_Vector.ZERO);
     }
     
     /**

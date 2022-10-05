@@ -1114,6 +1114,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                 }
                 //return t.getIntersection(pil, oom, rm);
             } else if (i instanceof V3D_Triangle it) {
+                //it.getIntersection(t, oom, rm);
                 return it.clip(t, t.getCentroid(oom, rm), oom, rm);
 //                //return it.getIntersection(t, oom); // This does not work due to precision issues.
 //                /**
@@ -1426,8 +1427,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                 return true;
             } else {
                 /**
-                 * If any of the faces of this are intersected by the triangle
-                 * return true.
+                 * If any faces are intersected by the triangle return true.
                  */
                 if (getPqr().isIntersectedBy(t, oom, rm)) {
                     return true;
@@ -1441,20 +1441,28 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                     /**
                      * The points of t may be around the outside of this, but
                      * none of the edges intersect. The intersection of the
-                     * plane of t and this can give a point, line segment or a
-                     * triangle. The cases of point and line segment are already
-                     * taken care of by the face intersection. The remaining
-                     * case is to deal with the triangle.
+                     * plane of t and this can give a point, line segment,
+                     * triangle or convex hull. By controlling rounding in the intersection
+                     * calculation, this can be robust, but currently the
+                     * following does not work when all the intersected points
+                     * are not aligned with t.
                      */
                     V3D_FiniteGeometry g = getIntersection(t.p, oom, rm);
                     if (g instanceof V3D_Point gp) {
                         return t.isAligned(gp, oom, rm);
                         //return t.isIntersectedBy(gp, oom, rm);
+                    } else if (g instanceof V3D_LineSegment gl) {
+                        if (t.isAligned(gl.getP(), oom, rm)) {
+                            return true;
+                        }
+                        if (t.isAligned(gl.getQ(), oom, rm)) {
+                            return true;
+                        }
+                        return t.isIntersectedBy(gl, oom, rm);
+                    } else if (g instanceof V3D_Triangle gt) {
+                        return t.isIntersectedBy(gt, oom, rm);
                     } else {
-                        /**
-                         * This might not work as
-                         */
-                        return t.isIntersectedBy((V3D_Triangle) g, oom, rm);
+                        return t.isIntersectedBy((V3D_ConvexHullCoplanar) g, oom, rm);
                     }
                 }
             }

@@ -564,6 +564,25 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     /**
+     * For checking if {@code t} intersects {@code this}.
+     *
+     * @param t The triangle to test for intersection with this.
+     * @param oom The Order of Magnitude for the precision.
+     * @return {@code true} iff the geometry is intersected by {@code l}.
+     */
+    //@Override
+    public boolean isIntersectedBy(V3D_ConvexHullCoplanar ch, int oom, RoundingMode rm) {
+        if (getEnvelope().isIntersectedBy(ch.getEnvelope())) {
+            for (var t: ch.triangles) {
+                if (isIntersectedBy(t, oom, rm)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The area of the triangle (rounded).
      */
@@ -1084,6 +1103,11 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         return this.getClass().getSimpleName() + "(" + p.toString() + ")";
     }
 
+//    @Override
+//    public String toString() {
+//        return this.getClass().getSimpleName() + "(" + p.toString() + ")";
+//    }
+    
     /**
      * If p, q and r are equal then the point is returned. If two of the points
      * are the same, then a line segment is returned. If all points are

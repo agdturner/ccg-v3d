@@ -90,7 +90,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
      * @param q What {@link #q} is cloned from.
      */
     public V3D_LineSegment(V3D_Environment e, V3D_Vector p, V3D_Vector q) {
-        super(e, V3D_Vector.ZERO);
+        super(e);
         l = new V3D_Line(e, p, q);
         this.l.offset = this.offset;
     }
@@ -106,8 +106,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
     public V3D_LineSegment(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q) {
         super(e, offset);
-        l = new V3D_Line(e, p, q);
-        this.l.offset = this.offset;
+        l = new V3D_Line(e, offset, p, q);
     }
 
     /**
@@ -204,14 +203,87 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
 
     @Override
     public String toString() {
-        return toString("");
+        //return toString("");
+        return toStringSimple("");
     }
-    
+
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of this.
+     */
     public String toString(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
-                + l.toStringFields(pad + " ") + "\n"
+                + toStringFields(pad + " ") + "\n"
                 + pad + ")";
+    }
+    
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of this.
+     */
+    public String toStringSimple(String pad) {
+        return this.getClass().getSimpleName() + "\n"
+                + pad + "(\n"
+                + toStringFieldsSimple(pad + " ") + "\n"
+                + pad + ")";
+    }
+
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of the fields.
+     */
+    @Override
+    protected String toStringFields(String pad) {
+        String r = super.toStringFields(pad) + "\n"
+                + pad + ",\n";
+        if (l.q == null) {
+            r += pad + "p=" + l.getP().toString(pad) + "\n"
+                    + pad + ",\n"
+                    + pad + "q=null" + "\n"
+                    + pad + ",\n"
+                    + pad + "v=" + l.v.toString(pad);
+        } else {
+            if (l.v == null) {
+                r += pad + "p=" + l.getP().toString(pad) + "\n"
+                        + pad + ",\n"
+                        + pad + "q=" + l.getQ().toString(pad) + "\n"
+                        + pad + ",\n"
+                        + pad + "v=null";
+            } else {
+                r += pad + "p=" + l.getP().toString(pad) + "\n"
+                        + pad + ",\n"
+                        + pad + "q=" + l.getQ().toString(pad) + "\n"
+                        + pad + ",\n"
+                        + pad + "v=" + l.v.toString(pad);
+            }
+        }
+        return r;
+    }
+
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of the fields.
+     */
+    @Override
+    protected String toStringFieldsSimple(String pad) {
+        String r = super.toStringFieldsSimple(pad) + ",\n";
+        if (l.q == null) {
+            r += pad + "p=" + l.getP().toStringSimple("") + ",\n"
+                    + pad + "q=null" + ",\n"
+                    + pad + "v=" + l.v.toStringSimple(pad);
+        } else {
+            if (l.v == null) {
+                r += pad + "p=" + l.getP().toStringSimple(pad) + ",\n"
+                        + pad + "q=" + l.getQ().toStringSimple(pad) + ",\n"
+                        + pad + "v=null";
+            } else {
+                r += pad + "p=" + l.getP().toStringSimple(pad) + ",\n"
+                        + pad + "q=" + l.getQ().toStringSimple(pad) + ",\n"
+                        + pad + "v=" + l.v.toStringSimple(pad);
+            }
+        }
+        return r;
     }
 
     @Override

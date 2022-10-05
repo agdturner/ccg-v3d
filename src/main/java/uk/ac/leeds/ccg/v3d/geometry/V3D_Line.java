@@ -112,7 +112,8 @@ public class V3D_Line extends V3D_Geometry
     protected V3D_Vector q;
 
     /**
-     * For storing the vector that defines the line from {@link #p}.
+     * For storing the vector from {@link #p} to {@link #q}. This will not 
+     * change under translation, but will change under rotation. 
      */
     protected V3D_Vector v;
 
@@ -292,7 +293,8 @@ public class V3D_Line extends V3D_Geometry
 
     @Override
     public String toString() {
-        return toString("");
+        //return toString("");
+        return toStringSimple("");
     }
 
     /**
@@ -303,6 +305,17 @@ public class V3D_Line extends V3D_Geometry
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
                 + toStringFields(pad + " ") + "\n"
+                + pad + ")";
+    }
+    
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of this.
+     */
+    public String toStringSimple(String pad) {
+        return this.getClass().getSimpleName() + "\n"
+                + pad + "(\n"
+                + toStringFieldsSimple(pad + " ") + "\n"
                 + pad + ")";
     }
 
@@ -338,6 +351,31 @@ public class V3D_Line extends V3D_Geometry
         return r;
     }
 
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of the fields.
+     */
+    @Override
+    protected String toStringFieldsSimple(String pad) {
+        String r = super.toStringFieldsSimple(pad) + ",\n";
+        if (q == null) {
+            r += pad + "p=" + getP().toStringSimple("") + ",\n"
+                    + pad + "q=null" + ",\n"
+                    + pad + "v=" + v.toStringSimple(pad);
+        } else {
+            if (v == null) {
+                r += pad + "p=" + getP().toStringSimple(pad) + ",\n"
+                        + pad + "q=" + getQ().toStringSimple(pad) + ",\n"
+                        + pad + "v=null";
+            } else {
+                r += pad + "p=" + getP().toStringSimple(pad) + ",\n"
+                        + pad + "q=" + getQ().toStringSimple(pad) + ",\n"
+                        + pad + "v=" + v.toStringSimple(pad);
+            }
+        }
+        return r;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (o instanceof V3D_Line l) {

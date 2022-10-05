@@ -57,38 +57,7 @@ public class V3D_PointTest extends V3D_Test {
     public void tearDown() {
     }
 
-    /**
-     * Test of toString method, of class V3D_Point.
-     */
-    @Test
-    public void testToString() {
-        System.out.println("toString");
-        Math_BigRational x = P0;
-        Math_BigRational y = P0;
-        Math_BigRational z = P0;
-        V3D_Point instance = new V3D_Point(e, x, y, z);
-        String expResult = "V3D_Point\n"
-                + "(\n"
-                + " oom=-3\n"
-                + " ,\n"
-                + " offset=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
-                + " ,\n"
-                + " rel=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
-                + ")";
-        String result = instance.toString();
-        //System.out.println(result);
-        assertTrue(expResult.equalsIgnoreCase(result));
-    }
+    
 
     /**
      * Test of equals method, of class V3D_Point.
@@ -400,27 +369,28 @@ public class V3D_PointTest extends V3D_Test {
      * Test of toString method, of class V3D_Point.
      */
     @Test
-    public void testToString_0args() {
+    public void testToString() {
         System.out.println("toString");
         V3D_Point instance = pP0P1P2;
-        String expResult = "V3D_Point\n"
-                + "(\n"
-                + " oom=-3\n"
-                + " ,\n"
-                + " offset=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
-                + " ,\n"
-                + " rel=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0)\n"
-                + " )\n"
-                + ")";
+//        String expResult = "V3D_Point\n"
+//                + "(\n"
+//                + " oom=-3\n"
+//                + " ,\n"
+//                + " offset=V3D_Vector\n"
+//                + " (\n"
+//                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+//                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+//                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+//                + " )\n"
+//                + " ,\n"
+//                + " rel=V3D_Vector\n"
+//                + " (\n"
+//                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+//                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+//                + "  dz=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0)\n"
+//                + " )\n"
+//                + ")";
+        String expResult = "V3D_Point(oom=-3, offset=V3D_Vector(dx=0, dy=0, dz=0), rel=V3D_Vector(dx=0, dy=1, dz=2))";
         String result = instance.toString();
         //System.out.println(result);
         assertEquals(expResult, result);

@@ -291,7 +291,8 @@ public class V3D_Vector implements Serializable {
 
     @Override
     public String toString() {
-        return toString("");
+        //return toString("");
+        return toStringSimple("");
     }
 
     /**
@@ -304,6 +305,15 @@ public class V3D_Vector implements Serializable {
                 + toStringFields(pad + " ") + "\n"
                 + pad + ")";
     }
+    
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of this.
+     */
+    public String toStringSimple(String pad) {
+        return pad + this.getClass().getSimpleName() 
+                + "(" + toStringFieldsSimple() + ")";
+    }
 
     /**
      * @param pad A padding of spaces.
@@ -313,6 +323,16 @@ public class V3D_Vector implements Serializable {
         return pad + "dx=" + dx + ",\n"
                 + pad + "dy=" + dy + ",\n"
                 + pad + "dz=" + dz;
+    }
+
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of the fields.
+     */
+    protected String toStringFieldsSimple() {
+        return "dx=" + dx.toStringSimple() 
+                + ", dy=" + dy.toStringSimple() 
+                + ", dz=" + dz.toStringSimple();
     }
 
     @Override
@@ -695,11 +715,11 @@ public class V3D_Vector implements Serializable {
      */
     public Math_BigRational getAngle(V3D_Vector v, int oom, RoundingMode rm) {
         Math_BigRational dp = getDotProduct(v, oom, rm);
-        Math_BigRational m2 = getMagnitude().getSqrt(oom, rm);
-        Math_BigRational vm2 = v.getMagnitude().getSqrt(oom, rm);
+        Math_BigRational m2 = getMagnitude(oom, rm);
+        Math_BigRational vm2 = v.getMagnitude(oom, rm);
         MathContext mc = new MathContext(-oom); // This is almost certainly wrong and needs to be checked!
         return Math_BigRational.valueOf(BigDecimalMath.acos(dp.divide(m2.multiply(vm2)).toBigDecimal(mc), mc));
-        //return null;
+        //return dp.divide(m2.multiply(vm2)).arccos(oom, rm);
     }
 
     /**

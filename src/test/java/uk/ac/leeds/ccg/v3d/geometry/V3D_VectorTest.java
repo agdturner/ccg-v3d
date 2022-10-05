@@ -58,24 +58,6 @@ public class V3D_VectorTest extends V3D_Test {
     }
 
     /**
-     * Test of toString method, of class V3D_Vector.
-     */
-    @Test
-    public void testToString() {
-        System.out.println("toString");
-        int oom = -1;
-        V3D_Vector instance = P0P0P0;
-        String expResult = "V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")";
-        String result = instance.toString();
-        assertTrue(expResult.equalsIgnoreCase(result));
-    }
-
-    /**
      * Test of equals method, of class V3D_Vector.
      */
     @Test
@@ -797,22 +779,17 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testToString_0args() {
         System.out.println("toString");
-    }
-
-    /**
-     * Test of toString method, of class V3D_Vector.
-     */
-    @Test
-    public void testToString_String() {
-        System.out.println("toString");
-    }
-
-    /**
-     * Test of toStringFields method, of class V3D_Vector.
-     */
-    @Test
-    public void testToStringFields() {
-        System.out.println("toStringFields");
+        V3D_Vector v = V3D_Vector.ZERO;
+        String result = v.toString();
+        String expResult = "V3D_Vector(dx=0, dy=0, dz=0)";
+//        String expResult = "V3D_Vector\n"
+//                + "(\n"
+//                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+//                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+//                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+//                + ")";
+        //System.out.println(result);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -928,7 +905,7 @@ public class V3D_VectorTest extends V3D_Test {
         V3D_Vector axisOfRotation = new V3D_Vector(0, 1, 0);
         Math_BigDecimal bd = new Math_BigDecimal();
         int oom = -3;
-        int oomt = oom -2;
+        int oomt = oom - 2;
         RoundingMode rm = RoundingMode.HALF_UP;
         Math_BigRational Pi = Math_BigRational.valueOf(bd.getPi(oomt, rm));
         Math_BigRational theta = Pi.divide(2);

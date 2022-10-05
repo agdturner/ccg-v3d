@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.core;
 
 import java.io.Serializable;
 import java.math.RoundingMode;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
@@ -59,6 +60,11 @@ public class V3D_Environment implements Serializable {
     public final Math_BigInteger bI;
     
     /**
+     * An instance that helps with calculations involving PI.
+     */
+    public final Math_BigDecimal bD;
+    
+    /**
      * The default Order of Magnitude.
      */
     public static final int DEFAULT_OOM = -3;
@@ -83,6 +89,7 @@ public class V3D_Environment implements Serializable {
      */
     public V3D_Environment(){
         bI = new Math_BigInteger();
+        bD = new Math_BigDecimal();
         oom = DEFAULT_OOM;
         rm = DEFAULT_RM;
     }
@@ -94,8 +101,9 @@ public class V3D_Environment implements Serializable {
      * @param oom What {@link #oom} is set to.
      * @param rm What {@link #rm} is set to.
      */
-    public V3D_Environment(Math_BigInteger bI, int oom, RoundingMode rm) {
+    public V3D_Environment(Math_BigInteger bI, Math_BigDecimal bD, int oom, RoundingMode rm) {
         this.bI = bI;
+        this.bD = bD;
         this.oom = oom;
         this.rm = rm;
     }
@@ -105,7 +113,16 @@ public class V3D_Environment implements Serializable {
      * @return A padded description.
      */
     public String toStringFields(String pad) {
-        return pad + "oom=" + oom;
+        return pad + toStringFieldsSimple();
     }
+    
+    /**
+     * @param pad The padding.
+     * @return A padded description.
+     */
+    public String toStringFieldsSimple() {
+        return "oom=" + oom;
+    }
+    
     
 }

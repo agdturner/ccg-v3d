@@ -87,7 +87,7 @@ public abstract class V3D_Geometry implements Serializable,
      */
     public V3D_Geometry(V3D_Environment e, V3D_Vector offset) {
         this.e = e;
-        this.offset = new V3D_Vector(offset);
+        this.offset = offset;
     }
 
     /**
@@ -98,6 +98,15 @@ public abstract class V3D_Geometry implements Serializable,
         return e.toStringFields(pad) + "\n"
                 + pad + ",\n"
                 + pad + "offset=" + offset.toString(pad);
+    }
+    
+    /**
+     * @param pad The padding.
+     * @return A padded description.
+     */
+    protected String toStringFieldsSimple(String pad) {
+        return pad + e.toStringFieldsSimple()
+                + ", offset=" + offset.toStringSimple("");
     }
     
     /**

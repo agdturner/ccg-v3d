@@ -67,7 +67,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry 
+public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         implements V3D_Face {
 
     private static final long serialVersionUID = 1L;
@@ -100,8 +100,11 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         super(points[0].e);
         this.points = new ArrayList<>();
         this.triangles = new ArrayList<>();
+        // Get a list of unique points.
+        HashSet<V3D_Point> pts2 = new HashSet<>();
+        pts2.addAll(Arrays.asList(points));
         ArrayList<V3D_Point> pts = new ArrayList<>();
-        pts.addAll(Arrays.asList(points));
+        pts.addAll(pts2);
         V3D_Vector v0 = pts.get(0).rel;
         Math_BigRationalSqrt xmin = v0.dx;
         Math_BigRationalSqrt xmax = v0.dx;
@@ -150,7 +153,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         V3D_Point yminp = pts.get(yminIndex);
         V3D_Point ymaxp = pts.get(ymaxIndex);
         V3D_Point zminp = pts.get(zminIndex);
-        V3D_Point zmaxp = pts.get(zmaxIndex);        
+        V3D_Point zmaxp = pts.get(zmaxIndex);
         this.offset = xminp.offset;
         if (xminIndex == xmaxIndex) {
             V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp);
@@ -520,53 +523,53 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         AboveAndBelow ab = new AboveAndBelow(pts, pl, e.oom, e.rm);
         // Process ab.a
         {
-                if (!ab.a.isEmpty()) {
-            V3D_Point apt = ab.a.get(ab.maxaIndex);
-            points.add(index, apt);
-            index++;
-            V3D_Triangle atr = new V3D_Triangle(p0, p1, apt);
-            TreeSet<Integer> removeIndexes = new TreeSet<>();
-            for (int i = 0; i < ab.a.size(); i++) {
-                if (atr.isIntersectedBy(ab.a.get(i), e.oom, e.rm)) {
-                    removeIndexes.add(i);
-                }
-            }
-            Iterator<Integer> ite = removeIndexes.descendingIterator();
-            while (ite.hasNext()) {
-                ab.a.remove(ite.next().intValue());
-            }
             if (!ab.a.isEmpty()) {
-                // Divide again
-                V3D_Line l = new V3D_Line(p0, p1);
-                V3D_Point proj = l.getPointOfIntersection(apt, e.oom, e.rm);
-                getConvexHull0(ab.a, apt, proj, n, index);
-            }
+                V3D_Point apt = ab.a.get(ab.maxaIndex);
+                points.add(index, apt);
+                index++;
+                V3D_Triangle atr = new V3D_Triangle(p0, p1, apt);
+                TreeSet<Integer> removeIndexes = new TreeSet<>();
+                for (int i = 0; i < ab.a.size(); i++) {
+                    if (atr.isIntersectedBy(ab.a.get(i), e.oom, e.rm)) {
+                        removeIndexes.add(i);
+                    }
                 }
+                Iterator<Integer> ite = removeIndexes.descendingIterator();
+                while (ite.hasNext()) {
+                    ab.a.remove(ite.next().intValue());
+                }
+                if (!ab.a.isEmpty()) {
+                    // Divide again
+                    V3D_Line l = new V3D_Line(p0, p1);
+                    V3D_Point proj = l.getPointOfIntersection(apt, e.oom, e.rm);
+                    getConvexHull0(ab.a, apt, proj, n, index);
+                }
+            }
         }
         index++;
         // Process ab.b
         {
-                if (!ab.b.isEmpty()) {
-            V3D_Point bpt = ab.b.get(ab.maxbIndex);
-            points.add(index, bpt);
-            V3D_Triangle btr = new V3D_Triangle(p0, p1, bpt);
-            TreeSet<Integer> removeIndexes = new TreeSet<>();
-            for (int i = 0; i < ab.b.size(); i++) {
-                if (btr.isIntersectedBy(ab.b.get(i), e.oom, e.rm)) {
-                    removeIndexes.add(i);
-                }
-            }
-            Iterator<Integer> ite = removeIndexes.descendingIterator();
-            while (ite.hasNext()) {
-                ab.b.remove(ite.next().intValue());
-            }
             if (!ab.b.isEmpty()) {
-                // Divide again
-                V3D_Line l = new V3D_Line(p0, p1);
-                V3D_Point proj = l.getPointOfIntersection(bpt, e.oom, e.rm);
-                getConvexHull0(ab.b, bpt, proj, n, index);
-            }
+                V3D_Point bpt = ab.b.get(ab.maxbIndex);
+                points.add(index, bpt);
+                V3D_Triangle btr = new V3D_Triangle(p0, p1, bpt);
+                TreeSet<Integer> removeIndexes = new TreeSet<>();
+                for (int i = 0; i < ab.b.size(); i++) {
+                    if (btr.isIntersectedBy(ab.b.get(i), e.oom, e.rm)) {
+                        removeIndexes.add(i);
+                    }
                 }
+                Iterator<Integer> ite = removeIndexes.descendingIterator();
+                while (ite.hasNext()) {
+                    ab.b.remove(ite.next().intValue());
+                }
+                if (!ab.b.isEmpty()) {
+                    // Divide again
+                    V3D_Line l = new V3D_Line(p0, p1);
+                    V3D_Point proj = l.getPointOfIntersection(bpt, e.oom, e.rm);
+                    getConvexHull0(ab.b, bpt, proj, n, index);
+                }
+            }
         }
     }
 
@@ -770,7 +773,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             // i instanceof V3D_LineSegment
             V3D_LineSegment il = (V3D_LineSegment) i;
             ArrayList<V3D_Point> pts = new ArrayList<>();
-            for (V3D_Point pt: points) {
+            for (V3D_Point pt : points) {
                 if (pl.isOnSameSide(pt, p, oom, rm)) {
                     pts.add(pt);
                 }
@@ -779,17 +782,17 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 return il;
             } else {
                 return new V3D_ConvexHullCoplanar(
-                        this.triangles.get(0).p.getN(oom, rm), 
+                        this.triangles.get(0).p.getN(oom, rm),
                         pts.toArray(V3D_Point[]::new));
             }
         }
     }
-    
+
     /**
      * Clips this using t.
      *
      * @param t The triangle to clip this with.
-     * @param pt A point that is used to return the side of this that is 
+     * @param pt A point that is used to return the side of this that is
      * clipped.
      * @return null, the whole or a part of this.
      */
@@ -856,15 +859,15 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             }
         }
     }
-    
+
     /**
-     * If pts are all equal then a V3D_Point is returned. If two are 
-     * different, then a V3D_LineSegment is returned. Three different, then a 
-     * V3D_Triangle is returned. If four or more are different then a 
-     * V3D_ConvexHullCoplanar is returned.
+     * If pts are all equal then a V3D_Point is returned. If two are different,
+     * then a V3D_LineSegment is returned. Three different, then a V3D_Triangle
+     * is returned. If four or more are different then a V3D_ConvexHullCoplanar
+     * is returned.
      *
      * @param pts The points.
-     * @return Either a V3D_Point, V3D_LineSegment, V3D_Triangle, or 
+     * @return Either a V3D_Point, V3D_LineSegment, V3D_Triangle, or
      * V3D_ConvexHullCoplanar.
      */
     public static V3D_FiniteGeometry getGeometry(int oom, RoundingMode rm, V3D_Point... pts) {
@@ -893,7 +896,5 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             }
         }
     }
-    
-    
-    
+
 }

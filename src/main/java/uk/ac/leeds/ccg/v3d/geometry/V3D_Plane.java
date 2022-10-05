@@ -178,9 +178,9 @@ public class V3D_Plane extends V3D_Geometry
         for (V3D_Point p : points) {
             if (!V3D_Line.isCollinear(e, l, p)) {
                 //return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
-                return new V3D_Plane(e, 
-                        l.getP().getVector(e.oom, e.rm), 
-                        l.getQ().getVector(e.oom, e.rm), 
+                return new V3D_Plane(e,
+                        l.getP().getVector(e.oom, e.rm),
+                        l.getQ().getVector(e.oom, e.rm),
                         p.getVector(e.oom, e.rm));
             }
         }
@@ -199,8 +199,8 @@ public class V3D_Plane extends V3D_Geometry
         for (V3D_Point p : points) {
             if (!V3D_Line.isCollinear(e, l, p)) {
                 //return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
-                return new V3D_Plane(e, V3D_Vector.ZERO, 
-                        l.getP().getVector(e.oom, e.rm), 
+                return new V3D_Plane(e, V3D_Vector.ZERO,
+                        l.getP().getVector(e.oom, e.rm),
                         l.getQ().getVector(e.oom, e.rm),
                         p.getVector(e.oom, e.rm));
             }
@@ -419,7 +419,8 @@ public class V3D_Plane extends V3D_Geometry
 
     @Override
     public String toString() {
-        return toString("");
+        //return toString("");
+        return toStringSimple("");
     }
 
     /**
@@ -435,6 +436,15 @@ public class V3D_Plane extends V3D_Geometry
 
     /**
      * @param pad A padding of spaces.
+     * @return A description of this.
+     */
+    public String toStringSimple(String pad) {
+        return pad + this.getClass().getSimpleName() + "("
+                + toStringFieldsSimple("") + ")";
+    }
+
+    /**
+     * @param pad A padding of spaces.
      * @return A description of the fields.
      */
     @Override
@@ -446,6 +456,18 @@ public class V3D_Plane extends V3D_Geometry
                 + pad + "q=" + q.toString(pad) + "\n"
                 + pad + ",\n"
                 + pad + "r=" + r.toString(pad);
+    }
+    
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of the fields.
+     */
+    @Override
+    protected String toStringFieldsSimple(String pad) {
+        return super.toStringFieldsSimple(pad) + ",\n"
+                + pad + "p=" + p.toStringSimple(pad) + ",\n"
+                + pad + "q=" + q.toStringSimple(pad) + ",\n"
+                + pad + "r=" + r.toStringSimple(pad);
     }
 
 //    /**
@@ -887,30 +909,32 @@ public class V3D_Plane extends V3D_Geometry
                 lp.getX(oomN2, rm).add(lv.getDX(oomN2, rm).multiply(t)),
                 lp.getY(oomN2, rm).add(lv.getDY(oomN2, rm).multiply(t)),
                 lp.getZ(oomN2, rm).add(lv.getDZ(oomN2, rm).multiply(t)));
-        // Check if r is on the line.
-        if (!l.isIntersectedBy(res, oom, rm)) {
-            System.out.println("Not on line! - l.isIntersectedBy(r, oom, rm)");
-        }
-        if (!isIntersectedBy(res, oom, rm)) {
-            System.out.println("Not on plane! - !isIntersectedBy(r, oom, rm)");
-            // Check side of line
-            if (isOnSameSide(res, lp, oom, rm)) {
-                System.out.println("isOnSameSide(res, lp, oom, rm)");
-            } else {
-                System.out.println("!isOnSameSide(res, lp, oom, rm)");
-                V3D_Plane pl2 = new V3D_Plane(getP(), getR(), getQ());
-                V3D_Point p2 = (V3D_Point) pl2.getIntersectiondel(l, oom, rm);
-                if (!res.equals(p2)) {
-                    System.out.println(res);
-                    System.out.println(p2);
-                } else {
-                    System.out.println(res);
-                }
+        if (false) {
+            // Check if r is on the line.
+            if (!l.isIntersectedBy(res, oom, rm)) {
+                System.out.println("Not on line! - l.isIntersectedBy(r, oom, rm)");
             }
-            if (isOnSameSide(res, lq, oom, rm)) {
-                System.out.println("isOnSameSide(res, lq, oom, rm)");
-            } else {
-                System.out.println("!isOnSameSide(res, lq, oom, rm)");
+            if (!isIntersectedBy(res, oom, rm)) {
+                System.out.println("Not on plane! - !isIntersectedBy(r, oom, rm)");
+                // Check side of line
+                if (isOnSameSide(res, lp, oom, rm)) {
+                    System.out.println("isOnSameSide(res, lp, oom, rm)");
+                } else {
+                    System.out.println("!isOnSameSide(res, lp, oom, rm)");
+                    V3D_Plane pl2 = new V3D_Plane(getP(), getR(), getQ());
+                    V3D_Point p2 = (V3D_Point) pl2.getIntersectiondel(l, oom, rm);
+                    if (!res.equals(p2)) {
+                        System.out.println(res);
+                        System.out.println(p2);
+                    } else {
+                        System.out.println(res);
+                    }
+                }
+                if (isOnSameSide(res, lq, oom, rm)) {
+                    System.out.println("isOnSameSide(res, lq, oom, rm)");
+                } else {
+                    System.out.println("!isOnSameSide(res, lq, oom, rm)");
+                }
             }
         }
         return res;
@@ -926,7 +950,6 @@ public class V3D_Plane extends V3D_Geometry
 //                l.p.getZ(oom).subtract(l.v.getDZ(oom).multiply(t)));
     }
 
-   
     public V3D_Geometry getIntersectiondel(V3D_Line l, int oom, RoundingMode rm) {
         int oomN2 = oom - 2;
         if (this.isParallel(l, oomN2, rm)) {
@@ -1016,8 +1039,7 @@ public class V3D_Plane extends V3D_Geometry
                 lp.getZ(oomN2, rm).add(lv.getDZ(oomN2, rm).multiply(t)));
         return res;
     }
-    
-    
+
     /**
      * @param l line segment to intersect with this.
      * @param oom The Order of Magnitude for the calculation.
@@ -1050,10 +1072,10 @@ public class V3D_Plane extends V3D_Geometry
         if (rit == null) {
             return rit;
         }
-        if (rit instanceof V3D_Line) {
+        if (rit instanceof V3D_Ray) {
             return r;
         }
-        if (r.getV().getDirection() == new V3D_Vector(r.getP(),
+        if (r.l.getV().getDirection() == new V3D_Vector(r.l.getP(),
                 (V3D_Point) rit, oom, rm).getDirection()) {
             return rit;
         }
