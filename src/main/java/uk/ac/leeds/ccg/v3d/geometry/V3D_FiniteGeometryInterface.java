@@ -15,8 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.math.RoundingMode;
 
 /**
  * V3D_FiniteGeometry for representing finite geometries.
@@ -31,13 +30,13 @@ public interface V3D_FiniteGeometryInterface {
      *
      * @return The V3D_Envelope.
      */
-    public abstract V3D_Envelope getEnvelope();
+    public abstract V3D_Envelope getEnvelope(int oom, RoundingMode rm);
     
     /**
      * For getting a copy of the points of the geometry.
      *
      * @return The V3D_Envelope.
      */
-    public abstract V3D_Point[] getPoints();
+    public abstract V3D_Point[] getPoints(int oom, RoundingMode rm);
     
 }

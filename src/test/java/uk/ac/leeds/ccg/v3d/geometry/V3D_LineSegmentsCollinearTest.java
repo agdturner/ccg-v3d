@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -292,11 +293,13 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
     @Test
     public void testSimplify() {
         System.out.println("simplify");
+        int oom = -1;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegmentsCollinear instance = new V3D_LineSegmentsCollinear(
                 new V3D_LineSegment(pP0P0P0, pP1P0P0),
                 new V3D_LineSegment(pP1P0P0, pP2P0P0));
         V3D_Geometry expResult = new V3D_LineSegment(pP0P0P0, pP2P0P0);
-        V3D_Geometry result = instance.simplify();
+        V3D_Geometry result = instance.simplify(oom, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_LineSegmentsCollinear(
@@ -304,7 +307,7 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
                 new V3D_LineSegment(pP1P0P0, pP2P0P0),
                 new V3D_LineSegment(pP0P0P0, pP2P0P0));
         expResult = new V3D_LineSegment(pP0P0P0, pP2P0P0);
-        result = instance.simplify();
+        result = instance.simplify(oom, rm);
         assertEquals(expResult, result);
     }
 

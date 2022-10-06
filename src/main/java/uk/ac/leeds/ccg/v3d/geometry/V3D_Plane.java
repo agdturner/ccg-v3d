@@ -87,9 +87,10 @@ public class V3D_Plane extends V3D_Geometry
      * @param points The points to test if they are coplanar with p.
      * @return {@code true} iff all points are coplanar with p.
      */
-    public static boolean isCoplanar(V3D_Environment e, V3D_Plane p, V3D_Point... points) {
+    public static boolean isCoplanar(V3D_Environment e, int oom, 
+            RoundingMode rm, V3D_Plane p, V3D_Point... points) {
         for (V3D_Point pt : points) {
-            if (!p.isIntersectedBy(pt, e.oom, e.rm)) {
+            if (!p.isIntersectedBy(pt, oom, rm)) {
                 return false;
             }
         }
@@ -102,10 +103,11 @@ public class V3D_Plane extends V3D_Geometry
      * @param points The points to test if they are coplanar with p.
      * @return {@code true} iff all points are coplanar with p.
      */
-    private static boolean isCoplanar(V3D_Environment e, V3D_Plane p, V3D_Vector... points) {
+    private static boolean isCoplanar(V3D_Environment e, int oom, 
+            RoundingMode rm, V3D_Plane p, V3D_Vector... points) {
         for (V3D_Vector pt : points) {
             V3D_Point point = new V3D_Point(e, p.offset, pt);
-            if (!p.isIntersectedBy(point, e.oom, e.rm)) {
+            if (!p.isIntersectedBy(point, oom, rm)) {
                 return false;
             }
         }
@@ -118,9 +120,11 @@ public class V3D_Plane extends V3D_Geometry
      * @param points The points to test if they are coplanar with p.
      * @return {@code true} iff all points are coplanar with p.
      */
-    public static boolean isCoplanar(V3D_Environment e, V3D_Envelope.Plane p, V3D_Envelope.Point... points) {
+    public static boolean isCoplanar(V3D_Environment e, int oom, 
+            RoundingMode rm, V3D_Envelope.Plane p, 
+            V3D_Envelope.Point... points) {
         for (V3D_Envelope.Point pt : points) {
-            if (!p.isIntersectedBy(pt, e.oom, e.rm)) {
+            if (!p.isIntersectedBy(pt, oom, rm)) {
                 return false;
             }
         }
@@ -133,14 +137,15 @@ public class V3D_Plane extends V3D_Geometry
      * @return {@code false} if points are coincident or collinear. {@code true}
      * iff all points are coplanar.
      */
-    public static boolean isCoplanar(V3D_Environment e, V3D_Point... points) {
+    public static boolean isCoplanar(V3D_Environment e, int oom, 
+            RoundingMode rm, V3D_Point... points) {
         // For the points to be in a plane at least one must not be collinear.
         if (V3D_Point.isCoincident(points)) {
             return false;
         }
-        if (!V3D_Line.isCollinear0(e, points)) {
-            V3D_Plane p = getPlane0(e, points);
-            return isCoplanar(e, p, points);
+        if (!V3D_Line.isCollinear0(e, oom, rm, points)) {
+            V3D_Plane p = getPlane0(e, oom, rm, points);
+            return isCoplanar(e, oom, rm, p, points);
         }
         return false;
     }
@@ -151,14 +156,15 @@ public class V3D_Plane extends V3D_Geometry
      * @return {@code false} if points are coincident or collinear. {@code true}
      * iff all points are coplanar.
      */
-    public static boolean isCoplanar(V3D_Environment e, V3D_Vector... points) {
+    public static boolean isCoplanar(V3D_Environment e, int oom, 
+            RoundingMode rm, V3D_Vector... points) {
         // For the points to be in a plane at least one must not be collinear.
         if (V3D_Point.isCoincident(points)) {
             return false;
         }
-        if (!V3D_Line.isCollinear0(e, points)) {
-            V3D_Plane p = getPlane0(e, points);
-            return isCoplanar(e, p, points);
+        if (!V3D_Line.isCollinear0(e, oom, rm, points)) {
+            V3D_Plane p = getPlane0(e, oom, rm, points);
+            return isCoplanar(e, oom, rm, p, points);
         }
         return false;
     }
@@ -170,18 +176,19 @@ public class V3D_Plane extends V3D_Geometry
      * {@code null} if there is no such plane (if the points are coincident or
      * collinear).
      */
-    public static V3D_Plane getPlane(V3D_Environment e, V3D_Point... points) {
+    public static V3D_Plane getPlane(V3D_Environment e, int oom, 
+            RoundingMode rm, V3D_Point... points) {
         V3D_Line l = V3D_Line.getLine(e, points);
         if (l == null) {
             return null;
         }
         for (V3D_Point p : points) {
-            if (!V3D_Line.isCollinear(e, l, p)) {
+            if (!V3D_Line.isCollinear(e, oom, rm, l, p)) {
                 //return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
                 return new V3D_Plane(e,
-                        l.getP().getVector(e.oom, e.rm),
-                        l.getQ().getVector(e.oom, e.rm),
-                        p.getVector(e.oom, e.rm));
+                        l.getP().getVector(oom, rm),
+                        l.getQ(oom, rm).getVector(oom, rm),
+                        p.getVector(oom, rm));
             }
         }
         return null;
@@ -194,15 +201,16 @@ public class V3D_Plane extends V3D_Geometry
      * {@code null} if there is no such plane. This does not test if the points
      * are coincident or collinear.
      */
-    private static V3D_Plane getPlane0(V3D_Environment e, V3D_Point... points) {
+    private static V3D_Plane getPlane0(V3D_Environment e, int oom, 
+            RoundingMode rm, V3D_Point... points) {
         V3D_Line l = V3D_Line.getLine(e, points);
         for (V3D_Point p : points) {
-            if (!V3D_Line.isCollinear(e, l, p)) {
+            if (!V3D_Line.isCollinear(e, oom, rm, l, p)) {
                 //return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
                 return new V3D_Plane(e, V3D_Vector.ZERO,
-                        l.getP().getVector(e.oom, e.rm),
-                        l.getQ().getVector(e.oom, e.rm),
-                        p.getVector(e.oom, e.rm));
+                        l.getP().getVector(oom, rm),
+                        l.getQ(oom, rm).getVector(oom, rm),
+                        p.getVector(oom, rm));
             }
         }
         return null;
@@ -215,10 +223,11 @@ public class V3D_Plane extends V3D_Geometry
      * {@code null} if there is no such plane. This does not test if the points
      * are coincident or collinear.
      */
-    private static V3D_Plane getPlane0(V3D_Environment e, V3D_Vector... points) {
+    private static V3D_Plane getPlane0(V3D_Environment e, int oom, 
+            RoundingMode rm, V3D_Vector... points) {
         V3D_Line l = V3D_Line.getLine(e, points);
         for (V3D_Vector p : points) {
-            if (!V3D_Line.isCollinear(e, l, p)) {
+            if (!V3D_Line.isCollinear(oom, rm, l, p)) {
                 //return new V3D_Plane(l.getP(oom), l.getQ(oom), p, oom);
                 return new V3D_Plane(e, l.offset, l.p, l.q, p);
             }
@@ -289,9 +298,9 @@ public class V3D_Plane extends V3D_Geometry
      * @param check If {@code true} then if p, q and r are coincident or
      * collinear then a RuntimeException is thrown.
      */
-    public V3D_Plane(V3D_Environment e, V3D_Vector p, V3D_Vector q,
-            V3D_Vector r, boolean check) {
-        this(e, V3D_Vector.ZERO, p, q, r, check);
+    public V3D_Plane(V3D_Environment e, int oom, RoundingMode rm, V3D_Vector p, 
+            V3D_Vector q, V3D_Vector r, boolean check) {
+        this(e, oom, rm, V3D_Vector.ZERO, p, q, r, check);
     }
 
     /**
@@ -307,13 +316,14 @@ public class V3D_Plane extends V3D_Geometry
      * @param check Ignored.
      * @throws RuntimeException if p, q and r are coincident or collinear.
      */
-    public V3D_Plane(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
-            V3D_Vector q, V3D_Vector r, boolean check) {
+    public V3D_Plane(V3D_Environment e, int oom, RoundingMode rm, 
+            V3D_Vector offset, V3D_Vector p, V3D_Vector q, V3D_Vector r, 
+            boolean check) {
         super(e, offset);
         this.p = p;
         this.q = q;
         this.r = r;
-        if (!isCoplanar(e, p, q, r)) {
+        if (!isCoplanar(e, oom, rm, p, q, r)) {
             throw new RuntimeException("The points do not define a plane.");
         }
     }
@@ -783,7 +793,8 @@ public class V3D_Plane extends V3D_Geometry
      * @return {@code true} If {@code pt} is on the plane.
      */
     public boolean isOnPlane(V3D_Line l, int oom, RoundingMode rm) {
-        return isIntersectedBy(l.getP(), oom, rm) && isIntersectedBy(l.getQ(), oom, rm);
+        return isIntersectedBy(l.getP(), oom, rm) 
+                && isIntersectedBy(l.getQ(oom, rm), oom, rm);
     }
 
     /**
@@ -837,7 +848,7 @@ public class V3D_Plane extends V3D_Geometry
         if (this.isIntersectedBy(lp, oomN2, rm)) {
             return lp;
         }
-        V3D_Point lq = l.getQ();
+        V3D_Point lq = l.getQ(oom, rm);
         if (this.isIntersectedBy(lq, oomN2, rm)) {
             return lq;
         }
@@ -965,7 +976,7 @@ public class V3D_Plane extends V3D_Geometry
         if (this.isIntersectedBy(lp, oomN2, rm)) {
             return lp;
         }
-        V3D_Point lq = l.getQ();
+        V3D_Point lq = l.getQ(oom, rm);
         if (this.isIntersectedBy(lq, oomN2, rm)) {
             return lq;
         }
@@ -1075,7 +1086,7 @@ public class V3D_Plane extends V3D_Geometry
         if (rit instanceof V3D_Ray) {
             return r;
         }
-        if (r.l.getV().getDirection() == new V3D_Vector(r.l.getP(),
+        if (r.l.getV(oom, rm).getDirection() == new V3D_Vector(r.l.getP(),
                 (V3D_Point) rit, oom, rm).getDirection()) {
             return rit;
         }
@@ -1674,8 +1685,8 @@ public class V3D_Plane extends V3D_Geometry
      * @param pl The plane to check for equality with {@code this}.
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
-    public boolean equals(V3D_Plane pl) {
-        return isCoplanar(e, this, pl.getP(), pl.getQ(), pl.getR());
+    public boolean equals(V3D_Plane pl, int oom, RoundingMode rm) {
+        return isCoplanar(e, oom, rm, this, pl.getP(), pl.getQ(), pl.getR());
     }
 
     /**
@@ -1838,7 +1849,7 @@ public class V3D_Plane extends V3D_Geometry
     @Override
     public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
         Math_BigRational lpd = getDistanceSquared(l.getP(), oom, rm);
-        Math_BigRational lqd = getDistanceSquared(l.getQ(), oom, rm);
+        Math_BigRational lqd = getDistanceSquared(l.getQ(oom, rm), oom, rm);
         return lpd.min(lqd);
     }
 
@@ -1847,11 +1858,11 @@ public class V3D_Plane extends V3D_Geometry
      *
      * @param offset What {@link #offset} is set to.
      */
-    public void setOffset(V3D_Vector offset) {
+    public void setOffset(V3D_Vector offset, int oom, RoundingMode rm) {
         if (!this.offset.equals(offset)) {
-            p = p.add(this.offset, e.oom, e.rm).subtract(offset, e.oom, e.rm);
-            q = q.add(this.offset, e.oom, e.rm).subtract(offset, e.oom, e.rm);
-            r = r.add(this.offset, e.oom, e.rm).subtract(offset, e.oom, e.rm);
+            p = p.add(this.offset, oom, rm).subtract(offset, oom, rm);
+            q = q.add(this.offset, oom, rm).subtract(offset, oom, rm);
+            r = r.add(this.offset, oom, rm).subtract(offset, oom, rm);
             this.offset = offset;
         }
     }
@@ -1861,17 +1872,17 @@ public class V3D_Plane extends V3D_Geometry
      *
      * @param v What is added to {@link #p}, {@link #q}, {@link #r}.
      */
-    public void translate(V3D_Vector v) {
-        p = p.add(v, e.oom, e.rm);
-        q = q.add(v, e.oom, e.rm);
-        r = r.add(v, e.oom, e.rm);
+    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        p = p.add(v, oom, rm);
+        q = q.add(v, oom, rm);
+        r = r.add(v, oom, rm);
     }
 
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        p = p.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
-        q = q.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
-        r = r.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
+        p = p.rotate(axisOfRotation, theta, e.bI, oom, rm);
+        q = q.rotate(axisOfRotation, theta, e.bI, oom, rm);
+        r = r.rotate(axisOfRotation, theta, e.bI, oom, rm);
         pq = null;
         qr = null;
         rp = null;

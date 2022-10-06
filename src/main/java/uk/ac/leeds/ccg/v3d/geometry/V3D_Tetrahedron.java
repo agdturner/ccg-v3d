@@ -196,13 +196,13 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Envelope getEnvelope() {
+    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
 //            en = pqr.getEnvelope(oom).union(qsr.getEnvelope(oom));
-            en = getP().getEnvelope()
-                    .union(getQ().getEnvelope())
-                    .union(getR().getEnvelope())
-                    .union(getS().getEnvelope());
+            en = getP().getEnvelope(oom, rm)
+                    .union(getQ().getEnvelope(oom, rm))
+                    .union(getR().getEnvelope(oom, rm))
+                    .union(getS().getEnvelope(oom, rm));
         }
         return en;
     }
@@ -394,7 +394,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         if (isIntersectedBy(l.getP(), oom, rm)) {
             return true;
         } else {
-            if (isIntersectedBy(l.getQ(), oom, rm)) {
+            if (isIntersectedBy(l.getQ(oom, rm), oom, rm)) {
                 return true;
             } else {
                 if (getPqr().isIntersectedBy(l, oom, rm)) {
@@ -493,20 +493,21 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
             V3D_Point r, V3D_Point s, int oom, RoundingMode rm) {
         if (p.equals(q)) {
             return V3D_Triangle.getGeometry(p, r, s, oom, rm);
-        } else if (p.equals(r)) {
+        } else if (p.equals(r, oom, rm)) {
             return V3D_Triangle.getGeometry(p, q, s, oom, rm);
-        } else if (p.equals(s)) {
+        } else if (p.equals(s, oom, rm)) {
             return V3D_Triangle.getGeometry(p, q, r, oom, rm);
-        } else if (q.equals(r)) {
+        } else if (q.equals(r, oom, rm)) {
             return V3D_Triangle.getGeometry(p, q, s, oom, rm);
-        } else if (q.equals(s)) {
+        } else if (q.equals(s, oom, rm)) {
             return V3D_Triangle.getGeometry(p, q, r, oom, rm);
-        } else if (r.equals(s)) {
+        } else if (r.equals(s, oom, rm)) {
             return V3D_Triangle.getGeometry(p, q, r, oom, rm);
         } else {
-            if (V3D_Plane.isCoplanar(p.e, p, q, r, s)) {
-                if (V3D_Line.isCollinear(p.e, p, q, r, s)) {
-                    return new V3D_LineSegment(p, q, r, s);
+            if (V3D_Plane.isCoplanar(p.e, oom, rm, p, q, r, s)) {
+                if (V3D_Line.isCollinear(p.e, oom, rm, p, q, r, s)) {
+                    //return V3D_Line(p, q, r, s);
+                    throw new UnsupportedOperationException("Need code to construct a line segment from 4 points!");
                 }
                 V3D_LineSegment pq = new V3D_LineSegment(p, q);
                 V3D_LineSegment rs = new V3D_LineSegment(r, s);
@@ -593,7 +594,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                 }
             } else {
                 V3D_Point lp = l.getP();
-                V3D_Point lq = l.getQ();
+                V3D_Point lq = l.getQ(oom, rm);
                 if (isIntersectedBy(lp, oom, rm)) {
                     if (isIntersectedBy(lq, oom, rm)) {
                         return (V3D_LineSegment) g.getIntersection(l, oom, rm);
@@ -950,13 +951,13 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                  * the triangle.
                  */
                 V3D_Vector n = t.p.getN(oom, rm);
-                V3D_Plane lp = new V3D_Plane(e, offset, t.p.p, t.p.q, t.p.p.add(n, oom, rm), false);
+                V3D_Plane lp = new V3D_Plane(e, oom, rm, offset, t.p.p, t.p.q, t.p.p.add(n, oom, rm), false);
                 V3D_FiniteGeometry lpiil = lp.getIntersection(il, oom, rm);
                 if (lpiil == null) {
-                    V3D_Plane lq = new V3D_Plane(e, offset, t.p.q, t.p.r, t.p.q.add(n, oom, rm), false);
+                    V3D_Plane lq = new V3D_Plane(e, oom, rm, offset, t.p.q, t.p.r, t.p.q.add(n, oom, rm), false);
                     V3D_FiniteGeometry lqiil = lq.getIntersection(il, oom, rm);
                     if (lqiil == null) {
-                        V3D_Plane lr = new V3D_Plane(e, offset, t.p.r, t.p.p, t.p.r.add(n, oom, rm), false);
+                        V3D_Plane lr = new V3D_Plane(e, oom, rm, offset, t.p.r, t.p.p, t.p.r.add(n, oom, rm), false);
                         V3D_FiniteGeometry lriil = lr.getIntersection(il, oom, rm);
                         if (lriil == null) {
                             return il;
@@ -974,12 +975,12 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                         }
                     } else if (lqiil instanceof V3D_Point lqiilp) {
                         // Find the other point and return the linesegment.
-                        V3D_Plane lr = new V3D_Plane(e, offset, t.p.r, t.p.p, t.p.r.add(n, oom, rm), false);
+                        V3D_Plane lr = new V3D_Plane(e, oom, rm, offset, t.p.r, t.p.p, t.p.r.add(n, oom, rm), false);
                         V3D_FiniteGeometry lriil = lr.getIntersection(il, oom, rm);
                         if (lriil == null) {
                             // For the points on the right side (if any)
                             V3D_Point ilp = il.getP();
-                            V3D_Point ilq = il.getQ();
+                            V3D_Point ilq = il.getQ(oom, rm);
                             V3D_Point tpp = t.p.getP();
                             if (lq.isOnSameSide(ilp, tpp, oom, rm)) {
                                 if (lq.isOnSameSide(ilq, tpp, oom, rm)) {
@@ -1003,7 +1004,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                             if (lqiilp.equals(lriilp)) {
                                 // Find the other point and return the line segment.
                                 V3D_Point ilp = il.getP();
-                                V3D_Point ilq = il.getQ();
+                                V3D_Point ilq = il.getQ(oom, rm);
                                 if (lq.isOnSameSide(ilp, ilq, oom, rm)) {
                                     if (lqiilp.getDistanceSquared(ilp, oom, rm).compareTo(
                                             lqiilp.getDistanceSquared(ilq, oom, rm)) == -1) {
@@ -1027,15 +1028,15 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                     }
                 } else if (lpiil instanceof V3D_Point lpiilp) {
                     // Find the other point and return the linesegment.
-                    V3D_Plane lq = new V3D_Plane(e, offset, t.p.q, t.p.r, t.p.q.add(n, oom, rm), false);
+                    V3D_Plane lq = new V3D_Plane(e, oom, rm, offset, t.p.q, t.p.r, t.p.q.add(n, oom, rm), false);
                     V3D_FiniteGeometry lqiil = lq.getIntersection(il, oom, rm);
                     if (lqiil == null) {
-                        V3D_Plane lr = new V3D_Plane(e, offset, t.p.r, t.p.p, t.p.r.add(n, oom, rm), false);
+                        V3D_Plane lr = new V3D_Plane(e, oom, rm, offset, t.p.r, t.p.p, t.p.r.add(n, oom, rm), false);
                         V3D_FiniteGeometry lriil = lr.getIntersection(il, oom, rm);
                         if (lriil == null) {
                             // Find the other point and return the line segment.
                             V3D_Point ilp = il.getP();
-                            V3D_Point ilq = il.getQ();
+                            V3D_Point ilq = il.getQ(oom, rm);
                             if (lq.isOnSameSide(ilp, ilq, oom, rm)) {
                                 if (lpiilp.getDistanceSquared(ilp, oom, rm).compareTo(
                                         lpiilp.getDistanceSquared(ilq, oom, rm)) == -1) {
@@ -1050,7 +1051,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                             if (lpiilp.equals(lriilp)) {
                                 // Find the other point and return the line segment.
                                 V3D_Point ilp = il.getP();
-                                V3D_Point ilq = il.getQ();
+                                V3D_Point ilq = il.getQ(oom, rm);
                                 if (lq.isOnSameSide(ilp, ilq, oom, rm)) {
                                     if (lpiilp.getDistanceSquared(ilp, oom, rm).compareTo(
                                             lpiilp.getDistanceSquared(ilq, oom, rm)) == -1) {
@@ -1074,12 +1075,12 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                         }
                     } else if (lqiil instanceof V3D_Point lqiilp) {
                         // Find the other point and return the linesegment.
-                        V3D_Plane lr = new V3D_Plane(e, offset, t.p.r, t.p.p, t.p.r.add(n, oom, rm), false);
+                        V3D_Plane lr = new V3D_Plane(e, oom, rm, offset, t.p.r, t.p.p, t.p.r.add(n, oom, rm), false);
                         V3D_FiniteGeometry lriil = lr.getIntersection(il, oom, rm);
                         if (lriil == null) {
                             // For the points on the right side (if any)
                             V3D_Point pilp = il.getP();
-                            V3D_Point pilq = il.getQ();
+                            V3D_Point pilq = il.getQ(oom, rm);
                             if (lq.isOnSameSide(pilp, pilq, oom, rm)) {
                                 if (lqiilp.getDistanceSquared(pilp, oom, rm).compareTo(
                                         lqiilp.getDistanceSquared(pilq, oom, rm)) == -1) {
@@ -1280,13 +1281,13 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                 return i_pqr;
             } else {
                 if (i_rsp instanceof V3D_Triangle i_rspt) {
-                    V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(
-                            i_pqrt, i_rspt);
+                    V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(oom,
+                            rm, i_pqrt, i_rspt);
                     return ch.simplify();
                 } else {
                     // i_rsp instanceof V3D_ConvexHullCoplanar
-                    V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(
-                            (V3D_ConvexHullCoplanar) i_rsp, i_pqrt);
+                    V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(oom, 
+                            rm, (V3D_ConvexHullCoplanar) i_rsp, i_pqrt);
                     return ch.simplify();
                 }
             }
@@ -1299,12 +1300,12 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
             } else if (i_rsp instanceof V3D_LineSegment) {
                 return i_pqr;
             } else if (i_rsp instanceof V3D_Triangle i_rspt) {
-                V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(
+                V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(oom, rm,
                         (V3D_ConvexHullCoplanar) i_pqr, i_rspt);
                 return ch.simplify();
             } else {
                 // i_rsp instanceof V3D_ConvexHullCoplanar
-                V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(
+                V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(oom, rm,
                         (V3D_ConvexHullCoplanar) i_pqr,
                         (V3D_ConvexHullCoplanar) i_rsp);
                 return ch.simplify();
@@ -1313,7 +1314,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Point[] getPoints() {
+    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
         V3D_Point[] re = new V3D_Point[4];
         re[0] = getP();
         re[1] = getQ();
@@ -1381,20 +1382,21 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      *
      * @param offset What {@link #offset} is set to.
      */
-    public void setOffset(V3D_Vector offset) {
-        p = p.add(offset, e.oom, e.rm).subtract(this.offset, e.oom, e.rm);
-        q = q.add(offset, e.oom, e.rm).subtract(this.offset, e.oom, e.rm);
-        r = r.add(offset, e.oom, e.rm).subtract(this.offset, e.oom, e.rm);
-        s = s.add(offset, e.oom, e.rm).subtract(this.offset, e.oom, e.rm);
+    public void setOffset(V3D_Vector offset, int oom, RoundingMode rm) {
+        p = p.add(offset, oom, rm).subtract(this.offset, oom, rm);
+        q = q.add(offset, oom, rm).subtract(this.offset, oom, rm);
+        r = r.add(offset, oom, rm).subtract(this.offset, oom, rm);
+        s = s.add(offset, oom, rm).subtract(this.offset, oom, rm);
         this.offset = offset;
     }
 
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        p = p.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
-        q = q.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
-        r = r.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
-        s = s.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+            int oom, RoundingMode rm) {
+        p = p.rotate(axisOfRotation, theta, e.bI, oom, rm);
+        q = q.rotate(axisOfRotation, theta, e.bI, oom, rm);
+        r = r.rotate(axisOfRotation, theta, e.bI, oom, rm);
+        s = s.rotate(axisOfRotation, theta, e.bI, oom, rm);
         pqr = null;
         psq = null;
         spr = null;
@@ -1455,7 +1457,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                         if (t.isAligned(gl.getP(), oom, rm)) {
                             return true;
                         }
-                        if (t.isAligned(gl.getQ(), oom, rm)) {
+                        if (t.isAligned(gl.getQ(oom, rm), oom, rm)) {
                             return true;
                         }
                         return t.isIntersectedBy(gl, oom, rm);
@@ -1480,7 +1482,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     @Override
     public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        if (getEnvelope().isIntersectedBy(t.getEnvelope())) {
+        if (getEnvelope(oom, rm).isIntersectedBy(t.getEnvelope(oom, rm))) {
             // 1. Check points
             // If any point of t are in this return true.
             if (isIntersectedBy(t.getP(), oom, rm)) {

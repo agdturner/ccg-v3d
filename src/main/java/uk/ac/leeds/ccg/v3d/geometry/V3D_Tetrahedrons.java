@@ -61,18 +61,18 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume,
     }
 
     @Override
-    public V3D_Envelope getEnvelope() {
+    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
-            en = tetrahedrons.stream().findAny().get().getEnvelope();
+            en = tetrahedrons.stream().findAny().get().getEnvelope(oom, rm);
             tetrahedrons.forEach((V3D_Tetrahedron t) -> {
-                en = en.union(t.getEnvelope());
+                en = en.union(t.getEnvelope(oom, rm));
             });
         }
         return en;
     }
 
     @Override
-    public V3D_Point[] getPoints() {
+    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
         int np = tetrahedrons.size() * 4;
         V3D_Point[] r = new V3D_Point[np];
         int i = 0;
@@ -166,9 +166,10 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume,
     }
 
     @Override
-     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+             int oom, RoundingMode rm) {
         for (V3D_Tetrahedron t : tetrahedrons) {
-            t.rotate(axisOfRotation, theta);
+            t.rotate(axisOfRotation, theta, oom, rm);
         }
     }
 

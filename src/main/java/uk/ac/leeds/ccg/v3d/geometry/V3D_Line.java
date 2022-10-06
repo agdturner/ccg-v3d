@@ -18,7 +18,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.Objects;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
@@ -130,7 +129,12 @@ public class V3D_Line extends V3D_Geometry
     public V3D_Line(V3D_Line l) {
         super(l.e, l.offset);
         this.p = new V3D_Vector(l.p);
-        this.q = new V3D_Vector(l.q);
+        if (l.q != null) {
+            this.q = new V3D_Vector(l.q);
+        }
+        if (l.v != null) {
+            this.v = new V3D_Vector(l.v);
+        }
     }
 
     /**
@@ -139,7 +143,12 @@ public class V3D_Line extends V3D_Geometry
     public V3D_Line(V3D_LineSegment l) {
         super(l.e, l.offset);
         this.p = new V3D_Vector(l.l.p);
-        this.q = new V3D_Vector(l.l.q);
+        if (l.l.q != null) {
+            this.q = new V3D_Vector(l.l.q);
+        }
+        if (l.l.v != null) {
+            this.v = new V3D_Vector(l.l.v);
+        }
     }
 
     /**
@@ -201,7 +210,7 @@ public class V3D_Line extends V3D_Geometry
             V3D_Vector q, boolean b) {
         super(e, offset);
         if (p.equals(q)) {
-            throw new RuntimeException("Points " + p + " and " + q
+            throw new RuntimeException("Points given by " + p + " and " + q
                     + " are the same and so do not define a line.");
         }
         this.p = new V3D_Vector(p);
@@ -234,7 +243,6 @@ public class V3D_Line extends V3D_Geometry
             V3D_Environment e) {
         super(e, offset);
         this.p = new V3D_Vector(p);
-        this.q = p.add(v, e.oom, e.rm);
         this.v = new V3D_Vector(v);
     }
 
@@ -272,7 +280,6 @@ public class V3D_Line extends V3D_Geometry
                     + "and so cannot define a line.");
         }
         this.p = new V3D_Vector(p);
-        this.q = p.add(v, e.oom, e.rm);
         this.v = new V3D_Vector(v);
     }
 
@@ -288,7 +295,11 @@ public class V3D_Line extends V3D_Geometry
         q2.setOffset(p.offset);
         this.offset = new V3D_Vector(p.offset);
         this.p = new V3D_Vector(p.rel);
-        this.q = q2.rel;
+        this.q = q2.rel;        
+        if (p.equals(q)) {
+            throw new RuntimeException("Points " + p + " and " + q
+                    + " are the same and so do not define a line.");
+        }
     }
 
     @Override
@@ -337,13 +348,13 @@ public class V3D_Line extends V3D_Geometry
             if (v == null) {
                 r += pad + "p=" + getP().toString(pad) + "\n"
                         + pad + ",\n"
-                        + pad + "q=" + getQ().toString(pad) + "\n"
+                        + pad + "q=" + q.toString(pad) + "\n"
                         + pad + ",\n"
                         + pad + "v=null";
             } else {
                 r += pad + "p=" + getP().toString(pad) + "\n"
                         + pad + ",\n"
-                        + pad + "q=" + getQ().toString(pad) + "\n"
+                        + pad + "q=" + q.toString(pad) + "\n"
                         + pad + ",\n"
                         + pad + "v=" + v.toString(pad);
             }
@@ -365,23 +376,15 @@ public class V3D_Line extends V3D_Geometry
         } else {
             if (v == null) {
                 r += pad + "p=" + getP().toStringSimple(pad) + ",\n"
-                        + pad + "q=" + getQ().toStringSimple(pad) + ",\n"
+                        + pad + "q=" + q.toStringSimple(pad) + ",\n"
                         + pad + "v=null";
             } else {
                 r += pad + "p=" + getP().toStringSimple(pad) + ",\n"
-                        + pad + "q=" + getQ().toStringSimple(pad) + ",\n"
+                        + pad + "q=" + q.toStringSimple(pad) + ",\n"
                         + pad + "v=" + v.toStringSimple(pad);
             }
         }
         return r;
-    }
-    
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof V3D_Line l) {
-            return equals(l, e.oom, e.rm);
-        }
-        return false;
     }
 
     /**
@@ -395,15 +398,7 @@ public class V3D_Line extends V3D_Geometry
 //        boolean t4 = l.isIntersectedBy(getQ(oom),oom);
 //        boolean t5 = getV(oom).isScalarMultiple(l.getV(oom), oom);
         return isIntersectedBy(l.getP(), oom, rm)
-                && isIntersectedBy(l.getQ(), oom, rm);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 17 * hash + Objects.hashCode(this.p);
-        hash = 17 * hash + Objects.hashCode(this.q);
-        return hash;
+                && isIntersectedBy(l.getQ(oom, rm), oom, rm);
     }
 
     /**
@@ -439,29 +434,32 @@ public class V3D_Line extends V3D_Geometry
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@link #q} with {@link #offset} applied.
      */
-    public V3D_Point getQ() {
-//        if (q == null) {
-//            q = p.add(v, oom);
-//        }
+    public V3D_Point getQ(int oom, RoundingMode rm) {
+        if (q == null) {
+            return new V3D_Point(e, offset, p.add(v, oom, rm));
+        }
         return new V3D_Point(e, offset, q);
     }
 
-    /**
-     * @return The vector from {@link #p} to {@link #q}.
-     */
-    protected V3D_Vector getV() {
-        if (v == null) {
-            v = q.subtract(p, e.oom, e.rm);
-        }
-        return v;
-    }
+//    /**
+//     * @return The vector from {@link #p} to {@link #q}.
+//     */
+//    protected V3D_Vector getV() {
+//        if (v == null) {
+//            v = q.subtract(p, oom, rm);
+//        }
+//        return v;
+//    }
 
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The vector from {@link #p} to {@link #q}.
      */
     public V3D_Vector getV(int oom, RoundingMode rm) {
-        return getV().add(offset, oom, rm);
+        if (q == null) {
+            return v;
+        }
+        return q.subtract(p, oom, rm).add(offset, oom, rm);
 //        return rotate(getV(), bI, theta).add(offset, oom);
     }
 
@@ -472,9 +470,9 @@ public class V3D_Line extends V3D_Geometry
      */
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
-        int oomN2 = oom - 2;
+        oom -= 2;
         V3D_Point tp = getP();
-        V3D_Point tq = getQ();
+        V3D_Point tq = getQ(oom, rm);
         if (tp.equals(pt, oom, rm)) {
             return true;
         }
@@ -484,16 +482,16 @@ public class V3D_Line extends V3D_Geometry
         V3D_Vector cp;
         if (tp.equals(V3D_Point.ORIGIN)) {
             V3D_Vector ppt = new V3D_Vector(
-                    pt.getX(oom, rm).subtract(tq.getX(oomN2, rm)),
-                    pt.getY(oom, rm).subtract(tq.getY(oomN2, rm)),
-                    pt.getZ(oom, rm).subtract(tq.getZ(oomN2, rm)));
-            cp = getV(oomN2, rm).getCrossProduct(ppt, oomN2, rm);
+                    pt.getX(oom, rm).subtract(tq.getX(oom, rm)),
+                    pt.getY(oom, rm).subtract(tq.getY(oom, rm)),
+                    pt.getZ(oom, rm).subtract(tq.getZ(oom, rm)));
+            cp = getV(oom, rm).getCrossProduct(ppt, oom, rm);
         } else {
             V3D_Vector ppt = new V3D_Vector(
-                    pt.getX(oomN2, rm).subtract(tp.getX(oomN2, rm)),
-                    pt.getY(oomN2, rm).subtract(tp.getY(oomN2, rm)),
-                    pt.getZ(oomN2, rm).subtract(tp.getZ(oomN2, rm)));
-            cp = getV(oomN2, rm).getCrossProduct(ppt, oomN2, rm);
+                    pt.getX(oom, rm).subtract(tp.getX(oom, rm)),
+                    pt.getY(oom, rm).subtract(tp.getY(oom, rm)),
+                    pt.getZ(oom, rm).subtract(tp.getZ(oom, rm)));
+            cp = getV(oom, rm).getCrossProduct(ppt, oom, rm);
         }
         //V3D_Vector cp = ppt.getCrossProduct(v, oom);
         return cp.getDX(oom, rm).isZero() && cp.getDY(oom, rm).isZero()
@@ -506,6 +504,7 @@ public class V3D_Line extends V3D_Geometry
      * @return {@code true} If this and {@code l} are parallel.
      */
     public boolean isParallel(V3D_Line l, int oom, RoundingMode rm) {
+        //oom -= 2;
         return getV(oom, rm).isScalarMultiple(l.getV(oom, rm), oom, rm);
     }
 
@@ -518,30 +517,30 @@ public class V3D_Line extends V3D_Geometry
     @Override
     public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
         V3D_Point tp = getP();
-        V3D_Point tq = getQ();
+        V3D_Point tq = getQ(oom, rm);
         V3D_Point lp = l.getP();
-        if (isCollinear(e, tp, tq, lp)) {
+        if (isCollinear(e, oom, rm, tp, tq, lp)) {
             return true;
         } else {
             //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
             V3D_Plane pl = new V3D_Plane(e, V3D_Vector.ZERO,
                     tp.getVector(oom, rm), tq.getVector(oom, rm), 
                     lp.getVector(oom, rm));
-            if (V3D_Plane.isCoplanar(e, pl, l.getQ())) {
+            if (V3D_Plane.isCoplanar(e, oom, rm, pl, l.getQ(oom, rm))) {
                 if (!isParallel(l, oom, rm)) {
                     return true;
                 }
             }
         }
-        V3D_Point lq = l.getQ();
-        if (isCollinear(e, tp, tq, lq)) {
+        V3D_Point lq = l.getQ(oom, rm);
+        if (isCollinear(e, oom, rm, tp, tq, lq)) {
             return true;
         } else {
             //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
             V3D_Plane pl = new V3D_Plane(e, V3D_Vector.ZERO,
                     tp.getVector(oom, rm), tq.getVector(oom, rm),
                     lp.getVector(oom, rm));
-            if (V3D_Plane.isCoplanar(e, pl, lq)) {
+            if (V3D_Plane.isCoplanar(e, oom, rm, pl, lq)) {
                 if (!isParallel(l, oom, rm)) {
                     return true;
                 }
@@ -581,9 +580,9 @@ public class V3D_Line extends V3D_Geometry
                 return null;
             }
         }
-        V3D_Point tq = getQ();
+        V3D_Point tq = getQ(oom, rm);
         V3D_Point lp = l.getP();
-        V3D_Point lq = l.getQ();
+        V3D_Point lq = l.getQ(oom, rm);
         V3D_Vector plp = new V3D_Vector(tp, lp, oom, rm);
         V3D_Vector lqlp = new V3D_Vector(lq, lp, oom, rm);
         if (lqlp.getMagnitudeSquared().isZero()) {
@@ -1317,7 +1316,7 @@ public class V3D_Line extends V3D_Geometry
 //            return Math_BigRational.ZERO;
 //        }
         V3D_Vector pp = new V3D_Vector(pt, getP(), oom, rm);
-        V3D_Vector qp = new V3D_Vector(pt, getQ(), oom, rm);
+        V3D_Vector qp = new V3D_Vector(pt, getQ(oom, rm), oom, rm);
         Math_BigRational num = (pp.getCrossProduct(qp, oom, rm)).getMagnitudeSquared();
         Math_BigRational den = getV(oom, rm).getMagnitudeSquared();
         return num.divide(den);
@@ -1540,7 +1539,7 @@ public class V3D_Line extends V3D_Geometry
      */
     public Math_Matrix_BR getAsMatrix(int oom, RoundingMode rm) {
         V3D_Point tp = getP();
-        V3D_Point tq = getQ();
+        V3D_Point tq = getQ(oom, rm);
         Math_BigRational[][] m = new Math_BigRational[2][3];
         m[0][0] = tp.getX(oom, rm);
         m[0][1] = tp.getY(oom, rm);
@@ -1587,16 +1586,16 @@ public class V3D_Line extends V3D_Geometry
      *
      * @param offset What {@link #offset} is set to.
      */
-    public void setOffset(V3D_Vector offset) {
-        p = p.add(offset, e.oom, e.rm).subtract(this.offset, e.oom, e.rm);
-        q = q.add(offset, e.oom, e.rm).subtract(this.offset, e.oom, e.rm);
+    public void setOffset(V3D_Vector offset, int oom, RoundingMode rm) {
+        p = p.add(offset, oom, rm).subtract(this.offset, oom, rm);
+        q = q.add(offset, oom, rm).subtract(this.offset, oom, rm);
         this.offset = offset;
     }
 
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        p = p.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
-        q = q.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
+        p = p.rotate(axisOfRotation, theta, e.bI, oom, rm);
+        q = q.rotate(axisOfRotation, theta, e.bI, oom, rm);
         v = null;
         //v = getV(oom);
     }
@@ -1607,10 +1606,10 @@ public class V3D_Line extends V3D_Geometry
      * @param a A point equal to one or other point of {@code this}.
      * @return The other point that is not equal to a.
      */
-    public V3D_Point getOtherPoint(V3D_Point a) {
+    public V3D_Point getOtherPoint(V3D_Point a, int oom, RoundingMode rm) {
         V3D_Point pt = getP();
         if (pt.equals(a)) {
-            return getQ();
+            return getQ(oom, rm);
         } else {
             return pt;
         }
@@ -1697,8 +1696,8 @@ public class V3D_Line extends V3D_Geometry
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public boolean isCollinear(V3D_Point pt) {
-        return this.isIntersectedBy(pt, e.oom, e.rm);
+    public boolean isCollinear(V3D_Point pt, int oom, RoundingMode rm) {
+        return this.isIntersectedBy(pt, oom, rm);
     }
 
     /**
@@ -1707,9 +1706,9 @@ public class V3D_Line extends V3D_Geometry
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public boolean isCollinear(V3D_Line l) {
-        if (isCollinear(l.getP())) {
-            if (isCollinear(l.getQ())) {
+    public boolean isCollinear(V3D_Line l, int oom, RoundingMode rm) {
+        if (isCollinear(l.getP(), oom, rm)) {
+            if (isCollinear(l.getQ(oom, rm), oom, rm)) {
                 return true;
             }
         }
@@ -1722,9 +1721,10 @@ public class V3D_Line extends V3D_Geometry
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public static boolean isCollinear(V3D_Environment e, V3D_Line l, V3D_Point... points) {
+    public static boolean isCollinear(V3D_Environment e, int oom, 
+            RoundingMode rm, V3D_Line l, V3D_Point... points) {
         for (V3D_Point p : points) {
-            if (!l.isIntersectedBy(p, e.oom, e.rm)) {
+            if (!l.isIntersectedBy(p, oom, rm)) {
                 return false;
             }
         }
@@ -1737,10 +1737,10 @@ public class V3D_Line extends V3D_Geometry
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public static boolean isCollinear(V3D_Environment e, V3D_Line l, V3D_Vector... points) {
-        V3D_Vector lv = l.getV(e.oom, e.rm);
+    public static boolean isCollinear(int oom, RoundingMode rm, V3D_Line l, V3D_Vector... points) {
+        V3D_Vector lv = l.getV(oom, rm);
         for (V3D_Vector p : points) {
-            if (!lv.isScalarMultiple(p, e.oom, e.rm)) {
+            if (!lv.isScalarMultiple(p, oom, rm)) {
                 return false;
             }
         }
@@ -1753,9 +1753,9 @@ public class V3D_Line extends V3D_Geometry
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public static boolean isCollinear(V3D_Environment e, V3D_Envelope.Line l, V3D_Envelope.Point... points) {
+    public static boolean isCollinear(int oom, RoundingMode rm, V3D_Envelope.Line l, V3D_Envelope.Point... points) {
         for (V3D_Envelope.Point p : points) {
-            if (!l.isIntersectedBy(p, e.oom, e.rm)) {
+            if (!l.isIntersectedBy(p, oom, rm)) {
                 return false;
             }
         }
@@ -1768,12 +1768,12 @@ public class V3D_Line extends V3D_Geometry
      * @return {@code false} if all points are coincident. {@code true} iff all
      * the points are collinear.
      */
-    public static boolean isCollinear(V3D_Environment e, V3D_Vector... points) {
+    public static boolean isCollinear(V3D_Environment e, int oom, RoundingMode rm, V3D_Vector... points) {
         // For the points to be in a line at least two must be different.
         if (V3D_Point.isCoincident(points)) {
             return false;
         }
-        return isCollinear0(e, points);
+        return isCollinear0(e, oom, rm, points);
     }
 
     /**
@@ -1782,12 +1782,13 @@ public class V3D_Line extends V3D_Geometry
      * @return {@code false} if all points are coincident. {@code true} iff all
      * the points are collinear.
      */
-    public static boolean isCollinear(V3D_Environment e, V3D_Point... points) {
+    public static boolean isCollinear(V3D_Environment e, int oom, 
+            RoundingMode rm, V3D_Point... points) {
         // For the points to be in a line at least two must be different.
         if (V3D_Point.isCoincident(points)) {
             return false;
         }
-        return isCollinear0(e, points);
+        return isCollinear0(e, oom, rm, points);
     }
 
     /**
@@ -1795,10 +1796,11 @@ public class V3D_Line extends V3D_Geometry
      * @param points The points to test if they are collinear.
      * @return {@code true} iff all the points are collinear or coincident.
      */
-    public static boolean isCollinear0(V3D_Environment e, V3D_Vector... points) {
+    public static boolean isCollinear0(V3D_Environment e, int oom, 
+            RoundingMode rm, V3D_Vector... points) {
         // Get a line
         V3D_Line l = getLine(e, points);
-        return isCollinear(e, l, points);
+        return isCollinear(oom, rm, l, points);
     }
 
     /**
@@ -1806,10 +1808,11 @@ public class V3D_Line extends V3D_Geometry
      * @param points The points to test if they are collinear.
      * @return {@code true} iff all the points are collinear or coincident.
      */
-    public static boolean isCollinear0(V3D_Environment e, V3D_Point... points) {
+    public static boolean isCollinear0(V3D_Environment e, int oom, 
+            RoundingMode rm, V3D_Point... points) {
         // Get a line
         V3D_Line l = getLine(e, points);
-        return isCollinear(e, l, points);
+        return isCollinear(e, oom, rm, l, points);
     }
 
     /**

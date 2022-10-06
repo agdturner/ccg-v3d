@@ -439,15 +439,17 @@ public class V3D_Vector implements Serializable {
      * @return Scaled vector.
      */
     public V3D_Vector multiply(Math_BigRational s, int oom, RoundingMode rm) {
+        int oomn5 = oom - 5;
         return new V3D_Vector(
-                getDX(oom, rm).multiply(s),
-                getDY(oom, rm).multiply(s),
-                getDZ(oom, rm).multiply(s));
+                getDX(oomn5, rm).multiply(s).round(oom, rm),
+                getDY(oomn5, rm).multiply(s).round(oom, rm),
+                getDZ(oomn5, rm).multiply(s).round(oom, rm));
     }
 
     /**
      * @param s The scalar value to divide this by.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return Scaled vector.
      */
     public V3D_Vector divide(Math_BigRational s, int oom, RoundingMode rm) {
@@ -462,26 +464,30 @@ public class V3D_Vector implements Serializable {
      * Adding or applying.
      *
      * @param v The vector to add.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return A new vector which is {@code this} add {@code v}.
      */
     public V3D_Vector add(V3D_Vector v, int oom, RoundingMode rm) {
+        int oomn5 = oom - 5;
         return new V3D_Vector(
-                getDX(oom, rm).add(v.getDX(oom, rm)),
-                getDY(oom, rm).add(v.getDY(oom, rm)),
-                getDZ(oom, rm).add(v.getDZ(oom, rm)));
+                getDX(oomn5, rm).add(v.getDX(oomn5, rm)).round(oom, rm),
+                getDY(oomn5, rm).add(v.getDY(oomn5, rm)).round(oom, rm),
+                getDZ(oomn5, rm).add(v.getDZ(oomn5, rm)).round(oom, rm));
     }
 
     /**
      * @param v The vector to subtract.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return A new vector which is {@code this} minus {@code v}.
      */
     public V3D_Vector subtract(V3D_Vector v, int oom, RoundingMode rm) {
+        int oomn5 = oom - 5;
         return new V3D_Vector(
-                getDX(oom, rm).subtract(v.getDX(oom, rm)),
-                getDY(oom, rm).subtract(v.getDY(oom, rm)),
-                getDZ(oom, rm).subtract(v.getDZ(oom, rm)));
+                getDX(oomn5, rm).subtract(v.getDX(oomn5, rm)).round(oom, rm),
+                getDY(oomn5, rm).subtract(v.getDY(oomn5, rm)).round(oom, rm),
+                getDZ(oomn5, rm).subtract(v.getDZ(oomn5, rm)).round(oom, rm));
     }
 
     /**
@@ -496,14 +502,17 @@ public class V3D_Vector implements Serializable {
      * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
      *
      * @param v V3D_Vector
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return dot product
      */
     public Math_BigRational getDotProduct(V3D_Vector v, int oom, 
             RoundingMode rm) {
-        return (v.getDX(oom, rm).multiply(getDX(oom, rm)))
-                .add(v.getDY(oom, rm).multiply(getDY(oom, rm)))
-                .add(v.getDZ(oom, rm).multiply(getDZ(oom, rm)));
+        int oomn5 = oom - 5;
+        return (v.getDX(oomn5, rm).multiply(getDX(oomn5, rm)))
+                .add(v.getDY(oomn5, rm).multiply(getDY(oomn5, rm)))
+                .add(v.getDZ(oomn5, rm).multiply(getDZ(oomn5, rm)))
+                .round(oom, rm);
 //        Math_BigRational vdx = v.getDX().abs();
 //        if (v.dx.negative) {
 //            vdx = vdx.negate();
@@ -538,10 +547,12 @@ public class V3D_Vector implements Serializable {
      * Test if this is orthogonal to {@code v}.
      *
      * @param v The vector to test for orthogonality with.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isOrthogonal(V3D_Vector v, int oom, RoundingMode rm) {
+        oom = oom -5;
         if (isScalarMultiple(v, oom, rm)) {
             return false;
         }
@@ -567,7 +578,8 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     private void initM(int oom, RoundingMode rm) {
         m = new Math_BigRationalSqrt(dx.getX().add(dy.getX().add(dz.getX())),
@@ -575,7 +587,8 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The magnitude of m.
      */
     protected Math_BigRationalSqrt getMagnitude0(int oom, RoundingMode rm) {
@@ -592,7 +605,8 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The magnitude of m.
      */
     public Math_BigRational getMagnitude(int oom, RoundingMode rm) {
@@ -603,7 +617,8 @@ public class V3D_Vector implements Serializable {
      * Test if {@code v} is a scalar multiple of {@code this}.
      *
      * @param v The vector to test if it is a scalar multiple of {@code this}.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
     public boolean isScalarMultiple(V3D_Vector v, int oom, RoundingMode rm) {
@@ -710,7 +725,8 @@ public class V3D_Vector implements Serializable {
      * </ol>
      *
      * @param v The vector to find the angle between.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The angle in radians between {@code this} and {@code v}.
      */
     public Math_BigRational getAngle(V3D_Vector v, int oom, RoundingMode rm) {
@@ -732,8 +748,8 @@ public class V3D_Vector implements Serializable {
      * accurate to a sufficient precision.
      * @param theta The angle of rotation.
      * @param bI For the Taylor series for trigonometry calculations.
-     * @param oom The Order of Magnitude for the precision of the result
-     * components.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The vector which is {@code #this} rotated using the parameters.
      */
     public V3D_Vector rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
@@ -769,7 +785,8 @@ public class V3D_Vector implements Serializable {
      * resulting vector is in the direction given by the right hand rule.
      *
      * @param v V3D_Vector
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return V3D_Vector
      */
     public V3D_Vector getCrossProduct(V3D_Vector v, int oom, RoundingMode rm) {
@@ -799,7 +816,8 @@ public class V3D_Vector implements Serializable {
     /**
      * Scales by {@link #m} to give a unit vector with length 1.
      *
-     * @param oom The order of magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return this scaled by {@link #m}.
      */
     public V3D_Vector getUnitVector(int oom, RoundingMode rm) {

@@ -18,7 +18,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VPoint;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -232,22 +231,6 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         return pad + super.toStringFieldsSimple("") + ", rel=" + rel.toStringSimple("");
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof V3D_Point v3D_Point) {
-            return equals(v3D_Point, e.oom, e.rm);
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.rel);
-        hash = 47 * hash + Objects.hashCode(this.offset);
-        return hash;
-    }
-
     /**
      * Two points are equal if they are at the same location defined by each
      * points relative start location and translation vector at the given oom 
@@ -270,7 +253,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     }
     
     @Override
-    public V3D_Point[] getPoints() {
+    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
         V3D_Point[] r = new V3D_Point[1];
         r[0] = this;
         return r;
@@ -402,7 +385,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         }
         // Not sure what oom should be in the cross product...
         V3D_Vector cp = new V3D_Vector(this, l.getP(), oom, rm)
-                .getCrossProduct(new V3D_Vector(this, l.getQ(), oom, rm),
+                .getCrossProduct(new V3D_Vector(this, l.getQ(oom, rm), oom, rm),
                         oom, rm);
         return cp.getMagnitude().divide(l.getV(oom, rm).getMagnitude(), oom, rm).toBigDecimal(oom, rm);
 //        return cp.getMagnitude(oom - 1).divide(l.v.getMagnitude(oom - 1), -oom,
@@ -434,7 +417,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     public Math_BigRational getDistanceSquared(V3D_Line l, boolean noInt, 
             int oom, RoundingMode rm) {
         V3D_Vector cp = new V3D_Vector(this, l.getP(), oom, rm)
-                .getCrossProduct(new V3D_Vector(this, l.getQ(), oom, rm),
+                .getCrossProduct(new V3D_Vector(this, l.getQ(oom, rm), oom, rm),
                         oom, rm);
         return cp.getMagnitudeSquared().divide(l.getV(oom, rm).getMagnitudeSquared());
     }
@@ -481,7 +464,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public V3D_Envelope getEnvelope() {
+    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         return new V3D_Envelope(e, getX(), getY(), getZ());
     }
 
@@ -553,7 +536,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         int oom2 = oom - 2;
         Math_BigRational l2 = l.getLength2(oom, rm);
         Math_BigRational lp2 = l.getP().getDistanceSquared(this, oom2, rm);
-        Math_BigRational lq2 = l.getQ().getDistanceSquared(this, oom2, rm);
+        Math_BigRational lq2 = l.getQ(oom, rm).getDistanceSquared(this, oom2, rm);
         BigDecimal lp = (new V3D_Line(l)).getDistance(this, oom, rm);
         if (lp2.compareTo(l2) != 1 || lq2.compareTo(l2) != 1) {
             return lp;
@@ -686,8 +669,9 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @param theta The angle of rotation.
      */
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        rel = rel.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta, 
+            int oom, RoundingMode rm) {
+        rel = rel.rotate(axisOfRotation, theta, e.bI, oom, rm);
 //        V3D_Vector relt = rel.rotate(axisOfRotation, theta, bI, oom);
 //        offset = offset.subtract(rel.subtract(relt, oom), oom);
     }

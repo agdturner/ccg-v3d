@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -192,6 +191,13 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         this.s = s2.rel;
     }
 
+    @Override
+    public String toString() {
+        //return toString("");
+        return toStringSimple("");
+    }
+
+    @Override
     public String toString(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
@@ -199,15 +205,26 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
                 + pad + ")";
     }
 
-    @Override
-    protected String toStringFields(String pad) {
-        return super.toStringFields(pad) + "\n"
-                + pad + ",\n"
-                + pad + "s=" + s.toString(pad);
+    public String toStringSimple(String pad) {
+        return pad + this.getClass().getSimpleName() + "("
+                + toStringFieldsSimple("") + ")";
     }
 
     @Override
-    public V3D_Point[] getPoints() {
+    protected String toStringFields(String pad) {
+        return pad + "p=" + this.p.toString(pad) + "\n"
+                + pad + ",\n"
+                + pad + "s=" + this.s.toString(pad) + "\n";
+    }
+
+    @Override
+    protected String toStringFieldsSimple(String pad) {
+        return pad + "p=" + this.p.toStringSimple(pad) + ",\n"
+                + pad + "s=" + s.toStringSimple(pad);
+    }
+
+    @Override
+    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
         V3D_Point[] re = new V3D_Point[4];
         re[0] = this.p.getP();
         re[1] = this.p.getQ();
@@ -231,7 +248,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public V3D_Envelope getEnvelope() {
+    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
             en = new V3D_Envelope(e, p.getP(), p.getQ(), p.getR(), getS());
         }
@@ -426,7 +443,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-        if (getEnvelope().isIntersectedBy(l.getEnvelope())) {
+        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm))) {
             if (p.isIntersectedBy(l, oom, rm)) {
                 V3D_Geometry pli = p.getIntersection(l, oom, rm);
                 if (pli instanceof V3D_Point plip) {
@@ -481,7 +498,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
                 if (i2 == null) {
                     return i1;
                 } else {
-                    return join(i1, i2);
+                    return join(i1, i2, oom, rm);
                 }
             }
         } else {
@@ -665,7 +682,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @return A point or line segment.
      */
     protected V3D_FiniteGeometry join(V3D_FiniteGeometry pointOrLineSegment1,
-            V3D_FiniteGeometry pointOrLineSegment2) {
+            V3D_FiniteGeometry pointOrLineSegment2, int oom, RoundingMode rm) {
         if (pointOrLineSegment1.equals(pointOrLineSegment2)) {
             return pointOrLineSegment1;
         }
@@ -673,9 +690,9 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             if (pointOrLineSegment2 instanceof V3D_LineSegment l2) {
                 if (l1.getP().equals(l2.getP())) {
                     return new V3D_LineSegment(e, offset, l1.l.q, l2.l.q);
-                } else if (l1.getP().equals(l2.getQ())) {
+                } else if (l1.getP().equals(l2.getQ(oom, rm))) {
                     return new V3D_LineSegment(e, offset, l1.l.q, l2.l.p);
-                } else if (l1.getQ().equals(l2.getP())) {
+                } else if (l1.getQ(oom, rm).equals(l2.getP())) {
                     return new V3D_LineSegment(e, offset, l1.l.p, l2.l.q);
                 } else {
                     //if (l1.getQ(oom).equals(l2.getQ(oom))) {
@@ -711,7 +728,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             if (i2 == null) {
                 return i1;
             } else {
-                return join(i1, i2);
+                return join(i1, i2, oom, rm);
             }
         }
 //        V3D_Point lp = l.getP(oom);
@@ -827,9 +844,9 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      *
      * @param offset What {@link #offset} is set to.
      */
-    public void setOffset(V3D_Vector offset) {
-        p.setOffset(offset);
-        s = s.add(offset, e.oom, e.rm).subtract(this.offset, e.oom, e.rm);
+    public void setOffset(V3D_Vector offset, int oom, RoundingMode rm) {
+        p.setOffset(offset, oom, rm);
+        s = s.add(offset, oom, rm).subtract(this.offset, oom, rm);
         en = null;
     }
 
@@ -839,16 +856,16 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @param v What is added to {@link #p}, {@link #q}, {@link #r}, {@link #s}.
      */
     @Override
-    public void translate(V3D_Vector v) {
-        super.translate(v);
-        s = s.add(v, e.oom, e.rm);
+    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        getPQR().translate(v, oom, rm);
+        s = s.add(v, oom, rm);
         en = null;
     }
 
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
-        super.rotate(axisOfRotation, theta);
-        s = s.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
+        super.rotate(axisOfRotation, theta, oom, rm);
+        s = s.rotate(axisOfRotation, theta, e.bI, oom, rm);
         en = null;
     }
 
@@ -925,7 +942,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             }
         } else {
             if (t2i instanceof V3D_Triangle t2it) {
-                return new V3D_ConvexHullCoplanar((V3D_Triangle) t1i, t2it).simplify();
+                return new V3D_ConvexHullCoplanar(oom, rm, (V3D_Triangle) t1i, t2it).simplify();
             } else {
                 return t1i;
             }
@@ -1000,34 +1017,12 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     /**
-     * Test for equality.
-     *
-     * @param o The object to test if it is equal to this.
-     * @return True iff this and o represent the same rectangle.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof V3D_Rectangle r) {
-            return equals(r);
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 71 * hash + Objects.hashCode(this.s);
-        hash = 71 * hash + Objects.hashCode(this.rsp);
-        return hash;
-    }
-
-    /**
      * @param r The rectangle to test if it is equal to this.
      * @return {@code true} iff this is equal to r.
      */
     //@Overrides
-    public boolean equals(V3D_Rectangle r, boolean b) {
-        return getConvexHull().equals(r.getConvexHull(), b);
+    public boolean equals(V3D_Rectangle r, int oom, RoundingMode rm) {
+        return getConvexHull(oom, rm).equals(r.getConvexHull(oom, rm), oom, rm);
     }
 
     /**
@@ -1035,9 +1030,9 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      *
      * @return {@link #convexHull} initialising it if it is {@code null}.
      */
-    public V3D_ConvexHullCoplanar getConvexHull() {
+    public V3D_ConvexHullCoplanar getConvexHull(int oom, RoundingMode rm) {
         if (convexHull == null) {
-            convexHull = new V3D_ConvexHullCoplanar(getPQR(), getRSP());
+            convexHull = new V3D_ConvexHullCoplanar(oom, rm, getPQR(), getRSP());
         }
         return convexHull;
     }

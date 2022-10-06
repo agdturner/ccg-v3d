@@ -57,13 +57,13 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Point[] getPoints() {
+    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
         int nl = lineSegments.size();
         V3D_Point[] r = new V3D_Point[nl * 2];
         for(int i = 0; i < nl; i ++) {
             V3D_LineSegment l = lineSegments.get(i);
             r[i] = l.getP();
-            r[i + nl] = l.getQ();
+            r[i + nl] = l.getQ(oom, rm);
         }
         return r;
     }
@@ -157,7 +157,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
          * }
          */
         V3D_Point l1p = l1.getP();
-        V3D_Point l1q = l1.getQ();
+        V3D_Point l1q = l1.getQ(oom, rm);
         if (l2.isIntersectedBy(l1p, oom, rm)) {
             // Cases 1, 2, 5, 6, 14, 16
             if (l2.isIntersectedBy(l1q, oom, rm)) {
@@ -188,20 +188,20 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                 // Cases 4, 8, 9, 10, 11
                 if (l1.isIntersectedBy(l2p, oom, rm)) {
                     // Cases 4, 11, 13
-                    if (l1.isIntersectedBy(l2.getQ(), oom, rm)) {
+                    if (l1.isIntersectedBy(l2.getQ(oom, rm), oom, rm)) {
                         // Cases 11
                         return l2;
                     } else {
                         // Cases 4, 13
                         //return new V3D_LineSegment(l2.getP(), l1.getQ());
-                        return new V3D_LineSegment(l1p, l2.getQ());
+                        return new V3D_LineSegment(l1p, l2.getQ(oom, rm));
                     }
                 } else {
                     // Cases 8, 9, 10
-                    V3D_Point tq = l2.getQ();
+                    V3D_Point tq = l2.getQ(oom, rm);
                     if (l1.isIntersectedBy(tq, oom, rm)) {
                         // Cases 8, 9
-                        return new V3D_LineSegment(l2.getQ(), l1q);
+                        return new V3D_LineSegment(l2.getQ(oom, rm), l1q);
                     } else {
                         // Cases 10                      
                         return l1;
@@ -212,7 +212,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                 V3D_Point tp = l2.getP();
                 if (l1.isIntersectedBy(tp, oom, rm)) {
                     // Cases 3, 12, 15
-                    V3D_Point tq = l2.getQ();
+                    V3D_Point tq = l2.getQ(oom, rm);
                     if (l1.isIntersectedBy(tq, oom, rm)) {
                         // Cases 3, 15
                         //return l2;
@@ -230,12 +230,12 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Envelope getEnvelope() {
+    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
             Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-            en = ite.next().getEnvelope();
+            en = ite.next().getEnvelope(oom, rm);
             while (ite.hasNext()) {
-                en = en.union(ite.next().getEnvelope());
+                en = en.union(ite.next().getEnvelope(oom, rm));
             }
         }
         return en;
@@ -362,7 +362,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment ls, int oom, RoundingMode rm) {
         if (isIntersectedBy(ls, oom, rm)) {
-            if (lineSegments.get(0).l.isCollinear(ls.l)) {
+            if (lineSegments.get(0).l.isCollinear(ls.l, oom, rm)) {
                 ArrayList<V3D_Point> ps = new ArrayList<>();
                 ArrayList<V3D_LineSegment> lse = new ArrayList<>();
                 Iterator<V3D_LineSegment> ite = lineSegments.iterator();
@@ -386,7 +386,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                         V3D_LineSegmentsCollinear r
                                 = new V3D_LineSegmentsCollinear(
                                         lse.toArray(V3D_LineSegment[]::new));
-                        return r.simplify();
+                        return r.simplify(oom, rm);
                     }
                 }
             } else {
@@ -445,10 +445,10 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * a simplified version of this with overlapping line segments replaced with
      * a single line segment.
      */
-    public V3D_FiniteGeometry simplify() {
+    public V3D_FiniteGeometry simplify(int oom, RoundingMode rm) {
         ArrayList<V3D_LineSegment> dummy = new ArrayList<>();
         dummy.addAll(lineSegments);
-        ArrayList<V3D_LineSegment> r = simplify0(dummy, 0);
+        ArrayList<V3D_LineSegment> r = simplify0(dummy, 0, oom, rm);
         if (r.size() == 1) {
             return r.get(0);
         } else {
@@ -456,24 +456,25 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
         }
     }
 
-    protected ArrayList<V3D_LineSegment> simplify0(ArrayList<V3D_LineSegment> ls, int i) {
+    protected ArrayList<V3D_LineSegment> simplify0(
+            ArrayList<V3D_LineSegment> ls, int i, int oom, RoundingMode rm) {
         V3D_LineSegment l0 = ls.get(i);
         ArrayList<V3D_LineSegment> r = new ArrayList<>();
         TreeSet<Integer> removeIndexes = new TreeSet<>();
         r.addAll(ls);
         for (int j = i; j < ls.size(); j++) {
             V3D_LineSegment l1 = ls.get(j);
-            if (l0.isIntersectedBy(l1, e.oom, e.rm)) {
+            if (l0.isIntersectedBy(l1, oom, rm)) {
                 V3D_Point l0p = l0.getP();
-                if (l0p.isIntersectedBy(l1, e.oom, e.rm)) {
-                    V3D_Point l0q = l0.getQ();
-                    if (l0q.isIntersectedBy(l1, e.oom, e.rm)) {
+                if (l0p.isIntersectedBy(l1, oom, rm)) {
+                    V3D_Point l0q = l0.getQ(oom, rm);
+                    if (l0q.isIntersectedBy(l1, oom, rm)) {
                         // l0 is completely overlapped by l1
                         removeIndexes.add(i);
                     } else {
                         V3D_Point l1p = l1.getP();
-                        V3D_Point l1q = l1.getQ();
-                        if (l1p.isIntersectedBy(l0, e.oom, e.rm)) {
+                        V3D_Point l1q = l1.getQ(oom, rm);
+                        if (l1p.isIntersectedBy(l0, oom, rm)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
                             r.add(new V3D_LineSegment(l1q, l0q));
@@ -484,11 +485,11 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                         }
                     }
                 } else {
-                    V3D_Point l0q = l0.getQ();
-                    if (l0q.isIntersectedBy(l1, e.oom, e.rm)) {
+                    V3D_Point l0q = l0.getQ(oom, rm);
+                    if (l0q.isIntersectedBy(l1, oom, rm)) {
                         V3D_Point l1p = l1.getP();
-                        V3D_Point l1q = l1.getQ();
-                        if (l1.getP().isIntersectedBy(l0, e.oom, e.rm)) {
+                        V3D_Point l1q = l1.getQ(oom, rm);
+                        if (l1.getP().isIntersectedBy(l0, oom, rm)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
                             r.add(new V3D_LineSegment(l1q, l0p));
@@ -509,7 +510,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
             r.remove(ite.next().intValue());
         }
         if (i < r.size() - 1) {
-            r = simplify0(r, i + 1);
+            r = simplify0(r, i + 1, oom, rm);
         }
         return r;
     }
@@ -560,7 +561,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

@@ -151,36 +151,38 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsOnPlane_V3D_LineSegment() {
         System.out.println("isOnPlane");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         // Test 1 to 9 lines segments in line with axes
         V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         V3D_Plane instance = V3D_Plane.X0;
-        assertFalse(instance.isOnPlane(l.l, e.oom, e.rm));
+        assertFalse(instance.isOnPlane(l.l, oom, rm));
         // Test 2
         instance = V3D_Plane.Y0;
-        assertTrue(instance.isOnPlane(l.l, e.oom, e.rm));
+        assertTrue(instance.isOnPlane(l.l, oom, rm));
         // Test 3
         instance = V3D_Plane.Z0;
-        assertTrue(instance.isOnPlane(l.l, e.oom, e.rm));
+        assertTrue(instance.isOnPlane(l.l, oom, rm));
         // Test 4
         l = new V3D_LineSegment(pP0P0P0, pP0P1P0);
         instance = V3D_Plane.X0;
-        assertTrue(instance.isOnPlane(l.l, e.oom, e.rm));
+        assertTrue(instance.isOnPlane(l.l, oom, rm));
         // Test 5
         instance = V3D_Plane.Y0;
-        assertFalse(instance.isOnPlane(l.l, e.oom, e.rm));
+        assertFalse(instance.isOnPlane(l.l, oom, rm));
         // Test 6
         instance = V3D_Plane.Z0;
-        assertTrue(instance.isOnPlane(l.l, e.oom, e.rm));
+        assertTrue(instance.isOnPlane(l.l, oom, rm));
         // Test 7
         l = new V3D_LineSegment(pP0P0P0, pP0P0P1);
         instance = V3D_Plane.X0;
-        assertTrue(instance.isOnPlane(l.l, e.oom, e.rm));
+        assertTrue(instance.isOnPlane(l.l, oom, rm));
         // Test 8
         instance = V3D_Plane.Y0;
-        assertTrue(instance.isOnPlane(l.l, e.oom, e.rm));
+        assertTrue(instance.isOnPlane(l.l, oom, rm));
         // Test 9
         instance = V3D_Plane.Z0;
-        assertFalse(instance.isOnPlane(l.l, e.oom, e.rm));
+        assertFalse(instance.isOnPlane(l.l, oom, rm));
     }
 
     /**
@@ -220,692 +222,694 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Plane_int() {
         System.out.println("intersects");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane pl;
         V3D_Plane instance;
         // x=1
         pl = new V3D_Plane(pP1P0P0, pP1P1P0, pP1P0P1);
         instance = new V3D_Plane(pP1P0P0, pP1P1P0, pP1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(pP1P1P0, pP0P1P0, pP0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(pP1P0P1, pP0P1P1, pP0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // y=1
         pl = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // z=1
         pl = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // x=0
         pl = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // y=0
         pl = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // z=0
         pl = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // x=-1
         pl = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // y=-1
         pl = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // z=-1
         pl = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // x=y
         pl = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // x=y+1
         pl = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // x=y-1
         pl = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // x=z
         pl = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // x=z+1
         pl = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // x=z-1
         pl = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         // y=z
         pl = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         // y=z+1
         pl = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-//        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+//        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         // y=z-1
         pl = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P0P1); // x=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P1P1); // y=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P1); // z=1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, N1P0P1); // x=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0N1P0, P0N1P1); // y=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0N1, P0P1N1, P0P0N1); // z=-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P1P1P1); // x=y
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0N1P0, P0N1P1); // x=y+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, P0P1P0, N1P0P1); // x=y-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1); // x=z
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P0P1); // x=z+1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, N1P0P0, N1P1P0, P0P0P1); // x=z-1
-        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P0P0, P0P1P1, P1P1P1); // y=z
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1P1P0, P0P1P0, P0P2P1); // y=z+1
-        assertFalse(instance.isIntersectedBy(pl, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pl, oom, rm));
         instance = new V3D_Plane(e, P1N1P0, P0P1P2, P0P0P1); // y=z-1
-//        assertTrue(instance.isIntersectedBy(pl, e.oom, e.rm));
+//        assertTrue(instance.isIntersectedBy(pl, oom, rm));
     }
 
     /**
@@ -914,1623 +918,1625 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Point_int() {
         System.out.println("intersects");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane instance;
         // x=0
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P0P0P1);
         // P2
-        assertFalse(instance.isIntersectedBy(pP2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N2, oom, rm));
         // P1
-        assertFalse(instance.isIntersectedBy(pP1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N2, oom, rm));
         // P0
-        assertTrue(instance.isIntersectedBy(pP0P2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P2N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2N2, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pP0P2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P2N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2N2, oom, rm));
         // N1
-        assertFalse(instance.isIntersectedBy(pN1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N2, oom, rm));
         // N2
-        assertFalse(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N2, oom, rm));
 
         // y=0
         instance = new V3D_Plane(e, P1P0P0, P0P0P0, P0P0P1);
         // P2
-        assertFalse(instance.isIntersectedBy(pP2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N2, oom, rm));
         // P1
-        assertFalse(instance.isIntersectedBy(pP1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N2, oom, rm));
         // P0
-        assertFalse(instance.isIntersectedBy(pP0P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N2, oom, rm));
         // N1
-        assertFalse(instance.isIntersectedBy(pN1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N2, oom, rm));
         // N2
-        assertFalse(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P1, oom, rm));
 
         // z=0
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P0);
         // P2
-        assertFalse(instance.isIntersectedBy(pP2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N2, oom, rm));
         // P1
-        assertFalse(instance.isIntersectedBy(pP1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N2, oom, rm));
         // P0
-        assertFalse(instance.isIntersectedBy(pP0P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N2, oom, rm));
         // N1
-        assertFalse(instance.isIntersectedBy(pN1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N2, oom, rm));
         // N2
-        assertFalse(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N2, oom, rm));
 
         // x=y
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, P0P0P1);
         // P2
-        assertTrue(instance.isIntersectedBy(pP2P2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N2, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pP2P2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N2, oom, rm));
         // P1
-        assertFalse(instance.isIntersectedBy(pP1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N2, oom, rm));
         // P0
-        assertFalse(instance.isIntersectedBy(pP0P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N2, oom, rm));
         // N1
-        assertFalse(instance.isIntersectedBy(pN1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N2, oom, rm));
         // N2
-        assertFalse(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N2N2, oom, rm));
 
         // x=-y
         instance = new V3D_Plane(e, P0P0P0, N1P1P0, P0P0P1);
         // P2
-        assertFalse(instance.isIntersectedBy(pP2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N2N2, oom, rm));
         // P1
-        assertFalse(instance.isIntersectedBy(pP1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N2, oom, rm));
         // P0
-        assertFalse(instance.isIntersectedBy(pP0P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N2, oom, rm));
         // N1
-        assertFalse(instance.isIntersectedBy(pN1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N2, oom, rm));
         // N2
-        assertTrue(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N2, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N2, oom, rm));
 
         // x=z
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, P1P0P1);
         // P2
-        assertTrue(instance.isIntersectedBy(pP2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N2, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pP2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N2, oom, rm));
         // P1
-        assertFalse(instance.isIntersectedBy(pP1P2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N2, oom, rm));
         // P0
-        assertFalse(instance.isIntersectedBy(pP0P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N2, oom, rm));
         // N1
-        assertFalse(instance.isIntersectedBy(pN1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N2, oom, rm));
         // N2
-        assertFalse(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N2N2, oom, rm));
 
         // x=-z
         instance = new V3D_Plane(e, P0P0P0, P0P1P0, N1P0P1);
         // P2
-        assertFalse(instance.isIntersectedBy(pP2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N2N2, oom, rm));
         // P1
-        assertFalse(instance.isIntersectedBy(pP1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N2, oom, rm));
         // P0
-        assertFalse(instance.isIntersectedBy(pP0P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N2, oom, rm));
         // N1
-        assertFalse(instance.isIntersectedBy(pN1P2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N2, oom, rm));
         // N2
-        assertTrue(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N2, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N2, oom, rm));
 
         // y=z
         instance = new V3D_Plane(e, P1P0P0, P0P0P0, P0P1P1);
         // P2
-        assertTrue(instance.isIntersectedBy(pP2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N2N2, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pP2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N2N2, oom, rm));
         // P1
-        assertTrue(instance.isIntersectedBy(pP1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N2N2, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pP1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N2N2, oom, rm));
         // P0
-        assertTrue(instance.isIntersectedBy(pP0P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2N2, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pP0P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2N2, oom, rm));
         // N1
-        assertTrue(instance.isIntersectedBy(pN1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N2N2, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pN1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N2N2, oom, rm));
         // N2
-        assertTrue(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N2N2, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N2N2, oom, rm));
 
         // x=-z
         instance = new V3D_Plane(e, P1P0P0, P0P0P0, P0N1P1);
         // P2
-        assertFalse(instance.isIntersectedBy(pP2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N2, oom, rm));
         // P1
-        assertFalse(instance.isIntersectedBy(pP1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N2, oom, rm));
         // P0
-        assertFalse(instance.isIntersectedBy(pP0P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N2, oom, rm));
         // N1
-        assertFalse(instance.isIntersectedBy(pN1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N2, oom, rm));
         // N2
-        assertFalse(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N2, oom, rm));
         // x=y-z
         instance = new V3D_Plane(e, P0P0P0, P1P1P0, N1P0P1);
         // P2
-        assertFalse(instance.isIntersectedBy(pP2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N2, oom, rm));
         // P1
-        assertFalse(instance.isIntersectedBy(pP1P2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N2, oom, rm));
         // P0
-        assertTrue(instance.isIntersectedBy(pP0P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2N2, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pP0P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2N2, oom, rm));
         // N1
-        assertFalse(instance.isIntersectedBy(pN1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N2, oom, rm));
         // N2
-        assertFalse(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N2, oom, rm));
         // x=z-y
         instance = new V3D_Plane(e, P1P0P1, P0P1P1, P0P0P0);
         // P2
-        assertFalse(instance.isIntersectedBy(pP2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N2, oom, rm));
         // P1
-        assertFalse(instance.isIntersectedBy(pP1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N2, oom, rm));
         // P0
-        assertTrue(instance.isIntersectedBy(pP0P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2N2, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(pP0P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2N2, oom, rm));
         // N1
-        assertFalse(instance.isIntersectedBy(pN1P2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N2, oom, rm));
         // N2
-        assertFalse(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N2, oom, rm));
         // y=x-z
         instance = new V3D_Plane(e, P1P1P0, P0P0P0, P0N1P1);
         // P2
-        assertFalse(instance.isIntersectedBy(pP2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP2N2N2, oom, rm));
         // P1
-        assertFalse(instance.isIntersectedBy(pP1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1P0N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1P0N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP1N2N2, oom, rm));
         // P0
-        assertFalse(instance.isIntersectedBy(pP0P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P2N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N1N2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pP0N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pP0N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P2N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N1N2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pP0N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pP0N2N2, oom, rm));
         // N1
-        assertFalse(instance.isIntersectedBy(pN1P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P1N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1P0N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P2, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN1N2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN1N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P1N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1P0N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P2, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN1N2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN1N2N2, oom, rm));
         // N2
-        assertFalse(instance.isIntersectedBy(pN2P2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P2N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2P0N1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2P0N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1P0, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N1N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N1N2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P2, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2P1, e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(pN2N2P0, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N1, e.oom, e.rm));
-        assertFalse(instance.isIntersectedBy(pN2N2N2, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P2N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2P0N1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2P0N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1P0, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N1N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N1N2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P2, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2P1, oom, rm));
+        assertTrue(instance.isIntersectedBy(pN2N2P0, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N1, oom, rm));
+        assertFalse(instance.isIntersectedBy(pN2N2N2, oom, rm));
         // Test 2 from https://math.stackexchange.com/questions/2686606/equation-of-a-plane-passing-through-3-points        
         V3D_Vector n = new V3D_Vector(1, -2, 1);
         V3D_Point p = pP1N2P1;
         instance = new V3D_Plane(p, n);
-        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 4, -2, -2), e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 4, 1, 4), e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 4, -2, -2), oom, rm));
+        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 4, 1, 4), oom, rm));
         n = new V3D_Vector(1, -2, 1);
         p = new V3D_Point(e, 4, -2, -2);
         instance = new V3D_Plane(p, n);
-        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 1, -2, 1), e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 4, 1, 4), e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 1, -2, 1), oom, rm));
+        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 4, 1, 4), oom, rm));
         // Test 3
         n = new V3D_Vector(1, -2, 1);
         p = pP0P0P0;
         instance = new V3D_Plane(p, n);
-        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 3, 0, -3), e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 3, 3, 3), e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 3, 0, -3), oom, rm));
+        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 3, 3, 3), oom, rm));
         n = new V3D_Vector(1, -2, 1);
         p = new V3D_Point(e, 3, 0, -3);
         instance = new V3D_Plane(p, n);
-        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 0, 0, 0), e.oom, e.rm));
-        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 3, 3, 3), e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 0, 0, 0), oom, rm));
+        assertTrue(instance.isIntersectedBy(new V3D_Point(e, 3, 3, 3), oom, rm));
 
     }
 
@@ -2623,17 +2629,19 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Line_int() {
         System.out.println("intersects");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line l = new V3D_Line(pP0P0P0, pP0P1P0); // Y axis
         V3D_Plane instance = new V3D_Plane(e, P1P0P1, P0P0P1, N1P0N1); // Y=0 plane
-        assertTrue(instance.isIntersectedBy(l, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(l, oom, rm));
         // Test 2
         l = new V3D_Line(pN1N1N1, pP1P1P1);
         instance = new V3D_Plane(e, P1P1N1, P1N1N1, N1P1N1); // z=-1 plane
-        assertTrue(instance.isIntersectedBy(l, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(l, oom, rm));
         // Test 2
         l = new V3D_Line(pP0P0P0, pP1P1P1);
         instance = new V3D_Plane(e, P1P1N1, P1N1N1, N1P1N1); // z=-2 plane
-        assertTrue(instance.isIntersectedBy(l, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(l, oom, rm));
     }
 
     /**
@@ -2642,37 +2650,39 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsParallel_V3D_Plane_int() {
         System.out.println("isParallel");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane p = new V3D_Plane(e, P1P1P0, P1N1P0, N1P1P0);
         V3D_Plane instance = new V3D_Plane(e, P1P1P1, P1N1P1, N1P1P1);
-        assertTrue(instance.isParallel(p, e.oom, e.rm));
+        assertTrue(instance.isParallel(p, oom, rm));
         // Test 2
         instance = new V3D_Plane(e, P1P1N1, P1N1N1, N1P1N1);
-        assertTrue(instance.isParallel(p, e.oom, e.rm));
+        assertTrue(instance.isParallel(p, oom, rm));
         // Test 3
         instance = new V3D_Plane(e, P1P1N1, P1N1N1, N1P1N1);
-        assertTrue(instance.isParallel(p, e.oom, e.rm));
+        assertTrue(instance.isParallel(p, oom, rm));
         // Test 4
         p = V3D_Plane.X0;
         instance = V3D_Plane.Y0;
-        assertFalse(instance.isParallel(p, e.oom, e.rm));
+        assertFalse(instance.isParallel(p, oom, rm));
         // Test 5
         p = V3D_Plane.X0;
         instance = V3D_Plane.Z0;
-        assertFalse(instance.isParallel(p, e.oom, e.rm));
+        assertFalse(instance.isParallel(p, oom, rm));
         // Test 6
         p = V3D_Plane.Y0;
         instance = V3D_Plane.Z0;
-        assertFalse(instance.isParallel(p, e.oom, e.rm));
+        assertFalse(instance.isParallel(p, oom, rm));
         // Test 7
         p = new V3D_Plane(e, P0P0P0, P0P1P0, P1P1P1);
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P2P1P1);
-        assertTrue(instance.isParallel(p, e.oom, e.rm));
+        assertTrue(instance.isParallel(p, oom, rm));
         // Test 8
         instance = new V3D_Plane(e, P1N1P0, P1P0P0, P2P0P1);
-        assertTrue(instance.isParallel(p, e.oom, e.rm));
+        assertTrue(instance.isParallel(p, oom, rm));
         // Test 9
         instance = new V3D_Plane(e, P1P0P0, P1P1P0, P1P1P1);
-        assertFalse(instance.isParallel(p, e.oom, e.rm));
+        assertFalse(instance.isParallel(p, oom, rm));
     }
 
     /**
@@ -2681,35 +2691,37 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsParallel_V3D_Line_int() {
         System.out.println("isParallel");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line l = V3D_Line.X_AXIS;
         V3D_Plane instance = V3D_Plane.Y0;
-        assertTrue(instance.isParallel(l, e.oom, e.rm));
+        assertTrue(instance.isParallel(l, oom, rm));
         // Test 2
         instance = V3D_Plane.Z0;
-        assertTrue(instance.isParallel(l, e.oom, e.rm));
+        assertTrue(instance.isParallel(l, oom, rm));
         // Test 3
         instance = V3D_Plane.X0;
-        assertFalse(instance.isParallel(l, e.oom, e.rm));
+        assertFalse(instance.isParallel(l, oom, rm));
         // Test 4
         l = V3D_Line.Y_AXIS;
         instance = V3D_Plane.X0;
-        assertTrue(instance.isParallel(l, e.oom, e.rm));
+        assertTrue(instance.isParallel(l, oom, rm));
         // Test 5
         instance = V3D_Plane.Y0;
-        assertFalse(instance.isParallel(l, e.oom, e.rm));
+        assertFalse(instance.isParallel(l, oom, rm));
         // Test 6
         instance = V3D_Plane.Z0;
-        assertTrue(instance.isParallel(l, e.oom, e.rm));
+        assertTrue(instance.isParallel(l, oom, rm));
         // Test 7
         l = V3D_Line.Z_AXIS;
         instance = V3D_Plane.X0;
-        assertTrue(instance.isParallel(l, e.oom, e.rm));
+        assertTrue(instance.isParallel(l, oom, rm));
         // Test 8
         instance = V3D_Plane.Y0;
-        assertTrue(instance.isParallel(l, e.oom, e.rm));
+        assertTrue(instance.isParallel(l, oom, rm));
         // Test 9
         instance = V3D_Plane.Z0;
-        assertFalse(instance.isParallel(l, e.oom, e.rm));
+        assertFalse(instance.isParallel(l, oom, rm));
     }
 
     /**
@@ -2720,6 +2732,8 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_Plane_int() {
         System.out.println("getIntersection");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane pl;
         V3D_Plane instance;
         V3D_Geometry expResult;
@@ -2754,7 +2768,7 @@ public class V3D_PlaneTest extends V3D_Test {
                         Math_BigRational.valueOf(-1).divide(16),
                         Math_BigRational.valueOf(-1).divide(16)));
         //, oom, e.rmN5);
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
 //        assertTrue(((V3D_Line) expResult).equals((V3D_Line) result));
 //        assertTrue(expResult.equals(result));
         /**
@@ -2763,25 +2777,25 @@ public class V3D_PlaneTest extends V3D_Test {
          * Simple. Something is not right with this test which had worked at
          * some stage... :(
          */
-        e.oom = -8;
+        oom = -8;
         pl = new V3D_Plane(new V3D_Point(e, 7, 11, 0), new V3D_Vector(0, 0, 3));
         instance = new V3D_Plane(new V3D_Point(e, 1, 0, 0), new V3D_Vector(5, 5, 0));
         V3D_Point p2 = new V3D_Point(e, 0.5d, 0.5d, 0);
-        assertTrue(V3D_Plane.isCoplanar(e, pl, p2));
+        assertTrue(V3D_Plane.isCoplanar(e, oom, rm, pl, p2));
         V3D_Vector v2 = new V3D_Vector(-15, 15, 0);
         //assertTrue(V3D_Geometrics.isCoplanar(oom, e.rm, pl, p2.apply(v2, oom, e.rm)));
-        assertTrue(V3D_Plane.isCoplanar(e, pl, new V3D_Point(e, p2.offset, p2.rel.add(v2, e.oom, e.rm))));
+        assertTrue(V3D_Plane.isCoplanar(e, oom, rm, pl, new V3D_Point(e, p2.offset, p2.rel.add(v2, oom, rm))));
         //assertTrue(V3D_Geometrics.isCoplanar(oom, e.rm, pl, new V3D_Point(p2.offset.add(v2, oom, e.rm), p2.rel)));
 
         //expResult = new V3D_Line(p2, v2, oom, e.rm);
-        expResult = new V3D_Line(e, p2.getVector(e.oom, e.rm), v2);
+        expResult = new V3D_Line(e, p2.getVector(oom, rm), v2);
         //expResult = new V3D_Line(p2.offset, p2.rel, v2, oom, e.rm);
 
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         //System.out.println(result);
         //System.out.println(expResult);
-        result = instance.getIntersection(pl, e.oom, e.rm);
-        //assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, e.oom, e.rm));
+        result = instance.getIntersection(pl, oom, rm);
+        //assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom, rm));
         //assertTrue(expResult.equals(result));
         // Test V3D_Plane.X0
         pl = V3D_Plane.X0;
@@ -2789,179 +2803,179 @@ public class V3D_PlaneTest extends V3D_Test {
         e.oom = V3D_Environment.DEFAULT_OOM;
         instance = V3D_Plane.X0;
         expResult = V3D_Plane.X0;
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 2
         instance = V3D_Plane.Y0;
         expResult = V3D_Line.Z_AXIS;
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 3
         instance = V3D_Plane.Z0;
         expResult = V3D_Line.Y_AXIS;
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 4
         instance = new V3D_Plane(pN1P1N1, pP0P1P0, pP1P1N1); // y=1
         expResult = new V3D_Line(pP0P1P0, pP0P1P1);    // x=0, y=1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 5
         instance = new V3D_Plane(pP1P0P1, pP0N1P1, pP0P0P1); // z=1
         expResult = new V3D_Line(pP0P1P1, pP0P0P1);    // x=0, z=1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 6 to 9
         pl = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
         // Test 6
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
         expResult = new V3D_Line(pP0P0N1, pP0P0P1);          // x=0, y=0
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 7
         instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
         expResult = new V3D_Line(pP0P0P0, pP1P0P0);          // y=0, z=0
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 8
         instance = new V3D_Plane(pP1P0P0, pP1P1P0, pP1P0P1);       // x=1
         expResult = new V3D_Line(pP1P0N1, pP1P0P1);          // x=1, y=0
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 9
         instance = new V3D_Plane(pP0P1P1, pP1P1P1, pP0P0P1);       // z=1
         expResult = new V3D_Line(pP0P0P1, pP1P0P1);          // y=0, z=1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 10 to 13
         pl = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0); // z=0
         // Test 10
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K); // x=0
         expResult = new V3D_Line(pP0N1P0, pP0P1P0);          // x=0, z=0
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 11
         instance = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K); // y=0
         expResult = new V3D_Line(pN1P0P0, pP1P0P0);          // y=0, z=0
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 12
         instance = new V3D_Plane(pP1P0P0, pP1P1P1, pP1P0P1); // x=1
         expResult = new V3D_Line(pP1N1P0, pP1P1P0);    // x=1, z=0
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 13
         instance = new V3D_Plane(pP1P1P1, pP0P1P0, pP1P1P0); // y=1
         expResult = new V3D_Line(pN1P1P0, pP1P1P0);    // y=1, z=0
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 14 to 15
         pl = new V3D_Plane(pP1P0P0, pP1P1P1, pP1P0P1); // x=1
         // Test 14
         instance = new V3D_Plane(pN1P1N1, pP0P1P0, pP1P1N1); // y=1
         expResult = new V3D_Line(pP1P1P0, pP1P1P1);    // x=1, y=1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 15
         instance = new V3D_Plane(pP1P0P1, pP0N1P1, pP0P0P1); // z=1
         expResult = new V3D_Line(pP1P1P1, pP1P0P1);    // x=1, z=1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 16 to 17
         pl = new V3D_Plane(pN1P1N1, pP0P1P0, pP1P1N1); // y=1
         // Test 16
         instance = new V3D_Plane(pP1P0P0, pP1P1P1, pP1P0P1); // x=1
         expResult = new V3D_Line(pP1P1P0, pP1P1P1);    // x=1, y=1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 17
         instance = new V3D_Plane(pP1P0P1, pP0N1P1, pP0P0P1); // z=1
         expResult = new V3D_Line(pP1P1P1, pP0P1P1);    // y=1, z=1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 18 to 19
         pl = new V3D_Plane(pP1P0P1, pP0N1P1, pP0P0P1); // z=1
         // Test 18
         instance = new V3D_Plane(pP1P0P0, pP1P1P1, pP1P0P1); // x=1
         expResult = new V3D_Line(pP1P0P1, pP1P1P1);    // x=1, z=1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 19
         instance = new V3D_Plane(pN1P1N1, pP0P1P0, pP1P1N1); // y=1
         expResult = new V3D_Line(pP1P1P1, pP0P1P1);    // y=1, z=1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 20 to 21
         pl = new V3D_Plane(pN1P0P0, pN1P1P1, pN1P0P1); // x=-1
         // Test 20
         instance = new V3D_Plane(pN1P1N1, pP0P1P0, pP1P1N1); // y=1
         expResult = new V3D_Line(pN1P1P0, pN1P1P1);    // x=-1, y=1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 21
         instance = new V3D_Plane(pP1P0P1, pP0N1P1, pP0P0P1); // z=1
         expResult = new V3D_Line(pN1P1P1, pN1P0P1);    // x=-1, z=1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 22 to 23
         pl = new V3D_Plane(pN1N1N1, pP0N1P0, pP1N1N1); // y=-1
         // Test 22
         instance = new V3D_Plane(pP1P0P0, pP1P1P1, pP1P0P1); // x=1
         expResult = new V3D_Line(pP1N1P0, pP1N1P1);    // x=1, y=-1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 23
         instance = new V3D_Plane(pP1P0P1, pP0N1P1, pP0P0P1); // z=1
         expResult = new V3D_Line(pP1N1P1, pP0N1P1);    // y=-1, z=1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 24 to 25
         pl = new V3D_Plane(pP1P0N1, pP0N1N1, pP0P0N1); // z=-1
         // Test 24
         instance = new V3D_Plane(pP1P0P0, pP1P1P1, pP1P0P1); // x=1
         expResult = new V3D_Line(pP1P0N1, pP1P1N1);    // x=1, z=-1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 25
         instance = new V3D_Plane(pN1P1N1, pP0P1P0, pP1P1N1); // y=1
         expResult = new V3D_Line(pP1P1N1, pP0P1N1);    // y=1, z=-1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 26 to 27
         pl = new V3D_Plane(pN1P0P0, pN1P1P1, pN1P0P1); // x=-1
         // Test 26
         instance = new V3D_Plane(pN1N1N1, pP0N1P0, pP1N1N1); // y=-1
         expResult = new V3D_Line(pN1N1P0, pN1N1P1);    // x=-1, y=-1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 27
         instance = new V3D_Plane(pP1P0N1, pP0N1N1, pP0P0N1); // z=-1
         expResult = new V3D_Line(pN1P1N1, pN1P0N1);    // x=-1, z=-1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 28 to 29
         pl = new V3D_Plane(pN1N1N1, pP0N1P0, pP1N1N1); // y=-1
         // Test 28
         instance = new V3D_Plane(pN1P0P0, pN1P1P1, pN1P0P1); // x=-1
         expResult = new V3D_Line(pN1N1P0, pN1N1P1);    // x=-1, y=-1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 29
         instance = new V3D_Plane(pP1P0N1, pP0N1N1, pP0P0N1); // z=-1
         expResult = new V3D_Line(pP1N1N1, pP0N1N1);    // y=-1, z=-1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 30 to 31
         pl = new V3D_Plane(pP1P0N1, pP0N1N1, pP0P0N1); // z=-1
         // Test 30
         instance = new V3D_Plane(pN1P0P0, pN1P1P1, pN1P0P1); // x=-1
         expResult = new V3D_Line(pN1P0N1, pN1P1N1);    // x=-1, z=-1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 31
         instance = new V3D_Plane(pN1N1N1, pP0N1P0, pP1N1N1); // y=-1
         expResult = new V3D_Line(pP1N1N1, pP0N1N1);    // y=-1, z=-1
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
 
         // Test 32 to ?
@@ -2969,7 +2983,7 @@ public class V3D_PlaneTest extends V3D_Test {
         // Test 32
         instance = new V3D_Plane(pN1N2N1, pP0N2P0, pP1N2N1); // y=-2
         expResult = new V3D_Line(pN1N2P0, pN1N2P1);    // x=-1, y=-2
-        result = instance.getIntersection(pl, e.oom, e.rm);
+        result = instance.getIntersection(pl, oom, rm);
         assertTrue(expResult.equals(result));
     }
 
@@ -3079,12 +3093,14 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsOnPlane() {
         System.out.println("isOnPlane");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0);
         V3D_Plane instance = new V3D_Plane(e, P0P0P0, P1P0P0, P1P1P0);
-        assertTrue(instance.isOnPlane(l, e.oom, e.rm));
+        assertTrue(instance.isOnPlane(l, oom, rm));
         // Test 2
         l = new V3D_Line(pP0P0P0, pP1P1P0);
-        assertTrue(instance.isOnPlane(l, e.oom, e.rm));
+        assertTrue(instance.isOnPlane(l, oom, rm));
     }
 
     /**
@@ -3274,37 +3290,6 @@ public class V3D_PlaneTest extends V3D_Test {
     }
 
     /**
-     * Test of equals method, of class V3D_Plane.
-     */
-    @Test
-    public void testEquals_V3D_Plane() {
-        System.out.println("equals");
-        V3D_Plane p;
-        V3D_Plane instance;
-        // Test 1
-        p = V3D_Plane.X0;
-        instance = V3D_Plane.X0;
-        assertTrue(p.equals(instance));
-        // Test 2
-        p = new V3D_Plane(e, P0P1P0, P1P1P1, P1P0P0);
-        instance = new V3D_Plane(e, P0P1P0, P1P1P1, P1P0P0);
-        assertTrue(instance.equals(p));
-        instance = new V3D_Plane(e, P1P1P0, P1P1P1, P1P0P0);
-        assertFalse(instance.equals(p));
-        instance = new V3D_Plane(e, P1P1P1, P1P0P0, P0P1P0);
-        assertTrue(instance.equals(p));
-        instance = new V3D_Plane(e, P1P0P0, P0P1P0, P1P1P1);
-        assertTrue(instance.equals(p));
-        // Test 3
-        p = new V3D_Plane(e, P0P0P0, P1P0P0, P0P1P0);
-        instance = new V3D_Plane(e, P0P0P0, P2P0P0, P0P2P0);
-        assertTrue(instance.equals(p));
-        // Test 6
-        instance = new V3D_Triangle(e, P0P0P0, P2P0P0, P0P2P0).p;
-        assertTrue(instance.equals(p));
-    }
-
-    /**
      * Test of isCoincident method, of class V3D_Plane.
      */
     @Test
@@ -3336,16 +3321,18 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetDistance_V3D_Line_int() {
         System.out.println("getDistance");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line l = new V3D_Line(e, new V3D_Vector(P10, P1, P1),
                 new V3D_Vector(P100, P1, P1));
         V3D_Plane instance = V3D_Plane.X0;
         BigDecimal expResult = BigDecimal.TEN;
-        BigDecimal result = instance.getDistance(l, e.oom, e.rm);
+        BigDecimal result = instance.getDistance(l, oom, rm);
         assertFalse(expResult.compareTo(result) == 0);
         l = new V3D_Line(e, new V3D_Vector(P10, P1, P1),
                 new V3D_Vector(P10, P0, P1));
         expResult = BigDecimal.TEN;
-        result = instance.getDistance(l, e.oom, e.rm);
+        result = instance.getDistance(l, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -3355,11 +3342,13 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetDistance_V3D_LineSegment_int() {
         System.out.println("getDistance");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment l = new V3D_LineSegment(e, new V3D_Vector(P10, P1, P1),
                 new V3D_Vector(P100, P1, P1));
         V3D_Plane instance = V3D_Plane.X0;
         BigDecimal expResult = BigDecimal.TEN;
-        BigDecimal result = instance.getDistance(l, e.oom, e.rm);
+        BigDecimal result = instance.getDistance(l, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -3712,19 +3701,21 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetN() {
         System.out.println("getN");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane instance = V3D_Plane.X0;
         V3D_Vector expResult = V3D_Vector.I;
-        V3D_Vector result = instance.getN(e.oom, e.rm);
+        V3D_Vector result = instance.getN(oom, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = V3D_Plane.Y0;
         expResult = V3D_Vector.J.reverse();
-        result = instance.getN(e.oom, e.rm);
+        result = instance.getN(oom, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = V3D_Plane.Z0;
         expResult = V3D_Vector.K;
-        result = instance.getN(e.oom, e.rm);
+        result = instance.getN(oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -3753,38 +3744,39 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testRotate() {
         System.out.println("rotate");
-        int oomt = e.oom - 2;
+        int oom = -5;
+        RoundingMode rm = RoundingMode.HALF_UP;
         Math_BigRational Pi = Math_BigRational.valueOf(
-                new Math_BigDecimal().getPi(oomt, RoundingMode.HALF_UP));
+                new Math_BigDecimal().getPi(oom, RoundingMode.HALF_UP));
         V3D_Vector axisOfRotation = V3D_Vector.I;
         Math_BigRational theta = Pi.divide(2);
         V3D_Plane instance = new V3D_Plane(V3D_Plane.X0);
-        instance.rotate(axisOfRotation, theta);
+        instance.rotate(axisOfRotation, theta, oom, rm);
         assertEquals(V3D_Plane.X0, instance);
         // Test 2
         axisOfRotation = V3D_Vector.J;
         instance = new V3D_Plane(V3D_Plane.X0);
-        instance.rotate(axisOfRotation, theta);
+        instance.rotate(axisOfRotation, theta, oom, rm);
         //System.out.println(instance.toString());
         assertEquals(V3D_Plane.Z0, instance);
         // Test 3
         axisOfRotation = V3D_Vector.K;
         instance = new V3D_Plane(V3D_Plane.X0);
-        instance.rotate(axisOfRotation, theta);
+        instance.rotate(axisOfRotation, theta, oom, rm);
         //System.out.println(instance.toString());
         assertEquals(V3D_Plane.Y0, instance);
         // Test 4
         axisOfRotation = V3D_Vector.I;
         theta = Pi;
         instance = new V3D_Plane(e, P1P0P0, P0P0P0, P0P2P0, P0P2P2);
-        instance.rotate(axisOfRotation, theta);
+        instance.rotate(axisOfRotation, theta, oom, rm);
         //System.out.println(instance.toString());
         assertEquals(new V3D_Plane(e, P1P0P0, P0P0P0, P0P2P0, P0P2P2), instance);
         // Test 5
         axisOfRotation = V3D_Vector.J;
         theta = Pi;
         instance = new V3D_Plane(e, P1P0P0, P0P0P0, P0P2P0, P0P2P2);
-        instance.rotate(axisOfRotation, theta);
+        instance.rotate(axisOfRotation, theta, oom, rm);
         V3D_Plane expResult = new V3D_Plane(e, P1P0P0, P0P0P0, P0P2P0, P0P2N2);
         //System.out.println(instance.toString());
         assertEquals(expResult, instance);
@@ -3792,7 +3784,7 @@ public class V3D_PlaneTest extends V3D_Test {
         axisOfRotation = V3D_Vector.K;
         theta = Pi;
         instance = new V3D_Plane(e, P1P0P0, P0P0P0, P0P2P0, P0P2P2);
-        instance.rotate(axisOfRotation, theta);
+        instance.rotate(axisOfRotation, theta, oom, rm);
         expResult = new V3D_Plane(e, P1P0P0, P0P0P0, P0N2P0, P0N2P2);
         //System.out.println(instance.toString());
         assertEquals(expResult, instance);
@@ -3805,26 +3797,28 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_LineSegment_int() {
         System.out.println("isIntersectedBy");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         V3D_Plane instance = V3D_Plane.X0;
-        assertTrue(instance.isIntersectedBy(l, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(l, oom, rm));
         // Test 2
         instance = V3D_Plane.Y0;
-        assertTrue(instance.isIntersectedBy(l, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(l, oom, rm));
         // Test 3
         instance = V3D_Plane.Z0;
-        assertTrue(instance.isIntersectedBy(l, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(l, oom, rm));
         // Test 4
         l = new V3D_LineSegment(pP0P0P2, pP1P0P2);
         instance = V3D_Plane.Z0;
-        assertFalse(instance.isIntersectedBy(l, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(l, oom, rm));
         // Test 5
         l = new V3D_LineSegment(pN1P0P0, pP1P0P0);
         instance = V3D_Plane.X0;
-        assertTrue(instance.isIntersectedBy(l, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(l, oom, rm));
         // Test 6
         l = new V3D_LineSegment(pP1P0P0, pP2P0P0);
-        assertFalse(instance.isIntersectedBy(l, e.oom, e.rm));
+        assertFalse(instance.isIntersectedBy(l, oom, rm));
     }
 
     /**
@@ -3833,6 +3827,8 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_Ray_int() {
         System.out.println("getIntersection");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Ray r;
         V3D_Plane instance;
         V3D_Geometry result;
@@ -3841,28 +3837,28 @@ public class V3D_PlaneTest extends V3D_Test {
         r = new V3D_Ray(pP0P0P0, pP1P0P0);
         instance = V3D_Plane.X0;
         expResult = pP0P0P0;
-        result = instance.getIntersection(r, e.oom, e.rm);
+        result = instance.getIntersection(r, oom, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = V3D_Plane.Y0;
         expResult = new V3D_Ray(pP0P0P0, pP1P0P0);
-        result = instance.getIntersection(r, e.oom, e.rm);
+        result = instance.getIntersection(r, oom, rm);
         assertEquals(expResult, result);
         // Test 3
         instance = V3D_Plane.Z0;
         expResult = new V3D_Ray(pP0P0P0, pP1P0P0);
-        result = instance.getIntersection(r, e.oom, e.rm);
+        result = instance.getIntersection(r, oom, rm);
         assertEquals(expResult, result);
         // Test 4
         r = new V3D_Ray(pN2P0P0, pN1P0P0);
         instance = V3D_Plane.X0;
         expResult = pP0P0P0;
-        result = instance.getIntersection(r, e.oom, e.rm);
+        result = instance.getIntersection(r, oom, rm);
         assertEquals(expResult, result);
         // Test 5
         r = new V3D_Ray(pN1P0P0, pN2P0P0);
         instance = V3D_Plane.X0;
-        result = instance.getIntersection(r, e.oom, e.rm);
+        result = instance.getIntersection(r, oom, rm);
         assertNull(result);
     }
 
@@ -3872,9 +3868,11 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testSetOffset() {
         System.out.println("setOffset");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector offset = V3D_Vector.I;
         V3D_Plane instance = new V3D_Plane(V3D_Plane.X0);
-        instance.setOffset(offset);
+        instance.setOffset(offset, oom, rm);
         V3D_Plane expResult = new V3D_Plane(new V3D_Environment(),
                 V3D_Vector.I, N1P0P0, N1P1P0, N1P0P1);
         assertEquals(expResult, instance);
@@ -3886,6 +3884,8 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_Point_int() {
         System.out.println("getDistanceSquared");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point pt;
         V3D_Plane instance;
         Math_BigRational expResult;
@@ -3894,12 +3894,12 @@ public class V3D_PlaneTest extends V3D_Test {
         pt = pP1P0P0;
         instance = V3D_Plane.X0;
         expResult = Math_BigRational.ONE;
-        result = instance.getDistanceSquared(pt, e.oom, e.rm);
+        result = instance.getDistanceSquared(pt, oom, rm);
         assertEquals(expResult, result);
         // Test 2
         pt = pP0P0P0;
         expResult = Math_BigRational.ZERO;
-        result = instance.getDistanceSquared(pt, e.oom, e.rm);
+        result = instance.getDistanceSquared(pt, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -3927,6 +3927,8 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_Plane_int() {
         System.out.println("getDistanceSquared");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane pl;
         V3D_Plane instance;
         Math_BigRational expResult;
@@ -3935,13 +3937,13 @@ public class V3D_PlaneTest extends V3D_Test {
         pl = V3D_Plane.X0;
         instance = V3D_Plane.Y0;
         expResult = Math_BigRational.ZERO;
-        result = instance.getDistanceSquared(pl, e.oom, e.rm);
+        result = instance.getDistanceSquared(pl, oom, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_Plane(V3D_Plane.X0);
-        instance.translate(P1P0P0);
+        instance.translate(P1P0P0, oom, rm);
         expResult = Math_BigRational.ONE;
-        result = instance.getDistanceSquared(pl, e.oom, e.rm);
+        result = instance.getDistanceSquared(pl, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -3951,6 +3953,8 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_Line_int() {
         System.out.println("getDistanceSquared");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line l;
         V3D_Plane instance;
         Math_BigRational expResult;
@@ -3959,13 +3963,13 @@ public class V3D_PlaneTest extends V3D_Test {
         l = V3D_Line.X_AXIS;
         instance = V3D_Plane.Y0;
         expResult = Math_BigRational.ZERO;
-        result = instance.getDistanceSquared(l, e.oom, e.rm);
+        result = instance.getDistanceSquared(l, oom, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_Plane(V3D_Plane.Y0);
-        instance.setOffset(P0P1P0);
+        instance.setOffset(P0P1P0, oom, rm);
         expResult = Math_BigRational.ONE;
-        result = instance.getDistanceSquared(l, e.oom, e.rm);
+        result = instance.getDistanceSquared(l, oom, rm);
         assertNotEquals(expResult, result);
     }
 
@@ -3975,6 +3979,8 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_LineSegment_int() {
         System.out.println("getDistanceSquared");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment l;
         boolean b = true;
         V3D_Plane instance;
@@ -3984,13 +3990,13 @@ public class V3D_PlaneTest extends V3D_Test {
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
         instance = V3D_Plane.Y0;
         expResult = Math_BigRational.ZERO;
-        result = instance.getDistanceSquared(l, e.oom, e.rm);
+        result = instance.getDistanceSquared(l, oom, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_Plane(V3D_Plane.Y0);
-        instance.setOffset(P0P1P0);
+        instance.setOffset(P0P1P0, oom, rm);
         expResult = Math_BigRational.ONE;
-        result = instance.getDistanceSquared(l, e.oom, e.rm);
+        result = instance.getDistanceSquared(l, oom, rm);
         assertNotEquals(expResult, result);
     }
 
@@ -4000,6 +4006,8 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetPointOfProjectedIntersection() {
         System.out.println("getPointOfProjectedIntersection");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point pt;
         V3D_Plane instance;
         V3D_Point expResult;
@@ -4008,7 +4016,7 @@ public class V3D_PlaneTest extends V3D_Test {
         pt = pP1P0P0;
         instance = V3D_Plane.X0;
         expResult = pP0P0P0;
-        result = instance.getPointOfProjectedIntersection(pt, e.oom, e.rm);
+        result = instance.getPointOfProjectedIntersection(pt, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -4018,16 +4026,18 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Triangle_int() {
         System.out.println("isIntersectedBy");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle t;
         V3D_Plane instance;
         // Test 1
         t = new V3D_Triangle(pP1P0P0, pP1P1P0, pP0P1P0);
         instance = V3D_Plane.X0;
-        assertTrue(instance.isIntersectedBy(t, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(t, oom, rm));
         // Test 2
         instance = new V3D_Plane(V3D_Plane.X0);
-        instance.translate(P2P0P0);
-        assertFalse(instance.isIntersectedBy(t, e.oom, e.rm));
+        instance.translate(P2P0P0, oom, rm);
+        assertFalse(instance.isIntersectedBy(t, oom, rm));
     }
 
     /**
@@ -4036,17 +4046,19 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Tetrahedron_int() {
         System.out.println("isIntersectedBy");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Tetrahedron t;
         V3D_Plane instance;
         // Test 1
         t = new V3D_Tetrahedron(e, P0P0P0, P1P0P0, P0P1P0, P1P1P0, P1P1P1);
         instance = V3D_Plane.X0;
-        assertTrue(instance.isIntersectedBy(t, e.oom, e.rm));
+        assertTrue(instance.isIntersectedBy(t, oom, rm));
         // Test 1
         t = new V3D_Tetrahedron(e, P0P0P0, P1P0P0, P0P1P0, P1P1P0, P1P1P1);
         instance = new V3D_Plane(V3D_Plane.X0);
-        instance.translate(new V3D_Vector(0.5d, 0, 0));
-        assertTrue(instance.isIntersectedBy(t, e.oom, e.rm));
+        instance.translate(new V3D_Vector(0.5d, 0, 0), oom, rm);
+        assertTrue(instance.isIntersectedBy(t, oom, rm));
     }
 
     /**
@@ -4055,6 +4067,8 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_Triangle_int() {
         System.out.println("getIntersection");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle t;
         //boolean b = false;
         V3D_Plane instance;
@@ -4064,18 +4078,18 @@ public class V3D_PlaneTest extends V3D_Test {
         t = new V3D_Triangle(e, P0P0P0, P1P0P0, P0P1P0, P1P1P0);
         instance = V3D_Plane.X0;
         expResult = pP0P1P0;
-        result = instance.getIntersection(t, e.oom, e.rm);
+        result = instance.getIntersection(t, oom, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_Plane(V3D_Plane.X0);
-        instance.translate(P1P0P0);
+        instance.translate(P1P0P0, oom, rm);
         expResult = new V3D_LineSegment(pP1P0P0, pP1P1P0);
-        result = instance.getIntersection(t, e.oom, e.rm);
+        result = instance.getIntersection(t, oom, rm);
         assertEquals(expResult, result);
         // Test 3
         instance = new V3D_Plane(V3D_Plane.Z0);
         expResult = new V3D_Triangle(t);
-        result = instance.getIntersection(t, e.oom, e.rm);
+        result = instance.getIntersection(t, oom, rm);
         System.out.println(expResult.toString());
         System.out.println(result.toString());
         boolean b = expResult.equals(result);
@@ -4167,6 +4181,8 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsCoplanar_3args() {
         System.out.println("isCoplanar");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane p;
         V3D_Point[] points;
         // Test 1
@@ -4175,19 +4191,19 @@ public class V3D_PlaneTest extends V3D_Test {
         points[0] = pP2P2P0;
         points[1] = pN2P2P0;
         points[2] = pP2N2P0;
-        assertTrue(V3D_Plane.isCoplanar(e, p, points));
+        assertTrue(V3D_Plane.isCoplanar(e, oom, rm, p, points));
         // Test 2
         points[2] = pP2N2P1;
-        assertFalse(V3D_Plane.isCoplanar(e, p, points));
+        assertFalse(V3D_Plane.isCoplanar(e, oom, rm, p, points));
         // Test 3
         p = new V3D_Plane(pP0P0P0, pP0P1P0, pP0P0P1);
         points[0] = pP0P2P2;
         points[1] = pP0N2P2;
         points[2] = pP0P2N2;
-        assertTrue(V3D_Plane.isCoplanar(e, p, points));
+        assertTrue(V3D_Plane.isCoplanar(e, oom, rm, p, points));
         // Test 4
         points[2] = pP2N2P1;
-        assertFalse(V3D_Plane.isCoplanar(e, p, points));
+        assertFalse(V3D_Plane.isCoplanar(e, oom, rm, p, points));
     }
 
     /**
@@ -4196,6 +4212,8 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testIsCoplanar_int_V3D_PointArr() {
         System.out.println("isCoplanar");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point[] points = new V3D_Point[6];
         points[0] = pP0P0P0;
         points[1] = pP0P1P0;
@@ -4203,10 +4221,10 @@ public class V3D_PlaneTest extends V3D_Test {
         points[3] = pP0P2P2;
         points[4] = pP0N2P2;
         points[5] = pP0P2N2;
-        assertTrue(V3D_Plane.isCoplanar(e, points));
+        assertTrue(V3D_Plane.isCoplanar(e, oom, rm, points));
         // Test 2
         points[2] = pP2N2P1;
-        assertFalse(V3D_Plane.isCoplanar(e, points));
+        assertFalse(V3D_Plane.isCoplanar(e, oom, rm, points));
     }
 
     /**
@@ -4215,10 +4233,12 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     @Disabled
     public void testGetPlane() {
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         System.out.println("getPlane");
         V3D_Point[] points = null;
         V3D_Plane expResult = null;
-        V3D_Plane result = V3D_Plane.getPlane(e, points);
+        V3D_Plane result = V3D_Plane.getPlane(e, oom, rm, points);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

@@ -139,7 +139,7 @@ public abstract class V3D_Geometry implements Serializable,
      * <li>https://en.wikipedia.org/wiki/3D_rotation_group</li>
      * </ul>
      */
-    public abstract void rotate(V3D_Vector axisOfRotation, Math_BigRational theta);
+    public abstract void rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm);
     
 //    /**
 //     * Identify if the envelope of this is intersected by {@code l}.

@@ -63,7 +63,7 @@ public class V3D_PointsCoplanar extends V3D_FiniteGeometry implements
      * @return The Envelope
      */
     @Override
-    public V3D_Envelope getEnvelope() {
+    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
             en = new V3D_Envelope(e, new V3D_Point(e, offset, rels[0]));
             for (int i = 1; i < rels.length; i++) {
@@ -75,7 +75,7 @@ public class V3D_PointsCoplanar extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public V3D_Point[] getPoints() {
+    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
         int n = rels.length;
         V3D_Point[] r = new V3D_Point[n];
         for(int i = 0; i < n; i ++) {
@@ -105,9 +105,10 @@ public class V3D_PointsCoplanar extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta) {
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+            int oom, RoundingMode rm) {
         for (V3D_Vector rel : rels) {
-            rel.rotate(axisOfRotation, theta, e.bI, e.oom, e.rm);
+            rel.rotate(axisOfRotation, theta, e.bI, oom, rm);
         }
     }
 

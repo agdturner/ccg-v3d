@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -54,10 +55,11 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry
         super(e, offset);
     }
     
-    public static V3D_Point[] getPoints(V3D_FiniteGeometry... gs) {
+    public static V3D_Point[] getPoints(int oom, RoundingMode rm, 
+            V3D_FiniteGeometry... gs) {
         ArrayList<V3D_Point> list = new ArrayList<>();
         for (var x: gs) {
-            V3D_Point[] pts = x.getPoints();
+            V3D_Point[] pts = x.getPoints(oom, rm);
             list.addAll(Arrays.asList(pts));
         }
         return list.toArray(V3D_Point[]::new);
