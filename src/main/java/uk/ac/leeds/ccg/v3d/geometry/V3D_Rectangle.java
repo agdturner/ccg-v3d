@@ -124,7 +124,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
          * which case {@link #pq} is now representing the reverse, and
          * {@link qr} represents the vector from p to r.
          */
-        boolean qAtOrigin2 = this.p.getQ().equals(V3D_Point.ORIGIN);
+        boolean qAtOrigin2 = this.p.getQ().equals(V3D_Point.ORIGIN, oom, rm);
         V3D_Vector qs;
         if (qAtOrigin2) {
             qs = s.subtract(p, oom, rm);
@@ -215,7 +215,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     protected String toStringFields(String pad) {
         return pad + "p=" + this.p.toString(pad) + "\n"
                 + pad + ",\n"
-                + pad + "s=" + this.s.toString(pad) + "\n";
+                + pad + "s=" + this.s.toString(pad);
     }
 
     @Override
@@ -305,19 +305,19 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     protected boolean isIntersectedBy0(V3D_Point pt, int oom, RoundingMode rm) {
         // Special cases
         V3D_Point tp = p.getP();
-        if (tp.equals(pt)) {
+        if (tp.equals(pt, oom, rm)) {
             return true;
         }
         V3D_Point tq = p.getQ();
-        if (tq.equals(pt)) {
+        if (tq.equals(pt, oom, rm)) {
             return true;
         }
         V3D_Point tr = p.getR();
-        if (tr.equals(pt)) {
+        if (tr.equals(pt, oom, rm)) {
             return true;
         }
         V3D_Point ts = this.getS();
-        if (ts.equals(pt)) {
+        if (ts.equals(pt, oom, rm)) {
             return true;
         }
         if (true) {
@@ -344,7 +344,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
                 || getSP().isIntersectedBy(pt, oom, rm) || p.getPQ().isIntersectedBy(pt, oom, rm)) {
             return true;
         }
-        if (p.getQ().equals(V3D_Point.ORIGIN)) {
+        if (p.getQ().equals(V3D_Point.ORIGIN, oom, rm)) {
             V3D_Vector ppt = new V3D_Vector(tq, pt, oom, rm);
             V3D_Vector qpt = new V3D_Vector(tp, pt, oom, rm);
             V3D_Vector rpt = new V3D_Vector(tr, pt, oom, rm);
@@ -685,11 +685,11 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     protected V3D_FiniteGeometry join(V3D_FiniteGeometry pointOrLineSegment1,
             V3D_FiniteGeometry pointOrLineSegment2, int oom, RoundingMode rm) {
-        if (pointOrLineSegment1.equals(pointOrLineSegment2)) {
-            return pointOrLineSegment1;
-        }
         if (pointOrLineSegment1 instanceof V3D_LineSegment l1) {
             if (pointOrLineSegment2 instanceof V3D_LineSegment l2) {
+                if (l1.equals(l2, oom, rm)){
+                    return l1;
+                }
                 if (l1.getP().equals(l2.getP())) {
                     return new V3D_LineSegment(e, offset, l1.l.q, l2.l.q);
                 } else if (l1.getP().equals(l2.getQ(oom, rm))) {
@@ -707,6 +707,9 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             if (pointOrLineSegment2 instanceof V3D_LineSegment l2) {
                 return l2;
             } else {
+                if (((V3D_Point) pointOrLineSegment1).equals((V3D_Point) pointOrLineSegment2, oom, rm)){
+                    return pointOrLineSegment1;
+                }
                 return (V3D_Point) pointOrLineSegment1;
             }
         }

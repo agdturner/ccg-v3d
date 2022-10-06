@@ -335,14 +335,6 @@ public class V3D_Vector implements Serializable {
                 + ", dz=" + dz.toStringSimple();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof V3D_Vector v3D_Vector) {
-            return equals(v3D_Vector);
-        }
-        return false;
-    }
-
     /**
      * Indicates if {@code this} and {@code v} are equal.
      *
@@ -754,13 +746,13 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
             Math_BigInteger bI, int oom, RoundingMode rm) {
-        int oomt = oom - 2;
-        Math_BigRational adx = axisOfRotation.getDX(oomt, rm);
-        Math_BigRational ady = axisOfRotation.getDY(oomt, rm);
-        Math_BigRational adz = axisOfRotation.getDZ(oomt, rm);
+        int oomn2 = oom - 6;
+        Math_BigRational adx = axisOfRotation.getDX(oomn2, rm);
+        Math_BigRational ady = axisOfRotation.getDY(oomn2, rm);
+        Math_BigRational adz = axisOfRotation.getDZ(oomn2, rm);
         Math_BigRational thetaDiv2 = theta.divide(2);
-        Math_BigRational sinThetaDiv2 = thetaDiv2.sin(bI, oomt, rm);
-        Math_BigRational w = thetaDiv2.cos(bI, oomt, rm);
+        Math_BigRational sinThetaDiv2 = thetaDiv2.sin(bI, oomn2, rm);
+        Math_BigRational w = thetaDiv2.cos(bI, oomn2, rm);
         Math_BigRational x = sinThetaDiv2.multiply(adx);
         Math_BigRational y = sinThetaDiv2.multiply(ady);
         Math_BigRational z = sinThetaDiv2.multiply(adz);
@@ -770,8 +762,8 @@ public class V3D_Vector implements Serializable {
         Math_Quaternion_BigRational rR = new Math_Quaternion_BigRational(
                 w, x.negate(), y.negate(), z.negate());
         Math_Quaternion_BigRational p = new Math_Quaternion_BigRational(
-                Math_BigRational.ZERO, this.getDX(oomt, rm), 
-                this.getDY(oomt, rm), this.getDZ(oomt, rm));
+                Math_BigRational.ZERO, this.getDX(oomn2, rm), 
+                this.getDY(oomn2, rm), this.getDZ(oomn2, rm));
         // P'=pP
         Math_Quaternion_BigRational pP = r.multiply(p).multiply(rR);
         return new V3D_Vector(pP.x.round(oom, rm), pP.y.round(oom, rm),

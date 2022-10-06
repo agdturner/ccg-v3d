@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Objects;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
@@ -88,7 +88,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @param triangles A non-empty list of coplanar triangles.
      */
     public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_Triangle... triangles) {
-        this(oom, rm, triangles[0].p.getN(oom, rm), V3D_Triangle.getPoints(triangles));
+        this(oom, rm, triangles[0].p.getN(oom, rm), V3D_Triangle.getPoints(triangles, oom, rm));
     }
 
     /**
@@ -101,10 +101,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         this.points = new ArrayList<>();
         this.triangles = new ArrayList<>();
         // Get a list of unique points.
-        HashSet<V3D_Point> pts2 = new HashSet<>();
-        pts2.addAll(Arrays.asList(points));
-        ArrayList<V3D_Point> pts = new ArrayList<>();
-        pts.addAll(pts2);
+        ArrayList<V3D_Point> pts = V3D_Point.getUnique(Arrays.asList(points), oom, rm);
         V3D_Vector v0 = pts.get(0).rel;
         Math_BigRationalSqrt xmin = v0.dx;
         Math_BigRationalSqrt xmax = v0.dx;
@@ -270,59 +267,72 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         return s;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        // Think about the case when there is a single triangle and whether this is equal to that triangle...
-        if (o instanceof V3D_ConvexHullCoplanar i) {
-            return equals(i);
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.points);
-        return hash;
-    }
-
     /**
      * Check if {@code this} is equal to {@code i}.
      *
      * @param i An instance to compare for equality.
      * @return {@code true} iff all the triangles are the same.
      */
-    public boolean equals(V3D_ConvexHullCoplanar i, int oom, RoundingMode rm) {
-        /**
-         * The triangularisation of this and i might be different and the number
-         * of points in each might be different, but the areas they define might
-         * be the same. For the areas to be the same each triangle from each
-         * must either be in the other, or it must fully intersect the other.
-         */
-        if (!this.triangles.get(0).p.equals(i.triangles.get(0).p)) {
-            // If they are not in the same plane, they are unequal!
-            return false;
-        }
-        for (V3D_Triangle t : triangles) {
-            V3D_Geometry g = i.getIntersection(t, oom, rm);
-            if (g instanceof V3D_Triangle gt) {
-                if (!t.equals(gt)) {
-//                    System.out.println(gt);
-//                    System.out.println(t);
-//                    t.equals(gt);
-                    return false;
+    public boolean equals(V3D_ConvexHullCoplanar c, int oom, RoundingMode rm) {
+        HashSet<Integer> indexes = new HashSet<>();
+        for (var x : points) {
+            boolean found = false;
+            for (int i = 0; i < c.points.size(); i++) {
+                if (x.equals(c.points.get(i), oom, rm)) {
+                    found = true;
+                    indexes.add(i);
+                    break;
                 }
             }
+            if (!found) {
+                return false;
+            }
         }
-        for (V3D_Triangle t : i.triangles) {
-            V3D_Geometry g = getIntersection(t, oom, rm);
-            if (g instanceof V3D_Triangle gt) {
-                if (!t.equals(gt)) {
+        for (int i = 0; i < c.points.size(); i++) {
+            if (!indexes.contains(i)) {
+                boolean found = false;
+                for (var x : points) {
+                    if (x.equals(c.points.get(i), oom, rm)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
                     return false;
                 }
             }
         }
         return true;
+//        /**
+//         * The triangularisation of this and i might be different and the number
+//         * of points in each might be different, but the areas they define might
+//         * be the same. For the areas to be the same each triangle from each
+//         * must either be in the other, or it must fully intersect the other.
+//         */
+//        if (!this.triangles.get(0).p.equals(i.triangles.get(0).p, oom, rm)) {
+//            // If they are not in the same plane, they are unequal!
+//            return false;
+//        }
+//        for (V3D_Triangle t : triangles) {
+//            V3D_Geometry g = i.getIntersection(t, oom, rm);
+//            if (g instanceof V3D_Triangle gt) {
+//                if (!t.equals(gt, oom, rm)) {
+////                    System.out.println(gt);
+////                    System.out.println(t);
+////                    t.equals(gt, oom, rm);
+//                    return false;
+//                }
+//            }
+//        }
+//        for (V3D_Triangle t : i.triangles) {
+//            V3D_Geometry g = getIntersection(t, oom, rm);
+//            if (g instanceof V3D_Triangle gt) {
+//                if (!t.equals(gt, oom, rm)) {
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
     }
 
     @Override
@@ -465,16 +475,17 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, RoundingMode rm) {
         // Create a set all the intersecting triangles from this.
-        HashSet<V3D_Point> ts = new HashSet<>();
+        List<V3D_Point> ts = new ArrayList<>();
         for (V3D_Triangle t2 : triangles) {
             V3D_FiniteGeometry i = t2.getIntersection(t, oom, rm);
             ts.addAll(Arrays.asList(i.getPoints(oom, rm)));
         }
-        if (ts.isEmpty()) {
+        ArrayList<V3D_Point> tsu = V3D_Point.getUnique(ts, oom, rm);
+        if (tsu.isEmpty()) {
             return null;
         } else {
             return new V3D_ConvexHullCoplanar(oom, rm, t.p.getN(oom, rm), 
-                    ts.toArray(V3D_Point[]::new)).simplify(oom, rm);
+                    tsu.toArray(V3D_Point[]::new)).simplify(oom, rm);
         }
 //        switch (size) {
 //            case 0:

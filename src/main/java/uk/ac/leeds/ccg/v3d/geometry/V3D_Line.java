@@ -296,7 +296,7 @@ public class V3D_Line extends V3D_Geometry
         this.offset = new V3D_Vector(p.offset);
         this.p = new V3D_Vector(p.rel);
         this.q = q2.rel;        
-        if (p.equals(q)) {
+        if (p.equals(q, oom, rm)) {
             throw new RuntimeException("Points " + p + " and " + q
                     + " are the same and so do not define a line.");
         }
@@ -470,7 +470,7 @@ public class V3D_Line extends V3D_Geometry
      */
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
-        oom -= 2;
+        int oomN2 = oom - 2;
         V3D_Point tp = getP();
         V3D_Point tq = getQ(oom, rm);
         if (tp.equals(pt, oom, rm)) {
@@ -480,18 +480,18 @@ public class V3D_Line extends V3D_Geometry
             return true;
         }
         V3D_Vector cp;
-        if (tp.equals(V3D_Point.ORIGIN)) {
+        if (tp.equals(V3D_Point.ORIGIN, oom, rm)) {
             V3D_Vector ppt = new V3D_Vector(
-                    pt.getX(oom, rm).subtract(tq.getX(oom, rm)),
-                    pt.getY(oom, rm).subtract(tq.getY(oom, rm)),
-                    pt.getZ(oom, rm).subtract(tq.getZ(oom, rm)));
-            cp = getV(oom, rm).getCrossProduct(ppt, oom, rm);
+                    pt.getX(oomN2, rm).subtract(tq.getX(oomN2, rm)),
+                    pt.getY(oomN2, rm).subtract(tq.getY(oomN2, rm)),
+                    pt.getZ(oomN2, rm).subtract(tq.getZ(oomN2, rm)));
+            cp = getV(oomN2, rm).getCrossProduct(ppt, oomN2, rm);
         } else {
             V3D_Vector ppt = new V3D_Vector(
-                    pt.getX(oom, rm).subtract(tp.getX(oom, rm)),
-                    pt.getY(oom, rm).subtract(tp.getY(oom, rm)),
-                    pt.getZ(oom, rm).subtract(tp.getZ(oom, rm)));
-            cp = getV(oom, rm).getCrossProduct(ppt, oom, rm);
+                    pt.getX(oomN2, rm).subtract(tp.getX(oomN2, rm)),
+                    pt.getY(oomN2, rm).subtract(tp.getY(oomN2, rm)),
+                    pt.getZ(oomN2, rm).subtract(tp.getZ(oomN2, rm)));
+            cp = getV(oomN2, rm).getCrossProduct(ppt, oomN2, rm);
         }
         //V3D_Vector cp = ppt.getCrossProduct(v, oom);
         return cp.getDX(oom, rm).isZero() && cp.getDY(oom, rm).isZero()
@@ -1000,7 +1000,7 @@ public class V3D_Line extends V3D_Geometry
          * not intersect. In this case pi and qi are meant to be the end points
          * of the shortest line between the two lines.
          */
-        if (pi.equals(qi)) {
+        if (pi.equals(qi, oom, rm)) {
             return pi;
         } else {
             return null;
@@ -1608,7 +1608,7 @@ public class V3D_Line extends V3D_Geometry
      */
     public V3D_Point getOtherPoint(V3D_Point a, int oom, RoundingMode rm) {
         V3D_Point pt = getP();
-        if (pt.equals(a)) {
+        if (pt.equals(a, oom, rm)) {
             return getQ(oom, rm);
         } else {
             return pt;
@@ -1785,7 +1785,7 @@ public class V3D_Line extends V3D_Geometry
     public static boolean isCollinear(V3D_Environment e, int oom, 
             RoundingMode rm, V3D_Point... points) {
         // For the points to be in a line at least two must be different.
-        if (V3D_Point.isCoincident(points)) {
+        if (V3D_Point.isCoincident(oom, rm, points)) {
             return false;
         }
         return isCollinear0(e, oom, rm, points);
@@ -1827,7 +1827,7 @@ public class V3D_Line extends V3D_Geometry
             V3D_Point... points) {
         V3D_Point p0 = points[0];
         for (V3D_Point p1 : points) {
-            if (!p1.equals(p0)) {
+            if (!p1.equals(p0, oom, rm)) {
                 //return new V3D_Line(p0, p1, -1);
                 return new V3D_Line(e, p0.getVector(oom, rm), p1.getVector(oom, rm));
             }

@@ -19,15 +19,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.TreeSet;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * For representing multiple collinear line segments.
- * 
+ *
  * Things to do:
  * <ol>
  * <li>Find extremes.</li>
@@ -60,14 +60,14 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     public V3D_Point[] getPoints(int oom, RoundingMode rm) {
         int nl = lineSegments.size();
         V3D_Point[] r = new V3D_Point[nl * 2];
-        for(int i = 0; i < nl; i ++) {
+        for (int i = 0; i < nl; i++) {
             V3D_LineSegment l = lineSegments.get(i);
             r[i] = l.getP();
             r[i + nl] = l.getQ(oom, rm);
         }
         return r;
     }
-    
+
     @Override
     public String toString() {
         String s = this.getClass().getName() + "(";
@@ -81,30 +81,44 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
         return s + ")";
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof V3D_LineSegmentsCollinear lsc) {
-            return equals(lsc);
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + Objects.hashCode(this.lineSegments);
-        return hash;
-    }
-
     /**
      * @param l The line segment to test if it is the same as {@code this}.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
-    public boolean equals(V3D_LineSegmentsCollinear l) {
-        if (!l.lineSegments.containsAll(lineSegments)) {
-            return false;
+    public boolean equals(V3D_LineSegmentsCollinear l, int oom, RoundingMode rm) {
+        HashSet<Integer> indexes = new HashSet<>();
+        for (var x : lineSegments) {
+            boolean found = false;
+            for (int i = 0; i < l.lineSegments.size(); i++) {
+                if (x.equals(l.lineSegments.get(i), oom, rm)) {
+                    found = true;
+                    indexes.add(i);
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
         }
-        return lineSegments.containsAll(l.lineSegments);
+        for (int i = 0; i < l.lineSegments.size(); i++) {
+            if (!indexes.contains(i)) {
+                boolean found = false;
+                for (var x : lineSegments) {
+                    if (x.equals(l.lineSegments.get(i), oom, rm)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    return false;
+                }
+            }
+        }
+        return true;
+//        if (!l.lineSegments.containsAll(lineSegments)) {
+//            return false;
+//        }
+//        return lineSegments.containsAll(l.lineSegments);
     }
 
     /**
@@ -356,6 +370,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * different start and end points.
      *
      * ls l The line segment to intersect with.
+     *
      * @param oom The order of magnitude for the precision.
      * @return The intersection of this and l.
      */
@@ -506,7 +521,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
             }
         }
         Iterator<Integer> ite = removeIndexes.descendingIterator();
-        while(ite.hasNext()) {
+        while (ite.hasNext()) {
             r.remove(ite.next().intValue());
         }
         if (i < r.size() - 1) {

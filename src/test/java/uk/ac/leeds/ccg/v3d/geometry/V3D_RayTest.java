@@ -213,12 +213,12 @@ public class V3D_RayTest extends V3D_Test {
         V3D_Ray instance = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
         V3D_Geometry expResult = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
         V3D_Geometry result = instance.getIntersection(l, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(((V3D_Ray) expResult).equals((V3D_Ray) result, oom, rm));
         // Test 2
         instance = new V3D_Ray(pP0P0P0, pP1P1P1, oom, rm);
         result = instance.getIntersection(l, oom, rm);
         expResult = pP0P0P0;
-        assertTrue(expResult.equals(result));
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 3
         instance = new V3D_Ray(pN1N1N1, pN1N1P0, oom, rm);
         result = instance.getIntersection(l, oom, rm);
@@ -228,13 +228,13 @@ public class V3D_RayTest extends V3D_Test {
         instance = new V3D_Ray(pN1N1N1, pP1P1P1, oom, rm);
         result = instance.getIntersection(l, oom, rm);
         expResult = pP0P0P0;
-        assertTrue(expResult.equals(result));
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 5
         l = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
         instance = new V3D_Ray(pN1P0P0, pP1P0P0, oom, rm);
         result = instance.getIntersection(l, oom, rm);
         expResult = new V3D_Ray(pN1P0P0, pP1P0P0, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(((V3D_Ray) expResult).equals((V3D_Ray) result, oom, rm));
     }
 
     /**
@@ -254,12 +254,12 @@ public class V3D_RayTest extends V3D_Test {
         instance = new V3D_Ray(e, P0P0P0, P1P0P0, P2P0P0);
         result = instance.getIntersection(l, oom, rm);
         expResult = pP1P0P0;
-        assertEquals(expResult, result);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 2
         instance = new V3D_Ray(pP0P0P0, pP1P1P1, oom, rm);
         result = instance.getIntersection(l, oom, rm);
         expResult = pP0P0P0;
-        assertTrue(expResult.equals(result));
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 3
         instance = new V3D_Ray(pN1N1N1, pN1N1P0, oom, rm);
         result = instance.getIntersection(l, oom, rm);
@@ -269,13 +269,14 @@ public class V3D_RayTest extends V3D_Test {
         instance = new V3D_Ray(pN1N1N1, pP1P1P1, oom, rm);
         result = instance.getIntersection(l, oom, rm);
         expResult = pP0P0P0;
-        assertTrue(expResult.equals(result));
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 5
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         instance = new V3D_Ray(pN1P0P0, pP1P0P0, oom, rm);
         result = instance.getIntersection(l, oom, rm);
         expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection(
+                (V3D_LineSegment) result, oom, rm));
     }
 
     /**
@@ -290,7 +291,7 @@ public class V3D_RayTest extends V3D_Test {
         V3D_Line l = new V3D_Line(pP1P0P0, pP1P1P0, oom, rm);
         V3D_Geometry expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         V3D_Geometry result = instance.getLineOfIntersection(l, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(((V3D_LineSegment) expResult).equals((V3D_LineSegment) result, oom, rm));
         // Test 2
         instance = new V3D_Ray(pP0P0P0, pP0P1P0, oom, rm);
         result = instance.getLineOfIntersection(l, oom, rm);
@@ -314,12 +315,12 @@ public class V3D_RayTest extends V3D_Test {
         instance = new V3D_Ray(pP1P0P0, pP1P1P0, oom, rm);
         expResult = pP1P0P0;
         result = instance.getPointOfIntersection(pt, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(expResult.equals((V3D_Point) result, oom, rm));
         // Test 2
         instance = new V3D_Ray(pP1N1P0, pP1P1P0, oom, rm);
         expResult = pP1P0P0;
         result = instance.getPointOfIntersection(pt, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(expResult.equals((V3D_Point) result, oom, rm));
     }
 
     /**
@@ -416,7 +417,7 @@ public class V3D_RayTest extends V3D_Test {
         //expResult = new V3D_Point(e, P0P0P0);
         expResult = pP0P0P0;
         result = instance.getIntersection(p, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 2
         instance = new V3D_Ray(e, P0P0P0, N1P0P0, N2P0P0);
         p = V3D_Plane.X0;
@@ -440,13 +441,13 @@ public class V3D_RayTest extends V3D_Test {
         instance = new V3D_Ray(e, P0P0P0, P1P0P0, P2P0P0);
         result = instance.getIntersection(r, oom, rm);
         expResult = new V3D_Ray(e, P0P0P0, P1P0P0, P2P0P0);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_Ray) expResult).equals((V3D_Ray) result, oom, rm));
         // Test 2: Collinear Pointing the same way 
         r = new V3D_Ray(e, P0P0P0, N2P0P0, N1P0P0);
         instance = new V3D_Ray(e, P0P0P0, P1P0P0, P2P0P0);
         result = instance.getIntersection(r, oom, rm);
         expResult = new V3D_Ray(e, P0P0P0, P1P0P0, P2P0P0);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_Ray) expResult).equals((V3D_Ray) result, oom, rm));
         /**
          * The rays may point along the same line. If they point in the same
          * direction, then they intersect and the start of the ray is the start
@@ -460,13 +461,13 @@ public class V3D_RayTest extends V3D_Test {
         instance = new V3D_Ray(e, P0P0P0, P1P0P0, P0P0P0);
         expResult = new V3D_LineSegment(e, P0P0P0, P0P0P0, P1P0P0);
         result = instance.getIntersection(r, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(((V3D_LineSegment) expResult).equals((V3D_LineSegment) result, oom, rm));
         // Test 4: Collinear pointing opposite ways overlapping at a point.
         r = new V3D_Ray(e, P0P0P0, P0P0P0, P1P0P0);
         instance = new V3D_Ray(e, P0P0P0, P0P0P0, N1P0P0);
         expResult = pP0P0P0;
         result = instance.getIntersection(r, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 4: Collinear pointing opposite ways not overlapping.
         r = new V3D_Ray(e, P0P0P0, P1P0P0, P2P0P0);
         instance = new V3D_Ray(e, P0P0P0, P0P0P0, N1P0P0);
@@ -477,7 +478,7 @@ public class V3D_RayTest extends V3D_Test {
         instance = new V3D_Ray(e, P0P0P0, P1P0P0, P1P1P1);
         result = instance.getIntersection(r, oom, rm);
         expResult = pP1P0P0;
-        assertTrue(expResult.equals(result));
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 6: Not intersecting.
         r = new V3D_Ray(e, P0P0P0, P1P0P0, P2P0P0);
         instance = new V3D_Ray(e, P0P0P0, P0P0P0, P1P1P1);
@@ -502,26 +503,25 @@ public class V3D_RayTest extends V3D_Test {
         instance = new V3D_Ray(pP1P0P0, pP2P0P0, oom, rm);
         expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         result = instance.getLineOfIntersection(pt, oom, rm);
-        //System.out.println(result);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_LineSegment) expResult).equals((V3D_LineSegment) result, oom, rm));
         // Test 2
         pt = pP0P0P1;
         instance = new V3D_Ray(pP1P0P0, pP2P0P0, oom, rm);
         expResult = new V3D_LineSegment(pP0P0P1, pP1P0P0, oom, rm);
         result = instance.getLineOfIntersection(pt, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_LineSegment) expResult).equals((V3D_LineSegment) result, oom, rm));
         // Test 3
         pt = pP2P0P0;
         instance = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
         expResult = pP2P0P0;
         result = instance.getLineOfIntersection(pt, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 4
         pt = pP2P1P0;
         instance = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
         expResult = new V3D_LineSegment(pP2P0P0, pP2P1P0, oom, rm);
         result = instance.getLineOfIntersection(pt, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
     }
 
     /**
@@ -593,19 +593,19 @@ public class V3D_RayTest extends V3D_Test {
         instance = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
         result = instance.getIntersection(t, oom, rm);
         expResult = pP1P0P0;
-        assertEquals(expResult, result);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 2
         t = new V3D_Triangle(pP0N2P0, pP0P2P0, pP2P0P0, oom, rm);
         instance = new V3D_Ray(pP1P0P0, pP2P0P0, oom, rm);
         result = instance.getIntersection(t, oom, rm);
         expResult = new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 3
         t = new V3D_Triangle(pP0N2P0, pP0P2P0, pP2P0P0, oom, rm);
         instance = new V3D_Ray(pN1P0P0, pP2P0P0, oom, rm);
         result = instance.getIntersection(t, oom, rm);
         expResult = new V3D_LineSegment(pP0P0P0, pP2P0P0, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
     }
 
     /**
@@ -625,26 +625,26 @@ public class V3D_RayTest extends V3D_Test {
         instance = new V3D_Ray(pN1P0P0, pP0P0P0, oom, rm);
         expResult = new V3D_LineSegment(pN1P0P0, pP0P0P0, oom, rm);
         result = instance.getIntersection(t, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_LineSegment) expResult).equals((V3D_LineSegment) result, oom, rm));
         // Test 2
         t = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
         instance = new V3D_Ray(pN1P1P0, pP0P1P0, oom, rm);
         expResult = pN1P1P0;
         result = instance.getIntersection(t, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 3
         t = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
         instance = new V3D_Ray(pN1P0P1, pP0P0P1, oom, rm);
         expResult = new V3D_LineSegment(pN1P0P1, pP0P0P1, oom, rm);
         result = instance.getIntersection(t, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 4
         t = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
         V3D_Point pNHP0P1 = new V3D_Point(e, Math_BigRational.valueOf(-1,2),P0, P1);
         instance = new V3D_Ray(pNHP0P1, pP0P0P1, oom, rm);
         expResult = new V3D_LineSegment(pNHP0P1, pP0P0P1, oom, rm);
         result = instance.getIntersection(t, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
     }
 
 //    /**
@@ -840,19 +840,19 @@ public class V3D_RayTest extends V3D_Test {
         instance = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
         expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         result = instance.getIntersection(l, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_LineSegment) expResult).equals((V3D_LineSegment) result, oom, rm));
         // Test 2
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         instance = new V3D_Ray(pP0P0P0, pN1P0P0, oom, rm);
         expResult = pP0P0P0;
         result = instance.getIntersection(l, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 3
         l = new V3D_LineSegment(pP0P0P0, pP2P0P0, oom, rm);
         instance = new V3D_Ray(pP1P0P0, pP2P0P0, oom, rm);
         expResult = new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm);
         result = instance.getIntersection(l, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_LineSegment) expResult).equals((V3D_LineSegment) result, oom, rm));
     }
 
     /**
@@ -871,19 +871,22 @@ public class V3D_RayTest extends V3D_Test {
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         instance = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
         result = instance.getLineOfIntersection(l, oom, rm);
-        assertTrue(result instanceof V3D_Point);
+        expResult = pP0P0P0;
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 2
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         instance = new V3D_Ray(pP0P1P0, pP1P1P0, oom, rm);
         expResult = new V3D_LineSegment(pP0P0P0, pP0P1P0, oom, rm);
         result = instance.getLineOfIntersection(l, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection(
+                (V3D_LineSegment) result, oom, rm));
         // Test 3
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         instance = new V3D_Ray(pP0P1P0, pP1P2P0, oom, rm);
         expResult = new V3D_LineSegment(pP0P0P0, pP0P1P0, oom, rm);
         result = instance.getLineOfIntersection(l, oom, rm);
-        assertEquals(expResult, result);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection(
+                (V3D_LineSegment) result, oom, rm));
         
     }
 

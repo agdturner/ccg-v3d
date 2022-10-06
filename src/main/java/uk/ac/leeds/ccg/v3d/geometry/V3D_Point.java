@@ -18,6 +18,10 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VPoint;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -54,7 +58,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Point extends V3D_FiniteGeometry implements 
+public class V3D_Point extends V3D_FiniteGeometry implements
         V3D_IntersectionAndDistanceCalculations {
 
     private static final long serialVersionUID = 1L;
@@ -233,7 +237,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
 
     /**
      * Two points are equal if they are at the same location defined by each
-     * points relative start location and translation vector at the given oom 
+     * points relative start location and translation vector at the given oom
      * and rm precision.
      *
      * @param p The point to test if it is the same as {@code this}.
@@ -251,7 +255,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         }
         return false;
     }
-    
+
     @Override
     public V3D_Point[] getPoints(int oom, RoundingMode rm) {
         V3D_Point[] r = new V3D_Point[1];
@@ -266,7 +270,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     public V3D_Vector getVector(int oom, RoundingMode rm) {
         return rel.add(offset, oom, rm);
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
@@ -275,7 +279,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     public Math_BigRational getX(int oom, RoundingMode rm) {
         return rel.getDX(oom, rm).add(offset.getDX(oom, rm));
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @param rm The RoundingMode if rounding is needed.
@@ -284,7 +288,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     public Math_BigRational getY(int oom, RoundingMode rm) {
         return rel.getDY(oom, rm).add(offset.getDY(oom, rm));
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the application of {@link #offset}.
      * @param rm The RoundingMode if rounding is needed.
@@ -297,8 +301,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     /**
      * @return true iff this is equal to the ORIGIN.
      */
-    public boolean isOrigin() {
-        return equals(ORIGIN);
+    public boolean isOrigin(int oom, RoundingMode rm) {
+        return equals(ORIGIN, oom, rm);
     }
 
     /**
@@ -309,7 +313,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @return The distance from {@code p} to this.
      */
     public Math_BigRationalSqrt getDistance(int oom, RoundingMode rm, V3D_Point p) {
-        if (this.equals(p)) {
+        if (this.equals(p, oom, rm)) {
             return Math_BigRationalSqrt.ZERO;
         }
         return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm);
@@ -325,7 +329,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      */
     @Override
     public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
-        if (this.equals(p)) {
+        if (this.equals(p, oom, rm)) {
             return BigDecimal.ZERO;
         }
         return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
@@ -341,7 +345,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @return The distance squared from {@code p} to this.
      */
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Point p, int oom, 
+    public Math_BigRational getDistanceSquared(V3D_Point p, int oom,
             RoundingMode rm) {
         Math_BigRational dx = this.getX(oom, rm).subtract(p.getX(oom, rm));
         Math_BigRational dy = this.getY(oom, rm).subtract(p.getY(oom, rm));
@@ -369,9 +373,9 @@ public class V3D_Point extends V3D_FiniteGeometry implements
 //        return cp.getMagnitude(oom - 1).divide(l.v.getMagnitude(oom - 1), -oom,
 //                RoundingMode.HALF_UP);
     }
-    
+
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, 
+    public Math_BigRational getDistanceSquared(V3D_Line l, int oom,
             RoundingMode rm) {
         return l.getDistanceSquared(this, oom, rm);
 //        if (l.isIntersectedBy(this, oom)) {
@@ -381,18 +385,18 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom, 
+    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom,
             RoundingMode rm) {
         return r.getDistanceSquared(this, oom, rm);
     }
 
     /**
-     * @param l The line to find the distance of {@code this} from. 
+     * @param l The line to find the distance of {@code this} from.
      * @param oom The Order of Magnitude for the precision of the result.
      * @param noInt A flag to indicate that {@code this} is not on {@code l}.
      * @return The distance squared between {@code this} and {@code l}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Line l, boolean noInt, 
+    public Math_BigRational getDistanceSquared(V3D_Line l, boolean noInt,
             int oom, RoundingMode rm) {
         V3D_Vector cp = new V3D_Vector(this, l.getP(), oom, rm)
                 .getCrossProduct(new V3D_Vector(this, l.getQ(oom, rm), oom, rm),
@@ -422,7 +426,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @return The distance from {@code p} to this.
      */
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom, 
+    public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom,
             RoundingMode rm) {
         //V3D_Vector pq = new V3D_Vector(this, pl.p, oom);
         //V3D_Vector pq = pl.p.subtract(this.getVector(oom), oom);
@@ -444,7 +448,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
 
     @Override
     public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
-        return new V3D_Envelope(e, oom, rm, getX(oom, rm), getY(oom, rm), 
+        return new V3D_Envelope(e, oom, rm, getX(oom, rm), getY(oom, rm),
                 getZ(oom, rm));
     }
 
@@ -579,7 +583,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         if (getX(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
             if (getY(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
                 if (getZ(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
-                    if (isOrigin()) {
+                    if (isOrigin(oom, rm)) {
                         return 0;
                     }
                     return 1;
@@ -632,7 +636,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         offset = offset.subtract(rel, oom, rm).add(this.rel, oom, rm);
         this.rel = rel;
     }
-    
+
     /**
      * Move the line.
      *
@@ -649,7 +653,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @param theta The angle of rotation.
      */
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta, 
+    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
             int oom, RoundingMode rm) {
         rel = rel.rotate(axisOfRotation, theta, e.bI, oom, rm);
 //        V3D_Vector relt = rel.rotate(axisOfRotation, theta, bI, oom);
@@ -662,13 +666,13 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, 
+    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom,
             RoundingMode rm) {
         return t.isIntersectedBy(this, oom, rm);
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, 
+    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom,
             RoundingMode rm) {
         if (p.isIntersectedBy(this, oom, rm)) {
             return this;
@@ -677,7 +681,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, 
+    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom,
             RoundingMode rm) {
         if (t.isIntersectedBy(this, oom, rm)) {
             return this;
@@ -686,7 +690,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, 
+    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom,
             RoundingMode rm) {
         if (t.isIntersectedBy(this, oom, rm)) {
             return this;
@@ -695,7 +699,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, 
+    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom,
             RoundingMode rm) {
         return l.getDistanceSquared(this, oom, rm);
     }
@@ -706,7 +710,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, 
+    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom,
             RoundingMode rm) {
         return t.getDistanceSquared(this, oom, rm);
     }
@@ -717,12 +721,11 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, 
+    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom,
             RoundingMode rm) {
         return t.getDistanceSquared(this, oom, rm);
     }
-    
-    
+
     /**
      * @param points The points to test if they are coincident.
      * @return {@code true} iff all the points are coincident.
@@ -741,10 +744,11 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @param points The points to test if they are coincident.
      * @return {@code true} iff all the points are coincident.
      */
-    public static boolean isCoincident(V3D_Point... points) {
+    public static boolean isCoincident(int oom, RoundingMode rm,
+            V3D_Point... points) {
         V3D_Point p0 = points[0];
         for (V3D_Point p1 : points) {
-            if (!p1.equals(p0)) {
+            if (!p1.equals(p0, oom, rm)) {
                 return false;
             }
         }
@@ -763,5 +767,30 @@ public class V3D_Point extends V3D_FiniteGeometry implements
             }
         }
         return true;
+    }
+
+    public static ArrayList<V3D_Point> getUnique(List<V3D_Point> pts,
+            int oom, RoundingMode rm) {
+        HashSet<Integer> indexes = new HashSet<>();
+        ArrayList<V3D_Point> r = new ArrayList<>();
+        for (int i = 0; i < pts.size(); i++) {
+            if (!indexes.contains(i)) {
+                V3D_Point p = pts.get(i);
+                boolean added = false;
+                for (int j = i + 1; j < pts.size(); j++) {
+                    V3D_Point p2 = pts.get(j);
+                    if (p.equals(p2, oom, rm)) {
+                        r.add(p);
+                        indexes.add(j);
+                        added = true;
+                        break;
+                    }
+                }
+                if (!added) {
+                    r.add(p);
+                }
+            }
+        }
+        return r;
     }
 }

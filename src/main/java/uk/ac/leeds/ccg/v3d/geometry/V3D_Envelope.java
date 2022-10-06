@@ -575,19 +575,19 @@ public class V3D_Envelope extends V3D_Geometry implements
      * {@code this.equals(en)}; otherwise returns the intersection.
      */
     public V3D_Envelope getIntersection(V3D_Envelope en, int oom, RoundingMode rm) {
-        if (this.equals(en)) {
+        if (this.equals(en, oom, rm)) {
             return en;
         }
         if (!this.isIntersectedBy(en, oom, rm)) {
             return null;
         }
         return new V3D_Envelope(this.e, oom, rm,
-                getXMin(oom, rm).min(en.getXMin(oom, rm)),
-                getXMax(oom, rm).max(en.getXMax(oom, rm)),
-                getYMin(oom, rm).min(en.getYMin(oom, rm)),
-                getYMax(oom, rm).max(en.getYMax(oom, rm)),
-                getZMin(oom, rm).min(en.getZMin(oom, rm)),
-                getZMax(oom, rm).max(en.getZMax(oom, rm)));
+                getXMin(oom, rm).max(en.getXMin(oom, rm)),
+                getXMax(oom, rm).min(en.getXMax(oom, rm)),
+                getYMin(oom, rm).max(en.getYMin(oom, rm)),
+                getYMax(oom, rm).min(en.getYMax(oom, rm)),
+                getZMin(oom, rm).max(en.getZMin(oom, rm)),
+                getZMax(oom, rm).min(en.getZMax(oom, rm)));
     }
 
     /**
@@ -2884,7 +2884,17 @@ public class V3D_Envelope extends V3D_Geometry implements
             return this.getClass().getSimpleName() + "(x=" + x.toString()
                     + ", y=" + y.toString() + ", z=" + z.toString() + ")";
         }
+        
+        public boolean equals(Point b) {
+            if (this.x.compareTo(b.x) == 0) {
+                if (this.y.compareTo(b.y) == 0) {
+                    return this.z.compareTo(b.z) == 0;
+                }
+            }
+            return false;
+        }
 
+        
         @Override
         protected Point translate(V3D_Vector v, int oom, RoundingMode rm) {
             return new Point(this, v, oom, rm);

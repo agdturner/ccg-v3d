@@ -285,21 +285,13 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
         }
         return r;
     }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 89 * hash + Objects.hashCode(this.l);
-        hash = 89 * hash + Objects.hashCode(this.len2);
-        return hash;
-    }
-
+    
     /**
      * @param l The line segment to test if it is the same as {@code this}.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return getP().equals(l.getP()) && getQ(oom, rm).equals(l.getQ(oom, rm));
+        return getP().equals(l.getP(), oom, rm) && getQ(oom, rm).equals(l.getQ(oom, rm), oom, rm);
     }
 
     /**
@@ -308,10 +300,11 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
      * the order of {@link #p} and {@link #q}.
      */
     public boolean equalsIgnoreDirection(V3D_LineSegment l, int oom, RoundingMode rm) {
-        if (equals(l)) {
+        if (equals(l, oom, rm)) {
             return true;
         } else {
-            return getP().equals(l.getQ(oom, rm)) && getQ(oom, rm).equals(l.getP());
+            return getP().equals(l.getQ(oom, rm), oom, rm) 
+                    && getQ(oom, rm).equals(l.getP(), oom, rm);
         }
     }
 
@@ -599,7 +592,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
                 // Cases: 1, 2, 8, 9, 20, 21, 27, 28
                 if (ls.isIntersectedBy(tp, oom, rm)) {
                     // Cases: 8, 9, 20, 21
-                    if (tp.equals(lp)) {
+                    if (tp.equals(lp, oom, rm)) {
                         // Cases: 8, 21
                         return tp;
                     } else {
@@ -608,7 +601,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
                     }
                 } else {
                     // Cases: 1, 2, 27, 28
-                    if (tp.equals(lp)) {
+                    if (tp.equals(lp, oom, rm)) {
                         // Cases: 1, 28
                         return tp;
                     } else {
@@ -625,7 +618,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
                     // Cases: 6, 7, 19, 22, 23
                     if (ls.isIntersectedBy(tq, oom, rm)) {
                         // Cases: 19, 23
-                        if (tp.equals(lp)) {
+                        if (tp.equals(lp, oom, rm)) {
                             // Case: 19
                             return this;
                         } else {
@@ -634,7 +627,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
                         }
                     } else {
                         // Cases: 6, 7, 22, 
-                        if (tp.equals(lq)) {
+                        if (tp.equals(lq, oom, rm)) {
                             // Cases: 7, 22
                             return tp;
                         } else {
@@ -646,7 +639,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
                     // Cases: 13, 14, 16
                     //if (l.isIntersectedBy(tq, oom)) {
                     // Cases: 13, 14, 16
-                    if (tq.equals(lq)) {
+                    if (tq.equals(lq, oom, rm)) {
                         // Cases: 14, 16
                         return tq;
                     } else {
@@ -831,7 +824,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
      */
     public static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q, 
             int oom, RoundingMode rm) {
-        if (p.equals(q)) {
+        if (p.equals(q, oom, rm)) {
             return p;
         } else {
             return new V3D_LineSegment(p, q, oom, rm);
@@ -1116,13 +1109,13 @@ public class V3D_LineSegment extends V3D_FiniteGeometry implements
             V3D_Point tp = this.getP();
             if (pl.isOnSameSide(tp, pt, oom, rm)) {
                 V3D_Point tq = this.getQ(oom, rm);
-                if (ip.equals(tq)) {
+                if (ip.equals(tq, oom, rm)) {
                     return ip;
                 } else {
                     return new V3D_LineSegment(ip, tq, oom, rm);
                 }
             } else {
-                if (ip.equals(tp)) {
+                if (ip.equals(tp, oom, rm)) {
                     return ip;
                 } else {
                     return new V3D_LineSegment(ip, tp, oom, rm);

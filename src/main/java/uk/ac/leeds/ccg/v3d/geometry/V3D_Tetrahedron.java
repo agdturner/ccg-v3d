@@ -164,7 +164,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     @Override
     public String toString() {
-        return toString("");
+        //return toString("");
+        return toStringSimple("");
     }
 
     /**
@@ -175,6 +176,17 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
                 + toStringFields(pad + " ") + "\n"
+                + pad + ")";
+    }
+
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of this.
+     */
+    public String toStringSimple(String pad) {
+        return pad + this.getClass().getSimpleName() + "\n"
+                + pad + "(\n"
+                + toStringFieldsSimple(pad + " ") + "\n"
                 + pad + ")";
     }
 
@@ -193,6 +205,19 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         st += pad + "r=" + this.r.toString(pad) + "\n";
         st += pad + ",\n";
         st += pad + "s=" + s.toString(pad);// + "\n";
+        return st;
+    }
+    
+    /**
+     * @param pad A padding of spaces.
+     * @return A description of the fields.
+     */
+    @Override
+    protected String toStringFieldsSimple(String pad) {
+        String st = pad + "p=" + p.toStringSimple(pad) + ",\n";
+        st += pad + "q=" + q.toStringSimple(pad) + ",\n";
+        st += pad + "r=" + this.r.toStringSimple(pad) + ",\n";
+        st += pad + "s=" + s.toStringSimple(pad);
         return st;
     }
 
@@ -492,7 +517,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     public static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q,
             V3D_Point r, V3D_Point s, int oom, RoundingMode rm) {
-        if (p.equals(q)) {
+        if (p.equals(q, oom, rm)) {
             return V3D_Triangle.getGeometry(p, r, s, oom, rm);
         } else if (p.equals(r, oom, rm)) {
             return V3D_Triangle.getGeometry(p, q, s, oom, rm);
@@ -552,23 +577,23 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     protected static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q,
             V3D_Point r, V3D_Point s, V3D_Point t, int oom, RoundingMode rm) {
-        if (p.equals(q)) {
+        if (p.equals(q, oom, rm)) {
             return getGeometry(p, r, s, t, oom, rm);
-        } else if (p.equals(r)) {
+        } else if (p.equals(r, oom, rm)) {
             return getGeometry(p, q, s, t, oom, rm);
-        } else if (p.equals(s)) {
+        } else if (p.equals(s, oom, rm)) {
             return getGeometry(p, q, r, t, oom, rm);
-        } else if (p.equals(t)) {
+        } else if (p.equals(t, oom, rm)) {
             return getGeometry(p, q, r, s, oom, rm);
-        } else if (q.equals(r)) {
+        } else if (q.equals(r, oom, rm)) {
             return getGeometry(p, q, s, t, oom, rm);
-        } else if (q.equals(s)) {
+        } else if (q.equals(s, oom, rm)) {
             return getGeometry(p, q, r, t, oom, rm);
-        } else if (q.equals(t)) {
+        } else if (q.equals(t, oom, rm)) {
             return getGeometry(p, q, r, s, oom, rm);
-        } else if (r.equals(s)) {
+        } else if (r.equals(s, oom, rm)) {
             return getGeometry(p, q, r, t, oom, rm);
-        } else if (r.equals(t)) {
+        } else if (r.equals(t, oom, rm)) {
             return getGeometry(p, q, r, s, oom, rm);
         } else {
             return getGeometry(p, q, r, t, oom, rm);
@@ -1002,7 +1027,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                 //}
                             }
                         } else if (lriil instanceof V3D_Point lriilp) {
-                            if (lqiilp.equals(lriilp)) {
+                            if (lqiilp.equals(lriilp, oom, rm)) {
                                 // Find the other point and return the line segment.
                                 V3D_Point ilp = il.getP();
                                 V3D_Point ilq = il.getQ(oom, rm);
@@ -1049,7 +1074,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                 return new V3D_LineSegment(lpiilp, ilp, oom, rm);
                             }
                         } else if (lriil instanceof V3D_Point lriilp) {
-                            if (lpiilp.equals(lriilp)) {
+                            if (lpiilp.equals(lriilp, oom, rm)) {
                                 // Find the other point and return the line segment.
                                 V3D_Point ilp = il.getP();
                                 V3D_Point ilq = il.getQ(oom, rm);
@@ -1097,7 +1122,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                 }
                             }
                         } else if (lriil instanceof V3D_Point lriilp) {
-                            if (lriilp.equals(lpiilp)) {
+                            if (lriilp.equals(lpiilp, oom, rm)) {
                                 return new V3D_LineSegment(lriilp, lqiilp, oom, rm);
                             } else {
                                 return new V3D_LineSegment(lriilp, lpiilp, oom, rm);

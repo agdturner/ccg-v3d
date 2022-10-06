@@ -185,38 +185,19 @@ public class V3D_EnvelopeTest extends V3D_Test {
      * Test of equals method, of class V3D_Envelope.
      */
     @Test
-    public void testEquals_Object() {
-        System.out.println("equals");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Envelope instance = new V3D_Envelope(e, oom, rm, pP0P0P0, pP1P1P1);
-        Object o = new V3D_Envelope(e, oom, rm, pP0P0P0, pP1P1P1);
-        assertTrue(instance.equals(o));
-        // Test 2
-        o = new V3D_Envelope(e, oom, rm, pP1P1P1, pP0P0P0);
-        assertTrue(instance.equals(o));
-        // Test 3
-        o = new V3D_Envelope(e, oom, rm, pP1N1P1, pP0P0P0);
-        assertFalse(instance.equals(o));
-    }
-
-    /**
-     * Test of equals method, of class V3D_Envelope.
-     */
-    @Test
     public void testEquals_V3D_Envelope() {
         System.out.println("equals");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Envelope instance = new V3D_Envelope(e, oom, rm, pP0P0P0, pP1P1P1);
         V3D_Envelope en = new V3D_Envelope(e, oom, rm, pP0P0P0, pP1P1P1);
-        assertTrue(instance.equals(en));
+        assertTrue(instance.equals(en, oom, rm));
         // Test 2
         en = new V3D_Envelope(e, oom, rm, pP1P1P1, pP0P0P0);
-        assertTrue(instance.equals(en));
+        assertTrue(instance.equals(en, oom, rm));
         // Test 3
         en = new V3D_Envelope(e, oom, rm, pP1N1P1, pP0P0P0);
-        assertFalse(instance.equals(en));
+        assertFalse(instance.equals(en, oom, rm));
     }
 
     /**
@@ -283,17 +264,17 @@ public class V3D_EnvelopeTest extends V3D_Test {
         V3D_Envelope instance = new V3D_Envelope(e, oom, rm, pN1N1N1, pP1P1P1);
         V3D_Geometry expResult = new V3D_LineSegment(pP0P0N1, pP0P0P1, oom, rm);
         V3D_Geometry result = instance.getIntersection(li, oom, rm);
-        assertTrue(((V3D_LineSegment) result).equals((V3D_LineSegment) expResult, oom, rm));
+        assertTrue(((V3D_LineSegment) result).equalsIgnoreDirection((V3D_LineSegment) expResult, oom, rm));
         // Test 2
         li = new V3D_Line(pP0P0P0, pP0P1P0, oom, rm);
         expResult = new V3D_LineSegment(pP0N1P0, pP0P1P0, oom, rm);
         result = instance.getIntersection(li, oom, rm);
-        assertTrue(((V3D_LineSegment) result).equals((V3D_LineSegment) expResult, oom, rm));
+        assertTrue(((V3D_LineSegment) result).equalsIgnoreDirection((V3D_LineSegment) expResult, oom, rm));
         // Test 3
         li = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
         expResult = new V3D_LineSegment(pN1P0P0, pP1P0P0, oom, rm);
         result = instance.getIntersection(li, oom, rm);
-        assertTrue(((V3D_LineSegment) result).equals((V3D_LineSegment) expResult, oom, rm));
+        assertTrue(((V3D_LineSegment) result).equalsIgnoreDirection((V3D_LineSegment) expResult, oom, rm));
         // Test 4
         li = new V3D_Line(pP1P1P1, pP0P2P1, oom, rm);
         expResult = pP1P1P1;
@@ -368,27 +349,27 @@ public class V3D_EnvelopeTest extends V3D_Test {
         li = new V3D_LineSegment(pP0P0P0, pP0P1P0, oom, rm);
         expResult = new V3D_LineSegment(pP0P0P0, pP0P1P0, oom, rm);
         result = instance.getIntersection(li, oom, rm);
-        assertTrue(((V3D_LineSegment) result).equals((V3D_LineSegment) expResult, oom, rm));
+        assertTrue(((V3D_LineSegment) result).equalsIgnoreDirection((V3D_LineSegment) expResult, oom, rm));
         // Test 3
         li = new V3D_LineSegment(pP0N1P0, pP0P1P0, oom, rm);
         expResult = new V3D_LineSegment(pP0N1P0, pP0P1P0, oom, rm);
         result = instance.getIntersection(li, oom, rm);
-        assertTrue(((V3D_LineSegment) result).equals((V3D_LineSegment) expResult, oom, rm));
+        assertTrue(((V3D_LineSegment) result).equalsIgnoreDirection((V3D_LineSegment) expResult, oom, rm));
         // Test 4
         li = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         result = instance.getIntersection(li, oom, rm);
-        assertTrue(((V3D_LineSegment) result).equals((V3D_LineSegment) expResult, oom, rm));
+        assertTrue(((V3D_LineSegment) result).equalsIgnoreDirection((V3D_LineSegment) expResult, oom, rm));
         // Test 5
         li = new V3D_LineSegment(pN1P0P0, pP1P0P0, oom, rm);
         expResult = new V3D_LineSegment(pN1P0P0, pP1P0P0, oom, rm);
         result = instance.getIntersection(li, oom, rm);
-        assertTrue(((V3D_LineSegment) result).equals((V3D_LineSegment) expResult, oom, rm));
+        assertTrue(((V3D_LineSegment) result).equalsIgnoreDirection((V3D_LineSegment) expResult, oom, rm));
         // Test 6
         li = new V3D_LineSegment(pN2P0P0, pP1P0P0, oom, rm);
         expResult = new V3D_LineSegment(pN1P0P0, pP1P0P0, oom, rm);
         result = instance.getIntersection(li, oom, rm);
-        assertTrue(((V3D_LineSegment) result).equals((V3D_LineSegment) expResult, oom, rm));
+        assertTrue(((V3D_LineSegment) result).equalsIgnoreDirection((V3D_LineSegment) expResult, oom, rm));
         // Test 7
         li = new V3D_LineSegment(pP1P1P1, pP0P2P1, oom, rm);
         expResult = pP1P1P1;
@@ -632,21 +613,21 @@ public class V3D_EnvelopeTest extends V3D_Test {
      * Test of translate method, of class V3D_Envelope.
      */
     @Test
-    public void testApply() {
-        System.out.println("apply");
+    public void testTranslate() {
+        System.out.println("translate");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector v = P1P1P1;
         V3D_Envelope instance = new V3D_Envelope(e, oom, rm, pP0P0P0, pP1P1P1);
         V3D_Envelope expResult = new V3D_Envelope(e, oom, rm, pP1P1P1, pP2P2P2);
         instance.translate(v, oom, rm);
-        assertTrue(expResult.equals(instance));
+        assertTrue(expResult.equals(instance, oom, rm));
         // Test 2
         v = N1N1N1;
         instance = new V3D_Envelope(e, oom, rm, pP0P0P0, pP1P1P1);
         expResult = new V3D_Envelope(e, oom, rm, pN1N1N1, pP0P0P0);
         instance.translate(v, oom, rm);
-        assertTrue(expResult.equals(instance));
+        assertTrue(expResult.equals(instance, oom, rm));
     }
 
     /**
