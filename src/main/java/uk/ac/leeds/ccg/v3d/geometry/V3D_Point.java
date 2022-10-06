@@ -55,7 +55,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @version 1.0
  */
 public class V3D_Point extends V3D_FiniteGeometry implements 
-        V3D_IntersectionAndDistanceCalculations, Comparable<V3D_Point> {
+        V3D_IntersectionAndDistanceCalculations {
 
     private static final long serialVersionUID = 1L;
 
@@ -266,14 +266,6 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     public V3D_Vector getVector(int oom, RoundingMode rm) {
         return rel.add(offset, oom, rm);
     }
-
-    /**
-     * @return The x component of {@link #rel} with {@link #offset} applied. The
-     * Order of Magnitude for the precision.
-     */
-    public Math_BigRational getX() {
-        return getX(e.oom, e.rm);
-    }
     
     /**
      * @param oom The Order of Magnitude for the precision.
@@ -283,13 +275,6 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     public Math_BigRational getX(int oom, RoundingMode rm) {
         return rel.getDX(oom, rm).add(offset.getDX(oom, rm));
     }
-
-    /**
-     * @return The y component of {@link #rel} with {@link #offset} applied.
-     */
-    public Math_BigRational getY() {
-        return getY(e.oom, e.rm);
-    }
     
     /**
      * @param oom The Order of Magnitude for the application of {@link #offset}.
@@ -298,13 +283,6 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      */
     public Math_BigRational getY(int oom, RoundingMode rm) {
         return rel.getDY(oom, rm).add(offset.getDY(oom, rm));
-    }
-
-    /**
-     * @return The z component of {@link #rel} with {@link #offset} applied.
-     */
-    public Math_BigRational getZ() {
-        return getZ(e.oom, e.rm);
     }
     
     /**
@@ -448,11 +426,12 @@ public class V3D_Point extends V3D_FiniteGeometry implements
             RoundingMode rm) {
         //V3D_Vector pq = new V3D_Vector(this, pl.p, oom);
         //V3D_Vector pq = pl.p.subtract(this.getVector(oom), oom);
-        V3D_Vector pq = pl.getP().getVector(oom, rm).subtract(this.getVector(oom, rm), oom, rm);
+        V3D_Vector pq = pl.getP().getVector(oom, rm).subtract(
+                this.getVector(oom, rm), oom, rm);
         if (pq.isScalarMultiple(pl.getN(oom, rm), oom, rm)) {
             return pq.getMagnitudeSquared();
         } else {
-            Math_BigRational[] coeffs = pl.getEquationCoefficients();
+            Math_BigRational[] coeffs = pl.getEquationCoefficients(oom, rm);
             Math_BigRational num = (coeffs[0].multiply(getX(oom, rm))
                     .add(coeffs[1].multiply(getY(oom, rm)))
                     .add(coeffs[2].multiply(getZ(oom, rm)))
@@ -465,7 +444,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements
 
     @Override
     public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
-        return new V3D_Envelope(e, getX(), getY(), getZ());
+        return new V3D_Envelope(e, oom, rm, getX(oom, rm), getY(oom, rm), 
+                getZ(oom, rm));
     }
 
     @Override
@@ -636,8 +616,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      *
      * @param offset What {@link #offset} is set to.
      */
-    public void setOffset(V3D_Vector offset) {
-        rel = getVector(e.oom, e.rm).subtract(offset, e.oom, e.rm);
+    public void setOffset(V3D_Vector offset, int oom, RoundingMode rm) {
+        rel = getVector(oom, rm).subtract(offset, oom, rm);
         this.offset = offset;
     }
 
@@ -647,9 +627,9 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      *
      * @param rel What {@link #rel} is set to.
      */
-    public void setRel(V3D_Vector rel) {
+    public void setRel(V3D_Vector rel, int oom, RoundingMode rm) {
         //offset = getVector(e.oom).subtract(rel, e.oom);
-        offset = offset.subtract(rel, e.oom, e.rm).add(this.rel, e.oom, e.rm);
+        offset = offset.subtract(rel, oom, rm).add(this.rel, oom, rm);
         this.rel = rel;
     }
     
@@ -658,8 +638,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      *
      * @param v What is added to {@link #offset}.
      */
-    public void translate(V3D_Vector v) {
-        this.offset = offset.add(v, e.oom, e.rm);
+    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        this.offset = offset.add(v, oom, rm);
     }
 
     /**
@@ -674,27 +654,6 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         rel = rel.rotate(axisOfRotation, theta, e.bI, oom, rm);
 //        V3D_Vector relt = rel.rotate(axisOfRotation, theta, bI, oom);
 //        offset = offset.subtract(rel.subtract(relt, oom), oom);
-    }
-
-    @Override
-    public int compareTo(V3D_Point o) {
-        int cx = getX().compareTo(o.getX());
-        switch (cx) {
-            case 1 -> {
-                return 1;
-            }
-            case 0 -> {
-                int cy = getY().compareTo(o.getY());
-                return switch (cy) {
-                    case 1 -> 1;
-                    case 0 -> getZ().compareTo(o.getZ());
-                    default -> -1;
-                };
-            }
-            default -> {
-                return -1;
-            }
-        }
     }
 
     @Override

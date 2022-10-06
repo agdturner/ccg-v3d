@@ -156,8 +156,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         V3D_Point zmaxp = pts.get(zmaxIndex);
         this.offset = xminp.offset;
         if (xminIndex == xmaxIndex) {
-            V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp);
-            V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp);
+            V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp, oom, rm);
+            V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp, oom, rm);
             Math_BigRational ydl2 = yd.getLength2(oom, rm);
             Math_BigRational zdl2 = zd.getLength2(oom, rm);
             if (ydl2.compareTo(zdl2) == 1) {
@@ -170,8 +170,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 getConvexHull0(pts, zminp, zmaxp, n, 1, oom, rm);
             }
         } else if (yminIndex == ymaxIndex) {
-            V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp);
-            V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp);
+            V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp, oom, rm);
+            V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp, oom, rm);
             Math_BigRational xdl2 = xd.getLength2(oom, rm);
             Math_BigRational zdl2 = zd.getLength2(oom, rm);
             if (xdl2.compareTo(zdl2) == 1) {
@@ -184,8 +184,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 getConvexHull0(pts, zminp, zmaxp, n, 1, oom, rm);
             }
         } else if (zminIndex == zmaxIndex) {
-            V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp);
-            V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp);
+            V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp, oom, rm);
+            V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp, oom, rm);
             Math_BigRational xdl2 = xd.getLength2(oom, rm);
             Math_BigRational ydl2 = yd.getLength2(oom, rm);
             if (xdl2.compareTo(ydl2) == 1) {
@@ -198,9 +198,9 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 getConvexHull0(pts, yminp, ymaxp, n, 1, oom, rm);
             }
         } else {
-            V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp);
-            V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp);
-            V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp);
+            V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp, oom, rm);
+            V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp, oom, rm);
+            V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp, oom, rm);
             Math_BigRational xdl2 = xd.getLength2(oom, rm);
             Math_BigRational ydl2 = yd.getLength2(oom, rm);
             Math_BigRational zdl2 = zd.getLength2(oom, rm);
@@ -230,7 +230,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         for (int i = 1; i < this.points.size() - 1; i++) {
             V3D_Point qt = this.points.get(i);
             V3D_Point rt = this.points.get(i + 1);
-            triangles.add(new V3D_Triangle(pt, qt, rt));
+            triangles.add(new V3D_Triangle(pt, qt, rt, oom, rm));
         }
     }
 
@@ -330,7 +330,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         if (en == null) {
             en = points.get(0).getEnvelope(oom, rm);
             for (int i = 1; i < points.size(); i++) {
-                en = en.union(points.get(i).getEnvelope(oom, rm));
+                en = en.union(points.get(i).getEnvelope(oom, rm), oom, rm);
             }
         }
         return en;
@@ -343,13 +343,13 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      *
      * @return Either a triangle, rectangle or this.
      */
-    public V3D_FiniteGeometry simplify() {
+    public V3D_FiniteGeometry simplify(int oom, RoundingMode rm) {
         if (isTriangle()) {
             return new V3D_Triangle(points.get(0), points.get(1),
-                    points.get(2));
-        } else if (isRectangle()) {
+                    points.get(2), oom, rm);
+        } else if (isRectangle(oom, rm)) {
             return new V3D_Rectangle(points.get(0), points.get(2),
-                    points.get(1), points.get(3));
+                    points.get(1), points.get(3), oom, rm);
         } else {
             return this;
         }
@@ -396,7 +396,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm))) {
+        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm), oom, rm)) {
             if (triangles.get(0).p.isIntersectedBy(l, oom, rm)) {
                 for (V3D_Triangle triangle : triangles) {
                     if (triangle.isIntersectedBy(l, oom, rm)) {
@@ -474,7 +474,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             return null;
         } else {
             return new V3D_ConvexHullCoplanar(oom, rm, t.p.getN(oom, rm), 
-                    ts.toArray(V3D_Point[]::new)).simplify();
+                    ts.toArray(V3D_Point[]::new)).simplify(oom, rm);
         }
 //        switch (size) {
 //            case 0:
@@ -519,7 +519,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     public final void getConvexHull0(ArrayList<V3D_Point> pts, V3D_Point p0,
             V3D_Point p1, V3D_Vector n, int index, int oom, RoundingMode rm) {
         V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(e,
-                offset, p0.rel.add(n, oom, rm)));
+                offset, p0.rel.add(n, oom, rm)), oom, rm);
         AboveAndBelow ab = new AboveAndBelow(pts, pl, oom, rm);
         // Process ab.a
         {
@@ -527,7 +527,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 V3D_Point apt = ab.a.get(ab.maxaIndex);
                 points.add(index, apt);
                 index++;
-                V3D_Triangle atr = new V3D_Triangle(p0, p1, apt);
+                V3D_Triangle atr = new V3D_Triangle(p0, p1, apt, oom, rm);
                 TreeSet<Integer> removeIndexes = new TreeSet<>();
                 for (int i = 0; i < ab.a.size(); i++) {
                     if (atr.isIntersectedBy(ab.a.get(i), oom, rm)) {
@@ -540,7 +540,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 }
                 if (!ab.a.isEmpty()) {
                     // Divide again
-                    V3D_Line l = new V3D_Line(p0, p1);
+                    V3D_Line l = new V3D_Line(p0, p1, oom, rm);
                     V3D_Point proj = l.getPointOfIntersection(apt, oom, rm);
                     getConvexHull0(ab.a, apt, proj, n, index, oom, rm);
                 }
@@ -552,7 +552,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             if (!ab.b.isEmpty()) {
                 V3D_Point bpt = ab.b.get(ab.maxbIndex);
                 points.add(index, bpt);
-                V3D_Triangle btr = new V3D_Triangle(p0, p1, bpt);
+                V3D_Triangle btr = new V3D_Triangle(p0, p1, bpt, oom, rm);
                 TreeSet<Integer> removeIndexes = new TreeSet<>();
                 for (int i = 0; i < ab.b.size(); i++) {
                     if (btr.isIntersectedBy(ab.b.get(i), oom, rm)) {
@@ -565,7 +565,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 }
                 if (!ab.b.isEmpty()) {
                     // Divide again
-                    V3D_Line l = new V3D_Line(p0, p1);
+                    V3D_Line l = new V3D_Line(p0, p1, oom, rm);
                     V3D_Point proj = l.getPointOfIntersection(bpt, oom, rm);
                     getConvexHull0(ab.b, bpt, proj, n, index, oom, rm);
                 }
@@ -733,10 +733,10 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      *
      * @return
      */
-    public boolean isRectangle() {
+    public boolean isRectangle(int oom, RoundingMode rm) {
         if (points.size() == 4) {
             return V3D_Rectangle.isRectangle(points.get(0),
-                    points.get(1), points.get(2), points.get(3));
+                    points.get(1), points.get(2), points.get(3), oom, rm);
         }
         return false;
     }
@@ -802,11 +802,11 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         V3D_Point tr = t.p.getR();
         V3D_Vector n = t.p.getN(oom, rm);
         V3D_Point pp = new V3D_Point(e, tp.offset.add(n, oom, rm), tp.rel);
-        V3D_Plane ppl = new V3D_Plane(tp, tq, pp);
+        V3D_Plane ppl = new V3D_Plane(tp, tq, pp, oom, rm);
         V3D_Point qp = new V3D_Point(e, tq.offset.add(n, oom, rm), tq.rel);
-        V3D_Plane qpl = new V3D_Plane(tq, tr, qp);
+        V3D_Plane qpl = new V3D_Plane(tq, tr, qp, oom, rm);
         V3D_Point rp = new V3D_Point(e, tr.offset.add(n, oom, rm), tr.rel);
-        V3D_Plane rpl = new V3D_Plane(tr, tp, rp);
+        V3D_Plane rpl = new V3D_Plane(tr, tp, rp, oom, rm);
         V3D_FiniteGeometry cppl = clip(ppl, tr, oom, rm);
         if (cppl == null) {
             return null;
@@ -877,9 +877,9 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         if (s.size() == 1) {
             return i.next();
         } else if (s.size() == 2) {
-            return new V3D_LineSegment(i.next(), i.next());
+            return new V3D_LineSegment(i.next(), i.next(), oom, rm);
         } else if (s.size() == 3) {
-            return new V3D_Triangle(i.next(), i.next(), i.next());
+            return new V3D_Triangle(i.next(), i.next(), i.next(), oom, rm);
         } else {
             V3D_Point ip = i.next();
             V3D_Point iq = i.next();
@@ -891,7 +891,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             if (V3D_Line.isCollinear(ip.e, oom, rm, ip, iq, ir) && i.hasNext()) {
                 return new V3D_LineSegment(oom, rm, pts);
             } else {
-                pl = new V3D_Plane(ip, iq, ir);
+                pl = new V3D_Plane(ip, iq, ir, oom, rm);
                 return new V3D_ConvexHullCoplanar(oom, rm, pl.getN(oom, rm), pts);
             }
         }

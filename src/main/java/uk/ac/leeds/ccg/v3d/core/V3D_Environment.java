@@ -70,19 +70,9 @@ public class V3D_Environment implements Serializable {
     public static final int DEFAULT_OOM = -3;
     
     /**
-     * The Order of Magnitude for the precision.
-     */
-    public int oom;
-    
-    /**
      * The default Order of Magnitude.
      */
     public static final RoundingMode DEFAULT_RM = RoundingMode.HALF_UP;
-
-    /**
-     * The RoundingMode for the precision.
-     */
-    public RoundingMode rm;
     
     /**
      * Creates a new instance.
@@ -90,8 +80,6 @@ public class V3D_Environment implements Serializable {
     public V3D_Environment(){
         bI = new Math_BigInteger();
         bD = new Math_BigDecimal();
-        oom = DEFAULT_OOM;
-        rm = DEFAULT_RM;
     }
     
     /**
@@ -104,25 +92,6 @@ public class V3D_Environment implements Serializable {
     public V3D_Environment(Math_BigInteger bI, Math_BigDecimal bD, int oom, RoundingMode rm) {
         this.bI = bI;
         this.bD = bD;
-        this.oom = oom;
-        this.rm = rm;
     }
-    
-    /**
-     * @param pad The padding.
-     * @return A padded description.
-     */
-    public String toStringFields(String pad) {
-        return pad + toStringFieldsSimple();
-    }
-    
-    /**
-     * @param pad The padding.
-     * @return A padded description.
-     */
-    public String toStringFieldsSimple() {
-        return "oom=" + oom;
-    }
-    
     
 }

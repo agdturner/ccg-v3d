@@ -65,10 +65,10 @@ public class V3D_PointsCoplanar extends V3D_FiniteGeometry implements
     @Override
     public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
-            en = new V3D_Envelope(e, new V3D_Point(e, offset, rels[0]));
+            en = new V3D_Envelope(e, oom, rm, new V3D_Point(e, offset, rels[0]));
             for (int i = 1; i < rels.length; i++) {
-                en = en.getIntersection(new V3D_Envelope(e, 
-                        new V3D_Point(e, offset, rels[0])));
+                en = en.getIntersection(new V3D_Envelope(e, oom, rm, 
+                        new V3D_Point(e, offset, rels[0])), oom, rm);
             }
         }
         return en;

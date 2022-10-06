@@ -192,7 +192,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
             Iterator<V3D_ConvexHullCoplanar> ite = parts.iterator();
             en = ite.next().getEnvelope(oom, rm);
             while (ite.hasNext()) {
-                en = en.union(ite.next().getEnvelope(oom, rm));
+                en = en.union(ite.next().getEnvelope(oom, rm), oom, rm);
             }
 //            en = triangles.get(0).getEnvelope();
 //            for (int i = 1; i < triangles.size(); i++) {
@@ -394,7 +394,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
                 pts.addAll(x.points);
             }
             convexHull = new V3D_ConvexHullCoplanar(oom, rm, 
-                    parts.get(0).triangles.get(0).p.getN(e.oom, e.rm),
+                    parts.get(0).triangles.get(0).p.getN(oom, rm),
                     pts.toArray(V3D_Point[]::new));
         }
         return convexHull;

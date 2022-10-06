@@ -57,46 +57,22 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
      * Test of equals method, of class V3D_LineSegmentsCollinear.
      */
     @Test
-    public void testEquals_Object() {
-        System.out.println("equals");
-        Object o = new V3D_LineSegmentsCollinear(
-                new V3D_LineSegment(pP0P0P0, pP1P0P0),
-                new V3D_LineSegment(pP0P1P0, pP1P1P0));
-        V3D_LineSegmentsCollinear instance = new V3D_LineSegmentsCollinear(
-                new V3D_LineSegment(pP0P0P0, pP1P0P0),
-                new V3D_LineSegment(pP0P1P0, pP1P1P0));
-        boolean expResult = true;
-        boolean result = instance.equals(o);
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of hashCode method, of class V3D_LineSegmentsCollinear.
-     */
-    @Test
-    public void testHashCode() {
-        System.out.println("hashCode");
-        // No test
-    }
-
-    /**
-     * Test of equals method, of class V3D_LineSegmentsCollinear.
-     */
-    @Test
     public void testEquals_V3D_LineSegmentsCollinear() {
         System.out.println("equals");
+        int oom = -1;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegmentsCollinear l = new V3D_LineSegmentsCollinear(
-                new V3D_LineSegment(pP0P0P0, pP1P0P0),
-                new V3D_LineSegment(pP0P1P0, pP1P1P0));
+                new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm),
+                new V3D_LineSegment(pP0P1P0, pP1P1P0, oom, rm));
         V3D_LineSegmentsCollinear instance = new V3D_LineSegmentsCollinear(
-                new V3D_LineSegment(pP0P0P0, pP1P0P0),
-                new V3D_LineSegment(pP0P1P0, pP1P1P0));
+                new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm),
+                new V3D_LineSegment(pP0P1P0, pP1P1P0, oom, rm));
         boolean result = instance.equals(l);
         assertTrue(result);
         // Test 2
         instance = new V3D_LineSegmentsCollinear(
-                new V3D_LineSegment(pP0P1P0, pP1P0P0),
-                new V3D_LineSegment(pP0P1P0, pP1P1P0));
+                new V3D_LineSegment(pP0P1P0, pP1P0P0, oom, rm),
+                new V3D_LineSegment(pP0P1P0, pP1P1P0, oom, rm));
         result = instance.equals(l);
         assertFalse(result);
     }
@@ -107,34 +83,35 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
     @Test
     public void testGetUnion() {
         System.out.println("getUnion");
+        int oom = -1;
+        RoundingMode rm = RoundingMode.HALF_UP;
         // Test 1 touch
-        V3D_LineSegment l1 = new V3D_LineSegment(pN2P0P0, pN1P0P0);
-        V3D_LineSegment l2 = new V3D_LineSegment(pN1P0P0, pP0P0P0);
-        int oom = -3;
-        V3D_Geometry expResult = new V3D_LineSegment(pN2P0P0, pP0P0P0);
-        V3D_Geometry result = V3D_LineSegmentsCollinear.getGeometry(l1, l2, oom, e.rm);//getUnion(l1, l2, oom);
+        V3D_LineSegment l1 = new V3D_LineSegment(pN2P0P0, pN1P0P0, oom, rm);
+        V3D_LineSegment l2 = new V3D_LineSegment(pN1P0P0, pP0P0P0, oom, rm);
+        V3D_Geometry expResult = new V3D_LineSegment(pN2P0P0, pP0P0P0, oom, rm);
+        V3D_Geometry result = V3D_LineSegmentsCollinear.getGeometry(l1, l2, oom, rm);//getUnion(l1, l2, oom);
         assertEquals(expResult, result);
-        result = V3D_LineSegmentsCollinear.getGeometry(l2, l1, oom, e.rm);
+        result = V3D_LineSegmentsCollinear.getGeometry(l2, l1, oom, rm);
         assertEquals(expResult, result);
         // Test 2 overlap
-        l2 = new V3D_LineSegment(pN2P0P0, pP0P0P0);
-        expResult = new V3D_LineSegment(pN2P0P0, pP0P0P0);
-        result = V3D_LineSegmentsCollinear.getGeometry(l1, l2, oom, e.rm);
+        l2 = new V3D_LineSegment(pN2P0P0, pP0P0P0, oom, rm);
+        expResult = new V3D_LineSegment(pN2P0P0, pP0P0P0, oom, rm);
+        result = V3D_LineSegmentsCollinear.getGeometry(l1, l2, oom, rm);
         assertEquals(expResult, result);
-        result = V3D_LineSegmentsCollinear.getGeometry(l2, l1, oom, e.rm);
+        result = V3D_LineSegmentsCollinear.getGeometry(l2, l1, oom, rm);
         assertEquals(expResult, result);
-        l1 = new V3D_LineSegment(pN2P0P0, pP2P0P0);
-        l2 = new V3D_LineSegment(pN1P0P0, pP1P0P0);
-        expResult = new V3D_LineSegment(pN2P0P0, pP2P0P0);
-        result = V3D_LineSegmentsCollinear.getGeometry(l1, l2, oom, e.rm);
+        l1 = new V3D_LineSegment(pN2P0P0, pP2P0P0, oom, rm);
+        l2 = new V3D_LineSegment(pN1P0P0, pP1P0P0, oom, rm);
+        expResult = new V3D_LineSegment(pN2P0P0, pP2P0P0, oom, rm);
+        result = V3D_LineSegmentsCollinear.getGeometry(l1, l2, oom, rm);
         assertEquals(expResult, result);
         // No overlap
-        l1 = new V3D_LineSegment(pN2P0P0, pN1P0P0);
-        l2 = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        l1 = new V3D_LineSegment(pN2P0P0, pN1P0P0, oom, rm);
+        l2 = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         expResult = new V3D_LineSegmentsCollinear(l1, l2);
-        result = V3D_LineSegmentsCollinear.getGeometry(l1, l2, oom, e.rm);
+        result = V3D_LineSegmentsCollinear.getGeometry(l1, l2, oom, rm);
         assertEquals(expResult, result);
-        result = V3D_LineSegmentsCollinear.getGeometry(l2, l1, oom, e.rm);
+        result = V3D_LineSegmentsCollinear.getGeometry(l2, l1, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -235,15 +212,16 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_Line_int() {
         System.out.println("getIntersection");
-        V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0);
-        int oom = -3;
+        int oom = -1;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
         V3D_LineSegmentsCollinear instance = new V3D_LineSegmentsCollinear(
-                new V3D_LineSegment(pN1P0P0, pP0P0P0),
-                new V3D_LineSegment(pP1P0P0, pP2P0P0));
-        V3D_Geometry expResult = instance = new V3D_LineSegmentsCollinear(
-                new V3D_LineSegment(pN1P0P0, pP0P0P0),
-                new V3D_LineSegment(pP1P0P0, pP2P0P0));
-        V3D_Geometry result = instance.getIntersection(l, oom, e.rm);
+                new V3D_LineSegment(pN1P0P0, pP0P0P0, oom, rm),
+                new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm));
+        V3D_Geometry expResult = new V3D_LineSegmentsCollinear(
+                new V3D_LineSegment(pN1P0P0, pP0P0P0, oom, rm),
+                new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm));
+        V3D_Geometry result = instance.getIntersection(l, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -253,13 +231,14 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
     @Test
     public void testGetIntersection_V3D_LineSegment_int() {
         System.out.println("getIntersection");
-        V3D_LineSegment l = new V3D_LineSegment(pN1P0P0, pP0P0P0);
-        int oom = -3;
+        int oom = -1;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_LineSegment l = new V3D_LineSegment(pN1P0P0, pP0P0P0, oom, rm);
         V3D_LineSegmentsCollinear instance = new V3D_LineSegmentsCollinear(
-                new V3D_LineSegment(pN1P0P0, pP0P0P0),
-                new V3D_LineSegment(pP1P0P0, pP2P0P0));
-        V3D_Geometry expResult = new V3D_LineSegment(pN1P0P0, pP0P0P0);
-        V3D_Geometry result = instance.getIntersection(l, oom, e.rm);
+                new V3D_LineSegment(pN1P0P0, pP0P0P0, oom, rm),
+                new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm));
+        V3D_Geometry expResult = new V3D_LineSegment(pN1P0P0, pP0P0P0, oom, rm);
+        V3D_Geometry result = instance.getIntersection(l, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -296,17 +275,17 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
         int oom = -1;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegmentsCollinear instance = new V3D_LineSegmentsCollinear(
-                new V3D_LineSegment(pP0P0P0, pP1P0P0),
-                new V3D_LineSegment(pP1P0P0, pP2P0P0));
-        V3D_Geometry expResult = new V3D_LineSegment(pP0P0P0, pP2P0P0);
+                new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm),
+                new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm));
+        V3D_Geometry expResult = new V3D_LineSegment(pP0P0P0, pP2P0P0, oom, rm);
         V3D_Geometry result = instance.simplify(oom, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_LineSegmentsCollinear(
-                new V3D_LineSegment(pP0P0P0, pP1P0P0),
-                new V3D_LineSegment(pP1P0P0, pP2P0P0),
-                new V3D_LineSegment(pP0P0P0, pP2P0P0));
-        expResult = new V3D_LineSegment(pP0P0P0, pP2P0P0);
+                new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm),
+                new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm),
+                new V3D_LineSegment(pP0P0P0, pP2P0P0, oom, rm));
+        expResult = new V3D_LineSegment(pP0P0P0, pP2P0P0, oom, rm);
         result = instance.simplify(oom, rm);
         assertEquals(expResult, result);
     }

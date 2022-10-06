@@ -95,9 +95,7 @@ public abstract class V3D_Geometry implements Serializable,
      * @return A padded description.
      */
     protected String toStringFields(String pad) {
-        return e.toStringFields(pad) + "\n"
-                + pad + ",\n"
-                + pad + "offset=" + offset.toString(pad);
+        return pad + "offset=" + offset.toString(pad);
     }
     
     /**
@@ -105,17 +103,16 @@ public abstract class V3D_Geometry implements Serializable,
      * @return A padded description.
      */
     protected String toStringFieldsSimple(String pad) {
-        return pad + e.toStringFieldsSimple()
-                + ", offset=" + offset.toStringSimple("");
+        return pad + "offset=" + offset.toStringSimple("");
     }
     
     /**
      * Translate (move relative to the origin).
      * 
-     * @param v The vector to apply.
+     * @param v The vector to translate.
      * @param oom The Order of Magnitude for the precision.
      */
-    public void apply(V3D_Vector v, int oom, RoundingMode rm) {
+    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
         offset = offset.add(v, oom, rm);
     }
 

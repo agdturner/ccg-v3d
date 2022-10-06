@@ -84,23 +84,23 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("getEnvelope");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Envelope expResult = new V3D_Envelope(e, pP0P0P0, pP1P1P1);
+        V3D_Envelope expResult = new V3D_Envelope(e, oom, rm, pP0P0P0, pP1P1P1);
         V3D_Envelope result = pP0P0P0.getEnvelope(oom, rm);
-        result = result.union(pP1P1P1.getEnvelope(oom, rm));
+        result = result.union(pP1P1P1.getEnvelope(oom, rm), oom, rm);
         assertEquals(expResult, result);
     }
 
 //    /**
-//     * Test of apply method, of class V3D_Point.
+//     * Test of translate method, of class V3D_Point.
 //     */
 //    @Test
 //    public void testApply() {
-//        System.out.println("apply");
+//        System.out.println("translate");
 //        int oom = -1;
 //        V3D_Vector v = new V3D_Vector(P1, P1, P1);
 //        V3D_Point instance = pP0P0P0;
 //        V3D_Point expResult = pP1P1P1;
-//        V3D_Point result = instance.apply(v, oom);
+//        V3D_Point result = instance.translate(v, oom);
 //        assertEquals(expResult, result);
 //    }
     /**
@@ -255,31 +255,31 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("getDistance");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line l = new V3D_Line(pP0P0P0, pP0P0P1);
+        V3D_Line l = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
         V3D_Point instance = pP0P1P0;
         BigDecimal expResult = P1.toBigDecimal(oom, rm);
         BigDecimal result = instance.getDistance(l, oom, rm);
         assertEquals(expResult, result);
         // Test 2
-        l = new V3D_Line(pP0P0P0, pP0P0P1);
+        l = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
         instance = new V3D_Point(e, P3, P4, P0);
         expResult = P5.toBigDecimal(oom, rm);
         result = instance.getDistance(l, oom, rm);
         assertEquals(expResult, result);
         // Test 3
-        l = new V3D_Line(pP0P0P1, pP0P0P0);
+        l = new V3D_Line(pP0P0P1, pP0P0P0, oom, rm);
         instance = new V3D_Point(e, P3, P4, P0);
         expResult = P5.toBigDecimal(oom, rm);
         result = instance.getDistance(l, oom, rm);
         assertEquals(expResult, result);
         // Test 4
-        l = new V3D_Line(pP0P0P0, pP0P0P1);
+        l = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
         instance = new V3D_Point(e, P4, P3, P0);
         expResult = P5.toBigDecimal(oom, rm);
         result = instance.getDistance(l, oom, rm);
         assertEquals(expResult, result);
         // Test 3
-        l = new V3D_Line(pP0P0P0, pP0P0P1);
+        l = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
         instance = new V3D_Point(e, P4, P3, P10);
         expResult = P5.toBigDecimal(oom, rm);
         result = instance.getDistance(l, oom, rm);
@@ -310,7 +310,7 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("getDistance");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP2P0P0);
+        V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP2P0P0, oom, rm);
         V3D_Point instance = pP1P1P0;
         BigDecimal expResult = BigDecimal.ONE;
         BigDecimal result = instance.getDistance(l, oom, rm);
@@ -326,7 +326,7 @@ public class V3D_PointTest extends V3D_Test {
         assertTrue(expResult.compareTo(result) == 0);
         // Test 4
         instance = pP2P2P0;
-        l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         expResult = new Math_BigRationalSqrt(5, oom, rm).toBigDecimal(oom, rm);
         result = instance.getDistance(l, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
@@ -599,7 +599,7 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("getIntersection");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0);
+        V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
         V3D_Point instance = pP0P0P0;
         V3D_Geometry expResult = instance;
         V3D_Geometry result = instance.getIntersection(l, oom, rm);
@@ -614,7 +614,7 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("getIntersection");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0);
+        V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         V3D_Point instance = pP0P0P0;
         V3D_Geometry expResult = pP0P0P0;
         V3D_Geometry result = instance.getIntersection(l, oom, rm);
@@ -646,7 +646,7 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("getDistance");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Ray r = new V3D_Ray(pP1P0P0, pP2P0P0);
+        V3D_Ray r = new V3D_Ray(pP1P0P0, pP2P0P0, oom, rm);
         V3D_Point instance = V3D_Point.ORIGIN;
         BigDecimal expResult = BigDecimal.ONE;
         BigDecimal result = instance.getDistance(r, oom, rm);
@@ -778,9 +778,11 @@ public class V3D_PointTest extends V3D_Test {
     @Test
     public void testSetOffset() {
         System.out.println("setOffset");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector offset = P0P0P1;
         V3D_Point instance = new V3D_Point(pP0P0P0);
-        instance.setOffset(offset);
+        instance.setOffset(offset, oom, rm);
         assertEquals(instance, pP0P0P0);
     }
 
@@ -790,9 +792,11 @@ public class V3D_PointTest extends V3D_Test {
     @Test
     public void testSetRel() {
         System.out.println("setRel");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector rel = P0P0P1;
         V3D_Point instance = new V3D_Point(pP0P0P0);
-        instance.setRel(rel);
+        instance.setRel(rel, oom, rm);
         assertEquals(instance, pP0P0P0);
     }
 

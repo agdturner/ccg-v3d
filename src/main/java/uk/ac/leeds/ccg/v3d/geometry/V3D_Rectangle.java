@@ -117,7 +117,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * rectangle.
      */
     public V3D_Rectangle(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
-            V3D_Vector q, V3D_Vector r, V3D_Vector s) {
+            V3D_Vector q, V3D_Vector r, V3D_Vector s, int oom, RoundingMode rm) {
         super(e, offset, p, q, r);
         /**
          * p and q get swapped if q is at the origin in defining the plane, in
@@ -127,7 +127,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         boolean qAtOrigin2 = this.p.getQ().equals(V3D_Point.ORIGIN);
         V3D_Vector qs;
         if (qAtOrigin2) {
-            qs = s.subtract(p, e.oom, e.rm);
+            qs = s.subtract(p, oom, rm);
         } else {
             qs = null;
         }
@@ -138,8 +138,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 //        ri = new V3D_LineSegment(r, s, oom);
 //        b = new V3D_LineSegment(s, p, oom);
         // Check for rectangle.
-        V3D_Vector tpq = this.p.getPQV();
-        V3D_Vector tqr = this.p.getQRV();
+        V3D_Vector tpq = this.p.getPQV(oom, rm);
+        V3D_Vector tqr = this.p.getQRV(oom, rm);
         if (tpq.isZeroVector()) {
             if (tqr.isZeroVector()) {
                 // Rectangle is a point.
@@ -152,11 +152,11 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             } else {
                 // Rectangle has area.
                 if (qAtOrigin2) {
-                    if (!(tpq.isOrthogonal(qs, e.oom, e.rm))) {
+                    if (!(tpq.isOrthogonal(qs, oom, rm))) {
                         throw new RuntimeException("The points do not define a rectangle.");
                     }
                 } else {
-                    if (!(tpq.isOrthogonal(tqr, e.oom, e.rm))) {
+                    if (!(tpq.isOrthogonal(tqr, oom, rm))) {
                         throw new RuntimeException("The points do not define a rectangle.");
                     }
                 }
@@ -171,9 +171,9 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
-    public V3D_Rectangle(V3D_Envelope.Rectangle r) {
+    public V3D_Rectangle(V3D_Envelope.Rectangle r, int oom, RoundingMode rm) {
         this(r.e, V3D_Vector.ZERO, new V3D_Vector(r.p), new V3D_Vector(r.q),
-                new V3D_Vector(r.r), new V3D_Vector(r.s));
+                new V3D_Vector(r.r), new V3D_Vector(r.s), oom, rm);
     }
 
     /**
@@ -184,10 +184,11 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @param r Used to initialise {@link #r}.
      * @param s Used to initialise {@link #s}.
      */
-    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s) {
-        super(p, q, r);
+    public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s,
+            int oom, RoundingMode rm) {
+        super(p, q, r, oom, rm);
         V3D_Point s2 = new V3D_Point(s);
-        s2.setOffset(p.offset);
+        s2.setOffset(p.offset, oom, rm);
         this.s = s2.rel;
     }
 
@@ -250,7 +251,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     @Override
     public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
-            en = new V3D_Envelope(e, p.getP(), p.getQ(), p.getR(), getS());
+            en = new V3D_Envelope(e, oom, rm, p.getP(), p.getQ(), 
+                    p.getR(), getS());
         }
         return en;
     }
@@ -349,8 +351,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             V3D_Vector spt = new V3D_Vector(ts, pt, oom, rm);
             V3D_Vector rs = new V3D_Vector(tr, ts, oom, rm);
             V3D_Vector sp = new V3D_Vector(ts, tq, oom, rm);
-            V3D_Vector cp = p.getPQV().reverse().getCrossProduct(ppt, oom, rm);
-            V3D_Vector cq = p.getQRV().getCrossProduct(qpt, oom, rm);
+            V3D_Vector cp = p.getPQV(oom, rm).reverse().getCrossProduct(ppt, oom, rm);
+            V3D_Vector cq = p.getQRV(oom, rm).getCrossProduct(qpt, oom, rm);
             V3D_Vector cr = rs.getCrossProduct(rpt, oom, rm);
             V3D_Vector cs = sp.getCrossProduct(spt, oom, rm);
             /**
@@ -380,8 +382,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             V3D_Vector spt = new V3D_Vector(ts, pt, oom, rm);
             V3D_Vector rs = new V3D_Vector(tr, ts, oom, rm);
             V3D_Vector sp = new V3D_Vector(ts, tp, oom, rm);
-            V3D_Vector cp = p.getPQV().getCrossProduct(ppt, oom, rm);
-            V3D_Vector cq = p.getQRV().getCrossProduct(qpt, oom, rm);
+            V3D_Vector cp = p.getPQV(oom, rm).getCrossProduct(ppt, oom, rm);
+            V3D_Vector cq = p.getQRV(oom, rm).getCrossProduct(qpt, oom, rm);
             V3D_Vector cr = rs.getCrossProduct(rpt, oom, rm);
             V3D_Vector cs = sp.getCrossProduct(spt, oom, rm);
             /**
@@ -443,7 +445,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm))) {
+        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm), oom, rm)) {
             if (p.isIntersectedBy(l, oom, rm)) {
                 V3D_Geometry pli = p.getIntersection(l, oom, rm);
                 if (pli instanceof V3D_Point plip) {
@@ -942,7 +944,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             }
         } else {
             if (t2i instanceof V3D_Triangle t2it) {
-                return new V3D_ConvexHullCoplanar(oom, rm, (V3D_Triangle) t1i, t2it).simplify();
+                return new V3D_ConvexHullCoplanar(oom, rm, (V3D_Triangle) t1i, t2it).simplify(oom, rm);
             } else {
                 return t1i;
             }
@@ -1047,13 +1049,13 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @return {@code true} iff p, q, r and s form a rectangle.
      */
     public static boolean isRectangle(V3D_Point p, V3D_Point q,
-            V3D_Point r, V3D_Point s) {
-        V3D_LineSegment pq = new V3D_LineSegment(p, q);
-        V3D_LineSegment qr = new V3D_LineSegment(q, r);
-        V3D_LineSegment rs = new V3D_LineSegment(r, s);
-        V3D_LineSegment sp = new V3D_LineSegment(s, p);
-        if (pq.l.isParallel(rs.l, p.e.oom, p.e.rm)) {
-            if (qr.l.isParallel(sp.l, p.e.oom, p.e.rm)) {
+            V3D_Point r, V3D_Point s, int oom, RoundingMode rm) {
+        V3D_LineSegment pq = new V3D_LineSegment(p, q, oom, rm);
+        V3D_LineSegment qr = new V3D_LineSegment(q, r, oom, rm);
+        V3D_LineSegment rs = new V3D_LineSegment(r, s, oom, rm);
+        V3D_LineSegment sp = new V3D_LineSegment(s, p, oom, rm);
+        if (pq.l.isParallel(rs.l, oom, rm)) {
+            if (qr.l.isParallel(sp.l, oom, rm)) {
                 return true;
             }
         }

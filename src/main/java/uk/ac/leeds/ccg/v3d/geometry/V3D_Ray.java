@@ -140,12 +140,12 @@ public class V3D_Ray extends V3D_Geometry
      * @param p What {@link #offset} and {@link #p} are set from.
      * @param q What {@link #q} is set from.
      */
-    public V3D_Ray(V3D_Point p, V3D_Point q) {
+    public V3D_Ray(V3D_Point p, V3D_Point q, int oom, RoundingMode rm) {
         super(p.e, p.offset);
         if (q.offset.equals(p.offset)) {
             l = new V3D_Line(p.e, p.offset, p.rel, q.rel);
         } else {
-            q.setOffset(offset);
+            q.setOffset(offset, oom, rm);
             l = new V3D_Line(p.e, p.offset, p.rel, q.rel);
         }
     }
@@ -226,12 +226,12 @@ public class V3D_Ray extends V3D_Geometry
     }
 
 //    /**
-//     * @param v The vector to apply to each coordinate of this.
+//     * @param v The vector to translate to each coordinate of this.
 //     * @param oom The Order of Magnitude for the precision of the calculation.
 //     * @return a new V3D_Ray which is {@code this} with the {@code v} applied.
 //     */
 //    @Override
-//    public V3D_Ray apply(V3D_Vector v, int oom) {
+//    public V3D_Ray translate(V3D_Vector v, int oom) {
 //        return new V3D_Ray(p.add(v, oom), q.add(v, oom), oom);
 //    }
     /**
@@ -255,7 +255,7 @@ public class V3D_Ray extends V3D_Geometry
 //            V3D_Point poi = l.getPointOfIntersection(pt, oom, rm);
 //            V3D_Ray r = new V3D_Ray(e, getP(), poi.getVector(oom, rm));
 
-            V3D_Ray r = new V3D_Ray(l.getP(), pt);
+            V3D_Ray r = new V3D_Ray(l.getP(), pt, oom, rm);
 
             return r.l.getV(oom, rm).getDirection() == l.getV(oom, rm).getDirection();
         }
@@ -576,17 +576,17 @@ public class V3D_Ray extends V3D_Geometry
                     if (spri == null) {
                         return null;
                     } else {
-                        return V3D_LineSegment.getGeometry(l.getP(), (V3D_Point) spri);
+                        return V3D_LineSegment.getGeometry(l.getP(), (V3D_Point) spri, oom, rm);
                     }
                 } else if (qsri instanceof V3D_Point qsrip) {
                     V3D_FiniteGeometry spri = getIntersection(t.getSpr(), oom, rm);
                     if (spri == null) {
-                        return V3D_LineSegment.getGeometry(l.getP(), qsrip);
+                        return V3D_LineSegment.getGeometry(l.getP(), qsrip, oom, rm);
                     } else if (spri instanceof V3D_Point sprip) {
                         if (qsrip.equals(sprip)) {
-                            return V3D_LineSegment.getGeometry(l.getP(), qsrip);
+                            return V3D_LineSegment.getGeometry(l.getP(), qsrip, oom, rm);
                         } else {
-                            return new V3D_LineSegment(qsrip, sprip);
+                            return new V3D_LineSegment(qsrip, sprip, oom, rm);
                         }
                     } else {
                         return spri;
@@ -599,12 +599,12 @@ public class V3D_Ray extends V3D_Geometry
                 if (qsri == null) {
                     V3D_FiniteGeometry spri = getIntersection(t.getSpr(), oom, rm);
                     if (spri == null) {
-                        return V3D_LineSegment.getGeometry(l.getP(), psqip);
+                        return V3D_LineSegment.getGeometry(l.getP(), psqip, oom, rm);
                     } else if (spri instanceof V3D_Point sprip) {
                         if (psqip.equals(sprip)) {
-                            return V3D_LineSegment.getGeometry(l.getP(), psqip);
+                            return V3D_LineSegment.getGeometry(l.getP(), psqip, oom, rm);
                         } else {
-                            return new V3D_LineSegment(psqip, sprip);
+                            return new V3D_LineSegment(psqip, sprip, oom, rm);
                         }
                     } else {
                         return spri;
@@ -613,19 +613,19 @@ public class V3D_Ray extends V3D_Geometry
                     V3D_FiniteGeometry spri = getIntersection(t.getSpr(), oom, rm);
                     if (spri == null) {
                         if (psqip.equals(qsrip)) {
-                            return V3D_LineSegment.getGeometry(l.getP(), psqip);
+                            return V3D_LineSegment.getGeometry(l.getP(), psqip, oom, rm);
                         } else {
-                            return new V3D_LineSegment(psqip, qsrip);
+                            return new V3D_LineSegment(psqip, qsrip, oom, rm);
                         }
                     } else if (spri instanceof V3D_Point sprip) {
                         if (psqip.equals(qsrip)) {
                             if (psqip.equals(sprip)) {
-                                return V3D_LineSegment.getGeometry(l.getP(), psqip);
+                                return V3D_LineSegment.getGeometry(l.getP(), psqip, oom, rm);
                             } else {
-                                return new V3D_LineSegment(psqip, sprip);
+                                return new V3D_LineSegment(psqip, sprip, oom, rm);
                             }
                         } else {
-                            return new V3D_LineSegment(psqip, qsrip);
+                            return new V3D_LineSegment(psqip, qsrip, oom, rm);
                         }
                     } else {
                         return spri;
@@ -643,12 +643,12 @@ public class V3D_Ray extends V3D_Geometry
                 if (qsri == null) {
                     V3D_FiniteGeometry spri = getIntersection(t.getSpr(), oom, rm);
                     if (spri == null) {
-                        return V3D_LineSegment.getGeometry(l.getP(), pqrip);
+                        return V3D_LineSegment.getGeometry(l.getP(), pqrip, oom, rm);
                     } else if (spri instanceof V3D_Point sprip) {
                         if (pqrip.equals(sprip)) {
-                            return V3D_LineSegment.getGeometry(l.getP(), pqrip);
+                            return V3D_LineSegment.getGeometry(l.getP(), pqrip, oom, rm);
                         } else {
-                            return new V3D_LineSegment(pqrip, sprip);
+                            return new V3D_LineSegment(pqrip, sprip, oom, rm);
                         }
                     } else {
                         return spri;
@@ -657,19 +657,19 @@ public class V3D_Ray extends V3D_Geometry
                     V3D_FiniteGeometry spri = getIntersection(t.getSpr(), oom, rm);
                     if (spri == null) {
                         if (pqrip.equals(qsrip)) {
-                            return V3D_LineSegment.getGeometry(l.getP(), qsrip);
+                            return V3D_LineSegment.getGeometry(l.getP(), qsrip, oom, rm);
                         } else {
-                            return new V3D_LineSegment(pqrip, qsrip);
+                            return new V3D_LineSegment(pqrip, qsrip, oom, rm);
                         }
                     } else if (spri instanceof V3D_Point sprip) {
                         if (pqri.equals(qsrip)) {
                             if (qsrip.equals(sprip)) {
-                                return V3D_LineSegment.getGeometry(l.getP(), qsrip);
+                                return V3D_LineSegment.getGeometry(l.getP(), qsrip, oom, rm);
                             } else {
-                                return new V3D_LineSegment(qsrip, sprip);
+                                return new V3D_LineSegment(qsrip, sprip, oom, rm);
                             }
                         } else {
-                            return V3D_LineSegment.getGeometry(pqrip, qsrip);
+                            return V3D_LineSegment.getGeometry(pqrip, qsrip, oom, rm);
                         }
                     } else {
                         return spri;
@@ -683,19 +683,19 @@ public class V3D_Ray extends V3D_Geometry
                     V3D_FiniteGeometry spri = getIntersection(t.getSpr(), oom, rm);
                     if (spri == null) {
                         if (pqrip.equals(psqip)) {
-                            return V3D_LineSegment.getGeometry(l.getP(), pqrip);
+                            return V3D_LineSegment.getGeometry(l.getP(), pqrip, oom, rm);
                         } else {
-                            return new V3D_LineSegment(pqrip, psqip);
+                            return new V3D_LineSegment(pqrip, psqip, oom, rm);
                         }
                     } else if (spri instanceof V3D_Point sprip) {
                         if (pqrip.equals(psqip)) {
                             if (psqip.equals(sprip)) {
-                                return V3D_LineSegment.getGeometry(l.getP(), psqip);
+                                return V3D_LineSegment.getGeometry(l.getP(), psqip, oom, rm);
                             } else {
-                                return new V3D_LineSegment(psqip, sprip);
+                                return new V3D_LineSegment(psqip, sprip, oom, rm);
                             }
                         } else {
-                            return new V3D_LineSegment(pqrip, psqip);
+                            return new V3D_LineSegment(pqrip, psqip, oom, rm);
                         }
                     } else {
                         return spri;
@@ -705,22 +705,22 @@ public class V3D_Ray extends V3D_Geometry
                     if (spri == null) {
                         if (pqrip.equals(psqip)) {
                             if (psqip.equals(qsrip)) {
-                                return V3D_LineSegment.getGeometry(l.getP(), psqip);
+                                return V3D_LineSegment.getGeometry(l.getP(), psqip, oom, rm);
                             } else {
-                                return new V3D_LineSegment(psqip, qsrip);
+                                return new V3D_LineSegment(psqip, qsrip, oom, rm);
                             }
                         } else {
-                            return new V3D_LineSegment(pqrip, psqip);
+                            return new V3D_LineSegment(pqrip, psqip, oom, rm);
                         }
                     } else if (spri instanceof V3D_Point sprip) {
                         if (pqrip.equals(psqip)) {
                             if (psqip.equals(qsrip)) {
-                                return V3D_LineSegment.getGeometry(pqrip, sprip);
+                                return V3D_LineSegment.getGeometry(pqrip, sprip, oom, rm);
                             } else {
-                                return new V3D_LineSegment(psqip, qsrip);
+                                return new V3D_LineSegment(psqip, qsrip, oom, rm);
                             }
                         } else {
-                            return new V3D_LineSegment(pqrip, psqip);
+                            return new V3D_LineSegment(pqrip, psqip, oom, rm);
                         }
                     } else {
                         return spri;
@@ -813,7 +813,7 @@ public class V3D_Ray extends V3D_Geometry
                 if (isIntersectedBy(rp, oom, rm)) {
                     V3D_Point tp = l.getP();
                     if (r.isIntersectedBy(tp, oom, rm)) {
-                        return V3D_LineSegment.getGeometry(rp, tp);
+                        return V3D_LineSegment.getGeometry(rp, tp, oom, rm);
 //                        return new V3D_LineSegment(e, rp.getVector(oom),
 //                                tp.getVector(oom));
                     } else {
@@ -859,7 +859,7 @@ public class V3D_Ray extends V3D_Geometry
             V3D_Point rp = r.l.getP();
             V3D_Point lp = l.getP();
             V3D_Point lq = l.getQ(oom, rm);
-            V3D_LineSegment lsrplq = new V3D_LineSegment(rp, lq);
+            V3D_LineSegment lsrplq = new V3D_LineSegment(rp, lq, oom, rm);
             int rvdirection = r.l.getV(oom, rm).getDirection();
             if (rp.equals(lp)) {
                 if (lsrplq.l.getV(oom, rm).getDirection() == rvdirection) {
@@ -868,7 +868,7 @@ public class V3D_Ray extends V3D_Geometry
                     return rp;
                 }
             } else {
-                V3D_LineSegment lsrplp = new V3D_LineSegment(rp, lp);
+                V3D_LineSegment lsrplp = new V3D_LineSegment(rp, lp, oom, rm);
                 if (rp.equals(lq)) {
                     if (lsrplp.l.getV(oom, rm).getDirection() == rvdirection) {
                         return l;
@@ -880,11 +880,11 @@ public class V3D_Ray extends V3D_Geometry
                         if (lsrplp.l.getV(oom, rm).getDirection() == rvdirection) {
                             return l;
                         } else {
-                            return new V3D_LineSegment(rp, lq);
+                            return new V3D_LineSegment(rp, lq, oom, rm);
                         }
                     } else {
                         if (lsrplp.l.getV(oom, rm).getDirection() == rvdirection) {
-                            return new V3D_LineSegment(rp, lp);
+                            return new V3D_LineSegment(rp, lp, oom, rm);
                         } else {
                             return null;
                         }
@@ -899,12 +899,12 @@ public class V3D_Ray extends V3D_Geometry
                 if (isIntersectedBy(lsq, oom, rm)) {
                     return ls;
                 } else {
-                    return new V3D_LineSegment(lsp, this.l.getP());
+                    return new V3D_LineSegment(lsp, this.l.getP(), oom, rm);
                 }
             } else {
                 V3D_Point lsq = ls.getQ(oom, rm);
                 if (isIntersectedBy(lsq, oom, rm)) {
-                    return new V3D_LineSegment(lsq, this.l.getP());
+                    return new V3D_LineSegment(lsq, this.l.getP(), oom, rm);
                 } else {
                     return null;
                 }
@@ -922,12 +922,12 @@ public class V3D_Ray extends V3D_Geometry
      */
     //@Override Used to override from V3D_Line
     public V3D_FiniteGeometry getLineOfIntersection(V3D_Point pt, int oom, RoundingMode rm) {
-        V3D_Ray r = new V3D_Ray(l.getP(), pt);
+        V3D_Ray r = new V3D_Ray(l.getP(), pt, oom, rm);
         Math_BigRational piby2 = Math_BigRational.valueOf(e.bD.getPiBy2(oom, rm));
         if (r.l.getV(oom, rm).getAngle(l.getV(oom, rm), oom, rm).compareTo(piby2) != 1) {
             return l.getLineOfIntersection(pt, oom, rm);
         } else {
-            return new V3D_LineSegment(pt, l.getP());
+            return new V3D_LineSegment(pt, l.getP(), oom, rm);
         }
 //        int rDir = r.l.v.getDirection();
 //        int tDir = l.v.getDirection();
@@ -1024,9 +1024,9 @@ public class V3D_Ray extends V3D_Geometry
                 V3D_Point tp = this.l.getP();
                 V3D_Point tq = this.l.getQ(oom, rm);
                 if (isIntersectedBy(loilp, oom, rm)) {
-                    return new V3D_LineSegment(tp, l.getPointOfIntersection(tp, oom, rm));
+                    return new V3D_LineSegment(tp, l.getPointOfIntersection(tp, oom, rm), oom, rm);
                 } else {
-                    return new V3D_LineSegment(tq, l.getPointOfIntersection(tq, oom, rm));
+                    return new V3D_LineSegment(tq, l.getPointOfIntersection(tq, oom, rm), oom, rm);
                 }
             }
         }
@@ -1061,30 +1061,30 @@ public class V3D_Ray extends V3D_Geometry
             if (lloi == null) {
                 V3D_Point poi = getPointOfIntersection(ls.getP(), oom, rm);
                 V3D_Point poi2 = ls.l.getPointOfIntersection(poi, oom, rm);
-                return getGeometry(poi, poi2);
+                return getGeometry(poi, poi2, oom, rm);
 //                return null;
             } else if (lloi instanceof V3D_Point lloip) {
-                return new V3D_LineSegment(getNearestPoint(lloip, oom, rm), lloip);
+                return new V3D_LineSegment(getNearestPoint(lloip, oom, rm), lloip, oom, rm);
             } else {
                 // lloi instanceof V3D_LineSegment
                 return null;
             }
         } else if (tloi instanceof V3D_Point tloip) {
             if (lloi == null) {
-                return new V3D_LineSegment(getNearestPoint(tloip, oom, rm), tloip);
+                return new V3D_LineSegment(getNearestPoint(tloip, oom, rm), tloip, oom, rm);
             } else {
                 //V3D_Point lp = ls.getP();
                 //V3D_Point lq = ls.getQ();
                 if (lloi instanceof V3D_Point lloip) {
-                    return getGeometry(lloip, tloip);
+                    return getGeometry(lloip, tloip, oom, rm);
                 } else {
                     V3D_LineSegment lloil = (V3D_LineSegment) lloi;
                     V3D_Point lloilp = lloil.getP();
                     V3D_Point lloilq = lloil.getQ(oom, rm);
                     if (isIntersectedBy(lloilp, oom, rm)) {
-                        return new V3D_LineSegment(lloilp, V3D_LineSegment.getNearestPoint(ls, lloilq, oom, rm));
+                        return new V3D_LineSegment(lloilp, V3D_LineSegment.getNearestPoint(ls, lloilq, oom, rm), oom, rm);
                     } else {
-                        return new V3D_LineSegment(lloilq, V3D_LineSegment.getNearestPoint(ls, lloilp, oom, rm));
+                        return new V3D_LineSegment(lloilq, V3D_LineSegment.getNearestPoint(ls, lloilp, oom, rm), oom, rm);
                     }
                 }
             }
@@ -1097,9 +1097,9 @@ public class V3D_Ray extends V3D_Geometry
                 V3D_Point tloilq = tloil.getQ(oom, rm);
                 if (lloi instanceof V3D_Point) {
                     if (isIntersectedBy(tloilp, oom, rm)) {
-                        return new V3D_LineSegment(tloilp, getNearestPoint(tloilq, oom, rm));
+                        return new V3D_LineSegment(tloilp, getNearestPoint(tloilq, oom, rm), oom, rm);
                     } else {
-                        return new V3D_LineSegment(tloilq, getNearestPoint(tloilp, oom, rm));
+                        return new V3D_LineSegment(tloilq, getNearestPoint(tloilp, oom, rm), oom, rm);
                     }
                 } else {
                     V3D_LineSegment lloil = (V3D_LineSegment) lloi;
@@ -1107,16 +1107,16 @@ public class V3D_Ray extends V3D_Geometry
                     V3D_Point lloilq = lloil.getQ(oom, rm);
                     if (l.isIntersectedBy(tloilp, oom, rm)) {
                         if (ll.isIntersectedBy(lloilp, oom, rm)) {
-                            return getGeometry(V3D_LineSegment.getNearestPoint(ls, lloilp, oom, rm), tloilp);
+                            return getGeometry(V3D_LineSegment.getNearestPoint(ls, lloilp, oom, rm), tloilp, oom, rm);
                         } else {
                             return getGeometry(V3D_LineSegment.getNearestPoint(ls, lloilq, oom, rm),
-                                    getNearestPoint(tloilq, oom, rm));
+                                    getNearestPoint(tloilq, oom, rm), oom, rm);
                         }
                     } else {
                         if (ll.isIntersectedBy(lloilp, oom, rm)) {
-                            return getGeometry(V3D_LineSegment.getNearestPoint(ls, lloilp, oom, rm), tloilq);
+                            return getGeometry(V3D_LineSegment.getNearestPoint(ls, lloilp, oom, rm), tloilq, oom, rm);
                         } else {
-                            return getGeometry(V3D_LineSegment.getNearestPoint(ls, lloilq, oom, rm), tloilp);
+                            return getGeometry(V3D_LineSegment.getNearestPoint(ls, lloilq, oom, rm), tloilp, oom, rm);
                         }
                     }
                 }

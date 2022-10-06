@@ -174,11 +174,11 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                 if (l1.isIntersectedBy(l2p, oom, rm)) {
                     // Cases 5
                     //return new V3D_LineSegment(l1p, l2.getP());
-                    return new V3D_LineSegment(l1p, l1q);
+                    return new V3D_LineSegment(l1p, l1q, oom, rm);
                 } else {
                     // Cases 1, 16
                     //return new V3D_LineSegment(l1p, l2.getQ());
-                    return new V3D_LineSegment(l2p, l1q);
+                    return new V3D_LineSegment(l2p, l1q, oom, rm);
                 }
             }
         } else {
@@ -194,14 +194,14 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                     } else {
                         // Cases 4, 13
                         //return new V3D_LineSegment(l2.getP(), l1.getQ());
-                        return new V3D_LineSegment(l1p, l2.getQ(oom, rm));
+                        return new V3D_LineSegment(l1p, l2.getQ(oom, rm), oom, rm);
                     }
                 } else {
                     // Cases 8, 9, 10
                     V3D_Point tq = l2.getQ(oom, rm);
                     if (l1.isIntersectedBy(tq, oom, rm)) {
                         // Cases 8, 9
-                        return new V3D_LineSegment(l2.getQ(oom, rm), l1q);
+                        return new V3D_LineSegment(l2.getQ(oom, rm), l1q, oom, rm);
                     } else {
                         // Cases 10                      
                         return l1;
@@ -219,7 +219,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                         return l1;
                     } else {
                         // Cases 12                 
-                        return new V3D_LineSegment(l2.getP(), l1p);
+                        return new V3D_LineSegment(l2.getP(), l1p, oom, rm);
                     }
                 } else {
                     // Cases 7
@@ -235,7 +235,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
             Iterator<V3D_LineSegment> ite = lineSegments.iterator();
             en = ite.next().getEnvelope(oom, rm);
             while (ite.hasNext()) {
-                en = en.union(ite.next().getEnvelope(oom, rm));
+                en = en.union(ite.next().getEnvelope(oom, rm), oom, rm);
             }
         }
         return en;
@@ -477,11 +477,11 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                         if (l1p.isIntersectedBy(l0, oom, rm)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
-                            r.add(new V3D_LineSegment(l1q, l0q));
+                            r.add(new V3D_LineSegment(l1q, l0q, oom, rm));
                         } else {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
-                            r.add(new V3D_LineSegment(l1q, l1p));
+                            r.add(new V3D_LineSegment(l1q, l1p, oom, rm));
                         }
                     }
                 } else {
@@ -492,11 +492,11 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                         if (l1.getP().isIntersectedBy(l0, oom, rm)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
-                            r.add(new V3D_LineSegment(l1q, l0p));
+                            r.add(new V3D_LineSegment(l1q, l0p, oom, rm));
                         } else {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
-                            r.add(new V3D_LineSegment(l1p, l0p));
+                            r.add(new V3D_LineSegment(l1p, l0p, oom, rm));
                         }
                     } else {
                         // l1 is completely overlapped by l0
