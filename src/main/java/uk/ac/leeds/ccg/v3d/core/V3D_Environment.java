@@ -89,7 +89,7 @@ public class V3D_Environment implements Serializable {
      * @param oom What {@link #oom} is set to.
      * @param rm What {@link #rm} is set to.
      */
-    public V3D_Environment(Math_BigInteger bI, Math_BigDecimal bD, int oom, RoundingMode rm) {
+    public V3D_Environment(Math_BigInteger bI, Math_BigDecimal bD) {
         this.bI = bI;
         this.bD = bD;
     }

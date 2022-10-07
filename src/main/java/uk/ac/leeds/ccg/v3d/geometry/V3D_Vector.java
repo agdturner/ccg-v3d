@@ -500,11 +500,11 @@ public class V3D_Vector implements Serializable {
      */
     public Math_BigRational getDotProduct(V3D_Vector v, int oom, 
             RoundingMode rm) {
-        int oomn5 = oom - 5;
-        return (v.getDX(oomn5, rm).multiply(getDX(oomn5, rm)))
-                .add(v.getDY(oomn5, rm).multiply(getDY(oomn5, rm)))
-                .add(v.getDZ(oomn5, rm).multiply(getDZ(oomn5, rm)))
-                .round(oom, rm);
+        oom -= 6;
+        return (v.getDX(oom, rm).multiply(getDX(oom, rm)))
+                .add(v.getDY(oom, rm).multiply(getDY(oom, rm)))
+                .add(v.getDZ(oom, rm).multiply(getDZ(oom, rm)));
+                //.round(oom, rm);
 //        Math_BigRational vdx = v.getDX().abs();
 //        if (v.dx.negative) {
 //            vdx = vdx.negate();
@@ -782,6 +782,7 @@ public class V3D_Vector implements Serializable {
      * @return V3D_Vector
      */
     public V3D_Vector getCrossProduct(V3D_Vector v, int oom, RoundingMode rm) {
+        oom = oom - 6;
 //        Math_BigRational tdx = getDX(oom);
 //        Math_BigRational tdy = getDY(oom);
 //        Math_BigRational tdz = getDZ(oom);

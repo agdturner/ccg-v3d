@@ -32,7 +32,7 @@ import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 public abstract class V3D_Test {
     
     public static final V3D_Environment e = new V3D_Environment(
-            new Math_BigInteger(), new Math_BigDecimal(), -3, RoundingMode.HALF_UP);
+            new Math_BigInteger(), new Math_BigDecimal());
 
     public static final Math_BigRational P0 = Math_BigRational.ZERO;
     public static final Math_BigRational P1 = Math_BigRational.ONE;
