@@ -23,6 +23,7 @@ import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VPoint;
 
 /**
  * An envelope contains all the extreme values with respect to the X, Y and Z
@@ -106,7 +107,7 @@ public class V3D_Envelope extends V3D_Geometry implements
      * @param points The points to test if they are collinear.
      * @return {@code true} iff all the points are collinear or coincident.
      */
-    private static boolean isCollinear0(int oom, 
+    private static boolean isCollinear0(int oom,
             RoundingMode rm, V3D_Envelope en, V3D_Envelope.Point... points) {
         // Get a line
         V3D_Envelope.Line l = getLine(en, points);
@@ -120,7 +121,7 @@ public class V3D_Envelope extends V3D_Geometry implements
      * @return {@code false} if all points are coincident. {@code true} iff all
      * the points are collinear.
      */
-    public static boolean isCollinear(int oom, RoundingMode rm, 
+    public static boolean isCollinear(int oom, RoundingMode rm,
             V3D_Envelope en, V3D_Envelope.Point... points) {
         // For the points to be in a line at least two must be different.
         if (V3D_Point.isCoincident(points)) {
@@ -417,7 +418,7 @@ public class V3D_Envelope extends V3D_Geometry implements
      * @param y The y-coordinate of a point.
      * @param z The z-coordinate of a point.
      */
-    public V3D_Envelope(V3D_Environment e, int oom, RoundingMode rm, 
+    public V3D_Envelope(V3D_Environment e, int oom, RoundingMode rm,
             Math_BigRational x, Math_BigRational y, Math_BigRational z) {
         this(e, oom, rm, new V3D_Point(e, x, y, z));
     }
@@ -447,9 +448,9 @@ public class V3D_Envelope extends V3D_Geometry implements
      * @param offset What {@link #offset} is set to.
      * @param en An envelope to base this on.
      */
-    public V3D_Envelope(V3D_Vector offset, V3D_Envelope en, int oom, 
+    public V3D_Envelope(V3D_Vector offset, V3D_Envelope en, int oom,
             RoundingMode rm) {
-        this(en.e, oom, rm, 
+        this(en.e, oom, rm,
                 en.xMin.subtract(en.offset.getDX(oom, rm))
                         .add(offset.getDX(oom, rm)),
                 en.xMax.subtract(en.offset.getDX(oom, rm))
@@ -480,13 +481,13 @@ public class V3D_Envelope extends V3D_Geometry implements
         if (e.isContainedBy(this, oom, rm)) {
             return this;
         } else {
-            return new V3D_Envelope(this.e, oom, rm, 
-                   e.getXMin(oom, rm).min(getXMin(oom, rm)),
-                   e.getXMax(oom, rm).max(getXMax(oom, rm)),
-                   e.getYMin(oom, rm).min(getYMin(oom, rm)),
-                   e.getYMax(oom, rm).max(getYMax(oom, rm)),
-                   e.getZMin(oom, rm).min(getZMin(oom, rm)),
-                   e.getZMax(oom, rm).max(getZMax(oom, rm)));
+            return new V3D_Envelope(this.e, oom, rm,
+                    e.getXMin(oom, rm).min(getXMin(oom, rm)),
+                    e.getXMax(oom, rm).max(getXMax(oom, rm)),
+                    e.getYMin(oom, rm).min(getYMin(oom, rm)),
+                    e.getYMax(oom, rm).max(getYMax(oom, rm)),
+                    e.getZMin(oom, rm).min(getZMin(oom, rm)),
+                    e.getZMax(oom, rm).max(getZMax(oom, rm)));
         }
     }
 
@@ -982,7 +983,7 @@ public class V3D_Envelope extends V3D_Geometry implements
      * {@code li} and {@code this}.
      */
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_LineSegment li, int oom, 
+    public V3D_FiniteGeometry getIntersection(V3D_LineSegment li, int oom,
             RoundingMode rm) {
         // Special case where both ends of li are within Envelope
         boolean lipi = isIntersectedBy(li.getP(), oom, rm);
@@ -999,19 +1000,19 @@ public class V3D_Envelope extends V3D_Geometry implements
                 }
             }
             case 1 -> {
-                return new V3D_LineSegment((LineSegment) l).getIntersection(li, 
+                return new V3D_LineSegment((LineSegment) l).getIntersection(li,
                         oom, rm);
             }
             case 2 -> {
-                return new V3D_LineSegment((LineSegment) f).getIntersection(li, 
+                return new V3D_LineSegment((LineSegment) f).getIntersection(li,
                         oom, rm);
             }
             case 3 -> {
-                return new V3D_LineSegment((LineSegment) f).getIntersection(li, 
+                return new V3D_LineSegment((LineSegment) f).getIntersection(li,
                         oom, rm);
             }
             case 4 -> {
-                return new V3D_Rectangle((Rectangle) f, oom, rm).getIntersection(li, oom, 
+                return new V3D_Rectangle((Rectangle) f, oom, rm).getIntersection(li, oom,
                         rm);
             }
             case 5 -> {
@@ -1019,7 +1020,7 @@ public class V3D_Envelope extends V3D_Geometry implements
                         rm);
             }
             case 6 -> {
-                return new V3D_Rectangle((Rectangle) t, oom, rm).getIntersection(li, oom, 
+                return new V3D_Rectangle((Rectangle) t, oom, rm).getIntersection(li, oom,
                         rm);
             }
             default -> {
@@ -1179,7 +1180,7 @@ public class V3D_Envelope extends V3D_Geometry implements
                         }
                     } else {
                         if (ail == null) {
-                            return getIntersection((V3D_Point) fil, li, lipi, 
+                            return getIntersection((V3D_Point) fil, li, lipi,
                                     oom, rm);
                         } else {
                             return V3D_LineSegment.getGeometry(
@@ -1232,9 +1233,10 @@ public class V3D_Envelope extends V3D_Geometry implements
                 && this.getZMin(oom).compareTo(e.getZMin(oom)) == 0
                 && this.getZMax(oom).compareTo(e.getZMax(oom)) == 0;
     }
-    
+
     /**
      * For getting {@link #xMin} rounded. RoundingMode.FLOOR is used.
+     *
      * @param oom The Order of Magnitude for the precision.
      * @return {@link #xMin} rounded.
      */
@@ -1244,6 +1246,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 
     /**
      * For getting {@link #xMin} rounded.
+     *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for the precision.
      * @return {@link #xMin} rounded.
@@ -1254,6 +1257,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 
     /**
      * For getting {@link #xMax} rounded. RoundingMode.CEILING is used.
+     *
      * @param oom The Order of Magnitude for the precision.
      * @return {@link #xMax} rounded.
      */
@@ -1271,9 +1275,10 @@ public class V3D_Envelope extends V3D_Geometry implements
     public Math_BigRational getXMax(int oom, RoundingMode rm) {
         return xMax.add(offset.getDX(oom - 2, rm)).round(oom, rm);
     }
-    
+
     /**
      * For getting {@link #yMin} rounded. RoundingMode.FLOOR is used.
+     *
      * @param oom The Order of Magnitude for the precision.
      * @return {@link #yMin} rounded.
      */
@@ -1283,6 +1288,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 
     /**
      * For getting {@link #yMin} rounded.
+     *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for the precision.
      * @return {@link #yMin} rounded.
@@ -1293,6 +1299,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 
     /**
      * For getting {@link #yMax} rounded. RoundingMode.CEILING is used.
+     *
      * @param oom The Order of Magnitude for the precision.
      * @return {@link #yMax} rounded.
      */
@@ -1313,6 +1320,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 
     /**
      * For getting {@link #zMin} rounded. RoundingMode.FLOOR is used.
+     *
      * @param oom The Order of Magnitude for the precision.
      * @return {@link #zMin} rounded.
      */
@@ -1322,6 +1330,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 
     /**
      * For getting {@link #zMin} rounded.
+     *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for the precision.
      * @return {@link #zMin} rounded.
@@ -1332,6 +1341,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 
     /**
      * For getting {@link #zMax} rounded. RoundingMode.CEILING is used.
+     *
      * @param oom The Order of Magnitude for the precision.
      * @return {@link #zMax} rounded.
      */
@@ -1349,7 +1359,7 @@ public class V3D_Envelope extends V3D_Geometry implements
     public Math_BigRational getZMax(int oom, RoundingMode rm) {
         return zMax.add(offset.getDZ(oom - 2, rm)).round(oom, rm);
     }
-    
+
     /**
      * Test if {@code this} is intersected by {@code li}.
      *
@@ -2884,7 +2894,7 @@ public class V3D_Envelope extends V3D_Geometry implements
             return this.getClass().getSimpleName() + "(x=" + x.toString()
                     + ", y=" + y.toString() + ", z=" + z.toString() + ")";
         }
-        
+
         public boolean equals(Point b) {
             if (this.x.compareTo(b.x) == 0) {
                 if (this.y.compareTo(b.y) == 0) {
@@ -2894,7 +2904,6 @@ public class V3D_Envelope extends V3D_Geometry implements
             return false;
         }
 
-        
         @Override
         protected Point translate(V3D_Vector v, int oom, RoundingMode rm) {
             return new Point(this, v, oom, rm);
@@ -3499,7 +3508,8 @@ public class V3D_Envelope extends V3D_Geometry implements
          * @param p A point for which the minimum distance from {@code this} is
          * returned.
          *
-         * @param oom, rm The Order of Magnitude for the precision of the result.
+         * @param oom, rm The Order of Magnitude for the precision of the
+         * result.
          * @return The minimum distance between this and {@code p}.
          */
         public BigDecimal getDistance(Point p, int oom, RoundingMode rm) {
@@ -3531,8 +3541,8 @@ public class V3D_Envelope extends V3D_Geometry implements
             V3D_Vector pv = new V3D_Vector(this.p, p);
             V3D_Vector vu = v.getUnitVector(oom - 2, rm);
             Math_BigRational pd = p.getDistanceSquared(new Point(this.e,
-                            vu.multiply(pv.getDotProduct(vu, oom, rm), oom, rm)
-                                    .add(new V3D_Vector(this.p), oom, rm), oom, rm));
+                    vu.multiply(pv.getDotProduct(vu, oom, rm), oom, rm)
+                            .add(new V3D_Vector(this.p), oom, rm), oom, rm));
             pv = new V3D_Vector(this.q, p);
             vu = v.reverse().getUnitVector(oom - 2, rm);
             Math_BigRational qd = p.getDistanceSquared(
@@ -3722,7 +3732,7 @@ public class V3D_Envelope extends V3D_Geometry implements
          * @param v The vector used to create this.
          */
         public Plane(Plane p, V3D_Vector v, int oom, RoundingMode rm) {
-            this(new Point(p.p, v, oom, rm), new Point(p.q, v, oom, rm), 
+            this(new Point(p.p, v, oom, rm), new Point(p.q, v, oom, rm),
                     new Point(p.r, v, oom, rm), oom, rm);
         }
 
@@ -3898,6 +3908,19 @@ public class V3D_Envelope extends V3D_Geometry implements
     }
 
     /**
+     * Calculate and return the approximate (or exact) centre.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
+     * @return The approximate or exact centre of this.
+     */
+    public V3D_Point getCentroid(int oom, RoundingMode rm) {
+        return new V3D_Point(e, this.xMax.subtract(this.xMin).divide(2),
+                 this.yMax.subtract(this.yMin).divide(2),
+                 this.zMax.subtract(this.zMin).divide(2));
+    }
+
+    /**
      * This rectangle is aligned with the axes.
      *
      * Like with {@link V3D_Rectangle}, the corner points {@link #p}, {@link #q},
@@ -3954,7 +3977,7 @@ public class V3D_Envelope extends V3D_Geometry implements
          * @param v The vector used to create this.
          */
         public Rectangle(Rectangle r, V3D_Vector v, int oom, RoundingMode rm) {
-            this(new Point(r.p, v, oom, rm), new Point(r.q, v, oom, rm), 
+            this(new Point(r.p, v, oom, rm), new Point(r.q, v, oom, rm),
                     new Point(r.r, v, oom, rm), new Point(r.s, v, oom, rm), oom, rm);
         }
 

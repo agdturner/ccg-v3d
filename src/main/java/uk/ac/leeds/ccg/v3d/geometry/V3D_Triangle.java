@@ -412,6 +412,16 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                 V3D_Vector edge1 = p.getPQV(oom, rm);
                 V3D_Vector edge2 = p.getRPV(oom, rm).reverse();
                 V3D_Vector h = l.getV(oom, rm).getCrossProduct(edge2, oom, rm);
+
+                if (edge1.getDotProduct(h, oom, rm).compareTo(Math_BigRational.ZERO) == 0) {
+                    System.out.println("edge1.getDotProduct(h, oom, rm) is zero in isIntersectedBy");
+                    System.out.println("Triangle:");
+                    System.out.println(this.toString());
+                    System.out.println("Line:");
+                    System.out.println(l.toString());
+                    return false;
+                }
+
                 Math_BigRational f = Math_BigRational.ONE.divide(
                         edge1.getDotProduct(h, oom, rm));
                 V3D_Vector s = l.p.subtract(p.getPV(), oom, rm);
@@ -1724,12 +1734,12 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
     @Override
     public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return r.isIntersectedBy(this, oom, rm);
     }
 
     @Override
     public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return r.getIntersection(this, oom, rm);
     }
 
     /**

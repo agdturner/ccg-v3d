@@ -625,11 +625,20 @@ public class V3D_Plane extends V3D_Geometry
      * @return The normal vector.
      */
     public V3D_Vector getN(int oom, RoundingMode rm) {
+//        if (n == null) {
+//            if (isQAtOrigin(oom, rm)) {
+//                n = getQRV(oom, rm).getCrossProduct(getRPV(oom, rm), oom, rm);
+//            } else {
+//                n = getPQV(oom, rm).getCrossProduct(getQRV(oom, rm), oom, rm);
+//            }
+//        }
+//        //return rotate(n, bI, theta);
+//        return n;
         if (n == null) {
             if (isQAtOrigin(oom, rm)) {
-                n = getQRV(oom, rm).getCrossProduct(getRPV(oom, rm), oom, rm);
+                return getQRV(oom, rm).getCrossProduct(getRPV(oom, rm), oom, rm);
             } else {
-                n = getPQV(oom, rm).getCrossProduct(getQRV(oom, rm), oom, rm);
+                return getPQV(oom, rm).getCrossProduct(getQRV(oom, rm), oom, rm);
             }
         }
         //return rotate(n, bI, theta);
@@ -854,8 +863,8 @@ public class V3D_Plane extends V3D_Geometry
         if (this.isIntersectedBy(lq, oom, rm)) {
             return lq;
         }
-        int oomN3 = oom - 3;
-        V3D_Vector lv = l.getV(oomN3, rm);
+        int oomN6 = oom - 6;
+        V3D_Vector lv = l.getV(oomN6, rm);
         Math_BigRational[][] m = new Math_BigRational[4][4];
         m[0][0] = Math_BigRational.ONE;
         m[0][1] = Math_BigRational.ONE;
@@ -876,18 +885,18 @@ public class V3D_Plane extends V3D_Geometry
         V3D_Point tp = getP();
         V3D_Point tq = getQ();
         V3D_Point tr = getR();
-        m[1][0] = tp.getX(oomN3, rm);
-        m[1][1] = tq.getX(oomN3, rm);
-        m[1][2] = tr.getX(oomN3, rm);
-        m[1][3] = lp.getX(oomN3, rm);
-        m[2][0] = tp.getY(oomN3, rm);
-        m[2][1] = tq.getY(oomN3, rm);
-        m[2][2] = tr.getY(oomN3, rm);
-        m[2][3] = lp.getY(oomN3, rm);
-        m[3][0] = tp.getZ(oomN3, rm);
-        m[3][1] = tq.getZ(oomN3, rm);
-        m[3][2] = tr.getZ(oomN3, rm);
-        m[3][3] = lp.getZ(oomN3, rm);
+        m[1][0] = tp.getX(oomN6, rm);
+        m[1][1] = tq.getX(oomN6, rm);
+        m[1][2] = tr.getX(oomN6, rm);
+        m[1][3] = lp.getX(oomN6, rm);
+        m[2][0] = tp.getY(oomN6, rm);
+        m[2][1] = tq.getY(oomN6, rm);
+        m[2][2] = tr.getY(oomN6, rm);
+        m[2][3] = lp.getY(oomN6, rm);
+        m[3][0] = tp.getZ(oomN6, rm);
+        m[3][1] = tq.getZ(oomN6, rm);
+        m[3][2] = tr.getZ(oomN6, rm);
+        m[3][3] = lp.getZ(oomN6, rm);
         Math_Matrix_BR numm = new Math_Matrix_BR(m);
         m[0][0] = Math_BigRational.ONE;
         m[0][1] = Math_BigRational.ONE;
@@ -905,24 +914,35 @@ public class V3D_Plane extends V3D_Geometry
 //        m[3][1] = q.getZ(oom);
 //        m[3][2] = r.getZ(oom);
 //        m[3][3] = lv.getDZ(oom);
-        m[1][0] = tp.getX(oomN3, rm);
-        m[1][1] = tq.getX(oomN3, rm);
-        m[1][2] = tr.getX(oomN3, rm);
-        m[1][3] = lv.getDX(oomN3, rm);
-        m[2][0] = tp.getY(oomN3, rm);
-        m[2][1] = tq.getY(oomN3, rm);
-        m[2][2] = tr.getY(oomN3, rm);
-        m[2][3] = lv.getDY(oomN3, rm);
-        m[3][0] = tp.getZ(oomN3, rm);
-        m[3][1] = tq.getZ(oomN3, rm);
-        m[3][2] = tr.getZ(oomN3, rm);
-        m[3][3] = lv.getDZ(oomN3, rm);
+        m[1][0] = tp.getX(oomN6, rm);
+        m[1][1] = tq.getX(oomN6, rm);
+        m[1][2] = tr.getX(oomN6, rm);
+        m[1][3] = lv.getDX(oomN6, rm);
+        m[2][0] = tp.getY(oomN6, rm);
+        m[2][1] = tq.getY(oomN6, rm);
+        m[2][2] = tr.getY(oomN6, rm);
+        m[2][3] = lv.getDY(oomN6, rm);
+        m[3][0] = tp.getZ(oomN6, rm);
+        m[3][1] = tq.getZ(oomN6, rm);
+        m[3][2] = tr.getZ(oomN6, rm);
+        m[3][3] = lv.getDZ(oomN6, rm);
         Math_Matrix_BR denm = new Math_Matrix_BR(m);
+        
+        if (denm.getDeterminant().compareTo(Math_BigRational.ZERO) == 0) {
+            System.out.println("Determinant is zero in getIntersection");
+            System.out.println("Plane:");
+            System.out.println(this.toString());
+            System.out.println("Line:");
+            System.out.println(l.toString());
+            return null;
+        }
+        
+        
         Math_BigRational t = numm.getDeterminant().divide(denm.getDeterminant()).negate();
         V3D_Point res = new V3D_Point(e,
-                lp.getX(oomN3, rm).add(lv.getDX(oomN3, rm).multiply(t)).round(oom, rm),
-                lp.getY(oomN3, rm).add(lv.getDY(oomN3, rm).multiply(t)).round(oom, rm),
-                lp.getZ(oomN3, rm).add(lv.getDZ(oomN3, rm).multiply(t)).round(oom, rm));
+                lp.getX(oomN6, rm).add(lv.getDX(oomN6, rm).multiply(t)).round(oom, rm),
+                lp.getY(oomN6, rm).add(lv.getDY(oomN6, rm).multiply(t)).round(oom, rm),
+                lp.getZ(oomN6, rm).add(lv.getDZ(oomN6, rm).multiply(t)).round(oom, rm));
         if (false) {
             // Check if r is on the line.
             if (!l.isIntersectedBy(res, oom, rm)) {
@@ -1082,18 +1102,7 @@ public class V3D_Plane extends V3D_Geometry
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
-        V3D_Geometry rit = r.getIntersection(this, oom, rm);
-        if (rit == null) {
-            return rit;
-        }
-        if (rit instanceof V3D_Ray) {
-            return r;
-        }
-        if (r.l.getV(oom, rm).getDirection() == new V3D_Vector(r.l.getP(),
-                (V3D_Point) rit, oom, rm).getDirection()) {
-            return rit;
-        }
-        return null;
+        return r.getIntersection(this, oom, rm);
     }
 
     /**
@@ -1224,6 +1233,7 @@ public class V3D_Plane extends V3D_Geometry
         //return new V3D_Line(pi, v, oom);
 
         if (pi == null) { // Hack.
+            pl.getPQV(oom, rm).isScalarMultiple(v, oom, rm);
             return null;
         }
 
@@ -1871,7 +1881,10 @@ public class V3D_Plane extends V3D_Geometry
         pq = null;
         qr = null;
         rp = null;
-        n = null;
+        if (n != null) {
+            // There will be some kind of residual error with each rotation!
+            n = n.rotate(axisOfRotation, theta, e.bI, oom, rm);
+        }
     }
 
     /**

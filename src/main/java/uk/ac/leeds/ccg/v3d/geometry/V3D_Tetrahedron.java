@@ -207,7 +207,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         st += pad + "s=" + s.toString(pad);// + "\n";
         return st;
     }
-    
+
     /**
      * @param pad A padding of spaces.
      * @return A description of the fields.
@@ -920,11 +920,15 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                 }
             } else if (psqi instanceof V3D_LineSegment psqil) {
                 V3D_FiniteGeometry qsri = getQsr().getIntersection(p, oom, rm);
-                if (qsri instanceof V3D_Point) {
+                if (qsri == null) {
                     return psqil;
                 } else {
-                    //V3D_LineSegment spri = (V3D_LineSegment) getSpr().getIntersection(p, oom, rm);
-                    return V3D_Triangle.getGeometry2(psqil, (V3D_LineSegment) qsri, oom, rm);
+                    if (qsri instanceof V3D_Point) {
+                        return psqil;
+                    } else {
+                        //V3D_LineSegment spri = (V3D_LineSegment) getSpr().getIntersection(p, oom, rm);
+                        return V3D_Triangle.getGeometry2(psqil, (V3D_LineSegment) qsri, oom, rm);
+                    }
                 }
             } else {
                 // Triangle
@@ -1312,7 +1316,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                     return ch.simplify(oom, rm);
                 } else {
                     // i_rsp instanceof V3D_ConvexHullCoplanar
-                    V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(oom, 
+                    V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(oom,
                             rm, (V3D_ConvexHullCoplanar) i_rsp, i_pqrt);
                     return ch.simplify(oom, rm);
                 }
@@ -1470,27 +1474,32 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                      * The points of t may be around the outside of this, but
                      * none of the edges intersect. The intersection of the
                      * plane of t and this can give a point, line segment,
-                     * triangle or convex hull. By controlling rounding in the intersection
-                     * calculation, this can be robust, but currently the
-                     * following does not work when all the intersected points
-                     * are not aligned with t.
+                     * triangle or convex hull. By controlling rounding in the
+                     * intersection calculation, this can be robust, but
+                     * currently the following does not work when all the
+                     * intersected points are not aligned with t.
                      */
                     V3D_FiniteGeometry g = getIntersection(t.p, oom, rm);
-                    if (g instanceof V3D_Point gp) {
-                        return t.isAligned(gp, oom, rm);
-                        //return t.isIntersectedBy(gp, oom, rm);
-                    } else if (g instanceof V3D_LineSegment gl) {
-                        if (t.isAligned(gl.getP(), oom, rm)) {
-                            return true;
-                        }
-                        if (t.isAligned(gl.getQ(oom, rm), oom, rm)) {
-                            return true;
-                        }
-                        return t.isIntersectedBy(gl, oom, rm);
-                    } else if (g instanceof V3D_Triangle gt) {
-                        return t.isIntersectedBy(gt, oom, rm);
+                    if (g == null) {
+                        // Wierd!
+                        return false;
                     } else {
-                        return t.isIntersectedBy((V3D_ConvexHullCoplanar) g, oom, rm);
+                        if (g instanceof V3D_Point gp) {
+                            return t.isAligned(gp, oom, rm);
+                            //return t.isIntersectedBy(gp, oom, rm);
+                        } else if (g instanceof V3D_LineSegment gl) {
+                            if (t.isAligned(gl.getP(), oom, rm)) {
+                                return true;
+                            }
+                            if (t.isAligned(gl.getQ(oom, rm), oom, rm)) {
+                                return true;
+                            }
+                            return t.isIntersectedBy(gl, oom, rm);
+                        } else if (g instanceof V3D_Triangle gt) {
+                            return t.isIntersectedBy(gt, oom, rm);
+                        } else {
+                            return t.isIntersectedBy((V3D_ConvexHullCoplanar) g, oom, rm);
+                        }
                     }
                 }
             }

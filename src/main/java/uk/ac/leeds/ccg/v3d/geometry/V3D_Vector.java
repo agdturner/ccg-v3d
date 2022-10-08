@@ -305,13 +305,13 @@ public class V3D_Vector implements Serializable {
                 + toStringFields(pad + " ") + "\n"
                 + pad + ")";
     }
-    
+
     /**
      * @param pad A padding of spaces.
      * @return A description of this.
      */
     public String toStringSimple(String pad) {
-        return pad + this.getClass().getSimpleName() 
+        return pad + this.getClass().getSimpleName()
                 + "(" + toStringFieldsSimple() + ")";
     }
 
@@ -330,8 +330,8 @@ public class V3D_Vector implements Serializable {
      * @return A description of the fields.
      */
     protected String toStringFieldsSimple() {
-        return "dx=" + dx.toStringSimple() 
-                + ", dy=" + dy.toStringSimple() 
+        return "dx=" + dx.toStringSimple()
+                + ", dy=" + dy.toStringSimple()
                 + ", dz=" + dz.toStringSimple();
     }
 
@@ -387,7 +387,6 @@ public class V3D_Vector implements Serializable {
 //    public Math_BigRational getDX(int oom) {
 //        return dx.getSqrt(oom);
 //    }
-
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The value of {@link #dy} as a Math_BigRational.
@@ -498,13 +497,13 @@ public class V3D_Vector implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return dot product
      */
-    public Math_BigRational getDotProduct(V3D_Vector v, int oom, 
+    public Math_BigRational getDotProduct(V3D_Vector v, int oom,
             RoundingMode rm) {
         oom -= 6;
         return (v.getDX(oom, rm).multiply(getDX(oom, rm)))
                 .add(v.getDY(oom, rm).multiply(getDY(oom, rm)))
                 .add(v.getDZ(oom, rm).multiply(getDZ(oom, rm)));
-                //.round(oom, rm);
+        //.round(oom, rm);
 //        Math_BigRational vdx = v.getDX().abs();
 //        if (v.dx.negative) {
 //            vdx = vdx.negate();
@@ -544,10 +543,14 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isOrthogonal(V3D_Vector v, int oom, RoundingMode rm) {
-        oom = oom -5;
-        if (isScalarMultiple(v, oom, rm)) {
-            return false;
-        }
+//        // Special case
+//        if (this.isZeroVector() || v.isZeroVector()) {
+//            return true;
+//        }
+//        oom = oom - 5;
+//        if (isScalarMultiple(v, oom, rm)) {
+//            return false;
+//        }
         return getDotProduct(v, oom, rm).isZero();
     }
 
@@ -614,97 +617,116 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
     public boolean isScalarMultiple(V3D_Vector v, int oom, RoundingMode rm) {
-        if (dx.isZero()) {
-            if (v.dx.isZero()) {
-                if (dy.isZero()) {
-                    if (v.dy.isZero()) {
-                        if (dz.isZero()) {
-                            return v.dz.isZero();
-                        } else {
-                            return true;
-                        }
-                    } else {
-                        return false;
-                    }
-                } else {
-                    if (v.dy.isZero()) {
-                        return false;
-                    } else {
-                        if (dz.isZero()) {
-                            return v.getDZ(oom, rm).isZero();
-                        } else {
-                            if (v.dz.isZero()) {
-                                return false;
-                            } else {
-                                Math_BigRational sy = getDY(oom, rm)
-                                        .divide(v.getDY(oom, rm));
-                                Math_BigRational sz = getDZ(oom, rm)
-                                        .divide(v.getDZ(oom, rm));
-                                return sy.compareTo(sz) == 0;
-                            }
-                        }
-                    }
-                }
-            } else {
-                return false;
-            }
-        } else {
-            if (v.dx.isZero()) {
-                return false;
-            } else {
-                if (dy.isZero()) {
-                    if (v.dy.isZero()) {
-                        if (dz.isZero()) {
-                            return v.dz.isZero();
-                        } else {
-                            if (v.dz.isZero()) {
-                                return false;
-                            } else {
-                                Math_BigRational sx = getDX(oom, rm)
-                                        .divide(v.getDX(oom, rm));
-                                Math_BigRational sz = getDZ(oom, rm)
-                                        .divide(v.getDZ(oom, rm));
-                                return sx.compareTo(sz) == 0;
-                            }
-                        }
-                    } else {
-                        return false;
-                    }
-                } else {
-                    if (v.dy.isZero()) {
-                        return false;
-                    } else {
-                        if (dz.isZero()) {
-                            if (v.dz.isZero()) {
-                                Math_BigRational sx = getDX(oom, rm)
-                                        .divide(v.getDX(oom, rm));
-                                Math_BigRational sy = getDY(oom, rm)
-                                        .divide(v.getDY(oom, rm));
-                                return sx.compareTo(sy) == 0;
-                            } else {
-                                return false;
-                            }
-                        } else {
-                            if (v.dz.isZero()) {
-                                return false;
-                            } else {
-                                Math_BigRational sx = getDX(oom, rm)
-                                        .divide(v.getDX(oom, rm));
-                                Math_BigRational sy = getDY(oom, rm)
-                                        .divide(v.getDY(oom, rm));
-                                Math_BigRational sz = getDZ(oom, rm)
-                                        .divide(v.getDZ(oom, rm));
-                                if (sx.compareTo(sy) == 0) {
-                                    return sy.compareTo(sz) == 0;
-                                } else {
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        // Special case
+        if (this.isZeroVector() || v.isZeroVector()) {
+            return true;
         }
+        oom -= 6;
+        return this.multiply(this.getDotProduct(v, oom, rm), oom, rm).equals(
+        v.multiply(this.getDotProduct(this, oom, rm), oom, rm));
+//        if (dx.isZero()) {
+//            if (v.dx.isZero()) {
+//                if (dy.isZero()) {
+//                    return true;
+//                } else {
+//                    if (v.dy.isZero()) {
+//                        return true;
+//                    } else {
+//                        if (dz.isZero()) {
+//                            return true;
+//                        } else {
+//                            if (v.dz.isZero()) {
+//                                return true;
+//                            } else {
+//                                Math_BigRational sy = getDY(oom, rm)
+//                                        .divide(v.getDY(oom, rm)).round(oom, rm);
+//                                Math_BigRational sz = getDZ(oom, rm)
+//                                        .divide(v.getDZ(oom, rm)).round(oom, rm);
+//                                return sy.compareTo(sz) == 0;
+//                            }
+//                        }
+//                    }
+//                }
+//            } else {
+//                if (dy.isZero()) {
+//                    return true;
+//                } else {
+//                    if (v.dy.isZero()) {
+//                        return true;
+//                    } else {
+//                        if (dz.isZero()) {
+//                            return true;
+//                        } else {
+//                            if (v.dz.isZero()) {
+//                                return true;
+//                            } else {
+//                                Math_BigRational sy = getDY(oom, rm)
+//                                        .divide(v.getDY(oom, rm)).round(oom, rm);
+//                                Math_BigRational sz = getDZ(oom, rm)
+//                                        .divide(v.getDZ(oom, rm)).round(oom, rm);
+//                                return sy.compareTo(sz) == 0;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        } else {
+//            if (v.dx.isZero()) {
+//                return false;
+//            } else {
+//                if (dy.isZero()) {
+//                    if (v.dy.isZero()) {
+//                        if (dz.isZero()) {
+//                            return v.dz.isZero();
+//                        } else {
+//                            if (v.dz.isZero()) {
+//                                return false;
+//                            } else {
+//                                Math_BigRational sx = getDX(oom, rm)
+//                                        .divide(v.getDX(oom, rm)).round(oom, rm);
+//                                Math_BigRational sz = getDZ(oom, rm)
+//                                        .divide(v.getDZ(oom, rm)).round(oom, rm);
+//                                return sx.compareTo(sz) == 0;
+//                            }
+//                        }
+//                    } else {
+//                        return false;
+//                    }
+//                } else {
+//                    if (v.dy.isZero()) {
+//                        return false;
+//                    } else {
+//                        if (dz.isZero()) {
+//                            if (v.dz.isZero()) {
+//                                Math_BigRational sx = getDX(oom, rm)
+//                                        .divide(v.getDX(oom, rm)).round(oom, rm);
+//                                Math_BigRational sy = getDY(oom, rm)
+//                                        .divide(v.getDY(oom, rm)).round(oom, rm);
+//                                return sx.compareTo(sy) == 0;
+//                            } else {
+//                                return false;
+//                            }
+//                        } else {
+//                            if (v.dz.isZero()) {
+//                                return false;
+//                            } else {
+//                                Math_BigRational sx = getDX(oom, rm)
+//                                        .divide(v.getDX(oom, rm)).round(oom, rm);
+//                                Math_BigRational sy = getDY(oom, rm)
+//                                        .divide(v.getDY(oom, rm)).round(oom, rm);
+//                                if (sx.compareTo(sy) == 0) {
+//                                    Math_BigRational sz = getDZ(oom, rm)
+//                                            .divide(v.getDZ(oom, rm)).round(oom, rm);
+//                                    return sy.compareTo(sz) == 0;
+//                                } else {
+//                                    return false;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     /**
@@ -736,7 +758,7 @@ public class V3D_Vector implements Serializable {
      * rotate a vector by a unit quaternion?, URL (version: 2019-06-12):
      * https://math.stackexchange.com/q/535223)
      *
-     * @param axisOfRotation The axis of rotation. This should be a unit vector 
+     * @param axisOfRotation The axis of rotation. This should be a unit vector
      * accurate to a sufficient precision.
      * @param theta The angle of rotation.
      * @param bI For the Taylor series for trigonometry calculations.
@@ -762,7 +784,7 @@ public class V3D_Vector implements Serializable {
         Math_Quaternion_BigRational rR = new Math_Quaternion_BigRational(
                 w, x.negate(), y.negate(), z.negate());
         Math_Quaternion_BigRational p = new Math_Quaternion_BigRational(
-                Math_BigRational.ZERO, this.getDX(oomn2, rm), 
+                Math_BigRational.ZERO, this.getDX(oomn2, rm),
                 this.getDY(oomn2, rm), this.getDZ(oomn2, rm));
         // P'=pP
         Math_Quaternion_BigRational pP = r.multiply(p).multiply(rR);

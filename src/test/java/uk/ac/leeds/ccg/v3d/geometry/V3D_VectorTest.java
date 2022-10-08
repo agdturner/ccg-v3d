@@ -331,7 +331,7 @@ public class V3D_VectorTest extends V3D_Test {
     }
 
     /**
-     * Test of isParallel method, of class V3D_Vector.
+     * Test of isScalarMultiple method, of class V3D_Vector.
      */
     @Test
     public void testIsScalarMultiple() {
@@ -340,7 +340,7 @@ public class V3D_VectorTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector v = P0P0P0;
         V3D_Vector instance = P1P1P1;
-        assertFalse(instance.isScalarMultiple(v, oom, rm));
+        assertTrue(instance.isScalarMultiple(v, oom, rm));
         // Test 2
         v = N1N1N1;
         instance = P1P1P1;

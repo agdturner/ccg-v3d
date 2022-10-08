@@ -122,6 +122,25 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     /**
+     * If p0 and p1 are the same, return the point. Otherwise return a line segment.
+     * @param p0 A point which may be the same as p1.
+     * @param p1 A point which may be the same as p0.
+     * 
+     * @param oom The Order of Magnitude for the calculation.
+     * @return A V3D_Point if p0 and p1 are equal, otherwise return a V3D_LineSegment with end points p0 an p1.
+     */
+    public static V3D_FiniteGeometry getGeometry(V3D_Point p0,
+            V3D_Point p1, int oom, RoundingMode rm) {
+        if (p0.equals(p1, oom, rm))
+            return p0;
+        else {
+            return new V3D_LineSegment(p0, p1, oom, rm);
+        }
+        
+    }
+    
+    
+    /**
      *
      * @param l1 A line segment collinear with {@code l2}.
      * @param l2 A line segment collinear with {@code l1}.
@@ -187,12 +206,10 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                 // Cases 1, 5, 16
                 if (l1.isIntersectedBy(l2p, oom, rm)) {
                     // Cases 5
-                    //return new V3D_LineSegment(l1p, l2.getP());
-                    return new V3D_LineSegment(l1p, l1q, oom, rm);
+                    return getGeometry(l1p, l1q, oom, rm);
                 } else {
                     // Cases 1, 16
-                    //return new V3D_LineSegment(l1p, l2.getQ());
-                    return new V3D_LineSegment(l2p, l1q, oom, rm);
+                    return getGeometry(l2p, l1q, oom, rm);
                 }
             }
         } else {
@@ -207,15 +224,14 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                         return l2;
                     } else {
                         // Cases 4, 13
-                        //return new V3D_LineSegment(l2.getP(), l1.getQ());
-                        return new V3D_LineSegment(l1p, l2.getQ(oom, rm), oom, rm);
+                        return getGeometry(l1p, l2.getQ(oom, rm), oom, rm);
                     }
                 } else {
                     // Cases 8, 9, 10
                     V3D_Point tq = l2.getQ(oom, rm);
                     if (l1.isIntersectedBy(tq, oom, rm)) {
                         // Cases 8, 9
-                        return new V3D_LineSegment(l2.getQ(oom, rm), l1q, oom, rm);
+                        return getGeometry(l2.getQ(oom, rm), l1q, oom, rm);
                     } else {
                         // Cases 10                      
                         return l1;
@@ -233,7 +249,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                         return l1;
                     } else {
                         // Cases 12                 
-                        return new V3D_LineSegment(l2.getP(), l1p, oom, rm);
+                        return getGeometry(l2.getP(), l1p, oom, rm);
                     }
                 } else {
                     // Cases 7
