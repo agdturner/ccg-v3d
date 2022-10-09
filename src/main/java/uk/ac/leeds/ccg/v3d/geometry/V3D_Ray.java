@@ -66,7 +66,7 @@ public class V3D_Ray extends V3D_Geometry
     /**
      * The line of this ray.
      */
-    V3D_Line l;
+    public V3D_Line l;
 
     /**
      * Create a new instance.
@@ -144,7 +144,7 @@ public class V3D_Ray extends V3D_Geometry
         if (q.offset.equals(p.offset)) {
             l = new V3D_Line(p.e, p.offset, p.rel, q.rel);
         } else {
-            q.setOffset(offset, oom, rm);
+            q.setOffset(offset, oom, rm); // Will change q.rel
             l = new V3D_Line(p.e, p.offset, p.rel, q.rel);
         }
     }
@@ -506,7 +506,7 @@ public class V3D_Ray extends V3D_Geometry
                 return null;
             }
         }
-        return g;
+        return this;
 //        if (g == null) {
 //            return g;
 //        } else {
