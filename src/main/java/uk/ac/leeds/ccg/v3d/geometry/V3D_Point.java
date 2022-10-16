@@ -19,7 +19,6 @@ import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VPoint;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
@@ -27,19 +26,23 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * 3D representation of a point. The "*" denotes a point in 3D in the following
+ * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding 
+ * these gives the position of a point. Two points are equal according to
+ * {@link #equals(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int, java.math.RoundingMode)
+ * if they have the 
+ * same position. The "*" denotes a point in 3D in the following
  * depiction: {@code
  *
  *                          y           -
  *                          +          /                * p=<x0,y0,z0>
- *                          |         /                 |
- *                          |        /                  |
+ *                          |         /                 |  =offset+rel
+ *                          |        /                  |  =<x1+x2,y1+y2,z1+z2>
  *                          |    z0-/-------------------|
- *                          |      /                   /
- *                          |     /                   /
- *                          |    /                   /
- *                          |   /                   /
- *                       y0-|  /                   /
+ *              r           |      /                   /
+ *       rel=<x2,y2,z2>     |     /                   /
+ *                          |    /                   /              
+ *                          |   /                   /      offset=<x1,y1,z1>
+ *                       y0-|  /                   /                o
  *                          | /                   /
  *                          |/                   /
  *  - ----------------------|-------------------/---- + x
@@ -369,9 +372,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         V3D_Vector cp = new V3D_Vector(this, l.getP(), oom, rm)
                 .getCrossProduct(new V3D_Vector(this, l.getQ(oom, rm), oom, rm),
                         oom, rm);
-        return cp.getMagnitude().divide(l.getV(oom, rm).getMagnitude(), oom, rm).toBigDecimal(oom, rm);
-//        return cp.getMagnitude(oom - 1).divide(l.v.getMagnitude(oom - 1), -oom,
-//                RoundingMode.HALF_UP);
+//        return cp.getMagnitude().divide(l.getV(oom, rm).getMagnitude(), oom, rm).toBigDecimal(oom, rm);
+        return cp.getMagnitude().divide(l.v.getMagnitude(oom, rm), oom, rm).toBigDecimal(oom, rm);
     }
 
     @Override
@@ -401,7 +403,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         V3D_Vector cp = new V3D_Vector(this, l.getP(), oom, rm)
                 .getCrossProduct(new V3D_Vector(this, l.getQ(oom, rm), oom, rm),
                         oom, rm);
-        return cp.getMagnitudeSquared().divide(l.getV(oom, rm).getMagnitudeSquared());
+        //return cp.getMagnitudeSquared().divide(l.getV(oom, rm).getMagnitudeSquared());
+        return cp.getMagnitudeSquared().divide(l.v.getMagnitudeSquared());
     }
 
     /**
@@ -432,7 +435,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         //V3D_Vector pq = pl.p.subtract(this.getVector(oom), oom);
         V3D_Vector pq = pl.getP().getVector(oom, rm).subtract(
                 this.getVector(oom, rm), oom, rm);
-        if (pq.isScalarMultiple(pl.getN(oom, rm), oom, rm)) {
+        //if (pq.isScalarMultiple(pl.getN(oom, rm), oom, rm)) {
+        if (pq.isScalarMultiple(pl.n, oom, rm)) {
             return pq.getMagnitudeSquared();
         } else {
             Math_BigRational[] coeffs = pl.getEquationCoefficients(oom, rm);
@@ -520,7 +524,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         int oom2 = oom - 2;
         Math_BigRational l2 = l.getLength2(oom, rm);
         Math_BigRational lp2 = l.getP().getDistanceSquared(this, oom2, rm);
-        Math_BigRational lq2 = l.getQ(oom, rm).getDistanceSquared(this, oom2, rm);
+        Math_BigRational lq2 = l.getQ().getDistanceSquared(this, oom2, rm);
         BigDecimal lp = (new V3D_Line(l)).getDistance(this, oom, rm);
         if (lp2.compareTo(l2) != 1 || lq2.compareTo(l2) != 1) {
             return lp;
@@ -535,7 +539,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         //Math_BigRational pl2 = (new V3D_Line(l)).getDistanceSquared(this);
         BigDecimal pl = (new V3D_Line(l)).getDistance(this, oom2, rm);
         Math_BigRational pl2 = Math_BigRational.valueOf(pl).pow(2);
-        V3D_Vector u = l.l.getV(oom, rm).getUnitVector(oom - 2, rm);
+        V3D_Vector u = l.l.v.getUnitVector(oom - 2, rm);
+        //V3D_Vector u = l.l.getV(oom, rm).getUnitVector(oom - 2, rm);
         V3D_Point pi = new V3D_Point(e, u.multiply(Math_BigRational.valueOf(
                 new Math_BigRationalSqrt(lp2.subtract(pl2), oom2, rm)
                         .toBigDecimal(oom2, rm)), oom2, rm)
@@ -642,6 +647,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      *
      * @param v What is added to {@link #offset}.
      */
+    @Override
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
         this.offset = offset.add(v, oom, rm);
     }
@@ -653,9 +659,15 @@ public class V3D_Point extends V3D_FiniteGeometry implements
      * @param theta The angle of rotation.
      */
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+    public V3D_Point rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
             int oom, RoundingMode rm) {
-        rel = rel.rotate(axisOfRotation, theta, e.bI, oom, rm);
+        V3D_Vector rrel;
+        if (theta.compareTo(Math_BigRational.ZERO) == 1) {
+            rrel = rel.rotate(axisOfRotation, theta, e.bd, oom, rm);
+        } else {
+            rrel = new V3D_Vector(rel);
+        }
+        return new V3D_Point(e, offset, rrel);
 //        V3D_Vector relt = rel.rotate(axisOfRotation, theta, bI, oom);
 //        offset = offset.subtract(rel.subtract(relt, oom), oom);
     }

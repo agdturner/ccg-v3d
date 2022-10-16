@@ -149,10 +149,10 @@ public class V3D_VTriangle extends V3D_VGeometry {
 //    }
     
     @Override
-    public void apply(V3D_V v) {
-        p.apply(v);
-        q.apply(v);
-        r.apply(v);
+    public void translate(V3D_V v) {
+        p.translate(v);
+        q.translate(v);
+        r.translate(v);
     }
 
 }

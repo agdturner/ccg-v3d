@@ -210,7 +210,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         if (getEnvelope(oom, rm).isIntersectedBy(pt, oom, rm)) {
-            if (parts.get(0).triangles.get(0).p.isIntersectedBy(pt, oom, rm)) {
+            if (parts.get(0).triangles.get(0).pl.isIntersectedBy(pt, oom, rm)) {
                 return isIntersectedBy0(pt, oom, rm);
             }
         }
@@ -369,16 +369,19 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      * @param theta The angle in radians.
      */
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+    public V3D_Polygon rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
             int oom, RoundingMode rm) {
-        if (holes != null) {
-            for (var x : holes) {
-                x.rotate(axisOfRotation, theta, oom, rm);
-            }
+        ArrayList<V3D_ConvexHullCoplanar> rparts = new ArrayList<>();
+        ArrayList<V3D_ConvexHullCoplanar> rholes = new ArrayList<>();
+        if (holes != null ) {
+        for (int i = 0; i < holes.size(); i ++) {
+            rholes.add(holes.get(i).rotate(axisOfRotation, theta, oom, rm));
         }
-        for (var x : parts) {
-            x.rotate(axisOfRotation, theta, oom, rm);
         }
+        for (int i = 0; i < parts.size(); i ++) {
+            rparts.add(parts.get(i).rotate(axisOfRotation, theta, oom, rm));
+        }
+        return new V3D_Polygon(rparts, rholes);
     }
 
     /**
@@ -394,7 +397,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
                 pts.addAll(x.points);
             }
             convexHull = new V3D_ConvexHullCoplanar(oom, rm, 
-                    parts.get(0).triangles.get(0).p.getN(oom, rm),
+                    parts.get(0).triangles.get(0).pl.n,
                     pts.toArray(V3D_Point[]::new));
         }
         return convexHull;

@@ -32,11 +32,4 @@ public interface V3D_FiniteGeometryInterface {
      */
     public abstract V3D_Envelope getEnvelope(int oom, RoundingMode rm);
     
-    /**
-     * For getting a copy of the points of the geometry.
-     *
-     * @return The V3D_Envelope.
-     */
-    public abstract V3D_Point[] getPoints(int oom, RoundingMode rm);
-    
 }

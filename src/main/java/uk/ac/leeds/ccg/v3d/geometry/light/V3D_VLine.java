@@ -168,8 +168,8 @@ public class V3D_VLine extends V3D_VGeometry {
 //        return c;
 //    }
     @Override
-    public void apply(V3D_V v) {
-        p.apply(v);
-        q.apply(v);
+    public void translate(V3D_V v) {
+        p.translate(v);
+        q.translate(v);
     }
 }

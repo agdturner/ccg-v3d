@@ -31,32 +31,32 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * these are stored independently in that the order of the points and the
  * directions of the vectors might be opposite. The points are shared between
  * all the triangles. {@code
- *  p *- - - - - - - - - - - + - - - - - - - - - - -* q
- *     \ ~                                         /|
- *      \     ~                                   / |
- *       \         ~                             /  |
- *        \             ~                       /   |
- *         \                 ~                 /    |
- *          \                      ~          /     |
- *           \                          ~    /      |
- *            \                             / ~     |
- *             \                           /       ~s
- *              \                         /        :
- *               \                       /
- *                \                     /      :
- *                 \                   /
- *                  \                 /     :
- *                   \               /
- *                    \             /    :
- *                     \           /
- *                      \         /   :
- *                       \       /
- *                        \     /  :
- *                         \   /
- *                          \ /:
- *                           *
- *                           r
- * }
+  pl *- - - - - - - - - - - + - - - - - - - - - - -* q
+     \ ~                                         /|
+      \     ~                                   / |
+       \         ~                             /  |
+        \             ~                       /   |
+         \                 ~                 /    |
+          \                      ~          /     |
+           \                          ~    /      |
+            \                             / ~     |
+             \                           /       ~s
+              \                         /        :
+               \                       /
+                \                     /      :
+                 \                   /
+                  \                 /     :
+                   \               /
+                    \             /    :
+                     \           /
+                      \         /   :
+                       \       /
+                        \     /  :
+                         \   /
+                          \ /:
+                           *
+                           r
+ }
  *
  * @author Andy Turner
  * @version 1.0
@@ -106,7 +106,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     public V3D_Triangle psq;
 
     /**
-     * Create a new instance. {@code p}, {@code q}, {@code r} and {@code s} must
+     * Create a new instance. {@code pl}, {@code q}, {@code r} and {@code s} must
      * all be different, not the zero vector and collectively they must be three
      * dimensional. This is generally the fastest way to construct a
      * tetrahedron.
@@ -128,7 +128,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     /**
-     * Create a new instance. {@code p}, {@code q}, {@code r} and {@code s} must
+     * Create a new instance. {@code pl}, {@code q}, {@code r} and {@code s} must
      * all be different and not coplanar. No test is done to check these things.
      *
      * @param p Used to set {@link #p}, {@link #e} and {@link #offset}.
@@ -152,14 +152,14 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     /**
-     * Create a new instance. {@code p}, must not be coplanar to t. No test is
+     * Create a new instance. {@code pl}, must not be coplanar to t. No test is
      * done to check this is the case.
      *
      * @param p Used to set {@link #p}, {@link #e} and {@link #offset}.
      * @param t Used to set {@link #q}, {@link #r} and {@link #s}.
      */
     public V3D_Tetrahedron(V3D_Point p, V3D_Triangle t, int oom, RoundingMode rm) {
-        this(p, t.p.getP(), t.p.getQ(), t.p.getR(), oom, rm);
+        this(p, t.getP(), t.getQ(), t.getR(), oom, rm);
     }
 
     @Override
@@ -267,9 +267,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      *
      * @return {@link #pqr}
      */
-    public V3D_Triangle getPqr() {
+    public V3D_Triangle getPqr(int oom, RoundingMode rm) {
         if (pqr == null) {
-            pqr = new V3D_Triangle(e, offset, p, q, r);
+            pqr = new V3D_Triangle(e, offset, p, q, r, oom, rm);
         }
         return pqr;
     }
@@ -279,9 +279,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      *
      * @return {@link #qsr}
      */
-    public V3D_Triangle getQsr() {
+    public V3D_Triangle getQsr(int oom, RoundingMode rm) {
         if (qsr == null) {
-            qsr = new V3D_Triangle(e, offset, q, s, r);
+            qsr = new V3D_Triangle(e, offset, q, s, r, oom, rm);
         }
         return qsr;
     }
@@ -291,9 +291,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      *
      * @return {@link #spr}
      */
-    public V3D_Triangle getSpr() {
+    public V3D_Triangle getSpr(int oom, RoundingMode rm) {
         if (spr == null) {
-            spr = new V3D_Triangle(e, offset, s, p, r);
+            spr = new V3D_Triangle(e, offset, s, p, r, oom, rm);
         }
         return spr;
     }
@@ -303,9 +303,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      *
      * @return {@link #psq}
      */
-    public V3D_Triangle getPsq() {
+    public V3D_Triangle getPsq(int oom, RoundingMode rm) {
         if (psq == null) {
-            psq = new V3D_Triangle(e, offset, p, s, q);
+            psq = new V3D_Triangle(e, offset, p, s, q, oom, rm);
         }
         return psq;
     }
@@ -318,10 +318,10 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     @Override
     public BigDecimal getArea(int oom, RoundingMode rm) {
-        return getPqr().getArea(oom, rm)
-                .add(getQsr().getArea(oom, rm))
-                .add(getSpr().getArea(oom, rm))
-                .add(getPsq().getArea(oom, rm));
+        return getPqr(oom, rm).getArea(oom, rm)
+                .add(getQsr(oom, rm).getArea(oom, rm))
+                .add(getSpr(oom, rm).getArea(oom, rm))
+                .add(getPsq(oom, rm).getArea(oom, rm));
     }
 
     /**
@@ -333,11 +333,11 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     @Override
     public BigDecimal getVolume(int oom, RoundingMode rm) {
-        V3D_Triangle tpqr = getPqr();
+        V3D_Triangle tpqr = getPqr(oom, rm);
         V3D_Point ts = getS();
         int oomn6 = oom - 6;
         BigDecimal hd3 = new Math_BigRationalSqrt(
-                tpqr.p.getPointOfProjectedIntersection(ts, oom, rm)
+                tpqr.pl.getPointOfProjectedIntersection(ts, oom, rm)
                         .getDistanceSquared(ts, oomn6, rm), oomn6, rm)
                 .getSqrt(oom, rm).divide(3).toBigDecimal(oomn6);
         return Math_BigDecimal.round(tpqr.getArea(oom - 3, rm).multiply(hd3), oom, rm);
@@ -366,14 +366,14 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
-        pqr = getPqr();
-        psq = getPsq();
-        spr = getSpr();
-        qsr = getQsr();
-        if (pqr.p.isOnSameSide(pt, getS(), oom, rm)) {
-            if (psq.p.isOnSameSide(pt, getR(), oom, rm)) {
-                if (spr.p.isOnSameSide(pt, getQ(), oom, rm)) {
-                    if (qsr.p.isOnSameSide(pt, getP(), oom, rm)) {
+        pqr = getPqr(oom, rm);
+        psq = getPsq(oom, rm);
+        spr = getSpr(oom, rm);
+        qsr = getQsr(oom, rm);
+        if (pqr.pl.isOnSameSide(pt, getS(), oom, rm)) {
+            if (psq.pl.isOnSameSide(pt, getR(), oom, rm)) {
+                if (spr.pl.isOnSameSide(pt, getQ(), oom, rm)) {
+                    if (qsr.pl.isOnSameSide(pt, getP(), oom, rm)) {
                         return true;
                     }
                 }
@@ -393,18 +393,18 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     @Override
     public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-        if (getPqr().isIntersectedBy(l, oom, rm)) {
+        if (getPqr(oom, rm).isIntersectedBy(l, oom, rm)) {
             return true;
         } else {
-            if (getPsq().isIntersectedBy(l, oom, rm)) {
+            if (getPsq(oom, rm).isIntersectedBy(l, oom, rm)) {
                 return true;
             } else {
-                return getQsr().isIntersectedBy(l, oom, rm);
+                return getQsr(oom, rm).isIntersectedBy(l, oom, rm);
 //                // No need for the final test
-//                if (getQsr().isIntersectedBy(l, oom, rm)) {
+//                if (getQsr(oom, rm).isIntersectedBy(l, oom, rm)) {
 //                    return true;
 //                } else {
-//                    return getSpr().isIntersectedBy(l, oom, rm);
+//                    return getSpr(oom, rm).isIntersectedBy(l, oom, rm);
 //                }
             }
         }
@@ -420,21 +420,21 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         if (isIntersectedBy(l.getP(), oom, rm)) {
             return true;
         } else {
-            if (isIntersectedBy(l.getQ(oom, rm), oom, rm)) {
+            if (isIntersectedBy(l.getQ(), oom, rm)) {
                 return true;
             } else {
-                if (getPqr().isIntersectedBy(l, oom, rm)) {
+                if (getPqr(oom, rm).isIntersectedBy(l, oom, rm)) {
                     return true;
                 } else {
-                    if (getPsq().isIntersectedBy(l, oom, rm)) {
+                    if (getPsq(oom, rm).isIntersectedBy(l, oom, rm)) {
                         return true;
                     } else {
-                        return getQsr().isIntersectedBy(l, oom, rm);
+                        return getQsr(oom, rm).isIntersectedBy(l, oom, rm);
 //                        // No need for the final test
-//                        if (getQsr().isIntersectedBy(l, oom, rm)) {
+//                        if (getQsr(oom, rm).isIntersectedBy(l, oom, rm)) {
 //                            return true;
 //                        } else {
-//                            return getSpr().isIntersectedBy(l, oom, rm);
+//                            return getSpr(oom, rm).isIntersectedBy(l, oom, rm);
 //                        }
                     }
                 }
@@ -444,22 +444,22 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry pqri = getPqr().getIntersection(l, oom, rm);
+        V3D_FiniteGeometry pqri = getPqr(oom, rm).getIntersection(l, oom, rm);
         if (pqri == null) {
-            V3D_FiniteGeometry psqi = getPsq().getIntersection(l, oom, rm);
+            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(l, oom, rm);
             if (psqi == null) {
-                return getQsr().getIntersection(l, oom, rm);
+                return getQsr(oom, rm).getIntersection(l, oom, rm);
             } else {
                 return psqi;
             }
         } else if (pqri instanceof V3D_Point pqrip) {
-            V3D_FiniteGeometry psqi = getPsq().getIntersection(l, oom, rm);
+            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(l, oom, rm);
             if (psqi == null) {
-                V3D_FiniteGeometry qsri = getQsr().getIntersection(l, oom, rm);
+                V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(l, oom, rm);
                 if (qsri == null) {
                     return null;
                 } else if (qsri instanceof V3D_Point qsrip) {
-                    V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                    V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                     if (spri == null) {
                         return V3D_LineSegment.getGeometry(qsrip, pqrip, oom, rm);
                     } else if (spri instanceof V3D_Point sprip) {
@@ -471,9 +471,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                     return qsri;
                 }
             } else if (psqi instanceof V3D_Point psqip) {
-                V3D_FiniteGeometry qsri = getQsr().getIntersection(l, oom, rm);
+                V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(l, oom, rm);
                 if (qsri == null) {
-                    V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                    V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                     if (spri == null) {
                         return V3D_LineSegment.getGeometry(psqip, pqrip, oom, rm);
                     } else if (spri instanceof V3D_Point sprip) {
@@ -482,7 +482,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                         return spri;
                     }
                 } else if (qsri instanceof V3D_Point qsrip) {
-                    V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                    V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                     if (spri == null) {
                         return V3D_LineSegment.getGeometry(psqip, pqrip, oom, rm);
                     } else if (spri instanceof V3D_Point sprip) {
@@ -512,8 +512,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param q Another possibly equal point.
      * @param r Another possibly equal point.
      * @param s Another possibly equal point.
-     * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or
-     * {@code new V3D_Triangle(p, q, r)}
+     * @return either {@code pl} or {@code new V3D_LineSegment(pl, q)} or
+     * {@code new V3D_Triangle(pl, q, r)}
      */
     public static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q,
             V3D_Point r, V3D_Point s, int oom, RoundingMode rm) {
@@ -532,7 +532,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         } else {
             if (V3D_Plane.isCoplanar(p.e, oom, rm, p, q, r, s)) {
                 if (V3D_Line.isCollinear(p.e, oom, rm, p, q, r, s)) {
-                    //return V3D_Line(p, q, r, s);
+                    //return V3D_Line(pl, q, r, s);
                     throw new UnsupportedOperationException("Need code to construct a line segment from 4 points!");
                 }
                 V3D_LineSegment pq = new V3D_LineSegment(p, q, oom, rm);
@@ -572,8 +572,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param r Another possibly equal point.
      * @param s Another possibly equal point.
      * @param t Another possibly equal point.
-     * @return either {@code p} or {@code new V3D_LineSegment(p, q)} or
-     * {@code new V3D_Triangle(p, q, r)}
+     * @return either {@code pl} or {@code new V3D_LineSegment(pl, q)} or
+     * {@code new V3D_Triangle(pl, q, r)}
      */
     protected static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q,
             V3D_Point r, V3D_Point s, V3D_Point t, int oom, RoundingMode rm) {
@@ -620,22 +620,22 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                 }
             } else {
                 V3D_Point lp = l.getP();
-                V3D_Point lq = l.getQ(oom, rm);
+                V3D_Point lq = l.getQ();
                 if (isIntersectedBy(lp, oom, rm)) {
                     if (isIntersectedBy(lq, oom, rm)) {
                         return (V3D_LineSegment) g.getIntersection(l, oom, rm);
                     } else {
-                        V3D_FiniteGeometry pqri = getPqr().getIntersection(l, oom, rm);
+                        V3D_FiniteGeometry pqri = getPqr(oom, rm).getIntersection(l, oom, rm);
                         if (pqri == null) {
-                            V3D_FiniteGeometry psqi = getPsq().getIntersection(l, oom, rm);
+                            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(l, oom, rm);
                             if (psqi == null) {
-                                V3D_FiniteGeometry qsri = getQsr().getIntersection(l, oom, rm);
+                                V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(l, oom, rm);
                                 if (qsri == null) {
                                     return new V3D_LineSegment(lp,
-                                            (V3D_Point) getSpr().getIntersection(l, oom, rm), oom, rm);
+                                            (V3D_Point) getSpr(oom, rm).getIntersection(l, oom, rm), oom, rm);
                                 } else {
                                     if (qsri instanceof V3D_Point qsrip) {
-                                        V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                        V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                         if (spri == null) {
                                             return new V3D_LineSegment(lp, qsrip, oom, rm);
                                         } else {
@@ -647,9 +647,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                 }
                             } else {
                                 if (psqi instanceof V3D_Point psqip) {
-                                    V3D_FiniteGeometry qsri = getQsr().getIntersection(l, oom, rm);
+                                    V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(l, oom, rm);
                                     if (qsri == null) {
-                                        V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                        V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                         if (spri == null) {
                                             return new V3D_LineSegment(lp, psqip, oom, rm);
                                         } else {
@@ -661,7 +661,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                         }
                                     } else {
                                         if (qsri instanceof V3D_Point qsrip) {
-                                            V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                            V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                             if (spri == null) {
                                                 return V3D_Triangle.getGeometry(lp, psqip, qsrip, oom, rm);
                                             } else {
@@ -681,11 +681,11 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                             }
                         } else {
                             if (pqri instanceof V3D_Point pqrip) {
-                                V3D_FiniteGeometry psqi = getPsq().getIntersection(l, oom, rm);
+                                V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(l, oom, rm);
                                 if (psqi == null) {
-                                    V3D_FiniteGeometry qsri = getQsr().getIntersection(l, oom, rm);
+                                    V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(l, oom, rm);
                                     if (qsri == null) {
-                                        V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                        V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                         if (spri == null) {
                                             return new V3D_LineSegment(lp, pqrip, oom, rm);
                                         } else {
@@ -697,7 +697,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                         }
                                     } else {
                                         if (qsri instanceof V3D_Point qsrip) {
-                                            V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                            V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                             if (spri == null) {
                                                 return V3D_Triangle.getGeometry(lp, pqrip, qsrip, oom, rm);
                                             } else {
@@ -713,9 +713,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                     }
                                 } else {
                                     if (psqi instanceof V3D_Point psqip) {
-                                        V3D_FiniteGeometry qsri = getQsr().getIntersection(l, oom, rm);
+                                        V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(l, oom, rm);
                                         if (qsri == null) {
-                                            V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                            V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                             if (spri == null) {
                                                 return V3D_Triangle.getGeometry(lp, pqrip, psqip, oom, rm);
                                             } else {
@@ -727,7 +727,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                             }
                                         } else {
                                             if (qsri instanceof V3D_Point qsrip) {
-                                                V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                                V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                                 if (spri == null) {
                                                     return getGeometry(lp, psqip, pqrip, qsrip, oom, rm);
                                                 } else {
@@ -751,17 +751,17 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                         }
                     }
                 } else {
-                    V3D_FiniteGeometry pqri = getPqr().getIntersection(l, oom, rm);
+                    V3D_FiniteGeometry pqri = getPqr(oom, rm).getIntersection(l, oom, rm);
                     if (pqri == null) {
-                        V3D_FiniteGeometry psqi = getPsq().getIntersection(l, oom, rm);
+                        V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(l, oom, rm);
                         if (psqi == null) {
-                            V3D_FiniteGeometry qsri = getQsr().getIntersection(l, oom, rm);
+                            V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(l, oom, rm);
                             if (qsri == null) {
                                 return new V3D_LineSegment(lq,
-                                        (V3D_Point) getSpr().getIntersection(l, oom, rm), oom, rm);
+                                        (V3D_Point) getSpr(oom, rm).getIntersection(l, oom, rm), oom, rm);
                             } else {
                                 if (qsri instanceof V3D_Point qsrip) {
-                                    V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                    V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                     if (spri == null) {
                                         return new V3D_LineSegment(lq, qsrip, oom, rm);
                                     } else {
@@ -773,9 +773,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                             }
                         } else {
                             if (psqi instanceof V3D_Point psqip) {
-                                V3D_FiniteGeometry qsri = getQsr().getIntersection(l, oom, rm);
+                                V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(l, oom, rm);
                                 if (qsri == null) {
-                                    V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                    V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                     if (spri == null) {
                                         return new V3D_LineSegment(lq, psqip, oom, rm);
                                     } else {
@@ -787,7 +787,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                     }
                                 } else {
                                     if (qsri instanceof V3D_Point qsrip) {
-                                        V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                        V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                         if (spri == null) {
                                             return V3D_Triangle.getGeometry(lq, psqip, qsrip, oom, rm);
                                         } else {
@@ -807,11 +807,11 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                         }
                     } else {
                         if (pqri instanceof V3D_Point pqrip) {
-                            V3D_FiniteGeometry psqi = getPsq().getIntersection(l, oom, rm);
+                            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(l, oom, rm);
                             if (psqi == null) {
-                                V3D_FiniteGeometry qsri = getQsr().getIntersection(l, oom, rm);
+                                V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(l, oom, rm);
                                 if (qsri == null) {
-                                    V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                    V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                     if (spri == null) {
                                         return new V3D_LineSegment(lq, pqrip, oom, rm);
                                     } else {
@@ -823,7 +823,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                     }
                                 } else {
                                     if (qsri instanceof V3D_Point qsrip) {
-                                        V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                        V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                         if (spri == null) {
                                             return V3D_Triangle.getGeometry(lq, pqrip, qsrip, oom, rm);
                                         } else {
@@ -839,9 +839,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                 }
                             } else {
                                 if (psqi instanceof V3D_Point psqip) {
-                                    V3D_FiniteGeometry qsri = getQsr().getIntersection(l, oom, rm);
+                                    V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(l, oom, rm);
                                     if (qsri == null) {
-                                        V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                        V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                         if (spri == null) {
                                             return V3D_Triangle.getGeometry(lq, pqrip, psqip, oom, rm);
                                         } else {
@@ -853,7 +853,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                         }
                                     } else {
                                         if (qsri instanceof V3D_Point qsrip) {
-                                            V3D_FiniteGeometry spri = getSpr().getIntersection(l, oom, rm);
+                                            V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(l, oom, rm);
                                             if (spri == null) {
                                                 return getGeometry(lq, psqip, pqrip, qsrip, oom, rm);
                                             } else {
@@ -887,9 +887,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry pqri = getPqr().getIntersection(p, oom, rm);
+        V3D_FiniteGeometry pqri = getPqr(oom, rm).getIntersection(p, oom, rm);
         if (pqri == null) {
-            V3D_FiniteGeometry psqi = getPsq().getIntersection(p, oom, rm);
+            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(p, oom, rm);
             if (psqi == null) {
                 return null;
             } else if (psqi instanceof V3D_Point psqip) {
@@ -900,33 +900,33 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                  * There will also be a line segment of qsr and spr that
                  * together form a triangle.
                  */
-                V3D_LineSegment qsril = (V3D_LineSegment) getQsr().getIntersection(p, oom, rm);
-                V3D_LineSegment spril = (V3D_LineSegment) getSpr().getIntersection(p, oom, rm);
+                V3D_LineSegment qsril = (V3D_LineSegment) getQsr(oom, rm).getIntersection(p, oom, rm);
+                V3D_LineSegment spril = (V3D_LineSegment) getSpr(oom, rm).getIntersection(p, oom, rm);
                 return V3D_Triangle.getGeometry(psqil, qsril, spril, oom, rm);
             } else {
                 // Triangle
                 return (V3D_Triangle) psqi;
             }
         } else if (pqri instanceof V3D_Point pqrip) {
-            V3D_FiniteGeometry psqi = getPsq().getIntersection(p, oom, rm);
+            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(p, oom, rm);
             if (psqi == null) {
                 return pqrip;
             } else if (psqi instanceof V3D_Point psqip) {
-                V3D_FiniteGeometry qsri = getQsr().getIntersection(p, oom, rm);
+                V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(p, oom, rm);
                 if (qsri == null) {
                     return psqip;
                 } else {
                     return V3D_Triangle.getGeometry((V3D_LineSegment) qsri, psqip, oom, rm);
                 }
             } else if (psqi instanceof V3D_LineSegment psqil) {
-                V3D_FiniteGeometry qsri = getQsr().getIntersection(p, oom, rm);
+                V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(p, oom, rm);
                 if (qsri == null) {
                     return psqil;
                 } else {
                     if (qsri instanceof V3D_Point) {
                         return psqil;
                     } else {
-                        //V3D_LineSegment spri = (V3D_LineSegment) getSpr().getIntersection(p, oom, rm);
+                        //V3D_LineSegment spri = (V3D_LineSegment) getSpr(oom, rm).getIntersection(pl, oom, rm);
                         return V3D_Triangle.getGeometry2(psqil, (V3D_LineSegment) qsri, oom, rm);
                     }
                 }
@@ -935,13 +935,13 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                 return (V3D_Triangle) psqi;
             }
         } else if (pqri instanceof V3D_LineSegment pqril) {
-            V3D_FiniteGeometry psqi = getPsq().getIntersection(p, oom, rm);
+            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(p, oom, rm);
             if (psqi == null) {
-                V3D_LineSegment qsril = (V3D_LineSegment) getQsr().getIntersection(p, oom, rm);
-                V3D_LineSegment spril = (V3D_LineSegment) getSpr().getIntersection(p, oom, rm);
+                V3D_LineSegment qsril = (V3D_LineSegment) getQsr(oom, rm).getIntersection(p, oom, rm);
+                V3D_LineSegment spril = (V3D_LineSegment) getSpr(oom, rm).getIntersection(p, oom, rm);
                 return V3D_Triangle.getGeometry(pqril, qsril, spril, oom, rm);
             } else if (psqi instanceof V3D_Point) {
-                V3D_FiniteGeometry spri = getSpr().getIntersection(p, oom, rm);
+                V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(p, oom, rm);
                 if (spri instanceof V3D_Point sprip) {
                     return V3D_Triangle.getGeometry(pqril, sprip, oom, rm);
                 } else {
@@ -964,7 +964,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
          * The intersection will be null, a point, a line segment, a triangle,
          * quadrilateral, pentagon or hexagon...
          */
-        V3D_FiniteGeometry i = getIntersection(t.p, oom, rm);
+        V3D_FiniteGeometry i = getIntersection(t.pl, oom, rm);
         if (i == null) {
             return null;
         } else {
@@ -980,24 +980,24 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                  * Need to get the intersections of pil and the plane edges of
                  * the triangle.
                  */
-                V3D_Vector n = t.p.getN(oom, rm);
-                V3D_Plane lp = new V3D_Plane(e, oom, rm, offset, t.p.p, t.p.q, t.p.p.add(n, oom, rm), false);
+                V3D_Vector n = t.pl.n;
+                V3D_Plane lp = new V3D_Plane(e, offset, t.p, t.q, t.p.add(n, oom, rm), oom, rm);
                 V3D_FiniteGeometry lpiil = lp.getIntersection(il, oom, rm);
                 if (lpiil == null) {
-                    V3D_Plane lq = new V3D_Plane(e, oom, rm, offset, t.p.q, t.p.r, t.p.q.add(n, oom, rm), false);
+                    V3D_Plane lq = new V3D_Plane(e, offset, t.q, t.r, t.q.add(n, oom, rm), oom, rm);
                     V3D_FiniteGeometry lqiil = lq.getIntersection(il, oom, rm);
                     if (lqiil == null) {
-                        V3D_Plane lr = new V3D_Plane(e, oom, rm, offset, t.p.r, t.p.p, t.p.r.add(n, oom, rm), false);
+                        V3D_Plane lr = new V3D_Plane(e, offset, t.r, t.p, t.r.add(n, oom, rm), oom, rm);
                         V3D_FiniteGeometry lriil = lr.getIntersection(il, oom, rm);
                         if (lriil == null) {
                             return il;
                         } else if (lriil instanceof V3D_Point lriilp) {
                             // Find the other point and return the line segment.
-                            V3D_Point pq = t.p.getQ();
+                            V3D_Point pq = t.getQ();
                             if (lr.isOnSameSide(lriilp, pq, oom, rm)) {
                                 return new V3D_LineSegment(lriilp, pq, oom, rm);
                             } else {
-                                return new V3D_LineSegment(lriilp, t.p.getP(), oom, rm);
+                                return new V3D_LineSegment(lriilp, t.getP(), oom, rm);
                             }
                         } else {
                             // Return the line segment.
@@ -1005,13 +1005,13 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                         }
                     } else if (lqiil instanceof V3D_Point lqiilp) {
                         // Find the other point and return the linesegment.
-                        V3D_Plane lr = new V3D_Plane(e, oom, rm, offset, t.p.r, t.p.p, t.p.r.add(n, oom, rm), false);
+                        V3D_Plane lr = new V3D_Plane(e, offset, t.r, t.p, t.r.add(n, oom, rm), oom, rm);
                         V3D_FiniteGeometry lriil = lr.getIntersection(il, oom, rm);
                         if (lriil == null) {
                             // For the points on the right side (if any)
                             V3D_Point ilp = il.getP();
-                            V3D_Point ilq = il.getQ(oom, rm);
-                            V3D_Point tpp = t.p.getP();
+                            V3D_Point ilq = il.getQ();
+                            V3D_Point tpp = t.getP();
                             if (lq.isOnSameSide(ilp, tpp, oom, rm)) {
                                 if (lq.isOnSameSide(ilq, tpp, oom, rm)) {
                                     if (lqiilp.getDistanceSquared(ilp, oom, rm).compareTo(
@@ -1034,7 +1034,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                             if (lqiilp.equals(lriilp, oom, rm)) {
                                 // Find the other point and return the line segment.
                                 V3D_Point ilp = il.getP();
-                                V3D_Point ilq = il.getQ(oom, rm);
+                                V3D_Point ilq = il.getQ();
                                 if (lq.isOnSameSide(ilp, ilq, oom, rm)) {
                                     if (lqiilp.getDistanceSquared(ilp, oom, rm).compareTo(
                                             lqiilp.getDistanceSquared(ilq, oom, rm)) == -1) {
@@ -1058,15 +1058,15 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                     }
                 } else if (lpiil instanceof V3D_Point lpiilp) {
                     // Find the other point and return the linesegment.
-                    V3D_Plane lq = new V3D_Plane(e, oom, rm, offset, t.p.q, t.p.r, t.p.q.add(n, oom, rm), false);
+                    V3D_Plane lq = new V3D_Plane(e, offset, t.q, t.r, t.q.add(n, oom, rm), oom, rm);
                     V3D_FiniteGeometry lqiil = lq.getIntersection(il, oom, rm);
                     if (lqiil == null) {
-                        V3D_Plane lr = new V3D_Plane(e, oom, rm, offset, t.p.r, t.p.p, t.p.r.add(n, oom, rm), false);
+                        V3D_Plane lr = new V3D_Plane(e, offset, t.r, t.p, t.r.add(n, oom, rm), oom, rm);
                         V3D_FiniteGeometry lriil = lr.getIntersection(il, oom, rm);
                         if (lriil == null) {
                             // Find the other point and return the line segment.
                             V3D_Point ilp = il.getP();
-                            V3D_Point ilq = il.getQ(oom, rm);
+                            V3D_Point ilq = il.getQ();
                             if (lq.isOnSameSide(ilp, ilq, oom, rm)) {
                                 if (lpiilp.getDistanceSquared(ilp, oom, rm).compareTo(
                                         lpiilp.getDistanceSquared(ilq, oom, rm)) == -1) {
@@ -1081,7 +1081,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                             if (lpiilp.equals(lriilp, oom, rm)) {
                                 // Find the other point and return the line segment.
                                 V3D_Point ilp = il.getP();
-                                V3D_Point ilq = il.getQ(oom, rm);
+                                V3D_Point ilq = il.getQ();
                                 if (lq.isOnSameSide(ilp, ilq, oom, rm)) {
                                     if (lpiilp.getDistanceSquared(ilp, oom, rm).compareTo(
                                             lpiilp.getDistanceSquared(ilq, oom, rm)) == -1) {
@@ -1090,7 +1090,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                         return new V3D_LineSegment(lpiilp, ilp, oom, rm);
                                     }
                                 } else {
-                                    if (lp.isOnSameSide(t.p.getR(), ilp, oom, rm)) {
+                                    if (lp.isOnSameSide(t.getR(), ilp, oom, rm)) {
                                         return new V3D_LineSegment(lpiilp, ilp, oom, rm);
                                     } else {
                                         return new V3D_LineSegment(lpiilp, ilq, oom, rm);
@@ -1105,12 +1105,12 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                         }
                     } else if (lqiil instanceof V3D_Point lqiilp) {
                         // Find the other point and return the linesegment.
-                        V3D_Plane lr = new V3D_Plane(e, oom, rm, offset, t.p.r, t.p.p, t.p.r.add(n, oom, rm), false);
+                        V3D_Plane lr = new V3D_Plane(e, offset, t.r, t.p, t.r.add(n, oom, rm), oom, rm);
                         V3D_FiniteGeometry lriil = lr.getIntersection(il, oom, rm);
                         if (lriil == null) {
                             // For the points on the right side (if any)
                             V3D_Point pilp = il.getP();
-                            V3D_Point pilq = il.getQ(oom, rm);
+                            V3D_Point pilq = il.getQ();
                             if (lq.isOnSameSide(pilp, pilq, oom, rm)) {
                                 if (lqiilp.getDistanceSquared(pilp, oom, rm).compareTo(
                                         lqiilp.getDistanceSquared(pilq, oom, rm)) == -1) {
@@ -1119,7 +1119,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                                     return new V3D_LineSegment(lqiilp, pilp, oom, rm);
                                 }
                             } else {
-                                if (lq.isOnSameSide(pilp, t.p.getP(), oom, rm)) {
+                                if (lq.isOnSameSide(pilp, t.getP(), oom, rm)) {
                                     return new V3D_LineSegment(lqiilp, pilp, oom, rm);
                                 } else {
                                     return new V3D_LineSegment(lqiilp, pilq, oom, rm);
@@ -1154,13 +1154,13 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 //                 * intersections are needed to derive the final shape. Otherwise
 //                 * return it.
 //                 */
-//                V3D_Point tp = t.p.getP();
-//                V3D_Point tq = t.p.getQ();
-//                V3D_Point tr = t.p.getR();
-//                V3D_Point itp = it.p.getP();
-//                V3D_Point itq = it.p.getQ();
-//                V3D_Point itr = it.p.getR();
-//                V3D_Vector itn = it.p.getN(oom);
+//                V3D_Point tp = t.pl.getP();
+//                V3D_Point tq = t.pl.getQ();
+//                V3D_Point tr = t.pl.getR();
+//                V3D_Point itp = it.pl.getP();
+//                V3D_Point itq = it.pl.getQ();
+//                V3D_Point itr = it.pl.getR();
+//                V3D_Vector itn = it.pl.getN(oom);
 //                V3D_Point itpp = new V3D_Point(e, itp.offset.add(itn, oom), itp.rel);
 //                V3D_Plane itppl = new V3D_Plane(itp, itq, itpp);
 //                V3D_Point itqp = new V3D_Point(e, itq.offset.add(itn, oom), itq.rel);
@@ -1192,13 +1192,13 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 //                                                if (itqpl.isOnSameSide(tr, itp, oom)) {
 //                                                    return t;
 //                                                } else {
-//                                                    V3D_LineSegment ititpq = (V3D_LineSegment) it.getIntersection(t.p.getPQ(), oom);
-//                                                    return V3D_Triangle.getGeometry(ititpq, t.p.getQR());
+//                                                    V3D_LineSegment ititpq = (V3D_LineSegment) it.getIntersection(t.pl.getPQ(), oom);
+//                                                    return V3D_Triangle.getGeometry(ititpq, t.pl.getQR());
 //                                                }
 //                                            } else {
 //                                                if (itqpl.isOnSameSide(tr, itp, oom)) {
-////                                                    V3D_LineSegment ititpq = (V3D_LineSegment) it.getIntersection(t.p.getPQ(), oom);
-////                                                    return V3D_Triangle.getGeometry(ititpq, t.p.getQR());
+////                                                    V3D_LineSegment ititpq = (V3D_LineSegment) it.getIntersection(t.pl.getPQ(), oom);
+////                                                    return V3D_Triangle.getGeometry(ititpq, t.pl.getQR());
 //                                                    //?
 //                                                } else {
 //                                                    //?
@@ -1227,13 +1227,13 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 //                                                if (itqpl.isOnSameSide(tr, itp, oom)) {
 //                                                    return t;
 //                                                } else {
-//                                                    V3D_LineSegment ititpq = (V3D_LineSegment) it.getIntersection(t.p.getPQ(), oom);
-//                                                    return V3D_Triangle.getGeometry(ititpq, t.p.getQR());
+//                                                    V3D_LineSegment ititpq = (V3D_LineSegment) it.getIntersection(t.pl.getPQ(), oom);
+//                                                    return V3D_Triangle.getGeometry(ititpq, t.pl.getQR());
 //                                                }
 //                                            } else {
 //                                                if (itqpl.isOnSameSide(tr, itp, oom)) {
-////                                                    V3D_LineSegment ititpq = (V3D_LineSegment) it.getIntersection(t.p.getPQ(), oom);
-////                                                    return V3D_Triangle.getGeometry(ititpq, t.p.getQR());
+////                                                    V3D_LineSegment ititpq = (V3D_LineSegment) it.getIntersection(t.pl.getPQ(), oom);
+////                                                    return V3D_Triangle.getGeometry(ititpq, t.pl.getQR());
 //                                                    //?
 //                                                } else {
 //                                                    //?
@@ -1278,7 +1278,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     //@Override
     public V3D_FiniteGeometry getIntersection(V3D_Rectangle r, int oom, RoundingMode rm) {
         V3D_Triangle r_pqr = r.getPQR();
-        V3D_Triangle r_rsp = r.getRSP();
+        V3D_Triangle r_rsp = r.getRSP(oom, rm);
         V3D_FiniteGeometry i_pqr = getIntersection(r_pqr, oom, rm);
         V3D_FiniteGeometry i_rsp = getIntersection(r_rsp, oom, rm);
         /**
@@ -1365,10 +1365,10 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
             return Math_BigRational.ZERO;
         } else {
             return Math_BigRational.min(
-                    getPqr().getDistanceSquared(pt, oom, rm),
-                    getPsq().getDistanceSquared(pt, oom, rm),
-                    getQsr().getDistanceSquared(pt, oom, rm),
-                    getSpr().getDistanceSquared(pt, oom, rm));
+                    getPqr(oom, rm).getDistanceSquared(pt, oom, rm),
+                    getPsq(oom, rm).getDistanceSquared(pt, oom, rm),
+                    getQsr(oom, rm).getDistanceSquared(pt, oom, rm),
+                    getSpr(oom, rm).getDistanceSquared(pt, oom, rm));
         }
     }
 
@@ -1400,10 +1400,10 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
             return Math_BigRational.ZERO;
         } else {
             return Math_BigRational.min(
-                    getPqr().getDistanceSquared(l, oom, rm),
-                    getPsq().getDistanceSquared(l, oom, rm),
-                    getQsr().getDistanceSquared(l, oom, rm),
-                    getSpr().getDistanceSquared(l, oom, rm));
+                    getPqr(oom, rm).getDistanceSquared(l, oom, rm),
+                    getPsq(oom, rm).getDistanceSquared(l, oom, rm),
+                    getQsr(oom, rm).getDistanceSquared(l, oom, rm),
+                    getSpr(oom, rm).getDistanceSquared(l, oom, rm));
         }
     }
 
@@ -1421,25 +1421,21 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+    public V3D_Tetrahedron rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
             int oom, RoundingMode rm) {
-        p = p.rotate(axisOfRotation, theta, e.bI, oom, rm);
-        q = q.rotate(axisOfRotation, theta, e.bI, oom, rm);
-        r = r.rotate(axisOfRotation, theta, e.bI, oom, rm);
-        s = s.rotate(axisOfRotation, theta, e.bI, oom, rm);
-        pqr = null;
-        psq = null;
-        spr = null;
-        qsr = null;
-        en = null;
+        return new V3D_Tetrahedron(e, offset,
+        p.rotate(axisOfRotation, theta, e.bd, oom, rm),
+        q.rotate(axisOfRotation, theta, e.bd, oom, rm),
+        r.rotate(axisOfRotation, theta, e.bd, oom, rm),
+        s.rotate(axisOfRotation, theta, e.bd, oom, rm));
     }
 
     @Override
     public boolean isIntersectedBy(V3D_Plane pl, int oom, RoundingMode rm) {
-        if (getPqr().isIntersectedBy(pl, oom, rm)) {
+        if (getPqr(oom, rm).isIntersectedBy(pl, oom, rm)) {
             return true;
         } else {
-            return getPsq().isIntersectedBy(pl, oom, rm);
+            return getPsq(oom, rm).isIntersectedBy(pl, oom, rm);
         }
     }
 
@@ -1452,22 +1448,22 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-        if (isIntersectedBy(t.p, oom, rm)) {
+        if (isIntersectedBy(t.pl, oom, rm)) {
             // If any of the points of the triangle are in this return true.
-            if (isIntersectedBy(t.p.getP(), oom, rm) || isIntersectedBy(t.p.getQ(), oom, rm)
-                    || isIntersectedBy(t.p.getR(), oom, rm)) {
+            if (isIntersectedBy(t.getP(), oom, rm) || isIntersectedBy(t.getQ(), oom, rm)
+                    || isIntersectedBy(t.getR(), oom, rm)) {
                 return true;
             } else {
                 /**
                  * If any faces are intersected by the triangle return true.
                  */
-                if (getPqr().isIntersectedBy(t, oom, rm)) {
+                if (getPqr(oom, rm).isIntersectedBy(t, oom, rm)) {
                     return true;
-                } else if (getPsq().isIntersectedBy(t, oom, rm)) {
+                } else if (getPsq(oom, rm).isIntersectedBy(t, oom, rm)) {
                     return true;
-                } else if (getQsr().isIntersectedBy(t, oom, rm)) {
+                } else if (getQsr(oom, rm).isIntersectedBy(t, oom, rm)) {
                     return true;
-                } else if (getSpr().isIntersectedBy(t, oom, rm)) {
+                } else if (getSpr(oom, rm).isIntersectedBy(t, oom, rm)) {
                     return true;
                 } else {
                     /**
@@ -1479,7 +1475,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                      * currently the following does not work when all the
                      * intersected points are not aligned with t.
                      */
-                    V3D_FiniteGeometry g = getIntersection(t.p, oom, rm);
+                    V3D_FiniteGeometry g = getIntersection(t.pl, oom, rm);
                     if (g == null) {
                         // Wierd!
                         return false;
@@ -1491,7 +1487,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                             if (t.isAligned(gl.getP(), oom, rm)) {
                                 return true;
                             }
-                            if (t.isAligned(gl.getQ(oom, rm), oom, rm)) {
+                            if (t.isAligned(gl.getQ(), oom, rm)) {
                                 return true;
                             }
                             return t.isIntersectedBy(gl, oom, rm);
@@ -1547,29 +1543,29 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
             }
             // 2. Check faces
             // If this intersects any face of t return true.
-            if (isIntersectedBy(t.getPqr(), oom, rm)) {
+            if (isIntersectedBy(t.getPqr(oom, rm), oom, rm)) {
                 return true;
             }
-            if (isIntersectedBy(t.getPsq(), oom, rm)) {
+            if (isIntersectedBy(t.getPsq(oom, rm), oom, rm)) {
                 return true;
             }
-            if (isIntersectedBy(t.getQsr(), oom, rm)) {
+            if (isIntersectedBy(t.getQsr(oom, rm), oom, rm)) {
                 return true;
             }
-            if (isIntersectedBy(t.getSpr(), oom, rm)) {
+            if (isIntersectedBy(t.getSpr(oom, rm), oom, rm)) {
                 return true;
             }
             // If t intersects any face of this return true.
-            if (t.isIntersectedBy(getPqr(), oom, rm)) {
+            if (t.isIntersectedBy(getPqr(oom, rm), oom, rm)) {
                 return true;
             }
-            if (t.isIntersectedBy(getPsq(), oom, rm)) {
+            if (t.isIntersectedBy(getPsq(oom, rm), oom, rm)) {
                 return true;
             }
-            if (t.isIntersectedBy(getQsr(), oom, rm)) {
+            if (t.isIntersectedBy(getQsr(oom, rm), oom, rm)) {
                 return true;
             }
-            if (t.isIntersectedBy(getSpr(), oom, rm)) {
+            if (t.isIntersectedBy(getSpr(oom, rm), oom, rm)) {
                 return true;
             }
         }
@@ -1578,21 +1574,21 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry pqri = getIntersection(t.getPqr(), oom, rm);
+        V3D_FiniteGeometry pqri = getIntersection(t.getPqr(oom, rm), oom, rm);
         if (pqri == null) {
-            V3D_FiniteGeometry psqi = getIntersection(t.getPsq(), oom, rm);
+            V3D_FiniteGeometry psqi = getIntersection(t.getPsq(oom, rm), oom, rm);
             if (psqi == null) {
-                V3D_FiniteGeometry qsri = getIntersection(t.getQsr(), oom, rm);
+                V3D_FiniteGeometry qsri = getIntersection(t.getQsr(oom, rm), oom, rm);
                 if (qsri == null) {
-                    V3D_FiniteGeometry spri = getIntersection(t.getSpr(), oom, rm);
+                    V3D_FiniteGeometry spri = getIntersection(t.getSpr(oom, rm), oom, rm);
                     if (spri == null) {
-                        V3D_FiniteGeometry tpqri = t.getIntersection(getPqr(), oom, rm);
+                        V3D_FiniteGeometry tpqri = t.getIntersection(getPqr(oom, rm), oom, rm);
                         if (tpqri == null) {
-                            V3D_FiniteGeometry tpsqi = t.getIntersection(getPsq(), oom, rm);
+                            V3D_FiniteGeometry tpsqi = t.getIntersection(getPsq(oom, rm), oom, rm);
                             if (tpsqi == null) {
-                                V3D_FiniteGeometry tqsri = t.getIntersection(getQsr(), oom, rm);
+                                V3D_FiniteGeometry tqsri = t.getIntersection(getQsr(oom, rm), oom, rm);
                                 if (tqsri == null) {
-                                    V3D_FiniteGeometry tspri = t.getIntersection(getSpr(), oom, rm);
+                                    V3D_FiniteGeometry tspri = t.getIntersection(getSpr(oom, rm), oom, rm);
                                     if (tspri == null) {
                                         if (isIntersectedBy(t.getP(), oom, rm)
                                                 && isIntersectedBy(t.getQ(), oom, rm)
@@ -1655,10 +1651,10 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
             return Math_BigRational.ZERO;
         } else {
             return Math_BigRational.min(
-                    getPqr().getDistanceSquared(l, oom, rm),
-                    getPsq().getDistanceSquared(l, oom, rm),
-                    getQsr().getDistanceSquared(l, oom, rm),
-                    getSpr().getDistanceSquared(l, oom, rm));
+                    getPqr(oom, rm).getDistanceSquared(l, oom, rm),
+                    getPsq(oom, rm).getDistanceSquared(l, oom, rm),
+                    getQsr(oom, rm).getDistanceSquared(l, oom, rm),
+                    getSpr(oom, rm).getDistanceSquared(l, oom, rm));
         }
     }
 
@@ -1674,10 +1670,10 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
             return Math_BigRational.ZERO;
         } else {
             return Math_BigRational.min(
-                    getPqr().getDistanceSquared(p, oom, rm),
-                    getPsq().getDistanceSquared(p, oom, rm),
-                    getQsr().getDistanceSquared(p, oom, rm),
-                    getSpr().getDistanceSquared(p, oom, rm));
+                    getPqr(oom, rm).getDistanceSquared(p, oom, rm),
+                    getPsq(oom, rm).getDistanceSquared(p, oom, rm),
+                    getQsr(oom, rm).getDistanceSquared(p, oom, rm),
+                    getSpr(oom, rm).getDistanceSquared(p, oom, rm));
         }
     }
 
@@ -1693,10 +1689,10 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
             return Math_BigRational.ZERO;
         } else {
             return Math_BigRational.min(
-                    getPqr().getDistanceSquared(t, oom, rm),
-                    getPsq().getDistanceSquared(t, oom, rm),
-                    getQsr().getDistanceSquared(t, oom, rm),
-                    getSpr().getDistanceSquared(t, oom, rm));
+                    getPqr(oom, rm).getDistanceSquared(t, oom, rm),
+                    getPsq(oom, rm).getDistanceSquared(t, oom, rm),
+                    getQsr(oom, rm).getDistanceSquared(t, oom, rm),
+                    getSpr(oom, rm).getDistanceSquared(t, oom, rm));
         }
     }
 
@@ -1712,10 +1708,10 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
             return Math_BigRational.ZERO;
         } else {
             return Math_BigRational.min(
-                    getPqr().getDistanceSquared(t, oom, rm),
-                    getPsq().getDistanceSquared(t, oom, rm),
-                    getQsr().getDistanceSquared(t, oom, rm),
-                    getSpr().getDistanceSquared(t, oom, rm));
+                    getPqr(oom, rm).getDistanceSquared(t, oom, rm),
+                    getPsq(oom, rm).getDistanceSquared(t, oom, rm),
+                    getQsr(oom, rm).getDistanceSquared(t, oom, rm),
+                    getSpr(oom, rm).getDistanceSquared(t, oom, rm));
         }
     }
 }

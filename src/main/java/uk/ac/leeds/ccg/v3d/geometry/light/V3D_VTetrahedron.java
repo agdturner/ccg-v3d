@@ -147,11 +147,11 @@ public class V3D_VTetrahedron extends V3D_VGeometry {
     }
 
     @Override
-    public void apply(V3D_V v) {
-        pqr.apply(v);
-        qsr.apply(v);
-        spr.apply(v);
-        psq.apply(v);
+    public void translate(V3D_V v) {
+        pqr.translate(v);
+        qsr.translate(v);
+        spr.translate(v);
+        psq.translate(v);
     }
 
 //    @Override

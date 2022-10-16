@@ -225,21 +225,10 @@ public class V3D_V implements Serializable {
      *
      * @param v The coordinate to apply.
      */
-    public void apply(V3D_V v) {
+    public void translate(V3D_V v) {
         x = x.add(v.x);
         y = y.add(v.y);
         z = z.add(v.z);
-    }
-
-    /**
-     * Subtract s from this.
-     *
-     * @param s The coordinate to apply.
-     */
-    public void subtract(V3D_V s) {
-        x = x.subtract(s.x);
-        y = y.subtract(s.y);
-        z = z.subtract(s.z);
     }
 
     /**
@@ -257,10 +246,9 @@ public class V3D_V implements Serializable {
      * resulting vector is in the direction given by the right hand rule.
      *
      * @param v V3D_V
-     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The CrossProduct.
      */
-    public V3D_V getCrossProduct(V3D_V v, int oom) {
+    public V3D_V getCrossProduct(V3D_V v) {
         return new V3D_V(
                 y.multiply(v.z).subtract(z.multiply(v.y)),
                 z.multiply(v.x).subtract(x.multiply(v.z)),

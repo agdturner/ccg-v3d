@@ -63,7 +63,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
         for (int i = 0; i < nl; i++) {
             V3D_LineSegment l = lineSegments.get(i);
             r[i] = l.getP();
-            r[i + nl] = l.getQ(oom, rm);
+            r[i + nl] = l.getQ();
         }
         return r;
     }
@@ -190,7 +190,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
          * }
          */
         V3D_Point l1p = l1.getP();
-        V3D_Point l1q = l1.getQ(oom, rm);
+        V3D_Point l1q = l1.getQ();
         if (l2.isIntersectedBy(l1p, oom, rm)) {
             // Cases 1, 2, 5, 6, 14, 16
             if (l2.isIntersectedBy(l1q, oom, rm)) {
@@ -219,19 +219,19 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                 // Cases 4, 8, 9, 10, 11
                 if (l1.isIntersectedBy(l2p, oom, rm)) {
                     // Cases 4, 11, 13
-                    if (l1.isIntersectedBy(l2.getQ(oom, rm), oom, rm)) {
+                    if (l1.isIntersectedBy(l2.getQ(), oom, rm)) {
                         // Cases 11
                         return l2;
                     } else {
                         // Cases 4, 13
-                        return getGeometry(l1p, l2.getQ(oom, rm), oom, rm);
+                        return getGeometry(l1p, l2.getQ(), oom, rm);
                     }
                 } else {
                     // Cases 8, 9, 10
-                    V3D_Point tq = l2.getQ(oom, rm);
+                    V3D_Point tq = l2.getQ();
                     if (l1.isIntersectedBy(tq, oom, rm)) {
                         // Cases 8, 9
-                        return getGeometry(l2.getQ(oom, rm), l1q, oom, rm);
+                        return getGeometry(l2.getQ(), l1q, oom, rm);
                     } else {
                         // Cases 10                      
                         return l1;
@@ -242,7 +242,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                 V3D_Point tp = l2.getP();
                 if (l1.isIntersectedBy(tp, oom, rm)) {
                     // Cases 3, 12, 15
-                    V3D_Point tq = l2.getQ(oom, rm);
+                    V3D_Point tq = l2.getQ();
                     if (l1.isIntersectedBy(tq, oom, rm)) {
                         // Cases 3, 15
                         //return l2;
@@ -498,13 +498,13 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
             if (l0.isIntersectedBy(l1, oom, rm)) {
                 V3D_Point l0p = l0.getP();
                 if (l0p.isIntersectedBy(l1, oom, rm)) {
-                    V3D_Point l0q = l0.getQ(oom, rm);
+                    V3D_Point l0q = l0.getQ();
                     if (l0q.isIntersectedBy(l1, oom, rm)) {
                         // l0 is completely overlapped by l1
                         removeIndexes.add(i);
                     } else {
                         V3D_Point l1p = l1.getP();
-                        V3D_Point l1q = l1.getQ(oom, rm);
+                        V3D_Point l1q = l1.getQ();
                         if (l1p.isIntersectedBy(l0, oom, rm)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
@@ -516,10 +516,10 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                         }
                     }
                 } else {
-                    V3D_Point l0q = l0.getQ(oom, rm);
+                    V3D_Point l0q = l0.getQ();
                     if (l0q.isIntersectedBy(l1, oom, rm)) {
                         V3D_Point l1p = l1.getP();
-                        V3D_Point l1q = l1.getQ(oom, rm);
+                        V3D_Point l1q = l1.getQ();
                         if (l1.getP().isIntersectedBy(l0, oom, rm)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
@@ -592,8 +592,12 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public V3D_LineSegmentsCollinear rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
+        V3D_LineSegment[] rls = new V3D_LineSegment[lineSegments.size()];
+        for (int i = 0; i < lineSegments.size(); i ++) {
+            rls[0] = lineSegments.get(i).rotate(axisOfRotation, theta, oom, rm);
+        }
+        return new V3D_LineSegmentsCollinear(rls);
     }
 
     @Override

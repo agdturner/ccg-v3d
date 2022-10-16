@@ -55,6 +55,11 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry
         super(e, offset);
     }
     
+    /**
+     * @return A copy of the points of the geometry.
+     */
+    public abstract V3D_Point[] getPoints(int oom, RoundingMode rm);
+    
     public static V3D_Point[] getPoints(int oom, RoundingMode rm, 
             V3D_FiniteGeometry... gs) {
         ArrayList<V3D_Point> list = new ArrayList<>();

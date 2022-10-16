@@ -19,8 +19,7 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import java.io.Serializable;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.Objects;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.number.Math_Quaternion_BigRational;
@@ -312,7 +311,7 @@ public class V3D_Vector implements Serializable {
      */
     public String toStringSimple(String pad) {
         return pad + this.getClass().getSimpleName()
-                + "(" + toStringFieldsSimple() + ")";
+                + "(" + toStringFieldsSimple("") + ")";
     }
 
     /**
@@ -329,8 +328,8 @@ public class V3D_Vector implements Serializable {
      * @param pad A padding of spaces.
      * @return A description of the fields.
      */
-    protected String toStringFieldsSimple() {
-        return "dx=" + dx.toStringSimple()
+    protected String toStringFieldsSimple(String pad) {
+        return pad + "dx=" + dx.toStringSimple()
                 + ", dy=" + dy.toStringSimple()
                 + ", dz=" + dz.toStringSimple();
     }
@@ -354,15 +353,6 @@ public class V3D_Vector implements Serializable {
      */
     public boolean isReverse(V3D_Vector v) {
         return equals(v.reverse());
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 23 * hash + Objects.hashCode(this.dx);
-        hash = 23 * hash + Objects.hashCode(this.dy);
-        hash = 23 * hash + Objects.hashCode(this.dz);
-        return hash;
     }
 
     /**
@@ -623,7 +613,7 @@ public class V3D_Vector implements Serializable {
         }
         oom -= 6;
         return this.multiply(this.getDotProduct(v, oom, rm), oom, rm).equals(
-        v.multiply(this.getDotProduct(this, oom, rm), oom, rm));
+                v.multiply(this.getDotProduct(this, oom, rm), oom, rm));
 //        if (dx.isZero()) {
 //            if (v.dx.isZero()) {
 //                if (dy.isZero()) {
@@ -747,7 +737,7 @@ public class V3D_Vector implements Serializable {
         Math_BigRational dp = getDotProduct(v, oom, rm);
         Math_BigRational m2 = getMagnitude(oom, rm);
         Math_BigRational vm2 = v.getMagnitude(oom, rm);
-        MathContext mc = new MathContext(-oom); // This is almost certainly wrong and needs to be checked!
+        MathContext mc = new MathContext(-oom + 1); // This needs checking!
         return Math_BigRational.valueOf(BigDecimalMath.acos(dp.divide(m2.multiply(vm2)).toBigDecimal(mc), mc));
         //return dp.divide(m2.multiply(vm2)).arccos(oom, rm);
     }
@@ -767,29 +757,41 @@ public class V3D_Vector implements Serializable {
      * @return The vector which is {@code #this} rotated using the parameters.
      */
     public V3D_Vector rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
-            Math_BigInteger bI, int oom, RoundingMode rm) {
-        int oomn2 = oom - 6;
-        Math_BigRational adx = axisOfRotation.getDX(oomn2, rm);
-        Math_BigRational ady = axisOfRotation.getDY(oomn2, rm);
-        Math_BigRational adz = axisOfRotation.getDZ(oomn2, rm);
-        Math_BigRational thetaDiv2 = theta.divide(2);
-        Math_BigRational sinThetaDiv2 = thetaDiv2.sin(bI, oomn2, rm);
-        Math_BigRational w = thetaDiv2.cos(bI, oomn2, rm);
-        Math_BigRational x = sinThetaDiv2.multiply(adx);
-        Math_BigRational y = sinThetaDiv2.multiply(ady);
-        Math_BigRational z = sinThetaDiv2.multiply(adz);
-        Math_Quaternion_BigRational r = new Math_Quaternion_BigRational(
-                w, x, y, z);
-        // R'=rR
-        Math_Quaternion_BigRational rR = new Math_Quaternion_BigRational(
-                w, x.negate(), y.negate(), z.negate());
-        Math_Quaternion_BigRational p = new Math_Quaternion_BigRational(
-                Math_BigRational.ZERO, this.getDX(oomn2, rm),
-                this.getDY(oomn2, rm), this.getDZ(oomn2, rm));
-        // P'=pP
-        Math_Quaternion_BigRational pP = r.multiply(p).multiply(rR);
-        return new V3D_Vector(pP.x.round(oom, rm), pP.y.round(oom, rm),
-                pP.z.round(oom, rm));
+            Math_BigDecimal bd, int oom, RoundingMode rm) {
+        Math_BigRational twoPi = Math_BigRational.valueOf(bd.getPi(oom, rm)).multiply(2);
+        // Change a negative angle into a positive one.
+        while (theta.compareTo(Math_BigRational.ZERO) == -1) {
+            theta = theta.add(twoPi);
+        }
+        // Only rotate less than 2Pi radians.
+        while (theta.compareTo(twoPi) == 1) {
+            theta = theta.subtract(twoPi);
+        }
+        if (theta.compareTo(Math_BigRational.ZERO) == 1) {
+            int oomn2 = oom - 6;
+            Math_BigRational adx = axisOfRotation.getDX(oomn2, rm);
+            Math_BigRational ady = axisOfRotation.getDY(oomn2, rm);
+            Math_BigRational adz = axisOfRotation.getDZ(oomn2, rm);
+            Math_BigRational thetaDiv2 = theta.divide(2);
+            Math_BigRational sinThetaDiv2 = thetaDiv2.sin(bd.getBi(), oomn2, rm);
+            Math_BigRational w = thetaDiv2.cos(bd.getBi(), oomn2, rm);
+            Math_BigRational x = sinThetaDiv2.multiply(adx);
+            Math_BigRational y = sinThetaDiv2.multiply(ady);
+            Math_BigRational z = sinThetaDiv2.multiply(adz);
+            Math_Quaternion_BigRational r = new Math_Quaternion_BigRational(
+                    w, x, y, z);
+            // R'=rR
+            Math_Quaternion_BigRational rR = new Math_Quaternion_BigRational(
+                    w, x.negate(), y.negate(), z.negate());
+            Math_Quaternion_BigRational p = new Math_Quaternion_BigRational(
+                    Math_BigRational.ZERO, this.getDX(oomn2, rm),
+                    this.getDY(oomn2, rm), this.getDZ(oomn2, rm));
+            // P'=pP
+            Math_Quaternion_BigRational pP = r.multiply(p).multiply(rR);
+            return new V3D_Vector(pP.x.round(oom, rm), pP.y.round(oom, rm),
+                    pP.z.round(oom, rm));
+        }
+        return new V3D_Vector(this);
     }
 
     /**

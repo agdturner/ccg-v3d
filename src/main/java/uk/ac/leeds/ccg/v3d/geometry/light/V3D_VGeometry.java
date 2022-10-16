@@ -72,6 +72,6 @@ public abstract class V3D_VGeometry implements Serializable {
     /**
      * @param v The vector to apply.
      */
-    public abstract void apply(V3D_V v);
+    public abstract void translate(V3D_V v);
     
 }

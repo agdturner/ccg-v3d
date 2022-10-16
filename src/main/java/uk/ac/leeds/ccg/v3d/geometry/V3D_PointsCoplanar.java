@@ -105,11 +105,8 @@ public class V3D_PointsCoplanar extends V3D_FiniteGeometry implements
     }
 
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
-            int oom, RoundingMode rm) {
-        for (V3D_Vector rel : rels) {
-            rel.rotate(axisOfRotation, theta, e.bI, oom, rm);
-        }
+    public V3D_PointsCoplanar rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

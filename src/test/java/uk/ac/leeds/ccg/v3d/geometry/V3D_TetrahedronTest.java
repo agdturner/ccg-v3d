@@ -263,7 +263,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1, oom, rm);
         V3D_Triangle expResult = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0, oom, rm);
-        V3D_Triangle result = instance.getPqr();
+        V3D_Triangle result = instance.getPqr(oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
 
@@ -278,7 +278,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1, oom, rm);
         V3D_Triangle expResult = new V3D_Triangle(pP1P0P0, pP0P1P0, pP0P1P1, oom, rm);
-        V3D_Triangle result = instance.getQsr();
+        V3D_Triangle result = instance.getQsr(oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
 
@@ -293,7 +293,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1, oom, rm);
         V3D_Triangle expResult = new V3D_Triangle(pP0P0P0, pP0P1P0, pP0P1P1, oom, rm);
-        V3D_Triangle result = instance.getSpr();
+        V3D_Triangle result = instance.getSpr(oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
 
@@ -308,7 +308,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1, oom, rm);
         V3D_Triangle expResult = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P1, oom, rm);
-        V3D_Triangle result = instance.getPsq();
+        V3D_Triangle result = instance.getPsq(oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
 
@@ -476,8 +476,8 @@ public class V3D_TetrahedronTest extends V3D_Test {
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 2
         instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
-        l = new V3D_Line(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(oom, rm), oom, rm);
-        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(oom, rm), oom, rm);
+        l = new V3D_Line(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2, oom, rm).getCentroid(oom, rm), oom, rm);
+        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2, oom, rm).getCentroid(oom, rm), oom, rm);
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
     }
@@ -502,8 +502,8 @@ public class V3D_TetrahedronTest extends V3D_Test {
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 2
         instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
-        l = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(oom, rm), oom, rm);
-        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(oom, rm), oom, rm);
+        l = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2, oom, rm).getCentroid(oom, rm), oom, rm);
+        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2, oom, rm).getCentroid(oom, rm), oom, rm);
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
 //        // Test 3
@@ -511,7 +511,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
 //        l = new V3D_LineSegment(e, P0P0P0, N2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(oom, rm).rel.multiply(P2, oom, rm).add(P2P2P0, oom, rm));
 //        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(oom, rm), oom, rm);
 //        result = instance.getIntersection(l, oom, rm);
-//        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
+//        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreOrientation((V3D_LineSegment) result, oom, rm));
     }
 
     /**

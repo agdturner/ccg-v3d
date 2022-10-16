@@ -55,14 +55,9 @@ public class V3D_Environment implements Serializable {
     public static final Math_BigRational N1 = Math_BigRational.ONE.negate();
 
     /**
-     * An instance that helps with calculations involving Taylor series.
+     * An instance that helps with calculations involving PI and Taylor series.
      */
-    public final Math_BigInteger bI;
-    
-    /**
-     * An instance that helps with calculations involving PI.
-     */
-    public final Math_BigDecimal bD;
+    public final Math_BigDecimal bd;
     
     /**
      * The default Order of Magnitude.
@@ -78,8 +73,7 @@ public class V3D_Environment implements Serializable {
      * Creates a new instance.
      */
     public V3D_Environment(){
-        bI = new Math_BigInteger();
-        bD = new Math_BigDecimal();
+        bd = new Math_BigDecimal();
     }
     
     /**
@@ -89,9 +83,8 @@ public class V3D_Environment implements Serializable {
      * @param oom What {@link #oom} is set to.
      * @param rm What {@link #rm} is set to.
      */
-    public V3D_Environment(Math_BigInteger bI, Math_BigDecimal bD) {
-        this.bI = bI;
-        this.bD = bD;
+    public V3D_Environment(Math_BigInteger bI, Math_BigDecimal bd) {
+        this.bd = bd;
     }
     
 }

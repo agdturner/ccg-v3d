@@ -255,8 +255,8 @@ public class V3D_VPoint extends V3D_VGeometry {
     }
 
     @Override
-    public void apply(V3D_V v) {
-        rel.apply(v);
+    public void translate(V3D_V v) {
+        rel.translate(v);
     }
 
 }

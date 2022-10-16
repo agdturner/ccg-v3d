@@ -19,11 +19,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.Objects;
+import java.util.ArrayList;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VPoint;
 
 /**
  * An envelope contains all the extreme values with respect to the X, Y and Z
@@ -53,36 +52,36 @@ import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VPoint;
  *                                    |
  *                                                  a
  *                                    t
- *                      lta_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ rta
+ *                      lta_ _ _ _ _ _ _ _ _ta_ _ _ _ _ _ _ _ rta
  *                        /|                                /|
  *                       / |                               / |
  *                      /  |                              /  |
  *                     /   |                             /   |
- *                    /    |                            /    |
+ *                  lt/    |                            /rt  |
  *                   /     |                           /     |
  *                  /      |                          /      |
- *                 /       |                         /       |
+ *                 /    la |                         /       | ra
  *                /        |                        /        |
  *               /         |                       /         |
- *          ltf /_ _ _ _ _ |_ _ _ _ _ _ _ _ _ _ _ /rtf       |
+ *          ltf /_ _ _ _ _ |_ _ _tf _ _ _ _ _ _ _ /rtf       |
  *             |           |                     |           |
  *             |           |                     |           |
  *  x - --- l  |           |                     |           |  r  --- + x
  *             |           |                     |           |
  *             |        lba|_ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _|rba
- *             |           /                     |           /
+ *             |           /                  ba |           /
  *             |          /                      |          /
- *             |         /                       |         /
+ *           lf|         /                       |rf       /
  *             |        /                        |        /
  *             |       /                         |       /
- *             |      /                          |      /
+ *             |   lb /                          |      / rb
  *             |     /                           |     /
  *             |    /                            |    /
  *             |   /                             |   /
  *             |  /                              |  /
  *             | /                               | /
  *          lbf|/_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |/rbf
- *
+ *                               bf
  *                                     b
  *                      f
  *                                     |
@@ -96,7 +95,7 @@ import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VPoint;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Envelope extends V3D_Geometry implements
+public class V3D_Envelope extends V3D_FiniteGeometry implements
         V3D_FiniteGeometryInterface, V3D_IntersectionAndDistanceCalculations {
 
     private static final long serialVersionUID = 1L;
@@ -550,7 +549,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 
     /**
      * @param p The point to test for intersection.
-     * @return {@code true} if this intersects with {@code p}
+     * @return {@code true} if this intersects with {@code pl}
      */
     @Override
     public boolean isIntersectedBy(V3D_Point p, int oom, RoundingMode rm) {
@@ -561,7 +560,7 @@ public class V3D_Envelope extends V3D_Geometry implements
      * @param x The x-coordinate of the point to test for intersection.
      * @param y The y-coordinate of the point to test for intersection.
      * @param z The z-coordinate of the point to test for intersection.
-     * @return {@code true} if this intersects with {@code p}
+     * @return {@code true} if this intersects with {@code pl}
      */
     public boolean isIntersectedBy(Math_BigRational x, Math_BigRational y,
             Math_BigRational z, int oom, RoundingMode rm) {
@@ -612,13 +611,13 @@ public class V3D_Envelope extends V3D_Geometry implements
                 }
             }
             case 1 -> {
-                return new V3D_LineSegment((LineSegment) l).getIntersection(li, oom, rm);
+                return new V3D_LineSegment((LineSegment) l, oom, rm).getIntersection(li, oom, rm);
             }
             case 2 -> {
-                return new V3D_LineSegment((LineSegment) f).getIntersection(li, oom, rm);
+                return new V3D_LineSegment((LineSegment) f, oom, rm).getIntersection(li, oom, rm);
             }
             case 3 -> {
-                return new V3D_LineSegment((LineSegment) f).getIntersection(li, oom, rm);
+                return new V3D_LineSegment((LineSegment) f, oom, rm).getIntersection(li, oom, rm);
             }
             case 4 -> {
                 return new V3D_Rectangle((Rectangle) f, oom, rm).getIntersection(li, oom, rm);
@@ -656,7 +655,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                                            oom, rm);
                                     return new V3D_LineSegment(e,
                                             ((V3D_Point) til).getVector(oom, rm),
-                                            ((V3D_Point) bil).getVector(oom, rm));
+                                            ((V3D_Point) bil).getVector(oom, rm), oom, rm);
                                 }
                             } else {
                                 if (til == null) {
@@ -736,7 +735,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                                        oom, rm);
                                 return new V3D_LineSegment(e,
                                         ((V3D_Point) lil).getVector(oom, rm),
-                                        ((V3D_Point) ril).getVector(oom, rm));
+                                        ((V3D_Point) ril).getVector(oom, rm), oom, rm);
                             }
                         } else {
                             return V3D_LineSegment.getGeometry(
@@ -768,7 +767,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                                    oom, rm);
                             return new V3D_LineSegment(e,
                                     ((V3D_Point) fil).getVector(oom, rm),
-                                    ((V3D_Point) ail).getVector(oom, rm));
+                                    ((V3D_Point) ail).getVector(oom, rm), oom, rm);
                         }
                     } else {
                         if (ail == null) {
@@ -805,13 +804,13 @@ public class V3D_Envelope extends V3D_Geometry implements
                 }
             }
             case 1 -> {
-                return new V3D_LineSegment((LineSegment) l).getIntersection(ray, oom, rm);
+                return new V3D_LineSegment((LineSegment) l, oom, rm).getIntersection(ray, oom, rm);
             }
             case 2 -> {
-                return new V3D_LineSegment((LineSegment) f).getIntersection(ray, oom, rm);
+                return new V3D_LineSegment((LineSegment) f, oom, rm).getIntersection(ray, oom, rm);
             }
             case 3 -> {
-                return new V3D_LineSegment((LineSegment) f).getIntersection(ray, oom, rm);
+                return new V3D_LineSegment((LineSegment) f, oom, rm).getIntersection(ray, oom, rm);
             }
             case 4 -> {
                 return new V3D_Rectangle((Rectangle) f, oom, rm).getIntersection(ray, oom, rm);
@@ -849,7 +848,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                                            oom, rm);
                                     return new V3D_LineSegment(e,
                                             ((V3D_Point) til).getVector(oom, rm),
-                                            ((V3D_Point) bil).getVector(oom, rm));
+                                            ((V3D_Point) bil).getVector(oom, rm), oom, rm);
                                 }
                             } else {
                                 if (til == null) {
@@ -929,7 +928,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                                        oom, rm);
                                 return new V3D_LineSegment(e,
                                         ((V3D_Point) lil).getVector(oom, rm),
-                                        ((V3D_Point) ril).getVector(oom, rm));
+                                        ((V3D_Point) ril).getVector(oom, rm), oom, rm);
                             }
                         } else {
                             return V3D_LineSegment.getGeometry(
@@ -961,7 +960,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                                    oom, rm);
                             return new V3D_LineSegment(e,
                                     ((V3D_Point) fil).getVector(oom, rm),
-                                    ((V3D_Point) ail).getVector(oom, rm));
+                                    ((V3D_Point) ail).getVector(oom, rm), oom, rm);
                         }
                     } else {
                         if (ail == null) {
@@ -987,7 +986,7 @@ public class V3D_Envelope extends V3D_Geometry implements
             RoundingMode rm) {
         // Special case where both ends of li are within Envelope
         boolean lipi = isIntersectedBy(li.getP(), oom, rm);
-        if (lipi && isIntersectedBy(li.getQ(oom, rm), oom, rm)) {
+        if (lipi && isIntersectedBy(li.getQ(), oom, rm)) {
             return li;
         }
         switch (type) {
@@ -1000,15 +999,15 @@ public class V3D_Envelope extends V3D_Geometry implements
                 }
             }
             case 1 -> {
-                return new V3D_LineSegment((LineSegment) l).getIntersection(li,
+                return new V3D_LineSegment((LineSegment) l, oom, rm).getIntersection(li,
                         oom, rm);
             }
             case 2 -> {
-                return new V3D_LineSegment((LineSegment) f).getIntersection(li,
+                return new V3D_LineSegment((LineSegment) f, oom, rm).getIntersection(li,
                         oom, rm);
             }
             case 3 -> {
-                return new V3D_LineSegment((LineSegment) f).getIntersection(li,
+                return new V3D_LineSegment((LineSegment) f, oom, rm).getIntersection(li,
                         oom, rm);
             }
             case 4 -> {
@@ -1055,7 +1054,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                                            oom, rm);
                                     return new V3D_LineSegment(e,
                                             ((V3D_Point) til).getVector(oom, rm),
-                                            ((V3D_Point) bil).getVector(oom, rm));
+                                            ((V3D_Point) bil).getVector(oom, rm), oom, rm);
                                 }
                             } else {
                                 if (til == null) {
@@ -1142,7 +1141,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                                        oom, rm);
                                 return new V3D_LineSegment(e,
                                         ((V3D_Point) lil).getVector(oom, rm),
-                                        ((V3D_Point) ril).getVector(oom, rm));
+                                        ((V3D_Point) ril).getVector(oom, rm), oom, rm);
                             }
                         } else {
                             return V3D_LineSegment.getGeometry(
@@ -1176,7 +1175,7 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                                    oom, rm);
                             return new V3D_LineSegment(e,
                                     ((V3D_Point) fil).getVector(oom, rm),
-                                    ((V3D_Point) ail).getVector(oom, rm));
+                                    ((V3D_Point) ail).getVector(oom, rm), oom, rm);
                         }
                     } else {
                         if (ail == null) {
@@ -1197,7 +1196,7 @@ public class V3D_Envelope extends V3D_Geometry implements
         if (lipi) {
             return V3D_LineSegment.getGeometry(li.getP(), pi, oom, rm);
         } else {
-            return V3D_LineSegment.getGeometry(li.getQ(oom, rm), pi, oom, rm);
+            return V3D_LineSegment.getGeometry(li.getQ(), pi, oom, rm);
         }
     }
 
@@ -1373,13 +1372,13 @@ public class V3D_Envelope extends V3D_Geometry implements
                 return li.isIntersectedBy(new V3D_Point((Point) f), oom, rm);
             }
             case 1 -> {
-                return new V3D_LineSegment((LineSegment) l).isIntersectedBy(li, oom, rm);
+                return new V3D_LineSegment((LineSegment) l, oom, rm).isIntersectedBy(li, oom, rm);
             }
             case 2 -> {
-                return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li, oom, rm);
+                return new V3D_LineSegment((LineSegment) f, oom, rm).isIntersectedBy(li, oom, rm);
             }
             case 3 -> {
-                return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li, oom, rm);
+                return new V3D_LineSegment((LineSegment) f, oom, rm).isIntersectedBy(li, oom, rm);
             }
             case 4 -> {
                 return new V3D_Rectangle((Rectangle) f, oom, rm).isIntersectedBy(li, oom, rm);
@@ -1425,7 +1424,8 @@ public class V3D_Envelope extends V3D_Geometry implements
          * the plane. So, the idea is to test the vertices and if we find an
          * intersection return true.
          */
-        V3D_Vector n = p.getN(oom, rm);
+        //V3D_Vector n = pl.getN(oom, rm);
+        V3D_Vector n = p.n;
         if (type == 0) {
             return p.isIntersectedBy(new V3D_Point(ltf), oom, rm);
         }
@@ -1555,7 +1555,7 @@ public class V3D_Envelope extends V3D_Geometry implements
      *
      * @param t The triangle to be tested for intersection.
      * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} iff the geometry is intersected by {@code p}.
+     * @return {@code true} iff the geometry is intersected by {@code pl}.
      */
     @Override
     public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
@@ -1567,20 +1567,20 @@ public class V3D_Envelope extends V3D_Geometry implements
              * Test the plane for intersection. This is not needed and may not
              * be computationally advantageous!
              */
-            if (isIntersectedBy(t.p, oom, rm)) {
-                /**
-                 * Test the edges of the triangle for intersection. This is not
-                 * needed and may not be computationally advantageous!
-                 */
-                if (isIntersectedBy(t.p.getPQ(), oom, rm)) {
-                    return true;
-                }
-                if (isIntersectedBy(t.p.getQR(), oom, rm)) {
-                    return true;
-                }
-                if (isIntersectedBy(t.p.getRP(), oom, rm)) {
-                    return true;
-                }
+            if (isIntersectedBy(t.pl, oom, rm)) {
+//                /**
+//                 * Test the edges of the triangle for intersection. This is not
+//                 * needed and may not be computationally advantageous!
+//                 */
+//                if (isIntersectedBy(t.getPQ(), oom, rm)) {
+//                    return true;
+//                }
+//                if (isIntersectedBy(t.getQR(), oom, rm)) {
+//                    return true;
+//                }
+//                if (isIntersectedBy(t.getRP(), oom, rm)) {
+//                    return true;
+//                }
                 /**
                  * <table>
                  * <caption>Types</caption>
@@ -1609,36 +1609,36 @@ public class V3D_Envelope extends V3D_Geometry implements
                     case 0:
                         return true;
                     case 1:
-                        return t.isIntersectedBy(new V3D_LineSegment((LineSegment) l), oom, rm);
+                        return t.isIntersectedBy(new V3D_LineSegment((LineSegment) l, oom, rm), oom, rm);
                     case 2:
-                        return t.isIntersectedBy(new V3D_LineSegment((LineSegment) f), oom, rm);
+                        return t.isIntersectedBy(new V3D_LineSegment((LineSegment) f, oom, rm), oom, rm);
                     case 3:
-                        return t.isIntersectedBy(new V3D_LineSegment((LineSegment) f), oom, rm);
+                        return t.isIntersectedBy(new V3D_LineSegment((LineSegment) f, oom, rm), oom, rm);
                     case 5:
-                        if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) f), oom, rm)) {
+                        if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) f, oom, rm), oom, rm)) {
                             return true;
                         } else {
-                            if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) a), oom, rm)) {
+                            if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) a, oom, rm), oom, rm)) {
                                 return true;
                             } else {
-                                if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) this.t), oom, rm)) {
+                                if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) this.t, oom, rm), oom, rm)) {
                                     return true;
                                 } else {
-                                    return t.isIntersectedBy(new V3D_LineSegment((LineSegment) this.b), oom, rm);
+                                    return t.isIntersectedBy(new V3D_LineSegment((LineSegment) this.b, oom, rm), oom, rm);
                                 }
                             }
                         }
                     case 6:
-                        if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) f), oom, rm)) {
+                        if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) f, oom, rm), oom, rm)) {
                             return true;
                         } else {
-                            if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) l), oom, rm)) {
+                            if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) l, oom, rm), oom, rm)) {
                                 return true;
                             } else {
-                                if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) a), oom, rm)) {
+                                if (t.isIntersectedBy(new V3D_LineSegment((LineSegment) a, oom, rm), oom, rm)) {
                                     return true;
                                 } else {
-                                    return t.isIntersectedBy(new V3D_LineSegment((LineSegment) r), oom, rm);
+                                    return t.isIntersectedBy(new V3D_LineSegment((LineSegment) r, oom, rm), oom, rm);
                                 }
                             }
                         }
@@ -1682,16 +1682,20 @@ public class V3D_Envelope extends V3D_Geometry implements
 
     private boolean checkIntersectionWithSide(Rectangle r, V3D_Triangle t, int oom, RoundingMode rm) {
         V3D_Vector n;
-        n = new V3D_Rectangle(r, oom, rm).p.getN(oom, rm);
-        int tpnc = t.p.p.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
+        //n = new V3D_Rectangle(r, oom, rm).p.getN(oom, rm);
+        n = new V3D_Rectangle(r, oom, rm).pl.n;
+        //int tpnc = t.p.p.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
+        int tpnc = t.p.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
         if (tpnc == 0) {
             return true;
         } else if (tpnc == 1) {
-            int tqnc = t.p.q.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
+            //int tqnc = t.p.q.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
+            int tqnc = t.q.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
             if (tqnc != 1) {
                 return true;
             } else {
-                int trnc = t.p.r.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
+                //int trnc = t.p.r.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
+                int trnc = t.r.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
                 if (trnc == 0) {
                     return true;
                 } else {
@@ -1699,11 +1703,13 @@ public class V3D_Envelope extends V3D_Geometry implements
                 }
             }
         } else {
-            int tqnc = t.p.q.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
+            //int tqnc = t.p.q.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
+            int tqnc = t.q.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
             if (tqnc != -1) {
                 return true;
             } else {
-                int trnc = t.p.r.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
+                //int trnc = t.p.r.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
+                int trnc = t.r.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
                 if (trnc == 0) {
                     return true;
                 } else {
@@ -1728,13 +1734,13 @@ public class V3D_Envelope extends V3D_Geometry implements
                 return ray.isIntersectedBy(new V3D_Point((Point) f), oom, rm);
             }
             case 1 -> {
-                return new V3D_LineSegment((LineSegment) l).isIntersectedBy(ray, oom, rm);
+                return new V3D_LineSegment((LineSegment) l, oom, rm).isIntersectedBy(ray, oom, rm);
             }
             case 2 -> {
-                return new V3D_LineSegment((LineSegment) f).isIntersectedBy(ray, oom, rm);
+                return new V3D_LineSegment((LineSegment) f, oom, rm).isIntersectedBy(ray, oom, rm);
             }
             case 3 -> {
-                return new V3D_LineSegment((LineSegment) f).isIntersectedBy(ray, oom, rm);
+                return new V3D_LineSegment((LineSegment) f, oom, rm).isIntersectedBy(ray, oom, rm);
             }
             case 4 -> {
                 return new V3D_Rectangle((Rectangle) f, oom, rm).isIntersectedBy(ray, oom, rm);
@@ -1785,13 +1791,13 @@ public class V3D_Envelope extends V3D_Geometry implements
                     return li.isIntersectedBy(new V3D_Point((Point) f), oom, rm);
                 }
                 case 1 -> {
-                    return new V3D_LineSegment((LineSegment) l).isIntersectedBy(li, oom, rm);
+                    return new V3D_LineSegment((LineSegment) l, oom, rm).isIntersectedBy(li, oom, rm);
                 }
                 case 2 -> {
-                    return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li, oom, rm);
+                    return new V3D_LineSegment((LineSegment) f, oom, rm).isIntersectedBy(li, oom, rm);
                 }
                 case 3 -> {
-                    return new V3D_LineSegment((LineSegment) f).isIntersectedBy(li, oom, rm);
+                    return new V3D_LineSegment((LineSegment) f, oom, rm).isIntersectedBy(li, oom, rm);
                 }
                 case 4 -> {
                     return new V3D_Rectangle((Rectangle) f, oom, rm).isIntersectedBy(li, oom, rm);
@@ -1832,7 +1838,7 @@ public class V3D_Envelope extends V3D_Geometry implements
      * could be changed in future to provide a negative distance which would be
      * the distance inside the envelope. To calculate the distance outside the
      * envelope, there are a number of different cases. The first cases are when
-     * the closest point on the Envelope to the point {@code p} is one of the
+     * the closest point on the Envelope to the point {@code pl} is one of the
      * corners. The next cases are when it is a point on one of the edges of
      * {@link #t}, {@link #b}, {@link #l}, {@link #r}, {@link #f}. The next
      * cases are when it is a point on one of the faces of {@link #t},
@@ -1854,92 +1860,92 @@ public class V3D_Envelope extends V3D_Geometry implements
         return new Math_BigRationalSqrt(d2, oom, rm).getSqrt(oom, rm).toBigDecimal(oom, rm);
 //        // Special case where Envelope is infinitesimally small.
 //        if (l instanceof Point && t instanceof Point) {
-//            return ((Point) l).getDistance(new Point(p, oom, rm), oom);
+//            return ((Point) l).getDistance(new Point(pl, oom, rm), oom);
 //        }
-//        int xcmin = p.getX(oom).compareTo(getXMin(oom));
-//        int ycmin = p.getY(oom).compareTo(getYMin(oom));
-//        int zcmin = p.getZ(oom).compareTo(getZMin(oom));
+//        int xcmin = pl.getX(oom).compareTo(getXMin(oom));
+//        int ycmin = pl.getY(oom).compareTo(getYMin(oom));
+//        int zcmin = pl.getZ(oom).compareTo(getZMin(oom));
 //        if (xcmin == -1) {
 //            if (ycmin == -1) {
 //                if (zcmin == -1) {
 //                    // lbf
 //                    if (f instanceof Rectangle rectangle) {
-//                        return rectangle.p.getDistance(new Point(p, oom, rm), oom);
+//                        return rectangle.pl.getDistance(new Point(pl, oom, rm), oom);
 //                    } else if (f instanceof LineSegment lineSegment) {
-//                        return lineSegment.p
-//                                .getDistance(new Point(p, oom, rm), oom);
+//                        return lineSegment.pl
+//                                .getDistance(new Point(pl, oom, rm), oom);
 //                    } else {
 //                        return ((Point) f)
-//                                .getDistance(new Point(p, oom, rm), oom);
+//                                .getDistance(new Point(pl, oom, rm), oom);
 //                    }
 //                } else {
-//                    int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                    int zcmax = pl.getZ(oom).compareTo(getZMax(oom));
 //                    if (zcmax == 1) {
 //                        // bla
 //                        if (l instanceof Rectangle rectangle) {
-//                            return rectangle.p
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                            return rectangle.pl
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        } else if (l instanceof LineSegment lineSegment) {
-//                            return lineSegment.p
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                            return lineSegment.pl
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        } else {
 //                            return ((Point) l)
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        }
 //                    } else {
 //                        // lba - lbf
 //                        if (l instanceof Rectangle rectangle) {
 //                            return new Line(rectangle.b)
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        } else if (l instanceof LineSegment) {
 //                            return ((Line) l)
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        } else {
 //                            return ((Point) l)
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        }
 //                    }
 //                }
 //            } else {
-//                int ycmax = p.getY(oom).compareTo(getYMax(oom));
+//                int ycmax = pl.getY(oom).compareTo(getYMax(oom));
 //                if (ycmax == 1) {
 //                    if (zcmin == -1) {
 //                        // ltf
 //                        if (f instanceof Rectangle rectangle) {
 //                            return rectangle.q
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        } else if (f instanceof LineSegment lineSegment) {
-//                            return lineSegment.p
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                            return lineSegment.pl
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        } else {
 //                            return ((Point) f)
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        }
 //                    } else {
-//                        int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                        int zcmax = pl.getZ(oom).compareTo(getZMax(oom));
 //                        if (zcmax == 1) {
 //                            // lta
 //                            if (l instanceof Rectangle rectangle) {
 //                                return rectangle.q
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else if (l instanceof LineSegment lineSegment) {
-//                                return lineSegment.p
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                return lineSegment.pl
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else {
 //                                return ((Point) l)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            }
 //                        } else {
 //                            // lta - ltf
 //                            if (l instanceof Rectangle rectangle) {
 //                                return new Line(rectangle.t)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else if (l instanceof LineSegment) {
 //                                return ((Line) l)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else {
 //                                return ((Point) l)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            }
 //                        }
 //                    }
@@ -1948,126 +1954,126 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                        // lbf - ltf
 //                        if (l instanceof Rectangle rectangle) {
 //                            return new Line(rectangle.ri)
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        } else if (l instanceof LineSegment) {
 //                            return ((Line) l)
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        } else {
 //                            return ((Point) l)
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        }
 //                    } else {
-//                        int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                        int zcmax = pl.getZ(oom).compareTo(getZMax(oom));
 //                        if (zcmax == 1) {
 //                            // lba - lta
 //                            if (l instanceof Rectangle rectangle) {
 //                                return new Line(rectangle.l)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else if (l instanceof LineSegment) {
 //                                return ((Line) l)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else {
 //                                return ((Point) l)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            }
 //                        } else {
 //                            // lba - lta - ltf - lbf
 //                            if (l instanceof Rectangle rectangle) {
 //                                return new Plane(rectangle)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else if (l instanceof LineSegment) {
 //                                return ((Line) l)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else {
 //                                return ((Point) l)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            }
 //                        }
 //                    }
 //                }
 //            }
 //        } else {
-//            int xcmax = p.getX(oom).compareTo(getXMax(oom));
+//            int xcmax = pl.getX(oom).compareTo(getXMax(oom));
 //            if (xcmax == 1) {
 //                if (ycmin == -1) {
 //                    if (zcmin == -1) {
 //                        // rbf
 //                        if (f instanceof Rectangle rectangle) {
 //                            return rectangle.s
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        } else if (f instanceof LineSegment lineSegment) {
 //                            return lineSegment.q
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        } else {
 //                            return ((Point) f)
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        }
 //                    } else {
-//                        int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                        int zcmax = pl.getZ(oom).compareTo(getZMax(oom));
 //                        if (zcmax == 1) {
 //                            // rba
 //                            if (a instanceof Rectangle rectangle) {
-//                                return rectangle.p
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                return rectangle.pl
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else if (a instanceof LineSegment lineSegment) {
-//                                return lineSegment.p
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                return lineSegment.pl
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else {
 //                                return ((Point) a)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            }
 //                        } else {
 //                            // rbf - rba
 //                            if (r instanceof Rectangle rectangle) {
 //                                return new Line(rectangle.b)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else if (r instanceof LineSegment) {
-//                                return ((Line) r).getDistance(new Point(p, oom, rm), oom);
+//                                return ((Line) r).getDistance(new Point(pl, oom, rm), oom);
 //                            } else {
-//                                return ((Point) r).getDistance(new Point(p, oom, rm), oom);
+//                                return ((Point) r).getDistance(new Point(pl, oom, rm), oom);
 //                            }
 //                        }
 //                    }
 //                } else {
-//                    int ycmax = p.getY(oom).compareTo(getYMax(oom));
+//                    int ycmax = pl.getY(oom).compareTo(getYMax(oom));
 //                    if (ycmax == 1) {
 //                        if (zcmin == -1) {
 //                            // rtf
 //                            if (f instanceof Rectangle rectangle) {
 //                                return rectangle.r
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else if (f instanceof LineSegment lineSegment) {
 //                                return lineSegment.q
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else {
 //                                return ((Point) f)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            }
 //                        } else {
-//                            int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                            int zcmax = pl.getZ(oom).compareTo(getZMax(oom));
 //                            if (zcmax == 1) {
 //                                // rta
 //                                if (a instanceof Rectangle rectangle) {
 //                                    return rectangle.q
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else if (a instanceof LineSegment lineSegment) {
-//                                    return lineSegment.p
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                    return lineSegment.pl
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else {
 //                                    return ((Point) a)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                }
 //                            } else {
 //                                // rtf - rta
 //                                if (r instanceof Rectangle rectangle) {
 //                                    return new Line(rectangle.t)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else if (r instanceof LineSegment) {
 //                                    return ((Line) r)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else {
 //                                    return ((Point) r)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                }
 //                            }
 //                        }
@@ -2076,39 +2082,39 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                            // rbf - rtf
 //                            if (f instanceof Rectangle rectangle) {
 //                                return new Line(rectangle.ri)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else if (f instanceof LineSegment) {
 //                                return ((Line) f)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else {
 //                                return ((Point) f)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            }
 //                        } else {
-//                            int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                            int zcmax = pl.getZ(oom).compareTo(getZMax(oom));
 //                            if (zcmax == 1) {
 //                                // rba - rta
 //                                if (a instanceof Rectangle rectangle) {
 //                                    return new Line(rectangle.l)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else if (a instanceof LineSegment) {
 //                                    return ((Line) a)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else {
 //                                    return ((Point) a)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                }
 //                            } else {
 //                                // rbf - rtf - rta - rba
 //                                if (r instanceof Rectangle rectangle) {
 //                                    return new Plane(rectangle)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else if (r instanceof LineSegment) {
 //                                    return ((Line) r)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else {
 //                                    return ((Point) r)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                }
 //                            }
 //                        }
@@ -2120,82 +2126,82 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                        // lbf - rbf
 //                        if (f instanceof Rectangle rectangle) {
 //                            return new Line(rectangle.b)
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        } else if (f instanceof LineSegment) {
 //                            return ((Line) f)
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        } else {
 //                            return ((Point) f)
-//                                    .getDistance(new Point(p, oom, rm), oom);
+//                                    .getDistance(new Point(pl, oom, rm), oom);
 //                        }
 //                    } else {
-//                        int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                        int zcmax = pl.getZ(oom).compareTo(getZMax(oom));
 //                        if (zcmax == 1) {
 //                            // rba - lba
 //                            if (a instanceof Rectangle rectangle) {
 //                                return new Line(rectangle.b)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else if (a instanceof LineSegment) {
 //                                return ((Line) a)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else {
 //                                return ((Point) a)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            }
 //                        } else {
 //                            // lba - lbf - rbf - rba
 //                            if (b instanceof Rectangle rectangle) {
 //                                return new Plane(rectangle)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else if (b instanceof LineSegment) {
 //                                return ((Line) b)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else {
 //                                return ((Point) b)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            }
 //                        }
 //                    }
 //                } else {
-//                    int ycmax = p.getY(oom).compareTo(getYMax(oom));
+//                    int ycmax = pl.getY(oom).compareTo(getYMax(oom));
 //                    if (ycmax == 1) {
 //                        if (zcmin == -1) {
 //                            // ltf - rtf
 //                            if (f instanceof Rectangle rectangle) {
 //                                return rectangle.t
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else if (f instanceof LineSegment lineSegment) {
 //                                return lineSegment.q
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else {
 //                                return ((Point) f)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            }
 //                        } else {
-//                            int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                            int zcmax = pl.getZ(oom).compareTo(getZMax(oom));
 //                            if (zcmax == 1) {
 //                                // rta - lta
 //                                if (a instanceof Rectangle rectangle) {
 //                                    return new Line(rectangle.t)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else if (a instanceof LineSegment) {
 //                                    return ((Line) a)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else {
 //                                    return ((Point) a)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                }
 //                            } else {
 //                                // ltf - lta - rta - rtf
 //                                if (t instanceof Rectangle rectangle) {
 //                                    return new Plane(rectangle)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else if (r instanceof LineSegment) {
 //                                    return ((Line) t)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else {
 //                                    return ((Point) t)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                }
 //                            }
 //                        }
@@ -2204,39 +2210,39 @@ public class V3D_Envelope extends V3D_Geometry implements
 //                            // lbf - ltf - rtf - rbf
 //                            if (f instanceof Rectangle rectangle) {
 //                                return new Plane(rectangle)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else if (f instanceof LineSegment) {
 //                                return ((Line) f)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            } else {
 //                                return ((Point) f)
-//                                        .getDistance(new Point(p, oom, rm), oom);
+//                                        .getDistance(new Point(pl, oom, rm), oom);
 //                            }
 //                        } else {
-//                            int zcmax = p.getZ(oom).compareTo(getZMax(oom));
+//                            int zcmax = pl.getZ(oom).compareTo(getZMax(oom));
 //                            if (zcmax == 1) {
 //                                // rba - rta - lta - lba
 //                                if (a instanceof Rectangle rectangle) {
 //                                    return new Plane(rectangle)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else if (a instanceof LineSegment) {
 //                                    return ((Line) a)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else {
 //                                    return ((Point) a)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                }
 //                            } else {
 //                                // lba - lbf - rbf - rba
 //                                if (r instanceof Rectangle) {
 //                                    return new Plane((Rectangle) b)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else if (r instanceof LineSegment) {
 //                                    return ((LineSegment) b)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                } else {
 //                                    return ((Point) b)
-//                                            .getDistance(new Point(p, oom, rm), oom);
+//                                            .getDistance(new Point(pl, oom, rm), oom);
 //                                }
 //                            }
 //                        }
@@ -2251,7 +2257,7 @@ public class V3D_Envelope extends V3D_Geometry implements
      * could be changed in future to provide a negative distance which would be
      * the distance inside the envelope. To calculate the distance outside the
      * envelope, there are a number of different cases. The first cases are when
-     * the closest point on the Envelope to the point {@code p} is one of the
+     * the closest point on the Envelope to the point {@code pl} is one of the
      * corners. The next cases are when it is a point on one of the edges of
      * {@link #t}, {@link #b}, {@link #l}, {@link #r}, {@link #f}. The next
      * cases are when it is a point on one of the faces of {@link #t},
@@ -2277,7 +2283,7 @@ public class V3D_Envelope extends V3D_Geometry implements
      * could be changed in future to provide a negative distance which would be
      * the distance inside the envelope. To calculate the distance outside the
      * envelope, there are a number of different cases. The first cases are when
-     * the closest point on the Envelope to the point {@code p} is one of the
+     * the closest point on the Envelope to the point {@code pl} is one of the
      * corners. The next cases are when it is a point on one of the edges of
      * {@link #t}, {@link #b}, {@link #l}, {@link #r}, {@link #f}. The next
      * cases are when it is a point on one of the faces of {@link #t},
@@ -2697,8 +2703,25 @@ public class V3D_Envelope extends V3D_Geometry implements
     }
 
     @Override
-    public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public V3D_Envelope rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
+        Math_BigRational twoPi = Math_BigRational.valueOf(e.bd.getPi(oom, rm)).multiply(2);
+        // Change a negative angle into a positive one.
+        while (theta.compareTo(Math_BigRational.ZERO) == -1) {
+            theta = theta.add(twoPi);
+        }
+        // Only rotate less than 2Pi radians.
+        while (theta.compareTo(twoPi) == 1) {
+            theta = theta.subtract(twoPi);
+        }
+        V3D_Point[] pts = getPoints(oom, rm);
+        if (theta.compareTo(Math_BigRational.ZERO) == 1) {
+            V3D_Point[] rpts = new V3D_Point[pts.length];
+            for (int i = 0; i < pts.length; i++) {
+                rpts[i] = pts[i].rotate(axisOfRotation, theta, oom, rm);
+            }
+            return new V3D_Envelope(e, oom, rm, rpts);
+        }
+        return new V3D_Envelope(e, oom, rm, pts);
     }
 
     @Override
@@ -2785,6 +2808,34 @@ public class V3D_Envelope extends V3D_Geometry implements
         return pts;
     }
 
+    public V3D_LineSegment[] getEdges(int oom, RoundingMode rm) {
+        V3D_LineSegment[] edges = new V3D_LineSegment[12];
+        edges[0] = new V3D_LineSegment(new V3D_Point(lbf), new V3D_Point(ltf), oom, rm); //lf
+        edges[1] = new V3D_LineSegment(new V3D_Point(lba), new V3D_Point(lta), oom, rm); //la
+        edges[2] = new V3D_LineSegment(new V3D_Point(lbf), new V3D_Point(lba), oom, rm); //lb
+        edges[3] = new V3D_LineSegment(new V3D_Point(ltf), new V3D_Point(lta), oom, rm); //lt
+        edges[4] = new V3D_LineSegment(new V3D_Point(rbf), new V3D_Point(rtf), oom, rm); //rf
+        edges[5] = new V3D_LineSegment(new V3D_Point(rba), new V3D_Point(rta), oom, rm); //ra
+        edges[6] = new V3D_LineSegment(new V3D_Point(rbf), new V3D_Point(rba), oom, rm); //rb
+        edges[7] = new V3D_LineSegment(new V3D_Point(rtf), new V3D_Point(rta), oom, rm); //rt
+        edges[8] = new V3D_LineSegment(new V3D_Point(lbf), new V3D_Point(rbf), oom, rm); //bf
+        edges[9] = new V3D_LineSegment(new V3D_Point(ltf), new V3D_Point(rtf), oom, rm); //tf
+        edges[10] = new V3D_LineSegment(new V3D_Point(lba), new V3D_Point(rba), oom, rm); //ba
+        edges[11] = new V3D_LineSegment(new V3D_Point(lta), new V3D_Point(rta), oom, rm); //ta
+        return edges;
+    }
+
+    public Geometry[] getFaces(int oom, RoundingMode rm) {
+        Geometry[] faces = new Geometry[6];
+        faces[0] = l;
+        faces[1] = t;
+        faces[2] = r;
+        faces[3] = b;
+        faces[4] = f;
+        faces[5] = a;
+        return faces;
+    }
+
     /**
      * Abstract Geometry class for geometries aligning with axes.
      */
@@ -2836,10 +2887,10 @@ public class V3D_Envelope extends V3D_Geometry implements
         public Math_BigRational z;
 
         /**
-         * Create a new instance from {@code p} and {@code v}.
+         * Create a new instance from {@code pl} and {@code v}.
          *
          * @param p The point to duplicate.
-         * @param v The vector to tranlsate immediately to {@code p}.
+         * @param v The vector to tranlsate immediately to {@code pl}.
          */
         public Point(Point p, V3D_Vector v, int oom, RoundingMode rm) {
             super(p.e);
@@ -2849,7 +2900,7 @@ public class V3D_Envelope extends V3D_Geometry implements
         }
 
         /**
-         * Create a new instance from {@code p}.
+         * Create a new instance from {@code pl}.
          *
          * @param p The point to duplicate
          */
@@ -2910,11 +2961,11 @@ public class V3D_Envelope extends V3D_Geometry implements
         }
 
         /**
-         * Get the distance between this and {@code p}.
+         * Get the distance between this and {@code pl}.
          *
          * @param p A point.
          * @param oom The Order of Magnitude for the precision of the result.
-         * @return The distance from {@code p} to this.
+         * @return The distance from {@code pl} to this.
          */
         public BigDecimal getDistance(Point p, int oom, RoundingMode rm) {
             if (this.equals(p)) {
@@ -2925,10 +2976,10 @@ public class V3D_Envelope extends V3D_Geometry implements
         }
 
         /**
-         * Get the distance between this and {@code p}.
+         * Get the distance between this and {@code pl}.
          *
          * @param p A point.
-         * @return The distance from {@code p} to this.
+         * @return The distance from {@code pl} to this.
          */
         public Math_BigRationalSqrt getDistanceExact(Point p, int oom, RoundingMode rm) {
             if (this.equals(p)) {
@@ -2939,10 +2990,10 @@ public class V3D_Envelope extends V3D_Geometry implements
         }
 
         /**
-         * Get the distance squared between this and {@code p}.
+         * Get the distance squared between this and {@code pl}.
          *
          * @param p A point.
-         * @return The distance squared from {@code p} to this.
+         * @return The distance squared from {@code pl} to this.
          */
         public Math_BigRational getDistanceSquared(Point p) {
             Math_BigRational dx = x.subtract(p.x);
@@ -2978,7 +3029,7 @@ public class V3D_Envelope extends V3D_Geometry implements
          * Create a new instance from {@code l} and {@code v}.
          *
          * @param l The line to duplicate.
-         * @param v The vector to tranlsate immediately to {@code p}.
+         * @param v The vector to tranlsate immediately to {@code pl}.
          */
         public Line(Line l, V3D_Vector v, int oom, RoundingMode rm) {
             super(l.e);
@@ -2991,7 +3042,7 @@ public class V3D_Envelope extends V3D_Geometry implements
         }
 
         /**
-         * {@code p} should not be equal to {@code q}.
+         * {@code pl} should not be equal to {@code q}.
          *
          * @param p What {@link #p} is set to.
          * @param q What {@link #q} is set to.
@@ -3162,10 +3213,10 @@ public class V3D_Envelope extends V3D_Geometry implements
                                             z = p.z.add(v.getDZ(oom, rm).multiply(lamda));
                                         }
                                     }
-                                    //x = p.x;            
-                                    //p.x + v.getDX(oom) * lamda = l.p.x + l.v.getDX(oom) * mu
-                                    //p.y + v.getDY(oom) * lamda = l.p.y + l.v.getDY(oom) * mu
-                                    //p.z + v.getDZ(oom) * lamda = l.p.z + l.v.getDZ(oom) * mu
+                                    //x = pl.x;            
+                                    //p.x + v.getDX(oom) * lamda = l.pl.x + l.v.getDX(oom) * mu
+                                    //p.y + v.getDY(oom) * lamda = l.pl.y + l.v.getDY(oom) * mu
+                                    //p.z + v.getDZ(oom) * lamda = l.pl.z + l.v.getDZ(oom) * mu
 
                                 } else {
                                     if (v.dz.isZero()) {
@@ -3179,9 +3230,9 @@ public class V3D_Envelope extends V3D_Geometry implements
                                             y = p.y.add(v.getDY(oom, rm).multiply(lamda));
                                         } else {
                                             // There are 2 ways to calculate lamda. One way should work! - If not try calculating mu.
-//                                        mu = ((p.y.add(v.getDY(oom).multiply(lamda))).subtract(l.p.y)).divide(l.v.getDY(oom));
-//                                        lamda = ((l.p.z.subtract(p.z)).divide(v.getDZ(oom))).add(l.v.getDZ(oom).multiply(mu));
-//                                        lamda = ((l.p.z.subtract(p.z)).divide(v.getDZ(oom))).add(l.v.getDZ(oom).multiply(((p.y.add(v.getDY(oom).multiply(lamda))).subtract(l.p.y)).divide(l.v.getDY(oom))));
+//                                        mu = ((pl.y.add(v.getDY(oom).multiply(lamda))).subtract(l.pl.y)).divide(l.v.getDY(oom));
+//                                        lamda = ((l.pl.z.subtract(pl.z)).divide(v.getDZ(oom))).add(l.v.getDZ(oom).multiply(mu));
+//                                        lamda = ((l.pl.z.subtract(pl.z)).divide(v.getDZ(oom))).add(l.v.getDZ(oom).multiply(((pl.y.add(v.getDY(oom).multiply(lamda))).subtract(l.pl.y)).divide(l.v.getDY(oom))));
 //                                        l = ((bz-az)/adz) + (bdz*(ady*(l-by)/bdy))
 //                                        l = ((bz-az)/adz) + bdz*ady*l/bdy - bdz*ady*by/bdy
 //                                        l - bdz*ady*l/bdy = ((bz-az)/adz) - bdz*ady*by/bdy
@@ -3326,9 +3377,9 @@ public class V3D_Envelope extends V3D_Geometry implements
                                             x = p.x.add(v.getDX(oom, rm).multiply(lamda));
                                         } else {
                                             // There are 2 ways to calculate lamda. One way should work! - If not try calculating mu.
-//                                        mu = ((p.x.add(v.getDX(oom).multiply(lamda))).subtract(l.p.x)).divide(l.v.getDX(oom));
-//                                        lamda = ((l.p.z.subtract(p.z)).divide(v.getDZ(oom))).add(l.v.getDZ(oom).multiply(mu));
-//                                        lamda = ((l.p.z.subtract(p.z)).divide(v.getDZ(oom))).add(l.v.getDZ(oom).multiply(((p.x.add(v.getDX(oom).multiply(lamda))).subtract(l.p.x)).divide(l.v.getDX(oom))));
+//                                        mu = ((pl.x.add(v.getDX(oom).multiply(lamda))).subtract(l.pl.x)).divide(l.v.getDX(oom));
+//                                        lamda = ((l.pl.z.subtract(pl.z)).divide(v.getDZ(oom))).add(l.v.getDZ(oom).multiply(mu));
+//                                        lamda = ((l.pl.z.subtract(pl.z)).divide(v.getDZ(oom))).add(l.v.getDZ(oom).multiply(((pl.x.add(v.getDX(oom).multiply(lamda))).subtract(l.pl.x)).divide(l.v.getDX(oom))));
 //                                        l = ((bz-az)/adz) + (bdz*(adx*(l-bx)/bdx))
 //                                        l = ((bz-az)/adz) + bdz*adx*l/bdx - bdz*adx*bx/bdx
 //                                        l - bdz*adx*l/bdx = ((bz-az)/adz) - bdz*adx*bx/bdx
@@ -3364,9 +3415,9 @@ public class V3D_Envelope extends V3D_Geometry implements
                                     z = p.z;
                                     if (l.v.dz.isZero()) {
                                         // There are 2 ways to calculate lamda. One way should work! - If not try calculating mu.
-//                                    mu = ((p.x.add(v.getDX(oom).multiply(lamda))).subtract(l.p.x)).divide(l.v.getDX(oom));
-//                                    lamda = ((l.p.y.subtract(p.y)).divide(v.getDY(oom))).add(l.v.getDY(oom).multiply(mu));
-//                                    lamda = ((l.p.y.subtract(p.y)).divide(v.getDY(oom))).add(l.v.getDY(oom).multiply(((p.x.add(v.getDX(oom).multiply(lamda))).subtract(l.p.x)).divide(l.v.getDX(oom))));
+//                                    mu = ((pl.x.add(v.getDX(oom).multiply(lamda))).subtract(l.pl.x)).divide(l.v.getDX(oom));
+//                                    lamda = ((l.pl.y.subtract(pl.y)).divide(v.getDY(oom))).add(l.v.getDY(oom).multiply(mu));
+//                                    lamda = ((l.pl.y.subtract(pl.y)).divide(v.getDY(oom))).add(l.v.getDY(oom).multiply(((pl.x.add(v.getDX(oom).multiply(lamda))).subtract(l.pl.x)).divide(l.v.getDX(oom))));
 //                                    l = ((by - ay) / ady) + (bdy * (adx * (l - bx) / bdx))
 //                                    l = ((by - ay) / ady) + bdy * adx * l / bdx - bdy * adx * bx / bdx
 //                                    l - bdy * adx * l / bdx = ((by - ay) / ady) - bdy * adx * bx / bdx
@@ -3462,9 +3513,9 @@ public class V3D_Envelope extends V3D_Geometry implements
                             }
                         }
                     }
-                    //p.x + v.getDX(oom) * lamda = l.p.x + l.v.getDX(oom) * mu
-                    //p.y + v.getDY(oom) * lamda = l.p.y + l.v.getDY(oom) * mu
-                    //p.z + v.getDZ(oom) * lamda = l.p.z + l.v.getDZ(oom) * mu
+                    //p.x + v.getDX(oom) * lamda = l.pl.x + l.v.getDX(oom) * mu
+                    //p.y + v.getDY(oom) * lamda = l.pl.y + l.v.getDY(oom) * mu
+                    //p.z + v.getDZ(oom) * lamda = l.pl.z + l.v.getDZ(oom) * mu
                     return new Point(this.e, x, y, z);
                 }
                 return null;
@@ -3472,13 +3523,13 @@ public class V3D_Envelope extends V3D_Geometry implements
             Math_BigRational mua = num.divide(den);
             Math_BigRational mub = (a.add(b.multiply(mua))).divide(d).negate();
             Point pi = new Point(this.e,
-                    //                (p.x.add(mua.multiply(qp.getDX(oom)))),
-                    //                (p.y.add(mua.multiply(qp.getDY(oom)))),
-                    //                (p.z.add(mua.multiply(qp.getDZ(oom)))));
+                    //                (pl.x.add(mua.multiply(qp.getDX(oom)))),
+                    //                (pl.y.add(mua.multiply(qp.getDY(oom)))),
+                    //                (pl.z.add(mua.multiply(qp.getDZ(oom)))));
                     (p.x.subtract(mua.multiply(qp.getDX(oom, rm)))),
                     (p.y.subtract(mua.multiply(qp.getDY(oom, rm)))),
                     (p.z.subtract(mua.multiply(qp.getDZ(oom, rm)))));
-            // If point p is on both lines then return this as the intersection.
+            // If point pl is on both lines then return this as the intersection.
             if (isIntersectedBy(pi, oom, rm) && l.isIntersectedBy(pi, oom, rm)) {
                 return pi;
             }
@@ -3510,17 +3561,17 @@ public class V3D_Envelope extends V3D_Geometry implements
          *
          * @param oom, rm The Order of Magnitude for the precision of the
          * result.
-         * @return The minimum distance between this and {@code p}.
+         * @return The minimum distance between this and {@code pl}.
          */
         public BigDecimal getDistance(Point p, int oom, RoundingMode rm) {
-//            V3D_Vector pv = new V3D_Vector(this.p, p);
+//            V3D_Vector pv = new V3D_Vector(this.pl, pl);
 //            V3D_Vector vu = v.getUnitVector(oom - 2);
-//            BigDecimal pd = p.getDistance(new Point(this.e, vu.multiply(
+//            BigDecimal pd = pl.getDistance(new Point(this.e, vu.multiply(
 //                    pv.getDotProduct(vu, oom), oom)
-//                    .add(new V3D_Vector(this.p), oom)), oom);
-//            pv = new V3D_Vector(this.q, p);
+//                    .add(new V3D_Vector(this.pl), oom)), oom);
+//            pv = new V3D_Vector(this.q, pl);
 //            vu = v.reverse().getUnitVector(oom - 2);
-//            BigDecimal qd = p.getDistance(new Point(this.e, vu.multiply(
+//            BigDecimal qd = pl.getDistance(new Point(this.e, vu.multiply(
 //                    pv.getDotProduct(vu, oom), oom)
 //                    .add(new V3D_Vector(this.q), oom)), oom);
 //            return pd.min(qd);
@@ -3535,7 +3586,7 @@ public class V3D_Envelope extends V3D_Geometry implements
          * returned.
          *
          * @param oom The Order of Magnitude for the precision of the result.
-         * @return The minimum distance between this and {@code p}.
+         * @return The minimum distance between this and {@code pl}.
          */
         public Math_BigRational getDistanceSquared(Point p, int oom, RoundingMode rm) {
             V3D_Vector pv = new V3D_Vector(this.p, p);
@@ -3594,7 +3645,7 @@ public class V3D_Envelope extends V3D_Geometry implements
          * Create a new instance from {@code l} and {@code v}.
          *
          * @param l The line to duplicate.
-         * @param v The vector to tranlsate immediately to {@code p}.
+         * @param v The vector to tranlsate immediately to {@code pl}.
          */
         public LineSegment(LineSegment l, V3D_Vector v, int oom, RoundingMode rm) {
             super(new Point(l.p, v, oom, rm), new Point(l.q, v, oom, rm));
@@ -3862,7 +3913,7 @@ public class V3D_Envelope extends V3D_Geometry implements
          *
          * @param p A point.
          * @param oom The Order of Magnitude for the precision.
-         * @return The distance from {@code this} to {@code p}.
+         * @return The distance from {@code this} to {@code pl}.
          */
         public BigDecimal getDistance(Point p, int oom, RoundingMode rm) {
             if (this.isIntersectedBy(p, oom, rm)) {
@@ -3876,11 +3927,11 @@ public class V3D_Envelope extends V3D_Geometry implements
         }
 
         /**
-         * Get the distance between this and {@code p}.
+         * Get the distance between this and {@code pl}.
          *
          * @param p A point.
          * @param oom The Order of Magnitude for the precision.
-         * @return The distance from {@code this} to {@code p}.
+         * @return The distance from {@code this} to {@code pl}.
          */
         public Math_BigRational getDistanceSquared(Point p, int oom,
                 RoundingMode rm) {
@@ -3891,13 +3942,13 @@ public class V3D_Envelope extends V3D_Geometry implements
         }
 
         /**
-         * Get the distance between this and {@code p}.
+         * Get the distance between this and {@code pl}.
          *
          * @param p A point.
          * @param noInt To distinguish this from
          * {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope.Point, int)}
          * @param oom The Order of Magnitude for the precision.
-         * @return The distance from {@code this} to {@code p}.
+         * @return The distance from {@code this} to {@code pl}.
          */
         protected Math_BigRational getDistanceSquared(Point p, boolean noInt,
                 int oom, RoundingMode rm) {
@@ -3905,19 +3956,6 @@ public class V3D_Envelope extends V3D_Geometry implements
             V3D_Vector u = this.n.getUnitVector(oom, rm);
             return v.getDotProduct(u, oom, rm).abs();
         }
-    }
-
-    /**
-     * Calculate and return the approximate (or exact) centre.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode used in the calculation.
-     * @return The approximate or exact centre of this.
-     */
-    public V3D_Point getCentroid(int oom, RoundingMode rm) {
-        return new V3D_Point(e, this.xMax.subtract(this.xMin).divide(2),
-                 this.yMax.subtract(this.yMin).divide(2),
-                 this.zMax.subtract(this.zMin).divide(2));
     }
 
     /**
@@ -3931,14 +3969,14 @@ public class V3D_Envelope extends V3D_Geometry implements
      * rectangle {@link #ri} is the line segment from {@link #r} to {@link #s}.
      * The bottom of a rectangle {@link #b} is the line segment from {@link #s}
      * to {@link #p}. The following depicts a generic rectangle {@code
-     *          t
-     * q *-------------* r
-     *   |             |
-     * l |             | ri
-     *   |             |
-     * p *-------------* s
-     *          b
-     * }
+          t
+ q *-------------* r
+   |             |
+ l |             | ri
+   |             |
+ pl *-------------* s
+          b
+ }
      */
     public class Rectangle extends Plane {
 
@@ -3992,7 +4030,7 @@ public class V3D_Envelope extends V3D_Geometry implements
         public Rectangle(Point p, Point q, Point r, Point s, int oom, RoundingMode rm) {
             super(p, q, r, oom, rm);
             this.s = s;
-            //en = new V3D_Envelope(p, q, r, s); Not initialised here as it causes a StackOverflowError
+            //en = new V3D_Envelope(pl, q, r, s); Not initialised here as it causes a StackOverflowError
             l = new LineSegment(p, q);
             t = new LineSegment(q, r);
             ri = new LineSegment(r, s);
@@ -4147,5 +4185,269 @@ public class V3D_Envelope extends V3D_Geometry implements
                 }
             }
         }
+    }
+
+    /**
+     * Calculate and return the approximate (or exact) centre.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
+     * @return The approximate or exact centre of this.
+     */
+    public V3D_Point getCentroid(int oom, RoundingMode rm) {
+        return new V3D_Point(e, this.xMax.add(this.xMin).divide(2),
+                this.yMax.add(this.yMin).divide(2),
+                this.zMax.add(this.zMin).divide(2));
+    }
+
+    /**
+     * Calculate and return the viewport - a rectangle between the point pt and
+     * this such that all of this is contained in the planes from the point
+     * through the viewport and the viewport intersects (touches) this. When the
+     * pt is directly in front of one of the faces of this, the viewport will be
+     * that face. In some cases the viewport may intersect (touch) along an edge
+     * between two faces. In all other cases, the viewport will intersect
+     * (touch) just one corner of this. The right edge of the viewport is in the
+     * direction given by the vector v from te point pt.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
+     * @param pt The point from which observation of this is occurring.
+     * @param v The vector pointing to the right of the viewport.
+     * @return A viewport - a rectangle between pt and this such that all of
+     * this is contained in the planes from the point through the viewport.
+     */
+    public V3D_Rectangle getViewport(int oom, RoundingMode rm, V3D_Point pt,
+            V3D_Vector v) {
+        V3D_Rectangle r;
+        V3D_Point[] pts = getPoints(oom, rm);
+//        pts[0] = new V3D_Point(lba);
+//        pts[1] = new V3D_Point(lbf);
+//        pts[2] = new V3D_Point(lta);
+//        pts[3] = new V3D_Point(ltf);
+//        pts[4] = new V3D_Point(rba);
+//        pts[5] = new V3D_Point(rbf);
+//        pts[6] = new V3D_Point(rta);
+//        pts[7] = new V3D_Point(rtf);
+        V3D_Point c = getCentroid(oom, rm);
+        V3D_Vector v2 = new V3D_Vector(pt, c, oom, rm).getCrossProduct(v, oom, rm);
+        /**
+         * Calculate the plane touching this in the direction given from pt to
+         * c.
+         */
+        // Find a closest point.
+        Math_BigRational d2min = pt.getDistanceSquared(pts[0], oom, rm);
+        V3D_Point closest = pts[0];
+        for (int i = 1; i < pts.length; i++) {
+            Math_BigRational d2 = pt.getDistanceSquared(pts[i], oom, rm);
+            if (d2.compareTo(d2min) == -1) {
+                closest = pts[i];
+            }
+        }
+        V3D_Plane pl0 = new V3D_Plane(closest, new V3D_Vector(pt, c, oom, rm));
+
+        V3D_Point pt2;
+        // Find top and bottom.
+        //ArrayList<V3D_Plane> tbpl = new ArrayList<>();
+        //ArrayList<V3D_Line> tb = new ArrayList<>();
+        pt2 = new V3D_Point(pt);
+        pt2.translate(v, oom, rm);
+
+        Math_BigRational angle = v2.getAngle(new V3D_Vector(pt, pts[0], oom, rm), oom, rm);
+        V3D_Point xv = new V3D_Point(pts[0]);
+        xv.translate(v, oom, rm);
+        V3D_Plane tp = new V3D_Plane(pt, pts[0], xv, oom, rm);
+        V3D_Plane bp = tp;
+        Math_BigRational aa = angle;
+        Math_BigRational ba = angle;
+        for (var x : pts) {
+            angle = v2.getAngle(new V3D_Vector(pt, x, oom, rm), oom, rm);
+            if (angle.compareTo(aa) == 1) {
+                aa = angle;
+                xv = new V3D_Point(x);
+                xv.translate(v, oom, rm);
+                tp = new V3D_Plane(pt, x, xv, oom, rm);
+            }
+            if (angle.compareTo(ba) == -1) {
+                ba = angle;
+                xv = new V3D_Point(x);
+                xv.translate(v, oom, rm);
+                bp = new V3D_Plane(pt, x, xv, oom, rm);
+            }
+        }
+        angle = v.getAngle(new V3D_Vector(pt, pts[0], oom, rm), oom, rm);
+        xv = new V3D_Point(pts[0]);
+        xv.translate(v2, oom, rm);
+        V3D_Plane lp = new V3D_Plane(pt, pts[0], xv, oom, rm);
+        V3D_Plane rp = lp;
+        Math_BigRational la = angle;
+        Math_BigRational ra = angle;
+        for (var x : pts) {
+            angle = v.getAngle(new V3D_Vector(pt, x, oom, rm), oom, rm);
+            if (angle.compareTo(la) == 1) {
+                la = angle;
+                xv = new V3D_Point(x);
+                xv.translate(v2, oom, rm);
+                lp = new V3D_Plane(pt, x, xv, oom, rm);
+            }
+            if (angle.compareTo(ra) == -1) {
+                ra = angle;
+                xv = new V3D_Point(x);
+                xv.translate(v2, oom, rm);
+                rp = new V3D_Plane(pt, x, xv, oom, rm);
+            }
+        }
+//        int  i = 1;
+//        ArrayList<V3D_Plane> tp;
+//        ArrayList<V3D_Plane> bp;
+//        
+//        for (var x : pts) {
+//            V3D_Plane pl = new V3D_Plane(x, pt, pt2, oom, rm);
+//            if (pl.allOnSameSide(pts, oom, rm)) {
+//                V3D_Line l = new V3D_Line(x, v);
+//                if (v2.getAngle(new V3D_Vector(pt, x)))
+//                if (addUnique(tb, l, oom, rm)) {
+//                    V3D_Point xv = new V3D_Point(x);
+//                    xv.translate(v, oom, rm);
+//                    tbpl.add(new V3D_Plane(pt, x, xv, oom, rm));
+//                }
+//            }
+//        }
+//        
+//        // Find left and right
+//        ArrayList<V3D_Plane> lrpl = new ArrayList<>();
+//        ArrayList<V3D_Line> lr = new ArrayList<>();
+//        pt2 = new V3D_Point(pt);
+//        pt2.translate(v2, oom, rm);
+//        for (var x : pts) {
+//            V3D_Plane pl = new V3D_Plane(x, pt, pt2, oom, rm);
+//            if (pl.allOnSameSide(pts, oom, rm)) {
+//                if (addUnique(lr, new V3D_Line(x, v2), oom, rm)) {
+//                    V3D_Point xv2 = new V3D_Point(x);
+//                    xv2.translate(v2, oom, rm);
+//                    lrpl.add(new V3D_Plane(pt, x, xv2, oom, rm));
+//                }
+//            }
+//        }
+
+        // Find edges.
+//        ArrayList<V3D_Line> lr = new ArrayList<>();
+//        for (var y : pts) {
+//            V3D_FiniteGeometry loi = tb.get(0).getLineOfIntersection(y, oom, rm);
+//            if (loi instanceof V3D_Point) {
+//                loi = tb.get(1).getLineOfIntersection(y, oom, rm);
+//            }
+//            V3D_LineSegment loil = (V3D_LineSegment) loi;
+//            if (loil.l.isIntersectedBy(tb.get(0), oom, rm)
+//                    && loil.l.isIntersectedBy(tb.get(1), oom, rm)) {
+//                V3D_Plane pl = new V3D_Plane(loil.l.getP(),
+//                        loil.l.getQ(oom, rm), pt, oom, rm);
+//                //if (!pl.isParallel(tb.get(0), oom, rm)) {
+//                if (allOnSameSide(pl, c, pts, oom, rm)) {
+//                    addUnique(lr, loil.l, oom, rm);
+//                }
+//                //}
+//            }
+//        }
+//        ArrayList<V3D_Point> pts2 = new ArrayList<>();
+//        for(var lrpli: lrpl) {
+//        pts2.add((V3D_Point) lrpli.getIntersection(tb.get(0), oom, rm));
+//        pts2.add((V3D_Point) lrpli.getIntersection(tb.get(1), oom, rm));
+//        }
+//        V3D_LineSegment[] edges = getEdges(oom, rm);
+//        for (var edge : edges) {
+//            if (tbpl.get(0).isBetweenPlanes(tbpl.get(1), edge.getP(), oom, rm)
+//                    && tbpl.get(0).isBetweenPlanes(tbpl.get(1), edge.getQ(oom, rm), oom, rm)) {
+////            if (!(edge.isCoplanar(tb.get(0), oom, rm) 
+////                    || edge.isCoplanar(tb.get(1), oom, rm))) {
+//                V3D_Plane pl = new V3D_Plane(pt, edge.getP(), edge.getQ(oom, rm), oom, rm);
+////                if (tb.get(0).isIntersectedBy(pl, oom, rm)
+////                        && tb.get(1).isIntersectedBy(pl, oom, rm)) {
+//                if (allOnSameSide(pl, c, pts, oom, rm)) {
+//                    V3D_Geometry g;
+//                    g = pl.getIntersection(tb.get(0), oom, rm);
+//                    if (g instanceof V3D_Point gp) {
+//                        addUnique(pts2, gp, oom, rm);
+//                    }
+//                    g = pl.getIntersection(tb.get(1), oom, rm);
+//                    if (g instanceof V3D_Point gp) {
+//                        addUnique(pts2, gp, oom, rm);
+//                    }
+//                }
+//            }
+////                }
+////            }
+//        }
+//        V3D_Point[] pts3 = V3D_ConvexHullCoplanar.getGeometry(oom, rm, pts2.toArray(V3D_Point[]::new)).getPoints(oom, rm);
+        // Distinguish points.
+//        V3D_Point[] pts3 = new V3D_Point[4];
+//        V3D_Point pl = ;
+        r = new V3D_Rectangle(
+                (V3D_Point) lp.getIntersection(pl0, bp, oom, rm),
+                (V3D_Point) lp.getIntersection(pl0, tp, oom, rm),
+                (V3D_Point) rp.getIntersection(pl0, tp, oom, rm),
+                (V3D_Point) rp.getIntersection(pl0, bp, oom, rm), oom, rm);
+
+//        ArrayList<V3D_Point> left = new ArrayList<>(2);
+//        ArrayList<V3D_Point> right = new ArrayList<>(2);
+//        V3D_Plane pl = new V3D_Plane(c, v, oom, rm);
+//        for (var x : pts3) {
+//            if (pl.getSideOfPlane(x, oom, rm) == 1) {
+//                right.add(x);
+//            } else {
+//                left.add(x);
+//            }
+//        }
+//        // Distinguish top and bottom.
+//        V3D_Point ptv = new V3D_Point(pt);
+//
+//        ptv.translate(v, oom, rm);
+//        V3D_Plane pl = new V3D_Plane(pt, c, ptv, oom, rm);
+//        for (var x : left) {
+//            if (pl.getSideOfPlane(x, oom, rm) == 1) {
+//                tl = x;
+//            } else {
+//                bl = x;
+//            }
+//        }
+//        for (var x : right) {
+//            if (pl.getSideOfPlane(x, oom, rm) == 1) {
+//                tr = x;
+//            } else {
+//                br = x;
+//            }
+//        }
+//        r = new V3D_Rectangle(bl, tl, tr, br, oom, rm);
+        return r;
+    }
+
+    protected boolean addUnique(ArrayList<V3D_Line> ls, V3D_Line l, int oom,
+            RoundingMode rm) {
+        boolean unique = true;
+        for (var x : ls) {
+            if (x.equals(l, oom, rm)) {
+                unique = false;
+                break;
+            }
+        }
+        if (unique) {
+            ls.add(l);
+        }
+        return unique;
+    }
+
+    protected boolean addUnique(ArrayList<V3D_Point> pts, V3D_Point pt, int oom,
+            RoundingMode rm) {
+        boolean unique = true;
+        for (var x : pts) {
+            if (x.equals(pt, oom, rm)) {
+                unique = false;
+                break;
+            }
+        }
+        if (unique) {
+            pts.add(pt);
+        }
+        return unique;
     }
 }

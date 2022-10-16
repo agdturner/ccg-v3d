@@ -3,10 +3,10 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
@@ -23,17 +23,7 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume,
     /**
      * The list of tetrahedron. Stored as a list so that the list can be 
      */
-    protected final Set<V3D_Tetrahedron> tetrahedrons;
-
-    /**
-     * Creates a new instance.
-     *
-     * @param tetrahedrons What {@link #tetrahedrons} is set to.
-     */
-    public V3D_Tetrahedrons(Set<V3D_Tetrahedron> tetrahedrons) {
-        super(tetrahedrons.stream().findFirst().get().e, tetrahedrons.stream().findFirst().get().offset);
-        this.tetrahedrons = tetrahedrons;
-    }
+    protected final ArrayList<V3D_Tetrahedron> tetrahedrons;
 
     /**
      * Creates a new instance.
@@ -43,7 +33,7 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume,
      */
     public V3D_Tetrahedrons(V3D_Tetrahedron... tetrahedrons) {
         super(tetrahedrons[0].e, tetrahedrons[0].offset);
-        this.tetrahedrons = new HashSet<>();
+        this.tetrahedrons = new ArrayList<>();
         this.tetrahedrons.addAll(Arrays.asList(tetrahedrons));
     }
 
@@ -166,11 +156,13 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume,
     }
 
     @Override
-     public void rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+     public V3D_Tetrahedrons rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
              int oom, RoundingMode rm) {
-        for (V3D_Tetrahedron t : tetrahedrons) {
-            t.rotate(axisOfRotation, theta, oom, rm);
+        V3D_Tetrahedron[] rls = new V3D_Tetrahedron[tetrahedrons.size()];
+        for (int i = 0; i < tetrahedrons.size(); i ++) {
+            rls[0] = tetrahedrons.get(i).rotate(axisOfRotation, theta, oom, rm);
         }
+        return new V3D_Tetrahedrons(rls);
     }
 
     @Override

@@ -303,13 +303,13 @@ public class V3D_LineTest extends V3D_Test {
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 4
         l = new V3D_Line(pN1N1N1, pP1P1P1, oom, rm);
-        instance = new V3D_Line(e, new V3D_Vector(P3, P1, P1), new V3D_Vector(P1, P3, P3));
+        instance = new V3D_Line(e, new V3D_Vector(P3, P1, P1), new V3D_Vector(P1, P3, P3), oom, rm);
         expResult = pP2P2P2;
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 5
         l = new V3D_Line(pN1N1P0, pP1P1P0, oom, rm);
-        instance = new V3D_Line(e, new V3D_Vector(P3, P3, P0), new V3D_Vector(P3, P3, N1));
+        instance = new V3D_Line(e, new V3D_Vector(P3, P3, P0), new V3D_Vector(P3, P3, N1), oom, rm);
         expResult = new V3D_Point(e, P3, P3, P0);
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
@@ -346,7 +346,7 @@ public class V3D_LineTest extends V3D_Test {
         // Test 11
         l = new V3D_Line(pN1N1N1, pP1P1P1, oom, rm);
         expResult = new V3D_Line(pN1N1N1, pP1P1P1, oom, rm);
-        instance = new V3D_Line(e, new V3D_Vector(N3, N3, N3), new V3D_Vector(N4, N4, N4));
+        instance = new V3D_Line(e, new V3D_Vector(N3, N3, N3), new V3D_Vector(N4, N4, N4), oom, rm);
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom, rm));
         // Test 12 to 14
@@ -364,10 +364,10 @@ public class V3D_LineTest extends V3D_Test {
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 16
-        l = new V3D_Line(e, P0N1P1, new V3D_Vector(P2, P1, P3));
+        l = new V3D_Line(e, P0N1P1, new V3D_Vector(P2, P1, P3), oom, rm);
         expResult = pP1P0P2;
         instance = new V3D_Line(e, new V3D_Vector(P1, P0, P2),
-                new V3D_Vector(P1, P1, P3));
+                new V3D_Vector(P1, P1, P3), oom, rm);
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 17 to 18
@@ -405,7 +405,7 @@ public class V3D_LineTest extends V3D_Test {
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 22
-        l = new V3D_Line(e, P0P1N1, new V3D_Vector(P2, P3, P1));
+        l = new V3D_Line(e, P0P1N1, new V3D_Vector(P2, P3, P1), oom, rm);
         expResult = pP1P2P0;
         instance = new V3D_Line(pP1P2P0, pP2P2P1, oom, rm);
         result = instance.getIntersection(l, oom, rm);
@@ -665,7 +665,7 @@ public class V3D_LineTest extends V3D_Test {
         p = pP1P1P1;
         oom = -3;
         Math_BigRational third = Math_BigRational.valueOf(1, 3);
-        instance = new V3D_Line(e, new V3D_Vector(N2, N4, P5), new V3D_Vector(N1, N2, P3));
+        instance = new V3D_Line(e, new V3D_Vector(N2, N4, P5), new V3D_Vector(N1, N2, P3), oom, rm);
         V3D_Point p2 = new V3D_Point(e, third, Math_BigRational.valueOf(2, 3), third);
         expResult = p2.getDistance(p, oom, rm);
         result = instance.getDistance(p, oom, rm);
@@ -824,7 +824,7 @@ public class V3D_LineTest extends V3D_Test {
         // Test 2
         l = new V3D_Line(pP0P0P0, pP1P1P0, oom, rm);
         oom = -4;
-        instance = new V3D_Line(e, P1N1P0, new V3D_Vector(P2, P0, P0));
+        instance = new V3D_Line(e, P1N1P0, new V3D_Vector(P2, P0, P0), oom, rm);
         expResult = BigDecimal.valueOf(2).sqrt(new MathContext(1 - oom, rm));
         result = instance.getDistance(l, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
@@ -951,39 +951,39 @@ public class V3D_LineTest extends V3D_Test {
         assertTrue(expResult.equals(result, oom, rm));
     }
 
-    /**
-     * Test of getQV method, of class V3D_Line.
-     */
-    @Test
-    public void testGetQV() {
-        System.out.println("getQV");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-        V3D_Vector expResult = new V3D_Vector(1, 0, 0);
-        V3D_Vector result = instance.getQV(oom, rm);
-        assertTrue(expResult.equals(result));
-    }
+//    /**
+//     * Test of getQV method, of class V3D_Line.
+//     */
+//    @Test
+//    public void testGetQV() {
+//        System.out.println("getQV");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
+//        V3D_Vector expResult = new V3D_Vector(1, 0, 0);
+//        V3D_Vector result = instance.getQV(oom, rm);
+//        assertTrue(expResult.equals(result));
+//    }
 
-    /**
-     * Test of getV method, of class V3D_Line.
-     */
-    @Test
-    public void testGetV_int_RoundingMode() {
-        System.out.println("getV");
-        int oom = -1;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-        V3D_Vector expResult = new V3D_Vector(1, 0, 0);
-        V3D_Vector result = instance.getV(oom, rm);
-        assertTrue(expResult.equals(result));
-        // Test 2
-        oom = -12;
-        instance = new V3D_Line(pP0P0P0, new V3D_Point(e, P0_1E12, P0, P0), oom, rm);
-        expResult = new V3D_Vector(P0_1E12, P0, P0);
-        result = instance.getV(oom, rm);
-        assertTrue(expResult.equals(result));
-    }
+//    /**
+//     * Test of getV method, of class V3D_Line.
+//     */
+//    @Test
+//    public void testGetV_int_RoundingMode() {
+//        System.out.println("getV");
+//        int oom = -1;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
+//        V3D_Vector expResult = new V3D_Vector(1, 0, 0);
+//        V3D_Vector result = instance.getV(oom, rm);
+//        assertTrue(expResult.equals(result));
+//        // Test 2
+//        oom = -12;
+//        instance = new V3D_Line(pP0P0P0, new V3D_Point(e, P0_1E12, P0, P0), oom, rm);
+//        expResult = new V3D_Vector(P0_1E12, P0, P0);
+//        result = instance.getV(oom, rm);
+//        assertTrue(expResult.equals(result));
+//    }
 
     /**
      * Test of rotate method, of class V3D_Line.
@@ -1012,15 +1012,15 @@ public class V3D_LineTest extends V3D_Test {
         // Test 3
         axisOfRotation = new V3D_Vector(0, 1, 0).getUnitVector(oom, rm);
         theta = Pi.divide(2);
-        instance = new V3D_Line(e, new V3D_Vector(0, 0, 0), new V3D_Vector(5, 0, 0));
-        expResult = new V3D_Line(e, new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, 5));
+        instance = new V3D_Line(e, new V3D_Vector(0, 0, 0), new V3D_Vector(5, 0, 0), oom, rm);
+        expResult = new V3D_Line(e, new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, 5), oom, rm);
         instance.rotate(axisOfRotation, theta, oom, rm);
         assertTrue(((V3D_Line) expResult).equals((V3D_Line) instance, oom, rm));
         // Test 4
         axisOfRotation = new V3D_Vector(0, 1, 0).getUnitVector(oom, rm);
         theta = Pi;
-        instance = new V3D_Line(e, new V3D_Vector(3, 2, 0), new V3D_Vector(5, 0, 0));
-        expResult = new V3D_Line(e, new V3D_Vector(-3, 2, 0), new V3D_Vector(-5, 0, 0));
+        instance = new V3D_Line(e, new V3D_Vector(3, 2, 0), new V3D_Vector(5, 0, 0), oom, rm);
+        expResult = new V3D_Line(e, new V3D_Vector(-3, 2, 0), new V3D_Vector(-5, 0, 0), oom, rm);
         instance.rotate(axisOfRotation, theta, oom, rm);
         assertTrue(((V3D_Line) expResult).equals((V3D_Line) instance, oom, rm));
     }
@@ -1144,7 +1144,7 @@ public class V3D_LineTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point[] points = null;
         V3D_Line expResult = null;
-        V3D_Line result = V3D_Line.getLine(e, oom, rm, points);
+        V3D_Line result = V3D_Line.getLine(oom, rm, points);
         assertTrue(expResult.equals(result, oom, rm));
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

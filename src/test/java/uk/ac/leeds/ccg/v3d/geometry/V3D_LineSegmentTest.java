@@ -165,7 +165,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
     @Test
     public void testTranslate() {
         System.out.println("translate");
-        int oom = -1;
+        int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector v = V3D_Vector.I;
         V3D_LineSegment instance = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);

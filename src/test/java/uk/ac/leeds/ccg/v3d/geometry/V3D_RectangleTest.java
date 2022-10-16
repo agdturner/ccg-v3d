@@ -415,7 +415,7 @@ public class V3D_RectangleTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
         V3D_LineSegment expResult = new V3D_LineSegment(pP1P1P0, pP0P1P0, oom, rm);
-        V3D_LineSegment result = instance.getRS();
+        V3D_LineSegment result = instance.getRS(oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
 
@@ -429,7 +429,7 @@ public class V3D_RectangleTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
         V3D_LineSegment expResult = new V3D_LineSegment(pP0P1P0, pP0P0P0, oom, rm);
-        V3D_LineSegment result = instance.getSP();
+        V3D_LineSegment result = instance.getSP(oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
 

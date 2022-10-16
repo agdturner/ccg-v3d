@@ -54,7 +54,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class V3D_Geometry implements Serializable, 
+public abstract class V3D_Geometry implements Serializable,
         V3D_IntersectionAndDistanceCalculations {
 
     private static final long serialVersionUID = 1L;
@@ -69,7 +69,7 @@ public abstract class V3D_Geometry implements Serializable,
      * {@link V3D_Point#ORIGIN}.
      */
     public V3D_Vector offset;
-    
+
     /**
      * Creates a new instance.
      *
@@ -97,7 +97,7 @@ public abstract class V3D_Geometry implements Serializable,
     protected String toStringFields(String pad) {
         return pad + "offset=" + offset.toString(pad);
     }
-    
+
     /**
      * @param pad The padding.
      * @return A padded description.
@@ -105,10 +105,10 @@ public abstract class V3D_Geometry implements Serializable,
     protected String toStringFieldsSimple(String pad) {
         return pad + "offset=" + offset.toStringSimple("");
     }
-    
+
     /**
      * Translate (move relative to the origin).
-     * 
+     *
      * @param v The vector to translate.
      * @param oom The Order of Magnitude for the precision.
      */
@@ -117,8 +117,9 @@ public abstract class V3D_Geometry implements Serializable,
     }
 
     /**
-     * Rotate about the {@link #offset}.
-     * 
+     * Returns the geometry rotated about the axis of rotation axisOfRotation by
+     * the angle theta.
+     *
      * @param axisOfRotation The axis of rotation.
      * @param theta The angle of rotation around the {@code axisOfRotation} in
      * radians. Options for rotation include:
@@ -136,8 +137,22 @@ public abstract class V3D_Geometry implements Serializable,
      * <li>https://en.wikipedia.org/wiki/3D_rotation_group</li>
      * </ul>
      */
-    public abstract void rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm);
-    
+    public abstract V3D_Geometry rotate(V3D_Vector axisOfRotation,
+            Math_BigRational theta, int oom, RoundingMode rm);
+
+    public Math_BigRational getAngleM(Math_BigRational theta, int oom,
+            RoundingMode rm) {
+        Math_BigRational twoPi = Math_BigRational.valueOf(e.bd.getPi(oom, rm)).multiply(2);
+        // Change a negative angle into a positive one.
+        while (theta.compareTo(Math_BigRational.ZERO) == -1) {
+            theta = theta.add(twoPi);
+        }
+        // Only rotate less than 2Pi radians.
+        while (theta.compareTo(twoPi) == 1) {
+            theta = theta.subtract(twoPi);
+        }
+        return theta;
+    }
 //    /**
 //     * Identify if the envelope of this is intersected by {@code l}.
 //     * 
