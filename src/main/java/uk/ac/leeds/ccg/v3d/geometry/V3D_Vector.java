@@ -66,22 +66,54 @@ public class V3D_Vector implements Serializable {
     public static final V3D_Vector ZERO = new V3D_Vector(0, 0, 0);
 
     /**
-     * The I vector {@code <1,0,0>} where:
-     * {@link #dx} = 1; {@link #dy} = {@link #dz} = 0.
+     * The I vector {@code <1,0,0>}.
      */
     public static final V3D_Vector I = new V3D_Vector(1, 0, 0);
 
     /**
-     * The J vector {@code <0,1,0>} where:
-     * {@link #dy} = 1; {@link #dx} = {@link #dz} = 0.
+     * The J vector {@code <0,1,0>}.
      */
     public static final V3D_Vector J = new V3D_Vector(0, 1, 0);
 
     /**
-     * The K vector {@code <0,0,1>} where:
-     * {@link #dy} = 1; {@link #dx} = {@link #dz} = 0.
+     * The K vector {@code <0,0,1>}.
      */
     public static final V3D_Vector K = new V3D_Vector(0, 0, 1);
+
+    /**
+     * The IJ vector {@code <1,1,0>}.
+     */
+    public static final V3D_Vector IJ = new V3D_Vector(1, 1, 0);
+
+    /**
+     * The IJ vector {@code <1,-1,0>}.
+     */
+    public static final V3D_Vector InJ = new V3D_Vector(1, -1, 0);
+
+    /**
+     * The IK vector {@code <1,0,1>}.
+     */
+    public static final V3D_Vector IK = new V3D_Vector(1, 0, 1);
+
+    /**
+     * The IK vector {@code <1,0,-1>}.
+     */
+    public static final V3D_Vector InK = new V3D_Vector(1, 0, -1);
+
+    /**
+     * The JK vector {@code <0,1,1>}.
+     */
+    public static final V3D_Vector JK = new V3D_Vector(0, 1, 1);
+
+    /**
+     * The JK vector {@code <0,1,-1>}.
+     */
+    public static final V3D_Vector JnK = new V3D_Vector(0, 1, -1);
+
+    /**
+     * The IJK vector {@code <1,1,1>} where:
+     */
+    public static final V3D_Vector IJK = new V3D_Vector(1, 1, 1);
 
     /**
      * Create a new instance.
@@ -237,14 +269,14 @@ public class V3D_Vector implements Serializable {
                 Math_BigRational.valueOf(dz));
     }
 
-    /**
-     * Creates a vector from the origin to {@code p}
-     *
-     * @param p the point to which the vector starting at the origin goes.
-     */
-    public V3D_Vector(V3D_Envelope.Point p) {
-        this(p.x, p.y, p.z);
-    }
+//    /**
+//     * Creates a vector from the origin to {@code p}
+//     *
+//     * @param p the point to which the vector starting at the origin goes.
+//     */
+//    public V3D_Vector(V3D_Envelope.Point p) {
+//        this(p.x, p.y, p.z);
+//    }
 
     /**
      * Creates a vector from {@code p} to {@code q}.
@@ -269,15 +301,15 @@ public class V3D_Vector implements Serializable {
         this(p.getVector(oom, rm));
     }
 
-    /**
-     * Creates a vector from {@code p} to {@code q}.
-     *
-     * @param p the point where the vector starts.
-     * @param q the point where the vector ends.
-     */
-    public V3D_Vector(V3D_Envelope.Point p, V3D_Envelope.Point q) {
-        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
-    }
+//    /**
+//     * Creates a vector from {@code p} to {@code q}.
+//     *
+//     * @param p the point where the vector starts.
+//     * @param q the point where the vector ends.
+//     */
+//    public V3D_Vector(V3D_Envelope.Point p, V3D_Envelope.Point q) {
+//        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
+//    }
 
     /**
      * Creates a vector from {@code v}.

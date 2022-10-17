@@ -69,4 +69,19 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry
         }
         return list.toArray(V3D_Point[]::new);
     }
+    
+    /**
+     * Translate (move relative to the origin).
+     *
+     * @param v The vector to translate.
+     * @param oom The Order of Magnitude for the precision.
+     */
+    @Override
+    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        super.translate(v, oom, rm);
+        if (en != null) {
+            en.translate(v, oom, rm);
+        }
+        //en = null;
+    }
 }

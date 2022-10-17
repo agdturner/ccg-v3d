@@ -123,16 +123,16 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         this.rel = new V3D_Vector(p.rel);
     }
 
-    /**
-     * Create a new instance with {@link #offset} set to
-     * {@link V3D_Vector#ZERO}.
-     *
-     * @param p Used to initialise {@link #rel} and {@link #e}.
-     */
-    public V3D_Point(V3D_Envelope.Point p) {
-        super(p.e, V3D_Vector.ZERO);
-        this.rel = new V3D_Vector(p);
-    }
+//    /**
+//     * Create a new instance with {@link #offset} set to
+//     * {@link V3D_Vector#ZERO}.
+//     *
+//     * @param p Used to initialise {@link #rel} and {@link #e}.
+//     */
+//    public V3D_Point(V3D_Envelope.Point p) {
+//        super(p.e, V3D_Vector.ZERO);
+//        this.rel = new V3D_Vector(p);
+//    }
 
     /**
      * Create a new instance with {@link #offset} set to
@@ -452,8 +452,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements
 
     @Override
     public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
-        return new V3D_Envelope(e, oom, rm, getX(oom, rm), getY(oom, rm),
-                getZ(oom, rm));
+        return new V3D_Envelope(e, oom, rm, this);
     }
 
     @Override
@@ -643,16 +642,6 @@ public class V3D_Point extends V3D_FiniteGeometry implements
     }
 
     /**
-     * Move the line.
-     *
-     * @param v What is added to {@link #offset}.
-     */
-    @Override
-    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
-        this.offset = offset.add(v, oom, rm);
-    }
-
-    /**
      * Rotates the point about {@link offset}.
      *
      * @param axisOfRotation The axis of rotation.
@@ -767,19 +756,19 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         return true;
     }
 
-    /**
-     * @param points The points to test if they are coincident.
-     * @return {@code true} iff all the points are coincident.
-     */
-    public static boolean isCoincident(V3D_Envelope.Point... points) {
-        V3D_Envelope.Point p0 = points[0];
-        for (V3D_Envelope.Point p1 : points) {
-            if (!p1.equals(p0)) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    /**
+//     * @param points The points to test if they are coincident.
+//     * @return {@code true} iff all the points are coincident.
+//     */
+//    public static boolean isCoincident(V3D_Envelope.Point... points) {
+//        V3D_Envelope.Point p0 = points[0];
+//        for (V3D_Envelope.Point p1 : points) {
+//            if (!p1.equals(p0)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     public static ArrayList<V3D_Point> getUnique(List<V3D_Point> pts,
             int oom, RoundingMode rm) {

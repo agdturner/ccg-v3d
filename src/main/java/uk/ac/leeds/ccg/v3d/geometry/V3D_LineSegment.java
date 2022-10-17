@@ -82,7 +82,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param l What {@code this} is cloned from.
      */
     public V3D_LineSegment(V3D_LineSegment l) {
-        super(l.e);
+        super(l.e, l.offset);
         this.l = new V3D_Line(l.l);
     }
 
@@ -175,9 +175,10 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      */
     @Override
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
-        offset = offset.add(v, oom, rm);
-        // As offset and l.offset are the same, do not double add!
-        //l.offset = l.offset.add(v, oom, rm);
+        super.translate(v, oom, rm);
+        //l.translate(v, oom, rm);
+        l.offset = offset;
+//        en.translate(v, oom, rm);
     }
 
     @Override
@@ -198,14 +199,14 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         this.l = new V3D_Line(l);
     }
 
-    /**
-     * Create a new instance.
-     *
-     * @param l What {@code this} is created from.
-     */
-    public V3D_LineSegment(V3D_Envelope.LineSegment l, int oom, RoundingMode rm) {
-        this(l.e, new V3D_Vector(l.p), new V3D_Vector(l.q), oom, rm);
-    }
+//    /**
+//     * Create a new instance.
+//     *
+//     * @param l What {@code this} is created from.
+//     */
+//    public V3D_LineSegment(V3D_Envelope.LineSegment l, int oom, RoundingMode rm) {
+//        this(l.e, new V3D_Vector(l.p), new V3D_Vector(l.q), oom, rm);
+//    }
 
     @Override
     public String toString() {
@@ -324,7 +325,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
 //                    && getQ(oom, rm).equals(l.getP(), oom, rm);
 //        }
         if (this.l.equals(l.l, oom, rm)) {
-            return this.l.isIntersectedBy(l.getQ(), oom, rm)
+            return isIntersectedBy(l.getQ(), oom, rm)
                     && l.isIntersectedBy(getQ(), oom, rm);
         }
         return false;
@@ -424,17 +425,14 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     /**
+     * This may have to calculate the intersection to be sure.
      * @param l A line segment to test if it intersects with this.
      * @param oom The Order of Magnitude for the calculation.
      * @return {@code true} iff {@code l} intersects with {@code this}.
      */
     @Override
     public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-        boolean ei = getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm), oom, rm);
-        if (ei) {
-            return this.l.isIntersectedBy(l, oom, rm);
-        }
-        return false;
+        return getIntersection(l, oom, rm) != null;
     }
 
     /**
@@ -508,12 +506,11 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      */
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment ls, int oom, RoundingMode rm) {
-        V3D_Envelope ren = getEnvelope(oom, rm).getIntersection(ls.getEnvelope(oom, rm), oom, rm);
-        if (ren == null) {
+        if (!getEnvelope(oom, rm).isIntersectedBy(ls.getEnvelope(oom, rm), oom, rm)) {
             return null;
         }
         // Get intersection of infinite lines. 
-        V3D_Geometry r = this.l.getIntersection(new V3D_Line(ls), oom, rm);
+        V3D_Geometry r = this.l.getIntersection(ls.l, oom, rm);
         if (r == null) {
             return null;
         }
@@ -622,11 +619,15 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         return new V3D_LineSegment(lp, tp, oom, rm);
                     }
                 } else {
-                    // Cases: 1, 2, 27, 28
+                    // Cases: 1, 2, 8, 21, 27, 28
                     if (tp.equals(lp, oom, rm)) {
-                        // Cases: 1, 28
+                        // Cases: 8, 21
                         return tp;
                     } else {
+                        // Case: 1, 28
+                        if (lp.equals(tq, oom, rm)) {
+                            return lp;
+                        }
                         // Cases: 2, 27
                         return new V3D_LineSegment(lp, tq, oom, rm);
                     }

@@ -17,6 +17,8 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.HashSet;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -164,17 +166,17 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         }
     }
 
-    /**
-     * Create a new instance.
-     *
-     * @param r What {@code this} is created from.
-     * @throws java.lang.RuntimeException iff the points do not define a
-     * rectangle.
-     */
-    public V3D_Rectangle(V3D_Envelope.Rectangle r, int oom, RoundingMode rm) {
-        this(r.e, V3D_Vector.ZERO, new V3D_Vector(r.p), new V3D_Vector(r.q),
-                new V3D_Vector(r.r), new V3D_Vector(r.s), oom, rm);
-    }
+//    /**
+//     * Create a new instance.
+//     *
+//     * @param r What {@code this} is created from.
+//     * @throws java.lang.RuntimeException iff the points do not define a
+//     * rectangle.
+//     */
+//    public V3D_Rectangle(V3D_Envelope.Rectangle r, int oom, RoundingMode rm) {
+//        this(r.e, V3D_Vector.ZERO, new V3D_Vector(r.p), new V3D_Vector(r.q),
+//                new V3D_Vector(r.r), new V3D_Vector(r.s), oom, rm);
+//    }
 
     /**
      * Creates a new instance
@@ -221,8 +223,10 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 
     @Override
     protected String toStringFieldsSimple(String pad) {
-        return pad + "p=" + this.p.toStringSimple(pad) + ",\n"
-                + pad + "s=" + s.toStringSimple(pad);
+        return pad + "p=" + p.toStringSimple(pad) + ",\n"
+                + pad + "p=" + q.toStringSimple(pad) + ",\n"
+                + pad + "q=" + r.toStringSimple(pad) + ",\n"
+                + pad + "r=" + s.toStringSimple(pad);
     }
 
     @Override
@@ -867,9 +871,12 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     @Override
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
-        getPQR().translate(v, oom, rm);
-        s = s.add(v, oom, rm);
-        en = null;
+        super.translate(v, oom, rm);
+        this.pqr = null;
+        this.rsp = null;
+        //this.pqr.translate(v, oom, rm);
+        //this.rsp.translate(v, oom, rm);
+        //s = s.add(v, oom, rm);
     }
 
     @Override
@@ -1035,7 +1042,33 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     //@Overrides
     public boolean equals(V3D_Rectangle r, int oom, RoundingMode rm) {
-        return getConvexHull(oom, rm).equals(r.getConvexHull(oom, rm), oom, rm);
+        V3D_Point[] pts = getPoints(oom, rm);
+        V3D_Point[] rpts = r.getPoints(oom, rm);
+        for (var x: pts) {
+            boolean found = false;
+            for (var y: rpts) {
+                if (x.equals(y, oom, rm)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (! found) {
+                return false;
+            }
+        }
+        for (var x: rpts) {
+            boolean found = false;
+            for (var y: pts) {
+                if (x.equals(y, oom, rm)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (! found) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

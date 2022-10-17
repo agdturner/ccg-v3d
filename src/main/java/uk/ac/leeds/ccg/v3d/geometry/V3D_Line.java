@@ -1623,6 +1623,17 @@ public class V3D_Line extends V3D_Geometry
 //        q = q.add(offset, oom, rm).subtract(this.offset, oom, rm);
 //        this.offset = offset;
 //    }
+    /**
+     * Translate (move relative to the origin).
+     *
+     * @param v The vector to translate.
+     * @param oom The Order of Magnitude for the precision.
+     */
+    @Override
+    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        super.translate(v, oom, rm);
+    }
+    
     @Override
     public V3D_Line rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
         V3D_Point rp = getP().rotate(axisOfRotation, theta, oom, rm);
@@ -1763,20 +1774,20 @@ public class V3D_Line extends V3D_Geometry
         return true;
     }
 
-    /**
-     * @param e The V3D_Environment.
-     * @param l The line to test points are collinear with.
-     * @param points The points to test if they are collinear with l.
-     * @return {@code true} iff all points are collinear with l.
-     */
-    public static boolean isCollinear(int oom, RoundingMode rm, V3D_Envelope.Line l, V3D_Envelope.Point... points) {
-        for (V3D_Envelope.Point p : points) {
-            if (!l.isIntersectedBy(p, oom, rm)) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    /**
+//     * @param e The V3D_Environment.
+//     * @param l The line to test points are collinear with.
+//     * @param points The points to test if they are collinear with l.
+//     * @return {@code true} iff all points are collinear with l.
+//     */
+//    public static boolean isCollinear(int oom, RoundingMode rm, V3D_Envelope.Line l, V3D_Envelope.Point... points) {
+//        for (V3D_Envelope.Point p : points) {
+//            if (!l.isIntersectedBy(p, oom, rm)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
 //    /**
 //     * @param e The V3D_Environment.

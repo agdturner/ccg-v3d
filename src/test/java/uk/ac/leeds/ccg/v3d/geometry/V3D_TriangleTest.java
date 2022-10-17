@@ -115,7 +115,7 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Triangle.
      */
     @Test
-    public void testIsIntersectedBy_V3D_Line_int() {
+    public void testIsIntersectedBy_V3D_Line() {
         System.out.println("isIntersectedBy");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -252,10 +252,15 @@ public class V3D_TriangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle instance = new V3D_Triangle(e, P0P0P0, P1P0P0, P0P1P0, P0P0P1, oom, rm);
-        String expResult = "V3D_Triangle(V3D_Plane(offset=V3D_Vector(dx=0, dy=0, dz=0),\n"
-                + "p=V3D_Vector(dx=1, dy=0, dz=0),\n"
-                + "q=V3D_Vector(dx=0, dy=1, dz=0),\n"
-                + "r=V3D_Vector(dx=0, dy=0, dz=1)))";
+        String expResult = "V3D_Triangle(\n" +
+" pl=( V3D_Plane(\n" +
+"  offset=V3D_Vector(dx=0, dy=0, dz=0),\n" +
+"  p=  V3D_Vector(dx=1, dy=0, dz=0),\n" +
+"  n=  V3D_Vector(dx=1, dy=1, dz=1))),\n" +
+" offset=(V3D_Vector(dx=0, dy=0, dz=0)),\n" +
+" p=(V3D_Vector(dx=1, dy=0, dz=0)),\n" +
+" q=(V3D_Vector(dx=0, dy=1, dz=0)),\n" +
+" r=(V3D_Vector(dx=0, dy=0, dz=1)))";
         String result = instance.toString();
         //System.out.println(result);
         assertEquals(expResult, result);
@@ -437,35 +442,35 @@ public class V3D_TriangleTest extends V3D_Test {
         instance = new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0, oom, rm);
         axisOfRotation = V3D_Vector.I;
         theta = Pi;
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        instance = instance.rotate(axisOfRotation, theta, oom, rm);
         expResult = new V3D_Triangle(pP1P0P0, pP0N1P0, pP1N1P0, oom, rm);
         assertTrue(expResult.equals(instance, oom, rm));
         // Test 2
         instance = new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0, oom, rm);
         theta = Pi.divide(2);
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        instance = instance.rotate(axisOfRotation, theta, oom, rm);
         expResult = new V3D_Triangle(pP1P0P0, pP0P0P1, pP1P0P1, oom, rm);
         assertTrue(expResult.equals(instance, oom, rm));
 //        // Test 3
 //        oom = -4;
 //        instance = new V3D_Triangle(pP2P0P0, pP0P2P0, pP2P2P0, oom, rm);
 //        theta = Pi;
-//        instance.rotate(axisOfRotation, theta, oom, rm);
+//        instance = instance.rotate(axisOfRotation, theta, oom, rm);
 //        expResult = new V3D_Triangle(pP2P0P0, pP0N2P0, pP2N2P0, oom, rm);
 //        assertTrue(expResult.equals(instance, oom, rm));
 //        // Test 4
 //        oom = -3;
 //        instance = new V3D_Triangle(pP2P0P0, pP0P2P0, pP2P2P0, oom, rm);
 //        theta = Pi.divide(2);
-//        instance.rotate(axisOfRotation, theta, oom, rm);
+//        instance = instance.rotate(axisOfRotation, theta, oom, rm);
 //        expResult = new V3D_Triangle(pP2P0P0, pP0P0P2, pP2P0P2, oom, rm);
 //        assertTrue(expResult.equals(instance, oom, rm));
 //        // Test 5
 //        instance = new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0, oom, rm);
-//        instance.p.setOffset(P1P0P0, oom, rm);
+//        instance = instance.p.setOffset(P1P0P0, oom, rm);
 //        axisOfRotation = V3D_Vector.I;
 //        theta = Pi;
-//        instance.rotate(axisOfRotation, theta, oom, rm);
+//        instance = instance.rotate(axisOfRotation, theta, oom, rm);
 //        expResult = new V3D_Triangle(pP1P0P0, pP0N1P0, pP1N1P0, oom, rm);
 //        assertTrue(expResult.equals(instance, oom, rm));
     }
@@ -494,20 +499,21 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of checkSide method, of class V3D_Triangle.
      */
     @Test
-    @Disabled
     public void testCheckSide() {
         System.out.println("checkSide");
-//        V3D_Triangle t = new V3D_Triangle(pN2P0P0, pP0P2P0, pP2P0P0);
-//        V3D_Vector n = t.getN(e.oom);
-//        V3D_Triangle instance = new V3D_Triangle(pN2P1P0, pP0P2P0, pP2P1P0);
-//        V3D_Vector v = instance.getRPV();
-//        assertTrue(instance.checkSide(t, n, v, e.oom));
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Triangle t = new V3D_Triangle(pN2P0P0, pP0P2P0, pP2P0P0, oom, rm);
+        V3D_Vector n = t.pl.n;
+        V3D_Triangle instance = new V3D_Triangle(pN2P1P0, pP0P2P0, pP2P1P0, oom, rm);
+        V3D_Vector v = instance.getRPV(oom, rm);
+        assertTrue(instance.checkSide(t, n, v, oom, rm));
 //        // Test 2
-//         t = new V3D_Triangle(pN2N2P0, pP0P0P0, pP2N2P0);
-//         n = t.getN(e.oom);
-//         instance = new V3D_Triangle(pN2P2P0, pP0P1P0, pP2P2P0);
-//         v = instance.getRPV();
-//        assertFalse(instance.checkSide(t, n, v, e.oom));
+//         t = new V3D_Triangle(pN2N2P0, pP0P0P0, pP2N2P0, oom, rm);
+//         n = t.pl.n;
+//         instance = new V3D_Triangle(pN2P2P0, pP0P1P0, pP2P2P0, oom, rm);
+//         v = instance.getRPV(oom, rm);
+//        assertFalse(instance.checkSide(t, n, v, oom, rm));
     }
 
     /**

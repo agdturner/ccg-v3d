@@ -707,34 +707,34 @@ public class V3D_PointTest extends V3D_Test {
         V3D_Vector axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt, rm);
         V3D_Point instance = new V3D_Point(pP1P0P0);
         Math_BigRational theta = Pi;
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        V3D_Point result = instance.rotate(axisOfRotation, theta, oom, rm);
         V3D_Point expResult = pP0P1P0;
-        assertTrue(expResult.equals(instance, oom, rm));
+        assertTrue(expResult.equals(result, oom, rm));
         // Test 2
         axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt, rm);
         instance = new V3D_Point(pP1P0P0);;
         theta = Pi;
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axisOfRotation, theta, oom, rm);
         expResult = pP0P1P0;
-        assertTrue(expResult.equals(instance, oom, rm));
+        assertTrue(expResult.equals(result, oom, rm));
         // Test 3
         axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt, rm);
         V3D_Vector offset = new V3D_Vector(2, 0, 0);
         V3D_Vector rel = new V3D_Vector(1, 0, 0);
         instance = new V3D_Point(e, offset, rel);
         theta = Pi;
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axisOfRotation, theta, oom, rm);
         expResult = new V3D_Point(e, 2, 1, 0);
-        assertTrue(expResult.equals(instance, oom, rm));
+        assertTrue(expResult.equals(result, oom, rm));
         // Test 4
         axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt, rm);
         offset = new V3D_Vector(1, 0, 0);
         rel = new V3D_Vector(2, 0, 0);
         instance = new V3D_Point(e, offset, rel);
         theta = Pi;
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axisOfRotation, theta, oom, rm);
         expResult = new V3D_Point(e, 1, 2, 0);
-        assertTrue(expResult.equals(instance, oom, rm));
+        assertTrue(expResult.equals(result, oom, rm));
     }
 
     /**

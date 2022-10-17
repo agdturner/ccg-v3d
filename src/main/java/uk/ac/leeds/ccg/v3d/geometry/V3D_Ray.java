@@ -178,8 +178,7 @@ public class V3D_Ray extends V3D_Geometry
      */
     @Override
     protected String toStringFields(String pad) {
-        String r = super.toStringFields(pad);
-        return r;
+        return pad + l.toStringFields(pad);
     }
 
     /**
@@ -188,8 +187,7 @@ public class V3D_Ray extends V3D_Geometry
      */
     @Override
     protected String toStringFieldsSimple(String pad) {
-        String r = super.toStringFieldsSimple(pad);
-        return r;
+        return pad +  l.toStringFieldsSimple(pad);
     }
 
 //    /**
@@ -382,7 +380,9 @@ public class V3D_Ray extends V3D_Geometry
             return false;
         }
         if (i instanceof V3D_Point pt) {
-            return isIntersectedBy(pt, oom, rm);
+            //return isIntersectedBy(pt, oom, rm);
+            V3D_Plane pl2 = new V3D_Plane(l.getP(), l.v);
+            return pl2.isOnSameSide(pt, l.getQ(oom, rm), oom, rm);
         } else {
             return true;
         }
@@ -1396,6 +1396,19 @@ public class V3D_Ray extends V3D_Geometry
         }
     }
 
+    /**
+     * Translate (move relative to the origin).
+     *
+     * @param v The vector to translate.
+     * @param oom The Order of Magnitude for the precision.
+     */
+    @Override
+    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        super.translate(v, oom, rm);
+        l.offset = offset;
+        //l.translate(v, oom, rm);
+    }
+    
     @Override
     public V3D_Ray rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
             int oom, RoundingMode rm) {

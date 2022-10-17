@@ -29,33 +29,33 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * For representing and processing triangles in 3D. A triangle has a non-zero
  * area. The corner points are {@link #pl}, {@link #q} and {@link #r}. The
  * following depicts a generic triangle {@code
-                          pq
-  pl *- - - - - - - - - - - + - - - - - - - - - - -* q
-     \~                   mpq                   ~/
-      \  ~                 |                 ~  /
-       \    ~              |              ~    /
-        \      ~           |           ~      /
-         \        ~        |        ~        /
-          \          ~     |     ~          /
-           \            ~  |  ~            /
-       -n  -n  -n  -n  -n  c  n  n  n  n  n  normal heading out from the page.
-             \          ~  |  ~          /
-              \      ~     |     ~      /
-               \  ~        |        ~  /
-                + mrp      |      mqr +
-             rp  \         |         /  qr
-                  \        |        /
-                   \       |       /
-                    \      |      /
-                     \     |     /
-                      \    |    /
-                       \   |   /
-                        \  |  /
-                         \ | /
-                          \|/
-                           *
-                           r
- }
+ * pq
+ * pl *- - - - - - - - - - - + - - - - - - - - - - -* q
+ * \~                   mpq                   ~/
+ * \  ~                 |                 ~  /
+ * \    ~              |              ~    /
+ * \      ~           |           ~      /
+ * \        ~        |        ~        /
+ * \          ~     |     ~          /
+ * \            ~  |  ~            /
+ * -n  -n  -n  -n  -n  c  n  n  n  n  n  normal heading out from the page.
+ * \          ~  |  ~          /
+ * \      ~     |     ~      /
+ * \  ~        |        ~  /
+ * + mrp      |      mqr +
+ * rp  \         |         /  qr
+ * \        |        /
+ * \       |       /
+ * \      |      /
+ * \     |     /
+ * \    |    /
+ * \   |   /
+ * \  |  /
+ * \ | /
+ * \|/
+ *
+ * r
+ * }
  * The mid points of the triangle edges may or may not be possible to pin point.
  * Likewise the centroid which is at the intersection of the line segments from
  * these midpoints to the opposite corner.
@@ -69,9 +69,9 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
     public V3D_Plane pl;
 
-    public final V3D_Vector p;
-    public final  V3D_Vector q;
-    public final  V3D_Vector r;
+    public V3D_Vector p;
+    public V3D_Vector q;
+    public V3D_Vector r;
 //    /**
 //     * For storing the line segment from {@link #pl} to {@link #q}.
 //     */
@@ -106,6 +106,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //     * The centroid.
 //     */
 //    private V3D_Point c;
+
     /**
      * Creates a new triangle.
      *
@@ -196,7 +197,6 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //                lpq.getQ(oom, rm).getVector(oom, rm),
 //                lqr.getQ(oom, rm).getVector(oom, rm));
 //    }
-
     /**
      * Creates a new instance.
      *
@@ -218,54 +218,54 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public final V3D_Point getP() {
         return new V3D_Point(e, offset, p);
     }
-    
+
     /**
      * @return A new point based on {@link #q} and {@link #offset}.
      */
     public final V3D_Point getQ() {
         return new V3D_Point(e, offset, q);
     }
-    
+
     /**
      * @return A new point based on {@link #r} and {@link #offset}.
      */
     public final V3D_Point getR() {
         return new V3D_Point(e, offset, r);
     }
-    
+
     /**
      * @return Line segment from p to q.
      */
     public final V3D_LineSegment getPQ(int oom, RoundingMode rm) {
         return new V3D_LineSegment(e, offset, p, q, oom, rm);
     }
-    
+
     public final V3D_Vector getPQV(int oom, RoundingMode rm) {
         return q.subtract(p, oom, rm);
     }
-    
+
     public final V3D_Vector getQRV(int oom, RoundingMode rm) {
         return r.subtract(q, oom, rm);
     }
-    
+
     public final V3D_Vector getRPV(int oom, RoundingMode rm) {
         return p.subtract(r, oom, rm);
     }
-    
+
     /**
      * @return Line segment from q to r.
      */
     public final V3D_LineSegment getQR(int oom, RoundingMode rm) {
         return new V3D_LineSegment(e, offset, q, r, oom, rm);
     }
-    
+
     /**
      * @return Line segment from r to p.
      */
     public final V3D_LineSegment getRP(int oom, RoundingMode rm) {
         return new V3D_LineSegment(e, offset, r, p, oom, rm);
     }
-    
+
     @Override
     public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
@@ -354,7 +354,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         V3D_LineSegment pq = getPQ(oom, rm);
         V3D_LineSegment qr = getQR(oom, rm);
         V3D_LineSegment rp = getRP(oom, rm);
-        if (pq.isIntersectedBy(pt, oom, rm) 
+        if (pq.isIntersectedBy(pt, oom, rm)
                 || qr.isIntersectedBy(pt, oom, rm)
                 || rp.isIntersectedBy(pt, oom, rm)) {
             return true;
@@ -444,84 +444,85 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         if (pl.isIntersectedBy(l, oom, rm)) {
             V3D_Geometry g = pl.getIntersection(l, oom, rm);
             if (g instanceof V3D_Point pt) {
-                if (isIntersectedBy(pt, oom, rm)) {
-                    return true;
-                    /**
-                     * Logically, if the point of the line plane intersection is
-                     * on the triangle then it intersects. However, the point is
-                     * only given accurately to the given precision, so testing
-                     * if the point is on the triangle does not work. The
-                     * commented out else clause and this comment is in the code
-                     * on purpose.
-                     */
-//                } else {
-//                    return false; // This seems logical, but does not work for all cases in practice.
-                }
-                /**
-                 * An option is to use the direction of the line vector to
-                 * define planes for each edge of the triangle and test that the
-                 * point of intersection is on the same side of these planes to
-                 * the other point of the triangle in all cases. This option is
-                 * commented out as it is thought this is slower than the option
-                 * given below. Some timed tests should be done to measure which
-                 * is faster...
-                 */
-//                V3D_Point pp = pl.getP();
-//                V3D_Point pq = pl.getQ();
-//                V3D_Point pr = pl.getR();
-//                V3D_Point qp = new V3D_Point(e, pq.offset, pl.getQV().add(l.v, oom));
-//                V3D_Plane a = new V3D_Plane(pp, pq, qp);
-//                V3D_Point rp = new V3D_Point(e, pr.offset, pl.getRV().add(l.v, oom));
-//                V3D_Plane b = new V3D_Plane(pq, pr, rp);
-//                V3D_Point ppt = new V3D_Point(e, pl.offset, pl.getPV().add(l.v, oom));
-//                V3D_Plane c = new V3D_Plane(pr, ppt, rp);
-//                if (a.isOnSameSide(pt, rp, oom)){
-//                    if (b.isOnSameSide(pt, pp, oom)) {
-//                        if (c.isOnSameSide(pt, pq, oom)) {
-//                            return true;
-//                        }
-//                    }
+                return isAligned(pt, oom, rm);
+//                if (isIntersectedBy(pt, oom, rm)) {
+//                    return true;
+//                    /**
+//                     * Logically, if the point of the line plane intersection is
+//                     * on the triangle then it intersects. However, the point is
+//                     * only given accurately to the given precision, so testing
+//                     * if the point is on the triangle does not work. The
+//                     * commented out else clause and this comment is in the code
+//                     * on purpose.
+//                     */
+////                } else {
+////                    return false; // This seems logical, but does not work for all cases in practice.
 //                }
-//                return false;
-                /**
-                 * Another option is to use:
-                 * https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-                 * It is thought this is faster than the option commented out
-                 * above. Some timed tests should be done to measure which is
-                 * faster...
-                 */
-                V3D_Vector edge1 = getPQ(oom, rm).l.v;
-                V3D_Vector edge2 = getRP(oom, rm).l.v.reverse();
-                //V3D_Vector h = l.getV(oom, rm).getCrossProduct(edge2, oom, rm);
-                V3D_Vector h = l.v.getCrossProduct(edge2, oom, rm);
-
-                if (edge1.getDotProduct(h, oom, rm).compareTo(Math_BigRational.ZERO) == 0) {
-                    System.out.println("edge1.getDotProduct(h, oom, rm) is zero in isIntersectedBy");
-                    System.out.println("Triangle:");
-                    System.out.println(this.toString());
-                    System.out.println("Line:");
-                    System.out.println(l.toString());
-                    return false;
-                }
-
-                Math_BigRational f = Math_BigRational.ONE.divide(
-                        edge1.getDotProduct(h, oom, rm));
-                V3D_Vector s = l.p.subtract(pl.getPV(), oom, rm);
-                Math_BigRational u = f.multiply(s.getDotProduct(h, oom, rm));
-                if (u.compareTo(Math_BigRational.ZERO) == -1
-                        || u.compareTo(Math_BigRational.ONE) == 1) {
-                    return false;
-                }
-                V3D_Vector q = s.getCrossProduct(edge1, oom, rm);
-                //Math_BigRational v = f.multiply(l.getV(oom, rm).getDotProduct(q, oom, rm));
-                Math_BigRational v = f.multiply(l.v.getDotProduct(q, oom, rm));
-                if (v.compareTo(Math_BigRational.ZERO) == -1
-                        || u.add(v).compareTo(Math_BigRational.ONE) == 1) {
-                    return false;
-                }
-                Math_BigRational t
-                        = f.multiply(edge2.getDotProduct(q, oom, rm));
-                return t.compareTo(Math_BigRational.ZERO) == 1;
+//                /**
+//                 * An option is to use the direction of the line vector to
+//                 * define planes for each edge of the triangle and test that the
+//                 * point of intersection is on the same side of these planes to
+//                 * the other point of the triangle in all cases. This option is
+//                 * commented out as it is thought this is slower than the option
+//                 * given below. Some timed tests should be done to measure which
+//                 * is faster...
+//                 */
+////                V3D_Point pp = pl.getP();
+////                V3D_Point pq = pl.getQ();
+////                V3D_Point pr = pl.getR();
+////                V3D_Point qp = new V3D_Point(e, pq.offset, pl.getQV().add(l.v, oom));
+////                V3D_Plane a = new V3D_Plane(pp, pq, qp);
+////                V3D_Point rp = new V3D_Point(e, pr.offset, pl.getRV().add(l.v, oom));
+////                V3D_Plane b = new V3D_Plane(pq, pr, rp);
+////                V3D_Point ppt = new V3D_Point(e, pl.offset, pl.getPV().add(l.v, oom));
+////                V3D_Plane c = new V3D_Plane(pr, ppt, rp);
+////                if (a.isOnSameSide(pt, rp, oom)){
+////                    if (b.isOnSameSide(pt, pp, oom)) {
+////                        if (c.isOnSameSide(pt, pq, oom)) {
+////                            return true;
+////                        }
+////                    }
+////                }
+////                return false;
+//                /**
+//                 * Another option is to use:
+//                 * https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+//                 * It is thought this is faster than the option commented out
+//                 * above. Some timed tests should be done to measure which is
+//                 * faster...
+//                 */
+//                V3D_Vector edge1 = getPQ(oom, rm).l.v;
+//                V3D_Vector edge2 = getRP(oom, rm).l.v.reverse();
+//                //V3D_Vector h = l.getV(oom, rm).getCrossProduct(edge2, oom, rm);
+//                V3D_Vector h = l.v.getCrossProduct(edge2, oom, rm);
+//
+//                if (edge1.getDotProduct(h, oom, rm).compareTo(Math_BigRational.ZERO) == 0) {
+//                    System.out.println("edge1.getDotProduct(h, oom, rm) is zero in isIntersectedBy");
+//                    System.out.println("Triangle:");
+//                    System.out.println(this.toString());
+//                    System.out.println("Line:");
+//                    System.out.println(l.toString());
+//                    return false;
+//                }
+//
+//                Math_BigRational f = Math_BigRational.ONE.divide(
+//                        edge1.getDotProduct(h, oom, rm));
+//                V3D_Vector s = l.p.subtract(pl.getPV(), oom, rm);
+//                Math_BigRational u = f.multiply(s.getDotProduct(h, oom, rm));
+//                if (u.compareTo(Math_BigRational.ZERO) == -1
+//                        || u.compareTo(Math_BigRational.ONE) == 1) {
+//                    return false;
+//                }
+//                V3D_Vector q = s.getCrossProduct(edge1, oom, rm);
+//                //Math_BigRational v = f.multiply(l.getV(oom, rm).getDotProduct(q, oom, rm));
+//                Math_BigRational v = f.multiply(l.v.getDotProduct(q, oom, rm));
+//                if (v.compareTo(Math_BigRational.ZERO) == -1
+//                        || u.add(v).compareTo(Math_BigRational.ONE) == 1) {
+//                    return false;
+//                }
+//                Math_BigRational t
+//                        = f.multiply(edge2.getDotProduct(q, oom, rm));
+//                return t.compareTo(Math_BigRational.ZERO) == 1;
             } else {
                 if (getPQ(oom, rm).isIntersectedBy(l, oom, rm)) {
                     return true;
@@ -700,8 +701,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public BigDecimal getPerimeter(int oom, RoundingMode rm) {
         int oomN1 = oom - 1;
         return Math_BigDecimal.round(getPQ(oom, rm).getLength(oom, rm).toBigDecimal(oomN1, rm)
-                        .add(getQR(oom, rm).getLength(oom, rm).toBigDecimal(oomN1, rm))
-                        .add(getRP(oom, rm).getLength(oom, rm).toBigDecimal(oomN1, rm)),
+                .add(getQR(oom, rm).getLength(oom, rm).toBigDecimal(oomN1, rm))
+                .add(getRP(oom, rm).getLength(oom, rm).toBigDecimal(oomN1, rm)),
                 oom, rm);
     }
 
@@ -836,8 +837,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     /**
-     * Calculate and return the intersection between {@code this} and {@code pl}.
-     * A question about how to do this:
+     * Calculate and return the intersection between {@code this} and
+     * {@code pl}. A question about how to do this:
      * https://stackoverflow.com/questions/3142469/determining-the-intersection-of-a-triangle-and-a-plane
      *
      * @param pl The plane to intersect with.
@@ -1125,7 +1126,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     /**
      * Test if two triangles are equal. Two triangles are equal if they have 3
      * coincident points, so even if the order is different and one is clockwise
-     * and the other anticlockwise.
+     * and the other anticlockwise, or one faces the other way.
      *
      * @param t The other triangle to test for equality.
      * @return {@code true} iff {@code this} is equal to {@code t}.
@@ -1174,24 +1175,35 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      */
     @Override
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        super.translate(v, oom, rm);
         pl.translate(v, oom, rm);
-        en = null;
     }
 
     @Override
     public V3D_Triangle rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
             int oom, RoundingMode rm) {
-        return new V3D_Triangle(getP().rotate(axisOfRotation, theta, oom, rm),
+        return new V3D_Triangle(
+                getP().rotate(axisOfRotation, theta, oom, rm),
                 getQ().rotate(axisOfRotation, theta, oom, rm),
                 getR().rotate(axisOfRotation, theta, oom, rm), oom, rm);
     }
 
     public String toString(String pad) {
-        return this.getClass().getSimpleName() + "(" + pl.toString(pad) + ")";
+        return pad + this.getClass().getSimpleName() + "(\n"
+                + pad + " pl=(" + pl.toString(pad + " ") + "),\n"
+                + pad + " offset=(" + this.offset.toString(pad + " ") + "),\n"
+                + pad + " p=(" + this.p.toString(pad + " ") + "),\n"
+                + pad + " q=(" + this.q.toString(pad + " ") + "),\n"
+                + pad + " r=(" + this.r.toString(pad + " ") + "))";
     }
 
     public String toStringSimple(String pad) {
-        return this.getClass().getSimpleName() + "(" + pl.toStringSimple("") + ")";
+        return pad + this.getClass().getSimpleName() + "(\n"
+                + pad + " pl=(" + pl.toStringSimple(pad + " ") + "),\n"
+                + pad + " offset=(" + this.offset.toStringSimple("") + "),\n"
+                + pad + " p=(" + this.p.toStringSimple("") + "),\n"
+                + pad + " q=(" + this.q.toStringSimple("") + "),\n"
+                + pad + " r=(" + this.r.toStringSimple("") + "))";
     }
 
     @Override
@@ -1555,7 +1567,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
     /**
      * This may be called when there is an intersection of two triangles where l
- is a side of a triangle and pl is a point.
+     * is a side of a triangle and pl is a point.
      *
      * @param l A line segment.
      * @param p1 A point that is either not collinear to l or intersects l.
@@ -1573,7 +1585,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
     /**
      * This may be called when there is an intersection of two triangles where l
- is a side of a triangle and pl is a point that is not collinear to l.
+     * is a side of a triangle and pl is a point that is not collinear to l.
      *
      * @param l A line segment.
      * @param p A point that is not collinear to l.

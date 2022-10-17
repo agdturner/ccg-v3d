@@ -124,8 +124,7 @@ public class V3D_LineTest extends V3D_Test {
                 + "(\n"
                 + " offset=V3D_Vector(dx=0, dy=0, dz=0),\n"
                 + " p=V3D_Point(offset=V3D_Vector(dx=0, dy=0, dz=0), rel=V3D_Vector(dx=0, dy=0, dz=0)),\n"
-                + " q= V3D_Vector(dx=1, dy=0, dz=0),\n"
-                + " v=null\n"
+                + " v= V3D_Vector(dx=1, dy=0, dz=0)\n"
                 + ")";
         String result = instance.toString();
         //System.out.println(result);
@@ -546,7 +545,7 @@ public class V3D_LineTest extends V3D_Test {
         System.out.println("isParallelToY0");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line instance = new V3D_Line(pP0P0P1, pP0P0N1, oom, rm);
+        V3D_Line instance = new V3D_Line(pP0P1P1, pP0P1N1, oom, rm);
         assertTrue(instance.isParallelToY0(oom, rm));
     }
 
@@ -558,7 +557,7 @@ public class V3D_LineTest extends V3D_Test {
         System.out.println("isParallelToZ0");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line instance = new V3D_Line(pP0P0P1, pP1P1P1, oom, rm);
+        V3D_Line instance = new V3D_Line(pP0P0P1, pP0P1P1, oom, rm);
         assertTrue(instance.isParallelToZ0(oom, rm));
     }
 
@@ -864,14 +863,12 @@ public class V3D_LineTest extends V3D_Test {
                 + "  )\n"
                 + " )\n"
                 + " ,\n"
-                + " q=V3D_Vector\n"
+                + " v=V3D_Vector\n"
                 + " (\n"
                 + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
                 + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + " )\n"
-                + " ,\n"
-                + " v=null\n"
                 + ")";
         String result = instance.toString(pad);
         //System.out.println(result);
@@ -910,16 +907,14 @@ public class V3D_LineTest extends V3D_Test {
                 + " )\n"
                 + ")\n"
                 + ",\n"
-                + "q=V3D_Vector\n"
+                + "v=V3D_Vector\n"
                 + "(\n"
                 + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
                 + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
                 + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")\n"
-                + ",\n"
-                + "v=null";
+                + ")";
         String result = instance.toStringFields(pad);
-        //System.out.println(result);
+        System.out.println(result);
         assertEquals(expResult, result);
     }
 
@@ -964,7 +959,6 @@ public class V3D_LineTest extends V3D_Test {
 //        V3D_Vector result = instance.getQV(oom, rm);
 //        assertTrue(expResult.equals(result));
 //    }
-
 //    /**
 //     * Test of getV method, of class V3D_Line.
 //     */
@@ -984,7 +978,6 @@ public class V3D_LineTest extends V3D_Test {
 //        result = instance.getV(oom, rm);
 //        assertTrue(expResult.equals(result));
 //    }
-
     /**
      * Test of rotate method, of class V3D_Line.
      */
@@ -1000,29 +993,29 @@ public class V3D_LineTest extends V3D_Test {
         Math_BigRational theta = Pi.divide(2);
         V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
         V3D_Line expResult = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-        instance.rotate(axisOfRotation, theta, oom, rm);
-        assertTrue(((V3D_Line) expResult).equals((V3D_Line) instance, oom, rm));
+        V3D_Line result = instance.rotate(axisOfRotation, theta, oom, rm);
+        assertTrue(expResult.equals(result, oom, rm));
         // Test 2
         axisOfRotation = new V3D_Vector(0, 1, 0).getUnitVector(oom, rm);
         theta = Pi.divide(2);
         instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
         expResult = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
-        instance.rotate(axisOfRotation, theta, oom, rm);
-        assertTrue(((V3D_Line) expResult).equals((V3D_Line) instance, oom, rm));
+        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        assertTrue(expResult.equals(result, oom, rm));
         // Test 3
         axisOfRotation = new V3D_Vector(0, 1, 0).getUnitVector(oom, rm);
         theta = Pi.divide(2);
         instance = new V3D_Line(e, new V3D_Vector(0, 0, 0), new V3D_Vector(5, 0, 0), oom, rm);
         expResult = new V3D_Line(e, new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, 5), oom, rm);
-        instance.rotate(axisOfRotation, theta, oom, rm);
-        assertTrue(((V3D_Line) expResult).equals((V3D_Line) instance, oom, rm));
+        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        assertTrue(expResult.equals(result, oom, rm));
         // Test 4
         axisOfRotation = new V3D_Vector(0, 1, 0).getUnitVector(oom, rm);
         theta = Pi;
         instance = new V3D_Line(e, new V3D_Vector(3, 2, 0), new V3D_Vector(5, 0, 0), oom, rm);
         expResult = new V3D_Line(e, new V3D_Vector(-3, 2, 0), new V3D_Vector(-5, 0, 0), oom, rm);
-        instance.rotate(axisOfRotation, theta, oom, rm);
-        assertTrue(((V3D_Line) expResult).equals((V3D_Line) instance, oom, rm));
+        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        assertTrue(expResult.equals(result, oom, rm));
     }
 
     /**
@@ -1133,20 +1126,4 @@ public class V3D_LineTest extends V3D_Test {
         assertTrue(V3D_Line.isCollinear(e, oom, rm, points));
     }
 
-    /**
-     * Test of getLine method, of class V3D_Geometrics. No test needed.
-     */
-    @Test
-    @Disabled
-    public void testGetLine() {
-        System.out.println("getLine");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Point[] points = null;
-        V3D_Line expResult = null;
-        V3D_Line result = V3D_Line.getLine(oom, rm, points);
-        assertTrue(expResult.equals(result, oom, rm));
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 }
