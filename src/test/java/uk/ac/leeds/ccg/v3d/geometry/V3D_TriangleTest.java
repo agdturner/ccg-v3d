@@ -111,75 +111,75 @@ public class V3D_TriangleTest extends V3D_Test {
         // No test.
     }
 
-    /**
-     * Test of isIntersectedBy method, of class V3D_Triangle.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_Line() {
-        System.out.println("isIntersectedBy");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line l = new V3D_Line(pP0P0P0, pP2P2P2, oom, rm);
-        V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
-        assertTrue(instance.isIntersectedBy(l, oom, rm));
-        // Test 2
-        l = new V3D_Line(pP1P1P1, pP1P1P0, oom, rm);
-        assertFalse(instance.isIntersectedBy(l, oom, rm));
-        // Test 3
-        // line
-        // x = 0, y = 0, z = t
-        // points (0, 0, 0), (0, 0, 1) 
-        l = new V3D_Line(new V3D_Point(e, 0, 0, -120),
-                new V3D_Point(e, 0, 3, 0), oom, rm);
-        // plane
-        // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
-        instance = new V3D_Triangle(
-                new V3D_Point(e, -40, -30, 6),
-                new V3D_Point(e, 0, 30, 5),
-                new V3D_Point(e, 40, 30, 5), oom, rm);
-        assertTrue(instance.isIntersectedBy(l, oom, rm));
-    }
-
-    /**
-     * Test of isIntersectedBy method, of class V3D_Triangle.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_LineSegment_int() {
-        System.out.println("isIntersectedBy");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_LineSegment l;
-        V3D_Triangle instance;
-        // Test 1
-        instance = new V3D_Triangle(e, P0P0P0, P1P0P0, P1P2P0, P2P0P0, oom, rm);
-        l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        assertTrue(instance.isIntersectedBy(l, oom, rm));
-        // Test 2
-        l = new V3D_LineSegment(e, P0P0P0, P0P0P0,
-                new V3D_Vector(Math_BigRational.valueOf(0.5d), P0, P0), oom, rm);
-        assertFalse(instance.isIntersectedBy(l, oom, rm));
-        // Test 3
-        l = new V3D_LineSegment(pP1P0P1, pP1P0P0, oom, rm);
-        assertTrue(instance.isIntersectedBy(l, oom, rm));
-        // Test 4
-        l = new V3D_LineSegment(pP1P0P1, pP1P0N1, oom, rm);
-        assertTrue(instance.isIntersectedBy(l, oom, rm));
-        // Test 5
-        l = new V3D_LineSegment(e, P0P0P0, P1P0P1,
-                new V3D_Vector(P1, P0, Math_BigRational.valueOf(0.5d)), oom, rm);
-        assertFalse(instance.isIntersectedBy(l, oom, rm));
-        // Test 6
-        l = new V3D_LineSegment(pP0P0P0, pP0P1P0, oom, rm);
-        instance = new V3D_Triangle(pN2N2P0, pP0P2P0, pP2N2P0, oom, rm);
-        assertTrue(instance.isIntersectedBy(l, oom, rm));
-        // Test 7
-        l = new V3D_LineSegment(pP0P0P0, pP2P2P2, oom, rm);
-        instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
-        assertTrue(instance.isIntersectedBy(l, oom, rm));
-        // Test 8
-        l = new V3D_LineSegment(pP1P1P1, pP1P1P0, oom, rm);
-        assertFalse(instance.isIntersectedBy(l, oom, rm));
-    }
+//    /**
+//     * Test of isIntersectedBy method, of class V3D_Triangle.
+//     */
+//    @Test
+//    public void testIsIntersectedBy_V3D_Line() {
+//        System.out.println("isIntersectedBy");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_Line l = new V3D_Line(pP0P0P0, pP2P2P2, oom, rm);
+//        V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
+//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        // Test 2
+//        l = new V3D_Line(pP1P1P1, pP1P1P0, oom, rm);
+//        assertFalse(instance.isIntersectedBy(l, oom, rm));
+//        // Test 3
+//        // line
+//        // x = 0, y = 0, z = t
+//        // points (0, 0, 0), (0, 0, 1) 
+//        l = new V3D_Line(new V3D_Point(e, 0, 0, -120),
+//                new V3D_Point(e, 0, 3, 0), oom, rm);
+//        // plane
+//        // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
+//        instance = new V3D_Triangle(
+//                new V3D_Point(e, -40, -30, 6),
+//                new V3D_Point(e, 0, 30, 5),
+//                new V3D_Point(e, 40, 30, 5), oom, rm);
+//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//    }
+//
+//    /**
+//     * Test of isIntersectedBy method, of class V3D_Triangle.
+//     */
+//    @Test
+//    public void testIsIntersectedBy_V3D_LineSegment_int() {
+//        System.out.println("isIntersectedBy");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_LineSegment l;
+//        V3D_Triangle instance;
+//        // Test 1
+//        instance = new V3D_Triangle(e, P0P0P0, P1P0P0, P1P2P0, P2P0P0, oom, rm);
+//        l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
+//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        // Test 2
+//        l = new V3D_LineSegment(e, P0P0P0, P0P0P0,
+//                new V3D_Vector(Math_BigRational.valueOf(0.5d), P0, P0), oom, rm);
+//        assertFalse(instance.isIntersectedBy(l, oom, rm));
+//        // Test 3
+//        l = new V3D_LineSegment(pP1P0P1, pP1P0P0, oom, rm);
+//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        // Test 4
+//        l = new V3D_LineSegment(pP1P0P1, pP1P0N1, oom, rm);
+//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        // Test 5
+//        l = new V3D_LineSegment(e, P0P0P0, P1P0P1,
+//                new V3D_Vector(P1, P0, Math_BigRational.valueOf(0.5d)), oom, rm);
+//        assertFalse(instance.isIntersectedBy(l, oom, rm));
+//        // Test 6
+//        l = new V3D_LineSegment(pP0P0P0, pP0P1P0, oom, rm);
+//        instance = new V3D_Triangle(pN2N2P0, pP0P2P0, pP2N2P0, oom, rm);
+//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        // Test 7
+//        l = new V3D_LineSegment(pP0P0P0, pP2P2P2, oom, rm);
+//        instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
+//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        // Test 8
+//        l = new V3D_LineSegment(pP1P1P1, pP1P1P0, oom, rm);
+//        assertFalse(instance.isIntersectedBy(l, oom, rm));
+//    }
 
     /**
      * Test of getPerimeter method, of class V3D_Triangle.
@@ -475,25 +475,25 @@ public class V3D_TriangleTest extends V3D_Test {
 //        assertTrue(expResult.equals(instance, oom, rm));
     }
 
-    /**
-     * Test of isIntersectedBy method, of class V3D_Triangle.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_Triangle_int() {
-        System.out.println("isIntersectedBy");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Triangle t;
-        V3D_Triangle instance;
-        // Test 1
-        t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
-        instance = new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0, oom, rm);
-        assertTrue(instance.isIntersectedBy(t, oom, rm));
-        // Test 2
-        t = new V3D_Triangle(pN1P0P0, pP0P1P0, pP1P0P0, oom, rm);
-        instance = new V3D_Triangle(pN2P0P0, pP0P2P0, pP2P0P0, oom, rm);
-        assertTrue(instance.isIntersectedBy(t, oom, rm));
-    }
+//    /**
+//     * Test of isIntersectedBy method, of class V3D_Triangle.
+//     */
+//    @Test
+//    public void testIsIntersectedBy_V3D_Triangle_int() {
+//        System.out.println("isIntersectedBy");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_Triangle t;
+//        V3D_Triangle instance;
+//        // Test 1
+//        t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
+//        instance = new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0, oom, rm);
+//        assertTrue(instance.isIntersectedBy(t, oom, rm));
+//        // Test 2
+//        t = new V3D_Triangle(pN1P0P0, pP0P1P0, pP1P0P0, oom, rm);
+//        instance = new V3D_Triangle(pN2P0P0, pP0P2P0, pP2P0P0, oom, rm);
+//        assertTrue(instance.isIntersectedBy(t, oom, rm));
+//    }
 
     /**
      * Test of checkSide method, of class V3D_Triangle.
@@ -839,32 +839,32 @@ public class V3D_TriangleTest extends V3D_Test {
         assertTrue(expResult.equals(result, oom, rm));
     }
 
-    /**
-     * Test of isIntersectedBy method, of class V3D_Triangle.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_Plane_int() {
-        System.out.println("isIntersectedBy");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Plane pl;
-        V3D_Triangle instance;
-        // Test 1
-        pl = new V3D_Plane(V3D_Plane.Y0);
-        pl.translate(P0P1P0, oom, rm);
-        instance = new V3D_Triangle(pP0P0P0, pP2P0P0, pP0P2P0, oom, rm);
-        assertTrue(instance.isIntersectedBy(pl, oom, rm));
-        // Test 2
-        pl = V3D_Plane.X0;
-        instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0, oom, rm);
-        assertTrue(instance.isIntersectedBy(pl, oom, rm));
-        // Test 3
-        pl = V3D_Plane.Y0;
-        assertTrue(instance.isIntersectedBy(pl, oom, rm));
-        // Test 4
-        pl = V3D_Plane.Z0;
-        assertTrue(instance.isIntersectedBy(pl, oom, rm));
-    }
+//    /**
+//     * Test of isIntersectedBy method, of class V3D_Triangle.
+//     */
+//    @Test
+//    public void testIsIntersectedBy_V3D_Plane_int() {
+//        System.out.println("isIntersectedBy");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_Plane pl;
+//        V3D_Triangle instance;
+//        // Test 1
+//        pl = new V3D_Plane(V3D_Plane.Y0);
+//        pl.translate(P0P1P0, oom, rm);
+//        instance = new V3D_Triangle(pP0P0P0, pP2P0P0, pP0P2P0, oom, rm);
+//        assertTrue(instance.isIntersectedBy(pl, oom, rm));
+//        // Test 2
+//        pl = V3D_Plane.X0;
+//        instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0, oom, rm);
+//        assertTrue(instance.isIntersectedBy(pl, oom, rm));
+//        // Test 3
+//        pl = V3D_Plane.Y0;
+//        assertTrue(instance.isIntersectedBy(pl, oom, rm));
+//        // Test 4
+//        pl = V3D_Plane.Z0;
+//        assertTrue(instance.isIntersectedBy(pl, oom, rm));
+//    }
 //
 //    /**
 //     * Test of isIntersectedBy method, of class V3D_Triangle.

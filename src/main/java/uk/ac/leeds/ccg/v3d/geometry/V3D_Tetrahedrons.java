@@ -135,15 +135,15 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume,
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 
-    @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
@@ -165,20 +165,20 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume,
         return new V3D_Tetrahedrons(rls);
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {
@@ -234,11 +234,11 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume,
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Ray l, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Ray l, int oom, RoundingMode rm) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {

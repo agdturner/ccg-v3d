@@ -411,34 +411,34 @@ public class V3D_LineTest extends V3D_Test {
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
     }
 
-    /**
-     * Test of isIntersectedBy method, of class V3D_Line.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_Line_int() {
-        System.out.println("isIntersectedBy");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line l;
-        V3D_Line instance;
-        boolean result;
-        // Test 1
-        l = new V3D_Line(pN1N1N1, pP1P1P1, oom, rm);
-        instance = new V3D_Line(pN1P1N1, pP1N1P1, oom, rm);
-        result = instance.isIntersectedBy(l, oom, rm);
-        assertTrue(result);
-        // Test 2
-        /**
-         * This test fails, the lines don't intersect, but to be sure a further
-         * test is needed! That further test might best involve calculating the
-         * intersection and if it is not null, then the result is true (in other
-         * words, there is an intersection as it has been computed)!
-         */
-//        l = new V3D_Line(P0N1N1, P1P1P1, oom, rm);
-//        instance = new V3D_Line(N1P1N1, P1N1P1, oom, rm);
+//    /**
+//     * Test of isIntersectedBy method, of class V3D_Line.
+//     */
+//    @Test
+//    public void testIsIntersectedBy_V3D_Line_int() {
+//        System.out.println("isIntersectedBy");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_Line l;
+//        V3D_Line instance;
+//        boolean result;
+//        // Test 1
+//        l = new V3D_Line(pN1N1N1, pP1P1P1, oom, rm);
+//        instance = new V3D_Line(pN1P1N1, pP1N1P1, oom, rm);
 //        result = instance.isIntersectedBy(l, oom, rm);
-//        assertFalse(result);
-    }
+//        assertTrue(result);
+//        // Test 2
+//        /**
+//         * This test fails, the lines don't intersect, but to be sure a further
+//         * test is needed! That further test might best involve calculating the
+//         * intersection and if it is not null, then the result is true (in other
+//         * words, there is an intersection as it has been computed)!
+//         */
+////        l = new V3D_Line(P0N1N1, P1P1P1, oom, rm);
+////        instance = new V3D_Line(N1P1N1, P1N1P1, oom, rm);
+////        result = instance.isIntersectedBy(l, oom, rm);
+////        assertFalse(result);
+//    }
 
     /**
      * Test of equals method, of class V3D_Line.
@@ -914,7 +914,7 @@ public class V3D_LineTest extends V3D_Test {
                 + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
                 + ")";
         String result = instance.toStringFields(pad);
-        System.out.println(result);
+        //System.out.println(result);
         assertEquals(expResult, result);
     }
 

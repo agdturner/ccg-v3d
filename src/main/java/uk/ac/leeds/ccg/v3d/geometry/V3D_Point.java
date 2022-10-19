@@ -460,25 +460,25 @@ public class V3D_Point extends V3D_FiniteGeometry implements
         return this.equals(p, oom, rm);
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-        return l.isIntersectedBy(this, oom, rm);
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
+//        return l.isIntersectedBy(this, oom, rm);
+//    }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.isIntersectedBy(this, oom, rm);
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return l.isIntersectedBy(this, oom, rm);
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
-        return p.isIntersectedBy(this, oom, rm);
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
+//        return r.isIntersectedBy(this, oom, rm);
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
+//        return l.isIntersectedBy(this, oom, rm);
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
+//        return p.isIntersectedBy(this, oom, rm);
+//    }
 
     /**
      * @param l The line to intersect with {@code this}.
@@ -661,16 +661,16 @@ public class V3D_Point extends V3D_FiniteGeometry implements
 //        offset = offset.subtract(rel.subtract(relt, oom), oom);
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-        return t.isIntersectedBy(this, oom, rm);
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom,
-            RoundingMode rm) {
-        return t.isIntersectedBy(this, oom, rm);
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
+//        return t.isIntersectedBy(this, oom, rm);
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom,
+//            RoundingMode rm) {
+//        return t.isIntersectedBy(this, oom, rm);
+//    }
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom,

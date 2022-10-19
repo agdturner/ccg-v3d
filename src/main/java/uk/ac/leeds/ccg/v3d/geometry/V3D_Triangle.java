@@ -434,180 +434,177 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         return false;
     }
 
-    /**
-     * @param l The line to test for intersection with this.
-     * @param oom The Order of Magnitude for the calculation.
-     * @return {@code true} If this and {@code l} intersect.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-        if (pl.isIntersectedBy(l, oom, rm)) {
-            V3D_Geometry g = pl.getIntersection(l, oom, rm);
-            if (g instanceof V3D_Point pt) {
-                return isAligned(pt, oom, rm);
-//                if (isIntersectedBy(pt, oom, rm)) {
-//                    return true;
-//                    /**
-//                     * Logically, if the point of the line plane intersection is
-//                     * on the triangle then it intersects. However, the point is
-//                     * only given accurately to the given precision, so testing
-//                     * if the point is on the triangle does not work. The
-//                     * commented out else clause and this comment is in the code
-//                     * on purpose.
-//                     */
-////                } else {
-////                    return false; // This seems logical, but does not work for all cases in practice.
-//                }
-//                /**
-//                 * An option is to use the direction of the line vector to
-//                 * define planes for each edge of the triangle and test that the
-//                 * point of intersection is on the same side of these planes to
-//                 * the other point of the triangle in all cases. This option is
-//                 * commented out as it is thought this is slower than the option
-//                 * given below. Some timed tests should be done to measure which
-//                 * is faster...
-//                 */
-////                V3D_Point pp = pl.getP();
-////                V3D_Point pq = pl.getQ();
-////                V3D_Point pr = pl.getR();
-////                V3D_Point qp = new V3D_Point(e, pq.offset, pl.getQV().add(l.v, oom));
-////                V3D_Plane a = new V3D_Plane(pp, pq, qp);
-////                V3D_Point rp = new V3D_Point(e, pr.offset, pl.getRV().add(l.v, oom));
-////                V3D_Plane b = new V3D_Plane(pq, pr, rp);
-////                V3D_Point ppt = new V3D_Point(e, pl.offset, pl.getPV().add(l.v, oom));
-////                V3D_Plane c = new V3D_Plane(pr, ppt, rp);
-////                if (a.isOnSameSide(pt, rp, oom)){
-////                    if (b.isOnSameSide(pt, pp, oom)) {
-////                        if (c.isOnSameSide(pt, pq, oom)) {
-////                            return true;
-////                        }
-////                    }
+//    /**
+//     * @param l The line to test for intersection with this.
+//     * @param oom The Order of Magnitude for the calculation.
+//     * @return {@code true} If this and {@code l} intersect.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
+//        if (pl.isIntersectedBy(l, oom, rm)) {
+//            V3D_Geometry g = pl.getIntersection(l, oom, rm);
+//            if (g instanceof V3D_Point pt) {
+//                return isAligned(pt, oom, rm);
+////                if (isIntersectedBy(pt, oom, rm)) {
+////                    return true;
+////                    /**
+////                     * Logically, if the point of the line plane intersection is
+////                     * on the triangle then it intersects. However, the point is
+////                     * only given accurately to the given precision, so testing
+////                     * if the point is on the triangle does not work. The
+////                     * commented out else clause and this comment is in the code
+////                     * on purpose.
+////                     */
+//////                } else {
+//////                    return false; // This seems logical, but does not work for all cases in practice.
 ////                }
-////                return false;
+////                /**
+////                 * An option is to use the direction of the line vector to
+////                 * define planes for each edge of the triangle and test that the
+////                 * point of intersection is on the same side of these planes to
+////                 * the other point of the triangle in all cases. This option is
+////                 * commented out as it is thought this is slower than the option
+////                 * given below. Some timed tests should be done to measure which
+////                 * is faster...
+////                 */
+//////                V3D_Point pp = pl.getP();
+//////                V3D_Point pq = pl.getQ();
+//////                V3D_Point pr = pl.getR();
+//////                V3D_Point qp = new V3D_Point(e, pq.offset, pl.getQV().add(l.v, oom));
+//////                V3D_Plane a = new V3D_Plane(pp, pq, qp);
+//////                V3D_Point rp = new V3D_Point(e, pr.offset, pl.getRV().add(l.v, oom));
+//////                V3D_Plane b = new V3D_Plane(pq, pr, rp);
+//////                V3D_Point ppt = new V3D_Point(e, pl.offset, pl.getPV().add(l.v, oom));
+//////                V3D_Plane c = new V3D_Plane(pr, ppt, rp);
+//////                if (a.isOnSameSide(pt, rp, oom)){
+//////                    if (b.isOnSameSide(pt, pp, oom)) {
+//////                        if (c.isOnSameSide(pt, pq, oom)) {
+//////                            return true;
+//////                        }
+//////                    }
+//////                }
+//////                return false;
+////                /**
+////                 * Another option is to use:
+////                 * https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+////                 * It is thought this is faster than the option commented out
+////                 * above. Some timed tests should be done to measure which is
+////                 * faster...
+////                 */
+////                V3D_Vector edge1 = getPQ(oom, rm).l.v;
+////                V3D_Vector edge2 = getRP(oom, rm).l.v.reverse();
+////                //V3D_Vector h = l.getV(oom, rm).getCrossProduct(edge2, oom, rm);
+////                V3D_Vector h = l.v.getCrossProduct(edge2, oom, rm);
+////
+////                if (edge1.getDotProduct(h, oom, rm).compareTo(Math_BigRational.ZERO) == 0) {
+////                    System.out.println("edge1.getDotProduct(h, oom, rm) is zero in isIntersectedBy");
+////                    System.out.println("Triangle:");
+////                    System.out.println(this.toString());
+////                    System.out.println("Line:");
+////                    System.out.println(l.toString());
+////                    return false;
+////                }
+////
+////                Math_BigRational f = Math_BigRational.ONE.divide(
+////                        edge1.getDotProduct(h, oom, rm));
+////                V3D_Vector s = l.p.subtract(pl.getPV(), oom, rm);
+////                Math_BigRational u = f.multiply(s.getDotProduct(h, oom, rm));
+////                if (u.compareTo(Math_BigRational.ZERO) == -1
+////                        || u.compareTo(Math_BigRational.ONE) == 1) {
+////                    return false;
+////                }
+////                V3D_Vector q = s.getCrossProduct(edge1, oom, rm);
+////                //Math_BigRational v = f.multiply(l.getV(oom, rm).getDotProduct(q, oom, rm));
+////                Math_BigRational v = f.multiply(l.v.getDotProduct(q, oom, rm));
+////                if (v.compareTo(Math_BigRational.ZERO) == -1
+////                        || u.add(v).compareTo(Math_BigRational.ONE) == 1) {
+////                    return false;
+////                }
+////                Math_BigRational t
+////                        = f.multiply(edge2.getDotProduct(q, oom, rm));
+////                return t.compareTo(Math_BigRational.ZERO) == 1;
+//            } else {
+//                if (getPQ(oom, rm).isIntersectedBy(l, oom, rm)) {
+//                    return true;
+//                }
+//                if (getQR(oom, rm).isIntersectedBy(l, oom, rm)) {
+//                    return true;
+//                }
 //                /**
-//                 * Another option is to use:
-//                 * https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-//                 * It is thought this is faster than the option commented out
-//                 * above. Some timed tests should be done to measure which is
-//                 * faster...
+//                 * The following statement is not necessary, but the commented
+//                 * out code is left here for clarity.
 //                 */
-//                V3D_Vector edge1 = getPQ(oom, rm).l.v;
-//                V3D_Vector edge2 = getRP(oom, rm).l.v.reverse();
-//                //V3D_Vector h = l.getV(oom, rm).getCrossProduct(edge2, oom, rm);
-//                V3D_Vector h = l.v.getCrossProduct(edge2, oom, rm);
-//
-//                if (edge1.getDotProduct(h, oom, rm).compareTo(Math_BigRational.ZERO) == 0) {
-//                    System.out.println("edge1.getDotProduct(h, oom, rm) is zero in isIntersectedBy");
-//                    System.out.println("Triangle:");
-//                    System.out.println(this.toString());
-//                    System.out.println("Line:");
-//                    System.out.println(l.toString());
+//                // if (getRP().isIntersectedBy(l, oom)) {
+//                //      return true;
+//                // }
+//            }
+//        }
+//        return false;
+//    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
+//        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm), oom, rm)) {
+//            if (pl.isIntersectedBy(l, oom, rm)) {
+//                V3D_FiniteGeometry g
+//                        = pl.getIntersection(l, oom, rm);
+//                if (g == null) {
 //                    return false;
+//                } else {
+//                    if (g instanceof V3D_Point pt) {
+//                        return isIntersectedBy(pt, oom, rm);
+//                    } else {
+//                        return l.isIntersectedBy((V3D_LineSegment) g, oom, rm);
+//                    }
 //                }
-//
-//                Math_BigRational f = Math_BigRational.ONE.divide(
-//                        edge1.getDotProduct(h, oom, rm));
-//                V3D_Vector s = l.p.subtract(pl.getPV(), oom, rm);
-//                Math_BigRational u = f.multiply(s.getDotProduct(h, oom, rm));
-//                if (u.compareTo(Math_BigRational.ZERO) == -1
-//                        || u.compareTo(Math_BigRational.ONE) == 1) {
+//            }
+//        }
+//        return false;
+//    }
+//    /**
+//     * For checking if {@code t} intersects {@code this}.
+//     *
+//     * @param t The triangle to test for intersection with this.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @return {@code true} iff the geometry is intersected by {@code l}.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
+//        if (getEnvelope(oom, rm).isIntersectedBy(t.getEnvelope(oom, rm), oom, rm)) {
+//            V3D_Plane plt = t.pl;
+//            if (isIntersectedBy(plt, oom, rm)) {
+//                V3D_Plane pl = this.pl;
+//                V3D_FiniteGeometry g = pl.getIntersection(t, oom, rm);
+//                if (g == null) {
 //                    return false;
+//                } else {
+//                    if (g instanceof V3D_Point pt) {
+//                        return t.isIntersectedBy(pt, oom, rm);
+//                    } else if (g instanceof V3D_LineSegment l) {
+//                        return t.isIntersectedBy(l, oom, rm);
+//                    } else {
+//                        /**
+//                         * Check for a line that goes between the triangles. For
+//                         * each side of one triangle. Compute the dot product of
+//                         * the corners of the other triangle with the normal of
+//                         * the side. Test that all these have the same side.
+//                         */
+//                        V3D_Vector nn = this.pl.n;
+//                        //if (checkSide(t, nn, this.pl.getPQV(oom, rm), oom, rm)) {
+//                        if (checkSide(t, nn, getPQV(oom, rm), oom, rm)) {
+//                            return true;
+//                        }
+//                        //if (checkSide(t, nn, this.pl.getQRV(oom, rm), oom, rm)) {
+//                        if (checkSide(t, nn, getQRV(oom, rm), oom, rm)) {
+//                            return true;
+//                        }
+//                        //return checkSide(t, nn, this.pl.getRPV(oom, rm), oom, rm);
+//                        return checkSide(t, nn, getRPV(oom, rm), oom, rm);
+//                    }
 //                }
-//                V3D_Vector q = s.getCrossProduct(edge1, oom, rm);
-//                //Math_BigRational v = f.multiply(l.getV(oom, rm).getDotProduct(q, oom, rm));
-//                Math_BigRational v = f.multiply(l.v.getDotProduct(q, oom, rm));
-//                if (v.compareTo(Math_BigRational.ZERO) == -1
-//                        || u.add(v).compareTo(Math_BigRational.ONE) == 1) {
-//                    return false;
-//                }
-//                Math_BigRational t
-//                        = f.multiply(edge2.getDotProduct(q, oom, rm));
-//                return t.compareTo(Math_BigRational.ZERO) == 1;
-            } else {
-                if (getPQ(oom, rm).isIntersectedBy(l, oom, rm)) {
-                    return true;
-                }
-                if (getQR(oom, rm).isIntersectedBy(l, oom, rm)) {
-                    return true;
-                }
-                /**
-                 * The following statement is not necessary, but the commented
-                 * out code is left here for clarity.
-                 */
-                // if (getRP().isIntersectedBy(l, oom)) {
-                //      return true;
-                // }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm), oom, rm)) {
-            if (pl.isIntersectedBy(l, oom, rm)) {
-                V3D_FiniteGeometry g
-                        = pl.getIntersection(l, oom, rm);
-                if (g == null) {
-                    return false;
-                } else {
-                    if (g instanceof V3D_Point pt) {
-                        return isIntersectedBy(pt, oom, rm);
-                    } else {
-                        return l.isIntersectedBy((V3D_LineSegment) g, oom, rm);
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * For checking if {@code t} intersects {@code this}.
-     *
-     * @param t The triangle to test for intersection with this.
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} iff the geometry is intersected by {@code l}.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-        if (getEnvelope(oom, rm).isIntersectedBy(t.getEnvelope(oom, rm), oom, rm)) {
-            V3D_Plane plt = t.pl;
-            if (isIntersectedBy(plt, oom, rm)) {
-                V3D_Plane pl = this.pl;
-                V3D_FiniteGeometry g = pl.getIntersection(t, oom, rm);
-                if (g == null) {
-                    return false;
-                } else {
-                    if (g instanceof V3D_Point pt) {
-                        return t.isIntersectedBy(pt, oom, rm);
-                    } else if (g instanceof V3D_LineSegment l) {
-                        return t.isIntersectedBy(l, oom, rm);
-                    } else {
-                        /**
-                         * Check for a line that goes between the triangles. For
-                         * each side of one triangle. Compute the dot product of
-                         * the corners of the other triangle with the normal of
-                         * the side. Test that all these have the same side.
-                         */
-                        V3D_Vector nn = this.pl.n;
-                        //if (checkSide(t, nn, this.pl.getPQV(oom, rm), oom, rm)) {
-                        if (checkSide(t, nn, getPQV(oom, rm), oom, rm)) {
-                            return true;
-                        }
-                        //if (checkSide(t, nn, this.pl.getQRV(oom, rm), oom, rm)) {
-                        if (checkSide(t, nn, getQRV(oom, rm), oom, rm)) {
-                            return true;
-                        }
-                        //return checkSide(t, nn, this.pl.getRPV(oom, rm), oom, rm);
-                        return checkSide(t, nn, getRPV(oom, rm), oom, rm);
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
+//            }
+//        }
+//        return false;
+//    }
     /**
      * Check a side for intersection.
      *
@@ -665,25 +662,24 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         }
     }
 
-    /**
-     * For checking if {@code t} intersects {@code this}.
-     *
-     * @param t The triangle to test for intersection with this.
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} iff the geometry is intersected by {@code l}.
-     */
-    //@Override
-    public boolean isIntersectedBy(V3D_ConvexHullCoplanar ch, int oom, RoundingMode rm) {
-        if (getEnvelope(oom, rm).isIntersectedBy(ch.getEnvelope(oom, rm), oom, rm)) {
-            for (var t : ch.triangles) {
-                if (isIntersectedBy(t, oom, rm)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
+//    /**
+//     * For checking if {@code t} intersects {@code this}.
+//     *
+//     * @param t The triangle to test for intersection with this.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @return {@code true} iff the geometry is intersected by {@code l}.
+//     */
+//    //@Override
+//    public boolean isIntersectedBy(V3D_ConvexHullCoplanar ch, int oom, RoundingMode rm) {
+//        if (getEnvelope(oom, rm).isIntersectedBy(ch.getEnvelope(oom, rm), oom, rm)) {
+//            for (var t : ch.triangles) {
+//                if (isIntersectedBy(t, oom, rm)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The area of the triangle (rounded).
@@ -915,46 +911,45 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom,
             RoundingMode rm) {
         if (getEnvelope(oom, rm).isIntersectedBy(t.getEnvelope(oom, rm), oom, rm)) {
-            if (isIntersectedBy(pl, oom, rm)) {
-                V3D_FiniteGeometry g = pl.getIntersection(t, oom, rm);
-                if (g == null) {
-                    return g;
-                } else {
-                    if (g instanceof V3D_Point pt) {
-                        if (t.isIntersectedBy(pt, oom, rm)) {
-                            return pt;
-                        } else {
-                            return null;
-                        }
-                    } else if (g instanceof V3D_LineSegment l) {
-                        return t.getIntersection(l, oom, rm);
+            V3D_FiniteGeometry g = pl.getIntersection(t, oom, rm);
+            if (g == null) {
+                return g;
+            } else {
+                if (g instanceof V3D_Point pt) {
+                    if (t.isIntersectedBy(pt, oom, rm)) {
+                        return pt;
                     } else {
-                        /**
-                         * The two triangles are in the same plane Get
-                         * intersections between the triangle edges. If there
-                         * are none, then return t. If there are some, then in
-                         * some cases the result is a single triangle, and in
-                         * others it is a polygon which can be represented as a
-                         * set of coplanar triangles.
-                         */
-                        // Check if vertices intersect
-                        boolean pi = isIntersectedBy(t.getP(), oom, rm);
-                        boolean qi = isIntersectedBy(t.getQ(), oom, rm);
-                        boolean ri = isIntersectedBy(t.getR(), oom, rm);
-                        if (pi && qi && ri) {
-                            return t;
-                        }
-                        boolean pit = t.isIntersectedBy(getP(), oom, rm);
-                        boolean qit = t.isIntersectedBy(getQ(), oom, rm);
-                        boolean rit = t.isIntersectedBy(getR(), oom, rm);
-                        if (pit && qit && rit) {
-                            return this;
-                        }
-                        V3D_FiniteGeometry gpq = t.getIntersection(getPQ(oom, rm), oom, rm);
-                        V3D_FiniteGeometry gqr = t.getIntersection(getQR(oom, rm), oom, rm);
-                        V3D_FiniteGeometry grp = t.getIntersection(getRP(oom, rm), oom, rm);
-                        if (gpq == null) {
-                            if (gqr == null) {
+                        return null;
+                    }
+                } else if (g instanceof V3D_LineSegment l) {
+                    return t.getIntersection(l, oom, rm);
+                } else {
+                    /**
+                     * The two triangles are in the same plane Get intersections
+                     * between the triangle edges. If there are none, then
+                     * return t. If there are some, then in some cases the
+                     * result is a single triangle, and in others it is a
+                     * polygon which can be represented as a set of coplanar
+                     * triangles.
+                     */
+                    // Check if vertices intersect
+                    boolean pi = isIntersectedBy(t.getP(), oom, rm);
+                    boolean qi = isIntersectedBy(t.getQ(), oom, rm);
+                    boolean ri = isIntersectedBy(t.getR(), oom, rm);
+                    if (pi && qi && ri) {
+                        return t;
+                    }
+                    boolean pit = t.isIntersectedBy(getP(), oom, rm);
+                    boolean qit = t.isIntersectedBy(getQ(), oom, rm);
+                    boolean rit = t.isIntersectedBy(getR(), oom, rm);
+                    if (pit && qit && rit) {
+                        return this;
+                    }
+                    V3D_FiniteGeometry gpq = t.getIntersection(getPQ(oom, rm), oom, rm);
+                    V3D_FiniteGeometry gqr = t.getIntersection(getQR(oom, rm), oom, rm);
+                    V3D_FiniteGeometry grp = t.getIntersection(getRP(oom, rm), oom, rm);
+                    if (gpq == null) {
+                        if (gqr == null) {
 //                                if (grp == null) {
 //                                    // Return the smaller of the triangles
 ////                                    if (t.getArea(oom).compareTo(getArea(oom)) == 1) {
@@ -964,115 +959,114 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //                                        return t;
 //                                    }
 //                                } else {
-                                return grp;
+                            return grp;
 //                                }
-                            } else if (gqr instanceof V3D_Point gqrp) {
-                                if (grp == null) {
-                                    return gqr;
-                                } else if (grp instanceof V3D_Point grpp) {
-                                    return V3D_LineSegment.getGeometry(
-                                            gqrp, grpp, oom, rm);
-                                } else {
-                                    V3D_LineSegment ls = (V3D_LineSegment) grp;
-                                    return getGeometry(gqrp, ls.getP(),
-                                            ls.getQ(), oom, rm);
-                                }
+                        } else if (gqr instanceof V3D_Point gqrp) {
+                            if (grp == null) {
+                                return gqr;
+                            } else if (grp instanceof V3D_Point grpp) {
+                                return V3D_LineSegment.getGeometry(
+                                        gqrp, grpp, oom, rm);
                             } else {
-                                if (grp == null) {
-                                    return gqr;
-                                } else if (grp instanceof V3D_Point grpp) {
-                                    V3D_LineSegment ls = (V3D_LineSegment) gqr;
-                                    return getGeometry(grpp, ls.getP(),
-                                            ls.getQ(), oom, rm);
-                                } else {
-                                    return getGeometry((V3D_LineSegment) gqr,
-                                            (V3D_LineSegment) grp, oom, rm);
-                                }
-                            }
-                        } else if (gpq instanceof V3D_Point gpqp) {
-                            if (gqr == null) {
-                                if (grp == null) {
-                                    return gpq;
-                                } else if (grp instanceof V3D_Point grpp) {
-                                    return V3D_LineSegment.getGeometry(
-                                            gpqp, grpp, oom, rm);
-                                } else {
-                                    V3D_LineSegment ls = (V3D_LineSegment) grp;
-                                    return getGeometry(gpqp, ls.getP(),
-                                            ls.getQ(), oom, rm);
-                                }
-                            } else if (gqr instanceof V3D_Point gqrp) {
-                                if (grp == null) {
-                                    return gqr;
-                                } else if (grp instanceof V3D_Point grpp) {
-                                    return V3D_LineSegment.getGeometry(gqrp, grpp, oom, rm); // Check!
-                                } else {
-                                    V3D_LineSegment grpl = (V3D_LineSegment) grp;
-                                    return getGeometry(grpl, gqrp, gpqp, oom,
-                                            rm);
-                                }
-                            } else {
-                                V3D_LineSegment ls = (V3D_LineSegment) gqr;
-                                if (grp == null) {
-                                    return getGeometry(ls, gpqp, oom, rm);
-                                } else if (grp instanceof V3D_Point grpp) {
-                                    return getGeometry(ls, grpp, gpqp, oom, rm);
-                                } else {
-                                    return null; // TODO: Figure out the geometry (point and two line segments).
-                                }
+                                V3D_LineSegment ls = (V3D_LineSegment) grp;
+                                return getGeometry(gqrp, ls.getP(),
+                                        ls.getQ(), oom, rm);
                             }
                         } else {
-                            V3D_LineSegment gpql = (V3D_LineSegment) gpq;
-                            if (gqr == null) {
-                                if (grp == null) {
-                                    return gpq;
-                                } else if (grp instanceof V3D_Point grpp) {
-                                    return getGeometry(grpp, gpql.getP(),
-                                            gpql.getQ(), oom, rm);
-                                } else {
-                                    return getGeometry(gpql,
-                                            (V3D_LineSegment) grp, oom, rm);
-                                }
-                            } else if (gqr instanceof V3D_Point gqrp) {
-                                if (grp == null) {
-                                    if (gqr.isIntersectedBy(gpql, oom, rm)) {
-                                        return gpql;
-                                    } else {
-                                        return new V3D_ConvexHullCoplanar(oom,
-                                                rm, pl.n, gpql.getP(),
-                                                gpql.getQ(), gqrp);
-                                    }
-                                } else if (grp instanceof V3D_Point grpp) {
-                                    return new V3D_ConvexHullCoplanar(oom,
-                                            rm, pl.n, gpql.getP(),
-                                            gpql.getQ(), gqrp, grpp);
-                                } else {
-                                    V3D_LineSegment grpl = (V3D_LineSegment) grp;
-                                    return new V3D_ConvexHullCoplanar(oom,
-                                            rm, pl.n, gpql.getP(),
-                                            gpql.getQ(), gqrp, grpl.getP(),
-                                            grpl.getQ());
-                                }
+                            if (grp == null) {
+                                return gqr;
+                            } else if (grp instanceof V3D_Point grpp) {
+                                V3D_LineSegment ls = (V3D_LineSegment) gqr;
+                                return getGeometry(grpp, ls.getP(),
+                                        ls.getQ(), oom, rm);
                             } else {
-                                V3D_LineSegment gqrl = (V3D_LineSegment) gqr;
-                                if (grp == null) {
-                                    return new V3D_ConvexHullCoplanar(oom,
-                                            rm, pl.n, gpql.getP(),
-                                            gpql.getQ(), gqrl.getP(),
-                                            gqrl.getQ());
-                                } else if (grp instanceof V3D_Point grpp) {
-                                    return new V3D_ConvexHullCoplanar(oom,
-                                            rm, pl.n, gpql.getP(),
-                                            gpql.getQ(), gqrl.getP(),
-                                            gqrl.getQ(), grpp);
+                                return getGeometry((V3D_LineSegment) gqr,
+                                        (V3D_LineSegment) grp, oom, rm);
+                            }
+                        }
+                    } else if (gpq instanceof V3D_Point gpqp) {
+                        if (gqr == null) {
+                            if (grp == null) {
+                                return gpq;
+                            } else if (grp instanceof V3D_Point grpp) {
+                                return V3D_LineSegment.getGeometry(
+                                        gpqp, grpp, oom, rm);
+                            } else {
+                                V3D_LineSegment ls = (V3D_LineSegment) grp;
+                                return getGeometry(gpqp, ls.getP(),
+                                        ls.getQ(), oom, rm);
+                            }
+                        } else if (gqr instanceof V3D_Point gqrp) {
+                            if (grp == null) {
+                                return gqr;
+                            } else if (grp instanceof V3D_Point grpp) {
+                                return V3D_LineSegment.getGeometry(gqrp, grpp, oom, rm); // Check!
+                            } else {
+                                V3D_LineSegment grpl = (V3D_LineSegment) grp;
+                                return getGeometry(grpl, gqrp, gpqp, oom,
+                                        rm);
+                            }
+                        } else {
+                            V3D_LineSegment ls = (V3D_LineSegment) gqr;
+                            if (grp == null) {
+                                return getGeometry(ls, gpqp, oom, rm);
+                            } else if (grp instanceof V3D_Point grpp) {
+                                return getGeometry(ls, grpp, gpqp, oom, rm);
+                            } else {
+                                return null; // TODO: Figure out the geometry (point and two line segments).
+                            }
+                        }
+                    } else {
+                        V3D_LineSegment gpql = (V3D_LineSegment) gpq;
+                        if (gqr == null) {
+                            if (grp == null) {
+                                return gpq;
+                            } else if (grp instanceof V3D_Point grpp) {
+                                return getGeometry(grpp, gpql.getP(),
+                                        gpql.getQ(), oom, rm);
+                            } else {
+                                return getGeometry(gpql,
+                                        (V3D_LineSegment) grp, oom, rm);
+                            }
+                        } else if (gqr instanceof V3D_Point gqrp) {
+                            if (grp == null) {
+                                if (gqr.getIntersection(gpql, oom, rm) != null) {
+                                    return gpql;
                                 } else {
-                                    V3D_LineSegment grpl = (V3D_LineSegment) grp;
                                     return new V3D_ConvexHullCoplanar(oom,
                                             rm, pl.n, gpql.getP(),
-                                            gpql.getQ(), gqrl.getP(),
-                                            gqrl.getQ(), grpl.getP(),
-                                            grpl.getQ());
+                                            gpql.getQ(), gqrp);
                                 }
+                            } else if (grp instanceof V3D_Point grpp) {
+                                return new V3D_ConvexHullCoplanar(oom,
+                                        rm, pl.n, gpql.getP(),
+                                        gpql.getQ(), gqrp, grpp);
+                            } else {
+                                V3D_LineSegment grpl = (V3D_LineSegment) grp;
+                                return new V3D_ConvexHullCoplanar(oom,
+                                        rm, pl.n, gpql.getP(),
+                                        gpql.getQ(), gqrp, grpl.getP(),
+                                        grpl.getQ());
+                            }
+                        } else {
+                            V3D_LineSegment gqrl = (V3D_LineSegment) gqr;
+                            if (grp == null) {
+                                return new V3D_ConvexHullCoplanar(oom,
+                                        rm, pl.n, gpql.getP(),
+                                        gpql.getQ(), gqrl.getP(),
+                                        gqrl.getQ());
+                            } else if (grp instanceof V3D_Point grpp) {
+                                return new V3D_ConvexHullCoplanar(oom,
+                                        rm, pl.n, gpql.getP(),
+                                        gpql.getQ(), gqrl.getP(),
+                                        gqrl.getQ(), grpp);
+                            } else {
+                                V3D_LineSegment grpl = (V3D_LineSegment) grp;
+                                return new V3D_ConvexHullCoplanar(oom,
+                                        rm, pl.n, gpql.getP(),
+                                        gpql.getQ(), gqrl.getP(),
+                                        gqrl.getQ(), grpl.getP(),
+                                        grpl.getQ());
                             }
                         }
                     }
@@ -1618,61 +1612,60 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         }
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Plane pl, int oom, RoundingMode rm) {
-        if (this.pl.isIntersectedBy(pl, oom, rm)) {
-            V3D_Geometry g = this.pl.getIntersection(pl, oom, rm);
-
-            if (g == null) { // Hack.
-                return false;
-            }
-
-            if (g instanceof V3D_Line l) {
-                return isIntersectedBy(l, oom, rm);
-            } else {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom,
-            RoundingMode rm) {
-        if (pl.isIntersectedBy(t, oom, rm)) {
-            /**
-             * If this is inside t then they intersect. First implement
-             * V3D_Tetrahedron.isIntersectedBy(V3D_Point)
-             */
-            if (t.isIntersectedBy(getP(), oom, rm)) {
-                return true;
-            }
-            if (t.isIntersectedBy(getQ(), oom, rm)) {
-                return true;
-            }
-            if (t.isIntersectedBy(getR(), oom, rm)) {
-                return true;
-            }
-            /**
-             * If this intersects any of the faces of t, then they intersect.
-             */
-            if (this.isIntersectedBy(t.getPqr(oom, rm), oom, rm)) {
-                return true;
-            }
-            if (this.isIntersectedBy(t.getQsr(oom, rm), oom, rm)) {
-                return true;
-            }
-            if (this.isIntersectedBy(t.getSpr(oom, rm), oom, rm)) {
-                return true;
-            }
-            if (this.isIntersectedBy(t.getPsq(oom, rm), oom, rm)) {
-                return true;
-            }
-            // Otherwise there is no intersection.
-        }
-        return false;
-    }
-
+//    @Override
+//    public boolean isIntersectedBy(V3D_Plane pl, int oom, RoundingMode rm) {
+//        if (this.pl.isIntersectedBy(pl, oom, rm)) {
+//            V3D_Geometry g = this.pl.getIntersection(pl, oom, rm);
+//
+//            if (g == null) { // Hack.
+//                return false;
+//            }
+//
+//            if (g instanceof V3D_Line l) {
+//                return getIntersection(l, oom, rm) != null;
+//            } else {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom,
+//            RoundingMode rm) {
+//        if (pl.isIntersectedBy(t, oom, rm)) {
+//            /**
+//             * If this is inside t then they intersect. First implement
+//             * V3D_Tetrahedron.isIntersectedBy(V3D_Point)
+//             */
+//            if (t.isIntersectedBy(getP(), oom, rm)) {
+//                return true;
+//            }
+//            if (t.isIntersectedBy(getQ(), oom, rm)) {
+//                return true;
+//            }
+//            if (t.isIntersectedBy(getR(), oom, rm)) {
+//                return true;
+//            }
+//            /**
+//             * If this intersects any of the faces of t, then they intersect.
+//             */
+//            if (this.isIntersectedBy(t.getPqr(oom, rm), oom, rm)) {
+//                return true;
+//            }
+//            if (this.isIntersectedBy(t.getQsr(oom, rm), oom, rm)) {
+//                return true;
+//            }
+//            if (this.isIntersectedBy(t.getSpr(oom, rm), oom, rm)) {
+//                return true;
+//            }
+//            if (this.isIntersectedBy(t.getPsq(oom, rm), oom, rm)) {
+//                return true;
+//            }
+//            // Otherwise there is no intersection.
+//        }
+//        return false;
+//    }
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         return t.getIntersection(this, oom, rm);
@@ -1750,7 +1743,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
-        if (isIntersectedBy(l, oom, rm)) {
+        if (getIntersection(l, oom, rm) != null) {
             return Math_BigRational.ZERO;
         }
 //        V3D_Line ll = new V3D_Line(l);
@@ -1787,7 +1780,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
-        if (isIntersectedBy(t, oom, rm)) {
+        if (getIntersection(t, oom, rm) != null) {
             return Math_BigRational.ZERO;
         }
         Math_BigRational dtpq2 = t.getDistanceSquared(getPQ(oom, rm), oom, rm);
@@ -1807,7 +1800,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        if (isIntersectedBy(t, oom, rm)) {
+        if (getIntersection(t, oom, rm) != null) {
             return Math_BigRational.ZERO;
         }
         Math_BigRational drpqr = getDistanceSquared(t.getPqr(oom, rm), oom, rm);
@@ -1835,11 +1828,10 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         return points.toArray(V3D_Point[]::new);
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.isIntersectedBy(this, oom, rm);
-    }
-
+//    @Override
+//    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
+//        return r.isIntersectedBy(this, oom, rm);
+//    }
     @Override
     public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
         return r.getIntersection(this, oom, rm);

@@ -28,16 +28,9 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * An envelope contains all the extreme values with respect to the X, Y and Z
  * axes. This is also known as an Axis Aligned Bounding Box (AABB). In this
  * implementation, it may have length of zero in any direction. For a point the
- * envelope is essentially the point. The envelope may also be a line. In any
- * case it has:
- * <ul>
- * <li>a top ({@link #t}) aligned with {@link #yMax}</li>
- * <li>a bottom ({@link #b}) aligned with {@link #yMin}</li>
- * <li>a left ({@link #l}) aligned with {@link #xMin}</li>
- * <li>a right ({@link #r}) aligned with {@link #xMax}</li>
- * <li>a fore ({@link #f}) aligned with {@link #zMin}</li>
- * <li>a aft ({@link #a}) aligned with {@link #zMax}</li>
- * </ul>
+ * envelope is essentially the point. The envelope may also be a line or a 
+ * rectangle, but often it will have 3 dimensions.
+ * 
  * The following depiction of a bounding box indicate the location of the
  * different faces and also gives an abbreviated name of each point that
  * reflects these. This points are not stored explicitly in an instance of the
@@ -49,42 +42,42 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *                                    +                  /
  *                                    |                 /
  *                                    |                /
- *                                    |
- *                                                  a
- *                                    t
- *                      lta_ _ _ _ _ _ _ _ _ta_ _ _ _ _ _ _ _ rta
+ *                                    |               /
+ *                                    |              /
+ *                                    |    zmin
+ *                         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
  *                        /|                                /|
  *                       / |                               / |
  *                      /  |                              /  |
  *                     /   |                             /   |
- *                  lt/    |                            /rt  |
+ *                    /    |         ymax               /    |
  *                   /     |                           /     |
  *                  /      |                          /      |
- *                 /    la |                         /       | ra
+ *                 /       |                         /       | 
  *                /        |                        /        |
  *               /         |                       /         |
- *          ltf /_ _ _ _ _ |_ _ _tf _ _ _ _ _ _ _ /rtf       |
+ *              /_ _ _ _ _ |_ _ _ _ _ _ _ _ _ _ _ /          |
  *             |           |                     |           |
  *             |           |                     |           |
- *  x - --- l  |           |                     |           |  r  --- + x
+ *        xmin |           |                     |    xmax   |  ------ + x
  *             |           |                     |           |
- *             |        lba|_ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _|rba
- *             |           /                  ba |           /
+ *             |           |_ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _|
+ *             |           /                     |           /
  *             |          /                      |          /
- *           lf|         /                       |rf       /
+ *             |         /                       |         /
  *             |        /                        |        /
  *             |       /                         |       /
- *             |   lb /                          |      / rb
+ *             |      /            ymin          |      / 
  *             |     /                           |     /
  *             |    /                            |    /
  *             |   /                             |   /
  *             |  /                              |  /
  *             | /                               | /
- *          lbf|/_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |/rbf
- *                               bf
- *                                     b
- *                      f
- *                                     |
+ *             |/_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |/
+ *                            zmax   
+ *                                     
+ *                      /              |
+ *                     /               |
  *                    /                |
  *                   /                 |
  *                  /                  -
@@ -534,6 +527,10 @@ public class V3D_Envelope implements Serializable {
         
         V3D_Vector v2 = new V3D_Vector(pt, c, oom, rm).getCrossProduct(v, oom, rm);
 
+//        if (v2.isZeroVector()) {
+//            int debug = 1;
+//        }
+        
         V3D_Plane hp = new V3D_Plane(c, v2);
 
         /**

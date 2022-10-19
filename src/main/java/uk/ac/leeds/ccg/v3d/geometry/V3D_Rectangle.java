@@ -291,19 +291,19 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         return new V3D_LineSegment(e, offset, s, p, oom, rm);
     }
 
-    private boolean isIntersectedBy0(V3D_Ray ray, int oom, RoundingMode rm) {
-        return getQR(oom, rm).isIntersectedBy(ray, oom, rm)
-                || getRS(oom, rm).isIntersectedBy(ray, oom, rm)
-                || getSP(oom, rm).isIntersectedBy(ray, oom, rm)
-                || getPQ(oom, rm).isIntersectedBy(ray, oom, rm);
-    }
-
-    private boolean isIntersectedBy0(V3D_Line ls, int oom, RoundingMode rm) {
-        return getQR(oom, rm).isIntersectedBy(ls, oom, rm)
-                || getRS(oom, rm).isIntersectedBy(ls, oom, rm)
-                || getSP(oom, rm).isIntersectedBy(ls, oom, rm)
-                || getPQ(oom, rm).isIntersectedBy(ls, oom, rm);
-    }
+//    private boolean isIntersectedBy0(V3D_Ray ray, int oom, RoundingMode rm) {
+//        return getQR(oom, rm).isIntersectedBy(ray, oom, rm)
+//                || getRS(oom, rm).isIntersectedBy(ray, oom, rm)
+//                || getSP(oom, rm).isIntersectedBy(ray, oom, rm)
+//                || getPQ(oom, rm).isIntersectedBy(ray, oom, rm);
+//    }
+//
+//    private boolean isIntersectedBy0(V3D_Line ls, int oom, RoundingMode rm) {
+//        return getQR(oom, rm).isIntersectedBy(ls, oom, rm)
+//                || getRS(oom, rm).isIntersectedBy(ls, oom, rm)
+//                || getSP(oom, rm).isIntersectedBy(ls, oom, rm)
+//                || getPQ(oom, rm).isIntersectedBy(ls, oom, rm);
+//    }
 
     @Override
     protected boolean isIntersectedBy0(V3D_Point pt, int oom, RoundingMode rm) {
@@ -416,75 +416,75 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         return false;
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-        if (pl.isIntersectedBy(l, oom, rm)) {
-            V3D_Geometry g = pl.getIntersection(l, oom, rm);
-            if (g instanceof V3D_Point v3D_Point) {
-                return isIntersectedBy0(v3D_Point, oom, rm);
-            } else {
-                return isIntersectedBy0((V3D_Line) g, oom, rm);
-            }
-        }
-        return false;
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
+//        if (pl.isIntersectedBy(l, oom, rm)) {
+//            V3D_Geometry g = pl.getIntersection(l, oom, rm);
+//            if (g instanceof V3D_Point v3D_Point) {
+//                return isIntersectedBy0(v3D_Point, oom, rm);
+//            } else {
+//                return isIntersectedBy0((V3D_Line) g, oom, rm);
+//            }
+//        }
+//        return false;
+//    }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Ray ray, int oom, RoundingMode rm) {
-        if (pl.isIntersectedBy(ray, oom, rm)) {
-            V3D_Geometry g = pl.getIntersection(ray, oom, rm);
-            if (g instanceof V3D_Point v3D_Point) {
-                return isIntersectedBy0(v3D_Point, oom, rm);
-            } else {
-                return isIntersectedBy0((V3D_Ray) g, oom, rm);
-            }
-        }
-        return false;
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Ray ray, int oom, RoundingMode rm) {
+//        if (pl.isIntersectedBy(ray, oom, rm)) {
+//            V3D_Geometry g = pl.getIntersection(ray, oom, rm);
+//            if (g instanceof V3D_Point v3D_Point) {
+//                return isIntersectedBy0(v3D_Point, oom, rm);
+//            } else {
+//                return isIntersectedBy0((V3D_Ray) g, oom, rm);
+//            }
+//        }
+//        return false;
+//    }
 
-    /**
-     * Intersection test.
-     *
-     * @param l The line segment to test for intersection.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@code true} iff this rectangle is intersected by {@code l}
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm), oom, rm)) {
-            if (pl.isIntersectedBy(l, oom, rm)) {
-                V3D_Geometry pli = pl.getIntersection(l, oom, rm);
-                if (pli instanceof V3D_Point plip) {
-                    return isIntersectedBy(plip, oom, rm);
-                } else {
-                    /**
-                     * If the two points on the line segment are on the same
-                     * side of all of the edges then there is no intersection
-                     * otherwise there is.
-                     */
-                    if (l.isIntersectedBy(getPQ(oom, rm), oom, rm)) {
-                        return true;
-                    }
-                    if (l.isIntersectedBy(getQR(oom, rm), oom, rm)) {
-                        return true;
-                    }
-                    if (l.isIntersectedBy(getRS(oom, rm), oom, rm)) {
-                        return true;
-                    }
-                    if (l.isIntersectedBy(getSP(oom, rm), oom, rm)) {
-                        return true;
-                    }
-//                    if (super.isIntersectedBy(l, oom)) {
+//    /**
+//     * Intersection test.
+//     *
+//     * @param l The line segment to test for intersection.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @return {@code true} iff this rectangle is intersected by {@code l}
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
+//        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm), oom, rm)) {
+//            if (pl.isIntersectedBy(l, oom, rm)) {
+//                V3D_Geometry pli = pl.getIntersection(l, oom, rm);
+//                if (pli instanceof V3D_Point plip) {
+//                    return isIntersectedBy(plip, oom, rm);
+//                } else {
+//                    /**
+//                     * If the two points on the line segment are on the same
+//                     * side of all of the edges then there is no intersection
+//                     * otherwise there is.
+//                     */
+//                    if (l.isIntersectedBy(getPQ(oom, rm), oom, rm)) {
 //                        return true;
 //                    }
-//                    if (getRSP(oom, rm).isIntersectedBy(l, oom)) {
+//                    if (l.isIntersectedBy(getQR(oom, rm), oom, rm)) {
 //                        return true;
 //                    }
-                }
-            }
-        }
-        return false;
-    }
+//                    if (l.isIntersectedBy(getRS(oom, rm), oom, rm)) {
+//                        return true;
+//                    }
+//                    if (l.isIntersectedBy(getSP(oom, rm), oom, rm)) {
+//                        return true;
+//                    }
+////                    if (super.isIntersectedBy(l, oom)) {
+////                        return true;
+////                    }
+////                    if (getRSP(oom, rm).isIntersectedBy(l, oom)) {
+////                        return true;
+////                    }
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     /**
      * @param l The line to intersect with.
@@ -493,7 +493,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
-        if (pl.isIntersectedBy(l, oom, rm)) {
+        if (pl.getIntersection(l, oom, rm) != null) {
             V3D_FiniteGeometry i1 = getPQR().getIntersection(l, oom, rm);
             V3D_FiniteGeometry i2 = getRSP(oom, rm).getIntersection(l, oom, rm);
             if (i1 == null) {
@@ -889,32 +889,32 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
                 getS().rotate(axisOfRotation, theta, oom, rm), oom, rm);
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
-        if (super.isIntersectedBy(p, oom, rm)) {
-            return true;
-        } else {
-            return getRSP(oom, rm).isIntersectedBy(p, oom, rm);
-        }
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-        if (super.isIntersectedBy(t, oom, rm)) {
-            return true;
-        } else {
-            return getRSP(oom, rm).isIntersectedBy(t, oom, rm);
-        }
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        if (super.isIntersectedBy(t, oom, rm)) {
-            return true;
-        } else {
-            return getRSP(oom, rm).isIntersectedBy(t, oom, rm);
-        }
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
+//        if (super.isIntersectedBy(p, oom, rm)) {
+//            return true;
+//        } else {
+//            return getRSP(oom, rm).isIntersectedBy(p, oom, rm);
+//        }
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
+//        if (super.isIntersectedBy(t, oom, rm)) {
+//            return true;
+//        } else {
+//            return getRSP(oom, rm).isIntersectedBy(t, oom, rm);
+//        }
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
+//        if (super.isIntersectedBy(t, oom, rm)) {
+//            return true;
+//        } else {
+//            return getRSP(oom, rm).isIntersectedBy(t, oom, rm);
+//        }
+//    }
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {

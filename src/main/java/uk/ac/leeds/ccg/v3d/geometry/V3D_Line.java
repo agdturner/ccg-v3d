@@ -110,7 +110,7 @@ public class V3D_Line extends V3D_Geometry
      * The vector that defines the line. This will not change under translation,
      * but will change under rotation.
      */
-    protected V3D_Vector v;
+    public V3D_Vector v;
 
     /**
      * @param e What {@link #e} is set to.
@@ -404,8 +404,8 @@ public class V3D_Line extends V3D_Geometry
 //        return isIntersectedBy(l.getP(), oom, rm)
 //                && isIntersectedBy(l.getQ(oom, rm), oom, rm);
         if (v.isScalarMultiple(l.v, oom, rm)) {
-            if (getP().isIntersectedBy(l, oom, rm)) {
-                if (l.getP().isIntersectedBy(this, oom, rm)) {
+            if (getP().getIntersection(l, oom, rm) != null) {
+                if (l.getP().getIntersection(this, oom, rm) != null) {
                     return true;
                 }
             }
@@ -447,6 +447,7 @@ public class V3D_Line extends V3D_Geometry
      */
     public V3D_Point getQ(int oom, RoundingMode rm) {
         //if (q == null) {
+        //return new V3D_Point(e, offset, p.add(v, oom, rm));
         return new V3D_Point(e, offset, p.add(v, oom, rm));
         //}
         //return new V3D_Point(e, offset, q);
@@ -520,46 +521,46 @@ public class V3D_Line extends V3D_Geometry
         return v.isScalarMultiple(l.v, oom, rm);
     }
 
-    /**
-     * @param l The line to test for intersection with this.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@code true} if {@code this} and {@code l} intersect and false if
-     * they may intersect, but more computation is needed.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-        V3D_Point tp = getP();
-        V3D_Point tq = getQ(oom, rm);
-        V3D_Point lp = l.getP();
-        if (isCollinear(e, oom, rm, tp, tq, lp)) {
-            return true;
-        } else {
-            //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
-            V3D_Plane pl = new V3D_Plane(e, V3D_Vector.ZERO,
-                    tp.getVector(oom, rm), tq.getVector(oom, rm),
-                    lp.getVector(oom, rm), oom, rm);
-            if (V3D_Plane.isCoplanar(e, oom, rm, pl, l.getQ(oom, rm))) {
-                if (!isParallel(l, oom, rm)) {
-                    return true;
-                }
-            }
-        }
-        V3D_Point lq = l.getQ(oom, rm);
-        if (isCollinear(e, oom, rm, tp, tq, lq)) {
-            return true;
-        } else {
-            //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
-            V3D_Plane pl = new V3D_Plane(e, V3D_Vector.ZERO,
-                    tp.getVector(oom, rm), tq.getVector(oom, rm),
-                    lp.getVector(oom, rm), oom, rm);
-            if (V3D_Plane.isCoplanar(e, oom, rm, pl, lq)) {
-                if (!isParallel(l, oom, rm)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+//    /**
+//     * @param l The line to test for intersection with this.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @return {@code true} if {@code this} and {@code l} intersect and false if
+//     * they may intersect, but more computation is needed.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
+//        V3D_Point tp = getP();
+//        V3D_Point tq = getQ(oom, rm);
+//        V3D_Point lp = l.getP();
+//        if (isCollinear(e, oom, rm, tp, tq, lp)) {
+//            return true;
+//        } else {
+//            //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
+//            V3D_Plane pl = new V3D_Plane(e, V3D_Vector.ZERO,
+//                    tp.getVector(oom, rm), tq.getVector(oom, rm),
+//                    lp.getVector(oom, rm), oom, rm);
+//            if (V3D_Plane.isCoplanar(e, oom, rm, pl, l.getQ(oom, rm))) {
+//                if (!isParallel(l, oom, rm)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        V3D_Point lq = l.getQ(oom, rm);
+//        if (isCollinear(e, oom, rm, tp, tq, lq)) {
+//            return true;
+//        } else {
+//            //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
+//            V3D_Plane pl = new V3D_Plane(e, V3D_Vector.ZERO,
+//                    tp.getVector(oom, rm), tq.getVector(oom, rm),
+//                    lp.getVector(oom, rm), oom, rm);
+//            if (V3D_Plane.isCoplanar(e, oom, rm, pl, lq)) {
+//                if (!isParallel(l, oom, rm)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     /**
      * @param p The plane to intersect.
@@ -585,7 +586,7 @@ public class V3D_Line extends V3D_Geometry
         // Special case of parallel lines.
         V3D_Point tp = getP();
         if (isParallel(l, oom, rm)) {
-            if (tp.isIntersectedBy(l, oom, rm)) {
+            if (tp.getIntersection(l, oom, rm) != null) {
                 // If lines are coincident return this.
                 return this;
             } else {
@@ -1023,15 +1024,15 @@ public class V3D_Line extends V3D_Geometry
         //return new V3D_Line(pi, qi);
     }
 
-    /**
-     * @param r The ray to test if it intersects with {@code this}.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@code true} If {@code this} and {@code r} intersect.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.isIntersectedBy(this, oom, rm);
-    }
+//    /**
+//     * @param r The ray to test if it intersects with {@code this}.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @return {@code true} If {@code this} and {@code r} intersect.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
+//        return r.isIntersectedBy(this, oom, rm);
+//    }
 
     /**
      * Intersects {@code this} with {@code r}.
@@ -1641,27 +1642,27 @@ public class V3D_Line extends V3D_Geometry
         return new V3D_Line(rp, rv);
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom,
-            RoundingMode rm) {
-        return l.isIntersectedBy(this, oom, rm);
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_LineSegment l, int oom,
+//            RoundingMode rm) {
+//        return l.isIntersectedBy(this, oom, rm);
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
+//        return p.isIntersectedBy(this, oom, rm);
+//    }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
-        return p.isIntersectedBy(this, oom, rm);
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-        return t.isIntersectedBy(this, oom, rm);
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom,
-            RoundingMode rm) {
-        return t.isIntersectedBy(this, oom, rm);
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
+//        return t.isIntersectedBy(this, oom, rm);
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom,
+//            RoundingMode rm) {
+//        return t.isIntersectedBy(this, oom, rm);
+//    }
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom,

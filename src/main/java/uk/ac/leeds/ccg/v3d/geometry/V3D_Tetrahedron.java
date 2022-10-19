@@ -391,56 +391,56 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         return pqr.isIntersectedBy(pt, oom, rm);
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-        if (getPqr(oom, rm).isIntersectedBy(l, oom, rm)) {
-            return true;
-        } else {
-            if (getPsq(oom, rm).isIntersectedBy(l, oom, rm)) {
-                return true;
-            } else {
-                return getQsr(oom, rm).isIntersectedBy(l, oom, rm);
-//                // No need for the final test
-//                if (getQsr(oom, rm).isIntersectedBy(l, oom, rm)) {
+//    @Override
+//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
+//        if (getPqr(oom, rm).isIntersectedBy(l, oom, rm)) {
+//            return true;
+//        } else {
+//            if (getPsq(oom, rm).isIntersectedBy(l, oom, rm)) {
+//                return true;
+//            } else {
+//                return getQsr(oom, rm).isIntersectedBy(l, oom, rm);
+////                // No need for the final test
+////                if (getQsr(oom, rm).isIntersectedBy(l, oom, rm)) {
+////                    return true;
+////                } else {
+////                    return getSpr(oom, rm).isIntersectedBy(l, oom, rm);
+////                }
+//            }
+//        }
+//    }
+
+//    @Override
+//    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
+//        return r.isIntersectedBy(this, oom, rm);
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
+//        if (isIntersectedBy(l.getP(), oom, rm)) {
+//            return true;
+//        } else {
+//            if (isIntersectedBy(l.getQ(), oom, rm)) {
+//                return true;
+//            } else {
+//                if (getPqr(oom, rm).isIntersectedBy(l, oom, rm)) {
 //                    return true;
 //                } else {
-//                    return getSpr(oom, rm).isIntersectedBy(l, oom, rm);
+//                    if (getPsq(oom, rm).isIntersectedBy(l, oom, rm)) {
+//                        return true;
+//                    } else {
+//                        return getQsr(oom, rm).isIntersectedBy(l, oom, rm);
+////                        // No need for the final test
+////                        if (getQsr(oom, rm).isIntersectedBy(l, oom, rm)) {
+////                            return true;
+////                        } else {
+////                            return getSpr(oom, rm).isIntersectedBy(l, oom, rm);
+////                        }
+//                    }
 //                }
-            }
-        }
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.isIntersectedBy(this, oom, rm);
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-        if (isIntersectedBy(l.getP(), oom, rm)) {
-            return true;
-        } else {
-            if (isIntersectedBy(l.getQ(), oom, rm)) {
-                return true;
-            } else {
-                if (getPqr(oom, rm).isIntersectedBy(l, oom, rm)) {
-                    return true;
-                } else {
-                    if (getPsq(oom, rm).isIntersectedBy(l, oom, rm)) {
-                        return true;
-                    } else {
-                        return getQsr(oom, rm).isIntersectedBy(l, oom, rm);
-//                        // No need for the final test
-//                        if (getQsr(oom, rm).isIntersectedBy(l, oom, rm)) {
-//                            return true;
-//                        } else {
-//                            return getSpr(oom, rm).isIntersectedBy(l, oom, rm);
-//                        }
-                    }
-                }
-            }
-        }
-    }
+//            }
+//        }
+//    }
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
@@ -537,14 +537,14 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                 }
                 V3D_LineSegment pq = new V3D_LineSegment(p, q, oom, rm);
                 V3D_LineSegment rs = new V3D_LineSegment(r, s, oom, rm);
-                if (pq.isIntersectedBy(rs, oom, rm)) {
+                if (pq.getIntersection(rs, oom, rm) != null) {
                     return new V3D_Polygon(
                             new V3D_Triangle(p, q, r, oom, rm),
                             new V3D_Triangle(p, q, s, oom, rm));
                 } else {
                     V3D_LineSegment pr = new V3D_LineSegment(p, r, oom, rm);
                     V3D_LineSegment qs = new V3D_LineSegment(q, s, oom, rm);
-                    if (pr.isIntersectedBy(qs, oom, rm)) {
+                    if (pr.getIntersection(qs, oom, rm) != null) {
                         return new V3D_Polygon(
                                 new V3D_Triangle(p, r, q, oom, rm),
                                 new V3D_Triangle(p, r, s, oom, rm));
@@ -1396,7 +1396,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
-        if (isIntersectedBy(l, oom, rm)) {
+        if (getIntersection(l, oom, rm) != null) {
             return Math_BigRational.ZERO;
         } else {
             return Math_BigRational.min(
@@ -1430,147 +1430,147 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         s.rotate(axisOfRotation, theta, e.bd, oom, rm));
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Plane pl, int oom, RoundingMode rm) {
-        if (getPqr(oom, rm).isIntersectedBy(pl, oom, rm)) {
-            return true;
-        } else {
-            return getPsq(oom, rm).isIntersectedBy(pl, oom, rm);
-        }
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Plane pl, int oom, RoundingMode rm) {
+//        if (getPqr(oom, rm).isIntersectedBy(pl, oom, rm)) {
+//            return true;
+//        } else {
+//            return getPsq(oom, rm).isIntersectedBy(pl, oom, rm);
+//        }
+//    }
+//
+//    /**
+//     * https://stackoverflow.com/questions/24097540/testing-tetrahedron-triangle-intersection
+//     *
+//     * @param t Triangle
+//     * @param oom The order of magnitude for the precision.
+//     * @return {@code true} iff this and triangle intersect.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
+//        if (isIntersectedBy(t.pl, oom, rm)) {
+//            // If any of the points of the triangle are in this return true.
+//            if (isIntersectedBy(t.getP(), oom, rm) || isIntersectedBy(t.getQ(), oom, rm)
+//                    || isIntersectedBy(t.getR(), oom, rm)) {
+//                return true;
+//            } else {
+//                /**
+//                 * If any faces are intersected by the triangle return true.
+//                 */
+//                if (getPqr(oom, rm).isIntersectedBy(t, oom, rm)) {
+//                    return true;
+//                } else if (getPsq(oom, rm).isIntersectedBy(t, oom, rm)) {
+//                    return true;
+//                } else if (getQsr(oom, rm).isIntersectedBy(t, oom, rm)) {
+//                    return true;
+//                } else if (getSpr(oom, rm).isIntersectedBy(t, oom, rm)) {
+//                    return true;
+//                } else {
+//                    /**
+//                     * The points of t may be around the outside of this, but
+//                     * none of the edges intersect. The intersection of the
+//                     * plane of t and this can give a point, line segment,
+//                     * triangle or convex hull. By controlling rounding in the
+//                     * intersection calculation, this can be robust, but
+//                     * currently the following does not work when all the
+//                     * intersected points are not aligned with t.
+//                     */
+//                    V3D_FiniteGeometry g = getIntersection(t.pl, oom, rm);
+//                    if (g == null) {
+//                        // Wierd!
+//                        return false;
+//                    } else {
+//                        if (g instanceof V3D_Point gp) {
+//                            return t.isAligned(gp, oom, rm);
+//                            //return t.isIntersectedBy(gp, oom, rm);
+//                        } else if (g instanceof V3D_LineSegment gl) {
+//                            if (t.isAligned(gl.getP(), oom, rm)) {
+//                                return true;
+//                            }
+//                            if (t.isAligned(gl.getQ(), oom, rm)) {
+//                                return true;
+//                            }
+//                            return t.isIntersectedBy(gl, oom, rm);
+//                        } else if (g instanceof V3D_Triangle gt) {
+//                            return t.isIntersectedBy(gt, oom, rm);
+//                        } else {
+//                            return t.isIntersectedBy((V3D_ConvexHullCoplanar) g, oom, rm);
+//                        }
+//                    }
+//                }
+//            }
+//        } else {
+//            return false;
+//        }
+//    }
 
-    /**
-     * https://stackoverflow.com/questions/24097540/testing-tetrahedron-triangle-intersection
-     *
-     * @param t Triangle
-     * @param oom The order of magnitude for the precision.
-     * @return {@code true} iff this and triangle intersect.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-        if (isIntersectedBy(t.pl, oom, rm)) {
-            // If any of the points of the triangle are in this return true.
-            if (isIntersectedBy(t.getP(), oom, rm) || isIntersectedBy(t.getQ(), oom, rm)
-                    || isIntersectedBy(t.getR(), oom, rm)) {
-                return true;
-            } else {
-                /**
-                 * If any faces are intersected by the triangle return true.
-                 */
-                if (getPqr(oom, rm).isIntersectedBy(t, oom, rm)) {
-                    return true;
-                } else if (getPsq(oom, rm).isIntersectedBy(t, oom, rm)) {
-                    return true;
-                } else if (getQsr(oom, rm).isIntersectedBy(t, oom, rm)) {
-                    return true;
-                } else if (getSpr(oom, rm).isIntersectedBy(t, oom, rm)) {
-                    return true;
-                } else {
-                    /**
-                     * The points of t may be around the outside of this, but
-                     * none of the edges intersect. The intersection of the
-                     * plane of t and this can give a point, line segment,
-                     * triangle or convex hull. By controlling rounding in the
-                     * intersection calculation, this can be robust, but
-                     * currently the following does not work when all the
-                     * intersected points are not aligned with t.
-                     */
-                    V3D_FiniteGeometry g = getIntersection(t.pl, oom, rm);
-                    if (g == null) {
-                        // Wierd!
-                        return false;
-                    } else {
-                        if (g instanceof V3D_Point gp) {
-                            return t.isAligned(gp, oom, rm);
-                            //return t.isIntersectedBy(gp, oom, rm);
-                        } else if (g instanceof V3D_LineSegment gl) {
-                            if (t.isAligned(gl.getP(), oom, rm)) {
-                                return true;
-                            }
-                            if (t.isAligned(gl.getQ(), oom, rm)) {
-                                return true;
-                            }
-                            return t.isIntersectedBy(gl, oom, rm);
-                        } else if (g instanceof V3D_Triangle gt) {
-                            return t.isIntersectedBy(gt, oom, rm);
-                        } else {
-                            return t.isIntersectedBy((V3D_ConvexHullCoplanar) g, oom, rm);
-                        }
-                    }
-                }
-            }
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * To check if this and y intersect.
-     *
-     * @param t A tetrahedron
-     * @param oom The order of magnitude for the precision.
-     * @return {@code true} iff this and t intersect.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        if (getEnvelope(oom, rm).isIntersectedBy(t.getEnvelope(oom, rm), oom, rm)) {
-            // 1. Check points
-            // If any point of t are in this return true.
-            if (isIntersectedBy(t.getP(), oom, rm)) {
-                return true;
-            }
-            if (isIntersectedBy(t.getQ(), oom, rm)) {
-                return true;
-            }
-            if (isIntersectedBy(t.getR(), oom, rm)) {
-                return true;
-            }
-            if (isIntersectedBy(t.getS(), oom, rm)) {
-                return true;
-            }
-            // If any point of this are in t return true.
-            if (t.isIntersectedBy(getP(), oom, rm)) {
-                return true;
-            }
-            if (t.isIntersectedBy(getQ(), oom, rm)) {
-                return true;
-            }
-            if (t.isIntersectedBy(getR(), oom, rm)) {
-                return true;
-            }
-            if (t.isIntersectedBy(getS(), oom, rm)) {
-                return true;
-            }
-            // 2. Check faces
-            // If this intersects any face of t return true.
-            if (isIntersectedBy(t.getPqr(oom, rm), oom, rm)) {
-                return true;
-            }
-            if (isIntersectedBy(t.getPsq(oom, rm), oom, rm)) {
-                return true;
-            }
-            if (isIntersectedBy(t.getQsr(oom, rm), oom, rm)) {
-                return true;
-            }
-            if (isIntersectedBy(t.getSpr(oom, rm), oom, rm)) {
-                return true;
-            }
-            // If t intersects any face of this return true.
-            if (t.isIntersectedBy(getPqr(oom, rm), oom, rm)) {
-                return true;
-            }
-            if (t.isIntersectedBy(getPsq(oom, rm), oom, rm)) {
-                return true;
-            }
-            if (t.isIntersectedBy(getQsr(oom, rm), oom, rm)) {
-                return true;
-            }
-            if (t.isIntersectedBy(getSpr(oom, rm), oom, rm)) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    /**
+//     * To check if this and y intersect.
+//     *
+//     * @param t A tetrahedron
+//     * @param oom The order of magnitude for the precision.
+//     * @return {@code true} iff this and t intersect.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
+//        if (getEnvelope(oom, rm).isIntersectedBy(t.getEnvelope(oom, rm), oom, rm)) {
+//            // 1. Check points
+//            // If any point of t are in this return true.
+//            if (isIntersectedBy(t.getP(), oom, rm)) {
+//                return true;
+//            }
+//            if (isIntersectedBy(t.getQ(), oom, rm)) {
+//                return true;
+//            }
+//            if (isIntersectedBy(t.getR(), oom, rm)) {
+//                return true;
+//            }
+//            if (isIntersectedBy(t.getS(), oom, rm)) {
+//                return true;
+//            }
+//            // If any point of this are in t return true.
+//            if (t.isIntersectedBy(getP(), oom, rm)) {
+//                return true;
+//            }
+//            if (t.isIntersectedBy(getQ(), oom, rm)) {
+//                return true;
+//            }
+//            if (t.isIntersectedBy(getR(), oom, rm)) {
+//                return true;
+//            }
+//            if (t.isIntersectedBy(getS(), oom, rm)) {
+//                return true;
+//            }
+//            // 2. Check faces
+//            // If this intersects any face of t return true.
+//            if (isIntersectedBy(t.getPqr(oom, rm), oom, rm)) {
+//                return true;
+//            }
+//            if (isIntersectedBy(t.getPsq(oom, rm), oom, rm)) {
+//                return true;
+//            }
+//            if (isIntersectedBy(t.getQsr(oom, rm), oom, rm)) {
+//                return true;
+//            }
+//            if (isIntersectedBy(t.getSpr(oom, rm), oom, rm)) {
+//                return true;
+//            }
+//            // If t intersects any face of this return true.
+//            if (t.isIntersectedBy(getPqr(oom, rm), oom, rm)) {
+//                return true;
+//            }
+//            if (t.isIntersectedBy(getPsq(oom, rm), oom, rm)) {
+//                return true;
+//            }
+//            if (t.isIntersectedBy(getQsr(oom, rm), oom, rm)) {
+//                return true;
+//            }
+//            if (t.isIntersectedBy(getSpr(oom, rm), oom, rm)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, RoundingMode rm) {
@@ -1647,7 +1647,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
-        if (isIntersectedBy(l, oom, rm)) {
+        if (getIntersection(l, oom, rm) != null) {
             return Math_BigRational.ZERO;
         } else {
             return Math_BigRational.min(
@@ -1666,7 +1666,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Plane p, int oom, RoundingMode rm) {
-        if (isIntersectedBy(p, oom, rm)) {
+        if (getIntersection(p, oom, rm) != null) {
             return Math_BigRational.ZERO;
         } else {
             return Math_BigRational.min(
@@ -1685,7 +1685,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
-        if (isIntersectedBy(t, oom, rm)) {
+        if (getIntersection(t, oom, rm) != null) {
             return Math_BigRational.ZERO;
         } else {
             return Math_BigRational.min(
@@ -1704,7 +1704,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        if (isIntersectedBy(t, oom, rm)) {
+        if (getIntersection(t, oom, rm) != null) {
             return Math_BigRational.ZERO;
         } else {
             return Math_BigRational.min(

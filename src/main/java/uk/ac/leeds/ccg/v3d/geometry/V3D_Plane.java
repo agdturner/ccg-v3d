@@ -129,7 +129,6 @@ public class V3D_Plane extends V3D_Geometry
 //        }
 //        return true;
 //    }
-
     /**
      * @param e The V3D_Environment.
      * @param points The points to test if they are coplanar.
@@ -225,7 +224,7 @@ public class V3D_Plane extends V3D_Geometry
      * The normal vector that defines the plane. This is perpendicular to the
      * plane.
      */
-    protected V3D_Vector n;
+    public V3D_Vector n;
 
     /**
      * Create a new instance.
@@ -284,7 +283,7 @@ public class V3D_Plane extends V3D_Geometry
             RoundingMode rm) {
         this(e, V3D_Vector.ZERO, p, q, r, oom, rm);
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -612,60 +611,66 @@ public class V3D_Plane extends V3D_Geometry
 //        return new V3D_Plane(pl.tranlsate(v, oom), q.tranlsate(v, oom), r.tranlsate(v, oom),
 //                oom);
 //    }
-    /**
-     * @param pl The plane to test for intersection with this.
-     * @param oom The Order of Magnitude for the calculation.
-     * @return {@code true} If this and {@code pl} intersect.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_Plane pl, int oom, RoundingMode rm) {
-        if (isParallel(pl, oom, rm)) {
-            return equalsIgnoreOrientation(pl, oom, rm);
-        }
-        return true;
-    }
+//    /**
+//     * @param pl The plane to test for intersection with this.
+//     * @param oom The Order of Magnitude for the calculation.
+//     * @return {@code true} If this and {@code pl} intersect.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_Plane pl, int oom, RoundingMode rm) {
+//        if (isParallel(pl, oom, rm)) {
+//            return equalsIgnoreOrientation(pl, oom, rm);
+//        }
+//        return true;
+//    }
 
-    /**
-     * @param l The line to test for intersection with this.
-     * @param oom The Order of Magnitude for the calculation.
-     * @return {@code true} If this and {@code l} intersect.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-        if (isParallel(l, oom, rm)) {
-            if (!isOnPlane(l, oom, rm)) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    /**
+//     * @param l The line to test for intersection with this.
+//     * @param oom The Order of Magnitude for the calculation.
+//     * @return {@code true} If this and {@code l} intersect.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
+//        if (isParallel(l, oom, rm)) {
+//            if (!isOnPlane(l, oom, rm)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.isIntersectedBy(this, oom, rm);
-    }
-
-    /**
-     * @param l The line segment to test for intersection with this.
-     * @param oom The Order of Magnitude for the calculation.
-     * @return {@code true} If this and {@code l} intersect.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-        V3D_Line ll = new V3D_Line(l);
-        if (isIntersectedBy(ll, oom, rm)) {
-            V3D_Geometry g = getIntersection(ll, oom, rm);
-            if (g == null) {
-                return false;
-            }
-            if (g instanceof V3D_Point pt) {
-                return l.isIntersectedBy(pt, oom, rm);
-            } else {
-                return l.isIntersectedBy((V3D_Line) g, oom, rm);
-            }
-        }
-        return false;
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
+//        return r.isIntersectedBy(this, oom, rm);
+//    }
+//
+//    /**
+//     * @param l The line segment to test for intersection with this.
+//     * @param oom The Order of Magnitude for the calculation.
+//     * @return {@code true} If this and {@code l} intersect.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
+//        V3D_Geometry g = getIntersection(l.l, oom, rm);
+//        if (g == null) {
+//            return false;
+//        }
+//        if (g instanceof V3D_Point pt) {
+//            //// The following might not work due to precision issues?
+//            //return l.isIntersectedBy(pt, oom, rm);
+//            // Is pt between the start and end of the planes of l.
+//            V3D_Plane pl = new V3D_Plane(l.l.getP(), l.l.v);
+//            if (pl.isOnSameSide(l.getQ(), pt, oom, rm)) {
+//                V3D_Plane pl2 = new V3D_Plane(l.getQ(), l.l.v);
+//                if (pl2.isOnSameSide(l.l.getP(), pt, oom, rm)) {
+//                    return true;
+//                }
+//            }
+//            return false;
+//        } else {
+//            return true;
+//        }
+//    }
 
     /**
      * This uses matrices as per the answer to this:
@@ -679,26 +684,55 @@ public class V3D_Plane extends V3D_Geometry
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         Math_BigRational[][] m = new Math_BigRational[4][4];
         V3D_Point tp = getP();
-        m[0][0] = tp.getX(oom, rm);
-        m[1][0] = tp.getY(oom, rm);
-        m[2][0] = tp.getZ(oom, rm);
-        m[3][0] = Math_BigRational.ONE;
-        V3D_Vector pv = getPV();
-        V3D_Point tq = getQ(pv, oom, rm);
-        m[0][1] = tq.getX(oom, rm);
-        m[1][1] = tq.getY(oom, rm);
-        m[2][1] = tq.getZ(oom, rm);
-        m[3][1] = Math_BigRational.ONE;
-        V3D_Point tr = getR(pv, oom, rm);
-        m[0][2] = tr.getX(oom, rm);
-        m[1][2] = tr.getY(oom, rm);
-        m[2][2] = tr.getZ(oom, rm);
-        m[3][2] = Math_BigRational.ONE;
-        m[0][3] = pt.getX(oom, rm);
-        m[1][3] = pt.getY(oom, rm);
-        m[2][3] = pt.getZ(oom, rm);
-        m[3][3] = Math_BigRational.ONE;
-        return new Math_Matrix_BR(m).getDeterminant().compareTo(Math_BigRational.ZERO) == 0;
+        if (tp.isOrigin(oom, rm)) {
+            V3D_Point tpt = new V3D_Point(pt);
+            tpt.translate(V3D_Vector.IJK, oom, rm);
+            V3D_Point ttp = new V3D_Point(getP());
+            ttp.translate(V3D_Vector.IJK, oom, rm);
+            V3D_Vector pv = getPV();
+            V3D_Point ttq = getQ(pv, oom, rm);
+            ttq.translate(V3D_Vector.IJK, oom, rm);
+            V3D_Point ttr = getR(pv, oom, rm);
+            ttr.translate(V3D_Vector.IJK, oom, rm);
+            m[0][0] = ttp.getX(oom, rm);
+            m[1][0] = ttp.getY(oom, rm);
+            m[2][0] = ttp.getZ(oom, rm);
+            m[3][0] = Math_BigRational.ONE;
+            m[0][1] = ttq.getX(oom, rm);
+            m[1][1] = ttq.getY(oom, rm);
+            m[2][1] = ttq.getZ(oom, rm);
+            m[3][1] = Math_BigRational.ONE;
+            m[0][2] = ttr.getX(oom, rm);
+            m[1][2] = ttr.getY(oom, rm);
+            m[2][2] = ttr.getZ(oom, rm);
+            m[3][2] = Math_BigRational.ONE;
+            m[0][3] = tpt.getX(oom, rm);
+            m[1][3] = tpt.getY(oom, rm);
+            m[2][3] = tpt.getZ(oom, rm);
+            m[3][3] = Math_BigRational.ONE;
+            return new Math_Matrix_BR(m).getDeterminant().compareTo(Math_BigRational.ZERO) == 0;
+        } else {
+            V3D_Vector pv = getPV();
+            V3D_Point tq = getQ(pv, oom, rm);
+            V3D_Point tr = getR(pv, oom, rm);
+            m[0][0] = tp.getX(oom, rm);
+            m[1][0] = tp.getY(oom, rm);
+            m[2][0] = tp.getZ(oom, rm);
+            m[3][0] = Math_BigRational.ONE;
+            m[0][1] = tq.getX(oom, rm);
+            m[1][1] = tq.getY(oom, rm);
+            m[2][1] = tq.getZ(oom, rm);
+            m[3][1] = Math_BigRational.ONE;
+            m[0][2] = tr.getX(oom, rm);
+            m[1][2] = tr.getY(oom, rm);
+            m[2][2] = tr.getZ(oom, rm);
+            m[3][2] = Math_BigRational.ONE;
+            m[0][3] = pt.getX(oom, rm);
+            m[1][3] = pt.getY(oom, rm);
+            m[2][3] = pt.getZ(oom, rm);
+            m[3][3] = Math_BigRational.ONE;
+            return new Math_Matrix_BR(m).getDeterminant().compareTo(Math_BigRational.ZERO) == 0;
+        }
     }
 
     /**
@@ -712,34 +746,8 @@ public class V3D_Plane extends V3D_Geometry
     }
 
     /**
-     * If the line is parallel to the plane, then there is no intersection
-     * unless the line is on the plane (when the line is the intersection). If
-     * the line is not parallel to the plane, then the line and the plane
-     * intersect at a point. In some cases that point can be represented exactly
-     * using the coordinates available. In some cases it cannot be represented
-     * exactly and some rounding is needed to provide a result. Rounding options
-     * include:
-     * <ol>
-     * <li>Constraining so the point is a point on the line. (NB. It should be
-     * possible to choose a point on either side of the plane.</li>
-     * <li>Constraining to be on the plane. (NB It should be possible to choose
-     * a point given the orientation of the line relative to the plane. If the
-     * line is perpendicular to the plane, there is a need to have a default
-     * based on the direction of the line and the orientation of the axes.)</li>
-     * <li>The closest point which does not have to be on the line or on the
-     * plane (NB. It should be possible to choose a point above or below the
-     * plane and in an orientation given by the orientation of the line relative
-     * to the plane. As with option 2, there is a need for a default if the line
-     * is perpendicular to the plane).</li>
-     * </ol>
-     * References:
-     * <ul>
-     * <li>https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection</li>
-     * <li>Weisstein, Eric W. "Line-Plane Intersection." From MathWorld--A
-     * Wolfram Web Resource.
-     * https://mathworld.wolfram.com/Line-PlaneIntersection.html
-     * </li>
-     * </ul>
+     * Method adapted from the python code given here:
+     * https://stackoverflow.com/a/18543221/1998054
      *
      * @param l The line to intersect with the plane.
      * @param oom The Order of Magnitude for the calculation.
@@ -748,145 +756,251 @@ public class V3D_Plane extends V3D_Geometry
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
+        // Special case
         if (this.isParallel(l, oom, rm)) {
             if (this.isOnPlane(l, oom, rm)) {
                 return l;
-            } else {
-                return null;
             }
         }
-        // Are either of the points of l on the plane.
-        //V3D_Point lp = l.getP(oom);
-        V3D_Point lp = l.getP();
-        if (this.isIntersectedBy(lp, oom, rm)) {
-            return lp;
-        }
-        V3D_Point lq = l.getQ(oom, rm);
-        if (this.isIntersectedBy(lq, oom, rm)) {
-            return lq;
-        }
-        int oomN6 = oom - 6;
-        //V3D_Vector lv = l.getV(oomN6, rm);
-        V3D_Vector lv = l.v;
-        Math_BigRational[][] m = new Math_BigRational[4][4];
-        m[0][0] = Math_BigRational.ONE;
-        m[0][1] = Math_BigRational.ONE;
-        m[0][2] = Math_BigRational.ONE;
-        m[0][3] = Math_BigRational.ONE;
-//        m[1][0] = pl.getX(oom);
-//        m[1][1] = q.getX(oom);
-//        m[1][2] = r.getX(oom);
-//        m[1][3] = lp.getX(oom);
-//        m[2][0] = pl.getY(oom);
-//        m[2][1] = q.getY(oom);
-//        m[2][2] = r.getY(oom);
-//        m[2][3] = lp.getY(oom);
-//        m[3][0] = pl.getZ(oom);
-//        m[3][1] = q.getZ(oom);
-//        m[3][2] = r.getZ(oom);
-//        m[3][3] = lp.getZ(oom);
-        V3D_Point tp = getP();
-        V3D_Vector pv = getPV();
-        V3D_Point tq = getQ(pv, oom, rm);
-        V3D_Point tr = getR(pv, oom, rm);
-        m[1][0] = tp.getX(oomN6, rm);
-        m[1][1] = tq.getX(oomN6, rm);
-        m[1][2] = tr.getX(oomN6, rm);
-        m[1][3] = lp.getX(oomN6, rm);
-        m[2][0] = tp.getY(oomN6, rm);
-        m[2][1] = tq.getY(oomN6, rm);
-        m[2][2] = tr.getY(oomN6, rm);
-        m[2][3] = lp.getY(oomN6, rm);
-        m[3][0] = tp.getZ(oomN6, rm);
-        m[3][1] = tq.getZ(oomN6, rm);
-        m[3][2] = tr.getZ(oomN6, rm);
-        m[3][3] = lp.getZ(oomN6, rm);
-        Math_Matrix_BR numm = new Math_Matrix_BR(m);
-        m[0][0] = Math_BigRational.ONE;
-        m[0][1] = Math_BigRational.ONE;
-        m[0][2] = Math_BigRational.ONE;
-        m[0][3] = Math_BigRational.ZERO;
-//        m[1][0] = pl.getX(oom);
-//        m[1][1] = q.getX(oom);
-//        m[1][2] = r.getX(oom);
-//        m[1][3] = lv.getDX(oom);
-//        m[2][0] = pl.getY(oom);
-//        m[2][1] = q.getY(oom);
-//        m[2][2] = r.getY(oom);
-//        m[2][3] = lv.getDY(oom);
-//        m[3][0] = pl.getZ(oom);
-//        m[3][1] = q.getZ(oom);
-//        m[3][2] = r.getZ(oom);
-//        m[3][3] = lv.getDZ(oom);
-        m[1][0] = tp.getX(oomN6, rm);
-        m[1][1] = tq.getX(oomN6, rm);
-        m[1][2] = tr.getX(oomN6, rm);
-        m[1][3] = lv.getDX(oomN6, rm);
-        m[2][0] = tp.getY(oomN6, rm);
-        m[2][1] = tq.getY(oomN6, rm);
-        m[2][2] = tr.getY(oomN6, rm);
-        m[2][3] = lv.getDY(oomN6, rm);
-        m[3][0] = tp.getZ(oomN6, rm);
-        m[3][1] = tq.getZ(oomN6, rm);
-        m[3][2] = tr.getZ(oomN6, rm);
-        m[3][3] = lv.getDZ(oomN6, rm);
-        Math_Matrix_BR denm = new Math_Matrix_BR(m);
-
-        if (denm.getDeterminant().compareTo(Math_BigRational.ZERO) == 0) {
-            System.out.println("Determinant is zero in getIntersection");
-            System.out.println("Plane:");
-            System.out.println(this.toString());
-            System.out.println("Line:");
-            System.out.println(l.toString());
+        Math_BigRational dot = n.getDotProduct(l.v, oom, rm);
+        if (dot.compareTo(Math_BigRational.ZERO) == 0) {
             return null;
-        }
-
-        Math_BigRational t = numm.getDeterminant().divide(denm.getDeterminant()).negate();
-        V3D_Point res = new V3D_Point(e,
-                lp.getX(oomN6, rm).add(lv.getDX(oomN6, rm).multiply(t)).round(oom, rm),
-                lp.getY(oomN6, rm).add(lv.getDY(oomN6, rm).multiply(t)).round(oom, rm),
-                lp.getZ(oomN6, rm).add(lv.getDZ(oomN6, rm).multiply(t)).round(oom, rm));
-        if (false) {
-            // Check if r is on the line.
-            if (!l.isIntersectedBy(res, oom, rm)) {
-                System.out.println("Not on line! - l.isIntersectedBy(r, oom, rm)");
-            }
-            if (!isIntersectedBy(res, oom, rm)) {
-                System.out.println("Not on plane! - !isIntersectedBy(r, oom, rm)");
-                // Check side of line
-                if (isOnSameSide(res, lp, oom, rm)) {
-                    System.out.println("isOnSameSide(res, lp, oom, rm)");
-                } else {
-                    System.out.println("!isOnSameSide(res, lp, oom, rm)");
-                    V3D_Plane pl2 = new V3D_Plane(tp, tr, tq, oom, rm);
-                    V3D_Point p2 = (V3D_Point) pl2.getIntersectiondel(l, oom, rm);
-                    if (!res.equals(p2, oom, rm)) {
-                        System.out.println(res);
-                        System.out.println(p2);
-                    } else {
-                        System.out.println(res);
-                    }
+        } else {
+            V3D_Point lp = l.getP();
+            V3D_Point tp = getP();
+            boolean atOrigin = lp.isOrigin(oom, rm);
+            if (atOrigin) {
+                V3D_Point tlp = new V3D_Point(lp);
+                tlp.translate(l.v, oom, rm);
+                V3D_Point ttp = new V3D_Point(tp);
+                ttp.translate(l.v, oom, rm);
+                V3D_Vector w = new V3D_Vector(ttp, tlp, oom, rm);
+                if (w.isZeroVector()) {
+                    return tp;
                 }
-                if (isOnSameSide(res, lq, oom, rm)) {
-                    System.out.println("isOnSameSide(res, lq, oom, rm)");
-                } else {
-                    System.out.println("!isOnSameSide(res, lq, oom, rm)");
+                Math_BigRational fac = n.getDotProduct(w, oom, rm).divide(dot).negate();
+                if (fac == Math_BigRational.ZERO) {
+                    return tp;
                 }
+                //fac = -dot_v3v3(p_no, w) / dot
+                //V3D_Vector u2 = l.v.multiply(fac, oom, rm);
+                V3D_Vector u2 = l.v.multiply(fac, oom, rm);
+                //u = mul_v3_fl(u, fac)
+                //V3D_Point p00 = new V3D_Point(tlp);
+                //V3D_Point p00 = new V3D_Point(l.getP());
+                //V3D_Point p00 = l.getP();
+                //V3D_Point p00 = new V3D_Point(tp);
+                tlp.translate(u2, oom, rm);
+                tlp.translate(l.v.reverse(), oom, rm);
+                return tlp;
+            } else {
+                V3D_Vector w = new V3D_Vector(tp, lp, oom, rm);
+                if (w.isZeroVector()) {
+                    return tp;
+                }
+                Math_BigRational fac = n.getDotProduct(w, oom, rm).divide(dot).negate();
+                V3D_Vector u2 = l.v.multiply(fac, oom, rm);
+                V3D_Point p00 = new V3D_Point(lp);
+                p00.translate(u2, oom, rm);
+                return p00;
             }
         }
-        return res;
-
-//        V3D_Vector d = new V3D_Vector(this.pl, l.pl, n.oom);
-//        //V3D_Vector d = new V3D_Vector(l.pl, pl, n.oom);
-//        Math_BigRational num = d.getDotProduct(this.n);
-//        Math_BigRational den = l.v.getDotProduct(this.n);
-//        Math_BigRational t = num.divide(den);
-//        return new V3D_Point(
-//                l.pl.getX(oom).subtract(l.v.getDX(oom).multiply(t)),
-//                l.pl.getY(oom).subtract(l.v.getDY(oom).multiply(t)),
-//                l.pl.getZ(oom).subtract(l.v.getDZ(oom).multiply(t)));
     }
 
+//    /**
+//     * If the line is parallel to the plane, then there is no intersection
+//     * unless the line is on the plane (when the line is the intersection). If
+//     * the line is not parallel to the plane, then the line and the plane
+//     * intersect at a point. In some cases that point can be represented exactly
+//     * using the coordinates available. In some cases it cannot be represented
+//     * exactly and some rounding is needed to provide a result. Rounding options
+//     * include:
+//     * <ol>
+//     * <li>Constraining so the point is a point on the line. (NB. It should be
+//     * possible to choose a point on either side of the plane.</li>
+//     * <li>Constraining to be on the plane. (NB It should be possible to choose
+//     * a point given the orientation of the line relative to the plane. If the
+//     * line is perpendicular to the plane, there is a need to have a default
+//     * based on the direction of the line and the orientation of the axes.)</li>
+//     * <li>The closest point which does not have to be on the line or on the
+//     * plane (NB. It should be possible to choose a point above or below the
+//     * plane and in an orientation given by the orientation of the line relative
+//     * to the plane. As with option 2, there is a need for a default if the line
+//     * is perpendicular to the plane).</li>
+//     * </ol>
+//     * References:
+//     * <ul>
+//     * <li>https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection</li>
+//     * <li>Weisstein, Eric W. "Line-Plane Intersection." From MathWorld--A
+//     * Wolfram Web Resource.
+//     * https://mathworld.wolfram.com/Line-PlaneIntersection.html
+//     * </li>
+//     * </ul>
+//     *
+//     * @param l The line to intersect with the plane.
+//     * @param oom The Order of Magnitude for the calculation.
+//     * @return The intersection of the line and the plane. This is either
+//     * {@code null} a line or a point.
+//     */
+//    @Override
+//    public V3D_Geometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
+//        if (this.isParallel(l, oom, rm)) {
+//            if (this.isOnPlane(l, oom, rm)) {
+//                return l;
+//            } else {
+//                return null;
+//            }
+//        }
+//        // Are either of the points of l on the plane.
+//        //V3D_Point lp = l.getP(oom);
+//        V3D_Point lp = l.getP();
+//        if (this.isIntersectedBy(lp, oom, rm)) {
+//            return lp;
+//        }
+//        V3D_Point lq = l.getQ(oom, rm);
+//        if (this.isIntersectedBy(lq, oom, rm)) {
+//            return lq;
+//        }
+//        V3D_Point tp = getP();
+//        V3D_Vector pv = getPV();
+//        V3D_Point tq = getQ(pv, oom, rm);
+//        V3D_Point tr = getR(pv, oom, rm);
+//        // Are any of these points on the line?
+//        if (l.isIntersectedBy(tp, oom, rm)) {
+//            return tp;
+//        }
+//        if (l.isIntersectedBy(tp, oom, rm)) {
+//            return tq;
+//        }
+//        if (l.isIntersectedBy(tp, oom, rm)) {
+//            return tr;
+//        }
+//        
+//        int oomN6 = oom - 6;
+//        //V3D_Vector lv = l.getV(oomN6, rm);
+//        V3D_Vector lv = l.v;
+//        Math_BigRational[][] m = new Math_BigRational[4][4];
+//        m[0][0] = Math_BigRational.ONE;
+//        m[0][1] = Math_BigRational.ONE;
+//        m[0][2] = Math_BigRational.ONE;
+//        m[0][3] = Math_BigRational.ONE;
+////        m[1][0] = pl.getX(oom);
+////        m[1][1] = q.getX(oom);
+////        m[1][2] = r.getX(oom);
+////        m[1][3] = lp.getX(oom);
+////        m[2][0] = pl.getY(oom);
+////        m[2][1] = q.getY(oom);
+////        m[2][2] = r.getY(oom);
+////        m[2][3] = lp.getY(oom);
+////        m[3][0] = pl.getZ(oom);
+////        m[3][1] = q.getZ(oom);
+////        m[3][2] = r.getZ(oom);
+////        m[3][3] = lp.getZ(oom);
+////        V3D_Point tp = getP();
+////        V3D_Vector pv = getPV();
+////        V3D_Point tq = getQ(pv, oom, rm);
+////        V3D_Point tr = getR(pv, oom, rm);
+//        m[1][0] = tp.getX(oomN6, rm);
+//        m[1][1] = tq.getX(oomN6, rm);
+//        m[1][2] = tr.getX(oomN6, rm);
+//        m[1][3] = lp.getX(oomN6, rm);
+//        m[2][0] = tp.getY(oomN6, rm);
+//        m[2][1] = tq.getY(oomN6, rm);
+//        m[2][2] = tr.getY(oomN6, rm);
+//        m[2][3] = lp.getY(oomN6, rm);
+//        m[3][0] = tp.getZ(oomN6, rm);
+//        m[3][1] = tq.getZ(oomN6, rm);
+//        m[3][2] = tr.getZ(oomN6, rm);
+//        m[3][3] = lp.getZ(oomN6, rm);
+//        Math_Matrix_BR numm = new Math_Matrix_BR(m);
+//        m[0][0] = Math_BigRational.ONE;
+//        m[0][1] = Math_BigRational.ONE;
+//        m[0][2] = Math_BigRational.ONE;
+//        m[0][3] = Math_BigRational.ZERO;
+////        m[1][0] = pl.getX(oom);
+////        m[1][1] = q.getX(oom);
+////        m[1][2] = r.getX(oom);
+////        m[1][3] = lv.getDX(oom);
+////        m[2][0] = pl.getY(oom);
+////        m[2][1] = q.getY(oom);
+////        m[2][2] = r.getY(oom);
+////        m[2][3] = lv.getDY(oom);
+////        m[3][0] = pl.getZ(oom);
+////        m[3][1] = q.getZ(oom);
+////        m[3][2] = r.getZ(oom);
+////        m[3][3] = lv.getDZ(oom);
+//        m[1][0] = tp.getX(oomN6, rm);
+//        m[1][1] = tq.getX(oomN6, rm);
+//        m[1][2] = tr.getX(oomN6, rm);
+//        m[1][3] = lv.getDX(oomN6, rm);
+//        m[2][0] = tp.getY(oomN6, rm);
+//        m[2][1] = tq.getY(oomN6, rm);
+//        m[2][2] = tr.getY(oomN6, rm);
+//        m[2][3] = lv.getDY(oomN6, rm);
+//        m[3][0] = tp.getZ(oomN6, rm);
+//        m[3][1] = tq.getZ(oomN6, rm);
+//        m[3][2] = tr.getZ(oomN6, rm);
+//        m[3][3] = lv.getDZ(oomN6, rm);
+//        Math_Matrix_BR denm = new Math_Matrix_BR(m);
+//
+//        if (denm.getDeterminant().compareTo(Math_BigRational.ZERO) == 0) {
+//            System.out.println("Determinant is zero in getIntersection");
+//            System.out.println("Plane:");
+//            System.out.println(this.toString());
+//            System.out.println("Line:");
+//            System.out.println(l.toString());
+//            return null;
+//        }
+//
+//        Math_BigRational t = numm.getDeterminant().divide(denm.getDeterminant()).negate();
+////        V3D_Point res = new V3D_Point(e,
+////                lp.getX(oomN6, rm).add(lv.getDX(oomN6, rm).multiply(t)).round(oom, rm),
+////                lp.getY(oomN6, rm).add(lv.getDY(oomN6, rm).multiply(t)).round(oom, rm),
+////                lp.getZ(oomN6, rm).add(lv.getDZ(oomN6, rm).multiply(t)).round(oom, rm));
+//        V3D_Point res = new V3D_Point(e,
+//                lp.getX(oomN6, rm).add(lv.getDX(oomN6, rm).multiply(t)).round(oom, rm),
+//                lp.getY(oomN6, rm).add(lv.getDY(oomN6, rm).multiply(t)).round(oom, rm),
+//                lp.getZ(oomN6, rm).add(lv.getDZ(oomN6, rm).multiply(t)).round(oom, rm));
+//        if (false) {
+//            // Check if res is on the line.
+//            if (!l.isIntersectedBy(res, oom, rm)) {
+//                System.out.println("Not on line! - l.isIntersectedBy(r, oom, rm)");
+//            }
+//            if (!isIntersectedBy(res, oom, rm)) {
+//                System.out.println("Not on plane! - !isIntersectedBy(r, oom, rm)");
+//                // Check side of line
+//                if (isOnSameSide(res, lp, oom, rm)) {
+//                    System.out.println("isOnSameSide(res, lp, oom, rm)");
+//                } else {
+//                    System.out.println("!isOnSameSide(res, lp, oom, rm)");
+//                    V3D_Plane pl2 = new V3D_Plane(tp, tr, tq, oom, rm);
+//                    V3D_Point p2 = (V3D_Point) pl2.getIntersectiondel(l, oom, rm);
+//                    if (!res.equals(p2, oom, rm)) {
+//                        System.out.println(res);
+//                        System.out.println(p2);
+//                    } else {
+//                        System.out.println(res);
+//                    }
+//                }
+//                if (isOnSameSide(res, lq, oom, rm)) {
+//                    System.out.println("isOnSameSide(res, lq, oom, rm)");
+//                } else {
+//                    System.out.println("!isOnSameSide(res, lq, oom, rm)");
+//                }
+//            }
+//        }
+//        return res;
+//
+////        V3D_Vector d = new V3D_Vector(this.pl, l.pl, n.oom);
+////        //V3D_Vector d = new V3D_Vector(l.pl, pl, n.oom);
+////        Math_BigRational num = d.getDotProduct(this.n);
+////        Math_BigRational den = l.v.getDotProduct(this.n);
+////        Math_BigRational t = num.divide(den);
+////        return new V3D_Point(
+////                l.pl.getX(oom).subtract(l.v.getDX(oom).multiply(t)),
+////                l.pl.getY(oom).subtract(l.v.getDY(oom).multiply(t)),
+////                l.pl.getZ(oom).subtract(l.v.getDZ(oom).multiply(t)));
+//    }
     public V3D_Geometry getIntersectiondel(V3D_Line l, int oom, RoundingMode rm) {
         int oomN2 = oom - 2;
         if (this.isParallel(l, oomN2, rm)) {
@@ -1023,6 +1137,27 @@ public class V3D_Plane extends V3D_Geometry
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Plane pl, int oom, RoundingMode rm) {
+        /**
+         * Calculate the cross product of the normal vectors to get the
+         * direction of the line.
+         */
+        //V3D_Vector v = pl.getN(oomN5).getCrossProduct(getN(oomN5), oomN5);
+        //V3D_Vector v = getN(oom, rm).getCrossProduct(pl.getN(oom, rm), oom, rm);
+        V3D_Vector v = n.getCrossProduct(pl.n, oom, rm);
+
+        /**
+         * Check special cases.
+         */
+        if (v.isZeroVector()) {
+            // The planes are parallel.
+            if (pl.equalsIgnoreOrientation(this, oom, rm)) {
+                // The planes are the same.
+                return this;
+            }
+            // There is no intersection.
+            return null;
+        }
+
 //        /**
 //         * The following is from:
 //         * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc
@@ -1063,49 +1198,31 @@ public class V3D_Plane extends V3D_Geometry
 //        m[4][3] = P0;
 //        m[4][4] = P0;
 //        // b4 = p1(1).*n1(1) + p1(2).*n1(2) + p1(3).*n1(3);
-//        Math_BigRational b4 = pl.getDX(oom, rm).multiply(n.getDX(oom, rm))
-//                .add(pl.getDY(oom, rm).multiply(n.getDY(oom, rm)))
-//                .add(pl.getDZ(oom, rm).multiply(n.getDZ(oom, rm)));
-//        System.out.println(b4);
+//        Math_BigRational b4 = pl.p.getDX(oom, rm).multiply(n.getDX(oom, rm))
+//                .add(pl.p.getDY(oom, rm).multiply(n.getDY(oom, rm)))
+//                .add(pl.p.getDZ(oom, rm).multiply(n.getDZ(oom, rm)));
+//        //System.out.println(b4);
 //        // b5 = p2(1).*n2(1) + p2(2).*n2(2) + p2(3).*n2(3);
-//        Math_BigRational b5 = pl.pl.getDX(oom, rm).multiply(pl.n.getDX(oom, rm))
-//                .add(pl.pl.getDY(oom, rm).multiply(pl.n.getDY(oom, rm)))
-//                .add(pl.pl.getDZ(oom, rm).multiply(pl.n.getDZ(oom, rm)));
-//        System.out.println(b5);
+//        Math_BigRational b5 = pl.p.getDX(oom, rm).multiply(pl.n.getDX(oom, rm))
+//                .add(pl.p.getDY(oom, rm).multiply(pl.n.getDY(oom, rm)))
+//                .add(pl.p.getDZ(oom, rm).multiply(pl.n.getDZ(oom, rm)));
+//        //System.out.println(b5);
 //        // b = [2*p0(1) ; 2*p0(2) ; 2*p0(3); b4 ; b5];
-//        m[0][5] = q.getDX(oom, rm).multiply(2);
-//        m[1][5] = q.getDY(oom, rm).multiply(2);
-//        m[2][5] = q.getDZ(oom, rm).multiply(2);
+//        m[0][5] = p.getDX(oom, rm).multiply(2);
+//        m[1][5] = p.getDY(oom, rm).multiply(2);
+//        m[2][5] = p.getDZ(oom, rm).multiply(2);
 //        m[3][5] = b4;
 //        m[4][5] = b5;
 //        // x = M\b;
 //        Math_Matrix_BR mm = new Math_Matrix_BR(m);
 //        Math_Matrix_BR ref = mm.getReducedRowEchelonForm();
-//        System.out.println(ref);
+//        //System.out.println(ref);
 //        // pl = x(1:3);
 //        //???
 //        // n = cross(n1, n2);
-
-        /**
-         * Calculate the cross product of the normal vectors to get the
-         * direction of the line.
-         */
-        //V3D_Vector v = pl.getN(oomN5).getCrossProduct(getN(oomN5), oomN5);
-        //V3D_Vector v = getN(oom, rm).getCrossProduct(pl.getN(oom, rm), oom, rm);
-        V3D_Vector v = n.getCrossProduct(pl.n, oom, rm);
-
-        /**
-         * Check special cases.
-         */
-        if (v.isZeroVector()) {
-            // The planes are parallel.
-            if (pl.equalsIgnoreOrientation(this, oom, rm)) {
-                // The planes are the same.
-                return this;
-            }
-            // There is no intersection.
-            return null;
-        }
+//        Math_BigRational[][] refrows = ref.getRows();
+//        V3D_Point pt = new V3D_Point(e, refrows[0][5], refrows[1][5], refrows[2][5]);
+//        return new V3D_Line(pt, v);
         /**
          * Find the intersection of a line in the plane that is not parallel to
          * v.
@@ -1131,18 +1248,18 @@ public class V3D_Plane extends V3D_Geometry
 //                    new V3D_Line(getP(), getQ()), oomN5);
 //        }
 //
-//        //if (pl.getPV().isScalarMultiple(v, oom, rm)) {
-//        if (pl.getPV().getDotProduct(n, oom, rm) == Math_BigRational.ZERO) {
-////            pi = (V3D_Point) getIntersection(
-////                    new V3D_Line(pl.getP(), pl.getR(oom, rm), oom, rm), oom, rm);
-//            return new V3D_Line(pl.getP(), pl.getR(oom, rm), oom, rm);
-//        } else {
-////            pi = (V3D_Point) getIntersection(
-////                    new V3D_Line(pl.getP(), pl.getQ(oom, rm), oom, rm), oom, rm);
-//            return new V3D_Line(pl.getP(), pl.getQ(oom, rm), oom, rm);
-//        }
-        V3D_Point pi = pl.getPointOfProjectedIntersection(getP(), oom, rm);
-        return new V3D_Line(pi, v);
+        //if (pl.getPV().isScalarMultiple(v, oom, rm)) {
+        if (pl.getPV().getDotProduct(n, oom, rm) == Math_BigRational.ZERO) {
+//            pi = (V3D_Point) getIntersection(
+//                    new V3D_Line(pl.getP(), pl.getR(oom, rm), oom, rm), oom, rm);
+            return new V3D_Line(pl.getP(), pl.getR(oom, rm), oom, rm);
+        } else {
+//            pi = (V3D_Point) getIntersection(
+//                    new V3D_Line(pl.getP(), pl.getQ(oom, rm), oom, rm), oom, rm);
+            return new V3D_Line(pl.getP(), pl.getQ(oom, rm), oom, rm);
+        }
+//        V3D_Point pi = pl.getPointOfProjectedIntersection(getP(), oom, rm);
+//        return new V3D_Line(pi, v);
     }
 
     /**
@@ -1601,7 +1718,7 @@ public class V3D_Plane extends V3D_Geometry
     public boolean isParallel(V3D_Line l, int oom, RoundingMode rm) {
         //return getN(oom, rm).getDotProduct(l.getV(oom, rm), oom, rm).isZero();
         //return getN(oom, rm).getDotProduct(l.v, oom, rm).isZero();
-        return n.getDotProduct(l.v, oom, rm).isZero();
+        return !n.getDotProduct(l.v, oom, rm).isZero();
         //return getPV().getDotProduct(l.v, oom, rm).isZero();
         //return n.getCrossProduct(l.v, oom, rm).getDotProduct(l.v, oom, rm).isZero();
     }
@@ -1632,8 +1749,8 @@ public class V3D_Plane extends V3D_Geometry
         //return isCoplanar(e, oom, rm, this, pl.getP(), pl.getQ(), pl.getR());
         //return isCoplanar(e, oom, rm, this, pl.getP(), pl.getQ(oom, rm), pl.getR(oom, rm));
         if (n.isScalarMultiple(pl.n, oom, rm)) {
-            if (getP().isIntersectedBy(pl, oom, rm)) {
-                if (pl.getP().isIntersectedBy(this, oom, rm)) {
+            if (getP().getIntersection(pl, oom, rm) != null) {
+                if (pl.getP().getIntersection(this, oom, rm) != null) {
                     return true;
                 }
             }
@@ -1740,17 +1857,17 @@ public class V3D_Plane extends V3D_Geometry
 
     @Override
     public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
-        if (isIntersectedBy(l, oom, rm)) {
-            return BigDecimal.ZERO;
-        }
+//        if (isIntersectedBy(l, oom, rm)) {
+//            return BigDecimal.ZERO;
+//        }
         return getDistance(l.getP(), oom, rm);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
-        if (isIntersectedBy(l, oom, rm)) {
-            return Math_BigRational.ZERO;
-        }
+//        if (isIntersectedBy(l, oom, rm)) {
+//            return Math_BigRational.ZERO;
+//        }
         return getDistanceSquared(l.getP(), true, oom, rm);
     }
 
@@ -1845,30 +1962,31 @@ public class V3D_Plane extends V3D_Geometry
         pt2.setOffset(offset, oom, rm);
 //        V3D_Vector nn = getN(oom, rm);
 //        V3D_Line l = new V3D_Line(pt2.rel, nn, e);
+
         V3D_Line l = new V3D_Line(pt2.rel, n, e);
         return (V3D_Point) getIntersection(l, oom, rm);
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-        if (isIntersectedBy(t.getPQ(oom, rm), oom, rm)) {
-            return true;
-        } else {
-            return isIntersectedBy(t.getQR(oom, rm), oom, rm);
-        }
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        // Only need to test 3 of the four triangle faces of t.
-        if (this.isIntersectedBy(t.getPqr(oom, rm), oom, rm)) {
-            return true;
-        }
-        if (this.isIntersectedBy(t.getQsr(oom, rm), oom, rm)) {
-            return true;
-        }
-        return this.isIntersectedBy(t.getSpr(oom, rm), oom, rm);
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
+//        if (isIntersectedBy(t.getPQ(oom, rm), oom, rm)) {
+//            return true;
+//        } else {
+//            return isIntersectedBy(t.getQR(oom, rm), oom, rm);
+//        }
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
+//        // Only need to test 3 of the four triangle faces of t.
+//        if (this.isIntersectedBy(t.getPqr(oom, rm), oom, rm)) {
+//            return true;
+//        }
+//        if (this.isIntersectedBy(t.getQsr(oom, rm), oom, rm)) {
+//            return true;
+//        }
+//        return this.isIntersectedBy(t.getSpr(oom, rm), oom, rm);
+//    }
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, RoundingMode rm) {

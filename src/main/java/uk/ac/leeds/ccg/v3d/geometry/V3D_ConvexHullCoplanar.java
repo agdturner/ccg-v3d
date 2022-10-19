@@ -395,30 +395,30 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy0(pt, oom)));
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-        if (triangles.get(0).pl.isIntersectedBy(l, oom, rm)) {
-            //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy(l, oom)));        
-            return triangles.stream().anyMatch(t -> (t.isIntersectedBy(l, oom, rm)));
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm), oom, rm)) {
-            if (triangles.get(0).pl.isIntersectedBy(l, oom, rm)) {
-                for (V3D_Triangle triangle : triangles) {
-                    if (triangle.isIntersectedBy(l, oom, rm)) {
-                        return true;
-                    }
-                }
-                return false;
-                //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy(l, oom, b)));
-            }
-        }
-        return false;
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
+//        if (triangles.get(0).pl.isIntersectedBy(l, oom, rm)) {
+//            //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy(l, oom)));        
+//            return triangles.stream().anyMatch(t -> (t.isIntersectedBy(l, oom, rm)));
+//        }
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
+//        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm), oom, rm)) {
+//            if (triangles.get(0).pl.isIntersectedBy(l, oom, rm)) {
+//                for (V3D_Triangle triangle : triangles) {
+//                    if (triangle.isIntersectedBy(l, oom, rm)) {
+//                        return true;
+//                    }
+//                }
+//                return false;
+//                //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy(l, oom, b)));
+//            }
+//        }
+//        return false;
+//    }
 
     /**
      * This sums all the areas irrespective of any overlaps.
@@ -586,25 +586,25 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         }
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
+//
+//    @Override
+//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
 
     @Override
     public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {

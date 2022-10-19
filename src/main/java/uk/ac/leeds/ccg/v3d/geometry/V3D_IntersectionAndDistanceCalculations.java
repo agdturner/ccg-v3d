@@ -38,71 +38,71 @@ public interface V3D_IntersectionAndDistanceCalculations {
     public abstract boolean isIntersectedBy(V3D_Point p, int oom, 
             RoundingMode rm);
 
-    /**
-     * Identify if the geometry is intersected by line {@code l}.
-     *
-     * @param l The line to test for intersection with.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff the geometry is intersected by {@code l}.
-     */
-    public abstract boolean isIntersectedBy(V3D_Line l, int oom, 
-            RoundingMode rm);
+//    /**
+//     * Identify if the geometry is intersected by line {@code l}.
+//     *
+//     * @param l The line to test for intersection with.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode if rounding is needed.
+//     * @return {@code true} iff the geometry is intersected by {@code l}.
+//     */
+//    public abstract boolean isIntersectedBy(V3D_Line l, int oom, 
+//            RoundingMode rm);
 
-    /**
-     * Identify if the geometry is intersected by ray {@code r}.
-     *
-     * @param r The ray to test for intersection with.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff the geometry is intersected by {@code r}.
-     */
-    public abstract boolean isIntersectedBy(V3D_Ray r, int oom, 
-            RoundingMode rm);
-
-    /**
-     * Identify if the geometry is intersected by line segment {@code l}.
-     *
-     * @param l The line segment to test for intersection with.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff the geometry is intersected by {@code l}.
-     */
-    public abstract boolean isIntersectedBy(V3D_LineSegment l, int oom, 
-            RoundingMode rm);
-
-    /**
-     * Identify if the geometry is intersected by plane {@code p}.
-     *
-     * @param p The plane to test for intersection with.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff the geometry is intersected by {@code p}.
-     */
-    public abstract boolean isIntersectedBy(V3D_Plane p, int oom, 
-            RoundingMode rm);
-
-    /**
-     * Identify if the geometry is intersected by plane {@code p}.
-     *
-     * @param t The triangle to test for intersection with.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff the geometry is intersected by {@code p}.
-     */
-    public abstract boolean isIntersectedBy(V3D_Triangle t, int oom, 
-            RoundingMode rm);
-
-    /**
-     * Identify if the geometry is intersected by plane {@code p}.
-     *
-     * @param t The tetrahedron to test for intersection with.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff the geometry is intersected by {@code p}.
-     */
-    public abstract boolean isIntersectedBy(V3D_Tetrahedron t, int oom, 
-            RoundingMode rm);
+//    /**
+//     * Identify if the geometry is intersected by ray {@code r}.
+//     *
+//     * @param r The ray to test for intersection with.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode if rounding is needed.
+//     * @return {@code true} iff the geometry is intersected by {@code r}.
+//     */
+//    public abstract boolean isIntersectedBy(V3D_Ray r, int oom, 
+//            RoundingMode rm);
+//
+//    /**
+//     * Identify if the geometry is intersected by line segment {@code l}.
+//     *
+//     * @param l The line segment to test for intersection with.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode if rounding is needed.
+//     * @return {@code true} iff the geometry is intersected by {@code l}.
+//     */
+//    public abstract boolean isIntersectedBy(V3D_LineSegment l, int oom, 
+//            RoundingMode rm);
+//
+//    /**
+//     * Identify if the geometry is intersected by plane {@code p}.
+//     *
+//     * @param p The plane to test for intersection with.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode if rounding is needed.
+//     * @return {@code true} iff the geometry is intersected by {@code p}.
+//     */
+//    public abstract boolean isIntersectedBy(V3D_Plane p, int oom, 
+//            RoundingMode rm);
+//
+//    /**
+//     * Identify if the geometry is intersected by plane {@code p}.
+//     *
+//     * @param t The triangle to test for intersection with.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode if rounding is needed.
+//     * @return {@code true} iff the geometry is intersected by {@code p}.
+//     */
+//    public abstract boolean isIntersectedBy(V3D_Triangle t, int oom, 
+//            RoundingMode rm);
+//
+//    /**
+//     * Identify if the geometry is intersected by plane {@code p}.
+//     *
+//     * @param t The tetrahedron to test for intersection with.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode if rounding is needed.
+//     * @return {@code true} iff the geometry is intersected by {@code p}.
+//     */
+//    public abstract boolean isIntersectedBy(V3D_Tetrahedron t, int oom, 
+//            RoundingMode rm);
 
     /**
      * Get the intersection between the geometry and the line {@code l}.

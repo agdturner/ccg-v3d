@@ -839,27 +839,13 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector getCrossProduct(V3D_Vector v, int oom, RoundingMode rm) {
         oom = oom - 6;
-//        Math_BigRational tdx = getDX(oom);
-//        Math_BigRational tdy = getDY(oom);
-//        Math_BigRational tdz = getDZ(oom);
-//        Math_BigRational vdx = v.getDX(oom);
-//        Math_BigRational vdy = v.getDY(oom);
-//        Math_BigRational vdz = v.getDZ(oom);
-//        return new V3D_Vector(
-//                tdy.multiply(vdz).subtract(tdz.multiply(vdy)),
-//                tdz.multiply(vdx).subtract(tdx.multiply(vdz)),
-//                tdx.multiply(vdy).subtract(vdx.multiply(vdy)), oom);
         return new V3D_Vector(
                 dy.multiply(v.dz, oom, rm).getSqrt(oom, rm)
                         .subtract(dz.multiply(v.dy, oom, rm).getSqrt(oom, rm)),
                 dz.multiply(v.dx, oom, rm).getSqrt(oom, rm)
                         .subtract(dx.multiply(v.dz, oom, rm).getSqrt(oom, rm)),
                 dx.multiply(v.dy, oom, rm).getSqrt(oom, rm)
-                        .subtract(v.dx.multiply(dy, oom, rm).getSqrt(oom, rm)));
-//        return new V3D_Vector(
-//                dy.multiply(v.dz, oom).getSqrt(oom).subtract(dz.multiply(v.dy, oom).getSqrt(oom)),
-//                dx.multiply(v.dz, oom).getSqrt(oom).subtract(dz.multiply(v.dx, oom).getSqrt(oom)).negate(),
-//                dx.multiply(v.dy, oom).getSqrt(oom).subtract(v.dx.multiply(dy, oom).getSqrt(oom)), oom);
+                        .subtract(dy.multiply(v.dx, oom, rm).getSqrt(oom, rm)));
     }
 
     /**

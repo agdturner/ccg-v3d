@@ -28,7 +28,6 @@ import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * Test of V3D_Point class.
@@ -89,20 +88,7 @@ public class V3D_PointTest extends V3D_Test {
         result = result.union(pP1P1P1.getEnvelope(oom, rm), oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
-
-//    /**
-//     * Test of translate method, of class V3D_Point.
-//     */
-//    @Test
-//    public void testApply() {
-//        System.out.println("translate");
-//        int oom = -1;
-//        V3D_Vector v = new V3D_Vector(P1, P1, P1);
-//        V3D_Point instance = pP0P0P0;
-//        V3D_Point expResult = pP1P1P1;
-//        V3D_Point result = instance.translate(v, oom);
-//        assertTrue(expResult.equals(result));
-//    }
+    
     /**
      * Test of equals method, of class V3D_Point.
      */
@@ -199,7 +185,6 @@ public class V3D_PointTest extends V3D_Test {
         instance = new V3D_Point(e, P3, P0, N4);
         result = instance.getDistance(oom, rm, p);
         assertEquals(expResult, result);
-
     }
 
     /**

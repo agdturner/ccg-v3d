@@ -300,132 +300,132 @@ public class V3D_Ray extends V3D_Geometry
 //                return vdzc0 == 1;
 //        }
 //    }
-    /**
-     * @param r A ray to test if it intersects with {@code this}.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@code true} iff {@code r} intersects with {@code this}.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-        if (l.getP().equals(r.l.getP(), oom, rm)) {
-            return true;
-        }
-        boolean ril = r.isIntersectedBy(l, oom, rm);
-        if (ril == false) {
-            return false;
-        }
-        boolean tirl = isIntersectedBy(r.l, oom, rm);
-        if (tirl == false) {
-            return false;
-        }
-        /**
-         * The rays may point along the same line. If they point in the same
-         * direction, then they intersect. If they point in opposite directions,
-         * then they do not intersect unless the points they start at intersect
-         * with the other ray.
-         */
-        if (ril && tirl) {
-            if (r.isIntersectedBy(l.getP(), oom, rm)) {
-                return true;
-            }
-            if (isIntersectedBy(r.l.getP(), oom, rm)) {
-                return true;
-            }
-        }
-        return isIntersectedBy((V3D_Point) getIntersection(r, oom, rm), oom, rm);
-    }
+//    /**
+//     * @param r A ray to test if it intersects with {@code this}.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @return {@code true} iff {@code r} intersects with {@code this}.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
+//        if (l.getP().equals(r.l.getP(), oom, rm)) {
+//            return true;
+//        }
+//        boolean ril = r.isIntersectedBy(l, oom, rm);
+//        if (ril == false) {
+//            return false;
+//        }
+//        boolean tirl = isIntersectedBy(r.l, oom, rm);
+//        if (tirl == false) {
+//            return false;
+//        }
+//        /**
+//         * The rays may point along the same line. If they point in the same
+//         * direction, then they intersect. If they point in opposite directions,
+//         * then they do not intersect unless the points they start at intersect
+//         * with the other ray.
+//         */
+//        if (ril && tirl) {
+//            if (r.isIntersectedBy(l.getP(), oom, rm)) {
+//                return true;
+//            }
+//            if (isIntersectedBy(r.l.getP(), oom, rm)) {
+//                return true;
+//            }
+//        }
+//        return isIntersectedBy((V3D_Point) getIntersection(r, oom, rm), oom, rm);
+//    }
+//
+//    /**
+//     * @param l A line segment to test if it intersects with {@code this}.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @return {@code true} iff {@code l} intersects with {@code this}.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
+//        V3D_Ray rlpq = new V3D_Ray(l.l);
+//        if (!isIntersectedBy(rlpq, oom, rm)) {
+//            return false;
+//        }
+//        V3D_Ray rlqp = new V3D_Ray(e, l.offset, l.q, l.l.p, oom, rm);
+//        return isIntersectedBy(rlqp, oom, rm);
+//    }
 
-    /**
-     * @param l A line segment to test if it intersects with {@code this}.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@code true} iff {@code l} intersects with {@code this}.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-        V3D_Ray rlpq = new V3D_Ray(l.l);
-        if (!isIntersectedBy(rlpq, oom, rm)) {
-            return false;
-        }
-        V3D_Ray rlqp = new V3D_Ray(e, l.offset, l.q, l.l.p, oom, rm);
-        return isIntersectedBy(rlqp, oom, rm);
-    }
+//    /**
+//     * @param l A line to test for intersection.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @return {@code true} iff {@code l} intersects with {@code this}.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
+//        V3D_Geometry i = this.l.getIntersection(l, oom, rm);
+//        if (i == null) {
+//            return false;
+//        }
+//        if (i instanceof V3D_Point pt) {
+//            return isIntersectedBy(pt, oom, rm);
+//        } else {
+//            return true;
+//        }
+//    }
 
-    /**
-     * @param l A line to test for intersection.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@code true} iff {@code l} intersects with {@code this}.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-        V3D_Geometry i = this.l.getIntersection(l, oom, rm);
-        if (i == null) {
-            return false;
-        }
-        if (i instanceof V3D_Point pt) {
-            return isIntersectedBy(pt, oom, rm);
-        } else {
-            return true;
-        }
-    }
+//    /**
+//     * @param pl A plane to test for intersection.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @return {@code true} iff {@code pl} intersects with {@code this}.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_Plane pl, int oom, RoundingMode rm) {
+//        V3D_Geometry i = this.l.getIntersection(pl, oom, rm);
+//        if (i == null) {
+//            return false;
+//        }
+//        if (i instanceof V3D_Point pt) {
+//            //return isIntersectedBy(pt, oom, rm);
+//            V3D_Plane pl2 = new V3D_Plane(l.getP(), l.v);
+//            return pl2.isOnSameSide(pt, l.getQ(oom, rm), oom, rm);
+//        } else {
+//            return true;
+//        }
+//    }
 
-    /**
-     * @param pl A plane to test for intersection.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@code true} iff {@code pl} intersects with {@code this}.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_Plane pl, int oom, RoundingMode rm) {
-        V3D_Geometry i = this.l.getIntersection(pl, oom, rm);
-        if (i == null) {
-            return false;
-        }
-        if (i instanceof V3D_Point pt) {
-            //return isIntersectedBy(pt, oom, rm);
-            V3D_Plane pl2 = new V3D_Plane(l.getP(), l.v);
-            return pl2.isOnSameSide(pt, l.getQ(oom, rm), oom, rm);
-        } else {
-            return true;
-        }
-    }
+//    /**
+//     * Currently this is not taking into account the direction of the ray.
+//     * 
+//     * 
+//     * @param t A triangle to test for intersection.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @return {@code true} iff {@code t} intersects with {@code this}.
+//     */
+//    @Override
+//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
+//        V3D_Geometry i = l.getIntersection(t, oom, rm);
+//        if (i == null) {
+//            return false;
+//        }
+//        if (i instanceof V3D_Point pt) {
+//            if (t.isAligned(pt, oom, rm)) {
+//                return true;
+//            }
+//        } else {
+//            return false;
+//            //return isIntersectedBy((V3D_LineSegment) i, oom, rm);
+//        }
+//        return false;
+//    }
 
-    /**
-     * Currently this is not taking into account the direction of the ray.
-     * 
-     * 
-     * @param t A triangle to test for intersection.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@code true} iff {@code t} intersects with {@code this}.
-     */
-    @Override
-    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-        V3D_Geometry i = l.getIntersection(t, oom, rm);
-        if (i == null) {
-            return false;
-        }
-        if (i instanceof V3D_Point pt) {
-            if (t.isAligned(pt, oom, rm)) {
-                return true;
-            }
-        } else {
-            return false;
-            //return isIntersectedBy((V3D_LineSegment) i, oom, rm);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        if (isIntersectedBy(t.getPqr(oom, rm), oom, rm)) {
-            return true;
-        }
-        if (isIntersectedBy(t.getPsq(oom, rm), oom, rm)) {
-            return true;
-        }
-        if (isIntersectedBy(t.getQsr(oom, rm), oom, rm)) {
-            return true;
-        }
-        return isIntersectedBy(t.getSpr(oom, rm), oom, rm);
-    }
+//    @Override
+//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
+//        if (isIntersectedBy(t.getPqr(oom, rm), oom, rm)) {
+//            return true;
+//        }
+//        if (isIntersectedBy(t.getPsq(oom, rm), oom, rm)) {
+//            return true;
+//        }
+//        if (isIntersectedBy(t.getQsr(oom, rm), oom, rm)) {
+//            return true;
+//        }
+//        return isIntersectedBy(t.getSpr(oom, rm), oom, rm);
+//    }
 
     /**
      * Intersects a ray with a plane. {@code null} is returned if there is no
@@ -1001,7 +1001,7 @@ public class V3D_Ray extends V3D_Geometry
             }
         } else {
             V3D_LineSegment loil = (V3D_LineSegment) loi;
-            if (isIntersectedBy(loil, oom, rm)) {
+            if (getIntersection(loil, oom, rm) != null) {
                 return loil;
             } else {
                 V3D_Point loilp = loil.getP();
@@ -1346,7 +1346,7 @@ public class V3D_Ray extends V3D_Geometry
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom, RoundingMode rm) {
-        if (isIntersectedBy(pl, oom, rm)) {
+        if (getIntersection(pl, oom, rm) != null) {
             return Math_BigRational.ZERO;
         } else {
             Math_BigRational ld2 = l.getDistanceSquared(pl, oom, rm);
@@ -1366,7 +1366,7 @@ public class V3D_Ray extends V3D_Geometry
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
-        if (isIntersectedBy(t, oom, rm)) {
+        if (getIntersection(t, oom, rm) != null) {
             return Math_BigRational.ZERO;
         } else {
             Math_BigRational pqd2 = ((V3D_LineSegment) getLineOfIntersection(t.getPQ(oom, rm), oom, rm)).getLength2(oom, rm);
@@ -1385,7 +1385,7 @@ public class V3D_Ray extends V3D_Geometry
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        if (isIntersectedBy(t, oom, rm)) {
+        if (getIntersection(t, oom, rm) != null) {
             return Math_BigRational.ZERO;
         } else {
             Math_BigRational pqrd2 = t.getPqr(oom, rm).getDistanceSquared(this, oom, rm);
