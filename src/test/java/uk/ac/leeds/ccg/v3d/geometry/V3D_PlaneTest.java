@@ -3290,27 +3290,6 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Plane.
      */
     @Test
-    public void testGetDistance_V3D_Line_int() {
-        System.out.println("getDistance");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line l = new V3D_Line(e, new V3D_Vector(P10, P1, P1),
-                new V3D_Vector(P100, P1, P1), oom, rm);
-        V3D_Plane instance = V3D_Plane.X0;
-        BigDecimal expResult = BigDecimal.TEN;
-        BigDecimal result = instance.getDistance(l, oom, rm);
-        assertFalse(expResult.compareTo(result) == 0);
-        l = new V3D_Line(e, new V3D_Vector(P10, P1, P1),
-                new V3D_Vector(P10, P0, P1), oom, rm);
-        expResult = BigDecimal.TEN;
-        result = instance.getDistance(l, oom, rm);
-        assertTrue(expResult.compareTo(result) == 0);
-    }
-
-    /**
-     * Test of getDistance method, of class V3D_Plane.
-     */
-    @Test
     public void testGetDistance_V3D_LineSegment_int() {
         System.out.println("getDistance");
         int oom = -3;

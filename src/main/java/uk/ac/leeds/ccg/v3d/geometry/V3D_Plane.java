@@ -757,10 +757,11 @@ public class V3D_Plane extends V3D_Geometry
     @Override
     public V3D_Geometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
         // Special case
-        if (this.isParallel(l, oom, rm)) {
-            if (this.isOnPlane(l, oom, rm)) {
+        if (isParallel(l, oom, rm)) {
+            if (isOnPlane(l, oom, rm)) {
                 return l;
             }
+            return null;
         }
         Math_BigRational dot = n.getDotProduct(l.v, oom, rm);
         if (dot.compareTo(Math_BigRational.ZERO) == 0) {
@@ -1707,7 +1708,11 @@ public class V3D_Plane extends V3D_Geometry
     public boolean isParallel(V3D_Plane p, int oom, RoundingMode rm) {
         //return pl.n.isScalarMultiple(n); // alternative - probably slower?
         //return getN(oom, rm).getCrossProduct(pl.getN(oom, rm), oom, rm).isZeroVector();
-        return n.getCrossProduct(p.n, oom, rm).isZeroVector();
+        if (n.isScalarMultiple(p.n, oom, rm)) {
+            return true;
+        }
+        return false;
+        //return n.getCrossProduct(p.n, oom, rm).isZeroVector();
     }
 
     /**
@@ -1716,11 +1721,24 @@ public class V3D_Plane extends V3D_Geometry
      * @return {@code true} if {@code this} is parallel to {@code l}.
      */
     public boolean isParallel(V3D_Line l, int oom, RoundingMode rm) {
-        //return getN(oom, rm).getDotProduct(l.getV(oom, rm), oom, rm).isZero();
-        //return getN(oom, rm).getDotProduct(l.v, oom, rm).isZero();
-        return !n.getDotProduct(l.v, oom, rm).isZero();
+//        n.getCrossProduct(p.n, oom, rm).isZeroVector();
+//        
+//        //return getN(oom, rm).getDotProduct(l.getV(oom, rm), oom, rm).isZero();
+//        //return getN(oom, rm).getDotProduct(l.v, oom, rm).isZero();
+//        V3D_Plane pl = new V3D_Plane(l.getP(), l.v);
+//        if (this.isParallel(pl, oom, rm)) {
+//            return false;
+//        }
+//        return n.getCrossProduct(l.v, oom, rm).isZeroVector();
+        //return n.getDotProduct(l.v, oom, rm).isZero();
         //return getPV().getDotProduct(l.v, oom, rm).isZero();
         //return n.getCrossProduct(l.v, oom, rm).getDotProduct(l.v, oom, rm).isZero();
+        
+        if (n.isOrthogonal(l.v, oom, rm)){
+            return true;
+            //return n.getCrossProduct(l.v, oom, rm).isZeroVector();
+        }
+        return n.getDotProduct(l.v, oom, rm).isZero();
     }
 
     /**
@@ -1857,17 +1875,12 @@ public class V3D_Plane extends V3D_Geometry
 
     @Override
     public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
-//        if (isIntersectedBy(l, oom, rm)) {
-//            return BigDecimal.ZERO;
-//        }
-        return getDistance(l.getP(), oom, rm);
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
+                .getSqrt().toBigDecimal(oom, rm);
     }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
-//        if (isIntersectedBy(l, oom, rm)) {
-//            return Math_BigRational.ZERO;
-//        }
         return getDistanceSquared(l.getP(), true, oom, rm);
     }
 
