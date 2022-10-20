@@ -319,7 +319,7 @@ public class V3D_VectorTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector v = P0P0P0;
         V3D_Vector instance = P1P1P1;
-        assertTrue(instance.isScalarMultiple(v, oom, rm));
+        assertFalse(instance.isScalarMultiple(v, oom, rm));
         // Test 2
         v = N1N1N1;
         instance = P1P1P1;

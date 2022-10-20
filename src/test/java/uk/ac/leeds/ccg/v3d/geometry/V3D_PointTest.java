@@ -615,20 +615,20 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("isIntersectedBy");
     }
 
-    /**
-     * Test of getDistance method, of class V3D_Point.
-     */
-    @Test
-    public void testGetDistance_V3D_Ray_int() {
-        System.out.println("getDistance");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Ray r = new V3D_Ray(pP1P0P0, pP2P0P0, oom, rm);
-        V3D_Point instance = V3D_Point.ORIGIN;
-        BigDecimal expResult = BigDecimal.ONE;
-        BigDecimal result = instance.getDistance(r, oom, rm);
-        assertTrue(expResult.compareTo(result) == 0);
-    }
+//    /**
+//     * Test of getDistance method, of class V3D_Point.
+//     */
+//    @Test
+//    public void testGetDistance_V3D_Ray_int() {
+//        System.out.println("getDistance");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_Ray r = new V3D_Ray(pP1P0P0, pP2P0P0, oom, rm);
+//        V3D_Point instance = V3D_Point.ORIGIN;
+//        BigDecimal expResult = BigDecimal.ONE;
+//        BigDecimal result = instance.getDistance(r, oom, rm);
+//        assertTrue(expResult.compareTo(result) == 0);
+//    }
 
     /**
      * Test of getLocation method, of class V3D_Point.

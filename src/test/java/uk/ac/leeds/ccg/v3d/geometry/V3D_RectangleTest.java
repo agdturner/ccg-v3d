@@ -734,7 +734,7 @@ public class V3D_RectangleTest extends V3D_Test {
         System.out.println("getDistance");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line l = new V3D_Line(pP0N1P0, pP1N1P0, oom, rm);
+        V3D_Line l = new V3D_Line(pP0N1P1, pP1N1P1, oom, rm);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
         BigDecimal expResult = BigDecimal.ONE;
         BigDecimal result = instance.getDistance(l, oom, rm);
@@ -749,7 +749,7 @@ public class V3D_RectangleTest extends V3D_Test {
         System.out.println("getDistanceSquared");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line l = new V3D_Line(pP0N1P0, pP1N1P0, oom, rm);
+        V3D_Line l = new V3D_Line(pP0N1P1, pP1N1P1, oom, rm);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
         Math_BigRational expResult = Math_BigRational.ONE;
         Math_BigRational result = instance.getDistanceSquared(l, oom, rm);
