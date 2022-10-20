@@ -122,24 +122,26 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     /**
-     * If p0 and p1 are the same, return the point. Otherwise return a line segment.
+     * If p0 and p1 are the same, return the point. Otherwise return a line
+     * segment.
+     *
      * @param p0 A point which may be the same as p1.
      * @param p1 A point which may be the same as p0.
-     * 
+     *
      * @param oom The Order of Magnitude for the calculation.
-     * @return A V3D_Point if p0 and p1 are equal, otherwise return a V3D_LineSegment with end points p0 an p1.
+     * @return A V3D_Point if p0 and p1 are equal, otherwise return a
+     * V3D_LineSegment with end points p0 an p1.
      */
     public static V3D_FiniteGeometry getGeometry(V3D_Point p0,
             V3D_Point p1, int oom, RoundingMode rm) {
-        if (p0.equals(p1, oom, rm))
+        if (p0.equals(p1, oom, rm)) {
             return p0;
-        else {
+        } else {
             return new V3D_LineSegment(p0, p1, oom, rm);
         }
-        
+
     }
-    
-    
+
     /**
      *
      * @param l1 A line segment collinear with {@code l2}.
@@ -349,7 +351,6 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
 //        }
 //        return false;
 //    }
-
 //    @Override
 //    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
 //        Iterator<V3D_LineSegment> ite = lineSegments.iterator();
@@ -360,7 +361,6 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
 //        }
 //        return false;
 //    }
-
     @Override
     public V3D_Geometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
@@ -392,47 +392,43 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      */
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment ls, int oom, RoundingMode rm) {
-        if (getIntersection(ls, oom, rm) != null) {
-            if (lineSegments.get(0).l.isCollinear(ls.l, oom, rm)) {
-                ArrayList<V3D_Point> ps = new ArrayList<>();
-                ArrayList<V3D_LineSegment> lse = new ArrayList<>();
-                Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-                while (ite.hasNext()) {
-                    V3D_Geometry g = ite.next().getIntersection(ls, oom, rm);
-                    if (g != null) {
-                        if (g instanceof V3D_Point gp) {
-                            ps.add(gp);
-                        } else {
-                            lse.add((V3D_LineSegment) g);
-                        }
-                    }
-                }
-                if (!ps.isEmpty()) {
-                    // Need to handle cases where we have points.
-                    throw new UnsupportedOperationException();
-                } else {
-                    if (lse.size() == 1) {
-                        return lse.get(0);
+        if (lineSegments.get(0).l.isCollinear(ls.l, oom, rm)) {
+            ArrayList<V3D_Point> ps = new ArrayList<>();
+            ArrayList<V3D_LineSegment> lse = new ArrayList<>();
+            Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+            while (ite.hasNext()) {
+                V3D_Geometry g = ite.next().getIntersection(ls, oom, rm);
+                if (g != null) {
+                    if (g instanceof V3D_Point gp) {
+                        ps.add(gp);
                     } else {
-                        V3D_LineSegmentsCollinear r
-                                = new V3D_LineSegmentsCollinear(
-                                        lse.toArray(V3D_LineSegment[]::new));
-                        return r.simplify(oom, rm);
+                        lse.add((V3D_LineSegment) g);
                     }
                 }
+            }
+            if (!ps.isEmpty()) {
+                // Need to handle cases where we have points.
+                throw new UnsupportedOperationException();
             } else {
-                // Find the point of intersection if there is one.
-                Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-                while (ite.hasNext()) {
-                    V3D_FiniteGeometry g = ite.next().getIntersection(ls, oom, rm);
-                    if (g != null) {
-                        return g;
-                    }
+                if (lse.size() == 1) {
+                    return lse.get(0);
+                } else {
+                    V3D_LineSegmentsCollinear r
+                            = new V3D_LineSegmentsCollinear(
+                                    lse.toArray(V3D_LineSegment[]::new));
+                    return r.simplify(oom, rm);
                 }
-                // Return null if there is no point of intersection.
-                return null;
             }
         } else {
+            // Find the point of intersection if there is one.
+            Iterator<V3D_LineSegment> ite = lineSegments.iterator();
+            while (ite.hasNext()) {
+                V3D_FiniteGeometry g = ite.next().getIntersection(ls, oom, rm);
+                if (g != null) {
+                    return g;
+                }
+            }
+            // Return null if there is no point of intersection.
             return null;
         }
     }
@@ -466,7 +462,6 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
 //        }
 //        return false;
 //    }
-
     /**
      * Combines overlapping line segments into single line segments. If there is
      * only one line segment, then a V3D_LineSegment is returned, otherwise a
@@ -594,29 +589,14 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     @Override
     public V3D_LineSegmentsCollinear rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
         V3D_LineSegment[] rls = new V3D_LineSegment[lineSegments.size()];
-        for (int i = 0; i < lineSegments.size(); i ++) {
+        for (int i = 0; i < lineSegments.size(); i++) {
             rls[0] = lineSegments.get(i).rotate(axisOfRotation, theta, oom, rm);
         }
         return new V3D_LineSegmentsCollinear(rls);
     }
-
-//    @Override
-//    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-//    }
-
+    
     @Override
     public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Ray r, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

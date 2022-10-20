@@ -1379,16 +1379,6 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.getDistance(this, oom, rm);
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.getDistanceSquared(this, oom, rm);
-    }
-
-    @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
                 .getSqrt(oom, rm).toBigDecimal(oom, rm);

@@ -54,8 +54,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class V3D_Geometry implements Serializable,
-        V3D_IntersectionAndDistanceCalculations {
+public abstract class V3D_Geometry implements Serializable, V3D_Intersection {
 
     private static final long serialVersionUID = 1L;
 

@@ -57,8 +57,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Plane extends V3D_Geometry
-        implements V3D_IntersectionAndDistanceCalculations {
+public class V3D_Plane extends V3D_Geometry implements V3D_Distance {
 
     private static final long serialVersionUID = 1L;
 
@@ -1249,18 +1248,19 @@ public class V3D_Plane extends V3D_Geometry
 //                    new V3D_Line(getP(), getQ()), oomN5);
 //        }
 //
-        //if (pl.getPV().isScalarMultiple(v, oom, rm)) {
-        if (pl.getPV().getDotProduct(n, oom, rm) == Math_BigRational.ZERO) {
-//            pi = (V3D_Point) getIntersection(
-//                    new V3D_Line(pl.getP(), pl.getR(oom, rm), oom, rm), oom, rm);
-            return new V3D_Line(pl.getP(), pl.getR(oom, rm), oom, rm);
-        } else {
-//            pi = (V3D_Point) getIntersection(
-//                    new V3D_Line(pl.getP(), pl.getQ(oom, rm), oom, rm), oom, rm);
-            return new V3D_Line(pl.getP(), pl.getQ(oom, rm), oom, rm);
-        }
-//        V3D_Point pi = pl.getPointOfProjectedIntersection(getP(), oom, rm);
-//        return new V3D_Line(pi, v);
+//        //if (pl.getPV().isScalarMultiple(v, oom, rm)) {
+//        if (pl.getPV().getDotProduct(n, oom, rm) == Math_BigRational.ZERO) {
+////            pi = (V3D_Point) getIntersection(
+////                    new V3D_Line(pl.getP(), pl.getR(oom, rm), oom, rm), oom, rm);
+//            return new V3D_Line(pl.getP(), pl.getR(oom, rm), oom, rm);
+//        } else {
+////            pi = (V3D_Point) getIntersection(
+////                    new V3D_Line(pl.getP(), pl.getQ(oom, rm), oom, rm), oom, rm);
+//            return new V3D_Line(pl.getP(), pl.getQ(oom, rm), oom, rm);
+//        }
+        
+        V3D_Point pi = pl.getPointOfProjectedIntersection(getP(), oom, rm);
+        return new V3D_Line(pi, v);
     }
 
     /**
@@ -1882,16 +1882,6 @@ public class V3D_Plane extends V3D_Geometry
     @Override
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
         return getDistanceSquared(l.getP(), true, oom, rm);
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.getDistance(this, oom, rm);
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.getDistanceSquared(this, oom, rm);
     }
 
     @Override

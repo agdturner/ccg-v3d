@@ -61,8 +61,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Point extends V3D_FiniteGeometry implements
-        V3D_IntersectionAndDistanceCalculations {
+public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
 
     private static final long serialVersionUID = 1L;
 
@@ -386,12 +385,6 @@ public class V3D_Point extends V3D_FiniteGeometry implements
 //        return getDistanceSquared(l, true, oom);
     }
 
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom,
-            RoundingMode rm) {
-        return r.getDistanceSquared(this, oom, rm);
-    }
-
     /**
      * @param l The line to find the distance of {@code this} from.
      * @param oom The Order of Magnitude for the precision of the result.
@@ -550,17 +543,6 @@ public class V3D_Point extends V3D_FiniteGeometry implements
             return new Math_BigRationalSqrt(Math_BigRational.min(lp2, lq2),
                     oom2, rm).toBigDecimal(oom, rm);
         }
-    }
-
-    /**
-     * @param r The ray to get the distance from.
-     * @param oom The Order of Magnitude for the precision of the result.
-     * @return The minimum distance between {@code this} and {@code r}.
-     */
-    @Override
-    public BigDecimal getDistance(V3D_Ray r, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(r, oom, rm), oom, rm)
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
     /**

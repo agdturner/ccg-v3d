@@ -525,35 +525,6 @@ public class V3D_Vector implements Serializable {
         return (v.getDX(oom, rm).multiply(getDX(oom, rm)))
                 .add(v.getDY(oom, rm).multiply(getDY(oom, rm)))
                 .add(v.getDZ(oom, rm).multiply(getDZ(oom, rm)));
-        //.round(oom, rm);
-//        Math_BigRational vdx = v.getDX().abs();
-//        if (v.dx.negative) {
-//            vdx = vdx.negate();
-//        }
-//        Math_BigRational vdy = v.getDY().abs();
-//        if (v.dy.negative) {
-//            vdy = vdy.negate();
-//        }
-//        Math_BigRational vdz = v.getDZ().abs();
-//        if (v.dz.negative) {
-//            vdz = vdz.negate();
-//        }
-//        Math_BigRational tdx = getDX().abs();
-//        if (dx.negative) {
-//            tdx = tdx.negate();
-//        }
-//        Math_BigRational tdy = getDY().abs();
-//        if (dy.negative) {
-//            tdy = tdy.negate();
-//        }
-//        Math_BigRational tdz = getDZ().abs();
-//        if (dz.negative) {
-//            tdz = tdz.negate();
-//        }
-//        return (vdx.multiply(tdx)).add(vdy.multiply(tdy)).add(vdz.multiply(tdz));
-//        return (v.dx.multiply(dx)).getSqrt()
-//                .add(v.dy.multiply(dy).getSqrt())
-//                .add(v.dz.multiply(dz).getSqrt());
     }
 
     /**
@@ -565,14 +536,10 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isOrthogonal(V3D_Vector v, int oom, RoundingMode rm) {
-//        // Special case
-//        if (this.isZeroVector() || v.isZeroVector()) {
-//            return true;
-//        }
-//        oom = oom - 5;
-//        if (isScalarMultiple(v, oom, rm)) {
-//            return false;
-//        }
+        // Special case
+        if (isScalarMultiple(v, oom, rm)) {
+            return false;
+        }
         return getDotProduct(v, oom, rm).isZero();
     }
 
@@ -641,11 +608,11 @@ public class V3D_Vector implements Serializable {
     public boolean isScalarMultiple(V3D_Vector v, int oom, RoundingMode rm) {
         // Special case
         if (this.isZeroVector() || v.isZeroVector()) {
-            return true;
+            return false;
         }
         oom -= 6;
-        return this.multiply(this.getDotProduct(v, oom, rm), oom, rm).equals(
-                v.multiply(this.getDotProduct(this, oom, rm), oom, rm));
+        return this.multiply(getDotProduct(v, oom, rm), oom, rm).equals(
+                v.multiply(getDotProduct(this, oom, rm), oom, rm));
 //        if (dx.isZero()) {
 //            if (v.dx.isZero()) {
 //                if (dy.isZero()) {

@@ -25,8 +25,7 @@ import java.math.RoundingMode;
  * @author Andy Turner
  * @version 1.0
  */
-public interface V3D_Face extends V3D_IntersectionAndDistanceCalculations, 
-        Serializable {
+public interface V3D_Face {
 
     /**
      * For calculating and returning the perimeter.

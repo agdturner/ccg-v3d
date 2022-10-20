@@ -77,8 +77,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Line extends V3D_Geometry
-        implements V3D_IntersectionAndDistanceCalculations {
+public class V3D_Line extends V3D_Geometry implements V3D_Distance {
 
     private static final long serialVersionUID = 1L;
 
@@ -561,7 +560,6 @@ public class V3D_Line extends V3D_Geometry
 //        }
 //        return false;
 //    }
-
     /**
      * @param p The plane to intersect.
      * @param oom The Order of Magnitude for the precision of the calculation.
@@ -1033,7 +1031,6 @@ public class V3D_Line extends V3D_Geometry
 //    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
 //        return r.isIntersectedBy(this, oom, rm);
 //    }
-
     /**
      * Intersects {@code this} with {@code r}.
      *
@@ -1124,18 +1121,23 @@ public class V3D_Line extends V3D_Geometry
     }
 
     /**
-     * Get the line of intersection (the shortest line) between two lines. The
-     * two lines must not intersect or be parallel for this to work. Part
-     * adapted from
-     * <a href="http://paulbourke.net/geometry/pointlineplane/">http://paulbourke.net/geometry/pointlineplane/</a>.
-     * The re
+     * Calculate and return the line of intersection (the shortest line) between
+     * this and l. If this and l intersect then return null. If this and l are
+     * parallel, then return null. Adapted in part from:
+     * http://paulbourke.net/geometry/pointlineplane/
      *
      * @param l The line to get the line of intersection with.
      * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return The line of intersection between {@code this} and {@code l}.
+     * @return The line of intersection between {@code this} and {@code l}. The
+     * point p is a point on or near this, and the point q is a point on or near
+     * l. Whether the points are on or near is down to rounding error and 
+     * precision.
      */
-    public V3D_FiniteGeometry getLineOfIntersection(V3D_Line l, int oom, RoundingMode rm) {
+    public V3D_LineSegment getLineOfIntersection(V3D_Line l, int oom, RoundingMode rm) {
         if (isParallel(l, oom, rm)) {
+            return null;
+        }
+        if (getIntersection(l, oom, rm) != null) {
             return null;
         }
         V3D_Point tp = getP();
@@ -1168,7 +1170,7 @@ public class V3D_Line extends V3D_Geometry
         //return new V3D_LineSegment(tpi, lpi, oom);
         //return new V3D_LineSegment(tpi.getVector(oom), lpi.getVector(oom), oom);
         //return new V3D_LineSegment(e, tpi, lpi);
-        return V3D_LineSegment.getGeometry(new V3D_Point(e, tpi), new V3D_Point(e, lpi), oom, rm);
+        return new V3D_LineSegment(new V3D_Point(e, tpi), new V3D_Point(e, lpi), oom, rm);
 
 //        // p13
 //        //V3D_Vector plp = new V3D_Vector(p, lp, oom);
@@ -1450,53 +1452,53 @@ public class V3D_Line extends V3D_Geometry
         }
     }
 
-    /**
-     * @param r A ray for which the minimum distance from {@code this} is
-     * returned.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return The minimum distance between {@code this} and {@code r}.
-     */
-    @Override
-    public BigDecimal getDistance(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.getDistance(this, oom, rm);
-//        V3D_Geometry g = r.getLineOfIntersection(this, oom);
-//        if (g == null) {
-//            return getDistance(r.getP(oom), oom);
-//        }
-//        if (g instanceof V3D_Point) {
-//            return BigDecimal.ZERO;
-//        } else {
-//            return ((V3D_LineSegment) g).getLength(oom).getSqrt(oom).toBigDecimal(oom);
-//        }
+//    /**
+//     * @param r A ray for which the minimum distance from {@code this} is
+//     * returned.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @return The minimum distance between {@code this} and {@code r}.
+//     */
+//    @Override
+//    public BigDecimal getDistance(V3D_Ray r, int oom, RoundingMode rm) {
+//        return r.getDistance(this, oom, rm);
+////        V3D_Geometry g = r.getLineOfIntersection(this, oom);
+////        if (g == null) {
+////            return getDistance(r.getP(oom), oom);
+////        }
+////        if (g instanceof V3D_Point) {
+////            return BigDecimal.ZERO;
+////        } else {
+////            return ((V3D_LineSegment) g).getLength(oom).getSqrt(oom).toBigDecimal(oom);
+////        }
+////
+////        //return r.getDistance(this, oom);
+////        //public Math_BigRational getDistance(V3D_Ray r) {
+////        if (isParallel(r, oom)) {
+////            return p.getDistance(new V3D_Line(r, oom), oom);
+////        } else {
+////            if (isIntersectedBy(r, oom)) {
+////                return BigDecimal.ZERO;
+////            } else {
+////                V3D_Line rl = new V3D_Line(r, oom);
+////                if (isIntersectedBy(rl, oom)) {
+////                    return getLineOfIntersection(r.p, oom).getLength().toBigDecimal(oom);
+////                }
+////                V3D_LineSegment li = (V3D_LineSegment) getLineOfIntersection(r, oom);
+////                if (li == null) {
+////                    li = getLineOfIntersection(r.p, oom);
+////                }
+////                if (r.isIntersectedBy(li.q, oom)) {
+////                    return li.getLength().toBigDecimal(oom);
+////                }
+////                return r.p.getDistance(this, oom);
+////            }
+////        }
+//    }
 //
-//        //return r.getDistance(this, oom);
-//        //public Math_BigRational getDistance(V3D_Ray r) {
-//        if (isParallel(r, oom)) {
-//            return p.getDistance(new V3D_Line(r, oom), oom);
-//        } else {
-//            if (isIntersectedBy(r, oom)) {
-//                return BigDecimal.ZERO;
-//            } else {
-//                V3D_Line rl = new V3D_Line(r, oom);
-//                if (isIntersectedBy(rl, oom)) {
-//                    return getLineOfIntersection(r.p, oom).getLength().toBigDecimal(oom);
-//                }
-//                V3D_LineSegment li = (V3D_LineSegment) getLineOfIntersection(r, oom);
-//                if (li == null) {
-//                    li = getLineOfIntersection(r.p, oom);
-//                }
-//                if (r.isIntersectedBy(li.q, oom)) {
-//                    return li.getLength().toBigDecimal(oom);
-//                }
-//                return r.p.getDistance(this, oom);
-//            }
-//        }
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.getDistanceSquared(this, oom, rm);
-    }
+//    @Override
+//    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom, RoundingMode rm) {
+//        return r.getDistanceSquared(this, oom, rm);
+//    }
 
     /**
      * @return {@code true} iff this is parallel to the plane defined by x=0.
@@ -1634,7 +1636,7 @@ public class V3D_Line extends V3D_Geometry
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
         super.translate(v, oom, rm);
     }
-    
+
     @Override
     public V3D_Line rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
         V3D_Point rp = getP().rotate(axisOfRotation, theta, oom, rm);
@@ -1652,7 +1654,6 @@ public class V3D_Line extends V3D_Geometry
 //    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
 //        return p.isIntersectedBy(this, oom, rm);
 //    }
-
 //    @Override
 //    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
 //        return t.isIntersectedBy(this, oom, rm);
@@ -1663,7 +1664,6 @@ public class V3D_Line extends V3D_Geometry
 //            RoundingMode rm) {
 //        return t.isIntersectedBy(this, oom, rm);
 //    }
-
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom,
             RoundingMode rm) {
@@ -1789,7 +1789,6 @@ public class V3D_Line extends V3D_Geometry
 //        }
 //        return true;
 //    }
-
 //    /**
 //     * @param e The V3D_Environment.
 //     * @param points The points to test if they are collinear.

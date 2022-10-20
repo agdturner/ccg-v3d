@@ -26,8 +26,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class V3D_FiniteGeometry extends V3D_Geometry 
-        implements V3D_FiniteGeometryInterface {
+public abstract class V3D_FiniteGeometry extends V3D_Geometry implements V3D_Distance {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,6 +34,13 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry
      * For storing the envelope.
      */
     protected V3D_Envelope en;
+    
+    /**
+     * For getting the envelope of the geometry
+     *
+     * @return The V3D_Envelope.
+     */
+    public abstract V3D_Envelope getEnvelope(int oom, RoundingMode rm);
     
     /**
      * Creates a new instance with offset V3D_Vector.ZERO

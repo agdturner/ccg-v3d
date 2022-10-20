@@ -868,8 +868,13 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                     if (gRP == null) {
                         return gQR;
                     } else {
-                        return V3D_LineSegment.getGeometry((V3D_Point) gQR,
-                                (V3D_Point) gRP, oom, rm);
+                        if (gRP instanceof V3D_Point gRPp) {
+                            return V3D_LineSegment.getGeometry((V3D_Point) gQR,
+                                    gRPp, oom, rm);
+                        } else {
+                            return V3D_Triangle.getGeometry((V3D_LineSegment) gRP,
+                                    (V3D_Point) gQR, oom, rm);
+                        }
                     }
                 }
             } else if (gPQ instanceof V3D_LineSegment) {
@@ -1723,16 +1728,6 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         Math_BigRational dqr2 = getQR(oom, rm).getDistanceSquared(l, oom, rm);
         Math_BigRational drp2 = getRP(oom, rm).getDistanceSquared(l, oom, rm);
         return Math_BigRational.min(dpq2, dqr2, drp2);
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.getDistance(this, oom, rm);
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.getDistanceSquared(this, oom, rm);
     }
 
     @Override
