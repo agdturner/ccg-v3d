@@ -266,22 +266,6 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_Point.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_Point() {
-        System.out.println("isIntersectedBy");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Point p = V3D_Point.ORIGIN;
-        V3D_Point instance = V3D_Point.ORIGIN;
-        assertTrue(instance.isIntersectedBy(p, oom, rm));
-        // Test 2
-        instance = pP0N1N1;
-        assertFalse(instance.isIntersectedBy(p, oom, rm));
-    }
-
-    /**
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
@@ -565,45 +549,6 @@ public class V3D_PointTest extends V3D_Test {
     @Test
     public void testIsIntersectedBy_V3D_Line_int() {
         System.out.println("isIntersectedBy");
-    }
-
-    /**
-     * Test of getIntersection method, of class V3D_Point is covered by:
-     * {@link V3D_LineTest#testGetIntersection()}.
-     */
-    @Test
-    public void testGetIntersection_V3D_Line_int() {
-        System.out.println("getIntersection");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-        V3D_Point instance = pP0P0P0;
-        V3D_Geometry expResult = instance;
-        V3D_Geometry result = instance.getIntersection(l, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-    }
-
-    /**
-     * Test of getIntersection method, of class V3D_Point.
-     */
-    @Test
-    public void testGetIntersection_V3D_LineSegment_int() {
-        System.out.println("getIntersection");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        V3D_Point instance = pP0P0P0;
-        V3D_Geometry expResult = pP0P0P0;
-        V3D_Geometry result = instance.getIntersection(l, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 2
-        instance = pP1P0P0;
-        expResult = pP1P0P0;
-        result = instance.getIntersection(l, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 3
-        instance = pN1P0P0;
-        assertNull(instance.getIntersection(l, oom, rm));
     }
 
     /**

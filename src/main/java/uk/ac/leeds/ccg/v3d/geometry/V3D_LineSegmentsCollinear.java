@@ -36,7 +36,8 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
+public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry
+        implements V3D_Intersection {
 
     private static final long serialVersionUID = 1L;
 
@@ -492,15 +493,15 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
             V3D_LineSegment l1 = ls.get(j);
             if (l0.getIntersection(l1, oom, rm) != null) {
                 V3D_Point l0p = l0.getP();
-                if (l0p.getIntersection(l1, oom, rm) != null) {
+                if (l1.isIntersectedBy(l0p, oom, rm)) {
                     V3D_Point l0q = l0.getQ();
-                    if (l0q.getIntersection(l1, oom, rm) != null) {
+                    if (l1.isIntersectedBy(l0q, oom, rm)) {
                         // l0 is completely overlapped by l1
                         removeIndexes.add(i);
                     } else {
                         V3D_Point l1p = l1.getP();
                         V3D_Point l1q = l1.getQ();
-                        if (l1p.getIntersection(l0, oom, rm) != null) {
+                        if (l0.isIntersectedBy(l1p, oom, rm)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
                             r.add(new V3D_LineSegment(l1q, l0q, oom, rm));
@@ -512,10 +513,10 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
                     }
                 } else {
                     V3D_Point l0q = l0.getQ();
-                    if (l0q.getIntersection(l1, oom, rm) != null) {
+                    if (l1.isIntersectedBy(l0q, oom, rm)) {
                         V3D_Point l1p = l1.getP();
                         V3D_Point l1q = l1.getQ();
-                        if (l1.getP().getIntersection(l0, oom, rm) != null) {
+                        if (l0.isIntersectedBy(l1.getP(), oom, rm)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
                             r.add(new V3D_LineSegment(l1q, l0p, oom, rm));
@@ -593,11 +594,6 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
             rls[0] = lineSegments.get(i).rotate(axisOfRotation, theta, oom, rm);
         }
         return new V3D_LineSegmentsCollinear(rls);
-    }
-    
-    @Override
-    public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

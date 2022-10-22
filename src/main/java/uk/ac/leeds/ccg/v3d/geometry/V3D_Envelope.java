@@ -45,7 +45,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *                                    |               /
  *                                    |              /
  *                                    |    zmin
- *                         _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+ *                     lta _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ rta
  *                        /|                                /|
  *                       / |                               / |
  *                      /  |                              /  |
@@ -56,12 +56,12 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *                 /       |                         /       | 
  *                /        |                        /        |
  *               /         |                       /         |
- *              /_ _ _ _ _ |_ _ _ _ _ _ _ _ _ _ _ /          |
+ *          ltf /_ _ _ _ _ |_ _ _ _ _ _ _ _ _ _ _ /rtf       |
  *             |           |                     |           |
  *             |           |                     |           |
  *        xmin |           |                     |    xmax   |  ------ + x
  *             |           |                     |           |
- *             |           |_ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _|
+ *             |        lba|_ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _|rba
  *             |           /                     |           /
  *             |          /                      |          /
  *             |         /                       |         /
@@ -74,7 +74,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *             |  /                              |  /
  *             | /                               | /
  *             |/_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |/
- *                            zmax   
+ *          lbf               zmax               rbf
  *                                     
  *                      /              |
  *                     /               |
@@ -124,6 +124,17 @@ public class V3D_Envelope implements Serializable {
      */
     private final Math_BigRational zMax;
 
+    /**
+     * For storing all the corner points. These are in order: lbf, lba, ltf, 
+     * lta, rbf, rba, rtf, rta.
+     */
+    protected V3D_Point[] pts;
+    
+    /**
+     * For storing the precision of pts.
+     */
+    protected int ptsoom;
+    
     /**
      * Create a new instance.
      *
@@ -467,7 +478,7 @@ public class V3D_Envelope implements Serializable {
     }
 
     /**
-     * Calculate and return the approximate (or exact) centre.
+     * Calculate and return the approximate (or exact) centroid of the envelope.
      *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode used in the calculation.
@@ -479,16 +490,26 @@ public class V3D_Envelope implements Serializable {
                 this.getZMax(oom, rm).add(this.getZMin(oom, rm)).divide(2));
     }
 
+    /**
+     * Return all the points of this with at least oom precision.
+     * 
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
+     * @return 
+     */
     public V3D_Point[] getPoints(int oom, RoundingMode rm) {
-        V3D_Point[] pts = new V3D_Point[8];
-        pts[0] = new V3D_Point(e, getXMin(oom, rm), getYMin(oom, rm), getZMin(oom, rm));
-        pts[1] = new V3D_Point(e, getXMin(oom, rm), getYMin(oom, rm), getZMax(oom, rm));
-        pts[2] = new V3D_Point(e, getXMin(oom, rm), getYMax(oom, rm), getZMin(oom, rm));
-        pts[3] = new V3D_Point(e, getXMin(oom, rm), getYMax(oom, rm), getZMax(oom, rm));
-        pts[4] = new V3D_Point(e, getXMax(oom, rm), getYMin(oom, rm), getZMin(oom, rm));
-        pts[5] = new V3D_Point(e, getXMax(oom, rm), getYMin(oom, rm), getZMax(oom, rm));
-        pts[6] = new V3D_Point(e, getXMax(oom, rm), getYMax(oom, rm), getZMin(oom, rm));
-        pts[7] = new V3D_Point(e, getXMax(oom, rm), getYMax(oom, rm), getZMax(oom, rm));
+        if (pts == null || ptsoom > oom) {
+        pts = new V3D_Point[8];
+        pts[0] = new V3D_Point(e, getXMin(oom, rm), getYMin(oom, rm), getZMin(oom, rm)); // lbf
+        pts[1] = new V3D_Point(e, getXMin(oom, rm), getYMin(oom, rm), getZMax(oom, rm)); // lba
+        pts[2] = new V3D_Point(e, getXMin(oom, rm), getYMax(oom, rm), getZMin(oom, rm)); // ltf
+        pts[3] = new V3D_Point(e, getXMin(oom, rm), getYMax(oom, rm), getZMax(oom, rm)); // lta
+        pts[4] = new V3D_Point(e, getXMax(oom, rm), getYMin(oom, rm), getZMin(oom, rm)); // rbf
+        pts[5] = new V3D_Point(e, getXMax(oom, rm), getYMin(oom, rm), getZMax(oom, rm)); // rba
+        pts[6] = new V3D_Point(e, getXMax(oom, rm), getYMax(oom, rm), getZMin(oom, rm)); // rtf
+        pts[7] = new V3D_Point(e, getXMax(oom, rm), getYMax(oom, rm), getZMax(oom, rm)); // rta
+        ptsoom = oom;
+        }
         return pts;
     }
 
@@ -523,16 +544,8 @@ public class V3D_Envelope implements Serializable {
 //        pts[7] = new V3D_Point(rtf);
         V3D_Point c = getCentroid(oom, rm);
         
-        V3D_Plane vp = new V3D_Plane(c, v);
-        
         V3D_Vector v2 = new V3D_Vector(pt, c, oom, rm).getCrossProduct(v, oom, rm);
-
-//        if (v2.isZeroVector()) {
-//            int debug = 1;
-//        }
         
-        V3D_Plane hp = new V3D_Plane(c, v2);
-
         /**
          * Calculate the plane touching this in the direction given from pt to
          * c.
@@ -547,175 +560,73 @@ public class V3D_Envelope implements Serializable {
             }
         }
         V3D_Plane pl0 = new V3D_Plane(closest, new V3D_Vector(pt, c, oom, rm));
-
-        V3D_Point pt2;
-        // Find top and bottom.
-        //ArrayList<V3D_Plane> tbpl = new ArrayList<>();
-        //ArrayList<V3D_Line> tb = new ArrayList<>();
-        pt2 = new V3D_Point(pt);
+        // Find top, bottom, left and right planes
+        V3D_Point pt2 = new V3D_Point(pt);
         pt2.translate(v, oom, rm);
-
-        Math_BigRational angle = v2.getAngle(new V3D_Vector(pt, vp.getPointOfProjectedIntersection(pts[0], oom, rm), oom, rm), oom, rm);
-        V3D_Point xv = new V3D_Point(pts[0]);
-        xv.translate(v, oom, rm);
-        V3D_Plane tp = new V3D_Plane(pts[0], pt, xv, oom, rm);
-        V3D_Plane bp = new V3D_Plane(pts[0], pt, xv, oom, rm);
-        Math_BigRational aa = angle;
-        Math_BigRational ba = angle;
+        V3D_Plane vpl = new V3D_Plane(c, v);
+        V3D_Plane v2pl = new V3D_Plane(c, v2);
+        // Find top and bottom
+        V3D_Point pa = new V3D_Point(v2pl.getP());
+        pa.translate(v2, oom, rm);
+        Math_BigRational aa = Math_BigRational.TEN;
+        V3D_Plane tp = null;
+        V3D_Point pb = new V3D_Point(v2pl.getP());
+        pb.translate(v2.reverse(), oom, rm);
+        Math_BigRational ba = Math_BigRational.ZERO;
+        V3D_Plane bp = null;
         for (var x : pts) {
-            angle = v2.getAngle(new V3D_Vector(pt, vp.getPointOfProjectedIntersection(x, oom, rm), oom, rm), oom, rm);
-            xv = new V3D_Point(x);
-            xv.translate(v, oom, rm);
-            if (angle.compareTo(aa) == -1) {
-                aa = angle;
-                tp = new V3D_Plane(x, pt, xv, oom, rm);
-            }
-            if (angle.compareTo(ba) == 1) {
-                ba = angle;
-                bp = new V3D_Plane(x, pt, xv, oom, rm);
+            V3D_Point pp = vpl.getPointOfProjectedIntersection(x, oom, rm);
+            Math_BigRational a = v2.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm);
+            if (v2pl.isOnSameSide(pa, x, oom, rm)) {
+                if (a.compareTo(aa) == -1) {
+                    aa = a;
+                    V3D_Point xv = new V3D_Point(x);
+                    xv.translate(v, oom, rm);
+                    tp = new V3D_Plane(x, pt, xv, oom, rm);
+                }
+            } else {
+                if (a.compareTo(ba) == 1) {
+                    ba = a;
+                    V3D_Point xv = new V3D_Point(x);
+                    xv.translate(v, oom, rm);
+                    bp = new V3D_Plane(x, pt, xv, oom, rm);
+                }
             }
         }
-        angle = v.getAngle(new V3D_Vector(pt, hp.getPointOfProjectedIntersection(pts[0], oom, rm), oom, rm), oom, rm);
-        xv = new V3D_Point(pts[0]);
-        xv.translate(v2, oom, rm);
-        V3D_Plane lp = new V3D_Plane(pts[0], pt, xv, oom, rm);
-        V3D_Plane rp = new V3D_Plane(pts[0], pt, xv, oom, rm);
-        Math_BigRational la = angle;
-        Math_BigRational ra = angle;
+        // Find left and right
+        V3D_Point pl = new V3D_Point(vpl.getP());
+        pl.translate(v.reverse(), oom, rm);
+        Math_BigRational la = Math_BigRational.ZERO;
+        V3D_Plane lp = null;
+        V3D_Point pr = new V3D_Point(vpl.getP());
+        pr.translate(v, oom, rm);
+        Math_BigRational ra = Math_BigRational.ZERO;
+        V3D_Plane rp = null;
         for (var x : pts) {
-            angle = v.getAngle(new V3D_Vector(pt, hp.getPointOfProjectedIntersection(x, oom, rm), oom, rm), oom, rm);
-            xv = new V3D_Point(x);
-            xv.translate(v2, oom, rm);
-            if (angle.compareTo(la) == 1) {
-                la = angle;
-                lp = new V3D_Plane(x, pt, xv, oom, rm);
-            }
-            if (angle.compareTo(ra) == -1) {
-                ra = angle;
-                rp = new V3D_Plane(x, pt, xv, oom, rm);
+            V3D_Point pp = v2pl.getPointOfProjectedIntersection(x, oom, rm);
+            Math_BigRational a = v.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm);
+            if (vpl.isOnSameSide(pl, x, oom, rm)) {
+                if (a.compareTo(la) == 1) {
+                    la = a;
+                    V3D_Point xv = new V3D_Point(x);
+                    xv.translate(v2, oom, rm);
+                    lp = new V3D_Plane(x, pt, xv, oom, rm);
+                }
+            } else {
+                if (a.compareTo(ra) == 1) {
+                    ra = a;
+                    V3D_Point xv = new V3D_Point(x);
+                    xv.translate(v2, oom, rm);
+                    rp = new V3D_Plane(x, pt, xv, oom, rm);
+                }
             }
         }
-//        int  i = 1;
-//        ArrayList<V3D_Plane> tp;
-//        ArrayList<V3D_Plane> bp;
-//        
-//        for (var x : pts) {
-//            V3D_Plane pl = new V3D_Plane(x, pt, pt2, oom, rm);
-//            if (pl.allOnSameSide(pts, oom, rm)) {
-//                V3D_Line l = new V3D_Line(x, v);
-//                if (v2.getAngle(new V3D_Vector(pt, x)))
-//                if (addUnique(tb, l, oom, rm)) {
-//                    V3D_Point xv = new V3D_Point(x);
-//                    xv.translate(v, oom, rm);
-//                    tbpl.add(new V3D_Plane(pt, x, xv, oom, rm));
-//                }
-//            }
-//        }
-//        
-//        // Find left and right
-//        ArrayList<V3D_Plane> lrpl = new ArrayList<>();
-//        ArrayList<V3D_Line> lr = new ArrayList<>();
-//        pt2 = new V3D_Point(pt);
-//        pt2.translate(v2, oom, rm);
-//        for (var x : pts) {
-//            V3D_Plane pl = new V3D_Plane(x, pt, pt2, oom, rm);
-//            if (pl.allOnSameSide(pts, oom, rm)) {
-//                if (addUnique(lr, new V3D_Line(x, v2), oom, rm)) {
-//                    V3D_Point xv2 = new V3D_Point(x);
-//                    xv2.translate(v2, oom, rm);
-//                    lrpl.add(new V3D_Plane(pt, x, xv2, oom, rm));
-//                }
-//            }
-//        }
-
-        // Find edges.
-//        ArrayList<V3D_Line> lr = new ArrayList<>();
-//        for (var y : pts) {
-//            V3D_FiniteGeometry loi = tb.get(0).getLineOfIntersection(y, oom, rm);
-//            if (loi instanceof V3D_Point) {
-//                loi = tb.get(1).getLineOfIntersection(y, oom, rm);
-//            }
-//            V3D_LineSegment loil = (V3D_LineSegment) loi;
-//            if (loil.l.isIntersectedBy(tb.get(0), oom, rm)
-//                    && loil.l.isIntersectedBy(tb.get(1), oom, rm)) {
-//                V3D_Plane pl = new V3D_Plane(loil.l.getP(),
-//                        loil.l.getQ(oom, rm), pt, oom, rm);
-//                //if (!pl.isParallel(tb.get(0), oom, rm)) {
-//                if (allOnSameSide(pl, c, pts, oom, rm)) {
-//                    addUnique(lr, loil.l, oom, rm);
-//                }
-//                //}
-//            }
-//        }
-//        ArrayList<V3D_Point> pts2 = new ArrayList<>();
-//        for(var lrpli: lrpl) {
-//        pts2.add((V3D_Point) lrpli.getIntersection(tb.get(0), oom, rm));
-//        pts2.add((V3D_Point) lrpli.getIntersection(tb.get(1), oom, rm));
-//        }
-//        V3D_LineSegment[] edges = getEdges(oom, rm);
-//        for (var edge : edges) {
-//            if (tbpl.get(0).isBetweenPlanes(tbpl.get(1), edge.getP(), oom, rm)
-//                    && tbpl.get(0).isBetweenPlanes(tbpl.get(1), edge.getQ(oom, rm), oom, rm)) {
-////            if (!(edge.isCoplanar(tb.get(0), oom, rm) 
-////                    || edge.isCoplanar(tb.get(1), oom, rm))) {
-//                V3D_Plane pl = new V3D_Plane(pt, edge.getP(), edge.getQ(oom, rm), oom, rm);
-////                if (tb.get(0).isIntersectedBy(pl, oom, rm)
-////                        && tb.get(1).isIntersectedBy(pl, oom, rm)) {
-//                if (allOnSameSide(pl, c, pts, oom, rm)) {
-//                    V3D_Geometry g;
-//                    g = pl.getIntersection(tb.get(0), oom, rm);
-//                    if (g instanceof V3D_Point gp) {
-//                        addUnique(pts2, gp, oom, rm);
-//                    }
-//                    g = pl.getIntersection(tb.get(1), oom, rm);
-//                    if (g instanceof V3D_Point gp) {
-//                        addUnique(pts2, gp, oom, rm);
-//                    }
-//                }
-//            }
-////                }
-////            }
-//        }
-//        V3D_Point[] pts3 = V3D_ConvexHullCoplanar.getGeometry(oom, rm, pts2.toArray(V3D_Point[]::new)).getPoints(oom, rm);
-        // Distinguish points.
-//        V3D_Point[] pts3 = new V3D_Point[4];
-//        V3D_Point pl = ;
         r = new V3D_Rectangle(
                 (V3D_Point) lp.getIntersection(pl0, bp, oom, rm),
                 (V3D_Point) lp.getIntersection(pl0, tp, oom, rm),
                 (V3D_Point) rp.getIntersection(pl0, tp, oom, rm),
                 (V3D_Point) rp.getIntersection(pl0, bp, oom, rm), oom, rm);
 
-//        ArrayList<V3D_Point> left = new ArrayList<>(2);
-//        ArrayList<V3D_Point> right = new ArrayList<>(2);
-//        V3D_Plane pl = new V3D_Plane(c, v, oom, rm);
-//        for (var x : pts3) {
-//            if (pl.getSideOfPlane(x, oom, rm) == 1) {
-//                right.add(x);
-//            } else {
-//                left.add(x);
-//            }
-//        }
-//        // Distinguish top and bottom.
-//        V3D_Point ptv = new V3D_Point(pt);
-//
-//        ptv.translate(v, oom, rm);
-//        V3D_Plane pl = new V3D_Plane(pt, c, ptv, oom, rm);
-//        for (var x : left) {
-//            if (pl.getSideOfPlane(x, oom, rm) == 1) {
-//                tl = x;
-//            } else {
-//                bl = x;
-//            }
-//        }
-//        for (var x : right) {
-//            if (pl.getSideOfPlane(x, oom, rm) == 1) {
-//                tr = x;
-//            } else {
-//                br = x;
-//            }
-//        }
-//        r = new V3D_Rectangle(bl, tl, tr, br, oom, rm);
         return r;
     }
 

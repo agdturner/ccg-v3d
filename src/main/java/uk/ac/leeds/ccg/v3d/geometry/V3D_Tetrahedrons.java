@@ -1,11 +1,9 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
@@ -16,7 +14,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * @version 1.0
  */
 public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume,
-        Serializable {
+        V3D_Intersection {
 
     private static final long serialVersionUID = 1L;
 
@@ -234,16 +232,4 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume,
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-//
-//    @Override
-//    public boolean isIntersectedBy(V3D_Ray l, int oom, RoundingMode rm) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    
 }

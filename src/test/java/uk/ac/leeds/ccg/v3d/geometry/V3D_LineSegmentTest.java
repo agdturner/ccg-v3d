@@ -418,29 +418,42 @@ public class V3D_LineSegmentTest extends V3D_Test {
         instance = new V3D_LineSegment(pP0P1P0, pP1P1P0, oom, rm);
         expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(l, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         instance = new V3D_LineSegment(pN1P0P0, pN1P1P0, oom, rm);
         expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(l, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         expResult = Math_BigRational.ONE;
         result = l.getDistanceSquared(instance, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 4
         l = new V3D_LineSegment(pP1P0P0, pP0P1P0, oom, rm);
         instance = new V3D_LineSegment(pN1P0P1, pN1P1P0, oom, rm);
         expResult = Math_BigRational.ONE;
         result = l.getDistanceSquared(instance, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 5
         instance = new V3D_LineSegment(pP1P0P0, pP0P1P0, oom, rm);
         l = new V3D_LineSegment(pN1P0P1, pN1P1P0, oom, rm);
         expResult = Math_BigRational.ONE;
         result = l.getDistanceSquared(instance, oom, rm);
-        assertTrue(expResult.equals(result));
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 6
+        instance = new V3D_LineSegment(pP0P0P0, pP0P1P0, oom, rm);
+        l = new V3D_LineSegment(pN1P0P0, pN1P1P0, oom, rm);
+        expResult = Math_BigRational.ONE;
+        result = l.getDistanceSquared(instance, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 7
+        instance = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
+        l = new V3D_LineSegment(pN1P0P1, pN1P1P0, oom, rm);
+        expResult = Math_BigRational.valueOf(3, 2);
+        result = l.getDistanceSquared(instance, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        
     }
 
     /**

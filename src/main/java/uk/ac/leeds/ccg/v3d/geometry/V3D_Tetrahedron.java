@@ -61,7 +61,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
+public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
+        V3D_Intersection {
 
     private static final long serialVersionUID = 1L;
 
@@ -601,11 +602,6 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.getIntersection(this, oom, rm);
-    }
-
-    @Override
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom,
             RoundingMode rm) {
         V3D_FiniteGeometry g = getIntersection(l.l, oom, rm);
@@ -623,7 +619,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                 V3D_Point lq = l.getQ();
                 if (isIntersectedBy(lp, oom, rm)) {
                     if (isIntersectedBy(lq, oom, rm)) {
-                        return (V3D_LineSegment) g.getIntersection(l, oom, rm);
+                        return ((V3D_LineSegment) g).getIntersection(l, oom, rm);
                     } else {
                         V3D_FiniteGeometry pqri = getPqr(oom, rm).getIntersection(l, oom, rm);
                         if (pqri == null) {

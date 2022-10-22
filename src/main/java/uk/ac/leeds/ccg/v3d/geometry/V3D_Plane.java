@@ -57,7 +57,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Plane extends V3D_Geometry implements V3D_Distance {
+public class V3D_Plane extends V3D_Geometry implements V3D_Distance, 
+        V3D_Intersection {
 
     private static final long serialVersionUID = 1L;
 
@@ -1115,16 +1116,6 @@ public class V3D_Plane extends V3D_Geometry implements V3D_Distance {
     }
 
     /**
-     * @param r The ray to intersect with this.
-     * @param oom The Order of Magnitude for the calculation.
-     * @return The intersection between {@code this} and {@code l}.
-     */
-    @Override
-    public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.getIntersection(this, oom, rm);
-    }
-
-    /**
      * https://www.microsoft.com/en-us/research/publication/intersection-of-two-planes/
      * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc
      * https://math.stackexchange.com/questions/291289/find-the-point-on-the-line-of-intersection-of-the-two-planes-using-lagranges-me
@@ -1767,8 +1758,8 @@ public class V3D_Plane extends V3D_Geometry implements V3D_Distance {
         //return isCoplanar(e, oom, rm, this, pl.getP(), pl.getQ(), pl.getR());
         //return isCoplanar(e, oom, rm, this, pl.getP(), pl.getQ(oom, rm), pl.getR(oom, rm));
         if (n.isScalarMultiple(pl.n, oom, rm)) {
-            if (getP().getIntersection(pl, oom, rm) != null) {
-                if (pl.getP().getIntersection(this, oom, rm) != null) {
+            if (pl.isIntersectedBy(getP(), oom, rm)) {
+                if (this.isIntersectedBy(pl.getP(), oom, rm)) {
                     return true;
                 }
             }

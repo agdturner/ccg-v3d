@@ -449,63 +449,6 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Point p, int oom, RoundingMode rm) {
-        return this.equals(p, oom, rm);
-    }
-
-//    @Override
-//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-//        return l.isIntersectedBy(this, oom, rm);
-//    }
-
-//    @Override
-//    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-//        return r.isIntersectedBy(this, oom, rm);
-//    }
-//
-//    @Override
-//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-//        return l.isIntersectedBy(this, oom, rm);
-//    }
-//
-//    @Override
-//    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
-//        return p.isIntersectedBy(this, oom, rm);
-//    }
-
-    /**
-     * @param l The line to intersect with {@code this}.
-     * @return {@code this} if the point is on the line {@code l} else return
-     * {@code null}.
-     */
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom,
-            RoundingMode rm) {
-        if (l.isIntersectedBy(this, oom, rm)) {
-            return this;
-        }
-        return null;
-    }
-
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Ray r, int oom,
-            RoundingMode rm) {
-        if (r.isIntersectedBy(this, oom, rm)) {
-            return this;
-        }
-        return null;
-    }
-
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom,
-            RoundingMode rm) {
-        if (l.isIntersectedBy(this, oom, rm)) {
-            return this;
-        }
-        return null;
-    }
-
-    @Override
     public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
         /**
          * Get the distance from the ends of the line segment to the point. If
@@ -653,33 +596,6 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
 //            RoundingMode rm) {
 //        return t.isIntersectedBy(this, oom, rm);
 //    }
-
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom,
-            RoundingMode rm) {
-        if (p.isIntersectedBy(this, oom, rm)) {
-            return this;
-        }
-        return null;
-    }
-
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom,
-            RoundingMode rm) {
-        if (t.isIntersectedBy(this, oom, rm)) {
-            return this;
-        }
-        return null;
-    }
-
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom,
-            RoundingMode rm) {
-        if (t.isIntersectedBy(this, oom, rm)) {
-            return this;
-        }
-        return null;
-    }
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom,

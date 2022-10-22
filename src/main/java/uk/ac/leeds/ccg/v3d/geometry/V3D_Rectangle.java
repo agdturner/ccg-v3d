@@ -17,8 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.HashSet;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -199,34 +197,29 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         //return toString("");
         return toStringSimple("");
     }
-
-    @Override
-    public String toString(String pad) {
-        return this.getClass().getSimpleName() + "\n"
-                + pad + "(\n"
-                + toStringFields(pad + " ") + "\n"
-                + pad + ")";
-    }
-
+    
     @Override
     public String toStringSimple(String pad) {
         return pad + this.getClass().getSimpleName() + "("
                 + toStringFieldsSimple("") + ")";
     }
-
+    
     @Override
     protected String toStringFields(String pad) {
-        return pad + "p=" + this.p.toString(pad) + "\n"
-                + pad + ",\n"
-                + pad + "s=" + this.s.toString(pad);
+        return "\n" + super.toStringFields(pad) + ",\n"
+                + pad + "p=" + p.toString(pad) + ",\n"
+                + pad + "q=" + q.toString(pad) + ",\n"
+                + pad + "r=" + r.toString(pad) + ",\n"
+                + pad + "s=" + s.toString(pad);
     }
 
     @Override
     protected String toStringFieldsSimple(String pad) {
-        return pad + "p=" + p.toStringSimple(pad) + ",\n"
-                + pad + "p=" + q.toStringSimple(pad) + ",\n"
-                + pad + "q=" + r.toStringSimple(pad) + ",\n"
-                + pad + "r=" + s.toStringSimple(pad);
+        return "\n" + super.toStringFieldsSimple(pad) + ",\n"
+                + pad + "p=" + p.toStringSimple(pad) + ",\n"
+                + pad + "q=" + q.toStringSimple(pad) + ",\n"
+                + pad + "r=" + r.toStringSimple(pad) + ",\n"
+                + pad + "s=" + s.toStringSimple(pad);
     }
 
     @Override
@@ -1032,8 +1025,12 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        return getRSP(oom, rm).getDistanceSquared(t, oom, rm).min(
-                getPQR().getDistanceSquared(t, oom, rm));
+        Math_BigRational pqrd = getPQR().getDistanceSquared(t, oom, rm);
+        if (pqrd.compareTo(Math_BigRational.ZERO) == 0) {
+            return pqrd;
+        } else {
+            return pqrd.min(getRSP(oom, rm).getDistanceSquared(t, oom, rm));
+        }
     }
 
     /**

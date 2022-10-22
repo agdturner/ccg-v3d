@@ -2816,14 +2816,14 @@ public class V3D_PlaneTest extends V3D_Test {
         result = instance.getIntersection(pl, oom, rm);
         assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom, rm));
         // Test 6 to 9
-        pl = new V3D_Plane(e, V3D_Vector.I, P0P0P0, V3D_Vector.K, oom, rm); // y=0
+        pl = V3D_Plane.Y0;
         // Test 6
-        instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K, oom, rm); // x=0
+        instance = V3D_Plane.X0;
         expResult = new V3D_Line(pP0P0N1, pP0P0P1, oom, rm);          // x=0, y=0
         result = instance.getIntersection(pl, oom, rm);
         assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom, rm));
         // Test 7
-        instance = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0, oom, rm); // z=0
+        instance = V3D_Plane.Z0;
         expResult = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);          // y=0, z=0
         result = instance.getIntersection(pl, oom, rm);
         assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom, rm));
@@ -2838,7 +2838,7 @@ public class V3D_PlaneTest extends V3D_Test {
         result = instance.getIntersection(pl, oom, rm);
         assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom, rm));
         // Test 10 to 13
-        pl = new V3D_Plane(e, V3D_Vector.I, V3D_Vector.J, P0P0P0, oom, rm); // z=0
+        pl = V3D_Plane.Z0;
         // Test 10
         instance = new V3D_Plane(e, P0P0P0, V3D_Vector.J, V3D_Vector.K, oom, rm); // x=0
         expResult = new V3D_Line(pP0N1P0, pP0P1P0, oom, rm);          // x=0, z=0
@@ -3692,47 +3692,6 @@ public class V3D_PlaneTest extends V3D_Test {
 //        l = new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm);
 //        assertFalse(instance.isIntersectedBy(l, oom, rm));
 //    }
-
-    /**
-     * Test of getIntersection method, of class V3D_Plane.
-     */
-    @Test
-    public void testGetIntersection_V3D_Ray() {
-        System.out.println("getIntersection");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Ray r;
-        V3D_Plane instance;
-        V3D_Geometry result;
-        V3D_Geometry expResult;
-        // Test 1
-        r = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
-        instance = V3D_Plane.X0;
-        expResult = pP0P0P0;
-        result = instance.getIntersection(r, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 2
-        instance = V3D_Plane.Y0;
-        expResult = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
-        result = instance.getIntersection(r, oom, rm);
-        assertTrue(((V3D_Ray) expResult).equals((V3D_Ray) result, oom, rm));
-        // Test 3
-        instance = V3D_Plane.Z0;
-        expResult = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
-        result = instance.getIntersection(r, oom, rm);
-        assertTrue(((V3D_Ray) expResult).equals((V3D_Ray) result, oom, rm));
-        // Test 4
-        r = new V3D_Ray(pN2P0P0, pN1P0P0, oom, rm);
-        instance = V3D_Plane.X0;
-        expResult = pP0P0P0;
-        result = instance.getIntersection(r, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 5
-        r = new V3D_Ray(pN1P0P0, pN2P0P0, oom, rm);
-        instance = V3D_Plane.X0;
-        result = instance.getIntersection(r, oom, rm);
-        assertNull(result);
-    }
 
     /**
      * Test of setOffset method, of class V3D_Plane.

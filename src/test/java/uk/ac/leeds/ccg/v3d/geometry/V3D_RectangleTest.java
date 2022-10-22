@@ -256,7 +256,6 @@ public class V3D_RectangleTest extends V3D_Test {
 //        //Test 2
 //        assertFalse(instance.isIntersectedBy(new V3D_Line(pP0N1P1, pP0N1N1, oom, rm), oom, rm));
 //    }
-
     /**
      * Test of getIntersection method, of class V3D_Rectangle.
      */
@@ -335,19 +334,36 @@ public class V3D_RectangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
-        String expResult = "p=V3D_Vector\n" +
-"(\n" +
-" dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n" +
-" dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n" +
-" dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n" +
-")\n" +
-",\n" +
-"s=V3D_Vector\n" +
-"(\n" +
-" dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n" +
-" dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n" +
-" dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n" +
-")";
+        String expResult = "\noffset=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + "),\n"
+                + "p=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + "),\n"
+                + "q=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + "),\n"
+                + "r=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + "),\n"
+                + "s=V3D_Vector\n"
+                + "(\n"
+                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
+                + " dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
+                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
+                + ")";
         String result = instance.toStringFields(pad);
         //System.out.println(result);
         assertEquals(expResult, result);
@@ -434,7 +450,6 @@ public class V3D_RectangleTest extends V3D_Test {
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
 //        assertTrue(instance.isIntersectedBy(l, oom, rm));
 //    }
-
     /**
      * Test of getIntersection method, of class V3D_Rectangle.
      */
@@ -527,7 +542,6 @@ public class V3D_RectangleTest extends V3D_Test {
 //        boolean result = instance.isIntersectedBy(l, oom, rm);
 //        assertEquals(expResult, result);
 //    }
-
     /**
      * Test of join method, of class V3D_Rectangle covered by
      * {@link #testGetIntersection_V3D_LineSegment_int()} and
@@ -681,7 +695,6 @@ public class V3D_RectangleTest extends V3D_Test {
 //        boolean result = instance.isIntersectedBy(t, oom, rm);
 //        assertEquals(expResult, result);
 //    }
-
     /**
      * Test of getIntersection method, of class V3D_Rectangle.
      */

@@ -77,7 +77,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Line extends V3D_Geometry implements V3D_Distance {
+public class V3D_Line extends V3D_Geometry implements V3D_Distance, 
+        V3D_Intersection {
 
     private static final long serialVersionUID = 1L;
 
@@ -403,8 +404,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance {
 //        return isIntersectedBy(l.getP(), oom, rm)
 //                && isIntersectedBy(l.getQ(oom, rm), oom, rm);
         if (v.isScalarMultiple(l.v, oom, rm)) {
-            if (getP().getIntersection(l, oom, rm) != null) {
-                if (l.getP().getIntersection(this, oom, rm) != null) {
+            if (l.isIntersectedBy(getP(), oom, rm)) {
+                if (this.isIntersectedBy(l.getP(), oom, rm)) {
                     return true;
                 }
             }
@@ -584,7 +585,7 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance {
         // Special case of parallel lines.
         V3D_Point tp = getP();
         if (isParallel(l, oom, rm)) {
-            if (tp.getIntersection(l, oom, rm) != null) {
+            if (l.isIntersectedBy(tp, oom, rm)) {
                 // If lines are coincident return this.
                 return this;
             } else {
@@ -1031,17 +1032,17 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance {
 //    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
 //        return r.isIntersectedBy(this, oom, rm);
 //    }
-    /**
-     * Intersects {@code this} with {@code r}.
-     *
-     * @param r The ray to get intersection with {@code this}.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return The intersection between {@code this} and {@code r}.
-     */
-    @Override
-    public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
-        return r.getIntersection(this, oom, rm);
-    }
+//    /**
+//     * Intersects {@code this} with {@code r}.
+//     *
+//     * @param r The ray to get intersection with {@code this}.
+//     * @param oom The Order of Magnitude for the precision of the calculation.
+//     * @return The intersection between {@code this} and {@code r}.
+//     */
+//    @Override
+//    public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
+//        return r.getIntersection(this, oom, rm);
+//    }
 
     /**
      * @param pt A point for which the shortest line segment to this is

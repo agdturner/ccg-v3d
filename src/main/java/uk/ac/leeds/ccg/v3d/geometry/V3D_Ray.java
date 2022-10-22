@@ -57,7 +57,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Ray extends V3D_Geometry {
+public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
 
     private static final long serialVersionUID = 1L;
 
@@ -758,7 +758,6 @@ public class V3D_Ray extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @return The intersection between {@code this} and {@code r}.
      */
-    @Override
     public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
         V3D_Geometry rtl = r.getIntersection(l, oom, rm);
         if (rtl == null) {
@@ -791,13 +790,16 @@ public class V3D_Ray extends V3D_Geometry {
                 V3D_Plane pl2 = new V3D_Plane(rp, r.l.v);
                 if (pl.isOnSameSide(rp, l.getQ(oom, rm), oom, rm)) {
                     if (pl2.isOnSameSide(tp, r.l.getQ(oom, rm), oom, rm)) {
+                        if (tp.equals(rp, oom, rm)) {
+                            return tp;
+                        }
                         return new V3D_LineSegment(rp, tp, oom, rm);
                     } else {
-                        return pl2;
+                        return new V3D_Ray(rp, l.v);
                     }
                 } else {
                     if (pl2.isOnSameSide(tp, r.l.getQ(oom, rm), oom, rm)) {
-                        return pl;
+                        return new V3D_Ray(tp, l.v);
                     } else {
                         return null;
                     }
@@ -839,10 +841,16 @@ public class V3D_Ray extends V3D_Geometry {
                 if (pl.isOnSameSide(rq, lsq, oom, rm)){
                     return ls;
                 } else {
+                    if (lsp.equals(rp, oom, rm)) {
+                        return rp;
+                    }
                     return new V3D_LineSegment(lsp, rp, oom, rm);
                 }
             } else {
                 if (pl.isOnSameSide(rq, lsq, oom, rm)){
+                    if (lsq.equals(rp, oom, rm)) {
+                        return rp;
+                    }
                     return new V3D_LineSegment(lsq, rp, oom, rm);
                 } else {
                     return null;

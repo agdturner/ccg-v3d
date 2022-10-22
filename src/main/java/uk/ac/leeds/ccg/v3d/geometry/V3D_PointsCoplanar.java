@@ -26,7 +26,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_PointsCoplanar extends V3D_FiniteGeometry {
+public class V3D_PointsCoplanar extends V3D_FiniteGeometry 
+        implements V3D_Intersection {
 
     private static final long serialVersionUID = 1L;
 
@@ -200,16 +201,6 @@ public class V3D_PointsCoplanar extends V3D_FiniteGeometry {
 
     @Override
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-//
-//    @Override
-//    public boolean isIntersectedBy(V3D_Ray l, int oom, RoundingMode rm) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-
-    @Override
-    public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

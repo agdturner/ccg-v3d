@@ -1006,6 +1006,12 @@ public class V3D_TriangleTest extends V3D_Test {
         expResult = Math_BigRational.ONE;
         result = instance.getDistanceSquared(l, oom, rm);
         assertEquals(expResult, result);
+        // Test 3
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
+        instance = new V3D_Triangle(pN1P0P0, pN1P1P0, pN1P0P1, oom, rm);
+        expResult = Math_BigRational.ONE;
+          result = instance.getDistanceSquared(l, oom, rm);
+        assertEquals(expResult, result);
     }
 
     /**

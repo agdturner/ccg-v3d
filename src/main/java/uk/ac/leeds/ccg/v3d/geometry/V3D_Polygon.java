@@ -33,7 +33,8 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
+public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face,
+        V3D_Intersection {
 
     private static final long serialVersionUID = 1L;
 
@@ -422,11 +423,6 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
 //    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 //    }
-
-    @Override
-    public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, RoundingMode rm) {

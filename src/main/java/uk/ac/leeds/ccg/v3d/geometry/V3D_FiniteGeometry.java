@@ -26,7 +26,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class V3D_FiniteGeometry extends V3D_Geometry implements V3D_Distance {
+public abstract class V3D_FiniteGeometry extends V3D_Geometry
+        implements V3D_Distance {
 
     private static final long serialVersionUID = 1L;
 

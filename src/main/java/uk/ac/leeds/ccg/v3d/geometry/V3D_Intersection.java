@@ -50,18 +50,6 @@ public interface V3D_Intersection {
             RoundingMode rm);
 
     /**
-     * Get the intersection between the geometry and the ray
-     * {@code r}.
-     *
-     * @param r The ray to intersect with.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return The V3D_Geometry.
-     */
-    public abstract V3D_Geometry getIntersection(V3D_Ray r, int oom, 
-            RoundingMode rm);
-
-    /**
      * Get the intersection between the geometry and the line segment
      * {@code l}.
      *
