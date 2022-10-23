@@ -451,28 +451,28 @@ public class V3D_TriangleTest extends V3D_Test {
         instance = instance.rotate(axisOfRotation, theta, oom, rm);
         expResult = new V3D_Triangle(pP1P0P0, pP0P0P1, pP1P0P1, oom, rm);
         assertTrue(expResult.equals(instance, oom, rm));
-//        // Test 3
-//        oom = -4;
-//        instance = new V3D_Triangle(pP2P0P0, pP0P2P0, pP2P2P0, oom, rm);
-//        theta = Pi;
-//        instance = instance.rotate(axisOfRotation, theta, oom, rm);
-//        expResult = new V3D_Triangle(pP2P0P0, pP0N2P0, pP2N2P0, oom, rm);
-//        assertTrue(expResult.equals(instance, oom, rm));
-//        // Test 4
-//        oom = -3;
-//        instance = new V3D_Triangle(pP2P0P0, pP0P2P0, pP2P2P0, oom, rm);
-//        theta = Pi.divide(2);
-//        instance = instance.rotate(axisOfRotation, theta, oom, rm);
-//        expResult = new V3D_Triangle(pP2P0P0, pP0P0P2, pP2P0P2, oom, rm);
-//        assertTrue(expResult.equals(instance, oom, rm));
-//        // Test 5
-//        instance = new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0, oom, rm);
-//        instance = instance.p.setOffset(P1P0P0, oom, rm);
-//        axisOfRotation = V3D_Vector.I;
-//        theta = Pi;
-//        instance = instance.rotate(axisOfRotation, theta, oom, rm);
-//        expResult = new V3D_Triangle(pP1P0P0, pP0N1P0, pP1N1P0, oom, rm);
-//        assertTrue(expResult.equals(instance, oom, rm));
+        // Test 3
+        oom = -4;
+        instance = new V3D_Triangle(pP2P0P0, pP0P2P0, pP2P2P0, oom, rm);
+        theta = Pi;
+        instance = instance.rotate(axisOfRotation, theta, oom, rm);
+        expResult = new V3D_Triangle(pP2P0P0, pP0N2P0, pP2N2P0, oom, rm);
+        assertTrue(expResult.equals(instance, oom, rm));
+        // Test 4
+        oom = -3;
+        instance = new V3D_Triangle(pP2P0P0, pP0P2P0, pP2P2P0, oom, rm);
+        theta = Pi.divide(2);
+        instance = instance.rotate(axisOfRotation, theta, oom, rm);
+        expResult = new V3D_Triangle(pP2P0P0, pP0P0P2, pP2P0P2, oom, rm);
+        assertTrue(expResult.equals(instance, oom, rm));
+        // Test 5
+        instance = new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0, oom, rm);
+        instance.translate(P1P0P0, oom, rm);
+        axisOfRotation = V3D_Vector.I;
+        theta = Pi;
+        instance = instance.rotate(axisOfRotation, theta, oom, rm);
+        expResult = new V3D_Triangle(pP1P0P0, pP0N1P0, pP1N1P0, oom, rm);
+        assertTrue(expResult.equals(instance, oom, rm));
     }
 
 //    /**

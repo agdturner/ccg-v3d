@@ -503,13 +503,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 //    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
 //        return getEnvelope().isIntersectedBy(l, oom);
 //    }
-    /**
-     * For this to work as expected, all triangles should have the same offset
-     * (point for the rotation).
-     *
-     * @param axisOfRotation The axis of rotation.
-     * @param theta The angle in radians.
-     */
+    
     @Override
     public V3D_ConvexHullCoplanar rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
             int oom, RoundingMode rm) {

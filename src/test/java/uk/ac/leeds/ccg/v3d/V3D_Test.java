@@ -352,7 +352,7 @@ public abstract class V3D_Test {
     public static final V3D_Point pN1N2P0 = new V3D_Point(e, N1, N2, P0);
     public static final V3D_Point pN1N2N1 = new V3D_Point(e, N1, N2, N1);
     public static final V3D_Point pN1N2N2 = new V3D_Point(e, N1, N2, N2);
-   // N2xx
+    // N2xx
     public static final V3D_Point pN2P2P2 = new V3D_Point(e, N2, P2, P2);
     public static final V3D_Point pN2P2P1 = new V3D_Point(e, N2, P2, P1);
     public static final V3D_Point pN2P2P0 = new V3D_Point(e, N2, P2, P0);

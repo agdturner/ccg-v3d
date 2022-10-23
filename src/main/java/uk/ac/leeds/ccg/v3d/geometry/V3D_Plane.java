@@ -754,8 +754,8 @@ public class V3D_Plane extends V3D_Geometry implements V3D_Distance,
      * @return The intersection of the line and the plane. This is either
      * {@code null} a line or a point.
      */
-    @Override
-    public V3D_Geometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
+    //@Override
+    public V3D_Geometry getIntersectionOption(V3D_Line l, int oom, RoundingMode rm) {
         // Special case
         if (isParallel(l, oom, rm)) {
             if (isOnPlane(l, oom, rm)) {
@@ -1002,7 +1002,7 @@ public class V3D_Plane extends V3D_Geometry implements V3D_Distance,
 ////                l.pl.getY(oom).subtract(l.v.getDY(oom).multiply(t)),
 ////                l.pl.getZ(oom).subtract(l.v.getDZ(oom).multiply(t)));
 //    }
-    public V3D_Geometry getIntersectiondel(V3D_Line l, int oom, RoundingMode rm) {
+    public V3D_Geometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
         int oomN2 = oom - 2;
         if (this.isParallel(l, oomN2, rm)) {
             if (this.isOnPlane(l, oomN2, rm)) {
@@ -1254,6 +1254,29 @@ public class V3D_Plane extends V3D_Geometry implements V3D_Distance,
         return new V3D_Line(pi, v);
     }
 
+//    /**
+//     * From https://mathworld.wolfram.com/Plane-PlaneIntersection.html
+//     * @param pl1
+//     * @param pl2
+//     * @param oom
+//     * @param rm
+//     * @return 
+//     */
+//    public V3D_Point getIntersection(V3D_Plane pl1, V3D_Plane pl2, int oom,
+//            RoundingMode rm) {
+//        Math_BigRational[][] m = new Math_BigRational[3][3];
+//        m[0][0] = n.getDX(oom, rm);
+//        m[1][0] = n.getDY(oom, rm);
+//        m[2][0] = n.getDZ(oom, rm);
+//        m[0][1] = pl1.n.getDX(oom, rm);
+//        m[1][1] = pl1.n.getDY(oom, rm);
+//        m[2][1] = pl1.n.getDZ(oom, rm);
+//        m[0][2] = pl2.n.getDX(oom, rm);
+//        m[1][2] = pl2.n.getDY(oom, rm);
+//        m[2][2] = pl2.n.getDZ(oom, rm);        
+//        Math_Matrix_BR mm = new Math_Matrix_BR(m);
+//    )
+    
     /**
      * The intersection of 3 planes could be a plane, a line, a point or null.
      * It is a plane if all 3 planes are the same. It is a line if two of the
@@ -1952,12 +1975,15 @@ public class V3D_Plane extends V3D_Geometry implements V3D_Distance,
      * is the point of intersection
      */
     public V3D_Point getPointOfProjectedIntersection(V3D_Point pt, int oom, RoundingMode rm) {
-        V3D_Point pt2 = new V3D_Point(pt);
-        pt2.setOffset(offset, oom, rm);
+        if (isIntersectedBy(pt, oom, rm)) {
+            return pt;
+        }
+//        V3D_Point pt2 = new V3D_Point(pt);
+//        pt2.setOffset(offset, oom, rm);
 //        V3D_Vector nn = getN(oom, rm);
 //        V3D_Line l = new V3D_Line(pt2.rel, nn, e);
-
-        V3D_Line l = new V3D_Line(pt2.rel, n, e);
+        //V3D_Line l = new V3D_Line(pt2.rel, n, e);
+        V3D_Line l = new V3D_Line(pt, n);
         return (V3D_Point) getIntersection(l, oom, rm);
     }
 

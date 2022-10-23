@@ -1124,7 +1124,9 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
     /**
      * Calculate and return the line of intersection (the shortest line) between
      * this and l. If this and l intersect then return null. If this and l are
-     * parallel, then return null. Adapted in part from:
+     * parallel, then return null. If the calculated ends of the line of 
+     * intersection are the same, the return null (this may happen due to 
+     * imprecision). Adapted in part from:
      * http://paulbourke.net/geometry/pointlineplane/
      *
      * @param l The line to get the line of intersection with.
@@ -1171,8 +1173,13 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
         //return new V3D_LineSegment(tpi, lpi, oom);
         //return new V3D_LineSegment(tpi.getVector(oom), lpi.getVector(oom), oom);
         //return new V3D_LineSegment(e, tpi, lpi);
-        return new V3D_LineSegment(new V3D_Point(e, tpi), new V3D_Point(e, lpi), oom, rm);
-
+        V3D_Point loip = new V3D_Point(e, tpi);
+        V3D_Point loiq = new V3D_Point(e, lpi);
+        if (loip.equals(loiq, oom, rm)) {
+            return null;
+        } else {
+            return new V3D_LineSegment(loip, loiq, oom, rm);
+        }
 //        // p13
 //        //V3D_Vector plp = new V3D_Vector(p, lp, oom);
 //        V3D_Vector plp = new V3D_Vector(tp, lp, oom);

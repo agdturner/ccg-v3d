@@ -1157,7 +1157,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry
 
     @Override
     public V3D_LineSegment rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
-        return new V3D_LineSegment(getP().rotate(axisOfRotation, theta, oom, rm),
+        return new V3D_LineSegment(
+                getP().rotate(axisOfRotation, theta, oom, rm),
                 getQ().rotate(axisOfRotation, theta, oom, rm), oom, rm);
     }
 

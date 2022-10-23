@@ -734,11 +734,11 @@ public class V3D_Vector implements Serializable {
      */
     public Math_BigRational getAngle(V3D_Vector v, int oom, RoundingMode rm) {
         Math_BigRational dp = getDotProduct(v, oom, rm);
-        Math_BigRational m2 = getMagnitude(oom, rm);
-        Math_BigRational vm2 = v.getMagnitude(oom, rm);
-        MathContext mc = new MathContext(-oom + 1); // This needs checking!
-        return Math_BigRational.valueOf(BigDecimalMath.acos(dp.divide(m2.multiply(vm2)).toBigDecimal(mc), mc));
-        //return dp.divide(m2.multiply(vm2)).arccos(oom, rm);
+        Math_BigRational mag = getMagnitude(oom, rm);
+        Math_BigRational vmag = v.getMagnitude(oom, rm);
+        MathContext mc = new MathContext(1 - oom); // This needs checking!
+        return Math_BigRational.valueOf(BigDecimalMath.acos(
+                dp.divide(mag.multiply(vmag)).toBigDecimal(mc), mc));
     }
 
     /**

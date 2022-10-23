@@ -16,12 +16,9 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
-import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -93,7 +90,7 @@ public class V3D_Envelope implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private V3D_Vector offset;
-    V3D_Environment e;
+    private final V3D_Environment e;
     /**
      * The minimum x-coordinate.
      */
@@ -142,6 +139,7 @@ public class V3D_Envelope implements Serializable {
      * @param points The points used to form the envelop.
      */
     public V3D_Envelope(V3D_Environment e, int oom, RoundingMode rm, V3D_Point... points) {
+        this.e = e;
         //offset = points[0].offset;
         offset = V3D_Vector.ZERO;
         int len = points.length;
@@ -214,12 +212,11 @@ public class V3D_Envelope implements Serializable {
                 new V3D_Point(e, xMax, yMax, zMax));
     }
 
-    @Override
-    public String toString() {
+    public String toString(int oom, RoundingMode rm) {
         return this.getClass().getSimpleName()
-                + "(xMin=" + xMin + ", xMax=" + xMax
-                + ", yMin=" + yMin + ", yMax=" + yMax
-                + ", zMin=" + zMin + ", zMax=" + zMax + ")";
+                + "(xMin=" + getXMin(oom, rm) + ", xMax=" + getXMax(oom, rm)
+                + ", yMin=" + getYMin(oom, rm) + ", yMax=" + getYMax(oom, rm)
+                + ", zMin=" + getZMin(oom, rm) + ", zMax=" + getZMax(oom, rm) + ")";
     }
 
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
@@ -544,88 +541,123 @@ public class V3D_Envelope implements Serializable {
 //        pts[7] = new V3D_Point(rtf);
         V3D_Point c = getCentroid(oom, rm);
         
-        V3D_Vector v2 = new V3D_Vector(pt, c, oom, rm).getCrossProduct(v, oom, rm);
+        V3D_Vector cv = new V3D_Vector(pt, c, oom, rm);
+        
+        V3D_Vector v2 = cv.getCrossProduct(v, oom, rm);
         
         /**
          * Calculate the plane touching this in the direction given from pt to
          * c.
          */
-        // Find a closest point.
+        // Find a closest point (there could be up to 4).
         Math_BigRational d2min = pt.getDistanceSquared(pts[0], oom, rm);
         V3D_Point closest = pts[0];
         for (int i = 1; i < pts.length; i++) {
             Math_BigRational d2 = pt.getDistanceSquared(pts[i], oom, rm);
             if (d2.compareTo(d2min) == -1) {
+                d2min = d2;
                 closest = pts[i];
             }
         }
-        V3D_Plane pl0 = new V3D_Plane(closest, new V3D_Vector(pt, c, oom, rm));
+        // Use the closest point to define the plane of the screen.
+        V3D_Plane pl0 = new V3D_Plane(closest, cv);
+        // Intersect the rays from pts to each point with the screen.
+        V3D_Point[] ipts = new V3D_Point[pts.length];
+        // Get the intersecting points on the screen plane from pt
+        for (int i = 0; i < pts.length; i++) {
+            V3D_Ray ray = new V3D_Ray(pt, pts[i], oom, rm);
+            ipts[i] = (V3D_Point) ray.getIntersection(pl0, oom, rm);
+        }
+        // Figure out the extremes in relation to v and v2
+        
+        
+        
         // Find top, bottom, left and right planes
-        V3D_Point pt2 = new V3D_Point(pt);
-        pt2.translate(v, oom, rm);
         V3D_Plane vpl = new V3D_Plane(c, v);
         V3D_Plane v2pl = new V3D_Plane(c, v2);
         // Find top and bottom
-        V3D_Point pa = new V3D_Point(v2pl.getP());
-        pa.translate(v2, oom, rm);
-        Math_BigRational aa = Math_BigRational.TEN;
-        V3D_Plane tp = null;
-        V3D_Point pb = new V3D_Point(v2pl.getP());
-        pb.translate(v2.reverse(), oom, rm);
+        V3D_Point ap = new V3D_Point(c);
+        ap.translate(v2, oom, rm);
+        Math_BigRational aa = Math_BigRational.ZERO;
+        V3D_Plane tpl = null;
+        //V3D_Point pb = new V3D_Point(v2pl.getP());
+        //pb.translate(v2.reverse(), oom, rm);
         Math_BigRational ba = Math_BigRational.ZERO;
-        V3D_Plane bp = null;
-        for (var x : pts) {
+        V3D_Plane bpl = null;
+        for (var x : ipts) {
             V3D_Point pp = vpl.getPointOfProjectedIntersection(x, oom, rm);
-            Math_BigRational a = v2.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm);
-            if (v2pl.isOnSameSide(pa, x, oom, rm)) {
-                if (a.compareTo(aa) == -1) {
+            //Math_BigRational a = v2.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
+            Math_BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
+            if (v2pl.isOnSameSide(ap, x, oom, rm)) {
+                if (a.compareTo(aa) == 1) {
                     aa = a;
+                    //System.out.println(a);
                     V3D_Point xv = new V3D_Point(x);
                     xv.translate(v, oom, rm);
-                    tp = new V3D_Plane(x, pt, xv, oom, rm);
+                    tpl = new V3D_Plane(x, pt, xv, oom, rm);
                 }
             } else {
                 if (a.compareTo(ba) == 1) {
                     ba = a;
                     V3D_Point xv = new V3D_Point(x);
                     xv.translate(v, oom, rm);
-                    bp = new V3D_Plane(x, pt, xv, oom, rm);
+                    bpl = new V3D_Plane(x, pt, xv, oom, rm);
                 }
             }
         }
         // Find left and right
-        V3D_Point pl = new V3D_Point(vpl.getP());
-        pl.translate(v.reverse(), oom, rm);
+        V3D_Point lp = new V3D_Point(c);
+        lp.translate(v.reverse(), oom, rm);
         Math_BigRational la = Math_BigRational.ZERO;
-        V3D_Plane lp = null;
-        V3D_Point pr = new V3D_Point(vpl.getP());
-        pr.translate(v, oom, rm);
+        V3D_Plane lpl = null;
+        //V3D_Point pr = new V3D_Point(vpl.getP());
+        //pr.translate(v, oom, rm);
         Math_BigRational ra = Math_BigRational.ZERO;
-        V3D_Plane rp = null;
-        for (var x : pts) {
+        V3D_Plane rpl = null;
+        for (var x : ipts) {
             V3D_Point pp = v2pl.getPointOfProjectedIntersection(x, oom, rm);
-            Math_BigRational a = v.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm);
-            if (vpl.isOnSameSide(pl, x, oom, rm)) {
+            //Math_BigRational a = v.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
+            Math_BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
+            if (vpl.isOnSameSide(lp, x, oom, rm)) {
                 if (a.compareTo(la) == 1) {
                     la = a;
                     V3D_Point xv = new V3D_Point(x);
                     xv.translate(v2, oom, rm);
-                    lp = new V3D_Plane(x, pt, xv, oom, rm);
+                    lpl = new V3D_Plane(x, pt, xv, oom, rm);
                 }
             } else {
                 if (a.compareTo(ra) == 1) {
                     ra = a;
                     V3D_Point xv = new V3D_Point(x);
                     xv.translate(v2, oom, rm);
-                    rp = new V3D_Plane(x, pt, xv, oom, rm);
+                    rpl = new V3D_Plane(x, pt, xv, oom, rm);
                 }
             }
         }
+//        // Check
+//        if (!tp.allOnSameSide(pts, oom, rm)) {
+//            int debug = 1;
+//        }
+//        if (!bp.allOnSameSide(pts, oom, rm)) {
+//            int debug = 1;
+//        }
+//        if (!lp.allOnSameSide(pts, oom, rm)) {
+//            int debug = 1;
+//        }
+//        if (!rp.allOnSameSide(pts, oom, rm)) {
+//            int debug = 1;
+//        }
+//        
+//        lp.n = lp.n.getUnitVector(oom, rm);
+//        rp.n = rp.n.getUnitVector(oom, rm);
+//        tp.n = tp.n.getUnitVector(oom, rm);
+//        bp.n = bp.n.getUnitVector(oom, rm);
+        
         r = new V3D_Rectangle(
-                (V3D_Point) lp.getIntersection(pl0, bp, oom, rm),
-                (V3D_Point) lp.getIntersection(pl0, tp, oom, rm),
-                (V3D_Point) rp.getIntersection(pl0, tp, oom, rm),
-                (V3D_Point) rp.getIntersection(pl0, bp, oom, rm), oom, rm);
+                (V3D_Point) lpl.getIntersection(pl0, bpl, oom, rm),
+                (V3D_Point) lpl.getIntersection(pl0, tpl, oom, rm),
+                (V3D_Point) rpl.getIntersection(pl0, tpl, oom, rm),
+                (V3D_Point) rpl.getIntersection(pl0, bpl, oom, rm), oom, rm);
 
         return r;
     }

@@ -119,7 +119,8 @@ public abstract class V3D_Geometry implements Serializable {
      * Returns the geometry rotated about the axis of rotation axisOfRotation by
      * the angle theta.
      *
-     * @param axisOfRotation The axis of rotation.
+     * @param axisOfRotation The axis of rotation. This is expected to be a unit
+     * normal vector. 
      * @param theta The angle of rotation around the {@code axisOfRotation} in
      * radians. Options for rotation include:
      * <ul>
