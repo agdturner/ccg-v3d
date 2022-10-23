@@ -65,6 +65,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     protected V3D_ConvexHullCoplanar convexHull;
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@link #rsp} initialising it first if it is {@code null}
      */
     public V3D_Triangle getRSP(int oom, RoundingMode rm) {
@@ -104,6 +106,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 //     * For storing the line segment from {@link #s} to {@link #pl}.
 //     */
 //    protected V3D_LineSegment b;
+    
     /**
      * Create a new instance.
      *
@@ -113,6 +116,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @param q The top left corner of the rectangle.
      * @param r The top right corner of the rectangle.
      * @param s The bottom right corner of the rectangle.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
@@ -164,18 +169,6 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         }
     }
 
-//    /**
-//     * Create a new instance.
-//     *
-//     * @param r What {@code this} is created from.
-//     * @throws java.lang.RuntimeException iff the points do not define a
-//     * rectangle.
-//     */
-//    public V3D_Rectangle(V3D_Envelope.Rectangle r, int oom, RoundingMode rm) {
-//        this(r.e, V3D_Vector.ZERO, new V3D_Vector(r.p), new V3D_Vector(r.q),
-//                new V3D_Vector(r.r), new V3D_Vector(r.s), oom, rm);
-//    }
-
     /**
      * Creates a new instance
      *
@@ -183,6 +176,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @param q Used to initialise {@link #q}.
      * @param r Used to initialise {@link #r}.
      * @param s Used to initialise {@link #s}.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Rectangle(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s,
             int oom, RoundingMode rm) {
@@ -256,7 +251,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 
     /**
      * @param pt The point to intersect with.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return A point or line segment.
      */
     @Override
@@ -269,6 +265,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The line segment from {@link #r} to {@link #s}.
      */
     protected V3D_LineSegment getRS(int oom, RoundingMode rm) {
@@ -277,26 +275,14 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The line segment from {@link #s} to {@link #p}.
      */
     protected V3D_LineSegment getSP(int oom, RoundingMode rm) {
         //return new V3D_LineSegment(offset, rotate(s, theta), rotate(pl, theta), oom);
         return new V3D_LineSegment(e, offset, s, p, oom, rm);
     }
-
-//    private boolean isIntersectedBy0(V3D_Ray ray, int oom, RoundingMode rm) {
-//        return getQR(oom, rm).isIntersectedBy(ray, oom, rm)
-//                || getRS(oom, rm).isIntersectedBy(ray, oom, rm)
-//                || getSP(oom, rm).isIntersectedBy(ray, oom, rm)
-//                || getPQ(oom, rm).isIntersectedBy(ray, oom, rm);
-//    }
-//
-//    private boolean isIntersectedBy0(V3D_Line ls, int oom, RoundingMode rm) {
-//        return getQR(oom, rm).isIntersectedBy(ls, oom, rm)
-//                || getRS(oom, rm).isIntersectedBy(ls, oom, rm)
-//                || getSP(oom, rm).isIntersectedBy(ls, oom, rm)
-//                || getPQ(oom, rm).isIntersectedBy(ls, oom, rm);
-//    }
 
     @Override
     protected boolean isIntersectedBy0(V3D_Point pt, int oom, RoundingMode rm) {
@@ -409,79 +395,10 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         return false;
     }
 
-//    @Override
-//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-//        if (pl.isIntersectedBy(l, oom, rm)) {
-//            V3D_Geometry g = pl.getIntersection(l, oom, rm);
-//            if (g instanceof V3D_Point v3D_Point) {
-//                return isIntersectedBy0(v3D_Point, oom, rm);
-//            } else {
-//                return isIntersectedBy0((V3D_Line) g, oom, rm);
-//            }
-//        }
-//        return false;
-//    }
-
-//    @Override
-//    public boolean isIntersectedBy(V3D_Ray ray, int oom, RoundingMode rm) {
-//        if (pl.isIntersectedBy(ray, oom, rm)) {
-//            V3D_Geometry g = pl.getIntersection(ray, oom, rm);
-//            if (g instanceof V3D_Point v3D_Point) {
-//                return isIntersectedBy0(v3D_Point, oom, rm);
-//            } else {
-//                return isIntersectedBy0((V3D_Ray) g, oom, rm);
-//            }
-//        }
-//        return false;
-//    }
-
-//    /**
-//     * Intersection test.
-//     *
-//     * @param l The line segment to test for intersection.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return {@code true} iff this rectangle is intersected by {@code l}
-//     */
-//    @Override
-//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-//        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm), oom, rm)) {
-//            if (pl.isIntersectedBy(l, oom, rm)) {
-//                V3D_Geometry pli = pl.getIntersection(l, oom, rm);
-//                if (pli instanceof V3D_Point plip) {
-//                    return isIntersectedBy(plip, oom, rm);
-//                } else {
-//                    /**
-//                     * If the two points on the line segment are on the same
-//                     * side of all of the edges then there is no intersection
-//                     * otherwise there is.
-//                     */
-//                    if (l.isIntersectedBy(getPQ(oom, rm), oom, rm)) {
-//                        return true;
-//                    }
-//                    if (l.isIntersectedBy(getQR(oom, rm), oom, rm)) {
-//                        return true;
-//                    }
-//                    if (l.isIntersectedBy(getRS(oom, rm), oom, rm)) {
-//                        return true;
-//                    }
-//                    if (l.isIntersectedBy(getSP(oom, rm), oom, rm)) {
-//                        return true;
-//                    }
-////                    if (super.isIntersectedBy(l, oom)) {
-////                        return true;
-////                    }
-////                    if (getRSP(oom, rm).isIntersectedBy(l, oom)) {
-////                        return true;
-////                    }
-//                }
-//            }
-//        }
-//        return false;
-//    }
-
     /**
      * @param l The line to intersect with.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return A point or line segment.
      */
     @Override
@@ -680,6 +597,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      *
      * @param pointOrLineSegment1 A point or line segment to join.
      * @param pointOrLineSegment2 A point or line segment to join.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return A point or line segment.
      */
     protected V3D_FiniteGeometry join(V3D_FiniteGeometry pointOrLineSegment1,
@@ -719,7 +638,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * {@code l}.
      *
      * @param l The line segment to test for intersection.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The intersection or {@code null} iff there is no intersection.
      */
     @Override
@@ -785,11 +705,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 //            }
 //        }
     }
-
-//    @Override
-//    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-//        return getEnvelope().isIntersectedBy(l, oom);
-//    }
+    
     @Override
     public BigDecimal getPerimeter(int oom, RoundingMode rm) {
         oom -= 2;
@@ -810,7 +726,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * Get the distance between this and {@code pl}.
      *
      * @param p A point.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The distance from {@code this} to {@code pl}.
      */
     @Override
@@ -847,6 +764,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * Change {@link #offset} without changing the overall line.
      *
      * @param offset What {@link #offset} is set to.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public void setOffset(V3D_Vector offset, int oom, RoundingMode rm) {
         pl.setOffset(offset, oom, rm);
@@ -861,6 +780,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * Move the rectangle.
      *
      * @param v What is added to {@link #p}, {@link #q}, {@link #r}, {@link #s}.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     @Override
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
@@ -881,33 +802,6 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
                 getR().rotate(axisOfRotation, theta, oom, rm),
                 getS().rotate(axisOfRotation, theta, oom, rm), oom, rm);
     }
-
-//    @Override
-//    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
-//        if (super.isIntersectedBy(p, oom, rm)) {
-//            return true;
-//        } else {
-//            return getRSP(oom, rm).isIntersectedBy(p, oom, rm);
-//        }
-//    }
-//
-//    @Override
-//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-//        if (super.isIntersectedBy(t, oom, rm)) {
-//            return true;
-//        } else {
-//            return getRSP(oom, rm).isIntersectedBy(t, oom, rm);
-//        }
-//    }
-//
-//    @Override
-//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-//        if (super.isIntersectedBy(t, oom, rm)) {
-//            return true;
-//        } else {
-//            return getRSP(oom, rm).isIntersectedBy(t, oom, rm);
-//        }
-//    }
 
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {
@@ -963,13 +857,6 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-//        V3D_Geometry i_pqr = getPQR().getIntersection(t, oom);
-//        V3D_Geometry i_rsp = getRSP(oom, rm).getIntersection(t, oom);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
                 .toBigDecimal(oom, rm);
@@ -1017,24 +904,10 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
                 getPQR().getDistanceSquared(t, oom, rm));
     }
 
-    @Override
-    public BigDecimal getDistance(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(t, oom, rm), oom, rm)
-                .toBigDecimal(oom, rm);
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        Math_BigRational pqrd = getPQR().getDistanceSquared(t, oom, rm);
-        if (pqrd.compareTo(Math_BigRational.ZERO) == 0) {
-            return pqrd;
-        } else {
-            return pqrd.min(getRSP(oom, rm).getDistanceSquared(t, oom, rm));
-        }
-    }
-
     /**
      * @param r The rectangle to test if it is equal to this.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff this is equal to r.
      */
     //@Overrides
@@ -1071,6 +944,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     /**
      * Initialises {@link #convexHull} if it is {@code null} and returns it.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@link #convexHull} initialising it if it is {@code null}.
      */
     public V3D_ConvexHullCoplanar getConvexHull(int oom, RoundingMode rm) {
@@ -1087,6 +962,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @param q Second clockwise or anti-clockwise point.
      * @param r Third clockwise or anti-clockwise point.
      * @param s Fourth clockwise or anti-clockwise point.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff pl, q, r and s form a rectangle.
      */
     public static boolean isRectangle(V3D_Point p, V3D_Point q,

@@ -750,7 +750,7 @@ public class V3D_Vector implements Serializable {
      * @param axisOfRotation The axis of rotation. This should be a unit vector
      * accurate to a sufficient precision.
      * @param theta The angle of rotation.
-     * @param bI For the Taylor series for trigonometry calculations.
+     * @param bd For the Taylor series for trigonometry calculations.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The vector which is {@code #this} rotated using the parameters.

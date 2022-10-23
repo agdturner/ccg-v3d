@@ -25,9 +25,9 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * An envelope contains all the extreme values with respect to the X, Y and Z
  * axes. This is also known as an Axis Aligned Bounding Box (AABB). In this
  * implementation, it may have length of zero in any direction. For a point the
- * envelope is essentially the point. The envelope may also be a line or a 
+ * envelope is essentially the point. The envelope may also be a line or a
  * rectangle, but often it will have 3 dimensions.
- * 
+ *
  * The following depiction of a bounding box indicate the location of the
  * different faces and also gives an abbreviated name of each point that
  * reflects these. This points are not stored explicitly in an instance of the
@@ -50,7 +50,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *                    /    |         ymax               /    |
  *                   /     |                           /     |
  *                  /      |                          /      |
- *                 /       |                         /       | 
+ *                 /       |                         /       |
  *                /        |                        /        |
  *               /         |                       /         |
  *          ltf /_ _ _ _ _ |_ _ _ _ _ _ _ _ _ _ _ /rtf       |
@@ -64,7 +64,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *             |         /                       |         /
  *             |        /                        |        /
  *             |       /                         |       /
- *             |      /            ymin          |      / 
+ *             |      /            ymin          |      /
  *             |     /                           |     /
  *             |    /                            |    /
  *             |   /                             |   /
@@ -72,7 +72,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *             | /                               | /
  *             |/_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |/
  *          lbf               zmax               rbf
- *                                     
+ *
  *                      /              |
  *                     /               |
  *                    /                |
@@ -122,20 +122,22 @@ public class V3D_Envelope implements Serializable {
     private final Math_BigRational zMax;
 
     /**
-     * For storing all the corner points. These are in order: lbf, lba, ltf, 
+     * For storing all the corner points. These are in order: lbf, lba, ltf,
      * lta, rbf, rba, rtf, rta.
      */
     protected V3D_Point[] pts;
-    
+
     /**
      * For storing the precision of pts.
      */
     protected int ptsoom;
-    
+
     /**
      * Create a new instance.
      *
      * @param e What {@link #e} is set to.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param points The points used to form the envelop.
      */
     public V3D_Envelope(V3D_Environment e, int oom, RoundingMode rm, V3D_Point... points) {
@@ -184,6 +186,8 @@ public class V3D_Envelope implements Serializable {
      * Create a new instance.
      *
      * @param e What {@link #e} is set to.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param x The x-coordinate of a point.
      * @param y The y-coordinate of a point.
      * @param z The z-coordinate of a point.
@@ -197,6 +201,8 @@ public class V3D_Envelope implements Serializable {
      * Create a new instance.
      *
      * @param e What {@link #e} is set to.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param xMin What {@link xMin} is set to.
      * @param xMax What {@link xMax} is set to.
      * @param yMin What {@link yMin} is set to.
@@ -212,6 +218,11 @@ public class V3D_Envelope implements Serializable {
                 new V3D_Point(e, xMax, yMax, zMax));
     }
 
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return This represented as a string.
+     */
     public String toString(int oom, RoundingMode rm) {
         return this.getClass().getSimpleName()
                 + "(xMin=" + getXMin(oom, rm) + ", xMax=" + getXMax(oom, rm)
@@ -219,12 +230,22 @@ public class V3D_Envelope implements Serializable {
                 + ", zMin=" + getZMin(oom, rm) + ", zMax=" + getZMax(oom, rm) + ")";
     }
 
+    /**
+     * Translates this using {@code v}.
+     *
+     * @param v The vector of translation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     */
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
         offset = offset.add(v, oom, rm);
+        pts = null;
     }
 
     /**
      * @param e The V3D_Envelope to union with this.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return an Envelope which is {@code this} union {@code e}.
      */
     public V3D_Envelope union(V3D_Envelope e, int oom, RoundingMode rm) {
@@ -245,6 +266,8 @@ public class V3D_Envelope implements Serializable {
      * If {@code e} touches, or overlaps then it intersects.
      *
      * @param e The Vector_Envelope2D to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code e}.
      */
     public boolean isIntersectedBy(V3D_Envelope e, int oom, RoundingMode rm) {
@@ -256,7 +279,12 @@ public class V3D_Envelope implements Serializable {
     }
 
     /**
-     * @return {@code true} iff e1 is beyond e2.
+     * @param e1 The envelope to test.
+     * @param e2 The envelope to test against.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} iff e1 is beyond e2 (i.e. they do not touch or
+     * intersect).
      */
     public static boolean isBeyond(V3D_Envelope e1, V3D_Envelope e2, int oom,
             RoundingMode rm) {
@@ -280,6 +308,8 @@ public class V3D_Envelope implements Serializable {
      * contained.
      *
      * @param e V3D_Envelope
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return if this is contained by {@code e}
      */
     public boolean isContainedBy(V3D_Envelope e, int oom, RoundingMode rm) {
@@ -293,6 +323,8 @@ public class V3D_Envelope implements Serializable {
 
     /**
      * @param p The point to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code pl}
      */
     public boolean isIntersectedBy(V3D_Point p, int oom, RoundingMode rm) {
@@ -303,6 +335,8 @@ public class V3D_Envelope implements Serializable {
      * @param x The x-coordinate of the point to test for intersection.
      * @param y The y-coordinate of the point to test for intersection.
      * @param z The z-coordinate of the point to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code pl}
      */
     public boolean isIntersectedBy(Math_BigRational x, Math_BigRational y,
@@ -314,6 +348,8 @@ public class V3D_Envelope implements Serializable {
 
     /**
      * @param en The envelop to intersect.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code null} if there is no intersection; {@code en} if
      * {@code this.equals(en)}; otherwise returns the intersection.
      */
@@ -337,6 +373,8 @@ public class V3D_Envelope implements Serializable {
      * Test for equality.
      *
      * @param e The V3D_Envelope to test for equality with this.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff this and e are equal.
      */
     public boolean equals(V3D_Envelope e, int oom, RoundingMode rm) {
@@ -489,23 +527,23 @@ public class V3D_Envelope implements Serializable {
 
     /**
      * Return all the points of this with at least oom precision.
-     * 
+     *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode used in the calculation.
-     * @return 
+     * @return The corners of this as points.
      */
     public V3D_Point[] getPoints(int oom, RoundingMode rm) {
         if (pts == null || ptsoom > oom) {
-        pts = new V3D_Point[8];
-        pts[0] = new V3D_Point(e, getXMin(oom, rm), getYMin(oom, rm), getZMin(oom, rm)); // lbf
-        pts[1] = new V3D_Point(e, getXMin(oom, rm), getYMin(oom, rm), getZMax(oom, rm)); // lba
-        pts[2] = new V3D_Point(e, getXMin(oom, rm), getYMax(oom, rm), getZMin(oom, rm)); // ltf
-        pts[3] = new V3D_Point(e, getXMin(oom, rm), getYMax(oom, rm), getZMax(oom, rm)); // lta
-        pts[4] = new V3D_Point(e, getXMax(oom, rm), getYMin(oom, rm), getZMin(oom, rm)); // rbf
-        pts[5] = new V3D_Point(e, getXMax(oom, rm), getYMin(oom, rm), getZMax(oom, rm)); // rba
-        pts[6] = new V3D_Point(e, getXMax(oom, rm), getYMax(oom, rm), getZMin(oom, rm)); // rtf
-        pts[7] = new V3D_Point(e, getXMax(oom, rm), getYMax(oom, rm), getZMax(oom, rm)); // rta
-        ptsoom = oom;
+            pts = new V3D_Point[8];
+            pts[0] = new V3D_Point(e, getXMin(oom, rm), getYMin(oom, rm), getZMin(oom, rm)); // lbf
+            pts[1] = new V3D_Point(e, getXMin(oom, rm), getYMin(oom, rm), getZMax(oom, rm)); // lba
+            pts[2] = new V3D_Point(e, getXMin(oom, rm), getYMax(oom, rm), getZMin(oom, rm)); // ltf
+            pts[3] = new V3D_Point(e, getXMin(oom, rm), getYMax(oom, rm), getZMax(oom, rm)); // lta
+            pts[4] = new V3D_Point(e, getXMax(oom, rm), getYMin(oom, rm), getZMin(oom, rm)); // rbf
+            pts[5] = new V3D_Point(e, getXMax(oom, rm), getYMin(oom, rm), getZMax(oom, rm)); // rba
+            pts[6] = new V3D_Point(e, getXMax(oom, rm), getYMax(oom, rm), getZMin(oom, rm)); // rtf
+            pts[7] = new V3D_Point(e, getXMax(oom, rm), getYMax(oom, rm), getZMax(oom, rm)); // rta
+            ptsoom = oom;
         }
         return pts;
     }
@@ -540,11 +578,11 @@ public class V3D_Envelope implements Serializable {
 //        pts[6] = new V3D_Point(rta);
 //        pts[7] = new V3D_Point(rtf);
         V3D_Point c = getCentroid(oom, rm);
-        
+
         V3D_Vector cv = new V3D_Vector(pt, c, oom, rm);
-        
+
         V3D_Vector v2 = cv.getCrossProduct(v, oom, rm);
-        
+
         /**
          * Calculate the plane touching this in the direction given from pt to
          * c.
@@ -569,9 +607,7 @@ public class V3D_Envelope implements Serializable {
             ipts[i] = (V3D_Point) ray.getIntersection(pl0, oom, rm);
         }
         // Figure out the extremes in relation to v and v2
-        
-        
-        
+
         // Find top, bottom, left and right planes
         V3D_Plane vpl = new V3D_Plane(c, v);
         V3D_Plane v2pl = new V3D_Plane(c, v2);
@@ -652,7 +688,7 @@ public class V3D_Envelope implements Serializable {
 //        rp.n = rp.n.getUnitVector(oom, rm);
 //        tp.n = tp.n.getUnitVector(oom, rm);
 //        bp.n = bp.n.getUnitVector(oom, rm);
-        
+
         r = new V3D_Rectangle(
                 (V3D_Point) lpl.getIntersection(pl0, bpl, oom, rm),
                 (V3D_Point) lpl.getIntersection(pl0, tpl, oom, rm),
@@ -662,6 +698,15 @@ public class V3D_Envelope implements Serializable {
         return r;
     }
 
+    /**
+     * A collection method to add l to ls iff there is not already an l in ls.
+     * 
+     * @param ls The collection.
+     * @param l The line segment to add.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} iff l is unique and is added to ls.
+     */
     protected boolean addUnique(ArrayList<V3D_Line> ls, V3D_Line l, int oom,
             RoundingMode rm) {
         boolean unique = true;
@@ -677,6 +722,15 @@ public class V3D_Envelope implements Serializable {
         return unique;
     }
 
+    /**
+     * A collection method to add pt to pts iff there is not already a pt in pts.
+     * 
+     * @param pts The collection.
+     * @param pt The point to add.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} iff l is unique and is added to ls.
+     */
     protected boolean addUnique(ArrayList<V3D_Point> pts, V3D_Point pt, int oom,
             RoundingMode rm) {
         boolean unique = true;

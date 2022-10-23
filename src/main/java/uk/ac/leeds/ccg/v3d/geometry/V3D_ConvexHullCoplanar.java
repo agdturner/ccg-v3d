@@ -68,7 +68,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * @version 1.0
  */
 public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
-        implements V3D_Face, V3D_Intersection {
+        implements V3D_Face {
 
     private static final long serialVersionUID = 1L;
 
@@ -85,6 +85,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     /**
      * Create a new instance.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param triangles A non-empty list of coplanar triangles.
      */
     public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_Triangle... triangles) {
@@ -94,6 +96,9 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     /**
      * Create a new instance.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param n The normal for the plane.
      * @param points A non-empty list of points in a plane given by n.
      */
     public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_Vector n, V3D_Point... points) {
@@ -233,6 +238,10 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 
     /**
      * Create a new instance.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param gs The input convex hulls.
      */
     public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_ConvexHullCoplanar... gs) {
         this(oom, rm, gs[0].triangles.get(0).pl.n, V3D_FiniteGeometry.getPoints(oom, rm, gs));
@@ -240,6 +249,12 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 
     /**
      * Create a new instance.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param ch The convex hull to add to the convex hull with t.
+     * @param t The triangle used to set the normal and to add to the convex
+     * hull with ch.
      */
     public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_ConvexHullCoplanar ch, V3D_Triangle t) {
         this(oom, rm, ch.triangles.get(0).pl.n, V3D_FiniteGeometry.getPoints(oom, rm, ch, t));
@@ -270,7 +285,9 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     /**
      * Check if {@code this} is equal to {@code i}.
      *
-     * @param i An instance to compare for equality.
+     * @param c An instance to compare for equality.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff all the triangles are the same.
      */
     public boolean equals(V3D_ConvexHullCoplanar c, int oom, RoundingMode rm) {
@@ -351,6 +368,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * effectively a rectangle, the rectangle is returned. Otherwise this is
      * returned.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return Either a triangle, rectangle or this.
      */
     public V3D_FiniteGeometry simplify(int oom, RoundingMode rm) {
@@ -366,11 +385,13 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     }
 
     /**
-     * @param pt The point to intersect with.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return A point or line segment.
+     * Identify if this is intersected by point {@code p}.
+     *
+     * @param pt The point to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff the geometry is intersected by {@code p}.
      */
-    @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         if (getEnvelope(oom, rm).isIntersectedBy(pt, oom, rm)) {
             if (triangles.get(0).pl.isIntersectedBy(pt, oom, rm)) {
@@ -382,7 +403,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 
     /**
      * @param pt The point.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code pt}.
      */
     protected boolean isIntersectedBy0(V3D_Point pt, int oom, RoundingMode rm) {
@@ -419,11 +441,11 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 //        }
 //        return false;
 //    }
-
     /**
      * This sums all the areas irrespective of any overlaps.
      *
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The area of the triangle (rounded).
      */
     @Override
@@ -438,7 +460,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     /**
      * This sums all the perimeters irrespective of any overlaps.
      *
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     @Override
     public BigDecimal getPerimeter(int oom, RoundingMode rm) {
@@ -450,21 +473,13 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     }
 
     /**
-     * @param l The line to intersect with.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return A point or line segment.
+     * Get the intersection between this and the plane {@code p}.
+     *
+     * @param p The plane to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
      */
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {
         if (this.triangles.get(0).pl.equalsIgnoreOrientation(p, oom, rm)) {
             return this;
@@ -472,7 +487,14 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
+    /**
+     * Get the intersection between the geometry and the triangle {@code t}.
+     *
+     * @param t The triangle to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
+     */
     public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, RoundingMode rm) {
         // Create a set all the intersecting triangles from this.
         List<V3D_Point> ts = new ArrayList<>();
@@ -484,7 +506,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         if (tsu.isEmpty()) {
             return null;
         } else {
-            return new V3D_ConvexHullCoplanar(oom, rm, t.pl.n, 
+            return new V3D_ConvexHullCoplanar(oom, rm, t.pl.n,
                     tsu.toArray(V3D_Point[]::new)).simplify(oom, rm);
         }
 //        switch (size) {
@@ -503,12 +525,11 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 //    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
 //        return getEnvelope().isIntersectedBy(l, oom);
 //    }
-    
     @Override
     public V3D_ConvexHullCoplanar rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
             int oom, RoundingMode rm) {
         V3D_Triangle[] rts = new V3D_Triangle[triangles.size()];
-        for (int i = 0; i < triangles.size(); i ++) {
+        for (int i = 0; i < triangles.size(); i++) {
             rts[0] = triangles.get(i).rotate(axisOfRotation, theta, oom, rm);
         }
         return new V3D_ConvexHullCoplanar(oom, rm, rts);
@@ -521,9 +542,11 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @param p1
      * @param n
      * @param index
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return the number of points added.
      */
-    public final void getConvexHull0(ArrayList<V3D_Point> pts, V3D_Point p0,
+    private void getConvexHull0(ArrayList<V3D_Point> pts, V3D_Point p0,
             V3D_Point p1, V3D_Vector n, int index, int oom, RoundingMode rm) {
         V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(e,
                 offset, p0.rel.add(n, oom, rm)), oom, rm);
@@ -580,81 +603,39 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         }
     }
 
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Point p, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Plane p, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
+    /**
+     * A class for helping to calculate a convex hull.
+     */
     public class AboveAndBelow {
 
-        // Above
+        /**
+         * The points that are above.
+         */
         public ArrayList<V3D_Point> a;
+
+        /**
+         * For storing the index of the point in {@link #a} that is the maximum.
+         */
         int maxaIndex;
 
-        // Below
+        /**
+         * The points that are below.
+         */
         public ArrayList<V3D_Point> b;
+
+        /**
+         * For storing the index of the point in {@link #b} that is the maximum.
+         */
         int maxbIndex;
 
+        /**
+         * Create a new instance.
+         *
+         * @param pts The points.
+         * @param p The plane.
+         * @param oom The Order of Magnitude for the precision.
+         * @param rm The RoundingMode for any rounding.
+         */
         public AboveAndBelow(ArrayList<V3D_Point> pts, V3D_Plane p, int oom, RoundingMode rm) {
             a = new ArrayList<>();
             b = new ArrayList<>();
@@ -694,7 +675,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     /**
      * If all {@link #triangles} form a single triangle return true
      *
-     * @return
+     * @return {@code true} iff this is a triangle.
      */
     public final boolean isTriangle() {
         return points.size() == 3;
@@ -703,7 +684,9 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     /**
      * If all {@link #triangles} form a single triangle return true
      *
-     * @return
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} iff this is a rectangle.
      */
     public boolean isRectangle(int oom, RoundingMode rm) {
         if (points.size() == 4) {
@@ -715,10 +698,12 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 
     /**
      * Clips this using the pl and return the part that is on the same side as
- pl.
+     * pl.
      *
      * @param pl The plane that clips.
      * @param p A point that is used to return the side of the clipped triangle.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return null, the whole or a part of this.
      */
     public V3D_FiniteGeometry clip(V3D_Plane pl, V3D_Point p, int oom, RoundingMode rm) {
@@ -766,6 +751,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @param t The triangle to clip this with.
      * @param pt A point that is used to return the side of this that is
      * clipped.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return null, the whole or a part of this.
      */
     public V3D_FiniteGeometry clip(V3D_Triangle t, V3D_Point pt, int oom, RoundingMode rm) {
@@ -838,6 +825,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * is returned. If four or more are different then a V3D_ConvexHullCoplanar
      * is returned.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param pts The points.
      * @return Either a V3D_Point, V3D_LineSegment, V3D_Triangle, or
      * V3D_ConvexHullCoplanar.
@@ -846,25 +835,30 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         Set<V3D_Point> s = new HashSet<>();
         s.addAll(Arrays.asList(pts));
         Iterator<V3D_Point> i = s.iterator();
-        if (s.size() == 1) {
-            return i.next();
-        } else if (s.size() == 2) {
-            return new V3D_LineSegment(i.next(), i.next(), oom, rm);
-        } else if (s.size() == 3) {
-            return new V3D_Triangle(i.next(), i.next(), i.next(), oom, rm);
-        } else {
-            V3D_Point ip = i.next();
-            V3D_Point iq = i.next();
-            V3D_Point ir = i.next();
-            while (V3D_Line.isCollinear(ip.e, oom, rm, ip, iq, ir) && i.hasNext()) {
-                ir = i.next();
+        switch (s.size()) {
+            case 1 -> {
+                return i.next();
             }
-            V3D_Plane pl;
-            if (V3D_Line.isCollinear(ip.e, oom, rm, ip, iq, ir) && i.hasNext()) {
-                return new V3D_LineSegment(oom, rm, pts);
-            } else {
-                pl = new V3D_Plane(ip, iq, ir, oom, rm);
-                return new V3D_ConvexHullCoplanar(oom, rm, pl.n, pts);
+            case 2 -> {
+                return new V3D_LineSegment(i.next(), i.next(), oom, rm);
+            }
+            case 3 -> {
+                return new V3D_Triangle(i.next(), i.next(), i.next(), oom, rm);
+            }
+            default -> {
+                V3D_Point ip = i.next();
+                V3D_Point iq = i.next();
+                V3D_Point ir = i.next();
+                while (V3D_Line.isCollinear(ip.e, oom, rm, ip, iq, ir) && i.hasNext()) {
+                    ir = i.next();
+                }
+                V3D_Plane pl;
+                if (V3D_Line.isCollinear(ip.e, oom, rm, ip, iq, ir) && i.hasNext()) {
+                    return new V3D_LineSegment(oom, rm, pts);
+                } else {
+                    pl = new V3D_Plane(ip, iq, ir, oom, rm);
+                    return new V3D_ConvexHullCoplanar(oom, rm, pl.n, pts);
+                }
             }
         }
     }

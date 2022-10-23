@@ -28,14 +28,16 @@ public interface V3D_Volume extends Serializable {
     
     /**
      * For calculating and returning the area.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The area.
      */
     public abstract BigDecimal getArea(int oom, RoundingMode rm);
     
     /**
      * For calculating and returning the perimeter.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The Perimeter.
      */
     public abstract BigDecimal getVolume(int oom, RoundingMode rm);

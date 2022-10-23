@@ -31,38 +31,37 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * these are stored independently in that the order of the points and the
  * directions of the vectors might be opposite. The points are shared between
  * all the triangles. {@code
-  pl *- - - - - - - - - - - + - - - - - - - - - - -* q
-     \ ~                                         /|
-      \     ~                                   / |
-       \         ~                             /  |
-        \             ~                       /   |
-         \                 ~                 /    |
-          \                      ~          /     |
-           \                          ~    /      |
-            \                             / ~     |
-             \                           /       ~s
-              \                         /        :
-               \                       /
-                \                     /      :
-                 \                   /
-                  \                 /     :
-                   \               /
-                    \             /    :
-                     \           /
-                      \         /   :
-                       \       /
-                        \     /  :
-                         \   /
-                          \ /:
-                           *
-                           r
- }
+ * pl *- - - - - - - - - - - + - - - - - - - - - - -* q
+ *     \ ~                                         /|
+ *      \     ~                                   / |
+ *       \         ~                             /  |
+ *        \             ~                       /   |
+ *         \                 ~                 /    |
+ *          \                      ~          /     |
+ *           \                          ~    /      |
+ *            \                             / ~     |
+ *             \                           /       ~s
+ *              \                         /        :
+ *               \                       /
+ *                \                     /      :
+ *                 \                   /
+ *                  \                 /     :
+ *                   \               /
+ *                    \             /    :
+ *                     \           /
+ *                      \         /   :
+ *                       \       /
+ *                        \     /  :
+ *                         \   /
+ *                          \ /:
+ *                           *
+ *                           r
+ * }
  *
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
-        V3D_Intersection {
+public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     private static final long serialVersionUID = 1L;
 
@@ -107,9 +106,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
     public V3D_Triangle psq;
 
     /**
-     * Create a new instance. {@code pl}, {@code q}, {@code r} and {@code s} must
-     * all be different, not the zero vector and collectively they must be three
-     * dimensional. This is generally the fastest way to construct a
+     * Create a new instance. {@code pl}, {@code q}, {@code r} and {@code s}
+     * must all be different, not the zero vector and collectively they must be
+     * three dimensional. This is generally the fastest way to construct a
      * tetrahedron.
      *
      * @param e What {@link #e} is set to.
@@ -129,13 +128,16 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
     }
 
     /**
-     * Create a new instance. {@code pl}, {@code q}, {@code r} and {@code s} must
-     * all be different and not coplanar. No test is done to check these things.
+     * Create a new instance. {@code pl}, {@code q}, {@code r} and {@code s}
+     * must all be different and not coplanar. No test is done to check these
+     * things.
      *
      * @param p Used to set {@link #p}, {@link #e} and {@link #offset}.
      * @param q Used to set {@link #q}.
      * @param r Used to set {@link #r}.
      * @param s Used to set {@link #s}.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Tetrahedron(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s,
             int oom, RoundingMode rm) {
@@ -158,6 +160,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
      *
      * @param p Used to set {@link #p}, {@link #e} and {@link #offset}.
      * @param t Used to set {@link #q}, {@link #r} and {@link #s}.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Tetrahedron(V3D_Point p, V3D_Triangle t, int oom, RoundingMode rm) {
         this(p, t.getP(), t.getQ(), t.getR(), oom, rm);
@@ -242,7 +246,6 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getQ() {
@@ -266,6 +269,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
     /**
      * If {@code null} initialise {@link #pqr} and return it.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@link #pqr}
      */
     public V3D_Triangle getPqr(int oom, RoundingMode rm) {
@@ -278,6 +283,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
     /**
      * If {@code null} initialise {@link #qsr} and return it.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@link #qsr}
      */
     public V3D_Triangle getQsr(int oom, RoundingMode rm) {
@@ -290,6 +297,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
     /**
      * If {@code null} initialise {@link #spr} and return it.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@link #spr}
      */
     public V3D_Triangle getSpr(int oom, RoundingMode rm) {
@@ -302,6 +311,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
     /**
      * If {@code null} initialise {@link #psq} and return it.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@link #psq}
      */
     public V3D_Triangle getPsq(int oom, RoundingMode rm) {
@@ -314,7 +325,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
     /**
      * For calculating and returning the surface area.
      *
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The outer surface area of the tetrahedron (rounded).
      */
     @Override
@@ -330,7 +342,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
      * https://en.wikipedia.org/wiki/Tetrahedron#Volume This implementation is
      * currently a bit rough and ready.
      *
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     @Override
     public BigDecimal getVolume(int oom, RoundingMode rm) {
@@ -351,7 +364,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
      * the average of the x, y and z coordinates from the points at each vertex.
      * https://www.globalspec.com/reference/52702/203279/4-8-the-centroid-of-a-tetrahedron
      *
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The centroid point.
      */
     public V3D_Point getCentroid(int oom, RoundingMode rm) {
@@ -365,7 +379,14 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
         return new V3D_Point(e, offset, new V3D_Vector(dx, dy, dz));
     }
 
-    @Override
+    /**
+     * Identify if this is intersected by point {@code pt}.
+     *
+     * @param pt The point to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff the geometry is intersected by {@code p}.
+     */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         pqr = getPqr(oom, rm);
         psq = getPsq(oom, rm);
@@ -392,58 +413,14 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
         return pqr.isIntersectedBy(pt, oom, rm);
     }
 
-//    @Override
-//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-//        if (getPqr(oom, rm).isIntersectedBy(l, oom, rm)) {
-//            return true;
-//        } else {
-//            if (getPsq(oom, rm).isIntersectedBy(l, oom, rm)) {
-//                return true;
-//            } else {
-//                return getQsr(oom, rm).isIntersectedBy(l, oom, rm);
-////                // No need for the final test
-////                if (getQsr(oom, rm).isIntersectedBy(l, oom, rm)) {
-////                    return true;
-////                } else {
-////                    return getSpr(oom, rm).isIntersectedBy(l, oom, rm);
-////                }
-//            }
-//        }
-//    }
-
-//    @Override
-//    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-//        return r.isIntersectedBy(this, oom, rm);
-//    }
-//
-//    @Override
-//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-//        if (isIntersectedBy(l.getP(), oom, rm)) {
-//            return true;
-//        } else {
-//            if (isIntersectedBy(l.getQ(), oom, rm)) {
-//                return true;
-//            } else {
-//                if (getPqr(oom, rm).isIntersectedBy(l, oom, rm)) {
-//                    return true;
-//                } else {
-//                    if (getPsq(oom, rm).isIntersectedBy(l, oom, rm)) {
-//                        return true;
-//                    } else {
-//                        return getQsr(oom, rm).isIntersectedBy(l, oom, rm);
-////                        // No need for the final test
-////                        if (getQsr(oom, rm).isIntersectedBy(l, oom, rm)) {
-////                            return true;
-////                        } else {
-////                            return getSpr(oom, rm).isIntersectedBy(l, oom, rm);
-////                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-    @Override
+    /**
+     * Get the intersection between this and the line {@code l}.
+     *
+     * @param l The line to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
+     */
     public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
         V3D_FiniteGeometry pqri = getPqr(oom, rm).getIntersection(l, oom, rm);
         if (pqri == null) {
@@ -513,6 +490,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
      * @param q Another possibly equal point.
      * @param r Another possibly equal point.
      * @param s Another possibly equal point.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return either {@code pl} or {@code new V3D_LineSegment(pl, q)} or
      * {@code new V3D_Triangle(pl, q, r)}
      */
@@ -573,6 +552,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
      * @param r Another possibly equal point.
      * @param s Another possibly equal point.
      * @param t Another possibly equal point.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return either {@code pl} or {@code new V3D_LineSegment(pl, q)} or
      * {@code new V3D_Triangle(pl, q, r)}
      */
@@ -601,7 +582,14 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
         }
     }
 
-    @Override
+    /**
+     * Get the intersection between this and the line segment {@code l}.
+     *
+     * @param l The line segment to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
+     */
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom,
             RoundingMode rm) {
         V3D_FiniteGeometry g = getIntersection(l.l, oom, rm);
@@ -877,15 +865,20 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
     }
 
     /**
-     * The intersection will be null, a point, a line segment, a triangle or a
+     * Get the intersection between the geometry and the plane {@code p}. The
+     * intersection will be null, a point, a line segment, a triangle or a
      * quadrilateral. It should be that any points of intersection are within
      * this.
+     *
+     * @param pl The plane to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
      */
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry pqri = getPqr(oom, rm).getIntersection(p, oom, rm);
+    public V3D_FiniteGeometry getIntersection(V3D_Plane pl, int oom, RoundingMode rm) {
+        V3D_FiniteGeometry pqri = getPqr(oom, rm).getIntersection(pl, oom, rm);
         if (pqri == null) {
-            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(p, oom, rm);
+            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(pl, oom, rm);
             if (psqi == null) {
                 return null;
             } else if (psqi instanceof V3D_Point psqip) {
@@ -896,26 +889,26 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
                  * There will also be a line segment of qsr and spr that
                  * together form a triangle.
                  */
-                V3D_LineSegment qsril = (V3D_LineSegment) getQsr(oom, rm).getIntersection(p, oom, rm);
-                V3D_LineSegment spril = (V3D_LineSegment) getSpr(oom, rm).getIntersection(p, oom, rm);
+                V3D_LineSegment qsril = (V3D_LineSegment) getQsr(oom, rm).getIntersection(pl, oom, rm);
+                V3D_LineSegment spril = (V3D_LineSegment) getSpr(oom, rm).getIntersection(pl, oom, rm);
                 return V3D_Triangle.getGeometry(psqil, qsril, spril, oom, rm);
             } else {
                 // Triangle
                 return (V3D_Triangle) psqi;
             }
         } else if (pqri instanceof V3D_Point pqrip) {
-            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(p, oom, rm);
+            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(pl, oom, rm);
             if (psqi == null) {
                 return pqrip;
             } else if (psqi instanceof V3D_Point psqip) {
-                V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(p, oom, rm);
+                V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(pl, oom, rm);
                 if (qsri == null) {
                     return psqip;
                 } else {
                     return V3D_Triangle.getGeometry((V3D_LineSegment) qsri, psqip, oom, rm);
                 }
             } else if (psqi instanceof V3D_LineSegment psqil) {
-                V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(p, oom, rm);
+                V3D_FiniteGeometry qsri = getQsr(oom, rm).getIntersection(pl, oom, rm);
                 if (qsri == null) {
                     return psqil;
                 } else {
@@ -931,13 +924,13 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
                 return (V3D_Triangle) psqi;
             }
         } else if (pqri instanceof V3D_LineSegment pqril) {
-            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(p, oom, rm);
+            V3D_FiniteGeometry psqi = getPsq(oom, rm).getIntersection(pl, oom, rm);
             if (psqi == null) {
-                V3D_LineSegment qsril = (V3D_LineSegment) getQsr(oom, rm).getIntersection(p, oom, rm);
-                V3D_LineSegment spril = (V3D_LineSegment) getSpr(oom, rm).getIntersection(p, oom, rm);
+                V3D_LineSegment qsril = (V3D_LineSegment) getQsr(oom, rm).getIntersection(pl, oom, rm);
+                V3D_LineSegment spril = (V3D_LineSegment) getSpr(oom, rm).getIntersection(pl, oom, rm);
                 return V3D_Triangle.getGeometry(pqril, qsril, spril, oom, rm);
             } else if (psqi instanceof V3D_Point) {
-                V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(p, oom, rm);
+                V3D_FiniteGeometry spri = getSpr(oom, rm).getIntersection(pl, oom, rm);
                 if (spri instanceof V3D_Point sprip) {
                     return V3D_Triangle.getGeometry(pqril, sprip, oom, rm);
                 } else {
@@ -954,12 +947,17 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
         }
     }
 
-    @Override
+    /**
+     * Get the intersection between this and the triangle {@code t}. The
+     * intersection will be null, a point, a line segment, a triangle,
+     * quadrilateral, pentagon or a hexagon.
+     *
+     * @param t The triangle to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
+     */
     public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, RoundingMode rm) {
-        /**
-         * The intersection will be null, a point, a line segment, a triangle,
-         * quadrilateral, pentagon or hexagon...
-         */
         V3D_FiniteGeometry i = getIntersection(t.pl, oom, rm);
         if (i == null) {
             return null;
@@ -1271,7 +1269,14 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
         }
     }
 
-    //@Override
+    /**
+     * Get the intersection with the rectangle {@code r}.
+     *
+     * @param r The rectangle to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
+     */
     public V3D_FiniteGeometry getIntersection(V3D_Rectangle r, int oom, RoundingMode rm) {
         V3D_Triangle r_pqr = r.getPQR();
         V3D_Triangle r_rsp = r.getRSP(oom, rm);
@@ -1349,13 +1354,27 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
         return re;
     }
 
-    @Override
+    /**
+     * Get the distance to {@code p}.
+     *
+     * @param p A point.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The distance squared to {@code p}.
+     */
     public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
                 .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
-    @Override
+    /**
+     * Get the distance squared to {@code p}.
+     *
+     * @param pt A point.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The distance squared to {@code p}.
+     */
     public Math_BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
         if (isIntersectedBy(pt, oom, rm)) {
             return Math_BigRational.ZERO;
@@ -1368,19 +1387,40 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
         }
     }
 
-    @Override
+    /**
+     * Get the minimum distance to {@code l}.
+     *
+     * @param l A line.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance squared to {@code l}.
+     */
     public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
                 .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
-    @Override
+    /**
+     * Get the minimum distance to {@code l}.
+     *
+     * @param l A line segment.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance squared to {@code l}.
+     */
     public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
                 .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
-    @Override
+    /**
+     * Get the minimum distance squared to {@code l}.
+     *
+     * @param l A line segment.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance squared to {@code l}.
+     */
     public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
         if (getIntersection(l, oom, rm) != null) {
             return Math_BigRational.ZERO;
@@ -1397,6 +1437,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
      * Change {@link #offset} without changing the overall line.
      *
      * @param offset What {@link #offset} is set to.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public void setOffset(V3D_Vector offset, int oom, RoundingMode rm) {
         p = p.add(offset, oom, rm).subtract(this.offset, oom, rm);
@@ -1410,156 +1452,24 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
     public V3D_Tetrahedron rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
             int oom, RoundingMode rm) {
         return new V3D_Tetrahedron(e, offset,
-        p.rotate(axisOfRotation, theta, e.bd, oom, rm),
-        q.rotate(axisOfRotation, theta, e.bd, oom, rm),
-        r.rotate(axisOfRotation, theta, e.bd, oom, rm),
-        s.rotate(axisOfRotation, theta, e.bd, oom, rm));
+                p.rotate(axisOfRotation, theta, e.bd, oom, rm),
+                q.rotate(axisOfRotation, theta, e.bd, oom, rm),
+                r.rotate(axisOfRotation, theta, e.bd, oom, rm),
+                s.rotate(axisOfRotation, theta, e.bd, oom, rm));
     }
 
-//    @Override
-//    public boolean isIntersectedBy(V3D_Plane pl, int oom, RoundingMode rm) {
-//        if (getPqr(oom, rm).isIntersectedBy(pl, oom, rm)) {
-//            return true;
-//        } else {
-//            return getPsq(oom, rm).isIntersectedBy(pl, oom, rm);
-//        }
-//    }
-//
-//    /**
-//     * https://stackoverflow.com/questions/24097540/testing-tetrahedron-triangle-intersection
-//     *
-//     * @param t Triangle
-//     * @param oom The order of magnitude for the precision.
-//     * @return {@code true} iff this and triangle intersect.
-//     */
-//    @Override
-//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-//        if (isIntersectedBy(t.pl, oom, rm)) {
-//            // If any of the points of the triangle are in this return true.
-//            if (isIntersectedBy(t.getP(), oom, rm) || isIntersectedBy(t.getQ(), oom, rm)
-//                    || isIntersectedBy(t.getR(), oom, rm)) {
-//                return true;
-//            } else {
-//                /**
-//                 * If any faces are intersected by the triangle return true.
-//                 */
-//                if (getPqr(oom, rm).isIntersectedBy(t, oom, rm)) {
-//                    return true;
-//                } else if (getPsq(oom, rm).isIntersectedBy(t, oom, rm)) {
-//                    return true;
-//                } else if (getQsr(oom, rm).isIntersectedBy(t, oom, rm)) {
-//                    return true;
-//                } else if (getSpr(oom, rm).isIntersectedBy(t, oom, rm)) {
-//                    return true;
-//                } else {
-//                    /**
-//                     * The points of t may be around the outside of this, but
-//                     * none of the edges intersect. The intersection of the
-//                     * plane of t and this can give a point, line segment,
-//                     * triangle or convex hull. By controlling rounding in the
-//                     * intersection calculation, this can be robust, but
-//                     * currently the following does not work when all the
-//                     * intersected points are not aligned with t.
-//                     */
-//                    V3D_FiniteGeometry g = getIntersection(t.pl, oom, rm);
-//                    if (g == null) {
-//                        // Wierd!
-//                        return false;
-//                    } else {
-//                        if (g instanceof V3D_Point gp) {
-//                            return t.isAligned(gp, oom, rm);
-//                            //return t.isIntersectedBy(gp, oom, rm);
-//                        } else if (g instanceof V3D_LineSegment gl) {
-//                            if (t.isAligned(gl.getP(), oom, rm)) {
-//                                return true;
-//                            }
-//                            if (t.isAligned(gl.getQ(), oom, rm)) {
-//                                return true;
-//                            }
-//                            return t.isIntersectedBy(gl, oom, rm);
-//                        } else if (g instanceof V3D_Triangle gt) {
-//                            return t.isIntersectedBy(gt, oom, rm);
-//                        } else {
-//                            return t.isIntersectedBy((V3D_ConvexHullCoplanar) g, oom, rm);
-//                        }
-//                    }
-//                }
-//            }
-//        } else {
-//            return false;
-//        }
-//    }
-
-//    /**
-//     * To check if this and y intersect.
-//     *
-//     * @param t A tetrahedron
-//     * @param oom The order of magnitude for the precision.
-//     * @return {@code true} iff this and t intersect.
-//     */
-//    @Override
-//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-//        if (getEnvelope(oom, rm).isIntersectedBy(t.getEnvelope(oom, rm), oom, rm)) {
-//            // 1. Check points
-//            // If any point of t are in this return true.
-//            if (isIntersectedBy(t.getP(), oom, rm)) {
-//                return true;
-//            }
-//            if (isIntersectedBy(t.getQ(), oom, rm)) {
-//                return true;
-//            }
-//            if (isIntersectedBy(t.getR(), oom, rm)) {
-//                return true;
-//            }
-//            if (isIntersectedBy(t.getS(), oom, rm)) {
-//                return true;
-//            }
-//            // If any point of this are in t return true.
-//            if (t.isIntersectedBy(getP(), oom, rm)) {
-//                return true;
-//            }
-//            if (t.isIntersectedBy(getQ(), oom, rm)) {
-//                return true;
-//            }
-//            if (t.isIntersectedBy(getR(), oom, rm)) {
-//                return true;
-//            }
-//            if (t.isIntersectedBy(getS(), oom, rm)) {
-//                return true;
-//            }
-//            // 2. Check faces
-//            // If this intersects any face of t return true.
-//            if (isIntersectedBy(t.getPqr(oom, rm), oom, rm)) {
-//                return true;
-//            }
-//            if (isIntersectedBy(t.getPsq(oom, rm), oom, rm)) {
-//                return true;
-//            }
-//            if (isIntersectedBy(t.getQsr(oom, rm), oom, rm)) {
-//                return true;
-//            }
-//            if (isIntersectedBy(t.getSpr(oom, rm), oom, rm)) {
-//                return true;
-//            }
-//            // If t intersects any face of this return true.
-//            if (t.isIntersectedBy(getPqr(oom, rm), oom, rm)) {
-//                return true;
-//            }
-//            if (t.isIntersectedBy(getPsq(oom, rm), oom, rm)) {
-//                return true;
-//            }
-//            if (t.isIntersectedBy(getQsr(oom, rm), oom, rm)) {
-//                return true;
-//            }
-//            if (t.isIntersectedBy(getSpr(oom, rm), oom, rm)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
-    @Override
+    /**
+     * Get the intersection between the geometry and the tetrahedron {@code t}.
+     *
+     * @param t The tetrahedron to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
+     */
     public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, RoundingMode rm) {
+        if (!getEnvelope(oom, rm).isIntersectedBy(t.getEnvelope(oom, rm), oom, rm)) {
+            return null;
+        }
         V3D_FiniteGeometry pqri = getIntersection(t.getPqr(oom, rm), oom, rm);
         if (pqri == null) {
             V3D_FiniteGeometry psqi = getIntersection(t.getPsq(oom, rm), oom, rm);
@@ -1631,7 +1541,14 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
+    /**
+     * Get the minimum distance squared to {@code l}.
+     *
+     * @param l A line segment.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance squared to {@code l}.
+     */
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
         if (getIntersection(l, oom, rm) != null) {
             return Math_BigRational.ZERO;
@@ -1644,13 +1561,27 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
         }
     }
 
-    @Override
+    /**
+     * Get the minimum distance to {@code p}.
+     *
+     * @param p A plane.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance squared to {@code p}.
+     */
     public BigDecimal getDistance(V3D_Plane p, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
                 .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
-    @Override
+    /**
+     * Get the minimum distance squared to {@code p}.
+     *
+     * @param p A plane.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance squared to {@code p}.
+     */
     public Math_BigRational getDistanceSquared(V3D_Plane p, int oom, RoundingMode rm) {
         if (getIntersection(p, oom, rm) != null) {
             return Math_BigRational.ZERO;
@@ -1663,13 +1594,27 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
         }
     }
 
-    @Override
+    /**
+     * Get the minimum distance to {@code t}.
+     *
+     * @param t A triangle.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance to {@code t}.
+     */
     public BigDecimal getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(t, oom, rm), oom, rm)
                 .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
-    @Override
+    /**
+     * Get the minimum distance squared to {@code t}.
+     *
+     * @param t A triangle.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance to {@code t}.
+     */
     public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
         if (getIntersection(t, oom, rm) != null) {
             return Math_BigRational.ZERO;
@@ -1682,22 +1627,66 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume,
         }
     }
 
-    @Override
+    /**
+     * Get the minimum distance to {@code r}.
+     *
+     * @param r A rectangle.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance to {@code t}.
+     */
+    public BigDecimal getDistance(V3D_Rectangle r, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(r, oom, rm), oom, rm)
+                .toBigDecimal(oom, rm);
+    }
+
+    /**
+     * Get the minimum distance squared to {@code r}.
+     *
+     * @param r A rectangle.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance to {@code t}.
+     */
+    public Math_BigRational getDistanceSquared(V3D_Rectangle r, int oom, RoundingMode rm) {
+        Math_BigRational pqrd = getDistanceSquared(r.getPQR(), oom, rm);
+        if (pqrd.compareTo(Math_BigRational.ZERO) == 0) {
+            return pqrd;
+        } else {
+            return pqrd.min(getDistanceSquared(r.getRSP(oom, rm), oom, rm));
+        }
+    }
+
+    /**
+     * Get the minimum distance to {@code t}.
+     *
+     * @param t A tetrahedron.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance to {@code t}.
+     */
     public BigDecimal getDistance(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(t, oom, rm), oom, rm)
                 .getSqrt(oom, rm).toBigDecimal(oom, rm);
     }
 
-    @Override
+    /**
+     * Get the minimum distance squared to {@code t}.
+     *
+     * @param t A tetrahedron.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance to {@code t}.
+     */
     public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         if (getIntersection(t, oom, rm) != null) {
             return Math_BigRational.ZERO;
         } else {
             return Math_BigRational.min(
-                    getPqr(oom, rm).getDistanceSquared(t, oom, rm),
-                    getPsq(oom, rm).getDistanceSquared(t, oom, rm),
-                    getQsr(oom, rm).getDistanceSquared(t, oom, rm),
-                    getSpr(oom, rm).getDistanceSquared(t, oom, rm));
+                    t.getDistanceSquared(getPqr(oom, rm), oom, rm),
+                    t.getDistanceSquared(getPsq(oom, rm), oom, rm),
+                    t.getDistanceSquared(getQsr(oom, rm), oom, rm),
+                    t.getDistanceSquared(getSpr(oom, rm), oom, rm));
         }
     }
 }

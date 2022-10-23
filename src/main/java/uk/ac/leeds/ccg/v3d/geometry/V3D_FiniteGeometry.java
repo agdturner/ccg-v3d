@@ -26,8 +26,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class V3D_FiniteGeometry extends V3D_Geometry
-        implements V3D_Distance {
+public abstract class V3D_FiniteGeometry extends V3D_Geometry {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,6 +38,8 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry
     /**
      * For getting the envelope of the geometry
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The V3D_Envelope.
      */
     public abstract V3D_Envelope getEnvelope(int oom, RoundingMode rm);
@@ -64,9 +65,17 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry
     
     /**
      * @return A copy of the points of the geometry.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     public abstract V3D_Point[] getPoints(int oom, RoundingMode rm);
     
+    /**
+     * @return A copy of the points of the geometries gs.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param gs The geometries.
+     */
     public static V3D_Point[] getPoints(int oom, RoundingMode rm, 
             V3D_FiniteGeometry... gs) {
         ArrayList<V3D_Point> list = new ArrayList<>();
@@ -82,6 +91,7 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry
      *
      * @param v The vector to translate.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     @Override
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {

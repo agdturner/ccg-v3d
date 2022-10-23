@@ -582,6 +582,61 @@ public class V3D_TetrahedronTest extends V3D_Test {
     }
 
     /**
+     * Test of getDistanceSquared method, of class V3D_Triangle.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_Triangle() {
+        System.out.println("getDistanceSquared");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Tetrahedron t;
+        V3D_Triangle tr;
+        Math_BigRational expResult;
+        Math_BigRational result;
+        // Test 1
+        t = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        tr = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0, oom, rm);
+        expResult = Math_BigRational.ZERO;
+        result = t.getDistanceSquared(tr, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 2
+        tr = new V3D_Triangle(pN1P1P0, pN1P0P0, pN1P0P1, oom, rm);
+        expResult = Math_BigRational.ONE;
+        result = t.getDistanceSquared(tr, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+    }
+    
+    /**
+     * Test of getDistance method, of class V3D_Rectangle.
+     */
+    @Test
+    public void testGetDistance_V3D_Rectangle() {
+        System.out.println("getDistance");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Tetrahedron t = new V3D_Tetrahedron(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1, oom, rm);
+        V3D_Rectangle r = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
+        BigDecimal expResult = BigDecimal.ZERO;
+        BigDecimal result = t.getDistance(r, oom, rm);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_Rectangle.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_Rectangle() {
+        System.out.println("getDistanceSquared");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Tetrahedron t = new V3D_Tetrahedron(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1, oom, rm);
+        V3D_Rectangle r = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
+        Math_BigRational expResult = Math_BigRational.ZERO;
+        Math_BigRational result = t.getDistanceSquared(r, oom, rm);
+        assertEquals(expResult, result);
+    }
+    
+    /**
      * Test of getDistance method, of class V3D_Tetrahedron covered by
      * {@link #testGetDistanceSquared_V3D_Point_int()}.
      */

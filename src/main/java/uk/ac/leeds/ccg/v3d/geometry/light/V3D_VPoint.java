@@ -152,8 +152,8 @@ public class V3D_VPoint extends V3D_VGeometry {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_VPoint v3D_VPoint) {
-            return equals(v3D_VPoint);
+        if (o instanceof V3D_VPoint p) {
+            return equals(p);
         }
         return false;
     }
@@ -217,7 +217,8 @@ public class V3D_VPoint extends V3D_VGeometry {
     /**
      * Get the distance between this and {@code p}.
      *
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @param p A point.
      * @return The distance from {@code p} to this.
      */
@@ -232,7 +233,8 @@ public class V3D_VPoint extends V3D_VGeometry {
      * Get the distance between this and {@code p}.
      *
      * @param p A point.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The distance from {@code p} to this.
      */
     public BigDecimal getDistance(V3D_VPoint p, int oom, RoundingMode rm) {
@@ -244,7 +246,8 @@ public class V3D_VPoint extends V3D_VGeometry {
      * Get the distance squared between this and {@code p}.
      *
      * @param p A point.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared from {@code p} to this.
      */
     public Math_BigRational getDistanceSquared(V3D_VPoint p, int oom, RoundingMode rm) {

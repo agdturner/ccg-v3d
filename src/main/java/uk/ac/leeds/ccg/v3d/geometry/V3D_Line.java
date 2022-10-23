@@ -26,7 +26,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of an infinite length line. The line passes through the
- * point {@link #p} and is travelling through point {@link #q}. The "*" denotes
+ * point {@link #p} with vector {@link #v}. The "*" denotes
  * a point in 3D and the line is shown with a line of "e" symbols in the
  * following depiction: {@code
  *                                       z                e
@@ -49,7 +49,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *                      /   |          e
  *                  z1-/    |         e
  *                    /     |        e
- *                   /      |       * q=<x1,y1,z1>
+ *                   /      |       e v=(dx,dy,dz)
  *                  /       |      e
  *                 /        |     e
  *                +         |    e
@@ -77,8 +77,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Line extends V3D_Geometry implements V3D_Distance, 
-        V3D_Intersection {
+public class V3D_Line extends V3D_Geometry {
 
     private static final long serialVersionUID = 1L;
 
@@ -158,7 +157,9 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
      *
      * @param e What {@link #e} is set to.
      * @param p What {@link #p} is set to.
-     * @param q What {@link #q} is set to.
+     * @param q Another point on the line from which {@link #v} is derived.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     public V3D_Line(V3D_Environment e, V3D_Vector p, V3D_Vector q, int oom, RoundingMode rm) {
         this(e, V3D_Vector.ZERO, p, q, oom, rm);
@@ -172,6 +173,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
      * @param p What {@link #p} is cloned from.
      * @param q What {@link #v} is calculated by taking the difference between p
      * and q.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     public V3D_Line(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, int oom, RoundingMode rm) {
@@ -184,41 +187,7 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
         }
         v = q.subtract(p, oom, rm);
     }
-
-//    /**
-//     * If {@code p} equals {@code q} then a RuntimeException is thrown.
-//     * {@link #offset} is set to {@link V3D_Vector#ZERO}.
-//     *
-//     * @param e What {@link #e} is set to.
-//     * @param p What {@link #p} is set to.
-//     * @param q What {@link #q} is set to.
-//     * @param b Ignored.
-//     * @throws RuntimeException if {@code p.equals(q)}.
-//     */
-//    public V3D_Line(V3D_Environment e, V3D_Vector p, V3D_Vector q, boolean b) {
-//        this(e, V3D_Vector.ZERO, p, q, b);
-//    }
-//
-//    /**
-//     * If {@code p} equals {@code q} then a RuntimeException is thrown.
-//     *
-//     * @param e What {@link #e} is set to.
-//     * @param offset What {@link #offset} is cloned from.
-//     * @param p What {@link #p} is cloned from.
-//     * @param q What {@link #q} is cloned from.
-//     * @param b Ignored.
-//     * @throws RuntimeException if {@code p.equals(q)}.
-//     */
-//    public V3D_Line(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
-//            V3D_Vector q, boolean b) {
-//        super(e, offset);
-//        if (p.equals(q)) {
-//            throw new RuntimeException("Points given by " + p + " and " + q
-//                    + " are the same and so do not define a line.");
-//        }
-//        this.p = new V3D_Vector(p);
-//        this.q = new V3D_Vector(q);
-//    }
+    
     /**
      * {@code v} should not be the zero vector {@code <0,0,0>}. {@link #offset}
      * is set to {@link V3D_Vector#ZERO}.
@@ -243,7 +212,7 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
      * @param check Ignored.
      * @throws RuntimeException if {@code v.isZeroVector()}.
      */
-    public V3D_Line(V3D_Vector p, V3D_Vector v, V3D_Environment e,
+    public V3D_Line(V3D_Vector p, V3D_Vector v, V3D_Environment e, 
             boolean check) {
         this(V3D_Vector.ZERO, p, v, e);
     }
@@ -251,12 +220,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
     /**
      * Checks to ensure v is not the zero vector {@code <0,0,0>}.
      *
-     * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is set to.
      * @param v The vector defining the line from {@link #p}.
-     * @param e What {@link #e} is set to.
-     * @param check Ignored.
-     * @throws RuntimeException if {@code v.isZeroVector()}.
      */
     public V3D_Line(V3D_Point p, V3D_Vector v) {
         this(p.offset, p.rel, v, p.e);
@@ -269,7 +234,6 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
      * @param p What {@link #p} is set to.
      * @param v The vector defining the line from {@link #p}.
      * @param e What {@link #e} is set to.
-     * @param check Ignored.
      * @throws RuntimeException if {@code v.isZeroVector()}.
      */
     public V3D_Line(V3D_Vector offset, V3D_Vector p, V3D_Vector v,
@@ -287,7 +251,9 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
      * Create a new instance.
      *
      * @param p What {@link #p} is cloned from.
-     * @param q What {@link #q} is cloned from.
+     * @param q What {@link #v} is derived from.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     public V3D_Line(V3D_Point p, V3D_Point q, int oom, RoundingMode rm) {
         super(p.e, p.offset);
@@ -393,6 +359,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
 
     /**
      * @param l The line to test if it is the same as {@code this}.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_Line l, int oom, RoundingMode rm) {
@@ -414,7 +382,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Vector getPV(int oom, RoundingMode rm) {
@@ -422,28 +391,21 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * The point of the line as calculated from {@link #p} and {@link #offset}.
+     * 
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getP() {
         return new V3D_Point(e, offset, p);
     }
 
-//    /**
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return {@link #q} with {@link #offset} applied.
-//     */
-//    public V3D_Vector getQV(int oom, RoundingMode rm) {
-//        return q.add(offset, oom, rm);
-////        if (q == null) {
-////            return p.add(v, oom).add(offset, oom);
-////        } else {
-////            return q.add(offset, oom);
-////        }
-//    }
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@link #q} with {@link #offset} applied.
+     * A point on the line as calculated from {@link #p}, {@link #offset} and 
+     * {@link #v}.
+     * 
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return Another point on the line derived from {@link #v}.
      */
     public V3D_Point getQ(int oom, RoundingMode rm) {
         //if (q == null) {
@@ -452,33 +414,13 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
         //}
         //return new V3D_Point(e, offset, q);
     }
-
-//    /**
-//     * @return The vector from {@link #p} to {@link #q}.
-//     */
-//    protected V3D_Vector getV() {
-//        if (v == null) {
-//            v = q.subtract(p, oom, rm);
-//        }
-//        return v;
-//    }
-//    /**
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return The vector from {@link #p} to {@link #q}.
-//     */
-//    public V3D_Vector getV(int oom, RoundingMode rm) {
-//        if (q == null) {
-//            return v;
-//        }
-//        return q.subtract(p, oom, rm).add(offset, oom, rm);
-////        return rotate(getV(), bI, theta).add(offset, oom);
-//    }
+    
     /**
      * @param pt A point to test for intersection.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} if p is on the line.
      */
-    @Override
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         int oomN2 = oom - 2;
         V3D_Point tp = getP();
@@ -512,7 +454,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
 
     /**
      * @param l The line to test if it is parallel to this.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} If this and {@code l} are parallel.
      */
     public boolean isParallel(V3D_Line l, int oom, RoundingMode rm) {
@@ -521,66 +464,15 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
         return v.isScalarMultiple(l.v, oom, rm);
     }
 
-//    /**
-//     * @param l The line to test for intersection with this.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return {@code true} if {@code this} and {@code l} intersect and false if
-//     * they may intersect, but more computation is needed.
-//     */
-//    @Override
-//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-//        V3D_Point tp = getP();
-//        V3D_Point tq = getQ(oom, rm);
-//        V3D_Point lp = l.getP();
-//        if (isCollinear(e, oom, rm, tp, tq, lp)) {
-//            return true;
-//        } else {
-//            //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
-//            V3D_Plane pl = new V3D_Plane(e, V3D_Vector.ZERO,
-//                    tp.getVector(oom, rm), tq.getVector(oom, rm),
-//                    lp.getVector(oom, rm), oom, rm);
-//            if (V3D_Plane.isCoplanar(e, oom, rm, pl, l.getQ(oom, rm))) {
-//                if (!isParallel(l, oom, rm)) {
-//                    return true;
-//                }
-//            }
-//        }
-//        V3D_Point lq = l.getQ(oom, rm);
-//        if (isCollinear(e, oom, rm, tp, tq, lq)) {
-//            return true;
-//        } else {
-//            //V3D_Plane pl = new V3D_Plane(tp, tq, lp, oom);
-//            V3D_Plane pl = new V3D_Plane(e, V3D_Vector.ZERO,
-//                    tp.getVector(oom, rm), tq.getVector(oom, rm),
-//                    lp.getVector(oom, rm), oom, rm);
-//            if (V3D_Plane.isCoplanar(e, oom, rm, pl, lq)) {
-//                if (!isParallel(l, oom, rm)) {
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
-//    }
-    /**
-     * @param p The plane to intersect.
-     * @param oom The Order of Magnitude for the precision of the calculation.
-     * @return {@code null} if there is no intersection and the geometry of
-     * intersection otherwise.
-     */
-    @Override
-    public V3D_Geometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {
-        return p.getIntersection(this, oom, rm);
-    }
-
     /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
      * return {@code this}.
      *
      * @param l The line to get the intersection with {@code this}.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The intersection between {@code this} and {@code l}.
      */
-    @Override
     public V3D_Geometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
         // Special case of parallel lines.
         V3D_Point tp = getP();
@@ -1023,31 +915,11 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
         //return new V3D_Line(pi, qi);
     }
 
-//    /**
-//     * @param r The ray to test if it intersects with {@code this}.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return {@code true} If {@code this} and {@code r} intersect.
-//     */
-//    @Override
-//    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-//        return r.isIntersectedBy(this, oom, rm);
-//    }
-//    /**
-//     * Intersects {@code this} with {@code r}.
-//     *
-//     * @param r The ray to get intersection with {@code this}.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return The intersection between {@code this} and {@code r}.
-//     */
-//    @Override
-//    public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
-//        return r.getIntersection(this, oom, rm);
-//    }
-
     /**
      * @param pt A point for which the shortest line segment to this is
      * returned.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The line segment having the shortest distance between {@code pt}
      * and {@code this}.
      */
@@ -1065,7 +937,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
      * <a href="https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line">https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line</a>
      *
      * @param pt The point projected onto this.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return A point on {@code this} which is the shortest distance from
      * {@code pt}.
      */
@@ -1130,7 +1003,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
      * http://paulbourke.net/geometry/pointlineplane/
      *
      * @param l The line to get the line of intersection with.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The line of intersection between {@code this} and {@code l}. The
      * point p is a point on or near this, and the point q is a point on or near
      * l. Whether the points are on or near is down to rounding error and 
@@ -1253,10 +1127,10 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
      *
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The minimum distance between this and {@code p}.
      */
-    @Override
     public BigDecimal getDistance(V3D_Point pt, int oom, RoundingMode rm) {
         if (isIntersectedBy(pt, oom, rm)) {
             return BigDecimal.ZERO;
@@ -1306,10 +1180,10 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
      *
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The minimum distance between this and {@code p}.
      */
-    @Override
     public Math_BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
         if (isIntersectedBy(pt, oom, rm)) {
             return Math_BigRational.ZERO;
@@ -1334,8 +1208,9 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
      * @param noInt This is ignored, but it distinguishes this method from
-     * {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int)}.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int, java.math.RoundingMode)}.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The minimum distance between this and {@code p}.
      */
     protected Math_BigRational getDistanceSquared(V3D_Point pt, boolean noInt,
@@ -1351,88 +1226,30 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
         Math_BigRational den = v.getMagnitudeSquared();
         return num.divide(den);
     }
-
-//    /**
-//     * https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
-//     *
-//     * @param p A point for which the minimum distance from {@code this} is
-//     * returned.
-//     * @return The minimum distance between this and {@code p}.
-//     */
-//    public Math_BigRationalSqrt getDistance(V3D_Point p) {
-//        /**
-//         * Calculate the direction vector of the line connecting the closest
-//         * points by computing the cross product.
-//         */
-//        V3D_Vector pv = new V3D_Vector(this.p, p);
-//        V3D_Vector cp = pv.getCrossProduct(v);
-////        Math_BigRational pvm2 = pv.getMagnitudeSquared();
-////        Math_BigRational cpm2 = cp.getMagnitudeSquared();
-////        if (pvm2.compareTo(Math_BigRational.ZERO) == 0) {
-////            if (cpm2.compareTo(Math_BigRational.ZERO) == 0) {
-////                return BigDecimal.ONE;
-////            }
-////        }
-////        Math_BigRationalSqrt pvm = new Math_BigRationalSqrt(pvm2);
-////        Math_BigRationalSqrt cpm = new Math_BigRationalSqrt(cpm2);
-////        return cpm.divide(pvm).toBigDecimal(oom);
-//        /**
-//         * Calculate the delta from {@link #p} and l.p
-//         */
-//        V3D_Vector delta = new V3D_Vector(this.p).subtract(pv);
-//        Math_BigRationalSqrt dp = new Math_BigRationalSqrt(cp.getDotProduct(delta));
-//        if (dp.compareTo(cp.m) == 0) {
-//            return Math_BigRationalSqrt.ONE; // Prevent a divide by zero if both are zero.
-//        }
-//        return dp.divide(cp.m);
-//    }
+    
     /**
      * https://en.wikipedia.org/wiki/Skew_lines#Nearest_points
      * https://en.wikipedia.org/wiki/Distance_between_two_parallel_lines
      *
      * @param l A line for which the minimum distance from {@code this} is
      * returned.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The minimum distance between this and {@code l}.
      */
-    @Override
     public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
                 .getSqrt(oom, rm).toBigDecimal(oom, rm);
-//        V3D_Point tp = getP(oom);
-//        if (isParallel(l, oom)) {
-//            //q.getDistance(l, scale, rm);
-//            return tp.getDistance(l, oom);
-//            //return p.getDistance(l, oom);
-////            V3D_Vector v2 = new V3D_Vector(l.p, q);
-////            return v2.subtract(v.multiply((v2.getDotProduct(v))
-////                    .divide(v.getMagnitudeSquared()))).getMagnitude(scale, rm);
-//        } else {
-//            /**
-//             * Calculate the direction vector of the line connecting the closest
-//             * points by computing the cross product.
-//             */
-//            //V3D_Vector cp = l.v.getCrossProduct(v, oom);
-//            V3D_Vector cp = getV(oom).getCrossProduct(l.getV(oom), oom);
-//            /**
-//             * Calculate the delta from {@link #p} and l.p
-//             */
-////            V3D_Vector delta = new V3D_Vector(l.p, oom).subtract(
-////                    new V3D_Vector(tp, oom), oom);
-//            V3D_Vector delta = l.getPV(oom).subtract(
-//                    new V3D_Vector(tp, oom), oom);
-//            //Math_BigRational m = Math_BigRational.valueOf(cp.getMagnitude(oom - 2));
-//            Math_BigRationalSqrt m = cp.getMagnitude();
-//            // d = cp.(delta)/m
-//            Math_BigRational dp = cp.getDotProduct(delta, oom);
-//            // m should only be zero if the lines are parallel.
-//            //Math_BigRational d = dp.divide(m.getX());
-//            Math_BigRational d = dp.divide(m.getSqrt(oom - 6)).abs();
-//            return d.toBigDecimal(oom);
-//        }
     }
 
-    @Override
+    /**
+     * Get the minimum distance squared to {@code l}.
+     *
+     * @param l A line.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance squared to {@code l}.
+     */
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
         V3D_Point tp = getP();
         if (isParallel(l, oom, rm)) {
@@ -1460,55 +1277,9 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
         }
     }
 
-//    /**
-//     * @param r A ray for which the minimum distance from {@code this} is
-//     * returned.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return The minimum distance between {@code this} and {@code r}.
-//     */
-//    @Override
-//    public BigDecimal getDistance(V3D_Ray r, int oom, RoundingMode rm) {
-//        return r.getDistance(this, oom, rm);
-////        V3D_Geometry g = r.getLineOfIntersection(this, oom);
-////        if (g == null) {
-////            return getDistance(r.getP(oom), oom);
-////        }
-////        if (g instanceof V3D_Point) {
-////            return BigDecimal.ZERO;
-////        } else {
-////            return ((V3D_LineSegment) g).getLength(oom).getSqrt(oom).toBigDecimal(oom);
-////        }
-////
-////        //return r.getDistance(this, oom);
-////        //public Math_BigRational getDistance(V3D_Ray r) {
-////        if (isParallel(r, oom)) {
-////            return p.getDistance(new V3D_Line(r, oom), oom);
-////        } else {
-////            if (isIntersectedBy(r, oom)) {
-////                return BigDecimal.ZERO;
-////            } else {
-////                V3D_Line rl = new V3D_Line(r, oom);
-////                if (isIntersectedBy(rl, oom)) {
-////                    return getLineOfIntersection(r.p, oom).getLength().toBigDecimal(oom);
-////                }
-////                V3D_LineSegment li = (V3D_LineSegment) getLineOfIntersection(r, oom);
-////                if (li == null) {
-////                    li = getLineOfIntersection(r.p, oom);
-////                }
-////                if (r.isIntersectedBy(li.q, oom)) {
-////                    return li.getLength().toBigDecimal(oom);
-////                }
-////                return r.p.getDistance(this, oom);
-////            }
-////        }
-//    }
-//
-//    @Override
-//    public Math_BigRational getDistanceSquared(V3D_Ray r, int oom, RoundingMode rm) {
-//        return r.getDistanceSquared(this, oom, rm);
-//    }
-
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff this is parallel to the plane defined by x=0.
      */
     public boolean isParallelToX0(int oom, RoundingMode rm) {
@@ -1522,6 +1293,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff this is parallel to the plane defined by y=0.
      */
     public boolean isParallelToY0(int oom, RoundingMode rm) {
@@ -1535,6 +1308,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff this is parallel to the plane defined by z=0.
      */
     public boolean isParallelToZ0(int oom, RoundingMode rm) {
@@ -1547,37 +1322,9 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
         return v.dy.compareTo(Math_BigRationalSqrt.ZERO) == 0;
     }
 
-//    //@Override
-//    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-//        if (this.isIntersectedBy(l, oom)) {
-//            return true;
-//        }
-//        if (this.isParallelToX0()) {
-//            if (this.isParallelToY0()) {
-//                return false;
-//            } else if (this.isParallelToZ0()) {
-//                return false;
-//            } else {
-//                return !this.isParallel(l, oom);
-//            }
-//        } else {
-//            if (this.isParallelToY0()) {
-//                if (this.isParallelToZ0()) {
-//                    return false;
-//                } else {
-//                    return !this.isParallel(l, oom);
-//                }
-//            } else {
-//                if (this.isParallelToZ0()) {
-//                    return !this.isParallel(l, oom);
-//                } else {
-//                    return true;
-//                }
-//            }
-//        }
-//    }
-    /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
+   /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The points that define the plan as a matrix.
      */
     public Math_Matrix_BR getAsMatrix(int oom, RoundingMode rm) {
@@ -1592,53 +1339,13 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
         m[1][2] = tq.getZ(oom, rm);
         return new Math_Matrix_BR(m);
     }
-
-    /**
-     * @param l The line segment to return the distance from.
-     * @param oom The Order of Magnitude for the precision of the result.
-     * @return The distance from {@code this} to {@code l} at the {@code oom}
-     * precision.
-     */
-    @Override
-    public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return l.getDistance(this, oom, rm);
-//        if (l.isIntersectedBy(this, oom)) {
-//            return BigDecimal.ZERO;
-//        }
-//        BigDecimal lpd = getDistance(l.getP(oom), oom);
-//        BigDecimal lqd = getDistance(l.getQ(oom), oom);
-//        BigDecimal ll = l.getLength(oom).getSqrt(oom).toBigDecimal(oom);
-//        BigDecimal min = lpd.min(lqd);
-//        if (ll.compareTo(min) == 1) {
-//            // Get the line of intersection and calculate the length.
-//            return ((V3D_LineSegment) getLineOfIntersection(l, oom)).getLength(oom)
-//                    .getSqrt(oom).toBigDecimal(oom);
-//        } else {
-//            return min;
-//        }
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom,
-            RoundingMode rm) {
-        return l.getDistanceSquared(this, oom, rm);
-    }
-
-//    /**
-//     * Change {@link #offset} without changing the overall line.
-//     *
-//     * @param offset What {@link #offset} is set to.
-//     */
-//    public void setOffset(V3D_Vector offset, int oom, RoundingMode rm) {
-//        p = p.add(offset, oom, rm).subtract(this.offset, oom, rm);
-//        q = q.add(offset, oom, rm).subtract(this.offset, oom, rm);
-//        this.offset = offset;
-//    }
+    
     /**
      * Translate (move relative to the origin).
      *
      * @param v The vector to translate.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     @Override
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
@@ -1646,89 +1353,17 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
     }
 
     @Override
-    public V3D_Line rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
+    public V3D_Line rotate(V3D_Vector axisOfRotation, Math_BigRational theta, 
+            int oom, RoundingMode rm) {
         V3D_Point rp = getP().rotate(axisOfRotation, theta, oom, rm);
         V3D_Vector rv = v.rotate(axisOfRotation, theta, e.bd, oom, rm);
         return new V3D_Line(rp, rv);
     }
 
-//    @Override
-//    public boolean isIntersectedBy(V3D_LineSegment l, int oom,
-//            RoundingMode rm) {
-//        return l.isIntersectedBy(this, oom, rm);
-//    }
-//
-//    @Override
-//    public boolean isIntersectedBy(V3D_Plane p, int oom, RoundingMode rm) {
-//        return p.isIntersectedBy(this, oom, rm);
-//    }
-//    @Override
-//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-//        return t.isIntersectedBy(this, oom, rm);
-//    }
-//
-//    @Override
-//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom,
-//            RoundingMode rm) {
-//        return t.isIntersectedBy(this, oom, rm);
-//    }
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom,
-            RoundingMode rm) {
-        return l.getIntersection(this, oom, rm);
-    }
-
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom,
-            RoundingMode rm) {
-        return t.getIntersection(this, oom, rm);
-    }
-
-    @Override
-    public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom,
-            RoundingMode rm) {
-        return t.getIntersection(this, oom, rm);
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Plane p, int oom, RoundingMode rm) {
-        return p.getDistance(this, oom, rm);
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom,
-            RoundingMode rm) {
-        return p.getDistanceSquared(this, oom, rm);
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Triangle t, int oom,
-            RoundingMode rm) {
-        return t.getDistance(this, oom, rm);
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom,
-            RoundingMode rm) {
-        return t.getDistanceSquared(this, oom, rm);
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Tetrahedron t, int oom,
-            RoundingMode rm) {
-        return t.getDistance(this, oom, rm);
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom,
-            RoundingMode rm) {
-        return t.getDistanceSquared(this, oom, rm);
-    }
-
     /**
-     * @param e The V3D_Environment.
-     * @param l The line to test points are collinear with.
-     * @param points The points to test if they are collinear with l.
+     * @param pt The point to test if it is collinear.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff all points are collinear with l.
      */
     public boolean isCollinear(V3D_Point pt, int oom, RoundingMode rm) {
@@ -1736,9 +1371,9 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
     }
 
     /**
-     * @param e The V3D_Environment.
-     * @param l The line to test points are collinear with.
-     * @param points The points to test if they are collinear with l.
+     * @param l The line to test if it is collinear.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff all points are collinear with l.
      */
     public boolean isCollinear(V3D_Line l, int oom, RoundingMode rm) {
@@ -1752,6 +1387,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
 
     /**
      * @param e The V3D_Environment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param l The line to test points are collinear with.
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
@@ -1767,7 +1404,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
     }
 
     /**
-     * @param e The V3D_Environment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param l The line to test points are collinear with.
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
@@ -1783,35 +1421,10 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
         return true;
     }
 
-//    /**
-//     * @param e The V3D_Environment.
-//     * @param l The line to test points are collinear with.
-//     * @param points The points to test if they are collinear with l.
-//     * @return {@code true} iff all points are collinear with l.
-//     */
-//    public static boolean isCollinear(int oom, RoundingMode rm, V3D_Envelope.Line l, V3D_Envelope.Point... points) {
-//        for (V3D_Envelope.Point p : points) {
-//            if (!l.isIntersectedBy(p, oom, rm)) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-//    /**
-//     * @param e The V3D_Environment.
-//     * @param points The points to test if they are collinear.
-//     * @return {@code false} if all points are coincident. {@code true} iff all
-//     * the points are collinear.
-//     */
-//    public static boolean isCollinear(V3D_Environment e, int oom, RoundingMode rm, V3D_Vector... points) {
-//        // For the points to be in a line at least two must be different.
-//        if (V3D_Point.isCoincident(points)) {
-//            return false;
-//        }
-//        return isCollinear0(e, oom, rm, points);
-//    }
     /**
      * @param e The V3D_Environment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param points The points to test if they are collinear.
      * @return {@code false} if all points are coincident. {@code true} iff all
      * the points are collinear.
@@ -1825,19 +1438,10 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
         return isCollinear0(e, oom, rm, points);
     }
 
-//    /**
-//     * @param e The V3D_Environment.
-//     * @param points The points to test if they are collinear.
-//     * @return {@code true} iff all the points are collinear or coincident.
-//     */
-//    public static boolean isCollinear0(V3D_Environment e, int oom, 
-//            RoundingMode rm, V3D_Vector... points) {
-//        // Get a line
-//        V3D_Line l = getLine(e, points);
-//        return isCollinear(oom, rm, l, points);
-//    }
     /**
      * @param e The V3D_Environment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param points The points to test if they are collinear.
      * @return {@code true} iff all the points are collinear or coincident.
      */
@@ -1852,7 +1456,8 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
      * There should be at least two different points in points. This does not
      * check for collinearity of all the points.
      *
-     * @param e The V3D_Environment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param points Any number of points, but with two being different.
      * @return A line defined by any two different points or null if the points
      * are coincident.
@@ -1869,25 +1474,6 @@ public class V3D_Line extends V3D_Geometry implements V3D_Distance,
         return null;
     }
 
-//    /**
-//     * There should be at least two different points.
-//     *
-//     * @param e The V3D_Environment.
-//     * @param points Any number of points, but with two being different.
-//     * @return A line defined by any two different points or null if the points
-//     * are coincident.
-//     */
-//    public static V3D_Line getLine(int oom, RoundingMode rm, 
-//            V3D_Vector... points) {
-//        V3D_Vector p0 = points[0];
-//        for (V3D_Vector p1 : points) {
-//            if (!p1.equals(p0)) {
-//                //return new V3D_Line(p0, p1, -1);
-//                return new V3D_Line(e, p0, p1);
-//            }
-//        }
-//        return null;
-//    }
     /**
      * @param l A line.
      * @param oom The Order of Magnitude for the precision.

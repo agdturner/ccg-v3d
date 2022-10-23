@@ -865,36 +865,6 @@ public class V3D_RectangleTest extends V3D_Test {
     }
 
     /**
-     * Test of getDistance method, of class V3D_Rectangle.
-     */
-    @Test
-    public void testGetDistance_V3D_Tetrahedron_int() {
-        System.out.println("getDistance");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Tetrahedron t = new V3D_Tetrahedron(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1, oom, rm);
-        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        BigDecimal expResult = BigDecimal.ZERO;
-        BigDecimal result = instance.getDistance(t, oom, rm);
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of getDistanceSquared method, of class V3D_Rectangle.
-     */
-    @Test
-    public void testGetDistanceSquared_V3D_Tetrahedron_int() {
-        System.out.println("getDistanceSquared");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Tetrahedron t = new V3D_Tetrahedron(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1, oom, rm);
-        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ZERO;
-        Math_BigRational result = instance.getDistanceSquared(t, oom, rm);
-        assertEquals(expResult, result);
-    }
-
-    /**
      * Test of equals method, of class V3D_Rectangle.
      */
     @Test

@@ -3892,38 +3892,6 @@ public class V3D_PlaneTest extends V3D_Test {
 //        assertTrue(instance.isIntersectedBy(t, oom, rm));
 //    }
 
-    /**
-     * Test of getIntersection method, of class V3D_Plane.
-     */
-    @Test
-    public void testGetIntersection_V3D_Triangle() {
-        System.out.println("getIntersection");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Triangle t;
-        //boolean b = false;
-        V3D_Plane instance;
-        V3D_Geometry expResult;
-        V3D_Geometry result;
-        // Test 1
-        t = new V3D_Triangle(e, P0P0P0, P1P0P0, P0P1P0, P1P1P0, oom, rm);
-        instance = V3D_Plane.X0;
-        expResult = pP0P1P0;
-        result = instance.getIntersection(t, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 2
-        instance = new V3D_Plane(V3D_Plane.X0);
-        instance.translate(P1P0P0, oom, rm);
-        expResult = new V3D_LineSegment(pP1P0P0, pP1P1P0, oom, rm);
-        result = instance.getIntersection(t, oom, rm);
-        assertTrue(((V3D_LineSegment) expResult).equals((V3D_LineSegment) result, oom, rm));
-        // Test 3
-        instance = new V3D_Plane(V3D_Plane.Z0);
-        expResult = new V3D_Triangle(t);
-        result = instance.getIntersection(t, oom, rm);
-        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
-    }
-
 //    /**
 //     * Test of getIntersection method, of class V3D_Plane.
 //     */

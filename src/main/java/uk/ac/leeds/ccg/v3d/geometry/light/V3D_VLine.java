@@ -134,8 +134,8 @@ public class V3D_VLine extends V3D_VGeometry {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_VLine v3D_VLine) {
-            return equals(v3D_VLine);
+        if (o instanceof V3D_VLine l) {
+            return equals(l);
         }
         return false;
     }

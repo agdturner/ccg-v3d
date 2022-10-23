@@ -15,18 +15,16 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
-import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of a ray - like a line, but one that starts at a point
- * continues infinitely in only one direction. The ray begins at the point
- * {@link #p} and goes through the point {@link #q}. The "*" denotes a point in
- * 3D and the ray is shown as a linear feature of "e" symbols in the following
- * depiction: {@code
+ * continues infinitely in only one direction. The ray begins at the point of
+ * {@link #l} and goes in the direction given by the vector of {@link #l}. The
+ * "*" denotes a point in 3D and the ray is shown as a linear feature of "e"
+ * symbols in the following depiction: {@code
  *                                     z
  *                         y           -
  *                         +          /                * pl=<x0,y0,z0>
@@ -47,7 +45,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *                     /   |          e
  *                z1 -/    |         e
  *                   /     |        e
- *                  /      |       * q=<x1,y1,z1>
+ *                  /      |       * v=(dx,dy,dz)
  *                 /       |      e
  *                /        |     e
  *               +         -    e
@@ -69,7 +67,7 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
     /**
      * Create a new instance.
      *
-     * @param l What {@code this} is created from.
+     * @param r What {@code this} is created from.
      */
     public V3D_Ray(V3D_Ray r) {
         super(r.e);
@@ -79,7 +77,8 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
     /**
      * Create a new instance.
      *
-     * @param l What {@code this} is created from.
+     * @param p What {@code this} is created from.
+     * @param v What {@code this} is created from.
      */
     public V3D_Ray(V3D_Point p, V3D_Vector v) {
         super(p.e, p.offset);
@@ -90,8 +89,10 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
      * Create a new instance. {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
      * @param e What {@link #e} is set to.
-     * @param p What {@link #p} is set to.
-     * @param q What {@link #q} is set to.
+     * @param p What {@code this} is created from.
+     * @param q What {@code this} is created from.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Ray(V3D_Environment e, V3D_Vector p, V3D_Vector q, int oom, RoundingMode rm) {
         this(e, V3D_Vector.ZERO, p, q, oom, rm);
@@ -102,8 +103,10 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
      *
      * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
-     * @param p What {@link #p} is set to.
-     * @param q What {@link #q} is set to.
+     * @param p What {@link #l} point is set to.
+     * @param q What {@link #l} vector is set from.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Ray(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, int oom, RoundingMode rm) {
@@ -124,8 +127,10 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
     /**
      * Create a new instance.
      *
-     * @param p What {@link #offset} and {@link #p} are set from.
-     * @param q What {@link #q} is set from.
+     * @param p What {@link #offset} and {@link #l} point are set from.
+     * @param q What {@link #l} vector is set from.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Ray(V3D_Point p, V3D_Point q, int oom, RoundingMode rm) {
         super(p.e, p.offset);
@@ -134,7 +139,8 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
 
     /**
      * @param r The ray to test if it is the same as {@code this}.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff {@code r} is the same as {@code this}.
      */
     public boolean equals(V3D_Ray r, int oom, RoundingMode rm) {
@@ -188,18 +194,10 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
         return pad + l.toStringFieldsSimple(pad);
     }
 
-//    /**
-//     * @param v The vector to translate to each coordinate of this.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return a new V3D_Ray which is {@code this} with the {@code v} applied.
-//     */
-//    @Override
-//    public V3D_Ray translate(V3D_Vector v, int oom) {
-//        return new V3D_Ray(pl.add(v, oom), q.add(v, oom), oom);
-//    }
     /**
      * @param pt A point to test for intersection.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} if {@code this} is intersected by {@code pl}.
      */
     @Override
@@ -233,193 +231,6 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
         return false;
     }
 
-//    /**
-//     * This compares the location of {@code pt} to the location of {@link #pl}
-//     * and the direction of {@link #v}. If the {@code pt} is on a side of
-//     * {@link #pl} and {@link #v} is moving away in any of the axial directions,
-//     * then there is no chance of an intersection.
-//     *
-//     * @param pt The point to test for a possible intersection.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return {@code false} if there is no chance of intersection, and
-//     * {@code true} otherwise.
-//     */
-//    private boolean isPossibleIntersection(V3D_Point pt, int oom) {
-//        int ptxcpx = pt.x.compareTo(pl.x);
-//        int vdxc0 = v.getDX(oom).compareTo(Math_BigRational.ZERO);
-//        switch (ptxcpx) {
-//            case -1:
-//                if (vdxc0 == -1) {
-//                    return getptycpy(pt, oom);
-//                } else {
-//                    return false;
-//                }
-//            case 0:
-//                return getptycpy(pt, oom);
-//            default:
-//                if (vdxc0 == 1) {
-//                    return getptycpy(pt, oom);
-//                } else {
-//                    return false;
-//                }
-//        }
-//    }
-//
-//    private boolean getptycpy(V3D_Point pt, int oom) {
-//        int ptycpy = pt.y.compareTo(pl.y);
-//        int vdyc0 = v.getDY(oom).compareTo(Math_BigRational.ZERO);
-//        switch (ptycpy) {
-//            case -1:
-//                if (vdyc0 == -1) {
-//                    return getptzcpz(pt, oom);
-//                } else {
-//                    return false;
-//                }
-//            case 0:
-//                return getptzcpz(pt, oom);
-//            default:
-//                if (vdyc0 == 1) {
-//                    return getptzcpz(pt, oom);
-//                } else {
-//                    return false;
-//                }
-//        }
-//    }
-//
-//    private boolean getptzcpz(V3D_Point pt, int oom) {
-//        int ptzcpz = pt.z.compareTo(pl.z);
-//        int vdzc0 = v.getDZ(oom).compareTo(Math_BigRational.ZERO);
-//        switch (ptzcpz) {
-//            case -1:
-//                return vdzc0 == -1;
-//            case 0:
-//                return true;
-//            default:
-//                return vdzc0 == 1;
-//        }
-//    }
-//    /**
-//     * @param r A ray to test if it intersects with {@code this}.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return {@code true} iff {@code r} intersects with {@code this}.
-//     */
-//    @Override
-//    public boolean isIntersectedBy(V3D_Ray r, int oom, RoundingMode rm) {
-//        if (l.getP().equals(r.l.getP(), oom, rm)) {
-//            return true;
-//        }
-//        boolean ril = r.isIntersectedBy(l, oom, rm);
-//        if (ril == false) {
-//            return false;
-//        }
-//        boolean tirl = isIntersectedBy(r.l, oom, rm);
-//        if (tirl == false) {
-//            return false;
-//        }
-//        /**
-//         * The rays may point along the same line. If they point in the same
-//         * direction, then they intersect. If they point in opposite directions,
-//         * then they do not intersect unless the points they start at intersect
-//         * with the other ray.
-//         */
-//        if (ril && tirl) {
-//            if (r.isIntersectedBy(l.getP(), oom, rm)) {
-//                return true;
-//            }
-//            if (isIntersectedBy(r.l.getP(), oom, rm)) {
-//                return true;
-//            }
-//        }
-//        return isIntersectedBy((V3D_Point) getIntersection(r, oom, rm), oom, rm);
-//    }
-//
-//    /**
-//     * @param l A line segment to test if it intersects with {@code this}.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return {@code true} iff {@code l} intersects with {@code this}.
-//     */
-//    @Override
-//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-//        V3D_Ray rlpq = new V3D_Ray(l.l);
-//        if (!isIntersectedBy(rlpq, oom, rm)) {
-//            return false;
-//        }
-//        V3D_Ray rlqp = new V3D_Ray(e, l.offset, l.q, l.l.p, oom, rm);
-//        return isIntersectedBy(rlqp, oom, rm);
-//    }
-//    /**
-//     * @param l A line to test for intersection.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return {@code true} iff {@code l} intersects with {@code this}.
-//     */
-//    @Override
-//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-//        V3D_Geometry i = this.l.getIntersection(l, oom, rm);
-//        if (i == null) {
-//            return false;
-//        }
-//        if (i instanceof V3D_Point pt) {
-//            return isIntersectedBy(pt, oom, rm);
-//        } else {
-//            return true;
-//        }
-//    }
-//    /**
-//     * @param pl A plane to test for intersection.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return {@code true} iff {@code pl} intersects with {@code this}.
-//     */
-//    @Override
-//    public boolean isIntersectedBy(V3D_Plane pl, int oom, RoundingMode rm) {
-//        V3D_Geometry i = this.l.getIntersection(pl, oom, rm);
-//        if (i == null) {
-//            return false;
-//        }
-//        if (i instanceof V3D_Point pt) {
-//            //return isIntersectedBy(pt, oom, rm);
-//            V3D_Plane pl2 = new V3D_Plane(l.getP(), l.v);
-//            return pl2.isOnSameSide(pt, l.getQ(oom, rm), oom, rm);
-//        } else {
-//            return true;
-//        }
-//    }
-//    /**
-//     * Currently this is not taking into account the direction of the ray.
-//     * 
-//     * 
-//     * @param t A triangle to test for intersection.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return {@code true} iff {@code t} intersects with {@code this}.
-//     */
-//    @Override
-//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-//        V3D_Geometry i = l.getIntersection(t, oom, rm);
-//        if (i == null) {
-//            return false;
-//        }
-//        if (i instanceof V3D_Point pt) {
-//            if (t.isAligned(pt, oom, rm)) {
-//                return true;
-//            }
-//        } else {
-//            return false;
-//            //return isIntersectedBy((V3D_LineSegment) i, oom, rm);
-//        }
-//        return false;
-//    }
-//    @Override
-//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-//        if (isIntersectedBy(t.getPqr(oom, rm), oom, rm)) {
-//            return true;
-//        }
-//        if (isIntersectedBy(t.getPsq(oom, rm), oom, rm)) {
-//            return true;
-//        }
-//        if (isIntersectedBy(t.getQsr(oom, rm), oom, rm)) {
-//            return true;
-//        }
-//        return isIntersectedBy(t.getSpr(oom, rm), oom, rm);
-//    }
     /**
      * Intersects a ray with a plane. {@code null} is returned if there is no
      * intersection, {@code this} is returned if the ray is on the plane.
@@ -437,18 +248,18 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
      * and choose the vague direction of the point from the intersection using
      * the orientation of the ray relative to the plane (and where the ray is
      * perpendicular to the plane, we can choose the direction relative to the
-     * orientation of the axes and origin)
+     * orientation of the axes and origin).
      *
-     * @TODO Refactor ray-plane intersection to choose on or before, or on or
-     * after.
+     * Support ray-plane intersection to choose on or before, or on or after?
      *
      * @param pl The plane to get the geometrical intersection with this.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The intersection between {@code this} and {@code pl}.
      */
     @Override
     public V3D_Geometry getIntersection(V3D_Plane pl, int oom, RoundingMode rm) {
-        V3D_Geometry g = l.getIntersection(pl, oom, rm);
+        V3D_Geometry g = pl.getIntersection(l, oom, rm);
         if (g == null) {
             return null;
         }
@@ -508,7 +319,8 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
      * is no intersection.
      *
      * @param t The triangle to get the geometrical intersection with this.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The intersection between {@code this} and {@code t}.
      */
     @Override
@@ -719,7 +531,8 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
      * intersection.
      *
      * @param l The line to get the geometrical intersection with this.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The intersection between {@code this} and {@code l}.
      */
     @Override
@@ -755,7 +568,8 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
      * returned if {@code this} and {@code r} do not intersect.
      *
      * @param r The line to get intersection with this.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The intersection between {@code this} and {@code r}.
      */
     public V3D_Geometry getIntersection(V3D_Ray r, int oom, RoundingMode rm) {
@@ -815,7 +629,8 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
      * returned if {@code this} and {@code l} do not intersect.
      *
      * @param ls The line to get intersection with this.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The intersection between {@code this} and {@code l}.
      */
     @Override
@@ -837,8 +652,8 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
             V3D_Point lsp = ls.getP();
             V3D_Point lsq = ls.getQ();
             V3D_Plane pl = new V3D_Plane(rp, r.l.v);
-            if (pl.isOnSameSide(rq, lsp, oom, rm)){
-                if (pl.isOnSameSide(rq, lsq, oom, rm)){
+            if (pl.isOnSameSide(rq, lsp, oom, rm)) {
+                if (pl.isOnSameSide(rq, lsq, oom, rm)) {
                     return ls;
                 } else {
                     if (lsp.equals(rp, oom, rm)) {
@@ -847,7 +662,7 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
                     return new V3D_LineSegment(lsp, rp, oom, rm);
                 }
             } else {
-                if (pl.isOnSameSide(rq, lsq, oom, rm)){
+                if (pl.isOnSameSide(rq, lsq, oom, rm)) {
                     if (lsq.equals(rp, oom, rm)) {
                         return rp;
                     }
@@ -864,6 +679,7 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
      *
      * @param v The vector to translate.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     @Override
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {

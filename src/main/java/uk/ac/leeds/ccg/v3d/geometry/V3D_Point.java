@@ -28,9 +28,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 /**
  * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding 
  * these gives the position of a point. Two points are equal according to
- * {@link #equals(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int, java.math.RoundingMode)
- * if they have the 
- * same position. The "*" denotes a point in 3D in the following
+ * {@link #equals(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int, java.math.RoundingMode)}
+ * if they have the same position. The "*" denotes a point in 3D in the following
  * depiction: {@code
  *
  *                          y           -
@@ -61,7 +60,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
+public class V3D_Point extends V3D_FiniteGeometry {
 
     private static final long serialVersionUID = 1L;
 
@@ -267,6 +266,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
 
     /**
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
      * @return The vector - {@code rel.add(offset, oom)}.
      */
     public V3D_Vector getVector(int oom, RoundingMode rm) {
@@ -301,6 +301,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
      * @return true iff this is equal to the ORIGIN.
      */
     public boolean isOrigin(int oom, RoundingMode rm) {
@@ -310,7 +312,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
     /**
      * Get the distance between this and {@code p}.
      *
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
      * @param p A point.
      * @return The distance from {@code p} to this.
      */
@@ -325,11 +328,10 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
      * Get the distance between this and {@code p}.
      *
      * @param p A point.
-     * @param oom The Order of Magnitude for the precision of the result.
-     * @param rm The RoundingMode if rounding is needed.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
      * @return The distance from {@code p} to this.
      */
-    @Override
     public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
         if (this.equals(p, oom, rm)) {
             return BigDecimal.ZERO;
@@ -346,7 +348,6 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared from {@code p} to this.
      */
-    @Override
     public Math_BigRational getDistanceSquared(V3D_Point p, int oom,
             RoundingMode rm) {
         Math_BigRational dx = this.getX(oom, rm).subtract(p.getX(oom, rm));
@@ -359,10 +360,10 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
      * Get the distance between this and {@code l}.
      *
      * @param l A line.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
      * @return The distance from {@code p} to this.
      */
-    @Override
     public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
         if (l.isIntersectedBy(this, oom, rm)) {
             return BigDecimal.ZERO;
@@ -375,7 +376,14 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
         return cp.getMagnitude().divide(l.v.getMagnitude(oom, rm), oom, rm).toBigDecimal(oom, rm);
     }
 
-    @Override
+    /**
+     * Get the distance squared between this and {@code l}.
+     *
+     * @param l A line.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
+     * @return The distance from {@code p} to this.
+     */
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom,
             RoundingMode rm) {
         return l.getDistanceSquared(this, oom, rm);
@@ -387,7 +395,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
 
     /**
      * @param l The line to find the distance of {@code this} from.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
      * @param noInt A flag to indicate that {@code this} is not on {@code l}.
      * @return The distance squared between {@code this} and {@code l}.
      */
@@ -404,10 +413,10 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
      * Get the distance between this and {@code pl}.
      *
      * @param pl A plane.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
      * @return The distance from {@code p} to this.
      */
-    @Override
     public BigDecimal getDistance(V3D_Plane pl, int oom, RoundingMode rm) {
         return pl.getDistance(this, oom, rm);
     }
@@ -418,10 +427,10 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
      * http://mathinsight.org/distance_point_plane
      *
      * @param pl A plane.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
      * @return The distance from {@code p} to this.
      */
-    @Override
     public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom,
             RoundingMode rm) {
         //V3D_Vector pq = new V3D_Vector(this, pl.p, oom);
@@ -448,7 +457,14 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
         return new V3D_Envelope(e, oom, rm, this);
     }
 
-    @Override
+    /**
+     * Get the minimum distance to {@code l}.
+     *
+     * @param l A line segment.
+     * @param oom The Order of Magnitude for the precision of the result.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The minimum distance squared to {@code l}.
+     */
     public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
         /**
          * Get the distance from the ends of the line segment to the point. If
@@ -489,7 +505,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
      * @return The location of the point:
      * <Table>
      * <caption>Locations</caption>
@@ -547,6 +564,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
      * Change {@link #offset} without changing the overall point vector by also
      * adjusting {@link #rel}.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
      * @param offset What {@link #offset} is set to.
      */
     public void setOffset(V3D_Vector offset, int oom, RoundingMode rm) {
@@ -558,6 +577,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
      * Change {@link #rel} without changing the overall point vector by also
      * adjusting {@link #offset}.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
      * @param rel What {@link #rel} is set to.
      */
     public void setRel(V3D_Vector rel, int oom, RoundingMode rm) {
@@ -571,6 +592,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
      *
      * @param axisOfRotation The axis of rotation.
      * @param theta The angle of rotation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
      */
     @Override
     public V3D_Point rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
@@ -585,46 +608,7 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
 //        V3D_Vector relt = rel.rotate(axisOfRotation, theta, bI, oom);
 //        offset = offset.subtract(rel.subtract(relt, oom), oom);
     }
-
-//    @Override
-//    public boolean isIntersectedBy(V3D_Triangle t, int oom, RoundingMode rm) {
-//        return t.isIntersectedBy(this, oom, rm);
-//    }
-//
-//    @Override
-//    public boolean isIntersectedBy(V3D_Tetrahedron t, int oom,
-//            RoundingMode rm) {
-//        return t.isIntersectedBy(this, oom, rm);
-//    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom,
-            RoundingMode rm) {
-        return l.getDistanceSquared(this, oom, rm);
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
-        return t.getDistance(this, oom, rm);
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom,
-            RoundingMode rm) {
-        return t.getDistanceSquared(this, oom, rm);
-    }
-
-    @Override
-    public BigDecimal getDistance(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        return t.getDistance(this, oom, rm);
-    }
-
-    @Override
-    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom,
-            RoundingMode rm) {
-        return t.getDistanceSquared(this, oom, rm);
-    }
-
+    
     /**
      * @param points The points to test if they are coincident.
      * @return {@code true} iff all the points are coincident.
@@ -641,6 +625,8 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
 
     /**
      * @param points The points to test if they are coincident.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff all the points are coincident.
      */
     public static boolean isCoincident(int oom, RoundingMode rm,
@@ -654,20 +640,14 @@ public class V3D_Point extends V3D_FiniteGeometry implements V3D_Distance  {
         return true;
     }
 
-//    /**
-//     * @param points The points to test if they are coincident.
-//     * @return {@code true} iff all the points are coincident.
-//     */
-//    public static boolean isCoincident(V3D_Envelope.Point... points) {
-//        V3D_Envelope.Point p0 = points[0];
-//        for (V3D_Envelope.Point p1 : points) {
-//            if (!p1.equals(p0)) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-
+    /**
+     * A collection method for getting unique points.
+     * 
+     * @param pts The points to derive a unique list from.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
+     * @return A unique list made from those in pts.
+     */
     public static ArrayList<V3D_Point> getUnique(List<V3D_Point> pts,
             int oom, RoundingMode rm) {
         HashSet<Integer> indexes = new HashSet<>();

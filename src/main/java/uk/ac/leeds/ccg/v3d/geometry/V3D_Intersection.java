@@ -15,9 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * V3D_FiniteGeometry
@@ -64,12 +62,12 @@ public interface V3D_Intersection {
     /**
      * Get the intersection between the geometry and the plane {@code p}.
      *
-     * @param p The plane to intersect with.
+     * @param pl The plane to intersect with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public abstract V3D_Geometry getIntersection(V3D_Plane p, int oom, 
+    public abstract V3D_Geometry getIntersection(V3D_Plane pl, int oom, 
             RoundingMode rm);
 
     /**

@@ -57,7 +57,7 @@ public class V3D_Environment implements Serializable {
     /**
      * An instance that helps with calculations involving PI and Taylor series.
      */
-    public final Math_BigDecimal bd;
+    public final transient Math_BigDecimal bd;
     
     /**
      * The default Order of Magnitude.
@@ -79,11 +79,9 @@ public class V3D_Environment implements Serializable {
     /**
      * Creates a new instance.
      *
-     * @param bI What {@link #bI} is set to.
-     * @param oom What {@link #oom} is set to.
-     * @param rm What {@link #rm} is set to.
+     * @param bd What {@link #bd} is set to.
      */
-    public V3D_Environment(Math_BigInteger bI, Math_BigDecimal bd) {
+    public V3D_Environment(Math_BigDecimal bd) {
         this.bd = bd;
     }
     

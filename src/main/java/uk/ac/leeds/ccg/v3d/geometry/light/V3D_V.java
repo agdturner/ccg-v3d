@@ -68,8 +68,7 @@ public class V3D_V implements Serializable {
      * @param y What {@link #y} is set to.
      * @param z What {@link #z} is set to.
      */
-    public V3D_V(Math_BigRational x, Math_BigRational y,
-            Math_BigRational z) {
+    public V3D_V(Math_BigRational x, Math_BigRational y, Math_BigRational z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -98,6 +97,7 @@ public class V3D_V implements Serializable {
     /**
      * @param p A point to construct from.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_V(V3D_Point p, int oom, RoundingMode rm) {
         this(p.getX(oom, rm), p.getY(oom, rm), p.getZ(oom, rm));
@@ -106,6 +106,7 @@ public class V3D_V implements Serializable {
     /**
      * @param v A vector to construct from.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_V(V3D_Vector v, int oom, RoundingMode rm) {
         this(v.getDX(oom, rm), v.getDY(oom, rm), v.getDZ(oom, rm));
@@ -165,8 +166,8 @@ public class V3D_V implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_V v3d_v) {
-            return equals(v3d_v);
+        if (o instanceof V3D_V v) {
+            return equals(v);
         }
         return false;
     }
@@ -174,12 +175,12 @@ public class V3D_V implements Serializable {
     /**
      * Indicates if {@code this} and {@code v} are equal.
      *
-     * @param c The coordinate to test for equality with {@code this}.
+     * @param v The instance to test for equality with {@code this}.
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
-    public boolean equals(V3D_V c) {
-        return x.compareTo(c.x) == 0 && y.compareTo(c.y) == 0
-                && z.compareTo(c.z) == 0;
+    public boolean equals(V3D_V v) {
+        return x.compareTo(v.x) == 0 && y.compareTo(v.y) == 0
+                && z.compareTo(v.z) == 0;
     }
 
     @Override
@@ -232,7 +233,8 @@ public class V3D_V implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The magnitude.
      */
     public Math_BigRational getMagnitude(int oom, RoundingMode rm) {
@@ -259,7 +261,8 @@ public class V3D_V implements Serializable {
      * Scales by the magnitude to give a unit vector. (N.B. There is no check to
      * be sure that the resulting vector has a magnitude of less than 1).
      *
-     * @param oom The order of magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return this scaled by the magnitude.
      */
     public V3D_V getUnitVector(int oom, RoundingMode rm) {
@@ -275,7 +278,7 @@ public class V3D_V implements Serializable {
      * Calculate and return the
      * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
      *
-     * @param v V3D_V
+     * @param v The other vector.
      * @return dot product
      */
     public Math_BigRational getDotProduct(V3D_V v) {
@@ -286,7 +289,8 @@ public class V3D_V implements Serializable {
      * Get the distance between this and {@code p} assuming both are points.
      *
      * @param p A point.
-     * @param oom The Order of Magnitude for the precision of the result.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The distance from {@code p} to this.
      */
     public Math_BigRational getDistance(V3D_V p, int oom, RoundingMode rm) {
