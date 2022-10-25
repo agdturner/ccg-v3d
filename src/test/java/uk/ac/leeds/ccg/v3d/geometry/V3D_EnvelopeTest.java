@@ -796,132 +796,132 @@ public class V3D_EnvelopeTest extends V3D_Test {
         pt = pP0P0N2;
         // Test 1
         v = V3D_Vector.I;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1N1N1, pN1P1N1, pP1P1N1, pP1N1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 2
         v = V3D_Vector.I.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pP1P1N1, pP1N1N1, pN1N1N1, pN1P1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 3
         v = V3D_Vector.J;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pP1N1N1, pN1N1N1, pN1P1N1, pP1P1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 4
         v = V3D_Vector.J.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1P1N1, pP1P1N1, pP1N1N1, pN1N1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test left face square on.
         pt = pN2P0P0;
         // Test 5
         v = V3D_Vector.K;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1P1N1, pN1N1N1, pN1N1P1, pN1P1P1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 6
         v = V3D_Vector.K.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1N1P1, pN1P1P1, pN1P1N1, pN1N1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 7
         v = V3D_Vector.J;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1N1N1, pN1N1P1, pN1P1P1, pN1P1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 8
         v = V3D_Vector.J.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1P1N1, pN1N1N1, pN1N1P1, pN1P1P1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test bottom face square on.
         pt = pP0N2P0;
         // Test 9
         v = V3D_Vector.I;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1N1N1, pN1N1P1, pP1N1P1, pP1N1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 10
         v = V3D_Vector.I.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1N1N1, pN1N1P1, pP1N1P1, pP1N1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 11
         v = V3D_Vector.K;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1N1N1, pP1N1N1, pP1N1P1, pN1N1P1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 12
         v = V3D_Vector.K.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pP1N1P1, pN1N1P1, pN1N1N1, pP1N1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test back face square on.
         pt = pP0P0P2;
         // Test 13
         v = V3D_Vector.I.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1N1P1, pN1P1P1, pP1P1P1, pP1N1P1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 14
         v = V3D_Vector.I;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pP1P1P1, pP1N1P1, pN1N1P1, pN1P1P1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 15
         v = V3D_Vector.J;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pP1N1P1, pN1N1P1, pN1P1P1, pP1P1P1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 16
         v = V3D_Vector.J.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1P1P1, pP1P1P1, pP1N1P1, pN1N1P1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test RIGHT face square on.
         pt = pP2P0P0;
         // Test 17
         v = V3D_Vector.K;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pP1P1N1, pP1N1N1, pP1N1P1, pP1P1P1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 18
         v = V3D_Vector.K.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pP1N1P1, pP1P1P1, pP1P1N1, pP1N1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 19
         v = V3D_Vector.J;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pP1N1N1, pP1N1P1, pP1P1P1, pP1P1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 20
         v = V3D_Vector.J.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pP1P1N1, pP1N1N1, pP1N1P1, pP1P1P1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test top face square on.
         pt = pP0P2P0;
         // Test 21
         v = V3D_Vector.I;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1P1N1, pN1P1P1, pP1P1P1, pP1P1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 22
         v = V3D_Vector.I.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1P1N1, pN1P1P1, pP1P1P1, pP1P1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 23
         v = V3D_Vector.K;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pN1P1N1, pP1P1N1, pP1P1P1, pN1P1P1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 24
         v = V3D_Vector.K.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(pP1P1P1, pN1P1P1, pN1P1N1, pP1P1N1, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         
@@ -932,7 +932,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         Math_BigRational N0_5 = Math_BigRational.valueOf(1, 2).negate();
         // Test 25
         v = V3D_Vector.I.add(V3D_Vector.K.reverse(), oom, rm);
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(
                 new V3D_Point(e, N1_5, N1, N0_5),
                 new V3D_Point(e, N1_5, P1, N0_5),
@@ -943,7 +943,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         // Test 26
         //v = v.getCrossProduct(new V3D_Vector(pN2P0N2, oom, rm), oom, rm);
         v = V3D_Vector.J;
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(
                 new V3D_Point(e, N0_5, N1, N1_5),
                 new V3D_Point(e, N1_5, N1, N0_5),
@@ -953,7 +953,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         assertTrue(expResult.equals(result, oom, rm));
         // Test 27
         v = V3D_Vector.I.add(V3D_Vector.K.reverse(), oom, rm).reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(
                 new V3D_Point(e, N0_5, P1, N1_5), 
                 new V3D_Point(e, N0_5, N1, N1_5),
@@ -963,7 +963,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
         assertTrue(expResult.equals(result, oom, rm));
         // Test 28
         v = V3D_Vector.J.reverse();
-        result = instance.getViewport(oom, rm, pt, v);
+        result = instance.getViewport(pt, v, oom, rm);
         expResult = new V3D_Rectangle(
                 new V3D_Point(e, N0_5, P1, N1_5),
                 new V3D_Point(e, N1_5, P1, N0_5),
@@ -975,7 +975,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        pt = pN2N2N2;
 //        // Test 29
 //        v = V3D_Vector.I.add(V3D_Vector.K, oom, rm);
-//        result = instance.getViewport(oom, rm, pt, v);
+//        result = instance.getViewport(pt, v, oom, rm);
 //        expResult = new V3D_Rectangle(
 //                new V3D_Point(e, N1_5, N1, N0_5),
 //                new V3D_Point(e, N1_5, P1, N0_5),
@@ -984,7 +984,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        assertTrue(expResult.equals(result, oom, rm));
 //        // Test 30
 //        v = V3D_Vector.J;
-//        result = instance.getViewport(oom, rm, pt, v);
+//        result = instance.getViewport(pt, v, oom, rm);
 //        expResult = new V3D_Rectangle(
 //                new V3D_Point(e, N1_5, N1, N0_5),
 //                new V3D_Point(e, N0_5, N1, N1_5),
@@ -993,7 +993,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        assertTrue(expResult.equals(result, oom, rm));
 //        // Test 31
 //        v = V3D_Vector.I.add(V3D_Vector.K.reverse(), oom, rm).reverse();
-//        result = instance.getViewport(oom, rm, pt, v);
+//        result = instance.getViewport(pt, v, oom, rm);
 //        expResult = new V3D_Rectangle(
 //                new V3D_Point(e, N0_5, N1, N1_5),
 //                new V3D_Point(e, N0_5, P1, N1_5),
@@ -1002,7 +1002,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        assertTrue(expResult.equals(result, oom, rm));
 //        // Test 32
 //        v = V3D_Vector.J.reverse();
-//        result = instance.getViewport(oom, rm, pt, v);
+//        result = instance.getViewport(pt, v, oom, rm);
 //        expResult = new V3D_Rectangle(
 //                new V3D_Point(e, N0_5, P1, N1_5),
 //                new V3D_Point(e, N1_5, P1, N0_5),

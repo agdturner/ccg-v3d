@@ -269,21 +269,13 @@ public class V3D_Vector implements Serializable {
                 Math_BigRational.valueOf(dz));
     }
 
-//    /**
-//     * Creates a vector from the origin to {@code p}
-//     *
-//     * @param p the point to which the vector starting at the origin goes.
-//     */
-//    public V3D_Vector(V3D_Envelope.Point p) {
-//        this(p.x, p.y, p.z);
-//    }
-
     /**
      * Creates a vector from {@code p} to {@code q}.
      *
      * @param p the point where the vector starts.
      * @param q the point where the vector ends.
-     * @param oom Used for initial square root calculations for magnitude.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
      */
     public V3D_Vector(V3D_Point p, V3D_Point q, int oom, RoundingMode rm) {
         this(q.getX(oom, rm).subtract(p.getX(oom, rm)),
@@ -295,21 +287,12 @@ public class V3D_Vector implements Serializable {
      * Creates a vector from the Origin to {@code p} to {@code q}.
      *
      * @param p the point where the vector starts.
-     * @param oom Used for initial square root calculations for magnitude.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
      */
     public V3D_Vector(V3D_Point p, int oom, RoundingMode rm) {
         this(p.getVector(oom, rm));
     }
-
-//    /**
-//     * Creates a vector from {@code p} to {@code q}.
-//     *
-//     * @param p the point where the vector starts.
-//     * @param q the point where the vector ends.
-//     */
-//    public V3D_Vector(V3D_Envelope.Point p, V3D_Envelope.Point q) {
-//        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
-//    }
 
     /**
      * Creates a vector from {@code v}.
@@ -395,22 +378,17 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
      * @return The value of {@link #dx} as a Math_BigRational.
      */
     public Math_BigRational getDX(int oom, RoundingMode rm) {
         return dx.getSqrt(oom, rm);
     }
-
-//    /**
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return The value of {@link #dx} as a Math_BigRational.
-//     */
-//    public Math_BigRational getDX(int oom) {
-//        return dx.getSqrt(oom);
-//    }
+    
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
      * @return The value of {@link #dy} as a Math_BigRational.
      */
     public Math_BigRational getDY(int oom, RoundingMode rm) {
@@ -418,7 +396,8 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
      * @return The value of {@link #dz} as a Math_BigRational.
      */
     public Math_BigRational getDZ(int oom, RoundingMode rm) {
@@ -448,7 +427,8 @@ public class V3D_Vector implements Serializable {
 
     /**
      * @param s The scalar value to multiply this by.
-     * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
      * @return Scaled vector.
      */
     public V3D_Vector multiply(Math_BigRational s, int oom, RoundingMode rm) {
@@ -462,7 +442,7 @@ public class V3D_Vector implements Serializable {
     /**
      * @param s The scalar value to divide this by.
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
+     * @param rm The RoundingMode used in the calculation.
      * @return Scaled vector.
      */
     public V3D_Vector divide(Math_BigRational s, int oom, RoundingMode rm) {
@@ -842,7 +822,7 @@ public class V3D_Vector implements Serializable {
      * <Table>
      * <caption>Directions</caption>
      * <thead>
-     * <tr><td>ID</td><td>Description</td></tr>
+     * <tr><td>ID</td><td>Description (P is positive, N is Negative)</td></tr>
      * </thead>
      * <tbody>
      * <tr><td>1</td><td>Pdx, Pdy, Pdz</td></tr>
