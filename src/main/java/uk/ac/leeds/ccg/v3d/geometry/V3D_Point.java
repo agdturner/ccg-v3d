@@ -37,7 +37,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *                          |         /                 |  =offset+rel
  *                          |        /                  |  =<x1+x2,y1+y2,z1+z2>
  *                          |    z0-/-------------------|
- *              r           |      /                   /
+ *               r          |      /                   /
  *       rel=<x2,y2,z2>     |     /                   /
  *                          |    /                   /              
  *                          |   /                   /      offset=<x1,y1,z1>
