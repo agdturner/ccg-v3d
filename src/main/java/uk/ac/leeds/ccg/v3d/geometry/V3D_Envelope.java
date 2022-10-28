@@ -41,13 +41,13 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *                                    |                /
  *                                    |               /
  *                                    |              /
- *                                    |    zmin
+ *                                    |    
  *                     lta _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ rta
  *                        /|                                /|
  *                       / |                               / |
  *                      /  |                              /  |
  *                     /   |                             /   |
- *                    /    |         ymax               /    |
+ *                    /    |                            /    |
  *                   /     |                           /     |
  *                  /      |                          /      |
  *                 /       |                         /       |
@@ -56,7 +56,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *          ltf /_ _ _ _ _ |_ _ _ _ _ _ _ _ _ _ _ /rtf       |
  *             |           |                     |           |
  *             |           |                     |           |
- *        xmin |           |                     |    xmax   |  ------ + x
+ *     x - ----|--         |                     |           |  ------ + x
  *             |           |                     |           |
  *             |        lba|_ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _|rba
  *             |           /                     |           /
@@ -71,8 +71,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  *             |  /                              |  /
  *             | /                               | /
  *             |/_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |/
- *          lbf               zmax               rbf
- *
+ *          lbf                                  rbf
+ *                                     |
  *                      /              |
  *                     /               |
  *                    /                |
@@ -838,8 +838,9 @@ public class V3D_Envelope implements Serializable {
      * viewport also has fixed dimensions based on the distance from the 
      * centroid to a corner of this irrespective of the orientation.
      * 
-     * @param pt The point from which observation of this is occuring.
-     * @param v A vector pointing to the right of the viewport.
+     * @param pt The point from which observation of this is to occur.
+     * @param v A vector pointing to the right of the viewport. This should be 
+     * orthogonal to the vector from pt to the centroid. 
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode used in the calculation.
      * @return A viewport - a rectangle between pt and this such that all of
@@ -852,19 +853,18 @@ public class V3D_Envelope implements Serializable {
         V3D_Point c = getCentroid(oom, rm);
         Math_BigRational d = Math_BigRational.valueOf(
                 c.getDistance(getPoints(oom, rm)[0], oom, rm));
+        Math_BigRational dby2 = d.divide(2);
         V3D_Point plpt = new V3D_Point(c);
         V3D_Vector cpt = new V3D_Vector(c, pt, oom, rm);
         V3D_Vector vo = cpt.getUnitVector(oom, rm);
         plpt.translate(vo.multiply(d, oom, rm), oom, rm);
-        V3D_Vector cv = cpt.reverse();
-        V3D_Plane pl0 = new V3D_Plane(plpt, cv);
-        V3D_Vector v2 = cv.getCrossProduct(v, oom, rm);
+        V3D_Plane pl0 = new V3D_Plane(plpt, cpt);
+        V3D_Vector v2 = cpt.getCrossProduct(v, oom, rm);
         // Find top, bottom, left and right planes
         V3D_Point ptv = new V3D_Point(pt);
         ptv.translate(v, oom, rm);
         V3D_Point ptv2 = new V3D_Point(pt);
         ptv2.translate(v2, oom, rm);
-        Math_BigRational dby2 = d.divide(2);
         // tp
         V3D_Vector vv = v2.getUnitVector(oom, rm).multiply(dby2, oom, rm);
         V3D_Point tppt = new V3D_Point(plpt);

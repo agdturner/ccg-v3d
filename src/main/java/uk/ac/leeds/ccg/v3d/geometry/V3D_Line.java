@@ -1141,30 +1141,6 @@ public class V3D_Line extends V3D_Geometry {
                 res.integerPart().toBigDecimal(oom, rm)) - oom;
         MathContext mc = new MathContext(precision);
         return Math_BigDecimal.round(res.toBigDecimal(mc), oom);
-//        /**
-//         * Calculate the direction vector of the line connecting the closest
-//         * points by computing the cross product.
-//         */
-//        V3D_Vector pv = new V3D_Vector(this.p, p, oom);
-//        V3D_Vector cp = pv.getCrossProduct(v);
-//        
-//        Math_BigRational pvm2 = pv.getMagnitudeSquared();
-//        Math_BigRational cpm2 = cp.getMagnitudeSquared();
-//        if (pvm2.compareTo(Math_BigRational.ZERO) == 0) {
-//            if (cpm2.compareTo(Math_BigRational.ZERO) == 0) {
-//                return BigDecimal.ONE;
-//            }
-//        }
-//        Math_BigRationalSqrt pvm = new Math_BigRationalSqrt(pvm2, oom);
-//        Math_BigRationalSqrt cpm = new Math_BigRationalSqrt(cpm2, oom);
-//        BigDecimal result = cpm.divide(pvm).toBigDecimal(oom);
-////        return cpm.divide(pvm).toBigDecimal(oom);
-////
-////        return getDistance(p).toBigDecimal(oom);
-////        V3D_Vector pv = new V3D_Vector(this.p, p, v.oom);
-//        V3D_Vector vu = v.getUnitVector(oom - 2);
-//        return p.getDistance(new V3D_Point(vu.multiply(pv.getDotProduct(vu))
-//                .add(new V3D_Vector(this.p, v.oom))), oom);
     }
 
     /**
@@ -1215,10 +1191,6 @@ public class V3D_Line extends V3D_Geometry {
      */
     protected Math_BigRational getDistanceSquared(V3D_Point pt, boolean noInt,
             int oom, RoundingMode rm) {
-//        return pt.getDistanceSquared(this, oom);
-//        if (isIntersectedBy(pt, oom)) {
-//            return Math_BigRational.ZERO;
-//        }
         V3D_Vector pp = new V3D_Vector(pt, getP(), oom, rm);
         V3D_Vector qp = new V3D_Vector(pt, getQ(oom, rm), oom, rm);
         Math_BigRational num = (pp.getCrossProduct(qp, oom, rm)).getMagnitudeSquared();
@@ -1253,7 +1225,7 @@ public class V3D_Line extends V3D_Geometry {
     public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
         V3D_Point tp = getP();
         if (isParallel(l, oom, rm)) {
-            return tp.getDistanceSquared(l, oom, rm);
+            return l.getDistanceSquared(tp, oom, rm);
         } else {
             /**
              * Calculate the direction vector of the line connecting the closest

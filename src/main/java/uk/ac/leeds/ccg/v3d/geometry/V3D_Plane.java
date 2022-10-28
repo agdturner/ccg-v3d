@@ -80,14 +80,14 @@ public class V3D_Plane extends V3D_Geometry {
      * @param e The V3D_Environment.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @param p The plane to test points are coplanar with.
+     * @param pl The plane to test points are coplanar with.
      * @param points The points to test if they are coplanar with pl.
      * @return {@code true} iff all points are coplanar with pl.
      */
     public static boolean isCoplanar(V3D_Environment e, int oom,
-            RoundingMode rm, V3D_Plane p, V3D_Point... points) {
+            RoundingMode rm, V3D_Plane pl, V3D_Point... points) {
         for (V3D_Point pt : points) {
-            if (!p.isIntersectedBy(pt, oom, rm)) {
+            if (!pl.isIntersectedBy(pt, oom, rm)) {
                 return false;
             }
         }
@@ -190,6 +190,22 @@ public class V3D_Plane extends V3D_Geometry {
         super(p.e, p.offset);
         this.p = p.rel;
         this.n = n;
+    }
+
+    /**
+     * Create a new instance.
+     *
+     * @param l A line segment in the plane.
+     * @param inplane A vector in the plane that is not a scalar multiple of 
+     * the vector of the line of l.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     */
+    public V3D_Plane(V3D_LineSegment l, V3D_Vector inplane, int oom,
+            RoundingMode rm) {
+        super(l.e, l.offset);
+        this.p = l.getP().rel;
+        this.n = l.l.v.getCrossProduct(inplane, oom, rm);
     }
 
     /**
@@ -1637,6 +1653,37 @@ public class V3D_Plane extends V3D_Geometry {
         return getDistanceSquared(pt, true, oom, rm);
     }
 
+//    /**
+//     * Get the distance between this and {@code pl}. Nykamp DQ, “Distance from
+//     * point to plane.” From Math Insight.
+//     * http://mathinsight.org/distance_point_plane
+//     *
+//     * @param pl A plane.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode.
+//     * @return The distance from {@code p} to this.
+//     */
+//    public Math_BigRational getDistanceSquared(V3D_Point pt, int oom,
+//            RoundingMode rm) {
+//        //V3D_Vector pq = new V3D_Vector(this, pl.p, oom);
+//        //V3D_Vector pq = pl.p.subtract(this.getVector(oom), oom);
+//        V3D_Vector pq = getP().getVector(oom, rm).subtract(
+//                pt.getVector(oom, rm), oom, rm);
+//        //if (pq.isScalarMultiple(pl.getN(oom, rm), oom, rm)) {
+//        if (pq.isScalarMultiple(n, oom, rm)) {
+//            return pq.getMagnitudeSquared();
+//        } else {
+//            Math_BigRational[] coeffs = getEquationCoefficients(oom, rm);
+//            Math_BigRational num = (coeffs[0].multiply(pt.getX(oom, rm))
+//                    .add(coeffs[1].multiply(pt.getY(oom, rm)))
+//                    .add(coeffs[2].multiply(pt.getZ(oom, rm)))
+//                    .add(coeffs[3])).abs();
+//            Math_BigRational den = coeffs[0].pow(2).add(coeffs[1].pow(2))
+//                    .add(coeffs[2].pow(2));
+//            return num.divide(den).round(oom, rm);
+//        }
+//    }
+
     /**
      * Get the distance between this and {@code pl}.
      *
@@ -1653,7 +1700,7 @@ public class V3D_Plane extends V3D_Geometry {
         V3D_Vector u = n.getUnitVector(oom, rm);
         return v.getDotProduct(u, oom, rm).pow(2);
     }
-
+    
     /**
      * Get the minimum distance to {@code p}.
      *
@@ -1679,10 +1726,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom, RoundingMode rm) {
         if (isParallel(pl, oom, rm)) {
-            V3D_Point tp = getP();
-            return tp.getDistanceSquared(pl, oom, rm);
-//            return tp.getDistanceSquared((V3D_Point) pl.getIntersection(
-//                    new V3D_Line(tp, getN(oom), oom), oom), oom);
+            return pl.getDistanceSquared(getP(), oom, rm);
         }
         return Math_BigRational.ZERO;
     }

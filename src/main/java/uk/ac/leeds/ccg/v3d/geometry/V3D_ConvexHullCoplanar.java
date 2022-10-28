@@ -632,20 +632,20 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
          * Create a new instance.
          *
          * @param pts The points.
-         * @param p The plane.
+         * @param pl The plane.
          * @param oom The Order of Magnitude for the precision.
          * @param rm The RoundingMode for any rounding.
          */
-        public AboveAndBelow(ArrayList<V3D_Point> pts, V3D_Plane p, int oom, RoundingMode rm) {
+        public AboveAndBelow(ArrayList<V3D_Point> pts, V3D_Plane pl, int oom, RoundingMode rm) {
             a = new ArrayList<>();
             b = new ArrayList<>();
-            V3D_Vector n = p.n;
+            V3D_Vector n = pl.n;
             Math_BigRational maxads = Math_BigRational.ZERO;
             Math_BigRational maxbds = Math_BigRational.ZERO;
             for (int i = 0; i < pts.size(); i++) {
                 V3D_Point pt = pts.get(i);
-                Math_BigRational t = p.getPV().subtract(pt.rel, oom, rm).getDotProduct(n, oom, rm);
-                Math_BigRational ds = pts.get(i).getDistanceSquared(p, oom, rm);
+                Math_BigRational t = pl.getPV().subtract(pt.rel, oom, rm).getDotProduct(n, oom, rm);
+                Math_BigRational ds = pl.getDistanceSquared(pts.get(i), oom, rm);
                 //System.out.println(pt.toString() + " " + t);
                 switch (t.compareTo(Math_BigRational.ZERO)) {
                     case 1 -> {

@@ -623,32 +623,32 @@ public class V3D_LineTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Line.
      */
     @Test
-    public void testGetDistance_V3D_Point_int() {
+    public void testGetDistance_V3D_Point() {
         System.out.println("getDistance");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Point p;
+        V3D_Point pt;
         V3D_Line instance;
         BigDecimal expResult;
         BigDecimal result;
         // Test 1
-        p = pP0P0P0;
+        pt = pP0P0P0;
         instance = new V3D_Line(pP1P0P0, pP1P1P0, oom, rm);
         expResult = BigDecimal.ONE;
-        result = instance.getDistance(p, oom, rm);
+        result = instance.getDistance(pt, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         instance = new V3D_Line(pP0P1P0, pP1P1P0, oom, rm);
-        result = instance.getDistance(p, oom, rm);
+        result = instance.getDistance(pt, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
-        p = pP1P1P1;
+        pt = pP1P1P1;
         instance = new V3D_Line(pP0P0P0, pP1P1P0, oom, rm);
-        result = instance.getDistance(p, oom, rm);
+        result = instance.getDistance(pt, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 4
         oom = - 4;
-        p = pP0P1P0;
+        pt = pP0P1P0;
         instance = new V3D_Line(pP0P0P0, pP1P1P0, oom, rm);
         int ooms = Math_BigRationalSqrt.getOOM(Math_BigRational.TWO, oom);
         if (ooms > 0) {
@@ -658,16 +658,46 @@ public class V3D_LineTest extends V3D_Test {
         expResult = Math_BigRational.valueOf(new Math_BigRationalSqrt(
                 Math_BigRational.TWO, oom, rm).toBigDecimal(oom, rm)).divide(2)
                 .toBigDecimal(mc);
-        result = instance.getDistance(p, oom, rm);
+        result = instance.getDistance(pt, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 5 https://math.stackexchange.com/a/1658288/756049
-        p = pP1P1P1;
+        pt = pP1P1P1;
         oom = -3;
         Math_BigRational third = Math_BigRational.valueOf(1, 3);
         instance = new V3D_Line(e, new V3D_Vector(N2, N4, P5), new V3D_Vector(N1, N2, P3), oom, rm);
         V3D_Point p2 = new V3D_Point(e, third, Math_BigRational.valueOf(2, 3), third);
-        expResult = p2.getDistance(p, oom, rm);
-        result = instance.getDistance(p, oom, rm);
+        expResult = p2.getDistance(pt, oom, rm);
+        result = instance.getDistance(pt, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 6
+        instance = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
+        pt = pP0P1P0;
+        expResult = P1.toBigDecimal(oom, rm);
+        result = instance.getDistance(pt, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 2
+        instance = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
+        pt = new V3D_Point(e, P3, P4, P0);
+        expResult = P5.toBigDecimal(oom, rm);
+        result = instance.getDistance(pt, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 3
+        instance = new V3D_Line(pP0P0P1, pP0P0P0, oom, rm);
+        pt = new V3D_Point(e, P3, P4, P0);
+        expResult = P5.toBigDecimal(oom, rm);
+        result = instance.getDistance(pt, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 4
+        instance = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
+        pt = new V3D_Point(e, P4, P3, P0);
+        expResult = P5.toBigDecimal(oom, rm);
+        result = instance.getDistance(pt, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 3
+        instance = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
+        pt = new V3D_Point(e, P4, P3, P10);
+        expResult = P5.toBigDecimal(oom, rm);
+        result = instance.getDistance(pt, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 

@@ -347,15 +347,37 @@ public class V3D_LineSegmentTest extends V3D_Test {
      * {@link #testGetDistanceSquared_V3D_Point_int()}.
      */
     @Test
-    public void testGetDistance_V3D_Point_int() {
+    public void testGetDistance_V3D_Point() {
         System.out.println("getDistance");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP2P0P0, oom, rm);
+        V3D_Point instance = pP1P1P0;
+        BigDecimal expResult = BigDecimal.ONE;
+        BigDecimal result = l.getDistance(instance, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 2
+        instance = pN1N1P0;
+        result = l.getDistance(instance, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 3
+        instance = pP2P2P0;
+        expResult = BigDecimal.valueOf(2);
+        result = l.getDistance(instance, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 4
+        instance = pP2P2P0;
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
+        expResult = new Math_BigRationalSqrt(5, oom, rm).toBigDecimal(oom, rm);
+        result = l.getDistance(instance, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
      * Test of getDistance method, of class V3D_LineSegment.
      */
     @Test
-    public void testGetDistanceSquared_V3D_Point_int() {
+    public void testGetDistanceSquared_V3D_Point() {
         System.out.println("getDistance");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -397,7 +419,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
      * {@link #testGetDistanceSquared_V3D_LineSegment_int()}.
      */
     @Test
-    public void testGetDistance_V3D_LineSegment_int() {
+    public void testGetDistance_V3D_LineSegment() {
         System.out.println("getDistance");
     }
 
@@ -405,7 +427,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
      * Test of getDistance method, of class V3D_LineSegment.
      */
     @Test
-    public void testGetDistanceSquared_V3D_LineSegment_int() {
+    public void testGetDistanceSquared_V3D_LineSegment() {
         System.out.println("getDistanceSquared");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -478,7 +500,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
      * Test of getLineOfIntersection method, of class V3D_Line.
      */
     @Test
-    public void testGetLineOfIntersection_V3D_Line_int() {
+    public void testGetLineOfIntersection_V3D_Line() {
         System.out.println("getLineOfIntersection");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -510,7 +532,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
      * Test of getLineOfIntersection method, of class V3D_Line.
      */
     @Test
-    public void testGetLineOfIntersection_V3D_LineSegment_int() {
+    public void testGetLineOfIntersection_V3D_LineSegment() {
         System.out.println("getLineOfIntersection");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;

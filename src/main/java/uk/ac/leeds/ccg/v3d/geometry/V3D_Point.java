@@ -106,7 +106,8 @@ public class V3D_Point extends V3D_FiniteGeometry {
     public V3D_Point(V3D_Environment e, V3D_Vector offset, V3D_Vector rel) {
 //        super(new V3D_Vector(offset), Math.min(offset.getMagnitude().getOom(),
 //                rel.getMagnitude().getOom()));
-        super(e, new V3D_Vector(offset));
+        //super(e, new V3D_Vector(offset));
+        super(e, offset);
         this.rel = new V3D_Vector(rel);
     }
 
@@ -341,167 +342,24 @@ public class V3D_Point extends V3D_FiniteGeometry {
     }
 
     /**
-     * Get the distance squared between this and {@code p}.
+     * Get the distance squared between this and {@code pt}.
      *
-     * @param p A point.
+     * @param pt A point.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared from {@code p} to this.
      */
-    public Math_BigRational getDistanceSquared(V3D_Point p, int oom,
+    public Math_BigRational getDistanceSquared(V3D_Point pt, int oom,
             RoundingMode rm) {
-        Math_BigRational dx = this.getX(oom, rm).subtract(p.getX(oom, rm));
-        Math_BigRational dy = this.getY(oom, rm).subtract(p.getY(oom, rm));
-        Math_BigRational dz = this.getZ(oom, rm).subtract(p.getZ(oom, rm));
+        Math_BigRational dx = getX(oom, rm).subtract(pt.getX(oom, rm));
+        Math_BigRational dy = getY(oom, rm).subtract(pt.getY(oom, rm));
+        Math_BigRational dz = getZ(oom, rm).subtract(pt.getZ(oom, rm));
         return dx.pow(2).add(dy.pow(2)).add(dz.pow(2));
-    }
-
-    /**
-     * Get the distance between this and {@code l}.
-     *
-     * @param l A line.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode.
-     * @return The distance from {@code p} to this.
-     */
-    public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
-        if (l.isIntersectedBy(this, oom, rm)) {
-            return BigDecimal.ZERO;
-        }
-        // Not sure what oom should be in the cross product...
-        V3D_Vector cp = new V3D_Vector(this, l.getP(), oom, rm)
-                .getCrossProduct(new V3D_Vector(this, l.getQ(oom, rm), oom, rm),
-                        oom, rm);
-//        return cp.getMagnitude().divide(l.getV(oom, rm).getMagnitude(), oom, rm).toBigDecimal(oom, rm);
-        return cp.getMagnitude().divide(l.v.getMagnitude(oom, rm), oom, rm).toBigDecimal(oom, rm);
-    }
-
-    /**
-     * Get the distance squared between this and {@code l}.
-     *
-     * @param l A line.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode.
-     * @return The distance from {@code p} to this.
-     */
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom,
-            RoundingMode rm) {
-        return l.getDistanceSquared(this, oom, rm);
-//        if (l.isIntersectedBy(this, oom)) {
-//            return Math_BigRational.ZERO;
-//        }
-//        return getDistanceSquared(l, true, oom);
-    }
-
-    /**
-     * @param l The line to find the distance of {@code this} from.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode.
-     * @param noInt A flag to indicate that {@code this} is not on {@code l}.
-     * @return The distance squared between {@code this} and {@code l}.
-     */
-    public Math_BigRational getDistanceSquared(V3D_Line l, boolean noInt,
-            int oom, RoundingMode rm) {
-        V3D_Vector cp = new V3D_Vector(this, l.getP(), oom, rm)
-                .getCrossProduct(new V3D_Vector(this, l.getQ(oom, rm), oom, rm),
-                        oom, rm);
-        //return cp.getMagnitudeSquared().divide(l.getV(oom, rm).getMagnitudeSquared());
-        return cp.getMagnitudeSquared().divide(l.v.getMagnitudeSquared());
-    }
-
-    /**
-     * Get the distance between this and {@code pl}.
-     *
-     * @param pl A plane.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode.
-     * @return The distance from {@code p} to this.
-     */
-    public BigDecimal getDistance(V3D_Plane pl, int oom, RoundingMode rm) {
-        return pl.getDistance(this, oom, rm);
-    }
-
-    /**
-     * Get the distance between this and {@code pl}. Nykamp DQ, “Distance from
-     * point to plane.” From Math Insight.
-     * http://mathinsight.org/distance_point_plane
-     *
-     * @param pl A plane.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode.
-     * @return The distance from {@code p} to this.
-     */
-    public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom,
-            RoundingMode rm) {
-        //V3D_Vector pq = new V3D_Vector(this, pl.p, oom);
-        //V3D_Vector pq = pl.p.subtract(this.getVector(oom), oom);
-        V3D_Vector pq = pl.getP().getVector(oom, rm).subtract(
-                this.getVector(oom, rm), oom, rm);
-        //if (pq.isScalarMultiple(pl.getN(oom, rm), oom, rm)) {
-        if (pq.isScalarMultiple(pl.n, oom, rm)) {
-            return pq.getMagnitudeSquared();
-        } else {
-            Math_BigRational[] coeffs = pl.getEquationCoefficients(oom, rm);
-            Math_BigRational num = (coeffs[0].multiply(getX(oom, rm))
-                    .add(coeffs[1].multiply(getY(oom, rm)))
-                    .add(coeffs[2].multiply(getZ(oom, rm)))
-                    .add(coeffs[3])).abs();
-            Math_BigRational den = coeffs[0].pow(2).add(coeffs[1].pow(2))
-                    .add(coeffs[2].pow(2));
-            return num.divide(den).round(oom, rm);
-        }
     }
 
     @Override
     public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         return new V3D_Envelope(e, oom, rm, this);
-    }
-
-    /**
-     * Get the minimum distance to {@code l}.
-     *
-     * @param l A line segment.
-     * @param oom The Order of Magnitude for the precision of the result.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return The minimum distance squared to {@code l}.
-     */
-    public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
-        /**
-         * Get the distance from the ends of the line segment to the point. If
-         * both these distances is less than the length of the line segment then
-         * the distance is the distance from the point to the infinite line.
-         *
-         */
-        int oom2 = oom - 2;
-        Math_BigRational l2 = l.getLength2(oom, rm);
-        Math_BigRational lp2 = l.getP().getDistanceSquared(this, oom2, rm);
-        Math_BigRational lq2 = l.getQ().getDistanceSquared(this, oom2, rm);
-        BigDecimal lp = (new V3D_Line(l)).getDistance(this, oom, rm);
-        if (lp2.compareTo(l2) != 1 || lq2.compareTo(l2) != 1) {
-            return lp;
-        }
-        /**
-         * If the projection from the point onto the infinite line intersects in
-         * a place within the line segment, then the distance is the distance
-         * from the point to the infinite line. If it is outside the line
-         * segment, then the distance is the minimum of the distances from the
-         * point to the ends of the line segment.
-         */
-        //Math_BigRational pl2 = (new V3D_Line(l)).getDistanceSquared(this);
-        BigDecimal pl = (new V3D_Line(l)).getDistance(this, oom2, rm);
-        Math_BigRational pl2 = Math_BigRational.valueOf(pl).pow(2);
-        V3D_Vector u = l.l.v.getUnitVector(oom - 2, rm);
-        //V3D_Vector u = l.l.getV(oom, rm).getUnitVector(oom - 2, rm);
-        V3D_Point pi = new V3D_Point(e, u.multiply(Math_BigRational.valueOf(
-                new Math_BigRationalSqrt(lp2.subtract(pl2), oom2, rm)
-                        .toBigDecimal(oom2, rm)), oom2, rm)
-                .add(new V3D_Vector(l.getP(), oom2, rm), oom2, rm));
-        if (l.isIntersectedBy(pi, oom, rm)) {
-            return lp;
-        } else {
-            return new Math_BigRationalSqrt(Math_BigRational.min(lp2, lq2),
-                    oom2, rm).toBigDecimal(oom, rm);
-        }
     }
 
     /**

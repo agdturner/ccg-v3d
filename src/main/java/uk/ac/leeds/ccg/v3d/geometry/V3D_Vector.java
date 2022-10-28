@@ -531,8 +531,7 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * @return The magnitude of m. {@link V3D_Environment#DEFAULT_OOM} is used
-     * to initialise the result.
+     * @return The magnitude of m.
      */
     public Math_BigRationalSqrt getMagnitude() {
         if (m == null) {
@@ -551,6 +550,7 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * Returns the magnitude of m to at least oom precision.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The magnitude of m.
@@ -559,23 +559,20 @@ public class V3D_Vector implements Serializable {
         if (m == null) {
             initM(oom, rm);
         } else {
-            if (m.getOom() <= oom) {
+            if (m.getOom() < oom) {
                 return m;
             } else {
+                if (m.getRoundingMode().equals(rm)) {
+                    if (m.getOom() == oom) {
+                        return m;
+                    }
+                }
                 initM(oom, rm);
             }
         }
         return m;
     }
 
-    /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return The magnitude of m.
-     */
-    public Math_BigRational getMagnitude(int oom, RoundingMode rm) {
-        return getMagnitude0(oom, rm).getSqrt(oom, rm);
-    }
 
     /**
      * Test if {@code v} is a scalar multiple of {@code this}.
@@ -713,9 +710,10 @@ public class V3D_Vector implements Serializable {
      * @return The angle in radians between {@code this} and {@code v}.
      */
     public Math_BigRational getAngle(V3D_Vector v, int oom, RoundingMode rm) {
-        Math_BigRational dp = getDotProduct(v, oom, rm);
-        Math_BigRational mag = getMagnitude(oom, rm);
-        Math_BigRational vmag = v.getMagnitude(oom, rm);
+        int oomn2 = oom -2;
+        Math_BigRational dp = getDotProduct(v, oomn2, rm);
+        Math_BigRational mag = getMagnitude().getSqrt(oomn2, rm);
+        Math_BigRational vmag = v.getMagnitude().getSqrt(oomn2, rm);
         MathContext mc = new MathContext(1 - oom); // This needs checking!
         return Math_BigRational.valueOf(BigDecimalMath.acos(
                 dp.divide(mag.multiply(vmag)).toBigDecimal(mc), mc));
@@ -803,7 +801,7 @@ public class V3D_Vector implements Serializable {
      * @return this scaled by {@link #m}.
      */
     public V3D_Vector getUnitVector(int oom, RoundingMode rm) {
-        Math_BigRational d = getMagnitude(oom, rm);
+        Math_BigRational d = getMagnitude().getSqrt(oom, rm);
 //        return new V3D_Vector(
 //                dx.getSqrt(oom).divide(d),
 //                dy.getSqrt(oom).divide(d),
