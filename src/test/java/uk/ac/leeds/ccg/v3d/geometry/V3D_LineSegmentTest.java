@@ -103,7 +103,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment instance = new V3D_LineSegment(pP0P0P0, pP1P1P0, oom, rm);
-        V3D_Envelope expResult = new V3D_Envelope(e, oom, rm, pP0P0P0, pP1P1P0);
+        V3D_Envelope expResult = new V3D_Envelope(oom, rm, pP0P0P0, pP1P1P0);
         V3D_Envelope result = instance.getEnvelope(oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }

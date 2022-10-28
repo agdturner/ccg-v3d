@@ -59,11 +59,6 @@ public abstract class V3D_Geometry implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * A reference to the environment.
-     */
-    public final V3D_Environment e;
-
-    /**
      * The offset used to position a geometry object relative to the
      * {@link V3D_Point#ORIGIN}.
      */
@@ -71,21 +66,17 @@ public abstract class V3D_Geometry implements Serializable {
 
     /**
      * Creates a new instance.
-     *
-     * @param e What {@link #e} is set to.
      */
-    public V3D_Geometry(V3D_Environment e) {
-        this(e, V3D_Vector.ZERO);
+    public V3D_Geometry() {
+        this(V3D_Vector.ZERO);
     }
 
     /**
      * Creates a new instance.
      *
      * @param offset What {@link #offset} is set to.
-     * @param e What {@link #e} is set to.
      */
-    public V3D_Geometry(V3D_Environment e, V3D_Vector offset) {
-        this.e = e;
+    public V3D_Geometry(V3D_Vector offset) {
         this.offset = offset;
     }
 
@@ -153,7 +144,8 @@ public abstract class V3D_Geometry implements Serializable {
      */
     public Math_BigRational getAngleM(Math_BigRational theta, int oom,
             RoundingMode rm) {
-        Math_BigRational twoPi = Math_BigRational.valueOf(e.bd.getPi(oom, rm)).multiply(2);
+        Math_BigRational twoPi = Math_BigRational.valueOf(
+                V3D_Environment.bd.getPi(oom, rm)).multiply(2);
         // Change a negative angle into a positive one.
         while (theta.compareTo(Math_BigRational.ZERO) == -1) {
             theta = theta.add(twoPi);

@@ -15,10 +15,8 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * A collection of V3D_Point instances.
@@ -38,12 +36,11 @@ public class V3D_PointsCollinear extends V3D_FiniteGeometry {
     /**
      * Create a new instance.
      *
-     * @param e What {@link #e} is set to.
      * @param offset The offset.
      * @param rels The point locations relative to the offset. 
      */
-    public V3D_PointsCollinear(V3D_Environment e, V3D_Vector offset, V3D_Vector... rels) {
-        super(e, offset);
+    public V3D_PointsCollinear(V3D_Vector offset, V3D_Vector... rels) {
+        super(offset);
         this.rels = rels;
     }
 
@@ -64,10 +61,10 @@ public class V3D_PointsCollinear extends V3D_FiniteGeometry {
     @Override
     public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
-            en = new V3D_Envelope(e, oom, rm, new V3D_Point(e, offset, rels[0]));
+            en = new V3D_Envelope(oom, rm, new V3D_Point(offset, rels[0]));
             for (int i = 1; i < rels.length; i++) {
-                en = en.getIntersection(new V3D_Envelope(e, oom, rm, 
-                        new V3D_Point(e, offset, rels[0])), oom, rm);
+                en = en.getIntersection(new V3D_Envelope(oom, rm, 
+                        new V3D_Point(offset, rels[0])), oom, rm);
             }
         }
         return en;
@@ -78,7 +75,7 @@ public class V3D_PointsCollinear extends V3D_FiniteGeometry {
         int n = rels.length;
         V3D_Point[] r = new V3D_Point[n];
         for(int i = 0; i < n; i ++) {
-            r[i] = new V3D_Point(e, offset, rels[i]);
+            r[i] = new V3D_Point(offset, rels[i]);
         }
         return r;
     }

@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of a ray - like a line, but one that starts at a point
@@ -70,7 +69,7 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
      * @param r What {@code this} is created from.
      */
     public V3D_Ray(V3D_Ray r) {
-        super(r.e);
+        super();
         l = new V3D_Line(r.l);
     }
 
@@ -81,37 +80,35 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
      * @param v What {@code this} is created from.
      */
     public V3D_Ray(V3D_Point p, V3D_Vector v) {
-        super(p.e, p.offset);
+        super(p.offset);
         l = new V3D_Line(p, v);
     }
 
     /**
      * Create a new instance. {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
-     * @param e What {@link #e} is set to.
      * @param p What {@code this} is created from.
      * @param q What {@code this} is created from.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_Ray(V3D_Environment e, V3D_Vector p, V3D_Vector q, int oom, RoundingMode rm) {
-        this(e, V3D_Vector.ZERO, p, q, oom, rm);
+    public V3D_Ray(V3D_Vector p, V3D_Vector q, int oom, RoundingMode rm) {
+        this(V3D_Vector.ZERO, p, q, oom, rm);
     }
 
     /**
      * Create a new instance.
      *
-     * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #l} point is set to.
      * @param q What {@link #l} vector is set from.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_Ray(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
+    public V3D_Ray(V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, int oom, RoundingMode rm) {
-        super(e, offset);
-        l = new V3D_Line(e, offset, p, q, oom, rm);
+        super(offset);
+        l = new V3D_Line(offset, p, q, oom, rm);
     }
 
     /**
@@ -120,7 +117,7 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
      * @param l What {@code this} is created from.
      */
     public V3D_Ray(V3D_Line l) {
-        super(l.e, l.offset);
+        super(l.offset);
         this.l = new V3D_Line(l);
     }
 
@@ -133,7 +130,7 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
      * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Ray(V3D_Point p, V3D_Point q, int oom, RoundingMode rm) {
-        super(p.e, p.offset);
+        super(p.offset);
         this.l = new V3D_Line(p, q, oom, rm);
     }
 

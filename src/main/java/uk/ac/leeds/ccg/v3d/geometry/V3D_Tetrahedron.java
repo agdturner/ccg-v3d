@@ -111,16 +111,15 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * three dimensional. This is generally the fastest way to construct a
      * tetrahedron.
      *
-     * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p A point that defines the tetrahedron.
      * @param q A point that defines the tetrahedron.
      * @param r A point that defines the tetrahedron.
      * @param s A point that defines the tetrahedron.
      */
-    public V3D_Tetrahedron(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
+    public V3D_Tetrahedron(V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r, V3D_Vector s) {
-        super(e, offset);
+        super(offset);
         this.p = p;
         this.q = q;
         this.r = r;
@@ -132,7 +131,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * must all be different and not coplanar. No test is done to check these
      * things.
      *
-     * @param p Used to set {@link #p}, {@link #e} and {@link #offset}.
+     * @param p Used to set {@link #p} and {@link #offset}.
      * @param q Used to set {@link #q}.
      * @param r Used to set {@link #r}.
      * @param s Used to set {@link #s}.
@@ -141,7 +140,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     public V3D_Tetrahedron(V3D_Point p, V3D_Point q, V3D_Point r, V3D_Point s,
             int oom, RoundingMode rm) {
-        super(p.e, p.offset);
+        super(p.offset);
         this.p = new V3D_Vector(p.rel);
         V3D_Point qp = new V3D_Point(q);
         qp.setOffset(offset, oom, rm);
@@ -158,7 +157,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * Create a new instance. {@code pl}, must not be coplanar to t. No test is
      * done to check this is the case.
      *
-     * @param p Used to set {@link #p}, {@link #e} and {@link #offset}.
+     * @param p Used to set {@link #p} and {@link #offset}.
      * @param t Used to set {@link #q}, {@link #r} and {@link #s}.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
@@ -242,28 +241,28 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getP() {
-        return new V3D_Point(e, offset, p);
+        return new V3D_Point(offset, p);
     }
 
     /**
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getQ() {
-        return new V3D_Point(e, offset, q);
+        return new V3D_Point(offset, q);
     }
 
     /**
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getR() {
-        return new V3D_Point(e, offset, r);
+        return new V3D_Point(offset, r);
     }
 
     /**
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_Point getS() {
-        return new V3D_Point(e, offset, s);
+        return new V3D_Point(offset, s);
     }
 
     /**
@@ -275,7 +274,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     public V3D_Triangle getPqr(int oom, RoundingMode rm) {
         if (pqr == null) {
-            pqr = new V3D_Triangle(e, offset, p, q, r, oom, rm);
+            pqr = new V3D_Triangle(offset, p, q, r, oom, rm);
         }
         return pqr;
     }
@@ -289,7 +288,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     public V3D_Triangle getQsr(int oom, RoundingMode rm) {
         if (qsr == null) {
-            qsr = new V3D_Triangle(e, offset, q, s, r, oom, rm);
+            qsr = new V3D_Triangle(offset, q, s, r, oom, rm);
         }
         return qsr;
     }
@@ -303,7 +302,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     public V3D_Triangle getSpr(int oom, RoundingMode rm) {
         if (spr == null) {
-            spr = new V3D_Triangle(e, offset, s, p, r, oom, rm);
+            spr = new V3D_Triangle(offset, s, p, r, oom, rm);
         }
         return spr;
     }
@@ -317,7 +316,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     public V3D_Triangle getPsq(int oom, RoundingMode rm) {
         if (psq == null) {
-            psq = new V3D_Triangle(e, offset, p, s, q, oom, rm);
+            psq = new V3D_Triangle(offset, p, s, q, oom, rm);
         }
         return psq;
     }
@@ -376,7 +375,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                 .add(r.getDY(oom, rm)).add(s.getDY(oom, rm))).divide(4).round(oom, rm);
         Math_BigRational dz = (p.getDZ(oom, rm).add(q.getDZ(oom, rm))
                 .add(r.getDZ(oom, rm)).add(s.getDZ(oom, rm))).divide(4).round(oom, rm);
-        return new V3D_Point(e, offset, new V3D_Vector(dx, dy, dz));
+        return new V3D_Point(offset, new V3D_Vector(dx, dy, dz));
     }
 
     /**
@@ -510,8 +509,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         } else if (r.equals(s, oom, rm)) {
             return V3D_Triangle.getGeometry(p, q, r, oom, rm);
         } else {
-            if (V3D_Plane.isCoplanar(p.e, oom, rm, p, q, r, s)) {
-                if (V3D_Line.isCollinear(p.e, oom, rm, p, q, r, s)) {
+            if (V3D_Plane.isCoplanar(oom, rm, p, q, r, s)) {
+                if (V3D_Line.isCollinear(oom, rm, p, q, r, s)) {
                     //return V3D_Line(pl, q, r, s);
                     throw new UnsupportedOperationException("Need code to construct a line segment from 4 points!");
                 }
@@ -975,13 +974,13 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                  * the triangle.
                  */
                 V3D_Vector n = t.pl.n;
-                V3D_Plane lp = new V3D_Plane(e, offset, t.p, t.q, t.p.add(n, oom, rm), oom, rm);
+                V3D_Plane lp = new V3D_Plane(offset, t.p, t.q, t.p.add(n, oom, rm), oom, rm);
                 V3D_FiniteGeometry lpiil = lp.getIntersection(il, oom, rm);
                 if (lpiil == null) {
-                    V3D_Plane lq = new V3D_Plane(e, offset, t.q, t.r, t.q.add(n, oom, rm), oom, rm);
+                    V3D_Plane lq = new V3D_Plane(offset, t.q, t.r, t.q.add(n, oom, rm), oom, rm);
                     V3D_FiniteGeometry lqiil = lq.getIntersection(il, oom, rm);
                     if (lqiil == null) {
-                        V3D_Plane lr = new V3D_Plane(e, offset, t.r, t.p, t.r.add(n, oom, rm), oom, rm);
+                        V3D_Plane lr = new V3D_Plane(offset, t.r, t.p, t.r.add(n, oom, rm), oom, rm);
                         V3D_FiniteGeometry lriil = lr.getIntersection(il, oom, rm);
                         if (lriil == null) {
                             return il;
@@ -999,7 +998,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                         }
                     } else if (lqiil instanceof V3D_Point lqiilp) {
                         // Find the other point and return the linesegment.
-                        V3D_Plane lr = new V3D_Plane(e, offset, t.r, t.p, t.r.add(n, oom, rm), oom, rm);
+                        V3D_Plane lr = new V3D_Plane(offset, t.r, t.p, t.r.add(n, oom, rm), oom, rm);
                         V3D_FiniteGeometry lriil = lr.getIntersection(il, oom, rm);
                         if (lriil == null) {
                             // For the points on the right side (if any)
@@ -1052,10 +1051,10 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                     }
                 } else if (lpiil instanceof V3D_Point lpiilp) {
                     // Find the other point and return the linesegment.
-                    V3D_Plane lq = new V3D_Plane(e, offset, t.q, t.r, t.q.add(n, oom, rm), oom, rm);
+                    V3D_Plane lq = new V3D_Plane(offset, t.q, t.r, t.q.add(n, oom, rm), oom, rm);
                     V3D_FiniteGeometry lqiil = lq.getIntersection(il, oom, rm);
                     if (lqiil == null) {
-                        V3D_Plane lr = new V3D_Plane(e, offset, t.r, t.p, t.r.add(n, oom, rm), oom, rm);
+                        V3D_Plane lr = new V3D_Plane(offset, t.r, t.p, t.r.add(n, oom, rm), oom, rm);
                         V3D_FiniteGeometry lriil = lr.getIntersection(il, oom, rm);
                         if (lriil == null) {
                             // Find the other point and return the line segment.
@@ -1099,7 +1098,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                         }
                     } else if (lqiil instanceof V3D_Point lqiilp) {
                         // Find the other point and return the linesegment.
-                        V3D_Plane lr = new V3D_Plane(e, offset, t.r, t.p, t.r.add(n, oom, rm), oom, rm);
+                        V3D_Plane lr = new V3D_Plane(offset, t.r, t.p, t.r.add(n, oom, rm), oom, rm);
                         V3D_FiniteGeometry lriil = lr.getIntersection(il, oom, rm);
                         if (lriil == null) {
                             // For the points on the right side (if any)
@@ -1451,11 +1450,11 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     @Override
     public V3D_Tetrahedron rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
             int oom, RoundingMode rm) {
-        return new V3D_Tetrahedron(e, offset,
-                p.rotate(axisOfRotation, theta, e.bd, oom, rm),
-                q.rotate(axisOfRotation, theta, e.bd, oom, rm),
-                r.rotate(axisOfRotation, theta, e.bd, oom, rm),
-                s.rotate(axisOfRotation, theta, e.bd, oom, rm));
+        return new V3D_Tetrahedron(offset,
+                p.rotate(axisOfRotation, theta, V3D_Environment.bd, oom, rm),
+                q.rotate(axisOfRotation, theta, V3D_Environment.bd, oom, rm),
+                r.rotate(axisOfRotation, theta, V3D_Environment.bd, oom, rm),
+                s.rotate(axisOfRotation, theta, V3D_Environment.bd, oom, rm));
     }
 
     /**

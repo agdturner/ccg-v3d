@@ -186,7 +186,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1, oom, rm);
-        V3D_Envelope expResult = new V3D_Envelope(e, oom, rm, pP0P0P0, pP1P0P0,
+        V3D_Envelope expResult = new V3D_Envelope(oom, rm, pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
         V3D_Envelope result = instance.getEnvelope(oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
@@ -358,8 +358,8 @@ public class V3D_TetrahedronTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Tetrahedron instance = new V3D_Tetrahedron(
                 pN2N2N2, pP2N2N2, pP0P2N2,
-                new V3D_Point(e, P0, P0, P4), oom, rm);
-        V3D_Point expResult = new V3D_Point(e, P0P0P0, new V3D_Vector(
+                new V3D_Point(P0, P0, P4), oom, rm);
+        V3D_Point expResult = new V3D_Point(P0P0P0, new V3D_Vector(
                 Math_BigRational.ZERO, Math_BigRational.valueOf(1, 2).negate(),
                 Math_BigRational.valueOf(1, 2).negate()));
         V3D_Point result = instance.getCentroid(oom, rm);
@@ -379,28 +379,28 @@ public class V3D_TetrahedronTest extends V3D_Test {
         // Test 1
         pt = pP0P0P0;
         //instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0, pP0P1P0, pP0P0P1);
-        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        instance = new V3D_Tetrahedron(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
         assertTrue(instance.isIntersectedBy(pt, oom, rm));
         // Test 2
-        pt = new V3D_Point(e, 0.5, 0.5, 0.5);
-        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P2P0P0, P0P2P0, P0P0P2);
+        pt = new V3D_Point(0.5, 0.5, 0.5);
+        instance = new V3D_Tetrahedron(P0P0P0, P0P0P0, P2P0P0, P0P2P0, P0P0P2);
         assertTrue(instance.isIntersectedBy(pt, oom, rm));
         // Test 3
-        pt = new V3D_Point(e, -0.5, -0.5, -0.5);
+        pt = new V3D_Point(-0.5, -0.5, -0.5);
         assertFalse(instance.isIntersectedBy(pt, oom, rm));
         // Test 4
-        pt = new V3D_Point(e, -0.5, 0, 0);
+        pt = new V3D_Point(-0.5, 0, 0);
         assertFalse(instance.isIntersectedBy(pt, oom, rm));
         // Test 5
         instance = new V3D_Tetrahedron(
-                new V3D_Point(e, 0, 0, -75),
-                new V3D_Point(e, -50, -37.5, 10),
-                new V3D_Point(e, 50, 37.5, 10),
-                new V3D_Point(e, -50, 37.5, 10), oom, rm);
-        //pt = new V3D_Point(e, -24, -19, 0);
-        //pt = new V3D_Point(e, 0, 0, -74);
-        //pt = new V3D_Point(e, 1, 1, 0);
-        pt = new V3D_Point(e, -11, 11, 0);
+                new V3D_Point(0, 0, -75),
+                new V3D_Point(-50, -37.5, 10),
+                new V3D_Point(50, 37.5, 10),
+                new V3D_Point(-50, 37.5, 10), oom, rm);
+        //pt = new V3D_Point(-24, -19, 0);
+        //pt = new V3D_Point(0, 0, -74);
+        //pt = new V3D_Point(1, 1, 0);
+        pt = new V3D_Point(-11, 11, 0);
         assertTrue(instance.isIntersectedBy(pt, oom, rm));
     }
 
@@ -416,11 +416,11 @@ public class V3D_TetrahedronTest extends V3D_Test {
 //        V3D_Tetrahedron instance;
 //        // Test 1
 //        l = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-//        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+//        instance = new V3D_Tetrahedron(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
 //        assertTrue(instance.isIntersectedBy(l, oom, rm));
 //        // Test 2
 //        l = new V3D_Line(pN2P0P0, pN1P0P0, oom, rm);
-//        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+//        instance = new V3D_Tetrahedron(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
 //        assertTrue(instance.isIntersectedBy(l, oom, rm));
 //    }
 //
@@ -436,23 +436,23 @@ public class V3D_TetrahedronTest extends V3D_Test {
 //        V3D_Tetrahedron instance;
 //        // Test 1
 //        l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-//        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+//        instance = new V3D_Tetrahedron(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
 //        assertTrue(instance.isIntersectedBy(l, oom, rm));
 //        // Test 2
 //        l = new V3D_LineSegment(pN1P0P0, pP0P0P0, oom, rm);
-//        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+//        instance = new V3D_Tetrahedron(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
 //        assertTrue(instance.isIntersectedBy(l, oom, rm));
 //        // Test 3
 //        l = new V3D_LineSegment(pN2P0P0, pN1P0P0, oom, rm);
-//        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+//        instance = new V3D_Tetrahedron(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
 //        assertFalse(instance.isIntersectedBy(l, oom, rm));
 //        // Test 4
 //        l = new V3D_LineSegment(pN2P0P0, pP2P0P0, oom, rm);
-//        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+//        instance = new V3D_Tetrahedron(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
 //        assertTrue(instance.isIntersectedBy(l, oom, rm));
 //        // Test 5
 //        l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-//        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+//        instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
 //        assertTrue(instance.isIntersectedBy(l, oom, rm));
 //    }
 
@@ -470,14 +470,14 @@ public class V3D_TetrahedronTest extends V3D_Test {
         V3D_Geometry result;
         // Test 1
         l = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        instance = new V3D_Tetrahedron(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
         expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 2
-        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
-        l = new V3D_Line(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2, oom, rm).getCentroid(oom, rm), oom, rm);
-        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2, oom, rm).getCentroid(oom, rm), oom, rm);
+        instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        l = new V3D_Line(pN2N2P0, new V3D_Triangle(P0P0P0, P2N2P0, N2P2P0, P0P0P2, oom, rm).getCentroid(oom, rm), oom, rm);
+        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(P0P0P0, P2N2P0, N2P2P0, P0P0P2, oom, rm).getCentroid(oom, rm), oom, rm);
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
     }
@@ -496,20 +496,20 @@ public class V3D_TetrahedronTest extends V3D_Test {
         V3D_Geometry result;
         // Test 1
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        instance = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        instance = new V3D_Tetrahedron(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
         expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 2
-        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
-        l = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2, oom, rm).getCentroid(oom, rm), oom, rm);
-        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2, oom, rm).getCentroid(oom, rm), oom, rm);
+        instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        l = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(P0P0P0, P2N2P0, N2P2P0, P0P0P2, oom, rm).getCentroid(oom, rm), oom, rm);
+        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(P0P0P0, P2N2P0, N2P2P0, P0P0P2, oom, rm).getCentroid(oom, rm), oom, rm);
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
 //        // Test 3
-//        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
-//        l = new V3D_LineSegment(e, P0P0P0, N2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(oom, rm).rel.multiply(P2, oom, rm).add(P2P2P0, oom, rm));
-//        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(e, P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(oom, rm), oom, rm);
+//        instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+//        l = new V3D_LineSegment(P0P0P0, N2N2P0, new V3D_Triangle(P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(oom, rm).rel.multiply(P2, oom, rm).add(P2P2P0, oom, rm));
+//        expResult = new V3D_LineSegment(pN2N2P0, new V3D_Triangle(P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid(oom, rm), oom, rm);
 //        result = instance.getIntersection(l, oom, rm);
 //        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreOrientation((V3D_LineSegment) result, oom, rm));
     }
@@ -528,15 +528,15 @@ public class V3D_TetrahedronTest extends V3D_Test {
         V3D_Geometry result;
         // Test 1
         p = V3D_Plane.X0;
-        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
         expResult = new V3D_Triangle(pP0P0P0, pP0P0P2, pP0N2P0, oom, rm);
         result = instance.getIntersection(p, oom, rm);
         assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
 //        // Test 2
 //        p = new V3D_Plane(V3D_Plane.X0);
 //        p.translate(P1P0P0, oom, rm);
-//        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
-//        expResult = new V3D_Triangle(e, P0P0P0, P1N2P0, P1N1P0, P1N1P1);
+//        instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+//        expResult = new V3D_Triangle(P0P0P0, P1N2P0, P1N1P0, P1N1P1);
 //        result = instance.getIntersection(p, oom, rm);
 //        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
     }
@@ -594,7 +594,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         Math_BigRational expResult;
         Math_BigRational result;
         // Test 1
-        t = new V3D_Tetrahedron(e, P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        t = new V3D_Tetrahedron(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
         tr = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0, oom, rm);
         expResult = Math_BigRational.ZERO;
         result = t.getDistanceSquared(tr, oom, rm);
@@ -658,13 +658,13 @@ public class V3D_TetrahedronTest extends V3D_Test {
         Math_BigRational expResult;
         Math_BigRational result;
         // Test 1
-        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
         p = pP0P0P0;
         expResult = Math_BigRational.ZERO;
         result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
-        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
         p = pN2N2N2;
         expResult = Math_BigRational.valueOf(4);
         result = instance.getDistanceSquared(p, oom, rm);
@@ -741,12 +741,12 @@ public class V3D_TetrahedronTest extends V3D_Test {
 //        V3D_Tetrahedron instance;
 //        // Test 1
 //        p = V3D_Plane.X0;
-//        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+//        instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
 //        assertTrue(instance.isIntersectedBy(p, oom, rm));
 //        // Test 1
 //        p = new V3D_Plane(V3D_Plane.X0);
 //        p.translate(P1P0P0, oom, rm);
-//        instance = new V3D_Tetrahedron(e, P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+//        instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
 //        assertTrue(instance.isIntersectedBy(p, oom, rm));
 //    }
 

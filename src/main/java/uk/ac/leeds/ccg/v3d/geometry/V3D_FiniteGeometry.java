@@ -18,7 +18,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * V3D_FiniteGeometry for representing finite geometries.
@@ -45,22 +44,19 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry {
     public abstract V3D_Envelope getEnvelope(int oom, RoundingMode rm);
     
     /**
-     * Creates a new instance with offset V3D_Vector.ZERO
-     *
-     * @param e What {@link #e} is set to.
+     * Creates a new instance with offset V3D_Vector.ZERO.
      */
-    public V3D_FiniteGeometry(V3D_Environment e) {
-        this(e, V3D_Vector.ZERO);
+    public V3D_FiniteGeometry() {
+        this(V3D_Vector.ZERO);
     }
     
     /**
      * Creates a new instance.
      *
      * @param offset What {@link #offset} is set to.
-     * @param e What {@link #e} is set to.
      */
-    public V3D_FiniteGeometry(V3D_Environment e, V3D_Vector offset) {
-        super(e, offset);
+    public V3D_FiniteGeometry(V3D_Vector offset) {
+        super(offset);
     }
     
     /**

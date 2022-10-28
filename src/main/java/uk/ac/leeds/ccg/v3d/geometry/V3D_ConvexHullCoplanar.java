@@ -102,7 +102,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @param points A non-empty list of points in a plane given by n.
      */
     public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_Vector n, V3D_Point... points) {
-        super(points[0].e);
+        super();
         this.points = new ArrayList<>();
         this.triangles = new ArrayList<>();
         // Get a list of unique points.
@@ -548,7 +548,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      */
     private void getConvexHull0(ArrayList<V3D_Point> pts, V3D_Point p0,
             V3D_Point p1, V3D_Vector n, int index, int oom, RoundingMode rm) {
-        V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(e,
+        V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(
                 offset, p0.rel.add(n, oom, rm)), oom, rm);
         AboveAndBelow ab = new AboveAndBelow(pts, pl, oom, rm);
         // Process ab.a
@@ -760,11 +760,11 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         V3D_Point tq = t.getQ();
         V3D_Point tr = t.getR();
         V3D_Vector n = t.pl.n;
-        V3D_Point pp = new V3D_Point(e, tp.offset.add(n, oom, rm), tp.rel);
+        V3D_Point pp = new V3D_Point(tp.offset.add(n, oom, rm), tp.rel);
         V3D_Plane ppl = new V3D_Plane(tp, tq, pp, oom, rm);
-        V3D_Point qp = new V3D_Point(e, tq.offset.add(n, oom, rm), tq.rel);
+        V3D_Point qp = new V3D_Point(tq.offset.add(n, oom, rm), tq.rel);
         V3D_Plane qpl = new V3D_Plane(tq, tr, qp, oom, rm);
-        V3D_Point rp = new V3D_Point(e, tr.offset.add(n, oom, rm), tr.rel);
+        V3D_Point rp = new V3D_Point(tr.offset.add(n, oom, rm), tr.rel);
         V3D_Plane rpl = new V3D_Plane(tr, tp, rp, oom, rm);
         V3D_FiniteGeometry cppl = clip(ppl, tr, oom, rm);
         if (cppl == null) {
@@ -849,11 +849,11 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 V3D_Point ip = i.next();
                 V3D_Point iq = i.next();
                 V3D_Point ir = i.next();
-                while (V3D_Line.isCollinear(ip.e, oom, rm, ip, iq, ir) && i.hasNext()) {
+                while (V3D_Line.isCollinear(oom, rm, ip, iq, ir) && i.hasNext()) {
                     ir = i.next();
                 }
                 V3D_Plane pl;
-                if (V3D_Line.isCollinear(ip.e, oom, rm, ip, iq, ir) && i.hasNext()) {
+                if (V3D_Line.isCollinear(oom, rm, ip, iq, ir) && i.hasNext()) {
                     return new V3D_LineSegment(oom, rm, pts);
                 } else {
                     pl = new V3D_Plane(ip, iq, ir, oom, rm);

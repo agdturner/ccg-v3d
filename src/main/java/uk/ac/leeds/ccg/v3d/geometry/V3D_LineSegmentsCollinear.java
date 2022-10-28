@@ -51,7 +51,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * @param lineSegments What {@code #lineSegments} is set to.
      */
     public V3D_LineSegmentsCollinear(V3D_LineSegment... lineSegments) {
-        super(lineSegments[0].e);
+        super();
         this.lineSegments = new ArrayList<>();
         this.lineSegments.addAll(Arrays.asList(lineSegments));
     }

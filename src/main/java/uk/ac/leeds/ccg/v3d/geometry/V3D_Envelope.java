@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * An envelope contains all the extreme values with respect to the X, Y and Z
@@ -88,11 +87,6 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 public class V3D_Envelope implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * A copy of the V3D_Environment.
-     */
-    public final V3D_Environment e;
     
     /**
      * For storing the offset of this.
@@ -143,13 +137,11 @@ public class V3D_Envelope implements Serializable {
     /**
      * Create a new instance.
      *
-     * @param e What {@link #e} is set to.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @param points The points used to form the envelop.
      */
-    public V3D_Envelope(V3D_Environment e, int oom, RoundingMode rm, V3D_Point... points) {
-        this.e = e;
+    public V3D_Envelope(int oom, RoundingMode rm, V3D_Point... points) {
         //offset = points[0].offset;
         offset = V3D_Vector.ZERO;
         int len = points.length;
@@ -193,22 +185,20 @@ public class V3D_Envelope implements Serializable {
     /**
      * Create a new instance.
      *
-     * @param e What {@link #e} is set to.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @param x The x-coordinate of a point.
      * @param y The y-coordinate of a point.
      * @param z The z-coordinate of a point.
      */
-    public V3D_Envelope(V3D_Environment e, int oom, RoundingMode rm,
+    public V3D_Envelope(int oom, RoundingMode rm,
             Math_BigRational x, Math_BigRational y, Math_BigRational z) {
-        this(e, oom, rm, new V3D_Point(e, x, y, z));
+        this(oom, rm, new V3D_Point(x, y, z));
     }
 
     /**
      * Create a new instance.
      *
-     * @param e What {@link #e} is set to.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @param xMin What {@link xMin} is set to.
@@ -218,12 +208,12 @@ public class V3D_Envelope implements Serializable {
      * @param zMin What {@link zMin} is set to.
      * @param zMax What {@link zMax} is set to.
      */
-    public V3D_Envelope(V3D_Environment e, int oom, RoundingMode rm,
+    public V3D_Envelope(int oom, RoundingMode rm,
             Math_BigRational xMin, Math_BigRational xMax,
             Math_BigRational yMin, Math_BigRational yMax,
             Math_BigRational zMin, Math_BigRational zMax) {
-        this(e, oom, rm, new V3D_Point(e, xMin, yMin, zMin),
-                new V3D_Point(e, xMax, yMax, zMax));
+        this(oom, rm, new V3D_Point(xMin, yMin, zMin),
+                new V3D_Point(xMax, yMax, zMax));
     }
 
     @Override
@@ -265,7 +255,7 @@ public class V3D_Envelope implements Serializable {
         if (e.isContainedBy(this, oom, rm)) {
             return this;
         } else {
-            return new V3D_Envelope(this.e, oom, rm,
+            return new V3D_Envelope(oom, rm,
                     e.getXMin(oom, rm).min(getXMin(oom, rm)),
                     e.getXMax(oom, rm).max(getXMax(oom, rm)),
                     e.getYMin(oom, rm).min(getYMin(oom, rm)),
@@ -373,7 +363,7 @@ public class V3D_Envelope implements Serializable {
         if (!this.isIntersectedBy(en, oom, rm)) {
             return null;
         }
-        return new V3D_Envelope(this.e, oom, rm,
+        return new V3D_Envelope(oom, rm,
                 getXMin(oom, rm).max(en.getXMin(oom, rm)),
                 getXMax(oom, rm).min(en.getXMax(oom, rm)),
                 getYMin(oom, rm).max(en.getYMin(oom, rm)),
@@ -533,7 +523,8 @@ public class V3D_Envelope implements Serializable {
      * @return The approximate or exact centre of this.
      */
     public V3D_Point getCentroid(int oom, RoundingMode rm) {
-        return new V3D_Point(e, this.getXMax(oom, rm).add(this.getXMin(oom, rm)).divide(2),
+        return new V3D_Point(
+                this.getXMax(oom, rm).add(this.getXMin(oom, rm)).divide(2),
                 this.getYMax(oom, rm).add(this.getYMin(oom, rm)).divide(2),
                 this.getZMax(oom, rm).add(this.getZMin(oom, rm)).divide(2));
     }
@@ -548,14 +539,14 @@ public class V3D_Envelope implements Serializable {
     public V3D_Point[] getPoints(int oom, RoundingMode rm) {
         if (pts == null || ptsoom > oom) {
             pts = new V3D_Point[8];
-            pts[0] = new V3D_Point(e, getXMin(oom, rm), getYMin(oom, rm), getZMin(oom, rm)); // lbf
-            pts[1] = new V3D_Point(e, getXMin(oom, rm), getYMin(oom, rm), getZMax(oom, rm)); // lba
-            pts[2] = new V3D_Point(e, getXMin(oom, rm), getYMax(oom, rm), getZMin(oom, rm)); // ltf
-            pts[3] = new V3D_Point(e, getXMin(oom, rm), getYMax(oom, rm), getZMax(oom, rm)); // lta
-            pts[4] = new V3D_Point(e, getXMax(oom, rm), getYMin(oom, rm), getZMin(oom, rm)); // rbf
-            pts[5] = new V3D_Point(e, getXMax(oom, rm), getYMin(oom, rm), getZMax(oom, rm)); // rba
-            pts[6] = new V3D_Point(e, getXMax(oom, rm), getYMax(oom, rm), getZMin(oom, rm)); // rtf
-            pts[7] = new V3D_Point(e, getXMax(oom, rm), getYMax(oom, rm), getZMax(oom, rm)); // rta
+            pts[0] = new V3D_Point(getXMin(oom, rm), getYMin(oom, rm), getZMin(oom, rm)); // lbf
+            pts[1] = new V3D_Point(getXMin(oom, rm), getYMin(oom, rm), getZMax(oom, rm)); // lba
+            pts[2] = new V3D_Point(getXMin(oom, rm), getYMax(oom, rm), getZMin(oom, rm)); // ltf
+            pts[3] = new V3D_Point(getXMin(oom, rm), getYMax(oom, rm), getZMax(oom, rm)); // lta
+            pts[4] = new V3D_Point(getXMax(oom, rm), getYMin(oom, rm), getZMin(oom, rm)); // rbf
+            pts[5] = new V3D_Point(getXMax(oom, rm), getYMin(oom, rm), getZMax(oom, rm)); // rba
+            pts[6] = new V3D_Point(getXMax(oom, rm), getYMax(oom, rm), getZMin(oom, rm)); // rtf
+            pts[7] = new V3D_Point(getXMax(oom, rm), getYMax(oom, rm), getZMax(oom, rm)); // rta
             ptsoom = oom;
         }
         return pts;
@@ -581,7 +572,7 @@ public class V3D_Envelope implements Serializable {
     public V3D_Rectangle getViewport(V3D_Point pt, V3D_Vector v, int oom, 
             RoundingMode rm) {
         V3D_Rectangle r;
-        V3D_Point[] pts = getPoints(oom, rm);
+        pts = getPoints(oom, rm);
 //        pts[0] = new V3D_Point(lba);
 //        pts[1] = new V3D_Point(lbf);
 //        pts[2] = new V3D_Point(lta);

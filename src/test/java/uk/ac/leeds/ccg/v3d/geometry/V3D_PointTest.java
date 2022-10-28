@@ -69,7 +69,7 @@ public class V3D_PointTest extends V3D_Test {
         BigDecimal result = instance.getDistance(instance, oom, rm);
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_Point(e, P3, P4, P0);
+        instance = new V3D_Point(P3, P4, P0);
         expResult = P5.toBigDecimal(oom, rm);
         result = instance.getDistance(pP0P0P0, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
@@ -83,7 +83,7 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("getEnvelope");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Envelope expResult = new V3D_Envelope(e, oom, rm, pP0P0P0, pP1P1P1);
+        V3D_Envelope expResult = new V3D_Envelope(oom, rm, pP0P0P0, pP1P1P1);
         V3D_Envelope result = pP0P0P0.getEnvelope(oom, rm);
         result = result.union(pP1P1P1.getEnvelope(oom, rm), oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
@@ -101,27 +101,27 @@ public class V3D_PointTest extends V3D_Test {
         Math_BigRational x = Math_BigRational.valueOf(new BigDecimal("0.000"));
         Math_BigRational y = Math_BigRational.valueOf(new BigDecimal("0.000"));
         Math_BigRational z = Math_BigRational.valueOf(new BigDecimal("0.000"));
-        V3D_Point p = new V3D_Point(e, x, y, z);
+        V3D_Point p = new V3D_Point(x, y, z);
         assertTrue(instance.equals(p, oom, rm));
         // Test 2
         x = P1;
         y = P10;
         z = P0;
-        instance = new V3D_Point(e, x, y, z);
+        instance = new V3D_Point(x, y, z);
         x = Math_BigRational.valueOf(new BigDecimal("1.000"));
         y = Math_BigRational.valueOf(new BigDecimal("10.000"));
         z = Math_BigRational.valueOf(new BigDecimal("0.000"));
-        p = new V3D_Point(e, x, y, z);
+        p = new V3D_Point(x, y, z);
         assertTrue(instance.equals(p, oom, rm));
         // Test 3
         x = Math_BigRational.ONE;
         y = Math_BigRational.TEN;
         z = Math_BigRational.ZERO;
-        instance = new V3D_Point(e, x, y, z);
+        instance = new V3D_Point(x, y, z);
         x = Math_BigRational.valueOf(new BigDecimal("0.000"));
         y = Math_BigRational.valueOf(new BigDecimal("1.000"));
         z = Math_BigRational.valueOf(new BigDecimal("10.000"));
-        p = new V3D_Point(e, x, y, z);
+        p = new V3D_Point(x, y, z);
         assertFalse(instance.equals(p, oom, rm));
     }
 
@@ -149,40 +149,40 @@ public class V3D_PointTest extends V3D_Test {
         result = instance.getDistance(oom, rm, p);
         assertEquals(expResult, result);
         // Test 4
-        instance = new V3D_Point(e, P3, P4, P0);
+        instance = new V3D_Point(P3, P4, P0);
         expResult = new Math_BigRationalSqrt(25, oom, rm);
         result = instance.getDistance(oom, rm, p);
         assertEquals(expResult, result);
         // Test 5
-        instance = new V3D_Point(e, P0, P3, P4);
+        instance = new V3D_Point(P0, P3, P4);
         result = instance.getDistance(oom, rm, p);
         assertEquals(expResult, result);
         // Test 6
-        instance = new V3D_Point(e, P3, P0, P4);
+        instance = new V3D_Point(P3, P0, P4);
         result = instance.getDistance(oom, rm, p);
         assertEquals(expResult, result);
         // Test 7
-        instance = new V3D_Point(e, N3, N4, P0);
+        instance = new V3D_Point(N3, N4, P0);
         result = instance.getDistance(oom, rm, p);
         assertEquals(expResult, result);
         // Test 8
-        instance = new V3D_Point(e, P0, N3, N4);
+        instance = new V3D_Point(P0, N3, N4);
         result = instance.getDistance(oom, rm, p);
         assertEquals(expResult, result);
         // Test 9
-        instance = new V3D_Point(e, N3, P0, N4);
+        instance = new V3D_Point(N3, P0, N4);
         result = instance.getDistance(oom, rm, p);
         assertEquals(expResult, result);
         // Test 10
-        instance = new V3D_Point(e, N3, P4, P0);
+        instance = new V3D_Point(N3, P4, P0);
         result = instance.getDistance(oom, rm, p);
         assertEquals(expResult, result);
         // Test 11
-        instance = new V3D_Point(e, P0, P3, N4);
+        instance = new V3D_Point(P0, P3, N4);
         result = instance.getDistance(oom, rm, p);
         assertEquals(expResult, result);
         // Test 12
-        instance = new V3D_Point(e, P3, P0, N4);
+        instance = new V3D_Point(P3, P0, N4);
         result = instance.getDistance(oom, rm, p);
         assertEquals(expResult, result);
     }
@@ -201,7 +201,7 @@ public class V3D_PointTest extends V3D_Test {
         BigDecimal result = instance.getDistance(p, oom, rm);
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_Point(e, P3, P4, P0);
+        instance = new V3D_Point(P3, P4, P0);
         expResult = P5.toBigDecimal(oom, rm);
         result = instance.getDistance(p, oom, rm);
         assertEquals(expResult, result);
@@ -220,7 +220,7 @@ public class V3D_PointTest extends V3D_Test {
         Math_BigRational result = instance.getDistanceSquared(instance, oom, rm);
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_Point(e, P3, P4, P0);
+        instance = new V3D_Point(P3, P4, P0);
         expResult = Math_BigRational.valueOf(25);
         result = instance.getDistanceSquared(pP0P0P0, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
@@ -582,19 +582,19 @@ public class V3D_PointTest extends V3D_Test {
         axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt, rm);
         V3D_Vector offset = new V3D_Vector(2, 0, 0);
         V3D_Vector rel = new V3D_Vector(1, 0, 0);
-        instance = new V3D_Point(e, offset, rel);
+        instance = new V3D_Point(offset, rel);
         theta = Pi;
         result = instance.rotate(axisOfRotation, theta, oom, rm);
-        expResult = new V3D_Point(e, 2, 1, 0);
+        expResult = new V3D_Point(2, 1, 0);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 4
         axisOfRotation = new V3D_Vector(1, 1, 0).getUnitVector(oomt, rm);
         offset = new V3D_Vector(1, 0, 0);
         rel = new V3D_Vector(2, 0, 0);
-        instance = new V3D_Point(e, offset, rel);
+        instance = new V3D_Point(offset, rel);
         theta = Pi;
         result = instance.rotate(axisOfRotation, theta, oom, rm);
-        expResult = new V3D_Point(e, 1, 2, 0);
+        expResult = new V3D_Point(1, 2, 0);
         assertTrue(expResult.equals(result, oom, rm));
     }
 

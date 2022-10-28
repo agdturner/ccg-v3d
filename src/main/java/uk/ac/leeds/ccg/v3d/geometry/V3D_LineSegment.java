@@ -92,38 +92,36 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param l What {@code this} is cloned from.
      */
     public V3D_LineSegment(V3D_LineSegment l) {
-        super(l.e, l.offset);
+        super(l.offset);
         this.l = new V3D_Line(l.l);
     }
 
     /**
      * Create a new instance. {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
-     * @param e What {@link #e} is set to.
      * @param p What the point of {@link #l} is cloned from.
      * @param q What {@link #q} is cloned from.
      * @param oom The Order of Magnitude for the precision of the result.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_LineSegment(V3D_Environment e, V3D_Vector p, V3D_Vector q,
+    public V3D_LineSegment(V3D_Vector p, V3D_Vector q,
             int oom, RoundingMode rm) {
-        this(e, V3D_Vector.ZERO, p, q, oom, rm);
+        this(V3D_Vector.ZERO, p, q, oom, rm);
     }
 
     /**
      * Create a new instance.
      *
-     * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p What the point of {@link #l} is cloned from.
      * @param q What {@link #q} is cloned from.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_LineSegment(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
+    public V3D_LineSegment(V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, int oom, RoundingMode rm) {
-        super(e, offset);
-        l = new V3D_Line(e, offset, p, q, oom, rm);
+        super(offset);
+        l = new V3D_Line(offset, p, q, oom, rm);
         this.q = q;
     }
 
@@ -136,10 +134,10 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param rm The RoundingMode for any rounding.
      */
     public V3D_LineSegment(V3D_Point p, V3D_Point q, int oom, RoundingMode rm) {
-        super(p.e, p.offset);
+        super(p.offset);
         V3D_Point q2 = new V3D_Point(q);
         q2.setOffset(offset, oom, rm);
-        l = new V3D_Line(e, offset, p.rel, q2.rel, oom, rm);
+        l = new V3D_Line(offset, p.rel, q2.rel, oom, rm);
         this.q = q2.rel;
     }
 
@@ -151,7 +149,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param points Any number of collinear points, with two being different.
      */
     public V3D_LineSegment(int oom, RoundingMode rm, V3D_Point... points) {
-        super(points[0].e, points[0].offset);
+        super(points[0].offset);
         V3D_Point p0 = points[0];
         V3D_Point p1 = points[1];
         V3D_LineSegment ls = new V3D_LineSegment(p0, p1, oom, rm);
@@ -182,7 +180,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      */
     public V3D_Point getQ() {
         //return l.getQ(oom, rm);
-        return new V3D_Point(e, offset, q);
+        return new V3D_Point(offset, q);
     }
 
     /**
@@ -219,7 +217,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param l What {@code this} is created from.
      */
     public V3D_LineSegment(V3D_Line l) {
-        super(l.e);
+        super();
         this.l = new V3D_Line(l);
     }
 
@@ -395,7 +393,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     @Override
     public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
-            en = new V3D_Envelope(e, oom, rm, getP(), getQ());
+            en = new V3D_Envelope(oom, rm, getP(), getQ());
         }
         return en;
     }
@@ -799,7 +797,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         //V3D_Vector pmpq = l.getV(oom, rm).divide(Math_BigRational.valueOf(2), oom, rm);
         V3D_Vector pmpq = l.v.divide(Math_BigRational.valueOf(2), oom, rm);
         //return getP(oom).translate(pmpq, oom);
-        return new V3D_Point(e, offset, l.p.add(pmpq, oom, rm));
+        return new V3D_Point(offset, l.p.add(pmpq, oom, rm));
     }
 
     /**

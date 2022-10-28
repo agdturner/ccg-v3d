@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * For representing and processing rectangles in 3D. A rectangle is a right
@@ -71,7 +70,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     public V3D_Triangle getRSP(int oom, RoundingMode rm) {
         if (rsp == null) {
-            rsp = new V3D_Triangle(e, r, s, p, oom, rm);
+            rsp = new V3D_Triangle(r, s, p, oom, rm);
         }
         return rsp;
     }
@@ -110,7 +109,6 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     /**
      * Create a new instance.
      *
-     * @param e What {@link #e} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p The bottom left corner of the rectangle.
      * @param q The top left corner of the rectangle.
@@ -121,9 +119,9 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
-    public V3D_Rectangle(V3D_Environment e, V3D_Vector offset, V3D_Vector p,
+    public V3D_Rectangle(V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r, V3D_Vector s, int oom, RoundingMode rm) {
-        super(e, offset, p, q, r, oom, rm);
+        super(offset, p, q, r, oom, rm);
         /**
          * p and q get swapped if q is at the origin in defining the plane, in
          * which case {@link #pq} is now representing the reverse, and
@@ -172,7 +170,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     /**
      * Creates a new instance
      *
-     * @param p Used to initialise {@link #e}, {@link #offset} and {@link #p}.
+     * @param p Used to initialise {@link #offset} and {@link #p}.
      * @param q Used to initialise {@link #q}.
      * @param r Used to initialise {@link #r}.
      * @param s Used to initialise {@link #s}.
@@ -238,13 +236,13 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @return {@link #s} with {@link #offset} applied.
      */
     public V3D_Point getS() {
-        return new V3D_Point(e, offset, getSV());
+        return new V3D_Point(offset, getSV());
     }
 
     @Override
     public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
-            en = new V3D_Envelope(e, oom, rm, getP(), getQ(), getR(), getS());
+            en = new V3D_Envelope(oom, rm, getP(), getQ(), getR(), getS());
         }
         return en;
     }
@@ -271,7 +269,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     protected V3D_LineSegment getRS(int oom, RoundingMode rm) {
         //return new V3D_LineSegment(offset, rotate(r, theta), rotate(s, theta), oom);
-        return new V3D_LineSegment(e, offset, r, s, oom, rm);
+        return new V3D_LineSegment(offset, r, s, oom, rm);
     }
 
     /**
@@ -281,7 +279,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     protected V3D_LineSegment getSP(int oom, RoundingMode rm) {
         //return new V3D_LineSegment(offset, rotate(s, theta), rotate(pl, theta), oom);
-        return new V3D_LineSegment(e, offset, s, p, oom, rm);
+        return new V3D_LineSegment(offset, s, p, oom, rm);
     }
 
     @Override
@@ -307,16 +305,16 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             //if (V3D_Geometrics.isCoplanar(this, pt)) {
             // Check the areas
             // Area pqpt
-            BigDecimal apqpt = new V3D_Triangle(e, tp.getVector(oom, rm),
+            BigDecimal apqpt = new V3D_Triangle(tp.getVector(oom, rm),
                     tq.getVector(oom, rm), pt.getVector(oom, rm), oom, rm).getArea(oom, rm);
             // Area qrpt
-            BigDecimal aqrpt = new V3D_Triangle(e, tq.getVector(oom, rm),
+            BigDecimal aqrpt = new V3D_Triangle(tq.getVector(oom, rm),
                     tr.getVector(oom, rm), pt.getVector(oom, rm), oom, rm).getArea(oom, rm);
             // Area rspt
-            BigDecimal arspt = new V3D_Triangle(e, tr.getVector(oom, rm),
+            BigDecimal arspt = new V3D_Triangle(tr.getVector(oom, rm),
                     ts.getVector(oom, rm), pt.getVector(oom, rm), oom, rm).getArea(oom, rm);
             // Area sppt
-            BigDecimal asppt = new V3D_Triangle(e, ts.getVector(oom, rm),
+            BigDecimal asppt = new V3D_Triangle(ts.getVector(oom, rm),
                     tp.getVector(oom, rm), pt.getVector(oom, rm), oom, rm).getArea(oom, rm);
             if (this.getArea(oom, rm).compareTo(apqpt.add(aqrpt).add(arspt).add(asppt)) == 0) {
                 return true;
@@ -609,14 +607,14 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
                     return l1;
                 }
                 if (l1.getP().equals(l2.getP())) {
-                    return new V3D_LineSegment(e, offset, l1.q, l2.q, oom, rm);
+                    return new V3D_LineSegment(offset, l1.q, l2.q, oom, rm);
                 } else if (l1.getP().equals(l2.getQ())) {
-                    return new V3D_LineSegment(e, offset, l1.q, l2.l.p, oom, rm);
+                    return new V3D_LineSegment(offset, l1.q, l2.l.p, oom, rm);
                 } else if (l1.getQ().equals(l2.getP())) {
-                    return new V3D_LineSegment(e, offset, l1.l.p, l2.q, oom, rm);
+                    return new V3D_LineSegment(offset, l1.l.p, l2.q, oom, rm);
                 } else {
                     //if (l1.getQ(oom).equals(l2.getQ(oom))) {
-                    return new V3D_LineSegment(e, offset, l1.l.p, l2.l.p, oom, rm);
+                    return new V3D_LineSegment(offset, l1.l.p, l2.l.p, oom, rm);
                 }
             } else {
                 return l1;

@@ -67,7 +67,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
     /**
      * The origin of the Euclidean space.
      */
-    public static final V3D_Point ORIGIN = new V3D_Point(new V3D_Environment(), 0, 0, 0);
+    public static final V3D_Point ORIGIN = new V3D_Point(0, 0, 0);
 
     /**
      * The position relative to the {@link #offset}. Taken together with
@@ -81,7 +81,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param p The point to clone/duplicate.
      */
     public V3D_Point(V3D_Point p) {
-        super(p.e, new V3D_Vector(p.offset));
+        super(new V3D_Vector(p.offset));
         this.rel = new V3D_Vector(p.rel);
     }
 
@@ -89,36 +89,33 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
      *
-     * @param e What {@link #e} is set to.
      * @param rel Cloned to initialise {@link #rel}.
      */
-    public V3D_Point(V3D_Environment e, V3D_Vector rel) {
-        this(e, V3D_Vector.ZERO, rel);
+    public V3D_Point(V3D_Vector rel) {
+        this(V3D_Vector.ZERO, rel);
     }
 
     /**
      * Create a new instance.
      *
-     * @param e What {@link #e} is set to.
      * @param offset Cloned to initialise {@link #offset}.
      * @param rel Cloned to initialise {@link #rel}.
      */
-    public V3D_Point(V3D_Environment e, V3D_Vector offset, V3D_Vector rel) {
+    public V3D_Point(V3D_Vector offset, V3D_Vector rel) {
 //        super(new V3D_Vector(offset), Math.min(offset.getMagnitude().getOom(),
 //                rel.getMagnitude().getOom()));
         //super(e, new V3D_Vector(offset));
-        super(e, offset);
+        super(offset);
         this.rel = new V3D_Vector(rel);
     }
 
     /**
      * Create a new instance.
      *
-     * @param e What {@link #e} is set to.
      * @param p The point to clone/duplicate.
      */
-    public V3D_Point(V3D_Environment e, V3D_VPoint p) {
-        super(e, new V3D_Vector(p.offset));
+    public V3D_Point(V3D_VPoint p) {
+        super(new V3D_Vector(p.offset));
         this.rel = new V3D_Vector(p.rel);
     }
 
@@ -137,14 +134,13 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
      *
-     * @param e What {@link #e} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(V3D_Environment e, Math_BigRational x, Math_BigRational y,
+    public V3D_Point(Math_BigRational x, Math_BigRational y,
             Math_BigRational z) {
-        super(e, V3D_Vector.ZERO);
+        super(V3D_Vector.ZERO);
         this.rel = new V3D_Vector(x, y, z);
     }
 
@@ -152,14 +148,13 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
      *
-     * @param e What {@link #e} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(V3D_Environment e, BigDecimal x, BigDecimal y,
+    public V3D_Point(BigDecimal x, BigDecimal y,
             BigDecimal z) {
-        this(e, Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
+        this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
                 Math_BigRational.valueOf(z));
     }
 
@@ -167,13 +162,12 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
      *
-     * @param e What {@link #e} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(V3D_Environment e, double x, double y, double z) {
-        this(e, Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
+    public V3D_Point(double x, double y, double z) {
+        this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
                 Math_BigRational.valueOf(z));
     }
 
@@ -181,13 +175,12 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
      *
-     * @param e What {@link #e} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(V3D_Environment e, long x, long y, long z) {
-        this(e, Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
+    public V3D_Point(long x, long y, long z) {
+        this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
                 Math_BigRational.valueOf(z));
     }
 
@@ -359,7 +352,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
 
     @Override
     public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
-        return new V3D_Envelope(e, oom, rm, this);
+        return new V3D_Envelope(oom, rm, this);
     }
 
     /**
@@ -458,11 +451,11 @@ public class V3D_Point extends V3D_FiniteGeometry {
             int oom, RoundingMode rm) {
         V3D_Vector rrel;
         if (theta.compareTo(Math_BigRational.ZERO) == 1) {
-            rrel = rel.rotate(axisOfRotation, theta, e.bd, oom, rm);
+            rrel = rel.rotate(axisOfRotation, theta, V3D_Environment.bd, oom, rm);
         } else {
             rrel = new V3D_Vector(rel);
         }
-        return new V3D_Point(e, offset, rrel);
+        return new V3D_Point(offset, rrel);
 //        V3D_Vector relt = rel.rotate(axisOfRotation, theta, bI, oom);
 //        offset = offset.subtract(rel.subtract(relt, oom), oom);
     }

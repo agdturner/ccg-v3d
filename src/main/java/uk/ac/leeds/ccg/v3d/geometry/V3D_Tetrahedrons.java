@@ -29,7 +29,7 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
      * individually.
      */
     public V3D_Tetrahedrons(V3D_Tetrahedron... tetrahedrons) {
-        super(tetrahedrons[0].e, tetrahedrons[0].offset);
+        super(tetrahedrons[0].offset);
         this.tetrahedrons = new ArrayList<>();
         this.tetrahedrons.addAll(Arrays.asList(tetrahedrons));
     }

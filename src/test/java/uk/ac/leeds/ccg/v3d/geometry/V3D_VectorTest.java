@@ -691,7 +691,7 @@ public class V3D_VectorTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         Math_BigRational s = Math_BigRational.TWO;
         V3D_Vector instance = V3D_Vector.I;
-        V3D_Vector expResult = new V3D_Vector(new V3D_Point(e, 0.5d, 0d, 0d), -2, rm);
+        V3D_Vector expResult = new V3D_Vector(new V3D_Point(0.5d, 0d, 0d), -2, rm);
         V3D_Vector result = instance.divide(s, oom, rm);
         assertTrue(expResult.equals(result));
     }
@@ -712,7 +712,7 @@ public class V3D_VectorTest extends V3D_Test {
         v = V3D_Vector.I;
         instance = V3D_Vector.J;
         result = instance.getAngle(v, oom, rm);
-        expResult = Math_BigRational.valueOf(e.bd.getPiBy2(oom, rm));
+        expResult = Math_BigRational.valueOf(V3D_Environment.bd.getPiBy2(oom, rm));
         assertTrue(expResult.equals(result));
     }
 

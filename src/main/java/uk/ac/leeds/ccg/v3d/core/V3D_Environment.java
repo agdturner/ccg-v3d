@@ -18,7 +18,6 @@ package uk.ac.leeds.ccg.v3d.core;
 import java.io.Serializable;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigInteger;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
@@ -28,6 +27,8 @@ import uk.ac.leeds.ccg.math.number.Math_BigRational;
  * @version 1.0
  */
 public class V3D_Environment implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
     /**
      * 0
@@ -57,7 +58,7 @@ public class V3D_Environment implements Serializable {
     /**
      * An instance that helps with calculations involving PI and Taylor series.
      */
-    public final transient Math_BigDecimal bd;
+    public static final Math_BigDecimal bd = new Math_BigDecimal();
     
     /**
      * The default Order of Magnitude.
@@ -73,16 +74,5 @@ public class V3D_Environment implements Serializable {
      * Creates a new instance.
      */
     public V3D_Environment(){
-        bd = new Math_BigDecimal();
     }
-    
-    /**
-     * Creates a new instance.
-     *
-     * @param bd What {@link #bd} is set to.
-     */
-    public V3D_Environment(Math_BigDecimal bd) {
-        this.bd = bd;
-    }
-    
 }

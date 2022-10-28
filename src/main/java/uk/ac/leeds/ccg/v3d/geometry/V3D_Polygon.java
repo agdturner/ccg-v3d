@@ -60,7 +60,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      */
     public V3D_Polygon(ArrayList<V3D_ConvexHullCoplanar> parts,
             ArrayList<V3D_ConvexHullCoplanar> holes) {
-        super(parts.get(0).triangles.get(0).e);
+        super();
         this.parts = parts;
         this.holes = holes;
     }
@@ -71,7 +71,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      * @param parts A non-empty list of coplanar triangles.
      */
     public V3D_Polygon(V3D_Triangle... parts) {
-        super(parts[0].e);
+        super();
         this.parts = new ArrayList<>();
         this.holes = null;
     }
