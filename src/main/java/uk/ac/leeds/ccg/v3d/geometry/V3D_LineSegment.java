@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of a finite length line (a line segment). The line begins
@@ -1060,10 +1059,11 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_LineSegment rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
+    public V3D_LineSegment rotate(V3D_Line axis, Math_BigRational theta, 
+            int oom, RoundingMode rm) {
         return new V3D_LineSegment(
-                getP().rotate(axisOfRotation, theta, oom, rm),
-                getQ().rotate(axisOfRotation, theta, oom, rm), oom, rm);
+                getP().rotate(axis, theta, oom, rm),
+                getQ().rotate(axis, theta, oom, rm), oom, rm);
     }
 
     /**

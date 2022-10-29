@@ -277,17 +277,17 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
     }
     
     @Override
-    public V3D_Polygon rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+    public V3D_Polygon rotate(V3D_Line axis, Math_BigRational theta,
             int oom, RoundingMode rm) {
         ArrayList<V3D_ConvexHullCoplanar> rparts = new ArrayList<>();
         ArrayList<V3D_ConvexHullCoplanar> rholes = new ArrayList<>();
         if (holes != null ) {
         for (int i = 0; i < holes.size(); i ++) {
-            rholes.add(holes.get(i).rotate(axisOfRotation, theta, oom, rm));
+            rholes.add(holes.get(i).rotate(axis, theta, oom, rm));
         }
         }
         for (int i = 0; i < parts.size(); i ++) {
-            rparts.add(parts.get(i).rotate(axisOfRotation, theta, oom, rm));
+            rparts.add(parts.get(i).rotate(axis, theta, oom, rm));
         }
         return new V3D_Polygon(rparts, rholes);
     }

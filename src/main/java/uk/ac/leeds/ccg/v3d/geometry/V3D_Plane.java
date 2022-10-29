@@ -1779,25 +1779,10 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     @Override
-    public V3D_Plane rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
-        V3D_Plane r;
-        Math_BigRational twoPi = Math_BigRational.valueOf(V3D_Environment.bd.getPi(oom, rm)).multiply(2);
-        // Change a negative angle into a positive one.
-        while (theta.compareTo(Math_BigRational.ZERO) == -1) {
-            theta = theta.add(twoPi);
-        }
-        // Only rotate less than 2Pi radians.
-        while (theta.compareTo(twoPi) == 1) {
-            theta = theta.subtract(twoPi);
-        }
-        if (theta.compareTo(Math_BigRational.ZERO) == 1) {
-            V3D_Point rp = getP().rotate(axisOfRotation, theta, oom, rm);
-            n = n.rotate(axisOfRotation, theta, V3D_Environment.bd, oom, rm);
-            r = new V3D_Plane(rp, n);
-        } else {
-            r = new V3D_Plane(this);
-        }
-        return r;
+    public V3D_Plane rotate(V3D_Line axis, Math_BigRational theta, 
+            int oom, RoundingMode rm) {
+        return new V3D_Plane(getP().rotate(axis, theta, oom, rm),
+            n.rotate(axis.v.getUnitVector(oom, rm), theta, oom, rm));
     }
 
     /**

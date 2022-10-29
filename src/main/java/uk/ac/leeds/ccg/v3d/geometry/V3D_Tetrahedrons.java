@@ -108,11 +108,11 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
 //    }
 
     @Override
-     public V3D_Tetrahedrons rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+     public V3D_Tetrahedrons rotate(V3D_Line axis, Math_BigRational theta,
              int oom, RoundingMode rm) {
         V3D_Tetrahedron[] rls = new V3D_Tetrahedron[tetrahedrons.size()];
         for (int i = 0; i < tetrahedrons.size(); i ++) {
-            rls[0] = tetrahedrons.get(i).rotate(axisOfRotation, theta, oom, rm);
+            rls[0] = tetrahedrons.get(i).rotate(axis, theta, oom, rm);
         }
         return new V3D_Tetrahedrons(rls);
     }

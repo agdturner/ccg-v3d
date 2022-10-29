@@ -22,7 +22,6 @@ import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of an infinite length line. The line passes through the
@@ -98,6 +97,42 @@ public class V3D_Line extends V3D_Geometry {
      */
     public static final V3D_Line Z_AXIS = new V3D_Line(V3D_Vector.ZERO,
             V3D_Vector.K);
+
+    /**
+     * y=x.
+     */
+    public static final V3D_Line Y_EQUALS_X = new V3D_Line(V3D_Vector.ZERO,
+            V3D_Vector.IJ);
+
+    /**
+     * y=z.
+     */
+    public static final V3D_Line Y_EQUALS_Z = new V3D_Line(V3D_Vector.ZERO,
+            V3D_Vector.JK);
+
+    /**
+     * x=z.
+     */
+    public static final V3D_Line X_EQUALS_Z = new V3D_Line(V3D_Vector.ZERO,
+            V3D_Vector.IK);
+
+    /**
+     * y=-x.
+     */
+    public static final V3D_Line Y_EQUALS_nX = new V3D_Line(V3D_Vector.ZERO,
+            V3D_Vector.InJ);
+
+    /**
+     * y=-z.
+     */
+    public static final V3D_Line Y_EQUALS_nZ = new V3D_Line(V3D_Vector.ZERO,
+            V3D_Vector.JnK);
+
+    /**
+     * x=-z.
+     */
+    public static final V3D_Line X_EQUALS_nZ = new V3D_Line(V3D_Vector.ZERO,
+            V3D_Vector.InK);
 
     /**
      * Can be used to define a point relative to {@link #offset} that defines
@@ -1277,10 +1312,10 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     @Override
-    public V3D_Line rotate(V3D_Vector axisOfRotation, Math_BigRational theta, 
+    public V3D_Line rotate(V3D_Line axis, Math_BigRational theta, 
             int oom, RoundingMode rm) {
-        V3D_Point rp = getP().rotate(axisOfRotation, theta, oom, rm);
-        V3D_Vector rv = v.rotate(axisOfRotation, theta, V3D_Environment.bd, oom, rm);
+        V3D_Point rp = getP().rotate(axis, theta, oom, rm);
+        V3D_Vector rv = v.rotate(axis.v.getUnitVector(oom, rm), theta, oom, rm);
         return new V3D_Line(rp, rv);
     }
 

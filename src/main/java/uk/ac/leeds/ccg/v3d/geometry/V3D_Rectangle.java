@@ -792,13 +792,13 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public V3D_Rectangle rotate(V3D_Vector axisOfRotation, 
+    public V3D_Rectangle rotate(V3D_Line axis, 
             Math_BigRational theta, int oom, RoundingMode rm) {
         return new V3D_Rectangle(
-                getP().rotate(axisOfRotation, theta, oom, rm),
-                getQ().rotate(axisOfRotation, theta, oom, rm),
-                getR().rotate(axisOfRotation, theta, oom, rm),
-                getS().rotate(axisOfRotation, theta, oom, rm), oom, rm);
+                getP().rotate(axis, theta, oom, rm),
+                getQ().rotate(axis, theta, oom, rm),
+                getR().rotate(axis, theta, oom, rm),
+                getS().rotate(axis, theta, oom, rm), oom, rm);
     }
 
     @Override

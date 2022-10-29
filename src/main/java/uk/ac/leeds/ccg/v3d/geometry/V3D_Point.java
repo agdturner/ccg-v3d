@@ -441,23 +441,35 @@ public class V3D_Point extends V3D_FiniteGeometry {
     /**
      * Rotates the point about {@link offset}.
      *
-     * @param axisOfRotation The axis of rotation.
+     * @param axis The axis of rotation.
      * @param theta The angle of rotation.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
      */
     @Override
-    public V3D_Point rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+    public V3D_Point rotate(V3D_Line axis, Math_BigRational theta,
             int oom, RoundingMode rm) {
-        V3D_Vector rrel;
-        if (theta.compareTo(Math_BigRational.ZERO) == 1) {
-            rrel = rel.rotate(axisOfRotation, theta, V3D_Environment.bd, oom, rm);
-        } else {
-            rrel = new V3D_Vector(rel);
+        Math_BigRational twoPi = Math_BigRational.valueOf(
+                V3D_Environment.bd.getPi(oom, rm)).multiply(2);
+        // Change a negative angle into a positive one.
+        while (theta.compareTo(Math_BigRational.ZERO) == -1) {
+            theta = theta.add(twoPi);
         }
-        return new V3D_Point(offset, rrel);
-//        V3D_Vector relt = rel.rotate(axisOfRotation, theta, bI, oom);
-//        offset = offset.subtract(rel.subtract(relt, oom), oom);
+        // Only rotate less than 2Pi radians.
+        while (theta.compareTo(twoPi) == 1) {
+            theta = theta.subtract(twoPi);
+        }
+        if (theta.compareTo(Math_BigRational.ZERO) == 0) {
+            return new V3D_Point(this);
+        }
+        V3D_Vector tv = axis.getP().getVector(oom, rm);
+        V3D_Point tp = new V3D_Point(this);
+        tp.translate(tv, oom, rm);
+        V3D_Vector rv = axis.v.getUnitVector(oom, rm);
+        V3D_Vector tpr = tp.getVector(oom, rm).rotate(rv, theta, oom, rm);
+        V3D_Point r = new V3D_Point(tpr);
+        r.translate(tv.reverse(), oom, rm);
+        return r;
     }
     
     /**

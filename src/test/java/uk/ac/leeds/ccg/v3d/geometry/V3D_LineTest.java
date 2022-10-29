@@ -950,7 +950,7 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testRotate() {
         System.out.println("rotate");
-        V3D_Vector axisOfRotation = new V3D_Vector(1, 0, 0);
+        V3D_Line axis = V3D_Line.X_AXIS;
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         int oomt = oom - 2;
@@ -959,28 +959,26 @@ public class V3D_LineTest extends V3D_Test {
         Math_BigRational theta = Pi.divide(2);
         V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
         V3D_Line expResult = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-        V3D_Line result = instance.rotate(axisOfRotation, theta, oom, rm);
+        V3D_Line result = instance.rotate(axis, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 2
-        axisOfRotation = new V3D_Vector(0, 1, 0).getUnitVector(oom, rm);
+        axis = new V3D_Line(pP0P0P0, V3D_Vector.J);
         theta = Pi.divide(2);
         instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
         expResult = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
-        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axis, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 3
-        axisOfRotation = new V3D_Vector(0, 1, 0).getUnitVector(oom, rm);
         theta = Pi.divide(2);
         instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(5, 0, 0), oom, rm);
         expResult = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, 5), oom, rm);
-        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axis, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 4
-        axisOfRotation = new V3D_Vector(0, 1, 0).getUnitVector(oom, rm);
         theta = Pi;
         instance = new V3D_Line(new V3D_Vector(3, 2, 0), new V3D_Vector(5, 0, 0), oom, rm);
         expResult = new V3D_Line(new V3D_Vector(-3, 2, 0), new V3D_Vector(-5, 0, 0), oom, rm);
-        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axis, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
 

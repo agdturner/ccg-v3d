@@ -19,7 +19,6 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import java.io.Serializable;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.number.Math_Quaternion_BigRational;
@@ -725,17 +724,17 @@ public class V3D_Vector implements Serializable {
      * rotate a vector by a unit quaternion?, URL (version: 2019-06-12):
      * https://math.stackexchange.com/q/535223)
      *
-     * @param axisOfRotation The axis of rotation. This should be a unit vector
+     * @param axis The axis of rotation. This should be a unit vector
      * accurate to a sufficient precision.
      * @param theta The angle of rotation.
-     * @param bd For the Taylor series for trigonometry calculations.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The vector which is {@code #this} rotated using the parameters.
      */
-    public V3D_Vector rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
-            Math_BigDecimal bd, int oom, RoundingMode rm) {
-        Math_BigRational twoPi = Math_BigRational.valueOf(bd.getPi(oom, rm)).multiply(2);
+    public V3D_Vector rotate(V3D_Vector axis, Math_BigRational theta,
+            int oom, RoundingMode rm) {
+        Math_BigRational twoPi = Math_BigRational.valueOf(
+                V3D_Environment.bd.getPi(oom, rm)).multiply(2);
         // Change a negative angle into a positive one.
         while (theta.compareTo(Math_BigRational.ZERO) == -1) {
             theta = theta.add(twoPi);
@@ -746,12 +745,14 @@ public class V3D_Vector implements Serializable {
         }
         if (theta.compareTo(Math_BigRational.ZERO) == 1) {
             int oomn2 = oom - 6;
-            Math_BigRational adx = axisOfRotation.getDX(oomn2, rm);
-            Math_BigRational ady = axisOfRotation.getDY(oomn2, rm);
-            Math_BigRational adz = axisOfRotation.getDZ(oomn2, rm);
+            Math_BigRational adx = axis.getDX(oomn2, rm);
+            Math_BigRational ady = axis.getDY(oomn2, rm);
+            Math_BigRational adz = axis.getDZ(oomn2, rm);
             Math_BigRational thetaDiv2 = theta.divide(2);
-            Math_BigRational sinThetaDiv2 = thetaDiv2.sin(bd.getBi(), oomn2, rm);
-            Math_BigRational w = thetaDiv2.cos(bd.getBi(), oomn2, rm);
+            Math_BigRational sinThetaDiv2 = thetaDiv2.sin(
+                    V3D_Environment.bd.getBi(), oomn2, rm);
+            Math_BigRational w = thetaDiv2.cos(
+                    V3D_Environment.bd.getBi(), oomn2, rm);
             Math_BigRational x = sinThetaDiv2.multiply(adx);
             Math_BigRational y = sinThetaDiv2.multiply(ady);
             Math_BigRational z = sinThetaDiv2.multiply(adz);

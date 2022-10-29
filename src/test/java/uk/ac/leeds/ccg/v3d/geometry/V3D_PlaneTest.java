@@ -3622,42 +3622,42 @@ public class V3D_PlaneTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         Math_BigRational Pi = Math_BigRational.valueOf(
                 new Math_BigDecimal().getPi(oom, RoundingMode.HALF_UP));
-        V3D_Vector axisOfRotation = V3D_Vector.I;
+        V3D_Line axis = V3D_Line.X_AXIS;
         Math_BigRational theta = Pi.divide(2);
         V3D_Plane instance = new V3D_Plane(V3D_Plane.X0);
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        instance.rotate(axis, theta, oom, rm);
         assertTrue(V3D_Plane.X0.equalsIgnoreOrientation(instance, oom, rm));
         // Test 2
-        axisOfRotation = V3D_Vector.J;
+        axis = V3D_Line.Y_AXIS;
         instance = new V3D_Plane(V3D_Plane.X0);
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        instance.rotate(axis, theta, oom, rm);
         assertTrue(V3D_Plane.Z0.equalsIgnoreOrientation(instance, oom, rm));
         // Test 3
-        axisOfRotation = V3D_Vector.K;
+        axis = V3D_Line.Z_AXIS;
         instance = new V3D_Plane(V3D_Plane.X0);
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        instance.rotate(axis, theta, oom, rm);
         assertTrue(V3D_Plane.Y0.equalsIgnoreOrientation(instance, oom, rm));
         // Test 4
-        axisOfRotation = V3D_Vector.I;
+        axis = V3D_Line.X_AXIS;
         theta = Pi;
         instance = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm);
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        instance.rotate(axis, theta, oom, rm);
         assertTrue(new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm).equalsIgnoreOrientation(instance, oom, rm));
         // Test 5
         oom = -6;
-        axisOfRotation = V3D_Vector.J;
+        axis = V3D_Line.Y_AXIS;
         Pi = Math_BigRational.valueOf(
                 new Math_BigDecimal().getPi(oom - 2, RoundingMode.HALF_UP));
         theta = Pi;
         instance = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm);
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        instance.rotate(axis, theta, oom, rm);
         V3D_Plane expResult = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2N2, oom, rm);
         assertTrue(expResult.equalsIgnoreOrientation(instance, oom, rm));
         // Test 5
-        axisOfRotation = V3D_Vector.K;
+        axis = V3D_Line.Z_AXIS;
         theta = Pi;
         instance = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm);
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        instance.rotate(axis, theta, oom, rm);
         expResult = new V3D_Plane(P1P0P0, P0P0P0, P0N2P0, P0N2P2, oom, rm);
         assertTrue(expResult.equalsIgnoreOrientation(instance, oom, rm));
     }

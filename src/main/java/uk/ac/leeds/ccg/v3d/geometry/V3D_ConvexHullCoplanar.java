@@ -526,11 +526,11 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 //        return getEnvelope().isIntersectedBy(l, oom);
 //    }
     @Override
-    public V3D_ConvexHullCoplanar rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+    public V3D_ConvexHullCoplanar rotate(V3D_Line axis, Math_BigRational theta,
             int oom, RoundingMode rm) {
         V3D_Triangle[] rts = new V3D_Triangle[triangles.size()];
         for (int i = 0; i < triangles.size(); i++) {
-            rts[0] = triangles.get(i).rotate(axisOfRotation, theta, oom, rm);
+            rts[0] = triangles.get(i).rotate(axis, theta, oom, rm);
         }
         return new V3D_ConvexHullCoplanar(oom, rm, rts);
     }

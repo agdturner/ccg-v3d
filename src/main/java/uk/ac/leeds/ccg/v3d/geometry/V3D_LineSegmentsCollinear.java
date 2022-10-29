@@ -553,10 +553,11 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_LineSegmentsCollinear rotate(V3D_Vector axisOfRotation, Math_BigRational theta, int oom, RoundingMode rm) {
+    public V3D_LineSegmentsCollinear rotate(V3D_Line axis, 
+            Math_BigRational theta, int oom, RoundingMode rm) {
         V3D_LineSegment[] rls = new V3D_LineSegment[lineSegments.size()];
         for (int i = 0; i < lineSegments.size(); i++) {
-            rls[0] = lineSegments.get(i).rotate(axisOfRotation, theta, oom, rm);
+            rls[0] = lineSegments.get(i).rotate(axis, theta, oom, rm);
         }
         return new V3D_LineSegmentsCollinear(rls);
     }

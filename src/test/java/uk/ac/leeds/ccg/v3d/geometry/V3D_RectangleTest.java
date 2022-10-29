@@ -645,10 +645,10 @@ public class V3D_RectangleTest extends V3D_Test {
         System.out.println("rotate");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Vector axisOfRotation = V3D_Vector.I;
+        V3D_Line axis = V3D_Line.X_AXIS;
         Math_BigRational theta = Math_BigRational.ZERO;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        instance.rotate(axisOfRotation, theta, oom, rm);
+        instance.rotate(axis, theta, oom, rm);
         V3D_Rectangle instance2 = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
         assertTrue(instance.equals(instance2, oom, rm));
     }

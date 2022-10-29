@@ -686,11 +686,11 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
     }
 
     @Override
-    public V3D_Ray rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+    public V3D_Ray rotate(V3D_Line axis, Math_BigRational theta,
             int oom, RoundingMode rm) {
         V3D_Ray r;
         if (theta.compareTo(Math_BigRational.ZERO) == 1) {
-            V3D_Line rl = this.l.rotate(axisOfRotation, theta, oom, rm);
+            V3D_Line rl = this.l.rotate(axis, theta, oom, rm);
             r = new V3D_Ray(rl);
         } else {
             r = new V3D_Ray(this);

@@ -1156,12 +1156,12 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public V3D_Triangle rotate(V3D_Vector axisOfRotation, Math_BigRational theta,
+    public V3D_Triangle rotate(V3D_Line axis, Math_BigRational theta,
             int oom, RoundingMode rm) {
         return new V3D_Triangle(
-                getP().rotate(axisOfRotation, theta, oom, rm),
-                getQ().rotate(axisOfRotation, theta, oom, rm),
-                getR().rotate(axisOfRotation, theta, oom, rm), oom, rm);
+                getP().rotate(axis, theta, oom, rm),
+                getQ().rotate(axis, theta, oom, rm),
+                getR().rotate(axis, theta, oom, rm), oom, rm);
     }
 
     /**
