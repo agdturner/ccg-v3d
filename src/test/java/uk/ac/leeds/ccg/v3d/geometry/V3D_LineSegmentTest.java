@@ -24,6 +24,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
@@ -359,6 +360,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         // Test 2
         instance = pN1N1P0;
         result = l.getDistance(instance, oom, rm);
+        expResult = new Math_BigRationalSqrt(2, oom, rm).getSqrt(oom, rm).toBigDecimal(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         instance = pP2P2P0;

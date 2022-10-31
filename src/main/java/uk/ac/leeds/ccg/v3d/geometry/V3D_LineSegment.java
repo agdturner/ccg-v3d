@@ -192,8 +192,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     @Override
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
         super.translate(v, oom, rm);
-        //l.translate(v, oom, rm);
-        l.offset = offset;
+        l.translate(v, oom, rm);
         if (ppl != null) {
             ppl.translate(v, oom, rm);
         }
@@ -595,7 +594,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         return tp;
                     } else {
                         // Cases: 9, 20
-                        return new V3D_LineSegment(lp, tp, oom, rm);
+                        return V3D_LineSegment.getGeometry(lp, tp, oom, rm);
                     }
                 } else {
                     // Cases: 1, 2, 8, 21, 27, 28
@@ -608,7 +607,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                             return lp;
                         }
                         // Cases: 2, 27
-                        return new V3D_LineSegment(lp, tq, oom, rm);
+                        return V3D_LineSegment.getGeometry(lp, tq, oom, rm);
                     }
                 }
             }
@@ -625,7 +624,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                             return this;
                         } else {
                             // Case: 23
-                            return new V3D_LineSegment(lq, tp, oom, rm);
+                            return V3D_LineSegment.getGeometry(lq, tp, oom, rm);
                         }
                     } else {
                         // Cases: 6, 7, 22, 
@@ -634,7 +633,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                             return tp;
                         } else {
                             // Case: 6
-                            return new V3D_LineSegment(tp, lq, oom, rm);
+                            return V3D_LineSegment.getGeometry(tp, lq, oom, rm);
                         }
                     }
                 } else {
@@ -647,7 +646,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                     } else {
                         // Case: 13
                         //return new V3D_LineSegment(e, l.q, ls.l.q);
-                        return new V3D_LineSegment(tq, lq, oom, rm);
+                        return V3D_LineSegment.getGeometry(tq, lq, oom, rm);
                     }
 //                    } else {
 //                        // Cases:                    
@@ -720,7 +719,10 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
     
     /**
-     * Is pt in line with this?
+     * Calculates and returns if pt is in line with this. It is in line if it is
+     * between the planes defined by the ends of the line segment with the
+     * normal vector as the vector of the line.
+     * 
      * @param pt The point. 
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -734,7 +736,10 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
     
     /**
-     * Is l in line with this?
+     * Calculates and returns if l is in line with this. It is in line if both 
+     * end points of l are in line with this as according to
+     * {@link #isAligned(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int, java.math.RoundingMode)}.
+     * 
      * @param l The line segment. 
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.

@@ -64,6 +64,12 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
     public V3D_Line l;
 
     /**
+     * For storing the plane at {@link #l} p with normal in direction of the 
+     * ray vector.
+     */
+    private V3D_Plane pl;
+    
+    /**
      * Create a new instance.
      *
      * @param r What {@code this} is created from.
@@ -189,6 +195,17 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
     @Override
     protected String toStringFieldsSimple(String pad) {
         return pad + l.toStringFieldsSimple(pad);
+    }
+    
+    /**
+     * For initialising and getting {@link #pl}.
+     * @return {@link #pl} initialised first if {@code null}.
+     */
+    public V3D_Plane getPl() {
+        if (pl == null) {
+            pl = new V3D_Plane(l.getP(), l.v);
+        }
+        return pl;
     }
 
     /**
@@ -636,54 +653,53 @@ public class V3D_Ray extends V3D_Geometry implements V3D_Intersection {
         if (g == null) {
             return null;
         } else if (g instanceof V3D_Point pt) {
-            V3D_Plane pl = new V3D_Plane(l.getP(), l.v);
+            pl = getPl();
             if (pl.isOnSameSide(pt, ls.getQ(), oom, rm)) {
                 return pt;
             } else {
                 return null;
             }
         } else {
-            V3D_Ray r = (V3D_Ray) g;
-            V3D_Point rp = r.l.getP();
-            V3D_Point rq = r.l.getQ(oom, rm);
+            V3D_Point rp = l.getP();
+            V3D_Point rq = l.getQ(oom, rm);
             V3D_Point lsp = ls.getP();
             V3D_Point lsq = ls.getQ();
-            V3D_Plane pl = new V3D_Plane(rp, r.l.v);
+            pl = getPl();
             if (pl.isOnSameSide(rq, lsp, oom, rm)) {
                 if (pl.isOnSameSide(rq, lsq, oom, rm)) {
                     return ls;
                 } else {
-                    if (lsp.equals(rp, oom, rm)) {
-                        return rp;
-                    }
-                    return new V3D_LineSegment(lsp, rp, oom, rm);
+                    return V3D_LineSegment.getGeometry(rp, lsp, oom, rm);
                 }
             } else {
                 if (pl.isOnSameSide(rq, lsq, oom, rm)) {
-                    if (lsq.equals(rp, oom, rm)) {
-                        return rp;
-                    }
-                    return new V3D_LineSegment(lsq, rp, oom, rm);
+                    return V3D_LineSegment.getGeometry(rp, lsq, oom, rm);
                 } else {
+                    if (isIntersectedBy(lsp, oom, rm)) {
+                        return lsp;
+                    }
+                    if (isIntersectedBy(lsq, oom, rm)) {
+                        return lsq;
+                    }
                     return null;
                 }
             }
         }
     }
 
-    /**
-     * Translate (move relative to the origin).
-     *
-     * @param v The vector to translate.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     */
-    @Override
-    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
-        super.translate(v, oom, rm);
-        l.offset = offset;
-        //l.translate(v, oom, rm);
-    }
+//    /**
+//     * Translate (move relative to the origin).
+//     *
+//     * @param v The vector to translate.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode if rounding is needed.
+//     */
+//    @Override
+//    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+//        super.translate(v, oom, rm);
+//        l.offset = offset;
+//        //l.translate(v, oom, rm);
+//    }
 
     @Override
     public V3D_Ray rotate(V3D_Line axis, Math_BigRational theta,

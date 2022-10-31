@@ -1771,12 +1771,12 @@ public class V3D_Plane extends V3D_Geometry {
         }
     }
 
-    @Override
-    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
-        p = p.add(v, oom, rm);
-//        q = q.add(v, oom, rm);
-//        r = r.add(v, oom, rm);
-    }
+//    @Override
+//    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+//        p = p.add(v, oom, rm);
+////        q = q.add(v, oom, rm);
+////        r = r.add(v, oom, rm);
+//    }
 
     @Override
     public V3D_Plane rotate(V3D_Line axis, Math_BigRational theta, 
@@ -1826,22 +1826,57 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public boolean isOnSameSide(V3D_Point a, V3D_Point b, int oom, RoundingMode rm) {
         //n = getN(oom, rm);
+        boolean aq = false;
         V3D_Vector av = a.getVector(oom, rm);
-        V3D_Vector pv = this.getP().getVector(oom, rm);
-        //int avd = n.getDotProduct(av.add(this.pl.reverse(), oom), oom).compareTo(Math_BigRational.ZERO);
-        int avd = n.getDotProduct(pv.subtract(av, oom, rm), oom, rm).compareTo(Math_BigRational.ZERO);
-        //int avd = this.pl.add(av.reverse(), oom).getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+        V3D_Vector pv = getP().getVector(oom, rm);
+        V3D_Vector avpv = pv.subtract(av, oom, rm);
+        if (avpv.isZeroVector()) {
+            pv = getQ(pv, oom, rm).getVector(oom, rm);
+            avpv = pv.subtract(av, oom, rm);
+            aq = true;
+        }
+        int avd = n.getDotProduct(avpv, oom, rm).compareTo(Math_BigRational.ZERO);
         if (avd == 0) {
             return true;
-        } else {
-            V3D_Vector bv = b.getVector(oom, rm);
-            int bvd = n.getDotProduct(pv.subtract(bv, oom, rm), oom, rm).compareTo(Math_BigRational.ZERO);
-            //int bvd = this.pl.add(bv.reverse(), oom).getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
-            if (bvd == 0) {
-                return true;
-            }
-            return avd == bvd;
+        }        
+        boolean bq = false;
+        V3D_Vector bv = b.getVector(oom, rm);
+        V3D_Vector bvpv = pv.subtract(bv, oom, rm);
+        if (bvpv.isZeroVector()) {
+            pv = getQ(pv, oom, rm).getVector(oom, rm);
+            bvpv = pv.subtract(bv, oom, rm);
+            bq = true;
         }
+        int bvd = n.getDotProduct(bvpv, oom, rm).compareTo(Math_BigRational.ZERO);
+        if (bvd == 0) {
+            return true;
+        }
+        if (aq && bq) {
+            avpv = pv.subtract(av, oom, rm);
+            avd = n.getDotProduct(avpv, oom, rm).compareTo(Math_BigRational.ZERO);
+        }
+        return avd == bvd;
+        
+//        //int avd = n.getDotProduct(av.add(this.pl.reverse(), oom), oom).compareTo(Math_BigRational.ZERO);
+//        int avd = n.getDotProduct(pv.subtract(av, oom, rm), oom, rm).compareTo(Math_BigRational.ZERO);
+//        //int avd = this.pl.add(av.reverse(), oom).getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+//        
+//        V3D_Vector bv = b.getVector(oom, rm);
+//        int bvd = n.getDotProduct(pv.subtract(bv, oom, rm), oom, rm).compareTo(Math_BigRational.ZERO);
+//
+//        return avd == bvd;
+
+//        if (avd == 0) {
+//            return true;
+//        } else {
+//            V3D_Vector bv = b.getVector(oom, rm);
+//            int bvd = n.getDotProduct(pv.subtract(bv, oom, rm), oom, rm).compareTo(Math_BigRational.ZERO);
+//            //int bvd = this.pl.add(bv.reverse(), oom).getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
+//            if (bvd == 0) {
+//                return true;
+//            }
+//            return avd == bvd;
+//        }
     }
 
     /**

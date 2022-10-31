@@ -106,29 +106,28 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
     @Override
     public V3D_Point[] getPoints(int oom, RoundingMode rm) {
         int np = 0;
-        for (var x: parts) {
+        for (var x : parts) {
             np += x.points.size();
         }
-        for (var x: holes) {
+        for (var x : holes) {
             np += x.points.size();
         }
         V3D_Point[] r = new V3D_Point[np];
         int i = 0;
-        for (var x: parts) {
-            for(var y: x.points) {
+        for (var x : parts) {
+            for (var y : x.points) {
                 r[i] = new V3D_Point(y);
-                i ++;
+                i++;
             }
         }
-        for (var x: holes) {
-            for(var y: x.points) {
+        for (var x : holes) {
+            for (var y : x.points) {
                 r[i] = new V3D_Point(y);
-                i ++;
+                i++;
             }
         }
         return r;
     }
-    
 
 //    @Override
 //    public boolean equals(Object o) {
@@ -242,7 +241,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
         }
         return false;
     }
-    
+
     /**
      * This sums all the areas irrespective of any overlaps.
      *
@@ -275,18 +274,34 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
 //        }
 //        return sum;
     }
-    
+
+    @Override
+    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        super.translate(v, oom, rm);
+        if (en != null) {
+            en.translate(v, oom, rm);
+        }
+        if (holes != null) {
+            for (int i = 0; i < holes.size(); i++) {
+                holes.get(i).translate(v, oom, rm);
+            }
+        }
+        for (int i = 0; i < parts.size(); i++) {
+            parts.get(i).translate(v, oom, rm);
+        }
+    }
+
     @Override
     public V3D_Polygon rotate(V3D_Line axis, Math_BigRational theta,
             int oom, RoundingMode rm) {
         ArrayList<V3D_ConvexHullCoplanar> rparts = new ArrayList<>();
         ArrayList<V3D_ConvexHullCoplanar> rholes = new ArrayList<>();
-        if (holes != null ) {
-        for (int i = 0; i < holes.size(); i ++) {
-            rholes.add(holes.get(i).rotate(axis, theta, oom, rm));
+        if (holes != null) {
+            for (int i = 0; i < holes.size(); i++) {
+                rholes.add(holes.get(i).rotate(axis, theta, oom, rm));
+            }
         }
-        }
-        for (int i = 0; i < parts.size(); i ++) {
+        for (int i = 0; i < parts.size(); i++) {
             rparts.add(parts.get(i).rotate(axis, theta, oom, rm));
         }
         return new V3D_Polygon(rparts, rholes);
@@ -306,7 +321,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
             for (var x : parts) {
                 pts.addAll(x.points);
             }
-            convexHull = new V3D_ConvexHullCoplanar(oom, rm, 
+            convexHull = new V3D_ConvexHullCoplanar(oom, rm,
                     parts.get(0).triangles.get(0).pl.n,
                     pts.toArray(V3D_Point[]::new));
         }

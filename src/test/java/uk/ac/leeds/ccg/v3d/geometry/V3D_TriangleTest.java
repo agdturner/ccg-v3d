@@ -144,7 +144,7 @@ public class V3D_TriangleTest extends V3D_Test {
 //     * Test of isIntersectedBy method, of class V3D_Triangle.
 //     */
 //    @Test
-//    public void testIsIntersectedBy_V3D_LineSegment_int() {
+//    public void testIsIntersectedBy_V3D_LineSegment() {
 //        System.out.println("isIntersectedBy");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
@@ -211,18 +211,25 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Geometry expResult = new V3D_LineSegment(pP1P0P0, pP1P1P0, oom, rm);
         V3D_Geometry result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
+        System.out.println("getIntersection");
+        // Test 2
+        instance = new V3D_Triangle(P0P0P0, P1P0P0, P1P2P0, P2P0P0, oom, rm);
+        l = new V3D_Line(pP1P0P1, pP1P0N1, oom, rm);
+        result = instance.getIntersection(l, oom, rm);
+        expResult = pP1P0P0;
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+        // Test 3
+        l = new V3D_Line(pP1P0P0, pP2P0P0, oom, rm);
+        expResult = new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm);
+        result = instance.getIntersection(l, oom, rm);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
+        // Test 4
+        l = new V3D_Line(pP1P0P0, pP2P0P0, oom, rm);
+        expResult = new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm);
+        result = instance.getIntersection(l, oom, rm);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
     }
 
-//    /**
-//     * Test of isEnvelopeIntersectedBy method, of class V3D_Triangle.
-//     */
-//    @Test
-//    public void testIsEnvelopeIntersectedBy() {
-//        System.out.println("isEnvelopeIntersectedBy");
-//        V3D_Line l = new V3D_Line(pP1N1P0, pP1P2P0);
-//        V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP1P1P0, pP2P0P0);
-//        assertTrue(instance.isEnvelopeIntersectedBy(l, oom, rm));
-//    }
     /**
      * Test of getCentroid method, of class V3D_Triangle.
      */
@@ -270,7 +277,7 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Triangle.
      */
     @Test
-    public void testIsIntersectedBy_V3D_Point_int() {
+    public void testIsIntersectedBy_V3D_Point() {
         System.out.println("isIntersectedBy");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -310,7 +317,7 @@ public class V3D_TriangleTest extends V3D_Test {
 
     /**
      * Test of isIntersectedBy0 method, of class V3D_Triangle covered by
-     * {@link #testIsIntersectedBy_V3D_Point_int()}.
+     * {@link #testIsIntersectedBy_V3D_Point()}.
      */
     @Test
     public void testIsIntersectedBy0() {
@@ -329,37 +336,7 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Triangle.
      */
     @Test
-    public void testGetIntersection_V3D_Line_int() {
-        System.out.println("getIntersection");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line l;
-        V3D_Triangle instance;
-        V3D_Geometry expResult;
-        V3D_Geometry result;
-        // Test 1
-        instance = new V3D_Triangle(P0P0P0, P1P0P0, P1P2P0, P2P0P0, oom, rm);
-        l = new V3D_Line(pP1P0P1, pP1P0N1, oom, rm);
-        result = instance.getIntersection(l, oom, rm);
-        expResult = pP1P0P0;
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 2
-        l = new V3D_Line(pP1P0P0, pP2P0P0, oom, rm);
-        expResult = new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm);
-        result = instance.getIntersection(l, oom, rm);
-        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
-        // Test 3
-        l = new V3D_Line(pP1P0P0, pP2P0P0, oom, rm);
-        expResult = new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm);
-        result = instance.getIntersection(l, oom, rm);
-        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
-    }
-
-    /**
-     * Test of getIntersection method, of class V3D_Triangle.
-     */
-    @Test
-    public void testGetIntersection_V3D_LineSegment_int() {
+    public void testGetIntersection_V3D_LineSegment() {
         System.out.println("getIntersection");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -436,7 +413,8 @@ public class V3D_TriangleTest extends V3D_Test {
         Math_BigRational theta;
         V3D_Triangle instance;
         V3D_Triangle expResult;
-        Math_BigRational Pi = Math_BigRational.valueOf(
+        Math_BigRational Pi;
+        Pi = Math_BigRational.valueOf(
                 new Math_BigDecimal().getPi(oom, RoundingMode.HALF_UP));
         // Test 1
         instance = new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0, oom, rm);
@@ -453,6 +431,8 @@ public class V3D_TriangleTest extends V3D_Test {
         assertTrue(expResult.equals(instance, oom, rm));
         // Test 3
         oom = -4;
+        Pi = Math_BigRational.valueOf(
+                new Math_BigDecimal().getPi(oom, RoundingMode.HALF_UP));
         instance = new V3D_Triangle(pP2P0P0, pP0P2P0, pP2P2P0, oom, rm);
         theta = Pi;
         instance = instance.rotate(axis, theta, oom, rm);
@@ -460,6 +440,8 @@ public class V3D_TriangleTest extends V3D_Test {
         assertTrue(expResult.equals(instance, oom, rm));
         // Test 4
         oom = -3;
+        Pi = Math_BigRational.valueOf(
+                new Math_BigDecimal().getPi(oom, RoundingMode.HALF_UP));
         instance = new V3D_Triangle(pP2P0P0, pP0P2P0, pP2P2P0, oom, rm);
         theta = Pi.divide(2);
         instance = instance.rotate(axis, theta, oom, rm);
@@ -470,56 +452,15 @@ public class V3D_TriangleTest extends V3D_Test {
         instance.translate(P1P0P0, oom, rm);
         theta = Pi;
         instance = instance.rotate(axis, theta, oom, rm);
-        expResult = new V3D_Triangle(pP1P0P0, pP0N1P0, pP1N1P0, oom, rm);
+        expResult = new V3D_Triangle(pP2P0P0, pP1N1P0, pP2N1P0, oom, rm);
         assertTrue(expResult.equals(instance, oom, rm));
-    }
-
-//    /**
-//     * Test of isIntersectedBy method, of class V3D_Triangle.
-//     */
-//    @Test
-//    public void testIsIntersectedBy_V3D_Triangle_int() {
-//        System.out.println("isIntersectedBy");
-//        int oom = -3;
-//        RoundingMode rm = RoundingMode.HALF_UP;
-//        V3D_Triangle t;
-//        V3D_Triangle instance;
-//        // Test 1
-//        t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
-//        instance = new V3D_Triangle(pP1P0P0, pP0P1P0, pP1P1P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(t, oom, rm));
-//        // Test 2
-//        t = new V3D_Triangle(pN1P0P0, pP0P1P0, pP1P0P0, oom, rm);
-//        instance = new V3D_Triangle(pN2P0P0, pP0P2P0, pP2P0P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(t, oom, rm));
-//    }
-
-    /**
-     * Test of checkSide method, of class V3D_Triangle.
-     */
-    @Test
-    public void testCheckSide() {
-        System.out.println("checkSide");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Triangle t = new V3D_Triangle(pN2P0P0, pP0P2P0, pP2P0P0, oom, rm);
-        V3D_Vector n = t.pl.n;
-        V3D_Triangle instance = new V3D_Triangle(pN2P1P0, pP0P2P0, pP2P1P0, oom, rm);
-        V3D_Vector v = instance.getRPV(oom, rm);
-        assertTrue(instance.checkSide(t, n, v, oom, rm));
-//        // Test 2
-//         t = new V3D_Triangle(pN2N2P0, pP0P0P0, pP2N2P0, oom, rm);
-//         n = t.pl.n;
-//         instance = new V3D_Triangle(pN2P2P0, pP0P1P0, pP2P2P0, oom, rm);
-//         v = instance.getRPV(oom, rm);
-//        assertFalse(instance.checkSide(t, n, v, oom, rm));
     }
 
     /**
      * Test of getIntersection method, of class V3D_Triangle.
      */
     @Test
-    public void testGetIntersection_V3D_Plane_int() {
+    public void testGetIntersection_V3D_Plane() {
         System.out.println("getIntersection");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -581,7 +522,7 @@ public class V3D_TriangleTest extends V3D_Test {
      * https://math.stackexchange.com/questions/1220102/how-do-i-find-the-intersection-of-two-3d-triangles
      */
     @Test
-    public void testGetIntersection_V3D_Triangle_int() {
+    public void testGetIntersection_V3D_Triangle() {
         System.out.println("getIntersection");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -859,7 +800,7 @@ public class V3D_TriangleTest extends V3D_Test {
 //     * Test of isIntersectedBy method, of class V3D_Triangle.
 //     */
 //    @Test
-//    public void testIsIntersectedBy_V3D_Plane_int() {
+//    public void testIsIntersectedBy_V3D_Plane() {
 //        System.out.println("isIntersectedBy");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
@@ -886,7 +827,7 @@ public class V3D_TriangleTest extends V3D_Test {
 //     * Test of isIntersectedBy method, of class V3D_Triangle.
 //     */
 //    @Test
-//    public void testIsIntersectedBy_V3D_Tetrahedron_int() {
+//    public void testIsIntersectedBy_V3D_Tetrahedron() {
 //        System.out.println("isIntersectedBy");
 //        V3D_Tetrahedron t = null;
 //        int oom = 0;
@@ -902,7 +843,7 @@ public class V3D_TriangleTest extends V3D_Test {
 //     * Test of getIntersection method, of class V3D_Triangle.
 //     */
 //    @Test
-//    public void testGetIntersection_V3D_Tetrahedron_int() {
+//    public void testGetIntersection_V3D_Tetrahedron() {
 //        System.out.println("getIntersection");
 //        V3D_Tetrahedron t = null;
 //        int oom = 0;
@@ -916,10 +857,10 @@ public class V3D_TriangleTest extends V3D_Test {
 
     /**
      * Test of getDistance method, of class V3D_Triangle covered by
-     * {@link #testGetDistanceSquared_V3D_Point_int()}.
+     * {@link #testGetDistanceSquared_V3D_Point()}.
      */
     @Test
-    public void testGetDistance_V3D_Point_int() {
+    public void testGetDistance_V3D_Point() {
         System.out.println("getDistance");
     }
 
@@ -927,7 +868,7 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of getDistanceSquared method, of class V3D_Triangle.
      */
     @Test
-    public void testGetDistanceSquared_V3D_Point_int() {
+    public void testGetDistanceSquared_V3D_Point() {
         System.out.println("getDistanceSquared");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -956,10 +897,10 @@ public class V3D_TriangleTest extends V3D_Test {
 
     /**
      * Test of getDistance method, of class V3D_Triangle covered by
-     * {@link #testGetDistanceSquared_V3D_Line_int()}.
+     * {@link #testGetDistanceSquared_V3D_Line()}.
      */
     @Test
-    public void testGetDistance_V3D_Line_int() {
+    public void testGetDistance_V3D_Line() {
         System.out.println("getDistance");
     }
 
@@ -967,7 +908,7 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of getDistanceSquared method, of class V3D_Triangle.
      */
     @Test
-    public void testGetDistanceSquared_V3D_Line_int() {
+    public void testGetDistanceSquared_V3D_Line() {
         System.out.println("getDistanceSquared");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -991,10 +932,10 @@ public class V3D_TriangleTest extends V3D_Test {
 
     /**
      * Test of getDistance method, of class V3D_Triangle covered by
-     * {@link #testGetDistanceSquared_V3D_LineSegment_int()}.
+     * {@link #testGetDistanceSquared_V3D_LineSegment()}.
      */
     @Test
-    public void testGetDistance_V3D_LineSegment_int() {
+    public void testGetDistance_V3D_LineSegment() {
         System.out.println("getDistance");
     }
 
@@ -1002,7 +943,7 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of getDistanceSquared method, of class V3D_Triangle.
      */
     @Test
-    public void testGetDistanceSquared_V3D_LineSegment_int() {
+    public void testGetDistanceSquared_V3D_LineSegment() {
         System.out.println("getDistanceSquared");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -1026,16 +967,16 @@ public class V3D_TriangleTest extends V3D_Test {
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         instance = new V3D_Triangle(pN1P0P0, pN1P1P0, pN1P0P1, oom, rm);
         expResult = Math_BigRational.ONE;
-          result = instance.getDistanceSquared(l, oom, rm);
+        result = instance.getDistanceSquared(l, oom, rm);
         assertEquals(expResult, result);
     }
 
     /**
      * Test of getDistance method, of class V3D_Triangle covered by
-     * {@link #testGetDistanceSquared_V3D_Plane_int()}.
+     * {@link #testGetDistanceSquared_V3D_Plane()}.
      */
     @Test
-    public void testGetDistance_V3D_Plane_int() {
+    public void testGetDistance_V3D_Plane() {
         System.out.println("getDistance");
     }
 
@@ -1043,7 +984,7 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of getDistanceSquared method, of class V3D_Triangle.
      */
     @Test
-    public void testGetDistanceSquared_V3D_Plane_int() {
+    public void testGetDistanceSquared_V3D_Plane() {
         System.out.println("getDistanceSquared");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -1067,10 +1008,10 @@ public class V3D_TriangleTest extends V3D_Test {
 
     /**
      * Test of getDistance method, of class V3D_Triangle covered by
-     * {@link #testGetDistanceSquared_V3D_Triangle_int()}.
+     * {@link #testGetDistanceSquared_V3D_Triangle()}.
      */
     @Test
-    public void testGetDistance_V3D_Triangle_int() {
+    public void testGetDistance_V3D_Triangle() {
         System.out.println("getDistance");
     }
 
@@ -1078,7 +1019,7 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of getDistanceSquared method, of class V3D_Triangle.
      */
     @Test
-    public void testGetDistanceSquared_V3D_Triangle_int() {
+    public void testGetDistanceSquared_V3D_Triangle() {
         System.out.println("getDistanceSquared");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -1120,10 +1061,10 @@ public class V3D_TriangleTest extends V3D_Test {
 
     /**
      * Test of getDistance method, of class V3D_Triangle covered by
-     * {@link #testGetDistanceSquared_V3D_Tetrahedron_int()}.
+     * {@link #testGetDistanceSquared_V3D_Tetrahedron()}.
      */
     @Test
-    public void testGetDistance_V3D_Tetrahedron_int() {
+    public void testGetDistance_V3D_Tetrahedron() {
         System.out.println("getDistance");
     }
 }

@@ -1299,17 +1299,17 @@ public class V3D_Line extends V3D_Geometry {
         return new Math_Matrix_BR(m);
     }
     
-    /**
-     * Translate (move relative to the origin).
-     *
-     * @param v The vector to translate.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     */
-    @Override
-    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
-        super.translate(v, oom, rm);
-    }
+//    /**
+//     * Translate (move relative to the origin).
+//     *
+//     * @param v The vector to translate.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode for any rounding.
+//     */
+//    @Override
+//    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+//        super.translate(v, oom, rm);
+//    }
 
     @Override
     public V3D_Line rotate(V3D_Line axis, Math_BigRational theta, 

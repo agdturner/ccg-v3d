@@ -115,10 +115,12 @@
                 <configuration>
                     <argLine>-Xms256m</argLine>
                     <!-- Ignore test failures -->
+                    <!--
                     <includes>
                         <include>TestFail.java</include>
                     </includes>
                     <testFailureIgnore>false</testFailureIgnore>
+                    -->
                 </configuration>
             </plugin>
             <plugin>
