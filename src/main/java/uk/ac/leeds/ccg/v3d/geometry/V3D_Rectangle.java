@@ -706,18 +706,18 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     
     @Override
     public BigDecimal getPerimeter(int oom, RoundingMode rm) {
-        oom -= 2;
-        return getPQ(oom, rm).getLength(oom, rm).toBigDecimal(oom, rm)
-                .add(getQR(oom, rm).getLength(oom, rm).toBigDecimal(oom, rm))
+        int oomn2 = oom -2;
+        return (getPQ(oomn2, rm).getLength(oomn2, rm).toBigDecimal(oomn2, rm)
+                .add(getQR(oomn2, rm).getLength(oomn2, rm).toBigDecimal(oomn2, rm)))
                 .multiply(BigDecimal.valueOf(2));
     }
 
     @Override
     public BigDecimal getArea(int oom, RoundingMode rm) {
-//        return Math_BigDecimal.roundDown(l.v.getMagnitude(oomn2)
-//                .multiply(t.v.getMagnitude(oomn2)), oom);
-        return getPQ(oom, rm).l.v.getMagnitude().multiply(getQR(oom, rm)
-                .l.v.getMagnitude(), oom, rm).toBigDecimal(oom, rm);
+        int oomn2 = oom -2;
+        return (getPQ(oomn2, rm).getLength(oomn2, rm).multiply(
+                getQR(oomn2, rm).getLength(oomn2, rm), oomn2, rm))
+                .toBigDecimal(oom, rm);
     }
 
     /**

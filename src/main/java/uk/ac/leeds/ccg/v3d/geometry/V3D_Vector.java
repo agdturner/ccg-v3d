@@ -147,12 +147,9 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector(Math_BigRational dx, Math_BigRational dy,
             Math_BigRational dz) {
-        Math_BigRational dx2 = dx.pow(2);
-        Math_BigRational dy2 = dy.pow(2);
-        Math_BigRational dz2 = dz.pow(2);
-        this.dx = new Math_BigRationalSqrt(dx2, dx);
-        this.dy = new Math_BigRationalSqrt(dy2, dy);
-        this.dz = new Math_BigRationalSqrt(dz2, dz);
+        this.dx = new Math_BigRationalSqrt(dx.pow(2), dx);
+        this.dy = new Math_BigRationalSqrt(dy.pow(2), dy);
+        this.dz = new Math_BigRationalSqrt(dz.pow(2), dz);
     }
 
     /**
@@ -174,11 +171,9 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector(Math_BigRationalSqrt dx, Math_BigRational dy,
             Math_BigRational dz) {
-        Math_BigRational dy2 = dy.pow(2);
-        Math_BigRational dz2 = dz.pow(2);
         this.dx = dx;
-        this.dy = new Math_BigRationalSqrt(dy2, dy);
-        this.dz = new Math_BigRationalSqrt(dz2, dz);
+        this.dy = new Math_BigRationalSqrt(dy.pow(2), dy);
+        this.dz = new Math_BigRationalSqrt(dz.pow(2), dz);
     }
 
     /**
@@ -188,11 +183,9 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector(Math_BigRational dx, Math_BigRationalSqrt dy,
             Math_BigRational dz) {
-        Math_BigRational dx2 = dx.pow(2);
-        Math_BigRational dz2 = dz.pow(2);
-        this.dx = new Math_BigRationalSqrt(dx2, dx);
+        this.dx = new Math_BigRationalSqrt(dx.pow(2), dx);
         this.dy = dy;
-        this.dz = new Math_BigRationalSqrt(dz2, dz);
+        this.dz = new Math_BigRationalSqrt(dz.pow(2), dz);
     }
 
     /**
@@ -202,10 +195,8 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector(Math_BigRational dx, Math_BigRational dy,
             Math_BigRationalSqrt dz) {
-        Math_BigRational dx2 = dx.pow(2);
-        Math_BigRational dy2 = dy.pow(2);
-        this.dx = new Math_BigRationalSqrt(dx2, dx);
-        this.dy = new Math_BigRationalSqrt(dy2, dy);
+        this.dx = new Math_BigRationalSqrt(dx.pow(2), dx);
+        this.dy = new Math_BigRationalSqrt(dy.pow(2), dy);
         this.dz = dz;
     }
 
@@ -216,10 +207,9 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector(Math_BigRationalSqrt dx, Math_BigRationalSqrt dy,
             Math_BigRational dz) {
-        Math_BigRational dz2 = dz.pow(2);
         this.dx = dx;
         this.dy = dy;
-        this.dz = new Math_BigRationalSqrt(dz2, dz);
+        this.dz = new Math_BigRationalSqrt(dz.pow(2), dz);
     }
 
     /**
@@ -229,9 +219,8 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector(Math_BigRationalSqrt dx, Math_BigRational dy,
             Math_BigRationalSqrt dz) {
-        Math_BigRational dy2 = dy.pow(2);
         this.dx = dx;
-        this.dy = new Math_BigRationalSqrt(dy2, dy);
+        this.dy = new Math_BigRationalSqrt(dy.pow(2), dy);
         this.dz = dz;
     }
 
@@ -242,8 +231,7 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector(Math_BigRational dx, Math_BigRationalSqrt dy,
             Math_BigRationalSqrt dz) {
-        Math_BigRational dx2 = dx.pow(2);
-        this.dx = new Math_BigRationalSqrt(dx2, dx);
+        this.dx = new Math_BigRationalSqrt(dx.pow(2), dx);
         this.dy = dy;
         this.dz = dz;
     }
@@ -254,7 +242,8 @@ public class V3D_Vector implements Serializable {
      * @param dz What {@link #dz} is set to.
      */
     public V3D_Vector(long dx, long dy, long dz) {
-        this(Math_BigRational.valueOf(dx), Math_BigRational.valueOf(dy),
+        this(Math_BigRational.valueOf(dx), 
+                Math_BigRational.valueOf(dy),
                 Math_BigRational.valueOf(dz));
     }
 
@@ -264,7 +253,8 @@ public class V3D_Vector implements Serializable {
      * @param dz What {@link #dz} is set to.
      */
     public V3D_Vector(double dx, double dy, double dz) {
-        this(Math_BigRational.valueOf(dx), Math_BigRational.valueOf(dy),
+        this(Math_BigRational.valueOf(dx), 
+                Math_BigRational.valueOf(dy),
                 Math_BigRational.valueOf(dz));
     }
 
@@ -355,7 +345,8 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
     public boolean equals(V3D_Vector v) {
-        return dx.compareTo(v.dx) == 0 && dy.compareTo(v.dy) == 0
+        return dx.compareTo(v.dx) == 0 
+                && dy.compareTo(v.dy) == 0
                 && dz.compareTo(v.dz) == 0;
     }
 
@@ -430,6 +421,16 @@ public class V3D_Vector implements Serializable {
      * @param rm The RoundingMode used in the calculation.
      * @return Scaled vector.
      */
+    public V3D_Vector multiply(long s, int oom, RoundingMode rm) {
+        return multiply(Math_BigRational.valueOf(s), oom, rm);
+    }
+
+    /**
+     * @param s The scalar value to multiply this by.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
+     * @return Scaled vector.
+     */
     public V3D_Vector multiply(Math_BigRational s, int oom, RoundingMode rm) {
         int oomn5 = oom - 5;
         return new V3D_Vector(
@@ -453,7 +454,7 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * Adding or applying.
+     * Add/apply/translate.
      *
      * @param v The vector to add.
      * @param oom The Order of Magnitude for the precision.
@@ -532,13 +533,13 @@ public class V3D_Vector implements Serializable {
     /**
      * @return The magnitude of m.
      */
-    public Math_BigRationalSqrt getMagnitude() {
+    private Math_BigRationalSqrt getMagnitude() {
         if (m == null) {
             initM(V3D_Environment.DEFAULT_OOM, V3D_Environment.DEFAULT_RM);
         }
         return m;
     }
-
+    
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -554,17 +555,15 @@ public class V3D_Vector implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return The magnitude of m.
      */
-    protected Math_BigRationalSqrt getMagnitude0(int oom, RoundingMode rm) {
+    protected Math_BigRationalSqrt getMagnitude(int oom, RoundingMode rm) {
         if (m == null) {
             initM(oom, rm);
         } else {
-            if (m.getOom() < oom) {
-                return m;
+            if (oom < m.getOom()) {
+                initM(oom, rm);
             } else {
                 if (m.getRoundingMode().equals(rm)) {
-                    if (m.getOom() == oom) {
-                        return m;
-                    }
+                    return m;
                 }
                 initM(oom, rm);
             }
@@ -711,8 +710,8 @@ public class V3D_Vector implements Serializable {
     public Math_BigRational getAngle(V3D_Vector v, int oom, RoundingMode rm) {
         int oomn2 = oom -2;
         Math_BigRational dp = getDotProduct(v, oomn2, rm);
-        Math_BigRational mag = getMagnitude().getSqrt(oomn2, rm);
-        Math_BigRational vmag = v.getMagnitude().getSqrt(oomn2, rm);
+        Math_BigRational mag = getMagnitude(oomn2, rm).getSqrt(oomn2, rm);
+        Math_BigRational vmag = v.getMagnitude(oomn2, rm).getSqrt(oomn2, rm);
         MathContext mc = new MathContext(1 - oom); // This needs checking!
         return Math_BigRational.valueOf(BigDecimalMath.acos(
                 dp.divide(mag.multiply(vmag)).toBigDecimal(mc), mc));
@@ -802,7 +801,8 @@ public class V3D_Vector implements Serializable {
      * @return this scaled by {@link #m}.
      */
     public V3D_Vector getUnitVector(int oom, RoundingMode rm) {
-        Math_BigRational d = getMagnitude().getSqrt(oom, rm);
+        int oomn6 = oom -6;
+        Math_BigRational d = getMagnitude(oomn6, rm).getSqrt(oomn6, rm);
 //        return new V3D_Vector(
 //                dx.getSqrt(oom).divide(d),
 //                dy.getSqrt(oom).divide(d),
@@ -811,9 +811,9 @@ public class V3D_Vector implements Serializable {
          * Force the magnitude to be equal to one.
          */
         return new V3D_Vector(
-                getDX(oom, rm).divide(d),
-                getDY(oom, rm).divide(d),
-                getDZ(oom, rm).divide(d), Math_BigRationalSqrt.ONE);
+                getDX(oomn6, rm).divide(d).round(oom, rm),
+                getDY(oomn6, rm).divide(d).round(oom, rm),
+                getDZ(oomn6, rm).divide(d).round(oom, rm), Math_BigRationalSqrt.ONE);
     }
 
     /**

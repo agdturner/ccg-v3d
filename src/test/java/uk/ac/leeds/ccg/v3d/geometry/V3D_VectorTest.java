@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 import org.junit.jupiter.api.AfterEach;
@@ -268,35 +269,35 @@ public class V3D_VectorTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector instance = P0P0P0;
         Math_BigRationalSqrt expResult = Math_BigRationalSqrt.ZERO;
-        Math_BigRationalSqrt result = instance.getMagnitude();
+        Math_BigRationalSqrt result = instance.getMagnitude(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 1
         oom = -1;
         instance = P1P1P0;
         expResult = new Math_BigRationalSqrt(P2, oom, rm);
-        result = instance.getMagnitude();
+        result = instance.getMagnitude(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         oom = -1;
         instance = P1P1P1;
         expResult = new Math_BigRationalSqrt(P3, oom, rm);
-        result = instance.getMagnitude();
+        result = instance.getMagnitude(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         oom = -100;
         instance = new V3D_Vector(P10, P10, P10);
         expResult = new Math_BigRationalSqrt(300L, oom, rm);
-        result = instance.getMagnitude();
+        result = instance.getMagnitude(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 4
         instance = new V3D_Vector(P3, P4, N4);
         expResult = new Math_BigRationalSqrt(41L, oom, rm);
-        result = instance.getMagnitude();
+        result = instance.getMagnitude(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 5
         instance = new V3D_Vector(P7, P8, N4);
         expResult = new Math_BigRationalSqrt(P7.pow(2).add(P8.pow(2).add(N4.pow(2))), oom, rm);
-        result = instance.getMagnitude();
+        result = instance.getMagnitude(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -539,7 +540,7 @@ public class V3D_VectorTest extends V3D_Test {
     @Test
     public void testGetUnitVector() {
         System.out.println("getUnitVector");
-        int oom = -1;
+        int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector instance = V3D_Vector.I;
         V3D_Vector expResult = V3D_Vector.I;
@@ -554,71 +555,61 @@ public class V3D_VectorTest extends V3D_Test {
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 3
         instance = new V3D_Vector(100, 100, 0);
-        Math_BigRational m = instance.getMagnitude().getSqrt(oom, rm);
         expResult = new V3D_Vector(
-                instance.getDX(oom, rm).divide(m),
-                instance.getDY(oom, rm).divide(m),
-                instance.getDZ(oom, rm).divide(m));
+                Math_BigRational.valueOf("0.707"),
+                Math_BigRational.valueOf("0.707"),
+                Math_BigRational.valueOf("0"));
         result = instance.getUnitVector(oom, rm);
         assertTrue(expResult.equals(result));
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 4
         instance = new V3D_Vector(0, 100, 100);
-        m = instance.getMagnitude().getSqrt(oom, rm);
         expResult = new V3D_Vector(
-                instance.getDX(oom, rm).divide(m),
-                instance.getDY(oom, rm).divide(m),
-                instance.getDZ(oom, rm).divide(m));
+                Math_BigRational.valueOf("0"),
+                Math_BigRational.valueOf("0.707"),
+                Math_BigRational.valueOf("0.707"));
         result = instance.getUnitVector(oom, rm);
         assertTrue(expResult.equals(result));
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 5
         instance = new V3D_Vector(100, 100, 100);
-        m = instance.getMagnitude().getSqrt(oom, rm);
         expResult = new V3D_Vector(
-                instance.getDX(oom, rm).divide(m),
-                instance.getDY(oom, rm).divide(m),
-                instance.getDZ(oom, rm).divide(m));
+                Math_BigRational.valueOf("0.577"),
+                Math_BigRational.valueOf("0.577"),
+                Math_BigRational.valueOf("0.577"));
         result = instance.getUnitVector(oom, rm);
         assertTrue(expResult.equals(result));
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 6
         instance = new V3D_Vector(-100, 0, 0);
-        m = instance.getMagnitude().getSqrt(oom, rm);
-        expResult = new V3D_Vector(
-                instance.getDX(oom, rm).divide(m),
-                instance.getDY(oom, rm).divide(m),
-                instance.getDZ(oom, rm).divide(m));
+        expResult = new V3D_Vector(-1,0,0);
         result = instance.getUnitVector(oom, rm);
         assertTrue(expResult.equals(result));
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 7
         instance = new V3D_Vector(-100, -100, 0);
-        m = instance.getMagnitude().getSqrt(oom, rm);
         expResult = new V3D_Vector(
-                instance.getDX(oom, rm).divide(m),
-                instance.getDY(oom, rm).divide(m),
-                instance.getDZ(oom, rm).divide(m));
+                Math_BigRational.valueOf("-0.707"),
+                Math_BigRational.valueOf("-0.707"),
+                Math_BigRational.valueOf("0"));
         result = instance.getUnitVector(oom, rm);
         assertTrue(expResult.equals(result));
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 8
         instance = new V3D_Vector(0, -100, -100);
-        m = instance.getMagnitude().getSqrt(oom, rm);
         expResult = new V3D_Vector(
-                instance.getDX(oom, rm).divide(m),
-                instance.getDY(oom, rm).divide(m),
-                instance.getDZ(oom, rm).divide(m));
+                Math_BigRational.valueOf("0"),
+                Math_BigRational.valueOf("-0.707"),
+                Math_BigRational.valueOf("-0.707"));
         result = instance.getUnitVector(oom, rm);
         assertTrue(expResult.equals(result));
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);
         // Test 9
         instance = new V3D_Vector(-100, -100, -100);
-        m = instance.getMagnitude().getSqrt(oom, rm);
         expResult = new V3D_Vector(
-                instance.getDX(oom, rm).divide(m),
-                instance.getDY(oom, rm).divide(m),
-                instance.getDZ(oom, rm).divide(m));
+                Math_BigRational.valueOf("-0.577"),
+                Math_BigRational.valueOf("-0.577"),
+                Math_BigRational.valueOf("-0.577"));
         result = instance.getUnitVector(oom, rm);
         assertTrue(expResult.equals(result));
         assertTrue(result.getMagnitudeSquared().compareTo(Math_BigRational.ONE) != 1);

@@ -1666,11 +1666,13 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @return The distance from {@code this} to {@code pl}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Point pt, boolean noInt, int oom, RoundingMode rm) {
-        V3D_Vector v = new V3D_Vector(pt, getP(), oom, rm);
+    public Math_BigRational getDistanceSquared(V3D_Point pt, boolean noInt, 
+            int oom, RoundingMode rm) {
+        int oomn4 = oom -4;
+        V3D_Vector v = new V3D_Vector(pt, getP(), oomn4, rm);
         //V3D_Vector u = getN(oom, rm).getUnitVector(oom, rm);
-        V3D_Vector u = n.getUnitVector(oom, rm);
-        return v.getDotProduct(u, oom, rm).pow(2);
+        V3D_Vector u = n.getUnitVector(oomn4, rm);
+        return v.getDotProduct(u, oomn4, rm).pow(2).round(oom, rm);
     }
     
     /**

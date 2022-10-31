@@ -1075,34 +1075,27 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * Clips this using pl and returns the part that is on the same side as pt.
      *
      * @param pl The plane that clips.
-     * @param pt A point that is used to return the side of the clipped triangle.
+     * @param pt A point that is used to return the side of the clipped line 
+     * segment.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return null, the whole or a part of this.
      */
     public V3D_FiniteGeometry clip(V3D_Plane pl, V3D_Point pt, int oom, RoundingMode rm) {
         V3D_FiniteGeometry i = pl.getIntersection(this, oom, rm);
+        V3D_Point tp = getP();
         if (i == null) {
-            if (pl.isOnSameSide(this.getP(), pt, oom, rm)) {
+            if (pl.isOnSameSide(tp, pt, oom, rm)) {
                 return this;
             } else {
                 return null;
             }
         } else if (i instanceof V3D_Point ip) {
-            V3D_Point tp = this.getP();
             if (pl.isOnSameSide(tp, pt, oom, rm)) {
-                V3D_Point tq = this.getQ();
-                if (ip.equals(tq, oom, rm)) {
-                    return ip;
-                } else {
-                    return new V3D_LineSegment(ip, tq, oom, rm);
-                }
+                return V3D_LineSegment.getGeometry(ip, tp, oom, rm);
             } else {
-                if (ip.equals(tp, oom, rm)) {
-                    return ip;
-                } else {
-                    return new V3D_LineSegment(ip, tp, oom, rm);
-                }
+                V3D_Point tq = this.getQ();
+                return V3D_LineSegment.getGeometry(ip, tq, oom, rm);
             }
         } else {
             return this;

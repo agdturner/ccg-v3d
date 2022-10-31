@@ -1229,10 +1229,10 @@ public class V3D_Line extends V3D_Geometry {
             V3D_Vector delta = l.getPV(oom, rm).subtract(
                     new V3D_Vector(tp, oom, rm), oom, rm);
             //Math_BigRational m = Math_BigRational.valueOf(cp.getMagnitude(oom - 2));
-            Math_BigRationalSqrt m = cp.getMagnitude();
+            Math_BigRational m = cp.getMagnitudeSquared();
             Math_BigRational dp = cp.getDotProduct(delta, oom, rm);
             // m should only be zero if the lines are parallel.
-            return (dp.pow(2).divide(m.getX())).abs();
+            return (dp.pow(2).divide(m)).abs();
         }
     }
 

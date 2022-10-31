@@ -344,10 +344,11 @@ public class V3D_Point extends V3D_FiniteGeometry {
      */
     public Math_BigRational getDistanceSquared(V3D_Point pt, int oom,
             RoundingMode rm) {
-        Math_BigRational dx = getX(oom, rm).subtract(pt.getX(oom, rm));
-        Math_BigRational dy = getY(oom, rm).subtract(pt.getY(oom, rm));
-        Math_BigRational dz = getZ(oom, rm).subtract(pt.getZ(oom, rm));
-        return dx.pow(2).add(dy.pow(2)).add(dz.pow(2));
+        int oomn2 = oom - 2;
+        Math_BigRational dx = getX(oomn2, rm).subtract(pt.getX(oomn2, rm));
+        Math_BigRational dy = getY(oomn2, rm).subtract(pt.getY(oomn2, rm));
+        Math_BigRational dz = getZ(oomn2, rm).subtract(pt.getZ(oomn2, rm));
+        return dx.pow(2).add(dy.pow(2)).add(dz.pow(2)).round(oom, rm);
     }
 
     @Override
