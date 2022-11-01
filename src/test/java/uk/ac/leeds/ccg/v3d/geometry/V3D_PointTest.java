@@ -57,39 +57,6 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
-     * Test of getDistance method, of class V3D_Point.
-     */
-    @Test
-    public void testGetDistance() {
-        System.out.println("getDistance");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Point instance = pP0P0P0;
-        BigDecimal expResult = BigDecimal.ZERO;
-        BigDecimal result = instance.getDistance(instance, oom, rm);
-        assertEquals(expResult, result);
-        // Test 2
-        instance = new V3D_Point(P3, P4, P0);
-        expResult = P5.toBigDecimal(oom, rm);
-        result = instance.getDistance(pP0P0P0, oom, rm);
-        assertTrue(expResult.compareTo(result) == 0);
-    }
-
-    /**
-     * Test of getEnvelope method, of class V3D_Point.
-     */
-    @Test
-    public void testGetEnvelope() {
-        System.out.println("getEnvelope");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Envelope expResult = new V3D_Envelope(oom, rm, pP0P0P0, pP1P1P1);
-        V3D_Envelope result = pP0P0P0.getEnvelope(oom, rm);
-        result = result.union(pP1P1P1.getEnvelope(oom, rm), oom, rm);
-        assertTrue(expResult.equals(result, oom, rm));
-    }
-    
-    /**
      * Test of equals method, of class V3D_Point.
      */
     @Test
@@ -126,10 +93,23 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
+     * Test of getEnvelope method, of class V3D_Point.
+     */
+    @Test
+    public void testGetEnvelope() {
+        System.out.println("getEnvelope");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Envelope expResult = new V3D_Envelope(oom, rm, pP1P2N2);
+        V3D_Envelope result = pP1P2N2.getEnvelope(oom, rm);
+        assertTrue(expResult.equals(result, oom, rm));
+    }
+
+    /**
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
-    public void testGetDistance_V3D_Point() {
+    public void testGetDistance_int_RoundingMode_V3D_Point() {
         System.out.println("getDistance");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -191,6 +171,25 @@ public class V3D_PointTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
+    public void testGetDistance_int_RoundingMode() {
+        System.out.println("getDistance");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Point instance = pP0P0P0;
+        BigDecimal expResult = BigDecimal.ZERO;
+        BigDecimal result = instance.getDistance(instance, oom, rm);
+        assertEquals(expResult, result);
+        // Test 2
+        instance = new V3D_Point(P3, P4, P0);
+        expResult = P5.toBigDecimal(oom, rm);
+        result = instance.getDistance(pP0P0P0, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+    }    
+    
+    /**
+     * Test of getDistance method, of class V3D_Point.
+     */
+    @Test
     public void testGetDistance_V3D_Point_int() {
         System.out.println("getDistance");
         int oom = -3;
@@ -233,25 +232,8 @@ public class V3D_PointTest extends V3D_Test {
     public void testToString() {
         System.out.println("toString");
         V3D_Point instance = pP0P1P2;
-//        String expResult = "V3D_Point\n"
-//                + "(\n"
-//                + " oom=-3\n"
-//                + " ,\n"
-//                + " offset=V3D_Vector\n"
-//                + " (\n"
-//                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-//                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-//                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-//                + " )\n"
-//                + " ,\n"
-//                + " rel=V3D_Vector\n"
-//                + " (\n"
-//                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-//                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-//                + "  dz=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0)\n"
-//                + " )\n"
-//                + ")";
-        String expResult = "V3D_Point(offset=V3D_Vector(dx=0, dy=0, dz=0), rel=V3D_Vector(dx=0, dy=1, dz=2))";
+        String expResult = "V3D_Point(offset=V3D_Vector(dx=0, dy=0, dz=0),"
+                + " rel=V3D_Vector(dx=0, dy=1, dz=2))";
         String result = instance.toString();
         //System.out.println(result);
         assertEquals(expResult, result);
@@ -311,18 +293,6 @@ public class V3D_PointTest extends V3D_Test {
         //System.out.println(result);
         assertEquals(expResult, result);
     }
-//
-//    /**
-//     * Test of getRel method, of class V3D_Point.
-//     */
-//    @Test
-//    public void testGetRel() {
-//        System.out.println("getRel");
-//        V3D_Point instance = new V3D_Point(0, 1, 2);
-//        V3D_Vector expResult = new V3D_Vector(0, 1, 2);
-//        V3D_Vector result = instance.getRel();
-//        assertEquals(expResult, result);
-//    }
 
     /**
      * Test of getVector method, of class V3D_Point.
@@ -395,31 +365,10 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
-     * Test of getDistance method, of class V3D_Point.
-     */
-    @Test
-    public void testGetDistance_int_V3D_Point() {
-        System.out.println("getDistance");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Point p = pP0P0P0;
-        V3D_Point instance = pP1P0P0;
-        Math_BigRationalSqrt expResult = Math_BigRationalSqrt.ONE;
-        Math_BigRationalSqrt result = instance.getDistance(oom, rm, p);
-        assertTrue(expResult.compareTo(result) == 0);
-        // Test 3
-        p = pP0P0P0;
-        instance = pP1P1P1;
-        expResult = new Math_BigRationalSqrt(3, oom, rm);
-        result = instance.getDistance(oom, rm, p);
-        assertTrue(expResult.compareTo(result) == 0);
-    }
-
-    /**
      * Test of getDistanceSquared method, of class V3D_Point.
      */
     @Test
-    public void testGetDistanceSquared_V3D_Point_int() {
+    public void testGetDistanceSquared_V3D_Point_int_RoundingMode() {
         System.out.println("getDistanceSquared");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -455,58 +404,6 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
-     * Test of getDistanceSquared method, of class V3D_Point covered by
-     * {@link V3D_PlaneTest#testGetDistance_V3D_Point_int()}.
-     *
-     */
-    @Test
-    public void testGetDistanceSquared_V3D_Plane_int() {
-        System.out.println("getDistanceSquared");
-    }
-
-    /**
-     * Test of isIntersectedBy method, of class V3D_Point covered by
-     * {@link V3D_PlaneTest#testIsIntersectedBy_V3D_Point_int()}.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_Point_int() {
-        System.out.println("isIntersectedBy");
-    }
-
-    /**
-     * Test of isIntersectedBy method, of class V3D_Point is covered by:
-     * {@link V3D_LineTest#testIsIntersectedBy_V3D_Point()}.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_Line_int() {
-        System.out.println("isIntersectedBy");
-    }
-
-    /**
-     * Test of isIntersectedBy method, of class V3D_Point.
-     * {@link V3D_LineSegmentTest#testIsIntersectedBy_V3D_Point()}
-     */
-    @Test
-    public void testIsIntersectedBy_3args() {
-        System.out.println("isIntersectedBy");
-    }
-
-//    /**
-//     * Test of getDistance method, of class V3D_Point.
-//     */
-//    @Test
-//    public void testGetDistance_V3D_Ray_int() {
-//        System.out.println("getDistance");
-//        int oom = -3;
-//        RoundingMode rm = RoundingMode.HALF_UP;
-//        V3D_Ray r = new V3D_Ray(pP1P0P0, pP2P0P0, oom, rm);
-//        V3D_Point instance = V3D_Point.ORIGIN;
-//        BigDecimal expResult = BigDecimal.ONE;
-//        BigDecimal result = instance.getDistance(r, oom, rm);
-//        assertTrue(expResult.compareTo(result) == 0);
-//    }
-
-    /**
      * Test of getLocation method, of class V3D_Point.
      */
     @Test
@@ -517,6 +414,8 @@ public class V3D_PointTest extends V3D_Test {
         V3D_Point instance = V3D_Point.ORIGIN;
         assertEquals(0, instance.getLocation(oom, rm));
         // PPP
+        instance = pP0P0P0;
+        assertEquals(0, instance.getLocation(oom, rm));
         instance = pP0P0P1;
         assertEquals(1, instance.getLocation(oom, rm));
         instance = pP0P1P0;
@@ -584,7 +483,7 @@ public class V3D_PointTest extends V3D_Test {
         theta = Pi;
         result = instance.rotate(axis, theta, oom, rm);
         expResult = new V3D_Point(0, 3, 0);
-        //assertTrue(expResult.equals(result, oom, rm));
+        assertTrue(expResult.equals(result, oom, rm));
         // Test 4
         offset = new V3D_Vector(1, 0, 0);
         rel = new V3D_Vector(2, 0, 0);
@@ -592,34 +491,7 @@ public class V3D_PointTest extends V3D_Test {
         theta = Pi;
         result = instance.rotate(axis, theta, oom, rm);
         expResult = new V3D_Point(0, 3, 0);
-        //assertTrue(expResult.equals(result, oom, rm));
-    }
-
-    /**
-     * Test of getDistance method, of class V3D_Point covered by
-     * {@link V3D_PlaneTest#testGetDistance_V3D_Point_int}.
-     */
-    @Test
-    public void testGetDistance_V3D_Plane_int() {
-        //System.out.println("getDistance");
-    }
-
-    /**
-     * Test of isIntersectedBy method, of class V3D_Point covered by
-     * {@link V3D_PlaneTest#testIsIntersectedBy_V3D_Point_int}.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_Plane_int() {
-        //System.out.println("isIntersectedBy");
-    }
-
-    /**
-     * Test of isEnvelopeIntersectedBy method, of class V3D_Point covered by
-     * {@link V3D_LineTest#testIsIntersectedBy_V3D_Point_int()}
-     */
-    @Test
-    public void testIsEnvelopeIntersectedBy() {
-        //System.out.println("isEnvelopeIntersectedBy");
+        assertTrue(expResult.equals(result, oom, rm));
     }
 
     /**
