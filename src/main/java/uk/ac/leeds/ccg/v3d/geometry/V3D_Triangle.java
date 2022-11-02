@@ -562,6 +562,9 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @return {@code true} iff pl is aligned with this.
      */
     public boolean isAligned(V3D_Point pt, int oom, RoundingMode rm) {
+        if (pl.isIntersectedBy(pt, oom, rm)) {
+            return isIntersectedBy(pt, oom, rm);
+        }
         if (getPQPl(oom, rm).isOnSameSide(pt, getR(), oom, rm)) {
             if (getQRPl(oom, rm).isOnSameSide(pt, getP(), oom, rm)) {
                 if (getRPPl(oom, rm).isOnSameSide(pt, getQ(), oom, rm)) {

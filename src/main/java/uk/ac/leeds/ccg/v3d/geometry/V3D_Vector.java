@@ -817,6 +817,25 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * The unit vector direction is given as being towards the point.
+     *
+     * @param pt The point controlling the direction of the unit vector.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return this scaled by {@link #m}.
+     */
+    public V3D_Vector getUnitVector(V3D_Point pt, int oom, RoundingMode rm) {
+        int direction = (getDotProduct(pt.getVector(oom, rm), oom, rm)
+                .divide(getDotProduct(this, oom, rm)))
+                .compareTo(Math_BigRational.ZERO);
+        V3D_Vector r = getUnitVector(oom, rm);
+        if (direction == -1) {
+            r = r.reverse();
+        }
+        return r;
+    }
+
+    /**
      * @return The direction of the vector:
      * <Table>
      * <caption>Directions</caption>

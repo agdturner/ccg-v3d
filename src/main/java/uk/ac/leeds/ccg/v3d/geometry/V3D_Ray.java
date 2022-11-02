@@ -391,13 +391,8 @@ public class V3D_Ray extends V3D_Geometry {
             } else {
                 return null;
             }
-        } else if (g instanceof V3D_Line) {
-            // If the lines are the same, then return this. 
-            return this;
-        } else {
-            // There is no intersection.
-            return null;
         }
+        return this;
     }
 
     /**

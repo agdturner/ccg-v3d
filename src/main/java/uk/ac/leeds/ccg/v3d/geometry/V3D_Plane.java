@@ -21,7 +21,6 @@ import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of an infinite plane. The plane is defined by the point
@@ -240,7 +239,7 @@ public class V3D_Plane extends V3D_Geometry {
             RoundingMode rm) {
         this(V3D_Vector.ZERO, p, q, r, oom, rm);
     }
-
+    
     /**
      * Create a new instance.
      *
@@ -253,7 +252,25 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_Plane(V3D_Vector offset, V3D_Vector p, 
+    public V3D_Plane(V3D_Vector offset, V3D_Vector p, V3D_Vector q, V3D_Vector r, int oom,
+            RoundingMode rm) {
+        this(p, offset, p, q, r, oom, rm);
+    }
+
+    /**
+     * Create a new instance.
+     *
+     * @param ptv A point vector giving the direction of the normal vector.
+     * @param offset What {@link #offset} is set to.
+     * @param p Used to initialise {@link #p}.
+     * @param q A point coplanar to pl and r, not collinear to both pl and r,
+     * and not equal to pl or r.
+     * @param r A point coplanar to pl and q, not collinear to both pl and q,
+     * and not equal to pl or q.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     */
+    public V3D_Plane(V3D_Vector ptv, V3D_Vector offset, V3D_Vector p, 
             V3D_Vector q, V3D_Vector r, int oom, RoundingMode rm) {
         super(offset);
         V3D_Vector pq = q.subtract(p, oom, rm);
@@ -266,7 +283,31 @@ public class V3D_Plane extends V3D_Geometry {
         }
         this.p = p;
         this.n = pq.getCrossProduct(qr, oom, rm);
+        int direction = (n.getDotProduct(ptv, oom, rm)
+                .divide(n.getDotProduct(n, oom, rm)))
+                .compareTo(Math_BigRational.ZERO);
+        if (direction == -1) {
+            n = n.reverse();
+        }
         //this.n = qr.getCrossProduct(pq, oom, rm);
+    }
+    
+    /**
+     * Create a new instance.
+     *
+     * @param pt A point giving the direction of the normal vector.
+     * @param offset What {@link #offset} is set to.
+     * @param p Used to initialise {@link #p}.
+     * @param q A point coplanar to pl and r, not collinear to both pl and r,
+     * and not equal to pl or r.
+     * @param r A point coplanar to pl and q, not collinear to both pl and q,
+     * and not equal to pl or q.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     */
+    public V3D_Plane(V3D_Point pt, V3D_Vector offset, V3D_Vector p, 
+            V3D_Vector q, V3D_Vector r, int oom, RoundingMode rm) {
+        this(pt.getVector(oom, rm), offset, p, q, r, oom, rm);
     }
 
     @Override
@@ -430,9 +471,9 @@ public class V3D_Plane extends V3D_Geometry {
         Math_BigRational[] coeffs = new Math_BigRational[4];
 //        // Ensure n is not null
 //        n = getN(oom, rm);
-        Math_BigRational ndxsr = n.dx.getSqrt();
-        Math_BigRational ndysr = n.dy.getSqrt();
-        Math_BigRational ndzsr = n.dz.getSqrt();
+        Math_BigRational ndxsr = n.dx.getSqrt(oom, rm);
+        Math_BigRational ndysr = n.dy.getSqrt(oom, rm);
+        Math_BigRational ndzsr = n.dz.getSqrt(oom, rm);
 //        Math_BigRational k = (ndxsr.multiply(pl.getX(oom))
 //                .add(ndysr.multiply(pl.getY(oom)))
 //                .add(ndzsr.multiply(pl.getZ(oom)))).negate();
@@ -797,8 +838,8 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public V3D_Geometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
         int oomN2 = oom - 2;
-        if (this.isParallel(l, oomN2, rm)) {
-            if (this.isOnPlane(l, oomN2, rm)) {
+        if (isParallel(l, oomN2, rm)) {
+            if (isOnPlane(l, oomN2, rm)) {
                 return l;
             } else {
                 return null;
@@ -807,11 +848,11 @@ public class V3D_Plane extends V3D_Geometry {
         // Are either of the points of l on the plane.
         //V3D_Point lp = l.getP(oom);
         V3D_Point lp = l.getP();
-        if (this.isIntersectedBy(lp, oomN2, rm)) {
+        if (isIntersectedBy(lp, oomN2, rm)) {
             return lp;
         }
         V3D_Point lq = l.getQ(oom, rm);
-        if (this.isIntersectedBy(lq, oomN2, rm)) {
+        if (isIntersectedBy(lq, oomN2, rm)) {
             return lq;
         }
         //V3D_Vector lv = l.getV(oomN2, rm);
@@ -1827,38 +1868,49 @@ public class V3D_Plane extends V3D_Geometry {
      * otherwise.
      */
     public boolean isOnSameSide(V3D_Point a, V3D_Point b, int oom, RoundingMode rm) {
-        //n = getN(oom, rm);
-        boolean aq = false;
-        V3D_Vector av = a.getVector(oom, rm);
-        V3D_Vector pv = getP().getVector(oom, rm);
-        V3D_Vector avpv = pv.subtract(av, oom, rm);
-        if (avpv.isZeroVector()) {
-            pv = getQ(pv, oom, rm).getVector(oom, rm);
-            avpv = pv.subtract(av, oom, rm);
-            aq = true;
-        }
-        int avd = n.getDotProduct(avpv, oom, rm).compareTo(Math_BigRational.ZERO);
-        if (avd == 0) {
-            return true;
-        }        
-        boolean bq = false;
-        V3D_Vector bv = b.getVector(oom, rm);
-        V3D_Vector bvpv = pv.subtract(bv, oom, rm);
-        if (bvpv.isZeroVector()) {
-            pv = getQ(pv, oom, rm).getVector(oom, rm);
-            bvpv = pv.subtract(bv, oom, rm);
-            bq = true;
-        }
-        int bvd = n.getDotProduct(bvpv, oom, rm).compareTo(Math_BigRational.ZERO);
-        if (bvd == 0) {
+        int aside = getSideOfPlane(a, oom, rm);
+        if (aside == 0) {
             return true;
         }
-        if (aq && bq) {
-            avpv = pv.subtract(av, oom, rm);
-            avd = n.getDotProduct(avpv, oom, rm).compareTo(Math_BigRational.ZERO);
+        int bside = getSideOfPlane(b, oom, rm);
+        if (bside == 0) {
+            return true;
         }
-        return avd == bvd;
-        
+        return aside == bside;
+//        //n = getN(oom, rm);
+//        boolean aq = false;
+//        V3D_Vector av = a.getVector(oom, rm);
+//        //V3D_Vector pv = getP().getVector(oom, rm);
+//        V3D_Vector pv = getP().getVector(oom, rm).getUnitVector(oom, rm);
+//        V3D_Vector avpv = pv.subtract(av, oom, rm);
+//        if (avpv.isZeroVector()) {
+//            //pv = getQ(pv, oom, rm).getVector(oom, rm);
+//            pv = getQ(pv, oom, rm).getVector(oom, rm);
+//            avpv = pv.subtract(av, oom, rm);
+//            aq = true;
+//        }
+//        int avd = n.getDotProduct(avpv, oom, rm).compareTo(Math_BigRational.ZERO);
+//        if (avd == 0) {
+//            return true;
+//        }        
+//        boolean bq = false;
+//        V3D_Vector bv = b.getVector(oom, rm);
+//        V3D_Vector bvpv = pv.subtract(bv, oom, rm);
+//        if (bvpv.isZeroVector()) {
+//            pv = getQ(pv, oom, rm).getVector(oom, rm);
+//            bvpv = pv.subtract(bv, oom, rm);
+//            bq = true;
+//        }
+//        int bvd = n.getDotProduct(bvpv, oom, rm).compareTo(Math_BigRational.ZERO);
+//        if (bvd == 0) {
+//            return true;
+//        }
+//        if (aq && bq) {
+//            avpv = pv.subtract(av, oom, rm);
+//            avd = n.getDotProduct(avpv, oom, rm).compareTo(Math_BigRational.ZERO);
+//        }
+//        return avd == bvd;
+//        
 //        //int avd = n.getDotProduct(av.add(this.pl.reverse(), oom), oom).compareTo(Math_BigRational.ZERO);
 //        int avd = n.getDotProduct(pv.subtract(av, oom, rm), oom, rm).compareTo(Math_BigRational.ZERO);
 //        //int avd = this.pl.add(av.reverse(), oom).getDotProduct(n, oom).compareTo(Math_BigRational.ZERO);
@@ -1896,17 +1948,11 @@ public class V3D_Plane extends V3D_Geometry {
      * plane that the normal points towards.
      */
     public int getSideOfPlane(V3D_Point pt, int oom, RoundingMode rm) {
-        //V3D_Vector v = pt.rel.subtract(getPQV(oom, rm), oom, rm);
-        V3D_Vector pv = getPV();
-        V3D_Vector v = pt.rel.subtract(pv, oom, rm);
-        if (v.isZeroVector()) {
-            v = pt.rel.subtract(pv.getCrossProduct(n, oom, rm), oom, rm);
-//            if (v.isZeroVector()) {
-//                v = pt.rel.subtract(getRPV(), e.oom);                
-//            }
-        }
-        //return v.getDotProduct(getN(oom, rm), oom, rm).compareTo(Math_BigRational.ZERO);
-        return v.getDotProduct(n, oom, rm).compareTo(Math_BigRational.ZERO);
+        Math_BigRational[] coeffs = getEquationCoefficients(oom, rm);
+        return (coeffs[0].multiply(pt.getX(oom, rm))
+                .add(coeffs[1].multiply(pt.getY(oom, rm)))
+                .add(coeffs[2].multiply(pt.getZ(oom, rm))).add(coeffs[3]))
+                .compareTo(Math_BigRational.ZERO);
     }
 
     /**

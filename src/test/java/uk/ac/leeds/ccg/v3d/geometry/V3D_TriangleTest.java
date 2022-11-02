@@ -60,6 +60,21 @@ public class V3D_TriangleTest extends V3D_Test {
      * Test of isIntersectedBy method, of class V3D_Triangle.
      */
     @Test
+    public void testIsAligned_V3D_Point_int_RoundingMode() {
+        System.out.println("isAligned");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Point pt = pP0N1P0;
+        V3D_Triangle instance = new V3D_Triangle(pP0P2P0, pP0N2P0, pP2P0P0, oom, rm);
+        assertTrue(instance.isAligned(pt, oom, rm));
+        pt = pN1P0P0;
+        assertFalse(instance.isAligned(pt, oom, rm));
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_Triangle.
+     */
+    @Test
     public void testIsIntersectedBy() {
         System.out.println("isIntersectedBy");
         int oom = -3;
@@ -541,11 +556,23 @@ public class V3D_TriangleTest extends V3D_Test {
         expResult = new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 3
-        t = new V3D_Triangle(pP0N2P0, pP0P2P0, pP2P0P0, oom, rm);
         r = new V3D_Ray(pN1P0P0, pP2P0P0, oom, rm);
         result = t.getIntersection(r, oom, rm);
         expResult = new V3D_LineSegment(pP0P0P0, pP2P0P0, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
+        // Test 4
+        r = new V3D_Ray(pN2P0N2, pP0P0P0, oom, rm);
+        result = t.getIntersection(r, oom, rm);
+        expResult = pP0P0P0;
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+        // Test 5
+        r = new V3D_Ray(pN2P0N2, pP0N1P0, oom, rm);
+        expResult = pP0N1P0;
+        result = t.getIntersection(r, oom, rm);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+        // Test 5
+        r = new V3D_Ray(pN2P0N2, pN1P0P0, oom, rm);
+        assertNull(t.getIntersection(r, oom, rm));
     }
 
     
