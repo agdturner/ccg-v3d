@@ -45,12 +45,13 @@
     </properties>
     
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-generic
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-generic -->
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>ccg-generic</artifactId>
-            <version>${ccg-generic.version}</version>
-        </dependency> -->
+            <version>2.2</version>
+            <!--<scope>test</scope>-->
+        </dependency>
         <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-io
         <dependency>
             <groupId>io.github.agdturner</groupId>

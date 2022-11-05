@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
@@ -305,16 +304,16 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             //if (V3D_Geometrics.isCoplanar(this, pt)) {
             // Check the areas
             // Area pqpt
-            BigDecimal apqpt = new V3D_Triangle(tp.getVector(oom, rm),
+            Math_BigRational apqpt = new V3D_Triangle(tp.getVector(oom, rm),
                     tq.getVector(oom, rm), pt.getVector(oom, rm), oom, rm).getArea(oom, rm);
             // Area qrpt
-            BigDecimal aqrpt = new V3D_Triangle(tq.getVector(oom, rm),
+            Math_BigRational aqrpt = new V3D_Triangle(tq.getVector(oom, rm),
                     tr.getVector(oom, rm), pt.getVector(oom, rm), oom, rm).getArea(oom, rm);
             // Area rspt
-            BigDecimal arspt = new V3D_Triangle(tr.getVector(oom, rm),
+            Math_BigRational arspt = new V3D_Triangle(tr.getVector(oom, rm),
                     ts.getVector(oom, rm), pt.getVector(oom, rm), oom, rm).getArea(oom, rm);
             // Area sppt
-            BigDecimal asppt = new V3D_Triangle(ts.getVector(oom, rm),
+            Math_BigRational asppt = new V3D_Triangle(ts.getVector(oom, rm),
                     tp.getVector(oom, rm), pt.getVector(oom, rm), oom, rm).getArea(oom, rm);
             if (this.getArea(oom, rm).compareTo(apqpt.add(aqrpt).add(arspt).add(asppt)) == 0) {
                 return true;
@@ -603,19 +602,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
             V3D_FiniteGeometry pointOrLineSegment2, int oom, RoundingMode rm) {
         if (pointOrLineSegment1 instanceof V3D_LineSegment l1) {
             if (pointOrLineSegment2 instanceof V3D_LineSegment l2) {
-                if (l1.equals(l2, oom, rm)) {
-                    return l1;
-                }
-                if (l1.getP().equals(l2.getP())) {
-                    return new V3D_LineSegment(offset, l1.q, l2.q, oom, rm);
-                } else if (l1.getP().equals(l2.getQ())) {
-                    return new V3D_LineSegment(offset, l1.q, l2.l.p, oom, rm);
-                } else if (l1.getQ().equals(l2.getP())) {
-                    return new V3D_LineSegment(offset, l1.l.p, l2.q, oom, rm);
-                } else {
-                    //if (l1.getQ(oom).equals(l2.getQ(oom))) {
-                    return new V3D_LineSegment(offset, l1.l.p, l2.l.p, oom, rm);
-                }
+                return V3D_LineSegment.getGeometry(oom, rm, l1.getP(), l1.getQ(), l2.getP(), l2.getQ());
             } else {
                 return l1;
             }
@@ -642,7 +629,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     @Override
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry i1 = new V3D_Triangle(this).getIntersection(l, oom, rm);
+        V3D_FiniteGeometry i1 = getPQR().getIntersection(l, oom, rm);
         V3D_FiniteGeometry i2 = getRSP(oom, rm).getIntersection(l, oom, rm);
         if (i1 == null) {
             return i2;
@@ -705,19 +692,19 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
     
     @Override
-    public BigDecimal getPerimeter(int oom, RoundingMode rm) {
+    public Math_BigRational getPerimeter(int oom, RoundingMode rm) {
         int oomn2 = oom -2;
-        return (getPQ(oomn2, rm).getLength(oomn2, rm).toBigDecimal(oomn2, rm)
-                .add(getQR(oomn2, rm).getLength(oomn2, rm).toBigDecimal(oomn2, rm)))
-                .multiply(BigDecimal.valueOf(2));
+        return (getPQ(oomn2, rm).getLength(oomn2, rm).getSqrt(oom, rm)
+                .add(getQR(oomn2, rm).getLength(oomn2, rm).getSqrt(oom, rm)))
+                .multiply(Math_BigRational.TWO);
     }
 
     @Override
-    public BigDecimal getArea(int oom, RoundingMode rm) {
+    public Math_BigRational getArea(int oom, RoundingMode rm) {
         int oomn2 = oom -2;
         return (getPQ(oomn2, rm).getLength(oomn2, rm).multiply(
                 getQR(oomn2, rm).getLength(oomn2, rm), oomn2, rm))
-                .toBigDecimal(oom, rm);
+                .getSqrt(oom, rm);
     }
 
     /**
@@ -729,9 +716,9 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      * @return The distance from {@code this} to {@code pl}.
      */
     @Override
-    public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
+    public Math_BigRational getDistance(V3D_Point p, int oom, RoundingMode rm) {
         return (new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm))
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
+                .getSqrt(oom, rm);
 //        if (this.isIntersectedBy(pl, oom, true)) {
 //            return BigDecimal.ZERO;
 //        }
@@ -855,9 +842,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
-                .toBigDecimal(oom, rm);
+    public Math_BigRational getDistance(V3D_Line l, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom-6, rm), oom, rm).getSqrt(oom, rm);
     }
 
     @Override
@@ -867,9 +853,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
-                .toBigDecimal(oom, rm);
+    public Math_BigRational getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom-6, rm), oom, rm).getSqrt(oom, rm);
     }
 
     @Override
@@ -879,9 +864,8 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Plane p, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
-                .toBigDecimal(oom, rm);
+    public Math_BigRational getDistance(V3D_Plane p, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom-6, rm), oom, rm).getSqrt(oom, rm);
     }
 
     @Override
@@ -891,9 +875,9 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public BigDecimal getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(t, oom, rm), oom, rm)
-                .toBigDecimal(oom, rm);
+    public Math_BigRational getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
+        return new Math_BigRationalSqrt(getDistanceSquared(t, oom-6, rm), oom, rm)
+                .getSqrt(oom, rm);
     }
 
     @Override

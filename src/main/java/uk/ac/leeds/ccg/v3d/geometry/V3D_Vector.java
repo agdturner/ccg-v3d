@@ -351,6 +351,26 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * Indicates if {@code this} and {@code v} are equal at the oom precision 
+     * using the RoundingMode rm.
+     *
+     * @param v The vector to test for equality with {@code this}.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
+     * @return {@code true} iff {@code this} is the same as {@code v}.
+     */
+    public boolean equals(V3D_Vector v, int oom, RoundingMode rm) {
+        if (getDX(oom, rm).compareTo(v.getDX(oom, rm)) == 0) {
+            if (getDY(oom, rm).compareTo(v.getDY(oom, rm)) == 0) {
+                if (getDZ(oom, rm).compareTo(v.getDZ(oom, rm)) == 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Indicates if {@code this} is the reverse of {@code v}.
      *
      * @param v The vector to compare with {@code this}.
@@ -432,11 +452,10 @@ public class V3D_Vector implements Serializable {
      * @return Scaled vector.
      */
     public V3D_Vector multiply(Math_BigRational s, int oom, RoundingMode rm) {
-        int oomn5 = oom - 5;
         return new V3D_Vector(
-                getDX(oomn5, rm).multiply(s).round(oom, rm),
-                getDY(oomn5, rm).multiply(s).round(oom, rm),
-                getDZ(oomn5, rm).multiply(s).round(oom, rm));
+                getDX(oom, rm).multiply(s),
+                getDY(oom, rm).multiply(s),
+                getDZ(oom, rm).multiply(s));
     }
 
     /**
@@ -446,11 +465,10 @@ public class V3D_Vector implements Serializable {
      * @return Scaled vector.
      */
     public V3D_Vector divide(Math_BigRational s, int oom, RoundingMode rm) {
-        int oomn5 = oom - 5;
         return new V3D_Vector(
-                getDX(oomn5, rm).divide(s).round(oom, rm),
-                getDY(oomn5, rm).divide(s).round(oom, rm),
-                getDZ(oomn5, rm).divide(s).round(oom, rm));
+                getDX(oom, rm).divide(s),
+                getDY(oom, rm).divide(s),
+                getDZ(oom, rm).divide(s));
     }
 
     /**
@@ -462,11 +480,10 @@ public class V3D_Vector implements Serializable {
      * @return A new vector which is {@code this} add {@code v}.
      */
     public V3D_Vector add(V3D_Vector v, int oom, RoundingMode rm) {
-        int oomn5 = oom - 5;
         return new V3D_Vector(
-                getDX(oomn5, rm).add(v.getDX(oomn5, rm)).round(oom, rm),
-                getDY(oomn5, rm).add(v.getDY(oomn5, rm)).round(oom, rm),
-                getDZ(oomn5, rm).add(v.getDZ(oomn5, rm)).round(oom, rm));
+                getDX(oom, rm).add(v.getDX(oom, rm)),
+                getDY(oom, rm).add(v.getDY(oom, rm)),
+                getDZ(oom, rm).add(v.getDZ(oom, rm)));
     }
 
     /**
@@ -476,11 +493,10 @@ public class V3D_Vector implements Serializable {
      * @return A new vector which is {@code this} minus {@code v}.
      */
     public V3D_Vector subtract(V3D_Vector v, int oom, RoundingMode rm) {
-        int oomn5 = oom - 5;
         return new V3D_Vector(
-                getDX(oomn5, rm).subtract(v.getDX(oomn5, rm)).round(oom, rm),
-                getDY(oomn5, rm).subtract(v.getDY(oomn5, rm)).round(oom, rm),
-                getDZ(oomn5, rm).subtract(v.getDZ(oomn5, rm)).round(oom, rm));
+                getDX(oom, rm).subtract(v.getDX(oom, rm)),
+                getDY(oom, rm).subtract(v.getDY(oom, rm)),
+                getDZ(oom, rm).subtract(v.getDZ(oom, rm)));
     }
 
     /**
@@ -501,7 +517,6 @@ public class V3D_Vector implements Serializable {
      */
     public Math_BigRational getDotProduct(V3D_Vector v, int oom,
             RoundingMode rm) {
-        oom -= 6;
         return (v.getDX(oom, rm).multiply(getDX(oom, rm)))
                 .add(v.getDY(oom, rm).multiply(getDY(oom, rm)))
                 .add(v.getDZ(oom, rm).multiply(getDZ(oom, rm)));
@@ -585,7 +600,6 @@ public class V3D_Vector implements Serializable {
         if (this.isZeroVector() || v.isZeroVector()) {
             return false;
         }
-        oom -= 6;
         return this.multiply(getDotProduct(v, oom, rm), oom, rm).equals(
                 v.multiply(getDotProduct(this, oom, rm), oom, rm));
 //        if (dx.isZero()) {
@@ -783,7 +797,6 @@ public class V3D_Vector implements Serializable {
      * @return V3D_Vector
      */
     public V3D_Vector getCrossProduct(V3D_Vector v, int oom, RoundingMode rm) {
-        oom = oom - 6;
         return new V3D_Vector(
                 dy.multiply(v.dz, oom, rm).getSqrt(oom, rm)
                         .subtract(dz.multiply(v.dy, oom, rm).getSqrt(oom, rm)),
@@ -794,28 +807,32 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * Scales by {@link #m} to give a unit vector with length 1.
+     * Scales by {@link #m} to give a unit vector with length 1. Six further 
+     * orders of magnitude are used to produce the result.
      *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return this scaled by {@link #m}.
      */
     public V3D_Vector getUnitVector(int oom, RoundingMode rm) {
-        int oomn6 = oom -6;
-        Math_BigRational d = getMagnitude(oomn6, rm).getSqrt(oomn6, rm);
+        Math_BigRational d = getMagnitude(oom, rm).getSqrt(oom, rm);
 //        return new V3D_Vector(
 //                dx.getSqrt(oom).divide(d),
 //                dy.getSqrt(oom).divide(d),
 //                dz.getSqrt(oom).divide(d), oom);
-        /**
-         * Force the magnitude to be equal to one.
-         */
+//        /**
+//         * Force the magnitude to be equal to one.
+//         */
+//        return new V3D_Vector(
+//                getDX(oomn6, rm).divide(d).round(oom, rm),
+//                getDY(oomn6, rm).divide(d).round(oom, rm),
+//                getDZ(oomn6, rm).divide(d).round(oom, rm), Math_BigRationalSqrt.ONE);
         return new V3D_Vector(
-                getDX(oomn6, rm).divide(d).round(oom, rm),
-                getDY(oomn6, rm).divide(d).round(oom, rm),
-                getDZ(oomn6, rm).divide(d).round(oom, rm), Math_BigRationalSqrt.ONE);
+                getDX(oom, rm).divide(d),
+                getDY(oom, rm).divide(d),
+                getDZ(oom, rm).divide(d), Math_BigRationalSqrt.ONE);
     }
-
+    
     /**
      * The unit vector direction is given as being towards the point.
      *

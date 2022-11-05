@@ -15,18 +15,18 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Disabled;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.generic.core.id.IDIntInt;
 import uk.ac.leeds.ccg.v3d.V3D_Test;
 
 /**
@@ -113,8 +113,8 @@ public class V3D_TriangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
-        BigDecimal expResult = new BigDecimal("0.5");
-        BigDecimal result = instance.getArea(oom, rm);
+        Math_BigRational expResult = Math_BigRational.valueOf("0.5");
+        Math_BigRational result = instance.getArea(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -205,10 +205,12 @@ public class V3D_TriangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
-        BigDecimal expResult = BigDecimal.valueOf(2).add(new Math_BigRationalSqrt(2, oom, rm).toBigDecimal(oom, rm));
-        BigDecimal result = instance.getPerimeter(oom, rm);
+        Math_BigRational expResult = Math_BigRational.TWO.add(
+                new Math_BigRationalSqrt(2, oom, rm).getSqrt(oom, rm));
+        Math_BigRational result = instance.getPerimeter(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
-        expResult = BigDecimal.valueOf(2).add(new Math_BigRationalSqrt(2, oom, rm).toBigDecimal(oom, rm));
+        expResult = Math_BigRational.TWO.add(
+                new Math_BigRationalSqrt(2, oom, rm).getSqrt(oom, rm));
         result = instance.getPerimeter(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
@@ -570,11 +572,119 @@ public class V3D_TriangleTest extends V3D_Test {
         expResult = pP0N1P0;
         result = t.getIntersection(r, oom, rm);
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 5
+        // Test 6
         r = new V3D_Ray(pN2P0N2, pN1P0P0, oom, rm);
         assertNull(t.getIntersection(r, oom, rm));
+        // Test 7
+        t = new V3D_Triangle(pP0N2P0, pP0P2P0, pP2P0P0, oom, rm);
+        r = new V3D_Ray(pN2N2N2, pN1N1N1, oom, rm);
+        expResult = pP0P0P0;
+        result = t.getIntersection(r, oom, rm);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+        // Test 8
+        t = new V3D_Triangle(pP0N2P0, pP0P2P0, pP2P2P1, oom, rm);
+        r = new V3D_Ray(pN2N2N2, pN1N1N1, oom, rm);
+        expResult = pP0P0P0;
+        result = t.getIntersection(r, oom, rm);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+        // Test 9
+        t = new V3D_Triangle(pN1N2P0, pN1P2P0, pP2P2P0, oom, rm);
+        r = new V3D_Ray(pN2N2N2, pN1N1N1, oom, rm);
+        expResult = pP0P0P0;
+        result = t.getIntersection(r, oom, rm);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+        // Test 10
+        t = new V3D_Triangle(pN1N2P0, pN1P2P0, pP2P2N1, oom, rm);
+        r = new V3D_Ray(pN2N2N2, pN1N1N1, oom, rm);
+        Math_BigRational nq = Math_BigRational.valueOf(-1, 4);
+        expResult = new V3D_Point(nq, nq, nq);
+        result = t.getIntersection(r, oom, rm);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+
+        // Box test.
+        V3D_Vector offset = V3D_Vector.ZERO;
+        V3D_Point[] points = new V3D_Point[8];
+        V3D_Point centroid = V3D_Point.ORIGIN;
+        long multiplier = 100;
+        V3D_Point lbf = new V3D_Point(offset, new V3D_Vector(-1 * multiplier,-1 * multiplier,-1 * multiplier));
+        V3D_Point lba = new V3D_Point(offset, new V3D_Vector(-1 * multiplier,-1 * multiplier,1 * multiplier));
+        V3D_Point ltf = new V3D_Point(offset, new V3D_Vector(-1 * multiplier,1 * multiplier,-1 * multiplier));
+        V3D_Point lta = new V3D_Point(offset, new V3D_Vector(-1 * multiplier,1 * multiplier,1 * multiplier));
+        V3D_Point rbf = new V3D_Point(offset, new V3D_Vector(1 * multiplier,-1 * multiplier,-1 * multiplier));
+        V3D_Point rba = new V3D_Point(offset, new V3D_Vector(1 * multiplier,-1 * multiplier,1 * multiplier));
+        V3D_Point rtf = new V3D_Point(offset, new V3D_Vector(1 * multiplier,1 * multiplier,-1 * multiplier));
+        V3D_Point rta = new V3D_Point(offset, new V3D_Vector(1 * multiplier,1 * multiplier,1 * multiplier));
+        // BLUE
+        V3D_Triangle b1 = new V3D_Triangle(centroid, lbf, ltf, rtf, oom, rm);
+        V3D_Triangle b2 = new V3D_Triangle(centroid, lbf, rbf, rtf, oom, rm);
+        // RED
+        V3D_Triangle r1 = new V3D_Triangle(centroid, lbf, ltf, lta, oom, rm);
+        V3D_Triangle r2 = new V3D_Triangle(centroid, lbf, lba, lta, oom, rm);
+        // YELLOW
+        V3D_Triangle y1 = new V3D_Triangle(centroid, lba, lta, rta, oom, rm);
+        V3D_Triangle y2 = new V3D_Triangle(centroid, lba, rba, rta, oom, rm);
+        // GREEN
+        V3D_Triangle g1 = new V3D_Triangle(centroid, rbf, rtf, rta, oom, rm);
+        V3D_Triangle g2 = new V3D_Triangle(centroid, rbf, rta, rba, oom, rm);
+        // ORANGE
+        V3D_Triangle o1 = new V3D_Triangle(centroid, ltf, lta, rta, oom, rm);
+        V3D_Triangle o2 = new V3D_Triangle(centroid, rtf, ltf, rta, oom, rm);
+        // PINK
+        V3D_Triangle p1 = new V3D_Triangle(centroid, lbf, rbf, rba, oom, rm);
+        V3D_Triangle p2 = new V3D_Triangle(centroid, lbf, lba, rba, oom, rm);
+        points[0] = lbf;
+        points[1] = lba;
+        points[2] = ltf;
+        points[3] = lta;
+        points[4] = rbf;
+        points[5] = rba;
+        points[6] = rtf;
+        points[7] = rta;
+        V3D_Envelope envelope = new V3D_Envelope(oom, rm, points);
+        int width = 100;
+        Math_BigRational radius = envelope.getPoints(oom, rm)[0]
+                                .getDistance(centroid, oom, rm);
+        V3D_Vector direction = new V3D_Vector(0, 0, 1).getUnitVector(oom, rm);
+        V3D_Point pt = new V3D_Point(centroid);
+        pt.translate(direction.multiply(radius.multiply(2), oom, rm), oom, rm);
+        V3D_Plane pl = new V3D_Plane(pt, new V3D_Vector(pt, envelope.getCentroid(oom, rm), oom, rm));
+        V3D_Vector pv = pl.getPV();
+        V3D_Rectangle screen = envelope.getViewport3(pt, pv, oom, rm);
+        Math_BigRational screenWidth = screen.getPQ(oom, rm).getLength(oom, rm).getSqrt(oom, rm);
+        Math_BigRational screenHeight = screenWidth;
+        Math_BigRational pixelSize = screenWidth.divide(width);
+        V3D_Vector vd = new V3D_Vector(screen.getQR(oom, rm).l.v).divide(
+                Math_BigRational.valueOf(width), oom, rm);
+        V3D_Vector v2d = new V3D_Vector(screen.getPQ(oom, rm).l.v).divide(
+                Math_BigRational.valueOf(width), oom, rm);
+        int row = width / 3;
+        int col = width / 2;
+        r = getRay(row, col, screen, pt, vd, v2d, oom, rm);
+        
+//        expResult = new V3D_Point(nq, nq, nq);
+//        result = b1.getIntersection(r, oom, rm);
+//        result = b2.getIntersection(r, oom, rm);
+//        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
     }
 
+    /**
+     * For getting a ray from the camera focal point through the centre of the
+     * screen pixel with ID id.
+     *
+     * @param id The ID of the screen pixel.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return The ray from the camera focal point through the centre of the
+     * screen pixel.
+     */
+    protected V3D_Ray getRay(int row, int col, V3D_Rectangle screen, V3D_Point pt, V3D_Vector vd, 
+            V3D_Vector v2d, int oom, RoundingMode rm) {
+            V3D_Vector rv = v2d.multiply(Math_BigRational.valueOf(row), oom, rm);
+            V3D_Vector cv = vd.multiply(Math_BigRational.valueOf(col), oom, rm);
+            V3D_Point rcpt = new V3D_Point(screen.getP());
+            rcpt.translate(rv.add(cv, oom, rm), oom, rm);
+            return new V3D_Ray(pt, rcpt, oom, rm);
+    }
     
     /**
      * Test of getIntersection method, of class V3D_Triangle.
@@ -992,8 +1102,10 @@ public class V3D_TriangleTest extends V3D_Test {
         assertTrue(expResult.compareTo(result) == 0);
         // Test 9
         p = new V3D_Point(0, 0, 0);
-        t = new V3D_Triangle(pN1P0P1, pP1P1N1, pP2N2N2, oom, rm);
-        p.translate(t.pl.n.getUnitVector(oom-3, rm).multiply(10, oom-2, rm), oom-2, rm);
+        oom = -3;
+        int oomn3 = oom - 3;
+        t = new V3D_Triangle(pN1P0P1, pP1P1N1, pP2N2N2, oomn3, rm);
+        p.translate(t.pl.n.getUnitVector(oomn3, rm).multiply(10, oomn3, rm), oomn3, rm);
         expResult = Math_BigRational.valueOf(100);
         result = t.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);

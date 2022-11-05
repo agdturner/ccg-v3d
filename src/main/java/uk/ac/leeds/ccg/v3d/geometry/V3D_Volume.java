@@ -16,8 +16,8 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * V3D_Volume
@@ -32,7 +32,7 @@ public interface V3D_Volume extends Serializable {
      * @param rm The RoundingMode if rounding is needed.
      * @return The area.
      */
-    public abstract BigDecimal getArea(int oom, RoundingMode rm);
+    public abstract Math_BigRational getArea(int oom, RoundingMode rm);
     
     /**
      * For calculating and returning the perimeter.
@@ -40,6 +40,6 @@ public interface V3D_Volume extends Serializable {
      * @param rm The RoundingMode if rounding is needed.
      * @return The Perimeter.
      */
-    public abstract BigDecimal getVolume(int oom, RoundingMode rm);
+    public abstract Math_BigRational getVolume(int oom, RoundingMode rm);
     
 }

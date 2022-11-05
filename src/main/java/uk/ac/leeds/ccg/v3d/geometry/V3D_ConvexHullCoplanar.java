@@ -449,8 +449,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @return The area of the triangle (rounded).
      */
     @Override
-    public BigDecimal getArea(int oom, RoundingMode rm) {
-        BigDecimal sum = BigDecimal.ZERO;
+    public Math_BigRational getArea(int oom, RoundingMode rm) {
+        Math_BigRational sum = Math_BigRational.ZERO;
         for (var t : triangles) {
             sum = sum.add(t.getArea(oom, rm));
         }
@@ -464,8 +464,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @param rm The RoundingMode for any rounding.
      */
     @Override
-    public BigDecimal getPerimeter(int oom, RoundingMode rm) {
-        BigDecimal sum = BigDecimal.ZERO;
+    public Math_BigRational getPerimeter(int oom, RoundingMode rm) {
+        Math_BigRational sum = Math_BigRational.ZERO;
         for (var t : triangles) {
             sum = sum.add(t.getPerimeter(oom, rm));
         }

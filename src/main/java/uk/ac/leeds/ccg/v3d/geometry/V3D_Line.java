@@ -196,7 +196,6 @@ public class V3D_Line extends V3D_Geometry {
             V3D_Vector q, int oom, RoundingMode rm) {
         super(offset);
         this.p = new V3D_Vector(p);
-        //this.q = new V3D_Vector(q);
         if (p.equals(q)) {
             throw new RuntimeException("Points " + p + " and " + q
                     + " are the same and so do not define a line.");
@@ -998,6 +997,7 @@ public class V3D_Line extends V3D_Geometry {
      * precision.
      */
     public V3D_LineSegment getLineOfIntersection(V3D_Line l, int oom, RoundingMode rm) {
+        int oomn6 = oom - 6;
         if (isParallel(l, oom, rm)) {
             return null;
         }
@@ -1006,17 +1006,17 @@ public class V3D_Line extends V3D_Geometry {
         }
         V3D_Point tp = getP();
         V3D_Point lp = l.getP();
-        V3D_Vector A = new V3D_Vector(tp, lp, oom, rm);
+        V3D_Vector A = new V3D_Vector(tp, lp, oomn6, rm);
         //V3D_Vector B = getV(oom, rm).reverse();
         V3D_Vector B = v.reverse();
         //V3D_Vector C = l.getV(oom, rm).reverse();
         V3D_Vector C = l.v.reverse();
 
-        Math_BigRational AdB = A.getDotProduct(B, oom, rm);
-        Math_BigRational AdC = A.getDotProduct(C, oom, rm);
-        Math_BigRational CdB = C.getDotProduct(B, oom, rm);
-        Math_BigRational BdB = B.getDotProduct(B, oom, rm);
-        Math_BigRational CdC = C.getDotProduct(C, oom, rm);
+        Math_BigRational AdB = A.getDotProduct(B, oomn6, rm);
+        Math_BigRational AdC = A.getDotProduct(C, oomn6, rm);
+        Math_BigRational CdB = C.getDotProduct(B, oomn6, rm);
+        Math_BigRational BdB = B.getDotProduct(B, oomn6, rm);
+        Math_BigRational CdC = C.getDotProduct(C, oomn6, rm);
 
         Math_BigRational ma = (AdC.multiply(CdB)).subtract(AdB.multiply(CdC))
                 .divide((BdB.multiply(CdC)).subtract(CdB.multiply(CdB)));
@@ -1118,16 +1118,12 @@ public class V3D_Line extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @return The minimum distance between this and {@code p}.
      */
-    public BigDecimal getDistance(V3D_Point pt, int oom, RoundingMode rm) {
+    public Math_BigRational getDistance(V3D_Point pt, int oom, RoundingMode rm) {
         if (isIntersectedBy(pt, oom, rm)) {
-            return BigDecimal.ZERO;
+            return Math_BigRational.ZERO;
         }
-        Math_BigRational res = new Math_BigRationalSqrt(
+        return new Math_BigRationalSqrt(
                 getDistanceSquared(pt, true, oom, rm), oom, rm).getSqrt(oom, rm);
-        int precision = Math_BigDecimal.getOrderOfMagnitudeOfMostSignificantDigit(
-                res.integerPart().toBigDecimal(oom, rm)) - oom;
-        MathContext mc = new MathContext(precision);
-        return Math_BigDecimal.round(res.toBigDecimal(mc), oom);
     }
 
     /**
@@ -1196,9 +1192,9 @@ public class V3D_Line extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @return The minimum distance between this and {@code l}.
      */
-    public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
+    public Math_BigRational getDistance(V3D_Line l, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
+                .getSqrt(oom, rm);
     }
 
     /**
@@ -1438,14 +1434,17 @@ public class V3D_Line extends V3D_Geometry {
      * @return true if this and l are not skew.
      */
     public boolean isCoplanar(V3D_Line l, int oom, RoundingMode rm) {
-        if (isCollinear(l.getP(), oom, rm)) {
+        V3D_Point lp = l.getP();
+        if (isCollinear(lp, oom, rm)) {
             return true;
         } else {
             V3D_Point lq = l.getQ(oom, rm);
             if (isCollinear(lq, oom, rm)) {
                 return true;
             } else {
-                V3D_Plane pl = new V3D_Plane(getP(), l.getP(), l.getQ(oom, rm), oom, rm);
+//                return V3D_Plane.isCoplanar(oom, rm, lp, lq, getP(),
+//                        getQ(oom,rm));
+                V3D_Plane pl = new V3D_Plane(getP(), lp, lq, oom, rm);
                 return pl.isIntersectedBy(getQ(oom, rm), oom, rm);
             }
         }

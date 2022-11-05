@@ -3372,8 +3372,8 @@ public class V3D_PlaneTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point p = new V3D_Point(P5, P0, P0);
         V3D_Plane instance = new V3D_Plane(P0P0P0, P0P0P1, P0P1P1, oom, rm);
-        BigDecimal expResult = BigDecimal.valueOf(5);
-        BigDecimal result = instance.getDistance(p, oom, rm);
+        Math_BigRational expResult = Math_BigRational.valueOf(5);
+        Math_BigRational result = instance.getDistance(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         p = new V3D_Point(P5, P10, P0);

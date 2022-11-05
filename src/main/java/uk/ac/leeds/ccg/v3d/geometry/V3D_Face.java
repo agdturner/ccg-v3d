@@ -15,8 +15,8 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * V3D_Face
@@ -32,7 +32,7 @@ public interface V3D_Face {
      * @param rm The RoundingMode for any rounding.
      * @return The Perimeter.
      */
-    public abstract BigDecimal getPerimeter(int oom, RoundingMode rm);
+    public abstract Math_BigRational getPerimeter(int oom, RoundingMode rm);
 
     /**
      * For calculating and returning the area.
@@ -40,5 +40,5 @@ public interface V3D_Face {
      * @param rm The RoundingMode for any rounding.
      * @return The area.
      */
-    public abstract BigDecimal getArea(int oom, RoundingMode rm);
+    public abstract Math_BigRational getArea(int oom, RoundingMode rm);
 }

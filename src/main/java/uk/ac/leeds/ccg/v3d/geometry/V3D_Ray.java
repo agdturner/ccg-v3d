@@ -537,8 +537,7 @@ public class V3D_Ray extends V3D_Geometry {
             int oom, RoundingMode rm) {
         V3D_Ray r;
         if (theta.compareTo(Math_BigRational.ZERO) == 1) {
-            V3D_Line rl = this.l.rotate(axis, theta, oom, rm);
-            r = new V3D_Ray(rl);
+            r = new V3D_Ray(l.rotate(axis, theta, oom, rm));
         } else {
             r = new V3D_Ray(this);
         }

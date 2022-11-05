@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -250,7 +249,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      * @return The area of the triangle (rounded).
      */
     @Override
-    public BigDecimal getArea(int oom, RoundingMode rm) {
+    public Math_BigRational getArea(int oom, RoundingMode rm) {
         throw new UnsupportedOperationException();
 //        BigDecimal sum = BigDecimal.ZERO;
 //        for (var t : triangles) {
@@ -266,7 +265,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      */
     @Override
-    public BigDecimal getPerimeter(int oom, RoundingMode rm) {
+    public Math_BigRational getPerimeter(int oom, RoundingMode rm) {
         throw new UnsupportedOperationException();
 //        BigDecimal sum = BigDecimal.ZERO;
 //        for (var t : triangles) {

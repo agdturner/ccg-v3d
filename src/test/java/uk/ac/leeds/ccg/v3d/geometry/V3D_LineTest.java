@@ -629,12 +629,12 @@ public class V3D_LineTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point pt;
         V3D_Line instance;
-        BigDecimal expResult;
-        BigDecimal result;
+        Math_BigRational expResult;
+        Math_BigRational result;
         // Test 1
         pt = pP0P0P0;
         instance = new V3D_Line(pP1P0P0, pP1P1P0, oom, rm);
-        expResult = BigDecimal.ONE;
+        expResult = Math_BigRational.ONE;
         result = instance.getDistance(pt, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
@@ -654,10 +654,8 @@ public class V3D_LineTest extends V3D_Test {
         if (ooms > 0) {
             ooms = 0;
         }
-        MathContext mc = new MathContext(-ooms);
         expResult = Math_BigRational.valueOf(new Math_BigRationalSqrt(
-                Math_BigRational.TWO, oom, rm).toBigDecimal(oom, rm)).divide(2)
-                .toBigDecimal(mc);
+                Math_BigRational.TWO, oom, rm).toBigDecimal(oom, rm)).divide(2);
         result = instance.getDistance(pt, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 5 https://math.stackexchange.com/a/1658288/756049
@@ -672,31 +670,31 @@ public class V3D_LineTest extends V3D_Test {
         // Test 6
         instance = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
         pt = pP0P1P0;
-        expResult = P1.toBigDecimal(oom, rm);
+        expResult = P1;
         result = instance.getDistance(pt, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         instance = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
         pt = new V3D_Point(P3, P4, P0);
-        expResult = P5.toBigDecimal(oom, rm);
+        expResult = P5;
         result = instance.getDistance(pt, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         instance = new V3D_Line(pP0P0P1, pP0P0P0, oom, rm);
         pt = new V3D_Point(P3, P4, P0);
-        expResult = P5.toBigDecimal(oom, rm);
+        expResult = P5;
         result = instance.getDistance(pt, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 4
         instance = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
         pt = new V3D_Point(P4, P3, P0);
-        expResult = P5.toBigDecimal(oom, rm);
+        expResult = P5;
         result = instance.getDistance(pt, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         instance = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
         pt = new V3D_Point(P4, P3, P10);
-        expResult = P5.toBigDecimal(oom, rm);
+        expResult = P5;
         result = instance.getDistance(pt, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
@@ -775,22 +773,22 @@ public class V3D_LineTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line l;
         V3D_Line instance;
-        BigDecimal expResult;
-        BigDecimal result;
+        Math_BigRational expResult;
+        Math_BigRational result;
         // Test 1 
         // https://math.stackexchange.com/questions/2213165/find-shortest-distance-between-lines-in-3d
         //l = new V3D_Line(new V3D_Vector(P2, P6, N9), oom, rm, new V3D_Vector(P3, P4, N4));
         l = new V3D_Line(new V3D_Vector(P2, P6, N9), new V3D_Vector(P3, P4, N4));
         //instance = new V3D_Line(new V3D_Vector(N1, N2, P3), oom, rm, new V3D_Vector(P2, N6, P1));
         instance = new V3D_Line(new V3D_Vector(N1, N2, P3), new V3D_Vector(P2, N6, P1));
-        expResult = new BigDecimal("4.7");
+        expResult = Math_BigRational.valueOf("4.7");
         result = instance.getDistance(l, -1, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         l = new V3D_Line(pP0P0P0, pP1P1P0, oom, rm);
         oom = -4;
-        instance = new V3D_Line(P1N1P0, new V3D_Vector(P2, P0, P0), oom, rm);
-        expResult = BigDecimal.valueOf(2).sqrt(new MathContext(1 - oom, rm));
+        instance = new V3D_Line(P1N1P0, P2P0P0, oom, rm);
+        expResult = new Math_BigRationalSqrt(Math_BigRational.TWO, oom, rm).getSqrt(oom, rm);
         result = instance.getDistance(l, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }

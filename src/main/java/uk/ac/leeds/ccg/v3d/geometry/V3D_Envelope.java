@@ -715,8 +715,7 @@ public class V3D_Envelope implements Serializable {
         V3D_Rectangle r;
         // Get the plane of the viewport.
         V3D_Point c = getCentroid(oom, rm);
-        Math_BigRational distance = Math_BigRational.valueOf(
-                c.getDistance(getPoints(oom, rm)[0], oom, rm));
+        Math_BigRational distance = c.getDistance(getPoints(oom, rm)[0], oom, rm);
         V3D_Point plpt = new V3D_Point(c);
         V3D_Vector vo = new V3D_Vector(c, pt, oom, rm);
         plpt.translate(vo.multiply(distance, oom, rm), oom, rm);
@@ -844,8 +843,7 @@ public class V3D_Envelope implements Serializable {
         V3D_Rectangle r;
         // Get the plane of the viewport.
         V3D_Point c = getCentroid(oomn4, rm);
-        Math_BigRational d = Math_BigRational.valueOf(
-                c.getDistance(getPoints(oom, rm)[0], oomn4, rm));
+        Math_BigRational d = c.getDistance(getPoints(oom, rm)[0], oomn4, rm);
         Math_BigRational dby2 = d.divide(2);
         V3D_Point plpt = new V3D_Point(c);
         V3D_Vector cpt = new V3D_Vector(c, pt, oomn4, rm);

@@ -80,8 +80,8 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The area of the triangle (rounded).
      */
     @Override
-    public BigDecimal getArea(int oom, RoundingMode rm) {
-        BigDecimal r = BigDecimal.ZERO;
+    public Math_BigRational getArea(int oom, RoundingMode rm) {
+        Math_BigRational r = Math_BigRational.ZERO;
         Iterator<V3D_Tetrahedron> ite = tetrahedrons.iterator();
         while (ite.hasNext()) {
             r = r.add(ite.next().getArea(oom, rm));
@@ -93,8 +93,8 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
      * @param oom The Order of Magnitude for the precision of the calculation.
      */
     @Override
-    public BigDecimal getVolume(int oom, RoundingMode rm) {
-        BigDecimal r = BigDecimal.ZERO;
+    public Math_BigRational getVolume(int oom, RoundingMode rm) {
+        Math_BigRational r = Math_BigRational.ZERO;
         Iterator<V3D_Tetrahedron> ite = tetrahedrons.iterator();
         while (ite.hasNext()) {
             r = r.add(ite.next().getVolume(oom, rm));

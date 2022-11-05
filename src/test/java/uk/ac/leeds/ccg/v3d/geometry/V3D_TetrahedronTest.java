@@ -323,13 +323,13 @@ public class V3D_TetrahedronTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P0P1, oom, rm);
-        BigDecimal expResult = (new Math_BigRationalSqrt(
+        Math_BigRational expResult = (new Math_BigRationalSqrt(
                 Math_BigRational.valueOf(3, 2), oom, rm).getSqrt(oom, rm)
                 .multiply(new Math_BigRationalSqrt(
                         Math_BigRational.TWO, oom, rm).getSqrt(oom, rm).divide(2)))
-                .add(Math_BigRational.valueOf(3, 2)).toBigDecimal(oom, rm);
-        BigDecimal result = instance.getArea(oom, rm);
-        assertEquals(expResult, result);
+                .add(Math_BigRational.valueOf(3, 2)).round(oom, rm);
+        Math_BigRational result = instance.getArea(oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -343,8 +343,8 @@ public class V3D_TetrahedronTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P0P1, oom, rm);
-        BigDecimal expResult = Math_BigRational.valueOf(1, 6).toBigDecimal(oom, rm);
-        BigDecimal result = instance.getVolume(oom, rm);
+        Math_BigRational expResult = Math_BigRational.valueOf(1, 6);
+        Math_BigRational result = instance.getVolume(oom, rm);
         assertEquals(expResult, result);
     }
 

@@ -17,10 +17,8 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  *
@@ -329,7 +327,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The outer surface area of the tetrahedron (rounded).
      */
     @Override
-    public BigDecimal getArea(int oom, RoundingMode rm) {
+    public Math_BigRational getArea(int oom, RoundingMode rm) {
         return getPqr(oom, rm).getArea(oom, rm)
                 .add(getQsr(oom, rm).getArea(oom, rm))
                 .add(getSpr(oom, rm).getArea(oom, rm))
@@ -345,15 +343,15 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param rm The RoundingMode if rounding is needed.
      */
     @Override
-    public BigDecimal getVolume(int oom, RoundingMode rm) {
+    public Math_BigRational getVolume(int oom, RoundingMode rm) {
         V3D_Triangle tpqr = getPqr(oom, rm);
         V3D_Point ts = getS();
         int oomn6 = oom - 6;
-        BigDecimal hd3 = new Math_BigRationalSqrt(
-                tpqr.pl.getPointOfProjectedIntersection(ts, oom, rm)
+        Math_BigRational hd3 = new Math_BigRationalSqrt(
+                tpqr.pl.getPointOfProjectedIntersection(ts, oomn6, rm)
                         .getDistanceSquared(ts, oomn6, rm), oomn6, rm)
-                .getSqrt(oom, rm).divide(3).toBigDecimal(oomn6);
-        return Math_BigDecimal.round(tpqr.getArea(oom - 3, rm).multiply(hd3), oom, rm);
+                .getSqrt(oom, rm).divide(3);
+        return tpqr.getArea(oom - 3, rm).multiply(hd3);
     }
 
     /**

@@ -23,6 +23,7 @@ module uk.ac.leeds.ccg.v3d {
      * ccg-math
      */
     requires transitive uk.ac.leeds.ccg.math;
+    requires transitive uk.ac.leeds.ccg.generic;
 
     /**
      * Exports.

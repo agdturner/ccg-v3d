@@ -326,12 +326,12 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param rm The RoundingMode.
      * @return The distance from {@code p} to this.
      */
-    public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
+    public Math_BigRational getDistance(V3D_Point p, int oom, RoundingMode rm) {
         if (this.equals(p, oom, rm)) {
-            return BigDecimal.ZERO;
+            return Math_BigRational.ZERO;
         }
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom -6, rm), oom, rm)
+                .getSqrt(oom, rm);
     }
 
     /**
@@ -344,11 +344,11 @@ public class V3D_Point extends V3D_FiniteGeometry {
      */
     public Math_BigRational getDistanceSquared(V3D_Point pt, int oom,
             RoundingMode rm) {
-        int oomn2 = oom - 2;
-        Math_BigRational dx = getX(oomn2, rm).subtract(pt.getX(oomn2, rm));
-        Math_BigRational dy = getY(oomn2, rm).subtract(pt.getY(oomn2, rm));
-        Math_BigRational dz = getZ(oomn2, rm).subtract(pt.getZ(oomn2, rm));
-        return dx.pow(2).add(dy.pow(2)).add(dz.pow(2)).round(oom, rm);
+        int oomn6 = oom - 6;
+        Math_BigRational dx = getX(oomn6, rm).subtract(pt.getX(oomn6, rm));
+        Math_BigRational dy = getY(oomn6, rm).subtract(pt.getY(oomn6, rm));
+        Math_BigRational dz = getZ(oomn6, rm).subtract(pt.getZ(oomn6, rm));
+        return dx.pow(2).add(dy.pow(2)).add(dz.pow(2));
     }
 
     @Override
