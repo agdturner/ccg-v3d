@@ -24,14 +24,14 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * angled quadrilateral. The four corners are the points
  * {@link #p}, {@link #q}, {@link #r} and {@link #s}. The following depicts a
  * rectangle {@code
-          qr
-  q *-------------* r
-    |             |
- pq |             | rs
-    |             |
-  pl *-------------* s
-          sp
- }
+ * qr
+ * q *-------------* r
+ * |             |
+ * pq |             | rs
+ * |             |
+ * pl *-------------* s
+ * sp
+ * }
  * The angles PQR, QRS, RSP, SPQ are all 90 degrees or Pi/2 radians.
  *
  * @author Andy Turner
@@ -104,7 +104,6 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 //     * For storing the line segment from {@link #s} to {@link #pl}.
 //     */
 //    protected V3D_LineSegment b;
-    
     /**
      * Create a new instance.
      *
@@ -189,13 +188,13 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         //return toString("");
         return toStringSimple("");
     }
-    
+
     @Override
     public String toStringSimple(String pad) {
         return pad + this.getClass().getSimpleName() + "("
                 + toStringFieldsSimple("") + ")";
     }
-    
+
     @Override
     protected String toStringFields(String pad) {
         return "\n" + super.toStringFields(pad) + ",\n"
@@ -320,9 +319,9 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
                 //return V3D_Geometrics.isCoplanar(this, pt);
             }
         }
-        if (getQR(oom, rm).isIntersectedBy(pt, oom, rm) 
+        if (getQR(oom, rm).isIntersectedBy(pt, oom, rm)
                 || getRS(oom, rm).isIntersectedBy(pt, oom, rm)
-                || getSP(oom, rm).isIntersectedBy(pt, oom, rm) 
+                || getSP(oom, rm).isIntersectedBy(pt, oom, rm)
                 || getPQ(oom, rm).isIntersectedBy(pt, oom, rm)) {
             return true;
         }
@@ -690,10 +689,10 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 //            }
 //        }
     }
-    
+
     @Override
     public Math_BigRational getPerimeter(int oom, RoundingMode rm) {
-        int oomn2 = oom -2;
+        int oomn2 = oom - 2;
         return (getPQ(oomn2, rm).getLength(oomn2, rm).getSqrt(oom, rm)
                 .add(getQR(oomn2, rm).getLength(oomn2, rm).getSqrt(oom, rm)))
                 .multiply(Math_BigRational.TWO);
@@ -701,7 +700,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 
     @Override
     public Math_BigRational getArea(int oom, RoundingMode rm) {
-        int oomn2 = oom -2;
+        int oomn2 = oom - 2;
         return (getPQ(oomn2, rm).getLength(oomn2, rm).multiply(
                 getQR(oomn2, rm).getLength(oomn2, rm), oomn2, rm))
                 .getSqrt(oom, rm);
@@ -779,7 +778,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     }
 
     @Override
-    public V3D_Rectangle rotate(V3D_Line axis, 
+    public V3D_Rectangle rotate(V3D_Line axis,
             Math_BigRational theta, int oom, RoundingMode rm) {
         return new V3D_Rectangle(
                 getP().rotate(axis, theta, oom, rm),
@@ -841,9 +840,33 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
         }
     }
 
+    /**
+     * Get the intersection between the geometry and the line segment {@code l}.
+     *
+     * @param r The ray to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
+     */
+    @Override
+    public V3D_FiniteGeometry getIntersection(V3D_Ray r, int oom,
+            RoundingMode rm) {
+        V3D_FiniteGeometry grsp = getRSP(oom, rm).getIntersection(r, oom, rm);
+        V3D_FiniteGeometry gpqr = getPQR().getIntersection(r, oom, rm);
+        if (grsp == null) {
+            return gpqr;
+        } else {
+            if (gpqr == null) {
+                return grsp;
+            } else {
+                return join(grsp, grsp, oom, rm);
+            }
+        }
+    }
+
     @Override
     public Math_BigRational getDistance(V3D_Line l, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(l, oom-6, rm), oom, rm).getSqrt(oom, rm);
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom - 6, rm), oom, rm).getSqrt(oom, rm);
     }
 
     @Override
@@ -854,7 +877,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 
     @Override
     public Math_BigRational getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(l, oom-6, rm), oom, rm).getSqrt(oom, rm);
+        return new Math_BigRationalSqrt(getDistanceSquared(l, oom - 6, rm), oom, rm).getSqrt(oom, rm);
     }
 
     @Override
@@ -865,7 +888,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 
     @Override
     public Math_BigRational getDistance(V3D_Plane p, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom-6, rm), oom, rm).getSqrt(oom, rm);
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom - 6, rm), oom, rm).getSqrt(oom, rm);
     }
 
     @Override
@@ -876,7 +899,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
 
     @Override
     public Math_BigRational getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(t, oom-6, rm), oom, rm)
+        return new Math_BigRationalSqrt(getDistanceSquared(t, oom - 6, rm), oom, rm)
                 .getSqrt(oom, rm);
     }
 
@@ -896,27 +919,27 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
     public boolean equals(V3D_Rectangle r, int oom, RoundingMode rm) {
         V3D_Point[] pts = getPoints(oom, rm);
         V3D_Point[] rpts = r.getPoints(oom, rm);
-        for (var x: pts) {
+        for (var x : pts) {
             boolean found = false;
-            for (var y: rpts) {
+            for (var y : rpts) {
                 if (x.equals(y, oom, rm)) {
                     found = true;
                     break;
                 }
             }
-            if (! found) {
+            if (!found) {
                 return false;
             }
         }
-        for (var x: rpts) {
+        for (var x : rpts) {
             boolean found = false;
-            for (var y: pts) {
+            for (var y : pts) {
                 if (x.equals(y, oom, rm)) {
                     found = true;
                     break;
                 }
             }
-            if (! found) {
+            if (!found) {
                 return false;
             }
         }
