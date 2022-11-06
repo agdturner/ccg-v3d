@@ -277,8 +277,9 @@ public class V3D_Ray extends V3D_Geometry {
         }
         if (g instanceof V3D_Point gp) {
             //V3D_Plane rp = new V3D_Plane(this.l.getP(), this.l.getV(oom, rm), oom, rm);
-            V3D_Plane rp = new V3D_Plane(this.l.getP(), this.l.v);
-            if (rp.isOnSameSide(gp, this.l.getQ(oom, rm), oom, rm)) {
+            //V3D_Plane rp = new V3D_Plane(this.l.getP(), this.l.v);
+            //if (rp.isOnSameSide(gp, this.l.getQ(oom, rm), oom, rm)) {
+            if (getPl().isOnSameSide(gp, this.l.getQ(oom, rm), oom, rm)) {
                 return g;
             } else {
                 return null;

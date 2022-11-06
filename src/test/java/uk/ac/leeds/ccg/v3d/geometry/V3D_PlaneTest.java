@@ -106,13 +106,13 @@ public class V3D_PlaneTest extends V3D_Test {
         // Test 1
         instance = new V3D_Plane(pP0P0P0, pP1P1P1, pP1P0P0, oom, rm);
         expResult = "0 * x + 1 * y + -1 * z + 0 = 0";
-        result = instance.getEquation(oom, rm);
+        result = instance.getEquationString(oom, rm);
         assertTrue(expResult.equalsIgnoreCase(result));
         // Test 2
         instance = new V3D_Plane(P1N2P1, new V3D_Vector(P4, N2, N2),
                 new V3D_Vector(P4, P1, P4), oom, rm);
         expResult = "9 * x + -18 * y + 9 * z + -54 = 0";
-        result = instance.getEquation(oom, rm);
+        result = instance.getEquationString(oom, rm);
         assertTrue(expResult.equalsIgnoreCase(result));
     }
 
@@ -3552,17 +3552,17 @@ public class V3D_PlaneTest extends V3D_Test {
      * Test of getEquationCoefficients method, of class V3D_Plane.
      */
     @Test
-    public void testGetEquationCoefficients() {
+    public void testGetEquation_int_RoundingMode() {
         System.out.println("getEquationCoefficients");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Plane instance = instance = new V3D_Plane(P0P0P0, P1P1P1, P1P0P0, oom, rm);
+        V3D_Plane instance = new V3D_Plane(P0P0P0, P1P1P1, P1P0P0, oom, rm);
         Math_BigRational[] expResult = new Math_BigRational[4];
         expResult[0] = P0;
         expResult[1] = P1;
         expResult[2] = N1;
         expResult[3] = P0;
-        Math_BigRational[] result = instance.getEquationCoefficients(oom, rm);
+        Math_BigRational[] result = instance.getEquation(oom, rm).coeffs;
 //        for (int i = 0; i < result.length; i ++) {
 //            System.out.println(i + " " + result[i].toRationalString());
 //        }

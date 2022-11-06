@@ -1487,7 +1487,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The V3D_Geometry.
      */
     public V3D_FiniteGeometry getIntersection(V3D_Rectangle r, int oom, RoundingMode rm) {
-        V3D_Triangle r_pqr = r.getPQR();
+        V3D_Triangle r_pqr = r.getPQR(oom, rm);
         V3D_Triangle r_rsp = r.getRSP(oom, rm);
         V3D_FiniteGeometry i_pqr = getIntersection(r_pqr, oom, rm);
         V3D_FiniteGeometry i_rsp = getIntersection(r_rsp, oom, rm);
@@ -1858,7 +1858,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The minimum distance to {@code t}.
      */
     public Math_BigRational getDistanceSquared(V3D_Rectangle r, int oom, RoundingMode rm) {
-        Math_BigRational pqrd = getDistanceSquared(r.getPQR(), oom, rm);
+        Math_BigRational pqrd = getDistanceSquared(r.getPQR(oom, rm), oom, rm);
         if (pqrd.compareTo(Math_BigRational.ZERO) == 0) {
             return pqrd;
         } else {

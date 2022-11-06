@@ -395,7 +395,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         if (getEnvelope(oom, rm).isIntersectedBy(pt, oom, rm)) {
             if (triangles.get(0).pl.isIntersectedBy(pt, oom, rm)) {
-                return isIntersectedBy0(pt, oom, rm);
+                //return isIntersectedBy0(pt, oom, rm);
+                return triangles.get(0).isAligned(pt, oom, rm);
             }
         }
         return false;
@@ -407,6 +408,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code pt}.
      */
+    @Deprecated
     protected boolean isIntersectedBy0(V3D_Point pt, int oom, RoundingMode rm) {
         for (V3D_Triangle triangle : triangles) {
             if (triangle.isIntersectedBy0(pt, oom, rm)) {

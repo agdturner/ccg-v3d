@@ -82,18 +82,28 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public V3D_Vector r;
 
     /**
+     * The order of magnitude used for the calculation of {@link #pl}.
+     */
+    public int oom;
+    
+    /**
+     * The RoundingMode used for the calculation of {@link #pl}.
+     */
+    public RoundingMode rm;
+    
+    /**
      * For storing the line segment from {@link #getP()} to {@link #getQ()} for
      * a given Order of Magnitude and RoundingMode precision.
      */
     private V3D_LineSegment pq;
 
     /**
-     * The Order of Magnitude for the precision of pq.
+     * The Order of Magnitude for the precision of {@link #pq}.
      */
     int pqoom;
 
     /**
-     * The RoundingMode used for the calculation of pq.
+     * The RoundingMode used for the calculation of {@link #pq}.
      */
     RoundingMode pqrm;
 
@@ -104,12 +114,12 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     private V3D_LineSegment qr;
 
     /**
-     * The Order of Magnitude for the precision of qr.
+     * The Order of Magnitude for the precision of {@link #qr}.
      */
     int qroom;
 
     /**
-     * The RoundingMode used for the calculation of qr.
+     * The RoundingMode used for the calculation of {@link #qr}.
      */
     RoundingMode qrrm;
 
@@ -120,12 +130,12 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     private V3D_LineSegment rp;
 
     /**
-     * The Order of Magnitude for the precision of rp.
+     * The Order of Magnitude for the precision of {@link #rp}.
      */
     int rpoom;
 
     /**
-     * The RoundingMode used for the calculation of rp.
+     * The RoundingMode used for the calculation of {@link #rp}.
      */
     RoundingMode rprm;
 
@@ -212,6 +222,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
             V3D_Vector q, V3D_Vector r, int oom, RoundingMode rm) {
         super(offset);
         this.pl = new V3D_Plane(V3D_Vector.ZERO, p, q, r, oom, rm);
+        this.oom = oom;
+        this.rm = rm;
         this.p = p;
         this.q = q;
         this.r = r;
@@ -260,6 +272,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         this.q = q.getVector(oom, rm).subtract(p.offset, oom, rm);
         this.r = r.getVector(oom, rm).subtract(p.offset, oom, rm);
         this.pl = new V3D_Plane(p, p.offset, p.rel, this.q, this.r, oom, rm);
+        this.oom = oom;
+        this.rm = rm;
     }
 
     /**
@@ -278,6 +292,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         this.q = q.getVector(oom, rm).subtract(p.offset, oom, rm);
         this.r = r.getVector(oom, rm).subtract(p.offset, oom, rm);
         this.pl = new V3D_Plane(pt, p.offset, p.rel, this.q, this.r, oom, rm);
+        this.oom = oom;
+        this.rm = rm;
     }
 
     /**
@@ -522,7 +538,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         if (getEnvelope(oom, rm).isIntersectedBy(pt, oom, rm)) {
             if (pl.isIntersectedBy(pt, oom, rm)) {
-                return isIntersectedBy0(pt, oom, rm);
+                return isAligned(pt, oom, rm);
+                //return isIntersectedBy0(pt, oom, rm);
             }
         }
         return false;
@@ -534,6 +551,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} if this intersects with {@code pt}.
      */
+    @Deprecated
     protected boolean isIntersectedBy0(V3D_Point pt, int oom, RoundingMode rm) {
         V3D_LineSegment tpq = getPQ(oom, rm);
         V3D_LineSegment tqr = getQR(oom, rm);
@@ -585,9 +603,9 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @return {@code true} iff pl is aligned with this.
      */
     public boolean isAligned(V3D_Point pt, int oom, RoundingMode rm) {
-        if (pl.isIntersectedBy(pt, oom, rm)) {
-            return isIntersectedBy0(pt, oom, rm);
-        }
+//        if (pl.isIntersectedBy(pt, oom, rm)) {
+//            return isIntersectedBy0(pt, oom, rm);
+//        }
         if (getPQPl(oom, rm).isOnSameSide(pt, getR(), oom, rm)) {
             if (getQRPl(oom, rm).isOnSameSide(pt, getP(), oom, rm)) {
                 if (getRPPl(oom, rm).isOnSameSide(pt, getQ(), oom, rm)) {
@@ -730,7 +748,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     /**
-     * Get the intersection between the geometry and the line segment {@code l}.
+     * Get the intersection between the geometry and the ray {@code r}.
      *
      * @param r The ray to intersect with.
      * @param oom The Order of Magnitude for the precision.
@@ -1053,7 +1071,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * The intersection could be: null, a point, a line segment, a triangle, or
      * a V3D_ConvexHullCoplanar (with 4, 5, or 6 sides).
      *
-     * @param t The triangle to test for intersection with this.
+     * @param t The triangle intersect with this.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      * @return The intersection between {@code t} and {@code this} or
@@ -2010,7 +2028,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      */
     public Math_BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
         if (pl.isIntersectedBy(pt, oom, rm)) {
-            if (isIntersectedBy0(pt, oom, rm)) {
+            //if (isIntersectedBy0(pt, oom, rm)) {
+            if (isAligned(pt, oom, rm)) {
                 return Math_BigRational.ZERO;
             } else {
                 return getDistanceSquaredEdge(pt, oom, rm);
@@ -2115,7 +2134,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     /**
-     * Get the minimum distance to {@code p}.
+     * Get the minimum distance to {@code pl}.
      *
      * @param pl A plane.
      * @param oom The Order of Magnitude for the precision.
@@ -2254,12 +2273,11 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         } else if (i instanceof V3D_Point ip) {
             /**
              * If at least two points of the triangle are on the same side of pl
-             * as pt, then return this, otherwise return ip. As the calcualtion
+             * as pt, then return this, otherwise return ip. As the calculation
              * of i is perhaps imprecise, then simply testing if ip equals one
              * of the triangle corner points and then testing another point to
              * see if it that is on the same side as pt might not work out
              * right!
-             *
              */
             int poll = 0;
             if (pl.isOnSameSide(ppt, pt, oom, rm)) {

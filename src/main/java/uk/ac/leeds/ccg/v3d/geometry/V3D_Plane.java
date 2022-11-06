@@ -151,7 +151,7 @@ public class V3D_Plane extends V3D_Geometry {
         }
         return null;
     }
-    
+
     /**
      * The point that defines the plane.
      */
@@ -162,6 +162,11 @@ public class V3D_Plane extends V3D_Geometry {
      * plane.
      */
     public V3D_Vector n;
+
+    /**
+     * For storing the equation of the plane.
+     */
+    protected transient Equation equation;
 
     /**
      * Create a new instance.
@@ -190,8 +195,8 @@ public class V3D_Plane extends V3D_Geometry {
      * Create a new instance.
      *
      * @param l A line segment in the plane.
-     * @param inplane A vector in the plane that is not a scalar multiple of 
-     * the vector of the line of l.
+     * @param inplane A vector in the plane that is not a scalar multiple of the
+     * vector of the line of l.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
@@ -238,7 +243,7 @@ public class V3D_Plane extends V3D_Geometry {
             RoundingMode rm) {
         this(V3D_Vector.ZERO, p, q, r, oom, rm);
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -269,7 +274,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_Plane(V3D_Vector ptv, V3D_Vector offset, V3D_Vector p, 
+    public V3D_Plane(V3D_Vector ptv, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r, int oom, RoundingMode rm) {
         super(offset);
         V3D_Vector pq = q.subtract(p, oom, rm);
@@ -282,14 +287,14 @@ public class V3D_Plane extends V3D_Geometry {
         }
         this.p = p;
         this.n = pq.getCrossProduct(qr, oom, rm);
-        
+
         V3D_Vector v;
         if (ptv.isZeroVector()) {
             v = p.add(q, oom, rm).add(r, oom, rm).reverse();
         } else {
             v = ptv;
         }
-        
+
         int direction = (n.getDotProduct(v, oom, rm)
                 .divide(n.getDotProduct(n, oom, rm)))
                 .compareTo(Math_BigRational.ZERO);
@@ -298,7 +303,7 @@ public class V3D_Plane extends V3D_Geometry {
         }
         //this.n = qr.getCrossProduct(pq, oom, rm);
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -312,7 +317,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_Plane(V3D_Point pt, V3D_Vector offset, V3D_Vector p, 
+    public V3D_Plane(V3D_Point pt, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r, int oom, RoundingMode rm) {
         this(pt.getVector(oom, rm), offset, p, q, r, oom, rm);
     }
@@ -373,7 +378,7 @@ public class V3D_Plane extends V3D_Geometry {
     public final V3D_Point getP() {
         return new V3D_Point(offset, p);
     }
-    
+
     /**
      * Find a perpendicular vector using: user65203, How to find perpendicular
      * vector to another vector?, URL (version: 2020-10-01):
@@ -407,7 +412,7 @@ public class V3D_Plane extends V3D_Geometry {
 
     /**
      * Get another point on the plane.
-     * 
+     *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return A point on the plane.
@@ -418,7 +423,7 @@ public class V3D_Plane extends V3D_Geometry {
 
     /**
      * Get another point on the plane.
-     * 
+     *
      * @param pv What is from {@link #getPV()}.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -430,7 +435,7 @@ public class V3D_Plane extends V3D_Geometry {
 
     /**
      * Get another point on the plane.
-     * 
+     *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return A point on the plane.
@@ -441,7 +446,7 @@ public class V3D_Plane extends V3D_Geometry {
 
     /**
      * Get another point on the plane.
-     * 
+     *
      * @param pv What is from {@link #getPV()}.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -451,21 +456,6 @@ public class V3D_Plane extends V3D_Geometry {
         V3D_Vector pvx = pv.getCrossProduct(n, oom, rm);
         return new V3D_Point(offset, this.p.add(pvx, oom, rm));
     }
-    
-    /**
-     * For getting the equation of the plane.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return The equation of the plane as a String.
-     */
-    public String getEquation(int oom, RoundingMode rm) {
-        Math_BigRational[] coefficients = getEquationCoefficients(oom, rm);
-        return coefficients[0].toRationalString() + " * x + "
-                + coefficients[1].toRationalString() + " * y + "
-                + coefficients[2].toRationalString() + " * z + "
-                + coefficients[3].toRationalString() + " = 0";
-    }
 
     /**
      * For getting the equation of the plane.
@@ -474,36 +464,105 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @return The equation of the plane as a String.
      */
-    public Math_BigRational[] getEquationCoefficients(int oom, RoundingMode rm) {
-        Math_BigRational[] coeffs = new Math_BigRational[4];
+    public String getEquationString(int oom, RoundingMode rm) {
+        if (equation == null) {
+            equation = new Equation(oom, rm);
+        }
+        return equation.coeffs[0].toRationalString() + " * x + "
+                + equation.coeffs[1].toRationalString() + " * y + "
+                + equation.coeffs[2].toRationalString() + " * z + "
+                + equation.coeffs[3].toRationalString() + " = 0";
+    }
+
+    /**
+     * For storing the coefficents of the plane equation along with the 
+     * precision at which these were calculated.
+     */
+    public class Equation {
+
+        /**
+         * The equation coefficients for the parametric equation of the plane:
+         * ax + bx + cx + d
+         * <ul>
+         * <li>[0] is a</li>
+         * <li>[1] is b</li>
+         * <li>[2] is c</li>
+         * <li>[3] is d</li>
+         * </ul>
+         */
+        Math_BigRational[] coeffs;
+        
+        /**
+         * The order of magnitude used to calculate the coefficients.
+         */
+        int oom;
+        
+        /**
+         * The RoundingMode used to calculate the coefficients.
+         */
+        RoundingMode rm;
+
+        /**
+         * Create a new instance.
+         * @param oom Used to set {@link #oom}.
+         * @param rm Used to set {@link #rm}.
+         */
+        public Equation(int oom, RoundingMode rm) {
+            this.oom = oom;
+            this.rm = rm;
+            coeffs = new Math_BigRational[4];
 //        // Ensure n is not null
 //        n = getN(oom, rm);
-        Math_BigRational ndxsr = n.dx.getSqrt(oom, rm);
-        Math_BigRational ndysr = n.dy.getSqrt(oom, rm);
-        Math_BigRational ndzsr = n.dz.getSqrt(oom, rm);
+            Math_BigRational ndxsr = n.dx.getSqrt(oom, rm);
+            Math_BigRational ndysr = n.dy.getSqrt(oom, rm);
+            Math_BigRational ndzsr = n.dz.getSqrt(oom, rm);
 //        Math_BigRational k = (ndxsr.multiply(pl.getX(oom))
 //                .add(ndysr.multiply(pl.getY(oom)))
 //                .add(ndzsr.multiply(pl.getZ(oom)))).negate();
-        V3D_Point tp = getP();
-        Math_BigRational k = (ndxsr.multiply(tp.getX(oom, rm))
-                .add(ndysr.multiply(tp.getY(oom, rm)))
-                .add(ndzsr.multiply(tp.getZ(oom, rm)))).negate();
+            V3D_Point tp = getP();
+            Math_BigRational k = (ndxsr.multiply(tp.getX(oom, rm))
+                    .add(ndysr.multiply(tp.getY(oom, rm)))
+                    .add(ndzsr.multiply(tp.getZ(oom, rm)))).negate();
 //        Math_BigRational k = (ndxsr.multiply(pl.getX(oom))
 //                .subtract(ndysr.multiply(pl.getY(oom)))
 //                .subtract(ndzsr.multiply(pl.getZ(oom))));
 //        Math_BigRational k = ndxsr.multiply(pl.getX(oom))
 //                .add(ndysr.multiply(pl.getY(oom)))
 //                .add(ndzsr.multiply(pl.getZ(oom)));
-        coeffs[0] = ndxsr;
-        coeffs[1] = ndysr;
-        coeffs[2] = ndzsr;
-        coeffs[3] = k;
-        return coeffs;
+            coeffs[0] = ndxsr;
+            coeffs[1] = ndysr;
+            coeffs[2] = ndzsr;
+            coeffs[3] = k;
+        }
     }
 
     /**
-     * Identify if the this is intersected by point {@code pt}. This uses
-     * matrices as per:
+     * For getting the equation of the plane.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return The equation of the plane as a String.
+     */
+    public Equation getEquation(int oom, RoundingMode rm) {
+        if (equation == null) {
+            equation = new Equation(oom, rm);
+        } else {
+            if (equation.oom < oom) {
+                return equation;
+            } else {
+                if (equation.oom == oom && equation.rm == rm) {
+                    return equation;
+                } else {
+                    equation = new Equation(oom, rm);
+                }
+            }
+        }
+        return equation;
+    }
+
+    /**
+     * Identify if this is intersected by point {@code pt} using the matrices
+     * approach described here:
      * https://math.stackexchange.com/questions/684141/check-if-a-point-is-on-a-plane-minimize-the-use-of-multiplications-and-divisio/684580#684580
      *
      * @param pt The point to test for intersection with.
@@ -834,7 +893,6 @@ public class V3D_Plane extends V3D_Geometry {
 ////                l.pl.getY(oom).subtract(l.v.getDY(oom).multiply(t)),
 ////                l.pl.getZ(oom).subtract(l.v.getDZ(oom).multiply(t)));
 //    }
-    
     /**
      * Get the intersection between the geometry and the line {@code l}.
      *
@@ -1700,7 +1758,6 @@ public class V3D_Plane extends V3D_Geometry {
 //            return num.divide(den).round(oom, rm);
 //        }
 //    }
-
     /**
      * Get the distance between this and {@code pl}.
      *
@@ -1711,15 +1768,15 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @return The distance from {@code this} to {@code pl}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Point pt, boolean noInt, 
+    public Math_BigRational getDistanceSquared(V3D_Point pt, boolean noInt,
             int oom, RoundingMode rm) {
-        int oomn4 = oom -4;
+        int oomn4 = oom - 4;
         V3D_Vector v = new V3D_Vector(pt, getP(), oomn4, rm);
         //V3D_Vector u = getN(oom, rm).getUnitVector(oom, rm);
         V3D_Vector u = n.getUnitVector(oomn4, rm);
         return v.getDotProduct(u, oomn4, rm).pow(2).round(oom, rm);
     }
-    
+
     /**
      * Get the minimum distance to {@code p}.
      *
@@ -1818,18 +1875,17 @@ public class V3D_Plane extends V3D_Geometry {
         }
     }
 
-//    @Override
-//    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
-//        p = p.add(v, oom, rm);
-////        q = q.add(v, oom, rm);
-////        r = r.add(v, oom, rm);
-//    }
-
     @Override
-    public V3D_Plane rotate(V3D_Line axis, Math_BigRational theta, 
+    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        super.translate(v, oom, rm);
+        this.equation = null;
+    }
+    
+    @Override
+    public V3D_Plane rotate(V3D_Line axis, Math_BigRational theta,
             int oom, RoundingMode rm) {
         return new V3D_Plane(getP().rotate(axis, theta, oom, rm),
-            n.rotate(axis.v.getUnitVector(oom, rm), theta, oom, rm));
+                n.rotate(axis.v.getUnitVector(oom, rm), theta, oom, rm));
     }
 
     /**
@@ -1938,11 +1994,7 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * Calculate a vector v from a point in this to pt so that v is not the zero
-     * vector. Calculate the dot product of v and the normal to the plane. If
-     * this is positive, then the point P is on same side of the plane that the
-     * normal points towards. If the dot product is 0, then pt lies on the
-     * plane. Otherwise, pt is on the other side.
+     * Plug the coordinates of pt into the plane equation.
      *
      * @param pt The point.
      * @param oom The Order of Magnitude for the precision.
@@ -1952,7 +2004,7 @@ public class V3D_Plane extends V3D_Geometry {
      * plane that the normal points towards.
      */
     public int getSideOfPlane(V3D_Point pt, int oom, RoundingMode rm) {
-        Math_BigRational[] coeffs = getEquationCoefficients(oom, rm);
+        Math_BigRational[] coeffs = getEquation(oom, rm).coeffs;
         return (coeffs[0].multiply(pt.getX(oom, rm))
                 .add(coeffs[1].multiply(pt.getY(oom, rm)))
                 .add(coeffs[2].multiply(pt.getZ(oom, rm))).add(coeffs[3]))

@@ -920,8 +920,8 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * Adapted from:
-     * <a href="https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line">https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line</a>
-     *
+     * https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line
+     * 
      * @param pt The point projected onto this.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -933,28 +933,30 @@ public class V3D_Line extends V3D_Geometry {
         if (isIntersectedBy(pt, oom, rm)) {
             return pt;
         }
-        // a = v
-        // p1 = p
-        // p0 = pt
-        //t = (- a.x * (p1.x - p0.x) - a.y * (p1.y - p0.y) - a.z * (p1.z - p0.z)) 
-        //     / (a.x * a.x + a.y * a.y + a.z * a.z)
-        //V3D_Vector tv = getV(oom, rm);
-        V3D_Vector tv = v;
-        V3D_Point tp = getP();
-        //V3D_Point tq = getQ();
-        Math_BigRational vdx = tv.dx.getSqrt(oom, rm);
-        Math_BigRational t = (vdx.negate().multiply((tp.getX(oom, rm).subtract(pt.getX(oom, rm))))
-                .subtract(tv.dy.getSqrt(oom, rm).multiply((tp.getY(oom, rm).subtract(pt.getY(oom, rm)))))
-                .subtract(tv.dz.getSqrt(oom, rm).multiply(tp.getZ(oom, rm).subtract(pt.getZ(oom, rm)))))
-                .divide(tv.dx.getX().add(tv.dy.getX()).add(tv.dz.getX()));
-//        Math_BigRational t2 = (vdx.negate().multiply((q.getX(oom).subtract(pt.getX(oom))))
-//                .subtract(v.dy.getSqrt(oom).multiply((q.getY(oom).subtract(pt.getY(oom))))) 
-//                .subtract(v.dz.getSqrt(oom).multiply(q.getZ(oom).subtract(pt.getZ(oom))))) 
-//                .divide(v.dx.getX().add(v.dy.getX()).add(v.dz.getX()));
-        //return new V3D_Point(p.getVector(oom).add(v.multiply(t, oom), oom), oom);
-        //return new V3D_Point(p.rel, p.offset.add(v.multiply(t, oom), oom));
-        //return tp.translate(tv.multiply(t, oom), oom);
-        return new V3D_Point(tp.getVector(oom, rm).add(tv.multiply(t, oom, rm), oom, rm));
+        V3D_Plane ptv = new V3D_Plane(pt, v);
+        return (V3D_Point) ptv.getIntersection(this, oom, rm);
+//        // a = v
+//        // p1 = p
+//        // p0 = pt
+//        //t = (- a.x * (p1.x - p0.x) - a.y * (p1.y - p0.y) - a.z * (p1.z - p0.z)) 
+//        //     / (a.x * a.x + a.y * a.y + a.z * a.z)
+//        //V3D_Vector tv = getV(oom, rm);
+//        V3D_Vector tv = v;
+//        V3D_Point tp = getP();
+//        //V3D_Point tq = getQ();
+//        Math_BigRational vdx = tv.dx.getSqrt(oom, rm);
+//        Math_BigRational t = (vdx.negate().multiply((tp.getX(oom, rm).subtract(pt.getX(oom, rm))))
+//                .subtract(tv.dy.getSqrt(oom, rm).multiply((tp.getY(oom, rm).subtract(pt.getY(oom, rm)))))
+//                .subtract(tv.dz.getSqrt(oom, rm).multiply(tp.getZ(oom, rm).subtract(pt.getZ(oom, rm)))))
+//                .divide(tv.dx.getX().add(tv.dy.getX()).add(tv.dz.getX()));
+////        Math_BigRational t2 = (vdx.negate().multiply((q.getX(oom).subtract(pt.getX(oom))))
+////                .subtract(v.dy.getSqrt(oom).multiply((q.getY(oom).subtract(pt.getY(oom))))) 
+////                .subtract(v.dz.getSqrt(oom).multiply(q.getZ(oom).subtract(pt.getZ(oom))))) 
+////                .divide(v.dx.getX().add(v.dy.getX()).add(v.dz.getX()));
+//        //return new V3D_Point(p.getVector(oom).add(v.multiply(t, oom), oom), oom);
+//        //return new V3D_Point(p.rel, p.offset.add(v.multiply(t, oom), oom));
+//        //return tp.translate(tv.multiply(t, oom), oom);
+//        return new V3D_Point(tp.getVector(oom, rm).add(tv.multiply(t, oom, rm), oom, rm));
 
 //        // P = pt
 //        // Q = p
