@@ -90,7 +90,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @param triangles A non-empty list of coplanar triangles.
      */
     public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_Triangle... triangles) {
-        this(oom, rm, triangles[0].pl.n, V3D_Triangle.getPoints(triangles, oom, rm));
+        this(oom, rm, triangles[0].getPl(oom, rm).n, V3D_Triangle.getPoints(triangles, oom, rm));
     }
 
     /**
@@ -244,7 +244,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @param gs The input convex hulls.
      */
     public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_ConvexHullCoplanar... gs) {
-        this(oom, rm, gs[0].triangles.get(0).pl.n, V3D_FiniteGeometry.getPoints(oom, rm, gs));
+        this(oom, rm, gs[0].triangles.get(0).getPl(oom, rm).n, V3D_FiniteGeometry.getPoints(oom, rm, gs));
     }
 
     /**
@@ -257,7 +257,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * hull with ch.
      */
     public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_ConvexHullCoplanar ch, V3D_Triangle t) {
-        this(oom, rm, ch.triangles.get(0).pl.n, V3D_FiniteGeometry.getPoints(oom, rm, ch, t));
+        this(oom, rm, ch.triangles.get(0).getPl(oom, rm).n, V3D_FiniteGeometry.getPoints(oom, rm, ch, t));
     }
 
     @Override
@@ -394,7 +394,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         if (getEnvelope(oom, rm).isIntersectedBy(pt, oom, rm)) {
-            if (triangles.get(0).pl.isIntersectedBy(pt, oom, rm)) {
+            if (triangles.get(0).getPl(oom, rm).isIntersectedBy(pt, oom, rm)) {
                 //return isIntersectedBy0(pt, oom, rm);
                 return triangles.get(0).isAligned(pt, oom, rm);
             }
@@ -483,7 +483,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @return The V3D_Geometry.
      */
     public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {
-        if (this.triangles.get(0).pl.equalsIgnoreOrientation(p, oom, rm)) {
+        if (this.triangles.get(0).getPl(oom, rm).equalsIgnoreOrientation(p, oom, rm)) {
             return this;
         }
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -508,7 +508,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         if (tsu.isEmpty()) {
             return null;
         } else {
-            return new V3D_ConvexHullCoplanar(oom, rm, t.pl.n,
+            return new V3D_ConvexHullCoplanar(oom, rm, t.getPl(oom, rm).n,
                     tsu.toArray(V3D_Point[]::new)).simplify(oom, rm);
         }
 //        switch (size) {
@@ -711,7 +711,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     public V3D_FiniteGeometry clip(V3D_Plane pl, V3D_Point p, int oom, RoundingMode rm) {
         V3D_FiniteGeometry i = getIntersection(pl, oom, rm);
         if (i == null) {
-            V3D_Point pp = this.triangles.get(0).pl.getP();
+            V3D_Point pp = this.triangles.get(0).getPl(oom, rm).getP();
             if (pl.isOnSameSide(pp, p, oom, rm)) {
                 return this;
             } else {
@@ -719,7 +719,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             }
         } else if (i instanceof V3D_Point ip) {
             if (pl.isOnSameSide(ip, p, oom, rm)) {
-                V3D_Point pp = this.triangles.get(0).pl.getP();
+                V3D_Point pp = this.triangles.get(0).getPl(oom, rm).getP();
                 if (pl.isOnSameSide(pp, p, oom, rm)) {
                     return this;
                 } else {
@@ -741,7 +741,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 return il;
             } else {
                 return new V3D_ConvexHullCoplanar(oom, rm,
-                        this.triangles.get(0).pl.n,
+                        this.triangles.get(0).getPl(oom, rm).n,
                         pts.toArray(V3D_Point[]::new));
             }
         }
@@ -761,7 +761,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         V3D_Point tp = t.getP();
         V3D_Point tq = t.getQ();
         V3D_Point tr = t.getR();
-        V3D_Vector n = t.pl.n;
+        V3D_Vector n = t.getPl(oom, rm).n;
         V3D_Point pp = new V3D_Point(tp.offset.add(n, oom, rm), tp.rel);
         V3D_Plane ppl = new V3D_Plane(tp, tq, pp, oom, rm);
         V3D_Point qp = new V3D_Point(tq.offset.add(n, oom, rm), tq.rel);

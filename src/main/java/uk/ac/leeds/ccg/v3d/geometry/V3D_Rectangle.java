@@ -275,7 +275,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * {@link #getPQR(int, java.math.RoundingMode)}.
      */
     public V3D_Plane getPlane(int oom, RoundingMode rm) {
-        return getPQR(oom, rm).pl;
+        return getPQR(oom, rm).getPl(oom, rm);
     }
 
 //    @Override

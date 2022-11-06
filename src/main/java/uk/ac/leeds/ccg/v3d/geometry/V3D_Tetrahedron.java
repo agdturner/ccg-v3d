@@ -348,7 +348,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         V3D_Point ts = getS();
         int oomn6 = oom - 6;
         Math_BigRational hd3 = new Math_BigRationalSqrt(
-                tpqr.pl.getPointOfProjectedIntersection(ts, oomn6, rm)
+                tpqr.getPl(oom, rm).getPointOfProjectedIntersection(ts, oomn6, rm)
                         .getDistanceSquared(ts, oomn6, rm), oomn6, rm)
                 .getSqrt(oom, rm).divide(3);
         return tpqr.getArea(oom - 3, rm).multiply(hd3);
@@ -389,10 +389,10 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         psq = getPsq(oom, rm);
         spr = getSpr(oom, rm);
         qsr = getQsr(oom, rm);
-        if (pqr.pl.isOnSameSide(pt, getS(), oom, rm)) {
-            if (psq.pl.isOnSameSide(pt, getR(), oom, rm)) {
-                if (spr.pl.isOnSameSide(pt, getQ(), oom, rm)) {
-                    if (qsr.pl.isOnSameSide(pt, getP(), oom, rm)) {
+        if (pqr.getPl(oom, rm).isOnSameSide(pt, getS(), oom, rm)) {
+            if (psq.getPl(oom, rm).isOnSameSide(pt, getR(), oom, rm)) {
+                if (spr.getPl(oom, rm).isOnSameSide(pt, getQ(), oom, rm)) {
+                    if (qsr.getPl(oom, rm).isOnSameSide(pt, getP(), oom, rm)) {
                         return true;
                     }
                 }
@@ -1167,7 +1167,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The V3D_Geometry.
      */
     public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry i = getIntersection(t.pl, oom, rm);
+        V3D_FiniteGeometry i = getIntersection(t.getPl(oom, rm), oom, rm);
         if (i == null) {
             return null;
         } else {
@@ -1183,7 +1183,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                  * Need to get the intersections of pil and the plane edges of
                  * the triangle.
                  */
-                V3D_Vector n = t.pl.n;
+                V3D_Vector n = t.getPl(oom, rm).n;
                 V3D_Plane lp = new V3D_Plane(offset, t.p, t.q, t.p.add(n, oom, rm), oom, rm);
                 V3D_FiniteGeometry lpiil = lp.getIntersection(il, oom, rm);
                 if (lpiil == null) {

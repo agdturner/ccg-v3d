@@ -480,7 +480,7 @@ public class V3D_Ray extends V3D_Geometry {
             }
         } else {
             V3D_Point rp = l.getP();
-            V3D_Point rq = l.getQ(oom, rm);
+            //V3D_Point rq = l.getQ(oom, rm);
             V3D_Point lsp = ls.getP();
             V3D_Point lsq = ls.getQ();
             if (isAligned(lsp, oom, rm)) {
@@ -506,9 +506,8 @@ public class V3D_Ray extends V3D_Geometry {
     }
     
     /**
-     * Calculates and returns if pt is in line with this. It is in line if it is
-     * between the planes defined by the ends of the line segment with the
-     * normal vector as the vector of the line.
+     * Calculates and returns if pt is in the direction of the ray (i.e. the
+     * same side of the ray start point plane as another point on the ray).
      * 
      * @param pt The point. 
      * @param oom The Order of Magnitude for the precision.
@@ -536,12 +535,10 @@ public class V3D_Ray extends V3D_Geometry {
     @Override
     public V3D_Ray rotate(V3D_Line axis, Math_BigRational theta,
             int oom, RoundingMode rm) {
-        V3D_Ray r;
         if (theta.compareTo(Math_BigRational.ZERO) == 1) {
-            r = new V3D_Ray(l.rotate(axis, theta, oom, rm));
+            return new V3D_Ray(l.rotate(axis, theta, oom, rm));
         } else {
-            r = new V3D_Ray(this);
+            return new V3D_Ray(this);
         }
-        return r;
     }
 }

@@ -195,7 +195,6 @@ public class V3D_TriangleTest extends V3D_Test {
 //        l = new V3D_LineSegment(pP1P1P1, pP1P1P0, oom, rm);
 //        assertFalse(instance.isIntersectedBy(l, oom, rm));
 //    }
-
     /**
      * Test of getPerimeter method, of class V3D_Triangle.
      */
@@ -276,15 +275,11 @@ public class V3D_TriangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle instance = new V3D_Triangle(P0P0P0, P1P0P0, P0P1P0, P0P0P1, oom, rm);
-        String expResult = "V3D_Triangle(\n" +
-" pl=( V3D_Plane(\n" +
-"  offset=V3D_Vector(dx=0, dy=0, dz=0),\n" +
-"  p=  V3D_Vector(dx=1, dy=0, dz=0),\n" +
-"  n=  V3D_Vector(dx=1, dy=1, dz=1))),\n" +
-" offset=(V3D_Vector(dx=0, dy=0, dz=0)),\n" +
-" p=(V3D_Vector(dx=1, dy=0, dz=0)),\n" +
-" q=(V3D_Vector(dx=0, dy=1, dz=0)),\n" +
-" r=(V3D_Vector(dx=0, dy=0, dz=1)))";
+        String expResult = "V3D_Triangle(\n"
+                + " offset=(V3D_Vector(dx=0, dy=0, dz=0)),\n"
+                + " p=(V3D_Vector(dx=1, dy=0, dz=0)),\n"
+                + " q=(V3D_Vector(dx=0, dy=1, dz=0)),\n"
+                + " r=(V3D_Vector(dx=0, dy=0, dz=1)))";
         String result = instance.toString();
         //System.out.println(result);
         assertEquals(expResult, result);
@@ -532,7 +527,6 @@ public class V3D_TriangleTest extends V3D_Test {
         assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
     }
 
-    
     /**
      * Test of getIntersection method, of class V3D_Triangle.
      */
@@ -606,14 +600,14 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Point[] points = new V3D_Point[8];
         V3D_Point centroid = V3D_Point.ORIGIN;
         long multiplier = 100;
-        V3D_Point lbf = new V3D_Point(offset, new V3D_Vector(-1 * multiplier,-1 * multiplier,-1 * multiplier));
-        V3D_Point lba = new V3D_Point(offset, new V3D_Vector(-1 * multiplier,-1 * multiplier,1 * multiplier));
-        V3D_Point ltf = new V3D_Point(offset, new V3D_Vector(-1 * multiplier,1 * multiplier,-1 * multiplier));
-        V3D_Point lta = new V3D_Point(offset, new V3D_Vector(-1 * multiplier,1 * multiplier,1 * multiplier));
-        V3D_Point rbf = new V3D_Point(offset, new V3D_Vector(1 * multiplier,-1 * multiplier,-1 * multiplier));
-        V3D_Point rba = new V3D_Point(offset, new V3D_Vector(1 * multiplier,-1 * multiplier,1 * multiplier));
-        V3D_Point rtf = new V3D_Point(offset, new V3D_Vector(1 * multiplier,1 * multiplier,-1 * multiplier));
-        V3D_Point rta = new V3D_Point(offset, new V3D_Vector(1 * multiplier,1 * multiplier,1 * multiplier));
+        V3D_Point lbf = new V3D_Point(offset, new V3D_Vector(-1 * multiplier, -1 * multiplier, -1 * multiplier));
+        V3D_Point lba = new V3D_Point(offset, new V3D_Vector(-1 * multiplier, -1 * multiplier, 1 * multiplier));
+        V3D_Point ltf = new V3D_Point(offset, new V3D_Vector(-1 * multiplier, 1 * multiplier, -1 * multiplier));
+        V3D_Point lta = new V3D_Point(offset, new V3D_Vector(-1 * multiplier, 1 * multiplier, 1 * multiplier));
+        V3D_Point rbf = new V3D_Point(offset, new V3D_Vector(1 * multiplier, -1 * multiplier, -1 * multiplier));
+        V3D_Point rba = new V3D_Point(offset, new V3D_Vector(1 * multiplier, -1 * multiplier, 1 * multiplier));
+        V3D_Point rtf = new V3D_Point(offset, new V3D_Vector(1 * multiplier, 1 * multiplier, -1 * multiplier));
+        V3D_Point rta = new V3D_Point(offset, new V3D_Vector(1 * multiplier, 1 * multiplier, 1 * multiplier));
         // BLUE
         V3D_Triangle b1 = new V3D_Triangle(centroid, lbf, ltf, rtf, oom, rm);
         V3D_Triangle b2 = new V3D_Triangle(centroid, lbf, rbf, rtf, oom, rm);
@@ -643,7 +637,7 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Envelope envelope = new V3D_Envelope(oom, rm, points);
         int width = 100;
         Math_BigRational radius = envelope.getPoints(oom, rm)[0]
-                                .getDistance(centroid, oom, rm);
+                .getDistance(centroid, oom, rm);
         V3D_Vector direction = new V3D_Vector(0, 0, 1).getUnitVector(oom, rm);
         V3D_Point pt = new V3D_Point(centroid);
         pt.translate(direction.multiply(radius.multiply(2), oom, rm), oom, rm);
@@ -661,7 +655,7 @@ public class V3D_TriangleTest extends V3D_Test {
         int row = width / 3;
         int col = width / 2;
         r = getRay(row, col, screen, pt, vd, v2d, oom, rm);
-        
+
 //        expResult = new V3D_Point(nq, nq, nq);
 //        result = b1.getIntersection(r, oom, rm);
 //        result = b2.getIntersection(r, oom, rm);
@@ -678,15 +672,15 @@ public class V3D_TriangleTest extends V3D_Test {
      * @return The ray from the camera focal point through the centre of the
      * screen pixel.
      */
-    protected V3D_Ray getRay(int row, int col, V3D_Rectangle screen, V3D_Point pt, V3D_Vector vd, 
+    protected V3D_Ray getRay(int row, int col, V3D_Rectangle screen, V3D_Point pt, V3D_Vector vd,
             V3D_Vector v2d, int oom, RoundingMode rm) {
-            V3D_Vector rv = v2d.multiply(Math_BigRational.valueOf(row), oom, rm);
-            V3D_Vector cv = vd.multiply(Math_BigRational.valueOf(col), oom, rm);
-            V3D_Point rcpt = new V3D_Point(screen.getP());
-            rcpt.translate(rv.add(cv, oom, rm), oom, rm);
-            return new V3D_Ray(pt, rcpt, oom, rm);
+        V3D_Vector rv = v2d.multiply(Math_BigRational.valueOf(row), oom, rm);
+        V3D_Vector cv = vd.multiply(Math_BigRational.valueOf(col), oom, rm);
+        V3D_Point rcpt = new V3D_Point(screen.getP());
+        rcpt.translate(rv.add(cv, oom, rm), oom, rm);
+        return new V3D_Ray(pt, rcpt, oom, rm);
     }
-    
+
     /**
      * Test of getIntersection method, of class V3D_Triangle.
      *
@@ -900,7 +894,7 @@ public class V3D_TriangleTest extends V3D_Test {
 //        );
 //        result = V3D_Triangle.getGeometry(l1, l2, l3, oom, rm);
 //        assertEquals(expResult, result);
-        
+
 //        assertTrue(expResult.equals(result, oom, rm));
 //        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
 //        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
@@ -1026,7 +1020,6 @@ public class V3D_TriangleTest extends V3D_Test {
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
-
     /**
      * Test of getDistance method, of class V3D_Triangle covered by
      * {@link #testGetDistanceSquared_V3D_Point()}.
@@ -1106,7 +1099,7 @@ public class V3D_TriangleTest extends V3D_Test {
         oom = -3;
         int oomn3 = oom - 3;
         t = new V3D_Triangle(pN1P0P1, pP1P1N1, pP2N2N2, oomn3, rm);
-        p.translate(t.pl.n.getUnitVector(oomn3, rm).multiply(10, oomn3, rm), oomn3, rm);
+        p.translate(t.getPl(oom, rm).n.getUnitVector(oomn3, rm).multiply(10, oomn3, rm), oomn3, rm);
         expResult = Math_BigRational.valueOf(100);
         result = t.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);

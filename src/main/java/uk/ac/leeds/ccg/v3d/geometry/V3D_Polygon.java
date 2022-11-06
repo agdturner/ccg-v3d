@@ -210,7 +210,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         if (getEnvelope(oom, rm).isIntersectedBy(pt, oom, rm)) {
-            if (parts.get(0).triangles.get(0).pl.isIntersectedBy(pt, oom, rm)) {
+            if (parts.get(0).triangles.get(0).getPl(oom, rm).isIntersectedBy(pt, oom, rm)) {
                 return isIntersectedBy0(pt, oom, rm);
             }
         }
@@ -321,7 +321,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
                 pts.addAll(x.points);
             }
             convexHull = new V3D_ConvexHullCoplanar(oom, rm,
-                    parts.get(0).triangles.get(0).pl.n,
+                    parts.get(0).triangles.get(0).getPl(oom, rm).n,
                     pts.toArray(V3D_Point[]::new));
         }
         return convexHull;
