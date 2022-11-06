@@ -421,8 +421,10 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param offset What {@link #offset} is set to.
      */
     public void setOffset(V3D_Vector offset, int oom, RoundingMode rm) {
-        rel = getVector(oom, rm).subtract(offset, oom, rm);
-        this.offset = offset;
+        if (!offset.equals(this.offset, oom, rm)) {
+            rel = getVector(oom, rm).subtract(offset, oom, rm);
+            this.offset = offset;
+        }
     }
 
     /**

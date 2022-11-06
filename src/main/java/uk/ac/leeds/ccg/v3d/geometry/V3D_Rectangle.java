@@ -69,7 +69,7 @@ public class V3D_Rectangle extends V3D_Triangle implements V3D_Face {
      */
     public V3D_Triangle getRSP(int oom, RoundingMode rm) {
         if (rsp == null) {
-            rsp = new V3D_Triangle(r, s, p, oom, rm);
+            rsp = new V3D_Triangle(offset, r, s, p, oom, rm);
         }
         return rsp;
     }
