@@ -739,20 +739,33 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      */
     public V3D_FiniteGeometry getIntersection(V3D_Ray r, int oom,
             RoundingMode rm) {
-        V3D_FiniteGeometry li = getIntersection(r.l, oom, rm);
-        if (li == null) {
+        V3D_FiniteGeometry g = getIntersection(r.l, oom, rm);
+        if (g == null) {
             return null;
         }
-        if (li instanceof V3D_Point lip) {
-            //if (r.isAligned(lip, oom, rm)) {
-            if (r.isAligned(lip, oom, rm) && isAligned(lip, oom, rm)) {
-                return lip;
+        if (g instanceof V3D_Point gp) {
+            if (r.isAligned(gp, oom, rm)) {
+                return gp;
             } else {
                 return null;
             }
         }
-        V3D_Plane rpl = r.getPl();
-        return ((V3D_LineSegment) li).clip(rpl, r.l.getQ(oom, rm), oom, rm);
+        V3D_LineSegment ls = (V3D_LineSegment) g;
+        V3D_Point lsp = ls.getP();
+        V3D_Point lsq = ls.getQ();
+        if (r.isAligned(lsp, oom, rm)) {
+            if (r.isAligned(lsq, oom, rm)) {
+                return ls;
+            } else {
+                return V3D_LineSegment.getGeometry(r.l.getP(), lsp, oom, rm);
+            }
+        } else {
+            if (r.isAligned(lsq, oom, rm)) {
+                return V3D_LineSegment.getGeometry(r.l.getP(), lsq, oom, rm);
+            } else {
+                throw new RuntimeException("Exception in triangle-linesegment intersection.");
+            }
+        }
     }
 
     /**
@@ -765,33 +778,43 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      */
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom,
             RoundingMode rm) {
-        V3D_FiniteGeometry li = getIntersection(l.l, oom, rm);
-        if (li == null) {
+        V3D_FiniteGeometry g = getIntersection(l.l, oom, rm);
+        if (g == null) {
             return null;
         }
-        if (li instanceof V3D_Point lip) {
-            //if (l.isAligned(lip, oom, rm)) {
-            if (l.isAligned(lip, oom, rm) && isAligned(lip, oom, rm)) {
-                return lip;
+        if (g instanceof V3D_Point gp) {
+            if (l.isAligned(gp, oom, rm)) {
+                return gp;
             } else {
                 return null;
             }
         }
-        V3D_Point lp = l.getP();
-        V3D_Point lq = l.getQ();
-        if (isAligned(lp, oom, rm)) {
-            if (isAligned(lq, oom, rm)) {
-                return l;
+        V3D_LineSegment ls = (V3D_LineSegment) g;
+        V3D_Point lsp = ls.getP();
+        V3D_Point lsq = ls.getQ();
+        if (l.isAligned(lsp, oom, rm)) {
+            if (l.isAligned(lsq, oom, rm)) {
+                return ls;
             } else {
-                return getIntersection0(l, lp, lq, oom, rm);
+                V3D_Plane lippl = ls.getPPL();
+                V3D_Point lp = l.getP();
+                if (lippl.isOnSameSide(lp, lsq, oom, rm)) {
+                    return V3D_LineSegment.getGeometry(lsp, lp, oom, rm);
+                } else {
+                    return V3D_LineSegment.getGeometry(lsp, l.getQ(), oom, rm);
+                }
             }
         } else {
-            if (isAligned(lq, oom, rm)) {
-                //return getIntersection0(l, lq, lp, oom, rm);
-                return li;
+            if (l.isAligned(lsq, oom, rm)) {
+                V3D_Plane liqpl = ls.getQPL();
+                V3D_Point lp = l.getP();
+                if (liqpl.isOnSameSide(lp, lsp, oom, rm)) {
+                    return V3D_LineSegment.getGeometry(lsq, lp, oom, rm);
+                } else {
+                    return V3D_LineSegment.getGeometry(lsq, l.getQ(), oom, rm);
+                }
             } else {
-                //return li;
-                return getIntersection0(l, lq, lp, oom, rm);
+                return l;
             }
         }
     }
