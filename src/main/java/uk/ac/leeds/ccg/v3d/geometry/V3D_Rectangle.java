@@ -24,14 +24,14 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * angled quadrilateral. The four corners are the points
  * {@link #p}, {@link #q}, {@link #r} and {@link #s}. The following depicts a
  * rectangle {@code
- *           qr
- * q  *-------------* r
- *    |             |
- * pq |             | rs
- *    |             |
- *  p *-------------* s
- *           sp
- * }
+           qr
+ qv  *-------------* r
+    |             |
+ pq |             | rs
+    |             |
+  p *-------------* s
+           sp
+ }
  * The angles PQR, QRS, RSP, SPQ are all 90 degrees or Pi/2 radians.
  *
  * @author Andy Turner
@@ -1020,7 +1020,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param s Fourth clockwise or anti-clockwise point.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff pl, q, r and s form a rectangle.
+     * @return {@code true} iff pl, qv, r and s form a rectangle.
      */
     public static boolean isRectangle(V3D_Point p, V3D_Point q,
             V3D_Point r, V3D_Point s, int oom, RoundingMode rm) {

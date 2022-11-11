@@ -19,6 +19,7 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import java.io.Serializable;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Objects;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.number.Math_Quaternion_BigRational;
@@ -336,6 +337,25 @@ public class V3D_Vector implements Serializable {
         return pad + "dx=" + dx.toStringSimple()
                 + ", dy=" + dy.toStringSimple()
                 + ", dz=" + dz.toStringSimple();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        } else if (obj instanceof V3D_Vector v3D_Vector){
+            return equals(v3D_Vector);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + Objects.hashCode(this.dx);
+        hash = 89 * hash + Objects.hashCode(this.dy);
+        hash = 89 * hash + Objects.hashCode(this.dz);
+        return hash;
     }
 
     /**

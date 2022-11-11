@@ -15,15 +15,10 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.light;
 
+import java.io.Serializable;
+
 /**
- *
- * A V3D_Tetrahedron is a V3D_Shape comprising 4 corner V3D_Point points that
- * are not coplanar or collinear or coincident. There are 4 V3D_Triangle
- * triangle faces defined from the outside with the points arranged clockwise.
- * Each face has a V3D_Line_Segment edge equal to that of another face, but
- * these are stored independently in that the order of the points and the
- * directions of the vectors might be opposite. The points are shared between
- * all the triangles. {@code
+ * A V3D_VTetrahedron comprising 4 V3D_VTriangle faces. {@code
  *  p *- - - - - - - - - - - + - - - - - - - - - - -* q
  *     \ ~                                         /|
  *      \     ~                                   / |
@@ -50,11 +45,12 @@ package uk.ac.leeds.ccg.v3d.geometry.light;
  *                           *
  *                           r
  * }
- *
+ * For more complicated triangles uk.ac.leeds.ccg.v3d.geometry.V3D_Tetrahedron.
+ * 
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_VTetrahedron extends V3D_VGeometry {
+public class V3D_VTetrahedron implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -78,38 +74,16 @@ public class V3D_VTetrahedron extends V3D_VGeometry {
      */
     public final V3D_VTriangle psq;
 
-//    /**
-//     * For storing the centroid.
-//     */
-//    protected V3D_Point c;
     /**
      * Create a new instance.
      *
-     * @param p A point that defines the tetrahedron.
-     * @param q A point that defines the tetrahedron.
-     * @param r A point that defines the tetrahedron.
-     * @param s A point that defines the tetrahedron.
-     */
-    public V3D_VTetrahedron(V3D_V p, V3D_V q, V3D_V r, V3D_V s) {
-        super(V3D_V.ZERO);
-        pqr = new V3D_VTriangle(p, q, r);
-        qsr = new V3D_VTriangle(q, s, r);
-        spr = new V3D_VTriangle(s, p, r);
-        psq = new V3D_VTriangle(p, s, q);
-    }
-
-    /**
-     * Create a new instance.
-     *
-     * @param offset What {@link #offset} is set to.
      * @param pqr What {@link #pqr} is set to.
      * @param qsr What {@link #qsr} is set to.
      * @param spr What {@link #spr} is set to.
      * @param psq What {@link #psq} is set to.
      */
-    public V3D_VTetrahedron(V3D_V offset, V3D_VTriangle pqr, V3D_VTriangle qsr,
+    public V3D_VTetrahedron(V3D_VTriangle pqr, V3D_VTriangle qsr, 
             V3D_VTriangle spr, V3D_VTriangle psq) {
-        super(offset);
         this.pqr = pqr;
         this.qsr = qsr;
         this.spr = spr;
@@ -144,14 +118,6 @@ public class V3D_VTetrahedron extends V3D_VGeometry {
                 + pad + "spr=" + spr.toString(pad) + "\n"
                 + pad + ",\n"
                 + pad + "psq=" + psq.toString(pad);
-    }
-
-    @Override
-    public void translate(V3D_V v) {
-        pqr.translate(v);
-        qsr.translate(v);
-        spr.translate(v);
-        psq.translate(v);
     }
 
 //    @Override

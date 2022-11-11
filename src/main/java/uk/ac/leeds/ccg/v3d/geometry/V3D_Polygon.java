@@ -211,35 +211,48 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         if (getEnvelope(oom, rm).isIntersectedBy(pt, oom, rm)) {
             if (parts.get(0).triangles.get(0).getPl(oom, rm).isIntersectedBy(pt, oom, rm)) {
-                return isIntersectedBy0(pt, oom, rm);
+//                // Holes and parts could be checked in parallel.
+//                if (holes != null) {
+//                    for (V3D_ConvexHullCoplanar h : holes) {
+//                        if (h.isAligned(pt, oom, rm)) {
+//                            return false;
+//                        }
+//                    }
+//                }
+                for (V3D_ConvexHullCoplanar pa : parts) {
+                    if (pa.isAligned(pt, oom, rm)) {
+                        return true;
+                    }
+                }
+//                return isIntersectedBy0(pt, oom, rm);
             }
         }
         return false;
     }
 
-    /**
-     * @param pt The point.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} if this intersects with {@code pt}.
-     */
-    protected boolean isIntersectedBy0(V3D_Point pt, int oom, RoundingMode rm) {
-        // Holes and parts could be checked in parallel.
-        // Check holes first
-        if (holes != null) {
-            for (V3D_ConvexHullCoplanar h : holes) {
-                if (h.isIntersectedBy0(pt, oom, rm)) {
-                    return false;
-                }
-            }
-        }
-        for (V3D_ConvexHullCoplanar pa : parts) {
-            if (pa.isIntersectedBy0(pt, oom, rm)) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    /**
+//     * @param pt The point.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode if rounding is needed.
+//     * @return {@code true} if this intersects with {@code pt}.
+//     */
+//    protected boolean isIntersectedBy0(V3D_Point pt, int oom, RoundingMode rm) {
+//        // Holes and parts could be checked in parallel.
+//        // Check holes first
+//        if (holes != null) {
+//            for (V3D_ConvexHullCoplanar h : holes) {
+//                if (h.isIntersectedBy0(pt, oom, rm)) {
+//                    return false;
+//                }
+//            }
+//        }
+//        for (V3D_ConvexHullCoplanar pa : parts) {
+//            if (pa.isIntersectedBy0(pt, oom, rm)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     /**
      * This sums all the areas irrespective of any overlaps.

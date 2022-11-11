@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VPoint;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -24,6 +23,7 @@ import java.util.List;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.geometry.light.V3D_V;
 
 /**
  * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding 
@@ -31,31 +31,31 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * {@link #equals(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int, java.math.RoundingMode)}
  * if they have the same position. The "*" denotes a point in 3D in the following
  * depiction: {@code
- *
- *                          y           -
- *                          +          /                * p=<x0,y0,z0>
- *                          |         /                 |  =offset+rel
- *                          |        /                  |  =<x1+x2,y1+y2,z1+z2>
- *                          |    z0-/-------------------|
- *               r          |      /                   /
- *       rel=<x2,y2,z2>     |     /                   /
- *                          |    /                   /              
- *                          |   /                   /      offset=<x1,y1,z1>
- *                       y0-|  /                   /                o
- *                          | /                   /
- *                          |/                   /
- *  - ----------------------|-------------------/---- + x
- *                         /|                  x0
- *                        / |
- *                       /  |
- *                      /   |
- *                     /    |
- *                    /     |
- *                   /      |
- *                  /       |
- *                 +        |
- *                z         -
- * }
+
+                          y           -
+                          +          /                * pv=<x0,y0,z0>
+                          |         /                 |  =offset+v
+                          |        /                  |  =<x1+x2,y1+y2,z1+z2>
+                          |    z0-/-------------------|
+               r          |      /                   /
+       v=<x2,y2,z2>     |     /                   /
+                          |    /                   /              
+                          |   /                   /      offset=<x1,y1,z1>
+                       y0-|  /                   /                o
+                          | /                   /
+                          |/                   /
+  - ----------------------|-------------------/---- + x
+                         /|                  x0
+                        / |
+                       /  |
+                      /   |
+                     /    |
+                    /     |
+                   /      |
+                  /       |
+                 +        |
+                z         -
+ }
  *
  * @author Andy Turner
  * @version 1.0
@@ -76,7 +76,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
     public V3D_Vector rel;
 
     /**
-     * Create a new instance which is completely independent of {@code p}.
+     * Create a new instance which is completely independent of {@code pv}.
      *
      * @param p The point to clone/duplicate.
      */
@@ -103,7 +103,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
      */
     public V3D_Point(V3D_Vector offset, V3D_Vector rel) {
 //        super(new V3D_Vector(offset), Math.min(offset.getMagnitude().getOom(),
-//                rel.getMagnitude().getOom()));
+//                v.getMagnitude().getOom()));
         //super(e, new V3D_Vector(offset));
         super(offset);
         this.rel = new V3D_Vector(rel);
@@ -112,22 +112,22 @@ public class V3D_Point extends V3D_FiniteGeometry {
     /**
      * Create a new instance.
      *
-     * @param p The point to clone/duplicate.
+     * @param v The point to clone/duplicate.
      */
-    public V3D_Point(V3D_VPoint p) {
-        super(new V3D_Vector(p.offset));
-        this.rel = new V3D_Vector(p.rel);
+    public V3D_Point(V3D_V v) {
+        super(V3D_Vector.ZERO);
+        this.rel = new V3D_Vector(v);
     }
 
 //    /**
 //     * Create a new instance with {@link #offset} set to
 //     * {@link V3D_Vector#ZERO}.
 //     *
-//     * @param p Used to initialise {@link #rel} and {@link #e}.
+//     * @param pv Used to initialise {@link #v} and {@link #e}.
 //     */
-//    public V3D_Point(V3D_Envelope.Point p) {
-//        super(p.e, V3D_Vector.ZERO);
-//        this.rel = new V3D_Vector(p);
+//    public V3D_Point(V3D_Envelope.Point pv) {
+//        super(pv.e, V3D_Vector.ZERO);
+//        this.v = new V3D_Vector(pv);
 //    }
 
     /**
@@ -238,7 +238,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param p The point to test if it is the same as {@code this}.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff {@code p} is the same as {@code this}.
+     * @return {@code true} iff {@code pv} is the same as {@code this}.
      */
     public boolean equals(V3D_Point p, int oom, RoundingMode rm) {
         if (this.getX(oom, rm).compareTo(p.getX(oom, rm)) == 0) {
@@ -261,7 +261,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
-     * @return The vector - {@code rel.add(offset, oom)}.
+     * @return The vector - {@code v.add(offset, oom)}.
      */
     public V3D_Vector getVector(int oom, RoundingMode rm) {
         return rel.add(offset, oom, rm);
@@ -304,12 +304,12 @@ public class V3D_Point extends V3D_FiniteGeometry {
     }
 
     /**
-     * Get the distance between this and {@code p}.
+     * Get the distance between this and {@code pv}.
      *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
      * @param p A point.
-     * @return The distance from {@code p} to this.
+     * @return The distance from {@code pv} to this.
      */
     public Math_BigRationalSqrt getDistance(int oom, RoundingMode rm, V3D_Point p) {
         if (this.equals(p, oom, rm)) {
@@ -319,12 +319,12 @@ public class V3D_Point extends V3D_FiniteGeometry {
     }
 
     /**
-     * Get the distance between this and {@code p}.
+     * Get the distance between this and {@code pv}.
      *
      * @param p A point.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
-     * @return The distance from {@code p} to this.
+     * @return The distance from {@code pv} to this.
      */
     public Math_BigRational getDistance(V3D_Point p, int oom, RoundingMode rm) {
         if (this.equals(p, oom, rm)) {
@@ -340,7 +340,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param pt A point.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return The distance squared from {@code p} to this.
+     * @return The distance squared from {@code pv} to this.
      */
     public Math_BigRational getDistanceSquared(V3D_Point pt, int oom,
             RoundingMode rm) {
@@ -436,7 +436,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param rel What {@link #rel} is set to.
      */
     public void setRel(V3D_Vector rel, int oom, RoundingMode rm) {
-        //offset = getVector(e.oom).subtract(rel, e.oom);
+        //offset = getVector(e.oom).subtract(v, e.oom);
         offset = offset.subtract(rel, oom, rm).add(this.rel, oom, rm);
         this.rel = rel;
     }

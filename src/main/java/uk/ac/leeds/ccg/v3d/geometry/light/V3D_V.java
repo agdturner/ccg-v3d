@@ -119,23 +119,8 @@ public class V3D_V implements Serializable {
      * @param p The start.
      * @param q The end.
      */
-    public V3D_V(V3D_VPoint p, V3D_VPoint q) {
-        this(q.getX().subtract(p.getX()),
-                q.getY().subtract(p.getY()),
-                q.getZ().subtract(p.getZ()));
-    }
-
-    /**
-     * Effectively this becomes a vector of the difference. What needs to be
-     * applied to p to get q.
-     *
-     * @param p The start.
-     * @param q The end.
-     */
     public V3D_V(V3D_V p, V3D_V q) {
-        this(q.x.subtract(p.x),
-                q.y.subtract(p.y),
-                q.z.subtract(p.z));
+        this(q.x.subtract(p.x), q.y.subtract(p.y),  q.z.subtract(p.z));
     }
 
     @Override

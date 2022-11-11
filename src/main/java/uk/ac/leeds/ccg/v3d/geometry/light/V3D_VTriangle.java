@@ -15,9 +15,12 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.light;
 
+import java.io.Serializable;
+
 /**
- * For representing and processing triangles in 3D. The corner points are
- * {@link #p}, {@link #q} and {@link #r}. The following depicts a triangle {@code
+ * For representing and processing lightweight triangles in 3D. The triangle is
+ * made of 3 V3D_VLine instances {@link #pq}, {@link #qr} and {@link #rp}. The 
+ * following depicts a triangle {@code
  *
  *  p *- - - - - - - - - - - - - - - - - - - - - - -* q
  *     \                                           /
@@ -45,71 +48,41 @@ package uk.ac.leeds.ccg.v3d.geometry.light;
  *                           *
  *                           r
  * }
- *
+ * For more complicated triangles uk.ac.leeds.ccg.v3d.geometry.V3D_Triangle.
+ * 
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_VTriangle extends V3D_VGeometry {
+public class V3D_VTriangle implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * A point of the triangle. The true position with respect to the origin is 
-     * {@code p.add(offset)}.
+     * The pq edge.
      */
-    public V3D_V p;
+    public V3D_VLine pq;
 
     /**
-     * A point of the triangle. The true position with respect to the origin is 
-     * {@code q.add(offset)}.
+     * The qr edge.
      */
-    public V3D_V q;
+    public V3D_VLine qr;
 
     /**
-     * A point of the triangle. The true position with respect to the origin is 
-     * {@code r.add(offset)}.
+     * The rp edge.
      */
-    public V3D_V r;
+    public V3D_VLine rp;
 
     /**
      * Creates a new triangle.
      *
-     * @param t The triangle to clone.
+     * @param pq What {@link #pq} is set to.
+     * @param qr What {@link #qr} is set to.
+     * @param rp What {@link #rp} is set to.
      */
-    public V3D_VTriangle(V3D_VTriangle t) {
-        super(new V3D_V(t.offset));
-        p = new V3D_V(t.p);
-        q = new V3D_V(t.q);
-        r = new V3D_V(t.r);
-    }
-
-    /**
-     * Creates a new triangle.
-     *
-     * @param p What {@link #p} is set to.
-     * @param q What {@link #q} is set to.
-     * @param r What {@link #r} is set to.
-     */
-    public V3D_VTriangle(V3D_V p, V3D_V q, V3D_V r) {
-        super(V3D_V.ZERO);
-        this.p = p;
-        this.q = q;
-        this.r = r;
-    }
-
-    /**
-     * Creates a new triangle.
-     *
-     * @param offset What {@link #offset} is set to.
-     * @param p What {@link #p} is set to.
-     * @param q What {@link #q} is set to.
-     * @param r What {@link #r} is set to.
-     */
-    public V3D_VTriangle(V3D_V offset, V3D_V p, V3D_V q, V3D_V r) {
-        super(offset);
-        this.p = p;
-        this.q = q;
-        this.r = r;
+    public V3D_VTriangle(V3D_VLine pq, V3D_VLine qr, V3D_VLine rp) {
+        this.pq = pq;
+        this.qr = qr;
+        this.rp = rp;
     }
 
     @Override
@@ -133,11 +106,11 @@ public class V3D_VTriangle extends V3D_VGeometry {
      * @return A description of the fields.
      */
     protected String toStringFields(String pad) {
-        return pad + "p=" + p.toString(pad) + "\n"
+        return pad + "pq=" + pq.toString(pad) + "\n"
                 + pad + ",\n"
-                + pad + "q=" + q.toString(pad) + "\n"
+                + pad + "qr=" + qr.toString(pad) + "\n"
                 + pad + ",\n"
-                + pad + "r=" + r.toString(pad);
+                + pad + "rp=" + rp.toString(pad);
     }
 
 //    @Override
@@ -147,12 +120,5 @@ public class V3D_VTriangle extends V3D_VGeometry {
 //                (p.y.add(q.y).add(r.y)).divide(3).add(offset.y),
 //                (p.z.add(q.z).add(r.z)).divide(3).add(offset.z));
 //    }
-    
-    @Override
-    public void translate(V3D_V v) {
-        p.translate(v);
-        q.translate(v);
-        r.translate(v);
-    }
 
 }

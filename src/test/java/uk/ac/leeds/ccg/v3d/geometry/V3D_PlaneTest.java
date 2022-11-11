@@ -3483,7 +3483,7 @@ public class V3D_PlaneTest extends V3D_Test {
     }
 
     /**
-     * Test of getPV method, of class V3D_Plane.
+     * Test of getPAsVector method, of class V3D_Plane.
      */
     @Test
     public void testGetPV() {

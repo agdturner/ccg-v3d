@@ -29,32 +29,32 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * these are stored independently in that the order of the points and the
  * directions of the vectors might be opposite. The points are shared between
  * all the triangles. {@code
- * pl *- - - - - - - - - - - + - - - - - - - - - - -* q
- *     \ ~                                         /|
- *      \     ~                                   / |
- *       \         ~                             /  |
- *        \             ~                       /   |
- *         \                 ~                 /    |
- *          \                      ~          /     |
- *           \                          ~    /      |
- *            \                             / ~     |
- *             \                           /       ~s
- *              \                         /        :
- *               \                       /
- *                \                     /      :
- *                 \                   /
- *                  \                 /     :
- *                   \               /
- *                    \             /    :
- *                     \           /
- *                      \         /   :
- *                       \       /
- *                        \     /  :
- *                         \   /
- *                          \ /:
- *                           *
- *                           r
- * }
+ pl *- - - - - - - - - - - + - - - - - - - - - - -* qv
+     \ ~                                         /|
+      \     ~                                   / |
+       \         ~                             /  |
+        \             ~                       /   |
+         \                 ~                 /    |
+          \                      ~          /     |
+           \                          ~    /      |
+            \                             / ~     |
+             \                           /       ~s
+              \                         /        :
+               \                       /
+                \                     /      :
+                 \                   /
+                  \                 /     :
+                   \               /
+                    \             /    :
+                     \           /
+                      \         /   :
+                       \       /
+                        \     /  :
+                         \   /
+                          \ /:
+                           *
+                           r
+ }
  *
  * @author Andy Turner
  * @version 1.0
@@ -104,7 +104,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     public V3D_Triangle psq;
 
     /**
-     * Create a new instance. {@code pl}, {@code q}, {@code r} and {@code s}
+     * Create a new instance. {@code pl}, {@code qv}, {@code r} and {@code s}
      * must all be different, not the zero vector and collectively they must be
      * three dimensional. This is generally the fastest way to construct a
      * tetrahedron.
@@ -125,7 +125,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     /**
-     * Create a new instance. {@code pl}, {@code q}, {@code r} and {@code s}
+     * Create a new instance. {@code pl}, {@code qv}, {@code r} and {@code s}
      * must all be different and not coplanar. No test is done to check these
      * things.
      *
@@ -344,14 +344,14 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     @Override
     public Math_BigRational getVolume(int oom, RoundingMode rm) {
-        V3D_Triangle tpqr = getPqr(oom, rm);
-        V3D_Point ts = getS();
         int oomn6 = oom - 6;
+        V3D_Triangle tpqr = getPqr(oomn6, rm);
+        V3D_Point ts = getS();
         Math_BigRational hd3 = new Math_BigRationalSqrt(
-                tpqr.getPl(oom, rm).getPointOfProjectedIntersection(ts, oomn6, rm)
+                tpqr.getPl(oomn6, rm).getPointOfProjectedIntersection(ts, oomn6, rm)
                         .getDistanceSquared(ts, oomn6, rm), oomn6, rm)
-                .getSqrt(oom, rm).divide(3);
-        return tpqr.getArea(oom - 3, rm).multiply(hd3);
+                .getSqrt(oomn6, rm).divide(3);
+        return tpqr.getArea(oomn6 - 3, rm).multiply(hd3);
     }
 
     /**
@@ -701,8 +701,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param s Another possibly equal point.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return either {@code pl} or {@code new V3D_LineSegment(pl, q)} or
-     * {@code new V3D_Triangle(pl, q, r)}
+     * @return either {@code pl} or {@code new V3D_LineSegment(pl, qv)} or
+     * {@code new V3D_Triangle(pl, qv, r)}
      */
     public static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q,
             V3D_Point r, V3D_Point s, int oom, RoundingMode rm) {
@@ -721,7 +721,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         } else {
             if (V3D_Plane.isCoplanar(oom, rm, p, q, r, s)) {
                 if (V3D_Line.isCollinear(oom, rm, p, q, r, s)) {
-                    //return V3D_Line(pl, q, r, s);
+                    //return V3D_Line(pl, qv, r, s);
                     throw new UnsupportedOperationException("Need code to construct a line segment from 4 points!");
                 }
                 V3D_LineSegment pq = new V3D_LineSegment(p, q, oom, rm);
@@ -763,8 +763,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param t Another possibly equal point.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return either {@code pl} or {@code new V3D_LineSegment(pl, q)} or
-     * {@code new V3D_Triangle(pl, q, r)}
+     * @return either {@code pl} or {@code new V3D_LineSegment(pl, qv)} or
+     * {@code new V3D_Triangle(pl, qv, r)}
      */
     protected static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q,
             V3D_Point r, V3D_Point s, V3D_Point t, int oom, RoundingMode rm) {

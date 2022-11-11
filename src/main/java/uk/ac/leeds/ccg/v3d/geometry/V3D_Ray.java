@@ -64,8 +64,8 @@ public class V3D_Ray extends V3D_Geometry {
     public V3D_Line l;
 
     /**
-     * For storing the plane at {@link #l} p with normal in direction of the 
-     * ray vector.
+     * For storing the plane at {@link #l} pv with normal in direction of the 
+ ray vector.
      */
     private V3D_Plane pl;
     
@@ -232,11 +232,11 @@ public class V3D_Ray extends V3D_Geometry {
 //            if (a.getX().isZero()) {
 //                return true;
 //            }
-//            Math_BigRationalSqrt b = pl.getDistance(this.q);
+//            Math_BigRationalSqrt b = pl.getDistance(this.qv);
 //            if (b.getX().isZero()) {
 //                return true;
 //            }
-//            Math_BigRationalSqrt l = this.pl.getDistance(this.q);
+//            Math_BigRationalSqrt l = this.pl.getDistance(this.qv);
 //            if (a.add(b, oom).compareTo(l) != 1) {
 //                return true;
 //            }

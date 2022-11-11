@@ -15,13 +15,13 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.light;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * 3D representation of a moveable finite length line. The line passes through the point
- * {@link #p} and is travelling through point {@link #q}. The "*" denotes a
- * point in 3D and the line is shown with a line of "e" symbols in the following
- * depiction: {@code
+ * 3D representation of a moveable finite length line. The line starts at 
+ * {@link #p} and ends at {@link #q}. The "*" denotes a point in 3D and the 
+ * line is shown with a line of "e" symbols in the following depiction: {@code
  *                                       z
  *                          y           -
  *                          +          /                * p=<x0,y0,z0>
@@ -70,25 +70,24 @@ import java.util.Objects;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_VLine extends V3D_VGeometry {
+public class V3D_VLine implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * A point defining the line.
      */
-    protected final V3D_V p;
+    public final V3D_V p;
 
     /**
      * A point defining the line.
      */
-    protected final V3D_V q;
+    public final V3D_V q;
 
     /**
      * @param l Used to initialise this.
      */
     public V3D_VLine(V3D_VLine l) {
-        super(new V3D_V(l.offset));
         this.p = new V3D_V(l.p);
         this.q = new V3D_V(l.q);
     }
@@ -98,7 +97,6 @@ public class V3D_VLine extends V3D_VGeometry {
      * @param q What {@link #q} is set to.
      */
     public V3D_VLine(V3D_V p, V3D_V q) {
-        super(V3D_V.ZERO);
         this.p = p;
         this.q = q;
     }
@@ -167,9 +165,4 @@ public class V3D_VLine extends V3D_VGeometry {
 //        }
 //        return c;
 //    }
-    @Override
-    public void translate(V3D_V v) {
-        p.translate(v);
-        q.translate(v);
-    }
 }

@@ -66,7 +66,7 @@ public class V3D_RectangleTest extends V3D_Test {
          * |             |
          * |             |
          * |             |
-         * p ----------- s
+         * pv ----------- s
          */
         V3D_Rectangle instance;
         V3D_Envelope expResult;
@@ -185,7 +185,7 @@ public class V3D_RectangleTest extends V3D_Test {
 //                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
 //                + " )\n"
 //                + " ,\n"
-//                + " p=V3D_Vector\n"
+//                + " pv=V3D_Vector\n"
 //                + " (\n"
 //                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
 //                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
@@ -658,9 +658,9 @@ public class V3D_RectangleTest extends V3D_Test {
 //        System.out.println("isIntersectedBy");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
-//        V3D_Plane p = new V3D_Plane(pP0P0P0, pP1P0P0, pP1P1P0, oom, rm);
+//        V3D_Plane pv = new V3D_Plane(pP0P0P0, pP1P0P0, pP1P1P0, oom, rm);
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(p, oom, rm));
+//        assertTrue(instance.isIntersectedBy(pv, oom, rm));
 //    }
 //
 //    /**

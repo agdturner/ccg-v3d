@@ -22,35 +22,35 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
  * 3D representation of a finite length line (a line segment). The line begins
- * at the point of {@link #l} and ends at the point {@link #q}. The "*" denotes
+ * at the point of {@link #l} and ends at the point {@link #qv}. The "*" denotes
  * a point in 3D and the line is shown with a line of "e" symbols in the
  * following depiction: {@code
- *                                       z
- *                          y           -
- *                          +          /                * p=<x0,y0,z0>
- *                          |         /                e
- *                          |        /                e
- *                          |    z0-/                e
- *                          |      /                e
- *                          |     /               e
- *                          |    /               e
- *                          |   /               e
- *                       y0-|  /               e
- *                          | /               e
- *                          |/         x1    e
- * x - ---------------------|-----------/---e---/---- + x
- *                         /|              e   x0
- *                        / |-y1          e
- *                       /  |           e
- *                      /   |          e
- *                  z1-/    |         e
- *                    /     |        e
- *                   /      |       * q=<x1,y1,z1>
- *                  /       |
- *                 /        |
- *                +         -
- *               z          y
- * }
+                                       z
+                          y           -
+                          +          /                * pv=<x0,y0,z0>
+                          |         /                e
+                          |        /                e
+                          |    z0-/                e
+                          |      /                e
+                          |     /               e
+                          |    /               e
+                          |   /               e
+                       y0-|  /               e
+                          | /               e
+                          |/         x1    e
+ x - ---------------------|-----------/---e---/---- + x
+                         /|              e   x0
+                        / |-y1          e
+                       /  |           e
+                      /   |          e
+                  z1-/    |         e
+                    /     |        e
+                   /      |       * qv=<x1,y1,z1>
+                  /       |
+                 /        |
+                +         -
+               z          y
+ }
  *
  * @author Andy Turner
  * @version 1.0
@@ -60,15 +60,21 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The line of which this segment is part.
+     * The line of which this line segment is part and for which the point on
+     * the line is one end point of this segment.
      */
     public final V3D_Line l;
 
     /**
-     * For defining the end point of the line segment which is given relative to
-     * the {@link #offset}.
+     * For defining {@link q} which is given relative to {@link #offset}.
      */
-    protected V3D_Vector q;
+    protected V3D_Vector qv;
+
+    /**
+     * For defining the other end point of the line segment (the other given in
+     * {@link #l}.
+     */
+    protected V3D_Point q;
 
     /**
      * For storing the plane at l.getP() with a normal given l.v.
@@ -99,7 +105,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * Create a new instance. {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
      * @param p What the point of {@link #l} is cloned from.
-     * @param q What {@link #q} is cloned from.
+     * @param q What {@link #qv} is cloned from.
      * @param oom The Order of Magnitude for the precision of the result.
      * @param rm The RoundingMode if rounding is needed.
      */
@@ -113,7 +119,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      *
      * @param offset What {@link #offset} is set to.
      * @param p What the point of {@link #l} is cloned from.
-     * @param q What {@link #q} is cloned from.
+     * @param q What {@link #qv} is cloned from.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
@@ -121,14 +127,14 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             V3D_Vector q, int oom, RoundingMode rm) {
         super(offset);
         l = new V3D_Line(offset, p, q, oom, rm);
-        this.q = q;
+        this.qv = q;
     }
 
     /**
      * Create a new instance.
      *
      * @param p What the point of {@link #l} is cloned from.
-     * @param q What {@link #q} is cloned from.
+     * @param q What {@link #qv} is cloned from.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
@@ -137,7 +143,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         V3D_Point q2 = new V3D_Point(q);
         q2.setOffset(offset, oom, rm);
         l = new V3D_Line(offset, p.rel, q2.rel, oom, rm);
-        this.q = q2.rel;
+        this.qv = q2.rel;
     }
 
     /**
@@ -164,22 +170,24 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             }
         }
         this.l = ls.l;
-        this.q = ls.q;
+        this.qv = ls.qv;
     }
 
     /**
-     * @return {@link #l} p with {@link #l} offset applied.
+     * @return {@link #l} pv with {@link #l} offset applied.
      */
     public V3D_Point getP() {
         return l.getP();
     }
 
     /**
-     * @return {@link #q} with {@link #offset} applied.
+     * @return {@link #qv} with {@link #offset} applied.
      */
     public V3D_Point getQ() {
-        //return l.getQ(oom, rm);
-        return new V3D_Point(offset, q);
+        if (q == null) {
+            q = new V3D_Point(offset, qv);
+        }
+        return q;
     }
 
     /**
@@ -193,6 +201,9 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
         super.translate(v, oom, rm);
         l.translate(v, oom, rm);
+        if (q != null) {
+            q.translate(v, oom, rm);
+        }
         if (ppl != null) {
             ppl.translate(v, oom, rm);
         }
@@ -225,7 +236,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
 //     * @param l What {@code this} is created from.
 //     */
 //    public V3D_LineSegment(V3D_Envelope.LineSegment l, int oom, RoundingMode rm) {
-//        this(l.e, new V3D_Vector(l.p), new V3D_Vector(l.q), oom, rm);
+//        this(l.e, new V3D_Vector(l.pv), new V3D_Vector(l.qv), oom, rm);
 //    }
     @Override
     public String toString() {
@@ -265,24 +276,24 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                 + pad + ",\n";
         r += pad + "l=" + l.toStringFields(pad) + "\n"
                 + pad + ",\n"
-                + pad + "q=" + q.toStringFields(pad);
-//        if (l.q == null) {
-//            r += pad + "p=" + l.getP().toString(pad) + "\n"
+                + pad + "q=" + qv.toStringFields(pad);
+//        if (l.qv == null) {
+//            r += pad + "pv=" + l.getP().toString(pad) + "\n"
 //                    + pad + ",\n"
-//                    + pad + "q=null" + "\n"
+//                    + pad + "qv=null" + "\n"
 //                    + pad + ",\n"
 //                    + pad + "v=" + l.v.toString(pad);
 //        } else {
 //            if (l.v == null) {
-//                r += pad + "p=" + l.getP().toString(pad) + "\n"
+//                r += pad + "pv=" + l.getP().toString(pad) + "\n"
 //                        + pad + ",\n"
-//                        + pad + "q=" + l.q.toString(pad) + "\n"
+//                        + pad + "qv=" + l.qv.toString(pad) + "\n"
 //                        + pad + ",\n"
 //                        + pad + "v=null";
 //            } else {
-//                r += pad + "p=" + l.getP().toString(pad) + "\n"
+//                r += pad + "pv=" + l.getP().toString(pad) + "\n"
 //                        + pad + ",\n"
-//                        + pad + "q=" + l.q.toString(pad) + "\n"
+//                        + pad + "qv=" + l.qv.toString(pad) + "\n"
 //                        + pad + ",\n"
 //                        + pad + "v=" + l.v.toString(pad);
 //            }
@@ -298,19 +309,19 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     protected String toStringFieldsSimple(String pad) {
         String r = super.toStringFieldsSimple(pad) + ",\n";
         r += pad + "l=" + l.toStringFieldsSimple(pad) + ",\n"
-                + pad + "q=" + q.toStringFieldsSimple("");
-//        if (l.q == null) {
-//            r += pad + "p=" + l.getP().toStringSimple("") + ",\n"
-//                    + pad + "q=null" + ",\n"
+                + pad + "q=" + qv.toStringFieldsSimple("");
+//        if (l.qv == null) {
+//            r += pad + "pv=" + l.getP().toStringSimple("") + ",\n"
+//                    + pad + "qv=null" + ",\n"
 //                    + pad + "v=" + l.v.toStringSimple(pad);
 //        } else {
 //            if (l.v == null) {
-//                r += pad + "p=" + l.getP().toStringSimple(pad) + ",\n"
-//                        + pad + "q=" + l.q.toStringSimple(pad) + ",\n"
+//                r += pad + "pv=" + l.getP().toStringSimple(pad) + ",\n"
+//                        + pad + "qv=" + l.qv.toStringSimple(pad) + ",\n"
 //                        + pad + "v=null";
 //            } else {
-//                r += pad + "p=" + l.getP().toStringSimple(pad) + ",\n"
-//                        + pad + "q=" + l.q.toStringSimple(pad) + ",\n"
+//                r += pad + "pv=" + l.getP().toStringSimple(pad) + ",\n"
+//                        + pad + "qv=" + l.qv.toStringSimple(pad) + ",\n"
 //                        + pad + "v=" + l.v.toStringSimple(pad);
 //            }
 //        }
@@ -336,7 +347,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff {@code this} is equal to {@code l}. This ignores
-     * the order of the point of {@link #l} and {@link #q}.
+     * the order of the point of {@link #l} and {@link #qv}.
      */
     public boolean equalsIgnoreDirection(V3D_LineSegment l, int oom, RoundingMode rm) {
 //        if (equals(l, oom, rm)) {
@@ -400,7 +411,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param pt A point to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if {@code this} is intersected by {@code p}.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         boolean ei = getEnvelope(oom, rm).isIntersectedBy(pt.getEnvelope(oom, rm), oom, rm);
@@ -645,7 +656,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         return tq;
                     } else {
                         // Case: 13
-                        //return new V3D_LineSegment(e, l.q, ls.l.q);
+                        //return new V3D_LineSegment(e, l.qv, ls.l.qv);
                         return V3D_LineSegment.getGeometry(tq, lq, oom, rm);
                     }
 //                    } else {
@@ -683,7 +694,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * returned.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return The minimum distance between this and {@code p}.
+     * @return The minimum distance between this and {@code pv}.
      */
     public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
@@ -702,7 +713,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * returned.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return The minimum distance between this and {@code p}.
+     * @return The minimum distance between this and {@code pv}.
      */
     public Math_BigRational getDistanceSquared(V3D_Point pt, int oom,
             RoundingMode rm) {
@@ -789,11 +800,11 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     /**
-     * Calculate and return the midpoint between p and q.
+     * Calculate and return the midpoint between pv and qv.
      *
      * @param oom The Order of Magnitude for the precision of the result.
      * @param rm The RoundingMode if rounding is needed.
-     * @return the midpoint between p and q to the OOM precision.
+     * @return the midpoint between pv and qv to the OOM precision.
      */
     public V3D_Point getMidpoint(int oom, RoundingMode rm) {
         //BigDecimal l = getLength().toBigDecimal(oom);
@@ -801,7 +812,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         //V3D_Vector pmpq = l.getV(oom, rm).divide(Math_BigRational.valueOf(2), oom, rm);
         V3D_Vector pmpq = l.v.divide(Math_BigRational.valueOf(2), oom, rm);
         //return getP(oom).translate(pmpq, oom);
-        return new V3D_Point(offset, l.p.add(pmpq, oom, rm));
+        return new V3D_Point(offset, l.pv.add(pmpq, oom, rm));
     }
 
     /**
@@ -822,14 +833,14 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     /**
-     * If p and q are equal then the point is returned otherwise the line
-     * segment is returned
+     * If pv and qv are equal then the point is returned otherwise the line
+ segment is returned
      *
      * @param p A point.
      * @param q Another possibly equal point.
      * @param oom The Order of Magnitude for the precision of the result.
      * @param rm The RoundingMode if rounding is needed.
-     * @return either {@code p} or {@code new V3D_LineSegment(p, q)}
+     * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
      */
     public static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q,
             int oom, RoundingMode rm) {
@@ -841,15 +852,15 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     /**
-     * If p, q and r are equal then the point is returned otherwise a line
-     * segment is returned where all the points are on the line segment.
+     * If pv, qv and r are equal then the point is returned otherwise a line
+ segment is returned where all the points are on the line segment.
      *
-     * @param p A point possibly equal to q or r, but certainly collinear.
-     * @param q A point possibly equal to p or r, but certainly collinear.
-     * @param r A point possibly equal to p or q, but certainly collinear.
+     * @param p A point possibly equal to qv or r, but certainly collinear.
+     * @param q A point possibly equal to pv or r, but certainly collinear.
+     * @param r A point possibly equal to pv or qv, but certainly collinear.
      * @param oom The Order of Magnitude for the precision of the result.
      * @param rm The RoundingMode if rounding is needed.
-     * @return either {@code p} or {@code new V3D_LineSegment(p, q)}
+     * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
      */
     public static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q,
             V3D_Point r, int oom, RoundingMode rm) {
@@ -875,14 +886,14 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
     
     /**
-     * If p, q and r are equal then the point is returned otherwise a line
-     * segment is returned where all the points are on the line segment.
+     * If pv, qv and r are equal then the point is returned otherwise a line
+ segment is returned where all the points are on the line segment.
      *
      * @param l A line segment.
      * @param pt A point collinear with l.
      * @param oom The Order of Magnitude for the precision of the result.
      * @param rm The RoundingMode if rounding is needed.
-     * @return either {@code p} or {@code new V3D_LineSegment(p, q)}
+     * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
      */
     public static V3D_FiniteGeometry getGeometry(V3D_LineSegment l,
             V3D_Point pt, int oom, RoundingMode rm) {
@@ -895,7 +906,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision of the result.
      * @param rm The RoundingMode if rounding is needed.
      * @param pts Collinear points.
-     * @return either {@code p} or {@code new V3D_LineSegment(p, q)}
+     * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
      */
     public static V3D_FiniteGeometry getGeometry(int oom, RoundingMode rm, 
             V3D_Point... pts) {
@@ -1079,7 +1090,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     /**
      * Useful for intersection tests.
      *
-     * @param pt The point to test if it is between {@link #q} and the point of
+     * @param pt The point to test if it is between {@link #qv} and the point of
      * {@link #l}.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -1100,7 +1111,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @param pt Is on the line of {@code l}, but not on {@code l}.
-     * @return The nearest point on {@code l} to {@code p}.
+     * @return The nearest point on {@code l} to {@code pv}.
      */
     protected static V3D_Point getNearestPoint(V3D_LineSegment l, V3D_Point pt, int oom, RoundingMode rm) {
         V3D_Point lp = l.getP();

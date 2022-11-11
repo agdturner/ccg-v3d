@@ -80,7 +80,7 @@ public class V3D_LineTest extends V3D_Test {
 //                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
 //                + " )\n"
 //                + " ,\n"
-//                + " p=V3D_Point\n"
+//                + " pv=V3D_Point\n"
 //                + " (\n"
 //                + "  oom=-3\n"
 //                + "  ,\n"
@@ -882,19 +882,19 @@ public class V3D_LineTest extends V3D_Test {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of getPV method, of class V3D_Line.
-     */
-    @Test
-    public void testGetPV() {
-        System.out.println("getPV");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-        V3D_Vector expResult = P0P0P0;
-        V3D_Vector result = instance.getPV(oom, rm);
-        assertTrue(expResult.equals(result));
-    }
+//    /**
+//     * Test of getPAsVector method, of class V3D_Line.
+//     */
+//    @Test
+//    public void testGetPV() {
+//        System.out.println("getPV");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
+//        V3D_Vector expResult = P0P0P0;
+//        V3D_Vector result = instance.getPAsVector(oom, rm);
+//        assertTrue(expResult.equals(result));
+//    }
 
     /**
      * Test of getP method, of class V3D_Line.

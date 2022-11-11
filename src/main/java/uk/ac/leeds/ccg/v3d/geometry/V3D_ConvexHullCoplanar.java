@@ -396,10 +396,27 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         if (getEnvelope(oom, rm).isIntersectedBy(pt, oom, rm)) {
             if (triangles.get(0).getPl(oom, rm).isIntersectedBy(pt, oom, rm)) {
                 //return isIntersectedBy0(pt, oom, rm);
+                //return triangles.get(0).isAligned(pt, oom, rm);
                 return triangles.get(0).isAligned(pt, oom, rm);
             }
         }
         return false;
+    }
+
+    /**
+     * @param pt The point.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if the point is aligned with any of the parts.
+     */
+    protected boolean isAligned(V3D_Point pt, int oom, RoundingMode rm) {
+        for (V3D_Triangle triangle : triangles) {
+            if (triangle.isAligned(pt, oom, rm)) {
+                return true;
+            }
+        }
+        return false;
+        //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy0(pt, oom)));
     }
 
     /**
@@ -419,30 +436,6 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy0(pt, oom)));
     }
 
-//    @Override
-//    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-//        if (triangles.get(0).pl.isIntersectedBy(l, oom, rm)) {
-//            //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy(l, oom)));        
-//            return triangles.stream().anyMatch(t -> (t.isIntersectedBy(l, oom, rm)));
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean isIntersectedBy(V3D_LineSegment l, int oom, RoundingMode rm) {
-//        if (getEnvelope(oom, rm).isIntersectedBy(l.getEnvelope(oom, rm), oom, rm)) {
-//            if (triangles.get(0).pl.isIntersectedBy(l, oom, rm)) {
-//                for (V3D_Triangle triangle : triangles) {
-//                    if (triangle.isIntersectedBy(l, oom, rm)) {
-//                        return true;
-//                    }
-//                }
-//                return false;
-//                //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy(l, oom, b)));
-//            }
-//        }
-//        return false;
-//    }
     /**
      * This sums all the areas irrespective of any overlaps.
      *
