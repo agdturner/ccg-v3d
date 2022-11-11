@@ -138,21 +138,21 @@ public class V3D_VLine implements Serializable {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
     /**
+     * The lines are equal irrespective of the direction vector between the 
+     * points.
+     * 
      * @param l The line to test if it is the same as {@code this}.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_VLine l) {
         return (p.equals(l.p) && q.equals(l.q))
                 || (p.equals(l.q) && q.equals(l.p));
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 17 * hash + Objects.hashCode(this.p);
-        hash = 17 * hash + Objects.hashCode(this.q);
-        return hash;
     }
 
 //    @Override

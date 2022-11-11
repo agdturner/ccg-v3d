@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 /**
  * For representing and processing lightweight triangles in 3D. The triangle is
- * made of 3 V3D_VLine instances {@link #pq}, {@link #qr} and {@link #rp}. The 
+ * made of 3 V3D_VLine instances {@link #pq}, {@link #qr} and {@link #rp}. The
  * following depicts a triangle {@code
  *
  *  p *- - - - - - - - - - - - - - - - - - - - - - -* q
@@ -49,7 +49,7 @@ import java.io.Serializable;
  *                           r
  * }
  * For more complicated triangles uk.ac.leeds.ccg.v3d.geometry.V3D_Triangle.
- * 
+ *
  * @author Andy Turner
  * @version 1.0
  */
@@ -71,6 +71,11 @@ public class V3D_VTriangle implements Serializable {
      * The rp edge.
      */
     public V3D_VLine rp;
+
+    /**
+     * For storing the normal.
+     */
+    public V3D_V n;
 
     /**
      * Creates a new triangle.
@@ -113,6 +118,19 @@ public class V3D_VTriangle implements Serializable {
                 + pad + "rp=" + rp.toString(pad);
     }
 
+    /**
+     * If {@link #n} is {@code null} then this calculates the normal using the
+     * right hand rule. If n has already been calculated, then it is returned.
+     *
+     * @return {@link #n} initialising it first if it is {@code null}.
+     */
+    public V3D_V getNormal() {
+        if (n == null) {
+            n = new V3D_V(pq.p, pq.q).getCrossProduct(new V3D_V(qr.p, qr.q));
+        }
+        return n;
+    }
+
 //    @Override
 //    public V3D_V getCentroid() {
 //        return new V3D_V(
@@ -120,5 +138,4 @@ public class V3D_VTriangle implements Serializable {
 //                (p.y.add(q.y).add(r.y)).divide(3).add(offset.y),
 //                (p.z.add(q.z).add(r.z)).divide(3).add(offset.z));
 //    }
-
 }

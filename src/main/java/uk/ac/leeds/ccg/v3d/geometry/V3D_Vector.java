@@ -403,7 +403,7 @@ public class V3D_Vector implements Serializable {
     /**
      * @return {@code true} if {@code this.equals(e.zeroVector)}
      */
-    public boolean isZeroVector() {
+    public boolean isZero() {
         return this.equals(ZERO);
     }
 
@@ -617,7 +617,7 @@ public class V3D_Vector implements Serializable {
      */
     public boolean isScalarMultiple(V3D_Vector v, int oom, RoundingMode rm) {
         // Special case
-        if (this.isZeroVector() || v.isZeroVector()) {
+        if (this.isZero() || v.isZero()) {
             return false;
         }
         return this.multiply(getDotProduct(v, oom, rm), oom, rm).equals(

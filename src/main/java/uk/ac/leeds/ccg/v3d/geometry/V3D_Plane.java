@@ -289,7 +289,7 @@ public class V3D_Plane extends V3D_Geometry {
         this.n = pq.getCrossProduct(qr, oom, rm);
 
         V3D_Vector v;
-        if (ptv.isZeroVector()) {
+        if (ptv.isZero()) {
             v = p.add(q, oom, rm).add(r, oom, rm).reverse();
         } else {
             v = ptv;
@@ -683,7 +683,7 @@ public class V3D_Plane extends V3D_Geometry {
                 V3D_Point ttp = new V3D_Point(tp);
                 ttp.translate(l.v, oom, rm);
                 V3D_Vector w = new V3D_Vector(ttp, tlp, oom, rm);
-                if (w.isZeroVector()) {
+                if (w.isZero()) {
                     return tp;
                 }
                 Math_BigRational fac = n.getDotProduct(w, oom, rm).divide(dot).negate();
@@ -703,7 +703,7 @@ public class V3D_Plane extends V3D_Geometry {
                 return tlp;
             } else {
                 V3D_Vector w = new V3D_Vector(tp, lp, oom, rm);
-                if (w.isZeroVector()) {
+                if (w.isZero()) {
                     return tp;
                 }
                 Math_BigRational fac = n.getDotProduct(w, oom, rm).divide(dot).negate();
@@ -1056,7 +1056,7 @@ public class V3D_Plane extends V3D_Geometry {
         /**
          * Check special cases.
          */
-        if (v.isZeroVector()) {
+        if (v.isZero()) {
             // The planes are parallel.
             if (pl.isIntersectedBy(getP(), oom, rm)) {
                 // The planes are the same.
@@ -1233,7 +1233,7 @@ public class V3D_Plane extends V3D_Geometry {
 //         * To find a point on the line find a vector (that defines a line) from
 //         * each plane that is not parallel to v, then find their intersection.
 //         */
-//        if (v.isZeroVector()) {
+//        if (v.isZero()) {
 //            // The planes are parallel.
 //            if (pl.equals(this)) {
 //                // The planes are the same.
@@ -1963,7 +1963,7 @@ public class V3D_Plane extends V3D_Geometry {
 //        //V3D_Vector pv = getP().getVector(oom, rm);
 //        V3D_Vector pv = getP().getVector(oom, rm).getUnitVector(oom, rm);
 //        V3D_Vector avpv = pv.subtract(av, oom, rm);
-//        if (avpv.isZeroVector()) {
+//        if (avpv.isZero()) {
 //            //pv = getQ(pv, oom, rm).getVector(oom, rm);
 //            pv = getQ(pv, oom, rm).getVector(oom, rm);
 //            avpv = pv.subtract(av, oom, rm);
@@ -1976,7 +1976,7 @@ public class V3D_Plane extends V3D_Geometry {
 //        boolean bq = false;
 //        V3D_Vector bv = b.getVector(oom, rm);
 //        V3D_Vector bvpv = pv.subtract(bv, oom, rm);
-//        if (bvpv.isZeroVector()) {
+//        if (bvpv.isZero()) {
 //            pv = getQ(pv, oom, rm).getVector(oom, rm);
 //            bvpv = pv.subtract(bv, oom, rm);
 //            bq = true;

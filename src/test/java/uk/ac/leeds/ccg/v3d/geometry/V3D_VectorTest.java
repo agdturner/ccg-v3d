@@ -397,17 +397,17 @@ public class V3D_VectorTest extends V3D_Test {
     }
 
     /**
-     * Test of isZeroVector method, of class V3D_Vector.
+     * Test of isZero method, of class V3D_Vector.
      */
     @Test
     public void testIsZeroVector() {
         System.out.println("isZeroVector");
         int oom = -1;
         V3D_Vector instance = new V3D_Vector(0, 0, 0);
-        assertTrue(instance.isZeroVector());
+        assertTrue(instance.isZero());
         // Test 2
         instance = new V3D_Vector(1, 0, 0);
-        assertFalse(instance.isZeroVector());
+        assertFalse(instance.isZero());
     }
 
     /**

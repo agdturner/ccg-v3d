@@ -268,11 +268,11 @@ public class V3D_Line extends V3D_Geometry {
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #pv} is set to.
      * @param v The vector defining the line from {@link #pv}.
-     * @throws RuntimeException if {@code v.isZeroVector()}.
+     * @throws RuntimeException if {@code v.isZero()}.
      */
     public V3D_Line(V3D_Vector offset, V3D_Vector p, V3D_Vector v) {
         super(offset);
-        if (v.isZeroVector()) {
+        if (v.isZero()) {
             throw new RuntimeException("Vector " + v + " is the zero vector "
                     + "which cannot be used to define a line.");
         }

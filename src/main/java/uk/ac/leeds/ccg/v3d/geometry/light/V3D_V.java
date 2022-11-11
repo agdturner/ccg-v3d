@@ -24,9 +24,11 @@ import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
- * A mutable 3D thing. It could be a vector or a coordinate or something else.
- * It is intentionally lightweight despite having heavy number components.
- *
+ * Intended for use as a vector or a coordinate. The idea is that this is 
+ * lightweight despite using heavyweight numbers. It is not as heavyweight as 
+ * V3D_Vector which uses even more heavyweight Math_BigRationalSqrt numbers 
+ * for coordinates.
+ * 
  * @author Andy Turner
  * @version 1.0
  */
@@ -120,7 +122,7 @@ public class V3D_V implements Serializable {
      * @param q The end.
      */
     public V3D_V(V3D_V p, V3D_V q) {
-        this(q.x.subtract(p.x), q.y.subtract(p.y),  q.z.subtract(p.z));
+        this(q.x.subtract(p.x), q.y.subtract(p.y), q.z.subtract(p.z));
     }
 
     @Override
@@ -180,7 +182,7 @@ public class V3D_V implements Serializable {
     /**
      * @return {@code true} if {@code this} equals {@link #ZERO}.
      */
-    public boolean isOrigin() {
+    public boolean isZero() {
         return this.equals(ZERO);
     }
 
@@ -223,7 +225,8 @@ public class V3D_V implements Serializable {
      * @return The magnitude.
      */
     public Math_BigRational getMagnitude(int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(x.pow(2).add(y.pow(2)).add(z.pow(2)), oom, rm).getSqrt(oom, rm);
+        return new Math_BigRationalSqrt(x.pow(2).add(y.pow(2))
+                .add(z.pow(2)), oom, rm).getSqrt(oom, rm);
     }
 
     /**
@@ -252,10 +255,7 @@ public class V3D_V implements Serializable {
      */
     public V3D_V getUnitVector(int oom, RoundingMode rm) {
         Math_BigRational d = getMagnitude(oom, RoundingMode.UP);
-        V3D_V r = new V3D_V(
-                x.divide(d),
-                y.divide(d),
-                z.divide(d));
+        V3D_V r = new V3D_V(x.divide(d), y.divide(d), z.divide(d));
         return r;
     }
 
