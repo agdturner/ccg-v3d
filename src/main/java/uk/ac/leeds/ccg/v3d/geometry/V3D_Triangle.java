@@ -1512,11 +1512,11 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //                .add(getRV(), oom).divide(Math_BigRational.valueOf(3), oom));
         oom -= 6;
         Math_BigRational dx = (p.getDX(oom, rm).add(q.getDX(oom, rm))
-                .add(r.getDX(oom, rm))).divide(3).round(oom, rm);
+                .add(r.getDX(oom, rm))).divide(3);
         Math_BigRational dy = (p.getDY(oom, rm).add(q.getDY(oom, rm))
-                .add(r.getDY(oom, rm))).divide(3).round(oom, rm);
+                .add(r.getDY(oom, rm))).divide(3);
         Math_BigRational dz = (p.getDZ(oom, rm).add(q.getDZ(oom, rm))
-                .add(r.getDZ(oom, rm))).divide(3).round(oom, rm);
+                .add(r.getDZ(oom, rm))).divide(3);
         return new V3D_Point(offset, new V3D_Vector(dx, dy, dz));
     }
 
@@ -2138,7 +2138,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         }
         V3D_Point poi = pl.getPointOfProjectedIntersection(pt, oom, rm);
         if (isAligned(poi, oom, rm)) {
-            return poi.getDistanceSquared(pt, oom, rm).round(oom, rm);
+            return poi.getDistanceSquared(pt, oom, rm);
         } else {
             return getDistanceSquaredEdge(pt, oom, rm);
         }
@@ -2158,7 +2158,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         Math_BigRational pqd2 = getPQ(oom, rm).getDistanceSquared(pt, oomn2, rm);
         Math_BigRational qrd2 = getQR(oom, rm).getDistanceSquared(pt, oomn2, rm);
         Math_BigRational rpd2 = getRP(oom, rm).getDistanceSquared(pt, oomn2, rm);
-        return Math_BigRational.min(pqd2, qrd2, rpd2).round(oom, rm);
+        return Math_BigRational.min(pqd2, qrd2, rpd2);
     }
 
     /**

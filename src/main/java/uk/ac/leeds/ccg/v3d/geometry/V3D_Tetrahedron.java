@@ -368,11 +368,11 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     public V3D_Point getCentroid(int oom, RoundingMode rm) {
         oom -= 6;
         Math_BigRational dx = (p.getDX(oom, rm).add(q.getDX(oom, rm))
-                .add(r.getDX(oom, rm)).add(s.getDX(oom, rm))).divide(4).round(oom, rm);
+                .add(r.getDX(oom, rm)).add(s.getDX(oom, rm))).divide(4);
         Math_BigRational dy = (p.getDY(oom, rm).add(q.getDY(oom, rm))
-                .add(r.getDY(oom, rm)).add(s.getDY(oom, rm))).divide(4).round(oom, rm);
+                .add(r.getDY(oom, rm)).add(s.getDY(oom, rm))).divide(4);
         Math_BigRational dz = (p.getDZ(oom, rm).add(q.getDZ(oom, rm))
-                .add(r.getDZ(oom, rm)).add(s.getDZ(oom, rm))).divide(4).round(oom, rm);
+                .add(r.getDZ(oom, rm)).add(s.getDZ(oom, rm))).divide(4);
         return new V3D_Point(offset, new V3D_Vector(dx, dy, dz));
     }
 

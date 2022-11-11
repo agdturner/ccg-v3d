@@ -637,9 +637,9 @@ public class V3D_Vector implements Serializable {
 //                                return true;
 //                            } else {
 //                                Math_BigRational sy = getDY(oom, rm)
-//                                        .divide(v.getDY(oom, rm)).round(oom, rm);
+//                                        .divide(v.getDY(oom, rm));
 //                                Math_BigRational sz = getDZ(oom, rm)
-//                                        .divide(v.getDZ(oom, rm)).round(oom, rm);
+//                                        .divide(v.getDZ(oom, rm));
 //                                return sy.compareTo(sz) == 0;
 //                            }
 //                        }
@@ -659,9 +659,9 @@ public class V3D_Vector implements Serializable {
 //                                return true;
 //                            } else {
 //                                Math_BigRational sy = getDY(oom, rm)
-//                                        .divide(v.getDY(oom, rm)).round(oom, rm);
+//                                        .divide(v.getDY(oom, rm));
 //                                Math_BigRational sz = getDZ(oom, rm)
-//                                        .divide(v.getDZ(oom, rm)).round(oom, rm);
+//                                        .divide(v.getDZ(oom, rm));
 //                                return sy.compareTo(sz) == 0;
 //                            }
 //                        }
@@ -681,9 +681,9 @@ public class V3D_Vector implements Serializable {
 //                                return false;
 //                            } else {
 //                                Math_BigRational sx = getDX(oom, rm)
-//                                        .divide(v.getDX(oom, rm)).round(oom, rm);
+//                                        .divide(v.getDX(oom, rm));
 //                                Math_BigRational sz = getDZ(oom, rm)
-//                                        .divide(v.getDZ(oom, rm)).round(oom, rm);
+//                                        .divide(v.getDZ(oom, rm));
 //                                return sx.compareTo(sz) == 0;
 //                            }
 //                        }
@@ -697,9 +697,9 @@ public class V3D_Vector implements Serializable {
 //                        if (dz.isZero()) {
 //                            if (v.dz.isZero()) {
 //                                Math_BigRational sx = getDX(oom, rm)
-//                                        .divide(v.getDX(oom, rm)).round(oom, rm);
+//                                        .divide(v.getDX(oom, rm));
 //                                Math_BigRational sy = getDY(oom, rm)
-//                                        .divide(v.getDY(oom, rm)).round(oom, rm);
+//                                        .divide(v.getDY(oom, rm));
 //                                return sx.compareTo(sy) == 0;
 //                            } else {
 //                                return false;
@@ -709,12 +709,12 @@ public class V3D_Vector implements Serializable {
 //                                return false;
 //                            } else {
 //                                Math_BigRational sx = getDX(oom, rm)
-//                                        .divide(v.getDX(oom, rm)).round(oom, rm);
+//                                        .divide(v.getDX(oom, rm));
 //                                Math_BigRational sy = getDY(oom, rm)
-//                                        .divide(v.getDY(oom, rm)).round(oom, rm);
+//                                        .divide(v.getDY(oom, rm));
 //                                if (sx.compareTo(sy) == 0) {
 //                                    Math_BigRational sz = getDZ(oom, rm)
-//                                            .divide(v.getDZ(oom, rm)).round(oom, rm);
+//                                            .divide(v.getDZ(oom, rm));
 //                                    return sy.compareTo(sz) == 0;
 //                                } else {
 //                                    return false;
@@ -799,8 +799,7 @@ public class V3D_Vector implements Serializable {
                     this.getDY(oomn2, rm), this.getDZ(oomn2, rm));
             // P'=pP
             Math_Quaternion_BigRational pP = r.multiply(p).multiply(rR);
-            return new V3D_Vector(pP.x.round(oom, rm), pP.y.round(oom, rm),
-                    pP.z.round(oom, rm));
+            return new V3D_Vector(pP.x, pP.y, pP.z);
         }
         return new V3D_Vector(this);
     }
@@ -844,9 +843,9 @@ public class V3D_Vector implements Serializable {
 //         * Force the magnitude to be equal to one.
 //         */
 //        return new V3D_Vector(
-//                getDX(oomn6, rm).divide(d).round(oom, rm),
-//                getDY(oomn6, rm).divide(d).round(oom, rm),
-//                getDZ(oomn6, rm).divide(d).round(oom, rm), Math_BigRationalSqrt.ONE);
+//                getDX(oomn6, rm).divide(d),
+//                getDY(oomn6, rm).divide(d),
+//                getDZ(oomn6, rm).divide(d), Math_BigRationalSqrt.ONE);
         return new V3D_Vector(
                 getDX(oom, rm).divide(d),
                 getDY(oom, rm).divide(d),

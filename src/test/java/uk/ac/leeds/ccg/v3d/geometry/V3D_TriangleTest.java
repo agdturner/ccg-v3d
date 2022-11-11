@@ -1101,7 +1101,7 @@ public class V3D_TriangleTest extends V3D_Test {
         t = new V3D_Triangle(pN1P0P1, pP1P1N1, pP2N2N2, oomn3, rm);
         p.translate(t.getPl(oom, rm).n.getUnitVector(oomn3, rm).multiply(10, oomn3, rm), oomn3, rm);
         expResult = Math_BigRational.valueOf(100);
-        result = t.getDistanceSquared(p, oom, rm);
+        result = t.getDistanceSquared(p, oom, rm).round(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 

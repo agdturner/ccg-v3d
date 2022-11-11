@@ -862,13 +862,13 @@ public class V3D_Plane extends V3D_Geometry {
 //
 //        Math_BigRational t = numm.getDeterminant().divide(denm.getDeterminant()).negate();
 ////        V3D_Point res = new V3D_Point(e,
-////                lp.getX(oomN6, rm).add(lv.getDX(oomN6, rm).multiply(t)).round(oom, rm),
-////                lp.getY(oomN6, rm).add(lv.getDY(oomN6, rm).multiply(t)).round(oom, rm),
-////                lp.getZ(oomN6, rm).add(lv.getDZ(oomN6, rm).multiply(t)).round(oom, rm));
+////                lp.getX(oomN6, rm).add(lv.getDX(oomN6, rm).multiply(t)),
+////                lp.getY(oomN6, rm).add(lv.getDY(oomN6, rm).multiply(t)),
+////                lp.getZ(oomN6, rm).add(lv.getDZ(oomN6, rm).multiply(t)));
 //        V3D_Point res = new V3D_Point(e,
-//                lp.getX(oomN6, rm).add(lv.getDX(oomN6, rm).multiply(t)).round(oom, rm),
-//                lp.getY(oomN6, rm).add(lv.getDY(oomN6, rm).multiply(t)).round(oom, rm),
-//                lp.getZ(oomN6, rm).add(lv.getDZ(oomN6, rm).multiply(t)).round(oom, rm));
+//                lp.getX(oomN6, rm).add(lv.getDX(oomN6, rm).multiply(t)),
+//                lp.getY(oomN6, rm).add(lv.getDY(oomN6, rm).multiply(t)),
+//                lp.getZ(oomN6, rm).add(lv.getDZ(oomN6, rm).multiply(t)));
 //        if (false) {
 //            // Check if res is on the line.
 //            if (!l.isIntersectedBy(res, oom, rm)) {
@@ -1775,7 +1775,7 @@ public class V3D_Plane extends V3D_Geometry {
 //                    .add(coeffs[3])).abs();
 //            Math_BigRational den = coeffs[0].pow(2).add(coeffs[1].pow(2))
 //                    .add(coeffs[2].pow(2));
-//            return num.divide(den).round(oom, rm);
+//            return num.divide(den);
 //        }
 //    }
     /**
@@ -1794,7 +1794,7 @@ public class V3D_Plane extends V3D_Geometry {
         V3D_Vector v = new V3D_Vector(pt, getP(), oomn4, rm);
         //V3D_Vector u = getN(oom, rm).getUnitVector(oom, rm);
         V3D_Vector u = n.getUnitVector(oomn4, rm);
-        return v.getDotProduct(u, oomn4, rm).pow(2).round(oom, rm);
+        return v.getDotProduct(u, oomn4, rm).pow(2);
     }
 
     /**

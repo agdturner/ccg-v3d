@@ -407,7 +407,7 @@ public class V3D_Envelope implements Serializable {
      * @return {@link #xMin} rounded.
      */
     public Math_BigRational getXMin(int oom, RoundingMode rm) {
-        return xMin.add(offset.getDX(oom - 2, rm)).round(oom, rm);
+        return xMin.add(offset.getDX(oom - 2, rm));
     }
 
     /**
@@ -428,7 +428,7 @@ public class V3D_Envelope implements Serializable {
      * @return {@link #xMax} rounded.
      */
     public Math_BigRational getXMax(int oom, RoundingMode rm) {
-        return xMax.add(offset.getDX(oom - 2, rm)).round(oom, rm);
+        return xMax.add(offset.getDX(oom - 2, rm));
     }
 
     /**
@@ -449,7 +449,7 @@ public class V3D_Envelope implements Serializable {
      * @return {@link #yMin} rounded.
      */
     public Math_BigRational getYMin(int oom, RoundingMode rm) {
-        return yMin.add(offset.getDY(oom - 2, rm)).round(oom, rm);
+        return yMin.add(offset.getDY(oom - 2, rm));
     }
 
     /**
@@ -470,7 +470,7 @@ public class V3D_Envelope implements Serializable {
      * @return {@link #yMax} rounded.
      */
     public Math_BigRational getYMax(int oom, RoundingMode rm) {
-        return yMax.add(offset.getDY(oom - 2, rm)).round(oom, rm);
+        return yMax.add(offset.getDY(oom - 2, rm));
     }
 
     /**
@@ -491,7 +491,7 @@ public class V3D_Envelope implements Serializable {
      * @return {@link #zMin} rounded.
      */
     public Math_BigRational getZMin(int oom, RoundingMode rm) {
-        return zMin.add(offset.getDZ(oom - 2, rm)).round(oom, rm);
+        return zMin.add(offset.getDZ(oom - 2, rm));
     }
 
     /**
@@ -512,7 +512,7 @@ public class V3D_Envelope implements Serializable {
      * @return {@link #zMax} rounded.
      */
     public Math_BigRational getZMax(int oom, RoundingMode rm) {
-        return zMax.add(offset.getDZ(oom - 2, rm)).round(oom, rm);
+        return zMax.add(offset.getDZ(oom - 2, rm));
     }
 
     /**
