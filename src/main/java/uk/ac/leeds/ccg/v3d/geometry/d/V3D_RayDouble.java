@@ -15,8 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import java.math.RoundingMode;
-
 /**
  * 3D representation of a ray - like a line, but one that starts at a point
  * continues infinitely in only one direction. The ray begins at the point of
@@ -63,11 +61,11 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
     public V3D_LineDouble l;
 
     /**
-     * For storing the plane at {@link #l} pv with normal in direction of the 
- ray vector.
+     * For storing the plane at {@link #l} pv with normal in direction of the
+     * ray vector.
      */
     private V3D_PlaneDouble pl;
-    
+
     /**
      * Create a new instance.
      *
@@ -90,7 +88,8 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
     }
 
     /**
-     * Create a new instance. {@link #offset} is set to {@link V3D_Vector#ZERO}.
+     * Create a new instance. {@link #offset} is set to
+     * {@link V3D_VectorDouble#ZERO}.
      *
      * @param p What {@code this} is created from.
      * @param q What {@code this} is created from.
@@ -186,9 +185,10 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
     protected String toStringFieldsSimple(String pad) {
         return pad + l.toStringFieldsSimple(pad);
     }
-    
+
     /**
      * For initialising and getting {@link #pl}.
+     *
      * @return {@link #pl} initialised first if {@code null}.
      */
     public V3D_PlaneDouble getPl() {
@@ -349,7 +349,6 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
 //            }
 //        }
 //    }
-
     /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
      * return {@code this}. If they overlap in a line return the part that
@@ -484,13 +483,13 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
             }
         }
     }
-    
+
     /**
      * Calculates and returns if pt is in the direction of the ray (i.e. the
      * same side of the ray start point plane as another point on the ray).
-     * 
-     * @param pt The point. 
-     * @return {@code true} If pt is in line with this.  
+     *
+     * @param pt The point.
+     * @return {@code true} If pt is in line with this.
      */
     public boolean isAligned(V3D_PointDouble pt) {
         return getPl().isOnSameSide(pt, l.getQ());
@@ -509,7 +508,6 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
 //        l.offset = offset;
 //        //l.translate(v);
 //    }
-
     @Override
     public V3D_RayDouble rotate(V3D_LineDouble axis, double theta) {
         theta = V3D_AngleDouble.normalise(theta);
