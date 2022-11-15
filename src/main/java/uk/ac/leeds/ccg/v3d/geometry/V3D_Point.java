@@ -453,24 +453,15 @@ public class V3D_Point extends V3D_FiniteGeometry {
     public V3D_Point rotate(V3D_Line axis, Math_BigRational theta,
             int oom, RoundingMode rm) {
         int oomn9 = oom - 9;
-        Math_BigRational twoPi = Math_BigRational.valueOf(
-                V3D_Environment.bd.getPi(oomn9, rm)).multiply(2);
-        // Change a negative angle into a positive one.
-        while (theta.compareTo(Math_BigRational.ZERO) == -1) {
-            theta = theta.add(twoPi);
-        }
-        // Only rotate less than 2Pi radians.
-        while (theta.compareTo(twoPi) == 1) {
-            theta = theta.subtract(twoPi);
-        }
-        if (theta.compareTo(Math_BigRational.ZERO) == 0) {
+        Math_BigRational na = V3D_Angle.normalise(theta, oom, rm);
+        if (na.compareTo(Math_BigRational.ZERO) == 0) {
             return new V3D_Point(this);
         }
         V3D_Vector tv = axis.getP().getVector(oomn9, rm);
         V3D_Point tp = new V3D_Point(this);
         tp.translate(tv, oomn9, rm);
         V3D_Vector rv = axis.v.getUnitVector(oomn9, rm);
-        V3D_Vector tpr = tp.getVector(oomn9, rm).rotate(rv, theta, oomn9, rm);
+        V3D_Vector tpr = tp.getVector(oomn9, rm).rotate(rv, na, oomn9, rm);
         V3D_Point r = new V3D_Point(tpr);
         r.translate(tv.reverse(), oom, rm);
         return r;

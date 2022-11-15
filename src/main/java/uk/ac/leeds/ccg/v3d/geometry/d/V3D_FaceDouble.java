@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package uk.ac.leeds.ccg.v3d.geometry.d;
+
+import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
- * Provides utility for 3D spatial geometry.
+ * V3D_Face
+ *
+ * @author Andy Turner
+ * @version 1.0
  */
-module uk.ac.leeds.ccg.v3d {
+public interface V3D_FaceDouble {
 
     /**
-     * ccg-math
+     * For calculating and returning the perimeter.
+     * @return The Perimeter.
      */
-    requires transitive uk.ac.leeds.ccg.math;
-    requires transitive uk.ac.leeds.ccg.generic;
+    public abstract double getPerimeter();
 
     /**
-     * Exports.
+     * For calculating and returning the area.
+     * @return The area.
      */
-    exports uk.ac.leeds.ccg.v3d.core;
-    exports uk.ac.leeds.ccg.v3d.geometry;
-    exports uk.ac.leeds.ccg.v3d.geometry.d;
-    exports uk.ac.leeds.ccg.v3d.geometry.d.light;
-    exports uk.ac.leeds.ccg.v3d.geometry.light;
+    public abstract double getArea();
 }

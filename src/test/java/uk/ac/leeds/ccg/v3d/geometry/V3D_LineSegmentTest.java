@@ -354,23 +354,23 @@ public class V3D_LineSegmentTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP2P0P0, oom, rm);
         V3D_Point instance = pP1P1P0;
-        BigDecimal expResult = BigDecimal.ONE;
-        BigDecimal result = l.getDistance(instance, oom, rm);
+        Math_BigRational expResult = Math_BigRational.ONE;
+        Math_BigRational result = l.getDistance(instance, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         instance = pN1N1P0;
         result = l.getDistance(instance, oom, rm);
-        expResult = new Math_BigRationalSqrt(2, oom, rm).getSqrt(oom, rm).toBigDecimal(oom, rm);
+        expResult = new Math_BigRationalSqrt(2, oom, rm).getSqrt(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         instance = pP2P2P0;
-        expResult = BigDecimal.valueOf(2);
+        expResult = Math_BigRational.valueOf(2);
         result = l.getDistance(instance, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 4
         instance = pP2P2P0;
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        expResult = new Math_BigRationalSqrt(5, oom, rm).toBigDecimal(oom, rm);
+        expResult = new Math_BigRationalSqrt(5, oom, rm).getSqrt(oom, rm);
         result = l.getDistance(instance, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }

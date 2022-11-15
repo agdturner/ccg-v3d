@@ -766,22 +766,13 @@ public class V3D_Vector implements Serializable {
      */
     public V3D_Vector rotate(V3D_Vector axis, Math_BigRational theta,
             int oom, RoundingMode rm) {
-        Math_BigRational twoPi = Math_BigRational.valueOf(
-                V3D_Environment.bd.getPi(oom, rm)).multiply(2);
-        // Change a negative angle into a positive one.
-        while (theta.compareTo(Math_BigRational.ZERO) == -1) {
-            theta = theta.add(twoPi);
-        }
-        // Only rotate less than 2Pi radians.
-        while (theta.compareTo(twoPi) == 1) {
-            theta = theta.subtract(twoPi);
-        }
-        if (theta.compareTo(Math_BigRational.ZERO) == 1) {
+        Math_BigRational na = V3D_Angle.normalise(theta, oom, rm);
+        if (na.compareTo(Math_BigRational.ZERO) == 1) {
             int oomn2 = oom - 6;
             Math_BigRational adx = axis.getDX(oomn2, rm);
             Math_BigRational ady = axis.getDY(oomn2, rm);
             Math_BigRational adz = axis.getDZ(oomn2, rm);
-            Math_BigRational thetaDiv2 = theta.divide(2);
+            Math_BigRational thetaDiv2 = na.divide(2);
             Math_BigRational sinThetaDiv2 = thetaDiv2.sin(
                     V3D_Environment.bd.getBi(), oomn2, rm);
             Math_BigRational w = thetaDiv2.cos(

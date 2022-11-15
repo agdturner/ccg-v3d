@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -856,6 +857,12 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         }
         if (g instanceof V3D_Point gp) {
             if (r.isAligned(gp, oom, rm)) {
+//                Math_BigRational[] coeffs = this.pl.equation.coeffs;
+//                V3D_Point pt = new V3D_Point(
+//                        coeffs[0].multiply(gp.getX(oom, rm)),
+//                        coeffs[1].multiply(gp.getY(oom, rm)),
+//                        coeffs[2].multiply(gp.getZ(oom, rm)));
+//                return pt;
                 return gp;
             } else {
                 return null;
