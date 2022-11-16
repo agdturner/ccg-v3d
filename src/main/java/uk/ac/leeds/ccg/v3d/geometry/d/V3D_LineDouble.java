@@ -372,17 +372,11 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param l The line to test if it is the same as {@code this}.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
-    public boolean equals(V3D_LineDouble l) {
-//        boolean t1 = isIntersectedBy(l.getP(oom), oom);
-//        boolean t2 = isIntersectedBy(l.getQ(oom), oom);
-//        boolean t3 = l.isIntersectedBy(getP(oom), oom);
-//        boolean t4 = l.isIntersectedBy(getQ(oom),oom);
-//        boolean t5 = getV(oom).isScalarMultiple(l.getV(oom), oom);
-//        return isIntersectedBy(l.getP(), )
-//                && isIntersectedBy(l.getQ(), );
-        if (v.isScalarMultiple(l.v)) {
+    public boolean equals(V3D_LineDouble l, double epsilon) {
+        if (v.isScalarMultiple(l.v, epsilon)) {
             if (l.isIntersectedBy(getP())) {
                 if (isIntersectedBy(l.getP())) {
                     return true;
@@ -457,10 +451,11 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param l The line to test if it is parallel to this.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} If this and {@code l} are parallel.
      */
-    public boolean isParallel(V3D_LineDouble l) {
-        return v.isScalarMultiple(l.v);
+    public boolean isParallel(V3D_LineDouble l, double epsilon) {
+        return v.isScalarMultiple(l.v, epsilon);
     }
 
     /**
@@ -468,12 +463,13 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * return {@code this}.
      *
      * @param l The line to get the intersection with {@code this}.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_GeometryDouble getIntersection(V3D_LineDouble l) {
+    public V3D_GeometryDouble getIntersection(V3D_LineDouble l, double epsilon) {
         // Special case of parallel lines.
         V3D_PointDouble tp = getP();
-        if (isParallel(l)) {
+        if (isParallel(l, epsilon)) {
             if (l.isIntersectedBy(tp)) {
                 // If lines are coincident return this.
                 return this;
@@ -898,14 +894,16 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
     /**
      * @param pt A point for which the shortest line segment to this is
      * returned.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The line segment having the shortest distance between {@code pt}
      * and {@code this}.
      */
-    public V3D_FiniteGeometryDouble getLineOfIntersection(V3D_PointDouble pt) {
+    public V3D_FiniteGeometryDouble getLineOfIntersection(V3D_PointDouble pt,
+            double epsilon) {
         if (isIntersectedBy(pt)) {
             return pt;
         }
-        return new V3D_LineSegmentDouble(pt, getPointOfIntersection(pt));
+        return new V3D_LineSegmentDouble(pt, getPointOfIntersection(pt, epsilon));
     }
 
     /**
@@ -913,15 +911,16 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line
      *
      * @param pt The point projected onto this.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return A point on {@code this} which is the shortest distance from
      * {@code pt}.
      */
-    public V3D_PointDouble getPointOfIntersection(V3D_PointDouble pt) {
+    public V3D_PointDouble getPointOfIntersection(V3D_PointDouble pt, double epsilon) {
         if (isIntersectedBy(pt)) {
             return pt;
         }
         V3D_PlaneDouble ptv = new V3D_PlaneDouble(pt, v);
-        return (V3D_PointDouble) ptv.getIntersection(this);
+        return (V3D_PointDouble) ptv.getIntersection(this, epsilon);
     }
 
     /**
@@ -933,16 +932,18 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * http://paulbourke.net/geometry/pointlineplane/
      *
      * @param l The line to get the line of intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The line of intersection between {@code this} and {@code l}. The
      * point pv is a point on or near this, and the point qv is a point on or
      * near l. Whether the points are on or near is down to rounding error and
      * precision.
      */
-    public V3D_LineSegmentDouble getLineOfIntersection(V3D_LineDouble l) {
-        if (isParallel(l)) {
+    public V3D_LineSegmentDouble getLineOfIntersection(V3D_LineDouble l,
+            double epsilon) {
+        if (isParallel(l, epsilon)) {
             return null;
         }
-        if (getIntersection(l) != null) {
+        if (getIntersection(l, epsilon) != null) {
             return null;
         }
         V3D_PointDouble tp = getP();
@@ -1051,21 +1052,23 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      *
      * @param l A line for which the minimum distance from {@code this} is
      * returned.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The minimum distance between this and {@code l}.
      */
-    public double getDistance(V3D_LineDouble l) {
-        return Math.sqrt(getDistanceSquared(l));
+    public double getDistance(V3D_LineDouble l, double epsilon) {
+        return Math.sqrt(getDistanceSquared(l, epsilon));
     }
 
     /**
      * Get the minimum distance squared to {@code l}.
      *
      * @param l A line.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The minimum distance squared to {@code l}.
      */
-    public double getDistanceSquared(V3D_LineDouble l) {
+    public double getDistanceSquared(V3D_LineDouble l, double epsilon) {
         V3D_PointDouble tp = getP();
-        if (isParallel(l)) {
+        if (isParallel(l, epsilon)) {
             return l.getDistanceSquared(tp);
         } else {
             /**
@@ -1148,8 +1151,9 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
     }
 
     @Override
-    public V3D_LineDouble rotate(V3D_LineDouble axis, double theta) {
-        V3D_PointDouble rp = getP().rotate(axis, theta);
+    public V3D_LineDouble rotate(V3D_LineDouble axis, double theta, 
+            double epsilon) {
+        V3D_PointDouble rp = getP().rotate(axis, theta, epsilon);
         V3D_VectorDouble rv = v.rotate(axis.v.getUnitVector(), theta);
         return new V3D_LineDouble(rp, rv);
     }
@@ -1192,15 +1196,16 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param l The line to test points are collinear with.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public static boolean isCollinear(V3D_LineDouble l,
+    public static boolean isCollinear(V3D_LineDouble l, double epsilon,
             V3D_VectorDouble... points) {
         //V3D_VectorDouble lv = l.getV();
         V3D_VectorDouble lv = l.v;
         for (V3D_VectorDouble p : points) {
-            if (!lv.isScalarMultiple(p)) {
+            if (!lv.isScalarMultiple(p, epsilon)) {
                 return false;
             }
         }

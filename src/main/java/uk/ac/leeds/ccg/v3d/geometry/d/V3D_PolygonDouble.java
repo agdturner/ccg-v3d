@@ -216,16 +216,17 @@ public class V3D_PolygonDouble extends V3D_FiniteGeometryDouble
     }
 
     @Override
-    public V3D_PolygonDouble rotate(V3D_LineDouble axis, double theta) {
+    public V3D_PolygonDouble rotate(V3D_LineDouble axis, double theta, 
+            double epsilon) {
         ArrayList<V3D_ConvexHullCoplanarDouble> rparts = new ArrayList<>();
         ArrayList<V3D_ConvexHullCoplanarDouble> rholes = new ArrayList<>();
         if (holes != null) {
             for (int i = 0; i < holes.size(); i++) {
-                rholes.add(holes.get(i).rotate(axis, theta));
+                rholes.add(holes.get(i).rotate(axis, theta, epsilon));
             }
         }
         for (int i = 0; i < parts.size(); i++) {
-            rparts.add(parts.get(i).rotate(axis, theta));
+            rparts.add(parts.get(i).rotate(axis, theta, epsilon));
         }
         return new V3D_PolygonDouble(rparts, rholes);
     }
@@ -234,16 +235,17 @@ public class V3D_PolygonDouble extends V3D_FiniteGeometryDouble
      * Return the convex hull calculating it first if it has not already been
      * calculated.
      *
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return Get the convex hull.
      */
-    public V3D_ConvexHullCoplanarDouble getConvexHull() {
+    public V3D_ConvexHullCoplanarDouble getConvexHull(double epsilon) {
         if (convexHull == null) {
             ArrayList<V3D_PointDouble> pts = new ArrayList<>();
             for (var x : parts) {
                 pts.addAll(x.points);
             }
             convexHull = new V3D_ConvexHullCoplanarDouble(
-                    parts.get(0).triangles.get(0).getPl().n,
+                    parts.get(0).triangles.get(0).getPl().n, epsilon,
                     pts.toArray(V3D_PointDouble[]::new));
         }
         return convexHull;

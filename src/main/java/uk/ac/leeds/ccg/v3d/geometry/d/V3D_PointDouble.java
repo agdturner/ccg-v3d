@@ -20,36 +20,35 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding 
+ * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding
  * these gives the position of a point. Two points are equal according to
- * {@link #equals(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Point)}
- * if they have the same position. The "*" denotes a point in 3D in the following
- * depiction: {@code
-
-                          y           -
-                          +          /                * pv=<x0,y0,z0>
-                          |         /                 |  =offset+v
-                          |        /                  |  =<x1+x2,y1+y2,z1+z2>
-                          |    z0-/-------------------|
-               r          |      /                   /
-         v=<x2,y2,z2>     |     /                   /
-                          |    /                   /              
-                          |   /                   /      offset=<x1,y1,z1>
-                       y0-|  /                   /                o
-                          | /                   /
-                          |/                   /
-  - ----------------------|-------------------/---- + x
-                         /|                  x0
-                        / |
-                       /  |
-                      /   |
-                     /    |
-                    /     |
-                   /      |
-                  /       |
-                 +        |
-                z         -
- }
+ * {@link #equals(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Point)} if they have the
+ * same position. The "*" denotes a point in 3D in the following depiction: {@code
+ *
+ * y           -
+ * +          /                * pv=<x0,y0,z0>
+ * |         /                 |  =offset+v
+ * |        /                  |  =<x1+x2,y1+y2,z1+z2>
+ * |    z0-/-------------------|
+ * r          |      /                   /
+ * v=<x2,y2,z2>     |     /                   /
+ * |    /                   /
+ * |   /                   /      offset=<x1,y1,z1>
+ * y0-|  /                   /                o
+ * | /                   /
+ * |/                   /
+ * - ----------------------|-------------------/---- + x
+ * /|                  x0
+ * / |
+ * /  |
+ * /   |
+ * /    |
+ * /     |
+ * /      |
+ * /       |
+ * +        |
+ * z         -
+ * }
  *
  * @author Andy Turner
  * @version 1.0
@@ -173,6 +172,30 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
                     return true;
                 }
             }
+        }
+        return false;
+    }
+
+    /**
+     * Two points are equal if they are at the same location defined by each
+     * points relative start location and translation vector.
+     *
+     * @param p The point to test if it is the same as {@code this}.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @return {@code true} iff {@code pv} is equal to {@code this} given the
+     * epsilon.
+     */
+    public boolean equals(V3D_PointDouble p, double epsilon) {
+        double x = this.getX();
+        double y = this.getY();
+        double z = this.getZ();
+        double px = p.getX();
+        double py = p.getY();
+        double pz = p.getZ();
+        if (x < px + epsilon && x > px - epsilon
+                && y < py + epsilon && y > py - epsilon
+                && z < pz + epsilon && z > pz - epsilon) {
+            return true;
         }
         return false;
     }
@@ -336,7 +359,8 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
      * @param theta The angle of rotation.
      */
     @Override
-    public V3D_PointDouble rotate(V3D_LineDouble axis, double theta) {
+    public V3D_PointDouble rotate(V3D_LineDouble axis, double theta, 
+            double epsilon) {
         theta = V3D_AngleDouble.normalise(theta);
         if (theta == 0d) {
             return new V3D_PointDouble(this);
@@ -350,7 +374,7 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
         r.translate(tv.reverse());
         return r;
     }
-    
+
     /**
      * @param points The points to test if they are coincident.
      * @return {@code true} iff all the points are coincident.
@@ -381,7 +405,7 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
 
     /**
      * A collection method for getting unique points.
-     * 
+     *
      * @param pts The points to derive a unique list from.
      * @return A unique list made from those in pts.
      */

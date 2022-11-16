@@ -1025,9 +1025,13 @@ public class V3D_Plane extends V3D_Geometry {
             return l;
         } else {
             V3D_Point pt = (V3D_Point) g;
-            if (l.isIntersectedBy(pt, oom, rm)) {
+            if (l.getPPL().isOnSameSide(pt, l.getQ(), oom, rm) && 
+                    l.getQPL().isOnSameSide(pt, l.getP(), oom, rm)) {
                 return pt;
             }
+//            if (l.isIntersectedBy(pt, oom, rm)) {
+//                return pt;
+//            }
             return null;
         }
     }

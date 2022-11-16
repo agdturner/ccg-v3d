@@ -139,12 +139,13 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
     /**
      * @param l1 A line segment collinear with {@code l2}.
      * @param l2 A line segment collinear with {@code l1}.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return A V3D_LineSegmentsCollinear if {@code l1} and {@code l2} do not
      * intersect, otherwise a single V3D_LineSegment.
      */
     public static V3D_FiniteGeometryDouble getGeometry(V3D_LineSegmentDouble l1,
-            V3D_LineSegmentDouble l2) {
-        if (l1.getIntersection(l2) == null) {
+            V3D_LineSegmentDouble l2, double epsilon) {
+        if (l1.getIntersection(l2, epsilon) == null) {
             return new V3D_LineSegmentsCollinearDouble(l1, l2);
         }
         /**
@@ -271,8 +272,8 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      * @param p A point.
      * @return The distance squared to {@code p}.
      */
-    public double getDistance(V3D_PointDouble p) {
-        return Math.sqrt(getDistanceSquared(p));
+    public double getDistance(V3D_PointDouble p, double epsilon) {
+        return Math.sqrt(getDistanceSquared(p, epsilon));
     }
 
     /**
@@ -281,14 +282,14 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      * @param p A point.
      * @return The distance squared to {@code p}.
      */
-    public double getDistanceSquared(V3D_PointDouble p) {
+    public double getDistanceSquared(V3D_PointDouble p, double epsilon) {
         if (isIntersectedBy(p)) {
             return 0d;
         }
         Iterator<V3D_LineSegmentDouble> ite = lineSegments.iterator();
-        double d = ite.next().getDistanceSquared(p);
+        double d = ite.next().getDistanceSquared(p, epsilon);
         while (ite.hasNext()) {
-            d = Math.min(d, ite.next().getDistanceSquared(p));
+            d = Math.min(d, ite.next().getDistanceSquared(p, epsilon));
         }
         return d;
     }
@@ -297,26 +298,28 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      * Get the minimum distance to {@code l}.
      *
      * @param l A line.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The minimum distance squared to {@code l}.
      */
-    public double getDistance(V3D_LineDouble l) {
-        return Math.sqrt(getDistanceSquared(l));
+    public double getDistance(V3D_LineDouble l, double epsilon) {
+        return Math.sqrt(getDistanceSquared(l, epsilon));
     }
 
     /**
      * Get the minimum distance squared to {@code l}.
      *
      * @param l A line.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The minimum distance squared to {@code l}.
      */
-    public double getDistanceSquared(V3D_LineDouble l) {
+    public double getDistanceSquared(V3D_LineDouble l, double epsilon) {
 //        if (isIntersectedBy(l)) {
 //            return Math_BigRational.ZERO;
 //        }
         Iterator<V3D_LineSegmentDouble> ite = lineSegments.iterator();
-        double d = ite.next().getDistanceSquared(l);
+        double d = ite.next().getDistanceSquared(l, epsilon);
         while (ite.hasNext()) {
-            d = Math.min(d, ite.next().getDistanceSquared(l));
+            d = Math.min(d, ite.next().getDistanceSquared(l, epsilon));
         }
         return d;
     }
@@ -325,26 +328,28 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      * Get the minimum distance to {@code l}.
      *
      * @param l A line segment.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The minimum distance to {@code l}.
      */
-    public double getDistance(V3D_LineSegmentDouble l) {
-        return Math.sqrt(getDistanceSquared(l));
+    public double getDistance(V3D_LineSegmentDouble l, double epsilon) {
+        return Math.sqrt(getDistanceSquared(l, epsilon));
     }
 
     /**
      * Get the minimum distance squared to {@code l}.
      *
      * @param l A line segment.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The minimum distance to {@code l}.
      */
-    public double getDistanceSquared(V3D_LineSegmentDouble l) {
-        if (getIntersection(l) != null) {
+    public double getDistanceSquared(V3D_LineSegmentDouble l, double epsilon) {
+        if (getIntersection(l, epsilon) != null) {
             return 0d;
         }
         Iterator<V3D_LineSegmentDouble> ite = lineSegments.iterator();
-        double d = ite.next().getDistanceSquared(l);
+        double d = ite.next().getDistanceSquared(l, epsilon);
         while (ite.hasNext()) {
-            d = Math.min(d, ite.next().getDistanceSquared(l));
+            d = Math.min(d, ite.next().getDistanceSquared(l, epsilon));
         }
         return d;
     }
@@ -369,14 +374,16 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      * Get the intersection between this and the line {@code l}.
      *
      * @param l The line to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The V3D_Geometry.
      */
-    public V3D_GeometryDouble getIntersection(V3D_LineDouble l) {
+    public V3D_GeometryDouble getIntersection(V3D_LineDouble l,
+            double epsilon) {
         Iterator<V3D_LineSegmentDouble> ite = lineSegments.iterator();
-        V3D_GeometryDouble g = ite.next().getIntersection(l);
+        V3D_GeometryDouble g = ite.next().getIntersection(l, epsilon);
         if (g == null) {
             while (ite.hasNext()) {
-                g = ite.next().getIntersection(l);
+                g = ite.next().getIntersection(l, epsilon);
                 if (g instanceof V3D_PointDouble) {
                     return g;
                 }
@@ -396,15 +403,17 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      * end points.
      *
      * @param ls The line segment to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble ls) {
+    public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble ls,
+            double epsilon) {
         if (lineSegments.get(0).l.isCollinear(ls.l)) {
             ArrayList<V3D_PointDouble> ps = new ArrayList<>();
             ArrayList<V3D_LineSegmentDouble> lse = new ArrayList<>();
             Iterator<V3D_LineSegmentDouble> ite = lineSegments.iterator();
             while (ite.hasNext()) {
-                V3D_GeometryDouble g = ite.next().getIntersection(ls);
+                V3D_GeometryDouble g = ite.next().getIntersection(ls, epsilon);
                 if (g != null) {
                     if (g instanceof V3D_PointDouble gp) {
                         ps.add(gp);
@@ -423,14 +432,14 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
                     V3D_LineSegmentsCollinearDouble r
                             = new V3D_LineSegmentsCollinearDouble(
                                     lse.toArray(V3D_LineSegmentDouble[]::new));
-                    return r.simplify();
+                    return r.simplify(epsilon);
                 }
             }
         } else {
             // Find the point of intersection if there is one.
             Iterator<V3D_LineSegmentDouble> ite = lineSegments.iterator();
             while (ite.hasNext()) {
-                V3D_FiniteGeometryDouble g = ite.next().getIntersection(ls);
+                V3D_FiniteGeometryDouble g = ite.next().getIntersection(ls, epsilon);
                 if (g != null) {
                     return g;
                 }
@@ -445,14 +454,15 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      * only one line segment, then a V3D_LineSegment is returned, otherwise a
      * V3D_LineSegmentsCollinear is returned.
      *
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return Either a V3D_LineSegment or a V3D_LineSegmentsCollinear which is
      * a simplified version of this with overlapping line segments replaced with
      * a single line segment.
      */
-    public V3D_FiniteGeometryDouble simplify() {
+    public V3D_FiniteGeometryDouble simplify(double epsilon) {
         ArrayList<V3D_LineSegmentDouble> dummy = new ArrayList<>();
         dummy.addAll(lineSegments);
-        ArrayList<V3D_LineSegmentDouble> r = simplify0(dummy, 0);
+        ArrayList<V3D_LineSegmentDouble> r = simplify0(dummy, 0, epsilon);
         if (r.size() == 1) {
             return r.get(0);
         } else {
@@ -460,15 +470,16 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
         }
     }
 
+    
     private ArrayList<V3D_LineSegmentDouble> simplify0(
-            ArrayList<V3D_LineSegmentDouble> ls, int i) {
+            ArrayList<V3D_LineSegmentDouble> ls, int i, double epsilon) {
         V3D_LineSegmentDouble l0 = ls.get(i);
         ArrayList<V3D_LineSegmentDouble> r = new ArrayList<>();
         TreeSet<Integer> removeIndexes = new TreeSet<>();
         r.addAll(ls);
         for (int j = i; j < ls.size(); j++) {
             V3D_LineSegmentDouble l1 = ls.get(j);
-            if (l0.getIntersection(l1) != null) {
+            if (l0.getIntersection(l1, epsilon) != null) {
                 V3D_PointDouble l0p = l0.getP();
                 if (l1.isIntersectedBy(l0p)) {
                     V3D_PointDouble l0q = l0.getQ();
@@ -514,7 +525,7 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
             r.remove(ite.next().intValue());
         }
         if (i < r.size() - 1) {
-            r = simplify0(r, i + 1);
+            r = simplify0(r, i + 1, epsilon);
         }
         return r;
     }
@@ -532,10 +543,10 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
     
     @Override
     public V3D_LineSegmentsCollinearDouble rotate(V3D_LineDouble axis, 
-            double theta) {
+            double theta, double epsilon) {
         V3D_LineSegmentDouble[] rls = new V3D_LineSegmentDouble[lineSegments.size()];
         for (int i = 0; i < lineSegments.size(); i++) {
-            rls[0] = lineSegments.get(i).rotate(axis, theta);
+            rls[0] = lineSegments.get(i).rotate(axis, theta, epsilon);
         }
         return new V3D_LineSegmentsCollinearDouble(rls);
     }

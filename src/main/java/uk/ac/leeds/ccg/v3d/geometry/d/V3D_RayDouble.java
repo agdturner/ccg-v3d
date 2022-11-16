@@ -134,10 +134,11 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
 
     /**
      * @param r The ray to test if it is the same as {@code this}.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} iff {@code r} is the same as {@code this}.
      */
-    public boolean equals(V3D_RayDouble r) {
-        return l.getP().equals(r.l.getP()) && l.v.isScalarMultiple(r.l.v);
+    public boolean equals(V3D_RayDouble r, double epsilon) {
+        return l.getP().equals(r.l.getP()) && l.v.isScalarMultiple(r.l.v, epsilon);
     }
 
     @Override
@@ -254,10 +255,11 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
      * Support ray-plane intersection to choose on or before, or on or after?
      *
      * @param pl The plane to get the geometrical intersection with this.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The intersection between {@code this} and {@code pl}.
      */
-    public V3D_GeometryDouble getIntersection(V3D_PlaneDouble pl) {
-        V3D_GeometryDouble g = pl.getIntersection(l);
+    public V3D_GeometryDouble getIntersection(V3D_PlaneDouble pl, double epsilon) {
+        V3D_GeometryDouble g = pl.getIntersection(l, epsilon);
         if (g == null) {
             return null;
         }
@@ -357,11 +359,12 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
      * intersection.
      *
      * @param l The line to get the geometrical intersection with this.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_GeometryDouble getIntersection(V3D_LineDouble l) {
+    public V3D_GeometryDouble getIntersection(V3D_LineDouble l, double epsilon) {
         // Check if infinite lines intersect.
-        V3D_GeometryDouble g = this.l.getIntersection(l);
+        V3D_GeometryDouble g = this.l.getIntersection(l, epsilon);
         if (g == null) {
             // There is no intersection.
             return g;
@@ -386,10 +389,11 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
      * returned if {@code this} and {@code r} do not intersect.
      *
      * @param r The line to get intersection with this.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The intersection between {@code this} and {@code r}.
      */
-    public V3D_GeometryDouble getIntersection(V3D_RayDouble r) {
-        V3D_GeometryDouble rtl = r.getIntersection(l);
+    public V3D_GeometryDouble getIntersection(V3D_RayDouble r, double epsilon) {
+        V3D_GeometryDouble rtl = r.getIntersection(l, epsilon);
         if (rtl == null) {
             return null;
         } else if (rtl instanceof V3D_PointDouble pt) {
@@ -401,7 +405,7 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
             }
         } else {
             // Then rtl is an instance of V3D_Ray.
-            V3D_GeometryDouble grl = getIntersection(r.l);
+            V3D_GeometryDouble grl = getIntersection(r.l, epsilon);
             if (grl instanceof V3D_PointDouble) {
                 return grl;
             } else {
@@ -445,10 +449,12 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
      * returned if {@code this} and {@code l} do not intersect.
      *
      * @param ls The line to get intersection with this.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble ls) {
-        V3D_GeometryDouble g = getIntersection(ls.l);
+    public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble ls,
+            double epsilon) {
+        V3D_GeometryDouble g = getIntersection(ls.l, epsilon);
         if (g == null) {
             return null;
         } else if (g instanceof V3D_PointDouble pt) {
@@ -509,12 +515,12 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
 //        //l.translate(v);
 //    }
     @Override
-    public V3D_RayDouble rotate(V3D_LineDouble axis, double theta) {
+    public V3D_RayDouble rotate(V3D_LineDouble axis, double theta, double epsilon) {
         theta = V3D_AngleDouble.normalise(theta);
         if (theta == 0d) {
             return new V3D_RayDouble(this);
         } else {
-            return new V3D_RayDouble(l.rotate(axis, theta));
+            return new V3D_RayDouble(l.rotate(axis, theta, epsilon));
         }
     }
 }

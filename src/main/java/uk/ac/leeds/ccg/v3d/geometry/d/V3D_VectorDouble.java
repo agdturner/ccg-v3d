@@ -331,11 +331,12 @@ public class V3D_VectorDouble implements Serializable {
      * Test if this is orthogonal to {@code v}.
      *
      * @param v The vector to test for orthogonality with.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} if this and {@code v} are orthogonal.
      */
-    public boolean isOrthogonal(V3D_VectorDouble v) {
+    public boolean isOrthogonal(V3D_VectorDouble v, double epsilon) {
         // Special case
-        if (isScalarMultiple(v)) {
+        if (isScalarMultiple(v, epsilon)) {
             return false;
         }
         return getDotProduct(v) == 0d;
@@ -359,15 +360,16 @@ public class V3D_VectorDouble implements Serializable {
      * Test if {@code v} is a scalar multiple of {@code this}.
      *
      * @param v The vector to test if it is a scalar multiple of {@code this}.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
-    public boolean isScalarMultiple(V3D_VectorDouble v) {
+    public boolean isScalarMultiple(V3D_VectorDouble v, double epsilon) {
         // Special case
         if (this.isZero() || v.isZero()) {
             return false;
         }
         return this.multiply(getDotProduct(v)).equals(
-                v.multiply(getDotProduct(this)));
+                v.multiply(getDotProduct(this)), epsilon);
     }
 
     /**

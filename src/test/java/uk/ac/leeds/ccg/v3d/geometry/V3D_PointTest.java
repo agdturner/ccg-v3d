@@ -65,9 +65,9 @@ public class V3D_PointTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point instance = pP0P0P0;
-        Math_BigRational x = Math_BigRational.valueOf(new BigDecimal("0.000"));
-        Math_BigRational y = Math_BigRational.valueOf(new BigDecimal("0.000"));
-        Math_BigRational z = Math_BigRational.valueOf(new BigDecimal("0.000"));
+        Math_BigRational x = Math_BigRational.ZERO;
+        Math_BigRational y = Math_BigRational.ZERO;
+        Math_BigRational z = Math_BigRational.ZERO;
         V3D_Point p = new V3D_Point(x, y, z);
         assertTrue(instance.equals(p, oom, rm));
         // Test 2
@@ -75,9 +75,9 @@ public class V3D_PointTest extends V3D_Test {
         y = P10;
         z = P0;
         instance = new V3D_Point(x, y, z);
-        x = Math_BigRational.valueOf(new BigDecimal("1.000"));
-        y = Math_BigRational.valueOf(new BigDecimal("10.000"));
-        z = Math_BigRational.valueOf(new BigDecimal("0.000"));
+        x = Math_BigRational.valueOf("1.000");
+        y = Math_BigRational.valueOf("10.000");
+        z = Math_BigRational.valueOf("0.000");
         p = new V3D_Point(x, y, z);
         assertTrue(instance.equals(p, oom, rm));
         // Test 3
@@ -85,11 +85,8 @@ public class V3D_PointTest extends V3D_Test {
         y = Math_BigRational.TEN;
         z = Math_BigRational.ZERO;
         instance = new V3D_Point(x, y, z);
-        x = Math_BigRational.valueOf(new BigDecimal("0.000"));
-        y = Math_BigRational.valueOf(new BigDecimal("1.000"));
-        z = Math_BigRational.valueOf(new BigDecimal("10.000"));
         p = new V3D_Point(x, y, z);
-        assertFalse(instance.equals(p, oom, rm));
+        assertTrue(instance.equals(p, oom, rm));
     }
 
     /**

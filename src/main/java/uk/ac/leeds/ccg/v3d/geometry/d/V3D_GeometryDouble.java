@@ -105,10 +105,7 @@ public abstract class V3D_GeometryDouble implements Serializable {
     /**
      * Returns the geometry rotated about the axis of rotation axisOfRotation by
      * the angle theta.
-     *
-     * @param axis The axis of rotation.
-     * @param theta The angle of rotation around the {@code axisOfRotation} in
-     * radians. Options for rotation include:
+     * Options for rotation include:
      * <ul>
      * <li>Rotation Matrix https://en.wikipedia.org/wiki/Rotation_matrix</li>
      * <li>Quaternions
@@ -122,9 +119,14 @@ public abstract class V3D_GeometryDouble implements Serializable {
      * <li>https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula</li>
      * <li>https://en.wikipedia.org/wiki/3D_rotation_group</li>
      * </ul>
+     * @param axis The axis of rotation.
+     * @param theta The angle of rotation around the {@code axisOfRotation} in
+     * radians.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The rotated geometry.
      */
-    public abstract V3D_GeometryDouble rotate(V3D_LineDouble axis, double theta);
+    public abstract V3D_GeometryDouble rotate(V3D_LineDouble axis, 
+            double theta, double epsilon);
 
     /**
      * For getting an angle between 0 and 2Pi

@@ -443,10 +443,12 @@ public class V3D_EnvelopeDouble implements Serializable {
      *
      * @param pt The point from which observation of this is occurring.
      * @param v The vector pointing to the right of the viewport.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return A viewport - a rectangle between pt and this such that all of
      * this is contained in the planes from the point through the viewport.
      */
-    public V3D_RectangleDouble getViewport(V3D_PointDouble pt, V3D_VectorDouble v) {
+    public V3D_RectangleDouble getViewport(V3D_PointDouble pt, 
+            V3D_VectorDouble v, double epsilon) {
         V3D_RectangleDouble r;
         pts = getPoints();
 //        pts[0] = new V3D_Point(lba);
@@ -481,7 +483,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         // Get the intersecting points on the screen plane from pt
         for (int i = 0; i < pts.length; i++) {
             V3D_RayDouble ray = new V3D_RayDouble(pt, pts[i]);
-            ipts[i] = (V3D_PointDouble) ray.getIntersection(pl0);
+            ipts[i] = (V3D_PointDouble) ray.getIntersection(pl0, epsilon);
         }
         // Figure out the extremes in relation to v and v2
         // Find top, bottom, left and right planes
@@ -497,7 +499,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         double ba = 0d;
         V3D_PlaneDouble bpl = null;
         for (var x : ipts) {
-            V3D_PointDouble pp = vpl.getPointOfProjectedIntersection(x);
+            V3D_PointDouble pp = vpl.getPointOfProjectedIntersection(x, epsilon);
             double a = Math.abs(cv.getAngle(new V3D_VectorDouble(pt, pp)));
             if (v2pl.isOnSameSide(ap, x)) {
                 if (a > aa) {
@@ -526,7 +528,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         double ra = 0d;
         V3D_PlaneDouble rpl = null;
         for (var x : ipts) {
-            V3D_PointDouble pp = v2pl.getPointOfProjectedIntersection(x);
+            V3D_PointDouble pp = v2pl.getPointOfProjectedIntersection(x, epsilon);
             double a = Math.abs(cv.getAngle(new V3D_VectorDouble(pt, pp)));
             if (vpl.isOnSameSide(lp, x)) {
                 if (a > la) {
@@ -563,10 +565,10 @@ public class V3D_EnvelopeDouble implements Serializable {
 //        tp.n = tp.n.getUnitVector();
 //        bp.n = bp.n.getUnitVector();
         r = new V3D_RectangleDouble(
-                (V3D_PointDouble) lpl.getIntersection(pl0, bpl),
-                (V3D_PointDouble) lpl.getIntersection(pl0, tpl),
-                (V3D_PointDouble) rpl.getIntersection(pl0, tpl),
-                (V3D_PointDouble) rpl.getIntersection(pl0, bpl));
+                (V3D_PointDouble) lpl.getIntersection(pl0, bpl, epsilon),
+                (V3D_PointDouble) lpl.getIntersection(pl0, tpl, epsilon),
+                (V3D_PointDouble) rpl.getIntersection(pl0, tpl, epsilon),
+                (V3D_PointDouble) rpl.getIntersection(pl0, bpl, epsilon));
 
         return r;
     }
@@ -579,11 +581,12 @@ public class V3D_EnvelopeDouble implements Serializable {
      *
      * @param pt The point from which observation of this is occuring.
      * @param v The vector pointing to the right of the viewport.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return A viewport - a rectangle between pt and this such that all of
      * this is contained in the planes from the point through the viewport.
      */
     public V3D_RectangleDouble getViewport2(V3D_PointDouble pt,
-            V3D_VectorDouble v) {
+            V3D_VectorDouble v, double epsilon) {
         V3D_RectangleDouble r;
         // Get the plane of the viewport.
         V3D_PointDouble c = getCentroid();
@@ -601,7 +604,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         // Get the intersecting points on the screen plane from pt
         for (int i = 0; i < pts.length; i++) {
             V3D_RayDouble ray = new V3D_RayDouble(pt, pts[i]);
-            ipts[i] = (V3D_PointDouble) ray.getIntersection(pl0);
+            ipts[i] = (V3D_PointDouble) ray.getIntersection(pl0, epsilon);
         }
         // Find top, bottom, left and right planes
         V3D_PlaneDouble vpl = new V3D_PlaneDouble(c, v);
@@ -616,7 +619,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         double ba = 0d;
         V3D_PlaneDouble bpl = null;
         for (var x : ipts) {
-            V3D_PointDouble pp = vpl.getPointOfProjectedIntersection(x);
+            V3D_PointDouble pp = vpl.getPointOfProjectedIntersection(x, epsilon);
             double a = Math.abs(cv.getAngle(new V3D_VectorDouble(pt, pp)));
             if (v2pl.isOnSameSide(ap, x)) {
                 if (a > aa) {
@@ -645,7 +648,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         double ra = 0d;
         V3D_PlaneDouble rpl = null;
         for (var x : ipts) {
-            V3D_PointDouble pp = v2pl.getPointOfProjectedIntersection(x);
+            V3D_PointDouble pp = v2pl.getPointOfProjectedIntersection(x, epsilon);
             double a = Math.abs(cv.getAngle(new V3D_VectorDouble(pt, pp)));
             if (vpl.isOnSameSide(lp, x)) {
                 if (a > la) {
@@ -683,10 +686,10 @@ public class V3D_EnvelopeDouble implements Serializable {
 //        bp.n = bp.n.getUnitVector();
 
         r = new V3D_RectangleDouble(
-                (V3D_PointDouble) lpl.getIntersection(pl0, bpl),
-                (V3D_PointDouble) lpl.getIntersection(pl0, tpl),
-                (V3D_PointDouble) rpl.getIntersection(pl0, tpl),
-                (V3D_PointDouble) rpl.getIntersection(pl0, bpl));
+                (V3D_PointDouble) lpl.getIntersection(pl0, bpl, epsilon),
+                (V3D_PointDouble) lpl.getIntersection(pl0, tpl, epsilon),
+                (V3D_PointDouble) rpl.getIntersection(pl0, tpl, epsilon),
+                (V3D_PointDouble) rpl.getIntersection(pl0, bpl, epsilon));
 
         return r;
     }
@@ -702,10 +705,12 @@ public class V3D_EnvelopeDouble implements Serializable {
      * @param pt The point from which observation of this is to occur.
      * @param v A vector pointing to the right of the viewport. This should be
      * orthogonal to the vector from pt to the centroid.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return A viewport - a rectangle between pt and this such that all of
      * this is contained in the planes from the point through the viewport.
      */
-    public V3D_RectangleDouble getViewport3(V3D_PointDouble pt, V3D_VectorDouble v) {
+    public V3D_RectangleDouble getViewport3(V3D_PointDouble pt, 
+            V3D_VectorDouble v, double epsilon) {
         V3D_RectangleDouble r;
         // Get the plane of the viewport.
         V3D_PointDouble c = getCentroid();
@@ -741,10 +746,10 @@ public class V3D_EnvelopeDouble implements Serializable {
         rppt.translate(hv);
         V3D_PlaneDouble rpl = new V3D_PlaneDouble(rppt, pt, ptv2);
         r = new V3D_RectangleDouble(
-                (V3D_PointDouble) lpl.getIntersection(pl0, bpl),
-                (V3D_PointDouble) lpl.getIntersection(pl0, tpl),
-                (V3D_PointDouble) rpl.getIntersection(pl0, tpl),
-                (V3D_PointDouble) rpl.getIntersection(pl0, bpl));
+                (V3D_PointDouble) lpl.getIntersection(pl0, bpl, epsilon),
+                (V3D_PointDouble) lpl.getIntersection(pl0, tpl, epsilon),
+                (V3D_PointDouble) rpl.getIntersection(pl0, tpl, epsilon),
+                (V3D_PointDouble) rpl.getIntersection(pl0, bpl, epsilon));
         return r;
     }
 

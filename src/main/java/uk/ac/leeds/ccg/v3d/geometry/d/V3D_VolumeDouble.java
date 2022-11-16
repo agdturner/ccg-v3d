@@ -19,23 +19,25 @@ import java.io.Serializable;
 
 /**
  * V3D_VolumeDouble
- * 
+ *
  * @author Andy Turner
  */
 public interface V3D_VolumeDouble extends Serializable {
-    
+
     /**
      * For calculating and returning the area.
-     * 
+     *
      * @return The area.
      */
     public abstract double getArea();
-    
+
     /**
      * For calculating and returning the perimeter.
-     * 
+     *
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The Perimeter.
      */
-    public abstract double getVolume();
-    
+    public abstract double getVolume(double epsilon);
+
 }

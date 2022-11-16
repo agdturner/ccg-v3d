@@ -453,14 +453,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
          */
         public Equation() {
             coeffs = new double[4];
-            double ndxsr = Math.sqrt(n.dx);
-            double ndysr = Math.sqrt(n.dy);
-            double ndzsr = Math.sqrt(n.dz);
             V3D_PointDouble tp = getP();
-            double k = ndxsr * tp.getX() + ndysr * tp.getY() + ndzsr * tp.getZ();
-            coeffs[0] = ndxsr;
-            coeffs[1] = ndysr;
-            coeffs[2] = ndzsr;
+            double k = n.dx * tp.getX() + n.dy * tp.getY() + n.dz * tp.getZ();
+            coeffs[0] = n.dx;
+            coeffs[1] = n.dy;
+            coeffs[2] = n.dz;
             coeffs[3] = k;
         }
     }
@@ -564,12 +561,13 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * https://stackoverflow.com/a/18543221/1998054
      *
      * @param l The line to intersect with the plane.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The intersection of the line and the plane. This is either
      * {@code null} a line or a point.
      */
-    public V3D_GeometryDouble getIntersectionOption(V3D_LineDouble l) {
+    public V3D_GeometryDouble getIntersectionOption(V3D_LineDouble l, double epsilon) {
         // Special case
-        if (isParallel(l)) {
+        if (isParallel(l, epsilon)) {
             if (isOnPlane(l)) {
                 return l;
             }
@@ -818,10 +816,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * Get the intersection between the geometry and the line {@code l}.
      *
      * @param l The line to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The V3D_Geometry.
      */
-    public V3D_GeometryDouble getIntersection(V3D_LineDouble l) {
-        if (isParallel(l)) {
+    public V3D_GeometryDouble getIntersection(V3D_LineDouble l, double epsilon) {
+        if (isParallel(l, epsilon)) {
             if (isOnPlane(l)) {
                 return l;
             } else {
@@ -903,19 +902,24 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * Get the intersection between the geometry and the line segment {@code l}.
      *
      * @param l The line segment to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble l) {
-        V3D_GeometryDouble g = getIntersection(l.l);
+    public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble l, double epsilon) {
+        V3D_GeometryDouble g = getIntersection(l.l, epsilon);
         if (g == null) {
             return null;
         } else if (g instanceof V3D_LineDouble) {
             return l;
         } else {
             V3D_PointDouble pt = (V3D_PointDouble) g;
-            if (l.isIntersectedBy(pt)) {
+            if (l.getPPL().isOnSameSide(pt, l.getQ()) && 
+                    l.getQPL().isOnSameSide(pt, l.getP())) {
                 return pt;
             }
+//            if (l.isIntersectedBy(pt)) {
+//                return pt;
+//            }
             return null;
         }
     }
@@ -928,9 +932,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * https://mathworld.wolfram.com/Plane-PlaneIntersection.html
      *
      * @param pl The plane to intersect.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The intersection between {@code this} and {@code pl}
      */
-    public V3D_GeometryDouble getIntersection(V3D_PlaneDouble pl) {
+    public V3D_GeometryDouble getIntersection(V3D_PlaneDouble pl, 
+            double epsilon) {
         /**
          * Calculate the cross product of the normal vectors to get the
          * direction of the line.
@@ -953,7 +959,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             // There is no intersection.
             return null;
         }
-        V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP());
+        V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
         return new V3D_LineDouble(pi, v);
     }
 
@@ -966,36 +972,39 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      *
      * @param pl1 A plane to intersect.
      * @param pl2 A second plane top intersect.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The intersection between {@code this} and {@code pl}
      */
     public V3D_GeometryDouble getIntersection(V3D_PlaneDouble pl1, 
-            V3D_PlaneDouble pl2) {
-        V3D_GeometryDouble g = getIntersection(pl1);
+            V3D_PlaneDouble pl2, double epsilon) {
+        V3D_GeometryDouble g = getIntersection(pl1, epsilon);
         if (g == null) {
             return null;
         } else {
             if (g instanceof V3D_PlaneDouble gp) {
-                return gp.getIntersection(pl2);
+                return gp.getIntersection(pl2, epsilon);
             } else {
-                return pl2.getIntersection((V3D_LineDouble) g);
+                return pl2.getIntersection((V3D_LineDouble) g, epsilon);
             }
         }
     }
 
     /**
      * @param p The plane to test if it is parallel to this.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} if {@code this} is parallel to {@code pl}.
      */
-    public boolean isParallel(V3D_PlaneDouble p) {
-        return n.isScalarMultiple(p.n);
+    public boolean isParallel(V3D_PlaneDouble p, double epsilon) {
+        return n.isScalarMultiple(p.n, epsilon);
     }
 
     /**
      * @param l The line to test if it is parallel to this.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} if {@code this} is parallel to {@code l}.
      */
-    public boolean isParallel(V3D_LineDouble l) {
-        if (n.isOrthogonal(l.v)) {
+    public boolean isParallel(V3D_LineDouble l, double epsilon) {
+        if (n.isOrthogonal(l.v, epsilon)) {
             return true;
         }
         return n.getDotProduct(l.v) == 0d;
@@ -1007,11 +1016,12 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * plane is on the other.
      *
      * @param pl The plane to check for equality with {@code this}.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
-    public boolean equals(V3D_PlaneDouble pl) {
+    public boolean equals(V3D_PlaneDouble pl, double epsilon) {
         if (n.getDotProduct(pl.n) > 0d) {
-            return equalsIgnoreOrientation(pl);
+            return equalsIgnoreOrientation(pl, epsilon);
         }
         return false;
     }
@@ -1021,10 +1031,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * each plane is on the other.
      *
      * @param pl The plane to check for equality with {@code this}.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
-    public boolean equalsIgnoreOrientation(V3D_PlaneDouble pl) {
-        if (n.isScalarMultiple(pl.n)) {
+    public boolean equalsIgnoreOrientation(V3D_PlaneDouble pl, double epsilon) {
+        if (n.isScalarMultiple(pl.n, epsilon)) {
             if (pl.isIntersectedBy(getP())) {
                 if (this.isIntersectedBy(pl.getP())) {
                     return true;
@@ -1099,10 +1110,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * Get the minimum distance to {@code pv}.
      *
      * @param p A plane.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The minimum distance to {@code pv}.
      */
-    public double getDistance(V3D_PlaneDouble p) {
-        return Math.sqrt(getDistanceSquared(p));
+    public double getDistance(V3D_PlaneDouble p, double epsilon) {
+        return Math.sqrt(getDistanceSquared(p, epsilon));
     }
 
     /**
@@ -1111,10 +1123,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * it.
      *
      * @param pl The other plane used to calculate the distance.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The shortest distance between {@code this} and {@code pl}.
      */
-    public double getDistanceSquared(V3D_PlaneDouble pl) {
-        if (isParallel(pl)) {
+    public double getDistanceSquared(V3D_PlaneDouble pl, double epsilon) {
+        if (isParallel(pl, epsilon)) {
             return pl.getDistanceSquared(getP());
         }
         return 0d;
@@ -1181,8 +1194,9 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
     }
 
     @Override
-    public V3D_PlaneDouble rotate(V3D_LineDouble axis, double theta) {
-        return new V3D_PlaneDouble(getP().rotate(axis, theta),
+    public V3D_PlaneDouble rotate(V3D_LineDouble axis, double theta, 
+            double epsilon) {
+        return new V3D_PlaneDouble(getP().rotate(axis, theta, epsilon),
                 n.rotate(axis.v.getUnitVector(), theta));
     }
 
@@ -1193,16 +1207,18 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      *
      * @param pt The point which when projected onto the plane using the normal
      * to the plane forms the end of the returned line of intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The line of intersection between {@code pt} and {@code this} or
      * {@code null} if {@code pt} is on {@code this}. The point pl on the result
      * is the point of intersection
      */
-    public V3D_PointDouble getPointOfProjectedIntersection(V3D_PointDouble pt) {
+    public V3D_PointDouble getPointOfProjectedIntersection(V3D_PointDouble pt,
+            double epsilon) {
         if (isIntersectedBy(pt)) {
             return pt;
         }
         V3D_LineDouble l = new V3D_LineDouble(pt, n);
-        return (V3D_PointDouble) getIntersection(l);
+        return (V3D_PointDouble) getIntersection(l, epsilon);
     }
 
     /**

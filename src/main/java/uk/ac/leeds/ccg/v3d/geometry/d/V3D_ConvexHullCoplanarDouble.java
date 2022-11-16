@@ -81,19 +81,22 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
     /**
      * Create a new instance.
      *
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @param triangles A non-empty list of coplanar triangles.
      */
-    public V3D_ConvexHullCoplanarDouble(V3D_TriangleDouble... triangles) {
-        this(triangles[0].getPl().n, V3D_TriangleDouble.getPoints(triangles));
+    public V3D_ConvexHullCoplanarDouble(double epsilon, 
+            V3D_TriangleDouble... triangles) {
+        this(triangles[0].getPl().n, epsilon, V3D_TriangleDouble.getPoints(triangles));
     }
 
     /**
      * Create a new instance.
      *
      * @param n The normal for the plane.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @param points A non-empty list of points in a plane given by n.
      */
-    public V3D_ConvexHullCoplanarDouble(V3D_VectorDouble n, 
+    public V3D_ConvexHullCoplanarDouble(V3D_VectorDouble n, double epsilon,
             V3D_PointDouble... points) {
         super();
         this.points = new ArrayList<>();
@@ -158,11 +161,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             if (ydl2 > zdl2) {
                 this.points.add(yminp);
                 this.points.add(ymaxp);
-                getConvexHull0(pts, yminp, ymaxp, n, 1);
+                getConvexHull0(pts, yminp, ymaxp, n, 1, epsilon);
             } else {
                 this.points.add(zminp);
                 this.points.add(zmaxp);
-                getConvexHull0(pts, zminp, zmaxp, n, 1);
+                getConvexHull0(pts, zminp, zmaxp, n, 1, epsilon);
             }
         } else if (yminIndex == ymaxIndex) {
             V3D_LineSegmentDouble xd = new V3D_LineSegmentDouble(xmaxp, xminp);
@@ -172,11 +175,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             if (xdl2 > zdl2) {
                 this.points.add(xminp);
                 this.points.add(xmaxp);
-                getConvexHull0(pts, xminp, xmaxp, n, 1);
+                getConvexHull0(pts, xminp, xmaxp, n, 1, epsilon);
             } else {
                 this.points.add(zminp);
                 this.points.add(zmaxp);
-                getConvexHull0(pts, zminp, zmaxp, n, 1);
+                getConvexHull0(pts, zminp, zmaxp, n, 1, epsilon);
             }
         } else if (zminIndex == zmaxIndex) {
             V3D_LineSegmentDouble xd = new V3D_LineSegmentDouble(xmaxp, xminp);
@@ -186,11 +189,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             if (xdl2 > ydl2) {
                 this.points.add(xminp);
                 this.points.add(xmaxp);
-                getConvexHull0(pts, xminp, xmaxp, n, 1);
+                getConvexHull0(pts, xminp, xmaxp, n, 1, epsilon);
             } else {
                 this.points.add(yminp);
                 this.points.add(ymaxp);
-                getConvexHull0(pts, yminp, ymaxp, n, 1);
+                getConvexHull0(pts, yminp, ymaxp, n, 1, epsilon);
             }
         } else {
             V3D_LineSegmentDouble xd = new V3D_LineSegmentDouble(xmaxp, xminp);
@@ -203,21 +206,21 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
                 if (xdl2 > zdl2) {
                     this.points.add(xminp);
                     this.points.add(xmaxp);
-                    getConvexHull0(pts, xminp, xmaxp, n, 1);
+                    getConvexHull0(pts, xminp, xmaxp, n, 1, epsilon);
                 } else {
                     this.points.add(zminp);
                     this.points.add(zmaxp);
-                    getConvexHull0(pts, zminp, zmaxp, n, 1);
+                    getConvexHull0(pts, zminp, zmaxp, n, 1, epsilon);
                 }
             } else {
                 if (ydl2 > zdl2) {
                     this.points.add(yminp);
                     this.points.add(ymaxp);
-                    getConvexHull0(pts, yminp, ymaxp, n, 1);
+                    getConvexHull0(pts, yminp, ymaxp, n, 1, epsilon);
                 } else {
                     this.points.add(zminp);
                     this.points.add(zmaxp);
-                    getConvexHull0(pts, zminp, zmaxp, n, 1);
+                    getConvexHull0(pts, zminp, zmaxp, n, 1, epsilon);
                 }
             }
         }
@@ -232,10 +235,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
     /**
      * Create a new instance.
      *
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @param gs The input convex hulls.
      */
-    public V3D_ConvexHullCoplanarDouble(V3D_ConvexHullCoplanarDouble... gs) {
-        this(gs[0].triangles.get(0).getPl().n, V3D_FiniteGeometryDouble.getPoints(gs));
+    public V3D_ConvexHullCoplanarDouble(double epsilon, V3D_ConvexHullCoplanarDouble... gs) {
+        this(gs[0].triangles.get(0).getPl().n, epsilon, V3D_FiniteGeometryDouble.getPoints(gs));
     }
 
     /**
@@ -244,9 +248,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * @param ch The convex hull to add to the convex hull with t.
      * @param t The triangle used to set the normal and to add to the convex
      * hull with ch.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      */
-    public V3D_ConvexHullCoplanarDouble(V3D_ConvexHullCoplanarDouble ch, V3D_TriangleDouble t) {
-        this(ch.triangles.get(0).getPl().n, V3D_FiniteGeometryDouble.getPoints(ch, t));
+    public V3D_ConvexHullCoplanarDouble(V3D_ConvexHullCoplanarDouble ch, 
+            V3D_TriangleDouble t, double epsilon) {
+        this(ch.triangles.get(0).getPl().n, epsilon, V3D_FiniteGeometryDouble.getPoints(ch, t));
     }
 
     @Override
@@ -355,13 +361,14 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * effectively a rectangle, the rectangle is returned. Otherwise this is
      * returned.
      *
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return Either a triangle, rectangle or this.
      */
-    public V3D_FiniteGeometryDouble simplify() {
+    public V3D_FiniteGeometryDouble simplify(double epsilon) {
         if (isTriangle()) {
             return new V3D_TriangleDouble(points.get(0), points.get(1),
                     points.get(2));
-        } else if (isRectangle()) {
+        } else if (isRectangle(epsilon)) {
             return new V3D_RectangleDouble(points.get(0), points.get(2),
                     points.get(1), points.get(3));
         } else {
@@ -445,10 +452,12 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * Get the intersection between this and the plane {@code p}.
      *
      * @param p The plane to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometryDouble getIntersection(V3D_PlaneDouble p) {
-        if (this.triangles.get(0).getPl().equalsIgnoreOrientation(p)) {
+    public V3D_FiniteGeometryDouble getIntersection(V3D_PlaneDouble p,
+            double epsilon) {
+        if (this.triangles.get(0).getPl().equalsIgnoreOrientation(p, epsilon)) {
             return this;
         }
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -458,21 +467,23 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * Get the intersection between the geometry and the triangle {@code t}.
      *
      * @param t The triangle to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometryDouble getIntersection(V3D_TriangleDouble t) {
+    public V3D_FiniteGeometryDouble getIntersection(V3D_TriangleDouble t, 
+            double epsilon) {
         // Create a set all the intersecting triangles from this.
         List<V3D_PointDouble> ts = new ArrayList<>();
         for (V3D_TriangleDouble t2 : triangles) {
-            V3D_FiniteGeometryDouble i = t2.getIntersection(t);
+            V3D_FiniteGeometryDouble i = t2.getIntersection(t, epsilon);
             ts.addAll(Arrays.asList(i.getPoints()));
         }
         ArrayList<V3D_PointDouble> tsu = V3D_PointDouble.getUnique(ts);
         if (tsu.isEmpty()) {
             return null;
         } else {
-            return new V3D_ConvexHullCoplanarDouble(t.getPl().n,
-                    tsu.toArray(V3D_PointDouble[]::new)).simplify();
+            return new V3D_ConvexHullCoplanarDouble(t.getPl().n, epsilon,
+                    tsu.toArray(V3D_PointDouble[]::new)).simplify(epsilon);
         }
 //        switch (size) {
 //            case 0:
@@ -492,12 +503,12 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
 //    }
     @Override
     public V3D_ConvexHullCoplanarDouble rotate(V3D_LineDouble axis,
-            double theta) {
+            double theta, double epsilon) {
         V3D_TriangleDouble[] rts = new V3D_TriangleDouble[triangles.size()];
         for (int i = 0; i < triangles.size(); i++) {
-            rts[0] = triangles.get(i).rotate(axis, theta);
+            rts[0] = triangles.get(i).rotate(axis, theta, epsilon);
         }
-        return new V3D_ConvexHullCoplanarDouble(rts);
+        return new V3D_ConvexHullCoplanarDouble(epsilon, rts);
     }
 
     /**
@@ -507,11 +518,12 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * @param p1
      * @param n
      * @param index
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return the number of points added.
      */
     private void getConvexHull0(ArrayList<V3D_PointDouble> pts,
             V3D_PointDouble p0, V3D_PointDouble p1, V3D_VectorDouble n,
-            int index) {
+            int index, double epsilon) {
         V3D_PlaneDouble pl = new V3D_PlaneDouble(p0, p1, new V3D_PointDouble(
                 offset, p0.rel.add(n)));
         AboveAndBelow ab = new AboveAndBelow(pts, pl);
@@ -535,8 +547,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
                 if (!ab.a.isEmpty()) {
                     // Divide again
                     V3D_LineDouble l = new V3D_LineDouble(p0, p1);
-                    V3D_PointDouble proj = l.getPointOfIntersection(apt);
-                    getConvexHull0(ab.a, apt, proj, n, index);
+                    V3D_PointDouble proj = l.getPointOfIntersection(apt, epsilon);
+                    getConvexHull0(ab.a, apt, proj, n, index, epsilon);
                 }
             }
         }
@@ -560,8 +572,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
                 if (!ab.b.isEmpty()) {
                     // Divide again
                     V3D_LineDouble l = new V3D_LineDouble(p0, p1);
-                    V3D_PointDouble proj = l.getPointOfIntersection(bpt);
-                    getConvexHull0(ab.b, bpt, proj, n, index);
+                    V3D_PointDouble proj = l.getPointOfIntersection(bpt, epsilon);
+                    getConvexHull0(ab.b, bpt, proj, n, index, epsilon);
                 }
             }
         }
@@ -641,12 +653,13 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
     /**
      * If all {@link #triangles} form a single triangle return true
      *
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} iff this is a rectangle.
      */
-    public boolean isRectangle() {
+    public boolean isRectangle(double epsilon) {
         if (points.size() == 4) {
             return V3D_RectangleDouble.isRectangle(points.get(0),
-                    points.get(1), points.get(2), points.get(3));
+                    points.get(1), points.get(2), points.get(3), epsilon);
         }
         return false;
     }
@@ -659,8 +672,9 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * @param p A point that is used to return the side of the clipped triangle.
      * @return null, the whole or a part of this.
      */
-    public V3D_FiniteGeometryDouble clip(V3D_PlaneDouble pl, V3D_PointDouble p) {
-        V3D_FiniteGeometryDouble i = getIntersection(pl);
+    public V3D_FiniteGeometryDouble clip(V3D_PlaneDouble pl, V3D_PointDouble p,
+            double epsilon) {
+        V3D_FiniteGeometryDouble i = getIntersection(pl, epsilon);
         if (i == null) {
             V3D_PointDouble pp = this.triangles.get(0).getPl().getP();
             if (pl.isOnSameSide(pp, p)) {
@@ -692,7 +706,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
                 return il;
             } else {
                 return new V3D_ConvexHullCoplanarDouble(
-                        this.triangles.get(0).getPl().n,
+                        this.triangles.get(0).getPl().n, epsilon,
                         pts.toArray(V3D_PointDouble[]::new));
             }
         }
@@ -704,10 +718,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * @param t The triangle to clip this with.
      * @param pt A point that is used to return the side of this that is
      * clipped.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return null, the whole or a part of this.
      */
     public V3D_FiniteGeometryDouble clip(V3D_TriangleDouble t, 
-            V3D_PointDouble pt) {
+            V3D_PointDouble pt, double epsilon) {
         V3D_PointDouble tp = t.getP();
         V3D_PointDouble tq = t.getQ();
         V3D_PointDouble tr = t.getR();
@@ -718,55 +733,55 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         V3D_PlaneDouble qpl = new V3D_PlaneDouble(tq, tr, qp);
         V3D_PointDouble rp = new V3D_PointDouble(tr.offset.add(n), tr.rel);
         V3D_PlaneDouble rpl = new V3D_PlaneDouble(tr, tp, rp);
-        V3D_FiniteGeometryDouble cppl = clip(ppl, tr);
+        V3D_FiniteGeometryDouble cppl = clip(ppl, tr, epsilon);
         if (cppl == null) {
             return null;
         } else if (cppl instanceof V3D_PointDouble) {
             return cppl;
         } else if (cppl instanceof V3D_LineSegmentDouble cppll) {
-            V3D_FiniteGeometryDouble cppllcqpl = cppll.clip(qpl, pt);
+            V3D_FiniteGeometryDouble cppllcqpl = cppll.clip(qpl, pt, epsilon);
             if (cppllcqpl == null) {
                 return null;
             } else if (cppllcqpl instanceof V3D_PointDouble) {
                 return cppllcqpl;
             } else {
-                return ((V3D_LineSegmentDouble) cppllcqpl).clip(rpl, pt);
+                return ((V3D_LineSegmentDouble) cppllcqpl).clip(rpl, pt, epsilon);
             }
         } else if (cppl instanceof V3D_TriangleDouble cpplt) {
-            V3D_FiniteGeometryDouble cppltcqpl = cpplt.clip(qpl, pt);
+            V3D_FiniteGeometryDouble cppltcqpl = cpplt.clip(qpl, pt, epsilon);
             if (cppltcqpl == null) {
                 return null;
             } else if (cppltcqpl instanceof V3D_PointDouble) {
                 return cppltcqpl;
             } else if (cppltcqpl instanceof V3D_LineSegmentDouble cppltcqpll) {
-                return cppltcqpll.clip(rpl, pt);
+                return cppltcqpll.clip(rpl, pt, epsilon);
             } else if (cppltcqpl instanceof V3D_TriangleDouble cppltcqplt) {
-                return cppltcqplt.clip(rpl, pt);
+                return cppltcqplt.clip(rpl, pt, epsilon);
             } else {
                 V3D_ConvexHullCoplanarDouble c = (V3D_ConvexHullCoplanarDouble) cppltcqpl;
-                return c.clip(rpl, tq);
+                return c.clip(rpl, tq, epsilon);
             }
         } else {
             V3D_ConvexHullCoplanarDouble c = (V3D_ConvexHullCoplanarDouble) cppl;
-            V3D_FiniteGeometryDouble cc = c.clip(qpl, pt);
+            V3D_FiniteGeometryDouble cc = c.clip(qpl, pt, epsilon);
             if (cc == null) {
                 return cc;
             } else if (cc instanceof V3D_PointDouble) {
                 return cc;
             } else if (cc instanceof V3D_LineSegmentDouble cppll) {
-                V3D_FiniteGeometryDouble cccqpl = cppll.clip(qpl, pt);
+                V3D_FiniteGeometryDouble cccqpl = cppll.clip(qpl, pt, epsilon);
                 if (cccqpl == null) {
                     return null;
                 } else if (cccqpl instanceof V3D_PointDouble) {
                     return cccqpl;
                 } else {
-                    return ((V3D_LineSegmentDouble) cccqpl).clip(rpl, pt);
+                    return ((V3D_LineSegmentDouble) cccqpl).clip(rpl, pt, epsilon);
                 }
             } else if (cc instanceof V3D_TriangleDouble ccct) {
-                return ccct.clip(rpl, tq);
+                return ccct.clip(rpl, tq, epsilon);
             } else {
                 V3D_ConvexHullCoplanarDouble ccc = (V3D_ConvexHullCoplanarDouble) cc;
-                return ccc.clip(rpl, pt);
+                return ccc.clip(rpl, pt, epsilon);
             }
         }
     }
@@ -777,11 +792,12 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * is returned. If four or more are different then a V3D_ConvexHullCoplanar
      * is returned.
      *
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @param pts The points.
      * @return Either a V3D_Point, V3D_LineSegment, V3D_Triangle, or
      * V3D_ConvexHullCoplanar.
      */
-    public static V3D_FiniteGeometryDouble getGeometry(V3D_PointDouble... pts) {
+    public static V3D_FiniteGeometryDouble getGeometry(double epsilon, V3D_PointDouble... pts) {
         Set<V3D_PointDouble> s = new HashSet<>();
         s.addAll(Arrays.asList(pts));
         Iterator<V3D_PointDouble> i = s.iterator();
@@ -807,7 +823,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
                     return new V3D_LineSegmentDouble(pts);
                 } else {
                     pl = new V3D_PlaneDouble(ip, iq, ir);
-                    return new V3D_ConvexHullCoplanarDouble(pl.n, pts);
+                    return new V3D_ConvexHullCoplanarDouble(pl.n, epsilon, pts);
                 }
             }
         }
