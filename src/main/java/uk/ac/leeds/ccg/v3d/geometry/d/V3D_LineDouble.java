@@ -994,7 +994,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
      * @param noInt This is ignored, but it distinguishes this method from
-     * {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble)}.
+     * {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble, double)}.
      * @return The minimum distance between this and {@code pv}.
      */
     protected double getDistanceSquared(V3D_PointDouble pt, boolean noInt) {
