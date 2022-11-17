@@ -558,6 +558,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * @param r Another possibly equal point.
      * @param s Another possibly equal point.
      * @param t Another possibly equal point.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return either {@code pl} or {@code new V3D_LineSegmentDouble(pl, qv)} or
      * {@code new V3D_TriangleDouble(pl, qv, r)}
      */

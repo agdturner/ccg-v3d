@@ -457,21 +457,11 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                 return tp;
             }
         }
-        double a = Math_Double.sqrt(plp.dx * (lqlp.dx)) 
-                + Math_Double.sqrt(plp.dy * (lqlp.dy))
-                + Math_Double.sqrt(plp.dz * (lqlp.dz));
-        double b = Math_Double.sqrt(lqlp.dx * (qp.dx)) 
-                + Math_Double.sqrt(lqlp.dy * (qp.dy))
-                + Math_Double.sqrt(lqlp.dz * (qp.dz));
-        double c = Math_Double.sqrt(plp.dx * (qp.dx)) 
-                + Math_Double.sqrt(plp.dy * (qp.dy))
-                + Math_Double.sqrt(plp.dz * (qp.dz));
-        double d = Math_Double.sqrt(lqlp.dx * (lqlp.dx)) 
-                + Math_Double.sqrt(lqlp.dy * (lqlp.dy))
-                + Math_Double.sqrt(lqlp.dz * (lqlp.dz));
-        double eb = Math_Double.sqrt(qp.dx * (qp.dx)) 
-                + Math_Double.sqrt(qp.dy * (qp.dy))
-                + Math_Double.sqrt(qp.dz * (qp.dz));
+        double a = plp.dx * lqlp.dx + plp.dy * lqlp.dy + plp.dz * lqlp.dz;
+        double b = lqlp.dx * qp.dx + lqlp.dy * qp.dy + lqlp.dz * qp.dz;
+        double c = plp.dx * qp.dx + plp.dy * qp.dy + plp.dz * qp.dz;
+        double d = lqlp.dx * lqlp.dx + lqlp.dy * lqlp.dy + lqlp.dz * lqlp.dz;
+        double eb = qp.dx * qp.dx + qp.dy * qp.dy + qp.dz * qp.dz;
         double den = (eb * (d)) - (b * (b));
         double num = (a * (b)) - (c * (d));
         if (den == 0d) {
@@ -977,6 +967,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      *
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The minimum distance between this and {@code pv}.
      */
     public double getDistanceSquared(V3D_PointDouble pt, double epsilon) {
@@ -1003,7 +994,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
      * @param noInt This is ignored, but it distinguishes this method from
-     * {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.V3D_PointDouble)}.
+     * {@link #getDistanceSquared(uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble)}.
      * @return The minimum distance between this and {@code pv}.
      */
     protected double getDistanceSquared(V3D_PointDouble pt, boolean noInt) {

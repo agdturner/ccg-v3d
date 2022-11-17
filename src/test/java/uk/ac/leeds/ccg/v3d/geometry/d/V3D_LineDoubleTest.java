@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_Double;
 
 /**
@@ -278,12 +279,6 @@ public class V3D_LineDoubleTest extends V3D_DoubleTest {
         expResult = pP0P0P0;
         result = instance.getIntersection(l, epsilon);
         assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
-        // Test 11
-        l = new V3D_LineDouble(pN1N1N1, pP1P1P1);
-        expResult = new V3D_LineDouble(pN1N1N1, pP1P1P1);
-        instance = new V3D_LineDouble(new V3D_VectorDouble(-3d, -3d, -3d), new V3D_VectorDouble(-4d, -4d, -4d));
-        result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineDouble) expResult).equals((V3D_LineDouble) result));
         // Test 12 to 14
         // v.dx = 0, v.dy != 0, v.dz !=0
         // Test 11
@@ -618,23 +613,23 @@ public class V3D_LineDoubleTest extends V3D_DoubleTest {
      * Test of getDistance method, of class V3D_LineDouble.
      */
     @Test
-    public void testGetDistance_V3D_LineDouble_int() {
+    public void testGetDistance_V3D_LineDouble_double() {
         System.out.println("getDistance");
-        double epsilon = 1d / 10000000d;
+        double epsilon = 1d / 100000000d;
         V3D_LineDouble l;
         V3D_LineDouble instance;
         double expResult;
         double result;
         // Test 1 
         // https://math.stackexchange.com/questions/2213165/find-shortest-distance-between-lines-in-3d
-        l = new V3D_LineDouble(new V3D_VectorDouble(2d, 6d, -9d), new V3D_VectorDouble(3d, 4d, -4d));
-        instance = new V3D_LineDouble(new V3D_VectorDouble(-1d, -2d, 3d), new V3D_VectorDouble(2d, -6d, 1d));
-        expResult = 4.7d;
+        l = new V3D_LineDouble(new V3D_VectorDouble(2d, 6d, -9d), new V3D_VectorDouble(3d, 4d, -4d), true);
+        instance = new V3D_LineDouble(new V3D_VectorDouble(-1d, -2d, 3d), new V3D_VectorDouble(2d, -6d, 1d), true);
+        expResult = 4.74020116673185d;
         result = instance.getDistance(l, epsilon);
-        assertTrue(expResult == result);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
         // Test 2
         l = new V3D_LineDouble(pP0P0P0, pP1P1P0);
-        instance = new V3D_LineDouble(P1N1P0, P2P0P0);
+        instance = new V3D_LineDouble(pP1N1P0, pP2P0P0);
         expResult = Math.sqrt(2d);
         result = instance.getDistance(l, epsilon);
         assertTrue(expResult == result);

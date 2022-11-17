@@ -440,7 +440,7 @@ public class V3D_VectorDouble implements Serializable {
                 dz * v.dx - dx * v.dz,
                 dx * v.dy - dy * v.dx);
     }
-
+    
     /**
      * Scales by {@link #m} to give a unit vector with length 1. Six further
      * orders of magnitude are used to produce the result.

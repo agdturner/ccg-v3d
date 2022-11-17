@@ -270,6 +270,7 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      * Get the minimum distance to {@code p}.
      *
      * @param p A point.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The distance squared to {@code p}.
      */
     public double getDistance(V3D_PointDouble p, double epsilon) {
@@ -280,6 +281,7 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      * Get the minimum distance squared to {@code p}.
      *
      * @param p A point.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The distance squared to {@code p}.
      */
     public double getDistanceSquared(V3D_PointDouble p, double epsilon) {

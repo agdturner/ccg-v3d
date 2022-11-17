@@ -1275,17 +1275,17 @@ public class V3D_Line extends V3D_Geometry {
              */
             //V3D_Vector cp = l.v.getCrossProduct(v, oom, rm);
             //V3D_Vector cp = getV(oom, rm).getCrossProduct(l.getV(oom, rm), oom, rm);
-            V3D_Vector cp = v.getCrossProduct(l.v, oom, rm);
+            V3D_Vector cp = v.getCrossProduct(l.v, oom, rm); //20, 11, 26
             /**
              * Calculate the delta from {@link #p} and l.p
              */
 //            V3D_Vector delta = new V3D_Vector(l.pv, oom).subtract(
 //                    new V3D_Vector(tp, oom), oom);
             V3D_Vector delta = l.getP().getVector(oom, rm).subtract(
-                    new V3D_Vector(tp, oom, rm), oom, rm);
+                    new V3D_Vector(tp, oom, rm), oom, rm);//3,8, -12
             //Math_BigRational m = Math_BigRational.valueOf(cp.getMagnitude(oom - 2));
-            Math_BigRational m = cp.getMagnitudeSquared();
-            Math_BigRational dp = cp.getDotProduct(delta, oom, rm);
+            Math_BigRational m = cp.getMagnitudeSquared(); //869
+            Math_BigRational dp = cp.getDotProduct(delta, oom, rm); //-184
             // m should only be zero if the lines are parallel.
             return (dp.pow(2).divide(m)).abs();
         }

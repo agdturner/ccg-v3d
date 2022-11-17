@@ -671,6 +671,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      *
      * @param pl The plane that clips.
      * @param p A point that is used to return the side of the clipped triangle.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return null, the whole or a part of this.
      */
     public V3D_FiniteGeometryDouble clip(V3D_PlaneDouble pl, V3D_PointDouble p,
