@@ -253,9 +253,9 @@ public class V3D_VectorDouble implements Serializable {
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
     public boolean equals(V3D_VectorDouble v, double epsilon) {
-        return dx < v.dx + epsilon && dx > v.dx - epsilon
-                && dy < v.dy + epsilon && dy > v.dy - epsilon 
-                && dz < v.dz + epsilon && dz > v.dz - epsilon;
+        return dx <= v.dx + epsilon && dx >= v.dx - epsilon
+                && dy <= v.dy + epsilon && dy >= v.dy - epsilon 
+                && dz <= v.dz + epsilon && dz >= v.dz - epsilon;
     }
 
     /**

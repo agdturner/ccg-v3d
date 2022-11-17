@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_PointDoubleTest extends V3D_TestDouble {
+public class V3D_PointDoubleTest extends V3D_DoubleTest {
 
     public V3D_PointDoubleTest() {
     }

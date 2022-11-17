@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
+import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_Double;
 
 /**
@@ -226,7 +227,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * @param p What {@link #pv} is cloned from.
      * @param v The vector defining the line from {@link #pv}. What {@link #v}
      * is cloned from.
-     * @param flag To distinguish this method from {@link #V3D_LineDouble(uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble, uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble)}
+     * @param flag To distinguish this method from
+     * {@link #V3D_LineDouble(uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble, uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble)}
      */
     public V3D_LineDouble(V3D_VectorDouble p, V3D_VectorDouble v, boolean flag) {
         this(V3D_VectorDouble.ZERO, p, v, flag);
@@ -248,7 +250,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #pv} is set to.
      * @param v The vector defining the line from {@link #pv}.
-     * @param flag To distinguish this from {@link #V3D_LineDouble(uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble, uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble, uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble)}
+     * @param flag To distinguish this from
+     * {@link #V3D_LineDouble(uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble, uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble, uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble)}
      * @throws RuntimeException if {@code v.isZero()}.
      */
     public V3D_LineDouble(V3D_VectorDouble offset, V3D_VectorDouble p, V3D_VectorDouble v, boolean flag) {
@@ -319,27 +322,6 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         r += pad + "p=" + getP().toString(pad) + "\n"
                 + pad + ",\n"
                 + pad + "v=" + v.toString(pad);
-//        if (qv == null) {
-//            r += pad + "pv=" + getP().toString(pad) + "\n"
-//                    + pad + ",\n"
-//                    + pad + "qv=null" + "\n"
-//                    + pad + ",\n"
-//                    + pad + "v=" + v.toString(pad);
-//        } else {
-//            if (v == null) {
-//                r += pad + "pv=" + getP().toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "qv=" + qv.toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "v=null";
-//            } else {
-//                r += pad + "pv=" + getP().toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "qv=" + qv.toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "v=" + v.toString(pad);
-//            }
-//        }
         return r;
     }
 
@@ -352,33 +334,19 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         String r = super.toStringFieldsSimple(pad) + ",\n";
         r += pad + "p=" + getP().toStringSimple("") + ",\n"
                 + pad + "v=" + v.toStringSimple(pad);
-//        if (qv == null) {
-//            r += pad + "pv=" + getP().toStringSimple("") + ",\n"
-//                    + pad + "qv=null" + ",\n"
-//                    + pad + "v=" + v.toStringSimple(pad);
-//        } else {
-//            if (v == null) {
-//                r += pad + "pv=" + getP().toStringSimple(pad) + ",\n"
-//                        + pad + "qv=" + qv.toStringSimple(pad) + ",\n"
-//                        + pad + "v=null";
-//            } else {
-//                r += pad + "pv=" + getP().toStringSimple(pad) + ",\n"
-//                        + pad + "qv=" + qv.toStringSimple(pad) + ",\n"
-//                        + pad + "v=" + v.toStringSimple(pad);
-//            }
-//        }
         return r;
     }
 
     /**
      * @param l The line to test if it is the same as {@code this}.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_LineDouble l, double epsilon) {
         if (v.isScalarMultiple(l.v, epsilon)) {
-            if (l.isIntersectedBy(getP())) {
-                if (isIntersectedBy(l.getP())) {
+            if (l.isIntersectedBy(getP(), epsilon)) {
+                if (isIntersectedBy(l.getP(), epsilon)) {
                     return true;
                 }
             }
@@ -386,14 +354,6 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         return false;
     }
 
-//    /**
-//     * @param oom The Order of Magnitude for the precision.
-//     * @param rm The RoundingMode for any rounding.
-//     * @return {@link #pv} with {@link #offset} applied.
-//     */
-//    public V3D_VectorDouble getPAsVector(int oom, RoundingMode rm) {
-//        return pv+(offset, );
-//    } 
     /**
      * The point of the line as calculated from {@link #pv} and {@link #offset}.
      *
@@ -421,15 +381,17 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param pt A point to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if pv is on the line.
      */
-    public boolean isIntersectedBy(V3D_PointDouble pt) {
+    public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
         V3D_PointDouble tp = getP();
         V3D_PointDouble tq = getQ();
-        if (tp.equals(pt)) {
+        if (tp.equals(pt, epsilon)) {
             return true;
         }
-        if (tq.equals(pt)) {
+        if (tq.equals(pt, epsilon)) {
             return true;
         }
         V3D_VectorDouble cp;
@@ -441,9 +403,9 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
             cp = v.getCrossProduct(ppt);
         } else {
             V3D_VectorDouble ppt = new V3D_VectorDouble(
-                    pt.getX()-(tp.getX()),
-                    pt.getY()-(tp.getY()),
-                    pt.getZ()-(tp.getZ()));
+                    pt.getX() - (tp.getX()),
+                    pt.getY() - (tp.getY()),
+                    pt.getZ() - (tp.getZ()));
             cp = v.getCrossProduct(ppt);
         }
         return cp.dx == 0d && cp.dy == 0d && cp.dz == 0d;
@@ -451,7 +413,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param l The line to test if it is parallel to this.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} If this and {@code l} are parallel.
      */
     public boolean isParallel(V3D_LineDouble l, double epsilon) {
@@ -463,14 +426,15 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * return {@code this}.
      *
      * @param l The line to get the intersection with {@code this}.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_GeometryDouble getIntersection(V3D_LineDouble l, double epsilon) {
         // Special case of parallel lines.
         V3D_PointDouble tp = getP();
         if (isParallel(l, epsilon)) {
-            if (l.isIntersectedBy(tp)) {
+            if (l.isIntersectedBy(tp, epsilon)) {
                 // If lines are coincident return this.
                 return this;
             } else {
@@ -483,33 +447,33 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         V3D_VectorDouble plp = new V3D_VectorDouble(tp, lp);
         V3D_VectorDouble lqlp = new V3D_VectorDouble(lq, lp);
         if (lqlp.getMagnitudeSquared() == 0d) {
-            if (isIntersectedBy(lp)) {
+            if (isIntersectedBy(lp, epsilon)) {
                 return lp;
             }
         }
         V3D_VectorDouble qp = new V3D_VectorDouble(tq, tp);
         if (qp.getMagnitudeSquared() == 0d) {
-            if (l.isIntersectedBy(tp)) {
+            if (l.isIntersectedBy(tp, epsilon)) {
                 return tp;
             }
         }
-        double a = Math.sqrt(plp.dx*(lqlp.dx))
-                + Math.sqrt(plp.dy*(lqlp.dy))
-                +Math.sqrt(plp.dz*(lqlp.dz));
-        double b = Math.sqrt(lqlp.dx*(qp.dx))
-                +Math.sqrt(lqlp.dy*(qp.dy))
-                +Math.sqrt(lqlp.dz*(qp.dz));
-        double c = Math.sqrt(plp.dx*(qp.dx))
-                +Math.sqrt(plp.dy*(qp.dy))
-                +Math.sqrt(plp.dz*(qp.dz));
-        double d = Math.sqrt(lqlp.dx*(lqlp.dx))
-                +Math.sqrt(lqlp.dy*(lqlp.dy))
-                +Math.sqrt(lqlp.dz*(lqlp.dz));
-        double eb = Math.sqrt(qp.dx*(qp.dx))
-                +Math.sqrt(qp.dy*(qp.dy))
-                +Math.sqrt(qp.dz*(qp.dz));
-        double den = (eb*(d))-(b*(b));
-        double num = (a*(b))-(c*(d));
+        double a = Math_Double.sqrt(plp.dx * (lqlp.dx)) 
+                + Math_Double.sqrt(plp.dy * (lqlp.dy))
+                + Math_Double.sqrt(plp.dz * (lqlp.dz));
+        double b = Math_Double.sqrt(lqlp.dx * (qp.dx)) 
+                + Math_Double.sqrt(lqlp.dy * (qp.dy))
+                + Math_Double.sqrt(lqlp.dz * (qp.dz));
+        double c = Math_Double.sqrt(plp.dx * (qp.dx)) 
+                + Math_Double.sqrt(plp.dy * (qp.dy))
+                + Math_Double.sqrt(plp.dz * (qp.dz));
+        double d = Math_Double.sqrt(lqlp.dx * (lqlp.dx)) 
+                + Math_Double.sqrt(lqlp.dy * (lqlp.dy))
+                + Math_Double.sqrt(lqlp.dz * (lqlp.dz));
+        double eb = Math_Double.sqrt(qp.dx * (qp.dx)) 
+                + Math_Double.sqrt(qp.dy * (qp.dy))
+                + Math_Double.sqrt(qp.dz * (qp.dz));
+        double den = (eb * (d)) - (b * (b));
+        double num = (a * (b)) - (c * (d));
         if (den == 0d) {
             if (num == 0d) {
                 double x;
@@ -535,8 +499,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                                     if (lv.dz == 0d) {
                                         z = lp.getZ();
                                     } else {
-                                        mu = (tp.getY()-(lp.getY()))/(lv.dy);
-                                        z = lp.getZ()+(lv.dz*(mu));
+                                        mu = (tp.getY() - (lp.getY())) / (lv.dy);
+                                        z = lp.getZ() + (lv.dz * (mu));
                                     }
                                 }
                             }
@@ -549,8 +513,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                                     if (lv.dz == 0d) {
                                         z = lp.getZ();
                                     } else {
-                                        lamda = (lp.getY()-(tp.getY()))/(tv.dy);
-                                        z = tp.getZ()+(tv.dz*(lamda));
+                                        lamda = (lp.getY() - (tp.getY())) / (tv.dy);
+                                        z = tp.getZ() + (tv.dz * (lamda));
                                     }
                                 }
                                 //x = pv.getX(oom);            
@@ -561,13 +525,13 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                             } else {
                                 if (tv.dz == 0d) {
                                     z = tp.getZ();
-                                    mu = (tp.getZ()-(lp.getZ()))/(lv.dy);
-                                    y = lp.getY()+(lv.dy*(mu));
+                                    mu = (tp.getZ() - (lp.getZ())) / (lv.dy);
+                                    y = lp.getY() + (lv.dy * (mu));
                                 } else {
                                     if (lv.dz == 0d) {
                                         z = lp.getZ();
-                                        lamda = (lp.getZ()-(tp.getZ()))/(tv.dy);
-                                        y = tp.getY()+(tv.dy*(lamda));
+                                        lamda = (lp.getZ() - (tp.getZ())) / (tv.dy);
+                                        y = tp.getY() + (tv.dy * (lamda));
                                     } else {
                                         // There are 2 ways to calculate lamda. One way should work! - If not try calculating mu.
 //                                        mu = ((pv.getY(oom)+(v.getDY(oom)*(lamda)))-(l.pv.getY(oom)))/(l.v.getDY(oom));
@@ -578,17 +542,17 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 //                                        l - bdz*ady*l/bdy = ((bz-az)/adz) - bdz*ady*by/bdy
 //                                        l (1 - bdz*ady/bdy) = ((bz-az)/adz) - bdz*ady*by/bdy
 //                                        l = (((bz-az)/adz) - bdz*ady*by/bdy)/(1 - bdz*ady/bdy)
-                                        double den2 = 1d-(lv.dz*(tv.dy/(lv.dy)));
+                                        double den2 = 1d - (lv.dz * (tv.dy / (lv.dy)));
                                         if (den2 != 0d) {
-                                            lamda = (((lp.getZ()-(tp.getZ()))/(tv.dz))-(lv.dz*(tv.dy*(lp.getY()/(lv.dy)))))/(den2);
-                                            z = tp.getZ()+(tv.dz*(lamda));
-                                            y = tp.getY()+(tv.dy*(lamda));
+                                            lamda = (((lp.getZ() - (tp.getZ())) / (tv.dz)) - (lv.dz * (tv.dy * (lp.getY() / (lv.dy))))) / (den2);
+                                            z = tp.getZ() + (tv.dz * (lamda));
+                                            y = tp.getY() + (tv.dy * (lamda));
                                         } else {
-                                            den2 = 1d-(lv.dy*(tv.dz/(lv.dz)));
+                                            den2 = 1d - (lv.dy * (tv.dz / (lv.dz)));
                                             if (den2 != 0d) {
-                                                lamda = (((lp.getY()-(tp.getY()))/(tv.dy))-(lv.dy*(tv.dz*(lp.getZ()/(lv.dz)))))/(den2);
-                                                z = tp.getZ()+(tv.dz*(lamda));
-                                                y = tp.getY()+(tv.dy*(lamda));
+                                                lamda = (((lp.getY() - (tp.getY())) / (tv.dy)) - (lv.dy * (tv.dz * (lp.getZ() / (lv.dz))))) / (den2);
+                                                z = tp.getZ() + (tv.dz * (lamda));
+                                                y = tp.getY() + (tv.dy * (lamda));
                                             } else {
                                                 // This should not happen!
                                                 z = 0d;
@@ -600,41 +564,41 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                             }
                         }
                     } else {
-                        mu = (tp.getX()-(lp.getX()))/(lv.dx);
+                        mu = (tp.getX() - (lp.getX())) / (lv.dx);
                         if (tv.dy == 0d) {
                             if (lv.dy == 0d) {
                                 y = tp.getY();
                                 z = tp.getZ();
                             } else {
                                 if (tv.dz == 0d) {
-                                    y = lp.getY()+(lv.dy*(mu));
+                                    y = lp.getY() + (lv.dy * (mu));
                                 } else {
-                                    y = tp.getY()+(tv.dy*(mu));
+                                    y = tp.getY() + (tv.dy * (mu));
                                 }
                                 if (lv.dz == 0d) {
                                     z = tp.getZ();
                                 } else {
-                                    z = lp.getZ()+(lv.dz*(mu));
+                                    z = lp.getZ() + (lv.dz * (mu));
                                 }
                             }
                         } else {
-                            lamda = ((lp.getY()+(lv.dy*(mu)))
-                                    -(tp.getX()))/(tv.dy);
+                            lamda = ((lp.getY() + (lv.dy * (mu)))
+                                    - (tp.getX())) / (tv.dy);
                             if (tv.dz == 0d) {
                                 z = tp.getZ();
                             } else {
-                                z = tp.getZ()+(tv.dz*(lamda));
+                                z = tp.getZ() + (tv.dz * (lamda));
                             }
                             if (lv.dy == 0d) {
                                 y = tp.getY();
                             } else {
-                                y = lp.getY()+(lv.dy*(mu));
+                                y = lp.getY() + (lv.dy * (mu));
                             }
                         }
                     }
                 } else {
                     if (lv.dx == 0d) {
-                        lamda = lp.getX()-(tp.getX())/(tv.dx);
+                        lamda = lp.getX() - (tp.getX()) / (tv.dx);
                         x = lp.getX();
                         if (tv.dy == 0d) {
                             y = tp.getY();
@@ -644,8 +608,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                                 if (lv.dz == 0d) {
                                     z = lp.getZ();
                                 } else {
-                                    mu = tp.getY()-(lp.getY())/(lv.dy);
-                                    z = lp.getZ()+(lv.dz*(mu));
+                                    mu = tp.getY() - (lp.getY()) / (lv.dy);
+                                    z = lp.getZ() + (lv.dz * (mu));
                                 }
                             }
                         } else {
@@ -658,8 +622,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                                         if (lv.dz == 0d) {
                                             z = lp.getZ();
                                         } else {
-                                            mu = ((tp.getZ()+(tv.dz*(lamda)))-(lp.getZ()))/(lv.dz);
-                                            z = lp.getZ()+(lv.dz*(mu));
+                                            mu = ((tp.getZ() + (tv.dz * (lamda))) - (lp.getZ())) / (lv.dz);
+                                            z = lp.getZ() + (lv.dz * (mu));
                                         }
                                     }
                                 } else {
@@ -669,8 +633,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                                         if (lv.dz == 0d) {
                                             z = lp.getZ();
                                         } else {
-                                            mu = (tp.getZ()-(lp.getZ()))/(lv.dz);
-                                            z = lp.getZ()+(lv.dz*(mu));
+                                            mu = (tp.getZ() - (lp.getZ())) / (lv.dz);
+                                            z = lp.getZ() + (lv.dz * (mu));
                                         }
                                     }
                                 }
@@ -683,12 +647,12 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                                         if (lv.dz == 0d) {
                                             z = lp.getZ();
                                         } else {
-                                            mu = ((tp.getZ()+(tv.dz*(lamda)))-(lp.getZ()))/(lv.dz);
-                                            z = lp.getZ()+(lv.dz*(mu));
+                                            mu = ((tp.getZ() + (tv.dz * (lamda))) - (lp.getZ())) / (lv.dz);
+                                            z = lp.getZ() + (lv.dz * (mu));
                                         }
                                     }
                                 } else {
-                                    y = tp.getY()+(tv.dy*(lamda));
+                                    y = tp.getY() + (tv.dy * (lamda));
                                     if (tv.dz == 0d) {
                                         z = tp.getZ();
                                     } else {
@@ -697,8 +661,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                                             //z = l.getP().dz;
                                             z = l.pv.dz;
                                         } else {
-                                            mu = ((tp.getZ()+(tv.dz*(lamda)))-(lp.getZ()))/(lv.dz);
-                                            z = lp.getZ()+(lv.dz*(mu));
+                                            mu = ((tp.getZ() + (tv.dz * (lamda))) - (lp.getZ())) / (lv.dz);
+                                            z = lp.getZ() + (lv.dz * (mu));
                                         }
                                     }
                                 }
@@ -715,8 +679,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                                 } else {
                                     if (lv.dz == 0d) {
                                         z = lp.getZ();
-                                        lamda = (lp.getZ()-(tp.getZ()))/(tv.dz);
-                                        x = tp.getX()+(tv.dx*(lamda));
+                                        lamda = (lp.getZ() - (tp.getZ())) / (tv.dz);
+                                        x = tp.getX() + (tv.dx * (lamda));
                                     } else {
                                         // There are 2 ways to calculate lamda. One way should work! - If not try calculating mu.
 //                                        mu = ((pv.getX(oom)+(v.getDX(oom)*(lamda)))-(l.pv.getX(oom)))/(l.v.getDX(oom));
@@ -727,17 +691,17 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 //                                        l - bdz*adx*l/bdx = ((bz-az)/adz) - bdz*adx*bx/bdx
 //                                        l (1 - bdz*adx/bdx) = ((bz-az)/adz) - bdz*adx*bx/bdx
 //                                        l = (((bz-az)/adz) - bdz*adx*bx/bdx)/(1 - bdz*adx/bdx)
-                                        double den2 = 1d-(lv.dz*(tv.dx/(lv.dx)));
+                                        double den2 = 1d - (lv.dz * (tv.dx / (lv.dx)));
                                         if (den2 != 0d) {
-                                            lamda = (((lp.getZ()-(tp.getZ()))/(tv.dz))-(lv.dz*(tv.dx*(lp.getX()/(lv.dx)))))/(den2);
-                                            z = tp.getZ()+(tv.dz*(lamda));
-                                            x = tp.getX()+(tv.dx*(lamda));
+                                            lamda = (((lp.getZ() - (tp.getZ())) / (tv.dz)) - (lv.dz * (tv.dx * (lp.getX() / (lv.dx))))) / (den2);
+                                            z = tp.getZ() + (tv.dz * (lamda));
+                                            x = tp.getX() + (tv.dx * (lamda));
                                         } else {
-                                            den2 = 1d-(lv.dx*(tv.dz/(lv.dz)));
+                                            den2 = 1d - (lv.dx * (tv.dz / (lv.dz)));
                                             if (den2 != 0d) {
-                                                lamda = (((lp.getX()-(tp.getX()))/(tv.dx))-(lv.dx*(tv.dz*(lp.getZ()/(lv.dz)))))/(den2);
-                                                z = tp.getZ()+(tv.dz*(lamda));
-                                                x = tp.getX()+(tv.dx*(lamda));
+                                                lamda = (((lp.getX() - (tp.getX())) / (tv.dx)) - (lv.dx * (tv.dz * (lp.getZ() / (lv.dz))))) / (den2);
+                                                z = tp.getZ() + (tv.dz * (lamda));
+                                                x = tp.getX() + (tv.dx * (lamda));
                                             } else {
                                                 // This should not happen!
                                                 z = 0d;
@@ -749,9 +713,9 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                             } else {
                                 //mu = tp.getY(oom)-(lp.getY(oom))/(l.v.getDY(oom));
                                 //mu = tp.getY()-(lp.getY())/(l.getV().dy);
-                                mu = tp.getY()-(lp.getY())/(l.v.dy);
-                                x = lp.getX()+(lv.dx*(mu));
-                                z = lp.getZ()+(lv.dz*(mu));
+                                mu = tp.getY() - (lp.getY()) / (l.v.dy);
+                                x = lp.getX() + (lv.dx * (mu));
+                                z = lp.getZ() + (lv.dz * (mu));
                             }
                         } else {
                             // v.getDX(oom) > 0 && l.v.getDX(oom) > 0 && v.getDY(oom) > 0
@@ -767,17 +731,17 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 //                                    l - bdy * adx * l / bdx = ((by - ay) / ady) - bdy * adx * bx / bdx
 //                                    l(1 - bdy * adx / bdx) = ((by - ay) / ady) - bdy * adx * bx / bdx
 //                                    l = (((by-ay)/ady) - bdy*adx*bx/bdx)/(1 - bdy*adx/bdx)
-                                    double den2 = 1d-(lv.dy*(tv.dx/(lv.dx)));
+                                    double den2 = 1d - (lv.dy * (tv.dx / (lv.dx)));
                                     if (den2 != 0d) {
-                                        lamda = (((lp.getY()-(tp.getY()))/(tv.dy))-(lv.dy*(tv.dx*(lp.getX()/(lv.dx)))))/(den2);
-                                        y = tp.getY()+(tv.dy*(lamda));
-                                        x = tp.getX()+(tv.dx*(lamda));
+                                        lamda = (((lp.getY() - (tp.getY())) / (tv.dy)) - (lv.dy * (tv.dx * (lp.getX() / (lv.dx))))) / (den2);
+                                        y = tp.getY() + (tv.dy * (lamda));
+                                        x = tp.getX() + (tv.dx * (lamda));
                                     } else {
-                                        den2 = 1d-(lv.dx*(tv.dy/(lv.dy)));
+                                        den2 = 1d - (lv.dx * (tv.dy / (lv.dy)));
                                         if (den2 != 0d) {
-                                            lamda = (((lp.getX()-(tp.getX()))/(tv.dx))-(lv.dx*(tv.dy*(lp.getY()/(lv.dy)))))/(den2);
-                                            y = tp.getY()+(tv.dy*(lamda));
-                                            x = tp.getX()+(tv.dx*(lamda));
+                                            lamda = (((lp.getX() - (tp.getX())) / (tv.dx)) - (lv.dx * (tv.dy * (lp.getY() / (lv.dy))))) / (den2);
+                                            y = tp.getY() + (tv.dy * (lamda));
+                                            x = tp.getX() + (tv.dx * (lamda));
                                         } else {
                                             // This should not happen!
                                             y = 0d;
@@ -785,62 +749,62 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                                         }
                                     }
                                 } else {
-                                    mu = (tp.getZ()-(lp.getZ()))/(lv.dz);
-                                    y = lp.getY()+(lv.dy*(mu));
-                                    x = lp.getX()+(lv.dx*(mu));
+                                    mu = (tp.getZ() - (lp.getZ())) / (lv.dz);
+                                    y = lp.getY() + (lv.dy * (mu));
+                                    x = lp.getX() + (lv.dx * (mu));
                                 }
                             } else {
                                 if (lv.dz == 0d) {
                                     z = lp.getZ();
-                                    lamda = (lp.getZ()-(tp.getZ()))/(tv.dz);
-                                    y = tp.getY()+(tv.dy*(lamda));
-                                    x = tp.getX()+(tv.dx*(lamda));
+                                    lamda = (lp.getZ() - (tp.getZ())) / (tv.dz);
+                                    y = tp.getY() + (tv.dy * (lamda));
+                                    x = tp.getX() + (tv.dx * (lamda));
                                 } else {
                                     // There are 6 ways to calculate lamda. One way should work! - If not try calculating mu.
-                                    double den2 =1d-(lv.dy*(tv.dx/(lv.dx)));
+                                    double den2 = 1d - (lv.dy * (tv.dx / (lv.dx)));
                                     if (den2 != 0d) {
-                                        lamda = (((lp.getY()-(tp.getY()))/(tv.dy))-(lv.dy*(tv.dx*(lp.getX()/(lv.dx)))))/(den2);
-                                        x = tp.getX()+(tv.dx*(lamda));
-                                        y = tp.getY()+(tv.dy*(lamda));
-                                        z = tp.getZ()+(tv.dz*(lamda));
+                                        lamda = (((lp.getY() - (tp.getY())) / (tv.dy)) - (lv.dy * (tv.dx * (lp.getX() / (lv.dx))))) / (den2);
+                                        x = tp.getX() + (tv.dx * (lamda));
+                                        y = tp.getY() + (tv.dy * (lamda));
+                                        z = tp.getZ() + (tv.dz * (lamda));
 //                                        x = qv.getX()+(v.dx*(lamda));
 //                                        y = qv.getY()+(v.dy*(lamda));
 //                                        z = qv.getZ()+(v.dz*(lamda));
                                     } else {
-                                        den2 = 1d-(lv.dy*(tv.dz/(lv.dz)));
+                                        den2 = 1d - (lv.dy * (tv.dz / (lv.dz)));
                                         if (den2 != 0d) {
-                                            lamda = (((lp.getY()-(tp.getY()))/(tv.dy))-(lv.dy*(tv.dz*(lp.getZ()/(lv.dz)))))/(den2);
-                                            x = tp.getX()+(tv.dx*(lamda));
-                                            y = tp.getY()+(tv.dy*(lamda));
-                                            z = tp.getZ()+(tv.dz*(lamda));
+                                            lamda = (((lp.getY() - (tp.getY())) / (tv.dy)) - (lv.dy * (tv.dz * (lp.getZ() / (lv.dz))))) / (den2);
+                                            x = tp.getX() + (tv.dx * (lamda));
+                                            y = tp.getY() + (tv.dy * (lamda));
+                                            z = tp.getZ() + (tv.dz * (lamda));
                                         } else {
-                                            den2 = 1d-(lv.dz*(tv.dx/(lv.dx)));
+                                            den2 = 1d - (lv.dz * (tv.dx / (lv.dx)));
                                             if (den2 != 0d) {
-                                                lamda = (((lp.getZ()-(tp.getZ()))/(tv.dz))-(lv.dz*(tv.dx*(lp.getX()/(lv.dx)))))/(den2);
-                                                x = tp.getX()+(tv.dx*(lamda));
-                                                y = tp.getY()+(tv.dy*(lamda));
-                                                z = tp.getZ()+(tv.dz*(lamda));
+                                                lamda = (((lp.getZ() - (tp.getZ())) / (tv.dz)) - (lv.dz * (tv.dx * (lp.getX() / (lv.dx))))) / (den2);
+                                                x = tp.getX() + (tv.dx * (lamda));
+                                                y = tp.getY() + (tv.dy * (lamda));
+                                                z = tp.getZ() + (tv.dz * (lamda));
                                             } else {
-                                                den2 = 1d-(lv.dz*(tv.dy/(lv.dy)));
+                                                den2 = 1d - (lv.dz * (tv.dy / (lv.dy)));
                                                 if (den2 != 0d) {
-                                                    lamda = (((lp.getZ()-(tp.getZ()))/(tv.dz))-(lv.dz*(tv.dy*(lp.getY()/(lv.dy)))))/(den2);
-                                                    x = tp.getX()+(tv.dx*(lamda));
-                                                    y = tp.getY()+(tv.dy*(lamda));
-                                                    z = tp.getZ()+(tv.dz*(lamda));
+                                                    lamda = (((lp.getZ() - (tp.getZ())) / (tv.dz)) - (lv.dz * (tv.dy * (lp.getY() / (lv.dy))))) / (den2);
+                                                    x = tp.getX() + (tv.dx * (lamda));
+                                                    y = tp.getY() + (tv.dy * (lamda));
+                                                    z = tp.getZ() + (tv.dz * (lamda));
                                                 } else {
-                                                    den2 = 1d-(lv.dx*(tv.dx/(lv.dy)));
+                                                    den2 = 1d - (lv.dx * (tv.dx / (lv.dy)));
                                                     if (den2 != 0d) {
-                                                        lamda = (((lp.getX()-(tp.getX()))/(tv.dx))-(lv.dx*(tv.dy*(lp.getY()/(lv.dy)))))/(den2);
-                                                        x = tp.getX()+(tv.dx*(lamda));
-                                                        y = tp.getY()+(tv.dy*(lamda));
-                                                        z = tp.getZ()+(tv.dz*(lamda));
+                                                        lamda = (((lp.getX() - (tp.getX())) / (tv.dx)) - (lv.dx * (tv.dy * (lp.getY() / (lv.dy))))) / (den2);
+                                                        x = tp.getX() + (tv.dx * (lamda));
+                                                        y = tp.getY() + (tv.dy * (lamda));
+                                                        z = tp.getZ() + (tv.dz * (lamda));
                                                     } else {
-                                                        den2 = 1d-(lv.dx*(tv.dx/(lv.dz)));
+                                                        den2 = 1d - (lv.dx * (tv.dx / (lv.dz)));
                                                         if (den2 != 0d) {
-                                                            lamda = (((lp.getX()-(tp.getX()))/(tv.dx))-(lv.dx*(tv.dz*(lp.getZ()/(lv.dz)))))/(den2);
-                                                            x = tp.getX()+(tv.dx*(lamda));
-                                                            y = tp.getY()+(tv.dy*(lamda));
-                                                            z = tp.getZ()+(tv.dz*(lamda));
+                                                            lamda = (((lp.getX() - (tp.getX())) / (tv.dx)) - (lv.dx * (tv.dz * (lp.getZ() / (lv.dz))))) / (den2);
+                                                            x = tp.getX() + (tv.dx * (lamda));
+                                                            y = tp.getY() + (tv.dy * (lamda));
+                                                            z = tp.getZ() + (tv.dz * (lamda));
                                                         } else {
                                                             // This should not happen!
                                                             x = 0d;
@@ -861,22 +825,22 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
             }
             return null;
         }
-        double mua = num/(den);
-        double mub = (a+(b*(mua)))/-d;
+        double mua = num / (den);
+        double mub = (a + (b * (mua))) / -d;
         V3D_PointDouble pi = new V3D_PointDouble(
-                (tp.getX()-(mua*(qp.dx))),
-                (tp.getY()-(mua*(qp.dy))),
-                (tp.getZ()-(mua*(qp.dz))));
+                (tp.getX() - (mua * (qp.dx))),
+                (tp.getY() - (mua * (qp.dy))),
+                (tp.getZ() - (mua * (qp.dz))));
         // If point pv is on both lines then return this as the intersection.
-        if (isIntersectedBy(pi) && l.isIntersectedBy(pi)) {
+        if (isIntersectedBy(pi, epsilon) && l.isIntersectedBy(pi, epsilon)) {
             return pi;
         }
         V3D_PointDouble qi = new V3D_PointDouble(
-                (lp.getX()+(mub*(lqlp.dx))),
-                (lp.getY()+(mub*(lqlp.dy))),
-                (lp.getZ()+(mub*(lqlp.dz))));
+                (lp.getX() + (mub * (lqlp.dx))),
+                (lp.getY() + (mub * (lqlp.dy))),
+                (lp.getZ() + (mub * (lqlp.dz))));
         // If point qv is on both lines then return this as the intersection.
-        if (isIntersectedBy(qi) && l.isIntersectedBy(qi)) {
+        if (isIntersectedBy(qi, epsilon) && l.isIntersectedBy(qi, epsilon)) {
             return qi;
         }
         /**
@@ -884,7 +848,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
          * not intersect. In this case pi and qi are meant to be the end points
          * of the shortest line between the two lines.
          */
-        if (pi.equals(qi)) {
+        if (pi.equals(qi, epsilon)) {
             return pi;
         } else {
             return null;
@@ -894,13 +858,14 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
     /**
      * @param pt A point for which the shortest line segment to this is
      * returned.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The line segment having the shortest distance between {@code pt}
      * and {@code this}.
      */
     public V3D_FiniteGeometryDouble getLineOfIntersection(V3D_PointDouble pt,
             double epsilon) {
-        if (isIntersectedBy(pt)) {
+        if (isIntersectedBy(pt, epsilon)) {
             return pt;
         }
         return new V3D_LineSegmentDouble(pt, getPointOfIntersection(pt, epsilon));
@@ -911,12 +876,13 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line
      *
      * @param pt The point projected onto this.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return A point on {@code this} which is the shortest distance from
      * {@code pt}.
      */
     public V3D_PointDouble getPointOfIntersection(V3D_PointDouble pt, double epsilon) {
-        if (isIntersectedBy(pt)) {
+        if (isIntersectedBy(pt, epsilon)) {
             return pt;
         }
         V3D_PlaneDouble ptv = new V3D_PlaneDouble(pt, v);
@@ -932,7 +898,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * http://paulbourke.net/geometry/pointlineplane/
      *
      * @param l The line to get the line of intersection with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The line of intersection between {@code this} and {@code l}. The
      * point pv is a point on or near this, and the point qv is a point on or
      * near l. Whether the points are on or near is down to rounding error and
@@ -960,9 +927,9 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         double BdB = B.getDotProduct(B);
         double CdC = C.getDotProduct(C);
 
-        double ma = (AdC*(CdB))-(AdB*(CdC))
-                /((BdB*(CdC))-(CdB*(CdB)));
-        double mb = ((ma*(CdB))+(AdC))/(CdC);
+        double ma = (AdC * (CdB)) - (AdB * (CdC))
+                / ((BdB * (CdC)) - (CdB * (CdB)));
+        double mb = ((ma * (CdB)) + (AdC)) / (CdC);
         V3D_VectorDouble tpi = tp.getVector().subtract(B.multiply(ma));
         V3D_VectorDouble lpi = lp.getVector().subtract(C.multiply(mb));
         V3D_PointDouble loip = new V3D_PointDouble(tpi);
@@ -973,7 +940,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
             return new V3D_LineSegmentDouble(loip, loiq);
         }
     }
-    
+
     /**
      * Calculate and return the distance from {@code this} to {@code pt} rounded
      * to {@code oom} precision. See:
@@ -986,10 +953,12 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      *
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance between this and {@code pv}.
      */
-    public double getDistance(V3D_PointDouble pt) {
-        if (isIntersectedBy(pt)) {
+    public double getDistance(V3D_PointDouble pt, double epsilon) {
+        if (isIntersectedBy(pt, epsilon)) {
             return 0d;
         }
         return Math.sqrt(getDistanceSquared(pt, true));
@@ -1010,8 +979,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * returned.
      * @return The minimum distance between this and {@code pv}.
      */
-    public double getDistanceSquared(V3D_PointDouble pt) {
-        if (isIntersectedBy(pt)) {
+    public double getDistanceSquared(V3D_PointDouble pt, double epsilon) {
+        if (isIntersectedBy(pt, epsilon)) {
             return 0d;
         } else {
             return getDistanceSquared(pt, true);
@@ -1043,7 +1012,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         double num = (pp.getCrossProduct(qp)).getMagnitudeSquared();
         //double den = getV().getMagnitudeSquared();
         double den = v.getMagnitudeSquared();
-        return num/den;
+        return num / den;
     }
 
     /**
@@ -1052,7 +1021,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      *
      * @param l A line for which the minimum distance from {@code this} is
      * returned.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance between this and {@code l}.
      */
     public double getDistance(V3D_LineDouble l, double epsilon) {
@@ -1063,13 +1033,14 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * Get the minimum distance squared to {@code l}.
      *
      * @param l A line.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code l}.
      */
     public double getDistanceSquared(V3D_LineDouble l, double epsilon) {
         V3D_PointDouble tp = getP();
         if (isParallel(l, epsilon)) {
-            return l.getDistanceSquared(tp);
+            return l.getDistanceSquared(tp, epsilon);
         } else {
             /**
              * Calculate the direction vector of the line connecting the closest
@@ -1084,7 +1055,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
             double m = cp.getMagnitudeSquared();
             double dp = cp.getDotProduct(delta);
             // m should only be zero if the lines are parallel.
-            return Math.abs(dp*dp/m);
+            return Math.abs(dp * dp / m);
         }
     }
 
@@ -1151,7 +1122,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
     }
 
     @Override
-    public V3D_LineDouble rotate(V3D_LineDouble axis, double theta, 
+    public V3D_LineDouble rotate(V3D_LineDouble axis, double theta,
             double epsilon) {
         V3D_PointDouble rp = getP().rotate(axis, theta, epsilon);
         V3D_VectorDouble rv = v.rotate(axis.v.getUnitVector(), theta);
@@ -1160,19 +1131,23 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param pt The point to test if it is collinear.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff all points are collinear with l.
      */
-    public boolean isCollinear(V3D_PointDouble pt) {
-        return this.isIntersectedBy(pt);
+    public boolean isCollinear(V3D_PointDouble pt, double epsilon) {
+        return this.isIntersectedBy(pt, epsilon);
     }
 
     /**
      * @param l The line to test if it is collinear.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff all points are collinear with l.
      */
-    public boolean isCollinear(V3D_LineDouble l) {
-        if (isCollinear(l.getP())) {
-            if (isCollinear(l.getQ())) {
+    public boolean isCollinear(V3D_LineDouble l, double epsilon) {
+        if (isCollinear(l.getP(), epsilon)) {
+            if (isCollinear(l.getQ(), epsilon)) {
                 return true;
             }
         }
@@ -1181,13 +1156,15 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param l The line to test points are collinear with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public static boolean isCollinear(V3D_LineDouble l, 
+    public static boolean isCollinear(V3D_LineDouble l, double epsilon,
             V3D_PointDouble... points) {
         for (V3D_PointDouble p : points) {
-            if (!l.isIntersectedBy(p)) {
+            if (!l.isIntersectedBy(p, epsilon)) {
                 return false;
             }
         }
@@ -1196,7 +1173,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param l The line to test points are collinear with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
@@ -1214,25 +1192,29 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param points The points to test if they are collinear.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code false} if all points are coincident. {@code true} iff all
      * the points are collinear.
      */
-    public static boolean isCollinear(V3D_PointDouble... points) {
+    public static boolean isCollinear(double epsilon, V3D_PointDouble... points) {
         // For the points to be in a line at least two must be different.
         if (V3D_PointDouble.isCoincident(points)) {
             return false;
         }
-        return isCollinear0(points);
+        return isCollinear0(epsilon, points);
     }
 
     /**
      * @param points The points to test if they are collinear.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff all the points are collinear or coincident.
      */
-    public static boolean isCollinear0(V3D_PointDouble... points) {
+    public static boolean isCollinear0(double epsilon, V3D_PointDouble... points) {
         // Get a line
         V3D_LineDouble l = getLine(points);
-        return isCollinear(l, points);
+        return isCollinear(l, epsilon, points);
     }
 
     /**
@@ -1255,15 +1237,17 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param l A line.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return true if this and l are not skew.
      */
-    public boolean isCoplanar(V3D_LineDouble l) {
+    public boolean isCoplanar(V3D_LineDouble l, double epsilon) {
         V3D_PointDouble lp = l.getP();
-        if (isCollinear(lp)) {
+        if (isCollinear(lp, epsilon)) {
             return true;
         } else {
             V3D_PointDouble lq = l.getQ();
-            if (isCollinear(lq)) {
+            if (isCollinear(lq, epsilon)) {
                 return true;
             } else {
                 V3D_PlaneDouble pl = new V3D_PlaneDouble(getP(), lp, lq);

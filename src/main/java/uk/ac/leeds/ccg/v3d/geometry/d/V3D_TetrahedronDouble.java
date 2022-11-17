@@ -447,7 +447,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                     if (spri == null) {
                         return V3D_LineSegmentDouble.getGeometry(qsrip, pqrip);
                     } else if (spri instanceof V3D_PointDouble sprip) {
-                        return V3D_TriangleDouble.getGeometry(qsrip, pqrip, sprip);
+                        return V3D_TriangleDouble.getGeometry(qsrip, pqrip, sprip, epsilon);
                     } else {
                         return spri;
                     }
@@ -461,7 +461,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                     if (spri == null) {
                         return V3D_LineSegmentDouble.getGeometry(psqip, pqrip);
                     } else if (spri instanceof V3D_PointDouble sprip) {
-                        return V3D_TriangleDouble.getGeometry(psqip, pqrip, sprip);
+                        return V3D_TriangleDouble.getGeometry(psqip, pqrip, sprip, epsilon);
                     } else {
                         return spri;
                     }
@@ -504,20 +504,20 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
             V3D_PointDouble q, V3D_PointDouble r, V3D_PointDouble s,
             double epsilon) {
         if (p.equals(q)) {
-            return V3D_TriangleDouble.getGeometry(p, r, s);
+            return V3D_TriangleDouble.getGeometry(p, r, s, epsilon);
         } else if (p.equals(r)) {
-            return V3D_TriangleDouble.getGeometry(p, q, s);
+            return V3D_TriangleDouble.getGeometry(p, q, s, epsilon);
         } else if (p.equals(s)) {
-            return V3D_TriangleDouble.getGeometry(p, q, r);
+            return V3D_TriangleDouble.getGeometry(p, q, r, epsilon);
         } else if (q.equals(r)) {
-            return V3D_TriangleDouble.getGeometry(p, q, s);
+            return V3D_TriangleDouble.getGeometry(p, q, s, epsilon);
         } else if (q.equals(s)) {
-            return V3D_TriangleDouble.getGeometry(p, q, r);
+            return V3D_TriangleDouble.getGeometry(p, q, r, epsilon);
         } else if (r.equals(s)) {
-            return V3D_TriangleDouble.getGeometry(p, q, r);
+            return V3D_TriangleDouble.getGeometry(p, q, r, epsilon);
         } else {
-            if (V3D_PlaneDouble.isCoplanar(p, q, r, s)) {
-                if (V3D_LineDouble.isCollinear(p, q, r, s)) {
+            if (V3D_PlaneDouble.isCoplanar(epsilon, p, q, r, s)) {
+                if (V3D_LineDouble.isCollinear(epsilon, p, q, r, s)) {
                     //return V3D_Line(pl, qv, r, s);
                     throw new UnsupportedOperationException("Need code to construct a line segment from 4 points!");
                 }
@@ -627,7 +627,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                         if (spri == null) {
                                             return new V3D_LineSegmentDouble(lp, qsrip);
                                         } else {
-                                            return V3D_TriangleDouble.getGeometry(lp, qsrip, (V3D_PointDouble) spri);
+                                            return V3D_TriangleDouble.getGeometry(lp, qsrip, (V3D_PointDouble) spri, epsilon);
                                         }
                                     } else {
                                         return qsri;
@@ -642,7 +642,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                             return new V3D_LineSegmentDouble(lp, psqip);
                                         } else {
                                             if (spri instanceof V3D_PointDouble sprip) {
-                                                return V3D_TriangleDouble.getGeometry(lp, psqip, sprip);
+                                                return V3D_TriangleDouble.getGeometry(lp, psqip, sprip, epsilon);
                                             } else {
                                                 return spri;
                                             }
@@ -651,7 +651,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                         if (qsri instanceof V3D_PointDouble qsrip) {
                                             V3D_FiniteGeometryDouble spri = getSpr().getIntersection(l, epsilon);
                                             if (spri == null) {
-                                                return V3D_TriangleDouble.getGeometry(lp, psqip, qsrip);
+                                                return V3D_TriangleDouble.getGeometry(lp, psqip, qsrip, epsilon);
                                             } else {
                                                 if (spri instanceof V3D_PointDouble sprip) {
                                                     return getGeometry(lp, psqip, qsrip, sprip, epsilon);
@@ -678,7 +678,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                             return new V3D_LineSegmentDouble(lp, pqrip);
                                         } else {
                                             if (spri instanceof V3D_PointDouble sprip) {
-                                                return V3D_TriangleDouble.getGeometry(lp, pqrip, sprip);
+                                                return V3D_TriangleDouble.getGeometry(lp, pqrip, sprip, epsilon);
                                             } else {
                                                 return spri;
                                             }
@@ -687,7 +687,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                         if (qsri instanceof V3D_PointDouble qsrip) {
                                             V3D_FiniteGeometryDouble spri = getSpr().getIntersection(l, epsilon);
                                             if (spri == null) {
-                                                return V3D_TriangleDouble.getGeometry(lp, pqrip, qsrip);
+                                                return V3D_TriangleDouble.getGeometry(lp, pqrip, qsrip, epsilon);
                                             } else {
                                                 if (spri instanceof V3D_PointDouble sprip) {
                                                     return getGeometry(lp, pqrip, qsrip, sprip, epsilon);
@@ -705,7 +705,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                         if (qsri == null) {
                                             V3D_FiniteGeometryDouble spri = getSpr().getIntersection(l, epsilon);
                                             if (spri == null) {
-                                                return V3D_TriangleDouble.getGeometry(lp, pqrip, psqip);
+                                                return V3D_TriangleDouble.getGeometry(lp, pqrip, psqip, epsilon);
                                             } else {
                                                 if (spri instanceof V3D_PointDouble sprip) {
                                                     return getGeometry(lp, pqrip, psqip, sprip, epsilon);
@@ -753,7 +753,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                     if (spri == null) {
                                         return new V3D_LineSegmentDouble(lq, qsrip);
                                     } else {
-                                        return V3D_TriangleDouble.getGeometry(lq, qsrip, (V3D_PointDouble) spri);
+                                        return V3D_TriangleDouble.getGeometry(lq, qsrip, (V3D_PointDouble) spri, epsilon);
                                     }
                                 } else {
                                     return qsri;
@@ -768,7 +768,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                         return new V3D_LineSegmentDouble(lq, psqip);
                                     } else {
                                         if (spri instanceof V3D_PointDouble sprip) {
-                                            return V3D_TriangleDouble.getGeometry(lq, psqip, sprip);
+                                            return V3D_TriangleDouble.getGeometry(lq, psqip, sprip, epsilon);
                                         } else {
                                             return spri;
                                         }
@@ -777,7 +777,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                     if (qsri instanceof V3D_PointDouble qsrip) {
                                         V3D_FiniteGeometryDouble spri = getSpr().getIntersection(l, epsilon);
                                         if (spri == null) {
-                                            return V3D_TriangleDouble.getGeometry(lq, psqip, qsrip);
+                                            return V3D_TriangleDouble.getGeometry(lq, psqip, qsrip, epsilon);
                                         } else {
                                             if (spri instanceof V3D_PointDouble sprip) {
                                                 return getGeometry(lq, psqip, qsrip, sprip, epsilon);
@@ -804,7 +804,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                         return new V3D_LineSegmentDouble(lq, pqrip);
                                     } else {
                                         if (spri instanceof V3D_PointDouble sprip) {
-                                            return V3D_TriangleDouble.getGeometry(lq, pqrip, sprip);
+                                            return V3D_TriangleDouble.getGeometry(lq, pqrip, sprip, epsilon);
                                         } else {
                                             return spri;
                                         }
@@ -813,7 +813,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                     if (qsri instanceof V3D_PointDouble qsrip) {
                                         V3D_FiniteGeometryDouble spri = getSpr().getIntersection(l, epsilon);
                                         if (spri == null) {
-                                            return V3D_TriangleDouble.getGeometry(lq, pqrip, qsrip);
+                                            return V3D_TriangleDouble.getGeometry(lq, pqrip, qsrip, epsilon);
                                         } else {
                                             if (spri instanceof V3D_PointDouble sprip) {
                                                 return getGeometry(lq, pqrip, qsrip, sprip, epsilon);
@@ -831,7 +831,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                     if (qsri == null) {
                                         V3D_FiniteGeometryDouble spri = getSpr().getIntersection(l, epsilon);
                                         if (spri == null) {
-                                            return V3D_TriangleDouble.getGeometry(lq, pqrip, psqip);
+                                            return V3D_TriangleDouble.getGeometry(lq, pqrip, psqip, epsilon);
                                         } else {
                                             if (spri instanceof V3D_PointDouble sprip) {
                                                 return getGeometry(lq, pqrip, psqip, sprip, epsilon);
@@ -909,7 +909,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                 if (qsri == null) {
                     return psqip;
                 } else {
-                    return V3D_TriangleDouble.getGeometry((V3D_LineSegmentDouble) qsri, psqip);
+                    return V3D_TriangleDouble.getGeometry((V3D_LineSegmentDouble) qsri, psqip, epsilon);
                 }
             } else if (psqi instanceof V3D_LineSegmentDouble psqil) {
                 V3D_FiniteGeometryDouble qsri = getQsr().getIntersection(pl, epsilon);
@@ -936,7 +936,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
             } else if (psqi instanceof V3D_PointDouble) {
                 V3D_FiniteGeometryDouble spri = getSpr().getIntersection(pl, epsilon);
                 if (spri instanceof V3D_PointDouble sprip) {
-                    return V3D_TriangleDouble.getGeometry(pqril, sprip);
+                    return V3D_TriangleDouble.getGeometry(pqril, sprip, epsilon);
                 } else {
                     return V3D_TriangleDouble.getGeometry2((V3D_LineSegmentDouble) spri, pqril, epsilon);
                 }

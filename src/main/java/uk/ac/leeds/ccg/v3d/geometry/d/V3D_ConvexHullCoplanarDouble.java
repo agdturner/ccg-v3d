@@ -409,12 +409,13 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
 
     /**
      * @param pt The point.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} if this intersects with {@code pt}.
      */
     @Deprecated
-    protected boolean isIntersectedBy0(V3D_PointDouble pt) {
+    protected boolean isIntersectedBy0(V3D_PointDouble pt, double epsilon) {
         for (V3D_TriangleDouble triangle : triangles) {
-            if (triangle.isIntersectedBy0(pt)) {
+            if (triangle.isIntersectedBy0(pt, epsilon)) {
                 return true;
             }
         }
@@ -815,12 +816,12 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
                 V3D_PointDouble ip = i.next();
                 V3D_PointDouble iq = i.next();
                 V3D_PointDouble ir = i.next();
-                while (V3D_LineDouble.isCollinear(ip, iq, ir) && i.hasNext()) {
+                while (V3D_LineDouble.isCollinear(epsilon, ip, iq, ir) && i.hasNext()) {
                     ir = i.next();
                 }
                 V3D_PlaneDouble pl;
-                if (V3D_LineDouble.isCollinear(ip, iq, ir) && i.hasNext()) {
-                    return new V3D_LineSegmentDouble(pts);
+                if (V3D_LineDouble.isCollinear(epsilon, ip, iq, ir) && i.hasNext()) {
+                    return new V3D_LineSegmentDouble(epsilon, pts);
                 } else {
                     pl = new V3D_PlaneDouble(ip, iq, ir);
                     return new V3D_ConvexHullCoplanarDouble(pl.n, epsilon, pts);

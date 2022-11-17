@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import uk.ac.leeds.ccg.v3d.V3D_Test;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;

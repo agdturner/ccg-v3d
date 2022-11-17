@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.v3d.V3D_Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;

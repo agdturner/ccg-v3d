@@ -31,7 +31,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_VectorDoubleTest extends V3D_TestDouble {
+public class V3D_VectorDoubleTest extends V3D_DoubleTest {
 
     public V3D_VectorDoubleTest() {
     }

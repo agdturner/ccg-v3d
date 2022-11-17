@@ -140,17 +140,18 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * Create a new instance that intersects all points.
      *
      * @param points Any number of collinear points, with two being different.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      */
-    public V3D_LineSegmentDouble(V3D_PointDouble... points) {
+    public V3D_LineSegmentDouble(double epsilon, V3D_PointDouble... points) {
         super(points[0].offset);
         V3D_PointDouble p0 = points[0];
         V3D_PointDouble p1 = points[1];
         V3D_LineSegmentDouble ls = new V3D_LineSegmentDouble(p0, p1);
         for (int i = 2; i < points.length; i++) {
-            if (!ls.isIntersectedBy(points[i])) {
+            if (!ls.isIntersectedBy(points[i], epsilon)) {
                 V3D_LineSegmentDouble l2 = new V3D_LineSegmentDouble(ls.getP(), points[i]);
                 V3D_PointDouble lq = ls.getQ();
-                if (l2.isIntersectedBy(lq)) {
+                if (l2.isIntersectedBy(lq, epsilon)) {
                     ls = l2;
                 } else {
                     ls = new V3D_LineSegmentDouble(ls.getQ(), points[i]);
@@ -307,23 +308,27 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
 
     /**
      * @param l The line segment to test if it is the same as {@code this}.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
-    public boolean equals(V3D_LineSegmentDouble l) {
-        if (equalsIgnoreDirection(l)) {
-            return this.l.getP().equals(l.getP());
+    public boolean equals(V3D_LineSegmentDouble l, double epsilon) {
+        if (equalsIgnoreDirection(l, epsilon)) {
+            return this.l.getP().equals(l.getP(), epsilon);
         }
         return false;
     }
 
     /**
      * @param l The line segment to test if it is equal to {@code this}.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} iff {@code this} is equal to {@code l}. This ignores
      * the order of the point of {@link #l} and {@link #qv}.
      */
-    public boolean equalsIgnoreDirection(V3D_LineSegmentDouble l) {
-        if (this.l.equals(l.l)) {
-            return isIntersectedBy(l.getQ()) && l.isIntersectedBy(getQ());
+    public boolean equalsIgnoreDirection(V3D_LineSegmentDouble l, 
+            double epsilon) {
+        if (this.l.equals(l.l, epsilon)) {
+            return isIntersectedBy(l.getQ(), epsilon)
+                    && l.isIntersectedBy(getQ(), epsilon);
         }
         return false;
     }
@@ -355,12 +360,13 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
 
     /**
      * @param pt A point to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} if {@code this} is intersected by {@code pv}.
      */
-    public boolean isIntersectedBy(V3D_PointDouble pt) {
+    public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
         boolean ei = getEnvelope().isIntersectedBy(pt.getEnvelope());
         if (ei) {
-            if (l.isIntersectedBy(pt)) {
+            if (l.isIntersectedBy(pt, epsilon)) {
                 V3D_PointDouble tp = getP();
                 double a = pt.getDistance(tp);
                 if (a == 0d) {
@@ -412,7 +418,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
          * this.
          */
         if (i instanceof V3D_PointDouble v3D_Point) {
-            if (isIntersectedBy(v3D_Point)) {
+            if (isIntersectedBy(v3D_Point, epsilon)) {
                 return v3D_Point;
             } else {
                 return null;
@@ -518,9 +524,9 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
         V3D_PointDouble lq = ls.getQ();
         V3D_PointDouble tp = getP();
         V3D_PointDouble tq = getQ();
-        if (this.isIntersectedBy(lp)) {
+        if (this.isIntersectedBy(lp, epsilon)) {
             // Cases: 1, 2, 3, 5, 8, 9, 10, 12, 17, 19, 20, 21, 24, 26, 27, 28
-            if (this.isIntersectedBy(lq)) {
+            if (this.isIntersectedBy(lq, epsilon)) {
                 // Cases: 3, 5, 10, 12, 17, 19, 24, 26
                 return ls;
 //                if (l.isIntersectedBy(tp, oom)) {
@@ -542,7 +548,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
 //                }
             } else {
                 // Cases: 1, 2, 8, 9, 20, 21, 27, 28
-                if (ls.isIntersectedBy(tp)) {
+                if (ls.isIntersectedBy(tp, epsilon)) {
                     // Cases: 8, 9, 20, 21
                     if (tp.equals(lp)) {
                         // Cases: 8, 21
@@ -568,11 +574,11 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
             }
         } else {
             // Cases: 4, 6, 7, 11, 13, 14, 16, 18, 19, 22, 23, 25
-            if (this.isIntersectedBy(lq)) {
+            if (this.isIntersectedBy(lq, epsilon)) {
                 // Cases: 6, 7, 13, 14, 16, 19, 22, 23
-                if (ls.isIntersectedBy(tp)) {
+                if (ls.isIntersectedBy(tp, epsilon)) {
                     // Cases: 6, 7, 19, 22, 23
-                    if (ls.isIntersectedBy(tq)) {
+                    if (ls.isIntersectedBy(tq, epsilon)) {
                         // Cases: 19, 23
                         if (tp.equals(lp)) {
                             // Case: 19
@@ -657,7 +663,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * @return The minimum distance between this and {@code pv}.
      */
     public double getDistanceSquared(V3D_PointDouble pt, double epsilon) {
-        if (isIntersectedBy(pt)) {
+        if (isIntersectedBy(pt, epsilon)) {
             return 0d;
         }
         V3D_PointDouble poi = l.getPointOfIntersection(pt, epsilon);
@@ -780,10 +786,11 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * @param p A point possibly equal to qv or r, but certainly collinear.
      * @param q A point possibly equal to pv or r, but certainly collinear.
      * @param r A point possibly equal to pv or qv, but certainly collinear.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
      */
     public static V3D_FiniteGeometryDouble getGeometry(V3D_PointDouble p,
-            V3D_PointDouble q, V3D_PointDouble r) {
+            V3D_PointDouble q, V3D_PointDouble r, double epsilon) {
         if (p.equals(q)) {
             return getGeometry(p, r);
         } else if (q.equals(r)) {
@@ -792,11 +799,11 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
             return getGeometry(p, q);
         } else {
             V3D_LineSegmentDouble ls = new V3D_LineSegmentDouble(p, q);
-            if (ls.isIntersectedBy(r)) {
+            if (ls.isIntersectedBy(r, epsilon)) {
                 return ls;
             } else {
                 ls = new V3D_LineSegmentDouble(p, r);
-                if (ls.isIntersectedBy(q)) {
+                if (ls.isIntersectedBy(q, epsilon)) {
                     return ls;
                 } else {
                     return new V3D_LineSegmentDouble(q, r);
@@ -864,8 +871,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
         V3D_PointDouble tp = getP();
         V3D_PointDouble tq = getQ();
         if (loi == null) {
-            double pd = l.getDistanceSquared(tp);
-            double qd = l.getDistanceSquared(tq);
+            double pd = l.getDistanceSquared(tp, epsilon);
+            double qd = l.getDistanceSquared(tq, epsilon);
             if (pd > qd) {
                 return new V3D_LineSegmentDouble(tq, l.getPointOfIntersection(tq, epsilon));
             } else {
@@ -1062,7 +1069,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
         V3D_LineSegmentDouble loi = getLineOfIntersection(l, epsilon);
         if (loi == null) {
             // Lines are parallel.
-            return l.getDistanceSquared(getP());
+            return l.getDistanceSquared(getP(), epsilon);
         }
         return loi.getLength2();
     }

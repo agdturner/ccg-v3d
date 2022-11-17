@@ -284,9 +284,9 @@ public class V3D_EnvelopeDouble implements Serializable {
      * @return if this is contained by {@code e}
      */
     public boolean isContainedBy(V3D_EnvelopeDouble e) {
-        return getXMax() < e.getXMax() && getXMin() > e.getXMin()
-                && getYMax() < e.getYMax() && getYMin() > e.getYMin()
-                && getZMax() < e.getZMax() && getZMin() > e.getZMin();
+        return getXMax() <= e.getXMax() && getXMin() >= e.getXMin()
+                && getYMax() <= e.getYMax() && getYMin() >= e.getYMin()
+                && getZMax() <= e.getZMax() && getZMin() >= e.getZMin();
     }
 
     /**

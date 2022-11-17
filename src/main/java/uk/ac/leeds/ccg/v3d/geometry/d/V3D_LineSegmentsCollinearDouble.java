@@ -186,9 +186,9 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
          */
         V3D_PointDouble l1p = l1.getP();
         V3D_PointDouble l1q = l1.getQ();
-        if (l2.isIntersectedBy(l1p)) {
+        if (l2.isIntersectedBy(l1p, epsilon)) {
             // Cases 1, 2, 5, 6, 14, 16
-            if (l2.isIntersectedBy(l1q)) {
+            if (l2.isIntersectedBy(l1q, epsilon)) {
                 // Cases 2, 6, 14
                 /**
                  * The line segments are effectively the same although the start
@@ -199,7 +199,7 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
             } else {
                 V3D_PointDouble l2p = l2.getP();
                 // Cases 1, 5, 16
-                if (l1.isIntersectedBy(l2p)) {
+                if (l1.isIntersectedBy(l2p, epsilon)) {
                     // Cases 5
                     return getGeometry(l1p, l1q);
                 } else {
@@ -209,12 +209,12 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
             }
         } else {
             // Cases 3, 4, 7, 8, 9, 10, 11, 12, 13, 15
-            if (l2.isIntersectedBy(l1q)) {
+            if (l2.isIntersectedBy(l1q, epsilon)) {
                 V3D_PointDouble l2p = l2.getP();
                 // Cases 4, 8, 9, 10, 11
-                if (l1.isIntersectedBy(l2p)) {
+                if (l1.isIntersectedBy(l2p, epsilon)) {
                     // Cases 4, 11, 13
-                    if (l1.isIntersectedBy(l2.getQ())) {
+                    if (l1.isIntersectedBy(l2.getQ(), epsilon)) {
                         // Cases 11
                         return l2;
                     } else {
@@ -224,7 +224,7 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
                 } else {
                     // Cases 8, 9, 10
                     V3D_PointDouble tq = l2.getQ();
-                    if (l1.isIntersectedBy(tq)) {
+                    if (l1.isIntersectedBy(tq, epsilon)) {
                         // Cases 8, 9
                         return getGeometry(l2.getQ(), l1q);
                     } else {
@@ -235,10 +235,10 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
             } else {
                 // Cases 3, 7, 12, 15
                 V3D_PointDouble tp = l2.getP();
-                if (l1.isIntersectedBy(tp)) {
+                if (l1.isIntersectedBy(tp, epsilon)) {
                     // Cases 3, 12, 15
                     V3D_PointDouble tq = l2.getQ();
-                    if (l1.isIntersectedBy(tq)) {
+                    if (l1.isIntersectedBy(tq, epsilon)) {
                         // Cases 3, 15
                         //return l2;
                         return l1;
@@ -283,7 +283,7 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      * @return The distance squared to {@code p}.
      */
     public double getDistanceSquared(V3D_PointDouble p, double epsilon) {
-        if (isIntersectedBy(p)) {
+        if (isIntersectedBy(p, epsilon)) {
             return 0d;
         }
         Iterator<V3D_LineSegmentDouble> ite = lineSegments.iterator();
@@ -358,12 +358,13 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      * Identify if this is intersected by point {@code pt}.
      *
      * @param pt The point to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} iff the geometry is intersected by {@code pt}.
      */
-    public boolean isIntersectedBy(V3D_PointDouble pt) {
+    public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
         Iterator<V3D_LineSegmentDouble> ite = lineSegments.iterator();
         while (ite.hasNext()) {
-            if (ite.next().isIntersectedBy(pt)) {
+            if (ite.next().isIntersectedBy(pt, epsilon)) {
                 return true;
             }
         }
@@ -408,7 +409,7 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble ls,
             double epsilon) {
-        if (lineSegments.get(0).l.isCollinear(ls.l)) {
+        if (lineSegments.get(0).l.isCollinear(ls.l, epsilon)) {
             ArrayList<V3D_PointDouble> ps = new ArrayList<>();
             ArrayList<V3D_LineSegmentDouble> lse = new ArrayList<>();
             Iterator<V3D_LineSegmentDouble> ite = lineSegments.iterator();
@@ -481,15 +482,15 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
             V3D_LineSegmentDouble l1 = ls.get(j);
             if (l0.getIntersection(l1, epsilon) != null) {
                 V3D_PointDouble l0p = l0.getP();
-                if (l1.isIntersectedBy(l0p)) {
+                if (l1.isIntersectedBy(l0p, epsilon)) {
                     V3D_PointDouble l0q = l0.getQ();
-                    if (l1.isIntersectedBy(l0q)) {
+                    if (l1.isIntersectedBy(l0q, epsilon)) {
                         // l0 is completely overlapped by l1
                         removeIndexes.add(i);
                     } else {
                         V3D_PointDouble l1p = l1.getP();
                         V3D_PointDouble l1q = l1.getQ();
-                        if (l0.isIntersectedBy(l1p)) {
+                        if (l0.isIntersectedBy(l1p, epsilon)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
                             r.add(new V3D_LineSegmentDouble(l1q, l0q));
@@ -501,10 +502,10 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
                     }
                 } else {
                     V3D_PointDouble l0q = l0.getQ();
-                    if (l1.isIntersectedBy(l0q)) {
+                    if (l1.isIntersectedBy(l0q, epsilon)) {
                         V3D_PointDouble l1p = l1.getP();
                         V3D_PointDouble l1q = l1.getQ();
-                        if (l0.isIntersectedBy(l1.getP())) {
+                        if (l0.isIntersectedBy(l1.getP(), epsilon)) {
                             removeIndexes.add(i);
                             removeIndexes.add(j);
                             r.add(new V3D_LineSegmentDouble(l1q, l0p));

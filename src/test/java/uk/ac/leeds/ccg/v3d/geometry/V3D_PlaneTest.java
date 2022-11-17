@@ -28,7 +28,6 @@ import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.V3D_Test;
 
 /**
  * Test of V3D_Plane class.

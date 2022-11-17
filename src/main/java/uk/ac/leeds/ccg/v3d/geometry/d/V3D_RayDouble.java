@@ -201,13 +201,14 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
 
     /**
      * @param pt A point to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} if {@code this} is intersected by {@code pl}.
      */
-    public boolean isIntersectedBy(V3D_PointDouble pt) {
+    public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
         if (pt.equals(l.getP())) {
             return true;
         }
-        if (l.isIntersectedBy(pt)) {
+        if (l.isIntersectedBy(pt, epsilon)) {
 //            V3D_Point poi = l.getPointOfIntersection(pt);
 //            V3D_Ray r = new V3D_Ray(e, getP(), poi.getVector());
             pl = getPl();
@@ -478,10 +479,10 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
                 if (isAligned(lsq)) {
                     return V3D_LineSegmentDouble.getGeometry(rp, lsq);
                 } else {
-                    if (isIntersectedBy(lsp)) {
+                    if (isIntersectedBy(lsp, epsilon)) {
                         return lsp;
                     }
-                    if (isIntersectedBy(lsq)) {
+                    if (isIntersectedBy(lsq, epsilon)) {
                         return lsq;
                     }
                     return null;

@@ -21,8 +21,53 @@ package uk.ac.leeds.ccg.v3d.geometry.d;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class V3D_TestDouble {
+public abstract class V3D_DoubleTest {
     
+    
+    public static final double P1E5 = 100000d;
+    public static final double P1E6 = 1000000d;
+    public static final double P1E7 = 10000000d;
+    public static final double P1E8 = 100000000d;
+    public static final double P1E9 = 1000000000d;
+    public static final double P1E10 = 10000000000d;
+    public static final double P1E11 = 100000000000d;
+    public static final double P1E12 = 1000000000000d;
+    public static final double P1E13 = 10000000000000d;
+    public static final double N1E5 = -100000d;
+    public static final double N1E6 = -1000000d;
+    public static final double N1E7 = -10000000d;
+    public static final double N1E8 = -100000000d;
+    public static final double N1E9 = -1000000000d;
+    public static final double N1E10 = -10000000000d;
+    public static final double N1E11 = -100000000000d;
+    public static final double N1E12 = -1000000000000d;
+    public static final double N1E13 = -10000000000000d;
+    public static final double P0_1E2 = 0.01d;
+    public static final double P0_1E3 = 0.001d;
+    public static final double P0_1E4 = 0.0001d;
+    public static final double P0_1E5 = 0.00001d;
+    public static final double P0_1E6 = 0.000001d;
+    public static final double P0_1E7 = 0.0000001d;
+    public static final double P0_1E8 = 0.00000001d;
+    public static final double P0_1E9 = 0.000000001d;
+    public static final double P0_1E10 = 0.0000000001d;
+    public static final double P0_1E11 = 0.00000000001d;
+    public static final double P0_1E12 = 0.000000000001d;
+    public static final double P0_1E13 = 0.0000000000001d;
+    public static final double P0_1E14 = 0.00000000000001d;
+    public static final double N0_1E2 = -0.01d;
+    public static final double N0_1E3 = -0.001d;
+    public static final double N0_1E4 = -0.0001d;
+    public static final double N0_1E5 = -0.00001d;
+    public static final double N0_1E6 = -0.000001d;
+    public static final double N0_1E7 = -0.0000001d;
+    public static final double N0_1E8 = -0.00000001d;
+    public static final double N0_1E9 = -0.000000001d;
+    public static final double N0_1E10 = -0.0000000001d;
+    public static final double N0_1E11 = -0.00000000001d;
+    public static final double N0_1E12 = -0.000000000001d;
+    public static final double N0_1E13 = -0.0000000000001d;
+    public static final double N0_1E14 = -0.00000000000001d;
     // P2xx
     public static final V3D_VectorDouble P2P2P2 = new V3D_VectorDouble(2.0d, 2.0d, 2.0d);
     public static final V3D_VectorDouble P2P2P1 = new V3D_VectorDouble(2.0d, 2.0d, 1.0d);
@@ -286,5 +331,5 @@ public abstract class V3D_TestDouble {
     public static final V3D_PointDouble pN2N2P0 = new V3D_PointDouble(-2.0d, -2.0d, 0.0d);
     public static final V3D_PointDouble pN2N2N1 = new V3D_PointDouble(-2.0d, -2.0d, -1.0d);
     public static final V3D_PointDouble pN2N2N2 = new V3D_PointDouble(-2.0d, -2.0d, -2.0d);
-    public V3D_TestDouble() {}
+    public V3D_DoubleTest() {}
 }
