@@ -22,32 +22,32 @@ import uk.ac.leeds.ccg.v3d.geometry.*;
  * at the point of {@link #l} and ends at the point {@link #qv}. The "*" denotes
  * a point in 3D and the line is shown with a line of "e" symbols in the
  * following depiction: {@code
-                                       z
-                          y           -
-                          +          /                * pv=<x0,y0,z0>
-                          |         /                e
-                          |        /                e
-                          |    z0-/                e
-                          |      /                e
-                          |     /               e
-                          |    /               e
-                          |   /               e
-                       y0-|  /               e
-                          | /               e
-                          |/         x1    e
- x - ---------------------|-----------/---e---/---- + x
-                         /|              e   x0
-                        / |-y1          e
-                       /  |           e
-                      /   |          e
-                  z1-/    |         e
-                    /     |        e
-                   /      |       * qv=<x1,y1,z1>
-                  /       |
-                 /        |
-                +         -
-               z          y
- }
+ * z
+ * y           -
+ * +          /                * pv=<x0,y0,z0>
+ * |         /                e
+ * |        /                e
+ * |    z0-/                e
+ * |      /                e
+ * |     /               e
+ * |    /               e
+ * |   /               e
+ * y0-|  /               e
+ * | /               e
+ * |/         x1    e
+ * x - ---------------------|-----------/---e---/---- + x
+ * /|              e   x0
+ * / |-y1          e
+ * /  |           e
+ * /   |          e
+ * z1-/    |         e
+ * /     |        e
+ * /      |       * qv=<x1,y1,z1>
+ * /       |
+ * /        |
+ * +         -
+ * z          y
+ * }
  *
  * @author Andy Turner
  * @version 1.0
@@ -140,7 +140,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * Create a new instance that intersects all points.
      *
      * @param points Any number of collinear points, with two being different.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      */
     public V3D_LineSegmentDouble(double epsilon, V3D_PointDouble... points) {
         super(points[0].offset);
@@ -308,7 +309,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
 
     /**
      * @param l The line segment to test if it is the same as {@code this}.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_LineSegmentDouble l, double epsilon) {
@@ -320,11 +322,12 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
 
     /**
      * @param l The line segment to test if it is equal to {@code this}.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff {@code this} is equal to {@code l}. This ignores
      * the order of the point of {@link #l} and {@link #qv}.
      */
-    public boolean equalsIgnoreDirection(V3D_LineSegmentDouble l, 
+    public boolean equalsIgnoreDirection(V3D_LineSegmentDouble l,
             double epsilon) {
         if (this.l.equals(l.l, epsilon)) {
             return isIntersectedBy(l.getQ(), epsilon)
@@ -360,7 +363,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
 
     /**
      * @param pt A point to test for intersection.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if {@code this} is intersected by {@code pv}.
      */
     public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
@@ -379,16 +383,9 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                 }
                 double d = tp.getDistance(tq);
                 double apb = a + b;
-//                if (apb == null) {
-//                    int oomt = oom - 2;
-//                    if (a.getSqrt(oomt, rm).add(b.getSqrt(oomt, rm)).compareTo(d.getSqrt(oomt, rm)) != 1) {
-//                        return true;
-//                    }
-//                } else {
-                    if (apb < d) {
-                        return true;
-                    }
-//                }
+                if (apb <= d) {
+                    return true;
+                }
             }
         }
         return false;
@@ -402,7 +399,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * segments do not intersect.
      *
      * @param l The line to get intersection with this.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_LineDouble l,
@@ -440,7 +438,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * segments do not intersect.
      *
      * @param ls The line to get intersection with this.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble ls,
@@ -642,7 +641,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      *
      * @param p A point for which the minimum distance from {@code this} is
      * returned.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance between this and {@code pv}.
      */
     public double getDistance(V3D_PointDouble p, double epsilon) {
@@ -659,7 +659,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      *
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance between this and {@code pv}.
      */
     public double getDistanceSquared(V3D_PointDouble pt, double epsilon) {
@@ -670,7 +671,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
         if (isAligned(poi)) {
             return poi.getDistanceSquared(pt);
         } else {
-            return Math.min(pt.getDistanceSquared(getP()), 
+            return Math.min(pt.getDistanceSquared(getP()),
                     pt.getDistanceSquared(getQ()));
         }
     }
@@ -707,7 +708,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
 
     /**
      * @param l The line segment to return the distance from.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The distance from {@code this} to {@code l} at the {@code oom}
      * precision.
      */
@@ -719,7 +721,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * Get the minimum distance squared to {@code l}.
      *
      * @param l A line segment.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code l}.
      */
     public double getDistanceSquared(V3D_LineSegmentDouble l, double epsilon) {
@@ -764,13 +767,13 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
 
     /**
      * If pv and qv are equal then the point is returned otherwise the line
- segment is returned
+     * segment is returned
      *
      * @param p A point.
      * @param q Another possibly equal point.
      * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
      */
-    public static V3D_FiniteGeometryDouble getGeometry(V3D_PointDouble p, 
+    public static V3D_FiniteGeometryDouble getGeometry(V3D_PointDouble p,
             V3D_PointDouble q) {
         if (p.equals(q)) {
             return p;
@@ -781,12 +784,13 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
 
     /**
      * If pv, qv and r are equal then the point is returned otherwise a line
- segment is returned where all the points are on the line segment.
+     * segment is returned where all the points are on the line segment.
      *
      * @param p A point possibly equal to qv or r, but certainly collinear.
      * @param q A point possibly equal to pv or r, but certainly collinear.
      * @param r A point possibly equal to pv or qv, but certainly collinear.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
      */
     public static V3D_FiniteGeometryDouble getGeometry(V3D_PointDouble p,
@@ -811,27 +815,31 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
             }
         }
     }
-    
+
     /**
      * If pv, qv and r are equal then the point is returned otherwise a line
- segment is returned where all the points are on the line segment.
+     * segment is returned where all the points are on the line segment.
      *
      * @param l A line segment.
      * @param pt A point collinear with l.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
      */
     public static V3D_FiniteGeometryDouble getGeometry(V3D_LineSegmentDouble l,
-            V3D_PointDouble pt) {
-        return getGeometry(l.getP(), l.getQ(), pt);
+            V3D_PointDouble pt, double epsilon) {
+        return getGeometry(epsilon, l.getP(), l.getQ(), pt);
     }
 
     /**
      * Get the smallest line segment intersected by all pts.
-     * 
+     *
      * @param pts Collinear points.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
      */
-    public static V3D_FiniteGeometryDouble getGeometry(V3D_PointDouble... pts) {
+    public static V3D_FiniteGeometryDouble getGeometry(double epsilon, V3D_PointDouble... pts) {
         int length = pts.length;
         if (length == 0) {
             return null;
@@ -840,26 +848,27 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
         } else if (length == 2) {
             return getGeometry(pts[0], pts[1]);
         } else if (length == 3) {
-            return getGeometry(pts[0], pts[1], pts[2]);
+            return getGeometry(pts[0], pts[1], pts[2], epsilon);
         } else {
-            V3D_FiniteGeometryDouble g = getGeometry(pts[0], pts[1], pts[2]);
-            for (int i = 3; i < length; i ++) {
+            V3D_FiniteGeometryDouble g = getGeometry(epsilon, pts[0], pts[1], pts[2]);
+            for (int i = 3; i < length; i++) {
                 if (g instanceof V3D_PointDouble gp) {
                     g = getGeometry(gp, pts[i]);
                 } else {
-                    g = getGeometry((V3D_LineSegmentDouble) g, pts[i]);
+                    g = getGeometry((V3D_LineSegmentDouble) g, pts[i], epsilon);
                 }
             }
             return g;
         }
-    }    
-            
+    }
+
     /**
      * Get the line of intersection (the shortest line) between {@code this} and
      * {@code l}.
      *
      * @param l The line to get the line of intersection with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The line of intersection between {@code this} and {@code l}.
      */
     public V3D_LineSegmentDouble getLineOfIntersection(V3D_LineDouble l,
@@ -904,7 +913,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * {@code l}.
      *
      * @param ls The line segment to get the line of intersection with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The line of intersection between {@code this} and {@code l}.
      */
     public V3D_LineSegmentDouble getLineOfIntersection(V3D_LineSegmentDouble ls,
@@ -1031,7 +1041,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * @param pt Is on the line of {@code l}, but not on {@code l}.
      * @return The nearest point on {@code l} to {@code pv}.
      */
-    protected static V3D_PointDouble getNearestPoint(V3D_LineSegmentDouble l, 
+    protected static V3D_PointDouble getNearestPoint(V3D_LineSegmentDouble l,
             V3D_PointDouble pt) {
         V3D_PointDouble lp = l.getP();
         V3D_PointDouble lq = l.getQ();
@@ -1048,7 +1058,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * Get the minimum distance to {@code l}.
      *
      * @param l A line.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance to {@code l}.
      */
     public double getDistance(V3D_LineDouble l, double epsilon) {
@@ -1059,7 +1070,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * Get the minimum distance squared to {@code l}.
      *
      * @param l A line.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code l}.
      */
     public double getDistanceSquared(V3D_LineDouble l, double epsilon) {
@@ -1075,7 +1087,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
     }
 
     @Override
-    public V3D_LineSegmentDouble rotate(V3D_LineDouble axis, double theta, 
+    public V3D_LineSegmentDouble rotate(V3D_LineDouble axis, double theta,
             double epsilon) {
         return new V3D_LineSegmentDouble(
                 getP().rotate(axis, theta, epsilon),
@@ -1088,7 +1100,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * @param pl The plane that clips.
      * @param pt A point that is used to return the side of the clipped line
      * segment.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return null, the whole or a part of this.
      */
     public V3D_FiniteGeometryDouble clip(V3D_PlaneDouble pl, V3D_PointDouble pt,

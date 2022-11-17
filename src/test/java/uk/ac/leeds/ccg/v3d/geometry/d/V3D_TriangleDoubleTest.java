@@ -1,0 +1,1087 @@
+/*
+ * Copyright 2020 Andy Turner, University of Leeds.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package uk.ac.leeds.ccg.v3d.geometry.d;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+
+/**
+ * Test of V3D_TriangleDouble class.
+ *
+ * @author Andy Turner
+ * @version 1.0
+ */
+public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
+
+    public V3D_TriangleDoubleTest() {
+    }
+
+    @BeforeAll
+    public static void setUpClass() {
+    }
+
+    @AfterAll
+    public static void tearDownClass() {
+    }
+
+    @BeforeEach
+    public void setUp() {
+    }
+
+    @AfterEach
+    public void tearDown() {
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testIsAligned_V3D_PointDouble_int_RoundingMode() {
+        System.out.println("isAligned");
+        double epsilon = 1d / 10000000d;
+        V3D_PointDouble pt = pP0N1P0;
+        V3D_TriangleDouble instance = new V3D_TriangleDouble(pP0P2P0, pP0N2P0, pP2P0P0);
+        assertTrue(instance.isAligned(pt));
+        pt = pN1P0P0;
+        assertFalse(instance.isAligned(pt));
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testIsIntersectedBy() {
+        System.out.println("isIntersectedBy");
+        double epsilon = 1d / 10000000d;
+        V3D_PointDouble pt = pP0P0P0;
+        V3D_TriangleDouble instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP1P1P0);
+        assertTrue(instance.isIntersectedBy(pt));
+        // Test 2
+        pt = pN1N1P0;
+        assertFalse(instance.isIntersectedBy(pt));
+        // Test 3
+        pt = new V3D_PointDouble(1d / 2d, 0d, 0d);
+        assertTrue(instance.isIntersectedBy(pt));
+    }
+
+    /**
+     * Test of getEnvelope method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetEnvelope() {
+        System.out.println("getEnvelope");
+        double epsilon = 1d / 10000000d;
+        V3D_TriangleDouble instance = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP1P0P0);
+        V3D_EnvelopeDouble expResult = new V3D_EnvelopeDouble(pP0P0P0, pP0P1P0, pP1P0P0);
+        V3D_EnvelopeDouble result = instance.getEnvelope();
+        assertTrue(expResult.equals(result));
+    }
+
+    /**
+     * Test of getArea method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetArea() {
+        System.out.println("getArea");
+        double epsilon = 1d / 10000000d;
+        V3D_TriangleDouble instance = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP1P0P0);
+        double expResult = 1d / 2d;
+        double result = instance.getArea();
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+    }
+
+    /**
+     * Test of translate method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testApply() {
+        // No test.
+    }
+
+    /**
+     * Test of getPerimeter method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetPerimeter() {
+        System.out.println("getPerimeter");
+        double epsilon = 1d / 10000000d;
+        V3D_TriangleDouble instance = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP1P0P0);
+        double expResult = 2d + Math.sqrt(2);
+        double result = instance.getPerimeter();
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        expResult = 2d + Math.sqrt(2);
+        result = instance.getPerimeter();
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetIntersection_V3D_LineDouble() {
+        System.out.println("getIntersection");
+        double epsilon = 1d / 10000000d;
+        V3D_LineDouble l = new V3D_LineDouble(pP1N1P0, pP1P2P0);
+        V3D_TriangleDouble instance = new V3D_TriangleDouble(pP0P0P0, pP1P1P0, pP2P0P0);
+        V3D_GeometryDouble expResult = new V3D_LineSegmentDouble(pP1P0P0, pP1P1P0);
+        V3D_GeometryDouble result = instance.getIntersection(l, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        System.out.println("getIntersection");
+        // Test 2
+        instance = new V3D_TriangleDouble(P0P0P0, P1P0P0, P1P2P0, P2P0P0);
+        l = new V3D_LineDouble(pP1P0P1, pP1P0N1);
+        result = instance.getIntersection(l, epsilon);
+        expResult = pP1P0P0;
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+        // Test 3
+        l = new V3D_LineDouble(pP1P0P0, pP2P0P0);
+        expResult = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
+        result = instance.getIntersection(l, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 4
+        l = new V3D_LineDouble(pP1P0P0, pP2P0P0);
+        expResult = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
+        result = instance.getIntersection(l, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+    }
+
+    /**
+     * Test of getCentroid method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetCentroid() {
+        System.out.println("getCentroid");
+        double epsilon = 1d / 10000000d;
+        V3D_TriangleDouble instance;
+        V3D_PointDouble expResult;
+        V3D_PointDouble result;
+        // Test
+        instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP1P1P0);
+        expResult = new V3D_PointDouble(2d / 3d, 1d / 3d, 0d);
+        result = instance.getCentroid();
+        assertTrue(expResult.equals(result));
+    }
+
+    /**
+     * Test of toString method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testToString() {
+        System.out.println("toString");
+        double epsilon = 1d / 10000000d;
+        V3D_TriangleDouble instance = new V3D_TriangleDouble(P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        String expResult = "V3D_TriangleDouble(\n"
+                + " offset=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0)),\n"
+                + " p=(V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0)),\n"
+                + " q=(V3D_VectorDouble(dx=0.0, dy=1.0, dz=0.0)),\n"
+                + " r=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=1.0)))";
+        String result = instance.toString();
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of isIntersectedBy method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testIsIntersectedBy_V3D_PointDouble() {
+        System.out.println("isIntersectedBy");
+        double epsilon = 1d / 10000000d;
+        V3D_PointDouble pt;
+        V3D_TriangleDouble instance;
+        instance = new V3D_TriangleDouble(P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        assertTrue(instance.isIntersectedBy(pP1P0P0));
+        assertTrue(instance.isIntersectedBy(pP0P1P0));
+        assertTrue(instance.isIntersectedBy(pP0P0P1));
+        pt = new V3D_PointDouble(P1P0P0, P0P0P0);
+        assertTrue(instance.isIntersectedBy(pt));
+        // Test 5
+        pt = new V3D_PointDouble(P0P1P0, P0P0P0);
+        assertTrue(instance.isIntersectedBy(pt));
+        // Test 6
+        pt = new V3D_PointDouble(P0P0P1, P0P0P0);
+        assertTrue(instance.isIntersectedBy(pt));
+        // Test 7
+        pt = new V3D_PointDouble(P1P0P0, P1P0P0);
+        assertFalse(instance.isIntersectedBy(pt));
+        // Test 8
+        pt = new V3D_PointDouble(P0P1P0, P0P1P0);
+        assertFalse(instance.isIntersectedBy(pt));
+        // Test 9
+        pt = new V3D_PointDouble(P0P0P1, P0P0P1);
+        assertFalse(instance.isIntersectedBy(pt));
+        // Test 10
+        instance = new V3D_TriangleDouble(P0P0P0, P1P0P0, P1P2P0, P2P0P0);
+        pt = new V3D_PointDouble(P0P0P0, new V3D_VectorDouble(1d, 3d, 0d));
+        assertFalse(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pP1P2P0));
+        assertTrue(instance.isIntersectedBy(pP1P1P0));
+        assertFalse(instance.isIntersectedBy(pP0P0P0));
+        pt = new V3D_PointDouble(P0P0P0, new V3D_VectorDouble(3d / 2d, 1d, 0d));
+        assertTrue(instance.isIntersectedBy(pt));
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetIntersection_V3D_LineSegmentDouble() {
+        System.out.println("getIntersection");
+        double epsilon = 1d / 10000000d;
+        V3D_LineSegmentDouble l;
+        V3D_TriangleDouble instance;
+        V3D_GeometryDouble expResult;
+        V3D_GeometryDouble result;
+        // Test 1
+        instance = new V3D_TriangleDouble(pP1P0P0, pP1P2P0, pP2P0P0);
+        l = new V3D_LineSegmentDouble(pP1P0P1, pP1P0N1);
+        expResult = pP1P0P0;
+        result = instance.getIntersection(l, epsilon);
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+        // Test 2
+        l = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
+        expResult = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
+        result = instance.getIntersection(l, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 3
+        l = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
+        expResult = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
+        result = instance.getIntersection(l, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 4
+        l = new V3D_LineSegmentDouble(pP2N2P0, pP2P1P0);
+        instance = new V3D_TriangleDouble(P0P0P0, P2P2P0,
+                new V3D_VectorDouble(4d, 0d, 0d));
+        expResult = new V3D_LineSegmentDouble(pP2P0P0, pP2P1P0);
+        result = instance.getIntersection(l, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 5
+        l = new V3D_LineSegmentDouble(pP0P0P0, pP0P1P0);
+        instance = new V3D_TriangleDouble(pN2N2P0, pP0P2P0, pP2N2P0);
+        expResult = new V3D_LineSegmentDouble(pP0P0P0, pP0P1P0);
+        result = instance.getIntersection(l, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+    }
+
+    /**
+     * Test of equals method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testEquals_V3D_TriangleDouble() {
+        System.out.println("equals");
+        double epsilon = 1d / 10000000d;
+        V3D_TriangleDouble t = new V3D_TriangleDouble(pP1P0P0, pP1P2P0, pP2P0P0);
+        V3D_TriangleDouble instance = new V3D_TriangleDouble(P1P0P0, P0P0P0, P0P2P0, P1P0P0);
+        boolean result = instance.equals(t, epsilon);
+        assertTrue(result);
+        // Test 2
+        instance = new V3D_TriangleDouble(P1P0P0, P0P2P0, P0P0P0, P1P0P0);
+        result = instance.equals(t, epsilon);
+        assertTrue(result);
+        // Test 3
+        instance = new V3D_TriangleDouble(P1P0P0, P0P2P0, P1P0P0, P0P0P0);
+        result = instance.equals(t, epsilon);
+        assertTrue(result);
+        // Test 4
+        instance = new V3D_TriangleDouble(P1P0P0, P1P0P0, P0P2P0, P0P0P0);
+        result = instance.equals(t, epsilon);
+        assertTrue(result);
+    }
+
+    /**
+     * Test of rotate method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testRotate() {
+        System.out.println("rotate");
+        double epsilon = 1d / 10000000d;
+        V3D_LineDouble axis;
+        double theta;
+        V3D_TriangleDouble instance;
+        V3D_TriangleDouble expResult;
+        double Pi = Math.PI;
+        // Test 1
+        instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
+        axis = V3D_LineDouble.X_AXIS;
+        theta = Pi;
+        instance = instance.rotate(axis, theta, epsilon);
+        expResult = new V3D_TriangleDouble(pP1P0P0, pP0N1P0, pP1N1P0);
+        assertTrue(expResult.equals(instance, epsilon));
+        // Test 2
+        instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
+        theta = Pi / 2d;
+        instance = instance.rotate(axis, theta, epsilon);
+        expResult = new V3D_TriangleDouble(pP1P0P0, pP0P0P1, pP1P0P1);
+        assertTrue(expResult.equals(instance, epsilon));
+        // Test 3
+        instance = new V3D_TriangleDouble(pP2P0P0, pP0P2P0, pP2P2P0);
+        theta = Pi;
+        instance = instance.rotate(axis, theta, epsilon);
+        expResult = new V3D_TriangleDouble(pP2P0P0, pP0N2P0, pP2N2P0);
+        assertTrue(expResult.equals(instance, epsilon));
+        // Test 4
+        instance = new V3D_TriangleDouble(pP2P0P0, pP0P2P0, pP2P2P0);
+        theta = Pi / 2d;
+        instance = instance.rotate(axis, theta, epsilon);
+        expResult = new V3D_TriangleDouble(pP2P0P0, pP0P0P2, pP2P0P2);
+        assertTrue(expResult.equals(instance, epsilon));
+        // Test 5
+        instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
+        instance.translate(P1P0P0);
+        theta = Pi;
+        instance = instance.rotate(axis, theta, epsilon);
+        expResult = new V3D_TriangleDouble(pP2P0P0, pP1N1P0, pP2N1P0);
+        assertTrue(expResult.equals(instance, epsilon));
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetIntersection_V3D_PlaneDouble() {
+        System.out.println("getIntersection");
+        double epsilon = 1d / 10000000d;
+        V3D_TriangleDouble t;
+        V3D_PlaneDouble p;
+        V3D_GeometryDouble expResult;
+        V3D_GeometryDouble result;
+        t = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        // Test 1
+        p = V3D_PlaneDouble.X0;
+        expResult = new V3D_LineSegmentDouble(pP0P0P0, pP0P1P0);
+        result = t.getIntersection(p, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 2
+        p = V3D_PlaneDouble.Y0;
+        expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+        result = t.getIntersection(p, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 3
+        p = V3D_PlaneDouble.Z0;
+        expResult = t;
+        result = t.getIntersection(p, epsilon);
+        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result));
+        // Test 4
+        t = new V3D_TriangleDouble(pN1P0P0, pP1P0P0, pP0P1P0);
+        p = V3D_PlaneDouble.X0;
+        expResult = new V3D_LineSegmentDouble(pP0P0P0, pP0P1P0);
+        result = t.getIntersection(p, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 5
+        t = new V3D_TriangleDouble(pN2N2N2, pN2N2P2, pP2P0P0);
+        p = V3D_PlaneDouble.X0;
+        expResult = new V3D_LineSegmentDouble(pP0N1P1, pP0N1N1);
+        result = t.getIntersection(p, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 6
+        t = new V3D_TriangleDouble(P0P0P0, P1P0P0, P0P1P0, P1P1P0);
+        p = V3D_PlaneDouble.X0;
+        expResult = pP0P1P0;
+        result = t.getIntersection(p, epsilon);
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+        // Test 7
+        p = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
+        p.translate(P1P0P0);
+        expResult = new V3D_LineSegmentDouble(pP1P0P0, pP1P1P0);
+        result = t.getIntersection(p, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equals((V3D_LineSegmentDouble) result, epsilon));
+        // Test 8
+        p = new V3D_PlaneDouble(V3D_PlaneDouble.Z0);
+        expResult = new V3D_TriangleDouble(t);
+        result = t.getIntersection(p, epsilon);
+        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetIntersection_V3D_RayDouble() {
+        System.out.println("getIntersection");
+        double epsilon = 1d / 10000000d;
+        V3D_TriangleDouble t;
+        V3D_RayDouble r;
+        V3D_GeometryDouble expResult;
+        V3D_GeometryDouble result;
+        // Test 1
+        t = new V3D_TriangleDouble(pP0P1P0, pP1P0P0, pP1P1P0);
+        r = new V3D_RayDouble(pP0P0P0, pP1P0P0);
+        result = t.getIntersection(r, epsilon);
+        expResult = pP1P0P0;
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+        // Test 2
+        t = new V3D_TriangleDouble(pP0N2P0, pP0P2P0, pP2P0P0);
+        r = new V3D_RayDouble(pP1P0P0, pP2P0P0);
+        result = t.getIntersection(r, epsilon);
+        expResult = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 3
+        r = new V3D_RayDouble(pN1P0P0, pP2P0P0);
+        result = t.getIntersection(r, epsilon);
+        expResult = new V3D_LineSegmentDouble(pP0P0P0, pP2P0P0);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 4
+        r = new V3D_RayDouble(pN2P0N2, pP0P0P0);
+        result = t.getIntersection(r, epsilon);
+        expResult = pP0P0P0;
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+        // Test 5
+        r = new V3D_RayDouble(pN2P0N2, pP0N1P0);
+        expResult = pP0N1P0;
+        result = t.getIntersection(r, epsilon);
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+        // Test 6
+        r = new V3D_RayDouble(pN2P0N2, pN1P0P0);
+        assertNull(t.getIntersection(r, epsilon));
+        // Test 7
+        t = new V3D_TriangleDouble(pP0N2P0, pP0P2P0, pP2P0P0);
+        r = new V3D_RayDouble(pN2N2N2, pN1N1N1);
+        expResult = pP0P0P0;
+        result = t.getIntersection(r, epsilon);
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+        // Test 8
+        t = new V3D_TriangleDouble(pP0N2P0, pP0P2P0, pP2P2P1);
+        r = new V3D_RayDouble(pN2N2N2, pN1N1N1);
+        expResult = pP0P0P0;
+        result = t.getIntersection(r, epsilon);
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+        // Test 9
+        t = new V3D_TriangleDouble(pN1N2P0, pN1P2P0, pP2P2P0);
+        r = new V3D_RayDouble(pN2N2N2, pN1N1N1);
+        expResult = pP0P0P0;
+        result = t.getIntersection(r, epsilon);
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+        // Test 10
+        t = new V3D_TriangleDouble(pN1N2P0, pN1P2P0, pP2P2N1);
+        r = new V3D_RayDouble(pN2N2N2, pN1N1N1);
+        double nq = -1d / 4d;
+        expResult = new V3D_PointDouble(nq, nq, nq);
+        result = t.getIntersection(r, epsilon);
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+
+        // Box test.
+        V3D_VectorDouble offset = V3D_VectorDouble.ZERO;
+        V3D_PointDouble[] points = new V3D_PointDouble[8];
+        V3D_PointDouble centroid = V3D_PointDouble.ORIGIN;
+        long multiplier = 100;
+        V3D_PointDouble lbf = new V3D_PointDouble(offset, new V3D_VectorDouble(-1 * multiplier, -1 * multiplier, -1 * multiplier));
+        V3D_PointDouble lba = new V3D_PointDouble(offset, new V3D_VectorDouble(-1 * multiplier, -1 * multiplier, 1 * multiplier));
+        V3D_PointDouble ltf = new V3D_PointDouble(offset, new V3D_VectorDouble(-1 * multiplier, 1 * multiplier, -1 * multiplier));
+        V3D_PointDouble lta = new V3D_PointDouble(offset, new V3D_VectorDouble(-1 * multiplier, 1 * multiplier, 1 * multiplier));
+        V3D_PointDouble rbf = new V3D_PointDouble(offset, new V3D_VectorDouble(1 * multiplier, -1 * multiplier, -1 * multiplier));
+        V3D_PointDouble rba = new V3D_PointDouble(offset, new V3D_VectorDouble(1 * multiplier, -1 * multiplier, 1 * multiplier));
+        V3D_PointDouble rtf = new V3D_PointDouble(offset, new V3D_VectorDouble(1 * multiplier, 1 * multiplier, -1 * multiplier));
+        V3D_PointDouble rta = new V3D_PointDouble(offset, new V3D_VectorDouble(1 * multiplier, 1 * multiplier, 1 * multiplier));
+        // BLUE
+        V3D_TriangleDouble b1 = new V3D_TriangleDouble(centroid, lbf, ltf, rtf);
+        V3D_TriangleDouble b2 = new V3D_TriangleDouble(centroid, lbf, rbf, rtf);
+        // RED
+        V3D_TriangleDouble r1 = new V3D_TriangleDouble(centroid, lbf, ltf, lta);
+        V3D_TriangleDouble r2 = new V3D_TriangleDouble(centroid, lbf, lba, lta);
+        // YELLOW
+        V3D_TriangleDouble y1 = new V3D_TriangleDouble(centroid, lba, lta, rta);
+        V3D_TriangleDouble y2 = new V3D_TriangleDouble(centroid, lba, rba, rta);
+        // GREEN
+        V3D_TriangleDouble g1 = new V3D_TriangleDouble(centroid, rbf, rtf, rta);
+        V3D_TriangleDouble g2 = new V3D_TriangleDouble(centroid, rbf, rta, rba);
+        // ORANGE
+        V3D_TriangleDouble o1 = new V3D_TriangleDouble(centroid, ltf, lta, rta);
+        V3D_TriangleDouble o2 = new V3D_TriangleDouble(centroid, rtf, ltf, rta);
+        // PINK
+        V3D_TriangleDouble p1 = new V3D_TriangleDouble(centroid, lbf, rbf, rba);
+        V3D_TriangleDouble p2 = new V3D_TriangleDouble(centroid, lbf, lba, rba);
+        points[0] = lbf;
+        points[1] = lba;
+        points[2] = ltf;
+        points[3] = lta;
+        points[4] = rbf;
+        points[5] = rba;
+        points[6] = rtf;
+        points[7] = rta;
+        V3D_EnvelopeDouble envelope = new V3D_EnvelopeDouble(points);
+        int width = 100;
+        double radius = envelope.getPoints()[0].getDistance(centroid);
+        V3D_VectorDouble direction = new V3D_VectorDouble(0, 0, 1).getUnitVector();
+        V3D_PointDouble pt = new V3D_PointDouble(centroid);
+        pt.translate(direction.multiply(radius * 2d));
+        V3D_PlaneDouble pl = new V3D_PlaneDouble(pt, new V3D_VectorDouble(pt, envelope.getCentroid()));
+        V3D_VectorDouble pv = pl.getPV();
+        V3D_RectangleDouble screen = envelope.getViewport3(pt, pv, epsilon);
+        V3D_TriangleDouble pqr = screen.getPQR();
+        double screenWidth = pqr.getPQ().getLength();
+        double screenHeight = screenWidth;
+        double pixelSize = screenWidth / (double) width;
+        V3D_VectorDouble vd = new V3D_VectorDouble(pqr.getQR().l.v).divide(
+                (double) width);
+        V3D_VectorDouble v2d = new V3D_VectorDouble(pqr.getPQ().l.v).divide(
+                (double) width);
+        int row = width / 3;
+        int col = width / 2;
+        r = getRay(row, col, screen, pt, vd, v2d, epsilon);
+
+//        expResult = new V3D_PointDouble(nq, nq, nq);
+//        result = b1.getIntersection(r);
+//        result = b2.getIntersection(r);
+//        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+    }
+
+    /**
+     * For getting a ray from the camera focal point through the centre of the
+     * screen pixel with ID id.
+     *
+     * @param id The ID of the screen pixel.
+     * @return The ray from the camera focal point through the centre of the
+     * screen pixel.
+     */
+    protected V3D_RayDouble getRay(int row, int col, V3D_RectangleDouble screen,
+            V3D_PointDouble pt, V3D_VectorDouble vd, V3D_VectorDouble v2d,
+            double epsilon) {
+        V3D_VectorDouble rv = v2d.multiply((double) row);
+        V3D_VectorDouble cv = vd.multiply((double) col);
+        V3D_PointDouble rcpt = new V3D_PointDouble(screen.getP());
+        rcpt.translate(rv.add(cv));
+        return new V3D_RayDouble(pt, rcpt);
+    }
+
+    /**
+     * Test of getIntersection method, of class V3D_TriangleDouble.
+     *
+     * Look for some examples here:
+     * https://math.stackexchange.com/questions/1220102/how-do-i-find-the-intersection-of-two-3d-triangles
+     */
+    @Test
+    public void testGetIntersection_V3D_TriangleDouble() {
+        System.out.println("getIntersection");
+        double epsilon = 1d / 10000000d;
+        V3D_TriangleDouble t = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP1P0P0);
+        V3D_TriangleDouble instance = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP1P0P0);
+        V3D_GeometryDouble expResult = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP1P0P0);
+        V3D_GeometryDouble result = instance.getIntersection(t, epsilon);
+        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+        // Test 2
+        t = new V3D_TriangleDouble(pN1N1P0, pP0P2P0, new V3D_PointDouble(3d, -1d, 0d));
+        instance = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP1P0P0);
+        expResult = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP1P0P0);
+        result = instance.getIntersection(t, epsilon);
+        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+        // Test 3
+        t = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP1P0P0);
+        instance = new V3D_TriangleDouble(pN1N1P0, pP0P2P0, new V3D_PointDouble(3d, -1d, 0d));
+        expResult = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP1P0P0);
+        result = instance.getIntersection(t, epsilon);
+        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+        // Test 4
+        t = new V3D_TriangleDouble(pP0P0P0, pP2P0P0, pP2P2P0);
+        instance = new V3D_TriangleDouble(pP1P0P0, new V3D_PointDouble(3d, 0d, 0d), new V3D_PointDouble(3d, 2d, 0d));
+        expResult = new V3D_TriangleDouble(pP1P0P0, pP2P0P0, pP2P1P0);
+        result = instance.getIntersection(t, epsilon);
+        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+//        // Test 5: 4 sides
+//        t = new V3D_TriangleDouble(new V3D_PointDouble(P2, N3, P0), new V3D_PointDouble(P6, P1, P0), new V3D_PointDouble(P2, P5, P0));
+//        instance = new V3D_TriangleDouble(pP1P0P0, new V3D_PointDouble(P3, P0, P0), new V3D_PointDouble(P3, P2, P0));
+//        expResult = new V3D_Polygon(
+//                new V3D_TriangleDouble(pP2P0P0, new V3D_PointDouble(P3, P0, P0),
+//                        pP2P1P0),
+//                new V3D_TriangleDouble(
+//                        new V3D_PointDouble(P3, P0, P0),
+//                        new V3D_PointDouble(P3, P2, P0),
+//                        pP2P1P0));
+//        result = instance.getIntersection(t, e.oom);
+//        //System.out.println(result);
+//        assertEquals(expResult, result);
+//        // Test 6: 5 sides
+//        t = new V3D_TriangleDouble(pP0P0P0, new V3D_PointDouble(P4, P0, P0), new V3D_PointDouble(P2, N4, P0));
+//        instance = new V3D_TriangleDouble(pP0N2P0, pP2P0P0, new V3D_PointDouble(P4, N2, P0));
+//        double N4_3 = double.valueOf(-4).divide(3);
+//        V3D_PointDouble m = new V3D_PointDouble(double.TWO.divide(3), N4_3, P0);
+//        V3D_PointDouble n = new V3D_PointDouble(double.TEN.divide(3), N4_3, P0);
+//        expResult = new V3D_Polygon(
+//                new V3D_TriangleDouble(pP2P0P0, m, n),
+//                //new V3D_TriangleDouble(m, n, pP1N2P0),
+//                new V3D_TriangleDouble(m, n, new V3D_PointDouble(P3, N2, P0)),
+//                new V3D_TriangleDouble(pP1N2P0,
+//                        new V3D_PointDouble(P3, N2, P0),
+//                        n));
+//        result = instance.getIntersection(t, e.oom);
+//        //System.out.println(result);
+//        //boolean equals = expResult.equals(result);
+//        assertEquals(expResult, result);
+//        // Test 6a: 6 sides
+//        t = new V3D_TriangleDouble(pP0P0P0, new V3D_PointDouble(P6, P0, P0), new V3D_PointDouble(P3, N3, P0));
+//        instance = new V3D_TriangleDouble(pP0N2P0, new V3D_PointDouble(P3, P1, P0), new V3D_PointDouble(P6, N2, P0));
+//        expResult = new V3D_Polygon(
+//                new V3D_TriangleDouble(pP2P0P0, new V3D_PointDouble(P4, P0, P0), pP1N1P0),
+//                new V3D_TriangleDouble(pP1N1P0, pP2N2P0, new V3D_PointDouble(P4, N2, P0)),
+//                new V3D_TriangleDouble(
+//                        new V3D_PointDouble(P4, P0, P0),
+//                        new V3D_PointDouble(P4, N2, P0),
+//                        new V3D_PointDouble(P5, N1, P0)),
+//                new V3D_TriangleDouble(new V3D_PointDouble(P4, P0, P0), pP1N1P0,
+//                        new V3D_PointDouble(P4, N2, P0)));
+//        result = instance.getIntersection(t, e.oom);
+//        //System.out.println(result);
+//        //boolean equals = expResult.equals(result);
+//        assertEquals(expResult, result);
+//        // Test 6b: 6 sides
+//        t = new V3D_TriangleDouble(new V3D_PointDouble(P6, P0, P0), pP0P0P0, new V3D_PointDouble(P3, N3, P0));
+//        instance = new V3D_TriangleDouble(pP0N2P0, new V3D_PointDouble(P3, P1, P0), new V3D_PointDouble(P6, N2, P0));
+//        expResult = new V3D_Polygon(
+//                new V3D_TriangleDouble(pP2P0P0, new V3D_PointDouble(P4, P0, P0), pP1N1P0),
+//                new V3D_TriangleDouble(pP1N1P0, pP2N2P0, new V3D_PointDouble(P4, N2, P0)),
+//                new V3D_TriangleDouble(
+//                        new V3D_PointDouble(P4, P0, P0),
+//                        new V3D_PointDouble(P4, N2, P0),
+//                        new V3D_PointDouble(P5, N1, P0)),
+//                new V3D_TriangleDouble(new V3D_PointDouble(P4, P0, P0), pP1N1P0,
+//                        new V3D_PointDouble(P4, N2, P0)));
+//        result = instance.getIntersection(t, e.oom);
+//        //System.out.println(result);
+//        //boolean equals = expResult.equals(result);
+//        assertEquals(expResult, result);
+
+    }
+
+    /**
+     * Test of getGeometry method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetGeometry_V3D_VectorDouble_V3D_VectorDouble() {
+        System.out.println("getGeometry");
+        double epsilon = 1d / 10000000d;
+        V3D_VectorDouble v1;
+        V3D_VectorDouble v2;
+        V3D_GeometryDouble expResult;
+        V3D_GeometryDouble result;
+        // Test 1
+        v1 = P0P0P0;
+        v2 = P0P0P0;
+        expResult = pP0P0P0;
+        result = V3D_TriangleDouble.getGeometry(v1, v2);
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        // Test 2
+        v2 = P1P0P0;
+        expResult = new V3D_LineSegmentDouble(P0P0P0, P0P0P0, P1P0P0);
+        result = V3D_TriangleDouble.getGeometry(v1, v2);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+    }
+
+    /**
+     * Test of translate method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testTranslate() {
+        System.out.println("translate");
+        double epsilon = 1d / 10000000d;
+        V3D_VectorDouble v = P1P0P0;
+        V3D_TriangleDouble instance = new V3D_TriangleDouble(P0P0P0, P1P0P0, P0P1P0, P1P1P0);
+        instance.translate(v);
+        V3D_TriangleDouble expResult = new V3D_TriangleDouble(P0P0P0, P2P0P0, P1P1P0, P2P1P0);
+        assertTrue(expResult.equals(instance, epsilon));
+        // Test 2
+        expResult = new V3D_TriangleDouble(P1P0P0, P1P0P0, P0P1P0, P1P1P0);
+        //System.out.println(instance);
+        //System.out.println(expResult);
+        //boolean te = expResult.equals(instance);
+        assertTrue(expResult.equals(instance, epsilon));
+    }
+
+    /**
+     * Test of getGeometry method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetGeometry_3args_1() {
+        System.out.println("getGeometry");
+        double epsilon = 1d / 10000000d;
+        V3D_PointDouble p;
+        V3D_PointDouble q;
+        V3D_PointDouble r;
+        V3D_GeometryDouble expResult;
+        V3D_GeometryDouble result;
+        // Test 1
+        p = new V3D_PointDouble(pP0P0P0);
+        q = new V3D_PointDouble(pP0P0P0);
+        r = new V3D_PointDouble(pP0P0P0);
+        expResult = new V3D_PointDouble(pP0P0P0);
+        result = V3D_TriangleDouble.getGeometry(p, q, r, epsilon);
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+        // Test 2
+        p = new V3D_PointDouble(pP1P0P0);
+        q = new V3D_PointDouble(pP0P0P0);
+        r = new V3D_PointDouble(pP0P0P0);
+        expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+        result = V3D_TriangleDouble.getGeometry(p, q, r, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 2
+        p = new V3D_PointDouble(pP1P0P0);
+        q = new V3D_PointDouble(pP0P1P0);
+        r = new V3D_PointDouble(pP0P0P0);
+        expResult = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        result = V3D_TriangleDouble.getGeometry(p, q, r, epsilon);
+        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+    }
+
+    /**
+     * Test of getGeometry method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetGeometry_4args() {
+        System.out.println("getGeometry");
+        double epsilon = 1d / 10000000d;
+        V3D_LineSegmentDouble l1;
+        V3D_LineSegmentDouble l2;
+        V3D_LineSegmentDouble l3;
+        V3D_GeometryDouble expResult;
+        V3D_GeometryDouble result;
+        // Test 1
+        l1 = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+        l2 = new V3D_LineSegmentDouble(pP1P0P0, pP1P1P0);
+        l3 = new V3D_LineSegmentDouble(pP1P1P0, pP0P0P0);
+        expResult = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP1P1P0);
+        result = V3D_TriangleDouble.getGeometry(l1, l2, l3, epsilon);
+        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+        // Test 2
+        l1 = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+        l2 = new V3D_LineSegmentDouble(pP1P1P0, pP0P2P0);
+        l3 = new V3D_LineSegmentDouble(pN1P2P0, pN1P1P0);
+//        expResult = new V3D_Polygon(
+//                new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP1P1P0),
+//                new V3D_TriangleDouble(pP1P1P0, pP0P2P0, pN1P2P0),
+//                new V3D_TriangleDouble(pP0P0P0, pN1P1P0, pN1P2P0),
+//                new V3D_TriangleDouble(pP0P0P0, pP1P1P0, pN1P2P0)
+//        );
+//        result = V3D_TriangleDouble.getGeometry(l1, l2, l3);
+//        assertEquals(expResult, result);
+
+//        assertTrue(expResult.equals(result));
+//        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+//        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result));
+//        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreOrientation((V3D_LineSegmentDouble) result));
+    }
+
+    /**
+     * Test of getGeometry method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetGeometry_3args_2() {
+        System.out.println("getGeometry");
+        double epsilon = 1d / 10000000d;
+        V3D_VectorDouble v1;
+        V3D_VectorDouble v2;
+        V3D_GeometryDouble expResult;
+        V3D_GeometryDouble result;
+        // Test 1
+        v1 = P0P0P0;
+        v2 = P0P0P0;
+        expResult = pP0P0P0;
+        result = V3D_TriangleDouble.getGeometry(v1, v2);
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        // Test 2
+        v1 = P0P0P0;
+        v2 = P1P0P0;
+        expResult = new V3D_LineSegmentDouble(pP1P0P0, pP0P0P0);
+        result = V3D_TriangleDouble.getGeometry(v1, v2);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+    }
+
+    /**
+     * Test of getGeometry method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetGeometry_V3D_LineSegmentDouble_V3D_LineSegmentDouble() {
+        System.out.println("getGeometry");
+        double epsilon = 1d / 10000000d;
+        V3D_LineSegmentDouble l1;
+        V3D_LineSegmentDouble l2;
+        V3D_GeometryDouble expResult;
+        V3D_GeometryDouble result;
+        // Test 1
+        l1 = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+        l2 = new V3D_LineSegmentDouble(pP0P0P0, pP0P1P0);
+        result = V3D_TriangleDouble.getGeometry(l1, l2, epsilon);
+        expResult = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+    }
+
+    /**
+     * Test of getOpposite method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetOpposite() {
+        System.out.println("getOpposite");
+        double epsilon = 1d / 10000000d;
+        V3D_LineSegmentDouble l = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+        V3D_TriangleDouble instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        V3D_PointDouble expResult = pP0P1P0;
+        V3D_PointDouble result = instance.getOpposite(l, epsilon);
+        assertTrue(expResult.equals(result, epsilon));
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_TriangleDouble covered by
+     * {@link #testGetDistanceSquared_V3D_PointDouble()}.
+     */
+    @Test
+    public void testGetDistance_V3D_PointDouble() {
+        System.out.println("getDistance");
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_PointDouble() {
+        System.out.println("getDistanceSquared");
+        double epsilon = 1d / 10000000d;
+        V3D_PointDouble p;
+        V3D_TriangleDouble t;
+        double expResult;
+        // Test 1
+        p = pP0P0P0;
+        t = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        expResult = 0d;
+        double result = t.getDistanceSquared(p, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 2
+        p = pP1P1P0;
+        t = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        expResult = 1d / 2d;
+        result = t.getDistanceSquared(p, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 3
+        p = pN1N1P1;
+        t = new V3D_TriangleDouble(pN2N2P0, pP2N2P0, pN2P2P0);
+        expResult = 1d;
+        result = t.getDistanceSquared(p, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 3
+        p = new V3D_PointDouble(-1, -1, 10);
+        t = new V3D_TriangleDouble(pN2N2P0, pP2N2P0, pN2P2P0);
+        expResult = 100d;
+        result = t.getDistanceSquared(p, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 4
+        p = new V3D_PointDouble(-2, -2, 10);
+        t = new V3D_TriangleDouble(pN2N2P0, pP2N2P0, pN2P2P0);
+        expResult = 100d;
+        result = t.getDistanceSquared(p, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 5
+        p = new V3D_PointDouble(-3, -3, 0);
+        t = new V3D_TriangleDouble(pN2N2P0, pP2N2P0, pN2P2P0);
+        expResult = 2d;
+        result = t.getDistanceSquared(p, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 6
+        p = new V3D_PointDouble(-3, -3, 1);
+        t = new V3D_TriangleDouble(pN2N2P0, pP2N2P0, pN2P2P0);
+        expResult = 3d;
+        result = t.getDistanceSquared(p, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 7
+        p = new V3D_PointDouble(-3, -3, 10);
+        t = new V3D_TriangleDouble(pN2N2P0, pP2N2P0, pN2P2P0);
+        expResult = 102d;
+        result = t.getDistanceSquared(p, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 8
+        p = new V3D_PointDouble(0, 0, 0);
+        t = new V3D_TriangleDouble(pN1P0P1, pP1P1N1, pP2N2N2);
+        expResult = 0d;
+        result = t.getDistanceSquared(p, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 9
+        p = new V3D_PointDouble(0, 0, 0);
+        t = new V3D_TriangleDouble(pN1P0P1, pP1P1N1, pP2N2N2);
+        p.translate(t.getPl().n.getUnitVector().multiply(10));
+        expResult = 100d;
+        result = t.getDistanceSquared(p, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_TriangleDouble covered by
+     * {@link #testGetDistanceSquared_V3D_LineDouble()}.
+     */
+    @Test
+    public void testGetDistance_V3D_LineDouble() {
+        System.out.println("getDistance");
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_LineDouble() {
+        System.out.println("getDistanceSquared");
+        double epsilon = 1d / 10000000d;
+        V3D_LineDouble l;
+        double expResult;
+        double result;
+        V3D_TriangleDouble instance;
+        // Test 1
+        l = new V3D_LineDouble(pP0P0P0, pP1P0P0);
+        instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        expResult = 0d;
+        result = instance.getDistanceSquared(l, epsilon);
+        assertEquals(expResult, result);
+        // Test 2
+        l = new V3D_LineDouble(pP0P0P1, pP1P0P1);
+        instance = new V3D_TriangleDouble(pN2N2P0, pP2N2P0, pN2P2P0);
+        expResult = 1d;
+        result = instance.getDistanceSquared(l, epsilon);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_TriangleDouble covered by
+     * {@link #testGetDistanceSquared_V3D_LineSegmentDouble()}.
+     */
+    @Test
+    public void testGetDistance_V3D_LineSegmentDouble() {
+        System.out.println("getDistance");
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_LineSegmentDouble() {
+        System.out.println("getDistanceSquared");
+        double epsilon = 1d / 10000000d;
+        V3D_LineSegmentDouble l;
+        V3D_TriangleDouble instance;
+        double expResult;
+        double result;
+        // Test 1
+        l = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+        instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        expResult = 0d;
+        result = instance.getDistanceSquared(l, epsilon);
+        assertEquals(expResult, result);
+        // Test 2
+        l = new V3D_LineSegmentDouble(pP0P0P1, pP1P0P1);
+        instance = new V3D_TriangleDouble(pN2N2P0, pP2N2P0, pN2P2P0);
+        expResult = 1d;
+        result = instance.getDistanceSquared(l, epsilon);
+        assertEquals(expResult, result);
+        // Test 3
+        l = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+        instance = new V3D_TriangleDouble(pN1P0P0, pN1P1P0, pN1P0P1);
+        expResult = 1d;
+        result = instance.getDistanceSquared(l, epsilon);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_TriangleDouble covered by
+     * {@link #testGetDistanceSquared_V3D_PlaneDouble()}.
+     */
+    @Test
+    public void testGetDistance_V3D_PlaneDouble() {
+        System.out.println("getDistance");
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_PlaneDouble() {
+        System.out.println("getDistanceSquared");
+        double epsilon = 1d / 10000000d;
+        V3D_PlaneDouble pl;
+        V3D_TriangleDouble instance;
+        double expResult;
+        double result;
+        // Test 1
+        pl = new V3D_PlaneDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        expResult = 0d;
+        result = instance.getDistanceSquared(pl);
+        assertEquals(expResult, result);
+        // Test 2
+        pl = new V3D_PlaneDouble(pP0P0P1, pP1P0P1, pP0P1P1);
+        instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        expResult = 1d;
+        result = instance.getDistanceSquared(pl);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_TriangleDouble covered by
+     * {@link #testGetDistanceSquared_V3D_TriangleDouble()}.
+     */
+    @Test
+    public void testGetDistance_V3D_TriangleDouble() {
+        System.out.println("getDistance");
+    }
+
+    /**
+     * Test of getDistanceSquared method, of class V3D_TriangleDouble.
+     */
+    @Test
+    public void testGetDistanceSquared_V3D_TriangleDouble() {
+        System.out.println("getDistanceSquared");
+        double epsilon = 1d / 10000000d;
+        V3D_TriangleDouble t;
+        V3D_TriangleDouble instance;
+        double expResult;
+        double result;
+        // Test 1
+        t = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        expResult = 0d;
+        result = instance.getDistanceSquared(t, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 2
+        t = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        instance = new V3D_TriangleDouble(pP0P0P1, pP1P0P1, pP0P1P1);
+        expResult = 1d;
+        result = instance.getDistanceSquared(t, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 3
+        t = new V3D_TriangleDouble(pN2N2P0, pP2N2P0, pN2P2P0);
+        instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        expResult = 0d;
+        result = instance.getDistanceSquared(t, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 4
+        t = new V3D_TriangleDouble(pN2N2P0, pP2N2P0, pN2P2P0);
+        instance = new V3D_TriangleDouble(pP0P0P1, pP1P0P1, pP0P1P1);
+        expResult = 1d;
+        result = instance.getDistanceSquared(t, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+        // Test 5
+        t = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+        instance = new V3D_TriangleDouble(pN1P0P0, pN1P0P1, pN1P1P0);
+        expResult = 1d;
+        result = instance.getDistanceSquared(t, epsilon);
+        assertTrue(Math_Double.equals(expResult, result, epsilon));
+    }
+
+    /**
+     * Test of getDistance method, of class V3D_TriangleDouble covered by
+     * {@link #testGetDistanceSquared_V3D_Tetrahedron()}.
+     */
+    @Test
+    public void testGetDistance_V3D_Tetrahedron() {
+        System.out.println("getDistance");
+    }
+}

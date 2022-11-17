@@ -270,7 +270,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_LineSegment.
      */
     @Test
-    public void testGetIntersection_V3D_LineSegment_boolean() {
+    public void testGetIntersection_V3D_LineSegment_int_RoundingMode() {
         System.out.println("getIntersection");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;

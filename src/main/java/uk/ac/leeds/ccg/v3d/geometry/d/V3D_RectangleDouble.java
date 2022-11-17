@@ -382,7 +382,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
                 if (i2 == null) {
                     return i1;
                 } else {
-                    return join(i1, i2);
+                    return join(i1, i2, epsilon);
                 }
             }
         } else {
@@ -563,14 +563,16 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      *
      * @param pol1 A point or line segment to join.
      * @param pol2 A point or line segment to join.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return A point or line segment.
      */
     protected V3D_FiniteGeometryDouble join(V3D_FiniteGeometryDouble pol1,
-            V3D_FiniteGeometryDouble pol2) {
+            V3D_FiniteGeometryDouble pol2, double epsilon) {
         if (pol1 instanceof V3D_LineSegmentDouble l1) {
             if (pol2 instanceof V3D_LineSegmentDouble l2) {
-                return V3D_LineSegmentDouble.getGeometry(l1.getP(), l1.getQ(),
-                        l2.getP(), l2.getQ());
+                return V3D_LineSegmentDouble.getGeometry(epsilon, l1.getP(), 
+                        l1.getQ(),                        l2.getP(), l2.getQ());
             } else {
                 return l1;
             }
@@ -578,7 +580,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
             if (pol2 instanceof V3D_LineSegmentDouble l2) {
                 return l2;
             } else {
-                if (((V3D_PointDouble) pol1).equals((V3D_PointDouble) pol2)) {
+                if (((V3D_PointDouble) pol1).equals((V3D_PointDouble) pol2, epsilon)) {
                     return pol1;
                 }
                 return (V3D_PointDouble) pol1;
@@ -605,7 +607,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
             if (i2 == null) {
                 return i1;
             } else {
-                return join(i1, i2);
+                return join(i1, i2, epsilon);
             }
         }
 //        V3D_Point lp = l.getP(oom);
@@ -756,7 +758,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
             if (rspi == null) {
                 return pqri;
             }
-            return join(pqri, rspi);
+            return join(pqri, rspi, epsilon);
         }
     }
 
@@ -820,7 +822,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
             if (grsp == null) {
                 return gpqr;
             }
-            return join(gpqr, grsp);
+            return join(gpqr, grsp, epsilon);
         }
     }
 
@@ -928,14 +930,13 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      * @param r The rectangle to test if it is equal to this.
      * @return {@code true} iff this is equal to r.
      */
-    //@Overrides
-    public boolean equals(V3D_RectangleDouble r) {
+    public boolean equals(V3D_RectangleDouble r, double epsilon) {
         V3D_PointDouble[] pts = getPoints();
         V3D_PointDouble[] rpts = r.getPoints();
         for (var x : pts) {
             boolean found = false;
             for (var y : rpts) {
-                if (x.equals(y)) {
+                if (x.equals(y, epsilon)) {
                     found = true;
                     break;
                 }
@@ -947,7 +948,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
         for (var x : rpts) {
             boolean found = false;
             for (var y : pts) {
-                if (x.equals(y)) {
+                if (x.equals(y, epsilon)) {
                     found = true;
                     break;
                 }
