@@ -714,6 +714,42 @@ public class V3D_TriangleTest extends V3D_Test {
         expResult = new V3D_Triangle(pP1P0P0, pP2P0P0, pP2P1P0, oom, rm);
         result = instance.getIntersection(t, oom, rm);
         assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
+        // Test 5: From  https://stackoverflow.com/a/29563443/1998054
+        t = new V3D_Triangle(new V3D_Point(-21, -72, 63),
+                new V3D_Point(-78, 99, 40),
+                new V3D_Point(-19, -78, -83), oom, rm);
+        instance = new V3D_Triangle(new V3D_Point(96, 77, -51),
+                new V3D_Point(-95, -1, -16),
+                new V3D_Point(9, 5, -21), oom, rm);
+        // This expected result is not given in the answer on stack overflow.
+        expResult = new V3D_LineSegment(
+                new V3D_Point(-34.630630630630634, -31.108108108108105, -5.95495495495496),
+                new V3D_Point(-48.45827629341561, 10.37482888024681, -21.586983320506448), oom, rm);
+        result = instance.getIntersection(t, oom, rm);
+        //System.out.println(result);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
+        // Test 6: From https://web.mst.edu/~chaman/home/pubs/2015WimoTriangleTrianglePublished.pdf
+        t = new V3D_Triangle(new V3D_Point(0, 0, 0),
+                new V3D_Point(6, 0, 0),
+                new V3D_Point(0, 6, 0), oom, rm);
+        instance = new V3D_Triangle(new V3D_Point(0, 3, 3),
+                new V3D_Point(0, 3, -3),
+                new V3D_Point(-3, 3, 3), oom, rm);
+        // This expected result is not given in the answer on stack overflow.
+        expResult = new V3D_Point(0, 3, 0);
+        result = instance.getIntersection(t, oom, rm);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+        // Test 7: From https://web.mst.edu/~chaman/home/pubs/2015WimoTriangleTrianglePublished.pdf
+        t = new V3D_Triangle(new V3D_Point(0, 6, 0),
+                new V3D_Point(6, 0, 0),
+                new V3D_Point(0, 0, 0), oom, rm);
+        instance = new V3D_Triangle(new V3D_Point(1, 3, 0),
+                new V3D_Point(3, 1, 0),
+                new V3D_Point(2, 2, 4), oom, rm);
+        result = instance.getIntersection(t, oom, rm);
+        expResult = new V3D_LineSegment(new V3D_Point(1, 3, 0),
+                new V3D_Point(3, 1, 0), oom, rm);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
 //        // Test 5: 4 sides
 //        t = new V3D_Triangle(new V3D_Point(P2, N3, P0), new V3D_Point(P6, P1, P0), new V3D_Point(P2, P5, P0));
 //        instance = new V3D_Triangle(pP1P0P0, new V3D_Point(P3, P0, P0), new V3D_Point(P3, P2, P0));

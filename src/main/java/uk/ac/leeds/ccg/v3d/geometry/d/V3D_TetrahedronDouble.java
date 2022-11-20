@@ -1460,7 +1460,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_TetrahedronDouble t, 
             double epsilon) {
-        if (!getEnvelope().isIntersectedBy(t.getEnvelope())) {
+        if (!getEnvelope().isIntersectedBy(t.getEnvelope(), epsilon)) {
             return null;
         }
         V3D_FiniteGeometryDouble pqri = getIntersection(t.getPqr(), epsilon);

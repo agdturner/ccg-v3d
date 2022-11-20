@@ -247,8 +247,20 @@ public class V3D_EnvelopeDouble implements Serializable {
      * @return {@code true} if this intersects with {@code e}.
      */
     public boolean isIntersectedBy(V3D_EnvelopeDouble e) {
-        if (isBeyond(this, e)) {
-            return !isBeyond(e, this);
+        return isIntersectedBy(e, 0.0d);
+    }
+
+    /**
+     * If {@code e} touches, or overlaps then it intersects.
+     *
+     * @param e The Vector_Envelope2D to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if this intersects with {@code e}.
+     */
+    public boolean isIntersectedBy(V3D_EnvelopeDouble e, double epsilon) {
+        if (isBeyond(this, e, epsilon)) {
+            return !isBeyond(e, this, epsilon);
         } else {
             return true;
         }
@@ -260,19 +272,33 @@ public class V3D_EnvelopeDouble implements Serializable {
      * @return {@code true} iff e1 is beyond e2 (i.e. they do not touch or
      * intersect).
      */
-    public static boolean isBeyond(V3D_EnvelopeDouble e1, V3D_EnvelopeDouble e2) {
-        if (e1.getXMax() < e2.getXMin()) {
+    public static boolean isBeyond(V3D_EnvelopeDouble e1,
+            V3D_EnvelopeDouble e2) {
+        return isBeyond(e1, e2, 0.0d);
+    }
+
+    /**
+     * @param e1 The envelope to test.
+     * @param e2 The envelope to test against.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} iff e1 is beyond e2 (i.e. they do not touch or
+     * intersect).
+     */
+    public static boolean isBeyond(V3D_EnvelopeDouble e1, V3D_EnvelopeDouble e2,
+            double epsilon) {
+        if (e1.getXMax() + epsilon < e2.getXMin()) {
             return true;
-        } else if (e1.getXMin() > e2.getXMax()) {
+        } else if (e1.getXMin() - epsilon > e2.getXMax()) {
             return true;
-        } else if (e1.getYMax() < e2.getYMin()) {
+        } else if (e1.getYMax() + epsilon < e2.getYMin()) {
             return true;
-        } else if (e1.getYMin() > e2.getYMax()) {
+        } else if (e1.getYMin() - epsilon > e2.getYMax()) {
             return true;
-        } else if (e1.getZMax() < e2.getZMin()) {
+        } else if (e1.getZMax() + epsilon < e2.getZMin()) {
             return true;
         } else {
-            return e1.getZMin() > e2.getZMax();
+            return e1.getZMin() - epsilon > e2.getZMax();
         }
     }
 
@@ -443,11 +469,12 @@ public class V3D_EnvelopeDouble implements Serializable {
      *
      * @param pt The point from which observation of this is occurring.
      * @param v The vector pointing to the right of the viewport.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return A viewport - a rectangle between pt and this such that all of
      * this is contained in the planes from the point through the viewport.
      */
-    public V3D_RectangleDouble getViewport(V3D_PointDouble pt, 
+    public V3D_RectangleDouble getViewport(V3D_PointDouble pt,
             V3D_VectorDouble v, double epsilon) {
         V3D_RectangleDouble r;
         pts = getPoints();
@@ -581,7 +608,8 @@ public class V3D_EnvelopeDouble implements Serializable {
      *
      * @param pt The point from which observation of this is occuring.
      * @param v The vector pointing to the right of the viewport.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return A viewport - a rectangle between pt and this such that all of
      * this is contained in the planes from the point through the viewport.
      */
@@ -705,13 +733,14 @@ public class V3D_EnvelopeDouble implements Serializable {
      * @param pt The point from which observation of this is to occur.
      * @param v A vector pointing to the right of the viewport. This should be
      * orthogonal to the vector from pt to the centroid.
-     * @param zoomFactor A zoom factor. A factor of 2 and the screen will be 
-     * twice as close to the object. 
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param zoomFactor A zoom factor. A factor of 2 and the screen will be
+     * twice as close to the object.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return A viewport - a rectangle between pt and this such that all of
      * this is contained in the planes from the point through the viewport.
      */
-    public V3D_RectangleDouble getViewport3(V3D_PointDouble pt, 
+    public V3D_RectangleDouble getViewport3(V3D_PointDouble pt,
             V3D_VectorDouble v, double zoomFactor, double epsilon) {
         V3D_RectangleDouble r;
         // Get the plane of the viewport.
@@ -721,7 +750,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         V3D_PointDouble plpt = new V3D_PointDouble(c);
         V3D_VectorDouble cpt = new V3D_VectorDouble(c, pt);
         V3D_VectorDouble vo = cpt.getUnitVector();
-        plpt.translate(vo.multiply(d/zoomFactor));
+        plpt.translate(vo.multiply(d / zoomFactor));
         V3D_PlaneDouble pl0 = new V3D_PlaneDouble(plpt, cpt);
         V3D_VectorDouble v2 = cpt.getCrossProduct(v);
         // Find top, bottom, left and right planes

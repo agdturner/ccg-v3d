@@ -632,6 +632,19 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         expResult = new V3D_LineSegmentDouble(new V3D_PointDouble(1, 3, 0),
                 new V3D_PointDouble(3, 1, 0));
         assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 8: From https://math.stackexchange.com/questions/1220102/how-do-i-find-the-intersection-of-two-3d-triangles
+        t = new V3D_TriangleDouble(new V3D_PointDouble(6, 8, 3),
+                new V3D_PointDouble(6, 8, -2),
+                new V3D_PointDouble(6, -4, -2));
+        instance = new V3D_TriangleDouble(new V3D_PointDouble(0, 5, 0),
+                new V3D_PointDouble(0, 0, 0),
+                new V3D_PointDouble(8, 0, 0));
+        result = instance.getIntersection(t, epsilon);
+        expResult = new V3D_LineSegmentDouble(new V3D_PointDouble(6, 1.25d, 0),
+                new V3D_PointDouble(6, 0.8d, 0));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        
+        
         
 //        // Test 5: 4 sides
 //        t = new V3D_TriangleDouble(new V3D_PointDouble(P2, N3, P0), new V3D_PointDouble(P6, P1, P0), new V3D_PointDouble(P2, P5, P0));

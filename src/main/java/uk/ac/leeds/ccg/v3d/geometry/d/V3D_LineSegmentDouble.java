@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
+import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.v3d.geometry.*;
 
 /**
@@ -368,7 +369,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * @return {@code true} if {@code this} is intersected by {@code pv}.
      */
     public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
-        boolean ei = getEnvelope().isIntersectedBy(pt.getEnvelope());
+        boolean ei = getEnvelope().isIntersectedBy(pt.getEnvelope(), epsilon);
         if (ei) {
             if (l.isIntersectedBy(pt, epsilon)) {
                 V3D_PointDouble tp = getP();
@@ -383,9 +384,10 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                 }
                 double d = tp.getDistance(tq);
                 double apb = a + b;
-                if (apb <= d) {
-                    return true;
-                }
+                return Math_Double.equals(apb, d, epsilon);
+//                if (apb <= d) {
+//                    return true;
+//                }
             }
         }
         return false;
@@ -444,7 +446,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble ls,
             double epsilon) {
-        if (!getEnvelope().isIntersectedBy(ls.getEnvelope())) {
+        if (!getEnvelope().isIntersectedBy(ls.getEnvelope(), epsilon)) {
             return null;
         }
         // Get intersection of infinite lines. 
@@ -795,22 +797,22 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      */
     public static V3D_FiniteGeometryDouble getGeometry(V3D_PointDouble p,
             V3D_PointDouble q, V3D_PointDouble r, double epsilon) {
-        if (p.equals(q)) {
-            return getGeometry(p, r);
-        } else if (q.equals(r)) {
-            return getGeometry(p, r);
-        } else if (p.equals(r)) {
-            return getGeometry(p, q);
+        if (p.equals(q, epsilon)) {
+            return getGeometry(epsilon, p, r);
+        } else if (q.equals(r, epsilon)) {
+            return getGeometry(epsilon, p, r);
+        } else if (p.equals(r, epsilon)) {
+            return getGeometry(epsilon, p, q);
         } else {
-            V3D_LineSegmentDouble ls = new V3D_LineSegmentDouble(p, q);
+            V3D_LineSegmentDouble ls = new V3D_LineSegmentDouble(epsilon, p, q);
             if (ls.isIntersectedBy(r, epsilon)) {
                 return ls;
             } else {
-                ls = new V3D_LineSegmentDouble(p, r);
+                ls = new V3D_LineSegmentDouble(epsilon, p, r);
                 if (ls.isIntersectedBy(q, epsilon)) {
                     return ls;
                 } else {
-                    return new V3D_LineSegmentDouble(q, r);
+                    return new V3D_LineSegmentDouble(epsilon, q, r);
                 }
             }
         }

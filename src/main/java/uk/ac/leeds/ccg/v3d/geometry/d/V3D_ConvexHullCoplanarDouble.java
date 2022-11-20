@@ -81,10 +81,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
     /**
      * Create a new instance.
      *
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @param triangles A non-empty list of coplanar triangles.
      */
-    public V3D_ConvexHullCoplanarDouble(double epsilon, 
+    public V3D_ConvexHullCoplanarDouble(double epsilon,
             V3D_TriangleDouble... triangles) {
         this(triangles[0].getPl().n, epsilon, V3D_TriangleDouble.getPoints(triangles));
     }
@@ -93,7 +94,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * Create a new instance.
      *
      * @param n The normal for the plane.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @param points A non-empty list of points in a plane given by n.
      */
     public V3D_ConvexHullCoplanarDouble(V3D_VectorDouble n, double epsilon,
@@ -235,7 +237,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
     /**
      * Create a new instance.
      *
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @param gs The input convex hulls.
      */
     public V3D_ConvexHullCoplanarDouble(double epsilon, V3D_ConvexHullCoplanarDouble... gs) {
@@ -248,9 +251,10 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * @param ch The convex hull to add to the convex hull with t.
      * @param t The triangle used to set the normal and to add to the convex
      * hull with ch.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      */
-    public V3D_ConvexHullCoplanarDouble(V3D_ConvexHullCoplanarDouble ch, 
+    public V3D_ConvexHullCoplanarDouble(V3D_ConvexHullCoplanarDouble ch,
             V3D_TriangleDouble t, double epsilon) {
         this(ch.triangles.get(0).getPl().n, epsilon, V3D_FiniteGeometryDouble.getPoints(ch, t));
     }
@@ -361,7 +365,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * effectively a rectangle, the rectangle is returned. Otherwise this is
      * returned.
      *
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return Either a triangle, rectangle or this.
      */
     public V3D_FiniteGeometryDouble simplify(double epsilon) {
@@ -409,7 +414,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
 
     /**
      * @param pt The point.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if this intersects with {@code pt}.
      */
     @Deprecated
@@ -453,7 +459,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * Get the intersection between this and the plane {@code p}.
      *
      * @param p The plane to intersect with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The V3D_Geometry.
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_PlaneDouble p,
@@ -468,10 +475,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * Get the intersection between the geometry and the triangle {@code t}.
      *
      * @param t The triangle to intersect with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometryDouble getIntersection(V3D_TriangleDouble t, 
+    public V3D_FiniteGeometryDouble getIntersection(V3D_TriangleDouble t,
             double epsilon) {
         // Create a set all the intersecting triangles from this.
         List<V3D_PointDouble> ts = new ArrayList<>();
@@ -519,7 +527,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * @param p1
      * @param n
      * @param index
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return the number of points added.
      */
     private void getConvexHull0(ArrayList<V3D_PointDouble> pts,
@@ -654,7 +663,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
     /**
      * If all {@link #triangles} form a single triangle return true
      *
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff this is a rectangle.
      */
     public boolean isRectangle(double epsilon) {
@@ -671,7 +681,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      *
      * @param pl The plane that clips.
      * @param p A point that is used to return the side of the clipped triangle.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return null, the whole or a part of this.
      */
     public V3D_FiniteGeometryDouble clip(V3D_PlaneDouble pl, V3D_PointDouble p,
@@ -720,10 +731,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * @param t The triangle to clip this with.
      * @param pt A point that is used to return the side of this that is
      * clipped.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return null, the whole or a part of this.
      */
-    public V3D_FiniteGeometryDouble clip(V3D_TriangleDouble t, 
+    public V3D_FiniteGeometryDouble clip(V3D_TriangleDouble t,
             V3D_PointDouble pt, double epsilon) {
         V3D_PointDouble tp = t.getP();
         V3D_PointDouble tq = t.getQ();
@@ -794,7 +806,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * is returned. If four or more are different then a V3D_ConvexHullCoplanar
      * is returned.
      *
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @param pts The points.
      * @return Either a V3D_Point, V3D_LineSegment, V3D_Triangle, or
      * V3D_ConvexHullCoplanar.
