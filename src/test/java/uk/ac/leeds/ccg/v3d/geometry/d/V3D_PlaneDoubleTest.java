@@ -3237,7 +3237,11 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         expResult = pP0P0P2;
         result = instance.getIntersection(l, epsilon);
         assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
-
+        // Test 11
+        l = new V3D_LineSegmentDouble(new V3D_PointDouble(4d,4d, 0d), new V3D_PointDouble(5d,5d,0d));
+        instance = new V3D_PlaneDouble(new V3D_PointDouble(6d,6d,0d), new V3D_VectorDouble(30d, 30d, 0d));
+        result = instance.getIntersection(l, epsilon);
+        assertNull(result);
     }
 
     /**

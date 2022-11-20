@@ -1065,16 +1065,17 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                                 }
                             }
                         } else {
+                            //return null;
                             V3D_FiniteGeometryDouble pqplil = getPQPl().getIntersection(l, epsilon);
                             V3D_FiniteGeometryDouble qrplil = getQRPl().getIntersection(l, epsilon);
                             V3D_FiniteGeometryDouble rpplil = getRPPl().getIntersection(l, epsilon);
                             if (pqplil == null) {
                                 if (qrplil == null) {
-                                    if (rpplil == null) {
+                                    //if (rpplil == null) {
                                         return null;
-                                    } else {
-                                        return rpplil;
-                                    }
+                                    //} else {
+                                    //    return rpplil;
+                                    //}
                                 } else {
                                     if (qrplil instanceof V3D_LineSegmentDouble) {
                                         return null;
