@@ -928,6 +928,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
 
     /**
      * @param r The rectangle to test if it is equal to this.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff this is equal to r.
      */
     public boolean equals(V3D_RectangleDouble r, double epsilon) {

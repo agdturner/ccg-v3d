@@ -1319,7 +1319,19 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                                 }
                             }
                         } else {
-                            throw new RuntimeException("Exception with triangle-triangle intersection.");
+                            V3D_FiniteGeometry pqplil = getPQPl(oom, rm).getIntersection(l, oom, rm);
+                            V3D_FiniteGeometry qrplil = getQRPl(oom, rm).getIntersection(l, oom, rm);
+                            V3D_FiniteGeometry rpplil = getRPPl(oom, rm).getIntersection(l, oom, rm);
+                            if (pqplil instanceof V3D_Point pqplilp) {
+                                if (qrplil instanceof V3D_Point qrplilp) {
+                                    return new V3D_LineSegment(pqplilp, qrplilp, oom, rm);
+                                } else {
+                                    return new V3D_LineSegment(pqplilp, (V3D_Point) rpplil, oom, rm);
+                                }
+                            } else {
+                                return new V3D_LineSegment((V3D_Point) qrplil, (V3D_Point) rpplil, oom, rm);
+                            }
+                            //throw new RuntimeException("Exception with triangle-triangle intersection.");
                         }
                     }
                 } else {

@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
 
 /**
  * Test of V3D_TriangleDouble class.
@@ -491,23 +492,23 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         V3D_PointDouble rtf = new V3D_PointDouble(offset, new V3D_VectorDouble(1 * multiplier, 1 * multiplier, -1 * multiplier));
         V3D_PointDouble rta = new V3D_PointDouble(offset, new V3D_VectorDouble(1 * multiplier, 1 * multiplier, 1 * multiplier));
         // BLUE
-        V3D_TriangleDouble b1 = new V3D_TriangleDouble(centroid, lbf, ltf, rtf);
-        V3D_TriangleDouble b2 = new V3D_TriangleDouble(centroid, lbf, rbf, rtf);
+        V3D_TriangleDouble b1 = new V3D_TriangleDouble(lbf, ltf, rtf);
+        V3D_TriangleDouble b2 = new V3D_TriangleDouble(lbf, rbf, rtf);
         // RED
-        V3D_TriangleDouble r1 = new V3D_TriangleDouble(centroid, lbf, ltf, lta);
-        V3D_TriangleDouble r2 = new V3D_TriangleDouble(centroid, lbf, lba, lta);
+        V3D_TriangleDouble r1 = new V3D_TriangleDouble(lbf, ltf, lta);
+        V3D_TriangleDouble r2 = new V3D_TriangleDouble(lbf, lba, lta);
         // YELLOW
-        V3D_TriangleDouble y1 = new V3D_TriangleDouble(centroid, lba, lta, rta);
-        V3D_TriangleDouble y2 = new V3D_TriangleDouble(centroid, lba, rba, rta);
+        V3D_TriangleDouble y1 = new V3D_TriangleDouble(lba, lta, rta);
+        V3D_TriangleDouble y2 = new V3D_TriangleDouble(lba, rba, rta);
         // GREEN
-        V3D_TriangleDouble g1 = new V3D_TriangleDouble(centroid, rbf, rtf, rta);
-        V3D_TriangleDouble g2 = new V3D_TriangleDouble(centroid, rbf, rta, rba);
+        V3D_TriangleDouble g1 = new V3D_TriangleDouble(rbf, rtf, rta);
+        V3D_TriangleDouble g2 = new V3D_TriangleDouble(rbf, rta, rba);
         // ORANGE
-        V3D_TriangleDouble o1 = new V3D_TriangleDouble(centroid, ltf, lta, rta);
-        V3D_TriangleDouble o2 = new V3D_TriangleDouble(centroid, rtf, ltf, rta);
+        V3D_TriangleDouble o1 = new V3D_TriangleDouble(ltf, lta, rta);
+        V3D_TriangleDouble o2 = new V3D_TriangleDouble(rtf, ltf, rta);
         // PINK
-        V3D_TriangleDouble p1 = new V3D_TriangleDouble(centroid, lbf, rbf, rba);
-        V3D_TriangleDouble p2 = new V3D_TriangleDouble(centroid, lbf, lba, rba);
+        V3D_TriangleDouble p1 = new V3D_TriangleDouble(lbf, rbf, rba);
+        V3D_TriangleDouble p2 = new V3D_TriangleDouble(lbf, lba, rba);
         points[0] = lbf;
         points[1] = lba;
         points[2] = ltf;
@@ -524,7 +525,8 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         pt.translate(direction.multiply(radius * 2d));
         V3D_PlaneDouble pl = new V3D_PlaneDouble(pt, new V3D_VectorDouble(pt, envelope.getCentroid()));
         V3D_VectorDouble pv = pl.getPV();
-        V3D_RectangleDouble screen = envelope.getViewport3(pt, pv, epsilon);
+        double zoomFactor = 1.0d;
+        V3D_RectangleDouble screen = envelope.getViewport3(pt, pv, zoomFactor, epsilon);
         V3D_TriangleDouble pqr = screen.getPQR();
         double screenWidth = pqr.getPQ().getLength();
         double screenHeight = screenWidth;
@@ -594,6 +596,43 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         expResult = new V3D_TriangleDouble(pP1P0P0, pP2P0P0, pP2P1P0);
         result = instance.getIntersection(t, epsilon);
         assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+        // Test 5: From  https://stackoverflow.com/a/29563443/1998054
+        t = new V3D_TriangleDouble(new V3D_PointDouble(-21, -72, 63),
+                new V3D_PointDouble(-78, 99, 40),
+                new V3D_PointDouble(-19, -78, -83));
+        instance = new V3D_TriangleDouble(new V3D_PointDouble(96, 77, -51),
+                new V3D_PointDouble(-95, -1, -16),
+                new V3D_PointDouble(9, 5, -21));
+        // This expected result is not given in the answer on stack overflow.
+        expResult = new V3D_LineSegmentDouble(
+                new V3D_PointDouble(-34.630630630630634, -31.108108108108105, -5.95495495495496),
+                new V3D_PointDouble(-48.45827629341561, 10.37482888024681, -21.586983320506448));
+        result = instance.getIntersection(t, epsilon);
+        //System.out.println(result);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        // Test 6: From https://web.mst.edu/~chaman/home/pubs/2015WimoTriangleTrianglePublished.pdf
+        t = new V3D_TriangleDouble(new V3D_PointDouble(0, 0, 0),
+                new V3D_PointDouble(6, 0, 0),
+                new V3D_PointDouble(0, 6, 0));
+        instance = new V3D_TriangleDouble(new V3D_PointDouble(0, 3, 3),
+                new V3D_PointDouble(0, 3, -3),
+                new V3D_PointDouble(-3, 3, 3));
+        // This expected result is not given in the answer on stack overflow.
+        expResult = new V3D_PointDouble(0, 3, 0);
+        result = instance.getIntersection(t, epsilon);
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        // Test 7: From https://web.mst.edu/~chaman/home/pubs/2015WimoTriangleTrianglePublished.pdf
+        t = new V3D_TriangleDouble(new V3D_PointDouble(0, 6, 0),
+                new V3D_PointDouble(6, 0, 0),
+                new V3D_PointDouble(0, 0, 0));
+        instance = new V3D_TriangleDouble(new V3D_PointDouble(1, 3, 0),
+                new V3D_PointDouble(3, 1, 0),
+                new V3D_PointDouble(2, 2, 4));
+        result = instance.getIntersection(t, epsilon);
+        expResult = new V3D_LineSegmentDouble(new V3D_PointDouble(1, 3, 0),
+                new V3D_PointDouble(3, 1, 0));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        
 //        // Test 5: 4 sides
 //        t = new V3D_TriangleDouble(new V3D_PointDouble(P2, N3, P0), new V3D_PointDouble(P6, P1, P0), new V3D_PointDouble(P2, P5, P0));
 //        instance = new V3D_TriangleDouble(pP1P0P0, new V3D_PointDouble(P3, P0, P0), new V3D_PointDouble(P3, P2, P0));

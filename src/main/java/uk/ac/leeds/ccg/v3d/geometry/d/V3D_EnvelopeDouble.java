@@ -705,12 +705,14 @@ public class V3D_EnvelopeDouble implements Serializable {
      * @param pt The point from which observation of this is to occur.
      * @param v A vector pointing to the right of the viewport. This should be
      * orthogonal to the vector from pt to the centroid.
+     * @param zoomFactor A zoom factor. A factor of 2 and the screen will be 
+     * twice as close to the object. 
      * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return A viewport - a rectangle between pt and this such that all of
      * this is contained in the planes from the point through the viewport.
      */
     public V3D_RectangleDouble getViewport3(V3D_PointDouble pt, 
-            V3D_VectorDouble v, double epsilon) {
+            V3D_VectorDouble v, double zoomFactor, double epsilon) {
         V3D_RectangleDouble r;
         // Get the plane of the viewport.
         V3D_PointDouble c = getCentroid();
@@ -719,7 +721,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         V3D_PointDouble plpt = new V3D_PointDouble(c);
         V3D_VectorDouble cpt = new V3D_VectorDouble(c, pt);
         V3D_VectorDouble vo = cpt.getUnitVector();
-        plpt.translate(vo.multiply(d));
+        plpt.translate(vo.multiply(d/zoomFactor));
         V3D_PlaneDouble pl0 = new V3D_PlaneDouble(plpt, cpt);
         V3D_VectorDouble v2 = cpt.getCrossProduct(v);
         // Find top, bottom, left and right planes

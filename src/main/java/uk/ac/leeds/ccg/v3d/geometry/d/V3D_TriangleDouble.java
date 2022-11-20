@@ -226,21 +226,21 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         this.r = r.getVector().subtract(p.offset);
     }
 
-    /**
-     * Creates a new instance.
-     *
-     * @param pt A point giving the direction of the normal vector.
-     * @param p Used to initialise {@link #offset} and {@link #pl}.
-     * @param q Used to initialise {@link #q}.
-     * @param r Used to initialise {@link #r}.
-     */
-    public V3D_TriangleDouble(V3D_PointDouble pt, V3D_PointDouble p, 
-            V3D_PointDouble q, V3D_PointDouble r) {
-        super(p.offset);
-        this.p = p.rel;
-        this.q = q.getVector().subtract(p.offset);
-        this.r = r.getVector().subtract(p.offset);
-    }
+//    /**
+//     * Creates a new instance.
+//     *
+//     * @param pt A point giving the direction of the normal vector.
+//     * @param p Used to initialise {@link #offset} and {@link #pl}.
+//     * @param q Used to initialise {@link #q}.
+//     * @param r Used to initialise {@link #r}.
+//     */
+//    public V3D_TriangleDouble(V3D_PointDouble pt, V3D_PointDouble p, 
+//            V3D_PointDouble q, V3D_PointDouble r) {
+//        super(p.offset);
+//        this.p = p.rel;
+//        this.q = q.getVector().subtract(p.offset);
+//        this.r = r.getVector().subtract(p.offset);
+//    }
     
     /**
      * @return {@link pl} accurate to at least the oom precision using 
@@ -1060,7 +1060,19 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                                 }
                             }
                         } else {
-                            throw new RuntimeException("Exception with triangle-triangle intersection.");
+                            V3D_FiniteGeometryDouble pqplil = getPQPl().getIntersection(l, epsilon);
+                            V3D_FiniteGeometryDouble qrplil = getQRPl().getIntersection(l, epsilon);
+                            V3D_FiniteGeometryDouble rpplil = getRPPl().getIntersection(l, epsilon);
+                            if (pqplil instanceof V3D_PointDouble pqplilp) {
+                                if (qrplil instanceof V3D_PointDouble qrplilp) {
+                                    return new V3D_LineSegmentDouble(pqplilp, qrplilp);
+                                } else {
+                                    return new V3D_LineSegmentDouble(pqplilp, (V3D_PointDouble) rpplil);
+                                }
+                            } else {
+                                return new V3D_LineSegmentDouble((V3D_PointDouble) qrplil, (V3D_PointDouble) rpplil);
+                            }
+                            //throw new RuntimeException("Exception with triangle-triangle intersection.");
                         }
                     }
                 } else {
