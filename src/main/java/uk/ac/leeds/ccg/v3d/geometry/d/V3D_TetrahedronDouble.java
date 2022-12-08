@@ -349,7 +349,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * @param pt The point to test for intersection with.
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
-    public boolean isIntersectedBy(V3D_PointDouble pt) {
+    public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
         pqr = getPqr();
         psq = getPsq();
         spr = getSpr();
@@ -363,16 +363,16 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                 }
             }
         }
-        if (qsr.isIntersectedBy(pt)) {
+        if (qsr.isIntersectedBy(pt, epsilon)) {
             return true;
         }
-        if (spr.isIntersectedBy(pt)) {
+        if (spr.isIntersectedBy(pt, epsilon)) {
             return true;
         }
-        if (psq.isIntersectedBy(pt)) {
+        if (psq.isIntersectedBy(pt, epsilon)) {
             return true;
         }
-        return pqr.isIntersectedBy(pt);
+        return pqr.isIntersectedBy(pt, epsilon);
     }
 
     /**
@@ -602,7 +602,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
             return null;
         } else {
             if (g instanceof V3D_PointDouble gp) {
-                if (isIntersectedBy(gp)) {
+                if (isIntersectedBy(gp, epsilon)) {
                     return g;
                 } else {
                     return null;
@@ -610,8 +610,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
             } else {
                 V3D_PointDouble lp = l.getP();
                 V3D_PointDouble lq = l.getQ();
-                if (isIntersectedBy(lp)) {
-                    if (isIntersectedBy(lq)) {
+                if (isIntersectedBy(lp, epsilon)) {
+                    if (isIntersectedBy(lq, epsilon)) {
                         return ((V3D_LineSegmentDouble) g).getIntersection(l, epsilon);
                     } else {
                         V3D_FiniteGeometryDouble pqri = getPqr().getIntersection(l, epsilon);
@@ -1378,7 +1378,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * @return The distance squared to {@code p}.
      */
     public double getDistanceSquared(V3D_PointDouble pt, double epsilon) {
-        if (isIntersectedBy(pt)) {
+        if (isIntersectedBy(pt, epsilon)) {
             return 0d;
         } else {
             return Math.min(getPqr().getDistanceSquared(pt, epsilon),
@@ -1479,16 +1479,16 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                 if (tqsri == null) {
                                     V3D_FiniteGeometryDouble tspri = t.getIntersection(getSpr(), epsilon);
                                     if (tspri == null) {
-                                        if (isIntersectedBy(t.getP())
-                                                && isIntersectedBy(t.getQ())
-                                                && isIntersectedBy(t.getR())
-                                                && isIntersectedBy(t.getS())) {
+                                        if (isIntersectedBy(t.getP(), epsilon)
+                                                && isIntersectedBy(t.getQ(), epsilon)
+                                                && isIntersectedBy(t.getR(), epsilon)
+                                                && isIntersectedBy(t.getS(), epsilon)) {
                                             return t;
                                         } else {
-                                            if (t.isIntersectedBy(getP())
-                                                    && t.isIntersectedBy(getQ())
-                                                    && t.isIntersectedBy(getR())
-                                                    && t.isIntersectedBy(getS())) {
+                                            if (t.isIntersectedBy(getP(), epsilon)
+                                                    && t.isIntersectedBy(getQ(), epsilon)
+                                                    && t.isIntersectedBy(getR(), epsilon)
+                                                    && t.isIntersectedBy(getS(), epsilon)) {
                                                 return this;
                                             } else {
                                                 return null;

@@ -220,11 +220,11 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      * @param pt The point to intersect with.
      * @return A point or line segment.
      */
-    public boolean isIntersectedBy(V3D_PointDouble pt) {
-        if (getPQR().isIntersectedBy(pt)) {
+    public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
+        if (getPQR().isIntersectedBy(pt, epsilon)) {
             return true;
         } else {
-            return getRSP().isIntersectedBy(pt);
+            return getRSP().isIntersectedBy(pt, epsilon);
         }
     }
 

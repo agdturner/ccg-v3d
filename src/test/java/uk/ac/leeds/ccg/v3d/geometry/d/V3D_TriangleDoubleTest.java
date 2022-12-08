@@ -74,13 +74,13 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         double epsilon = 1d / 10000000d;
         V3D_PointDouble pt = pP0P0P0;
         V3D_TriangleDouble instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP1P1P0);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 2
         pt = pN1N1P0;
-        assertFalse(instance.isIntersectedBy(pt));
+        assertFalse(instance.isIntersectedBy(pt, epsilon));
         // Test 3
         pt = new V3D_PointDouble(1d / 2d, 0d, 0d);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
     }
 
     /**
@@ -209,35 +209,35 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         V3D_PointDouble pt;
         V3D_TriangleDouble instance;
         instance = new V3D_TriangleDouble(P0P0P0, P1P0P0, P0P1P0, P0P0P1);
-        assertTrue(instance.isIntersectedBy(pP1P0P0));
-        assertTrue(instance.isIntersectedBy(pP0P1P0));
-        assertTrue(instance.isIntersectedBy(pP0P0P1));
+        assertTrue(instance.isIntersectedBy(pP1P0P0, epsilon));
+        assertTrue(instance.isIntersectedBy(pP0P1P0, epsilon));
+        assertTrue(instance.isIntersectedBy(pP0P0P1, epsilon));
         pt = new V3D_PointDouble(P1P0P0, P0P0P0);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 5
         pt = new V3D_PointDouble(P0P1P0, P0P0P0);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 6
         pt = new V3D_PointDouble(P0P0P1, P0P0P0);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 7
         pt = new V3D_PointDouble(P1P0P0, P1P0P0);
-        assertFalse(instance.isIntersectedBy(pt));
+        assertFalse(instance.isIntersectedBy(pt, epsilon));
         // Test 8
         pt = new V3D_PointDouble(P0P1P0, P0P1P0);
-        assertFalse(instance.isIntersectedBy(pt));
+        assertFalse(instance.isIntersectedBy(pt, epsilon));
         // Test 9
         pt = new V3D_PointDouble(P0P0P1, P0P0P1);
-        assertFalse(instance.isIntersectedBy(pt));
+        assertFalse(instance.isIntersectedBy(pt, epsilon));
         // Test 10
         instance = new V3D_TriangleDouble(P0P0P0, P1P0P0, P1P2P0, P2P0P0);
         pt = new V3D_PointDouble(P0P0P0, new V3D_VectorDouble(1d, 3d, 0d));
-        assertFalse(instance.isIntersectedBy(pt));
-        assertTrue(instance.isIntersectedBy(pP1P2P0));
-        assertTrue(instance.isIntersectedBy(pP1P1P0));
-        assertFalse(instance.isIntersectedBy(pP0P0P0));
+        assertFalse(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.isIntersectedBy(pP1P2P0, epsilon));
+        assertTrue(instance.isIntersectedBy(pP1P1P0, epsilon));
+        assertFalse(instance.isIntersectedBy(pP0P0P0, epsilon));
         pt = new V3D_PointDouble(P0P0P0, new V3D_VectorDouble(3d / 2d, 1d, 0d));
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
     }
 
     /**
@@ -646,68 +646,71 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         
         
         
-//        // Test 5: 4 sides
-//        t = new V3D_TriangleDouble(new V3D_PointDouble(P2, N3, P0), new V3D_PointDouble(P6, P1, P0), new V3D_PointDouble(P2, P5, P0));
-//        instance = new V3D_TriangleDouble(pP1P0P0, new V3D_PointDouble(P3, P0, P0), new V3D_PointDouble(P3, P2, P0));
-//        expResult = new V3D_Polygon(
-//                new V3D_TriangleDouble(pP2P0P0, new V3D_PointDouble(P3, P0, P0),
-//                        pP2P1P0),
-//                new V3D_TriangleDouble(
-//                        new V3D_PointDouble(P3, P0, P0),
-//                        new V3D_PointDouble(P3, P2, P0),
-//                        pP2P1P0));
-//        result = instance.getIntersection(t, e.oom);
-//        //System.out.println(result);
-//        assertEquals(expResult, result);
+        // Test 9: 4 sides
+        t = new V3D_TriangleDouble(new V3D_PointDouble(2, -3, 0), 
+                new V3D_PointDouble(6, 1, 0), new V3D_PointDouble(2, 5, 0));
+        instance = new V3D_TriangleDouble(pP1P0P0, new V3D_PointDouble(3, 0, 0), 
+                new V3D_PointDouble(3, 2, 0));
+        expResult = new V3D_ConvexHullCoplanarDouble(epsilon,
+                new V3D_TriangleDouble(pP2P0P0, new V3D_PointDouble(3, 0, 0),
+                        pP2P1P0),
+                new V3D_TriangleDouble(
+                        new V3D_PointDouble(3, 0, 0),
+                        new V3D_PointDouble(3, 2, 0),
+                        pP2P1P0));
+        result = instance.getIntersection(t, epsilon);
+        //System.out.println(result);
+        assertTrue(((V3D_ConvexHullCoplanarDouble) expResult).equals((V3D_ConvexHullCoplanarDouble) result, epsilon));
+        
 //        // Test 6: 5 sides
-//        t = new V3D_TriangleDouble(pP0P0P0, new V3D_PointDouble(P4, P0, P0), new V3D_PointDouble(P2, N4, P0));
-//        instance = new V3D_TriangleDouble(pP0N2P0, pP2P0P0, new V3D_PointDouble(P4, N2, P0));
-//        double N4_3 = double.valueOf(-4).divide(3);
-//        V3D_PointDouble m = new V3D_PointDouble(double.TWO.divide(3), N4_3, P0);
-//        V3D_PointDouble n = new V3D_PointDouble(double.TEN.divide(3), N4_3, P0);
-//        expResult = new V3D_Polygon(
+//        t = new V3D_TriangleDouble(pP0P0P0, new V3D_PointDouble(4, 0, 0), 
+//                new V3D_PointDouble(2, -4, 0));
+//        instance = new V3D_TriangleDouble(pP0N2P0, pP2P0P0, 
+//                new V3D_PointDouble(4, -2, 0));
+//        V3D_PointDouble m = new V3D_PointDouble(2d/3d, -4d/3d, 0);
+//        V3D_PointDouble n = new V3D_PointDouble(10d/3d, -4d/3d, 0);
+//        expResult = new V3D_ConvexHullCoplanarDouble(epsilon,
 //                new V3D_TriangleDouble(pP2P0P0, m, n),
 //                //new V3D_TriangleDouble(m, n, pP1N2P0),
-//                new V3D_TriangleDouble(m, n, new V3D_PointDouble(P3, N2, P0)),
+//                new V3D_TriangleDouble(m, n, new V3D_PointDouble(3, -2, 0)),
 //                new V3D_TriangleDouble(pP1N2P0,
-//                        new V3D_PointDouble(P3, N2, P0),
+//                        new V3D_PointDouble(3, -2, 0),
 //                        n));
-//        result = instance.getIntersection(t, e.oom);
-//        //System.out.println(result);
-//        //boolean equals = expResult.equals(result);
-//        assertEquals(expResult, result);
-//        // Test 6a: 6 sides
-//        t = new V3D_TriangleDouble(pP0P0P0, new V3D_PointDouble(P6, P0, P0), new V3D_PointDouble(P3, N3, P0));
-//        instance = new V3D_TriangleDouble(pP0N2P0, new V3D_PointDouble(P3, P1, P0), new V3D_PointDouble(P6, N2, P0));
-//        expResult = new V3D_Polygon(
-//                new V3D_TriangleDouble(pP2P0P0, new V3D_PointDouble(P4, P0, P0), pP1N1P0),
-//                new V3D_TriangleDouble(pP1N1P0, pP2N2P0, new V3D_PointDouble(P4, N2, P0)),
-//                new V3D_TriangleDouble(
-//                        new V3D_PointDouble(P4, P0, P0),
-//                        new V3D_PointDouble(P4, N2, P0),
-//                        new V3D_PointDouble(P5, N1, P0)),
-//                new V3D_TriangleDouble(new V3D_PointDouble(P4, P0, P0), pP1N1P0,
-//                        new V3D_PointDouble(P4, N2, P0)));
-//        result = instance.getIntersection(t, e.oom);
-//        //System.out.println(result);
-//        //boolean equals = expResult.equals(result);
-//        assertEquals(expResult, result);
+//        result = instance.getIntersection(t, epsilon);
+        //System.out.println(result);
+        assertTrue(((V3D_ConvexHullCoplanarDouble) expResult).equals((V3D_ConvexHullCoplanarDouble) result, epsilon));
+        // Test 6a: 6 sides
+        t = new V3D_TriangleDouble(pP0P0P0, new V3D_PointDouble(6, 0, 0), 
+                new V3D_PointDouble(3, -3, 0));
+        instance = new V3D_TriangleDouble(pP0N2P0, new V3D_PointDouble(3, 1, 0),
+                new V3D_PointDouble(6, -2, 0));
+        expResult = new V3D_ConvexHullCoplanarDouble(epsilon,
+                new V3D_TriangleDouble(pP2P0P0, new V3D_PointDouble(4, 0, 0), pP1N1P0),
+                new V3D_TriangleDouble(pP1N1P0, pP2N2P0, new V3D_PointDouble(4, -2, 0)),
+                new V3D_TriangleDouble(
+                        new V3D_PointDouble(4, 0, 0),
+                        new V3D_PointDouble(4, -2, 0),
+                        new V3D_PointDouble(5, -1, 0)),
+                new V3D_TriangleDouble(new V3D_PointDouble(4, 0, 0), pP1N1P0,
+                        new V3D_PointDouble(4, -2, 0)));
+        result = instance.getIntersection(t, epsilon);
+        //System.out.println(result);
+        assertTrue(((V3D_ConvexHullCoplanarDouble) expResult).equals((V3D_ConvexHullCoplanarDouble) result, epsilon));
 //        // Test 6b: 6 sides
-//        t = new V3D_TriangleDouble(new V3D_PointDouble(P6, P0, P0), pP0P0P0, new V3D_PointDouble(P3, N3, P0));
-//        instance = new V3D_TriangleDouble(pP0N2P0, new V3D_PointDouble(P3, P1, P0), new V3D_PointDouble(P6, N2, P0));
-//        expResult = new V3D_Polygon(
-//                new V3D_TriangleDouble(pP2P0P0, new V3D_PointDouble(P4, P0, P0), pP1N1P0),
-//                new V3D_TriangleDouble(pP1N1P0, pP2N2P0, new V3D_PointDouble(P4, N2, P0)),
+//        t = new V3D_TriangleDouble(new V3D_PointDouble(6, 0, 0), pP0P0P0, new V3D_PointDouble(3, -3, 0));
+//        instance = new V3D_TriangleDouble(pP0N2P0, new V3D_PointDouble(3, 1, 0), new V3D_PointDouble(6, -2, 0));
+//        expResult = new V3D_ConvexHullCoplanarDouble(epsilon,
+//                new V3D_TriangleDouble(pP2P0P0, new V3D_PointDouble(4, 0, 0), pP1N1P0),
+//                new V3D_TriangleDouble(pP1N1P0, pP2N2P0, new V3D_PointDouble(4, 2, 0)),
 //                new V3D_TriangleDouble(
-//                        new V3D_PointDouble(P4, P0, P0),
-//                        new V3D_PointDouble(P4, N2, P0),
-//                        new V3D_PointDouble(P5, N1, P0)),
-//                new V3D_TriangleDouble(new V3D_PointDouble(P4, P0, P0), pP1N1P0,
-//                        new V3D_PointDouble(P4, N2, P0)));
-//        result = instance.getIntersection(t, e.oom);
+//                        new V3D_PointDouble(4, 0, 0),
+//                        new V3D_PointDouble(4, -2, 0),
+//                        new V3D_PointDouble(5, -1, 0)),
+//                new V3D_TriangleDouble(new V3D_PointDouble(4, 0, 0), pP1N1P0,
+//                        new V3D_PointDouble(4, 2, 0)));
+//        result = instance.getIntersection(t, epsilon);
 //        //System.out.println(result);
-//        //boolean equals = expResult.equals(result);
-//        assertEquals(expResult, result);
+//        assertTrue(((V3D_ConvexHullCoplanarDouble) expResult).equals((V3D_ConvexHullCoplanarDouble) result, epsilon));
 
     }
 

@@ -403,11 +403,13 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
 
     /**
      * @param pt The point to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return A point or line segment.
      */
-    public boolean isIntersectedBy(V3D_PointDouble pt) {
-        if (getEnvelope().isIntersectedBy(pt)) {
-            if (getPl().isIntersectedBy(pt)) {
+    public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
+        if (getEnvelope().isIntersectedBy(pt.getEnvelope(), epsilon)) {
+            if (getPl().isIntersectedBy(pt, epsilon)) {
                 return isAligned(pt);
                 //return isIntersectedBy0(pt);
             }
@@ -1144,15 +1146,15 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                      * triangles.
                      */
                     // Check if vertices intersect
-                    boolean pi = isIntersectedBy(t.getP());
-                    boolean qi = isIntersectedBy(t.getQ());
-                    boolean ri = isIntersectedBy(t.getR());
+                    boolean pi = isIntersectedBy(t.getP(), epsilon);
+                    boolean qi = isIntersectedBy(t.getQ(), epsilon);
+                    boolean ri = isIntersectedBy(t.getR(), epsilon);
                     if (pi && qi && ri) {
                         return t;
                     }
-                    boolean pit = t.isIntersectedBy(getP());
-                    boolean qit = t.isIntersectedBy(getQ());
-                    boolean rit = t.isIntersectedBy(getR());
+                    boolean pit = t.isIntersectedBy(getP(), epsilon);
+                    boolean qit = t.isIntersectedBy(getQ(), epsilon);
+                    boolean rit = t.isIntersectedBy(getR(), epsilon);
                     if (pit && qit && rit) {
                         return this;
                     }
@@ -1253,7 +1255,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                                 pts.add(gpql.getQ());
                                 pts.add(gqrp);
                                 pts.add(grpp);
-                                ArrayList<V3D_PointDouble> pts2 = V3D_PointDouble.getUnique(pts);
+                                ArrayList<V3D_PointDouble> pts2 = V3D_PointDouble.getUnique(pts, epsilon);
                                 if (pts2.size() == 2) {
                                     return new V3D_LineSegmentDouble(pts2.get(0), pts2.get(1));
                                 }
@@ -1513,7 +1515,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             pts.add(l2q);
             pts.add(l3p);
             pts.add(l3q);
-            points = V3D_PointDouble.getUnique(pts);
+            points = V3D_PointDouble.getUnique(pts, epsilon);
         }
         int n = points.size();
         if (n == 2) {
@@ -1739,7 +1741,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             pts.add(l2p);
             pts.add(l2q);
             pts.add(pt);
-            points = V3D_PointDouble.getUnique(pts);
+            points = V3D_PointDouble.getUnique(pts, epsilon);
         }
         int n = points.size();
         if (n == 2) {
@@ -1784,7 +1786,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             pts.add(l1q);
             pts.add(l2p);
             pts.add(l2q);
-            points = V3D_PointDouble.getUnique(pts);
+            points = V3D_PointDouble.getUnique(pts, epsilon);
         }
         points.add(l1p);
         points.add(l1q);
@@ -1921,7 +1923,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * @return The distance squared to {@code pv}.
      */
     public double getDistanceSquared(V3D_PointDouble pt, double epsilon) {
-        if (getPl().isIntersectedBy(pt)) {
+        if (getPl().isIntersectedBy(pt, epsilon)) {
             //if (isIntersectedBy0(pt)) {
             if (isAligned(pt)) {
                 return 0d;
@@ -2117,17 +2119,20 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * For retrieving a Set of points that are the corners of the triangles.
      *
      * @param triangles The input.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return A Set of points that are the corners of the triangles.
      */
     //public static ArrayList<V3D_Point> getPoints(V3D_Triangle[] triangles) {
-    public static V3D_PointDouble[] getPoints(V3D_TriangleDouble[] triangles) {
+    public static V3D_PointDouble[] getPoints(V3D_TriangleDouble[] triangles, 
+            double epsilon) {
         List<V3D_PointDouble> s = new ArrayList<>();
         for (var t : triangles) {
             s.add(t.getP());
             s.add(t.getQ());
             s.add(t.getR());
         }
-        ArrayList<V3D_PointDouble> points = V3D_PointDouble.getUnique(s);
+        ArrayList<V3D_PointDouble> points = V3D_PointDouble.getUnique(s, epsilon);
         return points.toArray(V3D_PointDouble[]::new);
     }
 

@@ -15,7 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+//import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_Double;
 
 /**
@@ -1242,7 +1242,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                 return true;
             } else {
                 V3D_PlaneDouble pl = new V3D_PlaneDouble(getP(), lp, lq);
-                return pl.isIntersectedBy(getQ());
+                return pl.isIntersectedBy(getQ(), epsilon);
             }
         }
 

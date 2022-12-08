@@ -354,17 +354,17 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         pt = pP0P0P0;
         //instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0, pP0P1P0, pP0P0P1);
         instance = new V3D_TetrahedronDouble(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 2
         pt = new V3D_PointDouble(0.5, 0.5, 0.5);
         instance = new V3D_TetrahedronDouble(P0P0P0, P0P0P0, P2P0P0, P0P2P0, P0P0P2);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 3
         pt = new V3D_PointDouble(-0.5, -0.5, -0.5);
-        assertFalse(instance.isIntersectedBy(pt));
+        assertFalse(instance.isIntersectedBy(pt, epsilon));
         // Test 4
         pt = new V3D_PointDouble(-0.5, 0, 0);
-        assertFalse(instance.isIntersectedBy(pt));
+        assertFalse(instance.isIntersectedBy(pt, epsilon));
         // Test 5
         instance = new V3D_TetrahedronDouble(
                 new V3D_PointDouble(0, 0, -75),
@@ -375,7 +375,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         //pt = new V3D_PointDouble(0, 0, -74);
         //pt = new V3D_PointDouble(1, 1, 0);
         pt = new V3D_PointDouble(-11, 11, 0);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
     }
 
     /**

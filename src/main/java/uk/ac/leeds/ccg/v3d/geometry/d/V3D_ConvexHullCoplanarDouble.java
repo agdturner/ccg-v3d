@@ -104,7 +104,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         this.points = new ArrayList<>();
         this.triangles = new ArrayList<>();
         // Get a list of unique points.
-        ArrayList<V3D_PointDouble> pts = V3D_PointDouble.getUnique(Arrays.asList(points));
+        ArrayList<V3D_PointDouble> pts = V3D_PointDouble.getUnique(
+                Arrays.asList(points), epsilon);
         V3D_VectorDouble v0 = pts.get(0).rel;
         double xmin = v0.dx;
         double xmax = v0.dx;
@@ -287,12 +288,12 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * @param c An instance to compare for equality.
      * @return {@code true} iff all the triangles are the same.
      */
-    public boolean equals(V3D_ConvexHullCoplanarDouble c) {
+    public boolean equals(V3D_ConvexHullCoplanarDouble c, double epsilon) {
         HashSet<Integer> indexes = new HashSet<>();
         for (var x : points) {
             boolean found = false;
             for (int i = 0; i < c.points.size(); i++) {
-                if (x.equals(c.points.get(i))) {
+                if (x.equals(c.points.get(i), epsilon)) {
                     found = true;
                     indexes.add(i);
                     break;
@@ -306,7 +307,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             if (!indexes.contains(i)) {
                 boolean found = false;
                 for (var x : points) {
-                    if (x.equals(c.points.get(i))) {
+                    if (x.equals(c.points.get(i), epsilon)) {
                         found = true;
                         break;
                     }
@@ -385,11 +386,13 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * Identify if this is intersected by point {@code p}.
      *
      * @param pt The point to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
-    public boolean isIntersectedBy(V3D_PointDouble pt) {
+    public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
         if (getEnvelope().isIntersectedBy(pt)) {
-            if (triangles.get(0).getPl().isIntersectedBy(pt)) {
+            if (triangles.get(0).getPl().isIntersectedBy(pt, epsilon)) {
                 //return isIntersectedBy0(pt);
                 //return triangles.get(0).isAligned(pt);
                 return triangles.get(0).isAligned(pt);
@@ -487,7 +490,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             V3D_FiniteGeometryDouble i = t2.getIntersection(t, epsilon);
             ts.addAll(Arrays.asList(i.getPoints()));
         }
-        ArrayList<V3D_PointDouble> tsu = V3D_PointDouble.getUnique(ts);
+        ArrayList<V3D_PointDouble> tsu = V3D_PointDouble.getUnique(ts, epsilon);
         if (tsu.isEmpty()) {
             return null;
         } else {
@@ -546,7 +549,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
                 V3D_TriangleDouble atr = new V3D_TriangleDouble(p0, p1, apt);
                 TreeSet<Integer> removeIndexes = new TreeSet<>();
                 for (int i = 0; i < ab.a.size(); i++) {
-                    if (atr.isIntersectedBy(ab.a.get(i))) {
+                    if (atr.isIntersectedBy(ab.a.get(i), epsilon)) {
                         removeIndexes.add(i);
                     }
                 }
@@ -568,12 +571,24 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             if (!ab.b.isEmpty()) {
                 V3D_PointDouble bpt = ab.b.get(ab.maxbIndex);
                 points.add(index, bpt);
-                V3D_TriangleDouble btr = new V3D_TriangleDouble(p0, p1, bpt);
+                // Depending on epsilon some points might be the same!
+                //V3D_TriangleDouble btr = new V3D_TriangleDouble(p0, p1, bpt);
+                V3D_GeometryDouble btr = getGeometry(epsilon, p0, p1, bpt);
                 TreeSet<Integer> removeIndexes = new TreeSet<>();
-                for (int i = 0; i < ab.b.size(); i++) {
-                    if (btr.isIntersectedBy(ab.b.get(i))) {
-                        removeIndexes.add(i);
+                if (btr instanceof V3D_TriangleDouble) {
+                    V3D_TriangleDouble tbtr = (V3D_TriangleDouble) btr;
+                    for (int i = 0; i < ab.b.size(); i++) {
+                        if (tbtr.isIntersectedBy(ab.b.get(i), epsilon)) {
+                            removeIndexes.add(i);
+                        }
                     }
+//                } else if (btr instanceof V3D_LineSegmentDouble) {
+//                    V3D_LineSegmentDouble lbtr = (V3D_LineSegmentDouble) btr;
+//                    for (int i = 0; i < ab.b.size(); i++) {
+//                        if (lbtr.isIntersectedBy(ab.b.get(i), epsilon)) {
+//                            removeIndexes.add(i);
+//                        }
+//                    }
                 }
                 Iterator<Integer> ite = removeIndexes.descendingIterator();
                 while (ite.hasNext()) {

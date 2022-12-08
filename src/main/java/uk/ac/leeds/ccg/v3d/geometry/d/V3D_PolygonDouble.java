@@ -146,11 +146,13 @@ public class V3D_PolygonDouble extends V3D_FiniteGeometryDouble
      * Identify if this is intersected by point {@code p}.
      *
      * @param pt The point to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
-    public boolean isIntersectedBy(V3D_PointDouble pt) {
+    public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
         if (getEnvelope().isIntersectedBy(pt)) {
-            if (parts.get(0).triangles.get(0).getPl().isIntersectedBy(pt)) {
+            if (parts.get(0).triangles.get(0).getPl().isIntersectedBy(pt, epsilon)) {
 //                // Holes and parts could be checked in parallel.
 //                if (holes != null) {
 //                    for (V3D_ConvexHullCoplanarDouble h : holes) {

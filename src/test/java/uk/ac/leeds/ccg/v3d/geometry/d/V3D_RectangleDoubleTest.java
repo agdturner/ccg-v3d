@@ -97,40 +97,40 @@ public class V3D_RectangleDoubleTest extends V3D_DoubleTest {
         double epsilon = 1d / 10000000d;
         V3D_PointDouble pt = pP0P0P0;
         V3D_RectangleDouble instance = new V3D_RectangleDouble(pN1P1P0, pP1P1P0, pP1N1P0, pN1N1P0);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 2
         instance = new V3D_RectangleDouble(pN1P0P0, pP0P1P0, pP1P0P0, pP0N1P0);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 3
         double half = 1d / 2d;
         pt = new V3D_PointDouble(half, half, 0d);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 4
         double halfpe = half + epsilon;
         double halfne = half - epsilon;
         pt = new V3D_PointDouble(halfpe, half, 0d);
-        assertFalse(instance.isIntersectedBy(pt));
+        assertFalse(instance.isIntersectedBy(pt, epsilon));
         // Test 5
         pt = new V3D_PointDouble(-halfpe, half, 0d);
-        assertFalse(instance.isIntersectedBy(pt));
+        assertFalse(instance.isIntersectedBy(pt, epsilon));
         // Test 6
         pt = new V3D_PointDouble(half, halfpe, 0d);
-        assertFalse(instance.isIntersectedBy(pt));
+        assertFalse(instance.isIntersectedBy(pt, epsilon));
         // Test 7
         pt = new V3D_PointDouble(half, -halfpe, 0d);
-        assertFalse(instance.isIntersectedBy(pt));
+        assertFalse(instance.isIntersectedBy(pt, epsilon));
         // Test 8
         pt = new V3D_PointDouble(halfne, half, 0d);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 9
         pt = new V3D_PointDouble(-halfne, half, 0d);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 10
         pt = new V3D_PointDouble(half, halfne, 0d);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 11
         pt = new V3D_PointDouble(half, -halfne, 0d);
-        assertTrue(instance.isIntersectedBy(pt));
+        assertTrue(instance.isIntersectedBy(pt, epsilon));
     }
 
     /**

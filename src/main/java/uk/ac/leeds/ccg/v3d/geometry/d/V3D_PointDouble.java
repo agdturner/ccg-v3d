@@ -407,10 +407,12 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
      * A collection method for getting unique points.
      *
      * @param pts The points to derive a unique list from.
+     * @param epsilon The tolerance within which two points are regarded as
+     * equal.
      * @return A unique list made from those in pts.
      */
     public static ArrayList<V3D_PointDouble> getUnique(
-            List<V3D_PointDouble> pts) {
+            List<V3D_PointDouble> pts, double epsilon) {
         HashSet<Integer> indexes = new HashSet<>();
         ArrayList<V3D_PointDouble> r = new ArrayList<>();
         for (int i = 0; i < pts.size(); i++) {
@@ -419,7 +421,7 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
                 boolean added = false;
                 for (int j = i + 1; j < pts.size(); j++) {
                     V3D_PointDouble p2 = pts.get(j);
-                    if (p.equals(p2)) {
+                    if (p.equals(p2, epsilon)) {
                         r.add(p);
                         indexes.add(j);
                         added = true;

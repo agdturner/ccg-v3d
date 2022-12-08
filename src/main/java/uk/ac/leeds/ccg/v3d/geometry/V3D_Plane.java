@@ -569,6 +569,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
+        oom -= 2;
         equation = getEquation(oom, rm);
         return ((equation.coeffs[0].multiply(pt.getX(oom, rm))).add 
         (equation.coeffs[1].multiply(pt.getY(oom, rm))).add 

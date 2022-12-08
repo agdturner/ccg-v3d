@@ -73,12 +73,14 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
     /**
      * @param pl The plane to test points are coplanar with.
      * @param points The points to test if they are coplanar with pl.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff all points are coplanar with pl.
      */
-    public static boolean isCoplanar(V3D_PlaneDouble pl,
+    public static boolean isCoplanar(double epsilon, V3D_PlaneDouble pl,
             V3D_PointDouble... points) {
         for (V3D_PointDouble pt : points) {
-            if (!pl.isIntersectedBy(pt)) {
+            if (!pl.isIntersectedBy(pt, epsilon)) {
                 return false;
             }
         }
@@ -98,7 +100,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         }
         if (!V3D_LineDouble.isCollinear0(epsilon, points)) {
             V3D_PlaneDouble p = getPlane0(epsilon, points);
-            return isCoplanar(p, points);
+            return isCoplanar(epsilon, p, points);
         }
         return false;
     }
@@ -579,10 +581,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @param pt The point to test for intersection with.
      * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
-    public boolean isIntersectedBy(V3D_PointDouble pt) {
+    public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
         equation = getEquation();
-        return (equation.coeffs[0] * pt.getX() + equation.coeffs[1] * pt.getY()
-                + equation.coeffs[2] * pt.getZ() + equation.coeffs[3]) == 0d;
+        double c = (equation.coeffs[0] * pt.getX() + equation.coeffs[1] * pt.getY()
+                + equation.coeffs[2] * pt.getZ() + equation.coeffs[3]);
+        return Math.abs(c) < epsilon;
     }
 
     /**
@@ -651,8 +654,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @param l The line to test if it is on the plane.
      * @return {@code true} If {@code pt} is on the plane.
      */
-    public boolean isOnPlane(V3D_LineDouble l) {
-        return isIntersectedBy(l.getP()) && isIntersectedBy(l.getQ());
+    public boolean isOnPlane(V3D_LineDouble l, double epsilon) {
+        return isIntersectedBy(l.getP(), epsilon) && isIntersectedBy(l.getQ(), epsilon);
     }
 
     /**
@@ -668,7 +671,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
     public V3D_GeometryDouble getIntersectionOption(V3D_LineDouble l, double epsilon) {
         // Special case
         if (isParallel(l, epsilon)) {
-            if (isOnPlane(l)) {
+            if (isOnPlane(l, epsilon)) {
                 return l;
             }
             return null;
@@ -922,7 +925,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      */
     public V3D_GeometryDouble getIntersection(V3D_LineDouble l, double epsilon) {
         if (isParallel(l, epsilon)) {
-            if (isOnPlane(l)) {
+            if (isOnPlane(l, epsilon)) {
                 return l;
             } else {
                 return null;
@@ -931,11 +934,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         // Are either of the points of l on the plane.
         //V3D_Point lp = l.getP(oom);
         V3D_PointDouble lp = l.getP();
-        if (isIntersectedBy(lp)) {
+        if (isIntersectedBy(lp, epsilon)) {
             return lp;
         }
         V3D_PointDouble lq = l.getQ();
-        if (isIntersectedBy(lq)) {
+        if (isIntersectedBy(lq, epsilon)) {
             return lq;
         }
         //V3D_Vector lv = l.getV(oomN2, rm);
@@ -1051,7 +1054,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
          */
         if (v.isZero()) {
             // The planes are parallel.
-            if (pl.isIntersectedBy(getP())) {
+            if (pl.isIntersectedBy(getP(), epsilon)) {
                 // The planes are the same.
                 return this;
             }
@@ -1153,8 +1156,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      */
     public boolean equalsIgnoreOrientation(V3D_PlaneDouble pl, double epsilon) {
         if (n.isScalarMultiple(pl.n, epsilon)) {
-            if (pl.isIntersectedBy(getP())) {
-                if (this.isIntersectedBy(pl.getP())) {
+            if (pl.isIntersectedBy(getP(), epsilon)) {
+                if (this.isIntersectedBy(pl.getP(), epsilon)) {
                     return true;
                 }
             }
@@ -1190,9 +1193,6 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @return The distance from {@code this} to {@code pl}.
      */
     public double getDistance(V3D_PointDouble pt) {
-        if (this.isIntersectedBy(pt)) {
-            return 0d;
-        }
         return Math.sqrt(getDistanceSquared(pt, true));
     }
 
@@ -1203,9 +1203,6 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @return The distance from {@code this} to {@code pl}.
      */
     public double getDistanceSquared(V3D_PointDouble pt) {
-        if (this.isIntersectedBy(pt)) {
-            return 0d;
-        }
         return getDistanceSquared(pt, true);
     }
 
@@ -1334,7 +1331,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      */
     public V3D_PointDouble getPointOfProjectedIntersection(V3D_PointDouble pt,
             double epsilon) {
-        if (isIntersectedBy(pt)) {
+        if (isIntersectedBy(pt, epsilon)) {
             return pt;
         }
         V3D_LineDouble l = new V3D_LineDouble(pt, n);
@@ -1386,11 +1383,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @return {@code true} iff all points in pts are on or are on the same side
      * of this.
      */
-    protected boolean allOnSameSide(V3D_PointDouble[] pts) {
+    protected boolean allOnSameSide(V3D_PointDouble[] pts, double epsilon) {
         // Find a point not on the plane if there is one.
         V3D_PointDouble pt = null;
         for (var x : pts) {
-            if (isIntersectedBy(x)) {
+            if (isIntersectedBy(x, epsilon)) {
                 pt = x;
             }
         }
