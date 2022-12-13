@@ -15,12 +15,11 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigInteger;
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VTriangle;
 
@@ -746,14 +745,14 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public Math_BigRational getArea(int oom, RoundingMode rm) {
+    public BigRational getArea(int oom, RoundingMode rm) {
         int oomn2 = oom - 2;
         return getPQV(oomn2, rm).getCrossProduct(getRPV(oomn2, rm).reverse(), oomn2, rm)
-                .getMagnitude(oomn2, rm).getSqrt(oom, rm).divide(Math_BigRational.TWO);
+                .getMagnitude(oomn2, rm).getSqrt(oom, rm).divide(BigRational.TWO);
     }
 
     @Override
-    public Math_BigRational getPerimeter(int oom, RoundingMode rm) {
+    public BigRational getPerimeter(int oom, RoundingMode rm) {
         int oomn2 = oom - 2;
         return getPQ(oomn2, rm).getLength(oomn2, rm).getSqrt(oom, rm)
                 .add(getQR(oomn2, rm).getLength(oomn2, rm).getSqrt(oom, rm))
@@ -857,7 +856,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         }
         if (g instanceof V3D_Point gp) {
             if (r.isAligned(gp, oom, rm)) {
-//                Math_BigRational[] coeffs = this.pl.equation.coeffs;
+//                BigRational[] coeffs = this.pl.equation.coeffs;
 //                V3D_Point pt = new V3D_Point(
 //                        coeffs[0].multiply(gp.getX(oom, rm)),
 //                        coeffs[1].multiply(gp.getY(oom, rm)),
@@ -1575,13 +1574,13 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //        //System.out.println("c2=" + c2.toString());
 //        return c0;
 //        return new V3D_Point(e, offset, getPAsVector().add(getQV(), oom)
-//                .add(getRV(), oom).divide(Math_BigRational.valueOf(3), oom));
+//                .add(getRV(), oom).divide(BigRational.valueOf(3), oom));
         oom -= 6;
-        Math_BigRational dx = (p.getDX(oom, rm).add(q.getDX(oom, rm))
+        BigRational dx = (p.getDX(oom, rm).add(q.getDX(oom, rm))
                 .add(r.getDX(oom, rm))).divide(3);
-        Math_BigRational dy = (p.getDY(oom, rm).add(q.getDY(oom, rm))
+        BigRational dy = (p.getDY(oom, rm).add(q.getDY(oom, rm))
                 .add(r.getDY(oom, rm))).divide(3);
-        Math_BigRational dz = (p.getDZ(oom, rm).add(q.getDZ(oom, rm))
+        BigRational dz = (p.getDZ(oom, rm).add(q.getDZ(oom, rm))
                 .add(r.getDZ(oom, rm))).divide(3);
         return new V3D_Point(offset, new V3D_Vector(dx, dy, dz));
     }
@@ -1663,7 +1662,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public V3D_Triangle rotate(V3D_Line axis, Math_BigRational theta,
+    public V3D_Triangle rotate(V3D_Line axis, BigRational theta,
             int oom, RoundingMode rm) {
         return new V3D_Triangle(
                 getP().rotate(axis, theta, oom, rm),
@@ -1878,20 +1877,20 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //             * lines. This will be an extra side to the triangle.
 //             */
 //            // dl1l2
-//            Math_BigRational dl1pl2p = l1p.getDistanceSquared(l2p, oom);
-//            Math_BigRational dl1pl2q = l1p.getDistanceSquared(l2q, oom);
-//            Math_BigRational dl1ql2p = l1q.getDistanceSquared(l2p, oom);
-//            Math_BigRational dl1ql2q = l1q.getDistanceSquared(l2q, oom);
+//            BigRational dl1pl2p = l1p.getDistanceSquared(l2p, oom);
+//            BigRational dl1pl2q = l1p.getDistanceSquared(l2q, oom);
+//            BigRational dl1ql2p = l1q.getDistanceSquared(l2p, oom);
+//            BigRational dl1ql2q = l1q.getDistanceSquared(l2q, oom);
 //            // dl1l3
-//            Math_BigRational dl1pl3p = l1p.getDistanceSquared(l3p, oom);
-//            Math_BigRational dl1pl3q = l1p.getDistanceSquared(l3q, oom);
-//            Math_BigRational dl1ql3p = l1q.getDistanceSquared(l3p, oom);
-//            Math_BigRational dl1ql3q = l1q.getDistanceSquared(l3q, oom);
+//            BigRational dl1pl3p = l1p.getDistanceSquared(l3p, oom);
+//            BigRational dl1pl3q = l1p.getDistanceSquared(l3q, oom);
+//            BigRational dl1ql3p = l1q.getDistanceSquared(l3p, oom);
+//            BigRational dl1ql3q = l1q.getDistanceSquared(l3q, oom);
 ////            // dl2l3
-////            Math_BigRational dl2pl3p = l2p.getDistanceSquared(l3p, oom);
-////            Math_BigRational dl2pl3q = l2p.getDistanceSquared(l3q, oom);
-////            Math_BigRational dl2ql3p = l2q.getDistanceSquared(l3p, oom);
-////            Math_BigRational dl2ql3q = l2q.getDistanceSquared(l3q, oom);
+////            BigRational dl2pl3p = l2p.getDistanceSquared(l3p, oom);
+////            BigRational dl2pl3q = l2p.getDistanceSquared(l3q, oom);
+////            BigRational dl2ql3p = l2q.getDistanceSquared(l3p, oom);
+////            BigRational dl2ql3q = l2q.getDistanceSquared(l3q, oom);
 //            if (dl1pl2p.compareTo(dl1pl2q) == -1) {
 //                if (dl1pl2p.compareTo(dl1ql2q) == -1) {
 //                    t1 = new V3D_Triangle(l1p, l1q, l2p);
@@ -2180,7 +2179,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared to {@code pv}.
      */
-    public Math_BigRational getDistance(V3D_Point p, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_Point p, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
                 .getSqrt(oom, rm);
     }
@@ -2193,11 +2192,11 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared to {@code pv}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
         if (getPl(oom, rm).isIntersectedBy(pt, oom, rm)) {
             //if (isIntersectedBy0(pt, oom, rm)) {
             if (isAligned(pt, oom, rm)) {
-                return Math_BigRational.ZERO;
+                return BigRational.ZERO;
             } else {
                 return getDistanceSquaredEdge(pt, oom, rm);
             }
@@ -2218,13 +2217,13 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared between pt and the nearest edge of this.
      */
-    public Math_BigRational getDistanceSquaredEdge(V3D_Point pt, int oom,
+    public BigRational getDistanceSquaredEdge(V3D_Point pt, int oom,
             RoundingMode rm) {
         int oomn2 = oom - 2;
-        Math_BigRational pqd2 = getPQ(oom, rm).getDistanceSquared(pt, oomn2, rm);
-        Math_BigRational qrd2 = getQR(oom, rm).getDistanceSquared(pt, oomn2, rm);
-        Math_BigRational rpd2 = getRP(oom, rm).getDistanceSquared(pt, oomn2, rm);
-        return Math_BigRational.min(pqd2, qrd2, rpd2);
+        BigRational pqd2 = getPQ(oom, rm).getDistanceSquared(pt, oomn2, rm);
+        BigRational qrd2 = getQR(oom, rm).getDistanceSquared(pt, oomn2, rm);
+        BigRational rpd2 = getRP(oom, rm).getDistanceSquared(pt, oomn2, rm);
+        return BigRational.min(pqd2, qrd2, rpd2);
     }
 
     /**
@@ -2235,7 +2234,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code l}.
      */
-    public Math_BigRational getDistance(V3D_Line l, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_Line l, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
                 .getSqrt(oom, rm);
     }
@@ -2248,11 +2247,11 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code l}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
-        Math_BigRational dpq2 = getPQ(oom, rm).getDistanceSquared(l, oom, rm);
-        Math_BigRational dqr2 = getQR(oom, rm).getDistanceSquared(l, oom, rm);
-        Math_BigRational drp2 = getRP(oom, rm).getDistanceSquared(l, oom, rm);
-        return Math_BigRational.min(dpq2, dqr2, drp2);
+    public BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
+        BigRational dpq2 = getPQ(oom, rm).getDistanceSquared(l, oom, rm);
+        BigRational dqr2 = getQR(oom, rm).getDistanceSquared(l, oom, rm);
+        BigRational drp2 = getRP(oom, rm).getDistanceSquared(l, oom, rm);
+        return BigRational.min(dpq2, dqr2, drp2);
     }
 
     /**
@@ -2263,7 +2262,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code l}.
      */
-    public Math_BigRational getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
                 .getSqrt(oom, rm);
     }
@@ -2276,15 +2275,15 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code l}.
      */
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom,
+    public BigRational getDistanceSquared(V3D_LineSegment l, int oom,
             RoundingMode rm) {
         if (getIntersection(l, oom, rm) != null) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         }
-        Math_BigRational dlpq2 = l.getDistanceSquared(getPQ(oom, rm), oom, rm);
-        Math_BigRational dlqr2 = l.getDistanceSquared(getQR(oom, rm), oom, rm);
-        Math_BigRational dlrp2 = l.getDistanceSquared(getRP(oom, rm), oom, rm);
-        Math_BigRational d2 = Math_BigRational.min(dlpq2, dlqr2, dlrp2);
+        BigRational dlpq2 = l.getDistanceSquared(getPQ(oom, rm), oom, rm);
+        BigRational dlqr2 = l.getDistanceSquared(getQR(oom, rm), oom, rm);
+        BigRational dlrp2 = l.getDistanceSquared(getRP(oom, rm), oom, rm);
+        BigRational d2 = BigRational.min(dlpq2, dlqr2, dlrp2);
         /**
          * For any end points of l that are aligned with this, calculate the
          * distances as these could be the minimum.
@@ -2292,10 +2291,10 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         V3D_Point lp = l.getP();
         V3D_Point lq = l.getQ();
         if (isAligned(lp, oom, rm)) {
-            d2 = Math_BigRational.min(d2, getDistanceSquared(lp, oom, rm));
+            d2 = BigRational.min(d2, getDistanceSquared(lp, oom, rm));
         }
         if (isAligned(lq, oom, rm)) {
-            d2 = Math_BigRational.min(d2, getDistanceSquared(lq, oom, rm));
+            d2 = BigRational.min(d2, getDistanceSquared(lq, oom, rm));
         }
         return d2;
     }
@@ -2308,7 +2307,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code pv}.
      */
-    public Math_BigRational getDistance(V3D_Plane pl, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_Plane pl, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(pl, oom, rm), oom, rm)
                 .getSqrt(oom, rm);
     }
@@ -2321,12 +2320,12 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code pv}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom, RoundingMode rm) {
-        Math_BigRational dplpq2 = pl.getDistanceSquared(getPQ(oom, rm), oom, rm);
-        Math_BigRational dplqr2 = pl.getDistanceSquared(getQR(oom, rm), oom, rm);
-//        Math_BigRational dplrp2 = pl.getDistanceSquared(getRP(oom, rm), oom, rm);
-//        return Math_BigRational.min(dplpq2, dplqr2, dplrp2);
-        return Math_BigRational.min(dplpq2, dplqr2);
+    public BigRational getDistanceSquared(V3D_Plane pl, int oom, RoundingMode rm) {
+        BigRational dplpq2 = pl.getDistanceSquared(getPQ(oom, rm), oom, rm);
+        BigRational dplqr2 = pl.getDistanceSquared(getQR(oom, rm), oom, rm);
+//        BigRational dplrp2 = pl.getDistanceSquared(getRP(oom, rm), oom, rm);
+//        return BigRational.min(dplpq2, dplqr2, dplrp2);
+        return BigRational.min(dplpq2, dplqr2);
     }
 
     /**
@@ -2337,7 +2336,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code t}.
      */
-    public Math_BigRational getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(t, oom, rm), oom, rm)
                 .getSqrt(oom, rm);
     }
@@ -2350,18 +2349,18 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code t}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom,
+    public BigRational getDistanceSquared(V3D_Triangle t, int oom,
             RoundingMode rm) {
         if (getIntersection(t, oom, rm) != null) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         }
-        Math_BigRational dtpq2 = t.getDistanceSquared(getPQ(oom, rm), oom, rm);
-        Math_BigRational dtqr2 = t.getDistanceSquared(getQR(oom, rm), oom, rm);
-        Math_BigRational dtrp2 = t.getDistanceSquared(getRP(oom, rm), oom, rm);
-        Math_BigRational dpq2 = getDistanceSquared(t.getPQ(oom, rm), oom, rm);
-        Math_BigRational dqr2 = getDistanceSquared(t.getQR(oom, rm), oom, rm);
-        Math_BigRational drp2 = getDistanceSquared(t.getRP(oom, rm), oom, rm);
-        Math_BigRational d2 = Math_BigRational.min(dtpq2, dtqr2, dtrp2, dpq2,
+        BigRational dtpq2 = t.getDistanceSquared(getPQ(oom, rm), oom, rm);
+        BigRational dtqr2 = t.getDistanceSquared(getQR(oom, rm), oom, rm);
+        BigRational dtrp2 = t.getDistanceSquared(getRP(oom, rm), oom, rm);
+        BigRational dpq2 = getDistanceSquared(t.getPQ(oom, rm), oom, rm);
+        BigRational dqr2 = getDistanceSquared(t.getQR(oom, rm), oom, rm);
+        BigRational drp2 = getDistanceSquared(t.getRP(oom, rm), oom, rm);
+        BigRational d2 = BigRational.min(dtpq2, dtqr2, dtrp2, dpq2,
                 dqr2, drp2);
         /**
          * If any of the points of t are aligned with this, then these could be
@@ -2369,15 +2368,15 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
          */
         V3D_Point pt = t.getP();
         if (isAligned(pt, oom, rm)) {
-            d2 = Math_BigRational.min(d2, getDistanceSquared(pt, oom, rm));
+            d2 = BigRational.min(d2, getDistanceSquared(pt, oom, rm));
         }
         pt = t.getQ();
         if (isAligned(pt, oom, rm)) {
-            d2 = Math_BigRational.min(d2, getDistanceSquared(pt, oom, rm));
+            d2 = BigRational.min(d2, getDistanceSquared(pt, oom, rm));
         }
         pt = t.getR();
         if (isAligned(pt, oom, rm)) {
-            d2 = Math_BigRational.min(d2, getDistanceSquared(pt, oom, rm));
+            d2 = BigRational.min(d2, getDistanceSquared(pt, oom, rm));
         }
         /**
          * If any of the points of this are aligned with t, then these could be
@@ -2385,15 +2384,15 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
          */
         pt = getP();
         if (t.isAligned(pt, oom, rm)) {
-            d2 = Math_BigRational.min(d2, t.getDistanceSquared(pt, oom, rm));
+            d2 = BigRational.min(d2, t.getDistanceSquared(pt, oom, rm));
         }
         pt = getQ();
         if (t.isAligned(pt, oom, rm)) {
-            d2 = Math_BigRational.min(d2, t.getDistanceSquared(pt, oom, rm));
+            d2 = BigRational.min(d2, t.getDistanceSquared(pt, oom, rm));
         }
         pt = getR();
         if (t.isAligned(pt, oom, rm)) {
-            d2 = Math_BigRational.min(d2, t.getDistanceSquared(pt, oom, rm));
+            d2 = BigRational.min(d2, t.getDistanceSquared(pt, oom, rm));
         }
         return d2;
     }

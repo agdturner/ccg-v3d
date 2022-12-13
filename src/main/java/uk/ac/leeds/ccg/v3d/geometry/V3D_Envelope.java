@@ -15,10 +15,10 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * An envelope contains all the extreme values with respect to the X, Y and Z
@@ -96,32 +96,32 @@ public class V3D_Envelope implements Serializable {
     /**
      * The minimum x-coordinate.
      */
-    private final Math_BigRational xMin;
+    private final BigRational xMin;
 
     /**
      * The maximum x-coordinate.
      */
-    private final Math_BigRational xMax;
+    private final BigRational xMax;
 
     /**
      * The minimum y-coordinate.
      */
-    private final Math_BigRational yMin;
+    private final BigRational yMin;
 
     /**
      * The maximum y-coordinate.
      */
-    private final Math_BigRational yMax;
+    private final BigRational yMax;
 
     /**
      * The minimum z-coordinate.
      */
-    private final Math_BigRational zMin;
+    private final BigRational zMin;
 
     /**
      * The maximum z-coordinate.
      */
-    private final Math_BigRational zMax;
+    private final BigRational zMax;
 
     /**
      * For storing all the corner points. These are in order: lbf, lba, ltf,
@@ -158,19 +158,19 @@ public class V3D_Envelope implements Serializable {
                 zMax = points[0].getZ(oom, rm);
             }
             default -> {
-                Math_BigRational xmin = points[0].getX(oom, rm);
-                Math_BigRational xmax = points[0].getX(oom, rm);
-                Math_BigRational ymin = points[0].getY(oom, rm);
-                Math_BigRational ymax = points[0].getY(oom, rm);
-                Math_BigRational zmin = points[0].getZ(oom, rm);
-                Math_BigRational zmax = points[0].getZ(oom, rm);
+                BigRational xmin = points[0].getX(oom, rm);
+                BigRational xmax = points[0].getX(oom, rm);
+                BigRational ymin = points[0].getY(oom, rm);
+                BigRational ymax = points[0].getY(oom, rm);
+                BigRational zmin = points[0].getZ(oom, rm);
+                BigRational zmax = points[0].getZ(oom, rm);
                 for (int i = 1; i < points.length; i++) {
-                    xmin = Math_BigRational.min(xmin, points[i].getX(oom, rm));
-                    xmax = Math_BigRational.max(xmax, points[i].getX(oom, rm));
-                    ymin = Math_BigRational.min(ymin, points[i].getY(oom, rm));
-                    ymax = Math_BigRational.max(ymax, points[i].getY(oom, rm));
-                    zmin = Math_BigRational.min(zmin, points[i].getZ(oom, rm));
-                    zmax = Math_BigRational.max(zmax, points[i].getZ(oom, rm));
+                    xmin = BigRational.min(xmin, points[i].getX(oom, rm));
+                    xmax = BigRational.max(xmax, points[i].getX(oom, rm));
+                    ymin = BigRational.min(ymin, points[i].getY(oom, rm));
+                    ymax = BigRational.max(ymax, points[i].getY(oom, rm));
+                    zmin = BigRational.min(zmin, points[i].getZ(oom, rm));
+                    zmax = BigRational.max(zmax, points[i].getZ(oom, rm));
                 }
                 this.xMin = xmin;
                 this.xMax = xmax;
@@ -192,7 +192,7 @@ public class V3D_Envelope implements Serializable {
      * @param z The z-coordinate of a point.
      */
     public V3D_Envelope(int oom, RoundingMode rm,
-            Math_BigRational x, Math_BigRational y, Math_BigRational z) {
+            BigRational x, BigRational y, BigRational z) {
         this(oom, rm, new V3D_Point(x, y, z));
     }
 
@@ -209,9 +209,9 @@ public class V3D_Envelope implements Serializable {
      * @param zMax What {@link zMax} is set to.
      */
     public V3D_Envelope(int oom, RoundingMode rm,
-            Math_BigRational xMin, Math_BigRational xMax,
-            Math_BigRational yMin, Math_BigRational yMax,
-            Math_BigRational zMin, Math_BigRational zMax) {
+            BigRational xMin, BigRational xMax,
+            BigRational yMin, BigRational yMax,
+            BigRational zMin, BigRational zMax) {
         this(oom, rm, new V3D_Point(xMin, yMin, zMin),
                 new V3D_Point(xMax, yMax, zMax));
     }
@@ -342,8 +342,8 @@ public class V3D_Envelope implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code pl}
      */
-    public boolean isIntersectedBy(Math_BigRational x, Math_BigRational y,
-            Math_BigRational z, int oom, RoundingMode rm) {
+    public boolean isIntersectedBy(BigRational x, BigRational y,
+            BigRational z, int oom, RoundingMode rm) {
         return x.compareTo(getXMin(oom, rm)) != -1 && x.compareTo(getXMax(oom, rm)) != 1
                 && y.compareTo(getYMin(oom, rm)) != -1 && y.compareTo(getYMax(oom, rm)) != 1
                 && z.compareTo(getZMin(oom, rm)) != -1 && z.compareTo(getZMax(oom, rm)) != 1;
@@ -395,7 +395,7 @@ public class V3D_Envelope implements Serializable {
      * @param oom The Order of Magnitude for the precision.
      * @return {@link #xMin} rounded.
      */
-    public Math_BigRational getXMin(int oom) {
+    public BigRational getXMin(int oom) {
         return getXMin(oom, RoundingMode.FLOOR);
     }
 
@@ -406,7 +406,7 @@ public class V3D_Envelope implements Serializable {
      * @param rm The RoundingMode for the precision.
      * @return {@link #xMin} rounded.
      */
-    public Math_BigRational getXMin(int oom, RoundingMode rm) {
+    public BigRational getXMin(int oom, RoundingMode rm) {
         return xMin.add(offset.getDX(oom - 2, rm));
     }
 
@@ -416,7 +416,7 @@ public class V3D_Envelope implements Serializable {
      * @param oom The Order of Magnitude for the precision.
      * @return {@link #xMax} rounded.
      */
-    public Math_BigRational getXMax(int oom) {
+    public BigRational getXMax(int oom) {
         return getXMax(oom, RoundingMode.CEILING);
     }
 
@@ -427,7 +427,7 @@ public class V3D_Envelope implements Serializable {
      * @param rm The RoundingMode for the precision.
      * @return {@link #xMax} rounded.
      */
-    public Math_BigRational getXMax(int oom, RoundingMode rm) {
+    public BigRational getXMax(int oom, RoundingMode rm) {
         return xMax.add(offset.getDX(oom - 2, rm));
     }
 
@@ -437,7 +437,7 @@ public class V3D_Envelope implements Serializable {
      * @param oom The Order of Magnitude for the precision.
      * @return {@link #yMin} rounded.
      */
-    public Math_BigRational getYMin(int oom) {
+    public BigRational getYMin(int oom) {
         return getYMin(oom, RoundingMode.FLOOR);
     }
 
@@ -448,7 +448,7 @@ public class V3D_Envelope implements Serializable {
      * @param rm The RoundingMode for the precision.
      * @return {@link #yMin} rounded.
      */
-    public Math_BigRational getYMin(int oom, RoundingMode rm) {
+    public BigRational getYMin(int oom, RoundingMode rm) {
         return yMin.add(offset.getDY(oom - 2, rm));
     }
 
@@ -458,7 +458,7 @@ public class V3D_Envelope implements Serializable {
      * @param oom The Order of Magnitude for the precision.
      * @return {@link #yMax} rounded.
      */
-    public Math_BigRational getYMax(int oom) {
+    public BigRational getYMax(int oom) {
         return getYMax(oom, RoundingMode.CEILING);
     }
 
@@ -469,7 +469,7 @@ public class V3D_Envelope implements Serializable {
      * @param rm The RoundingMode for the precision.
      * @return {@link #yMax} rounded.
      */
-    public Math_BigRational getYMax(int oom, RoundingMode rm) {
+    public BigRational getYMax(int oom, RoundingMode rm) {
         return yMax.add(offset.getDY(oom - 2, rm));
     }
 
@@ -479,7 +479,7 @@ public class V3D_Envelope implements Serializable {
      * @param oom The Order of Magnitude for the precision.
      * @return {@link #zMin} rounded.
      */
-    public Math_BigRational getZMin(int oom) {
+    public BigRational getZMin(int oom) {
         return getZMin(oom, RoundingMode.FLOOR);
     }
 
@@ -490,7 +490,7 @@ public class V3D_Envelope implements Serializable {
      * @param rm The RoundingMode for the precision.
      * @return {@link #zMin} rounded.
      */
-    public Math_BigRational getZMin(int oom, RoundingMode rm) {
+    public BigRational getZMin(int oom, RoundingMode rm) {
         return zMin.add(offset.getDZ(oom - 2, rm));
     }
 
@@ -500,7 +500,7 @@ public class V3D_Envelope implements Serializable {
      * @param oom The Order of Magnitude for the precision.
      * @return {@link #zMax} rounded.
      */
-    public Math_BigRational getZMax(int oom) {
+    public BigRational getZMax(int oom) {
         return getZMax(oom, RoundingMode.CEILING);
     }
 
@@ -511,7 +511,7 @@ public class V3D_Envelope implements Serializable {
      * @param rm The RoundingMode for the precision.
      * @return {@link #zMax} rounded.
      */
-    public Math_BigRational getZMax(int oom, RoundingMode rm) {
+    public BigRational getZMax(int oom, RoundingMode rm) {
         return zMax.add(offset.getDZ(oom - 2, rm));
     }
 
@@ -589,10 +589,10 @@ public class V3D_Envelope implements Serializable {
          * c.
          */
         // Find a closest point (there could be up to 4).
-        Math_BigRational d2min = pt.getDistanceSquared(pts[0], oom, rm);
+        BigRational d2min = pt.getDistanceSquared(pts[0], oom, rm);
         V3D_Point closest = pts[0];
         for (int i = 1; i < pts.length; i++) {
-            Math_BigRational d2 = pt.getDistanceSquared(pts[i], oom, rm);
+            BigRational d2 = pt.getDistanceSquared(pts[i], oom, rm);
             if (d2.compareTo(d2min) == -1) {
                 d2min = d2;
                 closest = pts[i];
@@ -614,16 +614,16 @@ public class V3D_Envelope implements Serializable {
         // Find top and bottom
         V3D_Point ap = new V3D_Point(c);
         ap.translate(v2, oom, rm);
-        Math_BigRational aa = Math_BigRational.ZERO;
+        BigRational aa = BigRational.ZERO;
         V3D_Plane tpl = null;
         //V3D_Point pb = new V3D_Point(v2pl.getP());
         //pb.translate(v2.reverse(), oom, rm);
-        Math_BigRational ba = Math_BigRational.ZERO;
+        BigRational ba = BigRational.ZERO;
         V3D_Plane bpl = null;
         for (var x : ipts) {
             V3D_Point pp = vpl.getPointOfProjectedIntersection(x, oom, rm);
-            //Math_BigRational a = v2.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
-            Math_BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
+            //BigRational a = v2.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
+            BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
             if (v2pl.isOnSameSide(ap, x, oom, rm)) {
                 if (a.compareTo(aa) == 1) {
                     aa = a;
@@ -644,16 +644,16 @@ public class V3D_Envelope implements Serializable {
         // Find left and right
         V3D_Point lp = new V3D_Point(c);
         lp.translate(v.reverse(), oom, rm);
-        Math_BigRational la = Math_BigRational.ZERO;
+        BigRational la = BigRational.ZERO;
         V3D_Plane lpl = null;
         //V3D_Point pr = new V3D_Point(vpl.getP());
         //pr.translate(v, oom, rm);
-        Math_BigRational ra = Math_BigRational.ZERO;
+        BigRational ra = BigRational.ZERO;
         V3D_Plane rpl = null;
         for (var x : ipts) {
             V3D_Point pp = v2pl.getPointOfProjectedIntersection(x, oom, rm);
-            //Math_BigRational a = v.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
-            Math_BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
+            //BigRational a = v.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
+            BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
             if (vpl.isOnSameSide(lp, x, oom, rm)) {
                 if (a.compareTo(la) == 1) {
                     la = a;
@@ -717,7 +717,7 @@ public class V3D_Envelope implements Serializable {
         V3D_Rectangle r;
         // Get the plane of the viewport.
         V3D_Point c = getCentroid(oomn4, rm);
-        Math_BigRational distance = c.getDistance(getPoints(oom, rm)[0], oomn4, rm);
+        BigRational distance = c.getDistance(getPoints(oom, rm)[0], oomn4, rm);
         V3D_Point plpt = new V3D_Point(c);
         V3D_Vector vo = new V3D_Vector(c, pt, oomn4, rm).getUnitVector(oomn4, rm);
         plpt.translate(vo.multiply(distance, oomn4, rm), oomn4, rm);
@@ -739,16 +739,16 @@ public class V3D_Envelope implements Serializable {
         // Find top and bottom
         V3D_Point ap = new V3D_Point(c);
         ap.translate(v2, oomn4, rm);
-        Math_BigRational aa = Math_BigRational.ZERO;
+        BigRational aa = BigRational.ZERO;
         V3D_Plane tpl = null;
         //V3D_Point pb = new V3D_Point(v2pl.getP());
         //pb.translate(v2.reverse(), oom, rm);
-        Math_BigRational ba = Math_BigRational.ZERO;
+        BigRational ba = BigRational.ZERO;
         V3D_Plane bpl = null;
         for (var x : ipts) {
             V3D_Point pp = vpl.getPointOfProjectedIntersection(x, oomn4, rm);
-            //Math_BigRational a = v2.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
-            Math_BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oomn4, rm), oomn4, rm).abs();
+            //BigRational a = v2.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
+            BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oomn4, rm), oomn4, rm).abs();
             if (v2pl.isOnSameSide(ap, x, oomn4, rm)) {
                 if (a.compareTo(aa) == 1) {
                     aa = a;
@@ -769,16 +769,16 @@ public class V3D_Envelope implements Serializable {
         // Find left and right
         V3D_Point lp = new V3D_Point(c);
         lp.translate(v.reverse(), oomn4, rm);
-        Math_BigRational la = Math_BigRational.ZERO;
+        BigRational la = BigRational.ZERO;
         V3D_Plane lpl = null;
         //V3D_Point pr = new V3D_Point(vpl.getP());
         //pr.translate(v, oom, rm);
-        Math_BigRational ra = Math_BigRational.ZERO;
+        BigRational ra = BigRational.ZERO;
         V3D_Plane rpl = null;
         for (var x : ipts) {
             V3D_Point pp = v2pl.getPointOfProjectedIntersection(x, oomn4, rm);
-            //Math_BigRational a = v.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
-            Math_BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oomn4, rm), oomn4, rm).abs();
+            //BigRational a = v.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
+            BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oomn4, rm), oomn4, rm).abs();
             if (vpl.isOnSameSide(lp, x, oomn4, rm)) {
                 if (a.compareTo(la) == 1) {
                     la = a;
@@ -846,8 +846,8 @@ public class V3D_Envelope implements Serializable {
         V3D_Rectangle r;
         // Get the plane of the viewport.
         V3D_Point c = getCentroid(oomn4, rm);
-        Math_BigRational d = c.getDistance(getPoints(oom, rm)[0], oomn4, rm);
-        Math_BigRational dby2 = d.divide(2);
+        BigRational d = c.getDistance(getPoints(oom, rm)[0], oomn4, rm);
+        BigRational dby2 = d.divide(2);
         V3D_Point plpt = new V3D_Point(c);
         V3D_Vector cpt = new V3D_Vector(c, pt, oomn4, rm);
         V3D_Vector vo = cpt.getUnitVector(oomn4, rm);

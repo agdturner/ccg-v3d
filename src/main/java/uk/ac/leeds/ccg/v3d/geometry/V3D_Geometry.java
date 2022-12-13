@@ -15,9 +15,9 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -131,7 +131,7 @@ public abstract class V3D_Geometry implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return The rotated geometry.
      */
-    public abstract V3D_Geometry rotate(V3D_Line axis, Math_BigRational theta,
+    public abstract V3D_Geometry rotate(V3D_Line axis, BigRational theta,
             int oom, RoundingMode rm);
 
     /**
@@ -141,12 +141,12 @@ public abstract class V3D_Geometry implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return An angle between 0 and 2Pi.
      */
-    public Math_BigRational getAngleM(Math_BigRational theta, int oom,
+    public BigRational getAngleM(BigRational theta, int oom,
             RoundingMode rm) {
-        Math_BigRational twoPi = Math_BigRational.valueOf(
+        BigRational twoPi = BigRational.valueOf(
                 V3D_Environment.bd.getPi(oom, rm)).multiply(2);
         // Change a negative angle into a positive one.
-        while (theta.compareTo(Math_BigRational.ZERO) == -1) {
+        while (theta.compareTo(BigRational.ZERO) == -1) {
             theta = theta.add(twoPi);
         }
         // Only rotate less than 2Pi radians.

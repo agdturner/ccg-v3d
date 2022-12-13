@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
@@ -23,9 +24,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  *
@@ -322,12 +322,12 @@ public class V3D_TetrahedronTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P0P1, oom, rm);
-        Math_BigRational expResult = (new Math_BigRationalSqrt(
-                Math_BigRational.valueOf(3, 2), oom, rm).getSqrt(oom, rm)
-                .multiply(new Math_BigRationalSqrt(
-                        Math_BigRational.TWO, oom, rm).getSqrt(oom, rm).divide(2)))
-                .add(Math_BigRational.valueOf(3, 2)).round(oom, rm);
-        Math_BigRational result = instance.getArea(oom, rm);
+        BigRational expResult = Math_BigRational.round(
+                (new Math_BigRationalSqrt(BigRational.valueOf(3, 2), oom, rm)
+                        .getSqrt(oom, rm).multiply(new Math_BigRationalSqrt(
+                        BigRational.TWO, oom, rm).getSqrt(oom, rm).divide(2)))
+                        .add(BigRational.valueOf(3, 2)), oom, rm);
+        BigRational result = instance.getArea(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -342,8 +342,8 @@ public class V3D_TetrahedronTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P0P1, oom, rm);
-        Math_BigRational expResult = Math_BigRational.valueOf(1, 6);
-        Math_BigRational result = instance.getVolume(oom, rm);
+        BigRational expResult = BigRational.valueOf(1, 6);
+        BigRational result = instance.getVolume(oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -359,8 +359,8 @@ public class V3D_TetrahedronTest extends V3D_Test {
                 pN2N2N2, pP2N2N2, pP0P2N2,
                 new V3D_Point(P0, P0, P4), oom, rm);
         V3D_Point expResult = new V3D_Point(P0P0P0, new V3D_Vector(
-                Math_BigRational.ZERO, Math_BigRational.valueOf(1, 2).negate(),
-                Math_BigRational.valueOf(1, 2).negate()));
+                BigRational.ZERO, BigRational.valueOf(1, 2).negate(),
+                BigRational.valueOf(1, 2).negate()));
         V3D_Point result = instance.getCentroid(oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
@@ -454,7 +454,6 @@ public class V3D_TetrahedronTest extends V3D_Test {
 //        instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
 //        assertTrue(instance.isIntersectedBy(l, oom, rm));
 //    }
-
     /**
      * Test of getIntersection method, of class V3D_Tetrahedron.
      */
@@ -590,21 +589,21 @@ public class V3D_TetrahedronTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Tetrahedron t;
         V3D_Triangle tr;
-        Math_BigRational expResult;
-        Math_BigRational result;
+        BigRational expResult;
+        BigRational result;
         // Test 1
         t = new V3D_Tetrahedron(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
         tr = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0, oom, rm);
-        expResult = Math_BigRational.ZERO;
+        expResult = BigRational.ZERO;
         result = t.getDistanceSquared(tr, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         tr = new V3D_Triangle(pN1P1P0, pN1P0P0, pN1P0P1, oom, rm);
-        expResult = Math_BigRational.ONE;
+        expResult = BigRational.ONE;
         result = t.getDistanceSquared(tr, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
-    
+
     /**
      * Test of getDistance method, of class V3D_Rectangle.
      */
@@ -630,11 +629,11 @@ public class V3D_TetrahedronTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Tetrahedron t = new V3D_Tetrahedron(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1, oom, rm);
         V3D_Rectangle r = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ZERO;
-        Math_BigRational result = t.getDistanceSquared(r, oom, rm);
+        BigRational expResult = BigRational.ZERO;
+        BigRational result = t.getDistanceSquared(r, oom, rm);
         assertEquals(expResult, result);
     }
-    
+
     /**
      * Test of getDistance method, of class V3D_Tetrahedron covered by
      * {@link #testGetDistanceSquared_V3D_Point_int()}.
@@ -654,18 +653,18 @@ public class V3D_TetrahedronTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point p;
         V3D_Tetrahedron instance;
-        Math_BigRational expResult;
-        Math_BigRational result;
+        BigRational expResult;
+        BigRational result;
         // Test 1
         instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
         p = pP0P0P0;
-        expResult = Math_BigRational.ZERO;
+        expResult = BigRational.ZERO;
         result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
         p = pN2N2N2;
-        expResult = Math_BigRational.valueOf(4);
+        expResult = BigRational.valueOf(4);
         result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
@@ -679,7 +678,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Tetrahedron t;
-        V3D_Ray r ;
+        V3D_Ray r;
         V3D_Geometry expResult;
         V3D_Geometry result;
         // Test 1
@@ -702,12 +701,11 @@ public class V3D_TetrahedronTest extends V3D_Test {
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 4
         t = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
-        V3D_Point pNHP0P1 = new V3D_Point(Math_BigRational.valueOf(-1,2),P0, P1);
+        V3D_Point pNHP0P1 = new V3D_Point(BigRational.valueOf(-1, 2), P0, P1);
         r = new V3D_Ray(pNHP0P1, pP0P0P1, oom, rm);
         expResult = new V3D_LineSegment(pNHP0P1, pP0P0P1, oom, rm);
         result = t.getIntersection(r, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
     }
 
-    
 }

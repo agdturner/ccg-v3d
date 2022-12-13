@@ -1,11 +1,11 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * A set of V3D_Tetrahedron.
@@ -80,8 +80,8 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The area of the triangle (rounded).
      */
     @Override
-    public Math_BigRational getArea(int oom, RoundingMode rm) {
-        Math_BigRational r = Math_BigRational.ZERO;
+    public BigRational getArea(int oom, RoundingMode rm) {
+        BigRational r = BigRational.ZERO;
         Iterator<V3D_Tetrahedron> ite = tetrahedrons.iterator();
         while (ite.hasNext()) {
             r = r.add(ite.next().getArea(oom, rm));
@@ -93,8 +93,8 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
      * @param oom The Order of Magnitude for the precision of the calculation.
      */
     @Override
-    public Math_BigRational getVolume(int oom, RoundingMode rm) {
-        Math_BigRational r = Math_BigRational.ZERO;
+    public BigRational getVolume(int oom, RoundingMode rm) {
+        BigRational r = BigRational.ZERO;
         Iterator<V3D_Tetrahedron> ite = tetrahedrons.iterator();
         while (ite.hasNext()) {
             r = r.add(ite.next().getVolume(oom, rm));
@@ -119,7 +119,7 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
     }
     
     @Override
-     public V3D_Tetrahedrons rotate(V3D_Line axis, Math_BigRational theta,
+     public V3D_Tetrahedrons rotate(V3D_Line axis, BigRational theta,
              int oom, RoundingMode rm) {
         V3D_Tetrahedron[] rls = new V3D_Tetrahedron[tetrahedrons.size()];
         for (int i = 0; i < tetrahedrons.size(); i ++) {

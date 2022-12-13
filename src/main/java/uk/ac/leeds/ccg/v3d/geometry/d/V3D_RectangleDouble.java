@@ -247,8 +247,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     /**
      * @return The plane of the rectangle from {@link #getPQR()}.
      */
-    public V3D_PlaneDouble getPlane() {
-        return getPQR().getPl();
+    public V3D_PlaneDouble getPlane(double epsilon) {
+        return getPQR().getPl(epsilon);
     }
 
 //    @Override
@@ -369,7 +369,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_LineDouble l,
             double epsilon) {
-        if (getPlane().getIntersection(l, epsilon) != null) {
+        if (getPlane(epsilon).getIntersection(l, epsilon) != null) {
             V3D_FiniteGeometryDouble i1 = getPQR().getIntersection(l, epsilon);
             V3D_FiniteGeometryDouble i2 = getRSP().getIntersection(l, epsilon);
             if (i1 == null) {

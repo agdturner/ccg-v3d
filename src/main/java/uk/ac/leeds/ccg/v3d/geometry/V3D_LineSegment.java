@@ -15,9 +15,9 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -89,7 +89,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     /**
      * For storing the length of the line squared.
      */
-    protected Math_BigRational len2;
+    protected BigRational len2;
 
     /**
      * Create a new instance.
@@ -390,7 +390,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param rm The RoundingMode for any rounding.
      * @return The length of {@code this} squared.
      */
-    public Math_BigRational getLength2(int oom, RoundingMode rm) {
+    public BigRational getLength2(int oom, RoundingMode rm) {
         return getP().getDistanceSquared(getQ(), oom, rm);
     }
 
@@ -696,7 +696,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param rm The RoundingMode for any rounding.
      * @return The minimum distance between this and {@code pv}.
      */
-    public Math_BigRational getDistance(V3D_Point p, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_Point p, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
                 .getSqrt(oom, rm);
     }
@@ -715,10 +715,10 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param rm The RoundingMode for any rounding.
      * @return The minimum distance between this and {@code pv}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Point pt, int oom,
+    public BigRational getDistanceSquared(V3D_Point pt, int oom,
             RoundingMode rm) {
         if (isIntersectedBy(pt, oom, rm)) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         }
         V3D_Point poi = l.getPointOfIntersection(pt, oom, rm);
         if (isAligned(poi, oom, rm)) {
@@ -770,7 +770,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return The distance from {@code this} to {@code l} at the {@code oom}
      * precision.
      */
-    public Math_BigRational getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
                 .getSqrt(oom, rm);
     }
@@ -783,10 +783,10 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code l}.
      */
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom,
+    public BigRational getDistanceSquared(V3D_LineSegment l, int oom,
             RoundingMode rm) {
         if (getIntersection(l, oom, rm) != null) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         }
         V3D_LineSegment loi = getLineOfIntersection(l, oom, rm);
         if (loi == null) {
@@ -808,9 +808,9 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      */
     public V3D_Point getMidpoint(int oom, RoundingMode rm) {
         //BigDecimal l = getLength().toBigDecimal(oom);
-        //V3D_Vector pmpq = v.divide(Math_BigRational.valueOf(l));
-        //V3D_Vector pmpq = l.getV(oom, rm).divide(Math_BigRational.valueOf(2), oom, rm);
-        V3D_Vector pmpq = l.v.divide(Math_BigRational.valueOf(2), oom, rm);
+        //V3D_Vector pmpq = v.divide(BigRational.valueOf(l));
+        //V3D_Vector pmpq = l.getV(oom, rm).divide(BigRational.valueOf(2), oom, rm);
+        V3D_Vector pmpq = l.v.divide(BigRational.valueOf(2), oom, rm);
         //return getP(oom).translate(pmpq, oom);
         return new V3D_Point(offset, l.pv.add(pmpq, oom, rm));
     }
@@ -949,8 +949,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         V3D_Point tp = getP();
         V3D_Point tq = getQ();
         if (loi == null) {
-            Math_BigRational pd = l.getDistanceSquared(tp, oom, rm);
-            Math_BigRational qd = l.getDistanceSquared(tq, oom, rm);
+            BigRational pd = l.getDistanceSquared(tp, oom, rm);
+            BigRational qd = l.getDistanceSquared(tq, oom, rm);
             if (pd.compareTo(qd) == 1) {
                 return new V3D_LineSegment(tq, l.getPointOfIntersection(tq, oom, rm), oom, rm);
             } else {
@@ -1116,8 +1116,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     protected static V3D_Point getNearestPoint(V3D_LineSegment l, V3D_Point pt, int oom, RoundingMode rm) {
         V3D_Point lp = l.getP();
         V3D_Point lq = l.getQ();
-        Math_BigRational dlpp = lp.getDistanceSquared(pt, oom, rm);
-        Math_BigRational dlqp = lq.getDistanceSquared(pt, oom, rm);
+        BigRational dlpp = lp.getDistanceSquared(pt, oom, rm);
+        BigRational dlqp = lq.getDistanceSquared(pt, oom, rm);
         if (dlpp.compareTo(dlqp) == -1) {
             return lp;
         } else {
@@ -1133,7 +1133,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code l}.
      */
-    public Math_BigRational getDistance(V3D_Line l, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_Line l, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
                 .getSqrt(oom, rm);
     }
@@ -1146,9 +1146,9 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code l}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
         if (getIntersection(l, oom, rm) != null) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         }
         V3D_LineSegment loi = getLineOfIntersection(l, oom, rm);
         if (loi == null) {
@@ -1159,7 +1159,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_LineSegment rotate(V3D_Line axis, Math_BigRational theta,
+    public V3D_LineSegment rotate(V3D_Line axis, BigRational theta,
             int oom, RoundingMode rm) {
         return new V3D_LineSegment(
                 getP().rotate(axis, theta, oom, rm),

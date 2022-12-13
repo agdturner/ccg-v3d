@@ -15,7 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -23,9 +23,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Disabled;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -328,16 +325,16 @@ public class V3D_LineSegmentTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment instance;
-        Math_BigRational expResult;
-        Math_BigRational result;
+        BigRational expResult;
+        BigRational result;
         // Test 1
         instance = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        expResult = Math_BigRational.ONE;
+        expResult = BigRational.ONE;
         result = instance.getLength2(oom, rm);
         assertTrue(expResult.equals(result));
         // Test 2
         instance = new V3D_LineSegment(pP0P0P0, pP2P0P0, oom, rm);
-        expResult = Math_BigRational.valueOf(4);
+        expResult = BigRational.valueOf(4);
         result = instance.getLength2(oom, rm);
         assertTrue(expResult.equals(result));
     }
@@ -353,8 +350,8 @@ public class V3D_LineSegmentTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP2P0P0, oom, rm);
         V3D_Point instance = pP1P1P0;
-        Math_BigRational expResult = Math_BigRational.ONE;
-        Math_BigRational result = l.getDistance(instance, oom, rm);
+        BigRational expResult = BigRational.ONE;
+        BigRational result = l.getDistance(instance, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         instance = pN1N1P0;
@@ -363,7 +360,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         instance = pP2P2P0;
-        expResult = Math_BigRational.valueOf(2);
+        expResult = BigRational.valueOf(2);
         result = l.getDistance(instance, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 4
@@ -384,33 +381,33 @@ public class V3D_LineSegmentTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment instance;
         V3D_Point p;
-        Math_BigRational expResult;
-        Math_BigRational result;
+        BigRational expResult;
+        BigRational result;
         // Test 1
         instance = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         p = pP0P0P0;
-        expResult = Math_BigRational.ZERO;
+        expResult = BigRational.ZERO;
         result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 2
         p = pP1P0P0;
-        expResult = Math_BigRational.ZERO;
+        expResult = BigRational.ZERO;
         result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 3
         instance = new V3D_LineSegment(pP0P0P0, pP2P0P0, oom, rm);
         p = pP1P0P0;
-        expResult = Math_BigRational.ZERO;
+        expResult = BigRational.ZERO;
         result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 4
         p = pP1P0P1;
-        expResult = Math_BigRational.ONE;
+        expResult = BigRational.ONE;
         result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.equals(result));
         // Test 5
         p = pN1P0P1;
-        expResult = Math_BigRational.valueOf(2);
+        expResult = BigRational.valueOf(2);
         result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.equals(result));
     }
@@ -434,46 +431,46 @@ public class V3D_LineSegmentTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment l;
         V3D_LineSegment instance;
-        Math_BigRational expResult;
-        Math_BigRational result;
+        BigRational expResult;
+        BigRational result;
         // Test 1
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         instance = new V3D_LineSegment(pP0P1P0, pP1P1P0, oom, rm);
-        expResult = Math_BigRational.ONE;
+        expResult = BigRational.ONE;
         result = instance.getDistanceSquared(l, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         instance = new V3D_LineSegment(pN1P0P0, pN1P1P0, oom, rm);
-        expResult = Math_BigRational.ONE;
+        expResult = BigRational.ONE;
         result = instance.getDistanceSquared(l, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
-        expResult = Math_BigRational.ONE;
+        expResult = BigRational.ONE;
         result = l.getDistanceSquared(instance, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 4
         l = new V3D_LineSegment(pP1P0P0, pP0P1P0, oom, rm);
         instance = new V3D_LineSegment(pN1P0P1, pN1P1P0, oom, rm);
-        expResult = Math_BigRational.ONE;
+        expResult = BigRational.ONE;
         result = l.getDistanceSquared(instance, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 5
         instance = new V3D_LineSegment(pP1P0P0, pP0P1P0, oom, rm);
         l = new V3D_LineSegment(pN1P0P1, pN1P1P0, oom, rm);
-        expResult = Math_BigRational.ONE;
+        expResult = BigRational.ONE;
         result = l.getDistanceSquared(instance, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 6
         instance = new V3D_LineSegment(pP0P0P0, pP0P1P0, oom, rm);
         l = new V3D_LineSegment(pN1P0P0, pN1P1P0, oom, rm);
-        expResult = Math_BigRational.ONE;
+        expResult = BigRational.ONE;
         result = l.getDistanceSquared(instance, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 7
         instance = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         l = new V3D_LineSegment(pN1P0P1, pN1P1P0, oom, rm);
-        expResult = Math_BigRational.valueOf(3, 2);
+        expResult = BigRational.valueOf(3, 2);
         result = l.getDistanceSquared(instance, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         

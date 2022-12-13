@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -22,7 +23,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -106,13 +106,13 @@ public class V3D_RectangleTest extends V3D_Test {
         instance = new V3D_Rectangle(pN1P0P0, pP0P1P0, pP1P0P0, pP0N1P0, oom, rm);
         assertTrue(instance.isIntersectedBy(pt, oom, rm));
         // Test 3
-        Math_BigRational half = Math_BigRational.ONE.divide(2);
+        BigRational half = BigRational.ONE.divide(2);
         pt = new V3D_Point(half, half, P0);
         assertTrue(instance.isIntersectedBy(pt, oom, rm));
         // Test 4
-        Math_BigRational epsilon = Math_BigRational.valueOf("0.00000000001");
-        Math_BigRational halfpe = half.add(epsilon);
-        Math_BigRational halfne = half.subtract(epsilon);
+        BigRational epsilon = BigRational.valueOf("0.00000000001");
+        BigRational halfpe = half.add(epsilon);
+        BigRational halfne = half.subtract(epsilon);
         oom = -12;
         pt = new V3D_Point(halfpe, half, P0);
         assertFalse(instance.isIntersectedBy(pt, oom, rm));
@@ -286,8 +286,8 @@ public class V3D_RectangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.valueOf(4);
-        Math_BigRational result = instance.getPerimeter(oom, rm);
+        BigRational expResult = BigRational.valueOf(4);
+        BigRational result = instance.getPerimeter(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -300,8 +300,8 @@ public class V3D_RectangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ONE;
-        Math_BigRational result = instance.getArea(oom, rm);
+        BigRational expResult = BigRational.ONE;
+        BigRational result = instance.getArea(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -315,8 +315,8 @@ public class V3D_RectangleTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point p = pN1N1P0;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = new Math_BigRationalSqrt(2, oom, rm).getSqrt(oom, rm);
-        Math_BigRational result = instance.getDistance(p, oom, rm);
+        BigRational expResult = new Math_BigRationalSqrt(2, oom, rm).getSqrt(oom, rm);
+        BigRational result = instance.getDistance(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -574,12 +574,12 @@ public class V3D_RectangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP2P1P0, pP2P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ZERO;
-        Math_BigRational result = instance.getDistance(p, oom, rm);
+        BigRational expResult = BigRational.ZERO;
+        BigRational result = instance.getDistance(p, oom, rm);
         assertEquals(expResult, result);
         // Test 2
         p = pN1P0P0;
-        expResult = Math_BigRational.ONE;
+        expResult = BigRational.ONE;
         result = instance.getDistance(p, oom, rm);
         assertEquals(expResult, result);
     }
@@ -594,12 +594,12 @@ public class V3D_RectangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ZERO;
-        Math_BigRational result = instance.getDistanceSquared(p, oom, rm);
+        BigRational expResult = BigRational.ZERO;
+        BigRational result = instance.getDistanceSquared(p, oom, rm);
         assertEquals(expResult, result);
         // Test 2
         p = pN1N1P0;
-        expResult = Math_BigRational.TWO;
+        expResult = BigRational.TWO;
         result = instance.getDistanceSquared(p, oom, rm);
         assertEquals(expResult, result);
     }
@@ -642,7 +642,7 @@ public class V3D_RectangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line axis = V3D_Line.X_AXIS;
-        Math_BigRational theta = Math_BigRational.ZERO;
+        BigRational theta = BigRational.ZERO;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
         instance.rotate(axis, theta, oom, rm);
         V3D_Rectangle instance2 = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
@@ -745,8 +745,8 @@ public class V3D_RectangleTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line l = new V3D_Line(pP0N1P1, pP1N1P1, oom, rm);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ONE;
-        Math_BigRational result = instance.getDistance(l, oom, rm);
+        BigRational expResult = BigRational.ONE;
+        BigRational result = instance.getDistance(l, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -760,8 +760,8 @@ public class V3D_RectangleTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line l = new V3D_Line(pP0N1P1, pP1N1P1, oom, rm);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ONE;
-        Math_BigRational result = instance.getDistanceSquared(l, oom, rm);
+        BigRational expResult = BigRational.ONE;
+        BigRational result = instance.getDistanceSquared(l, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -775,8 +775,8 @@ public class V3D_RectangleTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment l = new V3D_LineSegment(pP0N1P0, pP1N1P0, oom, rm);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ONE;
-        Math_BigRational result = instance.getDistance(l, oom, rm);
+        BigRational expResult = BigRational.ONE;
+        BigRational result = instance.getDistance(l, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -790,8 +790,8 @@ public class V3D_RectangleTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment l = new V3D_LineSegment(pP0N1P0, pP1N1P0, oom, rm);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ONE;
-        Math_BigRational result = instance.getDistanceSquared(l, oom, rm);
+        BigRational expResult = BigRational.ONE;
+        BigRational result = instance.getDistanceSquared(l, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -805,8 +805,8 @@ public class V3D_RectangleTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane p = new V3D_Plane(pP0N1P0, pP1N1P0, pP0N1P1, oom, rm);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ONE;
-        Math_BigRational result = instance.getDistance(p, oom, rm);
+        BigRational expResult = BigRational.ONE;
+        BigRational result = instance.getDistance(p, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -820,8 +820,8 @@ public class V3D_RectangleTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane p = new V3D_Plane(pP0N1P0, pP1N1P0, pP0N1P1, oom, rm);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ONE;
-        Math_BigRational result = instance.getDistanceSquared(p, oom, rm);
+        BigRational expResult = BigRational.ONE;
+        BigRational result = instance.getDistanceSquared(p, oom, rm);
         assertEquals(expResult, result);
     }
 
@@ -835,12 +835,12 @@ public class V3D_RectangleTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle t = new V3D_Triangle(pP0N1P0, pP1N1P0, pP0N1P1, oom, rm);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ONE;
-        Math_BigRational result = instance.getDistance(t, oom, rm);
+        BigRational expResult = BigRational.ONE;
+        BigRational result = instance.getDistance(t, oom, rm);
         assertEquals(expResult, result);
         // Test 2
         t = new V3D_Triangle(pP0N1P0, pP1N1P0, pP1P1P0, oom, rm);
-        expResult = Math_BigRational.ZERO;
+        expResult = BigRational.ZERO;
         result = instance.getDistance(t, oom, rm);
         assertEquals(expResult, result);
     }
@@ -855,8 +855,8 @@ public class V3D_RectangleTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P1P0, oom, rm);
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        Math_BigRational expResult = Math_BigRational.ZERO;
-        Math_BigRational result = instance.getDistanceSquared(t, oom, rm);
+        BigRational expResult = BigRational.ZERO;
+        BigRational result = instance.getDistanceSquared(t, oom, rm);
         assertEquals(expResult, result);
     }
 

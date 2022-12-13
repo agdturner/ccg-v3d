@@ -15,9 +15,9 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * V3D_Volume
@@ -32,7 +32,7 @@ public interface V3D_Volume extends Serializable {
      * @param rm The RoundingMode if rounding is needed.
      * @return The area.
      */
-    public abstract Math_BigRational getArea(int oom, RoundingMode rm);
+    public abstract BigRational getArea(int oom, RoundingMode rm);
     
     /**
      * For calculating and returning the perimeter.
@@ -40,6 +40,6 @@ public interface V3D_Volume extends Serializable {
      * @param rm The RoundingMode if rounding is needed.
      * @return The Perimeter.
      */
-    public abstract Math_BigRational getVolume(int oom, RoundingMode rm);
+    public abstract BigRational getVolume(int oom, RoundingMode rm);
     
 }

@@ -420,8 +420,7 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
                 V3D_PointDouble p = pts.get(i);
                 boolean added = false;
                 for (int j = i + 1; j < pts.size(); j++) {
-                    V3D_PointDouble p2 = pts.get(j);
-                    if (p.equals(p2, epsilon)) {
+                    if (p.equals(pts.get(j), epsilon)) {
                         r.add(p);
                         indexes.add(j);
                         added = true;

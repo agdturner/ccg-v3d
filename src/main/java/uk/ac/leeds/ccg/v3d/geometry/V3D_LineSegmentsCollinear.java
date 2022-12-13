@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -284,8 +285,9 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * @return The distance squared to {@code p}.
      */
     public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
+        return Math_BigRational.toBigDecimal(new Math_BigRationalSqrt(
+                getDistanceSquared(p, oom, rm), oom, rm).getSqrt(oom, rm), oom,
+                rm);
     }
 
     /**
@@ -296,12 +298,12 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * @param rm The RoundingMode for any rounding.
      * @return The distance squared to {@code p}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Point p, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_Point p, int oom, RoundingMode rm) {
         if (isIntersectedBy(p, oom, rm)) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         }
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-        Math_BigRational d = ite.next().getDistanceSquared(p, oom, rm);
+        BigRational d = ite.next().getDistanceSquared(p, oom, rm);
         while (ite.hasNext()) {
             d = d.min(ite.next().getDistanceSquared(p, oom, rm));
         }
@@ -317,8 +319,9 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * @return The minimum distance squared to {@code l}.
      */
     public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
+        return Math_BigRational.toBigDecimal(new Math_BigRationalSqrt(
+                getDistanceSquared(l, oom, rm), oom, rm).getSqrt(oom, rm), oom, 
+                rm);
     }
 
     /**
@@ -329,12 +332,12 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * @param rm The RoundingMode for any rounding.
      * @return The minimum distance squared to {@code l}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
 //        if (isIntersectedBy(l, oom, rm)) {
-//            return Math_BigRational.ZERO;
+//            return BigRational.ZERO;
 //        }
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-        Math_BigRational d = ite.next().getDistanceSquared(l, oom, rm);
+        BigRational d = ite.next().getDistanceSquared(l, oom, rm);
         while (ite.hasNext()) {
             d = d.min(ite.next().getDistanceSquared(l, oom, rm));
         }
@@ -350,8 +353,9 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * @return The minimum distance to {@code l}.
      */
     public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
+        return Math_BigRational.toBigDecimal(new Math_BigRationalSqrt(
+                getDistanceSquared(l, oom, rm), oom, rm).getSqrt(oom, rm), oom,
+                rm);
     }
 
     /**
@@ -362,12 +366,12 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * @param rm The RoundingMode for any rounding.
      * @return The minimum distance to {@code l}.
      */
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
         if (getIntersection(l, oom, rm) != null) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         }
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-        Math_BigRational d = ite.next().getDistanceSquared(l, oom, rm);
+        BigRational d = ite.next().getDistanceSquared(l, oom, rm);
         while (ite.hasNext()) {
             d = d.min(ite.next().getDistanceSquared(l, oom, rm));
         }
@@ -565,7 +569,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     
     @Override
     public V3D_LineSegmentsCollinear rotate(V3D_Line axis, 
-            Math_BigRational theta, int oom, RoundingMode rm) {
+            BigRational theta, int oom, RoundingMode rm) {
         V3D_LineSegment[] rls = new V3D_LineSegment[lineSegments.size()];
         for (int i = 0; i < lineSegments.size(); i++) {
             rls[0] = lineSegments.get(i).rotate(axis, theta, oom, rm);

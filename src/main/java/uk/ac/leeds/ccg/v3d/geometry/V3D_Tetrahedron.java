@@ -15,9 +15,10 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -327,7 +328,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The outer surface area of the tetrahedron (rounded).
      */
     @Override
-    public Math_BigRational getArea(int oom, RoundingMode rm) {
+    public BigRational getArea(int oom, RoundingMode rm) {
         return getPqr(oom, rm).getArea(oom, rm)
                 .add(getQsr(oom, rm).getArea(oom, rm))
                 .add(getSpr(oom, rm).getArea(oom, rm))
@@ -343,11 +344,11 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param rm The RoundingMode if rounding is needed.
      */
     @Override
-    public Math_BigRational getVolume(int oom, RoundingMode rm) {
+    public BigRational getVolume(int oom, RoundingMode rm) {
         int oomn6 = oom - 6;
         V3D_Triangle tpqr = getPqr(oomn6, rm);
         V3D_Point ts = getS();
-        Math_BigRational hd3 = new Math_BigRationalSqrt(
+        BigRational hd3 = new Math_BigRationalSqrt(
                 tpqr.getPl(oomn6, rm).getPointOfProjectedIntersection(ts, oomn6, rm)
                         .getDistanceSquared(ts, oomn6, rm), oomn6, rm)
                 .getSqrt(oomn6, rm).divide(3);
@@ -367,11 +368,11 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     public V3D_Point getCentroid(int oom, RoundingMode rm) {
         oom -= 6;
-        Math_BigRational dx = (p.getDX(oom, rm).add(q.getDX(oom, rm))
+        BigRational dx = (p.getDX(oom, rm).add(q.getDX(oom, rm))
                 .add(r.getDX(oom, rm)).add(s.getDX(oom, rm))).divide(4);
-        Math_BigRational dy = (p.getDY(oom, rm).add(q.getDY(oom, rm))
+        BigRational dy = (p.getDY(oom, rm).add(q.getDY(oom, rm))
                 .add(r.getDY(oom, rm)).add(s.getDY(oom, rm))).divide(4);
-        Math_BigRational dz = (p.getDZ(oom, rm).add(q.getDZ(oom, rm))
+        BigRational dz = (p.getDZ(oom, rm).add(q.getDZ(oom, rm))
                 .add(r.getDZ(oom, rm)).add(s.getDZ(oom, rm))).divide(4);
         return new V3D_Point(offset, new V3D_Vector(dx, dy, dz));
     }
@@ -1572,8 +1573,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The distance squared to {@code p}.
      */
     public BigDecimal getDistance(V3D_Point p, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
+        return Math_BigRational.toBigDecimal(new Math_BigRationalSqrt(
+                getDistanceSquared(p, oom, rm), oom, rm).getSqrt(oom, rm), oom, 
+                rm);
     }
 
     /**
@@ -1584,11 +1586,12 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared to {@code p}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_Point pt, int oom, 
+            RoundingMode rm) {
         if (isIntersectedBy(pt, oom, rm)) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         } else {
-            return Math_BigRational.min(
+            return BigRational.min(
                     getPqr(oom, rm).getDistanceSquared(pt, oom, rm),
                     getPsq(oom, rm).getDistanceSquared(pt, oom, rm),
                     getQsr(oom, rm).getDistanceSquared(pt, oom, rm),
@@ -1605,8 +1608,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The minimum distance squared to {@code l}.
      */
     public BigDecimal getDistance(V3D_Line l, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
+        return Math_BigRational.toBigDecimal(new Math_BigRationalSqrt(
+                getDistanceSquared(l, oom, rm), oom, rm).getSqrt(oom, rm), oom, 
+                rm);
     }
 
     /**
@@ -1618,8 +1622,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The minimum distance squared to {@code l}.
      */
     public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(l, oom, rm), oom, rm)
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
+        return Math_BigRational.toBigDecimal(new Math_BigRationalSqrt(
+                getDistanceSquared(l, oom, rm), oom, rm).getSqrt(oom, rm), oom, 
+                rm);
     }
 
     /**
@@ -1630,11 +1635,11 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code l}.
      */
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
         if (getIntersection(l, oom, rm) != null) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         } else {
-            return Math_BigRational.min(
+            return BigRational.min(
                     getPqr(oom, rm).getDistanceSquared(l, oom, rm),
                     getPsq(oom, rm).getDistanceSquared(l, oom, rm),
                     getQsr(oom, rm).getDistanceSquared(l, oom, rm),
@@ -1658,7 +1663,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Tetrahedron rotate(V3D_Line axis, Math_BigRational theta,
+    public V3D_Tetrahedron rotate(V3D_Line axis, BigRational theta,
             int oom, RoundingMode rm) {
         return new V3D_Tetrahedron(
                 getP().rotate(axis, theta, oom, rm),
@@ -1758,11 +1763,11 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code l}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
         if (getIntersection(l, oom, rm) != null) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         } else {
-            return Math_BigRational.min(
+            return BigRational.min(
                     getPqr(oom, rm).getDistanceSquared(l, oom, rm),
                     getPsq(oom, rm).getDistanceSquared(l, oom, rm),
                     getQsr(oom, rm).getDistanceSquared(l, oom, rm),
@@ -1779,8 +1784,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The minimum distance squared to {@code p}.
      */
     public BigDecimal getDistance(V3D_Plane p, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
+        return Math_BigRational.toBigDecimal(new Math_BigRationalSqrt(
+                getDistanceSquared(p, oom, rm), oom, rm).getSqrt(oom, rm), oom,
+                rm);
     }
 
     /**
@@ -1791,11 +1797,11 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code p}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Plane p, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_Plane p, int oom, RoundingMode rm) {
         if (getIntersection(p, oom, rm) != null) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         } else {
-            return Math_BigRational.min(
+            return BigRational.min(
                     getPqr(oom, rm).getDistanceSquared(p, oom, rm),
                     getPsq(oom, rm).getDistanceSquared(p, oom, rm),
                     getQsr(oom, rm).getDistanceSquared(p, oom, rm),
@@ -1812,8 +1818,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The minimum distance to {@code t}.
      */
     public BigDecimal getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(t, oom, rm), oom, rm)
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
+        return Math_BigRational.toBigDecimal(new Math_BigRationalSqrt(
+                getDistanceSquared(t, oom, rm), oom, rm)
+                .getSqrt(oom, rm), oom, rm);
     }
 
     /**
@@ -1824,11 +1831,12 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code t}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_Triangle t, int oom, 
+            RoundingMode rm) {
         if (getIntersection(t, oom, rm) != null) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         } else {
-            return Math_BigRational.min(
+            return BigRational.min(
                     getPqr(oom, rm).getDistanceSquared(t, oom, rm),
                     getPsq(oom, rm).getDistanceSquared(t, oom, rm),
                     getQsr(oom, rm).getDistanceSquared(t, oom, rm),
@@ -1857,9 +1865,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code t}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Rectangle r, int oom, RoundingMode rm) {
-        Math_BigRational pqrd = getDistanceSquared(r.getPQR(oom, rm), oom, rm);
-        if (pqrd.compareTo(Math_BigRational.ZERO) == 0) {
+    public BigRational getDistanceSquared(V3D_Rectangle r, int oom, RoundingMode rm) {
+        BigRational pqrd = getDistanceSquared(r.getPQR(oom, rm), oom, rm);
+        if (pqrd.compareTo(BigRational.ZERO) == 0) {
             return pqrd;
         } else {
             return pqrd.min(getDistanceSquared(r.getRSP(oom, rm), oom, rm));
@@ -1875,8 +1883,9 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The minimum distance to {@code t}.
      */
     public BigDecimal getDistance(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        return new Math_BigRationalSqrt(getDistanceSquared(t, oom, rm), oom, rm)
-                .getSqrt(oom, rm).toBigDecimal(oom, rm);
+        return Math_BigRational.toBigDecimal(new Math_BigRationalSqrt(
+                getDistanceSquared(t, oom, rm), oom, rm)
+                .getSqrt(oom, rm), oom, rm);
     }
 
     /**
@@ -1887,11 +1896,11 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code t}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_Tetrahedron t, int oom, RoundingMode rm) {
         if (getIntersection(t, oom, rm) != null) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         } else {
-            return Math_BigRational.min(
+            return BigRational.min(
                     t.getDistanceSquared(getPqr(oom, rm), oom, rm),
                     t.getDistanceSquared(getPsq(oom, rm), oom, rm),
                     t.getDistanceSquared(getQsr(oom, rm), oom, rm),

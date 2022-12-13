@@ -15,8 +15,8 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -686,16 +686,16 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public Math_BigRational getPerimeter(int oom, RoundingMode rm) {
+    public BigRational getPerimeter(int oom, RoundingMode rm) {
         int oomn2 = oom - 2;
         pqr = getPQR(oomn2, rm);
         return (pqr.getPQ(oomn2, rm).getLength(oomn2, rm).getSqrt(oom, rm)
                 .add(pqr.getQR(oomn2, rm).getLength(oomn2, rm).getSqrt(oom, rm)))
-                .multiply(Math_BigRational.TWO);
+                .multiply(BigRational.TWO);
     }
 
     @Override
-    public Math_BigRational getArea(int oom, RoundingMode rm) {
+    public BigRational getArea(int oom, RoundingMode rm) {
         int oomn2 = oom - 2;
         pqr = getPQR(oomn2, rm);
         return (pqr.getPQ(oomn2, rm).getLength(oomn2, rm).multiply(
@@ -711,7 +711,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance from {@code this} to {@code pl}.
      */
-    public Math_BigRational getDistance(V3D_Point p, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_Point p, int oom, RoundingMode rm) {
         return (new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm))
                 .getSqrt(oom, rm);
     }
@@ -724,9 +724,9 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared to {@code p}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
-        Math_BigRational d1 = getPQR(oom, rm).getDistanceSquared(pt, oom, rm);
-        Math_BigRational d2 = getRSP(oom, rm).getDistanceSquared(pt, oom, rm);
+    public BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
+        BigRational d1 = getPQR(oom, rm).getDistanceSquared(pt, oom, rm);
+        BigRational d2 = getRSP(oom, rm).getDistanceSquared(pt, oom, rm);
         return d1.min(d2);
     }
 
@@ -764,7 +764,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
 
     @Override
     public V3D_Rectangle rotate(V3D_Line axis,
-            Math_BigRational theta, int oom, RoundingMode rm) {
+            BigRational theta, int oom, RoundingMode rm) {
         return new V3D_Rectangle(
                 getP().rotate(axis, theta, oom, rm),
                 getQ().rotate(axis, theta, oom, rm),
@@ -866,7 +866,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code l}.
      */
-    public Math_BigRational getDistance(V3D_Line l, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_Line l, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom - 6, rm), oom, rm).getSqrt(oom, rm);
     }
 
@@ -878,7 +878,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code l}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
         return getRSP(oom, rm).getDistanceSquared(l, oom, rm).min(
                 getPQR(oom, rm).getDistanceSquared(l, oom, rm));
     }
@@ -891,7 +891,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code l}.
      */
-    public Math_BigRational getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(l, oom - 6, rm), oom, rm).getSqrt(oom, rm);
     }
 
@@ -903,7 +903,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance to {@code l}.
      */
-    public Math_BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
         return getRSP(oom, rm).getDistanceSquared(l, oom, rm).min(
                 getPQR(oom, rm).getDistanceSquared(l, oom, rm));
     }
@@ -916,7 +916,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code p}.
      */
-    public Math_BigRational getDistance(V3D_Plane pl, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_Plane pl, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(pl, oom - 6, rm), oom, rm).getSqrt(oom, rm);
     }
 
@@ -928,7 +928,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code p}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Plane pl, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_Plane pl, int oom, RoundingMode rm) {
         return getRSP(oom, rm).getDistanceSquared(pl, oom, rm).min(
                 getPQR(oom, rm).getDistanceSquared(pl, oom, rm));
     }
@@ -941,7 +941,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code t}.
      */
-    public Math_BigRational getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_Triangle t, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(getDistanceSquared(t, oom - 6, rm), oom, rm)
                 .getSqrt(oom, rm);
     }
@@ -954,7 +954,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The minimum distance squared to {@code t}.
      */
-    public Math_BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
+    public BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
         return getRSP(oom, rm).getDistanceSquared(t, oom, rm).min(
                 getPQR(oom, rm).getDistanceSquared(t, oom, rm));
     }

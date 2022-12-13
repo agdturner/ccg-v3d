@@ -15,7 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -23,9 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-//import org.junit.jupiter.api.Disabled;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -64,9 +62,9 @@ public class V3D_PointTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point instance = pP0P0P0;
-        Math_BigRational x = Math_BigRational.ZERO;
-        Math_BigRational y = Math_BigRational.ZERO;
-        Math_BigRational z = Math_BigRational.ZERO;
+        BigRational x = BigRational.ZERO;
+        BigRational y = BigRational.ZERO;
+        BigRational z = BigRational.ZERO;
         V3D_Point p = new V3D_Point(x, y, z);
         assertTrue(instance.equals(p, oom, rm));
         // Test 2
@@ -74,15 +72,15 @@ public class V3D_PointTest extends V3D_Test {
         y = P10;
         z = P0;
         instance = new V3D_Point(x, y, z);
-        x = Math_BigRational.valueOf("1.000");
-        y = Math_BigRational.valueOf("10.000");
-        z = Math_BigRational.valueOf("0.000");
+        x = BigRational.valueOf("1.000");
+        y = BigRational.valueOf("10.000");
+        z = BigRational.valueOf("0.000");
         p = new V3D_Point(x, y, z);
         assertTrue(instance.equals(p, oom, rm));
         // Test 3
-        x = Math_BigRational.ONE;
-        y = Math_BigRational.TEN;
-        z = Math_BigRational.ZERO;
+        x = BigRational.ONE;
+        y = BigRational.TEN;
+        z = BigRational.ZERO;
         instance = new V3D_Point(x, y, z);
         p = new V3D_Point(x, y, z);
         assertTrue(instance.equals(p, oom, rm));
@@ -172,8 +170,8 @@ public class V3D_PointTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point instance = pP0P0P0;
-        Math_BigRational expResult = Math_BigRational.ZERO;
-        Math_BigRational result = instance.getDistance(instance, oom, rm);
+        BigRational expResult = BigRational.ZERO;
+        BigRational result = instance.getDistance(instance, oom, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_Point(P3, P4, P0);
@@ -192,8 +190,8 @@ public class V3D_PointTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point p = pP0P0P0;
         V3D_Point instance = pP1P0P0;
-        Math_BigRational expResult = P1;
-        Math_BigRational result = instance.getDistance(p, oom, rm);
+        BigRational expResult = P1;
+        BigRational result = instance.getDistance(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         instance = new V3D_Point(P3, P4, P0);
@@ -211,12 +209,12 @@ public class V3D_PointTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point instance = pP0P0P0;
-        Math_BigRational expResult = Math_BigRational.ZERO;
-        Math_BigRational result = instance.getDistanceSquared(instance, oom, rm);
+        BigRational expResult = BigRational.ZERO;
+        BigRational result = instance.getDistanceSquared(instance, oom, rm);
         assertEquals(expResult, result);
         // Test 2
         instance = new V3D_Point(P3, P4, P0);
-        expResult = Math_BigRational.valueOf(25);
+        expResult = BigRational.valueOf(25);
         result = instance.getDistanceSquared(pP0P0P0, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
@@ -313,8 +311,8 @@ public class V3D_PointTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point instance = pP0P1P2;
-        Math_BigRational expResult = Math_BigRational.ZERO;
-        Math_BigRational result = instance.getX(oom, rm);
+        BigRational expResult = BigRational.ZERO;
+        BigRational result = instance.getX(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -327,8 +325,8 @@ public class V3D_PointTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point instance = pP0P1P2;
-        Math_BigRational expResult = Math_BigRational.ONE;
-        Math_BigRational result = instance.getY(oom, rm);
+        BigRational expResult = BigRational.ONE;
+        BigRational result = instance.getY(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -341,8 +339,8 @@ public class V3D_PointTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point instance = pP0P1P2;
-        Math_BigRational expResult = Math_BigRational.TWO;
-        Math_BigRational result = instance.getZ(oom, rm);
+        BigRational expResult = BigRational.TWO;
+        BigRational result = instance.getZ(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -370,31 +368,31 @@ public class V3D_PointTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point p = pP1P0P0;
         V3D_Point instance = pP1P0P0;
-        Math_BigRational expResult = Math_BigRational.ZERO;
-        Math_BigRational result = instance.getDistanceSquared(p, oom, rm);
+        BigRational expResult = BigRational.ZERO;
+        BigRational result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         p = pP1P0P0;
         instance = pP2P0P0;
-        expResult = Math_BigRational.ONE;
+        expResult = BigRational.ONE;
         result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         p = pP1P0P0;
         instance = pP0P1P0;
-        expResult = Math_BigRational.valueOf(2);
+        expResult = BigRational.valueOf(2);
         result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 4
         p = pP1P0P0;
         instance = pP1P1P0;
-        expResult = Math_BigRational.valueOf(1);
+        expResult = BigRational.valueOf(1);
         result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
         // Test 5
         p = pP0P0P0;
         instance = pP1P1P1;
-        expResult = Math_BigRational.valueOf(3);
+        expResult = BigRational.valueOf(3);
         result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
@@ -459,10 +457,10 @@ public class V3D_PointTest extends V3D_Test {
         int oom = -3;
         int oomn9 = oom - 9;
         RoundingMode rm = RoundingMode.HALF_UP;
-        Math_BigRational Pi = Math_BigRational.valueOf(bd.getPi(oomn9, rm));
+        BigRational Pi = BigRational.valueOf(bd.getPi(oomn9, rm));
         V3D_Line axis = V3D_Line.Y_EQUALS_X;
         V3D_Point instance = new V3D_Point(pP1P0P0);
-        Math_BigRational theta = Pi;
+        BigRational theta = Pi;
         V3D_Point result = instance.rotate(axis, theta, oom, rm);
         V3D_Point expResult = pP0P1P0;
         assertTrue(expResult.equals(result, oom, rm));

@@ -15,14 +15,13 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometry.light.V3D_V;
 
 /**
@@ -138,8 +137,8 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(Math_BigRational x, Math_BigRational y,
-            Math_BigRational z) {
+    public V3D_Point(BigRational x, BigRational y,
+            BigRational z) {
         super(V3D_Vector.ZERO);
         this.rel = new V3D_Vector(x, y, z);
     }
@@ -154,8 +153,8 @@ public class V3D_Point extends V3D_FiniteGeometry {
      */
     public V3D_Point(BigDecimal x, BigDecimal y,
             BigDecimal z) {
-        this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
-                Math_BigRational.valueOf(z));
+        this(BigRational.valueOf(x), BigRational.valueOf(y),
+                BigRational.valueOf(z));
     }
 
     /**
@@ -167,8 +166,8 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param z What {@link #rel} z component is set to.
      */
     public V3D_Point(double x, double y, double z) {
-        this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
-                Math_BigRational.valueOf(z));
+        this(BigRational.valueOf(x), BigRational.valueOf(y),
+                BigRational.valueOf(z));
     }
 
     /**
@@ -180,8 +179,8 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param z What {@link #rel} z component is set to.
      */
     public V3D_Point(long x, long y, long z) {
-        this(Math_BigRational.valueOf(x), Math_BigRational.valueOf(y),
-                Math_BigRational.valueOf(z));
+        this(BigRational.valueOf(x), BigRational.valueOf(y),
+                BigRational.valueOf(z));
     }
 
     @Override
@@ -272,7 +271,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return The x component of {@link #rel} with {@link #offset} applied.
      */
-    public Math_BigRational getX(int oom, RoundingMode rm) {
+    public BigRational getX(int oom, RoundingMode rm) {
         return rel.getDX(oom, rm).add(offset.getDX(oom, rm));
     }
 
@@ -281,7 +280,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return The y component of {@link #rel} with {@link #offset} applied.
      */
-    public Math_BigRational getY(int oom, RoundingMode rm) {
+    public BigRational getY(int oom, RoundingMode rm) {
         return rel.getDY(oom, rm).add(offset.getDY(oom, rm));
     }
 
@@ -290,7 +289,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return The z component of {@link #rel} with {@link #offset} applied.
      */
-    public Math_BigRational getZ(int oom, RoundingMode rm) {
+    public BigRational getZ(int oom, RoundingMode rm) {
         return rel.getDZ(oom, rm).add(offset.getDZ(oom, rm));
     }
 
@@ -326,9 +325,9 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param rm The RoundingMode.
      * @return The distance from {@code pv} to this.
      */
-    public Math_BigRational getDistance(V3D_Point p, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_Point p, int oom, RoundingMode rm) {
         if (this.equals(p, oom, rm)) {
-            return Math_BigRational.ZERO;
+            return BigRational.ZERO;
         }
         return new Math_BigRationalSqrt(getDistanceSquared(p, oom -6, rm), oom, rm)
                 .getSqrt(oom, rm);
@@ -342,12 +341,12 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared from {@code pv} to this.
      */
-    public Math_BigRational getDistanceSquared(V3D_Point pt, int oom,
+    public BigRational getDistanceSquared(V3D_Point pt, int oom,
             RoundingMode rm) {
         int oomn6 = oom - 6;
-        Math_BigRational dx = getX(oomn6, rm).subtract(pt.getX(oomn6, rm));
-        Math_BigRational dy = getY(oomn6, rm).subtract(pt.getY(oomn6, rm));
-        Math_BigRational dz = getZ(oomn6, rm).subtract(pt.getZ(oomn6, rm));
+        BigRational dx = getX(oomn6, rm).subtract(pt.getX(oomn6, rm));
+        BigRational dy = getY(oomn6, rm).subtract(pt.getY(oomn6, rm));
+        BigRational dz = getZ(oomn6, rm).subtract(pt.getZ(oomn6, rm));
         return dx.pow(2).add(dy.pow(2)).add(dz.pow(2));
     }
 
@@ -378,9 +377,9 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * </Table>
      */
     public int getLocation(int oom, RoundingMode rm) {
-        if (getX(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
-            if (getY(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
-                if (getZ(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
+        if (getX(oom, rm).compareTo(BigRational.ZERO) != -1) {
+            if (getY(oom, rm).compareTo(BigRational.ZERO) != -1) {
+                if (getZ(oom, rm).compareTo(BigRational.ZERO) != -1) {
                     if (isOrigin(oom, rm)) {
                         return 0;
                     }
@@ -389,21 +388,21 @@ public class V3D_Point extends V3D_FiniteGeometry {
                     return 2;
                 }
             } else {
-                if (getZ(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
+                if (getZ(oom, rm).compareTo(BigRational.ZERO) != -1) {
                     return 3;
                 } else {
                     return 4;
                 }
             }
         } else {
-            if (getY(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
-                if (getZ(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
+            if (getY(oom, rm).compareTo(BigRational.ZERO) != -1) {
+                if (getZ(oom, rm).compareTo(BigRational.ZERO) != -1) {
                     return 5;
                 } else {
                     return 6;
                 }
             } else {
-                if (getZ(oom, rm).compareTo(Math_BigRational.ZERO) != -1) {
+                if (getZ(oom, rm).compareTo(BigRational.ZERO) != -1) {
                     return 7;
                 } else {
                     return 8;
@@ -450,11 +449,11 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param rm The RoundingMode.
      */
     @Override
-    public V3D_Point rotate(V3D_Line axis, Math_BigRational theta,
+    public V3D_Point rotate(V3D_Line axis, BigRational theta,
             int oom, RoundingMode rm) {
         int oomn9 = oom - 9;
-        Math_BigRational na = V3D_Angle.normalise(theta, oom, rm);
-        if (na.compareTo(Math_BigRational.ZERO) == 0) {
+        BigRational na = V3D_Angle.normalise(theta, oom, rm);
+        if (na.compareTo(BigRational.ZERO) == 0) {
             return new V3D_Point(this);
         }
         V3D_Vector tv = axis.getP().getVector(oomn9, rm);

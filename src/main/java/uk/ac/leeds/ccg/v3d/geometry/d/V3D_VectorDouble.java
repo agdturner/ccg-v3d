@@ -246,10 +246,14 @@ public class V3D_VectorDouble implements Serializable {
     }
 
     /**
-     * Indicates if {@code this} and {@code v} are equal.
+     * Indicates if {@code this} and {@code v} are equal within the specified
+     * tolerance. A tolerance of zero would mean that the vectors must be 
+     * exactly identical. Otherwise each of the coordinates is allowed to be up 
+     * to tolerance different and the vectors would still be considered equal. 
      *
      * @param v The vector to test for equality with {@code this}.
-     * @param epsilon A small number to test within the tollerance.
+     * @param epsilon The tolerance within which two vectors are considered 
+     * equal.
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
     public boolean equals(V3D_VectorDouble v, double epsilon) {
@@ -264,8 +268,8 @@ public class V3D_VectorDouble implements Serializable {
      * @param v The vector to compare with {@code this}.
      * @return {@code true} iff {@code this} is the reverse of {@code v}.
      */
-    public boolean isReverse(V3D_VectorDouble v) {
-        return equals(v.reverse());
+    public boolean isReverse(V3D_VectorDouble v, double epsilon) {
+        return equals(v.reverse(), epsilon);
     }
 
     /**

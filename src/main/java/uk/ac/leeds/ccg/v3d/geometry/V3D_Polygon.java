@@ -15,10 +15,10 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 //import java.util.ArrayList;
 
 /**
@@ -262,7 +262,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      * @return The area of the triangle (rounded).
      */
     @Override
-    public Math_BigRational getArea(int oom, RoundingMode rm) {
+    public BigRational getArea(int oom, RoundingMode rm) {
         throw new UnsupportedOperationException();
 //        BigDecimal sum = BigDecimal.ZERO;
 //        for (var t : triangles) {
@@ -278,7 +278,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      */
     @Override
-    public Math_BigRational getPerimeter(int oom, RoundingMode rm) {
+    public BigRational getPerimeter(int oom, RoundingMode rm) {
         throw new UnsupportedOperationException();
 //        BigDecimal sum = BigDecimal.ZERO;
 //        for (var t : triangles) {
@@ -304,7 +304,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public V3D_Polygon rotate(V3D_Line axis, Math_BigRational theta,
+    public V3D_Polygon rotate(V3D_Line axis, BigRational theta,
             int oom, RoundingMode rm) {
         ArrayList<V3D_ConvexHullCoplanar> rparts = new ArrayList<>();
         ArrayList<V3D_ConvexHullCoplanar> rholes = new ArrayList<>();

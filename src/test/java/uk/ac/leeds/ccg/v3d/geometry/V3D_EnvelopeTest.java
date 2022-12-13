@@ -15,20 +15,15 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.Disabled;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
-import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * Test class for V3D_Envelope.
@@ -416,8 +411,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Envelope instance = new V3D_Envelope(oom, rm, pP0N1N1, pP0N1P0, pN2N2N2);
-        Math_BigRational expResult = N2;
-        Math_BigRational result = instance.getXMin(oom, rm);
+        BigRational expResult = N2;
+        BigRational result = instance.getXMin(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -430,8 +425,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Envelope instance = new V3D_Envelope(oom, rm, pP0N1N1, pP0N1P0, pN2N2N2);
-        Math_BigRational expResult = P0;
-        Math_BigRational result = instance.getXMax(oom, rm);
+        BigRational expResult = P0;
+        BigRational result = instance.getXMax(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -444,8 +439,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Envelope instance = new V3D_Envelope(oom, rm, pP0N1N1, pP0N1P0, pN2N2N2);
-        Math_BigRational expResult = N2;
-        Math_BigRational result = instance.getYMin(oom, rm);
+        BigRational expResult = N2;
+        BigRational result = instance.getYMin(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -458,8 +453,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Envelope instance = new V3D_Envelope(oom, rm, pP0N1N1, pP0N1P0, pN2N2N2);
-        Math_BigRational expResult = N1;
-        Math_BigRational result = instance.getYMax(oom, rm);
+        BigRational expResult = N1;
+        BigRational result = instance.getYMax(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -472,8 +467,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Envelope instance = new V3D_Envelope(oom, rm, pP0N1N1, pP0N1P0, pN2N2N2);
-        Math_BigRational expResult = N2;
-        Math_BigRational result = instance.getZMin(oom, rm);
+        BigRational expResult = N2;
+        BigRational result = instance.getZMin(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -486,8 +481,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Envelope instance = new V3D_Envelope(oom, rm, pP0N1N1, pP0N1P0, pN2N2N2);
-        Math_BigRational expResult = P0;
-        Math_BigRational result = instance.getZMax(oom, rm);
+        BigRational expResult = P0;
+        BigRational result = instance.getZMax(oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -538,9 +533,9 @@ public class V3D_EnvelopeTest extends V3D_Test {
         System.out.println("isIntersectedBy");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        Math_BigRational x;
-        Math_BigRational y;
-        Math_BigRational z;
+        BigRational x;
+        BigRational y;
+        BigRational z;
         V3D_Envelope instance;
         // Test 1
         x = P0;
@@ -639,7 +634,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Point p = pP0P0P0;
 //        V3D_Envelope instance = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1P1);
-//        BigDecimal expResult = new Math_BigRationalSqrt(0, oom, rm).toBigDecimal(oom, rm);
+//        BigDecimal expResult = new BigRationalSqrt(0, oom, rm).toBigDecimal(oom, rm);
 //        BigDecimal result = instance.getDistance(p, oom, rm);
 //        assertTrue(expResult.compareTo(result) == 0);
 //        // Test
@@ -647,7 +642,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        // Corners
 //        // Test 2
 //        result = instance.getDistance(pN2N2N2, oom, rm);
-//        expResult = new Math_BigRationalSqrt(3, oom, rm).toBigDecimal(oom, rm);
+//        expResult = new BigRationalSqrt(3, oom, rm).toBigDecimal(oom, rm);
 //        assertTrue(expResult.compareTo(result) == 0);
 //        // Test 3
 //        result = instance.getDistance(pN2N2P2, oom, rm);
@@ -672,7 +667,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        assertTrue(expResult.compareTo(result) == 0);
 //        // Edges
 //        // Test 10
-//        expResult = new Math_BigRationalSqrt(2, oom, rm).toBigDecimal(oom, rm);
+//        expResult = new BigRationalSqrt(2, oom, rm).toBigDecimal(oom, rm);
 //        result = instance.getDistance(pN2N2P0, oom, rm);
 //        assertTrue(expResult.compareTo(result) == 0);
 //        // Test 11
@@ -698,7 +693,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        assertTrue(expResult.compareTo(result) == 0);
 //        // 6 planes
 //        // Test 18
-//        expResult = new Math_BigRationalSqrt(1, oom, rm).toBigDecimal(oom, rm);
+//        expResult = new BigRationalSqrt(1, oom, rm).toBigDecimal(oom, rm);
 //        result = instance.getDistance(pN2P0P0, oom, rm);
 //        assertTrue(expResult.compareTo(result) == 0);
 //        // Test 19
@@ -927,8 +922,8 @@ public class V3D_EnvelopeTest extends V3D_Test {
         
         // Test front left edge.
         pt = pN2P0N2;
-        Math_BigRational N1_5 = Math_BigRational.valueOf(3, 2).negate();
-        Math_BigRational N0_5 = Math_BigRational.valueOf(1, 2).negate();
+        BigRational N1_5 = BigRational.valueOf(3, 2).negate();
+        BigRational N0_5 = BigRational.valueOf(1, 2).negate();
         // Test 25
         v = V3D_Vector.I.add(V3D_Vector.K.reverse(), oom, rm);
         result = instance.getViewport(pt, v, oom, rm);

@@ -374,8 +374,20 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         System.out.println("isReverse");
         V3D_VectorDouble v = V3D_VectorDouble.I;
         V3D_VectorDouble instance = new V3D_VectorDouble(-1, 0, 0);
-        assertTrue(instance.isReverse(v));
+        double epsilon = 0d;
+        assertTrue(instance.isReverse(v, epsilon));
         // Test 2
+        epsilon = 0.0000000001d;
+        instance = new V3D_VectorDouble(-1d + epsilon/2, 0, 0);
+        assertTrue(instance.isReverse(v, epsilon));
+        // Test 3
+        epsilon = 0.0000000001d;
+        instance = new V3D_VectorDouble(-1d + 2 * epsilon, 0, 0);
+        assertFalse(instance.isReverse(v, epsilon));
+        // Test 4
+        epsilon = 0.0000000001d;
+        instance = new V3D_VectorDouble(-1d + epsilon, epsilon, -epsilon);
+        assertTrue(instance.isReverse(v, epsilon));
     }
 
     /**

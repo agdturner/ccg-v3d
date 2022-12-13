@@ -15,8 +15,8 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -26,19 +26,24 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 public class V3D_Angle {
     
     /**
+     * Create a new instance.
+     */
+    public V3D_Angle(){}
+    
+    /**
      * Returns a normal angle in the range 0 to 2PI.
      * @param theta The angle to be normalised.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return A normalised angle.
      */
-    public static Math_BigRational normalise(Math_BigRational theta, int oom, 
+    public static BigRational normalise(BigRational theta, int oom, 
             RoundingMode rm) {
-        Math_BigRational twoPi = Math_BigRational.valueOf(
+        BigRational twoPi = BigRational.valueOf(
                 V3D_Environment.bd.getPi(oom, rm)).multiply(2);
-        Math_BigRational r = theta;
+        BigRational r = theta;
         // Change a negative angle into a positive one.
-        while (r.compareTo(Math_BigRational.ZERO) == -1) {
+        while (r.compareTo(BigRational.ZERO) == -1) {
             r = r.add(twoPi);
         }
         // Only rotate less than 2Pi radians.

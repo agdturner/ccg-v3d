@@ -89,7 +89,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
 
     /**
      * @param points The points to test if they are coplanar.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code false} if points are coincident or collinear. {@code true}
      * iff all points are coplanar.
      */
@@ -107,12 +108,13 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
 
     /**
      * @param points The points from which a plane is to be derived.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return A plane that may or may not contain all the points or
      * {@code null} if there is no such plane (if the points are coincident or
      * collinear).
      */
-    public static V3D_PlaneDouble getPlane(double epsilon, 
+    public static V3D_PlaneDouble getPlane(double epsilon,
             V3D_PointDouble... points) {
         V3D_LineDouble l = V3D_LineDouble.getLine(points);
         if (l == null) {
@@ -128,12 +130,13 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
 
     /**
      * @param points The points from which a plane is to be derived.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return A plane that may or may not contain all the points or
      * {@code null} if there is no such plane. This does not test if the points
      * are coincident or collinear.
      */
-    private static V3D_PlaneDouble getPlane0(double epsilon, 
+    private static V3D_PlaneDouble getPlane0(double epsilon,
             V3D_PointDouble... points) {
         V3D_LineDouble l = V3D_LineDouble.getLine(points);
         for (V3D_PointDouble p : points) {
@@ -155,6 +158,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      */
     public V3D_VectorDouble n;
 
+//    /**
+//     * The tolerance used when the plane was initialised. 
+//     */
+//    public final double epsilon;
+    
     /**
      * For storing the equation of the plane.
      */
@@ -175,7 +183,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * Create a new instance.
      *
      * @param p Used to initialise {@link #p}.
-     * @param n The normal of the plane.
+     * @param n What {@link #n} is set to.
      */
     public V3D_PlaneDouble(V3D_PointDouble p, V3D_VectorDouble n) {
         super(p.offset);
@@ -205,7 +213,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
      * and not equal to pl or qv.
      */
-    public V3D_PlaneDouble(V3D_PointDouble p, V3D_PointDouble q, V3D_PointDouble r) {
+    public V3D_PlaneDouble(V3D_PointDouble p, V3D_PointDouble q,
+            V3D_PointDouble r) {
         super(p.offset);
         V3D_VectorDouble qv = q.getVector();
         V3D_VectorDouble pq = qv.subtract(p.getVector());
@@ -222,10 +231,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * and not equal to pl or r.
      * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
      * and not equal to pl or qv.
+     * @param epsilon Used to check vectors are not scalar multiples.
      */
-    public V3D_PlaneDouble(V3D_VectorDouble p, V3D_VectorDouble q,
-            V3D_VectorDouble r) {
-        this(V3D_VectorDouble.ZERO, p, q, r);
+    public V3D_PlaneDouble(V3D_VectorDouble p, V3D_VectorDouble q, 
+            V3D_VectorDouble r, double epsilon) {
+        this(V3D_VectorDouble.ZERO, p, q, r, epsilon);
     }
 
     /**
@@ -235,10 +245,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @param p Used to initialise {@link #p}.
      * @param q Coplanar but not collinear to both p and r.
      * @param r Coplanar but not collinear to both p and q.
+     * @param epsilon Used to check vectors are not scalar multiples.
      */
     public V3D_PlaneDouble(V3D_VectorDouble offset, V3D_VectorDouble p,
-            V3D_VectorDouble q, V3D_VectorDouble r) {
-        this(p, offset, p, q, r);
+            V3D_VectorDouble q, V3D_VectorDouble r, double epsilon) {
+        this(p, offset, p, q, r, epsilon);
     }
 
     /**
@@ -251,9 +262,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * and not equal to pl or r.
      * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
      * and not equal to pl or qv.
+     * @param epsilon What {@link #epsilon} is set to.
      */
     public V3D_PlaneDouble(V3D_VectorDouble ptv, V3D_VectorDouble offset,
-            V3D_VectorDouble p, V3D_VectorDouble q, V3D_VectorDouble r) {
+            V3D_VectorDouble p, V3D_VectorDouble q, V3D_VectorDouble r,
+            double epsilon) {
         super(offset);
         V3D_VectorDouble pq = q.subtract(p);
         if (pq.equals(V3D_VectorDouble.ZERO)) {
@@ -266,7 +279,13 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         this.p = p;
         this.n = pq.getCrossProduct(qr);
         if (n.isZero()) {
-            throw new RuntimeException("Points do not define a plane");
+            if (pq.isReverse(qr, epsilon)) {
+                int debug = 1;
+                this.n = r.subtract(p).getCrossProduct(pq);
+                
+            }
+            //throw new RuntimeException("Points do not define a plane");
+            int debug = 1;
         }
         V3D_VectorDouble v;
         if (ptv.isZero()) {
@@ -290,10 +309,12 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * and not equal to pl or r.
      * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
      * and not equal to pl or qv.
+     * @param epsilon What {@link #epsilon} is set to.
      */
     public V3D_PlaneDouble(V3D_PointDouble pt, V3D_VectorDouble offset,
-            V3D_VectorDouble p, V3D_VectorDouble q, V3D_VectorDouble r) {
-        this(pt.getVector(), offset, p, q, r);
+            V3D_VectorDouble p, V3D_VectorDouble q, V3D_VectorDouble r,
+            double epsilon) {
+        this(pt.getVector(), offset, p, q, r, epsilon);
     }
 
     @Override
@@ -1065,16 +1086,15 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             // There is no intersection.
             return null;
         }
-        
+
         try {
-        V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
+            V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
         } catch (RuntimeException e) {
             V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
         }
-        
+
         V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
-        
-        
+
         return new V3D_LineDouble(pi, v);
     }
 

@@ -152,7 +152,7 @@ public class V3D_PolygonDouble extends V3D_FiniteGeometryDouble
      */
     public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
         if (getEnvelope().isIntersectedBy(pt)) {
-            if (parts.get(0).triangles.get(0).getPl().isIntersectedBy(pt, epsilon)) {
+            if (parts.get(0).triangles.get(0).getPl(epsilon).isIntersectedBy(pt, epsilon)) {
 //                // Holes and parts could be checked in parallel.
 //                if (holes != null) {
 //                    for (V3D_ConvexHullCoplanarDouble h : holes) {
@@ -162,7 +162,7 @@ public class V3D_PolygonDouble extends V3D_FiniteGeometryDouble
 //                    }
 //                }
                 for (V3D_ConvexHullCoplanarDouble pa : parts) {
-                    if (pa.isAligned(pt)) {
+                    if (pa.isAligned(pt, epsilon)) {
                         return true;
                     }
                 }
@@ -247,7 +247,7 @@ public class V3D_PolygonDouble extends V3D_FiniteGeometryDouble
                 pts.addAll(x.points);
             }
             convexHull = new V3D_ConvexHullCoplanarDouble(
-                    parts.get(0).triangles.get(0).getPl().n, epsilon,
+                    parts.get(0).triangles.get(0).getPl(epsilon).n, epsilon,
                     pts.toArray(V3D_PointDouble[]::new));
         }
         return convexHull;

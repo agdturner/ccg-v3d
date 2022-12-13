@@ -15,8 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
-
 /**
  * V3D_Face
  *

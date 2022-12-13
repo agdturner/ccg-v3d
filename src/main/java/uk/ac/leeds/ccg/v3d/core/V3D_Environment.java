@@ -15,10 +15,10 @@
  */
 package uk.ac.leeds.ccg.v3d.core;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 
 /**
  * V3D_Environment
@@ -33,27 +33,27 @@ public class V3D_Environment implements Serializable {
     /**
      * 0
      */
-    public static final Math_BigRational P0 = Math_BigRational.ZERO;
+    public static final BigRational P0 = BigRational.ZERO;
     
     /**
      * 1
      */
-    public static final Math_BigRational P1 = Math_BigRational.ONE;
+    public static final BigRational P1 = BigRational.ONE;
     
     /**
      * 2
      */
-    public static final Math_BigRational P2 = Math_BigRational.TWO;
+    public static final BigRational P2 = BigRational.TWO;
     
     /**
      * 3
      */
-    public static final Math_BigRational P3 = Math_BigRational.valueOf(3);
+    public static final BigRational P3 = BigRational.valueOf(3);
     
     /**
      * -1
      */
-    public static final Math_BigRational N1 = Math_BigRational.ONE.negate();
+    public static final BigRational N1 = BigRational.ONE.negate();
 
     /**
      * An instance that helps with calculations involving PI and Taylor series.

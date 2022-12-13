@@ -15,14 +15,17 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
-
 /**
  *
  * @author Andy Turner
  */
 public class V3D_AngleDouble {
 
+    /**
+     * Create a new instance.
+     */
+    public V3D_AngleDouble(){}
+    
     /**
      * Returns a normal angle in the range 0 to 2PI.
      *

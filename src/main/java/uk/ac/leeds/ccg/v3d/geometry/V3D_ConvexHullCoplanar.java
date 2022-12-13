@@ -15,7 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry;
 
-import java.math.BigDecimal;
+import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,9 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-//import java.util.ArrayList;
 
 /**
  * A class for representing and using coplanar convex hulls. These are a special
@@ -160,8 +158,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         if (xminIndex == xmaxIndex) {
             V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp, oom, rm);
             V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp, oom, rm);
-            Math_BigRational ydl2 = yd.getLength2(oom, rm);
-            Math_BigRational zdl2 = zd.getLength2(oom, rm);
+            BigRational ydl2 = yd.getLength2(oom, rm);
+            BigRational zdl2 = zd.getLength2(oom, rm);
             if (ydl2.compareTo(zdl2) == 1) {
                 this.points.add(yminp);
                 this.points.add(ymaxp);
@@ -174,8 +172,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         } else if (yminIndex == ymaxIndex) {
             V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp, oom, rm);
             V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp, oom, rm);
-            Math_BigRational xdl2 = xd.getLength2(oom, rm);
-            Math_BigRational zdl2 = zd.getLength2(oom, rm);
+            BigRational xdl2 = xd.getLength2(oom, rm);
+            BigRational zdl2 = zd.getLength2(oom, rm);
             if (xdl2.compareTo(zdl2) == 1) {
                 this.points.add(xminp);
                 this.points.add(xmaxp);
@@ -188,8 +186,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         } else if (zminIndex == zmaxIndex) {
             V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp, oom, rm);
             V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp, oom, rm);
-            Math_BigRational xdl2 = xd.getLength2(oom, rm);
-            Math_BigRational ydl2 = yd.getLength2(oom, rm);
+            BigRational xdl2 = xd.getLength2(oom, rm);
+            BigRational ydl2 = yd.getLength2(oom, rm);
             if (xdl2.compareTo(ydl2) == 1) {
                 this.points.add(xminp);
                 this.points.add(xmaxp);
@@ -203,9 +201,9 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             V3D_LineSegment xd = new V3D_LineSegment(xmaxp, xminp, oom, rm);
             V3D_LineSegment yd = new V3D_LineSegment(ymaxp, yminp, oom, rm);
             V3D_LineSegment zd = new V3D_LineSegment(zmaxp, zminp, oom, rm);
-            Math_BigRational xdl2 = xd.getLength2(oom, rm);
-            Math_BigRational ydl2 = yd.getLength2(oom, rm);
-            Math_BigRational zdl2 = zd.getLength2(oom, rm);
+            BigRational xdl2 = xd.getLength2(oom, rm);
+            BigRational ydl2 = yd.getLength2(oom, rm);
+            BigRational zdl2 = zd.getLength2(oom, rm);
             if (xdl2.compareTo(ydl2) == 1) {
                 if (xdl2.compareTo(zdl2) == 1) {
                     this.points.add(xminp);
@@ -277,6 +275,17 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         s += ite.next().toString();
         while (ite.hasNext()) {
             s += ", " + ite.next();
+        }
+        s += ")";
+        return s;
+    }
+
+    public String toStringSimple() {
+        String s = this.getClass().getName() + "(";
+        Iterator<V3D_Point> ite = points.iterator();
+        s += ite.next().toString();
+        while (ite.hasNext()) {
+            s += ", " + ite.next().toStringSimple(s);
         }
         s += ")";
         return s;
@@ -444,8 +453,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @return The area of the triangle (rounded).
      */
     @Override
-    public Math_BigRational getArea(int oom, RoundingMode rm) {
-        Math_BigRational sum = Math_BigRational.ZERO;
+    public BigRational getArea(int oom, RoundingMode rm) {
+        BigRational sum = BigRational.ZERO;
         for (var t : triangles) {
             sum = sum.add(t.getArea(oom, rm));
         }
@@ -459,8 +468,8 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @param rm The RoundingMode for any rounding.
      */
     @Override
-    public Math_BigRational getPerimeter(int oom, RoundingMode rm) {
-        Math_BigRational sum = Math_BigRational.ZERO;
+    public BigRational getPerimeter(int oom, RoundingMode rm) {
+        BigRational sum = BigRational.ZERO;
         for (var t : triangles) {
             sum = sum.add(t.getPerimeter(oom, rm));
         }
@@ -521,7 +530,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 //        return getEnvelope().isIntersectedBy(l, oom);
 //    }
     @Override
-    public V3D_ConvexHullCoplanar rotate(V3D_Line axis, Math_BigRational theta,
+    public V3D_ConvexHullCoplanar rotate(V3D_Line axis, BigRational theta,
             int oom, RoundingMode rm) {
         V3D_Triangle[] rts = new V3D_Triangle[triangles.size()];
         for (int i = 0; i < triangles.size(); i++) {
@@ -553,22 +562,28 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 points.add(index, apt);
                 index++;
                 V3D_Triangle atr = new V3D_Triangle(p0, p1, apt, oom, rm);
-                TreeSet<Integer> removeIndexes = new TreeSet<>();
-                for (int i = 0; i < ab.a.size(); i++) {
-                    if (atr.isIntersectedBy(ab.a.get(i), oom, rm)) {
-                        removeIndexes.add(i);
+
+                if (!V3D_Line.isCollinear(oom, rm, p0, p1, apt)) {
+
+                    TreeSet<Integer> removeIndexes = new TreeSet<>();
+                    for (int i = 0; i < ab.a.size(); i++) {
+                        if (atr.isIntersectedBy(ab.a.get(i), oom, rm)) {
+                            removeIndexes.add(i);
+                        }
                     }
+                    Iterator<Integer> ite = removeIndexes.descendingIterator();
+                    while (ite.hasNext()) {
+                        ab.a.remove(ite.next().intValue());
+                    }
+                    if (!ab.a.isEmpty()) {
+                        // Divide again
+                        V3D_Line l = new V3D_Line(p0, p1, oom, rm);
+                        V3D_Point proj = l.getPointOfIntersection(apt, oom, rm);
+                        getConvexHull0(ab.a, apt, proj, n, index, oom, rm);
+                    }
+
                 }
-                Iterator<Integer> ite = removeIndexes.descendingIterator();
-                while (ite.hasNext()) {
-                    ab.a.remove(ite.next().intValue());
-                }
-                if (!ab.a.isEmpty()) {
-                    // Divide again
-                    V3D_Line l = new V3D_Line(p0, p1, oom, rm);
-                    V3D_Point proj = l.getPointOfIntersection(apt, oom, rm);
-                    getConvexHull0(ab.a, apt, proj, n, index, oom, rm);
-                }
+
             }
         }
         index++;
@@ -578,22 +593,28 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 V3D_Point bpt = ab.b.get(ab.maxbIndex);
                 points.add(index, bpt);
                 V3D_Triangle btr = new V3D_Triangle(p0, p1, bpt, oom, rm);
-                TreeSet<Integer> removeIndexes = new TreeSet<>();
-                for (int i = 0; i < ab.b.size(); i++) {
-                    if (btr.isIntersectedBy(ab.b.get(i), oom, rm)) {
-                        removeIndexes.add(i);
+
+                if (!V3D_Line.isCollinear(oom, rm, p0, p1, bpt)) {
+
+                    TreeSet<Integer> removeIndexes = new TreeSet<>();
+                    for (int i = 0; i < ab.b.size(); i++) {
+                        if (btr.isIntersectedBy(ab.b.get(i), oom, rm)) {
+                            removeIndexes.add(i);
+                        }
                     }
+                    Iterator<Integer> ite = removeIndexes.descendingIterator();
+                    while (ite.hasNext()) {
+                        ab.b.remove(ite.next().intValue());
+                    }
+                    if (!ab.b.isEmpty()) {
+                        // Divide again
+                        V3D_Line l = new V3D_Line(p0, p1, oom, rm);
+                        V3D_Point proj = l.getPointOfIntersection(bpt, oom, rm);
+                        getConvexHull0(ab.b, bpt, proj, n, index, oom, rm);
+                    }
+
                 }
-                Iterator<Integer> ite = removeIndexes.descendingIterator();
-                while (ite.hasNext()) {
-                    ab.b.remove(ite.next().intValue());
-                }
-                if (!ab.b.isEmpty()) {
-                    // Divide again
-                    V3D_Line l = new V3D_Line(p0, p1, oom, rm);
-                    V3D_Point proj = l.getPointOfIntersection(bpt, oom, rm);
-                    getConvexHull0(ab.b, bpt, proj, n, index, oom, rm);
-                }
+
             }
         }
     }
@@ -635,14 +656,14 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
             a = new ArrayList<>();
             b = new ArrayList<>();
             V3D_Vector n = pl.n;
-            Math_BigRational maxads = Math_BigRational.ZERO;
-            Math_BigRational maxbds = Math_BigRational.ZERO;
+            BigRational maxads = BigRational.ZERO;
+            BigRational maxbds = BigRational.ZERO;
             for (int i = 0; i < pts.size(); i++) {
                 V3D_Point pt = pts.get(i);
-                Math_BigRational t = pl.getPV().subtract(pt.rel, oom, rm).getDotProduct(n, oom, rm);
-                Math_BigRational ds = pl.getDistanceSquared(pts.get(i), oom, rm);
+                BigRational t = pl.getPV().subtract(pt.rel, oom, rm).getDotProduct(n, oom, rm);
+                BigRational ds = pl.getDistanceSquared(pts.get(i), oom, rm);
                 //System.out.println(pt.toString() + " " + t);
-                switch (t.compareTo(Math_BigRational.ZERO)) {
+                switch (t.compareTo(BigRational.ZERO)) {
                     case 1 -> {
                         if (ds.compareTo(maxads) == 1) {
                             maxads = ds;

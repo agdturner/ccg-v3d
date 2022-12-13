@@ -15,10 +15,10 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.light;
 
+import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.util.Objects;
-import uk.ac.leeds.ccg.math.number.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
@@ -39,17 +39,17 @@ public class V3D_V implements Serializable {
     /**
      * The x.
      */
-    public Math_BigRational x;
+    public BigRational x;
 
     /**
      * The y.
      */
-    public Math_BigRational y;
+    public BigRational y;
 
     /**
      * The z.
      */
-    public Math_BigRational z;
+    public BigRational z;
 
     /**
      * The origin {@code <0,0,0>}.
@@ -70,7 +70,7 @@ public class V3D_V implements Serializable {
      * @param y What {@link #y} is set to.
      * @param z What {@link #z} is set to.
      */
-    public V3D_V(Math_BigRational x, Math_BigRational y, Math_BigRational z) {
+    public V3D_V(BigRational x, BigRational y, BigRational z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -82,8 +82,8 @@ public class V3D_V implements Serializable {
      * @param dz What {@link #z} is set to after conversion.
      */
     public V3D_V(long dx, long dy, long dz) {
-        this(Math_BigRational.valueOf(dx), Math_BigRational.valueOf(dy),
-                Math_BigRational.valueOf(dz));
+        this(BigRational.valueOf(dx), BigRational.valueOf(dy),
+                BigRational.valueOf(dz));
     }
 
     /**
@@ -92,8 +92,8 @@ public class V3D_V implements Serializable {
      * @param dz What {@link #z} is set to after conversion.
      */
     public V3D_V(double dx, double dy, double dz) {
-        this(Math_BigRational.valueOf(dx), Math_BigRational.valueOf(dy),
-                Math_BigRational.valueOf(dz));
+        this(BigRational.valueOf(dx), BigRational.valueOf(dy),
+                BigRational.valueOf(dz));
     }
 
     /**
@@ -191,7 +191,7 @@ public class V3D_V implements Serializable {
      *
      * @param s The scalar value to multiply this by.
      */
-    public void multiply(Math_BigRational s) {
+    public void multiply(BigRational s) {
         x = x.multiply(s);
         y = y.multiply(s);
         z = z.multiply(s);
@@ -202,7 +202,7 @@ public class V3D_V implements Serializable {
      *
      * @param s The scalar value to divide this by.
      */
-    public void divide(Math_BigRational s) {
+    public void divide(BigRational s) {
         x = x.divide(s);
         y = y.divide(s);
         z = z.divide(s);
@@ -224,7 +224,7 @@ public class V3D_V implements Serializable {
      * @param rm The RoundingMode if rounding is needed.
      * @return The magnitude.
      */
-    public Math_BigRational getMagnitude(int oom, RoundingMode rm) {
+    public BigRational getMagnitude(int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(x.pow(2).add(y.pow(2))
                 .add(z.pow(2)), oom, rm).getSqrt(oom, rm);
     }
@@ -254,7 +254,7 @@ public class V3D_V implements Serializable {
      * @return this scaled by the magnitude.
      */
     public V3D_V getUnitVector(int oom, RoundingMode rm) {
-        Math_BigRational d = getMagnitude(oom, RoundingMode.UP);
+        BigRational d = getMagnitude(oom, RoundingMode.UP);
         V3D_V r = new V3D_V(x.divide(d), y.divide(d), z.divide(d));
         return r;
     }
@@ -266,7 +266,7 @@ public class V3D_V implements Serializable {
      * @param v The other vector.
      * @return dot product
      */
-    public Math_BigRational getDotProduct(V3D_V v) {
+    public BigRational getDotProduct(V3D_V v) {
         return (v.x.multiply(x)).add(v.y.multiply(y)).add(v.z.multiply(z));
     }
 
@@ -278,7 +278,7 @@ public class V3D_V implements Serializable {
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance from {@code p} to this.
      */
-    public Math_BigRational getDistance(V3D_V p, int oom, RoundingMode rm) {
+    public BigRational getDistance(V3D_V p, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(x.subtract(p.x).pow(2)
                 .add(y.subtract(p.y).pow(2))
                 .add(y.subtract(p.y).pow(2)), oom, rm).getSqrt(oom, rm);
