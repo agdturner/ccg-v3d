@@ -1886,7 +1886,7 @@ public class V3D_Plane extends V3D_Geometry {
     public BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
         BigRational lpd = getDistanceSquared(l.getP(), oom, rm);
         BigRational lqd = getDistanceSquared(l.getQ(), oom, rm);
-        return lpd.min(lqd);
+        return BigRational.min(lpd, lqd);
     }
 
     /**
