@@ -256,12 +256,12 @@ public class V3D_Envelope implements Serializable {
             return this;
         } else {
             return new V3D_Envelope(oom, rm,
-                    e.getXMin(oom, rm).min(getXMin(oom, rm)),
-                    e.getXMax(oom, rm).max(getXMax(oom, rm)),
-                    e.getYMin(oom, rm).min(getYMin(oom, rm)),
-                    e.getYMax(oom, rm).max(getYMax(oom, rm)),
-                    e.getZMin(oom, rm).min(getZMin(oom, rm)),
-                    e.getZMax(oom, rm).max(getZMax(oom, rm)));
+                    BigRational.min(e.getXMin(oom, rm), getXMin(oom, rm)),
+                    BigRational.max(e.getXMax(oom, rm), getXMax(oom, rm)),
+                    BigRational.min(e.getYMin(oom, rm), getYMin(oom, rm)),
+                    BigRational.max(e.getYMax(oom, rm), getYMax(oom, rm)),
+                    BigRational.min(e.getZMin(oom, rm), getZMin(oom, rm)),
+                    BigRational.max(e.getZMax(oom, rm), getZMax(oom, rm)));
         }
     }
 
@@ -364,12 +364,12 @@ public class V3D_Envelope implements Serializable {
             return null;
         }
         return new V3D_Envelope(oom, rm,
-                getXMin(oom, rm).max(en.getXMin(oom, rm)),
-                getXMax(oom, rm).min(en.getXMax(oom, rm)),
-                getYMin(oom, rm).max(en.getYMin(oom, rm)),
-                getYMax(oom, rm).min(en.getYMax(oom, rm)),
-                getZMin(oom, rm).max(en.getZMin(oom, rm)),
-                getZMax(oom, rm).min(en.getZMax(oom, rm)));
+                BigRational.max(getXMin(oom, rm),en.getXMin(oom, rm)),
+                BigRational.min(getXMax(oom, rm),en.getXMax(oom, rm)),
+                BigRational.max(getYMin(oom, rm),en.getYMin(oom, rm)),
+                BigRational.min(getYMax(oom, rm),en.getYMax(oom, rm)),
+                BigRational.max(getZMin(oom, rm),en.getZMin(oom, rm)),
+                BigRational.min(getZMax(oom, rm),en.getZMax(oom, rm)));
     }
 
     /**

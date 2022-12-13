@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -724,7 +723,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         if (isAligned(poi, oom, rm)) {
             return poi.getDistanceSquared(pt, oom, rm);
         } else {
-            return pt.getDistanceSquared(getP(), oom, rm).min(
+            return BigRational.min(pt.getDistanceSquared(getP(), oom, rm),
                     pt.getDistanceSquared(getQ(), oom, rm));
         }
     }
