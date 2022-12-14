@@ -26,30 +26,30 @@ import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VTriangleDouble;
  * following depicts a generic triangle {@code
  * pq
  * pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
- * \~                   mpq                   ~/
- * \  ~                 |                 ~  /
- * \    ~              |              ~    /
- * \      ~           |           ~      /
- * \        ~        |        ~        /
- * \          ~     |     ~          /
- * \            ~  |  ~            /
- * -n  -n  -n  -n  -n  c  +n  +n  +n  +n  +n  normal heading out from the page.
- * \          ~  |  ~          /
- * \      ~     |     ~      /
- * \  ~        |        ~  /
- * + mrp      |      mqr +
- * rp  \         |         /  qr
- * \        |        /
- * \       |       /
- * \      |      /
- * \     |     /
- * \    |    /
- * \   |   /
- * \  |  /
- * \ | /
- * \|/
- *
- * r
+ *     \~                   mpq                   ~/
+ *      \  ~                 |                 ~  /
+ *       \    ~              |              ~    /
+ *        \      ~           |           ~      /
+ *         \        ~        |        ~        /
+ *          \          ~     |     ~          /
+ *           \            ~  |  ~            /
+ *       -n  -n  -n  -n  -n  c  +n  +n  +n  +n  +n  normal heading out from the page.
+ *             \          ~  |  ~          /
+ *              \      ~     |     ~      /
+ *               \  ~        |        ~  /
+ *                + mrp      |      mqr +
+ *             rp  \         |         /  qr
+ *                  \        |        /
+ *                   \       |       /
+ *                    \      |      /
+ *                     \     |     /
+ *                      \    |    /
+ *                       \   |   /
+ *                        \  |  /
+ *                         \ | /
+ *                          \|/
+ *                           *
+ *                           r
  * }
  *
  * @author Andy Turner
@@ -68,7 +68,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * The tolerance of {@link #pl}.
      */
     protected double plEpsilon;
-    
+
     /**
      * Defines one of the corners of the triangle.
      */
@@ -107,20 +107,32 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * plane normal and with a normal orthogonal to the plane normal.
      */
     private V3D_PlaneDouble pqpl;
-    private double pqplEpsilon;
     
+    /**
+     * The epsilon used in generating {@link #pqpl}
+     */
+    private double pqplEpsilon;
+
     /**
      * For storing the plane aligning with {@link #qr} in the direction of the
      * plane normal and with a normal orthogonal to the plane normal.
      */
     private V3D_PlaneDouble qrpl;
+
+    /**
+     * The epsilon used in generating {@link #qrpl}
+     */
     private double qrplEpsilon;
-    
+
     /**
      * For storing the plane aligning with {@link #rp} in the direction of the
      * plane normal and with a normal orthogonal to the plane normal.
      */
     private V3D_PlaneDouble rppl;
+    
+    /**
+     * The epsilon used in generating {@link #rppl}
+     */
     private double rpplEpsilon;
 
 //    /**
@@ -251,7 +263,8 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
 //        this.r = r.getVector().subtract(p.offset);
 //    }
     /**
-     * @return {@link #pl} if {@link pl}this has at least as mto at least the oom precision using
+     * @return {@link #pl} if {@link pl}this has at least as mto at least the
+     * oom precision using
      * @param epsilon Used to check vectors are not scalar multiples.
      * RoundingMode rm.
      */
@@ -263,7 +276,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         }
         return pl;
     }
-    
+
     private void initPl(double epsilon) {
         pl = new V3D_PlaneDouble(offset, p, q, r, epsilon);
         plEpsilon = epsilon;
@@ -374,7 +387,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         }
         return pqpl;
     }
-    
+
     private void initPQPl(double epsilon) {
         pq = getPQ();
         pqpl = new V3D_PlaneDouble(pq.getP(), pq.l.v.getCrossProduct(
@@ -495,11 +508,10 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     }
 
     /**
-     * The point pt aligns with this if it is on the same side of each plane
-     * defined a triangle edge (with a normal given by the cross product of the
-     * triangle normal and the edge line vector), and the other point of the
-     * triangle. The plane normal may be imprecisely calculated. Greater
-     * precision can be gained using a smaller oom.
+     * The point pt aligns with this if it is on the inside of each plane
+     * defined triangle edge (with a normal given by the cross product of the
+     * triangle normal and the edge line vector) within a tolerance given by 
+     * epsilon.
      *
      * @param pt The point to check if it is in alignment.
      * @param epsilon The tolerance.
@@ -521,8 +533,8 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
 
     /**
      * A line segment aligns with this if both end points are aligned according
-     * to {@link #isAligned(uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble)}.
-     *
+     * to {@link #isAligned(uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble, double)}
+     * 
      * @param l The line segment to check if it is in alignment.
      * @param epsilon The tolerance.
      * @return {@code true} iff l is aligned with this.
@@ -536,8 +548,8 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
 
     /**
      * A triangle aligns with this if all points are aligned according to
-     * {@link #isAligned(uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble)}.
-     *
+     * {@link #isAligned(uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble, double)}.
+     * 
      * @param t The triangle to check if it is in alignment.
      * @param epsilon The tolerance.
      * @return {@code true} iff l is aligned with this.
@@ -973,7 +985,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     public V3D_FiniteGeometryDouble getIntersection(V3D_TriangleDouble t,
             double epsilon) {
         if (getEnvelope().isIntersectedBy(t.getEnvelope(), epsilon)) {
-            V3D_FiniteGeometryDouble g = t.getIntersection(getPl(epsilon), 
+            V3D_FiniteGeometryDouble g = t.getIntersection(getPl(epsilon),
                     epsilon);
             if (g == null) {
                 return g;
@@ -1120,7 +1132,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                             if (pqplil == null) {
                                 if (qrplil == null) {
                                     //if (rpplil == null) {
-                                        return null;
+                                    return null;
                                     //} else {
                                     //    return rpplil;
                                     //}
@@ -1930,7 +1942,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * For getting the point opposite a side of a triangle given the side.
      *
      * @param l a line segment either equal to one of the edges of this: null
-     * null null null null null     {@link #getPQ()},
+     * null null null null null null     {@link #getPQ()},
      * {@link #getQR()} or {@link #getRP()}.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
@@ -2170,7 +2182,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * @return A Set of points that are the corners of the triangles.
      */
     //public static ArrayList<V3D_Point> getPoints(V3D_Triangle[] triangles) {
-    public static V3D_PointDouble[] getPoints(V3D_TriangleDouble[] triangles, 
+    public static V3D_PointDouble[] getPoints(V3D_TriangleDouble[] triangles,
             double epsilon) {
         List<V3D_PointDouble> s = new ArrayList<>();
         for (var t : triangles) {

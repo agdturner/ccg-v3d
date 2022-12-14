@@ -266,6 +266,8 @@ public class V3D_VectorDouble implements Serializable {
      * Indicates if {@code this} is the reverse of {@code v}.
      *
      * @param v The vector to compare with {@code this}.
+     * @param epsilon The tolerance within which two vectors are considered 
+     * equal.
      * @return {@code true} iff {@code this} is the reverse of {@code v}.
      */
     public boolean isReverse(V3D_VectorDouble v, double epsilon) {
