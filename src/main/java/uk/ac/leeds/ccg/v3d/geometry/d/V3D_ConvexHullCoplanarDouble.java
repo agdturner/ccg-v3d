@@ -87,7 +87,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      */
     public V3D_ConvexHullCoplanarDouble(double epsilon,
             V3D_TriangleDouble... triangles) {
-        this(triangles[0].getPl(epsilon).n, epsilon, V3D_TriangleDouble.getPoints(triangles));
+        this(triangles[0].getPl(epsilon).n, epsilon, 
+                V3D_TriangleDouble.getPoints(triangles));
     }
 
     /**
@@ -164,11 +165,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             if (ydl2 > zdl2) {
                 this.points.add(yminp);
                 this.points.add(ymaxp);
-                getConvexHull0(pts, yminp, ymaxp, n, 1, epsilon);
+                compute(pts, yminp, ymaxp, n, 1, epsilon);
             } else {
                 this.points.add(zminp);
                 this.points.add(zmaxp);
-                getConvexHull0(pts, zminp, zmaxp, n, 1, epsilon);
+                compute(pts, zminp, zmaxp, n, 1, epsilon);
             }
         } else if (yminIndex == ymaxIndex) {
             V3D_LineSegmentDouble xd = new V3D_LineSegmentDouble(xmaxp, xminp);
@@ -178,11 +179,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             if (xdl2 > zdl2) {
                 this.points.add(xminp);
                 this.points.add(xmaxp);
-                getConvexHull0(pts, xminp, xmaxp, n, 1, epsilon);
+                compute(pts, xminp, xmaxp, n, 1, epsilon);
             } else {
                 this.points.add(zminp);
                 this.points.add(zmaxp);
-                getConvexHull0(pts, zminp, zmaxp, n, 1, epsilon);
+                compute(pts, zminp, zmaxp, n, 1, epsilon);
             }
         } else if (zminIndex == zmaxIndex) {
             V3D_LineSegmentDouble xd = new V3D_LineSegmentDouble(xmaxp, xminp);
@@ -192,11 +193,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             if (xdl2 > ydl2) {
                 this.points.add(xminp);
                 this.points.add(xmaxp);
-                getConvexHull0(pts, xminp, xmaxp, n, 1, epsilon);
+                compute(pts, xminp, xmaxp, n, 1, epsilon);
             } else {
                 this.points.add(yminp);
                 this.points.add(ymaxp);
-                getConvexHull0(pts, yminp, ymaxp, n, 1, epsilon);
+                compute(pts, yminp, ymaxp, n, 1, epsilon);
             }
         } else {
             V3D_LineSegmentDouble xd = new V3D_LineSegmentDouble(xmaxp, xminp);
@@ -209,21 +210,21 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
                 if (xdl2 > zdl2) {
                     this.points.add(xminp);
                     this.points.add(xmaxp);
-                    getConvexHull0(pts, xminp, xmaxp, n, 1, epsilon);
+                    compute(pts, xminp, xmaxp, n, 1, epsilon);
                 } else {
                     this.points.add(zminp);
                     this.points.add(zmaxp);
-                    getConvexHull0(pts, zminp, zmaxp, n, 1, epsilon);
+                    compute(pts, zminp, zmaxp, n, 1, epsilon);
                 }
             } else {
                 if (ydl2 > zdl2) {
                     this.points.add(yminp);
                     this.points.add(ymaxp);
-                    getConvexHull0(pts, yminp, ymaxp, n, 1, epsilon);
+                    compute(pts, yminp, ymaxp, n, 1, epsilon);
                 } else {
                     this.points.add(zminp);
                     this.points.add(zmaxp);
-                    getConvexHull0(pts, zminp, zmaxp, n, 1, epsilon);
+                    compute(pts, zminp, zmaxp, n, 1, epsilon);
                 }
             }
         }
@@ -281,7 +282,10 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         s += ")";
         return s;
     }
-    
+
+    /**
+     * @return Simple string representation. 
+     */
     public String toStringSimple() {
         String s = this.getClass().getName() + "(";
         Iterator<V3D_PointDouble> ite = points.iterator();
@@ -297,6 +301,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * Check if {@code this} is equal to {@code i}.
      *
      * @param c An instance to compare for equality.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff all the triangles are the same.
      */
     public boolean equals(V3D_ConvexHullCoplanarDouble c, double epsilon) {
@@ -414,6 +420,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
 
     /**
      * @param pt The point.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if the point is aligned with any of the parts.
      */
     protected boolean isAligned(V3D_PointDouble pt, double epsilon) {
@@ -545,74 +553,84 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * equal.
      * @return the number of points added.
      */
-    private void getConvexHull0(ArrayList<V3D_PointDouble> pts,
+    private void compute(ArrayList<V3D_PointDouble> pts,
             V3D_PointDouble p0, V3D_PointDouble p1, V3D_VectorDouble n,
             int index, double epsilon) {
         V3D_PlaneDouble pl = new V3D_PlaneDouble(p0, p1, new V3D_PointDouble(
                 offset, p0.rel.add(n)));
-        AboveAndBelow ab = new AboveAndBelow(pts, pl, epsilon);
+        AB ab = new AB(pts, pl, epsilon);
         {
-            // Process ab.a - those points above the line through p0 and p1 in
-            // the plane with normal n.
-            if (!ab.a.isEmpty()) {
+            // Process ab.a
+            if (ab.a.size() > 1) {
                 V3D_PointDouble apt = ab.a.get(ab.maxaIndex);
                 points.add(index, apt);
                 index++;
-                
                 if (!V3D_LineDouble.isCollinear(epsilon, p0, p1, apt)) {
-                
                     V3D_TriangleDouble atr = new V3D_TriangleDouble(p0, p1, apt);
                     TreeSet<Integer> removeIndexes = new TreeSet<>();
                     for (int i = 0; i < ab.a.size(); i++) {
                         if (atr.isIntersectedBy(ab.a.get(i), epsilon)) {
                             removeIndexes.add(i);
+                            index--;
                         }
                     }
                     Iterator<Integer> ite = removeIndexes.descendingIterator();
                     while (ite.hasNext()) {
                         ab.a.remove(ite.next().intValue());
                     }
-                    if (!ab.a.isEmpty()) {
+                    if (ab.a.size() > 1) {
                         // Divide again
                         V3D_LineDouble l = new V3D_LineDouble(p0, p1);
                         V3D_PointDouble proj = l.getPointOfIntersection(apt, epsilon);
-                        getConvexHull0(ab.a, apt, proj, n, index, epsilon);
+                        compute(ab.a, apt, proj, n, index, epsilon);
+                    } else {
+                        if (ab.a.size() == 1) {
+                            points.add(index, ab.a.get(0));
+                            index++;
+                        }
                     }
-                    
                 }
-                
+            } else {
+                if (ab.a.size() == 1) {
+                    points.add(index, ab.a.get(0));
+                    index++;
+                }
             }
         }
-        index++;
         {
-            // Process ab.b - those points below the line through p0 and p1 in
-            // the plane with normal n.
-            if (!ab.b.isEmpty()) {
+            // Process ab.b
+            if (ab.b.size() > 1) {
                 V3D_PointDouble bpt = ab.b.get(ab.maxbIndex);
                 points.add(index, bpt);
-                
+                index++;
                 if (!V3D_LineDouble.isCollinear(epsilon, p0, p1, bpt)) {
-                
                     V3D_TriangleDouble btr = new V3D_TriangleDouble(p0, p1, bpt);
                     TreeSet<Integer> removeIndexes = new TreeSet<>();
                     for (int i = 0; i < ab.b.size(); i++) {
                         if (btr.isIntersectedBy(ab.b.get(i), epsilon)) {
                             removeIndexes.add(i);
+                            index--;
                         }
                     }
                     Iterator<Integer> ite = removeIndexes.descendingIterator();
                     while (ite.hasNext()) {
                         ab.b.remove(ite.next().intValue());
                     }
-                    if (!ab.b.isEmpty()) {
+                    if (ab.b.size() > 1) {
                         // Divide again
                         V3D_LineDouble l = new V3D_LineDouble(p0, p1);
                         V3D_PointDouble proj = l.getPointOfIntersection(bpt, epsilon);
-                        getConvexHull0(ab.b, bpt, proj, n, index, epsilon);
+                        compute(ab.b, bpt, proj, n, index, epsilon);
+                    } else {
+                        if (ab.b.size() == 1) {
+                            points.add(index, ab.b.get(0));
+                        }
                     }
-
                 }
-
+            } else {
+                if (ab.b.size() == 1) {
+                    points.add(index, ab.b.get(0));
+                }
             }
         }
     }
@@ -620,7 +638,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
     /**
      * A class for helping to calculate a convex hull.
      */
-    public class AboveAndBelow {
+    public class AB {
 
         /**
          * The points that are above.
@@ -628,7 +646,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         public ArrayList<V3D_PointDouble> a;
 
         /**
-         * For storing the index of the point in {@link #a} that is the maximum.
+         * For storing the index of the point in {@link #a} that is the maximum
+         * distance from the plane.
          */
         int maxaIndex;
 
@@ -638,7 +657,8 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         public ArrayList<V3D_PointDouble> b;
 
         /**
-         * For storing the index of the point in {@link #b} that is the maximum.
+         * For storing the index of the point in {@link #b} that is the maximum
+         * distance from the plane.
          */
         int maxbIndex;
 
@@ -650,32 +670,42 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
          * @param epsilon The tolerance within which two vectors are considered
          * equal.
          */
-        public AboveAndBelow(ArrayList<V3D_PointDouble> pts,
-                V3D_PlaneDouble pl, double epsilon) {
+        public AB(ArrayList<V3D_PointDouble> pts, V3D_PlaneDouble pl,
+                double epsilon) {
             a = new ArrayList<>();
             b = new ArrayList<>();
-            V3D_VectorDouble n = pl.n;
-            double maxads = 0d;
-            double maxbds = 0d;
+
+            // Find points not on the plane
+            ArrayList<V3D_PointDouble> ptsnop = new ArrayList<>();
             for (int i = 0; i < pts.size(); i++) {
                 V3D_PointDouble pt = pts.get(i);
-                double t = pl.getPV().subtract(pt.rel).getDotProduct(n);
+                if (!pl.isIntersectedBy(pt, epsilon)) {
+                    ptsnop.add(pt);
+//                } else {
+//                    System.out.println("Point on plane: " + pt);
+                }
+            }
+
+            // Go through points
+            V3D_PointDouble pt0 = ptsnop.get(0);
+            a.add(pt0);
+            double maxads = pl.getDistanceSquared(pt0);
+            double maxbds = 0d;
+            for (int i = 1; i < ptsnop.size(); i++) {
+                V3D_PointDouble pt = ptsnop.get(i);
                 double ds = pl.getDistanceSquared(pts.get(i));
-                //System.out.println(pt.toString() + " " + t);
-                if (t > epsilon) {
+                if (pl.isOnSameSide(pt0, pt)) {
+                    a.add(pt);
                     if (ds > maxads) {
                         maxads = ds;
-                        maxaIndex = a.size();
+                        maxaIndex = a.size() - 1;
                     }
-                    a.add(pt);
-                    //System.out.println("Above the plane.");
-                } else if (t < epsilon) {
+                } else {
+                    b.add(pt);
                     if (ds > maxbds) {
                         maxbds = ds;
-                        maxbIndex = b.size();
+                        maxbIndex = b.size() - 1;
                     }
-                    b.add(pt);
-                    //System.out.println("Below the plane.");
                 }
             }
         }

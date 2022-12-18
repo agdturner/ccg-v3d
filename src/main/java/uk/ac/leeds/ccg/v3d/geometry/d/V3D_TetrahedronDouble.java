@@ -347,6 +347,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Identify if this is intersected by point {@code pt}.
      *
      * @param pt The point to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
     public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {

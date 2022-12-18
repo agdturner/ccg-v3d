@@ -17,6 +17,8 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +54,89 @@ public class V3D_PointTest extends V3D_Test {
     @AfterEach
     public void tearDown() {
     }
-
+    
+     /**
+     * Test of equals method, of class V3D_Point.
+     */
+    @Test
+    public void testGetUnique() {
+        System.out.println("getUnique");
+        ArrayList<V3D_Point> pts;
+        ArrayList<V3D_Point> expResult;
+        ArrayList<V3D_Point> result;
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        // Test 1
+        pts = new ArrayList<>();
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        expResult = new ArrayList<>();
+        expResult.add(pP0P0P0);
+        result = V3D_Point.getUnique(pts, oom, rm);
+        testContainsSamePoints(expResult, result, oom, rm);
+        // Test 2
+        pts = new ArrayList<>();
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        expResult = new ArrayList<>();
+        expResult.add(pP0P0P0);
+        expResult.add(pP1P0P0);
+        result = V3D_Point.getUnique(pts, oom, rm);
+        testContainsSamePoints(expResult, result, oom, rm);
+        // Test 3
+        pts = new ArrayList<>();
+        pts.add(pP0P1P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        expResult = new ArrayList<>();
+        expResult.add(pP0P1P0);
+        expResult.add(pP0P0P0);
+        expResult.add(pP1P0P0);
+        result = V3D_Point.getUnique(pts, oom, rm);
+        testContainsSamePoints(expResult, result, oom, rm);
+    }
+    
+    private void testContainsSamePoints(ArrayList<V3D_Point> expResult,
+        ArrayList<V3D_Point> result, int oom, RoundingMode rm) {
+        assertEquals(expResult.size(), result.size());
+        boolean t = false;
+        for (var x: result) {
+            for (var y: expResult) {
+                if (x.equals(y, oom, rm)) {
+                    t = true;
+                    break;
+                }
+            }
+            assertTrue(t);
+        }
+        t = false;
+        for (var x: expResult) {
+            for (var y: result) {
+                if (x.equals(y, oom, rm)) {
+                    t = true;
+                    break;
+                }
+            }
+            assertTrue(t);
+        }
+        
+    }
+    
     /**
      * Test of equals method, of class V3D_Point.
      */

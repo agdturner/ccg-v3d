@@ -25,36 +25,36 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.light.V3D_V;
 
 /**
- * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding 
+ * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding
  * these gives the position of a point. Two points are equal according to
  * {@link #equals(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int, java.math.RoundingMode)}
- * if they have the same position. The "*" denotes a point in 3D in the following
- * depiction: {@code
-
-                          y           -
-                          +          /                * pv=<x0,y0,z0>
-                          |         /                 |  =offset+v
-                          |        /                  |  =<x1+x2,y1+y2,z1+z2>
-                          |    z0-/-------------------|
-               r          |      /                   /
-       v=<x2,y2,z2>     |     /                   /
-                          |    /                   /              
-                          |   /                   /      offset=<x1,y1,z1>
-                       y0-|  /                   /                o
-                          | /                   /
-                          |/                   /
-  - ----------------------|-------------------/---- + x
-                         /|                  x0
-                        / |
-                       /  |
-                      /   |
-                     /    |
-                    /     |
-                   /      |
-                  /       |
-                 +        |
-                z         -
- }
+ * if they have the same position. The "*" denotes a point in 3D in the
+ * following depiction: {@code
+ *
+ * y           -
+ * +          /                * pv=<x0,y0,z0>
+ * |         /                 |  =offset+v
+ * |        /                  |  =<x1+x2,y1+y2,z1+z2>
+ * |    z0-/-------------------|
+ * r          |      /                   /
+ * v=<x2,y2,z2>     |     /                   /
+ * |    /                   /
+ * |   /                   /      offset=<x1,y1,z1>
+ * y0-|  /                   /                o
+ * | /                   /
+ * |/                   /
+ * - ----------------------|-------------------/---- + x
+ * /|                  x0
+ * / |
+ * /  |
+ * /   |
+ * /    |
+ * /     |
+ * /      |
+ * /       |
+ * +        |
+ * z         -
+ * }
  *
  * @author Andy Turner
  * @version 1.0
@@ -128,7 +128,6 @@ public class V3D_Point extends V3D_FiniteGeometry {
 //        super(pv.e, V3D_Vector.ZERO);
 //        this.v = new V3D_Vector(pv);
 //    }
-
     /**
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
@@ -329,7 +328,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
         if (this.equals(p, oom, rm)) {
             return BigRational.ZERO;
         }
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom -6, rm), oom, rm)
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom - 6, rm), oom, rm)
                 .getSqrt(oom, rm);
     }
 
@@ -465,7 +464,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
         r.translate(tv.reverse(), oom, rm);
         return r;
     }
-    
+
     /**
      * @param points The points to test if they are coincident.
      * @return {@code true} iff all the points are coincident.
@@ -499,7 +498,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
 
     /**
      * A collection method for getting unique points.
-     * 
+     *
      * @param pts The points to derive a unique list from.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
@@ -512,18 +511,14 @@ public class V3D_Point extends V3D_FiniteGeometry {
         for (int i = 0; i < pts.size(); i++) {
             if (!indexes.contains(i)) {
                 V3D_Point p = pts.get(i);
-                boolean added = false;
+                r.add(p);
                 for (int j = i + 1; j < pts.size(); j++) {
-                    V3D_Point p2 = pts.get(j);
-                    if (p.equals(p2, oom, rm)) {
-                        r.add(p);
-                        indexes.add(j);
-                        added = true;
-                        break;
+                    if (!indexes.contains(j)) {
+                        V3D_Point p2 = pts.get(j);
+                        if (p.equals(p2, oom, rm)) {
+                            indexes.add(j);
+                        }
                     }
-                }
-                if (!added) {
-                    r.add(p);
                 }
             }
         }

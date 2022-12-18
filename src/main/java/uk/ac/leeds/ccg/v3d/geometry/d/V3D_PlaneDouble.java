@@ -262,7 +262,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * and not equal to pl or r.
      * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
      * and not equal to pl or qv.
-     * @param epsilon What {@link #epsilon} is set to.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      */
     public V3D_PlaneDouble(V3D_VectorDouble ptv, V3D_VectorDouble offset,
             V3D_VectorDouble p, V3D_VectorDouble q, V3D_VectorDouble r,
@@ -279,13 +280,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         this.p = p;
         this.n = pq.getCrossProduct(qr);
         if (n.isZero()) {
-            if (pq.isReverse(qr, epsilon)) {
-                int debug = 1;
-                this.n = r.subtract(p).getCrossProduct(pq);
-                
-            }
-            //throw new RuntimeException("Points do not define a plane");
-            int debug = 1;
+//            if (pq.isReverse(qr, epsilon)) {
+//                int debug = 1;
+//                this.n = r.subtract(p).getCrossProduct(pq);
+//            }
+            throw new RuntimeException("Points do not define a plane");
         }
         V3D_VectorDouble v;
         if (ptv.isZero()) {
@@ -309,7 +308,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * and not equal to pl or r.
      * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
      * and not equal to pl or qv.
-     * @param epsilon What {@link #epsilon} is set to.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      */
     public V3D_PlaneDouble(V3D_PointDouble pt, V3D_VectorDouble offset,
             V3D_VectorDouble p, V3D_VectorDouble q, V3D_VectorDouble r,
@@ -600,6 +600,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * Plug the point into the plane equation.
      *
      * @param pt The point to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
     public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
@@ -673,6 +675,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
 
     /**
      * @param l The line to test if it is on the plane.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} If {@code pt} is on the plane.
      */
     public boolean isOnPlane(V3D_LineDouble l, double epsilon) {
@@ -1370,15 +1374,15 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * otherwise.
      */
     public boolean isOnSameSide(V3D_PointDouble a, V3D_PointDouble b) {
-        double aside = getSideOfPlane(a);
-        if (aside == 0d) {
+        int aside = getSideOfPlane(a);
+        if (aside == 0) {
             return true;
         }
-        double bside = getSideOfPlane(b);
-        if (bside == 0d) {
+        int bside = getSideOfPlane(b);
+        if (bside == 0) {
             return true;
         }
-        return aside < 0d && bside < 0d || aside > 0d && bside > 0d;
+        return aside == bside;
     }
 
     /**
@@ -1389,10 +1393,10 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * towards. 0 if pt is on the plane. -1 if pt is on the other side of the
      * plane that the normal points towards.
      */
-    public double getSideOfPlane(V3D_PointDouble pt) {
+    public int getSideOfPlane(V3D_PointDouble pt) {
         double[] coeffs = getEquation().coeffs;
-        return coeffs[0] * pt.getX() + coeffs[1] * pt.getY()
-                + coeffs[2] * pt.getZ() + coeffs[3];
+        return Double.valueOf(coeffs[0] * pt.getX() + coeffs[1] * pt.getY()
+                + coeffs[2] * pt.getZ() + coeffs[3]).compareTo(0d);
     }
 
     /**
@@ -1400,6 +1404,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * count either way.
      *
      * @param pts The points to check.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff all points in pts are on or are on the same side
      * of this.
      */

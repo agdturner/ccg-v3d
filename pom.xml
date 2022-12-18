@@ -62,7 +62,7 @@
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>ccg-math</artifactId>
-            <version>3.0</version>
+            <version>3.0.1</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/ch.obermuhlner/big-math
         <dependency>

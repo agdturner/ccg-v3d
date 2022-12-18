@@ -218,6 +218,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
 
     /**
      * @param pt The point to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return A point or line segment.
      */
     public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
@@ -245,6 +247,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     }
 
     /**
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The plane of the rectangle from {@link #getPQR()}.
      */
     public V3D_PlaneDouble getPlane(double epsilon) {

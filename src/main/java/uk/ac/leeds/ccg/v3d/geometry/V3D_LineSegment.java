@@ -467,7 +467,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
          * this.
          */
         if (i instanceof V3D_Point v3D_Point) {
-            if (isIntersectedBy(v3D_Point, oom, rm)) {
+            //if (isIntersectedBy(v3D_Point, oom, rm)) {
+            if (isBetween(v3D_Point, oom, rm)) {                
                 return v3D_Point;
             } else {
                 return null;

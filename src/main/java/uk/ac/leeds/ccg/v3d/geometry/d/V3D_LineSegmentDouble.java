@@ -418,7 +418,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
          * this.
          */
         if (i instanceof V3D_PointDouble v3D_Point) {
-            if (isIntersectedBy(v3D_Point, epsilon)) {
+            //if (isIntersectedBy(v3D_Point, epsilon)) {
+            if (isBetween(v3D_Point)) {
                 return v3D_Point;
             } else {
                 return null;
@@ -551,7 +552,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                 // Cases: 1, 2, 8, 9, 20, 21, 27, 28
                 if (ls.isIntersectedBy(tp, epsilon)) {
                     // Cases: 8, 9, 20, 21
-                    if (tp.equals(lp)) {
+                    if (tp.equals(lp, epsilon)) {
                         // Cases: 8, 21
                         return tp;
                     } else {
@@ -560,12 +561,12 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                     }
                 } else {
                     // Cases: 1, 2, 8, 21, 27, 28
-                    if (tp.equals(lp)) {
+                    if (tp.equals(lp, epsilon)) {
                         // Cases: 8, 21
                         return tp;
                     } else {
                         // Case: 1, 28
-                        if (lp.equals(tq)) {
+                        if (lp.equals(tq, epsilon)) {
                             return lp;
                         }
                         // Cases: 2, 27
@@ -581,7 +582,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                     // Cases: 6, 7, 19, 22, 23
                     if (ls.isIntersectedBy(tq, epsilon)) {
                         // Cases: 19, 23
-                        if (tp.equals(lp)) {
+                        if (tp.equals(lp, epsilon)) {
                             // Case: 19
                             return this;
                         } else {
@@ -590,7 +591,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                         }
                     } else {
                         // Cases: 6, 7, 22, 
-                        if (tp.equals(lq)) {
+                        if (tp.equals(lq, epsilon)) {
                             // Cases: 7, 22
                             return tp;
                         } else {
@@ -602,7 +603,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                     // Cases: 13, 14, 16
                     //if (l.isIntersectedBy(tq, oom)) {
                     // Cases: 13, 14, 16
-                    if (tq.equals(lq)) {
+                    if (tq.equals(lq, epsilon)) {
                         // Cases: 14, 16
                         return tq;
                     } else {
