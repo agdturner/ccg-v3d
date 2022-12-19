@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry.light;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * 3D representation of a moveable finite length line. The line starts at 

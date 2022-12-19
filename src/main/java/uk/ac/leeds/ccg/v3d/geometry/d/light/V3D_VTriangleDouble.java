@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d.light;
 
-import uk.ac.leeds.ccg.v3d.geometry.light.*;
 import java.io.Serializable;
 
 /**

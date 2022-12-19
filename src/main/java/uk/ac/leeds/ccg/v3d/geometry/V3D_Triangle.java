@@ -27,33 +27,33 @@ import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VTriangle;
  * For representing and processing triangles in 3D. A triangle has a non-zero
  * area. The corner points are {@link #pl}, {@link #q} and {@link #r}. The
  * following depicts a generic triangle {@code
-                           pq
-  pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
-     \~                   mpq                   ~/
-      \  ~                 |                 ~  /
-       \    ~              |              ~    /
-        \      ~           |           ~      /
-         \        ~        |        ~        /
-          \          ~     |     ~          /
-           \            ~  |  ~            /
-       -n  -n  -n  -n  -n  c  +n  +n  +n  +n  +n  normal heading out from the page.
-             \          ~  |  ~          /
-              \      ~     |     ~      /
-               \  ~        |        ~  /
-                + mrp      |      mqr +
-             rp  \         |         /  qr
-                  \        |        /
-                   \       |       /
-                    \      |      /
-                     \     |     /
-                      \    |    /
-                       \   |   /
-                        \  |  /
-                         \ | /
-                          \|/
-
-                           r
- }
+ *                          pq
+ * pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
+ *     \~                   mpq                   ~/
+ *      \  ~                 |                 ~  /
+ *       \    ~              |              ~    /
+ *        \      ~           |           ~      /
+ *         \        ~        |        ~        /
+ *          \          ~     |     ~          /
+ *           \            ~  |  ~            /
+ *            \  -n  -n  -n  c  +n  +n  +n  +n  normal going out of the page.
+ *             \          ~  |  ~          /
+ *              \      ~     |     ~      /
+ *               \  ~        |        ~  /
+ *                + mrp      |      mqr +
+ *             rp  \         |         /  qr
+ *                  \        |        /
+ *                   \       |       /
+ *                    \      |      /
+ *                     \     |     /
+ *                      \    |    /
+ *                       \   |   /
+ *                        \  |  /
+ *                         \ | /
+ *                          \|/
+ *                           *
+ *                           r
+ * }
  *
  * @author Andy Turner
  * @version 1.0
@@ -73,7 +73,6 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //     * hand rule.
 //     */
 //    public V3D_Vector normal;
-
     /**
      * Defines one of the corners of the triangle.
      */
@@ -93,12 +92,12 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * The order of magnitude used for the calculation of {@link #pl}.
      */
     public int oom;
-    
+
     /**
      * The RoundingMode used for the calculation of {@link #pl}.
      */
     public RoundingMode rm;
-    
+
     /**
      * For storing the line segment from {@link #getP()} to {@link #getQ()} for
      * a given Order of Magnitude and RoundingMode precision.
@@ -200,7 +199,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         q = new V3D_Vector(t.q);
         r = new V3D_Vector(t.r);
     }
-    
+
     /**
      * Creates a new triangle.
      *
@@ -209,13 +208,11 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_Triangle(V3D_Vector offset, V3D_VTriangle t, int oom, 
+    public V3D_Triangle(V3D_Vector offset, V3D_VTriangle t, int oom,
             RoundingMode rm) {
         this(offset, new V3D_Vector(t.pq.p), new V3D_Vector(t.pq.q),
                 new V3D_Vector(t.qr.q), oom, rm);
     }
-    
-    
 
     /**
      * Creates a new triangle. {@link #offset} is set to
@@ -227,7 +224,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_Triangle(V3D_Vector p, V3D_Vector q, V3D_Vector r, int oom, 
+    public V3D_Triangle(V3D_Vector p, V3D_Vector q, V3D_Vector r, int oom,
             RoundingMode rm) {
         this(V3D_Vector.ZERO, p, q, r, oom, rm);
     }
@@ -242,7 +239,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_Triangle(V3D_Vector offset, V3D_Vector p, V3D_Vector q, 
+    public V3D_Triangle(V3D_Vector offset, V3D_Vector p, V3D_Vector q,
             V3D_Vector r, int oom, RoundingMode rm) {
         super(offset);
         this.oom = oom;
@@ -273,7 +270,6 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //        this.r = r;
 //        this.normal = normal;
 //    }
-    
     /**
      * Creates a new triangle.
      *
@@ -284,7 +280,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_Triangle(V3D_LineSegment l, V3D_Vector r, int oom, RoundingMode rm) {
+    public V3D_Triangle(V3D_LineSegment l, V3D_Vector r, int oom,
+            RoundingMode rm) {
         this(l.offset, l.l.pv, l.qv, r, oom, rm);
     }
 
@@ -298,8 +295,10 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_Triangle(V3D_LineSegment l, V3D_Point r, int oom, RoundingMode rm) {
-        this(l.offset, l.l.pv, l.qv, r.getVector(oom, rm).subtract(l.offset, oom, rm), oom, rm);
+    public V3D_Triangle(V3D_LineSegment l, V3D_Point r, int oom,
+            RoundingMode rm) {
+        this(l.offset, l.l.pv, l.qv, r.getVector(oom, rm)
+                .subtract(l.offset, oom, rm), oom, rm);
     }
 
     /**
@@ -311,7 +310,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_Triangle(V3D_Point p, V3D_Point q, V3D_Point r, int oom, RoundingMode rm) {
+    public V3D_Triangle(V3D_Point p, V3D_Point q, V3D_Point r, int oom,
+            RoundingMode rm) {
         super(p.offset);
         this.p = p.rel;
         this.q = q.getVector(oom, rm).subtract(p.offset, oom, rm);
@@ -330,7 +330,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_Triangle(V3D_Point pt, V3D_Point p, V3D_Point q, V3D_Point r, 
+    public V3D_Triangle(V3D_Point pt, V3D_Point p, V3D_Point q, V3D_Point r,
             int oom, RoundingMode rm) {
         super(p.offset);
         this.p = p.rel;
@@ -339,11 +339,11 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         this.oom = oom;
         this.rm = rm;
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@link pl} accurate to at least the oom precision using 
+     * @return {@link pl} accurate to at least the oom precision using
      * RoundingMode rm.
      */
     public final V3D_Plane getPl(int oom, RoundingMode rm) {
@@ -357,16 +357,16 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         initPl(oom, rm);
         return pl;
     }
-    
+
     private void initPl(int oom, RoundingMode rm) {
         pl = new V3D_Plane(offset, p, q, r, oom, rm);
     }
 
     /**
-     * @param pt The normal will point to this side of the plane. 
+     * @param pt The normal will point to this side of the plane.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@link pl} accurate to at least the oom precision using 
+     * @return {@link pl} accurate to at least the oom precision using
      * RoundingMode rm.
      */
     public final V3D_Plane getPl(V3D_Point pt, int oom, RoundingMode rm) {
@@ -385,7 +385,6 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         pl = new V3D_Plane(pt, offset, p, q, r, oom, rm);
     }
 
-    
     /**
      * @return A new point based on {@link #p} and {@link #offset}.
      */
@@ -1677,9 +1676,9 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public String toString(String pad) {
         String r = pad + this.getClass().getSimpleName() + "(\n";
         if (pl != null) {
-            r+= pad + " pl=(" + pl.toString(pad + " ") + "),\n";
+            r += pad + " pl=(" + pl.toString(pad + " ") + "),\n";
         }
-        r+= pad + " offset=(" + this.offset.toString(pad + " ") + "),\n"
+        r += pad + " offset=(" + this.offset.toString(pad + " ") + "),\n"
                 + pad + " p=(" + this.p.toString(pad + " ") + "),\n"
                 + pad + " q=(" + this.q.toString(pad + " ") + "),\n"
                 + pad + " r=(" + this.r.toString(pad + " ") + "))";
@@ -1693,9 +1692,9 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     public String toStringSimple(String pad) {
         String r = pad + this.getClass().getSimpleName() + "(\n";
         if (pl != null) {
-            r+= pad + " pl=(" + pl.toStringSimple(pad + " ") + "),\n";
+            r += pad + " pl=(" + pl.toStringSimple(pad + " ") + "),\n";
         }
-        r+= pad + " offset=(" + this.offset.toStringSimple("") + "),\n"
+        r += pad + " offset=(" + this.offset.toStringSimple("") + "),\n"
                 + pad + " p=(" + this.p.toStringSimple("") + "),\n"
                 + pad + " q=(" + this.q.toStringSimple("") + "),\n"
                 + pad + " r=(" + this.r.toStringSimple("") + "))";
@@ -2152,7 +2151,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * For getting the point opposite a side of a triangle given the side.
      *
      * @param l a line segment either equal to one of the edges of this - null
-     * null null null null null null null null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
+     * null null null null null null null null null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
      * {@link #getQR(int, java.math.RoundingMode)} or
      * {@link #getRP(int, java.math.RoundingMode)}.
      * @param oom The Order of Magnitude for the precision.
