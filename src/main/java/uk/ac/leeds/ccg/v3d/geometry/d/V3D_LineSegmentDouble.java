@@ -557,7 +557,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                         return tp;
                     } else {
                         // Cases: 9, 20
-                        return V3D_LineSegmentDouble.getGeometry(lp, tp);
+                        return V3D_LineSegmentDouble.getGeometry(lp, tp, epsilon);
                     }
                 } else {
                     // Cases: 1, 2, 8, 21, 27, 28
@@ -570,7 +570,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                             return lp;
                         }
                         // Cases: 2, 27
-                        return V3D_LineSegmentDouble.getGeometry(lp, tq);
+                        return V3D_LineSegmentDouble.getGeometry(lp, tq, epsilon);
                     }
                 }
             }
@@ -587,7 +587,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                             return this;
                         } else {
                             // Case: 23
-                            return V3D_LineSegmentDouble.getGeometry(lq, tp);
+                            return V3D_LineSegmentDouble.getGeometry(lq, tp, epsilon);
                         }
                     } else {
                         // Cases: 6, 7, 22, 
@@ -596,7 +596,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                             return tp;
                         } else {
                             // Case: 6
-                            return V3D_LineSegmentDouble.getGeometry(tp, lq);
+                            return V3D_LineSegmentDouble.getGeometry(tp, lq, epsilon);
                         }
                     }
                 } else {
@@ -609,7 +609,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                     } else {
                         // Case: 13
                         //return new V3D_LineSegment(e, l.qv, ls.l.qv);
-                        return V3D_LineSegmentDouble.getGeometry(tq, lq);
+                        return V3D_LineSegmentDouble.getGeometry(tq, lq, epsilon);
                     }
 //                    } else {
 //                        // Cases:                    
@@ -774,11 +774,13 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      *
      * @param p A point.
      * @param q Another possibly equal point.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
      */
     public static V3D_FiniteGeometryDouble getGeometry(V3D_PointDouble p,
-            V3D_PointDouble q) {
-        if (p.equals(q)) {
+            V3D_PointDouble q, double epsilon) {
+        if (p.equals(q, epsilon)) {
             return p;
         } else {
             return new V3D_LineSegmentDouble(p, q);
@@ -849,14 +851,14 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
         } else if (length == 1) {
             return pts[0];
         } else if (length == 2) {
-            return getGeometry(pts[0], pts[1]);
+            return getGeometry(pts[0], pts[1], epsilon);
         } else if (length == 3) {
             return getGeometry(pts[0], pts[1], pts[2], epsilon);
         } else {
             V3D_FiniteGeometryDouble g = getGeometry(epsilon, pts[0], pts[1], pts[2]);
             for (int i = 3; i < length; i++) {
                 if (g instanceof V3D_PointDouble gp) {
-                    g = getGeometry(gp, pts[i]);
+                    g = getGeometry(gp, pts[i], epsilon);
                 } else {
                     g = getGeometry((V3D_LineSegmentDouble) g, pts[i], epsilon);
                 }
@@ -1119,10 +1121,10 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
             }
         } else if (i instanceof V3D_PointDouble ip) {
             if (pl.isOnSameSide(tp, pt)) {
-                return V3D_LineSegmentDouble.getGeometry(ip, tp);
+                return V3D_LineSegmentDouble.getGeometry(ip, tp, epsilon);
             } else {
                 V3D_PointDouble tq = this.getQ();
-                return V3D_LineSegmentDouble.getGeometry(ip, tq);
+                return V3D_LineSegmentDouble.getGeometry(ip, tq, epsilon);
             }
         } else {
             return this;

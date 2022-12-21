@@ -473,11 +473,11 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
                 if (isAligned(lsq)) {
                     return ls;
                 } else {
-                    return V3D_LineSegmentDouble.getGeometry(rp, lsp);
+                    return V3D_LineSegmentDouble.getGeometry(rp, lsp, epsilon);
                 }
             } else {
                 if (isAligned(lsq)) {
-                    return V3D_LineSegmentDouble.getGeometry(rp, lsq);
+                    return V3D_LineSegmentDouble.getGeometry(rp, lsq, epsilon);
                 } else {
                     if (isIntersectedBy(lsp, epsilon)) {
                         return lsp;

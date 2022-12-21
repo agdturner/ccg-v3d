@@ -680,11 +680,11 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             if (r.isAligned(lsq)) {
                 return ls;
             } else {
-                return V3D_LineSegmentDouble.getGeometry(r.l.getP(), lsp);
+                return V3D_LineSegmentDouble.getGeometry(r.l.getP(), lsp, epsilon);
             }
         } else {
             if (r.isAligned(lsq)) {
-                return V3D_LineSegmentDouble.getGeometry(r.l.getP(), lsq);
+                return V3D_LineSegmentDouble.getGeometry(r.l.getP(), lsq, epsilon);
             } else {
                 throw new RuntimeException("Exception in triangle-linesegment intersection.");
             }
@@ -722,9 +722,9 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                 V3D_PlaneDouble lippl = ls.getPPL();
                 V3D_PointDouble lp = l.getP();
                 if (lippl.isOnSameSide(lp, lsq)) {
-                    return V3D_LineSegmentDouble.getGeometry(lsp, lp);
+                    return V3D_LineSegmentDouble.getGeometry(lsp, lp, epsilon);
                 } else {
-                    return V3D_LineSegmentDouble.getGeometry(lsp, l.getQ());
+                    return V3D_LineSegmentDouble.getGeometry(lsp, l.getQ(), epsilon);
                 }
             }
         } else {
@@ -732,9 +732,9 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                 V3D_PlaneDouble liqpl = ls.getQPL();
                 V3D_PointDouble lp = l.getP();
                 if (liqpl.isOnSameSide(lp, lsp)) {
-                    return V3D_LineSegmentDouble.getGeometry(lsq, lp);
+                    return V3D_LineSegmentDouble.getGeometry(lsq, lp, epsilon);
                 } else {
-                    return V3D_LineSegmentDouble.getGeometry(lsq, l.getQ());
+                    return V3D_LineSegmentDouble.getGeometry(lsq, l.getQ(), epsilon);
                 }
             } else {
                 return l;
@@ -764,7 +764,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             if (liqr == null) {
                 if (lirp instanceof V3D_PointDouble lirpp) {
                     if (ptpl.isOnSameSide(lirpp, opt)) {
-                        return V3D_LineSegmentDouble.getGeometry(pt, lirpp);
+                        return V3D_LineSegmentDouble.getGeometry(pt, lirpp, epsilon);
                     } else {
                         return lirpp;
                     }
@@ -775,7 +775,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                 if (lirp == null) {
                     if (liqr instanceof V3D_PointDouble liqrp) {
                         if (ptpl.isOnSameSide(liqrp, opt)) {
-                            return V3D_LineSegmentDouble.getGeometry(pt, liqrp);
+                            return V3D_LineSegmentDouble.getGeometry(pt, liqrp, epsilon);
                         } else {
                             return liqrp;
                         }
@@ -794,13 +794,13 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                     if (ptpl.isOnSameSide(lirpp, opt)) {
                         if (ptpl.isOnSameSide(liqrp, opt)) {
                             //return getGeometry(pt, lirpp, liqrp);
-                            return V3D_LineSegmentDouble.getGeometry(lirpp, liqrp);
+                            return V3D_LineSegmentDouble.getGeometry(lirpp, liqrp, epsilon);
                         } else {
-                            return V3D_LineSegmentDouble.getGeometry(pt, lirpp);
+                            return V3D_LineSegmentDouble.getGeometry(pt, lirpp, epsilon);
                         }
                     } else {
                         if (ptpl.isOnSameSide(liqrp, opt)) {
-                            return V3D_LineSegmentDouble.getGeometry(pt, liqrp);
+                            return V3D_LineSegmentDouble.getGeometry(pt, liqrp, epsilon);
                         } else {
                             return pt;
                         }
@@ -815,7 +815,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                     if (lirp == null) {
                         V3D_PointDouble lipqp = (V3D_PointDouble) lipq;
                         if (ptpl.isOnSameSide(lipqp, opt)) {
-                            return V3D_LineSegmentDouble.getGeometry(pt, lipqp);
+                            return V3D_LineSegmentDouble.getGeometry(pt, lipqp, epsilon);
                         } else {
                             return pt;
                         }
@@ -829,11 +829,11 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                             if (ptpl.isOnSameSide(lirpp, opt)) {
                                 return getGeometry(pt, lirpp, lipqp, epsilon);
                             } else {
-                                return V3D_LineSegmentDouble.getGeometry(pt, lipqp);
+                                return V3D_LineSegmentDouble.getGeometry(pt, lipqp, epsilon);
                             }
                         } else {
                             if (ptpl.isOnSameSide(lirpp, opt)) {
-                                return V3D_LineSegmentDouble.getGeometry(pt, lirpp);
+                                return V3D_LineSegmentDouble.getGeometry(pt, lirpp, epsilon);
                             } else {
                                 return pt;
                             }
@@ -850,11 +850,11 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                             if (ptpl.isOnSameSide(liqrp, opt)) {
                                 return getGeometry(pt, liqrp, lipqp, epsilon);
                             } else {
-                                return V3D_LineSegmentDouble.getGeometry(pt, lipqp);
+                                return V3D_LineSegmentDouble.getGeometry(pt, lipqp, epsilon);
                             }
                         } else {
                             if (ptpl.isOnSameSide(liqrp, opt)) {
-                                return V3D_LineSegmentDouble.getGeometry(pt, liqrp);
+                                return V3D_LineSegmentDouble.getGeometry(pt, liqrp, epsilon);
                             } else {
                                 return pt;
                             }
@@ -877,7 +877,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                                 if (ptpl.isOnSameSide(lirpp, opt)) {
                                     return getGeometry(pt, lirpp, lipqp, epsilon);
                                 } else {
-                                    return V3D_LineSegmentDouble.getGeometry(pt, lipqp);
+                                    return V3D_LineSegmentDouble.getGeometry(pt, lipqp, epsilon);
                                 }
                             }
                         } else {
@@ -885,11 +885,11 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                                 if (ptpl.isOnSameSide(lirpp, opt)) {
                                     return getGeometry(pt, liqrp, lirpp, epsilon);
                                 } else {
-                                    return V3D_LineSegmentDouble.getGeometry(pt, liqrp);
+                                    return V3D_LineSegmentDouble.getGeometry(pt, liqrp, epsilon);
                                 }
                             } else {
                                 if (ptpl.isOnSameSide(lirpp, opt)) {
-                                    return V3D_LineSegmentDouble.getGeometry(pt, lirpp);
+                                    return V3D_LineSegmentDouble.getGeometry(pt, lirpp, epsilon);
                                 } else {
                                     return pt;
                                 }
@@ -939,7 +939,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                     } else {
                         if (gRP instanceof V3D_PointDouble gRPp) {
                             return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) gQR,
-                                    gRPp);
+                                    gRPp, epsilon);
                         } else {
                             return V3D_TriangleDouble.getGeometry((V3D_LineSegmentDouble) gRP,
                                     (V3D_PointDouble) gQR, epsilon);
@@ -958,11 +958,11 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                         return gRP;
                     } else {
                         return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) gPQ,
-                                (V3D_PointDouble) gRP);
+                                (V3D_PointDouble) gRP, epsilon);
                     }
                 } else {
                     if (gQR instanceof V3D_PointDouble gQRp) {
-                        return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) gPQ, gQRp);
+                        return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) gPQ, gQRp, epsilon);
                     } else {
                         return gQR;
                     }
@@ -1125,7 +1125,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                                 }
                             }
                         } else {
-                            //return null;
+//                            return null;
                             V3D_FiniteGeometryDouble pqplil = getPQPl(epsilon).getIntersection(l, epsilon);
                             V3D_FiniteGeometryDouble qrplil = getQRPl(epsilon).getIntersection(l, epsilon);
                             V3D_FiniteGeometryDouble rpplil = getRPPl(epsilon).getIntersection(l, epsilon);
@@ -1237,7 +1237,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                                 return gqr;
                             } else if (grp instanceof V3D_PointDouble grpp) {
                                 return V3D_LineSegmentDouble.getGeometry(
-                                        gqrp, grpp);
+                                        gqrp, grpp, epsilon);
                             } else {
                                 V3D_LineSegmentDouble ls = (V3D_LineSegmentDouble) grp;
                                 return getGeometry(gqrp, ls.getP(),
@@ -1261,7 +1261,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                                 return gpq;
                             } else if (grp instanceof V3D_PointDouble grpp) {
                                 return V3D_LineSegmentDouble.getGeometry(
-                                        gpqp, grpp);
+                                        gpqp, grpp, epsilon);
                             } else {
                                 V3D_LineSegmentDouble ls = (V3D_LineSegmentDouble) grp;
                                 return getGeometry(gpqp, ls.getP(),
@@ -1511,13 +1511,13 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     public static V3D_FiniteGeometryDouble getGeometry(V3D_PointDouble p,
             V3D_PointDouble q, V3D_PointDouble r, double epsilon) {
         if (p.equals(q)) {
-            return V3D_LineSegmentDouble.getGeometry(p, r);
+            return V3D_LineSegmentDouble.getGeometry(p, r, epsilon);
         } else {
             if (q.equals(r)) {
-                return V3D_LineSegmentDouble.getGeometry(q, p);
+                return V3D_LineSegmentDouble.getGeometry(q, p, epsilon);
             } else {
                 if (r.equals(p)) {
-                    return V3D_LineSegmentDouble.getGeometry(r, q);
+                    return V3D_LineSegmentDouble.getGeometry(r, q, epsilon);
                 } else {
                     if (V3D_LineDouble.isCollinear(epsilon, p, q, r)) {
                         V3D_LineSegmentDouble pq = new V3D_LineSegmentDouble(p, q);
