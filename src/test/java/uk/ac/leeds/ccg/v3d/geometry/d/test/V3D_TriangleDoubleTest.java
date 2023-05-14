@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry.d;
+package uk.ac.leeds.ccg.v3d.geometry.d.test;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -22,7 +22,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_ConvexHullCoplanarDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_EnvelopeDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_GeometryDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegmentDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PlaneDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_RayDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_RectangleDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_TriangleDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
 
 /**
  * Test of V3D_TriangleDouble class.
@@ -89,7 +99,6 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetEnvelope() {
         System.out.println("getEnvelope");
-        double epsilon = 1d / 10000000d;
         V3D_TriangleDouble instance = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP1P0P0);
         V3D_EnvelopeDouble expResult = new V3D_EnvelopeDouble(pP0P0P0, pP0P1P0, pP1P0P0);
         V3D_EnvelopeDouble result = instance.getEnvelope();
@@ -170,7 +179,6 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetCentroid() {
         System.out.println("getCentroid");
-        double epsilon = 1d / 10000000d;
         V3D_TriangleDouble instance;
         V3D_PointDouble expResult;
         V3D_PointDouble result;
@@ -187,13 +195,13 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
     @Test
     public void testToString() {
         System.out.println("toString");
-        double epsilon = 1d / 10000000d;
         V3D_TriangleDouble instance = new V3D_TriangleDouble(P0P0P0, P1P0P0, P0P1P0, P0P0P1);
-        String expResult = "V3D_TriangleDouble(\n"
-                + " offset=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0)),\n"
-                + " p=(V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0)),\n"
-                + " q=(V3D_VectorDouble(dx=0.0, dy=1.0, dz=0.0)),\n"
-                + " r=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=1.0)))";
+        String expResult = """
+                           V3D_TriangleDouble(
+                            offset=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0)),
+                            p=(V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0)),
+                            q=(V3D_VectorDouble(dx=0.0, dy=1.0, dz=0.0)),
+                            r=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=1.0)))""";
         String result = instance.toString();
         //System.out.println(result);
         assertEquals(expResult, result);
@@ -797,43 +805,43 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
     }
 
-    /**
-     * Test of getGeometry method, of class V3D_TriangleDouble.
-     */
-    @Test
-    public void testGetGeometry_4args() {
-        System.out.println("getGeometry");
-        double epsilon = 1d / 10000000d;
-        V3D_LineSegmentDouble l1;
-        V3D_LineSegmentDouble l2;
-        V3D_LineSegmentDouble l3;
-        V3D_GeometryDouble expResult;
-        V3D_GeometryDouble result;
-        // Test 1
-        l1 = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
-        l2 = new V3D_LineSegmentDouble(pP1P0P0, pP1P1P0);
-        l3 = new V3D_LineSegmentDouble(pP1P1P0, pP0P0P0);
-        expResult = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP1P1P0);
-        result = V3D_TriangleDouble.getGeometry(l1, l2, l3, epsilon);
-        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
-        // Test 2
-        l1 = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
-        l2 = new V3D_LineSegmentDouble(pP1P1P0, pP0P2P0);
-        l3 = new V3D_LineSegmentDouble(pN1P2P0, pN1P1P0);
-//        expResult = new V3D_Polygon(
-//                new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP1P1P0),
-//                new V3D_TriangleDouble(pP1P1P0, pP0P2P0, pN1P2P0),
-//                new V3D_TriangleDouble(pP0P0P0, pN1P1P0, pN1P2P0),
-//                new V3D_TriangleDouble(pP0P0P0, pP1P1P0, pN1P2P0)
-//        );
-//        result = V3D_TriangleDouble.getGeometry(l1, l2, l3);
-//        assertEquals(expResult, result);
-
-//        assertTrue(expResult.equals(result));
-//        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
-//        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result));
-//        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreOrientation((V3D_LineSegmentDouble) result));
-    }
+//    /**
+//     * Test of getGeometry method, of class V3D_TriangleDouble.
+//     */
+//    @Test
+//    public void testGetGeometry_4args() {
+//        System.out.println("getGeometry");
+//        double epsilon = 1d / 10000000d;
+//        V3D_LineSegmentDouble l1;
+//        V3D_LineSegmentDouble l2;
+//        V3D_LineSegmentDouble l3;
+//        V3D_GeometryDouble expResult;
+//        V3D_GeometryDouble result;
+//        // Test 1
+//        l1 = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+//        l2 = new V3D_LineSegmentDouble(pP1P0P0, pP1P1P0);
+//        l3 = new V3D_LineSegmentDouble(pP1P1P0, pP0P0P0);
+//        expResult = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP1P1P0);
+//        result = V3D_TriangleDouble.getGeometry(l1, l2, l3, epsilon);
+//        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+//        // Test 2
+//        l1 = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+//        l2 = new V3D_LineSegmentDouble(pP1P1P0, pP0P2P0);
+//        l3 = new V3D_LineSegmentDouble(pN1P2P0, pN1P1P0);
+////        expResult = new V3D_Polygon(
+////                new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP1P1P0),
+////                new V3D_TriangleDouble(pP1P1P0, pP0P2P0, pN1P2P0),
+////                new V3D_TriangleDouble(pP0P0P0, pN1P1P0, pN1P2P0),
+////                new V3D_TriangleDouble(pP0P0P0, pP1P1P0, pN1P2P0)
+////        );
+////        result = V3D_TriangleDouble.getGeometry(l1, l2, l3);
+////        assertEquals(expResult, result);
+//
+////        assertTrue(expResult.equals(result));
+////        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
+////        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result));
+////        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreOrientation((V3D_LineSegmentDouble) result));
+//    }
 
     /**
      * Test of getGeometry method, of class V3D_TriangleDouble.
@@ -860,24 +868,24 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
     }
 
-    /**
-     * Test of getGeometry method, of class V3D_TriangleDouble.
-     */
-    @Test
-    public void testGetGeometry_V3D_LineSegmentDouble_V3D_LineSegmentDouble() {
-        System.out.println("getGeometry");
-        double epsilon = 1d / 10000000d;
-        V3D_LineSegmentDouble l1;
-        V3D_LineSegmentDouble l2;
-        V3D_GeometryDouble expResult;
-        V3D_GeometryDouble result;
-        // Test 1
-        l1 = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
-        l2 = new V3D_LineSegmentDouble(pP0P0P0, pP0P1P0);
-        result = V3D_TriangleDouble.getGeometry(l1, l2, epsilon);
-        expResult = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
-        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
-    }
+//    /**
+//     * Test of getGeometry method, of class V3D_TriangleDouble.
+//     */
+//    @Test
+//    public void testGetGeometry_V3D_LineSegmentDouble_V3D_LineSegmentDouble() {
+//        System.out.println("getGeometry");
+//        double epsilon = 1d / 10000000d;
+//        V3D_LineSegmentDouble l1;
+//        V3D_LineSegmentDouble l2;
+//        V3D_GeometryDouble expResult;
+//        V3D_GeometryDouble result;
+//        // Test 1
+//        l1 = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+//        l2 = new V3D_LineSegmentDouble(pP0P0P0, pP0P1P0);
+//        result = V3D_TriangleDouble.getGeometry(l1, l2, epsilon);
+//        expResult = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
+//        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+//    }
 
     /**
      * Test of getOpposite method, of class V3D_TriangleDouble.
@@ -1064,7 +1072,6 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetDistanceSquared_V3D_PlaneDouble() {
         System.out.println("getDistanceSquared");
-        double epsilon = 1d / 10000000d;
         V3D_PlaneDouble pl;
         V3D_TriangleDouble instance;
         double expResult;

@@ -14,5 +14,11 @@ That way multiple projects can share the same settings (useful for formatting ru
 Any value defined here will override the pom.xml file value but is only applicable to the current project.
 -->
         <netbeans.hint.license>apache20</netbeans.hint.license>
+        <netbeans.compile.on.save>all</netbeans.compile.on.save>
     </properties>
+    <config-data xmlns="http://www.netbeans.org/ns/maven-config-data/1">
+        <configurations>
+            <configuration id="build run no test" profiles=""/>
+        </configurations>
+    </config-data>
 </project-shared-configuration>

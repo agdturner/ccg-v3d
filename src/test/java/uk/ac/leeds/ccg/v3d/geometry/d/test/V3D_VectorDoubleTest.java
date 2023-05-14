@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry.d;
+package uk.ac.leeds.ccg.v3d.geometry.d.test;
 
-import uk.ac.leeds.ccg.v3d.geometry.*;
-import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
 
 /**
  * Test of V3D_VectorDouble class.
@@ -396,7 +395,6 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
     @Test
     public void testIsZeroVector() {
         System.out.println("isZeroVector");
-        int oom = -1;
         V3D_VectorDouble instance = new V3D_VectorDouble(0, 0, 0);
         assertTrue(instance.isZero());
         // Test 2

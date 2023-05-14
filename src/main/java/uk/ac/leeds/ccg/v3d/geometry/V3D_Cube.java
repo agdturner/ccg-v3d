@@ -20,5 +20,9 @@ package uk.ac.leeds.ccg.v3d.geometry;
  * @author Andy Turner
  */
 public class V3D_Cube extends V3D_Parallelepiped {
+
+    private static final long serialVersionUID = 1L;
+    
+    public V3D_Cube(){}
     
 }

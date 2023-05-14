@@ -174,7 +174,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @param p The plane used to create this.
      */
     public V3D_PlaneDouble(V3D_PlaneDouble p) {
-        super(p.offset);
+        super(new V3D_VectorDouble(p.offset));
         this.p = new V3D_VectorDouble(p.p);
         this.n = new V3D_VectorDouble(p.n);
     }
@@ -182,13 +182,13 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
     /**
      * Create a new instance.
      *
-     * @param p Used to initialise {@link #p}.
+     * @param p Used to initialise {@link #offset} and {@link #p}.
      * @param n What {@link #n} is set to.
      */
     public V3D_PlaneDouble(V3D_PointDouble p, V3D_VectorDouble n) {
-        super(p.offset);
-        this.p = p.rel;
-        this.n = n;
+        super(new V3D_VectorDouble(p.offset));
+        this.p = new V3D_VectorDouble(p.rel);
+        this.n = new V3D_VectorDouble(n);
     }
 
     /**
@@ -199,8 +199,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * vector of the line of l.
      */
     public V3D_PlaneDouble(V3D_LineSegmentDouble l, V3D_VectorDouble inplane) {
-        super(l.offset);
-        this.p = l.getP().rel;
+        super(new V3D_VectorDouble(l.offset));
+        this.p = new V3D_VectorDouble(l.getP().rel);
         this.n = l.l.v.getCrossProduct(inplane);
     }
 
@@ -215,11 +215,13 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      */
     public V3D_PlaneDouble(V3D_PointDouble p, V3D_PointDouble q,
             V3D_PointDouble r) {
-        super(p.offset);
+        //super(p.offset);
+        super(new V3D_VectorDouble(p.offset));
         V3D_VectorDouble qv = q.getVector();
         V3D_VectorDouble pq = qv.subtract(p.getVector());
         V3D_VectorDouble qr = r.getVector().subtract(qv);
-        this.p = p.rel;
+        //this.p = p.rel;
+        this.p = new V3D_VectorDouble(p.rel);
         this.n = pq.getCrossProduct(qr);
     }
 
@@ -268,7 +270,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
     public V3D_PlaneDouble(V3D_VectorDouble ptv, V3D_VectorDouble offset,
             V3D_VectorDouble p, V3D_VectorDouble q, V3D_VectorDouble r,
             double epsilon) {
-        super(offset);
+        super(new V3D_VectorDouble(offset));
         V3D_VectorDouble pq = q.subtract(p);
         if (pq.equals(V3D_VectorDouble.ZERO)) {
             throw new RuntimeException("Cannot define plane as p equals q.");
@@ -277,7 +279,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         if (qr.equals(V3D_VectorDouble.ZERO)) {
             throw new RuntimeException("Cannot define plane as q equals r.");
         }
-        this.p = p;
+        //this.p = p;
+        this.p = new V3D_VectorDouble(p);
         this.n = pq.getCrossProduct(qr);
         if (n.isZero()) {
 //            if (pq.isReverse(qr, epsilon)) {
@@ -568,7 +571,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
          * <li>[3] is d</li>
          * </ul>
          */
-        double[] coeffs;
+        public double[] coeffs;
 
         /**
          * Create a new instance.
@@ -581,6 +584,14 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             coeffs[1] = n.dy;
             coeffs[2] = n.dz;
             coeffs[3] = -k;
+        }
+        
+        @Override
+        public String toString() {
+            return "(" + coeffs[0] + " * x)"
+                    + " + (" + coeffs[1] + " * x)"
+                    + " + (" + coeffs[2] + " * x)"
+                    + " + " + coeffs[3];
         }
     }
 

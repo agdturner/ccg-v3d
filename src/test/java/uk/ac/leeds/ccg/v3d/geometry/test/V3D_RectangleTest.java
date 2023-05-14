@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.test;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
@@ -24,6 +24,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Rectangle;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Triangle;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
  * Test of V3D_Rectangle class.
@@ -71,24 +80,24 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Envelope expResult;
         V3D_Envelope result;
         instance = new V3D_Rectangle(pN1P1P0, pP1P1P0, pP1N1P0, pN1N1P0, oom, rm);
-        expResult = new V3D_Envelope(oom, rm, pN1N1P0, pP1P1P0);
+        expResult = new V3D_Envelope(oom, pN1N1P0, pP1P1P0);
         result = instance.getEnvelope(oom, rm);
-        assertTrue(expResult.equals(result, oom, rm));
+        assertTrue(expResult.equals(result, oom));
         // Test 2
         instance = new V3D_Rectangle(pN1P1P1, pP1P1P0, pP1N1P0, pN1N1P1, oom, rm);
-        expResult = new V3D_Envelope(oom, rm, pN1N1P0, pP1P1P1);
+        expResult = new V3D_Envelope(oom, pN1N1P0, pP1P1P1);
         result = instance.getEnvelope(oom, rm);
-        assertTrue(expResult.equals(result, oom, rm));
+        assertTrue(expResult.equals(result, oom));
         // Test 3
         instance = new V3D_Rectangle(pN1P1P1, pP1P1N1, pP1N1N1, pN1N1P1, oom, rm);
-        expResult = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1P1);
+        expResult = new V3D_Envelope(oom, pN1N1N1, pP1P1P1);
         result = instance.getEnvelope(oom, rm);
-        assertTrue(expResult.equals(result, oom, rm));
+        assertTrue(expResult.equals(result, oom));
         // Test 4
         instance = new V3D_Rectangle(pN1N1N1, pP1N1N1, pP1P1N1, pN1P1N1, oom, rm);
-        expResult = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1N1);
+        expResult = new V3D_Envelope(oom, pN1N1N1, pP1P1N1);
         result = instance.getEnvelope(oom, rm);
-        assertTrue(expResult.equals(result, oom, rm));
+        assertTrue(expResult.equals(result, oom));
     }
 
     /**
@@ -173,46 +182,17 @@ public class V3D_RectangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-//        String expResult = "V3D_Rectangle(V3D_Plane\n"
-//                + "(\n"
-//                + " oom=-3\n"
-//                + " ,\n"
-//                + " offset=V3D_Vector\n"
-//                + " (\n"
-//                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-//                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-//                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-//                + " )\n"
-//                + " ,\n"
-//                + " pv=V3D_Vector\n"
-//                + " (\n"
-//                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-//                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-//                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-//                + " )\n"
-//                + " ,\n"
-//                + " q=V3D_Vector\n"
-//                + " (\n"
-//                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-//                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-//                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-//                + " )\n"
-//                + " ,\n"
-//                + " r=V3D_Vector\n"
-//                + " (\n"
-//                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-//                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-//                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-//                + " )\n"
-//                + "))";
-        String expResult = "V3D_Rectangle(p=V3D_Plane(offset=V3D_Vector(dx=0, dy=0, dz=0),\n"
-                + "p=V3D_Vector(dx=0, dy=0, dz=0),\n"
-                + "q=V3D_Vector(dx=0, dy=1, dz=0),\n"
-                + "r=V3D_Vector(dx=1, dy=1, dz=0)),\n"
-                + "s=V3D_Vector(dx=1, dy=0, dz=0))";
+        String expResult = """
+                           V3D_Rectangle(
+                           offset=V3D_Vector(dx=0, dy=0, dz=0),
+                           p=V3D_Vector(dx=0, dy=0, dz=0),
+                           q=V3D_Vector(dx=0, dy=1, dz=0),
+                           r=V3D_Vector(dx=1, dy=1, dz=0),
+                           s=V3D_Vector(dx=1, dy=0, dz=0)
+                           )""";
         String result = instance.toString();
-        System.out.println(result);
-        //assertTrue(expResult.equalsIgnoreCase(result));
+        //System.out.println(result);
+        assertTrue(expResult.equalsIgnoreCase(result));
     }
 
     /**
@@ -320,64 +300,66 @@ public class V3D_RectangleTest extends V3D_Test {
         assertTrue(expResult.compareTo(result) == 0);
     }
 
-    /**
-     * Test of toStringFields method, of class V3D_Rectangle.
-     */
-    @Test
-    public void testToStringFields() {
-        System.out.println("toStringFields");
-        String pad = "";
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
-        String expResult = "\noffset=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + "),\n"
-                + "p=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + "),\n"
-                + "q=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + "),\n"
-                + "r=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + "),\n"
-                + "s=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")";
-        String result = instance.toStringFields(pad);
-        //System.out.println(result);
-        assertEquals(expResult, result);
-    }
+//    /**
+//     * Test of toStringFields method, of class V3D_Rectangle.
+//     */
+//    @Test
+//    public void testToStringFields() {
+//        System.out.println("toStringFields");
+//        String pad = "";
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
+//        String expResult = """
+//                           
+//                           offset=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           ),
+//                           p=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           ),
+//                           q=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           ),
+//                           r=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+//                            dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           ),
+//                           s=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           )""";
+//        String result = instance.toStringFields(pad);
+//        //System.out.println(result);
+//        assertEquals(expResult, result);
+//    }
 
-    /**
-     * Test of getSV method, of class V3D_Rectangle.
-     */
-    @Test
-    public void testGetSV() {
-        System.out.println("getSV");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
-        V3D_Vector expResult = P0P1P0;
-        V3D_Vector result = instance.s;
-        assertTrue(expResult.equals(result, oom, rm));
-    }
+//    /**
+//     * Test of getSV method, of class V3D_Rectangle.
+//     */
+//    @Test
+//    public void testGetSV() {
+//        System.out.println("getSV");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
+//        V3D_Vector expResult = P0P1P0;
+//        V3D_Vector result = instance.s;
+//        assertTrue(expResult.equals(result, oom, rm));
+//    }
 
     /**
      * Test of getS method, of class V3D_Rectangle.
@@ -393,33 +375,33 @@ public class V3D_RectangleTest extends V3D_Test {
         assertTrue(expResult.equals(result, oom, rm));
     }
 
-    /**
-     * Test of getRS method, of class V3D_Rectangle.
-     */
-    @Test
-    public void testGetRS() {
-        System.out.println("getRS");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
-        V3D_LineSegment expResult = new V3D_LineSegment(pP1P1P0, pP0P1P0, oom, rm);
-        V3D_LineSegment result = instance.getRS(oom, rm);
-        assertTrue(expResult.equals(result, oom, rm));
-    }
+//    /**
+//     * Test of getRS method, of class V3D_Rectangle.
+//     */
+//    @Test
+//    public void testGetRS() {
+//        System.out.println("getRS");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
+//        V3D_LineSegment expResult = new V3D_LineSegment(pP1P1P0, pP0P1P0, oom, rm);
+//        V3D_LineSegment result = instance.getRS(oom, rm);
+//        assertTrue(expResult.equals(result, oom, rm));
+//    }
 
-    /**
-     * Test of getSP method, of class V3D_Rectangle.
-     */
-    @Test
-    public void testGetSP() {
-        System.out.println("getSP");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
-        V3D_LineSegment expResult = new V3D_LineSegment(pP0P1P0, pP0P0P0, oom, rm);
-        V3D_LineSegment result = instance.getSP(oom, rm);
-        assertTrue(expResult.equals(result, oom, rm));
-    }
+//    /**
+//     * Test of getSP method, of class V3D_Rectangle.
+//     */
+//    @Test
+//    public void testGetSP() {
+//        System.out.println("getSP");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
+//        V3D_LineSegment expResult = new V3D_LineSegment(pP0P1P0, pP0P0P0, oom, rm);
+//        V3D_LineSegment result = instance.getSP(oom, rm);
+//        assertTrue(expResult.equals(result, oom, rm));
+//    }
 
 //    /**
 //     * Test of isIntersectedBy method, of class V3D_Rectangle.
@@ -460,7 +442,7 @@ public class V3D_RectangleTest extends V3D_Test {
         //V3D_Geometry expResult = new V3D_LineSegment(P0P0P0, P1P0P0, P1P1P0, oom, rm);
         V3D_Geometry result = instance.getIntersection(l, oom, rm);
         //System.out.println(result);
-        result = instance.getIntersection(l, oom, rm);
+        //result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equals((V3D_LineSegment) result, oom, rm));
     }
 

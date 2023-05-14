@@ -1,7 +1,6 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,18 +47,18 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
+    public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = tetrahedrons.stream().findAny().get().getEnvelope(oom, rm);
+            en = tetrahedrons.stream().findAny().get().getEnvelope(oom);
             tetrahedrons.forEach((V3D_Tetrahedron t) -> {
-                en = en.union(t.getEnvelope(oom, rm), oom, rm);
+                en = en.union(t.getEnvelope(oom), oom);
             });
         }
         return en;
     }
 
     @Override
-    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
+    public V3D_Point[] getPoints() {
         int np = tetrahedrons.size() * 4;
         V3D_Point[] r = new V3D_Point[np];
         int i = 0;
@@ -126,6 +125,11 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
             rls[0] = tetrahedrons.get(i).rotate(axis, theta, oom, rm);
         }
         return new V3D_Tetrahedrons(rls);
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

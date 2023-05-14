@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.test;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +26,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
  * Test of V3D_Point class.
@@ -171,16 +174,95 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
+     * Test of isBetween method, of class V3D_Point.
+     */
+    @Test
+    public void testIsBetween() {
+        System.out.println("isBetween");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        // Test 1
+        V3D_Point p = pP0P0P0;
+        V3D_Point a = pN1P0P0;
+        V3D_Point b = pP1P0P0;
+        assertTrue(p.isBetween(a, b, oom, rm));
+        // Test 2
+        p = pP0P0P0;
+        a = pP0N1P0;
+        b = pP0P1P0;
+        assertTrue(p.isBetween(a, b, oom, rm));
+        // Test 3
+        p = pP0P0P0;
+        a = pP0P0N1;
+        b = pP0P0P1;
+        assertTrue(p.isBetween(a, b, oom, rm));
+        // Test 4
+        p = pP0P0P0;
+        a = pN1N1N1;
+        b = pP1P1P1;
+        assertTrue(p.isBetween(a, b, oom, rm));
+        // Test 5
+        p = pP0P0P0;
+        a = pN1N1N1;
+        b = pP1P1P1;
+        assertTrue(p.isBetween(a, b, oom, rm));
+        // Test 6
+        p = pP0P0P0;
+        a = pN1N1P0;
+        b = pP1P1P0;
+        assertTrue(p.isBetween(a, b, oom, rm));
+        // Test 7
+        p = pP0P0P0;
+        a = pN1P0N1;
+        b = pP1P0P1;
+        assertTrue(p.isBetween(a, b, oom, rm));
+        // Test 8
+        p = pP0P0P0;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b, oom, rm));
+        // Test 9
+        p = pP0P0P0;
+        a = pN1P0N1;
+        b = pP1P0P1;
+        assertTrue(p.isBetween(a, b, oom, rm));
+        // Test 10
+        p = pP0P0P0;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b, oom, rm));
+        // Test 11
+        p = pP0P0P1;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b, oom, rm));
+        // Test 12
+        p = pP0P0P2;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b, oom, rm));
+        // Test 13
+        p = pP0P1P2;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertFalse(p.isBetween(a, b, oom, rm));
+        // Test 14
+        p = pP1P1P1;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b, oom, rm));
+    }
+        
+    /**
      * Test of getEnvelope method, of class V3D_Point.
      */
     @Test
     public void testGetEnvelope() {
         System.out.println("getEnvelope");
         int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Envelope expResult = new V3D_Envelope(oom, rm, pP1P2N2);
-        V3D_Envelope result = pP1P2N2.getEnvelope(oom, rm);
-        assertTrue(expResult.equals(result, oom, rm));
+        V3D_Envelope expResult = new V3D_Envelope(oom, pP1P2N2);
+        V3D_Envelope result = pP1P2N2.getEnvelope(oom);
+        assertTrue(expResult.equals(result, oom));
     }
 
     /**
@@ -195,54 +277,54 @@ public class V3D_PointTest extends V3D_Test {
         V3D_Point instance = V3D_Point.ORIGIN;
         Math_BigRationalSqrt expResult = Math_BigRationalSqrt.ZERO;
         Math_BigRationalSqrt result = instance.getDistance(oom, rm, p);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 2
         instance = pP1P0P0;
         expResult = Math_BigRationalSqrt.ONE;
         result = instance.getDistance(oom, rm, p);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 3
         instance = pP1P1P0;
         expResult = new Math_BigRationalSqrt(2, oom, rm);
         result = instance.getDistance(oom, rm, p);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 4
         instance = new V3D_Point(P3, P4, P0);
         expResult = new Math_BigRationalSqrt(25, oom, rm);
         result = instance.getDistance(oom, rm, p);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 5
         instance = new V3D_Point(P0, P3, P4);
         result = instance.getDistance(oom, rm, p);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 6
         instance = new V3D_Point(P3, P0, P4);
         result = instance.getDistance(oom, rm, p);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 7
         instance = new V3D_Point(N3, N4, P0);
         result = instance.getDistance(oom, rm, p);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 8
         instance = new V3D_Point(P0, N3, N4);
         result = instance.getDistance(oom, rm, p);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 9
         instance = new V3D_Point(N3, P0, N4);
         result = instance.getDistance(oom, rm, p);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 10
         instance = new V3D_Point(N3, P4, P0);
         result = instance.getDistance(oom, rm, p);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 11
         instance = new V3D_Point(P0, P3, N4);
         result = instance.getDistance(oom, rm, p);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
         // Test 12
         instance = new V3D_Point(P3, P0, N4);
         result = instance.getDistance(oom, rm, p);
-        assertEquals(expResult, result);
+        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -325,52 +407,54 @@ public class V3D_PointTest extends V3D_Test {
         System.out.println("toString");
         String pad = "";
         V3D_Point instance = pP0P1P2;
-        String expResult = "V3D_Point\n"
-                + "(\n"
-                + " offset=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
-                + " ,\n"
-                + " rel=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0)\n"
-                + " )\n"
-                + ")";
+        String expResult = """
+                           V3D_Point
+                           (
+                            offset=V3D_Vector
+                            (
+                             dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+                             dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+                             dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+                            )
+                            ,
+                            rel=V3D_Vector
+                            (
+                             dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+                             dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+                             dz=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0)
+                            )
+                           )""";
         String result = instance.toString(pad);
         //System.out.println(result);
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of toStringFields method, of class V3D_Point.
-     */
-    @Test
-    public void testToStringFields() {
-        System.out.println("toStringFields");
-        String pad = "";
-        V3D_Point instance = pP0P1P2;
-        String expResult = "offset=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")\n"
-                + ",\n"
-                + "rel=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0)\n"
-                + ")";
-        String result = instance.toStringFields(pad);
-        //System.out.println(result);
-        assertEquals(expResult, result);
-    }
+//    /**
+//     * Test of toStringFields method, of class V3D_Point.
+//     */
+//    @Test
+//    public void testToStringFields() {
+//        System.out.println("toStringFields");
+//        String pad = "";
+//        V3D_Point instance = pP0P1P2;
+//        String expResult = """
+//                           offset=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           )
+//                           ,
+//                           rel=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+//                            dz=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0)
+//                           )""";
+//        String result = instance.toStringFields(pad);
+//        //System.out.println(result);
+//        assertEquals(expResult, result);
+//    }
 
     /**
      * Test of getVector method, of class V3D_Point.

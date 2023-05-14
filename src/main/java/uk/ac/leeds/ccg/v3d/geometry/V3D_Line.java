@@ -181,7 +181,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param l Used to initialise this.
      */
     public V3D_Line(V3D_Line l) {
-        super(l.offset);
+        super(new V3D_Vector(l.offset));
         this.pv = new V3D_Vector(l.pv);
         if (l.p != null) {
             this.p = new V3D_Point(l.p);

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.test;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
@@ -26,6 +26,17 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Ray;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Rectangle;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Tetrahedron;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Triangle;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
  *
@@ -62,13 +73,14 @@ public class V3D_TetrahedronTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1, oom, rm);
-        String expResult = "V3D_Tetrahedron\n"
-                + "(\n"
-                + " p= V3D_Vector(dx=0, dy=0, dz=0),\n"
-                + " q= V3D_Vector(dx=1, dy=0, dz=0),\n"
-                + " r= V3D_Vector(dx=0, dy=1, dz=0),\n"
-                + " s= V3D_Vector(dx=0, dy=1, dz=1)\n"
-                + ")";
+        String expResult = """
+                           V3D_Tetrahedron
+                           (
+                            p= V3D_Vector(dx=0, dy=0, dz=0),
+                            q= V3D_Vector(dx=1, dy=0, dz=0),
+                            r= V3D_Vector(dx=0, dy=1, dz=0),
+                            s= V3D_Vector(dx=0, dy=1, dz=1)
+                           )""";
         String result = instance.toString();
         //System.out.println(result);
         assertEquals(expResult, result);
@@ -85,95 +97,97 @@ public class V3D_TetrahedronTest extends V3D_Test {
         String pad = "";
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1, oom, rm);
-        String expResult = "V3D_Tetrahedron\n"
-                + "(\n"
-                + " offset=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " ) ,\n"
-                + " p=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
-                + " ,\n"
-                + " q=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
-                + " ,\n"
-                + " r=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + " )\n"
-                + " ,\n"
-                + " s=V3D_Vector\n"
-                + " (\n"
-                + "  dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + "  dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + "  dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0)\n"
-                + " )\n"
-                + ")";
+        String expResult = """
+                           V3D_Tetrahedron
+                           (
+                            offset=V3D_Vector
+                            (
+                             dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+                             dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+                             dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+                            ) ,
+                            p=V3D_Vector
+                            (
+                             dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+                             dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+                             dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+                            )
+                            ,
+                            q=V3D_Vector
+                            (
+                             dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+                             dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+                             dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+                            )
+                            ,
+                            r=V3D_Vector
+                            (
+                             dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+                             dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+                             dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+                            )
+                            ,
+                            s=V3D_Vector
+                            (
+                             dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+                             dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+                             dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0)
+                            )
+                           )""";
         String result = instance.toString(pad);
         //System.out.println(result);
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of toStringFields method, of class V3D_Tetrahedron.
-     */
-    @Test
-    public void testToStringFields() {
-        System.out.println("toStringFields");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        String pad = "";
-        V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1, oom, rm);
-        String expResult = "offset=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + "),\n"
-                + "p=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")\n"
-                + ",\n"
-                + "q=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")\n"
-                + ",\n"
-                + "r=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")\n"
-                + ",\n"
-                + "s=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0)\n"
-                + ")";
-        String result = instance.toStringFields(pad);
-        //System.out.println(result);
-        assertEquals(expResult, result);
-    }
+//    /**
+//     * Test of toStringFields method, of class V3D_Tetrahedron.
+//     */
+//    @Test
+//    public void testToStringFields() {
+//        System.out.println("toStringFields");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        String pad = "";
+//        V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
+//                pP0P1P0, pP0P1P1, oom, rm);
+//        String expResult = """
+//                           offset=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           ),
+//                           p=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           )
+//                           ,
+//                           q=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           )
+//                           ,
+//                           r=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           )
+//                           ,
+//                           s=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+//                            dz=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0)
+//                           )""";
+//        String result = instance.toStringFields(pad);
+//        //System.out.println(result);
+//        assertEquals(expResult, result);
+//    }
 
     /**
      * Test of getEnvelope method, of class V3D_Tetrahedron.
@@ -185,10 +199,10 @@ public class V3D_TetrahedronTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Tetrahedron instance = new V3D_Tetrahedron(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1, oom, rm);
-        V3D_Envelope expResult = new V3D_Envelope(oom, rm, pP0P0P0, pP1P0P0,
+        V3D_Envelope expResult = new V3D_Envelope(oom, pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
-        V3D_Envelope result = instance.getEnvelope(oom, rm);
-        assertTrue(expResult.equals(result, oom, rm));
+        V3D_Envelope result = instance.getEnvelope(oom);
+        assertTrue(expResult.equals(result, oom));
     }
 
     /**

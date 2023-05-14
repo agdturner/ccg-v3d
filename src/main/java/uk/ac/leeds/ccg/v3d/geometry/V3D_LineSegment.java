@@ -24,32 +24,32 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * at the point of {@link #l} and ends at the point {@link #qv}. The "*" denotes
  * a point in 3D and the line is shown with a line of "e" symbols in the
  * following depiction: {@code
-                                       z
-                          y           -
-                          +          /                * pv=<x0,y0,z0>
-                          |         /                e
-                          |        /                e
-                          |    z0-/                e
-                          |      /                e
-                          |     /               e
-                          |    /               e
-                          |   /               e
-                       y0-|  /               e
-                          | /               e
-                          |/         x1    e
- x - ---------------------|-----------/---e---/---- + x
-                         /|              e   x0
-                        / |-y1          e
-                       /  |           e
-                      /   |          e
-                  z1-/    |         e
-                    /     |        e
-                   /      |       * qv=<x1,y1,z1>
-                  /       |
-                 /        |
-                +         -
-               z          y
- }
+ * z
+ * y           -
+ * +          /                * pv=<x0,y0,z0>
+ * |         /                e
+ * |        /                e
+ * |    z0-/                e
+ * |      /                e
+ * |     /               e
+ * |    /               e
+ * |   /               e
+ * y0-|  /               e
+ * | /               e
+ * |/         x1    e
+ * x - ---------------------|-----------/---e---/---- + x
+ * /|              e   x0
+ * / |-y1          e
+ * /  |           e
+ * /   |          e
+ * z1-/    |         e
+ * /     |        e
+ * /      |       * qv=<x1,y1,z1>
+ * /       |
+ * /        |
+ * +         -
+ * z          y
+ * }
  *
  * @author Andy Turner
  * @version 1.0
@@ -212,7 +212,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
+    public V3D_Point[] getPoints() {
         V3D_Point[] r = new V3D_Point[2];
         r[0] = getP();
         r[1] = getQ();
@@ -399,9 +399,9 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code new V3D_Envelope(start, end)}
      */
     @Override
-    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
+    public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = new V3D_Envelope(oom, rm, getP(), getQ());
+            en = new V3D_Envelope(oom, getP(), getQ());
         }
         return en;
     }
@@ -413,7 +413,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if {@code this} is intersected by {@code pv}.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
-        boolean ei = getEnvelope(oom, rm).isIntersectedBy(pt.getEnvelope(oom, rm), oom, rm);
+        boolean ei = getEnvelope(oom).isIntersectedBy(pt.getEnvelope(oom), oom);
         if (ei) {
             if (l.isIntersectedBy(pt, oom, rm)) {
                 V3D_Point tp = getP();
@@ -468,7 +468,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
          */
         if (i instanceof V3D_Point v3D_Point) {
             //if (isIntersectedBy(v3D_Point, oom, rm)) {
-            if (isBetween(v3D_Point, oom, rm)) {                
+            if (isBetween(v3D_Point, oom, rm)) {
                 return v3D_Point;
             } else {
                 return null;
@@ -495,7 +495,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment ls, int oom, RoundingMode rm) {
-        if (!getEnvelope(oom, rm).isIntersectedBy(ls.getEnvelope(oom, rm), oom, rm)) {
+        if (!getEnvelope(oom).isIntersectedBy(ls.getEnvelope(oom), oom)) {
             return null;
         }
         // Get intersection of infinite lines. 
@@ -833,8 +833,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     /**
-     * If pv and qv are equal then the point is returned otherwise the line
- segment is returned
+     * If p and q are equal then the point is returned otherwise the line
+     * segment is returned
      *
      * @param p A point.
      * @param q Another possibly equal point.
@@ -852,12 +852,12 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     /**
-     * If pv, qv and r are equal then the point is returned otherwise a line
- segment is returned where all the points are on the line segment.
+     * If p, q and r are equal then the point is returned otherwise a line
+     * segment is returned where all the points are on the line segment.
      *
-     * @param p A point possibly equal to qv or r, but certainly collinear.
-     * @param q A point possibly equal to pv or r, but certainly collinear.
-     * @param r A point possibly equal to pv or qv, but certainly collinear.
+     * @param p A point possibly equal to q or r, but certainly collinear.
+     * @param q A point possibly equal to p or r, but certainly collinear.
+     * @param r A point possibly equal to p or q, but certainly collinear.
      * @param oom The Order of Magnitude for the precision of the result.
      * @param rm The RoundingMode if rounding is needed.
      * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
@@ -871,23 +871,27 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         } else if (p.equals(r, oom, rm)) {
             return getGeometry(p, q, oom, rm);
         } else {
-            V3D_LineSegment ls = new V3D_LineSegment(p, q, oom, rm);
-            if (ls.isIntersectedBy(r, oom, rm)) {
-                return ls;
+            //V3D_LineSegment ls = new V3D_LineSegment(p, q, oom, rm);
+            //if (ls.isIntersectedBy(r, oom, rm)) {
+            if (r.isBetween(p, q, oom, rm)) {
+                //return ls;
+                return new V3D_LineSegment(p, q, oom, rm);
             } else {
-                ls = new V3D_LineSegment(p, r, oom, rm);
-                if (ls.isIntersectedBy(q, oom, rm)) {
-                    return ls;
-                } else {
+                //ls = new V3D_LineSegment(p, r, oom, rm);
+                //if (ls.isIntersectedBy(q, oom, rm)) {
+                if (p.isBetween(r, q, oom, rm)) {
+                    //return ls;
                     return new V3D_LineSegment(q, r, oom, rm);
+                } else {
+                    return new V3D_LineSegment(p, r, oom, rm);
                 }
             }
         }
     }
-    
+
     /**
      * If pv, qv and r are equal then the point is returned otherwise a line
- segment is returned where all the points are on the line segment.
+     * segment is returned where all the points are on the line segment.
      *
      * @param l A line segment.
      * @param pt A point collinear with l.
@@ -902,13 +906,13 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
 
     /**
      * Get the smallest line segment intersected by all pts.
-     * 
+     *
      * @param oom The Order of Magnitude for the precision of the result.
      * @param rm The RoundingMode if rounding is needed.
      * @param pts Collinear points.
      * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
      */
-    public static V3D_FiniteGeometry getGeometry(int oom, RoundingMode rm, 
+    public static V3D_FiniteGeometry getGeometry(int oom, RoundingMode rm,
             V3D_Point... pts) {
         int length = pts.length;
         if (length == 0) {
@@ -921,7 +925,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             return getGeometry(pts[0], pts[1], pts[2], oom, rm);
         } else {
             V3D_FiniteGeometry g = getGeometry(pts[0], pts[1], pts[2], oom, rm);
-            for (int i = 3; i < length; i ++) {
+            for (int i = 3; i < length; i++) {
                 if (g instanceof V3D_Point gp) {
                     g = getGeometry(gp, pts[i], oom, rm);
                 } else {
@@ -930,8 +934,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             }
             return g;
         }
-    }    
-            
+    }
+
     /**
      * Get the line of intersection (the shortest line) between {@code this} and
      * {@code l}.
@@ -1196,4 +1200,22 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             return this;
         }
     }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
+        if (getEnvelope(oom).isIntersectedBy(aabb, oom)) {
+            if (aabb.isIntersectedBy(getP(), oom, rm)) {
+                return true;
+            } else {
+                if (aabb.isIntersectedBy(getQ(), oom, rm)) {
+                    return true;
+                } else {
+                    return aabb.isIntersectedBy(l, oom, rm);
+                }
+            }
+        } else {
+            return false;
+        }
+    }
+
 }

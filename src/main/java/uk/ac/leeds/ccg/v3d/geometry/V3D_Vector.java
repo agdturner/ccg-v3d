@@ -118,6 +118,15 @@ public class V3D_Vector implements Serializable {
 
     /**
      * Create a new instance.
+     */
+    public V3D_Vector() {
+        this.dx = Math_BigRationalSqrt.ZERO;
+        this.dy = Math_BigRationalSqrt.ZERO;
+        this.dz = Math_BigRationalSqrt.ZERO;
+    }
+
+    /**
+     * Create a new instance.
      *
      * @param v Used to initialise this. A deep copy of all components is made
      * so that {@code this} is completely independent of {@code v}.

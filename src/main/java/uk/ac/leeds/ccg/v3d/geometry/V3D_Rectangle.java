@@ -84,6 +84,10 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
     public V3D_Triangle getRSP(int oom, RoundingMode rm) {
         if (rsp == null) {
             rsp = new V3D_Triangle(offset, r, s, p, oom, rm);
+        } else {
+            if (rsp.oom > oom) {
+                rsp = new V3D_Triangle(offset, r, s, p, oom, rm);
+            }
         }
         return rsp;
     }
@@ -96,6 +100,10 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
     public V3D_Triangle getPQR(int oom, RoundingMode rm) {
         if (pqr == null) {
             pqr = new V3D_Triangle(offset, p, q, r, oom, rm);
+        } else {
+            if (pqr.oom > oom) {
+                pqr = new V3D_Triangle(offset, p, q, r, oom, rm);
+            }
         }
         return pqr;
     }
@@ -159,7 +167,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      */
     public String toStringSimple(String pad) {
         return pad + this.getClass().getSimpleName() + "("
-                + toStringFieldsSimple("") + ")";
+                + toStringFieldsSimple("") + "\n)";
     }
 
     @Override
@@ -181,14 +189,8 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
+    public V3D_Point[] getPoints() {
         V3D_Point[] re = new V3D_Point[4];
-//        pqr = getPQR(oom, rm);
-//        rsp = getRSP(oom, rm);
-//        re[0] = rsp.getP();
-//        re[1] = rsp.getQ();
-//        re[2] = rsp.getR();
-//        re[3] = rsp.getQ(); // This may look odd, but it is correct.
         re[0] = getP();
         re[1] = getQ();
         re[2] = getR();
@@ -224,12 +226,10 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
         return new V3D_Point(offset, s);
     }
 
-    @Override
     public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
             rsp = getRSP(oom, rm);
-            en = getPQR(oom, rm).getEnvelope(oom, rm)
-                    .union(getRSP(oom, rm).getEnvelope(oom, rm), oom, rm);
+            en = getPQR(oom, rm).getEnvelope(oom).union(rsp.getEnvelope(oom), oom);
         }
         return en;
     }
@@ -727,7 +727,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
     public BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
         BigRational d1 = getPQR(oom, rm).getDistanceSquared(pt, oom, rm);
         BigRational d2 = getRSP(oom, rm).getDistanceSquared(pt, oom, rm);
-        return d1.min(d2);
+        return BigRational.min(d1, d2);
     }
 
     /**
@@ -879,7 +879,8 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @return The minimum distance to {@code l}.
      */
     public BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
-        return getRSP(oom, rm).getDistanceSquared(l, oom, rm).min(
+        return BigRational.min(
+                getRSP(oom, rm).getDistanceSquared(l, oom, rm),
                 getPQR(oom, rm).getDistanceSquared(l, oom, rm));
     }
 
@@ -904,7 +905,8 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @return The minimum distance to {@code l}.
      */
     public BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return getRSP(oom, rm).getDistanceSquared(l, oom, rm).min(
+        return BigRational.min(
+                getRSP(oom, rm).getDistanceSquared(l, oom, rm),
                 getPQR(oom, rm).getDistanceSquared(l, oom, rm));
     }
 
@@ -929,7 +931,8 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @return The minimum distance squared to {@code p}.
      */
     public BigRational getDistanceSquared(V3D_Plane pl, int oom, RoundingMode rm) {
-        return getRSP(oom, rm).getDistanceSquared(pl, oom, rm).min(
+        return BigRational.min(
+                getRSP(oom, rm).getDistanceSquared(pl, oom, rm),
                 getPQR(oom, rm).getDistanceSquared(pl, oom, rm));
     }
 
@@ -955,7 +958,8 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * @return The minimum distance squared to {@code t}.
      */
     public BigRational getDistanceSquared(V3D_Triangle t, int oom, RoundingMode rm) {
-        return getRSP(oom, rm).getDistanceSquared(t, oom, rm).min(
+        return BigRational.min(
+                getRSP(oom, rm).getDistanceSquared(t, oom, rm),
                 getPQR(oom, rm).getDistanceSquared(t, oom, rm));
     }
 
@@ -967,8 +971,8 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      */
     //@Overrides
     public boolean equals(V3D_Rectangle r, int oom, RoundingMode rm) {
-        V3D_Point[] pts = getPoints(oom, rm);
-        V3D_Point[] rpts = r.getPoints(oom, rm);
+        V3D_Point[] pts = getPoints();
+        V3D_Point[] rpts = r.getPoints();
         for (var x : pts) {
             boolean found = false;
             for (var y : rpts) {
@@ -1034,5 +1038,15 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
             }
         }
         return false;
+    }
+
+    @Override
+    public V3D_Envelope getEnvelope(int oom) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

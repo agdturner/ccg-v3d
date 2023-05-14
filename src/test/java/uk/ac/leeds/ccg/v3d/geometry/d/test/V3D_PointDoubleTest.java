@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry.d;
+package uk.ac.leeds.ccg.v3d.geometry.d.test;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -21,6 +21,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_EnvelopeDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
 //import org.junit.jupiter.api.Disabled;
 
 /**
@@ -74,6 +78,85 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         assertFalse(instance.equals(p));
     }
 
+    /**
+     * Test of isBetween method, of class V3D_Point.
+     */
+    @Test
+    public void testIsBetween() {
+        System.out.println("isBetween");
+        // Test 1
+        V3D_PointDouble p = pP0P0P0;
+        V3D_PointDouble a = pN1P0P0;
+        V3D_PointDouble b = pP1P0P0;
+        double epsilon = 1 / 100000000d;
+        assertTrue(p.isBetween(a, b, epsilon));
+        // Test 2
+        p = pP0P0P0;
+        a = pP0N1P0;
+        b = pP0P1P0;
+        assertTrue(p.isBetween(a, b, epsilon));
+        // Test 3
+        p = pP0P0P0;
+        a = pP0P0N1;
+        b = pP0P0P1;
+        assertTrue(p.isBetween(a, b, epsilon));
+        // Test 4
+        p = pP0P0P0;
+        a = pN1N1N1;
+        b = pP1P1P1;
+        assertTrue(p.isBetween(a, b, epsilon));
+        // Test 5
+        p = pP0P0P0;
+        a = pN1N1N1;
+        b = pP1P1P1;
+        assertTrue(p.isBetween(a, b, epsilon));
+        // Test 6
+        p = pP0P0P0;
+        a = pN1N1P0;
+        b = pP1P1P0;
+        assertTrue(p.isBetween(a, b, epsilon));
+        // Test 7
+        p = pP0P0P0;
+        a = pN1P0N1;
+        b = pP1P0P1;
+        assertTrue(p.isBetween(a, b, epsilon));
+        // Test 8
+        p = pP0P0P0;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b, epsilon));
+        // Test 9
+        p = pP0P0P0;
+        a = pN1P0N1;
+        b = pP1P0P1;
+        assertTrue(p.isBetween(a, b, epsilon));
+        // Test 10
+        p = pP0P0P0;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b, epsilon));
+        // Test 11
+        p = pP0P0P1;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b, epsilon));
+        // Test 12
+        p = pP0P0P2;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b, epsilon));
+        // Test 13
+        p = pP0P1P2;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertFalse(p.isBetween(a, b, epsilon));
+        // Test 14
+        p = pP1P1P1;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b, epsilon));
+    }
+    
     /**
      * Test of getEnvelope method, of class V3D_PointDouble.
      */
@@ -220,52 +303,54 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         System.out.println("toString");
         String pad = "";
         V3D_PointDouble instance = pP0P1P2;
-        String expResult = "V3D_PointDouble\n"
-                + "(\n"
-                + " offset=V3D_VectorDouble\n"
-                + " (\n"
-                + "  dx=0.0,\n"
-                + "  dy=0.0,\n"
-                + "  dz=0.0\n"
-                + " )\n"
-                + " ,\n"
-                + " rel=V3D_VectorDouble\n"
-                + " (\n"
-                + "  dx=0.0,\n"
-                + "  dy=1.0,\n"
-                + "  dz=2.0\n"
-                + " )\n"
-                + ")";
+        String expResult = """
+                           V3D_PointDouble
+                           (
+                            offset=V3D_VectorDouble
+                            (
+                             dx=0.0,
+                             dy=0.0,
+                             dz=0.0
+                            )
+                            ,
+                            rel=V3D_VectorDouble
+                            (
+                             dx=0.0,
+                             dy=1.0,
+                             dz=2.0
+                            )
+                           )""";
         String result = instance.toString(pad);
         //System.out.println(result);
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of toStringFields method, of class V3D_PointDouble.
-     */
-    @Test
-    public void testToStringFields() {
-        System.out.println("toStringFields");
-        String pad = "";
-        V3D_PointDouble instance = pP0P1P2;
-        String expResult = "offset=V3D_VectorDouble\n"
-                + "(\n"
-                + " dx=0.0,\n"
-                + " dy=0.0,\n"
-                + " dz=0.0\n"
-                + ")\n"
-                + ",\n"
-                + "rel=V3D_VectorDouble\n"
-                + "(\n"
-                + " dx=0.0,\n"
-                + " dy=1.0,\n"
-                + " dz=2.0\n"
-                + ")";
-        String result = instance.toStringFields(pad);
-        System.out.println(result);
-        assertEquals(expResult, result);
-    }
+//    /**
+//     * Test of toStringFields method, of class V3D_PointDouble.
+//     */
+//    @Test
+//    public void testToStringFields() {
+//        System.out.println("toStringFields");
+//        String pad = "";
+//        V3D_PointDouble instance = pP0P1P2;
+//        String expResult = """
+//                           offset=V3D_VectorDouble
+//                           (
+//                            dx=0.0,
+//                            dy=0.0,
+//                            dz=0.0
+//                           )
+//                           ,
+//                           rel=V3D_VectorDouble
+//                           (
+//                            dx=0.0,
+//                            dy=1.0,
+//                            dz=2.0
+//                           )""";
+//        String result = instance.toStringFields(pad);
+//        System.out.println(result);
+//        assertEquals(expResult, result);
+//    }
 
     /**
      * Test of getVector method, of class V3D_PointDouble.

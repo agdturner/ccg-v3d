@@ -330,6 +330,9 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      */
     public boolean equalsIgnoreDirection(V3D_LineSegmentDouble l,
             double epsilon) {
+//        if (l == null) {
+//            return false;
+//        }
         if (this.l.equals(l.l, epsilon)) {
             return isIntersectedBy(l.getQ(), epsilon)
                     && l.isIntersectedBy(getQ(), epsilon);

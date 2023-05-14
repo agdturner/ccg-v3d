@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry.d;
+package uk.ac.leeds.ccg.v3d.geometry.d.test;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -22,6 +22,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_EnvelopeDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_GeometryDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegmentDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
 
 /**
  * Test of V3D_LineSegmentDouble class.
@@ -57,14 +63,15 @@ public class V3D_LineSegmentDoubleTest extends V3D_DoubleTest {
     public void testToString() {
         System.out.println("toString");
         V3D_LineSegmentDouble instance = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
-        String expResult = "V3D_LineSegmentDouble\n"
-                + "(\n"
-                + " offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),\n"
-                + " l= offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),\n"
-                + " p=V3D_PointDouble(offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0), rel=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0)),\n"
-                + " v= V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0),\n"
-                + " q=dx=1.0, dy=0.0, dz=0.0\n"
-                + ")";
+        String expResult = """
+                           V3D_LineSegmentDouble
+                           (
+                            offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
+                            l= offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
+                            p=V3D_PointDouble(offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0), rel=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0)),
+                            v= V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0),
+                            q=dx=1.0, dy=0.0, dz=0.0
+                           )""";
         String result = instance.toString();
         //System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
@@ -404,7 +411,6 @@ public class V3D_LineSegmentDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetMidpoint() {
         System.out.println("getMidpoint");
-        double epsilon = 1d / 1000000d;
         V3D_LineSegmentDouble instance;
         V3D_PointDouble expResult;
         V3D_PointDouble result;

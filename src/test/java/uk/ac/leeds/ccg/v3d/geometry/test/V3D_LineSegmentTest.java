@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.test;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
@@ -24,6 +24,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
  * Test of V3D_LineSegment class.
@@ -100,9 +106,9 @@ public class V3D_LineSegmentTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment instance = new V3D_LineSegment(pP0P0P0, pP1P1P0, oom, rm);
-        V3D_Envelope expResult = new V3D_Envelope(oom, rm, pP0P0P0, pP1P1P0);
-        V3D_Envelope result = instance.getEnvelope(oom, rm);
-        assertTrue(expResult.equals(result, oom, rm));
+        V3D_Envelope expResult = new V3D_Envelope(oom, pP0P0P0, pP1P1P0);
+        V3D_Envelope result = instance.getEnvelope(oom);
+        assertTrue(expResult.equals(result, oom));
     }
 
     /**

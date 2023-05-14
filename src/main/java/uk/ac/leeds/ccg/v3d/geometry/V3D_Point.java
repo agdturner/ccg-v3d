@@ -31,29 +31,29 @@ import uk.ac.leeds.ccg.v3d.geometry.light.V3D_V;
  * if they have the same position. The "*" denotes a point in 3D in the
  * following depiction: {@code
  *
- * y           -
- * +          /                * pv=<x0,y0,z0>
- * |         /                 |  =offset+v
- * |        /                  |  =<x1+x2,y1+y2,z1+z2>
- * |    z0-/-------------------|
- * r          |      /                   /
- * v=<x2,y2,z2>     |     /                   /
- * |    /                   /
- * |   /                   /      offset=<x1,y1,z1>
- * y0-|  /                   /                o
- * | /                   /
- * |/                   /
- * - ----------------------|-------------------/---- + x
- * /|                  x0
- * / |
- * /  |
- * /   |
- * /    |
- * /     |
- * /      |
- * /       |
- * +        |
- * z         -
+ *                             y           -
+ *                             +          /                * pv=<x0,y0,z0>
+ *                             |         /                 |  =offset+v
+ *                             |        /                  |  =<x1+x2,y1+y2,z1+z2>
+ *                             |    z0-/-------------------|
+ *                  r          |      /                   /
+ *            v=<x2,y2,z2>     |     /                   /
+ *                             |    /                   /
+ *                             |   /                   /      offset=<x1,y1,z1>
+ *                          y0-|  /                   /                o
+ *                             | /                   /
+ *                             |/                   /
+ *     - ----------------------|-------------------/---- + x
+ *                            /|                  x0
+ *                           / |
+ *                          /  |
+ *                         /   |
+ *                        /    |
+ *                       /     |
+ *                      /      |
+ *                     /       |
+ *                    +        |
+ *                   z         -
  * }
  *
  * @author Andy Turner
@@ -97,37 +97,14 @@ public class V3D_Point extends V3D_FiniteGeometry {
     /**
      * Create a new instance.
      *
-     * @param offset Cloned to initialise {@link #offset}.
+     * @param offset What {@link #offset} is set to.
      * @param rel Cloned to initialise {@link #rel}.
      */
     public V3D_Point(V3D_Vector offset, V3D_Vector rel) {
-//        super(new V3D_Vector(offset), Math.min(offset.getMagnitude().getOom(),
-//                v.getMagnitude().getOom()));
-        //super(e, new V3D_Vector(offset));
         super(offset);
         this.rel = new V3D_Vector(rel);
     }
 
-    /**
-     * Create a new instance.
-     *
-     * @param v The point to clone/duplicate.
-     */
-    public V3D_Point(V3D_V v) {
-        super(V3D_Vector.ZERO);
-        this.rel = new V3D_Vector(v);
-    }
-
-//    /**
-//     * Create a new instance with {@link #offset} set to
-//     * {@link V3D_Vector#ZERO}.
-//     *
-//     * @param pv Used to initialise {@link #v} and {@link #e}.
-//     */
-//    public V3D_Point(V3D_Envelope.Point pv) {
-//        super(pv.e, V3D_Vector.ZERO);
-//        this.v = new V3D_Vector(pv);
-//    }
     /**
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
@@ -136,8 +113,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(BigRational x, BigRational y,
-            BigRational z) {
+    public V3D_Point(BigRational x, BigRational y, BigRational z) {
         super(V3D_Vector.ZERO);
         this.rel = new V3D_Vector(x, y, z);
     }
@@ -150,9 +126,8 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(BigDecimal x, BigDecimal y,
-            BigDecimal z) {
-        this(BigRational.valueOf(x), BigRational.valueOf(y),
+    public V3D_Point(BigDecimal x, BigDecimal y, BigDecimal z) {
+        this(BigRational.valueOf(x), BigRational.valueOf(y), 
                 BigRational.valueOf(z));
     }
 
@@ -250,7 +225,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
+    public V3D_Point[] getPoints() {
         V3D_Point[] r = new V3D_Point[1];
         r[0] = this;
         return r;
@@ -302,6 +277,33 @@ public class V3D_Point extends V3D_FiniteGeometry {
     }
 
     /**
+     * Returns true if this is between a and b. If this equal a or b then return
+     * true.
+     * @param a A point
+     * @param b A point
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode.
+     * @return true iff this is equal to the ORIGIN.
+     */
+    public boolean isBetween(V3D_Point a, V3D_Point b, int oom, RoundingMode rm) {
+        if (this.equals(a, oom, rm)) {
+            return true;
+        }
+        if (this.equals(b, oom, rm)) {
+            return true;
+        }
+        V3D_Vector ab = new V3D_Vector(a, b, oom, rm);
+        if (ab.isZero()) {
+            return false;
+        }
+        V3D_Plane ap = new V3D_Plane(a, ab);
+        V3D_Plane bp = new V3D_Plane(b, ab);
+        int aps = ap.getSideOfPlane(this, oom, rm);
+        int bps = bp.getSideOfPlane(this, oom, rm);
+        return aps != bps;
+    }
+
+    /**
      * Get the distance between this and {@code pv}.
      *
      * @param oom The Order of Magnitude for the precision.
@@ -350,8 +352,8 @@ public class V3D_Point extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
-        return new V3D_Envelope(oom, rm, this);
+    public V3D_Envelope getEnvelope(int oom) {
+        return new V3D_Envelope(oom, this);
     }
 
     /**
@@ -523,5 +525,10 @@ public class V3D_Point extends V3D_FiniteGeometry {
             }
         }
         return r;
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
+        return aabb.isIntersectedBy(this, oom, rm);
     }
 }

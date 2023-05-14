@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.test;
 
 import ch.obermuhlner.math.big.BigRational;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
  * V3D_Test
@@ -23,7 +25,7 @@ import ch.obermuhlner.math.big.BigRational;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class V3D_Test {
+public class V3D_Test {
     
     public static final BigRational P0 = BigRational.ZERO;
     public static final BigRational P1 = BigRational.ONE;
@@ -369,5 +371,6 @@ public abstract class V3D_Test {
     public static final V3D_Point pN2N2P0 = new V3D_Point(N2, N2, P0);
     public static final V3D_Point pN2N2N1 = new V3D_Point(N2, N2, N1);
     public static final V3D_Point pN2N2N2 = new V3D_Point(N2, N2, N2);
+    
     public V3D_Test() {}
 }

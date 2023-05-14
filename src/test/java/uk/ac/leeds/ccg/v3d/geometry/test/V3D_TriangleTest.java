@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.test;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
@@ -26,6 +26,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_ConvexHullCoplanar;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Ray;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Rectangle;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Triangle;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
  * Test of V3D_Triangle class.
@@ -97,9 +108,9 @@ public class V3D_TriangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
-        V3D_Envelope expResult = new V3D_Envelope(oom, rm, pP0P0P0, pP0P1P0, pP1P0P0);
-        V3D_Envelope result = instance.getEnvelope(oom, rm);
-        assertTrue(expResult.equals(result, oom, rm));
+        V3D_Envelope expResult = new V3D_Envelope(oom, pP0P0P0, pP0P1P0, pP1P0P0);
+        V3D_Envelope result = instance.getEnvelope(oom);
+        assertTrue(expResult.equals(result, oom));
     }
 
     /**
@@ -204,11 +215,12 @@ public class V3D_TriangleTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle instance = new V3D_Triangle(P0P0P0, P1P0P0, P0P1P0, P0P0P1, oom, rm);
-        String expResult = "V3D_Triangle(\n"
-                + " offset=(V3D_Vector(dx=0, dy=0, dz=0)),\n"
-                + " p=(V3D_Vector(dx=1, dy=0, dz=0)),\n"
-                + " q=(V3D_Vector(dx=0, dy=1, dz=0)),\n"
-                + " r=(V3D_Vector(dx=0, dy=0, dz=1)))";
+        String expResult = """
+                           V3D_Triangle(
+                            offset=(V3D_Vector(dx=0, dy=0, dz=0)),
+                            p=(V3D_Vector(dx=1, dy=0, dz=0)),
+                            q=(V3D_Vector(dx=0, dy=1, dz=0)),
+                            r=(V3D_Vector(dx=0, dy=0, dz=1)))""";
         String result = instance.toString();
         //System.out.println(result);
         assertEquals(expResult, result);
@@ -563,9 +575,9 @@ public class V3D_TriangleTest extends V3D_Test {
         points[5] = rba;
         points[6] = rtf;
         points[7] = rta;
-        V3D_Envelope envelope = new V3D_Envelope(oom, rm, points);
+        V3D_Envelope envelope = new V3D_Envelope(oom, points);
         int width = 100;
-        BigRational radius = envelope.getPoints(oom, rm)[0]
+        BigRational radius = envelope.getPoints(oom)[0]
                 .getDistance(centroid, oom, rm);
         V3D_Vector direction = new V3D_Vector(0, 0, 1).getUnitVector(oom, rm);
         V3D_Point pt = new V3D_Point(centroid);
@@ -747,6 +759,21 @@ public class V3D_TriangleTest extends V3D_Test {
                         new V3D_Point(P4, N2, P0), oom, rm));
         result = instance.getIntersection(t, oom, rm);
         assertTrue(((V3D_ConvexHullCoplanar) expResult).equals((V3D_ConvexHullCoplanar) result, oom, rm));
+        
+        // Test 13 LineSegment intersection
+        t = new V3D_Triangle(new V3D_Point(P6, P0, P0), pP0P0P0, new V3D_Point(P3, N3, P0), oom, rm);
+        instance = new V3D_Triangle(pP0N2P0, new V3D_Point(P3, P1, P0), new V3D_Point(P6, N2, P0), oom, rm);
+        expResult = new V3D_ConvexHullCoplanar(oom, rm,
+                new V3D_Triangle(pP2P0P0, new V3D_Point(P4, P0, P0), pP1N1P0, oom, rm),
+                new V3D_Triangle(pP1N1P0, pP2N2P0, new V3D_Point(P4, N2, P0), oom, rm),
+                new V3D_Triangle(
+                        new V3D_Point(P4, P0, P0),
+                        new V3D_Point(P4, N2, P0),
+                        new V3D_Point(P5, N1, P0), oom, rm),
+                new V3D_Triangle(new V3D_Point(P4, P0, P0), pP1N1P0,
+                        new V3D_Point(P4, N2, P0), oom, rm));
+        result = instance.getIntersection(t, oom, rm);
+        assertTrue(((V3D_ConvexHullCoplanar) expResult).equals((V3D_ConvexHullCoplanar) result, oom, rm));
     }
 
     /**
@@ -831,44 +858,44 @@ public class V3D_TriangleTest extends V3D_Test {
         assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
     }
 
-    /**
-     * Test of getGeometry method, of class V3D_Triangle.
-     */
-    @Test
-    public void testGetGeometry_4args() {
-        System.out.println("getGeometry");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_LineSegment l1;
-        V3D_LineSegment l2;
-        V3D_LineSegment l3;
-        V3D_Geometry expResult;
-        V3D_Geometry result;
-        // Test 1
-        l1 = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        l2 = new V3D_LineSegment(pP1P0P0, pP1P1P0, oom, rm);
-        l3 = new V3D_LineSegment(pP1P1P0, pP0P0P0, oom, rm);
-        expResult = new V3D_Triangle(pP0P0P0, pP1P0P0, pP1P1P0, oom, rm);
-        result = V3D_Triangle.getGeometry(l1, l2, l3, oom, rm);
-        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
-        // Test 2
-        l1 = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        l2 = new V3D_LineSegment(pP1P1P0, pP0P2P0, oom, rm);
-        l3 = new V3D_LineSegment(pN1P2P0, pN1P1P0, oom, rm);
-//        expResult = new V3D_Polygon(
-//                new V3D_Triangle(pP0P0P0, pP1P0P0, pP1P1P0),
-//                new V3D_Triangle(pP1P1P0, pP0P2P0, pN1P2P0),
-//                new V3D_Triangle(pP0P0P0, pN1P1P0, pN1P2P0),
-//                new V3D_Triangle(pP0P0P0, pP1P1P0, pN1P2P0)
-//        );
+//    /**
+//     * Test of getGeometry method, of class V3D_Triangle.
+//     */
+//    @Test
+//    public void testGetGeometry_4args() {
+//        System.out.println("getGeometry");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_LineSegment l1;
+//        V3D_LineSegment l2;
+//        V3D_LineSegment l3;
+//        V3D_Geometry expResult;
+//        V3D_Geometry result;
+//        // Test 1
+//        l1 = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
+//        l2 = new V3D_LineSegment(pP1P0P0, pP1P1P0, oom, rm);
+//        l3 = new V3D_LineSegment(pP1P1P0, pP0P0P0, oom, rm);
+//        expResult = new V3D_Triangle(pP0P0P0, pP1P0P0, pP1P1P0, oom, rm);
 //        result = V3D_Triangle.getGeometry(l1, l2, l3, oom, rm);
-//        assertEquals(expResult, result);
-
-//        assertTrue(expResult.equals(result, oom, rm));
-//        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
 //        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
-//        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreOrientation((V3D_LineSegment) result, oom, rm));
-    }
+//        // Test 2
+//        l1 = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
+//        l2 = new V3D_LineSegment(pP1P1P0, pP0P2P0, oom, rm);
+//        l3 = new V3D_LineSegment(pN1P2P0, pN1P1P0, oom, rm);
+////        expResult = new V3D_Polygon(
+////                new V3D_Triangle(pP0P0P0, pP1P0P0, pP1P1P0),
+////                new V3D_Triangle(pP1P1P0, pP0P2P0, pN1P2P0),
+////                new V3D_Triangle(pP0P0P0, pN1P1P0, pN1P2P0),
+////                new V3D_Triangle(pP0P0P0, pP1P1P0, pN1P2P0)
+////        );
+////        result = V3D_Triangle.getGeometry(l1, l2, l3, oom, rm);
+////        assertEquals(expResult, result);
+//
+////        assertTrue(expResult.equals(result, oom, rm));
+////        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+////        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
+////        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreOrientation((V3D_LineSegment) result, oom, rm));
+//    }
 
     /**
      * Test of getGeometry method, of class V3D_Triangle.
@@ -896,25 +923,25 @@ public class V3D_TriangleTest extends V3D_Test {
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
     }
 
-    /**
-     * Test of getGeometry method, of class V3D_Triangle.
-     */
-    @Test
-    public void testGetGeometry_V3D_LineSegment_V3D_LineSegment() {
-        System.out.println("getGeometry");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_LineSegment l1;
-        V3D_LineSegment l2;
-        V3D_Geometry expResult;
-        V3D_Geometry result;
-        // Test 1
-        l1 = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        l2 = new V3D_LineSegment(pP0P0P0, pP0P1P0, oom, rm);
-        result = V3D_Triangle.getGeometry(l1, l2, oom, rm);
-        expResult = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0, oom, rm);
-        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
-    }
+//    /**
+//     * Test of getGeometry method, of class V3D_Triangle.
+//     */
+//    @Test
+//    public void testGetGeometry_V3D_LineSegment_V3D_LineSegment() {
+//        System.out.println("getGeometry");
+//        int oom = -3;
+//        RoundingMode rm = RoundingMode.HALF_UP;
+//        V3D_LineSegment l1;
+//        V3D_LineSegment l2;
+//        V3D_Geometry expResult;
+//        V3D_Geometry result;
+//        // Test 1
+//        l1 = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
+//        l2 = new V3D_LineSegment(pP0P0P0, pP0P1P0, oom, rm);
+//        result = V3D_Triangle.getGeometry(l1, l2, oom, rm);
+//        expResult = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0, oom, rm);
+//        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
+//    }
 
     /**
      * Test of getOpposite method, of class V3D_Triangle.

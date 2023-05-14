@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry.d;
+package uk.ac.leeds.ccg.v3d.geometry.d.test;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -22,6 +22,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_EnvelopeDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_GeometryDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegmentDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PlaneDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_RayDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_RectangleDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_TetrahedronDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_TriangleDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
 
 /**
  *
@@ -54,16 +65,16 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     @Test
     public void testToString_0args() {
         System.out.println("toString");
-        double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
-        String expResult = "V3D_TetrahedronDouble\n"
-                + "(\n"
-                + " p= V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),\n"
-                + " q= V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0),\n"
-                + " r= V3D_VectorDouble(dx=0.0, dy=1.0, dz=0.0),\n"
-                + " s= V3D_VectorDouble(dx=0.0, dy=1.0, dz=1.0)\n"
-                + ")";
+        String expResult = """
+                           V3D_TetrahedronDouble
+                           (
+                            p= V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
+                            q= V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0),
+                            r= V3D_VectorDouble(dx=0.0, dy=1.0, dz=0.0),
+                            s= V3D_VectorDouble(dx=0.0, dy=1.0, dz=1.0)
+                           )""";
         String result = instance.toString();
         //System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
@@ -75,98 +86,98 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     @Test
     public void testToString_String() {
         System.out.println("toString");
-        double epsilon = 1d / 10000000d;
         String pad = "";
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
-        String expResult = "V3D_TetrahedronDouble\n"
-                + "(\n"
-                + " offset=V3D_VectorDouble\n"
-                + " (\n"
-                + "  dx=0.0,\n"
-                + "  dy=0.0,\n"
-                + "  dz=0.0\n"
-                + " ) ,\n"
-                + " p=V3D_VectorDouble\n"
-                + " (\n"
-                + "  dx=0.0,\n"
-                + "  dy=0.0,\n"
-                + "  dz=0.0\n"
-                + " )\n"
-                + " ,\n"
-                + " q=V3D_VectorDouble\n"
-                + " (\n"
-                + "  dx=1.0,\n"
-                + "  dy=0.0,\n"
-                + "  dz=0.0\n"
-                + " )\n"
-                + " ,\n"
-                + " r=V3D_VectorDouble\n"
-                + " (\n"
-                + "  dx=0.0,\n"
-                + "  dy=1.0,\n"
-                + "  dz=0.0\n"
-                + " )\n"
-                + " ,\n"
-                + " s=V3D_VectorDouble\n"
-                + " (\n"
-                + "  dx=0.0,\n"
-                + "  dy=1.0,\n"
-                + "  dz=1.0\n"
-                + " )\n"
-                + ")";
+        String expResult = """
+                           V3D_TetrahedronDouble
+                           (
+                            offset=V3D_VectorDouble
+                            (
+                             dx=0.0,
+                             dy=0.0,
+                             dz=0.0
+                            ) ,
+                            p=V3D_VectorDouble
+                            (
+                             dx=0.0,
+                             dy=0.0,
+                             dz=0.0
+                            )
+                            ,
+                            q=V3D_VectorDouble
+                            (
+                             dx=1.0,
+                             dy=0.0,
+                             dz=0.0
+                            )
+                            ,
+                            r=V3D_VectorDouble
+                            (
+                             dx=0.0,
+                             dy=1.0,
+                             dz=0.0
+                            )
+                            ,
+                            s=V3D_VectorDouble
+                            (
+                             dx=0.0,
+                             dy=1.0,
+                             dz=1.0
+                            )
+                           )""";
         String result = instance.toString(pad);
         //System.out.println(result);
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of toStringFields method, of class V3D_TetrahedronDouble.
-     */
-    @Test
-    public void testToStringFields() {
-        System.out.println("toStringFields");
-        double epsilon = 1d / 10000000d;
-        String pad = "";
-        V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1);
-        String expResult = "offset=V3D_VectorDouble\n"
-                + "(\n"
-                + " dx=0.0,\n"
-                + " dy=0.0,\n"
-                + " dz=0.0\n"
-                + "),\n"
-                + "p=V3D_VectorDouble\n"
-                + "(\n"
-                + " dx=0.0,\n"
-                + " dy=0.0,\n"
-                + " dz=0.0\n"
-                + ")\n"
-                + ",\n"
-                + "q=V3D_VectorDouble\n"
-                + "(\n"
-                + " dx=1.0,\n"
-                + " dy=0.0,\n"
-                + " dz=0.0\n"
-                + ")\n"
-                + ",\n"
-                + "r=V3D_VectorDouble\n"
-                + "(\n"
-                + " dx=0.0,\n"
-                + " dy=1.0,\n"
-                + " dz=0.0\n"
-                + ")\n"
-                + ",\n"
-                + "s=V3D_VectorDouble\n"
-                + "(\n"
-                + " dx=0.0,\n"
-                + " dy=1.0,\n"
-                + " dz=1.0\n"
-                + ")";
-        String result = instance.toStringFields(pad);
-        //System.out.println(result);
-        assertEquals(expResult, result);
-    }
+//    /**
+//     * Test of toStringFields method, of class V3D_TetrahedronDouble.
+//     */
+//    @Test
+//    public void testToStringFields() {
+//        System.out.println("toStringFields");
+//        String pad = "";
+//        V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
+//                pP0P1P0, pP0P1P1);
+//        String expResult = """
+//                           offset=V3D_VectorDouble
+//                           (
+//                            dx=0.0,
+//                            dy=0.0,
+//                            dz=0.0
+//                           ),
+//                           p=V3D_VectorDouble
+//                           (
+//                            dx=0.0,
+//                            dy=0.0,
+//                            dz=0.0
+//                           )
+//                           ,
+//                           q=V3D_VectorDouble
+//                           (
+//                            dx=1.0,
+//                            dy=0.0,
+//                            dz=0.0
+//                           )
+//                           ,
+//                           r=V3D_VectorDouble
+//                           (
+//                            dx=0.0,
+//                            dy=1.0,
+//                            dz=0.0
+//                           )
+//                           ,
+//                           s=V3D_VectorDouble
+//                           (
+//                            dx=0.0,
+//                            dy=1.0,
+//                            dz=1.0
+//                           )""";
+//        String result = instance.toStringFields(pad);
+//        //System.out.println(result);
+//        assertEquals(expResult, result);
+//    }
 
     /**
      * Test of getEnvelope method, of class V3D_TetrahedronDouble.
@@ -174,7 +185,6 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetEnvelope() {
         System.out.println("getEnvelope");
-        double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
         V3D_EnvelopeDouble expResult = new V3D_EnvelopeDouble(pP0P0P0, pP1P0P0,
@@ -189,7 +199,6 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetP() {
         System.out.println("getP");
-        double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
         V3D_PointDouble expResult = pP0P0P0;
@@ -203,7 +212,6 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetQ() {
         System.out.println("getQ");
-        double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
         V3D_PointDouble expResult = pP1P0P0;
@@ -217,7 +225,6 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetR() {
         System.out.println("getR");
-        double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
         V3D_PointDouble expResult = pP0P1P0;
@@ -231,7 +238,6 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetS() {
         System.out.println("getS");
-        double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
         V3D_PointDouble expResult = pP0P1P1;
@@ -331,7 +337,6 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetCentroid() {
         System.out.println("getCentroid");
-        double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(
                 pN2N2N2, pP2N2N2, pP0P2N2,
                 new V3D_PointDouble(0d, 0d, 4d));

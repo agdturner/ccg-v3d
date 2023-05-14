@@ -142,33 +142,36 @@ public class V3D_EnvelopeDouble implements Serializable {
                         + "collection of points.");
             case 1 -> {
                 xMin = points[0].getX();
-                xMax = points[0].getX();
+                xMax = xMin;
                 yMin = points[0].getY();
-                yMax = points[0].getY();
+                yMax = yMin;
                 zMin = points[0].getZ();
-                zMax = points[0].getZ();
+                zMax = zMin;
             }
             default -> {
                 double xmin = points[0].getX();
-                double xmax = points[0].getX();
+                double xmax = xmin;
                 double ymin = points[0].getY();
-                double ymax = points[0].getY();
+                double ymax = ymin;
                 double zmin = points[0].getZ();
-                double zmax = points[0].getZ();
+                double zmax = zmin;
                 for (int i = 1; i < points.length; i++) {
-                    xmin = Math.min(xmin, points[i].getX());
-                    xmax = Math.max(xmax, points[i].getX());
-                    ymin = Math.min(ymin, points[i].getY());
-                    ymax = Math.max(ymax, points[i].getY());
-                    zmin = Math.min(zmin, points[i].getZ());
-                    zmax = Math.max(zmax, points[i].getZ());
+                    double x = points[i].getX();
+                    xmin = Math.min(xmin, x);
+                    xmax = Math.max(xmax, x);
+                    double y = points[i].getY();
+                    ymin = Math.min(ymin, y);
+                    ymax = Math.max(ymax, y);
+                    double z = points[i].getZ();
+                    zmin = Math.min(zmin, z);
+                    zmax = Math.max(zmax, z);
                 }
-                this.xMin = xmin;
-                this.xMax = xmax;
-                this.yMin = ymin;
-                this.yMax = ymax;
-                this.zMin = zmin;
-                this.zMax = zmax;
+                xMin = xmin;
+                xMax = xmax;
+                yMin = ymin;
+                yMax = ymax;
+                zMin = zmin;
+                zMax = zmax;
             }
         }
     }

@@ -175,7 +175,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param p The plane used to create this.
      */
     public V3D_Plane(V3D_Plane p) {
-        super(p.offset);
+        super(new V3D_Vector(p.offset));
         this.p = new V3D_Vector(p.p);
         this.n = new V3D_Vector(p.n);
     }
@@ -187,9 +187,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @param n The normal of the plane.
      */
     public V3D_Plane(V3D_Point p, V3D_Vector n) {
-        super(p.offset);
-        this.p = p.rel;
-        this.n = n;
+        super(new V3D_Vector(p.offset));
+        this.p = new V3D_Vector(p.rel);
+        this.n = new V3D_Vector(n);
     }
 
     /**
@@ -203,8 +203,8 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public V3D_Plane(V3D_LineSegment l, V3D_Vector inplane, int oom,
             RoundingMode rm) {
-        super(l.offset);
-        this.p = l.getP().rel;
+        super(new V3D_Vector(l.offset));
+        this.p = new V3D_Vector(l.getP().rel);
         this.n = l.l.v.getCrossProduct(inplane, oom, rm);
     }
 
@@ -221,11 +221,11 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r, int oom,
             RoundingMode rm) {
-        super(p.offset);
+        super(new V3D_Vector(p.offset));
         V3D_Vector qv = q.getVector(oom, rm);
         V3D_Vector pq = qv.subtract(p.getVector(oom, rm), oom, rm);
         V3D_Vector qr = r.getVector(oom, rm).subtract(qv, oom, rm);
-        this.p = p.rel;
+        this.p = new V3D_Vector(p.rel);
         this.n = pq.getCrossProduct(qr, oom, rm);
     }
 
@@ -277,7 +277,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public V3D_Plane(V3D_Vector ptv, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r, int oom, RoundingMode rm) {
-        super(offset);
+        super(new V3D_Vector(offset));
         V3D_Vector pq = q.subtract(p, oom, rm);
         if (pq.equals(V3D_Vector.ZERO)) {
             throw new RuntimeException("Cannot define plane as p equals q.");
@@ -286,7 +286,7 @@ public class V3D_Plane extends V3D_Geometry {
         if (qr.equals(V3D_Vector.ZERO)) {
             throw new RuntimeException("Cannot define plane as q equals r.");
         }
-        this.p = p;
+        this.p = new V3D_Vector(p);
         this.n = pq.getCrossProduct(qr, oom, rm);
         
         if (this.n.isZero()) {
@@ -496,17 +496,17 @@ public class V3D_Plane extends V3D_Geometry {
          * <li>[3] is d</li>
          * </ul>
          */
-        BigRational[] coeffs;
+        public BigRational[] coeffs;
 
         /**
          * The order of magnitude used to calculate the coefficients.
          */
-        int oom;
+        public int oom;
 
         /**
          * The RoundingMode used to calculate the coefficients.
          */
-        RoundingMode rm;
+        public RoundingMode rm;
 
         /**
          * Create a new instance.

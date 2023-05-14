@@ -25,29 +25,29 @@ import java.util.List;
  * {@link #equals(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Point)} if they have the
  * same position. The "*" denotes a point in 3D in the following depiction: {@code
  *
- * y           -
- * +          /                * pv=<x0,y0,z0>
- * |         /                 |  =offset+v
- * |        /                  |  =<x1+x2,y1+y2,z1+z2>
- * |    z0-/-------------------|
- * r          |      /                   /
- * v=<x2,y2,z2>     |     /                   /
- * |    /                   /
- * |   /                   /      offset=<x1,y1,z1>
- * y0-|  /                   /                o
- * | /                   /
- * |/                   /
- * - ----------------------|-------------------/---- + x
- * /|                  x0
- * / |
- * /  |
- * /   |
- * /    |
- * /     |
- * /      |
- * /       |
- * +        |
- * z         -
+ *                             y           -
+ *                             +          /                * pv=<x0,y0,z0>
+ *                             |         /                 |  =offset+v
+ *                             |        /                  |  =<x1+x2,y1+y2,z1+z2>
+ *                             |    z0-/-------------------|
+ *                  r          |      /                   /
+ *            v=<x2,y2,z2>     |     /                   /
+ *                             |    /                   /
+ *                             |   /                   /      offset=<x1,y1,z1>
+ *                          y0-|  /                   /                o
+ *                             | /                   /
+ *                             |/                   /
+ *     - ----------------------|-------------------/---- + x
+ *                            /|                  x0
+ *                           / |
+ *                          /  |
+ *                         /   |
+ *                        /    |
+ *                       /     |
+ *                      /      |
+ *                     /       |
+ *                    +        |
+ *                   z         -
  * }
  *
  * @author Andy Turner
@@ -91,7 +91,7 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
     /**
      * Create a new instance.
      *
-     * @param offset Cloned to initialise {@link #offset}.
+     * @param offset What {@link #offset} is set to.
      * @param rel Cloned to initialise {@link #rel}.
      */
     public V3D_PointDouble(V3D_VectorDouble offset, V3D_VectorDouble rel) {
@@ -181,7 +181,8 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
      * points relative start location and translation vector.
      *
      * @param p The point to test if it is the same as {@code this}.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff {@code pv} is equal to {@code this} given the
      * epsilon.
      */
@@ -240,6 +241,33 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
      */
     public boolean isOrigin() {
         return equals(ORIGIN);
+    }
+
+    /**
+     * Returns true if this is between a and b. If a = b = this then this is
+     * true.
+     *
+     * @param a A point
+     * @param b A point
+     * @param epsilon The tolerance.
+     * @return true iff this is equal to the ORIGIN.
+     */
+    public boolean isBetween(V3D_PointDouble a, V3D_PointDouble b, double epsilon) {
+        V3D_VectorDouble ab = new V3D_VectorDouble(a, b);
+        if (this.equals(a, epsilon)) {
+            return true;
+        }
+        if (this.equals(b, epsilon)) {
+            return true;
+        }
+        if (a.equals(b, epsilon)) {
+            return false;
+        }
+        V3D_PlaneDouble ap = new V3D_PlaneDouble(a, ab);
+        V3D_PlaneDouble bp = new V3D_PlaneDouble(b, ab);
+        int aps = ap.getSideOfPlane(this);
+        int bps = bp.getSideOfPlane(this);
+        return aps != bps;
     }
 
     /**
@@ -357,9 +385,10 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
      *
      * @param axis The axis of rotation.
      * @param theta The angle of rotation.
+     * @param epsilon The tolerance.
      */
     @Override
-    public V3D_PointDouble rotate(V3D_LineDouble axis, double theta, 
+    public V3D_PointDouble rotate(V3D_LineDouble axis, double theta,
             double epsilon) {
         theta = V3D_AngleDouble.normalise(theta);
         if (theta == 0d) {

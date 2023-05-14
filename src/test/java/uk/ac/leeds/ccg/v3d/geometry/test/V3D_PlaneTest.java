@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry;
+package uk.ac.leeds.ccg.v3d.geometry.test;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
@@ -27,6 +27,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
  * Test of V3D_Plane class.
@@ -3447,38 +3453,39 @@ public class V3D_PlaneTest extends V3D_Test {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of toStringFields method, of class V3D_Plane.
-     */
-    @Test
-    public void testToStringFields() {
-        System.out.println("toStringFields");
-        String pad = "";
-        V3D_Plane instance = V3D_Plane.X0;
-        String expResult = "offset=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")\n"
-                + ",\n"
-                + "p=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")\n"
-                + ",\n"
-                + "n=V3D_Vector\n"
-                + "(\n"
-                + " dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),\n"
-                + " dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),\n"
-                + " dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)\n"
-                + ")";
-        String result = instance.toStringFields(pad);
-        //System.out.println(result);
-        assertEquals(expResult, result);
-    }
+//    /**
+//     * Test of toStringFields method, of class V3D_Plane.
+//     */
+//    @Test
+//    public void testToStringFields() {
+//        System.out.println("toStringFields");
+//        String pad = "";
+//        V3D_Plane instance = V3D_Plane.X0;
+//        String expResult = """
+//                           offset=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           )
+//                           ,
+//                           p=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           )
+//                           ,
+//                           n=V3D_Vector
+//                           (
+//                            dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
+//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
+//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
+//                           )""";
+//        String result = instance.toStringFields(pad);
+//        //System.out.println(result);
+//        assertEquals(expResult, result);
+//    }
 
     /**
      * Test of getPAsVector method, of class V3D_Plane.

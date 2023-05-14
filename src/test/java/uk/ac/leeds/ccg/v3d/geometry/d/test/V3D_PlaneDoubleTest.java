@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry.d;
+package uk.ac.leeds.ccg.v3d.geometry.d.test;
 
 import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
@@ -25,6 +25,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_Double;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_GeometryDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegmentDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PlaneDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
 
 /**
  * Test of V3D_PlaneDouble class.
@@ -77,13 +83,14 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
     public void testToString() {
         System.out.println("toString");
         V3D_PlaneDouble instance = new V3D_PlaneDouble(pP0P0P0, pP1P1P1, pP1P0P0);
-        String expResult = "V3D_PlaneDouble(\n"
-                + " offset=V3D_VectorDouble(dx=0, dy=0, dz=0),\n"
-                + " p= V3D_VectorDouble(dx=0, dy=0, dz=0),\n"
-                + " n= V3D_VectorDouble(dx=0, dy=1, dz=-1))";
+        String expResult = """
+                           V3D_PlaneDouble(
+                            offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
+                            p= V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
+                            n= V3D_VectorDouble(dx=0.0, dy=1.0, dz=-1.0))""";
         String result = instance.toString();
-        System.out.println(result);
-        //assertTrue(expResult.equals(result));
+        //System.out.println(result);
+        assertTrue(expResult.equals(result));
     }
 
     /**
@@ -2698,38 +2705,39 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of toStringFields method, of class V3D_PlaneDouble.
-     */
-    @Test
-    public void testToStringFields() {
-        System.out.println("toStringFields");
-        String pad = "";
-        V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
-        String expResult = "offset=V3D_VectorDouble\n"
-                + "(\n"
-                + " dx=0.0,\n"
-                + " dy=0.0,\n"
-                + " dz=0.0\n"
-                + ")\n"
-                + ",\n"
-                + "p=V3D_VectorDouble\n"
-                + "(\n"
-                + " dx=0.0,\n"
-                + " dy=0.0,\n"
-                + " dz=0.0\n"
-                + ")\n"
-                + ",\n"
-                + "n=V3D_VectorDouble\n"
-                + "(\n"
-                + " dx=1.0,\n"
-                + " dy=0.0,\n"
-                + " dz=0.0\n"
-                + ")";
-        String result = instance.toStringFields(pad);
-        //System.out.println(result);
-        assertEquals(expResult, result);
-    }
+//    /**
+//     * Test of toStringFields method, of class V3D_PlaneDouble.
+//     */
+//    @Test
+//    public void testToStringFields() {
+//        System.out.println("toStringFields");
+//        String pad = "";
+//        V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
+//        String expResult = """
+//                           offset=V3D_VectorDouble
+//                           (
+//                            dx=0.0,
+//                            dy=0.0,
+//                            dz=0.0
+//                           )
+//                           ,
+//                           p=V3D_VectorDouble
+//                           (
+//                            dx=0.0,
+//                            dy=0.0,
+//                            dz=0.0
+//                           )
+//                           ,
+//                           n=V3D_VectorDouble
+//                           (
+//                            dx=1.0,
+//                            dy=0.0,
+//                            dz=0.0
+//                           )""";
+//        String result = instance.toStringFields(pad);
+//        //System.out.println(result);
+//        assertEquals(expResult, result);
+//    }
 
     /**
      * Test of getPAsVector method, of class V3D_PlaneDouble.

@@ -59,19 +59,19 @@ public class V3D_PointsCollinear extends V3D_FiniteGeometry {
      * @return The Envelope
      */
     @Override
-    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
+    public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
-            en = new V3D_Envelope(oom, rm, new V3D_Point(offset, rels[0]));
+            en = new V3D_Envelope(oom, new V3D_Point(offset, rels[0]));
             for (int i = 1; i < rels.length; i++) {
-                en = en.getIntersection(new V3D_Envelope(oom, rm, 
-                        new V3D_Point(offset, rels[0])), oom, rm);
+                en = en.getIntersection(new V3D_Envelope(oom, 
+                        new V3D_Point(offset, rels[0])), oom);
             }
         }
         return en;
     }
 
     @Override
-    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
+    public V3D_Point[] getPoints() {
         int n = rels.length;
         V3D_Point[] r = new V3D_Point[n];
         for(int i = 0; i < n; i ++) {
@@ -83,5 +83,10 @@ public class V3D_PointsCollinear extends V3D_FiniteGeometry {
     @Override
     public V3D_PointsCollinear rotate(V3D_Line axis, BigRational theta, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

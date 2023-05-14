@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry.d;
+package uk.ac.leeds.ccg.v3d.geometry.d.test;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.Disabled;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_EnvelopeDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_RectangleDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
 
 /**
  * Test class for V3D_EnvelopeDouble.
@@ -33,9 +35,8 @@ import org.junit.jupiter.api.Disabled;
  */
 public class V3D_EnvelopeDoubleTest extends V3D_DoubleTest {
 
-    private static final long serialVersionUID = 1L;
-
     public V3D_EnvelopeDoubleTest() {
+        super();
     }
 
     @BeforeAll
@@ -100,6 +101,10 @@ public class V3D_EnvelopeDoubleTest extends V3D_DoubleTest {
         en = new V3D_EnvelopeDouble(pP0P0P0, pP1P1P1);
         instance = new V3D_EnvelopeDouble(pN1N1N1, pN1P0P0);
         assertFalse(instance.isIntersectedBy(en));
+        // Test 5
+        en = new V3D_EnvelopeDouble(pP0P0P0, pP1P1P1);
+        instance = new V3D_EnvelopeDouble(pN1P0P0, pP0P1P1);
+        assertTrue(instance.isIntersectedBy(en));
     }
 
     /**

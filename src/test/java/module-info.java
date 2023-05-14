@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Andy Turner, University of Leeds.
+ * Copyright 2023 Centre for Computational Geography.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,11 @@
  * limitations under the License.
  */
 
-/**
- * Provides utility for 3D spatial geometry.
- */
-module uk.ac.leeds.ccg.v3d {
-
-    /**
-     * ccg-math
-     */
-    requires transitive uk.ac.leeds.ccg.math;
-    requires transitive uk.ac.leeds.ccg.generic;
-
-    /**
-     * Exports.
-     */
-    //exports uk.ac.leeds.ccg.v3d;
-    exports uk.ac.leeds.ccg.v3d.core;
-    exports uk.ac.leeds.ccg.v3d.geometry;
-    exports uk.ac.leeds.ccg.v3d.geometry.d;
-    exports uk.ac.leeds.ccg.v3d.geometry.d.light;
-    exports uk.ac.leeds.ccg.v3d.geometry.light;
+module uk.ac.leeds.ccg.v3d.test {
+    requires uk.ac.leeds.ccg.v3d;
+    //requires uk.ac.leeds.ccg.v3d.geometry;
+    
+    requires org.junit.jupiter.api;
+    opens uk.ac.leeds.ccg.v3d.geometry.test to org.junit.platform.commons;
+    opens uk.ac.leeds.ccg.v3d.geometry.d.test to org.junit.platform.commons;
 }

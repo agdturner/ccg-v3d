@@ -58,7 +58,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
+    public V3D_Point[] getPoints() {
         int nl = lineSegments.size();
         V3D_Point[] r = new V3D_Point[nl * 2];
         for (int i = 0; i < nl; i++) {
@@ -265,12 +265,12 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
+    public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
             Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-            en = ite.next().getEnvelope(oom, rm);
+            en = ite.next().getEnvelope(oom);
             while (ite.hasNext()) {
-                en = en.union(ite.next().getEnvelope(oom, rm), oom, rm);
+                en = en.union(ite.next().getEnvelope(oom), oom);
             }
         }
         return en;
@@ -305,7 +305,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
         BigRational d = ite.next().getDistanceSquared(p, oom, rm);
         while (ite.hasNext()) {
-            d = d.min(ite.next().getDistanceSquared(p, oom, rm));
+            d = BigRational.min(d, ite.next().getDistanceSquared(p, oom, rm));
         }
         return d;
     }
@@ -339,7 +339,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
         BigRational d = ite.next().getDistanceSquared(l, oom, rm);
         while (ite.hasNext()) {
-            d = d.min(ite.next().getDistanceSquared(l, oom, rm));
+            d = BigRational.min(d, ite.next().getDistanceSquared(l, oom, rm));
         }
         return d;
     }
@@ -373,7 +373,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();
         BigRational d = ite.next().getDistanceSquared(l, oom, rm);
         while (ite.hasNext()) {
-            d = d.min(ite.next().getDistanceSquared(l, oom, rm));
+            d = BigRational.min(d, ite.next().getDistanceSquared(l, oom, rm));
         }
         return d;
     }
@@ -575,6 +575,11 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
             rls[0] = lineSegments.get(i).rotate(axis, theta, oom, rm);
         }
         return new V3D_LineSegmentsCollinear(rls);
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

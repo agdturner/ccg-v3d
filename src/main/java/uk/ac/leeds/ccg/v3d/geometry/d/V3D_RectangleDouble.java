@@ -20,13 +20,13 @@ package uk.ac.leeds.ccg.v3d.geometry.d;
  * angled quadrilateral. The four corners are the points
  * {@link #p}, {@link #q}, {@link #r} and {@link #s}. The following depicts a
  * rectangle {@code
- * qr
+ *           qr
  * qv  *-------------* r
- * |             |
- * pq |             | rs
- * |             |
- * p *-------------* s
- * sp
+ *     |             |
+ * pq  |             | rs
+ *     |             |
+ * p   *-------------* s
+ *           sp
  * }
  * The angles PQR, QRS, RSP, SPQ are all 90 degrees or Pi/2 radians.
  *
@@ -783,9 +783,11 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
         V3D_FiniteGeometryDouble rspit = getRSP().getIntersection(t, epsilon);
         if (pqrit == null) {
             return rspit;
+            //return null;
         } else {
             if (rspit == null) {
                 return pqrit;
+                //return null;
             }
             if (pqrit instanceof V3D_PointDouble) {
                 return rspit;

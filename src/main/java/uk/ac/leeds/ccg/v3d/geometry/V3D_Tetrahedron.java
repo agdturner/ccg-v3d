@@ -225,13 +225,13 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
+    public V3D_Envelope getEnvelope(int oom) {
         if (en == null) {
 //            en = pqr.getEnvelope(oom).union(qsr.getEnvelope(oom));
-            en = getP().getEnvelope(oom, rm)
-                    .union(getQ().getEnvelope(oom, rm), oom, rm)
-                    .union(getR().getEnvelope(oom, rm), oom, rm)
-                    .union(getS().getEnvelope(oom, rm), oom, rm);
+            en = getP().getEnvelope(oom)
+                    .union(getQ().getEnvelope(oom), oom)
+                    .union(getR().getEnvelope(oom), oom)
+                    .union(getS().getEnvelope(oom), oom);
         }
         return en;
     }
@@ -1555,7 +1555,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Point[] getPoints(int oom, RoundingMode rm) {
+    public V3D_Point[] getPoints() {
         V3D_Point[] re = new V3D_Point[4];
         re[0] = getP();
         re[1] = getQ();
@@ -1681,7 +1681,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @return The V3D_Geometry.
      */
     public V3D_FiniteGeometry getIntersection(V3D_Tetrahedron t, int oom, RoundingMode rm) {
-        if (!getEnvelope(oom, rm).isIntersectedBy(t.getEnvelope(oom, rm), oom, rm)) {
+        if (!getEnvelope(oom).isIntersectedBy(t.getEnvelope(oom), oom)) {
             return null;
         }
         V3D_FiniteGeometry pqri = getIntersection(t.getPqr(oom, rm), oom, rm);
@@ -1870,7 +1870,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         if (pqrd.compareTo(BigRational.ZERO) == 0) {
             return pqrd;
         } else {
-            return pqrd.min(getDistanceSquared(r.getRSP(oom, rm), oom, rm));
+            return BigRational.min(pqrd,
+                    getDistanceSquared(r.getRSP(oom, rm), oom, rm));
         }
     }
 
@@ -1906,5 +1907,10 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
                     t.getDistanceSquared(getQsr(oom, rm), oom, rm),
                     t.getDistanceSquared(getSpr(oom, rm), oom, rm));
         }
+    }
+
+    @Override
+    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

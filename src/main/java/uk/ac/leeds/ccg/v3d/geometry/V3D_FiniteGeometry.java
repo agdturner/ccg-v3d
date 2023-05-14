@@ -35,15 +35,6 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry {
     protected V3D_Envelope en;
     
     /**
-     * For getting the envelope of the geometry
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return The V3D_Envelope.
-     */
-    public abstract V3D_Envelope getEnvelope(int oom, RoundingMode rm);
-    
-    /**
      * Creates a new instance with offset V3D_Vector.ZERO.
      */
     public V3D_FiniteGeometry() {
@@ -60,11 +51,28 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry {
     }
     
     /**
-     * @return A copy of the points of the geometry.
+     * For getting the envelope (the Axis Aligned Bounding Box) of the geometry.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @return The V3D_Envelope.
+     */
+    public abstract V3D_Envelope getEnvelope(int oom);
+    
+    /**
+     * For evaluating if the geometry is intersected by the Axis Aligned 
+     * Bounding Box aabb.
+     *
+     * @param aabb The Axis Aligned Bounding Box to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
+     * @return {@code true} iff the geometry intersects aabb at the given precision.
      */
-    public abstract V3D_Point[] getPoints(int oom, RoundingMode rm);
+    public abstract boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm);
+    
+    /**
+     * @return A copy of the points of the geometry.
+     */
+    public abstract V3D_Point[] getPoints();
     
     /**
      * @return A copy of the points of the geometries gs.
@@ -72,11 +80,10 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @param gs The geometries.
      */
-    public static V3D_Point[] getPoints(int oom, RoundingMode rm, 
-            V3D_FiniteGeometry... gs) {
+    public static V3D_Point[] getPoints(V3D_FiniteGeometry... gs) {
         ArrayList<V3D_Point> list = new ArrayList<>();
         for (var x: gs) {
-            V3D_Point[] pts = x.getPoints(oom, rm);
+            V3D_Point[] pts = x.getPoints();
             list.addAll(Arrays.asList(pts));
         }
         return list.toArray(V3D_Point[]::new);

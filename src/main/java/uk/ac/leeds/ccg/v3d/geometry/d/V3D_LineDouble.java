@@ -344,6 +344,9 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_LineDouble l, double epsilon) {
+//        if (l == null) {
+//            return false;
+//        }
         if (v.isScalarMultiple(l.v, epsilon)) {
             if (l.isIntersectedBy(getP(), epsilon)) {
                 if (isIntersectedBy(l.getP(), epsilon)) {
