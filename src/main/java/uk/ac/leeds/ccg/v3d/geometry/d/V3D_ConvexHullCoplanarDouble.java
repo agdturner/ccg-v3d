@@ -107,7 +107,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         // Get a list of unique points.
         ArrayList<V3D_PointDouble> pts = V3D_PointDouble.getUnique(
                 Arrays.asList(points), epsilon);
-        V3D_VectorDouble v0 = pts.get(0).rel;
+        V3D_VectorDouble v0 = new V3D_VectorDouble(pts.get(0).rel);
         double xmin = v0.dx;
         double xmax = v0.dx;
         double ymin = v0.dy;

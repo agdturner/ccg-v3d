@@ -293,7 +293,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         if (ptv.isZero()) {
             v = p.add(q).add(r).reverse();
         } else {
-            v = ptv;
+            v = new V3D_VectorDouble(ptv);
         }
         double direction = n.getDotProduct(v) / n.getDotProduct(n);
         if (direction < 0d) {

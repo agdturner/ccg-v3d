@@ -298,7 +298,7 @@ public class V3D_Plane extends V3D_Geometry {
         if (ptv.isZero()) {
             v = p.add(q, oom, rm).add(r, oom, rm).reverse();
         } else {
-            v = ptv;
+            v = new V3D_Vector(ptv);
         }
 
         int direction = (n.getDotProduct(v, oom, rm)

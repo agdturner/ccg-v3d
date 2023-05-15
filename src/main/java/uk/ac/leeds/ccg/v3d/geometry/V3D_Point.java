@@ -524,6 +524,27 @@ public class V3D_Point extends V3D_FiniteGeometry {
                 }
             }
         }
+//        HashSet<Integer> indexes = new HashSet<>();
+//        ArrayList<V3D_Point> r = new ArrayList<>();
+//        for (int i = 0; i < pts.size(); i++) {
+//            if (!indexes.contains(i)) {
+//                V3D_Point p = pts.get(i);
+//                boolean added = false;
+//                for (int j = i + 1; j < pts.size(); j++) {
+//                    if (p.equals(pts.get(j), oom, rm)) {
+//                        //r.add(p);
+//                        r.add(new V3D_Point(p));
+//                        indexes.add(j);
+//                        added = true;
+//                        break;
+//                    }
+//                }
+//                if (!added) {
+//                    //r.add(p);
+//                    r.add(new V3D_Point(p));
+//                }
+//            }
+//        }
         return r;
     }
 

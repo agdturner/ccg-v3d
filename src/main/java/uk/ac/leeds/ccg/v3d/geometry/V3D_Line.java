@@ -266,8 +266,8 @@ public class V3D_Line extends V3D_Geometry {
      * Checks to ensure v is not the zero vector {@code <0,0,0>}.
      *
      * @param offset What {@link #offset} is set to.
-     * @param p What {@link #pv} is set to.
-     * @param v The vector defining the line from {@link #pv}.
+     * @param p Used to initialise {@link #pv}.
+     * @param v Used to initialise {@link #v}.
      * @throws RuntimeException if {@code v.isZero()}.
      */
     public V3D_Line(V3D_Vector offset, V3D_Vector p, V3D_Vector v) {
@@ -290,7 +290,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      */
     public V3D_Line(V3D_Point p, V3D_Point q, int oom, RoundingMode rm) {
-        super(p.offset);
+        super(new V3D_Vector(p.offset));
         V3D_Point q2 = new V3D_Point(q);
         q2.setOffset(p.offset, oom, rm);
         if (p.rel.equals(q2.rel)) {

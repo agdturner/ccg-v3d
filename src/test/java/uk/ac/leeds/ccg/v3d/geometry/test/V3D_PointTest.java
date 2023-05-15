@@ -58,7 +58,7 @@ public class V3D_PointTest extends V3D_Test {
     public void tearDown() {
     }
     
-     /**
+    /**
      * Test of equals method, of class V3D_Point.
      */
     @Test
@@ -137,7 +137,6 @@ public class V3D_PointTest extends V3D_Test {
             }
             assertTrue(t);
         }
-        
     }
     
     /**

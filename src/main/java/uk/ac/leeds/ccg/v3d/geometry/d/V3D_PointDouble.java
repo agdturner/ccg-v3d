@@ -447,20 +447,38 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
         for (int i = 0; i < pts.size(); i++) {
             if (!indexes.contains(i)) {
                 V3D_PointDouble p = pts.get(i);
-                boolean added = false;
+                r.add(p);
                 for (int j = i + 1; j < pts.size(); j++) {
-                    if (p.equals(pts.get(j), epsilon)) {
-                        r.add(p);
-                        indexes.add(j);
-                        added = true;
-                        break;
+                    if (!indexes.contains(j)) {
+                        V3D_PointDouble p2 = pts.get(j);
+                        if (p.equals(p2, epsilon)) {
+                            indexes.add(j);
+                        }
                     }
-                }
-                if (!added) {
-                    r.add(p);
                 }
             }
         }
+//        HashSet<Integer> indexes = new HashSet<>();
+//        ArrayList<V3D_PointDouble> r = new ArrayList<>();
+//        for (int i = 0; i < pts.size(); i++) {
+//            if (!indexes.contains(i)) {
+//                V3D_PointDouble p = pts.get(i);
+//                boolean added = false;
+//                for (int j = i + 1; j < pts.size(); j++) {
+//                    if (p.equals(pts.get(j), epsilon)) {
+//                        //r.add(p);
+//                        r.add(new V3D_PointDouble(p));
+//                        indexes.add(j);
+//                        added = true;
+//                        break;
+//                    }
+//                }
+//                if (!added) {
+//                    //r.add(p);
+//                    r.add(new V3D_PointDouble(p));
+//                }
+//            }
+//        }
         return r;
     }
 }

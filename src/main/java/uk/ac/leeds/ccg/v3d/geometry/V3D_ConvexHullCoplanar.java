@@ -105,7 +105,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
         this.triangles = new ArrayList<>();
         // Get a list of unique points.
         ArrayList<V3D_Point> pts = V3D_Point.getUnique(Arrays.asList(points), oom, rm);
-        V3D_Vector v0 = pts.get(0).rel;
+        V3D_Vector v0 = new V3D_Vector(pts.get(0).rel);
         Math_BigRationalSqrt xmin = v0.dx;
         Math_BigRationalSqrt xmax = v0.dx;
         Math_BigRationalSqrt ymin = v0.dy;

@@ -272,7 +272,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * @param q What {@link #v} is derived from.
      */
     public V3D_LineDouble(V3D_PointDouble p, V3D_PointDouble q) {
-        super(p.offset);
+        super(new V3D_VectorDouble(p.offset));
         V3D_PointDouble q2 = new V3D_PointDouble(q);
         q2.setOffset(p.offset);
         if (p.rel.equals(q2.rel)) {

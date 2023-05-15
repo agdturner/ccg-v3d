@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d.test;
 
+import java.util.ArrayList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -557,6 +558,87 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         V3D_PointDouble instance = new V3D_PointDouble(pP0P0P0);
         instance.setRel(rel);
         assertTrue(instance.equals(pP0P0P0));
+    }
+    
+    /**
+     * Test of equals method, of class V3D_Point.
+     */
+    @Test
+    public void testGetUnique() {
+        System.out.println("getUnique");
+        ArrayList<V3D_PointDouble> pts;
+        ArrayList<V3D_PointDouble> expResult;
+        ArrayList<V3D_PointDouble> result;
+        double epsilon = 1 / 100000000d;
+        // Test 1
+        pts = new ArrayList<>();
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        expResult = new ArrayList<>();
+        expResult.add(pP0P0P0);
+        result = V3D_PointDouble.getUnique(pts, epsilon);
+        testContainsSamePoints(expResult, result, epsilon);
+        // Test 2
+        pts = new ArrayList<>();
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        expResult = new ArrayList<>();
+        expResult.add(pP0P0P0);
+        expResult.add(pP1P0P0);
+        result = V3D_PointDouble.getUnique(pts, epsilon);
+        testContainsSamePoints(expResult, result, epsilon);
+        // Test 3
+        pts = new ArrayList<>();
+        pts.add(pP0P1P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        expResult = new ArrayList<>();
+        expResult.add(pP0P1P0);
+        expResult.add(pP0P0P0);
+        expResult.add(pP1P0P0);
+        result = V3D_PointDouble.getUnique(pts, epsilon);
+        testContainsSamePoints(expResult, result, epsilon);
+    }
+    
+    private void testContainsSamePoints(ArrayList<V3D_PointDouble> expResult,
+        ArrayList<V3D_PointDouble> result, double epsilon) {
+        assertEquals(expResult.size(), result.size());
+        boolean t = false;
+        for (var x: result) {
+            for (var y: expResult) {
+                if (x.equals(y, epsilon)) {
+                    t = true;
+                    break;
+                }
+            }
+            assertTrue(t);
+        }
+        t = false;
+        for (var x: expResult) {
+            for (var y: result) {
+                if (x.equals(y, epsilon)) {
+                    t = true;
+                    break;
+                }
+            }
+            assertTrue(t);
+        }
+        
     }
 
 }

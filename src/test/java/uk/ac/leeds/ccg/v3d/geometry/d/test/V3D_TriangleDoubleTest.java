@@ -662,6 +662,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
                 new V3D_PointDouble(6, 1, 0), new V3D_PointDouble(2, 5, 0));
         instance = new V3D_TriangleDouble(pP1P0P0, new V3D_PointDouble(3, 0, 0), 
                 new V3D_PointDouble(3, 2, 0));
+        System.out.println(pP1P0P0.toString());
         expResult = new V3D_ConvexHullCoplanarDouble(epsilon,
                 new V3D_TriangleDouble(pP2P0P0, new V3D_PointDouble(3, 0, 0),
                         pP2P1P0),
