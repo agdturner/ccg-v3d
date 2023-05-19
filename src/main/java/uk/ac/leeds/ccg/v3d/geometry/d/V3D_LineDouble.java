@@ -91,43 +91,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      */
     public static final V3D_LineDouble Z_AXIS = new V3D_LineDouble(
             V3D_VectorDouble.ZERO, V3D_VectorDouble.K);
-
-    /**
-     * y=x.
-     */
-    public static final V3D_LineDouble Y_EQUALS_X = new V3D_LineDouble(
-            V3D_VectorDouble.ZERO, V3D_VectorDouble.IJ);
-
-    /**
-     * y=z.
-     */
-    public static final V3D_LineDouble Y_EQUALS_Z = new V3D_LineDouble(
-            V3D_VectorDouble.ZERO, V3D_VectorDouble.JK);
-
-    /**
-     * x=z.
-     */
-    public static final V3D_LineDouble X_EQUALS_Z = new V3D_LineDouble(
-            V3D_VectorDouble.ZERO, V3D_VectorDouble.IK);
-
-    /**
-     * y=-x.
-     */
-    public static final V3D_LineDouble Y_EQUALS_nX = new V3D_LineDouble(
-            V3D_VectorDouble.ZERO, V3D_VectorDouble.InJ);
-
-    /**
-     * y=-z.
-     */
-    public static final V3D_LineDouble Y_EQUALS_nZ = new V3D_LineDouble(
-            V3D_VectorDouble.ZERO, V3D_VectorDouble.JnK);
-
-    /**
-     * x=-z.
-     */
-    public static final V3D_LineDouble X_EQUALS_nZ = new V3D_LineDouble(
-            V3D_VectorDouble.ZERO, V3D_VectorDouble.InK);
-
+    
     /**
      * If this line is defined by a vector, then the calculation of {@link #q}
      * may be imprecise. If this line is defined by points, then {@link #v} may

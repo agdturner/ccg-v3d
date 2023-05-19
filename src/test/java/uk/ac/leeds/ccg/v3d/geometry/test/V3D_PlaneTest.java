@@ -3615,7 +3615,7 @@ public class V3D_PlaneTest extends V3D_Test {
         instance = instance.rotate(axis, theta, oom, rm);
         V3D_Plane expResult = new V3D_Plane(N1P0P0, P0P0P0, P0P2P0, P0P2N2, oom, rm);
         assertTrue(expResult.equalsIgnoreOrientation(instance, oom, rm));
-        // Test 5
+        // Test 6
         axis = V3D_Line.Z_AXIS;
         theta = Pi;
         instance = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm);

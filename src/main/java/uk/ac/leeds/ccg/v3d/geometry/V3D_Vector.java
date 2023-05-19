@@ -415,6 +415,13 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * @return {@code true} if {@code this.equals(e.zeroVector)}
+     */
+    public boolean isZero(int oom, RoundingMode rm) {
+        return this.equals(ZERO, oom, rm);
+    }
+
+    /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode used in the calculation.
      * @return The value of {@link #dx} as a BigRational.
@@ -623,12 +630,82 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
     public boolean isScalarMultiple(V3D_Vector v, int oom, RoundingMode rm) {
-        // Special case
-        if (this.isZero() || v.isZero()) {
+        if (equals(v, oom, rm)) {
+            return true;
+        } else {
+            // Special case
+            if (isZero(oom, rm)) {
+                /**
+                 * Can't multiply the zero vector by a scalar to get a non-zero 
+                 * vector.
+                 */
+                return false;
+            }                    
+            if (v.isZero(oom, rm)) {
+                /**
+                 * Already tested that this is not equal to v, so the scalar is 
+                 * zero.
+                 */
+                return true;
+            }
+            if (v.dx.equals(dx, oom)) {
+                // dx = v.dx
+                if (v.dx.isZero(oom)) {
+                    // dx = v.dx = 0d
+                    if (v.dy.equals(dy, oom)) {
+                        if (v.dy.isZero(oom)) {
+                            return !dz.isZero(oom);
+                        }
+                    } else {
+                        if (dy.isZero(oom)) {
+                            return dz.isZero(oom);
+                        } else {
+                            Math_BigRationalSqrt scalar = v.dy.divide(dy, oom, rm);
+                            return v.dz.equals(dz.multiply(scalar, oom, rm));
+                        }
+                    }
+                } else {
+                    // dx != 0
+                    // v.dx != 0
+                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom, rm);
+                    if (v.dy.equals(dy.multiply(scalar, oom, rm))) {
+                        return v.dz.equals(dz.multiply(scalar, oom, rm));
+                    } else {
+                        return false;
+                    }
+                }
+            } else {
+                // dx != v.dx
+                if (dx.isZero(oom)) {
+                    return false;
+//                    if (v.dy == 0d) {
+//                        return false;
+//                    } else {
+//                        if (v.dz == 0d) {
+//                            return false;
+//                        } else {
+//                            return true;
+//                        }
+//                    }
+                } else {
+                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom, rm);
+                    if (v.dy.equals(dy.multiply(scalar, oom, rm))) {
+                        return v.dz.equals(dz.multiply(scalar, oom, rm));
+                    } else {
+                        return false;
+                    }
+                }
+            }
             return false;
         }
-        return this.multiply(getDotProduct(v, oom, rm), oom, rm).equals(
-                v.multiply(getDotProduct(this, oom, rm), oom, rm));
+// Previous way
+//        // Special case
+//        if (this.isZero() || v.isZero()) {
+//            return false;
+//        }
+//        return this.multiply(getDotProduct(v, oom, rm), oom, rm).equals(
+//                v.multiply(getDotProduct(this, oom, rm), oom, rm));
+// Old way
 //        if (dx.isZero()) {
 //            if (v.dx.isZero()) {
 //                if (dy.isZero()) {

@@ -625,7 +625,7 @@ public class V3D_PointTest extends V3D_Test {
         int oomn9 = oom - 9;
         RoundingMode rm = RoundingMode.HALF_UP;
         BigRational Pi = BigRational.valueOf(bd.getPi(oomn9, rm));
-        V3D_Line axis = V3D_Line.Y_EQUALS_X;
+        V3D_Line axis = new V3D_Line(P0P0P0, P1P1P0);
         V3D_Point instance = new V3D_Point(pP1P0P0);
         BigRational theta = Pi;
         V3D_Point result = instance.rotate(axis, theta, oom, rm);

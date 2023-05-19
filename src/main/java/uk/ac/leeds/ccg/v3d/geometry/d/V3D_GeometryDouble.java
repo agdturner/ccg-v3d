@@ -104,8 +104,10 @@ public abstract class V3D_GeometryDouble implements Serializable {
 
     /**
      * Returns the geometry rotated about the axis of rotation axisOfRotation by
-     * the angle theta.
-     * Options for rotation include:
+     * the angle theta. In this geometry a positive rotation angle is in the 
+     * direction of the fingers of the right hand as the thumb points in the 
+     * direction of the axis of rotation. Options for rotation calculations 
+     * include:
      * <ul>
      * <li>Rotation Matrix https://en.wikipedia.org/wiki/Rotation_matrix</li>
      * <li>Quaternions

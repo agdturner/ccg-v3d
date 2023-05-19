@@ -765,14 +765,14 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         V3D_LineDouble result = instance.rotate(axis, theta, epsilon);
         assertTrue(expResult.equals(result, epsilon));
         // Test 2
-        axis = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_VectorDouble.J);
+        axis = V3D_LineDouble.Y_AXIS;
         instance = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
-        expResult = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P0P1);
+        expResult = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P0N1);
         result = instance.rotate(axis, theta, epsilon);
         assertTrue(expResult.equals(result, epsilon));
         // Test 3
         instance = new V3D_LineDouble(new V3D_VectorDouble(0, 0, 0), new V3D_VectorDouble(5, 0, 0));
-        expResult = new V3D_LineDouble(new V3D_VectorDouble(0, 0, 0), new V3D_VectorDouble(0, 0, 5));
+        expResult = new V3D_LineDouble(new V3D_VectorDouble(0, 0, 0), new V3D_VectorDouble(0, 0, -5));
         result = instance.rotate(axis, theta, epsilon);
         assertTrue(expResult.equals(result, epsilon));
         // Test 4

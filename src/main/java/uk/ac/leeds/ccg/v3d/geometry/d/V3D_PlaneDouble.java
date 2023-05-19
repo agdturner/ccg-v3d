@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
+import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_Double;
 
 /**
@@ -251,7 +252,9 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      */
     public V3D_PlaneDouble(V3D_VectorDouble offset, V3D_VectorDouble p,
             V3D_VectorDouble q, V3D_VectorDouble r, double epsilon) {
-        this(p, offset, p, q, r, epsilon);
+        //this(p, offset, p, q, r, epsilon);
+        this(q.subtract(p).getCrossProduct(r.subtract(q)), offset, p, q, r, epsilon);
+        //this(q.subtract(p).getCrossProduct(q.subtract(r)), offset, p, q, r, epsilon);
     }
 
     /**
@@ -1160,7 +1163,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         if (n.isOrthogonal(l.v, epsilon)) {
             return true;
         }
-        return n.getDotProduct(l.v) == 0d;
+        return Math_Double.equals(n.getDotProduct(l.v), 0d, epsilon);
+        //return n.getDotProduct(l.v) == 0d;
     }
 
     /**

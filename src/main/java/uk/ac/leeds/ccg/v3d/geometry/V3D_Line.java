@@ -76,6 +76,7 @@ public class V3D_Line extends V3D_Geometry {
 
     private static final long serialVersionUID = 1L;
 
+    
     /**
      * The x axis.
      */
@@ -93,43 +94,7 @@ public class V3D_Line extends V3D_Geometry {
      */
     public static final V3D_Line Z_AXIS = new V3D_Line(V3D_Vector.ZERO,
             V3D_Vector.K);
-
-    /**
-     * y=x.
-     */
-    public static final V3D_Line Y_EQUALS_X = new V3D_Line(V3D_Vector.ZERO,
-            V3D_Vector.IJ);
-
-    /**
-     * y=z.
-     */
-    public static final V3D_Line Y_EQUALS_Z = new V3D_Line(V3D_Vector.ZERO,
-            V3D_Vector.JK);
-
-    /**
-     * x=z.
-     */
-    public static final V3D_Line X_EQUALS_Z = new V3D_Line(V3D_Vector.ZERO,
-            V3D_Vector.IK);
-
-    /**
-     * y=-x.
-     */
-    public static final V3D_Line Y_EQUALS_nX = new V3D_Line(V3D_Vector.ZERO,
-            V3D_Vector.InJ);
-
-    /**
-     * y=-z.
-     */
-    public static final V3D_Line Y_EQUALS_nZ = new V3D_Line(V3D_Vector.ZERO,
-            V3D_Vector.JnK);
-
-    /**
-     * x=-z.
-     */
-    public static final V3D_Line X_EQUALS_nZ = new V3D_Line(V3D_Vector.ZERO,
-            V3D_Vector.InK);
-
+    
     /**
      * If this line is defined by a vector, then the calculation of {@link #q}
      * may be imprecise. If this line is defined by points, then {@link #v} may

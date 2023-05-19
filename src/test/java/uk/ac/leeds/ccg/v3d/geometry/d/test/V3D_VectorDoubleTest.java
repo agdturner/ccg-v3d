@@ -171,6 +171,7 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         instance = P0P1N1;
         assertFalse(instance.isOrthogonal(v, epsilon));
         instance = P0P0N1;
+        v = P1P1P0;
         assertTrue(instance.isOrthogonal(v, epsilon));
         instance = P1P1P1;
         assertFalse(instance.isOrthogonal(v, epsilon));
@@ -303,19 +304,70 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         double epsilon = 1 / 1000000d;
         V3D_VectorDouble v = P0P0P0;
         V3D_VectorDouble instance = P1P1P1;
-        assertFalse(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 2
+        v = N1N1N1;
+        instance = P0P0P0;
+        assertFalse(instance.isScalarMultiple(v, epsilon));
+        // Test 3
         v = N1N1N1;
         instance = P1P1P1;
         assertTrue(instance.isScalarMultiple(v, epsilon));
-        // Test 3
+        // Test 4
         v = P1P0P0;
         instance = P0P1P1;
         assertFalse(instance.isScalarMultiple(v, epsilon));
-        // Test 4
+        // Test 5
+        v = new V3D_VectorDouble(0d, 1d, 10000d);
+        instance = new V3D_VectorDouble(0d, 1d, 10000d);
+        assertTrue(instance.isScalarMultiple(v, epsilon));
+        // Test 6
         v = new V3D_VectorDouble(0d, 1d, 10000d);
         instance = new V3D_VectorDouble(0d, 1d, 10001d);
+        assertFalse(instance.isScalarMultiple(v, epsilon));        
+        // Test 7
+        v = new V3D_VectorDouble(0d, 1d, 1d);
+        instance = new V3D_VectorDouble(0d, 1d, 1d + (epsilon / 2.0d));
+        //assertFalse(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
+        // Test 8
+        v = new V3D_VectorDouble(0d, 1d, 10000d);
+        instance = new V3D_VectorDouble(0d, 2d, 20000d);
+        assertTrue(instance.isScalarMultiple(v, epsilon));
+        
+        // Test 9
+        instance = P0P0P0;
+        v = P1P1P1;
         assertFalse(instance.isScalarMultiple(v, epsilon));
+        // Test 10
+        instance = N1N1N1;
+        v = P0P0P0;
+        assertTrue(instance.isScalarMultiple(v, epsilon));
+        // Test 11
+        instance = N1N1N1;
+        v = P1P1P1;
+        assertTrue(instance.isScalarMultiple(v, epsilon));
+        // Test 12
+        instance = P1P0P0;
+        v = P0P1P1;
+        assertFalse(instance.isScalarMultiple(v, epsilon));
+        // Test 13
+        instance = new V3D_VectorDouble(0d, 1d, 10000d);
+        v = new V3D_VectorDouble(0d, 1d, 10000d);
+        assertTrue(instance.isScalarMultiple(v, epsilon));
+        // Test 14
+        instance = new V3D_VectorDouble(0d, 1d, 10000d);
+        v = new V3D_VectorDouble(0d, 1d, 10001d);
+        assertFalse(instance.isScalarMultiple(v, epsilon));        
+        // Test 15
+        instance = new V3D_VectorDouble(0d, 1d, 1d);
+        v = new V3D_VectorDouble(0d, 1d, 1d + (epsilon / 2.0d));
+        //assertFalse(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
+        // Test 16
+        instance = new V3D_VectorDouble(0d, 1d, 10000d);
+        v = new V3D_VectorDouble(0d, 2d, 20000d);
+        assertTrue(instance.isScalarMultiple(v, epsilon));
     }
 
     /**
@@ -724,6 +776,32 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         assertTrue(instance.equals(v));
         instance = new V3D_VectorDouble(1, 1, 0);
         assertFalse(instance.equals(v));
+    }
+
+    /**
+     * Test of equals method, of class V3D_VectorDouble.
+     */
+    @Test
+    public void testEquals_V3D_VectorDouble_double() {
+        System.out.println("equals");
+        double epsilon = 1/10000d;
+        double ediv2 = epsilon / 2.0d;
+        V3D_VectorDouble v = new V3D_VectorDouble(1, 1, 1);
+        V3D_VectorDouble instance = new V3D_VectorDouble(1, 1, 1);
+        assertTrue(instance.equals(v, epsilon));
+        // Test 2
+        instance = new V3D_VectorDouble(1, 1, 0);
+        assertFalse(instance.equals(v, epsilon));
+        // Test 3
+        instance = new V3D_VectorDouble(1, 1, 1 + ediv2);
+        assertTrue(instance.equals(v, epsilon));
+        // Test 4
+        instance = new V3D_VectorDouble(1, 1 + ediv2, 1);
+        assertTrue(instance.equals(v, epsilon));
+        // Test 5
+        instance = new V3D_VectorDouble(1 + ediv2, 1, 1);
+        assertTrue(instance.equals(v, epsilon));
+        
     }
 
     /**

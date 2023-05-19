@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry.d;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 
 /**
  * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding
@@ -193,12 +194,9 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
         double px = p.getX();
         double py = p.getY();
         double pz = p.getZ();
-        if (x < px + epsilon && x > px - epsilon
-                && y < py + epsilon && y > py - epsilon
-                && z < pz + epsilon && z > pz - epsilon) {
-            return true;
-        }
-        return false;
+        return Math_Double.equals(x, px, epsilon) 
+                && Math_Double.equals(y, py, epsilon) 
+                && Math_Double.equals(z, pz, epsilon) ;
     }
 
     @Override

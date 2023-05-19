@@ -134,13 +134,15 @@ public class V3D_EnvelopeDouble implements Serializable {
      */
     public V3D_EnvelopeDouble(V3D_PointDouble... points) {
         //offset = points[0].offset;
-        offset = V3D_VectorDouble.ZERO;
+        //offset = V3D_VectorDouble.ZERO;
         int len = points.length;
         switch (len) {
             case 0 ->
                 throw new RuntimeException("Cannot create envelope from an empty "
                         + "collection of points.");
             case 1 -> {
+                //offset = points[0].offset;
+                offset = V3D_VectorDouble.ZERO;
                 xMin = points[0].getX();
                 xMax = xMin;
                 yMin = points[0].getY();
@@ -149,6 +151,8 @@ public class V3D_EnvelopeDouble implements Serializable {
                 zMax = zMin;
             }
             default -> {
+                //offset = points[0].offset;
+                offset = V3D_VectorDouble.ZERO;
                 double xmin = points[0].getX();
                 double xmax = xmin;
                 double ymin = points[0].getY();

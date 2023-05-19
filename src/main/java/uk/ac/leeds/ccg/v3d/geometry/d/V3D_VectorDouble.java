@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry.d;
 
 import java.io.Serializable;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.math.number.Math_Quaternion_Double;
 import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VDouble;
 
@@ -220,8 +221,8 @@ public class V3D_VectorDouble implements Serializable {
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
-        } else if (obj instanceof V3D_VectorDouble v3D_Vector) {
-            return equals(v3D_Vector);
+        } else if (obj instanceof V3D_VectorDouble v) {
+            return equals(v);
         }
         return false;
     }
@@ -242,31 +243,41 @@ public class V3D_VectorDouble implements Serializable {
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
     public boolean equals(V3D_VectorDouble v) {
-        return dx == v.dx && dy == v.dy && dz == v.dz;
+        /**
+         * The hashcode cannot be used to speed things up as there is the case
+         * of -0.0 == 0.0!
+         */ 
+        //if (hashCode() == v.hashCode()) {
+            return dx == v.dx && dy == v.dy && dz == v.dz;
+        //}
+        //return false;
     }
 
     /**
      * Indicates if {@code this} and {@code v} are equal within the specified
-     * tolerance. A tolerance of zero would mean that the vectors must be 
-     * exactly identical. Otherwise each of the coordinates is allowed to be up 
-     * to tolerance different and the vectors would still be considered equal. 
+     * tolerance. A tolerance of zero would mean that the vectors must be
+     * exactly identical. Otherwise each of the coordinates is allowed to be up
+     * to tolerance different and the vectors would still be considered equal.
      *
      * @param v The vector to test for equality with {@code this}.
-     * @param epsilon The tolerance within which two vectors are considered 
+     * @param epsilon The tolerance within which two vectors are considered
      * equal.
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
     public boolean equals(V3D_VectorDouble v, double epsilon) {
-        return dx <= v.dx + epsilon && dx >= v.dx - epsilon
-                && dy <= v.dy + epsilon && dy >= v.dy - epsilon 
-                && dz <= v.dz + epsilon && dz >= v.dz - epsilon;
+        return Math_Double.equals(dx, v.dx, epsilon) &&
+               Math_Double.equals(dy, v.dy, epsilon) &&
+               Math_Double.equals(dz, v.dz, epsilon);                
+//        return dx <= v.dx + epsilon && dx >= v.dx - epsilon
+//                && dy <= v.dy + epsilon && dy >= v.dy - epsilon
+//                && dz <= v.dz + epsilon && dz >= v.dz - epsilon;
     }
 
     /**
      * Indicates if {@code this} is the reverse of {@code v}.
      *
      * @param v The vector to compare with {@code this}.
-     * @param epsilon The tolerance within which two vectors are considered 
+     * @param epsilon The tolerance within which two vectors are considered
      * equal.
      * @return {@code true} iff {@code this} is the reverse of {@code v}.
      */
@@ -275,10 +286,18 @@ public class V3D_VectorDouble implements Serializable {
     }
 
     /**
-     * @return {@code true} if {@code this.equals(e.zeroVector)}
+     * @return {@code true} if {@code this.equals(ZERO)}
      */
     public boolean isZero() {
         return this.equals(ZERO);
+    }
+
+    /**
+     * @return {@code true} if {@code this.equals(ZERO, epsilon)}
+     * @param epsilon
+     */
+    public boolean isZero(double epsilon) {
+        return this.equals(ZERO, epsilon);
     }
 
     /**
@@ -337,7 +356,8 @@ public class V3D_VectorDouble implements Serializable {
      * Test if this is orthogonal to {@code v}.
      *
      * @param v The vector to test for orthogonality with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isOrthogonal(V3D_VectorDouble v, double epsilon) {
@@ -366,16 +386,79 @@ public class V3D_VectorDouble implements Serializable {
      * Test if {@code v} is a scalar multiple of {@code this}.
      *
      * @param v The vector to test if it is a scalar multiple of {@code this}.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
     public boolean isScalarMultiple(V3D_VectorDouble v, double epsilon) {
-        // Special case
-        if (this.isZero() || v.isZero()) {
+        if (equals(v, epsilon)) {
+            return true;
+        } else {
+            // Special case
+            if (isZero(epsilon)) {
+                /**
+                 * Can't multiply the zero vector by a scalar to get a non-zero 
+                 * vector.
+                 */
+                return false;
+            }                    
+            if (v.isZero(epsilon)) {
+                /**
+                 * Already tested that this is not equal to v, so the scalar is 
+                 * zero.
+                 */
+                return true;
+            }
+            if (Math_Double.equals(v.dx, dx, epsilon)) {
+                // dx = v.dx
+                if (Math_Double.equals(v.dx, 0d, epsilon)) {
+                    // dx = v.dx = 0d
+                    if (Math_Double.equals(v.dy, dy, epsilon)) {
+                        if (Math_Double.equals(v.dy, 0d, epsilon)) {
+                            return !Math_Double.equals(dz, 0d, epsilon);
+                        }
+                    } else {
+                        if (Math_Double.equals(dy, 0d, epsilon)) {
+                            return Math_Double.equals(dz, 0d, epsilon);
+                        } else {
+                            double scalar = v.dy / dy;
+                            return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                        }
+                    }
+                } else {
+                    // dx != 0
+                    // v.dx != 0
+                    double scalar = v.dx / dx;
+                    if (Math_Double.equals(v.dy, dy * scalar, epsilon)) {
+                        return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                    } else {
+                        return false;
+                    }
+                }
+            } else {
+                // dx != v.dx
+                if (Math_Double.equals(dx, 0d, epsilon)) {
+                    return false;
+//                    if (v.dy == 0d) {
+//                        return false;
+//                    } else {
+//                        if (v.dz == 0d) {
+//                            return false;
+//                        } else {
+//                            return true;
+//                        }
+//                    }                    
+                } else {
+                    double scalar = v.dx / dx;
+                    if (Math_Double.equals(v.dy, dy * scalar, epsilon)) {
+                        return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                    } else {
+                        return false;
+                    }
+                }
+            }
             return false;
         }
-        return this.multiply(getDotProduct(v)).equals(
-                v.multiply(getDotProduct(this)), epsilon);
     }
 
     /**
@@ -446,7 +529,7 @@ public class V3D_VectorDouble implements Serializable {
                 dz * v.dx - dx * v.dz,
                 dx * v.dy - dy * v.dx);
     }
-    
+
     /**
      * Scales by {@link #m} to give a unit vector with length 1. Six further
      * orders of magnitude are used to produce the result.

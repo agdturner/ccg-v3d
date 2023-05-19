@@ -919,13 +919,15 @@ public class V3D_LineTest extends V3D_Test {
         axis = new V3D_Line(pP0P0P0, V3D_Vector.J);
         theta = Pi.divide(2);
         instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-        expResult = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
+        //expResult = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
+        expResult = new V3D_Line(pP0P0P0, pP0P0N1, oom, rm);
         result = instance.rotate(axis, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 3
         theta = Pi.divide(2);
         instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(5, 0, 0), oom, rm);
-        expResult = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, 5), oom, rm);
+        //expResult = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, 5), oom, rm);
+        expResult = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, -5), oom, rm);
         result = instance.rotate(axis, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 4

@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d.test;
 
-import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -1790,12 +1789,15 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         double epsilon = 0.00000001d;
         // Z = 0
         V3D_PlaneDouble instance = new V3D_PlaneDouble(P0P0P0, P1P0P0, P0P1P0, epsilon);
+        //V3D_PlaneDouble instance = new V3D_PlaneDouble(P0P0P0, P0P1P0, P1P0P0, epsilon);
+        //V3D_VectorDouble expResult = P0P0N1;
         V3D_VectorDouble expResult = P0P0P1;
         V3D_VectorDouble result = instance.n;
         assertTrue(expResult.equals(result));
         // Z = -1
         instance = new V3D_PlaneDouble(P0P0N1, P1P0N1, P0P1N1, epsilon);
-        expResult = P0P0N1;
+        //expResult = P0P0N1;
+        expResult = P0P0P1;
         result = instance.n;
         assertTrue(expResult.equals(result));
         // Z = 1
@@ -2660,10 +2662,11 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
     public void testToString_0args() {
         System.out.println("toString");
         V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
-        String expResult = "V3D_PlaneDouble(\n"
-                + " offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),\n"
-                + " p= V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),\n"
-                + " n= V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0))";
+        String expResult = """
+                           V3D_PlaneDouble(
+                            offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
+                            p= V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
+                            n= V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0))""";
         String result = instance.toString();
         //System.out.println(result);
         assertEquals(expResult, result);
@@ -2677,29 +2680,30 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         System.out.println("toString");
         String pad = "";
         V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
-        String expResult = "V3D_PlaneDouble\n"
-                + "(\n"
-                + " offset=V3D_VectorDouble\n"
-                + " (\n"
-                + "  dx=0.0,\n"
-                + "  dy=0.0,\n"
-                + "  dz=0.0\n"
-                + " )\n"
-                + " ,\n"
-                + " p=V3D_VectorDouble\n"
-                + " (\n"
-                + "  dx=0.0,\n"
-                + "  dy=0.0,\n"
-                + "  dz=0.0\n"
-                + " )\n"
-                + " ,\n"
-                + " n=V3D_VectorDouble\n"
-                + " (\n"
-                + "  dx=1.0,\n"
-                + "  dy=0.0,\n"
-                + "  dz=0.0\n"
-                + " )\n"
-                + ")";
+        String expResult = """
+                           V3D_PlaneDouble
+                           (
+                            offset=V3D_VectorDouble
+                            (
+                             dx=0.0,
+                             dy=0.0,
+                             dz=0.0
+                            )
+                            ,
+                            p=V3D_VectorDouble
+                            (
+                             dx=0.0,
+                             dy=0.0,
+                             dz=0.0
+                            )
+                            ,
+                            n=V3D_VectorDouble
+                            (
+                             dx=1.0,
+                             dy=0.0,
+                             dz=0.0
+                            )
+                           )""";
         String result = instance.toString(pad);
         //System.out.println(result);
         assertEquals(expResult, result);
@@ -2769,8 +2773,6 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetP() {
         System.out.println("getP");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
         V3D_PointDouble expResult = V3D_PointDouble.ORIGIN;
         V3D_PointDouble result = instance.getP();
@@ -2783,8 +2785,6 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetQ() {
         System.out.println("getQ");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
         V3D_PointDouble expResult = pP0P1P0;
         V3D_PointDouble result = instance.getQ();
@@ -2797,8 +2797,6 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetR() {
         System.out.println("getR");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
         V3D_PointDouble expResult = pP0P0N1;
         V3D_PointDouble result = instance.getR();

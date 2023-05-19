@@ -28,6 +28,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegmentDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PlaneDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_RayDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_RectangleDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_TriangleDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
