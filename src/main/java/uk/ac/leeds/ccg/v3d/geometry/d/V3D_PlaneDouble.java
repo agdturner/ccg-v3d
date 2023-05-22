@@ -117,7 +117,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      */
     public static V3D_PlaneDouble getPlane(double epsilon,
             V3D_PointDouble... points) {
-        V3D_LineDouble l = V3D_LineDouble.getLine(points);
+        V3D_LineDouble l = V3D_LineDouble.getLine(epsilon, points);
         if (l == null) {
             return null;
         }
@@ -139,7 +139,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      */
     private static V3D_PlaneDouble getPlane0(double epsilon,
             V3D_PointDouble... points) {
-        V3D_LineDouble l = V3D_LineDouble.getLine(points);
+        V3D_LineDouble l = V3D_LineDouble.getLine(epsilon, points);
         for (V3D_PointDouble p : points) {
             if (!V3D_LineDouble.isCollinear(l, epsilon, p)) {
                 return new V3D_PlaneDouble(l.getP(), l.getQ(), p);
@@ -154,10 +154,9 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
     protected V3D_VectorDouble p;
 
     /**
-     * The normal vector that defines the plane. This is perpendicular to the
-     * plane.
+     * The normal vector that defines the plane.
      */
-    public V3D_VectorDouble n;
+    protected V3D_VectorDouble n;
 
 //    /**
 //     * The tolerance used when the plane was initialised. 
@@ -322,6 +321,26 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             double epsilon) {
         this(pt.getVector(), offset, p, q, r, epsilon);
     }
+    
+    /**
+     * Creates a new plane which is essentially the same as pl, but with the 
+     * offset specified.
+     * 
+     * @param pl  The plane to use as a template.
+     * @param offset What {@link #offset} is set to.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     */
+    public V3D_PlaneDouble(V3D_VectorDouble offset, V3D_PlaneDouble pl, 
+            double epsilon) {
+        this.offset = offset;
+        n = pl.getN();
+        if (offset.equals(pl.offset, epsilon)) {
+            p = new V3D_VectorDouble(pl.p);
+        } else {
+            p = pl.p.add(pl.offset).subtract(offset);
+        }
+    }
 
     @Override
     public String toString() {
@@ -374,7 +393,14 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
     }
 
     /**
-     * @return {@link #p} with {@link #offset} and rotations applied.
+     * @return A copy of {@link #n}.
+     */
+    public final V3D_VectorDouble getN() {
+        return new V3D_VectorDouble(n);
+    }
+
+    /**
+     * @return {@link #p} with {@link #offset} applied.
      */
     public final V3D_PointDouble getP() {
         return new V3D_PointDouble(offset, p);
@@ -1330,18 +1356,6 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         return Math.min(lpd, lqd);
     }
 
-    /**
-     * Change {@link #offset} without changing the overall plane.
-     *
-     * @param offset What {@link #offset} is set to.
-     */
-    public void setOffset(V3D_VectorDouble offset) {
-        if (!this.offset.equals(offset)) {
-            p = p.add(this.offset).subtract(offset);
-            this.offset = offset;
-        }
-    }
-
     @Override
     public void translate(V3D_VectorDouble v) {
         super.translate(v);
@@ -1399,6 +1413,29 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         }
         return aside == bside;
     }
+    
+    /**
+     * Check a and b are on the same side of this. If either are on the boundary
+     * then return {@code false}.
+     *
+     * @param a A point.
+     * @param b Another point. The triangle to check the points to see if they
+     * are all on the same side of a line that intersects the edge of another
+     * triangle.
+     * @return {@code true} if an intersection is found and {@code false}
+     * otherwise.
+     */
+    public boolean isOnSameSideNotOn(V3D_PointDouble a, V3D_PointDouble b) {
+        int aside = getSideOfPlane(a);
+        if (aside == 0) {
+            return false;
+        }
+        int bside = getSideOfPlane(b);
+        if (bside == 0) {
+            return false;
+        }
+        return aside == bside;
+    }
 
     /**
      * Plug the coordinates of pt into the plane equation.
@@ -1425,27 +1462,61 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * of this.
      */
     protected boolean allOnSameSide(V3D_PointDouble[] pts, double epsilon) {
-        // Find a point not on the plane if there is one.
-        V3D_PointDouble pt = null;
-        for (var x : pts) {
-            if (isIntersectedBy(x, epsilon)) {
-                pt = x;
+        // Special cases
+        if (pts == null) {
+            return false;
+        }
+        switch (pts.length) {
+            case 0 -> {
+                return false;
+            }
+            case 1 -> {
+                return true;
+            }
+            default -> {
+                for (int i = 1; i < pts.length; i ++) {
+                    if (!isOnSameSide(pts[0], pts[i])) {
+                        return false;
+                    }
+                }
+                return true;
             }
         }
-        // If there is not a point in pts that is not on the plane, then returnone, then
-        if (pt == null) {
-            return true;
-        }
-        boolean res = true;
-        for (var x : pts) {
-            if (!isOnSameSide(x, pt)) {
-                res = false;
-                break;
-            }
-        }
-        return res;
     }
 
+    /**
+     * Check if all points in pts are on the same side of this. Points on this
+     * count either way.
+     *
+     * @param pts The points to check.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} iff all points in pts are on or are on the same side
+     * of this.
+     */
+    protected boolean allOnSameSideNotOn(V3D_PointDouble[] pts, double epsilon) {
+        // Special cases
+        if (pts == null) {
+            return false;
+        }
+        switch (pts.length) {
+            case 0 -> {
+                return false;
+            }
+            case 1 -> {
+                return true;
+            }
+            default -> {
+                for (int i = 1; i < pts.length; i ++) {
+                    if (!isOnSameSideNotOn(pts[0], pts[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+    }
+    
     /**
      *
      * @param pl A plane parallel to this.

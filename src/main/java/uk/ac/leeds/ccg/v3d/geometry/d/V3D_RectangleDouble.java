@@ -779,8 +779,45 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_TriangleDouble t,
             double epsilon) {
+        // Test if all points of t are on the same side of this.
+        if (this.getPlane(epsilon).allOnSameSideNotOn(t.getPoints(), epsilon)) {
+            return null;
+        } else {
+            // Test if all points of this are on the same side of t.
+            if (t.getPl(epsilon).allOnSameSideNotOn(getPoints(), epsilon)) {
+                return null;
+            }
+        }
+        
         V3D_FiniteGeometryDouble pqrit = getPQR().getIntersection(t, epsilon);
+        
+        // Debugging
+        V3D_TriangleDouble pqr = new V3D_TriangleDouble(V3D_VectorDouble.ZERO, getPQR());
+        V3D_FiniteGeometryDouble pqrit2 = pqr.getIntersection(t, epsilon);
+        if (pqrit != null && pqrit2 == null) {
+            pqrit = null;
+        }
+        
+        if (pqrit instanceof V3D_LineSegmentDouble pqritl) {
+            if (pqrit2 instanceof V3D_LineSegmentDouble pqrit2l) {
+                boolean pqritl_eq_pqrit2 = pqritl.equalsIgnoreDirection(pqrit2l, epsilon);
+                if (pqritl_eq_pqrit2) {
+                    int debug = 1;
+                } else {
+                    int debug = 1;
+                }
+            }
+        }
+        
         V3D_FiniteGeometryDouble rspit = getRSP().getIntersection(t, epsilon);
+        
+        // Debugging 
+        V3D_TriangleDouble rsp = new V3D_TriangleDouble(V3D_VectorDouble.ZERO, getRSP());
+        V3D_FiniteGeometryDouble rspit2 = rsp.getIntersection(t, epsilon);
+        if (rspit != null && rspit2 == null) {
+            rspit = null;
+        }
+        
         if (pqrit == null) {
             return rspit;
             //return null;

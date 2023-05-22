@@ -72,68 +72,68 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     /**
      * Defines one of the corners of the triangle.
      */
-    public V3D_VectorDouble p;
+    protected V3D_VectorDouble p;
 
     /**
      * Defines one of the corners of the triangle.
      */
-    public V3D_VectorDouble q;
+    protected V3D_VectorDouble q;
 
     /**
      * Defines one of the corners of the triangle.
      */
-    public V3D_VectorDouble r;
+    protected V3D_VectorDouble r;
 
     /**
      * For storing the line segment from {@link #getP()} to {@link #getQ()} for
      * a given Order of Magnitude and RoundingMode precision.
      */
-    private V3D_LineSegmentDouble pq;
+    protected V3D_LineSegmentDouble pq;
 
     /**
      * For storing the line segment from {@link #getQ()} to {@link #getR()} for
      * a given Order of Magnitude and RoundingMode precision.
      */
-    private V3D_LineSegmentDouble qr;
+    protected V3D_LineSegmentDouble qr;
 
     /**
      * For storing the line segment from {@link #getR()} to {@link #getP()} for
      * a given Order of Magnitude and RoundingMode precision.
      */
-    private V3D_LineSegmentDouble rp;
+    protected V3D_LineSegmentDouble rp;
 
     /**
      * For storing the plane aligning with {@link #pq} in the direction of the
      * plane normal and with a normal orthogonal to the plane normal.
      */
-    private V3D_PlaneDouble pqpl;
+    protected V3D_PlaneDouble pqpl;
 
     /**
      * The epsilon used in generating {@link #pqpl}
      */
-    private double pqplEpsilon;
+    protected double pqplEpsilon;
 
     /**
      * For storing the plane aligning with {@link #qr} in the direction of the
      * plane normal and with a normal orthogonal to the plane normal.
      */
-    private V3D_PlaneDouble qrpl;
+    protected V3D_PlaneDouble qrpl;
 
     /**
      * The epsilon used in generating {@link #qrpl}
      */
-    private double qrplEpsilon;
+    protected double qrplEpsilon;
 
     /**
      * For storing the plane aligning with {@link #rp} in the direction of the
      * plane normal and with a normal orthogonal to the plane normal.
      */
-    private V3D_PlaneDouble rppl;
+    protected V3D_PlaneDouble rppl;
 
     /**
      * The epsilon used in generating {@link #rppl}
      */
-    private double rpplEpsilon;
+    protected double rpplEpsilon;
 
 //    /**
 //     * For storing the midpoint between {@link #getP()} and {@link #getQ()}.
@@ -161,7 +161,8 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      */
     public V3D_TriangleDouble(V3D_TriangleDouble t) {
         super(new V3D_VectorDouble(t.offset));
-        pl = new V3D_PlaneDouble(t.pl);
+        //pl = new V3D_PlaneDouble(t.pl);
+        pl = new V3D_PlaneDouble(t.getPl(plEpsilon));
         plEpsilon = t.plEpsilon;
         p = new V3D_VectorDouble(t.p);
         q = new V3D_VectorDouble(t.q);
@@ -196,7 +197,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * Creates a new triangle.
      *
      * @param offset What {@link #offset} is set to.
-     * @param p What {@link #pl} is set to.
+     * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
      */
@@ -264,11 +265,27 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
 //        this.q = q.getVector().subtract(p.offset);
 //        this.r = r.getVector().subtract(p.offset);
 //    }
+    
     /**
-     * @return {@link #pl} if {@link pl}this has at least as mto at least the
-     * oom precision using
+     * Creates a new triangle.
+     *
+     * @param offset What {@link #offset} is set to.
+     * @param t The triangle to initialise this from.
+     */
+    public V3D_TriangleDouble(V3D_VectorDouble offset, V3D_TriangleDouble t) {
+        this(offset, 
+                new V3D_VectorDouble(t.p).add(t.offset).subtract(offset),
+                new V3D_VectorDouble(t.q).add(t.offset).subtract(offset),
+                new V3D_VectorDouble(t.r).add(t.offset).subtract(offset));
+    }
+    
+    /**
+     * Return the plane that this triangle is on. The direction of the 
+     * normal is towards the observer from the clockwise orientation of 
+     * {@link #p}, {@link q}, and {@link r}. 
+     * @return {@link #pl} if {@link pl} was defined with at least epsilon 
+     * precision.
      * @param epsilon Used to check vectors are not scalar multiples.
-     * RoundingMode rm.
      */
     public final V3D_PlaneDouble getPl(double epsilon) {
         if (pl == null) {
@@ -1150,6 +1167,16 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                                         grpl.getQ());
                             } catch (java.lang.IndexOutOfBoundsException e) {
                                 System.out.println("Strange!");
+                                System.out.println("V3D_ConvexHullCoplanarDouble.getGeometry(");
+                                System.out.println("epsilon=" + epsilon);
+                                System.out.println("gpql.getP()=" + gpql.getP());
+                                System.out.println("gpql.getQ()=" + gpql.getQ());
+                                System.out.println("gqrl.getP()=" + gqrl.getP());
+                                System.out.println("gqrl.getQ()=" + gqrl.getQ());
+                                System.out.println("grpl.getP()=" + grpl.getP());
+                                System.out.println("grpl.getQ()=" + grpl.getQ());
+                                System.out.println(")");
+                                
                                 return V3D_ConvexHullCoplanarDouble.getGeometry(
                                         epsilon, gpql.getP(),
                                         gpql.getQ(), gqrl.getP(),

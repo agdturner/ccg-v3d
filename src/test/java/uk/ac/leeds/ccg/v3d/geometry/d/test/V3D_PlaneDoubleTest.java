@@ -1792,64 +1792,64 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         //V3D_PlaneDouble instance = new V3D_PlaneDouble(P0P0P0, P0P1P0, P1P0P0, epsilon);
         //V3D_VectorDouble expResult = P0P0N1;
         V3D_VectorDouble expResult = P0P0P1;
-        V3D_VectorDouble result = instance.n;
+        V3D_VectorDouble result = instance.getN();
         assertTrue(expResult.equals(result));
         // Z = -1
         instance = new V3D_PlaneDouble(P0P0N1, P1P0N1, P0P1N1, epsilon);
         //expResult = P0P0N1;
         expResult = P0P0P1;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // Z = 1
         instance = new V3D_PlaneDouble(P0P0P1, P1P0P1, P0P1P1, epsilon);
         expResult = P0P0P1;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // Z = 1
         instance = new V3D_PlaneDouble(P1P0P1, P0P1P1, P0P0P1, epsilon);
         expResult = P0P0P1;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // Z = 1
         instance = new V3D_PlaneDouble(P0P1P1, P0P0P1, P1P0P1, epsilon);
         //expResult = new V3D_VectorDouble(P0P0N1);
         expResult = P0P0P1;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // Y = 0
         instance = new V3D_PlaneDouble(P0P0P0, P0P1P0, P0P0N1, epsilon);
         //expResult = new V3D_VectorDouble(P1P0P0);
         expResult = N1P0P0;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // X = 0
         instance = new V3D_PlaneDouble(P0P0P0, P1P0P0, P0P0N1, epsilon);
         //expResult = new V3D_VectorDouble(P0N1P0);
         expResult = P0P1P0;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // Y = 0
         instance = new V3D_PlaneDouble(P0P0P0, P1P0P0, N1P0P1, epsilon);
         expResult = P0N1P0;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // 
         instance = new V3D_PlaneDouble(P0P1P0, P1P1P1, P1P0P0, epsilon);
         //expResult = new V3D_VectorDouble(N1N1P1);
         expResult = P1P1N1;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // X = 0
         instance = new V3D_PlaneDouble(P0P0P0, P0P1P1, P0N1P0, epsilon);
         //expResult = new V3D_VectorDouble(N1P0P0);
         expResult = P1P0P0;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // 
         instance = new V3D_PlaneDouble(P0P0P0, P1P1P1, P0N1N1, epsilon);
         //expResult = new V3D_VectorDouble(P0N1P1);
         expResult = P0P1N1;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
     }
 
@@ -2626,7 +2626,7 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
      * Test of getDistance method, of class V3D_PlaneDouble.
      */
     @Test
-    public void testGetDistance_V3D_PointDouble_int() {
+    public void testGetDistance_V3D_PointDouble() {
         System.out.println("getDistance");
         double epsilon = 1d / 10000000d;
         V3D_PointDouble p = new V3D_PointDouble(5d, 0d, 0d);
@@ -2644,7 +2644,7 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
      * Test of getDistance method, of class V3D_PlaneDouble.
      */
     @Test
-    public void testGetDistance_V3D_LineSegmentDouble_int() {
+    public void testGetDistance_V3D_LineSegmentDouble() {
         System.out.println("getDistance");
         V3D_LineSegmentDouble l = new V3D_LineSegmentDouble(
                 new V3D_VectorDouble(10d, 1d, 1d),
@@ -2653,23 +2653,6 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         double expResult = 10d;
         double result = instance.getDistance(l);
         assertTrue(expResult == result);
-    }
-
-    /**
-     * Test of toString method, of class V3D_PlaneDouble.
-     */
-    @Test
-    public void testToString_0args() {
-        System.out.println("toString");
-        V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
-        String expResult = """
-                           V3D_PlaneDouble(
-                            offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
-                            p= V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
-                            n= V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0))""";
-        String result = instance.toString();
-        //System.out.println(result);
-        assertEquals(expResult, result);
     }
 
     /**
@@ -2869,18 +2852,20 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
     }
 
     /**
-     * Test of setOffset method, of class V3D_PlaneDouble.
+     * Test constructor method, of class V3D_PlaneDouble.
      */
     @Test
-    public void testSetOffset() {
-        System.out.println("setOffset");
+    public void testConstructor() {
+        System.out.println("testConstructors");
         double epsilon = 1d / 10000000d;
-        V3D_VectorDouble offset = V3D_VectorDouble.I;
-        V3D_PlaneDouble instance = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
-        instance.setOffset(offset);
-        V3D_PlaneDouble expResult = new V3D_PlaneDouble(
-                V3D_VectorDouble.I, N1P0P0, N1P1P0, N1P0P1, epsilon);
-        assertTrue(expResult.equalsIgnoreOrientation(instance, epsilon));
+        V3D_PlaneDouble pl0 = V3D_PlaneDouble.X0;
+        V3D_PlaneDouble pl1 = new V3D_PlaneDouble(V3D_VectorDouble.I, pl0, 
+                epsilon);
+        V3D_PlaneDouble pl2 = new V3D_PlaneDouble(V3D_VectorDouble.I, N1P0P0, 
+                N1P1P0, N1P0P1, epsilon);
+        assertTrue(pl0.equalsIgnoreOrientation(pl1, epsilon));
+        assertTrue(pl0.equalsIgnoreOrientation(pl2, epsilon));
+        assertTrue(pl1.equalsIgnoreOrientation(pl2, epsilon));
     }
 
     /**
@@ -2953,7 +2938,7 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
      * Test of getDistanceSquared method, of class V3D_PlaneDouble.
      */
     @Test
-    public void testGetDistanceSquared_V3D_LineDouble_int() {
+    public void testGetDistanceSquared_V3D_LineDouble() {
         System.out.println("getDistanceSquared");
         V3D_LineDouble l;
         V3D_PlaneDouble instance;
@@ -2966,11 +2951,11 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         result = instance.getDistanceSquared(l);
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_PlaneDouble(V3D_PlaneDouble.Y0);
-        instance.setOffset(P0P1P0);
-        expResult = 1d;
+        double epsilon = 1d / 10000000d;
+        instance = new V3D_PlaneDouble(P0P1P0, V3D_PlaneDouble.Y0, epsilon);
+        expResult = 0d;
         result = instance.getDistanceSquared(l);
-        assertNotEquals(expResult, result);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -2990,11 +2975,11 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         result = instance.getDistanceSquared(l);
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_PlaneDouble(V3D_PlaneDouble.Y0);
-        instance.setOffset(P0P1P0);
-        expResult = 1d;
+        double epsilon = 1d / 10000000d;
+        instance = new V3D_PlaneDouble(P0P1P0, V3D_PlaneDouble.Y0, epsilon);
+        expResult = 0d;
         result = instance.getDistanceSquared(l);
-        assertNotEquals(expResult, result);
+        assertEquals(expResult, result);
     }
 
     /**

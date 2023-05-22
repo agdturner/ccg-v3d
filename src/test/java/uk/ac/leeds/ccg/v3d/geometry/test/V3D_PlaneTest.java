@@ -2493,63 +2493,63 @@ public class V3D_PlaneTest extends V3D_Test {
         // Z = 0
         V3D_Plane instance = new V3D_Plane(P0P0P0, P1P0P0, P0P1P0, oom, rm);
         V3D_Vector expResult = P0P0P1;
-        V3D_Vector result = instance.n;
+        V3D_Vector result = instance.getN();
         assertTrue(expResult.equals(result));
         // Z = -1
         instance = new V3D_Plane(P0P0N1, P1P0N1, P0P1N1, oom, rm);
         expResult = P0P0N1;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // Z = 1
         instance = new V3D_Plane(P0P0P1, P1P0P1, P0P1P1, oom, rm);
         expResult = P0P0P1;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // Z = 1
         instance = new V3D_Plane(P1P0P1, P0P1P1, P0P0P1, oom, rm);
         expResult = P0P0P1;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // Z = 1
         instance = new V3D_Plane(P0P1P1, P0P0P1, P1P0P1, oom, rm);
         //expResult = new V3D_Vector(P0P0N1);
         expResult = P0P0P1;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // Y = 0
         instance = new V3D_Plane(P0P0P0, P0P1P0, P0P0N1, oom, rm);
         //expResult = new V3D_Vector(P1P0P0, oom, rm);
         expResult = N1P0P0;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // X = 0
         instance = new V3D_Plane(P0P0P0, P1P0P0, P0P0N1, oom, rm);
         //expResult = new V3D_Vector(P0N1P0);
         expResult = P0P1P0;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // Y = 0
         instance = new V3D_Plane(P0P0P0, P1P0P0, N1P0P1, oom, rm);
         expResult = P0N1P0;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // 
         instance = new V3D_Plane(P0P1P0, P1P1P1, P1P0P0, oom, rm);
         //expResult = new V3D_Vector(N1N1P1);
         expResult = P1P1N1;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // X = 0
         instance = new V3D_Plane(P0P0P0, P0P1P1, P0N1P0, oom, rm);
         //expResult = new V3D_Vector(N1P0P0);
         expResult = P1P0P0;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
         // 
         instance = new V3D_Plane(P0P0P0, P1P1P1, P0N1N1, oom, rm);
         //expResult = new V3D_Vector(P0N1P1);
         expResult = P0P1N1;
-        result = instance.n;
+        result = instance.getN();
         assertTrue(expResult.equals(result));
     }
 
@@ -3620,7 +3620,8 @@ public class V3D_PlaneTest extends V3D_Test {
         theta = Pi;
         instance = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm);
         instance = instance.rotate(axis, theta, oom, rm);
-        expResult = new V3D_Plane(N1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm);
+        //expResult = new V3D_Plane(N1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm);
+        expResult = new V3D_Plane(N1P0P0, P0P0P0, P0P2P2, P0P2P0, oom, rm);
         assertTrue(expResult.equalsIgnoreOrientation(instance, oom, rm));
     }
 
@@ -3653,20 +3654,22 @@ public class V3D_PlaneTest extends V3D_Test {
 //        l = new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm);
 //        assertFalse(instance.isIntersectedBy(l, oom, rm));
 //    }
+    
     /**
-     * Test of setOffset method, of class V3D_Plane.
+     * Test constructor method, of class V3D_PlaneDouble.
      */
     @Test
-    public void testSetOffset() {
-        System.out.println("setOffset");
+    public void testConstructor() {
+        System.out.println("testConstructors");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Vector offset = V3D_Vector.I;
-        V3D_Plane instance = new V3D_Plane(V3D_Plane.X0);
-        instance.setOffset(offset, oom, rm);
-        V3D_Plane expResult = new V3D_Plane(
-                V3D_Vector.I, N1P0P0, N1P1P0, N1P0P1, oom, rm);
-        assertTrue(expResult.equalsIgnoreOrientation(instance, oom, rm));
+        V3D_Plane pl0 = V3D_Plane.X0;
+        V3D_Plane pl1 = new V3D_Plane(V3D_Vector.I, pl0, oom, rm);
+        V3D_Plane pl2 = new V3D_Plane(V3D_Vector.I, N1P0P0, N1P1P0, N1P0P1, oom,
+                rm);
+        assertTrue(pl0.equalsIgnoreOrientation(pl1, oom, rm));
+        assertTrue(pl0.equalsIgnoreOrientation(pl2, oom, rm));
+        assertTrue(pl1.equalsIgnoreOrientation(pl2, oom, rm));
     }
 
     /**
@@ -3757,11 +3760,10 @@ public class V3D_PlaneTest extends V3D_Test {
         result = instance.getDistanceSquared(l, oom, rm);
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_Plane(V3D_Plane.Y0);
-        instance.setOffset(P0P1P0, oom, rm);
-        expResult = P1;
+        instance = new V3D_Plane(P0P1P0, V3D_Plane.Y0, oom, rm);
+        expResult = P0;
         result = instance.getDistanceSquared(l, oom, rm);
-        assertNotEquals(expResult, result);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -3784,8 +3786,7 @@ public class V3D_PlaneTest extends V3D_Test {
         result = instance.getDistanceSquared(l, oom, rm);
         assertEquals(expResult, result);
         // Test 2
-        instance = new V3D_Plane(V3D_Plane.Y0);
-        instance.setOffset(P0P1P0, oom, rm);
+        instance = new V3D_Plane(P0P1P0, V3D_Plane.Y0, oom, rm);
         expResult = P1;
         result = instance.getDistanceSquared(l, oom, rm);
         assertNotEquals(expResult, result);

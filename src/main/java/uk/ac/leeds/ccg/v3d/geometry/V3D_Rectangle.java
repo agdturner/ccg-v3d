@@ -808,6 +808,16 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      * {@code null} if there is no intersection.
      */
     public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, RoundingMode rm) {
+        // Test if all points of t are on the same side of this.
+        if (this.getPlane(oom, rm).allOnSameSideNotOn(t.getPoints(), oom, rm)) {
+            return null;
+        } else {
+            // Test if all points of this are on the same side of t.
+            if (t.getPl(oom, rm).allOnSameSideNotOn(getPoints(), oom, rm)) {
+                return null;
+            }
+        }
+        
         V3D_FiniteGeometry pqrit = getPQR(oom, rm).getIntersection(t, oom, rm);
         V3D_FiniteGeometry rspit = getRSP(oom, rm).getIntersection(t, oom, rm);
         if (pqrit == null) {

@@ -893,7 +893,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                     ir = i.next();
                 }
                 V3D_Plane pl;
-                if (V3D_Line.isCollinear(oom, rm, ip, iq, ir) && i.hasNext()) {
+                if (V3D_Line.isCollinear(oom, rm, ip, iq, ir)) {
                     return new V3D_LineSegment(oom, rm, pts);
                 } else {
                     pl = new V3D_Plane(ip, iq, ir, oom, rm);

@@ -686,6 +686,15 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
                 }
             }
 
+            if (ptsnop.size() == 0) {
+                int debug = 1;
+                for (int i = 0; i < pts.size(); i++) {
+                    V3D_PointDouble pt = pts.get(i);
+                    System.out.println("pt(" + i + ")=" + pt);
+                }
+                System.out.println("pl=" + pl);
+            }
+            
             // Go through points
             V3D_PointDouble pt0 = ptsnop.get(0);
             a.add(pt0);
@@ -894,7 +903,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
                     ir = i.next();
                 }
                 V3D_PlaneDouble pl;
-                if (V3D_LineDouble.isCollinear(epsilon, ip, iq, ir) && i.hasNext()) {
+                if (V3D_LineDouble.isCollinear(epsilon, ip, iq, ir)) {
                     return new V3D_LineSegmentDouble(epsilon, pts);
                 } else {
                     pl = new V3D_PlaneDouble(ip, iq, ir);

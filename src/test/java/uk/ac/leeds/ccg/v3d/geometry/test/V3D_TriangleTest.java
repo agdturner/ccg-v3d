@@ -1095,7 +1095,7 @@ public class V3D_TriangleTest extends V3D_Test {
         oom = -3;
         int oomn3 = oom - 3;
         t = new V3D_Triangle(pN1P0P1, pP1P1N1, pP2N2N2, oomn3, rm);
-        p.translate(t.getPl(oom, rm).n.getUnitVector(oomn3, rm).multiply(10, oomn3, rm), oomn3, rm);
+        p.translate(t.getPl(oom, rm).getN().getUnitVector(oomn3, rm).multiply(10, oomn3, rm), oomn3, rm);
         expResult = BigRational.valueOf(100);
         result = Math_BigRational.round(t.getDistanceSquared(p, oom, rm), oom, rm);
         assertTrue(expResult.compareTo(result) == 0);

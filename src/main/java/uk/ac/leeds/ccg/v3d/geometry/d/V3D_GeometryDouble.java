@@ -59,7 +59,7 @@ public abstract class V3D_GeometryDouble implements Serializable {
      * The offset used to position a geometry object relative to the
      * {@link V3D_PointDouble#ORIGIN}.
      */
-    public V3D_VectorDouble offset;
+    protected V3D_VectorDouble offset;
 
     /**
      * Creates a new instance.

@@ -319,6 +319,13 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         instance = new V3D_TriangleDouble(P1P0P0, P1P0P0, P0P2P0, P0P0P0);
         result = instance.equals(t, epsilon);
         assertTrue(result);
+        // Test 4
+        instance = new V3D_TriangleDouble(P1P0P0, P1P0P0, P0P2P0, P0P0P0);
+        t = new V3D_TriangleDouble(P0P0P0, instance);
+        result = instance.equals(t, epsilon);
+        assertTrue(result);
+        
+        
     }
 
     /**
@@ -978,7 +985,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         // Test 9
         p = new V3D_PointDouble(0, 0, 0);
         t = new V3D_TriangleDouble(pN1P0P1, pP1P1N1, pP2N2N2);
-        p.translate(t.getPl(epsilon).n.getUnitVector().multiply(10));
+        p.translate(t.getPl(epsilon).getN().getUnitVector().multiply(10));
         expResult = 100d;
         result = t.getDistanceSquared(p, epsilon);
         assertTrue(Math_Double.equals(expResult, result, epsilon));

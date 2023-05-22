@@ -1171,7 +1171,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      */
     public static boolean isCollinear0(double epsilon, V3D_PointDouble... points) {
         // Get a line
-        V3D_LineDouble l = getLine(points);
+        V3D_LineDouble l = getLine(epsilon, points);
         return isCollinear(l, epsilon, points);
     }
 
@@ -1183,10 +1183,10 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * @return A line defined by any two different points or null if the points
      * are coincident.
      */
-    public static V3D_LineDouble getLine(V3D_PointDouble... points) {
+    public static V3D_LineDouble getLine(double epsilon, V3D_PointDouble... points) {
         V3D_PointDouble p0 = points[0];
         for (V3D_PointDouble p1 : points) {
-            if (!p1.equals(p0)) {
+            if (!p1.equals(p0, epsilon)) {
                 return new V3D_LineDouble(p0, p1);
             }
         }
