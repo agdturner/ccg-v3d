@@ -73,7 +73,6 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //     * hand rule.
 //     */
 //    public V3D_Vector normal;
-    
     /**
      * Defines one of the corners of the triangle.
      */
@@ -285,7 +284,6 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //            RoundingMode rm) {
 //        this(new V3D_Vector(l.offset), l.l.pv, l.qv, r, oom, rm);
 //    }
-
 //    /**
 //     * Creates a new triangle.
 //     *
@@ -301,7 +299,6 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //        this(l.offset, l.l.pv, l.qv, r.getVector(oom, rm)
 //                .subtract(l.offset, oom, rm), oom, rm);
 //    }
-
     /**
      * Creates a new instance.
      *
@@ -339,7 +336,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         this.r = r.getVector(oom, rm).subtract(p.offset, oom, rm);
         this.oom = oom;
         this.rm = rm;
-        this.pl = new V3D_Plane(pt, p.offset, p.getVector(oom, rm), 
+        this.pl = new V3D_Plane(pt, p.offset, p.getVector(oom, rm),
                 q.getVector(oom, rm), r.getVector(oom, rm), oom, rm);
     }
 
@@ -1353,10 +1350,14 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                                 V3D_FiniteGeometry rpplil = getRPPl(oom, rm).getIntersection(l, oom, rm);
                                 if (pqplil == null) {
                                     if (qrplil == null) {
-                                        if (rpplil instanceof V3D_LineSegment) {
-                                            return rpplil;
+                                        if (rpplil == null) {
+                                            return l;
                                         } else {
-                                            return V3D_LineSegment.getGeometry((V3D_Point) rpplil, lp, oom, rm);
+                                            if (rpplil instanceof V3D_LineSegment) {
+                                                return rpplil;
+                                            } else {
+                                                return V3D_LineSegment.getGeometry((V3D_Point) rpplil, lp, oom, rm);
+                                            }
                                         }
                                     } else {
                                         if (qrplil instanceof V3D_LineSegment) {
@@ -1412,10 +1413,14 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                                 V3D_FiniteGeometry rpplil = getRPPl(oom, rm).getIntersection(l, oom, rm);
                                 if (pqplil == null) {
                                     if (qrplil == null) {
-                                        if (rpplil instanceof V3D_LineSegment) {
-                                            return rpplil;
+                                        if (rpplil == null) {
+                                            return lq;
                                         } else {
-                                            return V3D_LineSegment.getGeometry((V3D_Point) rpplil, lq, oom, rm);
+                                            if (rpplil instanceof V3D_LineSegment) {
+                                                return rpplil;
+                                            } else {
+                                                return V3D_LineSegment.getGeometry((V3D_Point) rpplil, lq, oom, rm);
+                                            }
                                         }
                                     } else {
                                         if (qrplil instanceof V3D_LineSegment) {
@@ -1469,11 +1474,11 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                                 V3D_FiniteGeometry rpplil = getRPPl(oom, rm).getIntersection(l, oom, rm);
                                 if (pqplil == null) {
                                     if (qrplil == null) {
-                                        if (rpplil == null) {
-                                            return null;
-                                        } else {
-                                            return rpplil;
-                                        }
+                                        //if (rpplil == null) {
+                                        return null;
+                                        //} else {
+                                        //    return rpplil;
+                                        //}
                                     } else {
                                         if (qrplil instanceof V3D_LineSegment) {
                                             return null;
@@ -2142,7 +2147,8 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * For getting the point opposite a side of a triangle given the side.
      *
      * @param l a line segment either equal to one of the edges of this - null
-     * null null null null null null null null null null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
+     * null null null null null null null null null null null null null null
+     * null null     {@link #getPQ(int, java.math.RoundingMode)},
      * {@link #getQR(int, java.math.RoundingMode)} or
      * {@link #getRP(int, java.math.RoundingMode)}.
      * @param oom The Order of Magnitude for the precision.
