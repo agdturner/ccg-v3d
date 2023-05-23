@@ -817,7 +817,6 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
                 return null;
             }
         }
-        
         V3D_FiniteGeometry pqrit = getPQR(oom, rm).getIntersection(t, oom, rm);
         V3D_FiniteGeometry rspit = getRSP(oom, rm).getIntersection(t, oom, rm);
         if (pqrit == null) {

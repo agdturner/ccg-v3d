@@ -788,43 +788,13 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
                 return null;
             }
         }
-        
         V3D_FiniteGeometryDouble pqrit = getPQR().getIntersection(t, epsilon);
-        
-        // Debugging
-        V3D_TriangleDouble pqr = new V3D_TriangleDouble(V3D_VectorDouble.ZERO, getPQR());
-        V3D_FiniteGeometryDouble pqrit2 = pqr.getIntersection(t, epsilon);
-        if (pqrit != null && pqrit2 == null) {
-            pqrit = null;
-        }
-        
-        if (pqrit instanceof V3D_LineSegmentDouble pqritl) {
-            if (pqrit2 instanceof V3D_LineSegmentDouble pqrit2l) {
-                boolean pqritl_eq_pqrit2 = pqritl.equalsIgnoreDirection(pqrit2l, epsilon);
-                if (pqritl_eq_pqrit2) {
-                    int debug = 1;
-                } else {
-                    int debug = 1;
-                }
-            }
-        }
-        
         V3D_FiniteGeometryDouble rspit = getRSP().getIntersection(t, epsilon);
-        
-        // Debugging 
-        V3D_TriangleDouble rsp = new V3D_TriangleDouble(V3D_VectorDouble.ZERO, getRSP());
-        V3D_FiniteGeometryDouble rspit2 = rsp.getIntersection(t, epsilon);
-        if (rspit != null && rspit2 == null) {
-            rspit = null;
-        }
-        
         if (pqrit == null) {
             return rspit;
-            //return null;
         } else {
             if (rspit == null) {
                 return pqrit;
-                //return null;
             }
             if (pqrit instanceof V3D_PointDouble) {
                 return rspit;
@@ -832,7 +802,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
                 if (rspit instanceof V3D_PointDouble) {
                     return pqrit;
                 } else if (rspit instanceof V3D_LineSegmentDouble t2il) {
-                    return V3D_LineSegmentsCollinearDouble.getGeometry(t1il, t2il, epsilon);
+                    return V3D_LineSegmentsCollinearDouble.getGeometry(t1il, 
+                            t2il, epsilon);
                 } else {
                     return rspit;
                 }

@@ -1130,15 +1130,13 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             // There is no intersection.
             return null;
         }
-
-        try {
-            V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
-        } catch (RuntimeException e) {
-            V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
-        }
-
+//        // Debugging code.
+//        try {
+//            V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
+//        } catch (RuntimeException e) {
+//            V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
+//        }
         V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
-
         return new V3D_LineDouble(pi, v);
     }
 

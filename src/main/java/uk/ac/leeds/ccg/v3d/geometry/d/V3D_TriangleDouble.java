@@ -1159,30 +1159,11 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                                     gqrl.getQ(), grpp);
                         } else {
                             V3D_LineSegmentDouble grpl = (V3D_LineSegmentDouble) grp;
-                            try {
-                                return V3D_ConvexHullCoplanarDouble.getGeometry(
+                            return V3D_ConvexHullCoplanarDouble.getGeometry(
                                         epsilon, gpql.getP(),
                                         gpql.getQ(), gqrl.getP(),
                                         gqrl.getQ(), grpl.getP(),
                                         grpl.getQ());
-                            } catch (java.lang.IndexOutOfBoundsException e) {
-                                System.out.println("Strange!");
-                                System.out.println("V3D_ConvexHullCoplanarDouble.getGeometry(");
-                                System.out.println("epsilon=" + epsilon);
-                                System.out.println("gpql.getP()=" + gpql.getP());
-                                System.out.println("gpql.getQ()=" + gpql.getQ());
-                                System.out.println("gqrl.getP()=" + gqrl.getP());
-                                System.out.println("gqrl.getQ()=" + gqrl.getQ());
-                                System.out.println("grpl.getP()=" + grpl.getP());
-                                System.out.println("grpl.getQ()=" + grpl.getQ());
-                                System.out.println(")");
-                                
-                                return V3D_ConvexHullCoplanarDouble.getGeometry(
-                                        epsilon, gpql.getP(),
-                                        gpql.getQ(), gqrl.getP(),
-                                        gqrl.getQ(), grpl.getP(),
-                                        grpl.getQ());
-                            }
                         }
                     }
                 }
@@ -1586,7 +1567,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     }
 
     /**
-     * Used in intersecting two triangles to give the overall intersection. If
+     * Used when intersecting two triangles to give the overall intersection. If
      * l1, l2 and l3 are equal then the line segment is returned. If there are 3
      * unique points then a triangle is returned. If there are 4 or more unique
      * points, then a V3D_ConvexHullCoplanarDouble is returned.
