@@ -19,6 +19,9 @@ module uk.ac.leeds.ccg.v3d.test {
     //requires uk.ac.leeds.ccg.v3d.geometry;
     
     requires org.junit.jupiter.api;
+    requires org.junit.jupiter.engine;
+    requires org.junit.jupiter.params;
+
     opens uk.ac.leeds.ccg.v3d.geometry.test to org.junit.platform.commons;
     opens uk.ac.leeds.ccg.v3d.geometry.d.test to org.junit.platform.commons;
 }
