@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry.d;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import static uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegmentDouble.getGeometry;
 
 /**
  * V3D_FiniteGeometry for representing finite geometries.

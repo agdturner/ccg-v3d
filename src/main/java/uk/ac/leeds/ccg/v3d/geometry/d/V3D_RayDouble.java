@@ -214,7 +214,7 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
             pl = getPl();
 //            V3D_Ray r = new V3D_Ray(l.getP(), pt);
 //            return r.l.getV().getDirection() == l.getV().getDirection();
-            return pl.isOnSameSide(pt, this.l.getQ());
+            return pl.isOnSameSide(pt, this.l.getQ(), epsilon);
         }
 //        boolean isPossibleIntersection = isPossibleIntersection(pt);
 //        if (isPossibleIntersection) {
@@ -268,7 +268,7 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
             //V3D_Plane rp = new V3D_Plane(this.l.getP(), this.l.getV());
             //V3D_Plane rp = new V3D_Plane(this.l.getP(), this.l.v);
             //if (rp.isOnSameSide(gp, this.l.getQ())) {
-            if (getPl().isOnSameSide(gp, this.l.getQ())) {
+            if (getPl().isOnSameSide(gp, this.l.getQ(), epsilon)) {
                 return g;
             } else {
                 return null;
@@ -374,7 +374,7 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
          * If lines intersects at a point, then check this point is on this.
          */
         if (g instanceof V3D_PointDouble pt) {
-            if (isAligned(pt)) {
+            if (isAligned(pt, epsilon)) {
                 return g;
             } else {
                 return null;
@@ -399,7 +399,7 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
             return null;
         } else if (rtl instanceof V3D_PointDouble pt) {
             pl = getPl();
-            if (pl.isOnSameSide(pt, l.getQ())) {
+            if (pl.isOnSameSide(pt, l.getQ(), epsilon)) {
                 return pt;
             } else {
                 return null;
@@ -423,8 +423,8 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
                 V3D_PointDouble rp = r.l.getP();
                 pl = getPl();
                 V3D_PlaneDouble rpl = r.getPl();
-                if (pl.isOnSameSide(rp, l.getQ())) {
-                    if (rpl.isOnSameSide(tp, r.l.getQ())) {
+                if (pl.isOnSameSide(rp, l.getQ(), epsilon)) {
+                    if (rpl.isOnSameSide(tp, r.l.getQ(), epsilon)) {
                         if (tp.equals(rp)) {
                             return tp;
                         }
@@ -433,7 +433,7 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
                         return new V3D_RayDouble(rp, l.v);
                     }
                 } else {
-                    if (rpl.isOnSameSide(tp, r.l.getQ())) {
+                    if (rpl.isOnSameSide(tp, r.l.getQ(), epsilon)) {
                         return new V3D_RayDouble(tp, l.v);
                     } else {
                         return null;
@@ -459,7 +459,7 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
         if (g == null) {
             return null;
         } else if (g instanceof V3D_PointDouble pt) {
-            if (isAligned(pt)) {
+            if (isAligned(pt, epsilon)) {
                 return pt;
             } else {
                 return null;
@@ -469,14 +469,14 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
             //V3D_Point rq = l.getQ();
             V3D_PointDouble lsp = ls.getP();
             V3D_PointDouble lsq = ls.getQ();
-            if (isAligned(lsp)) {
-                if (isAligned(lsq)) {
+            if (isAligned(lsp, epsilon)) {
+                if (isAligned(lsq, epsilon)) {
                     return ls;
                 } else {
                     return V3D_LineSegmentDouble.getGeometry(rp, lsp, epsilon);
                 }
             } else {
-                if (isAligned(lsq)) {
+                if (isAligned(lsq, epsilon)) {
                     return V3D_LineSegmentDouble.getGeometry(rp, lsq, epsilon);
                 } else {
                     if (isIntersectedBy(lsp, epsilon)) {
@@ -498,8 +498,8 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
      * @param pt The point.
      * @return {@code true} If pt is in line with this.
      */
-    public boolean isAligned(V3D_PointDouble pt) {
-        return getPl().isOnSameSide(pt, l.getQ());
+    public boolean isAligned(V3D_PointDouble pt, double epsilon) {
+        return getPl().isOnSameSide(pt, l.getQ(), epsilon);
     }
 
 //    /**
@@ -516,7 +516,7 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
 //        //l.translate(v);
 //    }
     @Override
-    public V3D_RayDouble rotate(V3D_LineDouble axis, double theta, double epsilon) {
+    public V3D_RayDouble rotate(V3D_RayDouble axis, double theta, double epsilon) {
         theta = V3D_AngleDouble.normalise(theta);
         if (theta == 0d) {
             return new V3D_RayDouble(this);

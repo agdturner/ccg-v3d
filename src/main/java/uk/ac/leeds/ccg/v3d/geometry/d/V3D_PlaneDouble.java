@@ -162,7 +162,6 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
 //     * The tolerance used when the plane was initialised. 
 //     */
 //    public final double epsilon;
-    
     /**
      * For storing the equation of the plane.
      */
@@ -235,7 +234,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * and not equal to pl or qv.
      * @param epsilon Used to check vectors are not scalar multiples.
      */
-    public V3D_PlaneDouble(V3D_VectorDouble p, V3D_VectorDouble q, 
+    public V3D_PlaneDouble(V3D_VectorDouble p, V3D_VectorDouble q,
             V3D_VectorDouble r, double epsilon) {
         this(V3D_VectorDouble.ZERO, p, q, r, epsilon);
     }
@@ -281,14 +280,13 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         if (qr.equals(V3D_VectorDouble.ZERO)) {
             throw new RuntimeException("Cannot define plane as q equals r.");
         }
-        //this.p = p;
         this.p = new V3D_VectorDouble(p);
         this.n = pq.getCrossProduct(qr);
         if (n.isZero()) {
-//            if (pq.isReverse(qr, epsilon)) {
-//                int debug = 1;
-//                this.n = r.subtract(p).getCrossProduct(pq);
-//            }
+
+            qr.isScalarMultiple(pq, epsilon);
+            pq.isScalarMultiple(qr, epsilon);
+
             throw new RuntimeException("Points do not define a plane");
         }
         V3D_VectorDouble v;
@@ -321,17 +319,17 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             double epsilon) {
         this(pt.getVector(), offset, p, q, r, epsilon);
     }
-    
+
     /**
-     * Creates a new plane which is essentially the same as pl, but with the 
+     * Creates a new plane which is essentially the same as pl, but with the
      * offset specified.
-     * 
-     * @param pl  The plane to use as a template.
+     *
+     * @param pl The plane to use as a template.
      * @param offset What {@link #offset} is set to.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      */
-    public V3D_PlaneDouble(V3D_VectorDouble offset, V3D_PlaneDouble pl, 
+    public V3D_PlaneDouble(V3D_VectorDouble offset, V3D_PlaneDouble pl,
             double epsilon) {
         this.offset = offset;
         n = pl.getN();
@@ -407,34 +405,40 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
     }
 
     /**
-     * Find a perpendicular vector using: user65203, How to find perpendicular
-     * vector to another vector?, URL (version: 2020-10-01):
-     * https://math.stackexchange.com/qv/3821978
+     * Find a perpendicular vector.
      *
      * @return A perpendicular vector.
      */
-    public final V3D_VectorDouble getPV() {
-        V3D_VectorDouble pv;
-        V3D_VectorDouble v1 = new V3D_VectorDouble(0d, n.dz, -n.dy);
-        V3D_VectorDouble v2 = new V3D_VectorDouble(-n.dz, 0d, n.dx);
-        V3D_VectorDouble v3 = new V3D_VectorDouble(-n.dy, n.dx, 0d);
-        double mv1 = v1.getMagnitudeSquared();
-        double mv2 = v2.getMagnitudeSquared();
-        double mv3 = v3.getMagnitudeSquared();
-        if (mv1 > mv2) {
-            if (mv1 > mv3) {
-                pv = v1;
-            } else {
-                pv = v3;
-            }
-        } else {
-            if (mv2 > mv3) {
-                pv = v2;
-            } else {
-                pv = v3;
-            }
+    public final V3D_VectorDouble getPV(double epsilon) {
+//        /**
+//         * Magnitude method adapted from:
+//         * https://math.stackexchange.com/questions/137362/how-to-find-perpendicular-vector-to-another-vector
+//         */
+//        V3D_VectorDouble v1 = new V3D_VectorDouble(0d, n.dz, -n.dy);
+//        V3D_VectorDouble v2 = new V3D_VectorDouble(-n.dz, 0d, n.dx);
+//        V3D_VectorDouble v3 = new V3D_VectorDouble(-n.dy, n.dx, 0d);
+//        double mv1 = v1.getMagnitudeSquared();
+//        double mv2 = v2.getMagnitudeSquared();
+//        double mv3 = v3.getMagnitudeSquared();
+//        if (mv1 > mv2) {
+//            if (mv1 > mv3) {
+//                return v1;
+//            }
+//        } else {
+//            if (mv2 > mv3) {
+//               return v2;
+//            }
+//        }
+//        return v3;
+        /**
+         * Alternative method adapted from:
+         * https://math.stackexchange.com/questions/137362/how-to-find-perpendicular-vector-to-another-vector
+         */
+        V3D_VectorDouble v = new V3D_VectorDouble(n.dz, n.dz, -n.dx - n.dy);
+        if (v.isZero()) {
+            return new V3D_VectorDouble(-n.dy - n.dz, n.dx, n.dx);
         }
-        return pv;
+        return v;
     }
 
     /**
@@ -442,8 +446,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      *
      * @return A point on the plane.
      */
-    public final V3D_PointDouble getQ() {
-        return getQ(getPV());
+    public final V3D_PointDouble getQ(double epsilon) {
+        return getQ(getPV(epsilon));
     }
 
     /**
@@ -461,8 +465,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      *
      * @return A point on the plane.
      */
-    public final V3D_PointDouble getR() {
-        return getR(getPV());
+    public final V3D_PointDouble getR(double epsilon) {
+        return getR(getPV(epsilon));
     }
 
     /**
@@ -614,7 +618,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             coeffs[2] = n.dz;
             coeffs[3] = -k;
         }
-        
+
         @Override
         public String toString() {
             return "(" + coeffs[0] + " * x)"
@@ -627,7 +631,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
     /**
      * For getting the equation of the plane.
      *
-     * @return The equation of the plane as a String.
+     * @return The equation of the plane as an Equation.
      */
     public Equation getEquation() {
         if (equation == null) {
@@ -648,7 +652,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         equation = getEquation();
         double c = (equation.coeffs[0] * pt.getX() + equation.coeffs[1] * pt.getY()
                 + equation.coeffs[2] * pt.getZ() + equation.coeffs[3]);
-        return Math.abs(c) < epsilon;
+        return Math.abs(c) <= epsilon;
     }
 
     /**
@@ -659,7 +663,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @param pt The point to test for intersection with.
      * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
-    public boolean isIntersectedByAlternative(V3D_PointDouble pt) {
+    public boolean isIntersectedByAlternative(V3D_PointDouble pt, double epsilon) {
         double[][] m = new double[4][4];
         V3D_PointDouble tp = getP();
         if (tp.isOrigin()) {
@@ -667,7 +671,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             tpt.translate(V3D_VectorDouble.IJK);
             V3D_PointDouble ttp = new V3D_PointDouble(getP());
             ttp.translate(V3D_VectorDouble.IJK);
-            V3D_VectorDouble pv = getPV();
+            V3D_VectorDouble pv = getPV(epsilon);
             V3D_PointDouble ttq = getQ(pv);
             ttq.translate(V3D_VectorDouble.IJK);
             V3D_PointDouble ttr = getR(pv);
@@ -690,7 +694,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             m[3][3] = 1.0d;
             return new Math_Matrix_Double(m).getDeterminant() == 0d;
         } else {
-            V3D_VectorDouble pv = getPV();
+            V3D_VectorDouble pv = getPV(epsilon);
             V3D_PointDouble tq = getQ(pv);
             V3D_PointDouble tr = getR(pv);
             m[0][0] = tp.getX();
@@ -1026,7 +1030,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
 //        m[3][2] = r.getZ(oom);
 //        m[3][3] = lp.getZ(oom);
         V3D_PointDouble tp = getP();
-        V3D_VectorDouble pv = getPV();
+        V3D_VectorDouble pv = getPV(epsilon);
         V3D_PointDouble tq = getQ(pv);
         V3D_PointDouble tr = getR(pv);
         m[1][0] = tp.getX();
@@ -1059,7 +1063,13 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         m[3][2] = tr.getZ();
         m[3][3] = lv.dz;
         Math_Matrix_Double denm = new Math_Matrix_Double(m);
-        double t = -numm.getDeterminant() / denm.getDeterminant();
+        double t;
+        if (Math.abs(denm.getDeterminant()) < epsilon
+                && Math.abs(numm.getDeterminant()) < epsilon) {
+            t = 1;
+        } else {
+            t = -numm.getDeterminant() / denm.getDeterminant();
+        }
         V3D_PointDouble res = new V3D_PointDouble(
                 lp.getX() + (lv.dx * (t)),
                 lp.getY() + (lv.dy * (t)),
@@ -1083,8 +1093,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             return l;
         } else {
             V3D_PointDouble pt = (V3D_PointDouble) g;
-            if (l.getPPL().isOnSameSide(pt, l.getQ())
-                    && l.getQPL().isOnSameSide(pt, l.getP())) {
+            if (l.getPPL().isOnSameSide(pt, l.getQ(), epsilon)
+                    && l.getQPL().isOnSameSide(pt, l.getP(), epsilon)) {
                 return pt;
             }
 //            if (l.isIntersectedBy(pt)) {
@@ -1231,9 +1241,9 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
     /**
      * @return The points that define the plane as a matrix.
      */
-    public Math_Matrix_Double getAsMatrix() {
+    public Math_Matrix_Double getAsMatrix(double epsilon) {
         V3D_PointDouble tp = getP();
-        V3D_VectorDouble pv = getPV();
+        V3D_VectorDouble pv = getPV(epsilon);
         V3D_PointDouble tq = getQ(pv);
         V3D_PointDouble tr = getR(pv);
         double[][] m = new double[3][3];
@@ -1361,10 +1371,10 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
     }
 
     @Override
-    public V3D_PlaneDouble rotate(V3D_LineDouble axis, double theta,
+    public V3D_PlaneDouble rotate(V3D_RayDouble axis, double theta,
             double epsilon) {
         return new V3D_PlaneDouble(getP().rotate(axis, theta, epsilon),
-                n.rotate(axis.v.getUnitVector(), theta));
+                n.rotate(axis.l.v.getUnitVector(), theta));
     }
 
     /**
@@ -1400,18 +1410,19 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @return {@code true} if an intersection is found and {@code false}
      * otherwise.
      */
-    public boolean isOnSameSide(V3D_PointDouble a, V3D_PointDouble b) {
-        int aside = getSideOfPlane(a);
+    public boolean isOnSameSide(V3D_PointDouble a, V3D_PointDouble b,
+            double epsilon) {
+        int aside = getSideOfPlane(a, epsilon);
         if (aside == 0) {
             return true;
         }
-        int bside = getSideOfPlane(b);
+        int bside = getSideOfPlane(b, epsilon);
         if (bside == 0) {
             return true;
         }
         return aside == bside;
     }
-    
+
     /**
      * Check a and b are on the same side of this. If either are on the boundary
      * then return {@code false}.
@@ -1423,12 +1434,13 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @return {@code true} if an intersection is found and {@code false}
      * otherwise.
      */
-    public boolean isOnSameSideNotOn(V3D_PointDouble a, V3D_PointDouble b) {
-        int aside = getSideOfPlane(a);
+    public boolean isOnSameSideNotOn(V3D_PointDouble a, V3D_PointDouble b,
+            double epsilon) {
+        int aside = getSideOfPlane(a, epsilon);
         if (aside == 0) {
             return false;
         }
-        int bside = getSideOfPlane(b);
+        int bside = getSideOfPlane(b, epsilon);
         if (bside == 0) {
             return false;
         }
@@ -1439,15 +1451,40 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * Plug the coordinates of pt into the plane equation.
      *
      * @param pt The point.
+     * @param epsilon If the point is within epsilon distance of the plane it is
+     * regarded as being on the plane.
      * @return 1 if pt is on the same side of the plane that the normal points
      * towards. 0 if pt is on the plane. -1 if pt is on the other side of the
      * plane that the normal points towards.
      */
-    public int getSideOfPlane(V3D_PointDouble pt) {
+    public int getSideOfPlane(V3D_PointDouble pt, double epsilon) {
         double[] coeffs = getEquation().coeffs;
-        return Double.valueOf(coeffs[0] * pt.getX() + coeffs[1] * pt.getY()
-                + coeffs[2] * pt.getZ() + coeffs[3]).compareTo(0d);
+        Double x = coeffs[0] * pt.getX()
+                + coeffs[1] * pt.getY()
+                + coeffs[2] * pt.getZ()
+                + coeffs[3];
+        if (Math.abs(x) < epsilon) {
+            return 0;
+        } else {
+            return x.compareTo(0d);
+        }
     }
+//    public int getSideOfPlane(V3D_PointDouble pt) {
+//        double[] coeffs = getEquation().coeffs;
+//        double x = coeffs[0] * pt.getX() 
+//                + coeffs[1] * pt.getY()
+//                + coeffs[2] * pt.getZ() 
+//                + coeffs[3];
+//        if (x < 0d) {
+//            return -1;
+//        } else {
+//            if (x > 0d ) {
+//                return 1;
+//            } else {
+//                return 0;
+//            }
+//        }
+//    }
 
     /**
      * Check if all points in pts are on the same side of this. Points on this
@@ -1472,8 +1509,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
                 return true;
             }
             default -> {
-                for (int i = 1; i < pts.length; i ++) {
-                    if (!isOnSameSide(pts[0], pts[i])) {
+                for (int i = 1; i < pts.length; i++) {
+                    if (!isOnSameSide(pts[0], pts[i], epsilon)) {
                         return false;
                     }
                 }
@@ -1505,8 +1542,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
                 return true;
             }
             default -> {
-                for (int i = 1; i < pts.length; i ++) {
-                    if (!isOnSameSideNotOn(pts[0], pts[i])) {
+                for (int i = 1; i < pts.length; i++) {
+                    if (!isOnSameSideNotOn(pts[0], pts[i], epsilon)) {
                         return false;
                     }
                 }
@@ -1514,16 +1551,17 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             }
         }
     }
-    
+
     /**
      *
      * @param pl A plane parallel to this.
      * @param pt A point to check if it lies on or between the parallel planes.
      * @return true if the point is on or between the parallel planes.
      */
-    public boolean isBetweenPlanes(V3D_PlaneDouble pl, V3D_PointDouble pt) {
-        if (pl.isOnSameSide(getP(), pt)) {
-            return this.isOnSameSide(pl.getP(), pt);
+    public boolean isBetweenPlanes(V3D_PlaneDouble pl, V3D_PointDouble pt,
+            double epsilon) {
+        if (pl.isOnSameSide(getP(), pt, epsilon)) {
+            return this.isOnSameSide(pl.getP(), pt, epsilon);
         }
         return false;
     }

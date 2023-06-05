@@ -27,6 +27,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_GeometryDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegmentDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_RayDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
 
 /**
@@ -86,7 +87,7 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
      * Test of isIntersectedBy method, of class V3D_LineDouble.
      */
     @Test
-    public void testIsIntersectedBy_V3D_PointDouble_int_RoundingMode() {
+    public void testIsIntersectedBy_V3D_PointDouble_double() {
         System.out.println("isIntersectedBy");
         double epsilon = 1d / 10000000d;
         V3D_PointDouble pt = V3D_DoubleTest.pP0P0P0;
@@ -381,7 +382,7 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
      * https://www.mathepower.com/en/lineintersection.php
      */
     @Test
-    public void testGetIntersection_V3D_LineDouble_int() {
+    public void testGetIntersection_V3D_LineDouble_double() {
         System.out.println("getIntersection");
         double epsilon = 1d / 10000000d;
         V3D_LineDouble l = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P1P1);
@@ -429,6 +430,43 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         expResult = new V3D_PointDouble(0d + (0.1d), 0d + (0.1d), 0d);
         result = instance.getIntersection(l, epsilon);
         assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        // Test 8
+        epsilon = 1d/100000d;
+        l = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, 0d),
+                new V3D_PointDouble(100d, 100d, 0d));
+        instance = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, epsilon),
+                new V3D_PointDouble(100d, 100d, epsilon));
+        expResult = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, 0d),
+                new V3D_PointDouble(100d, 100d, 0d));
+//        expResult = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, epsilon),
+//                new V3D_PointDouble(100d, 100d, epsilon));
+        result = instance.getIntersection(l, epsilon);
+        assertTrue(((V3D_LineDouble) expResult).equals((V3D_LineDouble) result, epsilon));
+        // Test 9
+        epsilon = 1d/100000d;
+        l = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, 0d),
+                new V3D_PointDouble(100d, 100d, 0d));
+        instance = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, epsilon*2d),
+                new V3D_PointDouble(100d, 100d, epsilon*2d));
+        result = instance.getIntersection(l, epsilon);
+        assertNull(result);
+        // Test 10
+        epsilon = 1d/100000d;
+        l = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, 0d),
+                new V3D_PointDouble(100d, 100d, 0d));
+        instance = new V3D_LineDouble(new V3D_PointDouble(-100d, 100d, epsilon),
+                new V3D_PointDouble(100d, -100d, epsilon));
+        expResult = V3D_DoubleTest.pP0P0P0;
+        result = instance.getIntersection(l, epsilon);
+        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        // Test 11
+        epsilon = 1d/100000d;
+        l = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, 0d),
+                new V3D_PointDouble(100d, 100d, 0d));
+        instance = new V3D_LineDouble(new V3D_PointDouble(-100d, 100d, epsilon*2d),
+                new V3D_PointDouble(100d, -100d, epsilon*2d));
+        result = instance.getIntersection(l, epsilon);
+        assertNull(result);
     }
 
     /**
@@ -563,7 +601,7 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
      * Test of getLineOfIntersection method, of class V3D_LineDouble.
      */
     @Test
-    public void testGetLineOfIntersection_V3D_PointDouble_int() {
+    public void testGetLineOfIntersection_V3D_PointDouble_double() {
         System.out.println("getLineOfIntersection");
         double epsilon = 1d / 10000000d;
         V3D_PointDouble pt;
@@ -606,7 +644,7 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
      * Test of getLineOfIntersection method, of class V3D_LineDouble.
      */
     @Test
-    public void testGetLineOfIntersection_V3D_LineDouble_int() {
+    public void testGetLineOfIntersection_V3D_LineDouble_double() {
         System.out.println("getLineOfIntersection");
         double epsilon = 1d / 10000000d;
         V3D_LineDouble l0 = new V3D_LineDouble(V3D_DoubleTest.pP1P0P0, V3D_DoubleTest.pP1P1P0);
@@ -757,7 +795,8 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
     public void testRotate() {
         System.out.println("rotate");
         double epsilon = 1d / 10000000d;
-        V3D_LineDouble axis = V3D_LineDouble.X_AXIS;
+        V3D_RayDouble xAxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
+        V3D_RayDouble axis = xAxis;
         double Pi = Math.PI;
         double theta = Pi / 2d;
         V3D_LineDouble instance = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
@@ -765,7 +804,8 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         V3D_LineDouble result = instance.rotate(axis, theta, epsilon);
         assertTrue(expResult.equals(result, epsilon));
         // Test 2
-        axis = V3D_LineDouble.Y_AXIS;
+        V3D_RayDouble yAxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P1P0);
+        axis = yAxis;
         instance = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
         expResult = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P0N1);
         result = instance.rotate(axis, theta, epsilon);

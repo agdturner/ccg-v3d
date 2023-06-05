@@ -583,7 +583,7 @@ public class V3D_TriangleTest extends V3D_Test {
         V3D_Point pt = new V3D_Point(centroid);
         pt.translate(direction.multiply(radius.multiply(2), oom, rm), oom, rm);
         V3D_Plane pl = new V3D_Plane(pt, new V3D_Vector(pt, envelope.getCentroid(oom, rm), oom, rm));
-        V3D_Vector pv = pl.getPV();
+        V3D_Vector pv = pl.getPV(oom, rm);
         V3D_Rectangle screen = envelope.getViewport3(pt, pv, oom, rm);
         V3D_Triangle pqr = screen.getPQR(oom, rm);
         BigRational screenWidth = pqr.getPQ(oom, rm).getLength(oom, rm).getSqrt(oom, rm);

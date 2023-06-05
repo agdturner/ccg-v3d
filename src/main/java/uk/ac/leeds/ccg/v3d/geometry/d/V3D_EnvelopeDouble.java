@@ -316,10 +316,20 @@ public class V3D_EnvelopeDouble implements Serializable {
      * @param e V3D_Envelope
      * @return if this is contained by {@code e}
      */
-    public boolean isContainedBy(V3D_EnvelopeDouble e) {
-        return getXMax() <= e.getXMax() && getXMin() >= e.getXMin()
-                && getYMax() <= e.getYMax() && getYMin() >= e.getYMin()
-                && getZMax() <= e.getZMax() && getZMin() >= e.getZMin();
+    public boolean isContainedBy(V3D_EnvelopeDouble e ){
+        return getXMax() <= e.getXMax()
+                && getXMin() >= e.getXMin()
+                && getYMax() <= e.getYMax()
+                && getYMin() >= e.getYMin()
+                && getZMax() <= e.getZMax()
+                && getZMin() >= e.getZMin();
+//    public boolean isContainedBy(V3D_EnvelopeDouble e, double epsilon) {
+//        return getXMax() <= e.getXMax() + epsilon
+//                && getXMin() >= e.getXMin() - epsilon
+//                && getYMax() <= e.getYMax() + epsilon
+//                && getYMin() >= e.getYMin() - epsilon
+//                && getZMax() <= e.getZMax() + epsilon
+//                && getZMin() >= e.getZMin() - epsilon;
     }
 
     /**
@@ -535,7 +545,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         for (var x : ipts) {
             V3D_PointDouble pp = vpl.getPointOfProjectedIntersection(x, epsilon);
             double a = Math.abs(cv.getAngle(new V3D_VectorDouble(pt, pp)));
-            if (v2pl.isOnSameSide(ap, x)) {
+            if (v2pl.isOnSameSide(ap, x, epsilon)) {
                 if (a > aa) {
                     aa = a;
                     //System.out.println(a);
@@ -564,7 +574,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         for (var x : ipts) {
             V3D_PointDouble pp = v2pl.getPointOfProjectedIntersection(x, epsilon);
             double a = Math.abs(cv.getAngle(new V3D_VectorDouble(pt, pp)));
-            if (vpl.isOnSameSide(lp, x)) {
+            if (vpl.isOnSameSide(lp, x, epsilon)) {
                 if (a > la) {
                     la = a;
                     V3D_PointDouble xv = new V3D_PointDouble(x);
@@ -656,7 +666,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         for (var x : ipts) {
             V3D_PointDouble pp = vpl.getPointOfProjectedIntersection(x, epsilon);
             double a = Math.abs(cv.getAngle(new V3D_VectorDouble(pt, pp)));
-            if (v2pl.isOnSameSide(ap, x)) {
+            if (v2pl.isOnSameSide(ap, x, epsilon)) {
                 if (a > aa) {
                     aa = a;
                     //System.out.println(a);
@@ -685,7 +695,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         for (var x : ipts) {
             V3D_PointDouble pp = v2pl.getPointOfProjectedIntersection(x, epsilon);
             double a = Math.abs(cv.getAngle(new V3D_VectorDouble(pt, pp)));
-            if (vpl.isOnSameSide(lp, x)) {
+            if (vpl.isOnSameSide(lp, x, epsilon)) {
                 if (a > la) {
                     la = a;
                     V3D_PointDouble xv = new V3D_PointDouble(x);

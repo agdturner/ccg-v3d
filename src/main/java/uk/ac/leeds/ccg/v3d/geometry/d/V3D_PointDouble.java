@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
@@ -167,6 +168,9 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
      * @return {@code true} iff {@code pv} is the same as {@code this}.
      */
     public boolean equals(V3D_PointDouble p) {
+        if (p == null) {
+            return false;
+        }
         if (this.getX() == p.getX()) {
             if (this.getY() == p.getY()) {
                 if (this.getZ() == p.getZ()) {
@@ -188,6 +192,9 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
      * epsilon.
      */
     public boolean equals(V3D_PointDouble p, double epsilon) {
+        if (p == null) {
+            return false;
+        }
         double x = this.getX();
         double y = this.getY();
         double z = this.getZ();
@@ -263,8 +270,8 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
         }
         V3D_PlaneDouble ap = new V3D_PlaneDouble(a, ab);
         V3D_PlaneDouble bp = new V3D_PlaneDouble(b, ab);
-        int aps = ap.getSideOfPlane(this);
-        int bps = bp.getSideOfPlane(this);
+        int aps = ap.getSideOfPlane(this, epsilon);
+        int bps = bp.getSideOfPlane(this, epsilon);
         return aps != bps;
     }
 
@@ -386,16 +393,16 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
      * @param epsilon The tolerance.
      */
     @Override
-    public V3D_PointDouble rotate(V3D_LineDouble axis, double theta,
+    public V3D_PointDouble rotate(V3D_RayDouble axis, double theta,
             double epsilon) {
         theta = V3D_AngleDouble.normalise(theta);
         if (theta == 0d) {
             return new V3D_PointDouble(this);
         }
-        V3D_VectorDouble tv = axis.getP().getVector();
+        V3D_VectorDouble tv = axis.l.getP().getVector();
         V3D_PointDouble tp = new V3D_PointDouble(this);
         tp.translate(tv);
-        V3D_VectorDouble rv = axis.v.getUnitVector();
+        V3D_VectorDouble rv = axis.l.v.getUnitVector();
         V3D_VectorDouble tpr = tp.getVector().rotate(rv, theta);
         V3D_PointDouble r = new V3D_PointDouble(tpr);
         r.translate(tv.reverse());
@@ -479,4 +486,17 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
 //        }
         return r;
     }
+    
+//    /**
+//     * A collection method for getting unique points.
+//     *
+//     * @param pts The points to derive a unique list from.
+//     * @param epsilon The tolerance within which two points are regarded as
+//     * equal.
+//     * @return A unique list made from those in pts.
+//     */
+//    public static ArrayList<V3D_PointDouble> getUnique(double epsilon, 
+//            V3D_PointDouble... pts) {
+//        return getUnique(Arrays.asList(pts), epsilon);
+//    }
 }

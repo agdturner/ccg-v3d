@@ -29,6 +29,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegmentDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PlaneDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_RayDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
 
 /**
@@ -2554,19 +2555,26 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetAsMatrix() {
         System.out.println("getAsMatrix");
+        double epsilon = 1d / 10000000d;
         V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
         double[][] m = new double[3][3];
         m[0][0] = 0d;
         m[0][1] = 0d;
         m[0][2] = 0d;
+//        m[1][0] = 0d;
+//        m[1][1] = 1d;
+//        m[1][2] = 0d;
+//        m[2][0] = 0d;
+//        m[2][1] = 0d;
+//        m[2][2] = -1d;
         m[1][0] = 0d;
-        m[1][1] = 1d;
-        m[1][2] = 0d;
+        m[1][1] = 0d;
+        m[1][2] = -1d;
         m[2][0] = 0d;
-        m[2][1] = 0d;
-        m[2][2] = -1d;
+        m[2][1] = -1d;
+        m[2][2] = 0d;
         Math_Matrix_Double expResult = new Math_Matrix_Double(m);
-        Math_Matrix_Double result = instance.getAsMatrix();
+        Math_Matrix_Double result = instance.getAsMatrix(epsilon);
         assertTrue(expResult.getRows().length == result.getRows().length);
         assertTrue(expResult.getCols().length == result.getCols().length);
         for (int i = 0; i < expResult.getRows().length; i++) {
@@ -2732,22 +2740,15 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetPV() {
         System.out.println("getPV");
+        double epsilon = 1d / 10000000d;
         V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
-        //int oom = -3;
-        V3D_VectorDouble expResult = V3D_VectorDouble.J;
-        V3D_VectorDouble result = instance.getPV();
-        //System.out.println(result);
-        assertTrue(expResult.equals(result));
+        assertTrue(instance.getPV(epsilon).getDotProduct(instance.getN()) == 0d);
         // Test 2
         instance = V3D_PlaneDouble.Y0;
-        expResult = V3D_VectorDouble.I.reverse();
-        result = instance.getPV();
-        assertTrue(expResult.equals(result));
+        assertTrue(instance.getPV(epsilon).getDotProduct(instance.getN()) == 0d);
         // Test 3
         instance = V3D_PlaneDouble.Z0;
-        expResult = V3D_VectorDouble.I.reverse();
-        result = instance.getPV();
-        assertTrue(expResult.equals(result));
+        assertTrue(instance.getPV(epsilon).getDotProduct(instance.getN()) == 0d);
     }
 
     /**
@@ -2768,10 +2769,9 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetQ() {
         System.out.println("getQ");
+        double epsilon = 1d / 10000000d;
         V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
-        V3D_PointDouble expResult = pP0P1P0;
-        V3D_PointDouble result = instance.getQ();
-        assertTrue((expResult).equals(result));
+        assertTrue(instance.isIntersectedBy(instance.getQ(epsilon), 0d));
     }
 
     /**
@@ -2780,10 +2780,9 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetR() {
         System.out.println("getR");
+        double epsilon = 1d / 10000000d;
         V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
-        V3D_PointDouble expResult = pP0P0N1;
-        V3D_PointDouble result = instance.getR();
-        assertTrue((expResult).equals(result));
+        assertTrue(instance.isIntersectedBy(instance.getR(epsilon), 0d));
     }
 
     /**
@@ -2814,36 +2813,39 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         System.out.println("rotate");
         double epsilon = 1d / 10000000d;
         double Pi = Math.PI;
-        V3D_LineDouble axis = V3D_LineDouble.X_AXIS;
+        V3D_RayDouble xAxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
+        V3D_RayDouble axis = xAxis;
         double theta = Pi / 2d;
         V3D_PlaneDouble instance = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
-        instance.rotate(axis, theta, epsilon);
+        instance = instance.rotate(axis, theta, epsilon);
         assertTrue(V3D_PlaneDouble.X0.equalsIgnoreOrientation(instance, epsilon));
         // Test 2
-        axis = V3D_LineDouble.Y_AXIS;
+        V3D_RayDouble yAxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P1P0);
+        axis = yAxis;
         instance = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
         instance = instance.rotate(axis, theta, epsilon);
         assertTrue(V3D_PlaneDouble.Z0.equalsIgnoreOrientation(instance, epsilon));
         // Test 3
-        axis = V3D_LineDouble.Z_AXIS;
+        V3D_RayDouble zAxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P0P1);
+        axis = zAxis;
         instance = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
         instance = instance.rotate(axis, theta, epsilon);
         assertTrue(V3D_PlaneDouble.Y0.equalsIgnoreOrientation(instance, epsilon));
         // Test 4
-        axis = V3D_LineDouble.X_AXIS;
+        axis = xAxis;
         theta = Pi;
         instance = new V3D_PlaneDouble(P1P0P0, P0P0P0, P0P2P0, P0P2P2, epsilon);
         instance = instance.rotate(axis, theta, epsilon);
         assertTrue(new V3D_PlaneDouble(P1P0P0, P0P0P0, P0P2P0, P0P2P2, epsilon).equalsIgnoreOrientation(instance, epsilon));
         // Test 5
-        axis = V3D_LineDouble.Y_AXIS;
+        axis = yAxis;
         theta = Pi;
         instance = new V3D_PlaneDouble(P1P0P0, P0P0P0, P0P2P0, P0P2P2, epsilon);
         instance = instance.rotate(axis, theta, epsilon);
         V3D_PlaneDouble expResult = new V3D_PlaneDouble(N1P0P0, P0P0P0, P0P2P0, P0P2N2, epsilon);
         assertTrue(expResult.equalsIgnoreOrientation(instance, epsilon));
         // Test 5
-        axis = V3D_LineDouble.Z_AXIS;
+        axis = zAxis;
         theta = Pi;
         instance = new V3D_PlaneDouble(P1P0P0, P0P0P0, P0P2P0, P0P2P2, epsilon);
         instance = instance.rotate(axis, theta, epsilon);

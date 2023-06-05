@@ -356,10 +356,10 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
         psq = getPsq();
         spr = getSpr();
         qsr = getQsr();
-        if (pqr.getPl(epsilon).isOnSameSide(pt, getS())) {
-            if (psq.getPl(epsilon).isOnSameSide(pt, getR())) {
-                if (spr.getPl(epsilon).isOnSameSide(pt, getQ())) {
-                    if (qsr.getPl(epsilon).isOnSameSide(pt, getP())) {
+        if (pqr.getPl(epsilon).isOnSameSide(pt, getS(), epsilon)) {
+            if (psq.getPl(epsilon).isOnSameSide(pt, getR(), epsilon)) {
+                if (spr.getPl(epsilon).isOnSameSide(pt, getQ(), epsilon)) {
+                    if (qsr.getPl(epsilon).isOnSameSide(pt, getP(), epsilon)) {
                         return true;
                     }
                 }
@@ -389,7 +389,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
             return null;
         }
         if (irl instanceof V3D_PointDouble irlp) {
-            if (r.isAligned(irlp)) {
+            if (r.isAligned(irlp, epsilon)) {
                 return irl;
             } else {
                 return null;
@@ -912,7 +912,12 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                 if (qsri == null) {
                     return psqip;
                 } else {
-                    return V3D_TriangleDouble.getGeometry((V3D_LineSegmentDouble) qsri, psqip, epsilon);
+                    if (qsri instanceof V3D_PointDouble qsrip) {
+                        return V3D_LineSegmentDouble.getGeometry(qsrip, psqip, epsilon);
+                    } else {
+                        return V3D_TriangleDouble.getGeometry(
+                                (V3D_LineSegmentDouble) qsri, psqip, epsilon);
+                    }
                 }
             } else if (psqi instanceof V3D_LineSegmentDouble psqil) {
                 V3D_FiniteGeometryDouble qsri = getQsr().getIntersection(pl, epsilon);
@@ -923,7 +928,20 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                         return psqil;
                     } else {
                         //V3D_LineSegmentDouble spri = (V3D_LineSegmentDouble) getSpr().getIntersection(pl);
-                        return V3D_TriangleDouble.getGeometry2(psqil, (V3D_LineSegmentDouble) qsri, epsilon);
+                        //return V3D_TriangleDouble.getGeometry2(psqil, (V3D_LineSegmentDouble) qsri, epsilon);
+                        V3D_LineSegmentDouble qsril = (V3D_LineSegmentDouble) qsri;
+                        
+                        // Debug
+                        Double x = psqil.getQ().getX();
+                        if (x.isInfinite() || x.isNaN()) {
+                            int debug =1 ;
+                            getQsr().getIntersection(pl, epsilon);
+                            getQsr().getIntersection(pl, epsilon);
+                        }
+                        
+                        
+                        return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon, 
+                                psqil.getP(),  psqil.getQ(), qsril.getP(), qsril.getQ());
                     }
                 }
             } else {
@@ -941,10 +959,15 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                 if (spri instanceof V3D_PointDouble sprip) {
                     return V3D_TriangleDouble.getGeometry(pqril, sprip, epsilon);
                 } else {
-                    return V3D_TriangleDouble.getGeometry2((V3D_LineSegmentDouble) spri, pqril, epsilon);
+                    //return V3D_TriangleDouble.getGeometry2((V3D_LineSegmentDouble) spri, pqril, epsilon);
+                    V3D_LineSegmentDouble spril = (V3D_LineSegmentDouble) spri;
+                    return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon, 
+                                spril.getP(),  spril.getQ(), pqril.getP(), pqril.getQ());
                 }
             } else if (psqi instanceof V3D_LineSegmentDouble psqil) {
-                return V3D_TriangleDouble.getGeometry2(psqil, pqril, epsilon);
+                //return V3D_TriangleDouble.getGeometry2(psqil, pqril, epsilon);
+                    return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon, 
+                                psqil.getP(),  psqil.getQ(), pqril.getP(), pqril.getQ());
             } else {
                 // Triangle
                 return (V3D_TriangleDouble) psqi;
@@ -995,7 +1018,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                         } else if (lriil instanceof V3D_PointDouble lriilp) {
                             // Find the other point and return the line segment.
                             V3D_PointDouble pq = t.getQ();
-                            if (lr.isOnSameSide(lriilp, pq)) {
+                            if (lr.isOnSameSide(lriilp, pq, epsilon)) {
                                 return new V3D_LineSegmentDouble(lriilp, pq);
                             } else {
                                 return new V3D_LineSegmentDouble(lriilp, t.getP());
@@ -1013,8 +1036,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                             V3D_PointDouble ilp = il.getP();
                             V3D_PointDouble ilq = il.getQ();
                             V3D_PointDouble tpp = t.getP();
-                            if (lq.isOnSameSide(ilp, tpp)) {
-                                if (lq.isOnSameSide(ilq, tpp)) {
+                            if (lq.isOnSameSide(ilp, tpp, epsilon)) {
+                                if (lq.isOnSameSide(ilq, tpp, epsilon)) {
                                     if (lqiilp.getDistanceSquared(ilp)
                                             < lqiilp.getDistanceSquared(ilq)) {
                                         return new V3D_LineSegmentDouble(lqiilp, ilq);
@@ -1036,7 +1059,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                 // Find the other point and return the line segment.
                                 V3D_PointDouble ilp = il.getP();
                                 V3D_PointDouble ilq = il.getQ();
-                                if (lq.isOnSameSide(ilp, ilq)) {
+                                if (lq.isOnSameSide(ilp, ilq, epsilon)) {
                                     if (lqiilp.getDistanceSquared(ilp)
                                             < lqiilp.getDistanceSquared(ilq)) {
                                         return new V3D_LineSegmentDouble(lqiilp, ilq);
@@ -1068,7 +1091,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                             // Find the other point and return the line segment.
                             V3D_PointDouble ilp = il.getP();
                             V3D_PointDouble ilq = il.getQ();
-                            if (lq.isOnSameSide(ilp, ilq)) {
+                            if (lq.isOnSameSide(ilp, ilq, epsilon)) {
                                 if (lpiilp.getDistanceSquared(ilp)
                                         < lpiilp.getDistanceSquared(ilq)) {
                                     return new V3D_LineSegmentDouble(lpiilp, ilq);
@@ -1083,7 +1106,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                 // Find the other point and return the line segment.
                                 V3D_PointDouble ilp = il.getP();
                                 V3D_PointDouble ilq = il.getQ();
-                                if (lq.isOnSameSide(ilp, ilq)) {
+                                if (lq.isOnSameSide(ilp, ilq, epsilon)) {
                                     if (lpiilp.getDistanceSquared(ilp)
                                             < lpiilp.getDistanceSquared(ilq)) {
                                         return new V3D_LineSegmentDouble(lpiilp, ilq);
@@ -1091,7 +1114,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                         return new V3D_LineSegmentDouble(lpiilp, ilp);
                                     }
                                 } else {
-                                    if (lp.isOnSameSide(t.getR(), ilp)) {
+                                    if (lp.isOnSameSide(t.getR(), ilp, epsilon)) {
                                         return new V3D_LineSegmentDouble(lpiilp, ilp);
                                     } else {
                                         return new V3D_LineSegmentDouble(lpiilp, ilq);
@@ -1112,7 +1135,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                             // For the points on the right side (if any)
                             V3D_PointDouble pilp = il.getP();
                             V3D_PointDouble pilq = il.getQ();
-                            if (lq.isOnSameSide(pilp, pilq)) {
+                            if (lq.isOnSameSide(pilp, pilq, epsilon)) {
                                 if (lqiilp.getDistanceSquared(pilp)
                                         < lqiilp.getDistanceSquared(pilq)) {
                                     return new V3D_LineSegmentDouble(lqiilp, pilq);
@@ -1120,7 +1143,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                     return new V3D_LineSegmentDouble(lqiilp, pilp);
                                 }
                             } else {
-                                if (lq.isOnSameSide(pilp, t.getP())) {
+                                if (lq.isOnSameSide(pilp, t.getP(), epsilon)) {
                                     return new V3D_LineSegmentDouble(lqiilp, pilp);
                                 } else {
                                     return new V3D_LineSegmentDouble(lqiilp, pilq);
@@ -1444,7 +1467,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
     }
 
     @Override
-    public V3D_TetrahedronDouble rotate(V3D_LineDouble axis, double theta, 
+    public V3D_TetrahedronDouble rotate(V3D_RayDouble axis, double theta, 
             double epsilon) {
         return new V3D_TetrahedronDouble(
                 getP().rotate(axis, theta, epsilon),

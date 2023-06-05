@@ -575,8 +575,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
             V3D_FiniteGeometryDouble pol2, double epsilon) {
         if (pol1 instanceof V3D_LineSegmentDouble l1) {
             if (pol2 instanceof V3D_LineSegmentDouble l2) {
-                return V3D_LineSegmentDouble.getGeometry(epsilon, l1.getP(), 
-                        l1.getQ(),                        l2.getP(), l2.getQ());
+                return V3D_LineSegmentDouble.getGeometry(epsilon, l1.getP(),
+                        l1.getQ(), l2.getP(), l2.getQ());
             } else {
                 return l1;
             }
@@ -732,7 +732,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     }
 
     @Override
-    public V3D_RectangleDouble rotate(V3D_LineDouble axis, double theta,
+    public V3D_RectangleDouble rotate(V3D_RayDouble axis, double theta,
             double epsilon) {
         return new V3D_RectangleDouble(
                 getP().rotate(axis, theta, epsilon),
@@ -789,7 +789,35 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
             }
         }
         V3D_FiniteGeometryDouble pqrit = getPQR().getIntersection(t, epsilon);
+
+        // Debug.
+        if (pqrit != null) {
+            if (pqrit instanceof V3D_LineSegmentDouble) {
+                V3D_LineSegmentDouble li = (V3D_LineSegmentDouble) pqrit;
+                Double d = li.getQ().getX();
+                if (d.isNaN()) {
+                    int debug = 1;
+                    getPQR().getIntersection(t, epsilon);
+                    getPQR().getIntersection(t, epsilon);
+                }
+            }
+        }
+
         V3D_FiniteGeometryDouble rspit = getRSP().getIntersection(t, epsilon);
+
+        // Debug.
+        if (rspit != null) {
+            if (rspit instanceof V3D_LineSegmentDouble) {
+            V3D_LineSegmentDouble li = (V3D_LineSegmentDouble) rspit;
+                Double d = li.getQ().getX();
+                if (d.isNaN()) {
+                    int debug = 1;
+                    getRSP().getIntersection(t, epsilon);
+                    getRSP().getIntersection(t, epsilon);
+                }
+            }
+        }
+
         if (pqrit == null) {
             return rspit;
         } else {
@@ -798,12 +826,12 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
             }
             if (pqrit instanceof V3D_PointDouble) {
                 return rspit;
-            } else if (pqrit instanceof V3D_LineSegmentDouble t1il) {
+            } else if (pqrit instanceof V3D_LineSegmentDouble pqritl) {
                 if (rspit instanceof V3D_PointDouble) {
                     return pqrit;
-                } else if (rspit instanceof V3D_LineSegmentDouble t2il) {
-                    return V3D_LineSegmentsCollinearDouble.getGeometry(t1il, 
-                            t2il, epsilon);
+                } else if (rspit instanceof V3D_LineSegmentDouble rspitl) {
+                    return V3D_LineSegmentDouble.getGeometry(epsilon, pqritl,
+                            rspitl);
                 } else {
                     return rspit;
                 }

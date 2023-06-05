@@ -218,7 +218,7 @@ public class V3D_PolygonDouble extends V3D_FiniteGeometryDouble
     }
 
     @Override
-    public V3D_PolygonDouble rotate(V3D_LineDouble axis, double theta, 
+    public V3D_PolygonDouble rotate(V3D_RayDouble axis, double theta, 
             double epsilon) {
         ArrayList<V3D_ConvexHullCoplanarDouble> rparts = new ArrayList<>();
         ArrayList<V3D_ConvexHullCoplanarDouble> rholes = new ArrayList<>();

@@ -24,21 +24,21 @@ import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VTriangleDouble;
  * For representing and processing triangles in 3D. A triangle has a non-zero
  * area. The corner points are {@link #pl}, {@link #q} and {@link #r}. The
  * following depicts a generic triangle {@code
- * pq
+ *   p                                               q
  * pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
  *     \~                   mpq                   ~/
  *      \  ~                 |                 ~  /
  *       \    ~              |              ~    /
  *        \      ~           |           ~      /
- *         \        ~        |        ~        /
- *          \          ~     |     ~          /
- *           \            ~  |  ~            /
- *       -n  -n  -n  -n  -n  c  +n  +n  +n  +n  +n  normal heading out from the page.
- *             \          ~  |  ~          /
- *              \      ~     |     ~      /
- *               \  ~        |        ~  /
- *                + mrp      |      mqr +
- *             rp  \         |         /  qr
+ *   -n    \        ~        |        ~        /
+ *          \n         ~     |     ~          /
+ *           \      -n    ~  |  ~            /
+ *            \              c              /
+ *             \          ~  |  ~   +n     /
+ *              \      ~     |     ~      / +n
+ *               \  ~        |        ~  /          +n
+ *                + mrp      |      mqr +                   +n
+ *             rp  \         |         /  qr      normal heading out from the page.
  *                  \        |        /
  *                   \       |       /
  *                    \      |      /
@@ -196,6 +196,9 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     /**
      * Creates a new triangle.
      *
+     * Warning p, q and r must all be different. No checks are done for
+     * efficiency reasons.
+     *
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
@@ -207,6 +210,11 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         this.p = p;
         this.q = q;
         this.r = r;
+
+        if (p.equals(q) || p.equals(r) || q.equals(r)) {
+            int debug = 1;
+            throw new RuntimeException("p.equals(q) || p.equals(r) || q.equals(r)");
+        }
     }
 
     /**
@@ -244,10 +252,12 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      */
     public V3D_TriangleDouble(V3D_PointDouble p, V3D_PointDouble q,
             V3D_PointDouble r) {
-        super(new V3D_VectorDouble(p.offset));
-        this.p = new V3D_VectorDouble(p.rel);
-        this.q = q.getVector().subtract(p.offset);
-        this.r = r.getVector().subtract(p.offset);
+        this(new V3D_VectorDouble(p.offset), new V3D_VectorDouble(p.rel),
+                q.getVector().subtract(p.offset), r.getVector().subtract(p.offset));
+//        super(new V3D_VectorDouble(p.offset));
+//        this.p = new V3D_VectorDouble(p.rel);
+//        this.q = q.getVector().subtract(p.offset);
+//        this.r = r.getVector().subtract(p.offset);
     }
 
 //    /**
@@ -540,9 +550,9 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
 //        if (pl.isIntersectedBy(pt)) {
 //            return isIntersectedBy0(pt);
 //        }
-        if (getPQPl(epsilon).isOnSameSide(pt, getR())) {
-            if (getQRPl(epsilon).isOnSameSide(pt, getP())) {
-                if (getRPPl(epsilon).isOnSameSide(pt, getQ())) {
+        if (getPQPl(epsilon).isOnSameSide(pt, getR(), epsilon)) {
+            if (getQRPl(epsilon).isOnSameSide(pt, getP(), epsilon)) {
+                if (getRPPl(epsilon).isOnSameSide(pt, getQ(), epsilon)) {
                     return true;
                 }
             }
@@ -624,8 +634,9 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                     if (lrpi == null) {
                         return lqri;
                     } else {
-                        return getGeometry(((V3D_PointDouble) lqri).getVector(),
-                                ((V3D_PointDouble) lrpi).getVector());
+                        return V3D_LineSegmentDouble.getGeometry(
+                                (V3D_PointDouble) lqri, (V3D_PointDouble) lrpi,
+                                epsilon);
                     }
                 }
             } else if (lpqi instanceof V3D_PointDouble lpqip) {
@@ -633,17 +644,18 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                     if (lrpi == null) {
                         return lpqi;
                     } else {
-                        return getGeometry(lpqip.getVector(),
-                                ((V3D_PointDouble) lrpi).getVector());
+                        return V3D_LineSegmentDouble.getGeometry(lpqip,
+                                (V3D_PointDouble) lrpi, epsilon);
                     }
                 } else if (lqri instanceof V3D_PointDouble lqrip) {
                     if (lrpi == null) {
-                        return getGeometry(lqrip.getVector(),
-                                lpqip.getVector());
+                        return V3D_LineSegmentDouble.getGeometry(lqrip, lpqip,
+                                epsilon);
                     } else if (lrpi instanceof V3D_LineSegmentDouble) {
                         return lrpi;
                     } else {
-                        return getGeometry(lpqip, lqrip, (V3D_PointDouble) lrpi, epsilon);
+                        return getGeometry(lpqip, lqrip, (V3D_PointDouble) lrpi,
+                                epsilon);
                     }
                 } else {
                     return lqri;
@@ -651,24 +663,6 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             } else {
                 return lpqi;
             }
-        }
-    }
-
-    /**
-     * If {@code v1} and {@code v2} are the same, then return a point, otherwise
-     * return a line segment. In both instance offset is set to
-     * {@link V3D_VectorDouble#ZERO}.
-     *
-     * @param v1 A vector.
-     * @param v2 A vector.
-     * @return Either a line segment or a point.
-     */
-    public static V3D_FiniteGeometryDouble getGeometry(V3D_VectorDouble v1,
-            V3D_VectorDouble v2) {
-        if (v1.equals(v2)) {
-            return new V3D_PointDouble(v1);
-        } else {
-            return new V3D_LineSegmentDouble(v1, v2);
         }
     }
 
@@ -687,7 +681,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             return null;
         }
         if (g instanceof V3D_PointDouble gp) {
-            if (r.isAligned(gp)) {
+            if (r.isAligned(gp, epsilon)) {
                 return gp;
             } else {
                 return null;
@@ -696,14 +690,14 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         V3D_LineSegmentDouble ls = (V3D_LineSegmentDouble) g;
         V3D_PointDouble lsp = ls.getP();
         V3D_PointDouble lsq = ls.getQ();
-        if (r.isAligned(lsp)) {
-            if (r.isAligned(lsq)) {
+        if (r.isAligned(lsp, epsilon)) {
+            if (r.isAligned(lsq, epsilon)) {
                 return ls;
             } else {
                 return V3D_LineSegmentDouble.getGeometry(r.l.getP(), lsp, epsilon);
             }
         } else {
-            if (r.isAligned(lsq)) {
+            if (r.isAligned(lsq, epsilon)) {
                 return V3D_LineSegmentDouble.getGeometry(r.l.getP(), lsq, epsilon);
             } else {
                 throw new RuntimeException("Exception in triangle-linesegment intersection.");
@@ -726,7 +720,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             return null;
         }
         if (g instanceof V3D_PointDouble gp) {
-            if (l.isAligned(gp)) {
+            if (l.isAligned(gp, epsilon)) {
                 return gp;
             } else {
                 return null;
@@ -735,23 +729,23 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         V3D_LineSegmentDouble ls = (V3D_LineSegmentDouble) g;
         V3D_PointDouble lsp = ls.getP();
         V3D_PointDouble lsq = ls.getQ();
-        if (l.isAligned(lsp)) {
-            if (l.isAligned(lsq)) {
+        if (l.isAligned(lsp, epsilon)) {
+            if (l.isAligned(lsq, epsilon)) {
                 return ls;
             } else {
                 V3D_PlaneDouble lippl = ls.getPPL();
                 V3D_PointDouble lp = l.getP();
-                if (lippl.isOnSameSide(lp, lsq)) {
+                if (lippl.isOnSameSide(lp, lsq, epsilon)) {
                     return V3D_LineSegmentDouble.getGeometry(lsp, lp, epsilon);
                 } else {
                     return V3D_LineSegmentDouble.getGeometry(lsp, l.getQ(), epsilon);
                 }
             }
         } else {
-            if (l.isAligned(lsq)) {
+            if (l.isAligned(lsq, epsilon)) {
                 V3D_PlaneDouble liqpl = ls.getQPL();
                 V3D_PointDouble lp = l.getP();
-                if (liqpl.isOnSameSide(lp, lsp)) {
+                if (liqpl.isOnSameSide(lp, lsp, epsilon)) {
                     return V3D_LineSegmentDouble.getGeometry(lsq, lp, epsilon);
                 } else {
                     return V3D_LineSegmentDouble.getGeometry(lsq, l.getQ(), epsilon);
@@ -783,7 +777,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         if (lipq == null) {
             if (liqr == null) {
                 if (lirp instanceof V3D_PointDouble lirpp) {
-                    if (ptpl.isOnSameSide(lirpp, opt)) {
+                    if (ptpl.isOnSameSide(lirpp, opt, epsilon)) {
                         return V3D_LineSegmentDouble.getGeometry(pt, lirpp, epsilon);
                     } else {
                         return lirpp;
@@ -794,7 +788,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             } else {
                 if (lirp == null) {
                     if (liqr instanceof V3D_PointDouble liqrp) {
-                        if (ptpl.isOnSameSide(liqrp, opt)) {
+                        if (ptpl.isOnSameSide(liqrp, opt, epsilon)) {
                             return V3D_LineSegmentDouble.getGeometry(pt, liqrp, epsilon);
                         } else {
                             return liqrp;
@@ -811,15 +805,15 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                     }
                     V3D_PointDouble lirpp = (V3D_PointDouble) lirp;
                     V3D_PointDouble liqrp = (V3D_PointDouble) liqr;
-                    if (ptpl.isOnSameSide(lirpp, opt)) {
-                        if (ptpl.isOnSameSide(liqrp, opt)) {
+                    if (ptpl.isOnSameSide(lirpp, opt, epsilon)) {
+                        if (ptpl.isOnSameSide(liqrp, opt, epsilon)) {
                             //return getGeometry(pt, lirpp, liqrp);
                             return V3D_LineSegmentDouble.getGeometry(lirpp, liqrp, epsilon);
                         } else {
                             return V3D_LineSegmentDouble.getGeometry(pt, lirpp, epsilon);
                         }
                     } else {
-                        if (ptpl.isOnSameSide(liqrp, opt)) {
+                        if (ptpl.isOnSameSide(liqrp, opt, epsilon)) {
                             return V3D_LineSegmentDouble.getGeometry(pt, liqrp, epsilon);
                         } else {
                             return pt;
@@ -834,7 +828,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                 if (liqr == null) {
                     if (lirp == null) {
                         V3D_PointDouble lipqp = (V3D_PointDouble) lipq;
-                        if (ptpl.isOnSameSide(lipqp, opt)) {
+                        if (ptpl.isOnSameSide(lipqp, opt, epsilon)) {
                             return V3D_LineSegmentDouble.getGeometry(pt, lipqp, epsilon);
                         } else {
                             return pt;
@@ -845,14 +839,14 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                         }
                         V3D_PointDouble lipqp = (V3D_PointDouble) lipq;
                         V3D_PointDouble lirpp = (V3D_PointDouble) lirp;
-                        if (ptpl.isOnSameSide(lipqp, opt)) {
-                            if (ptpl.isOnSameSide(lirpp, opt)) {
+                        if (ptpl.isOnSameSide(lipqp, opt, epsilon)) {
+                            if (ptpl.isOnSameSide(lirpp, opt, epsilon)) {
                                 return getGeometry(pt, lirpp, lipqp, epsilon);
                             } else {
                                 return V3D_LineSegmentDouble.getGeometry(pt, lipqp, epsilon);
                             }
                         } else {
-                            if (ptpl.isOnSameSide(lirpp, opt)) {
+                            if (ptpl.isOnSameSide(lirpp, opt, epsilon)) {
                                 return V3D_LineSegmentDouble.getGeometry(pt, lirpp, epsilon);
                             } else {
                                 return pt;
@@ -866,14 +860,14 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                     if (lirp == null) {
                         V3D_PointDouble lipqp = (V3D_PointDouble) lipq;
                         V3D_PointDouble liqrp = (V3D_PointDouble) liqr;
-                        if (ptpl.isOnSameSide(lipqp, opt)) {
-                            if (ptpl.isOnSameSide(liqrp, opt)) {
+                        if (ptpl.isOnSameSide(lipqp, opt, epsilon)) {
+                            if (ptpl.isOnSameSide(liqrp, opt, epsilon)) {
                                 return getGeometry(pt, liqrp, lipqp, epsilon);
                             } else {
                                 return V3D_LineSegmentDouble.getGeometry(pt, lipqp, epsilon);
                             }
                         } else {
-                            if (ptpl.isOnSameSide(liqrp, opt)) {
+                            if (ptpl.isOnSameSide(liqrp, opt, epsilon)) {
                                 return V3D_LineSegmentDouble.getGeometry(pt, liqrp, epsilon);
                             } else {
                                 return pt;
@@ -886,29 +880,29 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                         V3D_PointDouble lipqp = (V3D_PointDouble) lipq;
                         V3D_PointDouble liqrp = (V3D_PointDouble) liqr;
                         V3D_PointDouble lirpp = (V3D_PointDouble) lirp;
-                        if (ptpl.isOnSameSide(lipqp, opt)) {
-                            if (ptpl.isOnSameSide(liqrp, opt)) {
-                                if (ptpl.isOnSameSide(lirpp, opt)) {
+                        if (ptpl.isOnSameSide(lipqp, opt, epsilon)) {
+                            if (ptpl.isOnSameSide(liqrp, opt, epsilon)) {
+                                if (ptpl.isOnSameSide(lirpp, opt, epsilon)) {
                                     throw new RuntimeException("Issue with Triangle-Traingle intersection.");
                                 } else {
                                     return getGeometry(pt, liqrp, lipqp, epsilon);
                                 }
                             } else {
-                                if (ptpl.isOnSameSide(lirpp, opt)) {
+                                if (ptpl.isOnSameSide(lirpp, opt, epsilon)) {
                                     return getGeometry(pt, lirpp, lipqp, epsilon);
                                 } else {
                                     return V3D_LineSegmentDouble.getGeometry(pt, lipqp, epsilon);
                                 }
                             }
                         } else {
-                            if (ptpl.isOnSameSide(liqrp, opt)) {
-                                if (ptpl.isOnSameSide(lirpp, opt)) {
+                            if (ptpl.isOnSameSide(liqrp, opt, epsilon)) {
+                                if (ptpl.isOnSameSide(lirpp, opt, epsilon)) {
                                     return getGeometry(pt, liqrp, lirpp, epsilon);
                                 } else {
                                     return V3D_LineSegmentDouble.getGeometry(pt, liqrp, epsilon);
                                 }
                             } else {
-                                if (ptpl.isOnSameSide(lirpp, opt)) {
+                                if (ptpl.isOnSameSide(lirpp, opt, epsilon)) {
                                     return V3D_LineSegmentDouble.getGeometry(pt, lirpp, epsilon);
                                 } else {
                                     return pt;
@@ -1026,17 +1020,23 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                  * triangle, and in others it is a polygon which can be
                  * represented as a set of coplanar triangles.
                  */
-                // Check if vertices intersect
-                boolean pi = isIntersectedBy(t.getP(), epsilon);
-                boolean qi = isIntersectedBy(t.getQ(), epsilon);
-                boolean ri = isIntersectedBy(t.getR(), epsilon);
-                if (pi && qi && ri) {
+//                // Check if vertices intersect
+//                boolean pi = isIntersectedBy(t.getP(), epsilon);
+//                boolean qi = isIntersectedBy(t.getQ(), epsilon);
+//                boolean ri = isIntersectedBy(t.getR(), epsilon);
+//                if (pi && qi && ri) {
+//                    return t;
+//                }
+//                boolean pit = t.isIntersectedBy(getP(), epsilon);
+//                boolean qit = t.isIntersectedBy(getQ(), epsilon);
+//                boolean rit = t.isIntersectedBy(getR(), epsilon);
+//                if (pit && qit && rit) {
+//                    return this;
+//                }
+                if (isAligned(t, epsilon)) {
                     return t;
                 }
-                boolean pit = t.isIntersectedBy(getP(), epsilon);
-                boolean qit = t.isIntersectedBy(getQ(), epsilon);
-                boolean rit = t.isIntersectedBy(getR(), epsilon);
-                if (pit && qit && rit) {
+                if (t.isAligned(this, epsilon)) {
                     return this;
                 }
                 V3D_FiniteGeometryDouble gpq = t.getIntersection(getPQ(), epsilon);
@@ -1053,8 +1053,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                                     gqrp, grpp, epsilon);
                         } else {
                             V3D_LineSegmentDouble ls = (V3D_LineSegmentDouble) grp;
-                            return getGeometry(gqrp, ls.getP(),
-                                    ls.getQ(), epsilon);
+                            return getGeometry(gqrp, ls.getP(), ls.getQ(), epsilon);
                         }
                     } else {
                         if (grp == null) {
@@ -1084,7 +1083,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                         if (grp == null) {
                             return gqr;
                         } else if (grp instanceof V3D_PointDouble grpp) {
-                            return V3D_LineSegmentDouble.getGeometry(gpqp, gqrp, grpp, epsilon);
+                            return getGeometry(gpqp, gqrp, grpp, epsilon);
                         } else {
                             V3D_LineSegmentDouble grpl = (V3D_LineSegmentDouble) grp;
                             return getGeometry(grpl, gqrp, gpqp, epsilon);
@@ -1096,8 +1095,8 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                         } else if (grp instanceof V3D_PointDouble grpp) {
                             return getGeometry(ls, grpp, gpqp, epsilon);
                         } else {
-                            return getGeometry(ls,
-                                    (V3D_LineSegmentDouble) grp, gpqp, epsilon);
+                            return getGeometry(ls, (V3D_LineSegmentDouble) grp,
+                                    gpqp, epsilon);
                         }
                     }
                 } else {
@@ -1106,8 +1105,8 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                         if (grp == null) {
                             return gpq;
                         } else if (grp instanceof V3D_PointDouble grpp) {
-                            return getGeometry(grpp, gpql.getP(),
-                                    gpql.getQ(), epsilon);
+                            return getGeometry(grpp, gpql.getP(), gpql.getQ(),
+                                    epsilon);
                         } else {
                             return getGeometry(gpql,
                                     (V3D_LineSegmentDouble) grp, epsilon);
@@ -1117,7 +1116,8 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                             if (gpql.isIntersectedBy(gqrp, epsilon)) {
                                 return gpql;
                             } else {
-                                return new V3D_ConvexHullCoplanarDouble(getPl(epsilon).n, epsilon, gpql.getP(),
+                                return new V3D_ConvexHullCoplanarDouble(
+                                        getPl(epsilon).n, epsilon, gpql.getP(),
                                         gpql.getQ(), gqrp);
                             }
                         } else if (grp instanceof V3D_PointDouble grpp) {
@@ -1127,15 +1127,16 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                             pts.add(gqrp);
                             pts.add(grpp);
                             ArrayList<V3D_PointDouble> pts2 = V3D_PointDouble.getUnique(pts, epsilon);
-                            if (pts2.size() == 2) {
-                                return new V3D_LineSegmentDouble(pts2.get(0), pts2.get(1));
-                            }
-                            if (pts2.size() == 3) {
-                                return new V3D_TriangleDouble(pts2.get(0), pts2.get(1), pts2.get(2));
-                            }
-                            return new V3D_ConvexHullCoplanarDouble(
+                            return switch (pts2.size()) {
+                                case 2 ->
+                                    new V3D_LineSegmentDouble(pts2.get(0), pts2.get(1));
+                                case 3 ->
+                                    new V3D_TriangleDouble(pts2.get(0), pts2.get(1), pts2.get(2));
+                                default ->
+                                    new V3D_ConvexHullCoplanarDouble(
                                     getPl(epsilon).n, epsilon, gpql.getP(),
                                     gpql.getQ(), gqrp, grpp);
+                            };
                         } else {
                             V3D_LineSegmentDouble grpl = (V3D_LineSegmentDouble) grp;
                             return V3D_ConvexHullCoplanarDouble.getGeometry(
@@ -1167,221 +1168,318 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                 }
             } else {
                 // Triangles are not coplanar.
-                V3D_FiniteGeometryDouble g = t.getIntersection(pl, epsilon);
-                if (g == null) {
-                    return g;
+                //V3D_FiniteGeometryDouble i = t.getIntersection(pl, epsilon);
+                V3D_FiniteGeometryDouble i = getIntersection(t.pl, epsilon);
+                if (i == null) {
+                    return i;
+                } else if (i instanceof V3D_PointDouble pt) {
+                    if (isAligned(pt, epsilon)) {
+                        return pt;
+                    } else {
+                        return null;
+                    }
                 } else {
-                    if (g instanceof V3D_PointDouble pt) {
-                        if (isAligned(pt, epsilon)) {
-                            return pt;
-                        } else {
-                            return null;
-                        }
-                    } else if (g instanceof V3D_LineSegmentDouble l) {
-                        //return t.getIntersection(l);
-                        V3D_PointDouble lp = l.getP();
-                        V3D_PointDouble lq = l.getQ();
-                        if (isAligned(lp, epsilon)) {
-                            if (isAligned(lq, epsilon)) {
-                                return l;
-                            } else {
-                                V3D_FiniteGeometryDouble pqplil = getPQPl(epsilon).getIntersection(l, epsilon);
-                                V3D_FiniteGeometryDouble qrplil = getQRPl(epsilon).getIntersection(l, epsilon);
-                                V3D_FiniteGeometryDouble rpplil = getRPPl(epsilon).getIntersection(l, epsilon);
-                                if (pqplil == null) {
-                                    if (qrplil == null) {
-                                        if (rpplil == null) {
-                                            return l;
-                                            //return lp;
-                                            //return null;
-                                        } else {
-                                            if (rpplil instanceof V3D_LineSegmentDouble) {
-                                                return rpplil;
+                    V3D_LineSegmentDouble l = (V3D_LineSegmentDouble) i;
+                    //return t.getIntersection(l);
+                    V3D_PointDouble lp = l.getP();
+                    V3D_PointDouble lq = l.getQ();
+                    if (isAligned(lp, epsilon)) {
+                        if (isAligned(lq, epsilon)) {
+                            if (t.isAligned(lp, epsilon)) {
+                                if (t.isAligned(lq, epsilon)) {
+                                    V3D_FiniteGeometryDouble tpqplil = t.getPQPl(epsilon).getIntersection(l, epsilon);
+                                    V3D_FiniteGeometryDouble tqrplil = t.getQRPl(epsilon).getIntersection(l, epsilon);
+                                    V3D_FiniteGeometryDouble trpplil = t.getRPPl(epsilon).getIntersection(l, epsilon);
+                                    if (tpqplil == null) {
+                                        if (tqrplil == null) {
+                                            if (trpplil == null) {
+                                                return l;
                                             } else {
-                                                return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) rpplil, lp);
+                                                throw new UnsupportedOperationException();
+                                            }
+                                        } else {
+                                            throw new UnsupportedOperationException();
+                                        }
+                                    } else if (tpqplil instanceof V3D_LineSegmentDouble) {
+                                        if (tqrplil == null) {
+                                            if (trpplil == null) {
+                                                // Test if all points of this are on the same side of t.
+                                                if (t.getPl(epsilon).allOnSameSideNotOn(getPoints(), epsilon)) {
+                                                    return null;
+                                                }
+                                                throw new UnsupportedOperationException();
+                                            } else if (trpplil instanceof V3D_LineSegmentDouble) {
+                                                throw new UnsupportedOperationException();
+                                            } else {
+                                                throw new UnsupportedOperationException();
+                                            }
+                                        } else if (tqrplil instanceof V3D_LineSegmentDouble) {
+                                            throw new UnsupportedOperationException();
+                                        } else {
+                                            if (trpplil == null) {
+                                                throw new UnsupportedOperationException();
+                                            } else if (trpplil instanceof V3D_LineSegmentDouble) {
+                                                throw new UnsupportedOperationException();
+                                            } else {
+                                                return V3D_LineSegmentDouble.getGeometry(
+                                                        (V3D_PointDouble) tqrplil, (V3D_PointDouble) trpplil, epsilon);
                                             }
                                         }
                                     } else {
-                                        if (qrplil instanceof V3D_LineSegmentDouble) {
-                                            return qrplil;
-                                        } else {
-                                            if (rpplil == null) {
-                                                return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) qrplil, lp);
-                                            } else {
-                                                if (rpplil instanceof V3D_LineSegmentDouble) {
-                                                    return rpplil;
-                                                } else {
-                                                    return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) rpplil, lp);
-                                                }
-                                            }
-                                        }
+                                        throw new UnsupportedOperationException();
                                     }
                                 } else {
-                                    if (pqplil instanceof V3D_LineSegmentDouble) {
-                                        return pqplil;
-                                    } else {
-                                        if (qrplil == null) {
-                                            if (rpplil == null) {
-                                                return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) pqplil, lp);
+                                    V3D_FiniteGeometryDouble tpqplil = t.getPQPl(epsilon).getIntersection(l, epsilon);
+                                    V3D_FiniteGeometryDouble tqrplil = t.getQRPl(epsilon).getIntersection(l, epsilon);
+                                    V3D_FiniteGeometryDouble trpplil = t.getRPPl(epsilon).getIntersection(l, epsilon);
+                                    if (tpqplil == null) {
+                                        if (tqrplil == null) {
+                                            if (trpplil == null) {
+                                                return l;
+                                            } else if (trpplil instanceof V3D_LineSegmentDouble) {
+                                                throw new UnsupportedOperationException();
                                             } else {
-                                                if (rpplil instanceof V3D_LineSegmentDouble) {
-                                                    return rpplil;
+                                                // Not sure if this is correct.
+                                                return V3D_LineSegmentDouble.getGeometry(
+                                                        lp, (V3D_PointDouble) trpplil, epsilon);
+                                            }
+                                        } else if (tqrplil instanceof V3D_LineSegmentDouble) {
+                                            throw new UnsupportedOperationException();
+                                        } else {
+                                            // Not sure if this is correct.
+                                            return V3D_LineSegmentDouble.getGeometry(
+                                                    lp, (V3D_PointDouble) tqrplil, epsilon);
+                                        }
+                                    } else if (tpqplil instanceof V3D_LineSegmentDouble) {
+                                        if (tqrplil == null) {
+                                            if (trpplil == null) {
+                                                // Test if all points of this are on the same side of t.
+                                                if (t.getPl(epsilon).allOnSameSideNotOn(getPoints(), epsilon)) {
+                                                    return null;
+                                                }
+                                                throw new UnsupportedOperationException();
+                                            } else if (trpplil instanceof V3D_LineSegmentDouble) {
+                                                throw new UnsupportedOperationException();
+                                            } else {
+                                                throw new UnsupportedOperationException();
+                                            }
+                                        } else if (tqrplil instanceof V3D_LineSegmentDouble) {
+                                            throw new UnsupportedOperationException();
+                                        } else {
+                                            if (trpplil == null) {
+                                                throw new UnsupportedOperationException();
+                                            } else if (trpplil instanceof V3D_LineSegmentDouble) {
+                                                throw new UnsupportedOperationException();
+                                            } else {
+                                                return V3D_LineSegmentDouble.getGeometry(
+                                                        (V3D_PointDouble) tqrplil, (V3D_PointDouble) trpplil, epsilon);
+                                            }
+                                        }
+                                    } else {
+                                        throw new UnsupportedOperationException();
+                                    }
+                                }
+                            } else {
+                                if (t.isAligned(lp, epsilon)) {
+                                    throw new UnsupportedOperationException();
+                                } else {
+                                    if (t.isAligned(lq, epsilon)) {
+                                        return l;
+                                    } else {
+                                        V3D_FiniteGeometryDouble tpqplil = t.getPQPl(epsilon).getIntersection(l, epsilon);
+                                        V3D_FiniteGeometryDouble tqrplil = t.getQRPl(epsilon).getIntersection(l, epsilon);
+                                        V3D_FiniteGeometryDouble trpplil = t.getRPPl(epsilon).getIntersection(l, epsilon);
+                                        if (tpqplil == null) {
+                                            if (tqrplil == null) {
+                                                if (trpplil == null) {
+                                                    return l;
                                                 } else {
-                                                    return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) rpplil, (V3D_PointDouble) pqplil, lp, epsilon);
+                                                    throw new UnsupportedOperationException();
+                                                }
+                                            } else if (tqrplil instanceof V3D_LineSegmentDouble) {
+                                                throw new UnsupportedOperationException();
+                                            } else {
+                                                if (trpplil == null) {
+                                                    return l;
+                                                } else if (trpplil instanceof V3D_LineSegmentDouble) {
+                                                    throw new UnsupportedOperationException();
+                                                } else {
+                                                    return V3D_LineSegmentDouble.getGeometry(
+                                                            (V3D_PointDouble) tqrplil, (V3D_PointDouble) trpplil, epsilon);
+                                                }
+                                            }
+                                        } else if (tpqplil instanceof V3D_LineSegmentDouble) {
+                                            if (tqrplil == null) {
+                                                if (trpplil == null) {
+                                                    // Test if all points of this are on the same side of t.
+                                                    if (t.getPl(epsilon).allOnSameSideNotOn(getPoints(), epsilon)) {
+                                                        return null;
+                                                    } else {
+                                                        return null; // Not sure about this!
+                                                        //throw new UnsupportedOperationException();
+                                                    }
+                                                } else if (trpplil instanceof V3D_LineSegmentDouble) {
+                                                    throw new UnsupportedOperationException();
+                                                } else {
+                                                    throw new UnsupportedOperationException();
+                                                }
+                                            } else if (tqrplil instanceof V3D_LineSegmentDouble) {
+                                                throw new UnsupportedOperationException();
+                                            } else {
+                                                if (trpplil == null) {
+                                                    throw new UnsupportedOperationException();
+                                                } else if (trpplil instanceof V3D_LineSegmentDouble) {
+                                                    throw new UnsupportedOperationException();
+                                                } else {
+                                                    return V3D_LineSegmentDouble.getGeometry(
+                                                            (V3D_PointDouble) tqrplil, (V3D_PointDouble) trpplil, epsilon);
                                                 }
                                             }
                                         } else {
-                                            if (qrplil instanceof V3D_LineSegmentDouble) {
-                                                return qrplil;
-                                            } else {
-                                                //if (rpplil == null) {
-                                                return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) pqplil, (V3D_PointDouble) qrplil, lp, epsilon);
-                                                //} else {
-                                                //    if (rpplil instanceof V3D_LineSegment) {
-                                                //        return rpplil;
-                                                //    } else {
-                                                //        return V3D_LineSegment.getGeometry((V3D_Point) rpplil, (V3D_Point) pqplil, lp);
-                                                //    }
-                                                //}
-                                            }
+                                            throw new UnsupportedOperationException();
                                         }
                                     }
                                 }
                             }
                         } else {
-                            if (isAligned(lq, epsilon)) {
-                                V3D_FiniteGeometryDouble pqplil = getPQPl(epsilon).getIntersection(l, epsilon);
-                                V3D_FiniteGeometryDouble qrplil = getQRPl(epsilon).getIntersection(l, epsilon);
-                                V3D_FiniteGeometryDouble rpplil = getRPPl(epsilon).getIntersection(l, epsilon);
-                                if (pqplil == null) {
+                            V3D_FiniteGeometryDouble pqplil = getPQPl(epsilon).getIntersection(l, epsilon);
+                            V3D_FiniteGeometryDouble qrplil = getQRPl(epsilon).getIntersection(l, epsilon);
+                            V3D_FiniteGeometryDouble rpplil = getRPPl(epsilon).getIntersection(l, epsilon);
+                            if (pqplil == null) {
+                                if (qrplil == null) {
+                                    if (rpplil == null) {
+                                        return l;
+                                    } else if (rpplil instanceof V3D_LineSegmentDouble) {
+                                        return rpplil;
+                                    } else {
+                                        return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) rpplil, lp, epsilon);
+                                    }
+                                } else {
+                                    if (qrplil instanceof V3D_LineSegmentDouble) {
+                                        return qrplil;
+                                    } else {
+                                        if (rpplil == null) {
+                                            return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) qrplil, lp, epsilon);
+                                        } else if (rpplil instanceof V3D_LineSegmentDouble) {
+                                            return rpplil;
+                                        } else {
+                                            return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) rpplil, lp, epsilon);
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (pqplil instanceof V3D_LineSegmentDouble) {
+                                    return pqplil;
+                                } else {
                                     if (qrplil == null) {
                                         if (rpplil == null) {
-                                            //return l;
-                                            return lq;
-                                            //return null;
+                                            return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) pqplil, lp, epsilon);
+                                        } else if (rpplil instanceof V3D_LineSegmentDouble) {
+                                            return rpplil;
                                         } else {
-                                            if (rpplil instanceof V3D_LineSegmentDouble) {
-                                                return rpplil;
-                                            } else {
-                                                return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) rpplil, lq);
-                                            }
+                                            //return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) rpplil, (V3D_PointDouble) pqplil, lp, epsilon);
+                                            return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) rpplil, (V3D_PointDouble) pqplil, epsilon);
                                         }
                                     } else {
                                         if (qrplil instanceof V3D_LineSegmentDouble) {
                                             return qrplil;
                                         } else {
-                                            if (rpplil == null) {
-                                                return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) qrplil, lq);
-                                            } else {
-                                                if (rpplil instanceof V3D_LineSegmentDouble) {
-                                                    return rpplil;
-                                                } else {
-                                                    return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) rpplil, lq);
-                                                }
-                                            }
+                                            //return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) pqplil, (V3D_PointDouble) qrplil, lp, epsilon);
+                                            return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) pqplil, (V3D_PointDouble) qrplil, epsilon);
                                         }
                                     }
-                                } else {
-                                    if (pqplil instanceof V3D_LineSegmentDouble) {
-                                        return pqplil;
+                                }
+                            }
+                        }
+                    } else {
+                        if (isAligned(lq, epsilon)) {
+                            V3D_FiniteGeometryDouble pqplil = getPQPl(epsilon).getIntersection(l, epsilon);
+                            V3D_FiniteGeometryDouble qrplil = getQRPl(epsilon).getIntersection(l, epsilon);
+                            V3D_FiniteGeometryDouble rpplil = getRPPl(epsilon).getIntersection(l, epsilon);
+                            if (pqplil == null) {
+                                if (qrplil == null) {
+                                    if (rpplil == null) {
+                                        throw new RuntimeException("Paradox in intersection A!");
+                                    } else if (rpplil instanceof V3D_LineSegmentDouble) {
+                                        return rpplil;
                                     } else {
-                                        if (qrplil == null) {
-                                            if (rpplil == null) {
-                                                return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) pqplil, lq);
-                                            } else {
-                                                if (rpplil instanceof V3D_LineSegmentDouble) {
-                                                    return rpplil;
-                                                } else {
-                                                    return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) rpplil, (V3D_PointDouble) pqplil, lq, epsilon);
-                                                }
-                                            }
+                                        return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) rpplil, lq);
+                                    }
+                                } else {
+                                    if (qrplil instanceof V3D_LineSegmentDouble) {
+                                        return qrplil;
+                                    } else {
+                                        if (rpplil == null) {
+                                            return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) qrplil, lq, epsilon);
+                                        } else if (rpplil instanceof V3D_LineSegmentDouble) {
+                                            return rpplil;
                                         } else {
-                                            if (qrplil instanceof V3D_LineSegmentDouble) {
-                                                return qrplil;
-                                            } else {
-                                                //if (rpplil == null) {
-                                                return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) pqplil, (V3D_PointDouble) qrplil, lq, epsilon);
-                                                //} else {
-                                                //    if (rpplil instanceof V3D_LineSegment) {
-                                                //        return rpplil;
-                                                //    } else {
-                                                //        return V3D_LineSegment.getGeometry((V3D_Point) rpplil, (V3D_Point) pqplil, lp);
-                                                //    }
-                                                //}
-                                            }
+                                            return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) rpplil, lq, epsilon);
                                         }
                                     }
                                 }
                             } else {
-//                            return null;
-                                V3D_FiniteGeometryDouble pqplil = getPQPl(epsilon).getIntersection(l, epsilon);
-                                V3D_FiniteGeometryDouble qrplil = getQRPl(epsilon).getIntersection(l, epsilon);
-                                V3D_FiniteGeometryDouble rpplil = getRPPl(epsilon).getIntersection(l, epsilon);
-                                if (pqplil == null) {
+                                if (pqplil instanceof V3D_LineSegmentDouble) {
+                                    return pqplil;
+                                } else {
                                     if (qrplil == null) {
-                                        //if (rpplil == null) {
-                                        return null;
-                                        //} else {
-                                        //    return rpplil;
-                                        //}
-                                    } else {
-                                        if (qrplil instanceof V3D_LineSegmentDouble) {
-                                            return null;
+                                        if (rpplil == null) {
+                                            return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) pqplil, lq);
+                                        } else if (rpplil instanceof V3D_LineSegmentDouble) {
+                                            return rpplil;
                                         } else {
-                                            if (rpplil == null) {
-                                                return null;
-                                            } else if (rpplil instanceof V3D_LineSegmentDouble) {
-                                                return null;
+                                            return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) rpplil, (V3D_PointDouble) pqplil, lq, epsilon);
+                                        }
+                                    } else if (qrplil instanceof V3D_LineSegmentDouble) {
+                                        return qrplil;
+                                    } else {
+                                        return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) pqplil, (V3D_PointDouble) qrplil, lq, epsilon);
+                                    }
+                                }
+                            }
+                        } else {
+//                            return null;
+                            V3D_FiniteGeometryDouble pqplil = getPQPl(epsilon).getIntersection(l, epsilon);
+                            V3D_FiniteGeometryDouble qrplil = getQRPl(epsilon).getIntersection(l, epsilon);
+                            V3D_FiniteGeometryDouble rpplil = getRPPl(epsilon).getIntersection(l, epsilon);
+                            if (pqplil == null) {
+                                if (qrplil == null) {
+                                    return null;
+                                } else {
+                                    if (qrplil instanceof V3D_LineSegmentDouble) {
+                                        return qrplil;
+                                    } else {
+                                        if (rpplil == null) {
+                                            if (pqplil == null) {
+                                                throw new RuntimeException("Paradox in intersection B!");
+                                            } else if (pqplil instanceof V3D_LineSegmentDouble) {
+                                                throw new RuntimeException("Paradox in intersection C!");
                                             } else {
-                                                //return null;
-                                                return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) qrplil, (V3D_PointDouble) rpplil);
+                                                return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) qrplil, (V3D_PointDouble) pqplil, epsilon);
                                             }
+                                        } else if (rpplil instanceof V3D_LineSegmentDouble) {
+                                            throw new RuntimeException("Paradox in intersection D!");
+                                        } else {
+                                            return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) qrplil, (V3D_PointDouble) rpplil, epsilon);
                                         }
                                     }
+                                }
+                            } else {
+                                if (pqplil instanceof V3D_LineSegmentDouble) {
+                                    return pqplil;
                                 } else {
-                                    if (pqplil instanceof V3D_LineSegmentDouble) {
-                                        if (qrplil == null) {
-                                            return null;
-                                        } else if (qrplil instanceof V3D_LineSegmentDouble) {
-                                            return null;
+                                    if (qrplil == null) {
+                                        if (rpplil == null) {
+                                            throw new RuntimeException("Paradox in intersection E!");
+                                        } else if (rpplil instanceof V3D_LineSegmentDouble) {
+                                            return rpplil;
                                         } else {
-                                            if (rpplil == null) {
-                                                return null;
-                                            } else if (rpplil instanceof V3D_LineSegmentDouble) {
-                                                return null;
-                                            } else {
-                                                return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) qrplil, (V3D_PointDouble) rpplil);
-                                            }
+                                            return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) pqplil, (V3D_PointDouble) rpplil, epsilon);
                                         }
+                                    } else if (qrplil instanceof V3D_LineSegmentDouble) {
+                                        return qrplil;
                                     } else {
-                                        if (qrplil == null) {
-                                            if (rpplil == null) {
-                                                return null;
-                                            } else if (rpplil instanceof V3D_LineSegmentDouble) {
-                                                return null;
-                                            } else {
-                                                //return null;
-                                                return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) pqplil, (V3D_PointDouble) rpplil);
-                                            }
-                                        } else if (qrplil instanceof V3D_LineSegmentDouble) {
-                                            if (rpplil == null) {
-                                                return null;
-                                            } else if (rpplil instanceof V3D_LineSegmentDouble) {
-                                                return null;
-                                            } else {
-                                                return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) pqplil, (V3D_PointDouble) rpplil);
-                                            }
-                                        } else {
-                                            if (rpplil == null) {
-                                                //return null;
-                                                return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) pqplil, (V3D_PointDouble) qrplil);
-                                            } else if (rpplil instanceof V3D_LineSegmentDouble) {
-                                                return V3D_LineSegmentDouble.getGeometry(epsilon, (V3D_PointDouble) pqplil, (V3D_PointDouble) qrplil);
-                                            } else {
-                                                //return null;
-                                                return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) pqplil, (V3D_PointDouble) qrplil, (V3D_PointDouble) rpplil, epsilon);
-                                            }
-                                        }
+                                        return V3D_LineSegmentDouble.getGeometry((V3D_PointDouble) pqplil, (V3D_PointDouble) qrplil, epsilon);
                                     }
                                 }
                             }
@@ -1389,8 +1487,9 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                     }
                 }
             }
+        } else {
+            return null;
         }
-        return null;
     }
 
     /**
@@ -1484,7 +1583,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     }
 
     @Override
-    public V3D_TriangleDouble rotate(V3D_LineDouble axis, double theta,
+    public V3D_TriangleDouble rotate(V3D_RayDouble axis, double theta,
             double epsilon) {
         return new V3D_TriangleDouble(
                 getP().rotate(axis, theta, epsilon),
@@ -1533,15 +1632,15 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     /**
      * If p, q and r are equal then the point is returned. If two of the points
      * are the same, then a line segment is returned. If all points are
-     * different then a triangle is returned.
+     * different then if they are collinear a line segment is returned,
+     * otherwise a triangle is returned.
      *
      * @param p A point.
      * @param q Another possibly equal point.
      * @param r Another possibly equal point.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return either {@code pl} or {@code new V3D_LineSegment(pl, qv)} or
-     * {@code new V3D_Triangle(pl, qv, r)}
+     * @return Either a point, line segment or a triangle.
      */
     public static V3D_FiniteGeometryDouble getGeometry(V3D_PointDouble p,
             V3D_PointDouble q, V3D_PointDouble r, double epsilon) {
@@ -1555,6 +1654,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                     return V3D_LineSegmentDouble.getGeometry(r, q, epsilon);
                 } else {
                     if (V3D_LineDouble.isCollinear(epsilon, p, q, r)) {
+                        //return V3D_LineSegmentDouble.getGeometry(p, q, r, epsilon);
                         V3D_LineSegmentDouble pq = new V3D_LineSegmentDouble(p, q);
                         if (pq.isIntersectedBy(r, epsilon)) {
                             return pq;
@@ -1568,19 +1668,16 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                         }
                     }
                     return new V3D_TriangleDouble(p, q, r);
-//                    return new V3D_Triangle(pl.e, V3D_Vector.ZERO,
-//                            pl.getVector(pl.e.oom),
-//                            qv.getVector(pl.e.oom), r.getVector(pl.e.oom));
                 }
             }
         }
     }
 
     /**
-     * Used when intersecting two triangles to give the overall intersection. If
-     * l1, l2 and l3 are equal then the line segment is returned. If there are 3
-     * unique points then a triangle is returned. If there are 4 or more unique
-     * points, then a V3D_ConvexHullCoplanarDouble is returned.
+     * Useful in calculating the intersection of two triangles. If l1, l2 and l3
+     * are equal then the line segment is returned. If there are 3 unique points
+     * then a triangle is returned. If there are 4 or more unique points, then a
+     * V3D_ConvexHullCoplanarDouble is returned.
      *
      * @param l1 A line segment.
      * @param l2 A line segment.
@@ -1593,223 +1690,49 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     protected static V3D_FiniteGeometryDouble getGeometry(
             V3D_LineSegmentDouble l1, V3D_LineSegmentDouble l2,
             V3D_LineSegmentDouble l3, double epsilon) {
-        V3D_PointDouble l1p = l1.getP();
-        V3D_PointDouble l1q = l1.getQ();
-        V3D_PointDouble l2p = l2.getP();
-        V3D_PointDouble l2q = l2.getQ();
-        V3D_PointDouble l3p = l3.getP();
-        V3D_PointDouble l3q = l3.getQ();
         ArrayList<V3D_PointDouble> points;
         {
             List<V3D_PointDouble> pts = new ArrayList<>();
-            pts.add(l1p);
-            pts.add(l1q);
-            pts.add(l2p);
-            pts.add(l2q);
-            pts.add(l3p);
-            pts.add(l3q);
+            if (l1 != null) {
+                pts.add(l1.getP());
+                pts.add(l1.getQ());
+            }
+            if (l2 != null) {
+                pts.add(l2.getP());
+                pts.add(l2.getQ());
+            }
+            if (l3 != null) {
+                pts.add(l3.getP());
+                pts.add(l3.getQ());
+            }
             points = V3D_PointDouble.getUnique(pts, epsilon);
         }
         int n = points.size();
-        if (n == 2) {
-            return l1;
-        } else if (n == 3) {
-            Iterator<V3D_PointDouble> ite = points.iterator();
-            return getGeometry(ite.next(), ite.next(), ite.next(), epsilon);
-        } else {
-            V3D_PointDouble[] pts = new V3D_PointDouble[points.size()];
-            int i = 0;
-            for (var p : points) {
-                pts[i] = p;
-                i++;
+        switch (n) {
+            case 2 -> {
+                return l1;
             }
-            V3D_PlaneDouble pl = new V3D_PlaneDouble(pts[0], pts[1], pts[2]);
-            return new V3D_ConvexHullCoplanarDouble(pl.n, epsilon, pts);
+            case 3 -> {
+                Iterator<V3D_PointDouble> ite = points.iterator();
+                return getGeometry(ite.next(), ite.next(), ite.next(), epsilon);
+            }
+            default -> {
+                V3D_PointDouble[] pts = new V3D_PointDouble[points.size()];
+                int i = 0;
+                for (var p : points) {
+                    pts[i] = p;
+                    i++;
+                }
+                V3D_PlaneDouble pl = new V3D_PlaneDouble(pts[0], pts[1], pts[2]);
+                return new V3D_ConvexHullCoplanarDouble(pl.n, epsilon, pts);
+            }
         }
-//       // This way returned polygons.
-//       } else if (n == 4) {
-//            V3D_Triangle t1;
-//            V3D_Triangle t2;
-//            // Case: quadrangle (closed polygon with 4 sides)
-//            V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, oom);
-//            V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, oom);
-//            V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, oom);
-//            if (illl2 == null) {
-//                V3D_Point op1 = l1.l.getOtherPoint(illl3);
-//                V3D_Point op2 = l2.l.getOtherPoint(il2l3);
-//                t1 = new V3D_Triangle(op1, op2, l3p);
-//                t2 = new V3D_Triangle(l3p, l3q, op2);
-//            } else {
-//                V3D_Point op1 = l1.l.getOtherPoint(illl2);
-//                V3D_Point op3;
-//                if (illl3 == null) {
-//                    op3 = l3.l.getOtherPoint(il2l3);
-//                    t1 = new V3D_Triangle(op1, op3, illl2);
-//                    t2 = new V3D_Triangle(l3p, l3q, illl2);
-//                } else {
-//                    op3 = l3.l.getOtherPoint(illl3);
-//                    t1 = new V3D_Triangle(op1, op3, illl2);
-//                    t2 = new V3D_Triangle(l3p, l3q, illl2);
-//                }
-//            }
-//            return new V3D_Polygon(t1, t2); // 
-//            //throw new UnsupportedOperationException("Not supported yet.");
-//        } else if (n == 5) {
-//            V3D_Triangle t1;
-//            V3D_Triangle t2;
-//            V3D_Triangle t3;
-//            // Case: convex pentagon (closed polygon with 5 sides)
-//            V3D_Point illl2 = (V3D_Point) l1.getIntersection(l2, oom);
-//            V3D_Point illl3 = (V3D_Point) l1.getIntersection(l3, oom);
-//            V3D_Point il2l3 = (V3D_Point) l2.getIntersection(l3, oom);
-//            // Find the two lines that intersect
-//            if (illl2 == null) {
-//                if (illl3 == null) {
-//                    // l2 and l3 intersect
-//                    V3D_Point op1 = l1.l.getOtherPoint(illl3);
-//                    V3D_Point op3 = l3.l.getOtherPoint(illl3);
-//                    t1 = new V3D_Triangle(op1, op3, illl3);
-//                    t2 = new V3D_Triangle(op1, op3, l2p); // This might be twisted?
-//                    t3 = new V3D_Triangle(op3, l2p, l2q);
-//                } else {
-//                    // l2 and l3 intersect
-//                    V3D_Point op2 = l2.l.getOtherPoint(il2l3);
-//                    V3D_Point op3 = l3.l.getOtherPoint(il2l3);
-//                    t1 = new V3D_Triangle(op2, op3, il2l3);
-//                    t2 = new V3D_Triangle(op2, op3, l1p); // This might be twisted?
-//                    t3 = new V3D_Triangle(op3, l1p, l1q);
-//                }
-//            } else {
-//                // l1 and l2 intersect
-//                V3D_Point op1 = l1.l.getOtherPoint(illl2);
-//                V3D_Point op2 = l2.l.getOtherPoint(illl2);
-//                t1 = new V3D_Triangle(op1, op2, illl2);
-//                t2 = new V3D_Triangle(op1, op2, l3p); // This might be twisted?
-//                t3 = new V3D_Triangle(op2, l3p, l3q);
-//            }
-//            return new V3D_Polygon(t1, t2, t3);
-//        } else {
-//            // n = 6
-//            V3D_Triangle t1;
-//            V3D_Triangle t2;
-//            V3D_Triangle t3;
-//            V3D_Triangle t4;
-//            /**
-//             * Find the two points that are the minimum distance between any two
-//             * lines. This will be an extra side to the triangle.
-//             */
-//            // dl1l2
-//            Math_BigRational dl1pl2p = l1p.getDistanceSquared(l2p, oom);
-//            Math_BigRational dl1pl2q = l1p.getDistanceSquared(l2q, oom);
-//            Math_BigRational dl1ql2p = l1q.getDistanceSquared(l2p, oom);
-//            Math_BigRational dl1ql2q = l1q.getDistanceSquared(l2q, oom);
-//            // dl1l3
-//            Math_BigRational dl1pl3p = l1p.getDistanceSquared(l3p, oom);
-//            Math_BigRational dl1pl3q = l1p.getDistanceSquared(l3q, oom);
-//            Math_BigRational dl1ql3p = l1q.getDistanceSquared(l3p, oom);
-//            Math_BigRational dl1ql3q = l1q.getDistanceSquared(l3q, oom);
-////            // dl2l3
-////            Math_BigRational dl2pl3p = l2p.getDistanceSquared(l3p, oom);
-////            Math_BigRational dl2pl3q = l2p.getDistanceSquared(l3q, oom);
-////            Math_BigRational dl2ql3p = l2q.getDistanceSquared(l3p, oom);
-////            Math_BigRational dl2ql3q = l2q.getDistanceSquared(l3q, oom);
-//            if (dl1pl2p.compareTo(dl1pl2q) == -1) {
-//                if (dl1pl2p.compareTo(dl1ql2q) == -1) {
-//                    t1 = new V3D_Triangle(l1p, l1q, l2p);
-//                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
-//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-//                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
-//                            t3 = new V3D_Triangle(l3q, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        } else {
-//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3p, l2p, l1q);
-//                        }
-//                    } else {
-//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-//                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
-//                            t3 = new V3D_Triangle(l3q, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        } else {
-//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        }
-//                    }
-//                } else {
-//                    t1 = new V3D_Triangle(l1p, l1q, l2p);
-//                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
-//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-//                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
-//                            t3 = new V3D_Triangle(l1p, l2p, l3q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        } else {
-//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        }
-//                    } else {
-//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-//                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
-//                            t3 = new V3D_Triangle(l3q, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        } else {
-//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        }
-//                    }
-//                }
-//            } else {
-//                if (dl1pl2p.compareTo(dl1ql2q) == -1) {
-//                    t1 = new V3D_Triangle(l1p, l1q, l2p);
-//                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
-//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-//                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
-//                            t3 = new V3D_Triangle(l3q, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        } else {
-//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3p, l2p, l1q);
-//                        }
-//                    } else {
-//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-//                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
-//                            t3 = new V3D_Triangle(l3q, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        } else {
-//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        }
-//                    }
-//                } else {
-//                    t1 = new V3D_Triangle(l1p, l1q, l2q);
-//                    if (dl1pl2p.compareTo(dl1ql2q) == -1) {
-//                        t2 = new V3D_Triangle(l3q, l2p, l2q);
-//                        if (dl1ql3p.compareTo(dl1ql3q) == -1) {
-//                            t3 = new V3D_Triangle(l1p, l2p, l3q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        } else {
-//                            t3 = new V3D_Triangle(l3p, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        }
-//                    } else {
-//                        t2 = new V3D_Triangle(l3p, l2p, l2q);
-//                        if (dl1pl3p.compareTo(dl1pl3q) == -1) {
-//                            t3 = new V3D_Triangle(l3q, l2p, l1q);
-//                            t4 = new V3D_Triangle(l3q, l2p, l1q);
-//                        } else {
-//                            t3 = new V3D_Triangle(l3p, l3q, l1q);
-//                            t4 = new V3D_Triangle(l3p, l2p, l1q);
-//                        }
-//                    }
-//                }
-//            }
-//            return new V3D_Polygon(t1, t2, t3, t4);
-//        }
     }
 
     /**
-     * Used in intersecting two triangles to give the overall intersection. If
-     * there are 3 unique points then a triangle is returned. If there are 4 or
-     * more unique points, then a V3D_ConvexHullCoplanar is returned.
+     * Useful in calculating the intersection of two triangles. If there are 3
+     * unique points then a triangle is returned. If there are 4 or more unique
+     * points, then a V3D_ConvexHullCoplanar is returned.
      *
      * @param l1 A line segment.
      * @param l2 A line segment.
@@ -1854,58 +1777,53 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         }
     }
 
+//    /**
+//     * Used in intersecting a triangle and a tetrahedron. If there are 3 unique
+//     * points then a triangle is returned. If there are 4 points, then a
+//     * V3D_ConvexHullCoplanar is returned.
+//     *
+//     * @param l1 A line segment.
+//     * @param l2 A line segment.
+//     * @param epsilon The tolerance within which two vectors are regarded as
+//     * equal.
+//     * @return either {@code pl} or {@code new V3D_LineSegment(pl, qv)} or
+//     * {@code new V3D_Triangle(pl, qv, r)}
+//     */
+//    protected static V3D_FiniteGeometryDouble getGeometry2(
+//            V3D_LineSegmentDouble l1, V3D_LineSegmentDouble l2, double epsilon) {
+//        V3D_PointDouble l1p = l1.getP();
+//        V3D_PointDouble l1q = l1.getQ();
+//        V3D_PointDouble l2p = l2.getP();
+//        V3D_PointDouble l2q = l2.getQ();
+//        ArrayList<V3D_PointDouble> points;
+//        {
+//            List<V3D_PointDouble> pts = new ArrayList<>();
+//            pts.add(l1p);
+//            pts.add(l1q);
+//            pts.add(l2p);
+//            pts.add(l2q);
+//            points = V3D_PointDouble.getUnique(pts, epsilon);
+//        }
+//        int n = points.size();
+//        switch (n) {
+//            case 2:
+//                return l1;
+//            case 3:
+//                Iterator<V3D_PointDouble> ite = points.iterator();
+//                return getGeometry(ite.next(), ite.next(), ite.next(), epsilon);
+//            default:
+//                V3D_PointDouble[] pts = new V3D_PointDouble[points.size()];
+//                int i = 0;
+//                for (var p : points) {
+//                    pts[i] = p;
+//                    i++;
+//                }
+//                V3D_PlaneDouble pl = new V3D_PlaneDouble(pts[0], pts[1], pts[2]);
+//                return new V3D_ConvexHullCoplanarDouble(pl.n, epsilon, pts);
+//        }
+//    }
     /**
-     * Used in intersecting a triangle and a tetrahedron. If there are 3 unique
-     * points then a triangle is returned. If there are 4 points, then a
-     * V3D_ConvexHullCoplanar is returned.
-     *
-     * @param l1 A line segment.
-     * @param l2 A line segment.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
-     * @return either {@code pl} or {@code new V3D_LineSegment(pl, qv)} or
-     * {@code new V3D_Triangle(pl, qv, r)}
-     */
-    protected static V3D_FiniteGeometryDouble getGeometry2(
-            V3D_LineSegmentDouble l1, V3D_LineSegmentDouble l2, double epsilon) {
-        V3D_PointDouble l1p = l1.getP();
-        V3D_PointDouble l1q = l1.getQ();
-        V3D_PointDouble l2p = l2.getP();
-        V3D_PointDouble l2q = l2.getQ();
-        ArrayList<V3D_PointDouble> points;
-        {
-            List<V3D_PointDouble> pts = new ArrayList<>();
-            pts.add(l1p);
-            pts.add(l1q);
-            pts.add(l2p);
-            pts.add(l2q);
-            points = V3D_PointDouble.getUnique(pts, epsilon);
-        }
-        points.add(l1p);
-        points.add(l1q);
-        points.add(l2p);
-        points.add(l2q);
-        int n = points.size();
-        if (n == 2) {
-            return l1;
-        } else if (n == 3) {
-            Iterator<V3D_PointDouble> ite = points.iterator();
-            return getGeometry(ite.next(), ite.next(), ite.next(), epsilon);
-        } else {
-            V3D_PointDouble[] pts = new V3D_PointDouble[points.size()];
-            int i = 0;
-            for (var p : points) {
-                pts[i] = p;
-                i++;
-            }
-            V3D_PlaneDouble pl = new V3D_PlaneDouble(pts[0], pts[1], pts[2]);
-            return new V3D_ConvexHullCoplanarDouble(pl.n, epsilon, pts);
-        }
-    }
-
-    /**
-     * This may be called when there is an intersection of two triangles. If l1
-     * and l2 are two sides of a triangle, return the triangle.
+     * Useful in calculating the intersection of two triangles.
      *
      * @param l1 A line segment and triangle edge.
      * @param l2 A line segment and triangle edge.
@@ -1919,24 +1837,29 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         V3D_PointDouble pt = (V3D_PointDouble) l1.getIntersection(l2, epsilon);
         V3D_PointDouble l1p = l1.getP();
         V3D_PointDouble l2p = l2.getP();
-        if (l1p.equals(pt)) {
-            if (l2p.equals(pt)) {
-                return new V3D_TriangleDouble(pt, l1.getQ(), l2.getQ());
-            } else {
-                return new V3D_TriangleDouble(pt, l1.getQ(), l2p);
-            }
+        if (pt == null) {
+            V3D_TriangleDouble t = new V3D_TriangleDouble(l2, l1p);
+            return new V3D_ConvexHullCoplanarDouble(t.getPl(epsilon).getN(),
+                    epsilon, l1p, l2p, l1.getQ(), l2.getQ());
         } else {
-            if (l2p.equals(pt)) {
-                return new V3D_TriangleDouble(pt, l1p, l2.getQ());
+            if (l1p.equals(pt, epsilon)) {
+                if (l2p.equals(pt, epsilon)) {
+                    return new V3D_TriangleDouble(pt, l1.getQ(), l2.getQ());
+                } else {
+                    return new V3D_TriangleDouble(pt, l1.getQ(), l2p);
+                }
             } else {
-                return new V3D_TriangleDouble(pt, l1p, l2p);
+                if (l2p.equals(pt, epsilon)) {
+                    return new V3D_TriangleDouble(pt, l1p, l2.getQ());
+                } else {
+                    return new V3D_TriangleDouble(pt, l1p, l2p);
+                }
             }
         }
     }
 
     /**
-     * This may be called when there is an intersection of two triangles where l
-     * is a side of a triangle and pl is a point.
+     * Useful in calculating the intersection of two triangles.
      *
      * @param l A line segment.
      * @param p1 A point that is either not collinear to l or intersects l.
@@ -1956,8 +1879,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     }
 
     /**
-     * This may be called when there is an intersection of two triangles where l
-     * is a side of a triangle and pl is a point that is not collinear to l.
+     * Useful in calculating the intersection of two triangles.
      *
      * @param l A line segment.
      * @param p A point that is not collinear to l.
@@ -1977,6 +1899,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * For getting the point opposite a side of a triangle given the side.
      *
      * @param l a line segment either equal to one of the edges of this: null
+     * null null null null null null null null null null null null null null
      * null null null null null null null null null null     {@link #getPQ()},
      * {@link #getQR()} or {@link #getRP()}.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -2244,7 +2167,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         V3D_FiniteGeometryDouble i = getIntersection(pl, epsilon);
         V3D_PointDouble ppt = getPl(epsilon).getP();
         if (i == null) {
-            if (pl.isOnSameSide(ppt, pt)) {
+            if (pl.isOnSameSide(ppt, pt, epsilon)) {
                 return this;
             } else {
                 return null;
@@ -2259,13 +2182,13 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
              * right!
              */
             int poll = 0;
-            if (pl.isOnSameSide(ppt, pt)) {
+            if (pl.isOnSameSide(ppt, pt, epsilon)) {
                 poll++;
             }
-            if (pl.isOnSameSide(getQ(), pt)) {
+            if (pl.isOnSameSide(getQ(), pt, epsilon)) {
                 poll++;
             }
-            if (pl.isOnSameSide(getR(), pt)) {
+            if (pl.isOnSameSide(getR(), pt, epsilon)) {
                 poll++;
             }
             if (poll > 1) {
@@ -2278,29 +2201,35 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             V3D_LineSegmentDouble il = (V3D_LineSegmentDouble) i;
             V3D_PointDouble qpt = getQ();
             V3D_PointDouble rpt = getR();
-            if (pl.isOnSameSide(ppt, pt)) {
-                if (pl.isOnSameSide(qpt, pt)) {
-                    if (pl.isOnSameSide(rpt, pt)) {
+            if (pl.isOnSameSide(ppt, pt, epsilon)) {
+                if (pl.isOnSameSide(qpt, pt, epsilon)) {
+                    if (pl.isOnSameSide(rpt, pt, epsilon)) {
                         return this;
                     } else {
-                        return getGeometry(il, getPQ(), epsilon);
+                        //return getGeometry(il, getPQ(), epsilon);
+                        return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon,
+                                il.getP(), il.getQ(), getP(), getQ());
                     }
                 } else {
-                    if (pl.isOnSameSide(rpt, pt)) {
-                        return getGeometry(il, getRP(), epsilon);
+                    if (pl.isOnSameSide(rpt, pt, epsilon)) {
+                        //return getGeometry(il, getRP(), epsilon);
+                        return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon,
+                                il.getP(), il.getQ(), getR(), getP());
                     } else {
                         return getGeometry(il, ppt, epsilon);
                     }
                 }
             } else {
-                if (pl.isOnSameSide(qpt, pt)) {
-                    if (pl.isOnSameSide(rpt, pt)) {
-                        return getGeometry(il, getPQ(), epsilon);
+                if (pl.isOnSameSide(qpt, pt, epsilon)) {
+                    if (pl.isOnSameSide(rpt, pt, epsilon)) {
+                        //return getGeometry(il, getQR(), epsilon);
+                        return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon,
+                                il.getP(), il.getQ(), getQ(), getR());
                     } else {
                         return getGeometry(il, qpt, epsilon);
                     }
                 } else {
-                    if (pl.isOnSameSide(rpt, pt)) {
+                    if (pl.isOnSameSide(rpt, pt, epsilon)) {
                         return getGeometry(il, rpt, epsilon);
                     } else {
                         return null;

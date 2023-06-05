@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
@@ -87,10 +88,11 @@ public class V3D_PlaneTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane instance = new V3D_Plane(pP0P0P0, pP1P1P1, pP1P0P0, oom, rm);
-        String expResult = "V3D_Plane(\n"
-                + " offset=V3D_Vector(dx=0, dy=0, dz=0),\n"
-                + " p= V3D_Vector(dx=0, dy=0, dz=0),\n"
-                + " n= V3D_Vector(dx=0, dy=1, dz=-1))";
+        String expResult = """
+                           V3D_Plane(
+                            offset=V3D_Vector(dx=0, dy=0, dz=0),
+                            p= V3D_Vector(dx=0, dy=0, dz=0),
+                            n= V3D_Vector(dx=0, dy=1, dz=-1))""";
         String result = instance.toString();
         //System.out.println(result);
         assertTrue(expResult.equals(result));
@@ -3302,12 +3304,18 @@ public class V3D_PlaneTest extends V3D_Test {
         m[0][0] = P0;
         m[0][1] = P0;
         m[0][2] = P0;
+//        m[1][0] = P0;
+//        m[1][1] = P1;
+//        m[1][2] = P0;
+//        m[2][0] = P0;
+//        m[2][1] = P0;
+//        m[2][2] = N1;
         m[1][0] = P0;
-        m[1][1] = P1;
-        m[1][2] = P0;
+        m[1][1] = P0;
+        m[1][2] = N1;
         m[2][0] = P0;
-        m[2][1] = P0;
-        m[2][2] = N1;
+        m[2][1] = N1;
+        m[2][2] = P0;
         Math_Matrix_BR expResult = new Math_Matrix_BR(m);
         Math_Matrix_BR result = instance.getAsMatrix(oom, rm);
         assertTrue(expResult.getRows().length == result.getRows().length);
@@ -3493,22 +3501,16 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetPV() {
         System.out.println("getPV");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane instance = V3D_Plane.X0;
-        //int oom = -3;
-        V3D_Vector expResult = V3D_Vector.J;
-        V3D_Vector result = instance.getPV();
-        //System.out.println(result);
-        assertTrue(expResult.equals(result));
+        assertTrue(instance.getPV(oom, rm).getDotProduct(instance.getN(), oom, rm).compareTo(BigRational.ZERO) == 0);
         // Test 2
         instance = V3D_Plane.Y0;
-        expResult = V3D_Vector.I.reverse();
-        result = instance.getPV();
-        assertTrue(expResult.equals(result));
+        assertTrue(instance.getPV(oom, rm).getDotProduct(instance.getN(), oom, rm).compareTo(BigRational.ZERO) == 0);
         // Test 3
         instance = V3D_Plane.Z0;
-        expResult = V3D_Vector.I.reverse();
-        result = instance.getPV();
-        assertTrue(expResult.equals(result));
+        assertTrue(instance.getPV(oom, rm).getDotProduct(instance.getN(), oom, rm).compareTo(BigRational.ZERO) == 0);
     }
 
     /**
@@ -3534,9 +3536,7 @@ public class V3D_PlaneTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane instance = V3D_Plane.X0;
-        V3D_Point expResult = pP0P1P0;
-        V3D_Point result = instance.getQ(oom, rm);
-        assertTrue((expResult).equals(result, oom, rm));
+        assertTrue(instance.isIntersectedBy(instance.getQ(oom, rm), oom, rm));
     }
 
     /**
@@ -3548,9 +3548,7 @@ public class V3D_PlaneTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane instance = V3D_Plane.X0;
-        V3D_Point expResult = pP0P0N1;
-        V3D_Point result = instance.getR(oom, rm);
-        assertTrue((expResult).equals(result, oom, rm));
+        assertTrue(instance.isIntersectedBy(instance.getR(oom, rm), oom, rm));
     }
 
     /**
@@ -3587,7 +3585,7 @@ public class V3D_PlaneTest extends V3D_Test {
         V3D_Line axis = V3D_Line.X_AXIS;
         BigRational theta = Pi.divide(2);
         V3D_Plane instance = new V3D_Plane(V3D_Plane.X0);
-        instance.rotate(axis, theta, oom, rm);
+        instance = instance.rotate(axis, theta, oom, rm);
         assertTrue(V3D_Plane.X0.equalsIgnoreOrientation(instance, oom, rm));
         // Test 2
         axis = V3D_Line.Y_AXIS;

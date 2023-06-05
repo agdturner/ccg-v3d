@@ -422,7 +422,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
          */
         if (i instanceof V3D_PointDouble v3D_Point) {
             //if (isIntersectedBy(v3D_Point, epsilon)) {
-            if (isBetween(v3D_Point)) {
+            if (isBetween(v3D_Point, epsilon)) {
                 return v3D_Point;
             } else {
                 return null;
@@ -463,64 +463,96 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
         }
         /**
          * Check the type of intersection. {@code
+         *
          * A) p_q l.p_l.q
+         *
          * 1)  p +----------+ q
          *              l.p +----------+ l.q
+         *
          * 2)  p +----------+ q
          *         l.p +----------+ l.q
+         *
          * 3)  p +------------------------+ q
          *         l.p +----------+ l.q
+         *
          * 4)        p +----------+ q
          *     l.p +----------------------+ l.q
+         *
          * 5)    p +----------+ q
          *     l.p +----------+ l.q
+         *
          * 6)         p +----------+ q
          *     l.p +----------+ l.q
+         *
          * 7)              p +----------+ q
          *     l.p +---------+ l.q
+         *
          * B) q_p l.p_l.q
+         *
          * 8)  q +----------+ p
          *              l.p +----------+ l.q
+         *
          * 9)  q +----------+ p
          *         l.p +----------+ l.q
+         *
          * 10) q +------------------------+ p
          *         l.p +----------+ l.q
+         *
          * 11)       q +----------+ p
          *     l.p +----------------------+ l.q
+         *
          * 12)       q +----------+ p
          *         l.p +----------+ l.q
+         *
          * 13)       q +----------+ p
          *     l.p +----------+ l.q
+         *
          * 14)              q +----------+ p
          *     l.p +----------+ l.q
+         *
          * C) p_q l.q_l.p
+         *
          * 15) p +----------+ q
-         *         l.q +----------+ l.p
-         * 16) p +----------+ q
          *              l.q +----------+ l.p
+         *
+         * 16) p +----------+ q
+         *         l.q +----------+ l.p
+         *
          * 17) p +------------------------+ q
          *         l.q +----------+ l.p
+         *
          * 18)       p +----------+ q
          *     l.q +------------------------+ l.p
+         *
          * 19)       p +----------+ q
          *         l.q +----------+ l.p
+         *
          * 20)       p +----------+ q
          *     l.q +----------+ l.p
+         *
          * 21)              p +----------+ q
          *     l.q +----------+ l.p
+         *
          * D) q_p l.q_l.p
+         *
          * 22) q +----------+ p
          *              l.q +----------+ l.p
+         *
          * 23) q +----------+ p
          *         l.q +----------+ l.p
+         *
          * 24) q +------------------------+ p
          *         l.q +----------+ l.p
+         *
          * 25)       q +----------+ p
          *     l.q +------------------------+ l.p
+         *
          * 26)       p +----------+ q
-         *         l.q +---------+ l.p
+         *         l.q +----------+ l.p
+         *
          * 27)       q +----------+ p
          *    l.q +---------+ l.p
+         *
          * 28)            q +----------+ p
          *    l.q +---------+ l.p
          * }
@@ -534,23 +566,6 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
             if (this.isIntersectedBy(lq, epsilon)) {
                 // Cases: 3, 5, 10, 12, 17, 19, 24, 26
                 return ls;
-//                if (l.isIntersectedBy(tp, oom)) {
-//                    // Cases: 5, 12, 19, 26
-//                    if (l.isIntersectedBy(tq, oom)) {
-//                        // Cases: 5, 12, 19, 26
-//                        return l;
-//                    } else {
-//                        // Cases: 
-//                    }
-//                } else {
-//                    // Cases: 3, 10, 17, 24
-//                    if (l.isIntersectedBy(tq, oom)) {
-//                        // Cases: 3, 10, 17, 24
-//                        return l;
-//                    } else {
-//                        // Cases: 
-//                    }
-//                }
             } else {
                 // Cases: 1, 2, 8, 9, 20, 21, 27, 28
                 if (ls.isIntersectedBy(tp, epsilon)) {
@@ -563,35 +578,25 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                         return V3D_LineSegmentDouble.getGeometry(lp, tp, epsilon);
                     }
                 } else {
-                    // Cases: 1, 2, 8, 21, 27, 28
-                    if (tp.equals(lp, epsilon)) {
-                        // Cases: 8, 21
-                        return tp;
-                    } else {
+                    // Case: 1, 2, 27, 28
+                    if (lp.equals(tq, epsilon)) {
                         // Case: 1, 28
-                        if (lp.equals(tq, epsilon)) {
-                            return lp;
-                        }
+                        return lp;
+                    } else {
                         // Cases: 2, 27
                         return V3D_LineSegmentDouble.getGeometry(lp, tq, epsilon);
                     }
                 }
             }
         } else {
-            // Cases: 4, 6, 7, 11, 13, 14, 16, 18, 19, 22, 23, 25
+            // Cases: 4, 6, 7, 11, 13, 14, 15, 16, 18, 22, 23, 25
             if (this.isIntersectedBy(lq, epsilon)) {
-                // Cases: 6, 7, 13, 14, 16, 19, 22, 23
+                // Cases: 6, 7, 13, 14, 15, 16, 22, 23
                 if (ls.isIntersectedBy(tp, epsilon)) {
-                    // Cases: 6, 7, 19, 22, 23
+                    // Cases: 6, 7, 22, 23
                     if (ls.isIntersectedBy(tq, epsilon)) {
-                        // Cases: 19, 23
-                        if (tp.equals(lp, epsilon)) {
-                            // Case: 19
-                            return this;
-                        } else {
                             // Case: 23
                             return V3D_LineSegmentDouble.getGeometry(lq, tp, epsilon);
-                        }
                     } else {
                         // Cases: 6, 7, 22, 
                         if (tp.equals(lq, epsilon)) {
@@ -603,36 +608,18 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                         }
                     }
                 } else {
-                    // Cases: 13, 14, 16
-                    //if (l.isIntersectedBy(tq, oom)) {
-                    // Cases: 13, 14, 16
+                    // Cases: 13, 14, 15, 16
                     if (tq.equals(lq, epsilon)) {
-                        // Cases: 14, 16
+                        // Cases: 14, 15
                         return tq;
                     } else {
-                        // Case: 13
-                        //return new V3D_LineSegment(e, l.qv, ls.l.qv);
+                        // Case: 13, 16
                         return V3D_LineSegmentDouble.getGeometry(tq, lq, epsilon);
                     }
-//                    } else {
-//                        // Cases:                    
-//                        return l;
-                    //}
                 }
             } else {
                 // Cases: 4, 11, 18, 25
                 return this;
-//                if (l.isIntersectedBy(tp, oom)) {
-//                    // Cases: 4, 11, 18, 25
-//                    if (l.isIntersectedBy(tq, oom)) {
-//                        // Cases: 4, 11, 18, 25
-//                        return this;
-//                    } else {
-//                        // Cases:
-//                    }
-//                } else {
-//                    // Cases:
-//                }
             }
         }
     }
@@ -674,7 +661,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
             return 0d;
         }
         V3D_PointDouble poi = l.getPointOfIntersection(pt, epsilon);
-        if (isAligned(poi)) {
+        if (isAligned(poi, epsilon)) {
             return poi.getDistanceSquared(pt);
         } else {
             return Math.min(pt.getDistanceSquared(getP()),
@@ -690,9 +677,9 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * @param pt The point.
      * @return {@code true} If pt is in line with this.
      */
-    public boolean isAligned(V3D_PointDouble pt) {
-        if (getPPL().isOnSameSide(pt, getQ())) {
-            return getQPL().isOnSameSide(pt, getP());
+    public boolean isAligned(V3D_PointDouble pt, double epsilon) {
+        if (getPPL().isOnSameSide(pt, getQ(), epsilon)) {
+            return getQPL().isOnSameSide(pt, getP(), epsilon);
         }
         return false;
     }
@@ -705,9 +692,9 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * @param l The line segment.
      * @return {@code true} If pt is in line with this.
      */
-    public boolean isAligned(V3D_LineSegmentDouble l) {
-        if (isAligned(l.getP())) {
-            return isAligned(l.getQ());
+    public boolean isAligned(V3D_LineSegmentDouble l, double epsilon) {
+        if (isAligned(l.getP(), epsilon)) {
+            return isAligned(l.getQ(), epsilon);
         }
         return false;
     }
@@ -825,48 +812,84 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
     }
 
     /**
-     * If pv, qv and r are equal then the point is returned otherwise a line
-     * segment is returned where all the points are on the line segment.
+     * Calculates the shortest line segment which l and pt intersect with.
      *
      * @param l A line segment.
      * @param pt A point collinear with l.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
+     * @return The shortest line segment which l and pt intersect with.
      */
-    public static V3D_FiniteGeometryDouble getGeometry(V3D_LineSegmentDouble l,
+    public static V3D_LineSegmentDouble getGeometry(V3D_LineSegmentDouble l,
             V3D_PointDouble pt, double epsilon) {
-        return getGeometry(epsilon, l.getP(), l.getQ(), pt);
+        return (V3D_LineSegmentDouble) getGeometry(epsilon, l.getP(), l.getQ(), pt);
     }
 
     /**
-     * Get the smallest line segment intersected by all pts.
+     * Calculates the shortest line segment which all line segments intersect
+     * with.
+     *
+     * @param ls Collinear line segments.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The shortest line segment which all line segments in ls intersect
+     * with.
+     */
+    public static V3D_LineSegmentDouble getGeometry(double epsilon,
+            V3D_LineSegmentDouble... ls) {
+        switch (ls.length) {
+            case 0 -> {
+                return null;
+            }
+            case 1 -> {
+                return ls[0];
+            }
+            default -> {
+                V3D_LineSegmentDouble r = getGeometry(ls[0], ls[1].getP(), epsilon);
+                r = getGeometry(r, ls[1].getQ(), epsilon);
+                for (int i = 1; i < ls.length; i++) {
+                    r = getGeometry(r, ls[i].getP(), epsilon);
+                    r = getGeometry(r, ls[i].getQ(), epsilon);
+                }
+                return r;
+            }
+        }
+    }
+
+    /**
+     * Calculate and return the smallest line segment intersected by all pts.
      *
      * @param pts Collinear points.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
+     * @return The smallest line segment intersected by all pts
      */
     public static V3D_FiniteGeometryDouble getGeometry(double epsilon, V3D_PointDouble... pts) {
         int length = pts.length;
-        if (length == 0) {
-            return null;
-        } else if (length == 1) {
-            return pts[0];
-        } else if (length == 2) {
-            return getGeometry(pts[0], pts[1], epsilon);
-        } else if (length == 3) {
-            return getGeometry(pts[0], pts[1], pts[2], epsilon);
-        } else {
-            V3D_FiniteGeometryDouble g = getGeometry(epsilon, pts[0], pts[1], pts[2]);
-            for (int i = 3; i < length; i++) {
-                if (g instanceof V3D_PointDouble gp) {
-                    g = getGeometry(gp, pts[i], epsilon);
-                } else {
-                    g = getGeometry((V3D_LineSegmentDouble) g, pts[i], epsilon);
-                }
+        switch (length) {
+            case 0 -> {
+                return null;
             }
-            return g;
+            case 1 -> {
+                return pts[0];
+            }
+            case 2 -> {
+                return getGeometry(pts[0], pts[1], epsilon);
+            }
+            case 3 -> {
+                return getGeometry(pts[0], pts[1], pts[2], epsilon);
+            }
+            default -> {
+                V3D_FiniteGeometryDouble g = getGeometry(epsilon, pts[0], pts[1], pts[2]);
+                for (int i = 3; i < length; i++) {
+                    if (g instanceof V3D_PointDouble gp) {
+                        g = getGeometry(gp, pts[i], epsilon);
+                    } else {
+                        g = getGeometry((V3D_LineSegmentDouble) g, pts[i], epsilon);
+                    }
+                }
+                return g;
+            }
         }
     }
 
@@ -900,8 +923,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
             //V3D_Point lsq = loi.getQ();
             V3D_PlaneDouble plp = new V3D_PlaneDouble(tp, l.v);
             V3D_PlaneDouble plq = new V3D_PlaneDouble(tq, l.v);
-            if (plp.isOnSameSide(lsp, tq)) {
-                if (plq.isOnSameSide(lsp, tp)) {
+            if (plp.isOnSameSide(lsp, tq, epsilon)) {
+                if (plq.isOnSameSide(lsp, tp, epsilon)) {
                     /**
                      * The line of intersection connects in the line segment, so
                      * return it.
@@ -943,8 +966,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                 // Can use isAligned to do this more clearly?
                 V3D_PlaneDouble tppl = new V3D_PlaneDouble(tp, l.v);
                 V3D_PlaneDouble tqpl = new V3D_PlaneDouble(tq, l.v);
-                if (tppl.isOnSameSide(lsloiq, tq)) {
-                    if (tqpl.isOnSameSide(lsloiq, tp)) {
+                if (tppl.isOnSameSide(lsloiq, tq, epsilon)) {
+                    if (tqpl.isOnSameSide(lsloiq, tp, epsilon)) {
                         /**
                          * The line of intersection connects in this, so lsloiq
                          * is one of the points wanted.
@@ -967,9 +990,9 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                     // Is the intersection point on ls within the line segment?
                     // Can use isAligned to do this more clearly?
                     V3D_PlaneDouble lsppl = new V3D_PlaneDouble(lsp, ls.l.v);
-                    if (lsppl.isOnSameSide(tloiq, lsq)) {
+                    if (lsppl.isOnSameSide(tloiq, lsq, epsilon)) {
                         V3D_PlaneDouble lsqpl = new V3D_PlaneDouble(lsq, ls.l.v);
-                        if (lsqpl.isOnSameSide(tloiq, lsp)) {
+                        if (lsqpl.isOnSameSide(tloiq, lsp, epsilon)) {
                             /**
                              * The line of intersection connects in this, so
                              * lsloiq is one of the points wanted.
@@ -989,7 +1012,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                     //return new V3D_LineSegment(tloiq, getNearestPoint(this, tloiq));
                 } else {
                     // tloip is on
-                    if (isBetween(tloip)) {
+                    if (isBetween(tloip, epsilon)) {
                         return new V3D_LineSegmentDouble(tloip, getNearestPoint(ls, tloip));
                     } else {
                         return new V3D_LineSegmentDouble(
@@ -1035,9 +1058,9 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * @return {@code true} iff pt lies between the planes at the end of the
      * line segment.
      */
-    public boolean isBetween(V3D_PointDouble pt) {
-        if (getPPL().isOnSameSide(pt, getQ())) {
-            if (getQPL().isOnSameSide(pt, getP())) {
+    public boolean isBetween(V3D_PointDouble pt, double epsilon) {
+        if (getPPL().isOnSameSide(pt, getQ(), epsilon)) {
+            if (getQPL().isOnSameSide(pt, getP(), epsilon)) {
                 return true;
             }
         }
@@ -1095,7 +1118,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
     }
 
     @Override
-    public V3D_LineSegmentDouble rotate(V3D_LineDouble axis, double theta,
+    public V3D_LineSegmentDouble rotate(V3D_RayDouble axis, double theta,
             double epsilon) {
         return new V3D_LineSegmentDouble(
                 getP().rotate(axis, theta, epsilon),
@@ -1117,16 +1140,16 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
         V3D_FiniteGeometryDouble i = pl.getIntersection(this, epsilon);
         V3D_PointDouble tp = getP();
         if (i == null) {
-            if (pl.isOnSameSide(tp, pt)) {
+            if (pl.isOnSameSide(tp, pt, epsilon)) {
                 return this;
             } else {
                 return null;
             }
         } else if (i instanceof V3D_PointDouble ip) {
-            if (pl.isOnSameSide(tp, pt)) {
+            if (pl.isOnSameSide(tp, pt, epsilon)) {
                 return V3D_LineSegmentDouble.getGeometry(ip, tp, epsilon);
             } else {
-                V3D_PointDouble tq = this.getQ();
+                V3D_PointDouble tq = getQ();
                 return V3D_LineSegmentDouble.getGeometry(ip, tq, epsilon);
             }
         } else {

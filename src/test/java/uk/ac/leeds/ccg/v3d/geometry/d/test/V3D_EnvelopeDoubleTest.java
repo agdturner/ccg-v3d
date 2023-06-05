@@ -88,7 +88,7 @@ public class V3D_EnvelopeDoubleTest extends V3D_DoubleTest {
     @Test
     public void testIsIntersectedBy_V3D_EnvelopeDouble() {
         System.out.println("isIntersectedBy");
-        V3D_EnvelopeDouble instance = new V3D_EnvelopeDouble(pP0P0P0, pP0P0P0);
+        V3D_EnvelopeDouble instance = new V3D_EnvelopeDouble(pP0P0P0);
         V3D_EnvelopeDouble en = new V3D_EnvelopeDouble(pP0P0P0, pP1P1P1);
         assertTrue(instance.isIntersectedBy(en));
         // Test 2
@@ -200,6 +200,8 @@ public class V3D_EnvelopeDoubleTest extends V3D_DoubleTest {
         System.out.println("isIntersectedBy");
         V3D_EnvelopeDouble instance = new V3D_EnvelopeDouble(pN1N1N1, pP1P1P1);
         assertTrue(instance.isIntersectedBy(0d, 0d, 0d));
+        instance = new V3D_EnvelopeDouble(pP1P0P0);
+        assertFalse(instance.isIntersectedBy(0d, 0d, 0d));
     }
 
     /**
@@ -341,27 +343,6 @@ public class V3D_EnvelopeDoubleTest extends V3D_DoubleTest {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_EnvelopeDouble.
-     */
-    @Test
-    public void testIsIntersectedBy_3args_1() {
-        System.out.println("isIntersectedBy");
-        double x;
-        double y;
-        double z;
-        V3D_EnvelopeDouble instance;
-        // Test 1
-        x = 0d;
-        y = 0d;
-        z = 0d;
-        instance = new V3D_EnvelopeDouble(pP0P0P0);
-        assertTrue(instance.isIntersectedBy(x, y, z));
-        // Test 2
-        instance = new V3D_EnvelopeDouble(pP1P0P0);
-        assertFalse(instance.isIntersectedBy(x, y, z));
-    }
-
-    /**
      * Test of translate method, of class V3D_EnvelopeDouble.
      */
     @Test
@@ -378,20 +359,6 @@ public class V3D_EnvelopeDoubleTest extends V3D_DoubleTest {
         expResult = new V3D_EnvelopeDouble(pN1N1N1, pP0P0P0);
         instance.translate(v);
         assertTrue(expResult.equals(instance));
-    }
-
-    /**
-     * Test of isIntersectedBy method, of class V3D_EnvelopeDouble.
-     */
-    @Test
-    public void testIsIntersectedBy_V3D_PointDouble_int() {
-        System.out.println("isIntersectedBy");
-        V3D_PointDouble p = V3D_PointDouble.ORIGIN;
-        V3D_EnvelopeDouble instance = new V3D_EnvelopeDouble(pP0P0P0);
-        assertTrue(instance.isIntersectedBy(p));
-        // Test 2
-        instance = new V3D_EnvelopeDouble(pP1P0P0);
-        assertFalse(instance.isIntersectedBy(p));
     }
 
     /**

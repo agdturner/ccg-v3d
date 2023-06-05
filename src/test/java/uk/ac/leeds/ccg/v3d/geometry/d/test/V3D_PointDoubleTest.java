@@ -23,7 +23,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_EnvelopeDouble;
-import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_RayDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
@@ -507,7 +506,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         System.out.println("rotate");
         double Pi = Math.PI;
         double epsilon = 1 / 100000000d;
-        V3D_LineDouble axis = new V3D_LineDouble(P0P0P0, P1P1P0);
+        V3D_RayDouble axis = new V3D_RayDouble(P0P0P0, P1P1P0);
         V3D_PointDouble instance = new V3D_PointDouble(pP1P0P0);
         double theta = Pi;
         V3D_PointDouble result = instance.rotate(axis, theta, epsilon);

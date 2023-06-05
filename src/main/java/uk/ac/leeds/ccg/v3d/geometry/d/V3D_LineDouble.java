@@ -243,8 +243,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
             throw new RuntimeException("Points " + p + " and " + q
                     + " are the same and so do not define a line.");
         }
-        this.pv = new V3D_VectorDouble(p.rel);
-        this.v = q2.rel.subtract(this.pv);
+        pv = new V3D_VectorDouble(p.rel);
+        v = q2.rel.subtract(pv);
     }
 
     @Override
@@ -375,7 +375,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                     pt.getZ() - (tp.getZ()));
             cp = v.getCrossProduct(ppt);
         }
-        return cp.dx == 0d && cp.dy == 0d && cp.dz == 0d;
+        //return cp.dx == 0d && cp.dy == 0d && cp.dz == 0d;
+        return Math.abs(cp.dx) < epsilon && Math.abs(cp.dy) < epsilon && Math.abs(cp.dz) < epsilon;
     }
 
     /**
@@ -390,7 +391,11 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
-     * return {@code this}.
+     * return {@code this}. If the lines are parallel, but are less than 
+     * epsilon in distance apart, then they are regarded as intersecting. Also
+     * if they are less than epsilon distance apart, they are regarded as 
+     * intersecting (and the closest point to this on the line of intersection
+     * is returned as the intersection).
      *
      * @param l The line to get the intersection with {@code this}.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -405,6 +410,9 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                 // If lines are coincident return this.
                 return this;
             } else {
+                if (this.getDistance(l, epsilon) < epsilon) {
+                    return this;
+                }
                 return null;
             }
         }
@@ -780,7 +788,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                 }
                 return new V3D_PointDouble(x, y, z);
             }
-            return null;
+            return null; // Should this depend on epsilon?
         }
         double mua = num / (den);
         double mub = (a + (b * (mua))) / -d;
@@ -808,7 +816,13 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         if (pi.equals(qi, epsilon)) {
             return pi;
         } else {
-            return null;
+            if (new V3D_LineSegmentDouble(pi, qi).getLength() < epsilon) {
+                int debug = 1;
+                //return pi;
+                return qi;
+            } else {
+                return null;
+            }
         }
     }
 
@@ -1080,10 +1094,10 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
     }
 
     @Override
-    public V3D_LineDouble rotate(V3D_LineDouble axis, double theta,
+    public V3D_LineDouble rotate(V3D_RayDouble axis, double theta,
             double epsilon) {
         V3D_PointDouble rp = getP().rotate(axis, theta, epsilon);
-        V3D_VectorDouble rv = v.rotate(axis.v.getUnitVector(), theta);
+        V3D_VectorDouble rv = v.rotate(axis.l.v.getUnitVector(), theta);
         return new V3D_LineDouble(rp, rv);
     }
 

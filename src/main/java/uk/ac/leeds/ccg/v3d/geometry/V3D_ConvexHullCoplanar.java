@@ -226,12 +226,22 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
                 }
             }
         }
+
+        if (this.points.size() < 3) {
+            int debug = 1;
+        }
+
         V3D_Point pt = this.points.get(0);
         for (int i = 1; i < this.points.size() - 1; i++) {
             V3D_Point qt = this.points.get(i);
             V3D_Point rt = this.points.get(i + 1);
             triangles.add(new V3D_Triangle(pt, qt, rt, oom, rm));
         }
+
+        if (triangles.size() == 0) {
+            int debug = 1;
+        }
+
     }
 
     /**
@@ -281,7 +291,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     }
 
     /**
-     * @return Simple string representation. 
+     * @return Simple string representation.
      */
     public String toStringSimple() {
         String s = this.getClass().getName() + "(";
@@ -405,11 +415,16 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
+        // Check envelopes intersect.
         if (getEnvelope(oom).isIntersectedBy(pt, oom, rm)) {
+            // Check point is on the plane. 
             if (triangles.get(0).getPl(oom, rm).isIntersectedBy(pt, oom, rm)) {
-                //return isIntersectedBy0(pt, oom, rm);
-                //return triangles.get(0).isAligned(pt, oom, rm);
-                return triangles.get(0).isAligned(pt, oom, rm);
+                // Check point is in a triangle
+                for (var t : triangles) {
+                    if (t.isAligned(pt, oom, rm)) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -553,81 +568,77 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * @param rm The RoundingMode for any rounding.
      * @return the number of points added.
      */
-    private void compute(ArrayList<V3D_Point> pts, V3D_Point p0,
-            V3D_Point p1, V3D_Vector n, int index, int oom, RoundingMode rm) {
+    private void compute(ArrayList<V3D_Point> pts, V3D_Point p0, V3D_Point p1,
+            V3D_Vector n, int index, int oom, RoundingMode rm) {
         V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(
                 offset, p0.rel.add(n, oom, rm)), oom, rm);
-        AB ab = new AB(pts, pl, oom, rm);
+        AB ab = new AB(pts, p0, p1, pl, oom, rm);
         {
             // Process ab.a
-            if (ab.a.size() > 1) {
-                V3D_Point apt = ab.a.get(ab.maxaIndex);
-                points.add(index, apt);
-                index++;
-                if (!V3D_Line.isCollinear(oom, rm, p0, p1, apt)) {
+            if (!ab.a.isEmpty()) {
+                if (ab.a.size() > 1) {
+                    V3D_Point apt = ab.a.get(ab.maxaIndex);
+                    points.add(index, apt);
+                    index++;
                     V3D_Triangle atr = new V3D_Triangle(p0, p1, apt, oom, rm);
                     TreeSet<Integer> removeIndexes = new TreeSet<>();
                     for (int i = 0; i < ab.a.size(); i++) {
                         if (atr.isIntersectedBy(ab.a.get(i), oom, rm)) {
                             removeIndexes.add(i);
-                            index--;
+                            //index--;
                         }
                         Iterator<Integer> ite = removeIndexes.descendingIterator();
                         while (ite.hasNext()) {
                             ab.a.remove(ite.next().intValue());
                         }
-                        if (ab.a.size() > 1) {
-                            // Divide again
-                            V3D_Line l = new V3D_Line(p0, p1, oom, rm);
-                            V3D_Point proj = l.getPointOfIntersection(apt, oom, rm);
-                            compute(ab.a, apt, proj, n, index, oom, rm);
-                        } else {
-                            if (ab.a.size() == 1) {
+                        if (!ab.a.isEmpty()) {
+                            if (ab.a.size() > 1) {
+                                // Divide again
+                                V3D_Line l = new V3D_Line(p0, p1, oom, rm);
+                                V3D_Point proj = l.getPointOfIntersection(apt, oom, rm);
+                                compute(ab.a, proj, apt, n, index, oom, rm);
+                            } else {
                                 points.add(index, ab.a.get(0));
                                 index++;
                             }
                         }
                     }
                 } else {
-                    if (ab.a.size() == 1) {
-                        points.add(index, ab.a.get(0));
-                    }
+                    points.add(index, ab.a.get(0));
                     index++;
                 }
             }
         }
         {
             // Process ab.b
-            if (ab.b.size() > 1) {
-                V3D_Point bpt = ab.b.get(ab.maxbIndex);
-                points.add(index, bpt);
-                index++;
-                if (!V3D_Line.isCollinear(oom, rm, p0, p1, bpt)) {
+            if (!ab.b.isEmpty()) {
+                if (ab.b.size() > 1) {
+                    V3D_Point bpt = ab.b.get(ab.maxbIndex);
+                    points.add(index, bpt);
+                    index++;
                     V3D_Triangle btr = new V3D_Triangle(p0, p1, bpt, oom, rm);
                     TreeSet<Integer> removeIndexes = new TreeSet<>();
                     for (int i = 0; i < ab.b.size(); i++) {
                         if (btr.isIntersectedBy(ab.b.get(i), oom, rm)) {
                             removeIndexes.add(i);
-                            index--;
+                            //index--;
                         }
                     }
                     Iterator<Integer> ite = removeIndexes.descendingIterator();
                     while (ite.hasNext()) {
                         ab.b.remove(ite.next().intValue());
                     }
-                    if (ab.b.size() > 1) {
-                        // Divide again
-                        V3D_Line l = new V3D_Line(p0, p1, oom, rm);
-                        V3D_Point proj = l.getPointOfIntersection(bpt, oom, rm);
-                        compute(ab.b, bpt, proj, n, index, oom, rm);
-                    } else {
-                        if (ab.b.size() == 1) {
+                    if (!ab.b.isEmpty()) {
+                        if (ab.b.size() > 1) {
+                            // Divide again
+                            V3D_Line l = new V3D_Line(p0, p1, oom, rm);
+                            V3D_Point proj = l.getPointOfIntersection(bpt, oom, rm);
+                            compute(ab.b, bpt, proj, n, index, oom, rm);
+                        } else {
                             points.add(index, ab.b.get(0));
                         }
                     }
-                }
-            } else {
-                if (ab.b.size() == 1) {
+                } else {
                     points.add(index, ab.b.get(0));
                 }
             }
@@ -645,22 +656,24 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
     public class AB {
 
         /**
-         * The points that are above.
+         * The points that are above the plane.
          */
-        public ArrayList<V3D_Point> a;
+        ArrayList<V3D_Point> a;
 
         /**
-         * For storing the index of the point in {@link #a} that is the maximum.
+         * For storing the index of the point in {@link #a} that is the maximum
+         * distance from the plane.
          */
         int maxaIndex;
 
         /**
-         * The points that are below.
+         * The points that are below the plane.
          */
-        public ArrayList<V3D_Point> b;
+        ArrayList<V3D_Point> b;
 
         /**
-         * For storing the index of the point in {@link #b} that is the maximum.
+         * For storing the index of the point in {@link #b} that is the maximum
+         * distance from the plane.
          */
         int maxbIndex;
 
@@ -668,34 +681,42 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
          * Create a new instance.
          *
          * @param pts The points.
-         * @param pl The plane.
+         * @param p0 One end of the line segment dividing the convex hull.
+         * @param p1 One end of the line segment dividing the convex hull.
+         * @param plane The plane.
          * @param oom The Order of Magnitude for the precision.
          * @param rm The RoundingMode for any rounding.
          */
-        public AB(ArrayList<V3D_Point> pts, V3D_Plane pl, int oom, RoundingMode rm) {
-            a = new ArrayList<>();
-            b = new ArrayList<>();
-
-            // Find points not on the plane
-            ArrayList<V3D_Point> ptsnop = new ArrayList<>();
+        public AB(ArrayList<V3D_Point> pts, V3D_Point p0, V3D_Point p1,
+                V3D_Plane plane, int oom, RoundingMode rm) {
+            // Find points above and below the plane.
+            // Points that are not on the plane.
+            ArrayList<V3D_Point> no = new ArrayList<>();
             for (int i = 0; i < pts.size(); i++) {
                 V3D_Point pt = pts.get(i);
-                if (!pl.isIntersectedBy(pt, oom, rm)) {
-                    ptsnop.add(pt);
-//                } else {
-//                    System.out.println("Point on plane: " + pt);
+                if (!plane.isIntersectedBy(pt, oom, rm)) {
+                    no.add(pt);
                 }
             }
+            no = V3D_Point.getUnique(no, oom, rm);
 
-            // Go through points
-            V3D_Point pt0 = ptsnop.get(0);
-            BigRational maxads = pl.getDistanceSquared(pt0, oom, rm);
+            if (no.size() < 1) {
+                int debug = 1;
+            }
+
+            // Go through points that are not on the plane.
+            a = new ArrayList<>();
+            b = new ArrayList<>();
+            V3D_Point pt0 = no.get(0);
+            BigRational maxads = plane.getDistanceSquared(pt0, oom, rm);
             BigRational maxbds = BigRational.ZERO;
             a.add(pt0);
-            for (int i = 1; i < ptsnop.size(); i++) {
-                V3D_Point pt = ptsnop.get(i);
-                BigRational ds = pl.getDistanceSquared(pts.get(i), oom, rm);
-                if (pl.isOnSameSide(pt0, pt, oom, rm)) {
+            maxaIndex = 0;
+            maxbIndex = -1;
+            for (int i = 1; i < no.size(); i++) {
+                V3D_Point pt = no.get(i);
+                BigRational ds = plane.getDistanceSquared(pt, oom, rm);
+                if (plane.isOnSameSide(pt0, pt, oom, rm)) {
                     a.add(pt);
                     if (ds.compareTo(maxads) == 1) {
                         maxads = ds;

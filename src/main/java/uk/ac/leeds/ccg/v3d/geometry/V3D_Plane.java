@@ -412,34 +412,45 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * Find a perpendicular vector using: user65203, How to find perpendicular
-     * vector to another vector?, URL (version: 2020-10-01):
-     * https://math.stackexchange.com/qv/3821978
+     * Find a perpendicular vector.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return A perpendicular vector.
      */
-    public final V3D_Vector getPV() {
-        V3D_Vector pv;
-        V3D_Vector v1 = new V3D_Vector(Math_BigRationalSqrt.ZERO, n.dz, n.dy.negate());
-        V3D_Vector v2 = new V3D_Vector(n.dz.negate(), Math_BigRationalSqrt.ZERO, n.dx);
-        V3D_Vector v3 = new V3D_Vector(n.dy.negate(), n.dx, Math_BigRationalSqrt.ZERO);
-        BigRational mv1 = v1.getMagnitudeSquared();
-        BigRational mv2 = v2.getMagnitudeSquared();
-        BigRational mv3 = v3.getMagnitudeSquared();
-        if (mv1.compareTo(mv2) == 1) {
-            if (mv1.compareTo(mv3) == 1) {
-                pv = v1;
-            } else {
-                pv = v3;
-            }
-        } else {
-            if (mv2.compareTo(mv3) == 1) {
-                pv = v2;
-            } else {
-                pv = v3;
-            }
+    public final V3D_Vector getPV(int oom, RoundingMode rm) {
+//        /**
+//         * Magnitude method adapted from:
+//         * https://math.stackexchange.com/questions/137362/how-to-find-perpendicular-vector-to-another-vector
+//         */
+//        V3D_Vector v1 = new V3D_Vector(Math_BigRationalSqrt.ZERO, n.dz, n.dy.negate());
+//        V3D_Vector v2 = new V3D_Vector(n.dz.negate(), Math_BigRationalSqrt.ZERO, n.dx);
+//        V3D_Vector v3 = new V3D_Vector(n.dy.negate(), n.dx, Math_BigRationalSqrt.ZERO);
+//        BigRational mv1 = v1.getMagnitudeSquared();
+//        BigRational mv2 = v2.getMagnitudeSquared();
+//        BigRational mv3 = v3.getMagnitudeSquared();
+//        if (mv1.compareTo(mv2) == 1) {
+//            if (mv1.compareTo(mv3) == 1) {
+//                return v1;
+//            } else {
+//                return v3;
+//            }
+//        } else {
+//            if (mv2.compareTo(mv3) == 1) {
+//                return v2;
+//            } else {
+//                return v3;
+//            }
+//        }
+        /**
+         * Alternative method adapted from:
+         * https://math.stackexchange.com/questions/137362/how-to-find-perpendicular-vector-to-another-vector
+         */
+        V3D_Vector v = new V3D_Vector(n.dz, n.dz, n.dx.negate().add(n.dy.negate(), oom, rm));
+        if (v.isZero()) {
+            return new V3D_Vector(n.dy.negate().add(n.dz.negate(), oom, rm), n.dx, n.dx);
         }
-        return pv;
+        return v;
     }
 
     /**
@@ -450,7 +461,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return A point on the plane.
      */
     public final V3D_Point getQ(int oom, RoundingMode rm) {
-        return getQ(getPV(), oom, rm);
+        return getQ(getPV(oom, rm), oom, rm);
     }
 
     /**
@@ -473,7 +484,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return A point on the plane.
      */
     public final V3D_Point getR(int oom, RoundingMode rm) {
-        return getR(getPV(), oom, rm);
+        return getR(getPV(oom, rm), oom, rm);
     }
 
     /**
@@ -604,7 +615,10 @@ public class V3D_Plane extends V3D_Geometry {
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         oom -= 2;
         equation = getEquation(oom, rm);
-        return ((equation.coeffs[0].multiply(pt.getX(oom, rm))).add(equation.coeffs[1].multiply(pt.getY(oom, rm))).add(equation.coeffs[2].multiply(pt.getZ(oom, rm))).add(equation.coeffs[3])).compareTo(BigRational.ZERO) == 0;
+        return ((equation.coeffs[0].multiply(pt.getX(oom, rm)))
+                .add(equation.coeffs[1].multiply(pt.getY(oom, rm)))
+                .add(equation.coeffs[2].multiply(pt.getZ(oom, rm)))
+                .add(equation.coeffs[3])).compareTo(BigRational.ZERO) == 0;
     }
 
     /**
@@ -625,7 +639,7 @@ public class V3D_Plane extends V3D_Geometry {
             tpt.translate(V3D_Vector.IJK, oom, rm);
             V3D_Point ttp = new V3D_Point(getP());
             ttp.translate(V3D_Vector.IJK, oom, rm);
-            V3D_Vector pv = getPV();
+            V3D_Vector pv = getPV(oom, rm);
             V3D_Point ttq = getQ(pv, oom, rm);
             ttq.translate(V3D_Vector.IJK, oom, rm);
             V3D_Point ttr = getR(pv, oom, rm);
@@ -648,7 +662,7 @@ public class V3D_Plane extends V3D_Geometry {
             m[3][3] = BigRational.ONE;
             return new Math_Matrix_BR(m).getDeterminant().compareTo(BigRational.ZERO) == 0;
         } else {
-            V3D_Vector pv = getPV();
+            V3D_Vector pv = getPV(oom, rm);
             V3D_Point tq = getQ(pv, oom, rm);
             V3D_Point tr = getR(pv, oom, rm);
             m[0][0] = tp.getX(oom, rm);
@@ -987,7 +1001,7 @@ public class V3D_Plane extends V3D_Geometry {
 //        m[3][2] = r.getZ(oom);
 //        m[3][3] = lp.getZ(oom);
         V3D_Point tp = getP();
-        V3D_Vector pv = getPV();
+        V3D_Vector pv = getPV(oom, rm);
         V3D_Point tq = getQ(pv, oom, rm);
         V3D_Point tr = getR(pv, oom, rm);
         m[1][0] = tp.getX(oomn6, rm);
@@ -1736,7 +1750,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public Math_Matrix_BR getAsMatrix(int oom, RoundingMode rm) {
         V3D_Point tp = getP();
-        V3D_Vector pv = getPV();
+        V3D_Vector pv = getPV(oom, rm);
         V3D_Point tq = getQ(pv, oom, rm);
         V3D_Point tr = getR(pv, oom, rm);
         BigRational[][] m = new BigRational[3][3];

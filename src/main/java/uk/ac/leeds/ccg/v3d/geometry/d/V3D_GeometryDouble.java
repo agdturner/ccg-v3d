@@ -127,7 +127,7 @@ public abstract class V3D_GeometryDouble implements Serializable {
      * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The rotated geometry.
      */
-    public abstract V3D_GeometryDouble rotate(V3D_LineDouble axis, 
+    public abstract V3D_GeometryDouble rotate(V3D_RayDouble axis, 
             double theta, double epsilon);
 
     /**
