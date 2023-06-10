@@ -246,9 +246,9 @@ public class V3D_VectorDouble implements Serializable {
         /**
          * The hashcode cannot be used to speed things up as there is the case
          * of -0.0 == 0.0!
-         */ 
+         */
         //if (hashCode() == v.hashCode()) {
-            return dx == v.dx && dy == v.dy && dz == v.dz;
+        return dx == v.dx && dy == v.dy && dz == v.dz;
         //}
         //return false;
     }
@@ -265,9 +265,9 @@ public class V3D_VectorDouble implements Serializable {
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
     public boolean equals(V3D_VectorDouble v, double epsilon) {
-        return Math_Double.equals(dx, v.dx, epsilon) &&
-               Math_Double.equals(dy, v.dy, epsilon) &&
-               Math_Double.equals(dz, v.dz, epsilon);                
+        return Math_Double.equals(dx, v.dx, epsilon)
+                && Math_Double.equals(dy, v.dy, epsilon)
+                && Math_Double.equals(dz, v.dz, epsilon);
 //        return dx <= v.dx + epsilon && dx >= v.dx - epsilon
 //                && dy <= v.dy + epsilon && dy >= v.dy - epsilon
 //                && dz <= v.dz + epsilon && dz >= v.dz - epsilon;
@@ -349,6 +349,19 @@ public class V3D_VectorDouble implements Serializable {
      * @return dot product
      */
     public double getDotProduct(V3D_VectorDouble v) {
+        return getDotProduct0(v);
+        //return this.getUnitVector().getDotProduct0(v.getUnitVector());
+        //return dx * v.dx + dy * v.dy + dz * v.dz;
+    }
+    
+    /**
+     * Calculate and return the
+     * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
+     *
+     * @param v V3D_Vector
+     * @return dot product
+     */
+    public double getDotProduct0(V3D_VectorDouble v) {
         return dx * v.dx + dy * v.dy + dz * v.dz;
     }
 
@@ -361,11 +374,14 @@ public class V3D_VectorDouble implements Serializable {
      * @return {@code true} if this and {@code v} are orthogonal.
      */
     public boolean isOrthogonal(V3D_VectorDouble v, double epsilon) {
-        // Special case
-        if (isScalarMultiple(v, epsilon)) {
-            return false;
-        }
-        return getDotProduct(v) == 0d;
+//        // Special case
+//        if (isScalarMultiple(v, epsilon)) {
+//            return false;
+//        }
+        //return getDotProduct(v) == 0d;
+        double dp = getDotProduct(v);
+        return Math_Double.equals(dp, 0d, epsilon);
+        //return Math.abs(getDotProduct(v)) < epsilon;
     }
 
     /**
@@ -394,60 +410,110 @@ public class V3D_VectorDouble implements Serializable {
         if (equals(v, epsilon)) {
             return true;
         } else {
-            // Special case
-            if (isZero(epsilon)) {
+            // Special cases
+            boolean isZero = isZero(epsilon);
+            boolean visZero = v.isZero(epsilon);
+            if (isZero) {
                 /**
-                 * Can't multiply the zero vector by a scalar to get a non-zero 
+                 * Can't multiply the zero vector by a scalar to get a non-zero
                  * vector.
                  */
-                return false;
-            }                    
-            if (v.isZero(epsilon)) {
+                return visZero;
+            }
+            if (visZero) {
                 /**
-                 * Already tested that this is not equal to v, so the scalar is 
+                 * Already tested that this is not equal to v, so the scalar is
                  * zero.
                  */
                 return true;
             }
-            if (Math_Double.equals(v.dx, dx, epsilon)) {
-                // dx = v.dx
+            /**
+             * General case: A little complicated as there is a need to deal
+             * with zero vector components and cases where the vectors point in
+             * different directions.
+             */
+            if (Math_Double.equals(Math.abs(v.dx), Math.abs(dx), epsilon)) {
+                // |dx| = |v.dx|
                 if (Math_Double.equals(v.dx, 0d, epsilon)) {
                     // dx = v.dx = 0d
-                    if (Math_Double.equals(v.dy, dy, epsilon)) {
+                    if (Math_Double.equals(Math.abs(v.dy), Math.abs(dy), epsilon)) {
                         if (Math_Double.equals(v.dy, 0d, epsilon)) {
-                            return !Math_Double.equals(dz, 0d, epsilon);
+                            return true;
+                        } else {
+                            if (Math_Double.equals(Math.abs(v.dz), Math.abs(dz), epsilon)) {
+//                                    if (Math_Double.equals(v.dz, 0d, epsilon)) { 
+//                                        // This should not happen as it is already tested for. Commented code left for clarity.
+//                                        return true;
+//                                    } else {
+                                double scalar = v.dy / dy;
+                                return Math_Double.equals(v.dz, dz * scalar, epsilon);
+//                                    }
+                            } else {
+                                return false;
+                            }
                         }
                     } else {
-                        if (Math_Double.equals(dy, 0d, epsilon)) {
-                            return Math_Double.equals(dz, 0d, epsilon);
+                        if (Math_Double.equals(v.dy, 0d, epsilon)) {
+                            return Math_Double.equals(v.dz, 0d, epsilon);
                         } else {
-                            double scalar = v.dy / dy;
-                            return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                            if (Math_Double.equals(Math.abs(v.dz), Math.abs(dz), epsilon)) {
+                                if (Math_Double.equals(v.dz, 0d, epsilon)) {
+                                    return true;
+                                } else {
+                                    double scalar = v.dy / dy;
+                                    return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                                }
+                            } else {
+                                double scalar = v.dy / dy;
+                                return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                            }
                         }
                     }
                 } else {
-                    // dx != 0
-                    // v.dx != 0
-                    double scalar = v.dx / dx;
-                    if (Math_Double.equals(v.dy, dy * scalar, epsilon)) {
-                        return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                    // |dx| = |v.dx| != 0d
+                    if (Math_Double.equals(Math.abs(v.dy), Math.abs(dy), epsilon)) {
+                        if (Math_Double.equals(v.dy, 0d, epsilon)) {
+                            if (Math_Double.equals(Math.abs(v.dz), Math.abs(dz), epsilon)) {
+                                if (Math_Double.equals(v.dz, 0d, epsilon)) {
+                                    return true;
+                                } else {
+                                    double scalar = v.dx / dx;
+                                    return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                                }
+                            } else {
+                                double scalar = v.dx / dx;
+                                return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                            }
+                        } else {
+                            double scalar = v.dx / dx;
+                            if (Math_Double.equals(v.dy, dy * scalar, epsilon)) {
+                                if (Math_Double.equals(Math.abs(v.dz), Math.abs(dz), epsilon)) {
+                                    if (Math_Double.equals(v.dz, 0d, epsilon)) {
+                                        return true;
+                                    } else {
+                                        return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                                    }
+                                } else {
+                                    return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                                }
+                            } else {
+                                return false;
+                            }
+                        }
                     } else {
-                        return false;
+                        // |dx| = |v.dx| != 0d, |dy| != |v.dy|
+                        double scalar = v.dx / dx;
+                        if (Math_Double.equals(v.dy, dy * scalar, epsilon)) {
+                            return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                        } else {
+                            return false;
+                        }
                     }
                 }
             } else {
-                // dx != v.dx
+                // |dx| != |v.dx|
                 if (Math_Double.equals(dx, 0d, epsilon)) {
-                    return false;
-//                    if (v.dy == 0d) {
-//                        return false;
-//                    } else {
-//                        if (v.dz == 0d) {
-//                            return false;
-//                        } else {
-//                            return true;
-//                        }
-//                    }                    
+                    return isZero;
                 } else {
                     double scalar = v.dx / dx;
                     if (Math_Double.equals(v.dy, dy * scalar, epsilon)) {
@@ -457,7 +523,6 @@ public class V3D_VectorDouble implements Serializable {
                     }
                 }
             }
-            return false;
         }
     }
 
@@ -495,8 +560,8 @@ public class V3D_VectorDouble implements Serializable {
         theta = V3D_AngleDouble.normalise(theta);
         if (theta == 0d) {
             return new V3D_VectorDouble(this);
-        }
-        if (theta > 0) {
+        } else {
+            //if (theta > 0) {
             double thetaDiv2 = theta / 2.0d;
             double sinThetaDiv2 = Math.sin(thetaDiv2);
             double w = Math.cos(thetaDiv2);
@@ -510,8 +575,9 @@ public class V3D_VectorDouble implements Serializable {
             // P'=pP
             Math_Quaternion_Double pP = r.multiply(p).multiply(rR);
             return new V3D_VectorDouble(pP.x, pP.y, pP.z);
+            //}
+            //return new V3D_VectorDouble(this);
         }
-        return new V3D_VectorDouble(this);
     }
 
     /**
@@ -524,6 +590,15 @@ public class V3D_VectorDouble implements Serializable {
      * @return V3D_Vector
      */
     public V3D_VectorDouble getCrossProduct(V3D_VectorDouble v) {
+        return getCrossProduct0(v);
+        //return this.getUnitVector().getCrossProduct0(v.getUnitVector());
+//        return new V3D_VectorDouble(
+//                dy * v.dz - dz * v.dy,
+//                dz * v.dx - dx * v.dz,
+//                dx * v.dy - dy * v.dx);
+    }
+    
+    public V3D_VectorDouble getCrossProduct0(V3D_VectorDouble v) {
         return new V3D_VectorDouble(
                 dy * v.dz - dz * v.dy,
                 dz * v.dx - dx * v.dz,

@@ -376,7 +376,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
             cp = v.getCrossProduct(ppt);
         }
         //return cp.dx == 0d && cp.dy == 0d && cp.dz == 0d;
-        return Math.abs(cp.dx) < epsilon && Math.abs(cp.dy) < epsilon && Math.abs(cp.dz) < epsilon;
+        return Math.abs(cp.dx) <= epsilon && Math.abs(cp.dy) <= epsilon && Math.abs(cp.dz) <= epsilon;
     }
 
     /**
@@ -857,7 +857,12 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
             return pt;
         }
         V3D_PlaneDouble ptv = new V3D_PlaneDouble(pt, v);
-        return (V3D_PointDouble) ptv.getIntersection(this, epsilon);
+        V3D_GeometryDouble i = ptv.getIntersection(this, epsilon);
+        if (i instanceof V3D_LineDouble) { 
+            return pt;
+        } else {
+            return (V3D_PointDouble) i;
+        }
     }
 
     /**
@@ -1022,12 +1027,12 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
             /**
              * Calculate the delta from {@link #p} and l.p
              */
-            V3D_VectorDouble delta = l.getP().getVector().subtract(
-                    new V3D_VectorDouble(tp));
+            V3D_VectorDouble delta = l.getP().getVector().subtract(tp.getVector());
             double m = cp.getMagnitudeSquared();
             double dp = cp.getDotProduct(delta);
             // m should only be zero if the lines are parallel.
-            return Math.abs(dp * dp / m);
+            //return Math.abs(dp * dp / m);
+            return dp * dp / m;
         }
     }
 

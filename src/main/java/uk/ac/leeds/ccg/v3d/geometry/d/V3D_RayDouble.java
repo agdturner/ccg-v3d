@@ -138,7 +138,15 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
      * @return {@code true} iff {@code r} is the same as {@code this}.
      */
     public boolean equals(V3D_RayDouble r, double epsilon) {
-        return l.getP().equals(r.l.getP()) && l.v.isScalarMultiple(r.l.v, epsilon);
+        if (l.getP().equals(r.l.getP())) {
+            if (l.v.getDirection() == r.l.v.getDirection()) {
+                return l.v.isScalarMultiple(r.l.v, epsilon);
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     @Override

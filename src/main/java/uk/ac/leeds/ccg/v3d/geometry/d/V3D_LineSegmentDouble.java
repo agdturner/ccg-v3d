@@ -561,9 +561,9 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
         V3D_PointDouble lq = ls.getQ();
         V3D_PointDouble tp = getP();
         V3D_PointDouble tq = getQ();
-        if (this.isIntersectedBy(lp, epsilon)) {
+        if (isIntersectedBy(lp, epsilon)) {
             // Cases: 1, 2, 3, 5, 8, 9, 10, 12, 17, 19, 20, 21, 24, 26, 27, 28
-            if (this.isIntersectedBy(lq, epsilon)) {
+            if (isIntersectedBy(lq, epsilon)) {
                 // Cases: 3, 5, 10, 12, 17, 19, 24, 26
                 return ls;
             } else {
@@ -590,7 +590,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
             }
         } else {
             // Cases: 4, 6, 7, 11, 13, 14, 15, 16, 18, 22, 23, 25
-            if (this.isIntersectedBy(lq, epsilon)) {
+            if (isIntersectedBy(lq, epsilon)) {
                 // Cases: 6, 7, 13, 14, 15, 16, 22, 23
                 if (ls.isIntersectedBy(tp, epsilon)) {
                     // Cases: 6, 7, 22, 23

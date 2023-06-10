@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 //import java.util.ArrayList;
 
@@ -87,7 +86,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      */
     public V3D_ConvexHullCoplanarDouble(double epsilon,
             V3D_TriangleDouble... triangles) {
-        this(triangles[0].getPl(epsilon).n, epsilon,
+        this(triangles[0].pl.n, epsilon,
                 V3D_TriangleDouble.getPoints(triangles));
     }
 
@@ -254,7 +253,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      * @param gs The input convex hulls.
      */
     public V3D_ConvexHullCoplanarDouble(double epsilon, V3D_ConvexHullCoplanarDouble... gs) {
-        this(gs[0].triangles.get(0).getPl(epsilon).n, epsilon, V3D_FiniteGeometryDouble.getPoints(gs));
+        this(gs[0].triangles.get(0).pl.n, epsilon, V3D_FiniteGeometryDouble.getPoints(gs));
     }
 
     /**
@@ -268,7 +267,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      */
     public V3D_ConvexHullCoplanarDouble(V3D_ConvexHullCoplanarDouble ch,
             V3D_TriangleDouble t, double epsilon) {
-        this(ch.triangles.get(0).getPl(epsilon).n, epsilon, V3D_FiniteGeometryDouble.getPoints(ch, t));
+        this(ch.triangles.get(0).pl.n, epsilon, V3D_FiniteGeometryDouble.getPoints(ch, t));
     }
 
     @Override
@@ -421,7 +420,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         // Check envelopes intersect.
         if (getEnvelope().isIntersectedBy(pt)) {
             // Check point is on the plane. 
-            if (triangles.get(0).getPl(epsilon).isIntersectedBy(pt, epsilon)) {
+            if (triangles.get(0).pl.isIntersectedBy(pt, epsilon)) {
                 // Check point is in a triangle
                 for (var t : triangles) {
                     //if (t.isIntersectedBy(pt, epsilon)) {
@@ -503,7 +502,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_PlaneDouble p,
             double epsilon) {
-        if (triangles.get(0).getPl(epsilon).equalsIgnoreOrientation(p, epsilon)) {
+        if (triangles.get(0).pl.equalsIgnoreOrientation(p, epsilon)) {
             return this;
         }
         ArrayList<V3D_PointDouble> pts = new ArrayList<>();
@@ -546,7 +545,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         if (tsu.isEmpty()) {
             return null;
         } else {
-            return new V3D_ConvexHullCoplanarDouble(t.getPl(epsilon).n, epsilon,
+            return new V3D_ConvexHullCoplanarDouble(t.pl.n, epsilon,
                     tsu.toArray(V3D_PointDouble[]::new)).simplify(epsilon);
         }
 //        switch (size) {
@@ -723,10 +722,10 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             maxaIndex = 0;
             if (a.size() > 1) {
                 V3D_PointDouble pt0 = a.get(0);
-                double maxds = pl.getDistanceSquared(pt0);
+                double maxds = pl.getDistanceSquared(pt0, epsilon);
                 for (int i = 1; i < a.size(); i++) {
                     V3D_PointDouble pt = a.get(i);
-                    double ds = pl.getDistanceSquared(pt);
+                    double ds = pl.getDistanceSquared(pt, epsilon);
                     if (ds > maxds) {
                         maxds = ds;
                         maxaIndex = i;
@@ -737,10 +736,10 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             maxbIndex = 0;
             if (b.size() > 1) {
                 V3D_PointDouble pt0 = b.get(0);
-                double maxds = pl.getDistanceSquared(pt0);
+                double maxds = pl.getDistanceSquared(pt0, epsilon);
                 for (int i = 1; i < b.size(); i++) {
                     V3D_PointDouble pt = b.get(i);
-                    double ds = pl.getDistanceSquared(pt);
+                    double ds = pl.getDistanceSquared(pt, epsilon);
                     if (ds > maxds) {
                         maxds = ds;
                         maxbIndex = i;
@@ -845,7 +844,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         V3D_PointDouble tp = t.getP();
         V3D_PointDouble tq = t.getQ();
         V3D_PointDouble tr = t.getR();
-        V3D_VectorDouble n = t.getPl(epsilon).n;
+        V3D_VectorDouble n = t.pl.n;
         V3D_PointDouble pp = new V3D_PointDouble(tp.offset.add(n), tp.rel);
         V3D_PlaneDouble ppl = new V3D_PlaneDouble(tp, tq, pp);
         V3D_PointDouble qp = new V3D_PointDouble(tq.offset.add(n), tq.rel);

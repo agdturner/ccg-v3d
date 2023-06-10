@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_Double;
 
 /**
@@ -188,6 +187,9 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         super(new V3D_VectorDouble(p.offset));
         this.p = new V3D_VectorDouble(p.rel);
         this.n = new V3D_VectorDouble(n);
+        if (n.isZero()) {
+            throw new RuntimeException("Zero Normal!");
+        }
     }
 
     /**
@@ -198,9 +200,13 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * vector of the line of l.
      */
     public V3D_PlaneDouble(V3D_LineSegmentDouble l, V3D_VectorDouble inplane) {
-        super(new V3D_VectorDouble(l.offset));
-        this.p = new V3D_VectorDouble(l.getP().rel);
-        this.n = l.l.v.getCrossProduct(inplane);
+        this(l.getP(), l.l.v.getCrossProduct(inplane));
+//        super(new V3D_VectorDouble(l.offset));
+//        p = new V3D_VectorDouble(l.getP().rel);
+//        n = l.l.v.getCrossProduct(inplane);
+//        if (n.isZero()) {
+//            throw new RuntimeException("Zero Normal!");
+//        }
     }
 
     /**
@@ -232,11 +238,10 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * and not equal to pl or r.
      * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
      * and not equal to pl or qv.
-     * @param epsilon Used to check vectors are not scalar multiples.
      */
     public V3D_PlaneDouble(V3D_VectorDouble p, V3D_VectorDouble q,
-            V3D_VectorDouble r, double epsilon) {
-        this(V3D_VectorDouble.ZERO, p, q, r, epsilon);
+            V3D_VectorDouble r) {
+        this(V3D_VectorDouble.ZERO, p, q, r);
     }
 
     /**
@@ -246,12 +251,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @param p Used to initialise {@link #p}.
      * @param q Coplanar but not collinear to both p and r.
      * @param r Coplanar but not collinear to both p and q.
-     * @param epsilon Used to check vectors are not scalar multiples.
      */
     public V3D_PlaneDouble(V3D_VectorDouble offset, V3D_VectorDouble p,
-            V3D_VectorDouble q, V3D_VectorDouble r, double epsilon) {
+            V3D_VectorDouble q, V3D_VectorDouble r) {
         //this(p, offset, p, q, r, epsilon);
-        this(q.subtract(p).getCrossProduct(r.subtract(q)), offset, p, q, r, epsilon);
+        this(q.subtract(p).getCrossProduct(r.subtract(q)), offset, p, q, r);
         //this(q.subtract(p).getCrossProduct(q.subtract(r)), offset, p, q, r, epsilon);
     }
 
@@ -269,8 +273,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * equal.
      */
     public V3D_PlaneDouble(V3D_VectorDouble ptv, V3D_VectorDouble offset,
-            V3D_VectorDouble p, V3D_VectorDouble q, V3D_VectorDouble r,
-            double epsilon) {
+            V3D_VectorDouble p, V3D_VectorDouble q, V3D_VectorDouble r) {
         super(new V3D_VectorDouble(offset));
         V3D_VectorDouble pq = q.subtract(p);
         if (pq.equals(V3D_VectorDouble.ZERO)) {
@@ -283,10 +286,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         this.p = new V3D_VectorDouble(p);
         this.n = pq.getCrossProduct(qr);
         if (n.isZero()) {
-
-            qr.isScalarMultiple(pq, epsilon);
-            pq.isScalarMultiple(qr, epsilon);
-
+            //qr.isScalarMultiple(pq, epsilon);
+            //pq.isScalarMultiple(qr, epsilon);
             throw new RuntimeException("Points do not define a plane");
         }
         V3D_VectorDouble v;
@@ -315,9 +316,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * equal.
      */
     public V3D_PlaneDouble(V3D_PointDouble pt, V3D_VectorDouble offset,
-            V3D_VectorDouble p, V3D_VectorDouble q, V3D_VectorDouble r,
-            double epsilon) {
-        this(pt.getVector(), offset, p, q, r, epsilon);
+            V3D_VectorDouble p, V3D_VectorDouble q, V3D_VectorDouble r) {
+        this(pt.getVector(), offset, p, q, r);
     }
 
     /**
@@ -653,6 +653,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         double c = (equation.coeffs[0] * pt.getX() + equation.coeffs[1] * pt.getY()
                 + equation.coeffs[2] * pt.getZ() + equation.coeffs[3]);
         return Math.abs(c) <= epsilon;
+        //return c == 0d;
     }
 
     /**
@@ -993,7 +994,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @return The V3D_Geometry.
      */
     public V3D_GeometryDouble getIntersection(V3D_LineDouble l, double epsilon) {
-        if (isParallel(l, epsilon)) {
+        //if (isParallel(l, epsilon)) {
+        if (isParallel(l, 0d)) {
             if (isOnPlane(l, epsilon)) {
                 return l;
             } else {
@@ -1064,11 +1066,13 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         m[3][3] = lv.dz;
         Math_Matrix_Double denm = new Math_Matrix_Double(m);
         double t;
-        if (Math.abs(denm.getDeterminant()) < epsilon
-                && Math.abs(numm.getDeterminant()) < epsilon) {
+        double denmdet = denm.getDeterminant();
+        double nummdet = numm.getDeterminant();
+        //if (Math.abs(denmdet) <= epsilon && Math.abs(nummdet) <= epsilon) {
+        if (denm.getDeterminant() == 0d && nummdet == 0d) {
             t = 1;
         } else {
-            t = -numm.getDeterminant() / denm.getDeterminant();
+            t = -nummdet / denmdet;
         }
         V3D_PointDouble res = new V3D_PointDouble(
                 lp.getX() + (lv.dx * (t)),
@@ -1127,26 +1131,26 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         /**
          * Check special cases.
          */
-        if (v.isZero()) {
+        //if (v.isZero()) {
+        if (v.isZero(epsilon)) {
             // The planes are parallel.
             if (pl.isIntersectedBy(getP(), epsilon)) {
                 // The planes are the same.
                 return this;
+            } else {
+                return null;
             }
-//            if (pl.equalsIgnoreOrientation(this)) {
-//                // The planes are the same.
-//                return this;
-//            }
-            // There is no intersection.
-            return null;
         }
-//        // Debugging code.
-//        try {
-//            V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
-//        } catch (RuntimeException e) {
-//            V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
-//        }
         V3D_PointDouble pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
+
+        // Debugging code
+        if (pi == null) {
+            pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
+            pi = pl.getPointOfProjectedIntersection(getP(), epsilon/10d);
+            pi = pl.getPointOfProjectedIntersection(getP(), epsilon/100d);
+            pi = pl.getPointOfProjectedIntersection(getP(), epsilon/1000d);
+        }
+        
         return new V3D_LineDouble(pi, v);
     }
 
@@ -1197,8 +1201,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         if (n.isOrthogonal(l.v, epsilon)) {
             return true;
         }
-        return Math_Double.equals(n.getDotProduct(l.v), 0d, epsilon);
-        //return n.getDotProduct(l.v) == 0d;
+        //return Math_Double.equals(n.getDotProduct(l.v), 0d, epsilon);
+        return n.getDotProduct(l.v) == 0d;
     }
 
     /**
@@ -1212,8 +1216,11 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
     public boolean equals(V3D_PlaneDouble pl, double epsilon) {
-        if (n.getDotProduct(pl.n) > 0d) {
-            return equalsIgnoreOrientation(pl, epsilon);
+        if (n.getDirection() == pl.n.getDirection()) {
+//            if (n.isScalarMultiple(pl.n, epsilon))
+//            if (n.getDotProduct(pl.n) > 0d) {
+                return equalsIgnoreOrientationNoNormalCheck(pl, epsilon);
+//            }
         }
         return false;
     }
@@ -1229,12 +1236,18 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      */
     public boolean equalsIgnoreOrientation(V3D_PlaneDouble pl, double epsilon) {
         if (n.isScalarMultiple(pl.n, epsilon)) {
+            return equalsIgnoreOrientationNoNormalCheck(pl, epsilon);
+        }
+        return false;
+    }
+    
+    private boolean equalsIgnoreOrientationNoNormalCheck(V3D_PlaneDouble pl, 
+            double epsilon) {
             if (pl.isIntersectedBy(getP(), epsilon)) {
                 if (this.isIntersectedBy(pl.getP(), epsilon)) {
                     return true;
                 }
             }
-        }
         return false;
     }
 
@@ -1275,8 +1288,12 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @param pt A point.
      * @return The distance from {@code this} to {@code pl}.
      */
-    public double getDistanceSquared(V3D_PointDouble pt) {
-        return getDistanceSquared(pt, true);
+    public double getDistanceSquared(V3D_PointDouble pt, double epsilon) {
+        if (this.isIntersectedBy(pt, epsilon)) {
+            return 0d;
+        } else {
+            return getDistanceSquared(pt, true);
+        }
     }
 
     /**
@@ -1317,7 +1334,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      */
     public double getDistanceSquared(V3D_PlaneDouble pl, double epsilon) {
         if (isParallel(pl, epsilon)) {
-            return pl.getDistanceSquared(getP());
+            return pl.getDistanceSquared(getP(), epsilon);
         }
         return 0d;
     }
@@ -1348,8 +1365,8 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @param l A line segment.
      * @return The minimum distance to {@code l}.
      */
-    public double getDistance(V3D_LineSegmentDouble l) {
-        return Math.sqrt(getDistanceSquared(l));
+    public double getDistance(V3D_LineSegmentDouble l, double epsilon) {
+        return Math.sqrt(getDistanceSquared(l, epsilon));
     }
 
     /**
@@ -1358,9 +1375,9 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
      * @param l A line segment.
      * @return The minimum distance to {@code l}.
      */
-    public double getDistanceSquared(V3D_LineSegmentDouble l) {
-        double lpd = getDistanceSquared(l.getP());
-        double lqd = getDistanceSquared(l.getQ());
+    public double getDistanceSquared(V3D_LineSegmentDouble l, double epsilon) {
+        double lpd = getDistanceSquared(l.getP(), epsilon);
+        double lqd = getDistanceSquared(l.getQ(), epsilon);
         return Math.min(lpd, lqd);
     }
 

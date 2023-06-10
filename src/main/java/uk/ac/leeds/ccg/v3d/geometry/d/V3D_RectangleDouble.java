@@ -61,37 +61,47 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     /**
      * For storing a triangle that makes up the rectangle.
      */
-    protected V3D_TriangleDouble pqr;
+    public final V3D_TriangleDouble pqr;
 
     /**
      * For storing a triangle that makes up half the rectangle.
      */
-    protected V3D_TriangleDouble rsp;
+    public final V3D_TriangleDouble rsp;
 
     /**
      * For storing the convex hull
      */
     protected V3D_ConvexHullCoplanarDouble convexHull;
 
-    /**
-     * @return {@link #rsp} initialising it first if it is {@code null}.
-     */
-    public V3D_TriangleDouble getRSP() {
-        if (rsp == null) {
-            rsp = new V3D_TriangleDouble(offset, r, s, p);
-        }
-        return rsp;
-    }
+//    /**
+//     * @return {@link #rsp} initialising it first if it is {@code null}.
+//     */
+//    public V3D_TriangleDouble getRSP() {
+//        if (rsp == null) {
+//            rsp = new V3D_TriangleDouble(offset, r, s, p);
+//        }
+//        return rsp;
+//    }
 
-    /**
-     * @return {@link #pqr} initialising it first if it is {@code null}.
-     */
-    public V3D_TriangleDouble getPQR() {
-        if (pqr == null) {
-            pqr = new V3D_TriangleDouble(offset, p, q, r);
-        }
-        return pqr;
-    }
+//    /**
+//     * @return {@link #rsp} initialising it first if it is {@code null}.
+//     */
+//    public V3D_TriangleDouble getRSP(V3D_PlaneDouble pl) {
+//        if (rsp == null) {
+//            rsp = new V3D_TriangleDouble(pl, offset, r, s, p);
+//        }
+//        return rsp;
+//    }
+//
+//    /**
+//     * @return {@link #pqr} initialising it first if it is {@code null}.
+//     */
+//    public V3D_TriangleDouble getPQR(V3D_PlaneDouble pl) {
+//        if (pqr == null) {
+//            pqr = new V3D_TriangleDouble(pl, offset, p, q, r);
+//        }
+//        return pqr;
+//    }
 
     /**
      * Create a new instance.
@@ -111,6 +121,9 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
         this.q = q;
         this.r = r;
         this.s = s;
+        V3D_PlaneDouble pl = new V3D_PlaneDouble(offset, p, q, r);
+        rsp = new V3D_TriangleDouble(pl, this.offset, this.r, this.s, this.p);
+        pqr = new V3D_TriangleDouble(pl, this.offset, this.p, this.q, this.r);
     }
 
     /**
@@ -121,8 +134,22 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      * @param r Used to initialise {@link #r}.
      * @param s Used to initialise {@link #s}.
      */
-    public V3D_RectangleDouble(V3D_PointDouble p, V3D_PointDouble q,
+    public V3D_RectangleDouble(V3D_PointDouble p, V3D_PointDouble q, 
             V3D_PointDouble r, V3D_PointDouble s) {
+        this(new V3D_PlaneDouble(p, q, r), p, q, r, s);
+    }
+    
+    /**
+     * Creates a new instance
+     *
+     * @param pl Used to initialise the planes.
+     * @param p Used to initialise {@link #offset} and {@link #p}.
+     * @param q Used to initialise {@link #q}.
+     * @param r Used to initialise {@link #r}.
+     * @param s Used to initialise {@link #s}.
+     */
+    public V3D_RectangleDouble(V3D_PlaneDouble pl, V3D_PointDouble p, 
+            V3D_PointDouble q, V3D_PointDouble r, V3D_PointDouble s) {
         super(p.offset);
         this.p = p.rel;
         V3D_PointDouble qn = new V3D_PointDouble(q);
@@ -134,6 +161,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
         V3D_PointDouble sn = new V3D_PointDouble(s);
         sn.setOffset(p.offset);
         this.s = sn.rel;
+        rsp = new V3D_TriangleDouble(pl, this.offset, this.r, this.s, this.p);
+        pqr = new V3D_TriangleDouble(pl, this.offset, this.p, this.q, this.r);
     }
 
     @Override
@@ -210,8 +239,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     @Override
     public V3D_EnvelopeDouble getEnvelope() {
         if (en == null) {
-            rsp = getRSP();
-            en = getPQR().getEnvelope().union(getRSP().getEnvelope());
+            en = rsp.getEnvelope().union(pqr.getEnvelope());
         }
         return en;
     }
@@ -223,10 +251,10 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      * @return A point or line segment.
      */
     public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
-        if (getPQR().isIntersectedBy(pt, epsilon)) {
+        if (pqr.isIntersectedBy(pt, epsilon)) {
             return true;
         } else {
-            return getRSP().isIntersectedBy(pt, epsilon);
+            return rsp.isIntersectedBy(pt, epsilon);
         }
     }
 
@@ -251,8 +279,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      * equal.
      * @return The plane of the rectangle from {@link #getPQR()}.
      */
-    public V3D_PlaneDouble getPlane(double epsilon) {
-        return getPQR().getPl(epsilon);
+    public V3D_PlaneDouble getPlane() {
+        return pqr.pl;
     }
 
 //    @Override
@@ -373,9 +401,9 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_LineDouble l,
             double epsilon) {
-        if (getPlane(epsilon).getIntersection(l, epsilon) != null) {
-            V3D_FiniteGeometryDouble i1 = getPQR().getIntersection(l, epsilon);
-            V3D_FiniteGeometryDouble i2 = getRSP().getIntersection(l, epsilon);
+        if (getPlane().getIntersection(l, epsilon) != null) {
+            V3D_FiniteGeometryDouble i1 = pqr.getIntersection(l, epsilon);
+            V3D_FiniteGeometryDouble i2 = rsp.getIntersection(l, epsilon);
             if (i1 == null) {
                 if (i2 == null) {
                     return null;
@@ -603,8 +631,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble l,
             double epsilon) {
-        V3D_FiniteGeometryDouble i1 = getPQR().getIntersection(l, epsilon);
-        V3D_FiniteGeometryDouble i2 = getRSP().getIntersection(l, epsilon);
+        V3D_FiniteGeometryDouble i1 = pqr.getIntersection(l, epsilon);
+        V3D_FiniteGeometryDouble i2 = rsp.getIntersection(l, epsilon);
         if (i1 == null) {
             return i2;
         } else {
@@ -667,13 +695,11 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
 
     @Override
     public double getPerimeter() {
-        pqr = getPQR();
         return (pqr.getPQ().getLength() + pqr.getQR().getLength()) * 2d;
     }
 
     @Override
     public double getArea() {
-        pqr = getPQR();
         return pqr.getPQ().getLength() * pqr.getQR().getLength();
     }
 
@@ -698,13 +724,13 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      * @return The distance squared to {@code p}.
      */
     public double getDistanceSquared(V3D_PointDouble pt, double epsilon) {
-        double d1 = getPQR().getDistanceSquared(pt, epsilon);
-        double d2 = getRSP().getDistanceSquared(pt, epsilon);
+        double d1 = pqr.getDistanceSquared(pt, epsilon);
+        double d2 = rsp.getDistanceSquared(pt, epsilon);
         return Math.min(d1, d2);
     }
 
     /**
-     * Change {@link #offset} without changing the overall line.
+     * Change {@link #offset} without changing the overall rectangle.
      *
      * @param offset What {@link #offset} is set to.
      */
@@ -713,8 +739,6 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
         q = q.add(offset).subtract(this.offset);
         r = r.add(offset).subtract(this.offset);
         s = s.add(offset).subtract(this.offset);
-        pqr = null;
-        rsp = null;
         convexHull = null;
     }
 
@@ -726,8 +750,6 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     @Override
     public void translate(V3D_VectorDouble v) {
         super.translate(v);
-        this.pqr = null;
-        this.rsp = null;
         convexHull = null;
     }
 
@@ -751,14 +773,14 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_PlaneDouble pl,
             double epsilon) {
-        V3D_FiniteGeometryDouble pqri = getPQR().getIntersection(pl, epsilon);
+        V3D_FiniteGeometryDouble pqri = pqr.getIntersection(pl, epsilon);
         if (pqri == null) {
-            return getRSP().getIntersection(pl, epsilon);
+            return rsp.getIntersection(pl, epsilon);
         } else {
             if (pqri instanceof V3D_TriangleDouble) {
                 return this;
             }
-            V3D_FiniteGeometryDouble rspi = getRSP().getIntersection(pl, epsilon);
+            V3D_FiniteGeometryDouble rspi = rsp.getIntersection(pl, epsilon);
             if (rspi == null) {
                 return pqri;
             }
@@ -780,15 +802,15 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     public V3D_FiniteGeometryDouble getIntersection(V3D_TriangleDouble t,
             double epsilon) {
         // Test if all points of t are on the same side of this.
-        if (this.getPlane(epsilon).allOnSameSideNotOn(t.getPoints(), epsilon)) {
+        if (this.getPlane().allOnSameSideNotOn(t.getPoints(), epsilon)) {
             return null;
         } else {
             // Test if all points of this are on the same side of t.
-            if (t.getPl(epsilon).allOnSameSideNotOn(getPoints(), epsilon)) {
+            if (t.pl.allOnSameSideNotOn(getPoints(), epsilon)) {
                 return null;
             }
         }
-        V3D_FiniteGeometryDouble pqrit = getPQR().getIntersection(t, epsilon);
+        V3D_FiniteGeometryDouble pqrit = pqr.getIntersection(t, epsilon);
 
         // Debug.
         if (pqrit != null) {
@@ -797,13 +819,13 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
                 Double d = li.getQ().getX();
                 if (d.isNaN()) {
                     int debug = 1;
-                    getPQR().getIntersection(t, epsilon);
-                    getPQR().getIntersection(t, epsilon);
+                    pqr.getIntersection(t, epsilon);
+                    pqr.getIntersection(t, epsilon);
                 }
             }
         }
 
-        V3D_FiniteGeometryDouble rspit = getRSP().getIntersection(t, epsilon);
+        V3D_FiniteGeometryDouble rspit = rsp.getIntersection(t, epsilon);
 
         // Debug.
         if (rspit != null) {
@@ -812,8 +834,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
                 Double d = li.getQ().getX();
                 if (d.isNaN()) {
                     int debug = 1;
-                    getRSP().getIntersection(t, epsilon);
-                    getRSP().getIntersection(t, epsilon);
+                    rsp.getIntersection(t, epsilon);
+                    rsp.getIntersection(t, epsilon);
                 }
             }
         }
@@ -856,8 +878,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_RayDouble r,
             double epsilon) {
-        V3D_FiniteGeometryDouble gpqr = getPQR().getIntersection(r, epsilon);
-        V3D_FiniteGeometryDouble grsp = getRSP().getIntersection(r, epsilon);
+        V3D_FiniteGeometryDouble gpqr = pqr.getIntersection(r, epsilon);
+        V3D_FiniteGeometryDouble grsp = rsp.getIntersection(r, epsilon);
         if (gpqr == null) {
             return grsp;
         } else {
@@ -890,8 +912,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      */
     public double getDistanceSquared(V3D_LineDouble l, double epsilon) {
         return Math.min(
-                getRSP().getDistanceSquared(l, epsilon),
-                getPQR().getDistanceSquared(l, epsilon));
+                rsp.getDistanceSquared(l, epsilon),
+                pqr.getDistanceSquared(l, epsilon));
     }
 
     /**
@@ -916,8 +938,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      */
     public double getDistanceSquared(V3D_LineSegmentDouble l, double epsilon) {
         return Math.min(
-                getRSP().getDistanceSquared(l, epsilon),
-                getPQR().getDistanceSquared(l, epsilon));
+                rsp.getDistanceSquared(l, epsilon),
+                pqr.getDistanceSquared(l, epsilon));
     }
 
     /**
@@ -926,8 +948,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      * @param pl A plane.
      * @return The minimum distance squared to {@code p}.
      */
-    public double getDistance(V3D_PlaneDouble pl) {
-        return Math.sqrt(getDistanceSquared(pl));
+    public double getDistance(V3D_PlaneDouble pl, double epsilon) {
+        return Math.sqrt(getDistanceSquared(pl, epsilon));
     }
 
     /**
@@ -936,10 +958,10 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      * @param pl A plane.
      * @return The minimum distance squared to {@code p}.
      */
-    public double getDistanceSquared(V3D_PlaneDouble pl) {
+    public double getDistanceSquared(V3D_PlaneDouble pl, double epsilon) {
         return Math.min(
-                getRSP().getDistanceSquared(pl),
-                getPQR().getDistanceSquared(pl));
+                rsp.getDistanceSquared(pl, epsilon),
+                pqr.getDistanceSquared(pl, epsilon));
     }
 
     /**
@@ -964,8 +986,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      */
     public double getDistanceSquared(V3D_TriangleDouble t, double epsilon) {
         return Math.min(
-                getRSP().getDistanceSquared(t, epsilon),
-                getPQR().getDistanceSquared(t, epsilon));
+                rsp.getDistanceSquared(t, epsilon),
+                pqr.getDistanceSquared(t, epsilon));
     }
 
     /**
@@ -1013,8 +1035,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      */
     public V3D_ConvexHullCoplanarDouble getConvexHull(double epsilon) {
         if (convexHull == null) {
-            convexHull = new V3D_ConvexHullCoplanarDouble(epsilon, getPQR(),
-                    getRSP());
+            convexHull = new V3D_ConvexHullCoplanarDouble(epsilon, pqr,
+                    rsp);
         }
         return convexHull;
     }

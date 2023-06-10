@@ -501,7 +501,7 @@ public class V3D_RectangleDoubleTest extends V3D_DoubleTest {
      * Test of getIntersection method, of class V3D_RectangleDouble.
      */
     @Test
-    public void testGetIntersection_V3D_TriangleDouble_int() {
+    public void testGetIntersection_V3D_TriangleDouble_double() {
         System.out.println("getIntersection");
         double epsilon = 1d / 10000000d;
         V3D_TriangleDouble t = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP1P1P0);
@@ -689,7 +689,7 @@ public class V3D_RectangleDoubleTest extends V3D_DoubleTest {
         V3D_PlaneDouble p = new V3D_PlaneDouble(pP0N1P0, pP1N1P0, pP0N1P1);
         V3D_RectangleDouble instance = new V3D_RectangleDouble(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         double expResult = 1d;
-        double result = instance.getDistance(p);
+        double result = instance.getDistance(p, epsilon);
         assertTrue(Math_Double.equals(expResult, result, epsilon));
     }
 
@@ -703,7 +703,7 @@ public class V3D_RectangleDoubleTest extends V3D_DoubleTest {
         V3D_PlaneDouble p = new V3D_PlaneDouble(pP0N1P0, pP1N1P0, pP0N1P1);
         V3D_RectangleDouble instance = new V3D_RectangleDouble(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         double expResult = 1d;
-        double result = instance.getDistanceSquared(p);
+        double result = instance.getDistanceSquared(p, epsilon);
         assertTrue(Math_Double.equals(expResult, result, epsilon));
     }
 

@@ -217,12 +217,16 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         V3D_TriangleDouble instance = new V3D_TriangleDouble(P0P0P0, P1P0P0, P0P1P0, P0P0P1);
         String expResult = """
                            V3D_TriangleDouble(
+                            pl=( V3D_PlaneDouble(
+                             offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
+                             p=  V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0),
+                             n=  V3D_VectorDouble(dx=1.0, dy=1.0, dz=1.0))),
                             offset=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0)),
                             p=(V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0)),
                             q=(V3D_VectorDouble(dx=0.0, dy=1.0, dz=0.0)),
                             r=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=1.0)))""";
         String result = instance.toString();
-        //System.out.println(result);
+        System.out.println(result);
         assertEquals(expResult, result);
     }
 
@@ -636,7 +640,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         V3D_VectorDouble pv = pl.getPV(epsilon);
         double zoomFactor = 1.0d;
         V3D_RectangleDouble screen = envelope.getViewport3(pt, pv, zoomFactor, epsilon);
-        V3D_TriangleDouble pqr = screen.getPQR();
+        V3D_TriangleDouble pqr = screen.pqr;
         double screenWidth = pqr.getPQ().getLength();
         double screenHeight = screenWidth;
         double pixelSize = screenWidth / (double) width;
@@ -1024,7 +1028,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         // Test 9
         p = new V3D_PointDouble(0, 0, 0);
         t = new V3D_TriangleDouble(pN1P0P1, pP1P1N1, pP2N2N2);
-        p.translate(t.getPl(epsilon).getN().getUnitVector().multiply(10));
+        p.translate(t.pl.getN().getUnitVector().multiply(10));
         expResult = 100d;
         result = t.getDistanceSquared(p, epsilon);
         assertTrue(Math_Double.equals(expResult, result, epsilon));
@@ -1123,17 +1127,18 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         V3D_TriangleDouble instance;
         double expResult;
         double result;
+        double epsilon = 1d / 10000000d;
         // Test 1
         pl = new V3D_PlaneDouble(pP0P0P0, pP1P0P0, pP0P1P0);
         instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
         expResult = 0d;
-        result = instance.getDistanceSquared(pl);
+        result = instance.getDistanceSquared(pl, epsilon);
         assertEquals(expResult, result);
         // Test 2
         pl = new V3D_PlaneDouble(pP0P0P1, pP1P0P1, pP0P1P1);
         instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
         expResult = 1d;
-        result = instance.getDistanceSquared(pl);
+        result = instance.getDistanceSquared(pl, epsilon);
         assertEquals(expResult, result);
     }
 
