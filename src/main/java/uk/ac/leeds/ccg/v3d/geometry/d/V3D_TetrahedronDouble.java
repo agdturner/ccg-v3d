@@ -15,6 +15,11 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import static uk.ac.leeds.ccg.v3d.geometry.d.V3D_TriangleDouble.getGeometry;
+
 /**
  *
  * A V3D_TetrahedronDouble comprises 4 corner V3D_PointDouble points that are
@@ -379,7 +384,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
 
     /**
      * @param r The ray for which the intersection is returned.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The intersection of this and r.
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_RayDouble r,
@@ -402,7 +408,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the intersection between this and the line {@code l}.
      *
      * @param l The line to intersect with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The V3D_Geometry.
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_LineDouble l,
@@ -498,7 +505,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * @param q Another possibly equal point.
      * @param r Another possibly equal point.
      * @param s Another possibly equal point.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return either {@code pl} or {@code new V3D_LineSegmentDouble(pl, qv)} or
      * {@code new V3D_TriangleDouble(pl, qv, r)}
      */
@@ -560,7 +568,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * @param r Another possibly equal point.
      * @param s Another possibly equal point.
      * @param t Another possibly equal point.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return either {@code pl} or {@code new V3D_LineSegmentDouble(pl, qv)} or
      * {@code new V3D_TriangleDouble(pl, qv, r)}
      */
@@ -594,7 +603,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the intersection between this and the line segment {@code l}.
      *
      * @param l The line segment to intersect with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The V3D_Geometry.
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble l,
@@ -878,7 +888,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * this.
      *
      * @param pl The plane to intersect with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The V3D_Geometry.
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_PlaneDouble pl,
@@ -904,7 +915,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                     }
                 } else if (qsri instanceof V3D_LineSegmentDouble qsril) {
                     if (spri instanceof V3D_LineSegmentDouble spril) {
-                        return V3D_TriangleDouble.getGeometry(psqil, qsril, spril, epsilon);
+                        return getGeometry(pl, psqil, qsril, spril, epsilon);
                     } else {
                         return V3D_TriangleDouble.getGeometry(psqil, qsril, (V3D_PointDouble) spri, epsilon);
                     }
@@ -946,18 +957,17 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                         //V3D_LineSegmentDouble spri = (V3D_LineSegmentDouble) getSpr().getIntersection(pl);
                         //return V3D_TriangleDouble.getGeometry2(psqil, (V3D_LineSegmentDouble) qsri, epsilon);
                         V3D_LineSegmentDouble qsril = (V3D_LineSegmentDouble) qsri;
-                        
+
                         // Debug
                         Double x = psqil.getQ().getX();
                         if (x.isInfinite() || x.isNaN()) {
-                            int debug =1 ;
+                            int debug = 1;
                             getQsr().getIntersection(pl, epsilon);
                             getQsr().getIntersection(pl, epsilon);
                         }
-                        
-                        
-                        return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon, 
-                                psqil.getP(),  psqil.getQ(), qsril.getP(), qsril.getQ());
+
+                        return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon,
+                                psqil.getP(), psqil.getQ(), qsril.getP(), qsril.getQ());
                     }
                 }
             } else {
@@ -967,9 +977,28 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
         } else if (pqri instanceof V3D_LineSegmentDouble pqril) {
             V3D_FiniteGeometryDouble psqi = getPsq().getIntersection(pl, epsilon);
             if (psqi == null) {
-                V3D_LineSegmentDouble qsril = (V3D_LineSegmentDouble) getQsr().getIntersection(pl, epsilon);
-                V3D_LineSegmentDouble spril = (V3D_LineSegmentDouble) getSpr().getIntersection(pl, epsilon);
-                return V3D_TriangleDouble.getGeometry(pqril, qsril, spril, epsilon);
+                V3D_FiniteGeometryDouble qsri = getQsr().getIntersection(pl, epsilon);
+                if (qsri == null) {
+                    throw new UnsupportedOperationException();
+                } else {
+                    if (qsri instanceof V3D_LineSegmentDouble qsril) {
+                        V3D_FiniteGeometryDouble spri = (V3D_LineSegmentDouble) getSpr().getIntersection(pl, epsilon);
+                        if (spri == null) {
+                            throw new UnsupportedOperationException();
+                        } else {
+                            if (spri instanceof V3D_LineSegmentDouble spril) {
+                                return getGeometry(pl, pqril, qsril, spril, epsilon);
+                            } else {
+                                //spri is a point
+                                throw new UnsupportedOperationException();
+                                //return getGeometry(pl, pqril, qsril, (V3D_PointDouble) spri, epsilon);
+                            }
+                        }
+                    } else {
+                        // qsri is a point
+                        throw new UnsupportedOperationException();
+                    }
+                }
             } else if (psqi instanceof V3D_PointDouble) {
                 V3D_FiniteGeometryDouble spri = getSpr().getIntersection(pl, epsilon);
                 if (spri instanceof V3D_PointDouble sprip) {
@@ -977,13 +1006,13 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                 } else {
                     //return V3D_TriangleDouble.getGeometry2((V3D_LineSegmentDouble) spri, pqril, epsilon);
                     V3D_LineSegmentDouble spril = (V3D_LineSegmentDouble) spri;
-                    return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon, 
-                                spril.getP(),  spril.getQ(), pqril.getP(), pqril.getQ());
+                    return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon,
+                            spril.getP(), spril.getQ(), pqril.getP(), pqril.getQ());
                 }
             } else if (psqi instanceof V3D_LineSegmentDouble psqil) {
                 //return V3D_TriangleDouble.getGeometry2(psqil, pqril, epsilon);
-                    return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon, 
-                                psqil.getP(),  psqil.getQ(), pqril.getP(), pqril.getQ());
+                return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon,
+                        psqil.getP(), psqil.getQ(), pqril.getP(), pqril.getQ());
             } else {
                 // Triangle
                 return (V3D_TriangleDouble) psqi;
@@ -994,12 +1023,67 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
     }
 
     /**
+     * Useful in calculating the intersection of a tetrahedron and a plane. If
+     * ab, cd and ef are equal then the line segment is returned. If there are 3
+     * unique points then a triangle is returned. If there are 4 or more unique
+     * points, then a V3D_ConvexHullCoplanarDouble is returned.
+     *
+     * @param ab A line segment.
+     * @param cd A line segment.
+     * @param ef A line segment.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return A line segment, triangle, or coplanar convex hull.
+     */
+    protected static V3D_FiniteGeometryDouble getGeometry(V3D_PlaneDouble pl,
+            V3D_LineSegmentDouble ab, V3D_LineSegmentDouble cd,
+            V3D_LineSegmentDouble ef, double epsilon) {
+        ArrayList<V3D_PointDouble> points;
+        {
+            List<V3D_PointDouble> pts = new ArrayList<>();
+            if (ab != null) {
+                pts.add(ab.getP());
+                pts.add(ab.getQ());
+            }
+            if (cd != null) {
+                pts.add(cd.getP());
+                pts.add(cd.getQ());
+            }
+            if (ef != null) {
+                pts.add(ef.getP());
+                pts.add(ef.getQ());
+            }
+            points = V3D_PointDouble.getUnique(pts, epsilon);
+        }
+        int n = points.size();
+        switch (n) {
+            case 2 -> {
+                return ab;
+            }
+            case 3 -> {
+                Iterator<V3D_PointDouble> ite = points.iterator();
+                return V3D_TriangleDouble.getGeometry(ite.next(), ite.next(), ite.next(), epsilon);
+            }
+            default -> {
+                V3D_PointDouble[] pts = new V3D_PointDouble[points.size()];
+                int i = 0;
+                for (var p : points) {
+                    pts[i] = p;
+                    i++;
+                }
+                return new V3D_ConvexHullCoplanarDouble(pl.n, epsilon, pts);
+            }
+        }
+    }
+
+    /**
      * Get the intersection between this and the triangle {@code t}. The
      * intersection will be null, a point, a line segment, a triangle,
      * quadrilateral, pentagon or a hexagon.
      *
      * @param t The triangle to intersect with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The V3D_Geometry.
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_TriangleDouble t,
@@ -1319,7 +1403,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the intersection with the rectangle {@code r}.
      *
      * @param r The rectangle to intersect with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The V3D_FiniteGeometryDouble.
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_RectangleDouble r, double epsilon) {
@@ -1402,7 +1487,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the distance to {@code p}.
      *
      * @param p A point.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The distance squared to {@code p}.
      */
     public double getDistance(V3D_PointDouble p, double epsilon) {
@@ -1413,7 +1499,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the distance squared to {@code p}.
      *
      * @param pt A point.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The distance squared to {@code p}.
      */
     public double getDistanceSquared(V3D_PointDouble pt, double epsilon) {
@@ -1431,7 +1518,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the minimum distance to {@code l}.
      *
      * @param l A line.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code l}.
      */
     public double getDistance(V3D_LineDouble l, double epsilon) {
@@ -1442,7 +1530,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the minimum distance to {@code l}.
      *
      * @param l A line segment.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code l}.
      */
     public double getDistance(V3D_LineSegmentDouble l, double epsilon) {
@@ -1453,7 +1542,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the minimum distance squared to {@code l}.
      *
      * @param l A line segment.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code l}.
      */
     public double getDistanceSquared(V3D_LineSegmentDouble l, double epsilon) {
@@ -1481,7 +1571,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
     }
 
     @Override
-    public V3D_TetrahedronDouble rotate(V3D_RayDouble axis, double theta, 
+    public V3D_TetrahedronDouble rotate(V3D_RayDouble axis, double theta,
             double epsilon) {
         return new V3D_TetrahedronDouble(
                 getP().rotate(axis, theta, epsilon),
@@ -1494,10 +1584,11 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the intersection between the geometry and the tetrahedron {@code t}.
      *
      * @param t The tetrahedron to intersect with.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometryDouble getIntersection(V3D_TetrahedronDouble t, 
+    public V3D_FiniteGeometryDouble getIntersection(V3D_TetrahedronDouble t,
             double epsilon) {
         if (!getEnvelope().isIntersectedBy(t.getEnvelope(), epsilon)) {
             return null;
@@ -1577,7 +1668,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the minimum distance squared to {@code l}.
      *
      * @param l A lineDouble.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code l}.
      */
     public double getDistanceSquared(V3D_LineDouble l, double epsilon) {
@@ -1595,7 +1687,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the minimum distance to {@code p}.
      *
      * @param p A planeDouble.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code p}.
      */
     public double getDistance(V3D_PlaneDouble p, double epsilon) {
@@ -1606,7 +1699,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the minimum distance squared to {@code p}.
      *
      * @param p A planeDouble.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code p}.
      */
     public double getDistanceSquared(V3D_PlaneDouble p, double epsilon) {
@@ -1624,7 +1718,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the minimum distance to {@code t}.
      *
      * @param t A triangleDouble.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance to {@code t}.
      */
     public double getDistance(V3D_TriangleDouble t, double epsilon) {
@@ -1635,7 +1730,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the minimum distance squared to {@code t}.
      *
      * @param t A triangle.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance to {@code t}.
      */
     public double getDistanceSquared(V3D_TriangleDouble t, double epsilon) {
@@ -1653,7 +1749,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the minimum distance to {@code r}.
      *
      * @param r A rectangle.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance to {@code t}.
      */
     public double getDistance(V3D_RectangleDouble r, double epsilon) {
@@ -1664,7 +1761,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the minimum distance squared to {@code r}.
      *
      * @param r A rectangle.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance to {@code t}.
      */
     public double getDistanceSquared(V3D_RectangleDouble r, double epsilon) {
@@ -1680,7 +1778,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the minimum distance to {@code t}.
      *
      * @param t A tetrahedron.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance to {@code t}.
      */
     public double getDistance(V3D_TetrahedronDouble t, double epsilon) {
@@ -1691,7 +1790,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * Get the minimum distance squared to {@code t}.
      *
      * @param t A tetrahedron.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance to {@code t}.
      */
     public double getDistanceSquared(V3D_TetrahedronDouble t, double epsilon) {

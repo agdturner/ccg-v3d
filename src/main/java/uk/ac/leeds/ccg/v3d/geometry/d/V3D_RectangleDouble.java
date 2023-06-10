@@ -811,35 +811,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
             }
         }
         V3D_FiniteGeometryDouble pqrit = pqr.getIntersection(t, epsilon);
-
-        // Debug.
-        if (pqrit != null) {
-            if (pqrit instanceof V3D_LineSegmentDouble) {
-                V3D_LineSegmentDouble li = (V3D_LineSegmentDouble) pqrit;
-                Double d = li.getQ().getX();
-                if (d.isNaN()) {
-                    int debug = 1;
-                    pqr.getIntersection(t, epsilon);
-                    pqr.getIntersection(t, epsilon);
-                }
-            }
-        }
-
         V3D_FiniteGeometryDouble rspit = rsp.getIntersection(t, epsilon);
-
-        // Debug.
-        if (rspit != null) {
-            if (rspit instanceof V3D_LineSegmentDouble) {
-            V3D_LineSegmentDouble li = (V3D_LineSegmentDouble) rspit;
-                Double d = li.getQ().getX();
-                if (d.isNaN()) {
-                    int debug = 1;
-                    rsp.getIntersection(t, epsilon);
-                    rsp.getIntersection(t, epsilon);
-                }
-            }
-        }
-
         if (pqrit == null) {
             return rspit;
         } else {
@@ -852,8 +824,9 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
                 if (rspit instanceof V3D_PointDouble) {
                     return pqrit;
                 } else if (rspit instanceof V3D_LineSegmentDouble rspitl) {
-                    return V3D_LineSegmentDouble.getGeometry(epsilon, pqritl,
-                            rspitl);
+//                    return joinV3D_LineSegmentDouble.getGeometry(epsilon, pqritl,
+//                            rspitl);
+                    return join(pqritl, rspitl, epsilon);
                 } else {
                     return rspit;
                 }

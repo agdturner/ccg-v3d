@@ -93,6 +93,18 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
     /**
      * Create a new instance.
      *
+     * @param pl The plane.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @param points A non-empty list of points in a plane given by n.
+     */
+    public V3D_ConvexHullCoplanarDouble(V3D_PlaneDouble pl, double epsilon,
+            V3D_PointDouble... points) {
+        this(pl.n, epsilon, points);
+    }
+    /**
+     * Create a new instance.
+     *
      * @param n The normal for the plane.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.

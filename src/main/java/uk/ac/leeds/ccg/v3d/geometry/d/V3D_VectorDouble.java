@@ -349,19 +349,8 @@ public class V3D_VectorDouble implements Serializable {
      * @return dot product
      */
     public double getDotProduct(V3D_VectorDouble v) {
-        return getDotProduct0(v);
+        //return getDotProduct0(v);
         //return this.getUnitVector().getDotProduct0(v.getUnitVector());
-        //return dx * v.dx + dy * v.dy + dz * v.dz;
-    }
-    
-    /**
-     * Calculate and return the
-     * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
-     *
-     * @param v V3D_Vector
-     * @return dot product
-     */
-    public double getDotProduct0(V3D_VectorDouble v) {
         return dx * v.dx + dy * v.dy + dz * v.dz;
     }
 
@@ -638,6 +627,7 @@ public class V3D_VectorDouble implements Serializable {
      * <tr><td>ID</td><td>Description (P is positive, N is Negative)</td></tr>
      * </thead>
      * <tbody>
+     * <tr><td>0</td><td>0dx, 0dy, 0dz</td></tr>
      * <tr><td>1</td><td>Pdx, Pdy, Pdz</td></tr>
      * <tr><td>2</td><td>Pdx, Pdy, Ndz</td></tr>
      * <tr><td>3</td><td>Pdx, Ndy, Pdz</td></tr>
@@ -653,7 +643,11 @@ public class V3D_VectorDouble implements Serializable {
         if (dx >= 0d) {
             if (dy >= 0d) {
                 if (dz >= 0d) {
-                    return 1;
+                    if (isZero()) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
                 } else {
                     return 2;
                 }
