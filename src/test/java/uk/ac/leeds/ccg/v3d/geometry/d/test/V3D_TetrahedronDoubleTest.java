@@ -469,7 +469,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
      * Test of getIntersection method, of class V3D_TetrahedronDouble.
      */
     @Test
-    public void testGetIntersection_V3D_TriangleDouble_int() {
+    public void testGetIntersection_V3D_TriangleDouble_double() {
         System.out.println("getIntersection");
         double epsilon = 1d / 10000000d;
         V3D_TriangleDouble t;

@@ -1118,11 +1118,11 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
     }
 
     @Override
-    public V3D_LineSegmentDouble rotate(V3D_RayDouble axis, double theta,
-            double epsilon) {
+    public V3D_LineSegmentDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv, 
+            double theta, double epsilon) {
         return new V3D_LineSegmentDouble(
-                getP().rotate(axis, theta, epsilon),
-                getQ().rotate(axis, theta, epsilon));
+                getP().rotate(ray, uv, theta, epsilon),
+                getQ().rotate(ray, uv, theta, epsilon));
     }
 
     /**

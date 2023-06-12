@@ -754,13 +754,13 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     }
 
     @Override
-    public V3D_RectangleDouble rotate(V3D_RayDouble axis, double theta,
-            double epsilon) {
+    public V3D_RectangleDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
         return new V3D_RectangleDouble(
-                getP().rotate(axis, theta, epsilon),
-                getQ().rotate(axis, theta, epsilon),
-                getR().rotate(axis, theta, epsilon),
-                getS().rotate(axis, theta, epsilon));
+                getP().rotate(ray, uv, theta, epsilon),
+                getQ().rotate(ray, uv, theta, epsilon),
+                getR().rotate(ray, uv, theta, epsilon),
+                getS().rotate(ray, uv, theta, epsilon));
     }
 
     /**

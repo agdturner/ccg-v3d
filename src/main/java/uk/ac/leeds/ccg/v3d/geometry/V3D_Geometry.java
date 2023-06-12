@@ -127,12 +127,17 @@ public abstract class V3D_Geometry implements Serializable {
      * <li>https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula</li>
      * <li>https://en.wikipedia.org/wiki/3D_rotation_group</li>
      * </ul>
+     * @param r The ray defining the axis of rotation about which the geometry
+     * is rotated.
+     * @param uv The unit vector of r. This is passed in as often there is a 
+     * desire to rotate many geometries about a ray and this saves computation 
+     * in calculating the unit vector each time.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The rotated geometry.
      */
-    public abstract V3D_Geometry rotate(V3D_Line axis, BigRational theta,
-            int oom, RoundingMode rm);
+    public abstract V3D_Geometry rotate(V3D_Ray r, V3D_Vector uv, 
+            BigRational theta, int oom, RoundingMode rm);
 
     /**
      * For getting an angle between 0 and 2Pi

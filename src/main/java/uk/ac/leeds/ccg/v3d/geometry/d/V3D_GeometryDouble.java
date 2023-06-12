@@ -121,14 +121,19 @@ public abstract class V3D_GeometryDouble implements Serializable {
      * <li>https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula</li>
      * <li>https://en.wikipedia.org/wiki/3D_rotation_group</li>
      * </ul>
-     * @param axis The axis of rotation.
-     * @param theta The angle of rotation around the {@code axisOfRotation} in
+     * @param ray The ray defining the axis of rotation about which the geometry
+     * is rotated.
+     * @param uv The unit vector of r. This is passed in as often there is a 
+     * desire to rotate many geometries about a ray and this saves computation 
+     * in calculating the unit vector each time.
+     * @param theta The angle of rotation around the the rotation axis in
      * radians.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as 
+     * equal.
      * @return The rotated geometry.
      */
-    public abstract V3D_GeometryDouble rotate(V3D_RayDouble axis, 
-            double theta, double epsilon);
+    public abstract V3D_GeometryDouble rotate(V3D_RayDouble ray,  
+            V3D_VectorDouble uv, double theta, double epsilon);
 
     /**
      * For getting an angle between 0 and 2Pi

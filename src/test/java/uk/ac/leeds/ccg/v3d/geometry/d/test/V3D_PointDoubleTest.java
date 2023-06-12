@@ -157,7 +157,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         b = pP0P1P1;
         assertTrue(p.isBetween(a, b, epsilon));
     }
-    
+
     /**
      * Test of getEnvelope method, of class V3D_PointDouble.
      */
@@ -352,7 +352,6 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
 //        System.out.println(result);
 //        assertEquals(expResult, result);
 //    }
-
     /**
      * Test of getVector method, of class V3D_PointDouble.
      */
@@ -506,16 +505,17 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         System.out.println("rotate");
         double Pi = Math.PI;
         double epsilon = 1 / 100000000d;
-        V3D_RayDouble axis = new V3D_RayDouble(P0P0P0, P1P1P0);
+        V3D_RayDouble axis = new V3D_RayDouble(P0P0P0, V3D_VectorDouble.IJ);
+        V3D_VectorDouble uv = axis.l.v.getUnitVector();
         V3D_PointDouble instance = new V3D_PointDouble(pP1P0P0);
         double theta = Pi;
-        V3D_PointDouble result = instance.rotate(axis, theta, epsilon);
+        V3D_PointDouble result = instance.rotate(axis, uv, theta, epsilon);
         V3D_PointDouble expResult = pP0P1P0;
         assertTrue(expResult.equals(result, epsilon));
         // Test 2
         instance = new V3D_PointDouble(pP1P0P0);
         theta = Pi;
-        result = instance.rotate(axis, theta, epsilon);
+        result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pP0P1P0;
         assertTrue(expResult.equals(result, epsilon));
         // Test 3
@@ -523,7 +523,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         V3D_VectorDouble rel = new V3D_VectorDouble(1, 0, 0);
         instance = new V3D_PointDouble(offset, rel);
         theta = Pi;
-        result = instance.rotate(axis, theta, epsilon);
+        result = instance.rotate(axis, uv, theta, epsilon);
         expResult = new V3D_PointDouble(0, 3, 0);
         assertTrue(expResult.equals(result, epsilon));
         // Test 4
@@ -531,8 +531,49 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         rel = new V3D_VectorDouble(2, 0, 0);
         instance = new V3D_PointDouble(offset, rel);
         theta = Pi;
-        result = instance.rotate(axis, theta, epsilon);
+        result = instance.rotate(axis, uv, theta, epsilon);
         expResult = new V3D_PointDouble(0, 3, 0);
+        assertTrue(expResult.equals(result, epsilon));
+        
+        // Test 5
+        axis = new V3D_RayDouble(P0P0P0, V3D_VectorDouble.K);
+        uv = axis.l.v.getUnitVector();
+        instance = new V3D_PointDouble(pP1P0P0);
+        theta = Pi;
+        result = instance.rotate(axis, uv, theta, epsilon);
+        expResult = pN1P0P0;
+        assertTrue(expResult.equals(result, epsilon));
+        // Test 6
+        instance = new V3D_PointDouble(pP2P0P0);
+        theta = Pi;
+        result = instance.rotate(axis, uv, theta, epsilon);
+        expResult = pN2P0P0;
+        assertTrue(expResult.equals(result, epsilon));
+        // Test 7
+        instance = new V3D_PointDouble(pN2P0P0);
+        theta = Pi;
+        result = instance.rotate(axis, uv, theta, epsilon);
+        expResult = pP2P0P0;
+        assertTrue(expResult.equals(result, epsilon));
+        
+        // Test 8
+        axis = new V3D_RayDouble(P0P0P0, V3D_VectorDouble.IJK);
+        uv = axis.l.v.getUnitVector();
+        instance = new V3D_PointDouble(pP1P1P1);
+        theta = Pi;
+        result = instance.rotate(axis, uv, theta, epsilon);
+        expResult = pP1P1P1;
+        assertTrue(expResult.equals(result, epsilon));
+        // Test 9
+        instance = new V3D_PointDouble(pP1P1P0);
+        theta = 2d * Pi / 3d;
+        result = instance.rotate(axis, uv, theta, epsilon);
+        expResult = pP0P1P1;
+        assertTrue(expResult.equals(result, epsilon));
+        // Test 10
+        theta = 4d * Pi / 3d;
+        result = instance.rotate(axis, uv, theta, epsilon);
+        expResult = pP1P0P1;
         assertTrue(expResult.equals(result, epsilon));
     }
 
@@ -559,7 +600,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         instance.setRel(rel);
         assertTrue(instance.equals(pP0P0P0));
     }
-    
+
     /**
      * Test of equals method, of class V3D_Point.
      */
@@ -614,13 +655,13 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         result = V3D_PointDouble.getUnique(pts, epsilon);
         testContainsSamePoints(expResult, result, epsilon);
     }
-    
+
     private void testContainsSamePoints(ArrayList<V3D_PointDouble> expResult,
-        ArrayList<V3D_PointDouble> result, double epsilon) {
+            ArrayList<V3D_PointDouble> result, double epsilon) {
         assertEquals(expResult.size(), result.size());
         boolean t = false;
-        for (var x: result) {
-            for (var y: expResult) {
+        for (var x : result) {
+            for (var y : expResult) {
                 if (x.equals(y, epsilon)) {
                     t = true;
                     break;
@@ -629,8 +670,8 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
             assertTrue(t);
         }
         t = false;
-        for (var x: expResult) {
-            for (var y: result) {
+        for (var x : expResult) {
+            for (var y : result) {
                 if (x.equals(y, epsilon)) {
                     t = true;
                     break;
@@ -638,7 +679,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
             }
             assertTrue(t);
         }
-        
+
     }
 
 }

@@ -540,32 +540,29 @@ public class V3D_VectorDouble implements Serializable {
      * rotate a vector by a unit quaternion?, URL (version: 2019-06-12):
      * https://math.stackexchange.com/q/535223)
      *
-     * @param axis The axis of rotation. This should be a unit vector accurate
-     * to a sufficient precision.
+     * @param uv The rotation unit vector.
      * @param theta The angle of rotation.
      * @return The vector which is {@code #this} rotated using the parameters.
      */
-    public V3D_VectorDouble rotate(V3D_VectorDouble axis, double theta) {
+    public V3D_VectorDouble rotate(V3D_VectorDouble uv, double theta) {
         theta = V3D_AngleDouble.normalise(theta);
         if (theta == 0d) {
             return new V3D_VectorDouble(this);
         } else {
-            //if (theta > 0) {
             double thetaDiv2 = theta / 2.0d;
             double sinThetaDiv2 = Math.sin(thetaDiv2);
             double w = Math.cos(thetaDiv2);
-            double x = sinThetaDiv2 * axis.dx;
-            double y = sinThetaDiv2 * axis.dy;
-            double z = sinThetaDiv2 * axis.dz;
+            double x = sinThetaDiv2 * uv.dx;
+            double y = sinThetaDiv2 * uv.dy;
+            double z = sinThetaDiv2 * uv.dz;
             Math_Quaternion_Double r = new Math_Quaternion_Double(w, x, y, z);
             // R'=rR
             Math_Quaternion_Double rR = new Math_Quaternion_Double(w, -x, -y, -z);
             Math_Quaternion_Double p = new Math_Quaternion_Double(0, dx, dy, dz);
+            //Math_Quaternion_Double p = new Math_Quaternion_Double(0, x, y, z);
             // P'=pP
             Math_Quaternion_Double pP = r.multiply(p).multiply(rR);
             return new V3D_VectorDouble(pP.x, pP.y, pP.z);
-            //}
-            //return new V3D_VectorDouble(this);
         }
     }
 

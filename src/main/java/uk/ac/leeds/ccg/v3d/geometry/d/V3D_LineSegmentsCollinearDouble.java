@@ -419,11 +419,11 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
     }
 
     @Override
-    public V3D_LineSegmentsCollinearDouble rotate(V3D_RayDouble axis,
-            double theta, double epsilon) {
+    public V3D_LineSegmentsCollinearDouble rotate(V3D_RayDouble ray, 
+            V3D_VectorDouble uv, double theta, double epsilon) {
         V3D_LineSegmentDouble[] rls = new V3D_LineSegmentDouble[lineSegments.size()];
         for (int i = 0; i < lineSegments.size(); i++) {
-            rls[0] = lineSegments.get(i).rotate(axis, theta, epsilon);
+            rls[0] = lineSegments.get(i).rotate(ray, uv, theta, epsilon);
         }
         return new V3D_LineSegmentsCollinearDouble(rls);
     }

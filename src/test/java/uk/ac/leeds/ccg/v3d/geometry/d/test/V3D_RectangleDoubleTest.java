@@ -474,11 +474,10 @@ public class V3D_RectangleDoubleTest extends V3D_DoubleTest {
     public void testRotate() {
         System.out.println("rotate");
         double epsilon = 1d / 10000000d;
-        V3D_RayDouble xAxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
-        V3D_RayDouble axis = xAxis;
+        V3D_RayDouble xaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
         double theta = 0d;
         V3D_RectangleDouble instance = new V3D_RectangleDouble(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
-        instance.rotate(axis, theta, epsilon);
+        instance.rotate(xaxis, xaxis.l.v, theta, epsilon);
         V3D_RectangleDouble instance2 = new V3D_RectangleDouble(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         assertTrue(instance.equals(instance2, epsilon));
     }

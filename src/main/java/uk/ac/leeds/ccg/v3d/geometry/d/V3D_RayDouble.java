@@ -510,26 +510,24 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
         return getPl().isOnSameSide(pt, l.getQ(), epsilon);
     }
 
-//    /**
-//     * Translate (move relative to the origin).
-//     *
-//     * @param v The vector to translate.
-//     * @param oom The Order of Magnitude for the precision.
-//     * @param rm The RoundingMode if rounding is needed.
-//     */
-//    @Override
-//    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
-//        super.translate(v);
-//        l.offset = offset;
-//        //l.translate(v);
-//    }
+    /**
+     * Translate (move relative to the origin).
+     *
+     * @param v The vector to translate.
+     */
     @Override
-    public V3D_RayDouble rotate(V3D_RayDouble axis, double theta, double epsilon) {
+    public void translate(V3D_VectorDouble v) {
+        this.l.translate(v);
+    }
+    
+    @Override
+    public V3D_RayDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv, 
+            double theta, double epsilon) {
         theta = V3D_AngleDouble.normalise(theta);
         if (theta == 0d) {
             return new V3D_RayDouble(this);
         } else {
-            return new V3D_RayDouble(l.rotate(axis, theta, epsilon));
+            return new V3D_RayDouble(l.rotate(ray, uv, theta, epsilon));
         }
     }
 }

@@ -957,26 +957,26 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
     @Test
     public void testRotate() {
         System.out.println("rotate");
-        V3D_VectorDouble axisOfRotation = new V3D_VectorDouble(0, 1, 0);
+        V3D_VectorDouble uv = new V3D_VectorDouble(0, 1, 0);
         double epsilon = 1/10000d;
         double Pi = Math.PI;
         double theta = Pi / 2d;
         V3D_VectorDouble instance = new V3D_VectorDouble(1, 0, 0);
         V3D_VectorDouble expResult = new V3D_VectorDouble(0, 0, -1);
-        V3D_VectorDouble result = instance.rotate(axisOfRotation, theta);
+        V3D_VectorDouble result = instance.rotate(uv, theta);
         assertTrue(expResult.equals(result, epsilon));
         // Test 2
         // From Example 2: https://graphics.stanford.edu/courses/cs348a-17-winter/Papers/quaternion.pdf
-        axisOfRotation = new V3D_VectorDouble(1, 1, 1).getUnitVector();
+        uv = new V3D_VectorDouble(1, 1, 1).getUnitVector();
         theta = Pi * 2d / 3d;
         instance = new V3D_VectorDouble(1, 0, 0);
         expResult = new V3D_VectorDouble(0, 1, 0);
-        result = instance.rotate(axisOfRotation, theta);
+        result = instance.rotate(uv, theta);
         assertTrue(expResult.equals(result, epsilon));
-//        // Test 3 Fails :(
+//        // Test 3 Fails :(?
 //        // From Example 1: https://www.imsc.res.in/~knr/131129workshop/writeup_knr.pdf
-//        axisOfRotation = new V3D_VectorDouble(0, 1, 0);
-//        theta = Pi.divide(3);
+//        uv = new V3D_VectorDouble(0, 1, 0);
+//        theta = Pi / 3d;
 //        instance = new V3D_VectorDouble(1, -1, 2);
 //        double sqrt3 = new double(3).getSqrt();
 //        double x = (double.TEN.add(
@@ -990,11 +990,11 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
 //        assertTrue(expResult.equals(result));
         // Test 4
         // From Case 1 https://www.tobynorris.com/work/prog/csharp/quatview/help/case_1.htm
-        axisOfRotation = new V3D_VectorDouble(0, 0, 1);
+        uv = new V3D_VectorDouble(0, 0, 1);
         theta = -Pi / 6d;
         instance = new V3D_VectorDouble(0.6d, 0.8d, 0d);
         expResult = new V3D_VectorDouble(0.9196d, 0.3928d, 0d);
-        result = instance.rotate(axisOfRotation, theta);
+        result = instance.rotate(uv, theta);
         assertTrue(expResult.equals(result, epsilon));
 //        // Test 5
 //        // From Case 2 https://www.tobynorris.com/work/prog/csharp/quatview/help/case_1.htm
@@ -1007,46 +1007,46 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
 //        result = instance.rotate(axisOfRotation, theta);
 //        assertTrue(expResult.equals(result));
         // Test 6
-        axisOfRotation = new V3D_VectorDouble(0, 0, 1);
+        uv = new V3D_VectorDouble(0, 0, 1);
         theta = Pi / 2d;
         instance = new V3D_VectorDouble(1, 0, 0);
         expResult = new V3D_VectorDouble(0, 1, 0);
-        result = instance.rotate(axisOfRotation, theta);
+        result = instance.rotate(uv, theta);
         assertTrue(expResult.equals(result, epsilon));
         // Test 7
-        axisOfRotation = new V3D_VectorDouble(1, 1, 0).getUnitVector();
+        uv = new V3D_VectorDouble(1, 1, 0).getUnitVector();
         theta = Pi;
         instance = new V3D_VectorDouble(1, 0, 0);
         expResult = new V3D_VectorDouble(0, 1, 0);
-        result = instance.rotate(axisOfRotation, theta);
+        result = instance.rotate(uv, theta);
         assertTrue(expResult.equals(result, epsilon));
         // Test 8
-        axisOfRotation = new V3D_VectorDouble(1, 1, 0).getUnitVector();
+        uv = new V3D_VectorDouble(1, 1, 0).getUnitVector();
         theta = Pi;
         instance = new V3D_VectorDouble(2, 0, 0);
         expResult = new V3D_VectorDouble(0, 2, 0);
-        result = instance.rotate(axisOfRotation, theta);
+        result = instance.rotate(uv, theta);
         assertTrue(expResult.equals(result, epsilon));
         // Test 9
-        axisOfRotation = new V3D_VectorDouble(1, 1, 0).getUnitVector();
+        uv = new V3D_VectorDouble(1, 1, 0).getUnitVector();
         theta = Pi;
         instance = new V3D_VectorDouble(3, 1, 0);
         expResult = new V3D_VectorDouble(1, 3, 0);
-        result = instance.rotate(axisOfRotation, theta);
+        result = instance.rotate(uv, theta);
         assertTrue(expResult.equals(result, epsilon));
         // Test 10
-        axisOfRotation = new V3D_VectorDouble(1, 1, 0).getUnitVector();
+        uv = new V3D_VectorDouble(1, 1, 0).getUnitVector();
         theta = Pi;
         instance = new V3D_VectorDouble(3, 2, 1);
         expResult = new V3D_VectorDouble(2, 3, -1);
-        result = instance.rotate(axisOfRotation, theta);
+        result = instance.rotate(uv, theta);
         assertTrue(expResult.equals(result, epsilon));
         // Test 11
-        axisOfRotation = new V3D_VectorDouble(1, 1, 0).getUnitVector();
+        uv = new V3D_VectorDouble(1, 1, 0).getUnitVector();
         theta = Pi * 2d;
         instance = new V3D_VectorDouble(3, 2, 1);
         expResult = new V3D_VectorDouble(3, 2, 1);
-        result = instance.rotate(axisOfRotation, theta);
+        result = instance.rotate(uv, theta);
         assertTrue(expResult.equals(result, epsilon));
     }
 

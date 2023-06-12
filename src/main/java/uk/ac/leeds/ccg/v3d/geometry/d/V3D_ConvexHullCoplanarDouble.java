@@ -577,11 +577,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
 //        return getEnvelope().isIntersectedBy(l, oom);
 //    }
     @Override
-    public V3D_ConvexHullCoplanarDouble rotate(V3D_RayDouble axis,
-            double theta, double epsilon) {
+    public V3D_ConvexHullCoplanarDouble rotate(V3D_RayDouble ray, 
+            V3D_VectorDouble uv, double theta, double epsilon) {
         V3D_TriangleDouble[] rts = new V3D_TriangleDouble[triangles.size()];
         for (int i = 0; i < triangles.size(); i++) {
-            rts[0] = triangles.get(i).rotate(axis, theta, epsilon);
+            rts[0] = triangles.get(i).rotate(ray, uv, theta, epsilon);
         }
         return new V3D_ConvexHullCoplanarDouble(epsilon, rts);
     }

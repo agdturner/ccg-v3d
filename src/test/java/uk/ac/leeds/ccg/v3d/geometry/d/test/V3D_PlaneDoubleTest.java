@@ -2533,8 +2533,8 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         result = instance.getIntersection(l, epsilon);
         assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result));
         // Test 11
-        l = new V3D_LineSegmentDouble(new V3D_PointDouble(4d,4d, 0d), new V3D_PointDouble(5d,5d,0d));
-        instance = new V3D_PlaneDouble(new V3D_PointDouble(6d,6d,0d), new V3D_VectorDouble(30d, 30d, 0d));
+        l = new V3D_LineSegmentDouble(new V3D_PointDouble(4d, 4d, 0d), new V3D_PointDouble(5d, 5d, 0d));
+        instance = new V3D_PlaneDouble(new V3D_PointDouble(6d, 6d, 0d), new V3D_VectorDouble(30d, 30d, 0d));
         result = instance.getIntersection(l, epsilon);
         assertNull(result);
     }
@@ -2658,7 +2658,7 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
                 new V3D_VectorDouble(100d, 1d, 1d));
         V3D_PlaneDouble instance = V3D_PlaneDouble.X0;
         double expResult = 10d;
-        double epsilon = 1d/1000000d;
+        double epsilon = 1d / 1000000d;
         double result = instance.getDistance(l, epsilon);
         assertTrue(expResult == result);
     }
@@ -2733,7 +2733,6 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
 //        //System.out.println(result);
 //        assertEquals(expResult, result);
 //    }
-
     /**
      * Test of getPAsVector method, of class V3D_PlaneDouble.
      */
@@ -2812,42 +2811,37 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         System.out.println("rotate");
         double epsilon = 1d / 10000000d;
         double Pi = Math.PI;
-        V3D_RayDouble xAxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
-        V3D_RayDouble axis = xAxis;
+        V3D_RayDouble xaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_VectorDouble.I);
+        V3D_RayDouble yaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_VectorDouble.J);
+        V3D_RayDouble zaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_VectorDouble.K);
+        // Test 1;
         double theta = Pi / 2d;
         V3D_PlaneDouble instance = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
-        instance = instance.rotate(axis, theta, epsilon);
+        instance = instance.rotate(xaxis, xaxis.l.v, theta, epsilon);
         assertTrue(V3D_PlaneDouble.X0.equalsIgnoreOrientation(instance, epsilon));
         // Test 2
-        V3D_RayDouble yAxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P1P0);
-        axis = yAxis;
         instance = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
-        instance = instance.rotate(axis, theta, epsilon);
+        instance = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
         assertTrue(V3D_PlaneDouble.Z0.equalsIgnoreOrientation(instance, epsilon));
         // Test 3
-        V3D_RayDouble zAxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P0P1);
-        axis = zAxis;
         instance = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
-        instance = instance.rotate(axis, theta, epsilon);
+        instance = instance.rotate(zaxis, zaxis.l.v, theta, epsilon);
         assertTrue(V3D_PlaneDouble.Y0.equalsIgnoreOrientation(instance, epsilon));
         // Test 4
-        axis = xAxis;
         theta = Pi;
         instance = new V3D_PlaneDouble(P1P0P0, P0P0P0, P0P2P0, P0P2P2);
-        instance = instance.rotate(axis, theta, epsilon);
+        instance = instance.rotate(xaxis, xaxis.l.v, theta, epsilon);
         assertTrue(new V3D_PlaneDouble(P1P0P0, P0P0P0, P0P2P0, P0P2P2).equalsIgnoreOrientation(instance, epsilon));
         // Test 5
-        axis = yAxis;
         theta = Pi;
         instance = new V3D_PlaneDouble(P1P0P0, P0P0P0, P0P2P0, P0P2P2);
-        instance = instance.rotate(axis, theta, epsilon);
+        instance = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
         V3D_PlaneDouble expResult = new V3D_PlaneDouble(N1P0P0, P0P0P0, P0P2P0, P0P2N2);
         assertTrue(expResult.equalsIgnoreOrientation(instance, epsilon));
-        // Test 5
-        axis = zAxis;
+        // Test 6
         theta = Pi;
         instance = new V3D_PlaneDouble(P1P0P0, P0P0P0, P0P2P0, P0P2P2);
-        instance = instance.rotate(axis, theta, epsilon);
+        instance = instance.rotate(zaxis, zaxis.l.v, theta, epsilon);
         expResult = new V3D_PlaneDouble(N1P0P0, P0P0P0, P0P2P0, P0P2P2);
         assertTrue(expResult.equalsIgnoreOrientation(instance, epsilon));
     }
@@ -2860,9 +2854,9 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         System.out.println("testConstructors");
         double epsilon = 1d / 10000000d;
         V3D_PlaneDouble pl0 = V3D_PlaneDouble.X0;
-        V3D_PlaneDouble pl1 = new V3D_PlaneDouble(V3D_VectorDouble.I, pl0, 
+        V3D_PlaneDouble pl1 = new V3D_PlaneDouble(V3D_VectorDouble.I, pl0,
                 epsilon);
-        V3D_PlaneDouble pl2 = new V3D_PlaneDouble(V3D_VectorDouble.I, N1P0P0, 
+        V3D_PlaneDouble pl2 = new V3D_PlaneDouble(V3D_VectorDouble.I, N1P0P0,
                 N1P1P0, N1P0P1);
         assertTrue(pl0.equalsIgnoreOrientation(pl1, epsilon));
         assertTrue(pl0.equalsIgnoreOrientation(pl2, epsilon));

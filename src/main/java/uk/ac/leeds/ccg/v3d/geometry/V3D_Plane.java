@@ -1936,10 +1936,10 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     @Override
-    public V3D_Plane rotate(V3D_Line axis, BigRational theta,
+    public V3D_Plane rotate(V3D_Ray ray, V3D_Vector uv, BigRational theta,
             int oom, RoundingMode rm) {
-        return new V3D_Plane(getP().rotate(axis, theta, oom, rm),
-                n.rotate(axis.v.getUnitVector(oom, rm), theta, oom, rm));
+        return new V3D_Plane(getP().rotate(ray, uv, theta, oom, rm),
+                n.rotate(uv, theta, oom, rm));
     }
 
     /**

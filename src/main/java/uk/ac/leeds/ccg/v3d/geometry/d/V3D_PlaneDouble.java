@@ -1388,10 +1388,10 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
     }
 
     @Override
-    public V3D_PlaneDouble rotate(V3D_RayDouble axis, double theta,
-            double epsilon) {
-        return new V3D_PlaneDouble(getP().rotate(axis, theta, epsilon),
-                n.rotate(axis.l.v.getUnitVector(), theta));
+    public V3D_PlaneDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
+        return new V3D_PlaneDouble(getP().rotate(ray, uv, theta, epsilon),
+                n.rotate(uv, theta));
     }
 
     /**

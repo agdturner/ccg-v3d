@@ -31,6 +31,7 @@ import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Ray;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
@@ -146,16 +147,17 @@ public class V3D_LineTest extends V3D_Test {
         System.out.println("isParallel");
         int oom = -1;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line l = V3D_Line.X_AXIS;
-        V3D_Line instance = V3D_Line.X_AXIS;
+        V3D_Line l = new V3D_Line(pP0P0P0, V3D_Vector.I);
+        V3D_Line instance = l;
         assertTrue(instance.isParallel(l, oom, rm));
         // Test 2
-        instance = V3D_Line.Y_AXIS;
+        l = new V3D_Line(pP0P0P0, V3D_Vector.J);
         assertFalse(instance.isParallel(l, oom, rm));
         // Test 3
-        instance = V3D_Line.Z_AXIS;
+        l = new V3D_Line(pP0P0P0, V3D_Vector.K);
         assertFalse(instance.isParallel(l, oom, rm));
         // Test 4
+        l = new V3D_Line(pP0P0P0, V3D_Vector.I);
         instance = new V3D_Line(V3D_Test.pP0P1P0, V3D_Test.pP1P1P0, oom, rm);
         assertTrue(instance.isParallel(l, oom, rm));
         // Test 5
@@ -171,7 +173,7 @@ public class V3D_LineTest extends V3D_Test {
         instance = new V3D_Line(V3D_Test.pP1P0P1, V3D_Test.pP0P1P1, oom, rm);
         assertFalse(instance.isParallel(l, oom, rm));
         // Test 9
-        l = V3D_Line.Y_AXIS;
+        l = new V3D_Line(pP0P0P0, V3D_Vector.J);
         instance = new V3D_Line(V3D_Test.pP0P0P1, V3D_Test.pP0P1P1, oom, rm);
         assertTrue(instance.isParallel(l, oom, rm));
         // Test 9
@@ -184,7 +186,7 @@ public class V3D_LineTest extends V3D_Test {
         instance = new V3D_Line(V3D_Test.pP1P0P1, V3D_Test.pP1P1P0, oom, rm);
         assertFalse(instance.isParallel(l, oom, rm));
         // Test 12
-        l = V3D_Line.Z_AXIS;
+        l = new V3D_Line(pP0P0P0, V3D_Vector.K);
         instance = new V3D_Line(V3D_Test.pP1P0P0, V3D_Test.pP1P0P1, oom, rm);
         assertTrue(instance.isParallel(l, oom, rm));
         // Test 9
@@ -408,11 +410,11 @@ public class V3D_LineTest extends V3D_Test {
         instance = new V3D_Line(V3D_Test.pP1P1P1, V3D_Test.pP0P0P0, oom, rm);
         assertTrue(instance.equals(l, oom, rm));
         // Test 3
-        l = V3D_Line.X_AXIS;
-        instance = V3D_Line.X_AXIS;
+        l = new V3D_Line(pP0P0P0, V3D_Vector.I);
+        instance = l;
         assertTrue(instance.equals(l, oom, rm));
         // Test 4
-        instance = V3D_Line.Y_AXIS;
+        instance = new V3D_Line(pP0P0P0, V3D_Vector.J);
         assertFalse(instance.equals(l, oom, rm));
     }
 
@@ -560,7 +562,7 @@ public class V3D_LineTest extends V3D_Test {
         System.out.println("getAsMatrix");
         int oom = -1;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line instance = V3D_Line.X_AXIS;
+        V3D_Line instance = new V3D_Line(pP0P0P0, V3D_Vector.I);
         BigRational[][] m = new BigRational[2][3];
         m[0][0] = BigRational.ZERO;
         m[0][1] = BigRational.ZERO;
@@ -754,7 +756,7 @@ public class V3D_LineTest extends V3D_Test {
     public void testToString_String() {
         System.out.println("toString");
         String pad = "";
-        V3D_Line instance = V3D_Line.X_AXIS;
+        V3D_Line instance = new V3D_Line(pP0P0P0, V3D_Vector.I);
         String expResult = """
                            V3D_Line
                            (
@@ -904,7 +906,7 @@ public class V3D_LineTest extends V3D_Test {
     @Test
     public void testRotate() {
         System.out.println("rotate");
-        V3D_Line axis = V3D_Line.X_AXIS;
+        V3D_Ray axis = new V3D_Ray(pP0P0P0, V3D_Vector.I);
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         int oomt = oom - 2;
@@ -913,28 +915,28 @@ public class V3D_LineTest extends V3D_Test {
         BigRational theta = Pi.divide(2);
         V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
         V3D_Line expResult = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-        V3D_Line result = instance.rotate(axis, theta, oom, rm);
+        V3D_Line result = instance.rotate(axis, axis.l.v, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 2
-        axis = new V3D_Line(pP0P0P0, V3D_Vector.J);
+        axis = new V3D_Ray(pP0P0P0, V3D_Vector.J);
         theta = Pi.divide(2);
         instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
         //expResult = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
         expResult = new V3D_Line(pP0P0P0, pP0P0N1, oom, rm);
-        result = instance.rotate(axis, theta, oom, rm);
+        result = instance.rotate(axis, axis.l.v, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 3
         theta = Pi.divide(2);
         instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(5, 0, 0), oom, rm);
         //expResult = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, 5), oom, rm);
         expResult = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, -5), oom, rm);
-        result = instance.rotate(axis, theta, oom, rm);
+        result = instance.rotate(axis, axis.l.v, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 4
         theta = Pi;
         instance = new V3D_Line(new V3D_Vector(3, 2, 0), new V3D_Vector(5, 0, 0), oom, rm);
         expResult = new V3D_Line(new V3D_Vector(-3, 2, 0), new V3D_Vector(-5, 0, 0), oom, rm);
-        result = instance.rotate(axis, theta, oom, rm);
+        result = instance.rotate(axis, axis.l.v, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
 

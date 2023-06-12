@@ -450,20 +450,26 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param rm The RoundingMode.
      */
     @Override
-    public V3D_Point rotate(V3D_Line axis, BigRational theta,
+    public V3D_Point rotate(V3D_Ray ray, V3D_Vector uv, BigRational theta,
             int oom, RoundingMode rm) {
         int oomn9 = oom - 9;
-        BigRational na = V3D_Angle.normalise(theta, oom, rm);
+        BigRational na = V3D_Angle.normalise(theta, oomn9, rm);
         if (na.compareTo(BigRational.ZERO) == 0) {
             return new V3D_Point(this);
         }
-        V3D_Vector tv = axis.getP().getVector(oomn9, rm);
+        V3D_Vector tv = ray.l.getPointOfIntersection(this, oom, rm).getVector(oomn9, rm);
         V3D_Point tp = new V3D_Point(this);
-        tp.translate(tv, oomn9, rm);
-        V3D_Vector rv = axis.v.getUnitVector(oomn9, rm);
-        V3D_Vector tpr = tp.getVector(oomn9, rm).rotate(rv, na, oomn9, rm);
-        V3D_Point r = new V3D_Point(tpr);
-        r.translate(tv.reverse(), oom, rm);
+        tp.translate(tv.reverse(), oomn9, rm);
+        V3D_Vector tpv = tp.getVector(oomn9, rm);
+        V3D_Point r;
+        if (tpv.isZero()) {
+            r = new V3D_Point(tpv);
+        } else {
+            Math_BigRationalSqrt magnitude = tpv.getMagnitude(oomn9, rm);
+            V3D_Vector tpr = tpv.getUnitVector(oomn9, rm).rotate(uv, theta, oomn9, rm);
+            r = new V3D_Point(tpr.multiply(magnitude.getSqrt(oomn9, rm), oomn9, rm));
+        }
+        r.translate(tv, oomn9, rm);
         return r;
     }
 

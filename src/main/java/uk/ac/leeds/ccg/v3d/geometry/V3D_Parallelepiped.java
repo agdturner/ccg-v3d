@@ -39,7 +39,7 @@ public class V3D_Parallelepiped extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Geometry rotate(V3D_Line axis, BigRational theta, int oom, RoundingMode rm) {
+    public V3D_Geometry rotate(V3D_Ray ray, V3D_Vector uv, BigRational theta, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

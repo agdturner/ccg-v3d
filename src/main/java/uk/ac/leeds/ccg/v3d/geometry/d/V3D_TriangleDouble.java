@@ -626,7 +626,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             V3D_FiniteGeometryDouble lrpi = getRP().getIntersection(l, epsilon);
             if (lpqi == null) {
                 if (lqri == null) {
-                    return null; // This should not happen!
+                    return null;
                 } else {
                     if (lrpi == null) {
                         return lqri;
@@ -1730,12 +1730,12 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     }
 
     @Override
-    public V3D_TriangleDouble rotate(V3D_RayDouble axis, double theta,
-            double epsilon) {
+    public V3D_TriangleDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
         return new V3D_TriangleDouble(
-                getP().rotate(axis, theta, epsilon),
-                getQ().rotate(axis, theta, epsilon),
-                getR().rotate(axis, theta, epsilon));
+                getP().rotate(ray, uv, theta, epsilon),
+                getQ().rotate(ray, uv, theta, epsilon),
+                getR().rotate(ray, uv, theta, epsilon));
     }
 
     /**

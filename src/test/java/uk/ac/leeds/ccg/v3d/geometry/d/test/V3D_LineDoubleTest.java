@@ -47,7 +47,6 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
 //    public V3D_LineDoubleTest(V3D_LineDouble l) {
 //        super(l);
 //    }
-
     @BeforeAll
     public static void setUpClass() {
     }
@@ -431,7 +430,7 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         result = instance.getIntersection(l, epsilon);
         assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
         // Test 8
-        epsilon = 1d/100000d;
+        epsilon = 1d / 100000d;
         l = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, 0d),
                 new V3D_PointDouble(100d, 100d, 0d));
         instance = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, epsilon),
@@ -443,15 +442,15 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         result = instance.getIntersection(l, epsilon);
         assertTrue(((V3D_LineDouble) expResult).equals((V3D_LineDouble) result, epsilon));
         // Test 9
-        epsilon = 1d/100000d;
+        epsilon = 1d / 100000d;
         l = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, 0d),
                 new V3D_PointDouble(100d, 100d, 0d));
-        instance = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, epsilon*2d),
-                new V3D_PointDouble(100d, 100d, epsilon*2d));
+        instance = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, epsilon * 2d),
+                new V3D_PointDouble(100d, 100d, epsilon * 2d));
         result = instance.getIntersection(l, epsilon);
         assertNull(result);
         // Test 10
-        epsilon = 1d/100000d;
+        epsilon = 1d / 100000d;
         l = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, 0d),
                 new V3D_PointDouble(100d, 100d, 0d));
         instance = new V3D_LineDouble(new V3D_PointDouble(-100d, 100d, epsilon),
@@ -460,11 +459,11 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         result = instance.getIntersection(l, epsilon);
         assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
         // Test 11
-        epsilon = 1d/100000d;
+        epsilon = 1d / 100000d;
         l = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, 0d),
                 new V3D_PointDouble(100d, 100d, 0d));
-        instance = new V3D_LineDouble(new V3D_PointDouble(-100d, 100d, epsilon*2d),
-                new V3D_PointDouble(100d, -100d, epsilon*2d));
+        instance = new V3D_LineDouble(new V3D_PointDouble(-100d, 100d, epsilon * 2d),
+                new V3D_PointDouble(100d, -100d, epsilon * 2d));
         result = instance.getIntersection(l, epsilon);
         assertNull(result);
     }
@@ -775,7 +774,6 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
 //        //System.out.println(result);
 //        assertEquals(expResult, result);
 //    }
-
     /**
      * Test of getP method, of class V3D_LineDouble.
      */
@@ -795,31 +793,29 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
     public void testRotate() {
         System.out.println("rotate");
         double epsilon = 1d / 10000000d;
-        V3D_RayDouble xAxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
-        V3D_RayDouble axis = xAxis;
+        V3D_RayDouble xaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
         double Pi = Math.PI;
         double theta = Pi / 2d;
         V3D_LineDouble instance = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
         V3D_LineDouble expResult = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
-        V3D_LineDouble result = instance.rotate(axis, theta, epsilon);
+        V3D_LineDouble result = instance.rotate(xaxis, xaxis.l.v, theta, epsilon);
         assertTrue(expResult.equals(result, epsilon));
         // Test 2
-        V3D_RayDouble yAxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P1P0);
-        axis = yAxis;
+        V3D_RayDouble yaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P1P0);
         instance = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
         expResult = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P0N1);
-        result = instance.rotate(axis, theta, epsilon);
+        result = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
         assertTrue(expResult.equals(result, epsilon));
         // Test 3
         instance = new V3D_LineDouble(new V3D_VectorDouble(0, 0, 0), new V3D_VectorDouble(5, 0, 0));
         expResult = new V3D_LineDouble(new V3D_VectorDouble(0, 0, 0), new V3D_VectorDouble(0, 0, -5));
-        result = instance.rotate(axis, theta, epsilon);
+        result = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
         assertTrue(expResult.equals(result, epsilon));
         // Test 4
         theta = Pi;
         instance = new V3D_LineDouble(new V3D_VectorDouble(3, 2, 0), new V3D_VectorDouble(5, 0, 0));
         expResult = new V3D_LineDouble(new V3D_VectorDouble(-3, 2, 0), new V3D_VectorDouble(-5, 0, 0));
-        result = instance.rotate(axis, theta, epsilon);
+        result = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
         assertTrue(expResult.equals(result, epsilon));
     }
 

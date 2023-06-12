@@ -75,25 +75,6 @@ import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 public class V3D_Line extends V3D_Geometry {
 
     private static final long serialVersionUID = 1L;
-
-    
-    /**
-     * The x axis.
-     */
-    public static final V3D_Line X_AXIS = new V3D_Line(V3D_Vector.ZERO,
-            V3D_Vector.I);
-
-    /**
-     * The y axis.
-     */
-    public static final V3D_Line Y_AXIS = new V3D_Line(V3D_Vector.ZERO,
-            V3D_Vector.J);
-
-    /**
-     * The z axis.
-     */
-    public static final V3D_Line Z_AXIS = new V3D_Line(V3D_Vector.ZERO,
-            V3D_Vector.K);
     
     /**
      * If this line is defined by a vector, then the calculation of {@link #q}
@@ -1338,10 +1319,10 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     @Override
-    public V3D_Line rotate(V3D_Line axis, BigRational theta,
+    public V3D_Line rotate(V3D_Ray ray, V3D_Vector uv, BigRational theta,
             int oom, RoundingMode rm) {
-        V3D_Point rp = getP().rotate(axis, theta, oom, rm);
-        V3D_Vector rv = v.rotate(axis.v.getUnitVector(oom, rm), theta, oom, rm);
+        V3D_Point rp = getP().rotate(ray, uv, theta, oom, rm);
+        V3D_Vector rv = v.rotate(uv, theta, oom, rm);
         return new V3D_Line(rp, rv);
     }
 

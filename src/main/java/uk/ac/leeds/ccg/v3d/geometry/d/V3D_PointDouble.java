@@ -385,27 +385,26 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
         this.rel = rel;
     }
 
-    /**
-     * Rotates the point about {@link offset}.
-     *
-     * @param axis The axis of rotation.
-     * @param theta The angle of rotation.
-     * @param epsilon The tolerance.
-     */
     @Override
-    public V3D_PointDouble rotate(V3D_RayDouble axis, double theta,
-            double epsilon) {
+    public V3D_PointDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
         theta = V3D_AngleDouble.normalise(theta);
         if (theta == 0d) {
             return new V3D_PointDouble(this);
         }
-        V3D_VectorDouble tv = axis.l.getP().getVector();
+        V3D_VectorDouble tv = ray.l.getPointOfIntersection(this, epsilon).getVector();
         V3D_PointDouble tp = new V3D_PointDouble(this);
-        tp.translate(tv);
-        V3D_VectorDouble rv = axis.l.v.getUnitVector();
-        V3D_VectorDouble tpr = tp.getVector().rotate(rv, theta);
-        V3D_PointDouble r = new V3D_PointDouble(tpr);
-        r.translate(tv.reverse());
+        tp.translate(tv.reverse());
+        V3D_VectorDouble tpv = tp.getVector();
+        V3D_PointDouble r;
+        if (tpv.isZero()) {
+            r = new V3D_PointDouble(tpv);
+        } else {
+            double magnitude = tpv.getMagnitude();
+            V3D_VectorDouble tpr = tpv.getUnitVector().rotate(uv, theta);
+            r = new V3D_PointDouble(tpr.multiply(magnitude));
+        }
+        r.translate(tv);
         return r;
     }
 

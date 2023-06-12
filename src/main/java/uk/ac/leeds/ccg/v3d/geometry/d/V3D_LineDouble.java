@@ -91,7 +91,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      */
     public static final V3D_LineDouble Z_AXIS = new V3D_LineDouble(
             V3D_VectorDouble.ZERO, V3D_VectorDouble.K);
-    
+
     /**
      * If this line is defined by a vector, then the calculation of {@link #q}
      * may be imprecise. If this line is defined by points, then {@link #v} may
@@ -391,11 +391,11 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * Intersects {@code this} with {@code l}. If they are equivalent then
-     * return {@code this}. If the lines are parallel, but are less than 
-     * epsilon in distance apart, then they are regarded as intersecting. Also
-     * if they are less than epsilon distance apart, they are regarded as 
-     * intersecting (and the closest point to this on the line of intersection
-     * is returned as the intersection).
+     * return {@code this}. If the lines are parallel, but are less than epsilon
+     * in distance apart, then they are regarded as intersecting. Also if they
+     * are less than epsilon distance apart, they are regarded as intersecting
+     * (and the closest point to this on the line of intersection is returned as
+     * the intersection).
      *
      * @param l The line to get the intersection with {@code this}.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -858,7 +858,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         }
         V3D_PlaneDouble ptv = new V3D_PlaneDouble(pt, v);
         V3D_GeometryDouble i = ptv.getIntersection(this, epsilon);
-        if (i instanceof V3D_LineDouble) { 
+        if (i instanceof V3D_LineDouble) {
             return pt;
         } else {
             return (V3D_PointDouble) i;
@@ -953,7 +953,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      *
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance between this and {@code pv}.
      */
     public double getDistanceSquared(V3D_PointDouble pt, double epsilon) {
@@ -1090,19 +1091,21 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
     @Override
     public void translate(V3D_VectorDouble v) {
         super.translate(v);
+        //pv.translate(v);
         if (p != null) {
-            this.p.translate(v);
+            p.translate(v);
         }
         if (q != null) {
-            this.q.translate(v);
+            q.translate(v);
         }
+        
     }
 
     @Override
-    public V3D_LineDouble rotate(V3D_RayDouble axis, double theta,
-            double epsilon) {
-        V3D_PointDouble rp = getP().rotate(axis, theta, epsilon);
-        V3D_VectorDouble rv = v.rotate(axis.l.v.getUnitVector(), theta);
+    public V3D_LineDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
+        V3D_PointDouble rp = getP().rotate(ray, uv, theta, epsilon);
+        V3D_VectorDouble rv = v.getUnitVector().rotate(uv, theta);
         return new V3D_LineDouble(rp, rv);
     }
 

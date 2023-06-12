@@ -29,6 +29,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Ray;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
@@ -625,33 +626,36 @@ public class V3D_PointTest extends V3D_Test {
         int oomn9 = oom - 9;
         RoundingMode rm = RoundingMode.HALF_UP;
         BigRational Pi = BigRational.valueOf(bd.getPi(oomn9, rm));
-        V3D_Line axis = new V3D_Line(P0P0P0, P1P1P0);
+        V3D_Ray xaxis = new V3D_Ray(V3D_Test.pP0P0P0, V3D_Vector.I);
+        V3D_Ray yaxis = new V3D_Ray(V3D_Test.pP0P0P0, V3D_Vector.J);
+        V3D_Ray zaxis = new V3D_Ray(V3D_Test.pP0P0P0, V3D_Vector.K);
+        // Test 1
         V3D_Point instance = new V3D_Point(pP1P0P0);
         BigRational theta = Pi;
-        V3D_Point result = instance.rotate(axis, theta, oom, rm);
-        V3D_Point expResult = pP0P1P0;
+        V3D_Point result = instance.rotate(xaxis, xaxis.l.v, theta, oom, rm);
+        V3D_Point expResult = pP1P0P0;
         assertTrue(expResult.equals(result, oom, rm));
         // Test 2
         instance = new V3D_Point(pP1P0P0);
         theta = Pi;
-        result = instance.rotate(axis, theta, oom, rm);
-        expResult = pP0P1P0;
+        result = instance.rotate(yaxis, yaxis.l.v, theta, oom, rm);
+        expResult = pN1P0P0;
         assertTrue(expResult.equals(result, oom, rm));
         // Test 3
         V3D_Vector offset = new V3D_Vector(2, 0, 0);
         V3D_Vector rel = new V3D_Vector(1, 0, 0);
         instance = new V3D_Point(offset, rel);
         theta = Pi;
-        result = instance.rotate(axis, theta, oom, rm);
-        expResult = new V3D_Point(0, 3, 0);
+        result = instance.rotate(yaxis, yaxis.l.v, theta, oom, rm);
+        expResult = new V3D_Point(-3, 0, 0);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 4
         offset = new V3D_Vector(1, 0, 0);
         rel = new V3D_Vector(2, 0, 0);
         instance = new V3D_Point(offset, rel);
         theta = Pi;
-        result = instance.rotate(axis, theta, oom, rm);
-        expResult = new V3D_Point(0, 3, 0);
+        result = instance.rotate(yaxis, yaxis.l.v, theta, oom, rm);
+        expResult = new V3D_Point(-3, 0, 0);
         assertTrue(expResult.equals(result, oom, rm));
     }
 

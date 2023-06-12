@@ -218,17 +218,17 @@ public class V3D_PolygonDouble extends V3D_FiniteGeometryDouble
     }
 
     @Override
-    public V3D_PolygonDouble rotate(V3D_RayDouble axis, double theta, 
-            double epsilon) {
+    public V3D_PolygonDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
         ArrayList<V3D_ConvexHullCoplanarDouble> rparts = new ArrayList<>();
         ArrayList<V3D_ConvexHullCoplanarDouble> rholes = new ArrayList<>();
         if (holes != null) {
             for (int i = 0; i < holes.size(); i++) {
-                rholes.add(holes.get(i).rotate(axis, theta, epsilon));
+                rholes.add(holes.get(i).rotate(ray, uv, theta, epsilon));
             }
         }
         for (int i = 0; i < parts.size(); i++) {
-            rparts.add(parts.get(i).rotate(axis, theta, epsilon));
+            rparts.add(parts.get(i).rotate(ray, uv, theta, epsilon));
         }
         return new V3D_PolygonDouble(rparts, rholes);
     }
