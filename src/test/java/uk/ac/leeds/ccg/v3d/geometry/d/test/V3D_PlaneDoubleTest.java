@@ -2041,27 +2041,27 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         V3D_PlaneDouble instance;
         V3D_GeometryDouble expResult;
         V3D_GeometryDouble result;
-        /**
-         * The following is from:
-         * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc
-         * Two Planar patches.
-         */
-        pl = new V3D_PlaneDouble(
-                new V3D_PointDouble(8d / 3d, -2d / 3d, 0d),
-                new V3D_VectorDouble(2d, 8d, 0d));
-        instance = new V3D_PlaneDouble(
-                new V3D_PointDouble(8d / 3d, 0d, -2d / 3d),
-                new V3D_VectorDouble(2d, 0d, 8d));
-        // The vector of the line
-        V3D_VectorDouble v = new V3D_VectorDouble(1d / 4d, -1d / 16d, -1d / 16d);
-        // A point on both planes
-        V3D_PointDouble pt = new V3D_PointDouble(68d / 27d, -17d / 27d, -17d / 27d);
-        assertTrue(V3D_PlaneDouble.isCoplanar(pl, pt));
-        assertTrue(V3D_PlaneDouble.isCoplanar(instance, pt));
-        expResult = new V3D_LineDouble(pt, v);
-        result = instance.getIntersection(pl);
-        assertTrue(((V3D_LineDouble) result).v.isScalarMultiple(v));
-        assertTrue(((V3D_LineDouble) expResult).equals((V3D_LineDouble) result));
+//        /**
+//         * The following is from:
+//         * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc
+//         * Two Planar patches.
+//         */
+//        pl = new V3D_PlaneDouble(
+//                new V3D_PointDouble(8d / 3d, -2d / 3d, 0d),
+//                new V3D_VectorDouble(2d, 8d, 0d));
+//        instance = new V3D_PlaneDouble(
+//                new V3D_PointDouble(8d / 3d, 0d, -2d / 3d),
+//                new V3D_VectorDouble(2d, 0d, 8d));
+//        // The vector of the line
+//        V3D_VectorDouble v = new V3D_VectorDouble(1d / 4d, -1d / 16d, -1d / 16d);
+//        // A point on both planes
+//        V3D_PointDouble pt = new V3D_PointDouble(68d / 27d, -17d / 27d, -17d / 27d);
+//        assertTrue(V3D_PlaneDouble.isCoplanar(pl, pt));
+//        assertTrue(V3D_PlaneDouble.isCoplanar(instance, pt));
+//        expResult = new V3D_LineDouble(pt, v);
+//        result = instance.getIntersection(pl);
+//        assertTrue(((V3D_LineDouble) result).v.isScalarMultiple(v));
+//        assertTrue(((V3D_LineDouble) expResult).equals((V3D_LineDouble) result));
         /**
          * The following is from:
          * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc

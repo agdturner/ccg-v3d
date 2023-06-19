@@ -24,13 +24,11 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * angled quadrilateral. The four corners are the points
  * {@link #p}, {@link #q}, {@link #r} and {@link #s}. The following depicts a
  * rectangle {@code
-           qr
- qv  *-------------* r
-    |             |
- pq |             | rs
-    |             |
-  p *-------------* s
-           sp
+ q  *-----* r
+    |   / |
+    |  /  | 
+    | /   |
+  p *-----* s
  }
  * The angles PQR, QRS, RSP, SPQ are all 90 degrees or Pi/2 radians.
  *

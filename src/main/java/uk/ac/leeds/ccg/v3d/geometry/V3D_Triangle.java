@@ -1122,22 +1122,30 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                     V3D_FiniteGeometry gRP = pl.getIntersection(getRP(oom, rm), oom, rm);
                     if (gRP == null) {
                         return null;
-                    } else {
-                        return gRP;
-                    }
-                } else {
-                    V3D_Geometry gRP = pl.getIntersection(getRP(oom, rm), oom, rm);
+                    } else if (gRP instanceof V3D_Point gRPp) {
+                            return V3D_LineSegment.getGeometry(
+                                    (V3D_Point) gQR, gRPp, oom, rm);
+                        } else {
+                            return gRP;
+                        }
+                } else if (gQR instanceof V3D_LineSegment gQRl) {
+                    V3D_FiniteGeometry gRP = pl.getIntersection(getRP(oom, rm), oom, rm);
                     if (gRP == null) {
                         return gQR;
-                    } else {
-                        if (gRP instanceof V3D_Point gRPp) {
-                            return V3D_LineSegment.getGeometry((V3D_Point) gQR,
-                                    gRPp, oom, rm);
+                    } else if (gRP instanceof V3D_Point gRPp) {
+                            return V3D_LineSegment.getGeometry(gQRl, gRPp, oom, rm);
                         } else {
-                            return V3D_Triangle.getGeometry((V3D_LineSegment) gRP,
-                                    (V3D_Point) gQR, oom, rm);
+                            return gRP;
                         }
-                    }
+                } else {
+                    V3D_FiniteGeometry gRP = pl.getIntersection(getRP(oom, rm), oom, rm);
+                    if (gRP == null) {
+                        return gQR;
+                    } else if (gRP instanceof V3D_LineSegment gRPl) {
+                            return V3D_LineSegment.getGeometry(gRPl, (V3D_Point) gQR, oom, rm);
+                        } else {
+                            return V3D_LineSegment.getGeometry((V3D_Point) gRP, (V3D_Point) gQR, oom, rm);
+                        }
                 }
             } else if (gPQ instanceof V3D_LineSegment) {
                 return gPQ;
@@ -1187,17 +1195,23 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                  * triangle, and in others it is a polygon which can be
                  * represented as a set of coplanar triangles.
                  */
-                // Check if vertices intersect
-                boolean pi = isIntersectedBy(t.getP(), oom, rm);
-                boolean qi = isIntersectedBy(t.getQ(), oom, rm);
-                boolean ri = isIntersectedBy(t.getR(), oom, rm);
-                if (pi && qi && ri) {
+//                // Check if vertices intersect
+//                boolean pi = isIntersectedBy(t.getP(), oom, rm);
+//                boolean qi = isIntersectedBy(t.getQ(), oom, rm);
+//                boolean ri = isIntersectedBy(t.getR(), oom, rm);
+//                if (pi && qi && ri) {
+//                    return t;
+//                }
+//                boolean pit = t.isIntersectedBy(getP(), oom, rm);
+//                boolean qit = t.isIntersectedBy(getQ(), oom, rm);
+//                boolean rit = t.isIntersectedBy(getR(), oom, rm);
+//                if (pit && qit && rit) {
+//                    return this;
+//                }
+                if (isAligned(t, oom, rm)) {
                     return t;
                 }
-                boolean pit = t.isIntersectedBy(getP(), oom, rm);
-                boolean qit = t.isIntersectedBy(getQ(), oom, rm);
-                boolean rit = t.isIntersectedBy(getR(), oom, rm);
-                if (pit && qit && rit) {
+                if (t.isAligned(this, oom, rm)) {
                     return this;
                 }
                 V3D_FiniteGeometry gpq = t.getIntersection(getPQ(oom, rm), oom, rm);
@@ -1288,15 +1302,16 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                             pts.add(gqrp);
                             pts.add(grpp);
                             ArrayList<V3D_Point> pts2 = V3D_Point.getUnique(pts, oom, rm);
-                            if (pts2.size() == 2) {
-                                return new V3D_LineSegment(pts2.get(0), pts2.get(1), oom, rm);
-                            }
-                            if (pts2.size() == 3) {
-                                return new V3D_Triangle(pts2.get(0), pts2.get(1), pts2.get(2), oom, rm);
-                            }
-                            return new V3D_ConvexHullCoplanar(oom,
+                            return switch (pts2.size()) {
+                                case 2 ->
+                                    new V3D_LineSegment(pts2.get(0), pts2.get(1), oom, rm);
+                                case 3 ->
+                                    new V3D_Triangle(pts2.get(0), pts2.get(1), pts2.get(2), oom, rm);
+                                default ->
+                                    new V3D_ConvexHullCoplanar(oom,
                                     rm, getPl(oom, rm).n, gpql.getP(),
                                     gpql.getQ(), gqrp, grpp);
+                            };
                         } else {
                             V3D_LineSegment grpl = (V3D_LineSegment) grp;
                             return V3D_ConvexHullCoplanar.getGeometry(
@@ -1327,215 +1342,215 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                 }
             } else {
                 // Triangles are not coplanar.
-                V3D_FiniteGeometry g = t.getIntersection(pl, oom, rm);
-                if (g == null) {
-                    return g;
+                V3D_FiniteGeometry i = getIntersection(t.pl, oom, rm);
+                if (i == null) {
+                    return i;
+                } else if (i instanceof V3D_Point pt) {
+                    if (isAligned(pt, oom, rm)) {
+                        return pt;
+                    } else {
+                        return null;
+                    }
                 } else {
-                    if (g instanceof V3D_Point pt) {
-                        if (isAligned(pt, oom, rm)) {
+                    V3D_LineSegment il = (V3D_LineSegment) i;
+                    V3D_FiniteGeometry ti = t.getIntersection(pl, oom, rm);
+                    if (ti == null) {
+                        return ti;
+                    } else if (ti instanceof V3D_Point pt) {
+                        if (t.isAligned(pt, oom, rm)) {
                             return pt;
                         } else {
                             return null;
                         }
-                    } else if (g instanceof V3D_LineSegment l) {
-                        //return t.getIntersection(l, oom, rm);
-                        V3D_Point lp = l.getP();
-                        V3D_Point lq = l.getQ();
-                        if (isAligned(lp, oom, rm)) {
-                            if (isAligned(lq, oom, rm)) {
-                                return l;
-                            } else {
-                                V3D_FiniteGeometry pqplil = getPQPl(oom, rm).getIntersection(l, oom, rm);
-                                V3D_FiniteGeometry qrplil = getQRPl(oom, rm).getIntersection(l, oom, rm);
-                                V3D_FiniteGeometry rpplil = getRPPl(oom, rm).getIntersection(l, oom, rm);
-                                if (pqplil == null) {
-                                    if (qrplil == null) {
-                                        if (rpplil == null) {
-                                            return l;
-                                        } else {
-                                            if (rpplil instanceof V3D_LineSegment) {
-                                                return rpplil;
-                                            } else {
-                                                return V3D_LineSegment.getGeometry((V3D_Point) rpplil, lp, oom, rm);
-                                            }
-                                        }
-                                    } else {
-                                        if (qrplil instanceof V3D_LineSegment) {
-                                            return qrplil;
-                                        } else {
-                                            if (rpplil == null) {
-                                                return V3D_LineSegment.getGeometry((V3D_Point) qrplil, lp, oom, rm);
-                                            } else {
-                                                if (rpplil instanceof V3D_LineSegment) {
-                                                    return rpplil;
-                                                } else {
-                                                    return V3D_LineSegment.getGeometry((V3D_Point) qrplil, (V3D_Point) rpplil, lp, oom, rm);
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (pqplil instanceof V3D_LineSegment) {
-                                        return pqplil;
-                                    } else {
-                                        if (qrplil == null) {
-                                            if (rpplil == null) {
-                                                return V3D_LineSegment.getGeometry((V3D_Point) pqplil, lp, oom, rm);
-                                            } else {
-                                                if (rpplil instanceof V3D_LineSegment) {
-                                                    return rpplil;
-                                                } else {
-                                                    return V3D_LineSegment.getGeometry((V3D_Point) rpplil, (V3D_Point) pqplil, lp, oom, rm);
-                                                }
-                                            }
-                                        } else {
-                                            if (qrplil instanceof V3D_LineSegment) {
-                                                return qrplil;
-                                            } else {
-                                                //if (rpplil == null) {
-                                                return V3D_LineSegment.getGeometry((V3D_Point) pqplil, (V3D_Point) qrplil, lp, oom, rm);
-                                                //} else {
-                                                //    if (rpplil instanceof V3D_LineSegment) {
-                                                //        return rpplil;
-                                                //    } else {
-                                                //        return V3D_LineSegment.getGeometry((V3D_Point) rpplil, (V3D_Point) pqplil, lp, oom, rm);
-                                                //    }
-                                                //}
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            if (isAligned(lq, oom, rm)) {
-                                V3D_FiniteGeometry pqplil = getPQPl(oom, rm).getIntersection(l, oom, rm);
-                                V3D_FiniteGeometry qrplil = getQRPl(oom, rm).getIntersection(l, oom, rm);
-                                V3D_FiniteGeometry rpplil = getRPPl(oom, rm).getIntersection(l, oom, rm);
-                                if (pqplil == null) {
-                                    if (qrplil == null) {
-                                        if (rpplil == null) {
-                                            return lq;
-                                        } else {
-                                            if (rpplil instanceof V3D_LineSegment) {
-                                                return rpplil;
-                                            } else {
-                                                return V3D_LineSegment.getGeometry((V3D_Point) rpplil, lq, oom, rm);
-                                            }
-                                        }
-                                    } else {
-                                        if (qrplil instanceof V3D_LineSegment) {
-                                            return qrplil;
-                                        } else {
-                                            if (rpplil == null) {
-                                                return V3D_LineSegment.getGeometry((V3D_Point) qrplil, lq, oom, rm);
-                                            } else {
-                                                if (rpplil instanceof V3D_LineSegment) {
-                                                    return rpplil;
-                                                } else {
-                                                    return V3D_LineSegment.getGeometry((V3D_Point) qrplil, (V3D_Point) rpplil, lq, oom, rm);
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (pqplil instanceof V3D_LineSegment) {
-                                        return pqplil;
-                                    } else {
-                                        if (qrplil == null) {
-                                            if (rpplil == null) {
-                                                return V3D_LineSegment.getGeometry((V3D_Point) pqplil, lq, oom, rm);
-                                            } else {
-                                                if (rpplil instanceof V3D_LineSegment) {
-                                                    return rpplil;
-                                                } else {
-                                                    return V3D_LineSegment.getGeometry((V3D_Point) rpplil, (V3D_Point) pqplil, lq, oom, rm);
-                                                }
-                                            }
-                                        } else {
-                                            if (qrplil instanceof V3D_LineSegment) {
-                                                return qrplil;
-                                            } else {
-                                                //if (rpplil == null) {
-                                                return V3D_LineSegment.getGeometry((V3D_Point) pqplil, (V3D_Point) qrplil, lq, oom, rm);
-                                                //} else {
-                                                //    if (rpplil instanceof V3D_LineSegment) {
-                                                //        return rpplil;
-                                                //    } else {
-                                                //        return V3D_LineSegment.getGeometry((V3D_Point) rpplil, (V3D_Point) pqplil, lp, oom, rm);
-                                                //    }
-                                                //}
-                                            }
-                                        }
-                                    }
-                                }
-                            } else {
-                                V3D_FiniteGeometry pqplil = getPQPl(oom, rm).getIntersection(l, oom, rm);
-                                V3D_FiniteGeometry qrplil = getQRPl(oom, rm).getIntersection(l, oom, rm);
-                                V3D_FiniteGeometry rpplil = getRPPl(oom, rm).getIntersection(l, oom, rm);
-                                if (pqplil == null) {
-                                    if (qrplil == null) {
-                                        //if (rpplil == null) {
-                                        return null;
-                                        //} else {
-                                        //    return rpplil;
-                                        //}
-                                    } else {
-                                        if (qrplil instanceof V3D_LineSegment) {
-                                            return null;
-                                        } else {
-                                            if (rpplil == null) {
-                                                return null;
-                                            } else if (rpplil instanceof V3D_LineSegment) {
-                                                return null;
-                                            } else {
-                                                return V3D_LineSegment.getGeometry((V3D_Point) qrplil, (V3D_Point) rpplil, oom, rm);
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (pqplil instanceof V3D_LineSegment) {
-                                        if (qrplil == null) {
-                                            return null;
-                                        } else if (qrplil instanceof V3D_LineSegment) {
-                                            return null;
-                                        } else {
-                                            if (rpplil == null) {
-                                                return null;
-                                            } else if (rpplil instanceof V3D_LineSegment) {
-                                                return null;
-                                            } else {
-                                                return V3D_LineSegment.getGeometry((V3D_Point) qrplil, (V3D_Point) rpplil, oom, rm);
-                                            }
-                                        }
-                                    } else {
-                                        if (qrplil == null) {
-                                            if (rpplil == null) {
-                                                return null;
-                                            } else if (rpplil instanceof V3D_LineSegment) {
-                                                return null;
-                                            } else {
-                                                return V3D_LineSegment.getGeometry((V3D_Point) pqplil, (V3D_Point) rpplil, oom, rm);
-                                            }
-                                        } else if (qrplil instanceof V3D_LineSegment) {
-                                            if (rpplil == null) {
-                                                return null;
-                                            } else if (rpplil instanceof V3D_LineSegment) {
-                                                return null;
-                                            } else {
-                                                return V3D_LineSegment.getGeometry((V3D_Point) pqplil, (V3D_Point) rpplil, oom, rm);
-                                            }
-                                        } else {
-                                            return V3D_LineSegment.getGeometry((V3D_Point) pqplil, (V3D_Point) qrplil, (V3D_Point) rpplil, oom, rm);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                    } else {
+                        return il.getIntersection((V3D_LineSegment) ti, oom, rm);
                     }
+
+//                    V3D_Point lp = il.getP();
+//                    V3D_Point lq = il.getQ();
+//                    if (isAligned(lp, oom, rm)) {
+//                        if (isAligned(lq, oom, rm)) {
+//                            return il;
+//                        } else {
+//                            V3D_FiniteGeometry pqplil = getPQPl(oom, rm).getIntersection(il, oom, rm);
+//                            V3D_FiniteGeometry qrplil = getQRPl(oom, rm).getIntersection(il, oom, rm);
+//                            V3D_FiniteGeometry rpplil = getRPPl(oom, rm).getIntersection(il, oom, rm);
+//                            if (pqplil == null) {
+//                                if (qrplil == null) {
+//                                    if (rpplil == null) {
+//                                        return il;
+//                                    } else if (rpplil instanceof V3D_LineSegment) {
+//                                        return rpplil;
+//                                    } else {
+//                                        return V3D_LineSegment.getGeometry((V3D_Point) rpplil, lp, oom, rm);
+//                                    }
+//                                } else {
+//                                    if (qrplil instanceof V3D_LineSegment) {
+//                                        return qrplil;
+//                                    } else {
+//                                        if (rpplil == null) {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) qrplil, lp, oom, rm);
+//                                        } else if (rpplil instanceof V3D_LineSegment) {
+//                                            return rpplil;
+//                                        } else {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) qrplil, (V3D_Point) rpplil, lp, oom, rm);
+//                                        }
+//                                    }
+//                                }
+//                            } else {
+//                                if (pqplil instanceof V3D_LineSegment) {
+//                                    return pqplil;
+//                                } else {
+//                                    if (qrplil == null) {
+//                                        if (rpplil == null) {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) pqplil, lp, oom, rm);
+//                                        } else if (rpplil instanceof V3D_LineSegment) {
+//                                            return rpplil;
+//                                        } else {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) rpplil, (V3D_Point) pqplil, lp, oom, rm);
+//                                        }
+//                                    } else {
+//                                        if (qrplil instanceof V3D_LineSegment) {
+//                                            return qrplil;
+//                                        } else {
+//                                            //if (rpplil == null) {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) pqplil, (V3D_Point) qrplil, lp, oom, rm);
+//                                            //} else {
+//                                            //    if (rpplil instanceof V3D_LineSegment) {
+//                                            //        return rpplil;
+//                                            //    } else {
+//                                            //        return V3D_LineSegment.getGeometry((V3D_Point) rpplil, (V3D_Point) pqplil, lp, oom, rm);
+//                                            //    }
+//                                            //}
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        if (isAligned(lq, oom, rm)) {
+//                            V3D_FiniteGeometry pqplil = getPQPl(oom, rm).getIntersection(il, oom, rm);
+//                            V3D_FiniteGeometry qrplil = getQRPl(oom, rm).getIntersection(il, oom, rm);
+//                            V3D_FiniteGeometry rpplil = getRPPl(oom, rm).getIntersection(il, oom, rm);
+//                            if (pqplil == null) {
+//                                if (qrplil == null) {
+//                                    if (rpplil == null) {
+//                                        return lq;
+//                                    } else if (rpplil instanceof V3D_LineSegment) {
+//                                        return rpplil;
+//                                    } else {
+//                                        return V3D_LineSegment.getGeometry((V3D_Point) rpplil, lq, oom, rm);
+//                                    }
+//                                } else {
+//                                    if (qrplil instanceof V3D_LineSegment) {
+//                                        return qrplil;
+//                                    } else {
+//                                        if (rpplil == null) {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) qrplil, lq, oom, rm);
+//                                        } else if (rpplil instanceof V3D_LineSegment) {
+//                                            return rpplil;
+//                                        } else {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) qrplil, (V3D_Point) rpplil, lq, oom, rm);
+//                                        }
+//                                    }
+//                                }
+//                            } else {
+//                                if (pqplil instanceof V3D_LineSegment) {
+//                                    return pqplil;
+//                                } else {
+//                                    if (qrplil == null) {
+//                                        if (rpplil == null) {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) pqplil, lq, oom, rm);
+//                                        } else if (rpplil instanceof V3D_LineSegment) {
+//                                            return rpplil;
+//                                        } else {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) rpplil, (V3D_Point) pqplil, lq, oom, rm);
+//                                        }
+//                                    } else {
+//                                        if (qrplil instanceof V3D_LineSegment) {
+//                                            return qrplil;
+//                                        } else {
+//                                            //if (rpplil == null) {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) pqplil, (V3D_Point) qrplil, lq, oom, rm);
+//                                            //} else {
+//                                            //    if (rpplil instanceof V3D_LineSegment) {
+//                                            //        return rpplil;
+//                                            //    } else {
+//                                            //        return V3D_LineSegment.getGeometry((V3D_Point) rpplil, (V3D_Point) pqplil, lp, oom, rm);
+//                                            //    }
+//                                            //}
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        } else {
+//                            V3D_FiniteGeometry pqplil = getPQPl(oom, rm).getIntersection(il, oom, rm);
+//                            V3D_FiniteGeometry qrplil = getQRPl(oom, rm).getIntersection(il, oom, rm);
+//                            V3D_FiniteGeometry rpplil = getRPPl(oom, rm).getIntersection(il, oom, rm);
+//                            if (pqplil == null) {
+//                                if (qrplil == null) {
+//                                    //if (rpplil == null) {
+//                                    return null;
+//                                    //} else {
+//                                    //    return rpplil;
+//                                    //}
+//                                } else {
+//                                    if (qrplil instanceof V3D_LineSegment) {
+//                                        return null;
+//                                    } else {
+//                                        if (rpplil == null) {
+//                                            return null;
+//                                        } else if (rpplil instanceof V3D_LineSegment) {
+//                                            return null;
+//                                        } else {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) qrplil, (V3D_Point) rpplil, oom, rm);
+//                                        }
+//                                    }
+//                                }
+//                            } else {
+//                                if (pqplil instanceof V3D_LineSegment) {
+//                                    if (qrplil == null) {
+//                                        return null;
+//                                    } else if (qrplil instanceof V3D_LineSegment) {
+//                                        return null;
+//                                    } else {
+//                                        if (rpplil == null) {
+//                                            return null;
+//                                        } else if (rpplil instanceof V3D_LineSegment) {
+//                                            return null;
+//                                        } else {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) qrplil, (V3D_Point) rpplil, oom, rm);
+//                                        }
+//                                    }
+//                                } else {
+//                                    if (qrplil == null) {
+//                                        if (rpplil == null) {
+//                                            return null;
+//                                        } else if (rpplil instanceof V3D_LineSegment) {
+//                                            return null;
+//                                        } else {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) pqplil, (V3D_Point) rpplil, oom, rm);
+//                                        }
+//                                    } else if (qrplil instanceof V3D_LineSegment) {
+//                                        if (rpplil == null) {
+//                                            return null;
+//                                        } else if (rpplil instanceof V3D_LineSegment) {
+//                                            return null;
+//                                        } else {
+//                                            return V3D_LineSegment.getGeometry((V3D_Point) pqplil, (V3D_Point) rpplil, oom, rm);
+//                                        }
+//                                    } else {
+//                                        return V3D_LineSegment.getGeometry((V3D_Point) pqplil, (V3D_Point) qrplil, (V3D_Point) rpplil, oom, rm);
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
                 }
             }
+        } else {
+            return null;
         }
-        return null;
     }
 
 //    @Override
@@ -2148,7 +2163,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      *
      * @param l a line segment either equal to one of the edges of this - null
      * null null null null null null null null null null null null null null
-     * null null     {@link #getPQ(int, java.math.RoundingMode)},
+     * null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
      * {@link #getQR(int, java.math.RoundingMode)} or
      * {@link #getRP(int, java.math.RoundingMode)}.
      * @param oom The Order of Magnitude for the precision.

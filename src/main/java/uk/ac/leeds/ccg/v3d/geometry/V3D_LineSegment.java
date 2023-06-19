@@ -434,9 +434,10 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         return true;
                     }
                 } else {
-                    if (apb.compareTo(d) != 1) {
-                        return true;
-                    }
+                    return apb.equals(d, oom);
+//                    if (apb.compareTo(d) != 1) {
+//                        return true;
+//                    }
                 }
             }
         }
@@ -509,63 +510,94 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         /**
          * Check the type of intersection. {@code
          * A) p_q l.p_l.q
+         *
          * 1)  p +----------+ q
          *              l.p +----------+ l.q
+         *
          * 2)  p +----------+ q
          *         l.p +----------+ l.q
+         *
          * 3)  p +------------------------+ q
          *         l.p +----------+ l.q
+         *
          * 4)        p +----------+ q
          *     l.p +----------------------+ l.q
+         *
          * 5)    p +----------+ q
          *     l.p +----------+ l.q
+         *
          * 6)         p +----------+ q
          *     l.p +----------+ l.q
+         *
          * 7)              p +----------+ q
          *     l.p +---------+ l.q
+         *
          * B) q_p l.p_l.q
+         *
          * 8)  q +----------+ p
          *              l.p +----------+ l.q
+         *
          * 9)  q +----------+ p
          *         l.p +----------+ l.q
+         *
          * 10) q +------------------------+ p
          *         l.p +----------+ l.q
+         *
          * 11)       q +----------+ p
          *     l.p +----------------------+ l.q
+         *
          * 12)       q +----------+ p
          *         l.p +----------+ l.q
+         *
          * 13)       q +----------+ p
          *     l.p +----------+ l.q
+         *
          * 14)              q +----------+ p
          *     l.p +----------+ l.q
+         *
          * C) p_q l.q_l.p
+         *
          * 15) p +----------+ q
-         *         l.q +----------+ l.p
-         * 16) p +----------+ q
          *              l.q +----------+ l.p
+         *
+         * 16) p +----------+ q
+         *         l.q +----------+ l.p
+         *
          * 17) p +------------------------+ q
          *         l.q +----------+ l.p
+         *
          * 18)       p +----------+ q
          *     l.q +------------------------+ l.p
+         *
          * 19)       p +----------+ q
          *         l.q +----------+ l.p
+         *
          * 20)       p +----------+ q
          *     l.q +----------+ l.p
+         *
          * 21)              p +----------+ q
          *     l.q +----------+ l.p
+         *
          * D) q_p l.q_l.p
+         *
          * 22) q +----------+ p
          *              l.q +----------+ l.p
+         *
          * 23) q +----------+ p
          *         l.q +----------+ l.p
+         *
          * 24) q +------------------------+ p
          *         l.q +----------+ l.p
+         *
          * 25)       q +----------+ p
          *     l.q +------------------------+ l.p
+         *
          * 26)       p +----------+ q
-         *         l.q +---------+ l.p
+         *         l.q +----------+ l.p
+         *
          * 27)       q +----------+ p
          *    l.q +---------+ l.p
+         *
          * 28)            q +----------+ p
          *    l.q +---------+ l.p
          * }
@@ -574,28 +606,11 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         V3D_Point lq = ls.getQ();
         V3D_Point tp = getP();
         V3D_Point tq = getQ();
-        if (this.isIntersectedBy(lp, oom, rm)) {
+        if (isIntersectedBy(lp, oom, rm)) {
             // Cases: 1, 2, 3, 5, 8, 9, 10, 12, 17, 19, 20, 21, 24, 26, 27, 28
-            if (this.isIntersectedBy(lq, oom, rm)) {
+            if (isIntersectedBy(lq, oom, rm)) {
                 // Cases: 3, 5, 10, 12, 17, 19, 24, 26
                 return ls;
-//                if (l.isIntersectedBy(tp, oom)) {
-//                    // Cases: 5, 12, 19, 26
-//                    if (l.isIntersectedBy(tq, oom)) {
-//                        // Cases: 5, 12, 19, 26
-//                        return l;
-//                    } else {
-//                        // Cases: 
-//                    }
-//                } else {
-//                    // Cases: 3, 10, 17, 24
-//                    if (l.isIntersectedBy(tq, oom)) {
-//                        // Cases: 3, 10, 17, 24
-//                        return l;
-//                    } else {
-//                        // Cases: 
-//                    }
-//                }
             } else {
                 // Cases: 1, 2, 8, 9, 20, 21, 27, 28
                 if (ls.isIntersectedBy(tp, oom, rm)) {
@@ -608,35 +623,25 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         return V3D_LineSegment.getGeometry(lp, tp, oom, rm);
                     }
                 } else {
-                    // Cases: 1, 2, 8, 21, 27, 28
-                    if (tp.equals(lp, oom, rm)) {
-                        // Cases: 8, 21
-                        return tp;
+                    // Cases: 1, 2, 27, 28
+                    if (lp.equals(tq, oom, rm)) {
+                        // Cases: 1, 28
+                        return lp;
                     } else {
-                        // Case: 1, 28
-                        if (lp.equals(tq, oom, rm)) {
-                            return lp;
-                        }
-                        // Cases: 2, 27
+                        // Case: 2, 27
                         return V3D_LineSegment.getGeometry(lp, tq, oom, rm);
                     }
                 }
             }
         } else {
-            // Cases: 4, 6, 7, 11, 13, 14, 16, 18, 19, 22, 23, 25
-            if (this.isIntersectedBy(lq, oom, rm)) {
-                // Cases: 6, 7, 13, 14, 16, 19, 22, 23
+            // Cases: 4, 6, 7, 11, 13, 14, 15, 16, 18, 22, 23, 25
+            if (isIntersectedBy(lq, oom, rm)) {
+                // Cases: 6, 7, 13, 14, 15, 16, 22, 23
                 if (ls.isIntersectedBy(tp, oom, rm)) {
-                    // Cases: 6, 7, 19, 22, 23
+                    // Cases: 6, 7, 22, 23
                     if (ls.isIntersectedBy(tq, oom, rm)) {
-                        // Cases: 19, 23
-                        if (tp.equals(lp, oom, rm)) {
-                            // Case: 19
-                            return this;
-                        } else {
-                            // Case: 23
-                            return V3D_LineSegment.getGeometry(lq, tp, oom, rm);
-                        }
+                        // Cases: 23
+                        return V3D_LineSegment.getGeometry(lq, tp, oom, rm);
                     } else {
                         // Cases: 6, 7, 22, 
                         if (tp.equals(lq, oom, rm)) {
@@ -648,36 +653,19 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         }
                     }
                 } else {
-                    // Cases: 13, 14, 16
-                    //if (l.isIntersectedBy(tq, oom)) {
-                    // Cases: 13, 14, 16
+                    // Cases: 13, 14, 15, 16
                     if (tq.equals(lq, oom, rm)) {
-                        // Cases: 14, 16
+                        // Cases: 14, 15
                         return tq;
                     } else {
-                        // Case: 13
+                        // Case: 13, 16
                         //return new V3D_LineSegment(e, l.qv, ls.l.qv);
                         return V3D_LineSegment.getGeometry(tq, lq, oom, rm);
                     }
-//                    } else {
-//                        // Cases:                    
-//                        return l;
-                    //}
                 }
             } else {
                 // Cases: 4, 11, 18, 25
                 return this;
-//                if (l.isIntersectedBy(tp, oom)) {
-//                    // Cases: 4, 11, 18, 25
-//                    if (l.isIntersectedBy(tq, oom)) {
-//                        // Cases: 4, 11, 18, 25
-//                        return this;
-//                    } else {
-//                        // Cases:
-//                    }
-//                } else {
-//                    // Cases:
-//                }
             }
         }
     }

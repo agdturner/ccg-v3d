@@ -954,23 +954,40 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             if (gPQ == null) {
                 V3D_FiniteGeometryDouble gQR = pl.getIntersection(getQR(),
                         epsilon);
-                V3D_FiniteGeometryDouble gRP = pl.getIntersection(getRP(),
-                        epsilon);
                 if (gQR == null) {
-                    return gRP;
-                } else {
+                    V3D_FiniteGeometryDouble gRP = pl.getIntersection(getRP(),
+                        epsilon);
                     if (gRP == null) {
-                        return gQR;
+                        return null;
                     } else if (gRP instanceof V3D_PointDouble gRPp) {
                         return V3D_LineSegmentDouble.getGeometry(
                                 (V3D_PointDouble) gQR, gRPp, epsilon);
                     } else {
-//                            return V3D_TriangleDouble.getGeometry(
-//                                    (V3D_LineSegmentDouble) gRP,
-//                                    (V3D_PointDouble) gQR, epsilon);
                         return gRP;
                     }
-
+                } else if (gQR instanceof V3D_LineSegmentDouble gQRl) {
+                    V3D_FiniteGeometryDouble gRP = pl.getIntersection(getRP(),
+                        epsilon);
+                    if (gRP == null) {
+                        return gQR;
+                    } else if (gRP instanceof V3D_PointDouble gRPp) {
+                        return V3D_LineSegmentDouble.getGeometry(gQRl, 
+                                gRPp, epsilon);
+                    } else {
+                        return gRP;
+                    }
+                } else {
+                    V3D_FiniteGeometryDouble gRP = pl.getIntersection(getRP(),
+                        epsilon);
+                    if (gRP == null) {
+                        return gQR;
+                    } else if (gRP instanceof V3D_LineSegmentDouble gRPl) {
+                        return V3D_LineSegmentDouble.getGeometry(
+                                gRPl, (V3D_PointDouble) gQR,  epsilon);
+                    } else {
+                        return V3D_LineSegmentDouble.getGeometry(
+                                (V3D_PointDouble) gQR, (V3D_PointDouble) gRP, epsilon);
+                    }
                 }
             } else if (gPQ instanceof V3D_LineSegmentDouble) {
                 return gPQ;
@@ -1991,7 +2008,8 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      *
      * @param l a line segment either equal to one of the edges of this: null
      * null null null null null null null null null null null null null null
-     * null null null null null null null null null null null null null null null     {@link #getPQ()},
+     * null null null null null null null null null null null null null null
+     * null null     {@link #getPQ()},
      * {@link #getQR()} or {@link #getRP()}.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
