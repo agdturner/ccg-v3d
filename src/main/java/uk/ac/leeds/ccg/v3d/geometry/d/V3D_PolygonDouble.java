@@ -152,7 +152,7 @@ public class V3D_PolygonDouble extends V3D_FiniteGeometryDouble
      */
     public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
         if (getEnvelope().isIntersectedBy(pt)) {
-            if (parts.get(0).triangles.get(0).pl.isIntersectedBy(pt, epsilon)) {
+            if (parts.get(0).triangles.get(0).pl.isIntersectedBy(epsilon, pt)) {
 //                // Holes and parts could be checked in parallel.
 //                if (holes != null) {
 //                    for (V3D_ConvexHullCoplanarDouble h : holes) {

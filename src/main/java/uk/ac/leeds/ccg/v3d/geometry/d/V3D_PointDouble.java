@@ -185,13 +185,33 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
      * Two points are equal if they are at the same location defined by each
      * points relative start location and translation vector.
      *
+     * @param p The points to test if they are all equal.
+     * @return {@code true} iff {@code pv} is the same as {@code this}.
+     */
+    public static boolean equals(V3D_PointDouble... ps) {
+        if (ps.length < 2) {
+            return true;
+        }
+        var v0 = ps[0];
+        for (var v : ps) {
+            if (!v.equals(v0)) {
+                return false;
+            }
+        }
+        return true;
+    }
+            
+    /**
+     * Two points are equal if they are at the same location defined by each
+     * points relative start location and translation vector.
+     *
+     * @param epsilon The tolerance within which vector components are 
+     * considered equal.
      * @param p The point to test if it is the same as {@code this}.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      * @return {@code true} iff {@code pv} is equal to {@code this} given the
      * epsilon.
      */
-    public boolean equals(V3D_PointDouble p, double epsilon) {
+    public boolean equals(double epsilon, V3D_PointDouble p) {
         if (p == null) {
             return false;
         }
@@ -204,6 +224,28 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
         return Math_Double.equals(x, px, epsilon) 
                 && Math_Double.equals(y, py, epsilon) 
                 && Math_Double.equals(z, pz, epsilon) ;
+    }
+    
+    /**
+     * Two points are equal if they are at the same location defined by each
+     * points relative start location and translation vector.
+     *
+     * @param epsilon The tolerance within which vector components are 
+     * considered equal.
+     * @param ps The points to test if they are all equal.
+     * @return {@code true} iff {@code pv} is the same as {@code this}.
+     */
+    public static boolean equals(double epsilon, V3D_PointDouble... ps) {
+        if (ps.length < 2) {
+            return true;
+        }
+        var v0 = ps[0];
+        for (var v : ps) {
+            if (!v.equals(v0)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -252,20 +294,47 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
      * Returns true if this is between a and b. If a = b = this then this is
      * true.
      *
+     * @param a A point.
+     * @param b A point.
+     * @return true iff this is between a and b.
+     */
+    public boolean isBetween(V3D_PointDouble a, V3D_PointDouble b) {
+        V3D_VectorDouble ab = new V3D_VectorDouble(a, b);
+        if (this.equals(a)) {
+            return true;
+        }
+        if (this.equals(b)) {
+            return true;
+        }
+        if (a.equals(b)) {
+            return false;
+        }
+        V3D_PlaneDouble ap = new V3D_PlaneDouble(a, ab);
+        V3D_PlaneDouble bp = new V3D_PlaneDouble(b, ab);
+        int aps = ap.getSideOfPlane(this);
+        int bps = bp.getSideOfPlane(this);
+        return aps != bps;
+    }
+    
+    /**
+     * Returns true if this is between a and b. If a = b = this then this is
+     * true.
+     *
+     * @param epsilon The tolerance within which vector components are 
+     * considered equal.
      * @param a A point
      * @param b A point
-     * @param epsilon The tolerance.
      * @return true iff this is equal to the ORIGIN.
      */
-    public boolean isBetween(V3D_PointDouble a, V3D_PointDouble b, double epsilon) {
+    public boolean isBetween(double epsilon, V3D_PointDouble a, V3D_PointDouble b) {
         V3D_VectorDouble ab = new V3D_VectorDouble(a, b);
-        if (this.equals(a, epsilon)) {
+        if (this.equals(epsilon, a)) {
             return true;
         }
-        if (this.equals(b, epsilon)) {
+        if (this.equals(epsilon, b)) {
             return true;
         }
-        if (a.equals(b, epsilon)) {
+        if (a.equals(epsilon, b)) {
             return false;
         }
         V3D_PlaneDouble ap = new V3D_PlaneDouble(a, ab);
@@ -409,39 +478,11 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
     }
 
     /**
-     * @param points The points to test if they are coincident.
-     * @return {@code true} iff all the points are coincident.
-     */
-    public static boolean isCoincident(V3D_VectorDouble... points) {
-        V3D_VectorDouble p0 = points[0];
-        for (V3D_VectorDouble p1 : points) {
-            if (!p1.equals(p0)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @param points The points to test if they are coincident.
-     * @return {@code true} iff all the points are coincident.
-     */
-    public static boolean isCoincident(V3D_PointDouble... points) {
-        V3D_PointDouble p0 = points[0];
-        for (V3D_PointDouble p1 : points) {
-            if (!p1.equals(p0)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * A collection method for getting unique points.
      *
+     * @param epsilon The tolerance within which vector components are 
+     * considered equal.
      * @param pts The points to derive a unique list from.
-     * @param epsilon The tolerance within which two points are regarded as
-     * equal.
      * @return A unique list made from those in pts.
      */
     public static ArrayList<V3D_PointDouble> getUnique(
@@ -455,7 +496,7 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
                 for (int j = i + 1; j < pts.size(); j++) {
                     if (!indexes.contains(j)) {
                         V3D_PointDouble p2 = pts.get(j);
-                        if (p.equals(p2, epsilon)) {
+                        if (p.equals(epsilon, p2)) {
                             indexes.add(j);
                         }
                     }

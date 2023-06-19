@@ -91,50 +91,50 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         double epsilon = 1d / 10000000d;
         V3D_PointDouble pt = V3D_DoubleTest.pP0P0P0;
         V3D_LineDouble instance = new V3D_LineDouble(V3D_DoubleTest.pN1N1N1, V3D_DoubleTest.pP1P1P1);
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.isIntersectedBy(epsilon, pt));
         // Test 2
         pt = new V3D_PointDouble(V3D_DoubleTest.P0_1E2, V3D_DoubleTest.P0_1E2, V3D_DoubleTest.P0_1E2);
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.isIntersectedBy(epsilon, pt));
         // Test 3 works as the rounding puts pt on the line.
         pt = new V3D_PointDouble(V3D_DoubleTest.P0_1E12, V3D_DoubleTest.P0_1E12, V3D_DoubleTest.P0_1E12);
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.isIntersectedBy(epsilon, pt));
         // Test 4 works as the rounding puts pt on the line.
         pt = new V3D_PointDouble(V3D_DoubleTest.N0_1E12, V3D_DoubleTest.N0_1E12, V3D_DoubleTest.N0_1E12);
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.isIntersectedBy(epsilon, pt));
         // Test 5 works as the rounding puts pt on the line.
         double a = V3D_DoubleTest.P0_1E2 + V3D_DoubleTest.P1E12;
         pt = new V3D_PointDouble(a, a, a);
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.isIntersectedBy(epsilon, pt));
         // Test 6 works as the rounding puts pt on the line.
         a = V3D_DoubleTest.N0_1E2 + V3D_DoubleTest.N1E12;
         pt = new V3D_PointDouble(a, a, a);
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.isIntersectedBy(epsilon, pt));
         // Test 7
         instance = new V3D_LineDouble(V3D_DoubleTest.pP0N1N1, V3D_DoubleTest.pP2P1P1);
         pt = new V3D_PointDouble(-1d, -2d, -2d);
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.isIntersectedBy(epsilon, pt));
         // Test 8 fails as the rounding does not put pt on the line.
         a = V3D_DoubleTest.N0_1E2 + V3D_DoubleTest.N1E12;
         pt = new V3D_PointDouble(a, a, a);
-        assertFalse(instance.isIntersectedBy(pt, epsilon));
+        assertFalse(instance.isIntersectedBy(epsilon, pt));
         pt = new V3D_PointDouble(a + 1d, a, a);
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.isIntersectedBy(epsilon, pt));
 //        // Test 9 Results seem somewhat contrary. It would not matter if these 
 //        // results came out differently. The point is that oom is not set 
 //        // to be sufficiently sensitive, so we get intersections reported that 
 //        // are not wanted.  
 //        a = N0_1E12+(N1E12);
 //        pt = new V3D_PointDouble(a, a, a);
-//        assertTrue(instance.isIntersectedBy(pt, epsilon)); // True as rounding in the cross product calculation is too general.
+//        assertTrue(instance.isIntersectedBy(epsilon, pt)); // True as rounding in the cross product calculation is too general.
 //        pt = new V3D_PointDouble(a+(BigInteger.ONE), a, a);
-//        assertTrue(instance.isIntersectedBy(pt, epsilon)); // True as rounding in the cross product calculation is too general, but it should be true anyway!
+//        assertTrue(instance.isIntersectedBy(epsilon, pt)); // True as rounding in the cross product calculation is too general, but it should be true anyway!
         // Test 10 This is like test 9, but the oom is set appropriately so the
         // coordinate and crossproduct rounding work fine.
         a = V3D_DoubleTest.N0_1E12 + V3D_DoubleTest.N1E12;
         pt = new V3D_PointDouble(a, a, a);
-        assertFalse(instance.isIntersectedBy(pt, epsilon));
+        assertFalse(instance.isIntersectedBy(epsilon, pt));
         pt = new V3D_PointDouble(a + 1d, a, a);
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.isIntersectedBy(epsilon, pt));
     }
 
     /**
@@ -362,17 +362,17 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         double epsilon = 1d / 10000000d;
         V3D_LineDouble l = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P1P1);
         V3D_LineDouble instance = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P1P1);
-        assertTrue(instance.equals(l, epsilon));
+        assertTrue(instance.equals(epsilon, l));
         // Test 2
         instance = new V3D_LineDouble(V3D_DoubleTest.pP1P1P1, V3D_DoubleTest.pP0P0P0);
-        assertTrue(instance.equals(l, epsilon));
+        assertTrue(instance.equals(epsilon, l));
         // Test 3
         l = V3D_LineDouble.X_AXIS;
         instance = V3D_LineDouble.X_AXIS;
-        assertTrue(instance.equals(l, epsilon));
+        assertTrue(instance.equals(epsilon, l));
         // Test 4
         instance = V3D_LineDouble.Y_AXIS;
-        assertFalse(instance.equals(l, epsilon));
+        assertFalse(instance.equals(epsilon, l));
     }
 
     /**
@@ -388,12 +388,14 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         V3D_LineDouble instance = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P1P1);
         V3D_GeometryDouble expResult = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P1P1);
         V3D_GeometryDouble result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineDouble) expResult).equals((V3D_LineDouble) result, epsilon));
+        assertTrue(((V3D_LineDouble) expResult).equals(epsilon, 
+                (V3D_LineDouble) result));
         // Test 2
         instance = new V3D_LineDouble(V3D_DoubleTest.pP1P1P1, V3D_DoubleTest.pP0P0P0);
         expResult = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P1P1);
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineDouble) expResult).equals((V3D_LineDouble) result, epsilon));
+        assertTrue(((V3D_LineDouble) expResult).equals(epsilon, 
+                (V3D_LineDouble) result));
         // Test 3
         //instance = new V3D_LineDouble(P0P1P0, P0N1P0);
         instance = new V3D_LineDouble(V3D_DoubleTest.pP0N1P0, V3D_DoubleTest.pP0P1P0);
@@ -401,7 +403,8 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         expResult = V3D_DoubleTest.pP0P0P0;
         epsilon = 1d / 100000000000d;
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, 
+                (V3D_PointDouble) result));
         // Test 4
         instance = new V3D_LineDouble(V3D_DoubleTest.pN1P1P1, V3D_DoubleTest.pP1N1P1);
         l = new V3D_LineDouble(V3D_DoubleTest.pP0P2P1, V3D_DoubleTest.pP1P1P1);
@@ -414,13 +417,15 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         instance = new V3D_LineDouble(V3D_DoubleTest.pN1P1P1, V3D_DoubleTest.pP1N1N1);
         expResult = V3D_DoubleTest.pP0P0P0;
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, 
+                (V3D_PointDouble) result));
         // Test 6
         l = new V3D_LineDouble(V3D_DoubleTest.pN1N1N1, V3D_DoubleTest.pP1P1P1);
         instance = new V3D_LineDouble(V3D_DoubleTest.pN1P1P1, V3D_DoubleTest.pP1N1N1);
         expResult = V3D_DoubleTest.pP0P0P0;
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, 
+                (V3D_PointDouble) result));
         // Test 7
         l = new V3D_LineDouble(new V3D_PointDouble(-1d + (0.1d), -1d + (0.1d), -1d),
                 new V3D_PointDouble(1d + (0.1d), 1d + (0.1d), 1d));
@@ -428,7 +433,8 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
                 new V3D_PointDouble(1d + (0.1d), -1d + (0.1d), -1d));
         expResult = new V3D_PointDouble(0d + (0.1d), 0d + (0.1d), 0d);
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, 
+                (V3D_PointDouble) result));
         // Test 8
         epsilon = 1d / 100000d;
         l = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, 0d),
@@ -440,7 +446,8 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
 //        expResult = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, epsilon),
 //                new V3D_PointDouble(100d, 100d, epsilon));
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineDouble) expResult).equals((V3D_LineDouble) result, epsilon));
+        assertTrue(((V3D_LineDouble) expResult).equals(epsilon, 
+                (V3D_LineDouble) result));
         // Test 9
         epsilon = 1d / 100000d;
         l = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, 0d),
@@ -457,7 +464,8 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
                 new V3D_PointDouble(100d, -100d, epsilon));
         expResult = V3D_DoubleTest.pP0P0P0;
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, 
+                (V3D_PointDouble) result));
         // Test 11
         epsilon = 1d / 100000d;
         l = new V3D_LineDouble(new V3D_PointDouble(-100d, -100d, 0d),
@@ -612,14 +620,14 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         instance = new V3D_LineDouble(V3D_DoubleTest.pP1P0P0, V3D_DoubleTest.pP1P1P0);
         expResult = new V3D_LineSegmentDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
         result = instance.getLineOfIntersection(pt, epsilon);
-        assertTrue(expResult.equals((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(expResult.equalsIgnoreDirection(epsilon,(V3D_LineSegmentDouble) result));
         // Test 2
         instance = new V3D_LineDouble(V3D_DoubleTest.pP1N1P0, V3D_DoubleTest.pP1P1P0);
         expResult = new V3D_LineSegmentDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
         //result = instance.getLineOfIntersection(pt, epsilon);
         //System.out.println(result);
         result = instance.getLineOfIntersection(pt, epsilon);
-        assertTrue(expResult.equals((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(expResult.equalsIgnoreDirection(epsilon,(V3D_LineSegmentDouble) result));
     }
 
     /**
@@ -650,7 +658,7 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         V3D_LineDouble l1 = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P0P1);
         V3D_LineSegmentDouble expResult = new V3D_LineSegmentDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
         V3D_LineSegmentDouble result = l0.getLineOfIntersection(l1, epsilon);
-        assertTrue(expResult.equalsIgnoreDirection(result, epsilon));
+        assertTrue(expResult.equalsIgnoreDirection(epsilon, result));
         // Test 2
         l1 = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P1P0);
         result = l0.getLineOfIntersection(l1, epsilon);
@@ -799,44 +807,28 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
         V3D_LineDouble instance = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
         V3D_LineDouble expResult = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
         V3D_LineDouble result = instance.rotate(xaxis, xaxis.l.v, theta, epsilon);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 2
         V3D_RayDouble yaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P1P0);
         instance = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
         expResult = new V3D_LineDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P0N1);
         result = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 3
         instance = new V3D_LineDouble(new V3D_VectorDouble(0, 0, 0), new V3D_VectorDouble(5, 0, 0));
         expResult = new V3D_LineDouble(new V3D_VectorDouble(0, 0, 0), new V3D_VectorDouble(0, 0, -5));
         result = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 4
         theta = Pi;
         instance = new V3D_LineDouble(new V3D_VectorDouble(3, 2, 0), new V3D_VectorDouble(5, 0, 0));
         expResult = new V3D_LineDouble(new V3D_VectorDouble(-3, 2, 0), new V3D_VectorDouble(-5, 0, 0));
         result = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
     }
 
     /**
-     * Test of isCoincident method, of class V3D_Geometrics.
-     */
-    @Test
-    public void testIsCoincident() {
-        System.out.println("isCoincident");
-        V3D_PointDouble[] points = new V3D_PointDouble[2];
-        points[0] = V3D_DoubleTest.pP0P0P0;
-        points[1] = V3D_DoubleTest.pP0P0P0;
-        assertTrue(V3D_PointDouble.isCoincident(points));
-        points[1] = V3D_DoubleTest.pP0P0P1;
-        assertFalse(V3D_PointDouble.isCoincident(points));
-        points[0] = V3D_DoubleTest.pP0P0P1;
-        assertTrue(V3D_PointDouble.isCoincident(points));
-    }
-
-    /**
-     * Test of isCollinear method, of class V3D_Geometrics.
+     * Test of isCollinear method, of class V3D_LineDouble.
      */
     @Test
     public void testIsCollinear_V3D_LineDouble_V3D_PointDoubleArr() {
@@ -858,7 +850,7 @@ public class V3D_LineDoubleTest extends V3D_LineDouble {
     }
 
     /**
-     * Test of isCollinear method, of class V3D_Geometrics.
+     * Test of isCollinear method, of class V3D_LineDouble.
      */
     @Test
     public void testIsCollinear_V3D_PointDoubleArr() {

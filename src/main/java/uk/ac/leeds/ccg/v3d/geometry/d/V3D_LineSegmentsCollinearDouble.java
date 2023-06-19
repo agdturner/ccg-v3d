@@ -88,7 +88,7 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
         for (var x : lineSegments) {
             boolean found = false;
             for (int i = 0; i < l.lineSegments.size(); i++) {
-                if (x.equals(l.lineSegments.get(i), epsilon)) {
+                if (x.equalsIgnoreDirection(epsilon, l.lineSegments.get(i))) {
                     found = true;
                     indexes.add(i);
                     break;
@@ -102,7 +102,7 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
             if (!indexes.contains(i)) {
                 boolean found = false;
                 for (var x : lineSegments) {
-                    if (x.equals(l.lineSegments.get(i), epsilon)) {
+                    if (x.equalsIgnoreDirection(epsilon, l.lineSegments.get(i))) {
                         found = true;
                         break;
                     }
@@ -285,7 +285,8 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble ls,
             double epsilon) {
-        if (lineSegments.get(0).l.isCollinear(ls.l, epsilon)) {
+        //if (lineSegments.get(0).l.isCollinear(epsilon, ls.getPoints())) {
+        if (ls.l.equals(epsilon, lineSegments.get(0).l)) {
             ArrayList<V3D_PointDouble> ps = new ArrayList<>();
             ArrayList<V3D_LineSegmentDouble> lse = new ArrayList<>();
             Iterator<V3D_LineSegmentDouble> ite = lineSegments.iterator();

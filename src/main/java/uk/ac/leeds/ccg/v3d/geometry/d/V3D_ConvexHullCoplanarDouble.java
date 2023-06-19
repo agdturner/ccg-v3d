@@ -249,7 +249,13 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         for (int i = 1; i < this.points.size() - 1; i++) {
             V3D_PointDouble qt = this.points.get(i);
             V3D_PointDouble rt = this.points.get(i + 1);
-            triangles.add(new V3D_TriangleDouble(pt, qt, rt));
+            
+            try {
+                triangles.add(new V3D_TriangleDouble(pt, qt, rt));
+            } catch(RuntimeException e) {
+                // Points are colinear!
+                triangles.add(new V3D_TriangleDouble(pt, qt, rt));
+            }
         }
 
         if (triangles.isEmpty()) {
@@ -331,7 +337,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         for (var x : points) {
             boolean found = false;
             for (int i = 0; i < c.points.size(); i++) {
-                if (x.equals(c.points.get(i), epsilon)) {
+                if (x.equals(epsilon, c.points.get(i))) {
                     found = true;
                     indexes.add(i);
                     break;
@@ -345,7 +351,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             if (!indexes.contains(i)) {
                 boolean found = false;
                 for (var x : points) {
-                    if (x.equals(c.points.get(i), epsilon)) {
+                    if (x.equals(epsilon, c.points.get(i))) {
                         found = true;
                         break;
                     }
@@ -432,7 +438,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         // Check envelopes intersect.
         if (getEnvelope().isIntersectedBy(pt)) {
             // Check point is on the plane. 
-            if (triangles.get(0).pl.isIntersectedBy(pt, epsilon)) {
+            if (triangles.get(0).pl.isIntersectedBy(epsilon, pt)) {
                 // Check point is in a triangle
                 for (var t : triangles) {
                     //if (t.isIntersectedBy(pt, epsilon)) {
@@ -648,7 +654,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
                 index++;
                 
                 // Debug
-                if (bpt.equals(p1, epsilon)) {
+                if (bpt.equals(epsilon, p1)) {
                     int debug = 1;
                     ab = new AB(pts, p0, p1, pl, epsilon);
                 }
@@ -939,7 +945,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
                 return new V3D_LineSegmentDouble(i.next(), i.next());
             }
             case 3 -> {
-                return new V3D_TriangleDouble(i.next(), i.next(), i.next());
+                if (V3D_LineDouble.isCollinear(epsilon, pts)) {
+                    return V3D_LineSegmentDouble.getGeometry(epsilon, pts);
+                } else {
+                    return new V3D_TriangleDouble(i.next(), i.next(), i.next());
+                }
             }
             default -> {
                 V3D_PointDouble ip = i.next();

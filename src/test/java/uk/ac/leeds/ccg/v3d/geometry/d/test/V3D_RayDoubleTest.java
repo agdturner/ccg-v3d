@@ -127,7 +127,8 @@ public class V3D_RayDoubleTest extends V3D_DoubleTest {
         instance = new V3D_RayDouble(pP0P0P0, pP1P1P1);
         result = instance.getIntersection(l, epsilon);
         expResult = pP0P0P0;
-        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, 
+                (V3D_PointDouble) result));
         // Test 3
         instance = new V3D_RayDouble(pN1N1N1, pN1N1P0);
         result = instance.getIntersection(l, epsilon);
@@ -137,7 +138,8 @@ public class V3D_RayDoubleTest extends V3D_DoubleTest {
         instance = new V3D_RayDouble(pN1N1N1, pP1P1P1);
         result = instance.getIntersection(l, epsilon);
         expResult = pP0P0P0;
-        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, 
+                (V3D_PointDouble) result));
         // Test 5
         l = new V3D_LineDouble(pP0P0P0, pP1P0P0);
         instance = new V3D_RayDouble(pN1P0P0, pP1P0P0);
@@ -184,7 +186,7 @@ public class V3D_RayDoubleTest extends V3D_DoubleTest {
         result = instance.getIntersection(l, epsilon);
         expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
-                (V3D_LineSegmentDouble) result, epsilon));
+                epsilon, (V3D_LineSegmentDouble) result));
     }
 
     /**
@@ -218,7 +220,8 @@ public class V3D_RayDoubleTest extends V3D_DoubleTest {
         p = V3D_PlaneDouble.X0;
         expResult = pP0P0P0;
         result = instance.getIntersection(p, epsilon);
-        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, 
+                (V3D_PointDouble) result));
         // Test 2
         p = V3D_PlaneDouble.Y0;
         expResult = new V3D_RayDouble(pP0P0P0, pP1P0P0);
@@ -234,7 +237,8 @@ public class V3D_RayDoubleTest extends V3D_DoubleTest {
         p = V3D_PlaneDouble.X0;
         expResult = pP0P0P0;
         result = instance.getIntersection(p, epsilon);
-        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, 
+                (V3D_PointDouble) result));
         // Test 5
         instance = new V3D_RayDouble(pN1P0P0, pN2P0P0);
         p = V3D_PlaneDouble.X0;
@@ -278,13 +282,15 @@ public class V3D_RayDoubleTest extends V3D_DoubleTest {
         instance = new V3D_RayDouble(P0P0P0, P1P0P0, P0P0P0);
         expResult = new V3D_LineSegmentDouble(P0P0P0, P0P0P0, P1P0P0);
         result = instance.getIntersection(r, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equals((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(epsilon, 
+                (V3D_LineSegmentDouble) result));
         // Test 4: Collinear pointing opposite ways overlapping at a point.
         r = new V3D_RayDouble(P0P0P0, P0P0P0, P1P0P0);
         instance = new V3D_RayDouble(P0P0P0, P0P0P0, N1P0P0);
         expResult = pP0P0P0;
         result = instance.getIntersection(r, epsilon);
-        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, 
+                (V3D_PointDouble) result));
         // Test 4: Collinear pointing opposite ways not overlapping.
         r = new V3D_RayDouble(P0P0P0, P1P0P0, P2P0P0);
         instance = new V3D_RayDouble(P0P0P0, P0P0P0, N1P0P0);
@@ -295,7 +301,8 @@ public class V3D_RayDoubleTest extends V3D_DoubleTest {
         instance = new V3D_RayDouble(P0P0P0, P1P0P0, P1P1P1);
         result = instance.getIntersection(r, epsilon);
         expResult = pP1P0P0;
-        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, 
+                (V3D_PointDouble) result));
         // Test 6: Not intersecting.
         r = new V3D_RayDouble(P0P0P0, P1P0P0, P2P0P0);
         instance = new V3D_RayDouble(P0P0P0, P0P0P0, P1P1P1);
@@ -319,7 +326,8 @@ public class V3D_RayDoubleTest extends V3D_DoubleTest {
         instance = new V3D_RayDouble(pP0P0P0, pP1P0P0);
         expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 2
         l = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         instance = new V3D_RayDouble(pP0P0P0, pN1P0P0);
@@ -331,6 +339,7 @@ public class V3D_RayDoubleTest extends V3D_DoubleTest {
         instance = new V3D_RayDouble(pP1P0P0, pP2P0P0);
         expResult = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
     }
 }

@@ -254,23 +254,64 @@ public class V3D_VectorDouble implements Serializable {
     }
 
     /**
+     * @param points The points to test if they are coincident.
+     * @return {@code true} iff all the points are coincident.
+     */
+    public static boolean equals(V3D_VectorDouble... v) {
+        V3D_VectorDouble v0 = v[0];
+        for (V3D_VectorDouble v1 : v) {
+            if (!v1.equals(v0)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Indicates if {@code this} and {@code v} are equal within the specified
      * tolerance. A tolerance of zero would mean that the vectors must be
      * exactly identical. Otherwise each of the coordinates is allowed to be up
      * to tolerance different and the vectors would still be considered equal.
      *
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
      * @param v The vector to test for equality with {@code this}.
-     * @param epsilon The tolerance within which two vectors are considered
-     * equal.
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
-    public boolean equals(V3D_VectorDouble v, double epsilon) {
+    public boolean equals(double epsilon, V3D_VectorDouble v) {
         return Math_Double.equals(dx, v.dx, epsilon)
                 && Math_Double.equals(dy, v.dy, epsilon)
                 && Math_Double.equals(dz, v.dz, epsilon);
-//        return dx <= v.dx + epsilon && dx >= v.dx - epsilon
-//                && dy <= v.dy + epsilon && dy >= v.dy - epsilon
-//                && dz <= v.dz + epsilon && dz >= v.dz - epsilon;
+    }
+
+    /**
+     *
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @param vs The vectors to test for equality.
+     * @return {@code true} iff all vs are equal within epsilon.
+     */
+    public static boolean equals(double epsilon, V3D_VectorDouble... vs) {
+        if (vs.length < 2) {
+            return true;
+        }
+        V3D_VectorDouble v0 = vs[0];
+        for (V3D_VectorDouble v : vs) {
+            if (!v.equals(v0)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Indicates if {@code this} is the reverse of {@code v}.
+     *
+     * @param v The vector to compare with {@code this}.
+     * @return {@code true} iff {@code this} is the reverse of {@code v}.
+     */
+    public boolean isReverse(V3D_VectorDouble v) {
+        return equals(v.reverse());
     }
 
     /**
@@ -282,7 +323,7 @@ public class V3D_VectorDouble implements Serializable {
      * @return {@code true} iff {@code this} is the reverse of {@code v}.
      */
     public boolean isReverse(V3D_VectorDouble v, double epsilon) {
-        return equals(v.reverse(), epsilon);
+        return equals(epsilon, v.reverse());
     }
 
     /**
@@ -297,7 +338,7 @@ public class V3D_VectorDouble implements Serializable {
      * @param epsilon
      */
     public boolean isZero(double epsilon) {
-        return this.equals(ZERO, epsilon);
+        return equals(epsilon, ZERO);
     }
 
     /**
@@ -345,12 +386,10 @@ public class V3D_VectorDouble implements Serializable {
      * Calculate and return the
      * <A href="https://en.wikipedia.org/wiki/Dot_product">dot product</A>.
      *
-     * @param v V3D_Vector
-     * @return dot product
+     * @param v The other vector to compose the cross product from.
+     * @return The dot product.
      */
     public double getDotProduct(V3D_VectorDouble v) {
-        //return getDotProduct0(v);
-        //return this.getUnitVector().getDotProduct0(v.getUnitVector());
         return dx * v.dx + dy * v.dy + dz * v.dz;
     }
 
@@ -358,21 +397,58 @@ public class V3D_VectorDouble implements Serializable {
      * Test if this is orthogonal to {@code v}.
      *
      * @param v The vector to test for orthogonality with.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      * @return {@code true} if this and {@code v} are orthogonal.
      */
-    public boolean isOrthogonal(V3D_VectorDouble v, double epsilon) {
+    public boolean isOrthogonal(V3D_VectorDouble v) {
 //        // Special case
-//        if (isScalarMultiple(v, epsilon)) {
+//        if (isScalarMultiple(v)) {
 //            return false;
 //        }
-        //return getDotProduct(v) == 0d;
-        double dp = getDotProduct(v);
-        return Math_Double.equals(dp, 0d, epsilon);
-        //return Math.abs(getDotProduct(v)) < epsilon;
+
+//        if (getCrossProduct(v).isZero()) {
+//            return true;
+//        }
+        return getDotProduct(v) == 0d;
     }
 
+    /**
+     * Test if this is orthogonal to {@code v}.
+     *
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @param v The vector to test for orthogonality with.
+     * @return {@code true} if this and {@code v} are orthogonal.
+     */
+    public boolean isOrthogonal(double epsilon, V3D_VectorDouble v) {
+        // Special case
+        if (isScalarMultiple(epsilon, v)) {
+            return false;
+        }
+
+//        if (getCrossProduct(v).isZero()) {
+//            return true;
+//        }
+        return Math_Double.equals(getDotProduct(v), 0d, epsilon);
+    }
+
+//    /**
+//     * Test if this is orthogonal to {@code v}.
+//     *
+//     * @param v The vector to test for orthogonality with.
+//     * @param epsilon The tolerance within which two vectors are regarded as
+//     * equal.
+//     * @return {@code true} if this and {@code v} are orthogonal.
+//     */
+//    public boolean isOrthogonal(V3D_VectorDouble v, double epsilon) {
+////        // Special case
+////        if (isScalarMultiple(v, epsilon)) {
+////            return false;
+////        }
+//        //return getDotProduct(v) == 0d;
+//        double dp = getDotProduct(v);
+//        return Math_Double.equals(dp, 0d, epsilon);
+//        //return Math.abs(getDotProduct(v)) < epsilon;
+//    }
     /**
      * @return The magnitude of m.
      */
@@ -391,12 +467,162 @@ public class V3D_VectorDouble implements Serializable {
      * Test if {@code v} is a scalar multiple of {@code this}.
      *
      * @param v The vector to test if it is a scalar multiple of {@code this}.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
-    public boolean isScalarMultiple(V3D_VectorDouble v, double epsilon) {
-        if (equals(v, epsilon)) {
+    public boolean isScalarMultiple(V3D_VectorDouble v) {
+        if (equals(v)) {
+            return true;
+        } else {
+            // Special cases
+            boolean isZero = isZero();
+            if (isZero) {
+                /**
+                 * Can't multiply the zero vector by a scalar to get a non-zero
+                 * vector.
+                 */
+                return v.isZero();
+            }
+            if (v.isZero()) {
+                /**
+                 * Already tested that this is not equal to v, so the scalar is
+                 * zero.
+                 */
+                return true;
+            }
+            /**
+             * General case: A little complicated as there is a need to deal
+             * with zero vector components and cases where the vectors point in
+             * different directions.
+             */
+            if (Math.abs(v.dx) == Math.abs(dx)) {
+                // |dx| = |v.dx|
+                if (v.dx == 0d) {
+                    // dx = v.dx = 0d
+                    if (Math.abs(v.dy) == Math.abs(dy)) {
+                        if (v.dy == 0d) {
+                            return true;
+                        } else {
+                            if (Math.abs(v.dz) == Math.abs(dz)) {
+//                                    if (v.dz == 0d) { 
+//                                        // This should not happen as it is already tested for. Commented code left for clarity.
+//                                        return true;
+//                                    } else {
+                                double scalar = v.dy / dy;
+                                double dzs = dz * scalar;
+                                double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
+                                return Math_Double.equals(v.dz, dzs, epsilon);
+//                                    }
+                            } else {
+                                return false;
+                            }
+                        }
+                    } else {
+                        if (v.dy == 0d) {
+                            return v.dz == 0d;
+                        } else {
+                            if (Math.abs(v.dz) == Math.abs(dz)) {
+                                if (v.dz == 0d) {
+                                    return true;
+                                } else {
+                                    double scalar = v.dy / dy;
+                                    double dzs = dz * scalar;
+                                    double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
+                                    return Math_Double.equals(v.dz, dzs, epsilon);
+                                }
+                            } else {
+                                double scalar = v.dy / dy;
+                                double dzs = dz * scalar;
+                                double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
+                                return Math_Double.equals(v.dz, dzs, epsilon);
+                            }
+                        }
+                    }
+                } else {
+                    // |dx| = |v.dx| != 0d
+                    if (Math.abs(v.dy) == Math.abs(dy)) {
+                        if (v.dy == 0d) {
+                            if (Math.abs(v.dz) == Math.abs(dz)) {
+                                if (v.dz == 0d) {
+                                    return true;
+                                } else {
+                                    double scalar = v.dx / dx;
+                                    double dzs = dz * scalar;
+                                    double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
+                                    return Math_Double.equals(v.dz, dzs, epsilon);
+                                }
+                            } else {
+                                double scalar = v.dx / dx;
+                                double dzs = dz * scalar;
+                                double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
+                                return Math_Double.equals(v.dz, dzs, epsilon);
+                            }
+                        } else {
+                            double scalar = v.dx / dx;
+                            double dys = dy * scalar;
+                            double epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys);
+                            if (Math_Double.equals(v.dy, dy * scalar, epsilon)) {
+
+                                if (Math_Double.equals(Math.abs(v.dz), Math.abs(dz), epsilon)) {
+                                    if (Math_Double.equals(v.dz, 0d, epsilon)) {
+                                        return true;
+                                    } else {
+                                        double dzs = dz * scalar;
+                                        epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys, v.dz, dz, dzs);
+                                        return Math_Double.equals(v.dz, dzs, epsilon);
+                                    }
+                                } else {
+                                    double dzs = dz * scalar;
+                                    epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys, v.dz, dz, dzs);
+                                    return Math_Double.equals(v.dz, dzs, epsilon);
+                                }
+                            } else {
+                                return false;
+                            }
+                        }
+                    } else {
+                        // |dx| = |v.dx| != 0d, |dy| != |v.dy|
+                        double scalar = v.dx / dx;
+                        double dys = dy * scalar;
+                        double epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys);
+                        if (Math_Double.equals(v.dy, dys, epsilon)) {
+                            double dzs = dz * scalar;
+                            epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys, v.dz, dz, dzs);
+                            return Math_Double.equals(v.dz, dzs, epsilon);
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                // |dx| != |v.dx|
+                if (dx == 0d) {
+                    return isZero;
+                } else {
+                    double scalar = v.dx / dx;
+                    double dys = dy * scalar;
+                    double epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys);
+                    if (Math_Double.equals(v.dy, dys, epsilon)) {
+                        double dzs = dz * scalar;
+                        epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys, v.dz, dz, dzs);
+                        return Math_Double.equals(v.dz, dzs, epsilon);
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Test if {@code v} is a scalar multiple of {@code this}.
+     *
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @param v The vector to test if it is a scalar multiple of {@code this}.
+     * @return {@code true} if {@code this} and {@code v} are scalar multiples.
+     */
+    public boolean isScalarMultiple(double epsilon, V3D_VectorDouble v) {
+        if (equals(epsilon, v)) {
             return true;
         } else {
             // Special cases
@@ -572,19 +798,10 @@ public class V3D_VectorDouble implements Serializable {
      * Treat this as the first vector and {@code v} as the second vector. The
      * resulting vector is in the direction given by the right hand rule.
      *
-     * @param v V3D_Vector
-     * @return V3D_Vector
+     * @param v The other vector to compose the cross product from.
+     * @return The cross product as a vector.
      */
     public V3D_VectorDouble getCrossProduct(V3D_VectorDouble v) {
-        return getCrossProduct0(v);
-        //return this.getUnitVector().getCrossProduct0(v.getUnitVector());
-//        return new V3D_VectorDouble(
-//                dy * v.dz - dz * v.dy,
-//                dz * v.dx - dx * v.dz,
-//                dx * v.dy - dy * v.dx);
-    }
-    
-    public V3D_VectorDouble getCrossProduct0(V3D_VectorDouble v) {
         return new V3D_VectorDouble(
                 dy * v.dz - dz * v.dy,
                 dz * v.dx - dx * v.dz,
@@ -598,7 +815,7 @@ public class V3D_VectorDouble implements Serializable {
      * @return this scaled by {@link #m}.
      */
     public V3D_VectorDouble getUnitVector() {
-        return this.divide(getMagnitude());
+        return divide(getMagnitude());
     }
 
     /**

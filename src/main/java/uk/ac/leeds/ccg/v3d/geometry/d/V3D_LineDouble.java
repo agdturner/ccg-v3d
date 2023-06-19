@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
 //import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_Double;
 
 /**
@@ -303,21 +304,38 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param l The line to test if it is the same as {@code this}.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
-    public boolean equals(V3D_LineDouble l, double epsilon) {
-//        if (l == null) {
-//            return false;
+    public boolean equals(V3D_LineDouble l) {
+//        if (v.isScalarMultiple(l.v)) {
+//            if (isIntersectedBy(l.getP())) {
+//                if (isIntersectedBy(l.getQ())) {
+                    if (l.isIntersectedBy(getP())) {
+                        if (l.isIntersectedBy(getQ())) {
+                            return true;
+                        }
+                    }
+//                }
+//            }
 //        }
-        if (v.isScalarMultiple(l.v, epsilon)) {
-            if (l.isIntersectedBy(getP(), epsilon)) {
-                if (isIntersectedBy(l.getP(), epsilon)) {
-                    return true;
-                }
+        return false;
+    }
+
+    /**
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @param l The line to test if it is the same as {@code this}.
+     * @return {@code true} iff {@code l} is the same as {@code this} within
+     * epsilon.
+     */
+    public boolean equals(double epsilon, V3D_LineDouble l) {
+        //if (v.isScalarMultiple(epsilon, l.v)) {
+        if (l.isIntersectedBy(epsilon, getP())) {
+            if (l.isIntersectedBy(epsilon, getQ())) {
+                return true;
             }
         }
+        //}
         return false;
     }
 
@@ -348,21 +366,54 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param pt A point to test for intersection.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      * @return {@code true} if pv is on the line.
      */
-    public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
+    public boolean isIntersectedBy(V3D_PointDouble pt) {
         V3D_PointDouble tp = getP();
         V3D_PointDouble tq = getQ();
-        if (tp.equals(pt, epsilon)) {
+        if (tp.equals(pt)) {
             return true;
         }
-        if (tq.equals(pt, epsilon)) {
+        if (tq.equals(pt)) {
+            return true;
+        }
+        V3D_VectorDouble dpt = new V3D_VectorDouble(
+                    pt.getX() - (tp.getX()),
+                    pt.getY() - (tp.getY()),
+                    pt.getZ() - (tp.getZ()));
+        if (dpt.isZero()) {
+            dpt = new V3D_VectorDouble(
+                    pt.getX() - (tq.getX()),
+                    pt.getY() - (tq.getY()),
+                    pt.getZ() - (tq.getZ()));
+        }
+        V3D_VectorDouble cp = v.getCrossProduct(dpt);
+        double magnitude = cp.getMagnitude();
+        double epsilon = Math_Double.getTolerance(
+                tp.getX(), tp.getY(), tp.getZ(), 
+                tq.getX(), tq.getY(), tq.getZ(), 
+                pt.getX(), pt.getY(), pt.getZ(), 
+                v.dx, v.dy, v.dz, magnitude);
+        return Math_Double.equals(magnitude, 0d, epsilon);
+    }
+
+    /**
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @param pt A point to test for intersection.
+     * @return {@code true} if pv is on the line.
+     */
+    public boolean isIntersectedBy(double epsilon, V3D_PointDouble pt) {
+        V3D_PointDouble tp = getP();
+        V3D_PointDouble tq = getQ();
+        if (tp.equals(epsilon, pt)) {
+            return true;
+        }
+        if (tq.equals(epsilon, pt)) {
             return true;
         }
         V3D_VectorDouble cp;
-        if (tp.equals(V3D_PointDouble.ORIGIN)) {
+        if (tp.equals(epsilon, V3D_PointDouble.ORIGIN)) {
             V3D_VectorDouble ppt = new V3D_VectorDouble(
                     pt.getX() - (tq.getX()),
                     pt.getY() - (tq.getY()),
@@ -376,17 +427,19 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
             cp = v.getCrossProduct(ppt);
         }
         //return cp.dx == 0d && cp.dy == 0d && cp.dz == 0d;
-        return Math.abs(cp.dx) <= epsilon && Math.abs(cp.dy) <= epsilon && Math.abs(cp.dz) <= epsilon;
+        //return Math.abs(cp.dx) <= epsilon && Math.abs(cp.dy) <= epsilon && Math.abs(cp.dz) <= epsilon;
+        //return cp.getMagnitude() <= epsilon;
+        return Math_Double.equals(cp.getMagnitude(), 0d, epsilon);
     }
 
     /**
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @param l The line to test if it is parallel to this.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      * @return {@code true} If this and {@code l} are parallel.
      */
     public boolean isParallel(V3D_LineDouble l, double epsilon) {
-        return v.isScalarMultiple(l.v, epsilon);
+        return v.isScalarMultiple(epsilon, l.v);
     }
 
     /**
@@ -398,15 +451,15 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * the intersection).
      *
      * @param l The line to get the intersection with {@code this}.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_GeometryDouble getIntersection(V3D_LineDouble l, double epsilon) {
         // Special case of parallel lines.
         V3D_PointDouble tp = getP();
         if (isParallel(l, epsilon)) {
-            if (l.isIntersectedBy(tp, epsilon)) {
+            if (l.isIntersectedBy(epsilon, tp)) {
                 // If lines are coincident return this.
                 return this;
             } else {
@@ -422,13 +475,13 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         V3D_VectorDouble plp = new V3D_VectorDouble(tp, lp);
         V3D_VectorDouble lqlp = new V3D_VectorDouble(lq, lp);
         if (lqlp.getMagnitudeSquared() == 0d) {
-            if (isIntersectedBy(lp, epsilon)) {
+            if (isIntersectedBy(epsilon, lp)) {
                 return lp;
             }
         }
         V3D_VectorDouble qp = new V3D_VectorDouble(tq, tp);
         if (qp.getMagnitudeSquared() == 0d) {
-            if (l.isIntersectedBy(tp, epsilon)) {
+            if (l.isIntersectedBy(epsilon, tp)) {
                 return tp;
             }
         }
@@ -797,7 +850,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                 (tp.getY() - (mua * (qp.dy))),
                 (tp.getZ() - (mua * (qp.dz))));
         // If point pv is on both lines then return this as the intersection.
-        if (isIntersectedBy(pi, epsilon) && l.isIntersectedBy(pi, epsilon)) {
+        if (isIntersectedBy(epsilon, pi) && l.isIntersectedBy(epsilon, pi)) {
             return pi;
         }
         V3D_PointDouble qi = new V3D_PointDouble(
@@ -805,7 +858,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
                 (lp.getY() + (mub * (lqlp.dy))),
                 (lp.getZ() + (mub * (lqlp.dz))));
         // If point qv is on both lines then return this as the intersection.
-        if (isIntersectedBy(qi, epsilon) && l.isIntersectedBy(qi, epsilon)) {
+        if (isIntersectedBy(epsilon, qi) && l.isIntersectedBy(epsilon, qi)) {
             return qi;
         }
         /**
@@ -813,7 +866,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
          * not intersect. In this case pi and qi are meant to be the end points
          * of the shortest line between the two lines.
          */
-        if (pi.equals(qi, epsilon)) {
+        if (pi.equals(epsilon, qi)) {
             return pi;
         } else {
             if (new V3D_LineSegmentDouble(pi, qi).getLength() < epsilon) {
@@ -829,14 +882,14 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
     /**
      * @param pt A point for which the shortest line segment to this is
      * returned.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @return The line segment having the shortest distance between {@code pt}
      * and {@code this}.
      */
     public V3D_FiniteGeometryDouble getLineOfIntersection(V3D_PointDouble pt,
             double epsilon) {
-        if (isIntersectedBy(pt, epsilon)) {
+        if (isIntersectedBy(epsilon, pt)) {
             return pt;
         }
         return new V3D_LineSegmentDouble(pt, getPointOfIntersection(pt, epsilon));
@@ -847,13 +900,13 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line
      *
      * @param pt The point projected onto this.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @return A point on {@code this} which is the shortest distance from
      * {@code pt}.
      */
     public V3D_PointDouble getPointOfIntersection(V3D_PointDouble pt, double epsilon) {
-        if (isIntersectedBy(pt, epsilon)) {
+        if (isIntersectedBy(epsilon, pt)) {
             return pt;
         }
         V3D_PlaneDouble ptv = new V3D_PlaneDouble(pt, v);
@@ -874,8 +927,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * http://paulbourke.net/geometry/pointlineplane/
      *
      * @param l The line to get the line of intersection with.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @return The line of intersection between {@code this} and {@code l}. The
      * point pv is a point on or near this, and the point qv is a point on or
      * near l. Whether the points are on or near is down to rounding error and
@@ -929,12 +982,12 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      *
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @return The minimum distance between this and {@code pv}.
      */
     public double getDistance(V3D_PointDouble pt, double epsilon) {
-        if (isIntersectedBy(pt, epsilon)) {
+        if (isIntersectedBy(epsilon, pt)) {
             return 0d;
         }
         return Math.sqrt(getDistanceSquared(pt, true));
@@ -951,14 +1004,14 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * https://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html</li>
      * </ul>
      *
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @param pt A point for which the minimum distance from {@code this} is
      * returned.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      * @return The minimum distance between this and {@code pv}.
      */
     public double getDistanceSquared(V3D_PointDouble pt, double epsilon) {
-        if (isIntersectedBy(pt, epsilon)) {
+        if (isIntersectedBy(epsilon, pt)) {
             return 0d;
         } else {
             return getDistanceSquared(pt, true);
@@ -999,8 +1052,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      *
      * @param l A line for which the minimum distance from {@code this} is
      * returned.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @return The minimum distance between this and {@code l}.
      */
     public double getDistance(V3D_LineDouble l, double epsilon) {
@@ -1011,8 +1064,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * Get the minimum distance squared to {@code l}.
      *
      * @param l A line.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @return The minimum distance squared to {@code l}.
      */
     public double getDistanceSquared(V3D_LineDouble l, double epsilon) {
@@ -1098,7 +1151,7 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         if (q != null) {
             q.translate(v);
         }
-        
+
     }
 
     @Override
@@ -1110,41 +1163,32 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
     }
 
     /**
+     * Deprecated use
+     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble)}.
+     *
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @param pt The point to test if it is collinear.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      * @return {@code true} iff all points are collinear with l.
      */
-    public boolean isCollinear(V3D_PointDouble pt, double epsilon) {
-        return this.isIntersectedBy(pt, epsilon);
+    @Deprecated
+    public boolean isCollinear(V3D_PointDouble pt) {
+        return isIntersectedBy(pt);
     }
 
     /**
-     * @param l The line to test if it is collinear.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @param ps The point to test if it is collinear.
      * @return {@code true} iff all points are collinear with l.
      */
-    public boolean isCollinear(V3D_LineDouble l, double epsilon) {
-        if (isCollinear(l.getP(), epsilon)) {
-            if (isCollinear(l.getQ(), epsilon)) {
-                return true;
-            }
+    public static boolean isCollinear(double epsilon, V3D_PointDouble... ps) {
+        V3D_LineDouble l = getLine(ps);
+        if (l == null) {
+            return false;
         }
-        return false;
-    }
-
-    /**
-     * @param l The line to test points are collinear with.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
-     * @param points The points to test if they are collinear with l.
-     * @return {@code true} iff all points are collinear with l.
-     */
-    public static boolean isCollinear(V3D_LineDouble l, double epsilon,
-            V3D_PointDouble... points) {
-        for (V3D_PointDouble p : points) {
-            if (!l.isIntersectedBy(p, epsilon)) {
+        for (var p : ps) {
+            if (!l.isIntersectedBy(p)) {
                 return false;
             }
         }
@@ -1153,8 +1197,8 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param l The line to test points are collinear with.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @param points The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
@@ -1163,7 +1207,51 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         //V3D_VectorDouble lv = l.getV();
         V3D_VectorDouble lv = l.v;
         for (V3D_VectorDouble p : points) {
-            if (!lv.isScalarMultiple(p, epsilon)) {
+            if (!lv.isScalarMultiple(epsilon, p)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Determine if points are collinear.
+     *
+     * @param ps The points to test if they are collinear.
+     * @return {@code false} if all points are equal. {@code true} iff all the
+     * points are collinear.
+     */
+    public static boolean isCollinear(V3D_LineDouble l, V3D_PointDouble... ps) {
+        // For the points to be in a line at least two must be different.
+        if (V3D_PointDouble.equals(ps)) {
+            return false;
+        }
+        return isCollinear0(ps);
+    }
+
+    /**
+     * @param points The points to test if they are collinear.
+     * @return {@code true} iff all the points are collinear or coincident.
+     */
+    public static boolean isCollinear0(V3D_PointDouble... points) {
+        // Get a line
+        V3D_LineDouble l = getLine(points);
+        return isCollinear(l, points);
+    }
+
+    /**
+     * Determine if points are collinear with l.
+     *
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @param ps The points to test if they are collinear.
+     * @return {@code false} if all points are equal. {@code true} iff all the
+     * points are collinear.
+     */
+    public static boolean isCollinear(V3D_LineDouble l, double epsilon,
+            V3D_PointDouble... ps) {
+        for (var p : ps) {
+            if (!l.isIntersectedBy(epsilon, p)) {
                 return false;
             }
         }
@@ -1172,29 +1260,32 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     /**
      * @param points The points to test if they are collinear.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
-     * @return {@code false} if all points are coincident. {@code true} iff all
-     * the points are collinear.
-     */
-    public static boolean isCollinear(double epsilon, V3D_PointDouble... points) {
-        // For the points to be in a line at least two must be different.
-        if (V3D_PointDouble.isCoincident(points)) {
-            return false;
-        }
-        return isCollinear0(epsilon, points);
-    }
-
-    /**
-     * @param points The points to test if they are collinear.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @return {@code true} iff all the points are collinear or coincident.
      */
     public static boolean isCollinear0(double epsilon, V3D_PointDouble... points) {
         // Get a line
         V3D_LineDouble l = getLine(epsilon, points);
         return isCollinear(l, epsilon, points);
+    }
+
+    /**
+     * There should be at least two different points in points. This does not
+     * check ps are collinear.
+     *
+     * @param ps Any number of points, but with two being different.
+     * @return A line defined by any two different points or null if the points
+     * are coincident.
+     */
+    public static V3D_LineDouble getLine(V3D_PointDouble... ps) {
+        var p0 = ps[0];
+        for (var p : ps) {
+            if (!p.equals(p0)) {
+                return new V3D_LineDouble(p0, p);
+            }
+        }
+        return null;
     }
 
     /**
@@ -1206,32 +1297,32 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * are coincident.
      */
     public static V3D_LineDouble getLine(double epsilon, V3D_PointDouble... points) {
-        V3D_PointDouble p0 = points[0];
-        for (V3D_PointDouble p1 : points) {
-            if (!p1.equals(p0, epsilon)) {
-                return new V3D_LineDouble(p0, p1);
+        V3D_PointDouble pt0 = points[0];
+        for (V3D_PointDouble pt : points) {
+            if (!pt.equals(epsilon, pt0)) {
+                return new V3D_LineDouble(pt0, pt);
             }
         }
         return null;
     }
 
     /**
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @param l A line.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      * @return true if this and l are not skew.
      */
-    public boolean isCoplanar(V3D_LineDouble l, double epsilon) {
+    public boolean isCoplanar(double epsilon, V3D_LineDouble l) {
         V3D_PointDouble lp = l.getP();
-        if (isCollinear(lp, epsilon)) {
+        if (isCollinear(epsilon, lp)) {
             return true;
         } else {
             V3D_PointDouble lq = l.getQ();
-            if (isCollinear(lq, epsilon)) {
+            if (isCollinear(epsilon, lq)) {
                 return true;
             } else {
                 V3D_PlaneDouble pl = new V3D_PlaneDouble(getP(), lp, lq);
-                return pl.isIntersectedBy(getQ(), epsilon);
+                return pl.isIntersectedBy(epsilon, getQ());
             }
         }
 

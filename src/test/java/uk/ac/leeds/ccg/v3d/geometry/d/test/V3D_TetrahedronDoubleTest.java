@@ -66,7 +66,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     public void testToString_0args() {
         System.out.println("toString");
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1);
+                pP0P1P0, pP0P1P1, 0d);
         String expResult = """
                            V3D_TetrahedronDouble
                            (
@@ -88,7 +88,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         System.out.println("toString");
         String pad = "";
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1);
+                pP0P1P0, pP0P1P1, 0d);
         String expResult = """
                            V3D_TetrahedronDouble
                            (
@@ -186,7 +186,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     public void testGetEnvelope() {
         System.out.println("getEnvelope");
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1);
+                pP0P1P0, pP0P1P1, 0d);
         V3D_EnvelopeDouble expResult = new V3D_EnvelopeDouble(pP0P0P0, pP1P0P0,
                 pP0P1P0, pP0P1P1);
         V3D_EnvelopeDouble result = instance.getEnvelope();
@@ -200,7 +200,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     public void testGetP() {
         System.out.println("getP");
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1);
+                pP0P1P0, pP0P1P1, 0d);
         V3D_PointDouble expResult = pP0P0P0;
         V3D_PointDouble result = instance.getP();
         assertTrue(expResult.equals(result));
@@ -213,7 +213,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     public void testGetQ() {
         System.out.println("getQ");
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1);
+                pP0P1P0, pP0P1P1, 0d);
         V3D_PointDouble expResult = pP1P0P0;
         V3D_PointDouble result = instance.getQ();
         assertTrue(expResult.equals(result));
@@ -226,7 +226,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     public void testGetR() {
         System.out.println("getR");
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1);
+                pP0P1P0, pP0P1P1, 0d);
         V3D_PointDouble expResult = pP0P1P0;
         V3D_PointDouble result = instance.getR();
         assertTrue(expResult.equals(result));
@@ -239,7 +239,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     public void testGetS() {
         System.out.println("getS");
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1);
+                pP0P1P0, pP0P1P1, 0d);
         V3D_PointDouble expResult = pP0P1P1;
         V3D_PointDouble result = instance.getS();
         assertTrue(expResult.equals(result));
@@ -253,7 +253,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         System.out.println("getPqr");
         double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1);
+                pP0P1P0, pP0P1P1, epsilon);
         V3D_TriangleDouble expResult = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
         V3D_TriangleDouble result = instance.getPqr();
         assertTrue(expResult.equals(result, epsilon));
@@ -267,7 +267,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         System.out.println("getQsr");
         double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1);
+                pP0P1P0, pP0P1P1, epsilon);
         V3D_TriangleDouble expResult = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP0P1P1);
         V3D_TriangleDouble result = instance.getQsr();
         assertTrue(expResult.equals(result, epsilon));
@@ -281,7 +281,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         System.out.println("getSpr");
         double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1);
+                pP0P1P0, pP0P1P1, epsilon);
         V3D_TriangleDouble expResult = new V3D_TriangleDouble(pP0P0P0, pP0P1P0, pP0P1P1);
         V3D_TriangleDouble result = instance.getSpr();
         assertTrue(expResult.equals(result, epsilon));
@@ -295,7 +295,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         System.out.println("getPsq");
         double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0,
-                pP0P1P0, pP0P1P1);
+                pP0P1P0, pP0P1P1, epsilon);
         V3D_TriangleDouble expResult = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P1);
         V3D_TriangleDouble result = instance.getPsq();
         assertTrue(expResult.equals(result, epsilon));
@@ -310,7 +310,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         System.out.println("getArea");
         double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0,
-                pP1P0P0, pP0P1P0, pP0P0P1);
+                pP1P0P0, pP0P1P0, pP0P0P1, epsilon);
         double expResult = (Math.sqrt(3d / 2d) * Math.sqrt(2d) / 2d) + 3d / 2d;
         double result = instance.getArea();
         assertTrue(Math_Double.equals(expResult, result, epsilon));
@@ -325,7 +325,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         System.out.println("getVolume");
         double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(pP0P0P0,
-                pP1P0P0, pP0P1P0, pP0P0P1);
+                pP1P0P0, pP0P1P0, pP0P0P1, epsilon);
         double expResult = 1d / 6d;
         double result = instance.getVolume(epsilon);
         assertTrue(Math_Double.equals(expResult, result, epsilon));
@@ -337,13 +337,14 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetCentroid() {
         System.out.println("getCentroid");
+        double epsilon = 1d / 10000000d;
         V3D_TetrahedronDouble instance = new V3D_TetrahedronDouble(
                 pN2N2N2, pP2N2N2, pP0P2N2,
-                new V3D_PointDouble(0d, 0d, 4d));
+                new V3D_PointDouble(0d, 0d, 4d), epsilon);
         V3D_PointDouble expResult = new V3D_PointDouble(P0P0P0,
                 new V3D_VectorDouble(0d, -1d / 2d, -1d / 2d));
         V3D_PointDouble result = instance.getCentroid();
-        assertTrue(expResult.equals(result));
+        assertTrue(expResult.equals(epsilon, result));
     }
 
     /**
@@ -358,11 +359,11 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         // Test 1
         pt = pP0P0P0;
         //instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0, pP0P1P0, pP0P0P1);
-        instance = new V3D_TetrahedronDouble(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0, pP0P1P0, pP0P0P1, epsilon);
         assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 2
         pt = new V3D_PointDouble(0.5, 0.5, 0.5);
-        instance = new V3D_TetrahedronDouble(P0P0P0, P0P0P0, P2P0P0, P0P2P0, P0P0P2);
+        instance = new V3D_TetrahedronDouble(pP0P0P0, pP2P0P0, pP0P2P0, pP0P0P2, epsilon);
         assertTrue(instance.isIntersectedBy(pt, epsilon));
         // Test 3
         pt = new V3D_PointDouble(-0.5, -0.5, -0.5);
@@ -375,7 +376,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
                 new V3D_PointDouble(0, 0, -75),
                 new V3D_PointDouble(-50, -37.5, 10),
                 new V3D_PointDouble(50, 37.5, 10),
-                new V3D_PointDouble(-50, 37.5, 10));
+                new V3D_PointDouble(-50, 37.5, 10), epsilon);
         //pt = new V3D_PointDouble(-24, -19, 0);
         //pt = new V3D_PointDouble(0, 0, -74);
         //pt = new V3D_PointDouble(1, 1, 0);
@@ -396,16 +397,18 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         V3D_GeometryDouble result;
         // Test 1
         l = new V3D_LineDouble(pP0P0P0, pP1P0P0);
-        instance = new V3D_TetrahedronDouble(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0, pP0P1P0, pP0P0P1, epsilon);
         expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 2
-        instance = new V3D_TetrahedronDouble(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        instance = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         l = new V3D_LineDouble(pN2N2P0, new V3D_TriangleDouble(P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid());
         expResult = new V3D_LineSegmentDouble(pN2N2P0, new V3D_TriangleDouble(P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid());
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
     }
 
     /**
@@ -421,16 +424,18 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         V3D_GeometryDouble result;
         // Test 1
         l = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
-        instance = new V3D_TetrahedronDouble(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        instance = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0, pP0P1P0, pP0P0P1, epsilon);
         expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 2
-        instance = new V3D_TetrahedronDouble(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        instance = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         l = new V3D_LineSegmentDouble(pN2N2P0, new V3D_TriangleDouble(P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid());
         expResult = new V3D_LineSegmentDouble(pN2N2P0, new V3D_TriangleDouble(P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid());
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
 //        // Test 3
 //        instance = new V3D_TetrahedronDouble(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
 //        l = new V3D_LineSegmentDouble(P0P0P0, N2N2P0, new V3D_TriangleDouble(P0P0P0, P2N2P0, N2P2P0, P0P0P2).getCentroid().rel.multiply(P2).add(P2P2P0));
@@ -452,17 +457,33 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         V3D_GeometryDouble result;
         // Test 1
         p = V3D_PlaneDouble.X0;
-        instance = new V3D_TetrahedronDouble(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        instance = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         expResult = new V3D_TriangleDouble(pP0P0P0, pP0P0P2, pP0N2P0);
         result = instance.getIntersection(p, epsilon);
         assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
-//        // Test 2
-//        p = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
-//        p.translate(P1P0P0);
-//        instance = new V3D_TetrahedronDouble(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
-//        expResult = new V3D_TriangleDouble(P0P0P0, P1N2P0, P1N1P0, P1N1P1);
-//        result = instance.getIntersection(p);
-//        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+        // Test 2
+        p = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
+        p.translate(P1P0P0);
+        instance = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
+        expResult = new V3D_TriangleDouble(P0P0P0, P1N2P0, P1N1P0, P1N1P1);
+        result = instance.getIntersection(p, epsilon);
+        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
+        // Test 3
+        p = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
+        p.translate(P2P0P0);
+        instance = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
+        expResult = new V3D_PointDouble(P0P0P0, P2N2P0);
+        result = instance.getIntersection(p, epsilon);
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, 
+                (V3D_PointDouble) result));
+        // Test 4
+        p = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
+        p.translate(N2P0P0);
+        instance = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
+        expResult = new V3D_LineSegmentDouble(pN2P2P0, pN2N2P0);
+        result = instance.getIntersection(p, epsilon);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
     }
 
     /**
@@ -478,7 +499,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         V3D_GeometryDouble result;
         // Test 1
         t = new V3D_TriangleDouble(pP0N2P0, pP0P2P0, pP0P0P2);
-        instance = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2);
+        instance = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         expResult = new V3D_TriangleDouble(pP0P0P0, pP0P0P2, pP0N2P0);
         result = instance.getIntersection(t, epsilon);
         assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
@@ -498,7 +519,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
 //        assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
         // Test 4
         t = new V3D_TriangleDouble(pN1N1P0, pP1N1P0, pN1P1P0);
-        instance = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2);
+        instance = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         expResult = new V3D_TriangleDouble(pN1N1P0, pP1N1P0, pN1P1P0);
         result = instance.getIntersection(t, epsilon);
         assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
@@ -516,7 +537,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         double expResult;
         double result;
         // Test 1
-        t = new V3D_TetrahedronDouble(P0P0P0, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
+        t = new V3D_TetrahedronDouble(pP0P0P0, pP1P0P0, pP0P1P0, pP0P0P1, epsilon);
         tr = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
         expResult = 0d;
         result = t.getDistanceSquared(tr, epsilon);
@@ -535,7 +556,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     public void testGetDistance_V3D_RectangleDouble() {
         System.out.println("getDistance");
         double epsilon = 1d / 10000000d;
-        V3D_TetrahedronDouble t = new V3D_TetrahedronDouble(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1);
+        V3D_TetrahedronDouble t = new V3D_TetrahedronDouble(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1, epsilon);
         V3D_RectangleDouble r = new V3D_RectangleDouble(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         double expResult = 0d;
         double result = t.getDistance(r, epsilon);
@@ -549,7 +570,7 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
     public void testGetDistanceSquared_V3D_RectangleDouble() {
         System.out.println("getDistanceSquared");
         double epsilon = 1d / 10000000d;
-        V3D_TetrahedronDouble t = new V3D_TetrahedronDouble(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1);
+        V3D_TetrahedronDouble t = new V3D_TetrahedronDouble(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1, epsilon);
         V3D_RectangleDouble r = new V3D_RectangleDouble(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         double expResult = 0d;
         double result = t.getDistance(r, epsilon);
@@ -577,13 +598,13 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         double expResult;
         double result;
         // Test 1
-        instance = new V3D_TetrahedronDouble(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        instance = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         p = pP0P0P0;
         expResult = 0d;
         result = instance.getDistanceSquared(p, epsilon);
         assertTrue(Math_Double.equals(expResult, result, epsilon));
         // Test 2
-        instance = new V3D_TetrahedronDouble(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        instance = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         p = pN2N2N2;
         expResult = 4d;
         result = instance.getDistanceSquared(p, epsilon);
@@ -602,30 +623,34 @@ public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
         V3D_GeometryDouble expResult;
         V3D_GeometryDouble result;
         // Test 1
-        t = new V3D_TetrahedronDouble(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        t = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         r = new V3D_RayDouble(pN1P0P0, pP0P0P0);
         expResult = new V3D_LineSegmentDouble(pN1P0P0, pP0P0P0);
         result = t.getIntersection(r, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 2
-        t = new V3D_TetrahedronDouble(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        t = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         r = new V3D_RayDouble(pN1P1P0, pP0P1P0);
         expResult = pN1P1P0;
         result = t.getIntersection(r, epsilon);
-        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon,
+                (V3D_PointDouble) result));
         // Test 3
-        t = new V3D_TetrahedronDouble(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        t = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         r = new V3D_RayDouble(pN1P0P1, pP0P0P1);
         expResult = new V3D_LineSegmentDouble(pN1P0P1, pP0P0P1);
         result = t.getIntersection(r, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 4
-        t = new V3D_TetrahedronDouble(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
+        t = new V3D_TetrahedronDouble(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         V3D_PointDouble pNHP0P1 = new V3D_PointDouble(-1d / 2d, 0d, 1d);
         r = new V3D_RayDouble(pNHP0P1, pP0P0P1);
         expResult = new V3D_LineSegmentDouble(pNHP0P1, pP0P0P1);
         result = t.getIntersection(r, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
     }
 
 }

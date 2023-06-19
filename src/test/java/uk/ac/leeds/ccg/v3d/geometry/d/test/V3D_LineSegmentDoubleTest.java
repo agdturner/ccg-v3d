@@ -27,6 +27,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_GeometryDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegmentDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_RayDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
 
 /**
@@ -114,10 +115,10 @@ public class V3D_LineSegmentDoubleTest extends V3D_DoubleTest {
         double epsilon = 1d / 1000000d;
         V3D_LineSegmentDouble l = new V3D_LineSegmentDouble(pP0P0P0, pP1P1P0);
         V3D_LineSegmentDouble instance = new V3D_LineSegmentDouble(pP0P0P0, pP1P1P0);
-        assertTrue(instance.equals(l, epsilon));
+        assertTrue(instance.equals(epsilon, l));
         // Test 2
         instance = new V3D_LineSegmentDouble(pP1P1P0, pP0P0P0);
-        assertFalse(instance.equals(l, epsilon));
+        assertFalse(instance.equals(epsilon, l));
     }
 
     /**
@@ -129,13 +130,13 @@ public class V3D_LineSegmentDoubleTest extends V3D_DoubleTest {
         double epsilon = 1d / 1000000d;
         V3D_LineSegmentDouble l = new V3D_LineSegmentDouble(pP0P0P0, pP1P1P0);
         V3D_LineSegmentDouble instance = new V3D_LineSegmentDouble(pP0P0P0, pP2P2P0);
-        assertFalse(instance.equalsIgnoreDirection(l, epsilon));
+        assertFalse(instance.equalsIgnoreDirection(epsilon, l));
         // Test 2
         instance = new V3D_LineSegmentDouble(pP1P1P0, pP0P0P0);
-        assertTrue(instance.equalsIgnoreDirection(l, epsilon));
+        assertTrue(instance.equalsIgnoreDirection(epsilon, l));
         // Test 3
         instance = new V3D_LineSegmentDouble(pP0P0P0, pP1P1P0);
-        assertTrue(instance.equalsIgnoreDirection(l, epsilon));
+        assertTrue(instance.equalsIgnoreDirection(epsilon, l));
     }
 
     /**
@@ -149,19 +150,55 @@ public class V3D_LineSegmentDoubleTest extends V3D_DoubleTest {
         V3D_LineSegmentDouble instance = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         V3D_LineSegmentDouble expResult = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
         instance.translate(v);
-        assertTrue(expResult.equalsIgnoreDirection(instance, epsilon));
+        assertTrue(expResult.equalsIgnoreDirection(epsilon, instance));
         // Test 2
         instance = new V3D_LineSegmentDouble(pP0P0P0, pP0P1P0);
         expResult = new V3D_LineSegmentDouble(pP1P0P0, pP1P1P0);
         instance.translate(v);
-        assertTrue(expResult.equalsIgnoreDirection(instance, epsilon));
+        assertTrue(expResult.equalsIgnoreDirection(epsilon, instance));
         // Test 3
         instance = new V3D_LineSegmentDouble(pP0P0P0, pP0P0P1);
         expResult = new V3D_LineSegmentDouble(pP1P0P0, pP1P0P1);
         instance.translate(v);
-        assertTrue(expResult.equalsIgnoreDirection(instance, epsilon));
+        assertTrue(expResult.equalsIgnoreDirection(epsilon, instance));
+        // Test 4
+        instance = new V3D_LineSegmentDouble(pP0P0P0, pP0P0P1);
+        expResult = new V3D_LineSegmentDouble(pP1P1P1, pP1P1P2);
+        instance.translate(V3D_VectorDouble.IJK);
+        assertTrue(expResult.equalsIgnoreDirection(epsilon, instance));
     }
 
+    
+    /**
+     * Test of getIntersection method, of class V3D_LineSegmentDouble.
+     */
+    @Test
+    public void testRotate() {
+        System.out.println("rotate");
+        double epsilon = 1d / 1000000d;
+        V3D_RayDouble xaxis = new V3D_RayDouble(pP0P0P0, V3D_VectorDouble.I);
+        V3D_VectorDouble uv = xaxis.l.v;
+        double Pi = Math.PI;
+        double theta = Pi / 2d;
+        V3D_LineSegmentDouble instance = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+        V3D_LineSegmentDouble expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
+        V3D_LineSegmentDouble result = instance.rotate(xaxis, uv, theta, epsilon);
+        assertTrue(expResult.equalsIgnoreDirection(epsilon, result));
+        // Test 2
+        V3D_RayDouble yaxis = new V3D_RayDouble(pP0P0P0, V3D_VectorDouble.J);
+        uv = yaxis.l.v;
+        expResult = new V3D_LineSegmentDouble(pP0P0P0, pP0P0N1);
+        result = instance.rotate(yaxis, uv, theta, epsilon);
+        assertTrue(expResult.equalsIgnoreDirection(epsilon, result));
+        // Test 3
+        V3D_RayDouble zaxis = new V3D_RayDouble(pP0P0P0, V3D_VectorDouble.K);
+        uv = zaxis.l.v;
+        theta = Pi;
+        expResult = new V3D_LineSegmentDouble(pP0P0P0, pN1P0P0);
+        result = instance.rotate(zaxis, uv, theta, epsilon);
+        assertTrue(expResult.equalsIgnoreDirection(epsilon, result));
+    }
+    
     /**
      * Test of getIntersection method, of class V3D_LineSegmentDouble.
      */
@@ -173,7 +210,8 @@ public class V3D_LineSegmentDoubleTest extends V3D_DoubleTest {
         V3D_LineSegmentDouble instance = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         V3D_GeometryDouble expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         V3D_GeometryDouble result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 2
         instance = new V3D_LineSegmentDouble(pP0P0P0, pP1P1P1);
         result = instance.getIntersection(l, epsilon);
@@ -194,7 +232,8 @@ public class V3D_LineSegmentDoubleTest extends V3D_DoubleTest {
         instance = new V3D_LineSegmentDouble(pN1P0P0, pP1P0P0);
         result = instance.getIntersection(l, epsilon);
         expResult = new V3D_LineSegmentDouble(pN1P0P0, pP1P0P0);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
     }
 
     /**
@@ -208,7 +247,8 @@ public class V3D_LineSegmentDoubleTest extends V3D_DoubleTest {
         V3D_LineSegmentDouble instance = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         V3D_GeometryDouble expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         V3D_GeometryDouble result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 2
         instance = new V3D_LineSegmentDouble(pP0P0P0, pP1P1P1);
         result = instance.getIntersection(l, epsilon);
@@ -229,7 +269,8 @@ public class V3D_LineSegmentDoubleTest extends V3D_DoubleTest {
         instance = new V3D_LineSegmentDouble(pN1P0P0, pP1P0P0);
         result = instance.getIntersection(l, epsilon);
         expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
     }
 
     /**
@@ -432,24 +473,28 @@ public class V3D_LineSegmentDoubleTest extends V3D_DoubleTest {
         V3D_LineDouble l1 = new V3D_LineDouble(pP0P0P0, pP0P0P1);
         V3D_GeometryDouble expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         V3D_GeometryDouble result = l0.getLineOfIntersection(l1, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 2
         l1 = new V3D_LineDouble(pP0P0P0, pP0P1P0);
         expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         result = l0.getLineOfIntersection(l1, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 3
         l0 = new V3D_LineSegmentDouble(pP1P0P1, pP1P0P2);
         l1 = new V3D_LineDouble(pN1P0P0, pN2P0P0);
         expResult = new V3D_LineSegmentDouble(pP1P0P0, pP1P0P1);
         result = l0.getLineOfIntersection(l1, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
 //        // Test 4
 //        l0 = new V3D_LineSegmentDouble(pP1P0P0, pP0P1P0);
 //        l1 = new V3D_LineDouble(pN1P0P1, pN1P1P0);
 //        expResult = new V3D_LineSegmentDouble(pN1P1P0, pP0P1P0);
 //        result = l0.getLineOfIntersection(l1);
-//        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result));
+//        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+//                epsilon, (V3D_LineSegmentDouble) result));
     }
 
     /**
@@ -463,7 +508,7 @@ public class V3D_LineSegmentDoubleTest extends V3D_DoubleTest {
         V3D_LineSegmentDouble l1 = new V3D_LineSegmentDouble(pP0P0P0, pP0P0P1);
         V3D_LineSegmentDouble expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         V3D_LineSegmentDouble result = l0.getLineOfIntersection(l1, epsilon);
-        assertTrue(expResult.equalsIgnoreDirection(result, epsilon));
+        assertTrue(expResult.equalsIgnoreDirection(epsilon, result));
         // Test 2
         l1 = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         result = l0.getLineOfIntersection(l1, epsilon);
@@ -473,12 +518,12 @@ public class V3D_LineSegmentDoubleTest extends V3D_DoubleTest {
         l1 = new V3D_LineSegmentDouble(pN1P0P0, pN2P0P0);
         expResult = new V3D_LineSegmentDouble(pN1P0P0, pP1P0P1);
         result = l0.getLineOfIntersection(l1, epsilon);
-        assertTrue(expResult.equalsIgnoreDirection(result, epsilon));
+        assertTrue(expResult.equalsIgnoreDirection(epsilon, result));
         // Test 4
         l0 = new V3D_LineSegmentDouble(pP1P0P0, pP0P1P0);
         l1 = new V3D_LineSegmentDouble(pN1P0P1, pN1P1P0);
         expResult = new V3D_LineSegmentDouble(pN1P1P0, pP0P1P0);
         result = l0.getLineOfIntersection(l1, epsilon);
-        assertTrue(expResult.equalsIgnoreDirection(result, epsilon));
+        assertTrue(expResult.equalsIgnoreDirection(epsilon, result));
     }
 }

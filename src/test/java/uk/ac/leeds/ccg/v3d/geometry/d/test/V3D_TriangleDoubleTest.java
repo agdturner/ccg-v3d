@@ -172,7 +172,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         V3D_TriangleDouble instance = new V3D_TriangleDouble(pP0P0P0, pP1P1P0, pP2P0P0);
         V3D_GeometryDouble expResult = new V3D_LineSegmentDouble(pP1P0P0, pP1P1P0);
         V3D_GeometryDouble result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(epsilon, (V3D_LineSegmentDouble) result));
         System.out.println("getIntersection");
         // Test 2
         instance = new V3D_TriangleDouble(P0P0P0, P1P0P0, P1P2P0, P2P0P0);
@@ -184,12 +184,12 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         l = new V3D_LineDouble(pP1P0P0, pP2P0P0);
         expResult = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(epsilon, (V3D_LineSegmentDouble) result));
         // Test 4
         l = new V3D_LineDouble(pP1P0P0, pP2P0P0);
         expResult = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(epsilon, (V3D_LineSegmentDouble) result));
     }
 
     /**
@@ -226,7 +226,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
                             q=(V3D_VectorDouble(dx=0.0, dy=1.0, dz=0.0)),
                             r=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=1.0)))""";
         String result = instance.toString();
-        System.out.println(result);
+        //System.out.println(result);
         assertEquals(expResult, result);
     }
 
@@ -292,31 +292,36 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         l = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
         expResult = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 3
         l = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
         expResult = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 4
         l = new V3D_LineSegmentDouble(pP2N2P0, pP2P1P0);
         instance = new V3D_TriangleDouble(P0P0P0, P2P2P0,
                 new V3D_VectorDouble(4d, 0d, 0d));
         expResult = new V3D_LineSegmentDouble(pP2P0P0, pP2P1P0);
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 5
         l = new V3D_LineSegmentDouble(pP0P0P0, pP0P1P0);
         instance = new V3D_TriangleDouble(pN2N2P0, pP0P2P0, pP2N2P0);
         expResult = new V3D_LineSegmentDouble(pP0P0P0, pP0P1P0);
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 6
         l = new V3D_LineSegmentDouble(new V3D_PointDouble(4d, -2d, 0d), pP2P0P0);
         instance = new V3D_TriangleDouble(pP0P0P0, new V3D_PointDouble(4d, 0d, 0d), new V3D_PointDouble(2d, -4d, 0d));
         expResult = new V3D_LineSegmentDouble(pP2P0P0, new V3D_PointDouble(10d/3d, -4d/3d, 0d));
         result = instance.getIntersection(l, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
     }
 
     /**
@@ -369,24 +374,28 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         instance = instance.rotate(xaxis, xaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pP1P0P0, pP0N1P0, pP1N1P0);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         // Test 2
         instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
         theta = Pi / 2d;
         instance = instance.rotate(xaxis, xaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pP1P0P0, pP0P0P1, pP1P0P1);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         // Test 3
         instance = new V3D_TriangleDouble(pP2P0P0, pP0P2P0, pP2P2P0);
         theta = Pi;
         instance = instance.rotate(xaxis, xaxis.l.v,  theta, epsilon);
         expResult = new V3D_TriangleDouble(pP2P0P0, pP0N2P0, pP2N2P0);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         // Test 4
         instance = new V3D_TriangleDouble(pP2P0P0, pP0P2P0, pP2P2P0);
         theta = Pi / 2d;
         instance = instance.rotate(xaxis, xaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pP2P0P0, pP0P0P2, pP2P0P2);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         // Test 5
         instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
         instance.translate(P1P0P0);
@@ -394,6 +403,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         instance = instance.rotate(xaxis, xaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pP2P0P0, pP1N1P0, pP2N1P0);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         
         // Test 6
         instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
@@ -402,24 +412,28 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         instance = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pN1P0P0, pP0P1P0, pN1P1P0);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         // Test 7
         instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
         theta = Pi / 2d;
         instance = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pP0P0N1, pP0P1P0, pP0P1N1);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         // Test 8
         instance = new V3D_TriangleDouble(pP2P0P0, pP0P2P0, pP2P2P0);
         theta = Pi;
         instance = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pN2P0P0, pP0P2P0, pN2P2P0);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         // Test 9
         instance = new V3D_TriangleDouble(pP2P0P0, pP0P2P0, pP2P2P0);
         theta = Pi / 2d;
         instance = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pP0P0N2, pP0P2P0, pP0P2N2);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         // Test 10
         instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
         instance.translate(P1P0P0);
@@ -427,6 +441,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         instance = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pN2P0P0, pN1P1P0, pN2P1P0);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         
         // Test 11
         instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
@@ -435,24 +450,27 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         instance = instance.rotate(zaxis, zaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pN1P0P0, pP0N1P0, pN1N1P0);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         // Test 12
         instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
         theta = Pi / 2d;
         instance = instance.rotate(zaxis, zaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pP0P1P0, pN1P0P0, pN1P1P0);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         // Test 13
         instance = new V3D_TriangleDouble(pP2P0P0, pP0P2P0, pP2P2P0);
         theta = Pi;
         instance = instance.rotate(zaxis, zaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pN2P0P0, pP0N2P0, pN2N2P0);
         assertTrue(expResult.equals(instance, epsilon));
-        // Test 14
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         instance = new V3D_TriangleDouble(pP2P0P0, pP0P2P0, pP2P2P0);
         theta = Pi / 2d;
         instance = instance.rotate(zaxis, zaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pP0P2P0, pN2P0P0, pN2P2P0);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
         // Test 15
         instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
         instance.translate(P1P0P0);
@@ -460,6 +478,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         instance = instance.rotate(zaxis, zaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pN2P0P0, pN1N1P0, pN2N1P0);
         assertTrue(expResult.equals(instance, epsilon));
+        assertTrue(expResult.pl.equals(instance.pl, epsilon));
     }
 
     /**
@@ -478,12 +497,14 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         p = V3D_PlaneDouble.X0;
         expResult = new V3D_LineSegmentDouble(pP0P0P0, pP0P1P0);
         result = t.getIntersection(p, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 2
         p = V3D_PlaneDouble.Y0;
         expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         result = t.getIntersection(p, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 3
         p = V3D_PlaneDouble.Z0;
         expResult = t;
@@ -494,13 +515,15 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         p = V3D_PlaneDouble.X0;
         expResult = new V3D_LineSegmentDouble(pP0P0P0, pP0P1P0);
         result = t.getIntersection(p, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 5
         t = new V3D_TriangleDouble(pN2N2N2, pN2N2P2, pP2P0P0);
         p = V3D_PlaneDouble.X0;
         expResult = new V3D_LineSegmentDouble(pP0N1P1, pP0N1N1);
         result = t.getIntersection(p, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 6
         t = new V3D_TriangleDouble(P0P0P0, P1P0P0, P0P1P0, P1P1P0);
         p = V3D_PlaneDouble.X0;
@@ -512,7 +535,8 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         p.translate(P1P0P0);
         expResult = new V3D_LineSegmentDouble(pP1P0P0, pP1P1P0);
         result = t.getIntersection(p, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equals((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 8
         p = new V3D_PlaneDouble(V3D_PlaneDouble.Z0);
         expResult = new V3D_TriangleDouble(t);
@@ -542,12 +566,14 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         r = new V3D_RayDouble(pP1P0P0, pP2P0P0);
         result = t.getIntersection(r, epsilon);
         expResult = new V3D_LineSegmentDouble(pP1P0P0, pP2P0P0);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 3
         r = new V3D_RayDouble(pN1P0P0, pP2P0P0);
         result = t.getIntersection(r, epsilon);
         expResult = new V3D_LineSegmentDouble(pP0P0P0, pP2P0P0);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 4
         r = new V3D_RayDouble(pN2P0N2, pP0P0P0);
         result = t.getIntersection(r, epsilon);
@@ -633,7 +659,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         V3D_PointDouble pt = new V3D_PointDouble(centroid);
         pt.translate(direction.multiply(radius * 2d));
         V3D_PlaneDouble pl = new V3D_PlaneDouble(pt, new V3D_VectorDouble(pt, envelope.getCentroid()));
-        V3D_VectorDouble pv = pl.getPV(epsilon);
+        V3D_VectorDouble pv = pl.getPV();
         double zoomFactor = 1.0d;
         V3D_RectangleDouble screen = envelope.getViewport3(pt, pv, zoomFactor, epsilon);
         V3D_TriangleDouble pqr = screen.pqr;
@@ -740,7 +766,8 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         result = instance.getIntersection(t, epsilon);
         expResult = new V3D_LineSegmentDouble(new V3D_PointDouble(1, 3, 0),
                 new V3D_PointDouble(3, 1, 0));
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 8: From https://math.stackexchange.com/questions/1220102/how-do-i-find-the-intersection-of-two-3d-triangles
         t = new V3D_TriangleDouble(new V3D_PointDouble(6, 8, 3),
                 new V3D_PointDouble(6, 8, -2),
@@ -751,7 +778,8 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         result = instance.getIntersection(t, epsilon);
         expResult = new V3D_LineSegmentDouble(new V3D_PointDouble(6, 1.25d, 0),
                 new V3D_PointDouble(6, 0.8d, 0));
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 9: 4 sides
         t = new V3D_TriangleDouble(new V3D_PointDouble(2, -3, 0), 
                 new V3D_PointDouble(6, 1, 0), new V3D_PointDouble(2, 5, 0));
@@ -829,16 +857,14 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
     public void testTranslate() {
         System.out.println("translate");
         double epsilon = 1d / 10000000d;
-        V3D_VectorDouble v = P1P0P0;
         V3D_TriangleDouble instance = new V3D_TriangleDouble(P0P0P0, P1P0P0, P0P1P0, P1P1P0);
-        instance.translate(v);
+        instance.translate(V3D_VectorDouble.I);
         V3D_TriangleDouble expResult = new V3D_TriangleDouble(P0P0P0, P2P0P0, P1P1P0, P2P1P0);
         assertTrue(expResult.equals(instance, epsilon));
         // Test 2
-        expResult = new V3D_TriangleDouble(P1P0P0, P1P0P0, P0P1P0, P1P1P0);
-        //System.out.println(instance);
-        //System.out.println(expResult);
-        //boolean te = expResult.equals(instance);
+        instance = new V3D_TriangleDouble(P0P0P0, P1P0P0, P0P1P0, P1P1P0);
+        instance.translate(V3D_VectorDouble.IJK);
+        expResult = new V3D_TriangleDouble(P1P1P1, P1P0P0, P0P1P0, P1P1P0);
         assertTrue(expResult.equals(instance, epsilon));
     }
 
@@ -867,7 +893,8 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         r = new V3D_PointDouble(pP0P0P0);
         expResult = new V3D_LineSegmentDouble(pP0P0P0, pP1P0P0);
         result = V3D_TriangleDouble.getGeometry(p, q, r, epsilon);
-        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(
+                epsilon, (V3D_LineSegmentDouble) result));
         // Test 2
         p = new V3D_PointDouble(pP1P0P0);
         q = new V3D_PointDouble(pP0P1P0);
@@ -945,7 +972,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         V3D_TriangleDouble instance = new V3D_TriangleDouble(pP0P0P0, pP1P0P0, pP0P1P0);
         V3D_PointDouble expResult = pP0P1P0;
         V3D_PointDouble result = instance.getOpposite(l, epsilon);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
     }
 
     /**

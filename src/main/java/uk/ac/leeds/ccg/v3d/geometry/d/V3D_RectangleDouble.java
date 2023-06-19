@@ -612,7 +612,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
             if (pol2 instanceof V3D_LineSegmentDouble l2) {
                 return l2;
             } else {
-                if (((V3D_PointDouble) pol1).equals((V3D_PointDouble) pol2, epsilon)) {
+                if (((V3D_PointDouble) pol1).equals(epsilon, (V3D_PointDouble) pol2)) {
                     return pol1;
                 }
                 return (V3D_PointDouble) pol1;
@@ -975,7 +975,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
         for (var x : pts) {
             boolean found = false;
             for (var y : rpts) {
-                if (x.equals(y, epsilon)) {
+                if (x.equals(epsilon, y)) {
                     found = true;
                     break;
                 }
@@ -987,7 +987,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
         for (var x : rpts) {
             boolean found = false;
             for (var y : pts) {
-                if (x.equals(y, epsilon)) {
+                if (x.equals(epsilon, y)) {
                     found = true;
                     break;
                 }

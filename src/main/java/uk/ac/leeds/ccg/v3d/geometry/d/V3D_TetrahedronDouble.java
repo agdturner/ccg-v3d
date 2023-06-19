@@ -135,7 +135,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * @param s Used to set {@link #s}.
      */
     public V3D_TetrahedronDouble(V3D_PointDouble p, V3D_PointDouble q,
-            V3D_PointDouble r, V3D_PointDouble s) {
+            V3D_PointDouble r, V3D_PointDouble s, double epsilon) {
         super(p.offset);
         this.p = new V3D_VectorDouble(p.rel);
         V3D_PointDouble qp = new V3D_PointDouble(q);
@@ -147,17 +147,22 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
         V3D_PointDouble sp = new V3D_PointDouble(s);
         sp.setOffset(offset);
         this.s = sp.rel;
+        
+        if (V3D_PlaneDouble.isCoplanar(epsilon, p, q, r, s)) {
+            // The tetrahedron is flat and without volume.
+            int debug = 1;
+        }
     }
 
     /**
-     * Create a new instance. {@code pl}, must not be coplanar to t. No test is
-     * done to check this is the case.
+     * Create a new instance. If {@code p} is coplanar with t then the 
+     * tetrahedron is flat and without volume.
      *
      * @param p Used to set {@link #p} and {@link #offset}.
      * @param t Used to set {@link #q}, {@link #r} and {@link #s}.
      */
-    public V3D_TetrahedronDouble(V3D_PointDouble p, V3D_TriangleDouble t) {
-        this(p, t.getP(), t.getQ(), t.getR());
+    public V3D_TetrahedronDouble(V3D_PointDouble p, V3D_TriangleDouble t, double epsilon) {
+        this(p, t.getP(), t.getQ(), t.getR(), epsilon);
     }
 
     @Override
@@ -550,7 +555,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                     }
                 }
             }
-            return new V3D_TetrahedronDouble(p, q, r, s);
+            return new V3D_TetrahedronDouble(p, q, r, s, epsilon);
         }
     }
 
@@ -966,9 +971,25 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
             if (psqi == null) {
                 V3D_FiniteGeometryDouble qsri = getQsr().getIntersection(pl, epsilon);
                 if (qsri == null) {
+                    
+                    // debugging code
+                    getPqr().getIntersection(pl, epsilon);
+                    getPsq().getIntersection(pl, epsilon);
+                    getQsr().getIntersection(pl, epsilon);
+                    getSpr().getIntersection(pl, epsilon);
+                    //V3D_PlaneDouble.isCoplanar(epsilon, getP(), getQ(), getR(), getS());
+                    
                     return pqri;
                     //throw new RuntimeException("Paradox B:" + this.toString() + pl.toString());
                 } else if (qsri instanceof V3D_PointDouble qsrip) {
+                    
+                    // debugging code
+                    getPqr().getIntersection(pl, epsilon);
+                    getPsq().getIntersection(pl, epsilon);
+                    getQsr().getIntersection(pl, epsilon);
+                    getSpr().getIntersection(pl, epsilon);
+                    //V3D_PlaneDouble.isCoplanar(epsilon, getP(), getQ(), getR(), getS());
+                    
                     return V3D_TriangleDouble.getGeometry(pqril, qsrip, epsilon);
                     //throw new RuntimeException("Paradox C");
                 } else if (qsri instanceof V3D_LineSegmentDouble qsril) {
@@ -976,12 +997,28 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                     return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon,
                             pqril.getP(), pqril.getQ(), qsril.getP(), qsril.getQ());
                 } else {
+                    
+                    // debugging code
+                    getPqr().getIntersection(pl, epsilon);
+                    getPsq().getIntersection(pl, epsilon);
+                    getQsr().getIntersection(pl, epsilon);
+                    getSpr().getIntersection(pl, epsilon);
+                    //V3D_PlaneDouble.isCoplanar(epsilon, getP(), getQ(), getR(), getS());
+                    
                     return qsri;
                     //throw new RuntimeException("Paradox D");
                 }
             } else if (psqi instanceof V3D_PointDouble psqip) {
                 V3D_FiniteGeometryDouble qsri = getQsr().getIntersection(pl, epsilon);
                 if (qsri == null) {
+                    
+                    // debugging code
+                    getPqr().getIntersection(pl, epsilon);
+                    getPsq().getIntersection(pl, epsilon);
+                    getQsr().getIntersection(pl, epsilon);
+                    getSpr().getIntersection(pl, epsilon);
+                    //V3D_PlaneDouble.isCoplanar(epsilon, getP(), getQ(), getR(), getS());
+                    
                     return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon,
                             pqril.getP(), pqril.getQ(), psqip);
                     //throw new RuntimeException("Paradox E");
@@ -995,6 +1032,14 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                             pqril.getP(), pqril.getQ(), qsril.getP(),
                             qsril.getQ(), psqip);
                 } else {
+                    
+                    // debugging code
+                    getPqr().getIntersection(pl, epsilon);
+                    getPsq().getIntersection(pl, epsilon);
+                    getQsr().getIntersection(pl, epsilon);
+                    getSpr().getIntersection(pl, epsilon);
+                    //V3D_PlaneDouble.isCoplanar(epsilon, getP(), getQ(), getR(), getS());
+                    
                     return qsri;
                     //throw new RuntimeException("Paradox F");
                 }
@@ -1557,7 +1602,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                 getP().rotate(ray, uv, theta, epsilon),
                 getQ().rotate(ray, uv, theta, epsilon),
                 getR().rotate(ray, uv, theta, epsilon),
-                getS().rotate(ray, uv, theta, epsilon));
+                getS().rotate(ray, uv, theta, epsilon), epsilon);
     }
 
     /**

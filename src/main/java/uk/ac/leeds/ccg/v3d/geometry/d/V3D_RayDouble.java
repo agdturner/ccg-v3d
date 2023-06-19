@@ -140,7 +140,7 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
     public boolean equals(V3D_RayDouble r, double epsilon) {
         if (l.getP().equals(r.l.getP())) {
             if (l.v.getDirection() == r.l.v.getDirection()) {
-                return l.v.isScalarMultiple(r.l.v, epsilon);
+                return l.v.isScalarMultiple(epsilon, r.l.v);
             } else {
                 return false;
             }
@@ -216,7 +216,7 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
         if (pt.equals(l.getP())) {
             return true;
         }
-        if (l.isIntersectedBy(pt, epsilon)) {
+        if (l.isIntersectedBy(epsilon, pt)) {
 //            V3D_Point poi = l.getPointOfIntersection(pt);
 //            V3D_Ray r = new V3D_Ray(e, getP(), poi.getVector());
             pl = getPl();

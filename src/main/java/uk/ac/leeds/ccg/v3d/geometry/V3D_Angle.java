@@ -43,13 +43,25 @@ public class V3D_Angle {
                 V3D_Environment.bd.getPi(oom, rm)).multiply(2);
         BigRational r = theta;
         // Change a negative angle into a positive one.
-        while (r.compareTo(BigRational.ZERO) == -1) {
-            r = r.add(twoPi);
+        if (theta.compareTo(BigRational.ZERO) == -1) {
+            int n = theta.divide(twoPi).subtract(1).intValue();
+            r = theta.subtract(twoPi.multiply(n));
+        } else {
+            // Only rotate less than 2Pi radians.
+            if (theta.compareTo(BigRational.ZERO) == 1) {
+                int n = theta.divide(twoPi).intValue();
+                r = theta.subtract(twoPi.multiply(n));
+            }
         }
-        // Only rotate less than 2Pi radians.
-        while (r.compareTo(twoPi) == 1) {
-            r = r.subtract(twoPi);
-        }
+//        BigRational r = theta;
+//        // Change a negative angle into a positive one.
+//        while (r.compareTo(BigRational.ZERO) == -1) {
+//            r = r.add(twoPi);
+//        }
+//        // Only rotate less than 2Pi radians.
+//        while (r.compareTo(twoPi) == 1) {
+//            r = r.subtract(twoPi);
+//        }
         return r;
     }
     

@@ -78,6 +78,22 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         p = new V3D_PointDouble(0d, 10d, 1d);
         assertFalse(instance.equals(p));
     }
+    
+    /**
+     * Test of isCoincident method, of class V3D_LineDouble.
+     */
+    @Test
+    public void testIsCoincident() {
+        System.out.println("isCoincident");
+        V3D_PointDouble[] points = new V3D_PointDouble[2];
+        points[0] = pP0P0P0;
+        points[1] = pP0P0P0;
+        assertTrue(V3D_PointDouble.equals(points));
+        points[1] = pP0P0P1;
+        assertFalse(V3D_PointDouble.equals(points));
+        points[0] = pP0P0P1;
+        assertTrue(V3D_PointDouble.equals(points));
+    }
 
     /**
      * Test of isBetween method, of class V3D_Point.
@@ -90,72 +106,72 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         V3D_PointDouble a = pN1P0P0;
         V3D_PointDouble b = pP1P0P0;
         double epsilon = 1 / 100000000d;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
         // Test 2
         p = pP0P0P0;
         a = pP0N1P0;
         b = pP0P1P0;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
         // Test 3
         p = pP0P0P0;
         a = pP0P0N1;
         b = pP0P0P1;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
         // Test 4
         p = pP0P0P0;
         a = pN1N1N1;
         b = pP1P1P1;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
         // Test 5
         p = pP0P0P0;
         a = pN1N1N1;
         b = pP1P1P1;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
         // Test 6
         p = pP0P0P0;
         a = pN1N1P0;
         b = pP1P1P0;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
         // Test 7
         p = pP0P0P0;
         a = pN1P0N1;
         b = pP1P0P1;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
         // Test 8
         p = pP0P0P0;
         a = pP0N1N1;
         b = pP0P1P1;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
         // Test 9
         p = pP0P0P0;
         a = pN1P0N1;
         b = pP1P0P1;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
         // Test 10
         p = pP0P0P0;
         a = pP0N1N1;
         b = pP0P1P1;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
         // Test 11
         p = pP0P0P1;
         a = pP0N1N1;
         b = pP0P1P1;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
         // Test 12
         p = pP0P0P2;
         a = pP0N1N1;
         b = pP0P1P1;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
         // Test 13
         p = pP0P1P2;
         a = pP0N1N1;
         b = pP0P1P1;
-        assertFalse(p.isBetween(a, b, epsilon));
+        assertFalse(p.isBetween(epsilon, a, b));
         // Test 14
         p = pP1P1P1;
         a = pP0N1N1;
         b = pP0P1P1;
-        assertTrue(p.isBetween(a, b, epsilon));
+        assertTrue(p.isBetween(epsilon, a, b));
     }
 
     /**
@@ -511,13 +527,13 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         double theta = Pi;
         V3D_PointDouble result = instance.rotate(axis, uv, theta, epsilon);
         V3D_PointDouble expResult = pP0P1P0;
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 2
         instance = new V3D_PointDouble(pP1P0P0);
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pP0P1P0;
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 3
         V3D_VectorDouble offset = new V3D_VectorDouble(2, 0, 0);
         V3D_VectorDouble rel = new V3D_VectorDouble(1, 0, 0);
@@ -525,7 +541,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = new V3D_PointDouble(0, 3, 0);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 4
         offset = new V3D_VectorDouble(1, 0, 0);
         rel = new V3D_VectorDouble(2, 0, 0);
@@ -533,7 +549,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = new V3D_PointDouble(0, 3, 0);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         
         // Test 5
         axis = new V3D_RayDouble(P0P0P0, V3D_VectorDouble.K);
@@ -542,19 +558,19 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pN1P0P0;
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 6
         instance = new V3D_PointDouble(pP2P0P0);
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pN2P0P0;
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 7
         instance = new V3D_PointDouble(pN2P0P0);
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pP2P0P0;
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         
         // Test 8
         axis = new V3D_RayDouble(P0P0P0, V3D_VectorDouble.IJK);
@@ -563,20 +579,38 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pP1P1P1;
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 9
         instance = new V3D_PointDouble(pP1P1P0);
         theta = 2d * Pi / 3d;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pP0P1P1;
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 10
         theta = 4d * Pi / 3d;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pP1P0P1;
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
     }
 
+    
+    /**
+     * Test of setOffset method, of class V3D_PointDouble.
+     */
+    @Test
+    public void testTranslate() {
+        System.out.println("setOffset");
+        V3D_PointDouble instance = new V3D_PointDouble(pP0P0P0);
+        V3D_VectorDouble offset = P0P0P1;
+        double epsilon = 1 / 100000000d;
+        instance.translate(offset);
+        assertTrue(instance.equals(epsilon, pP0P0P1));
+        // Test 2
+        offset = N2N2N2;
+        instance.translate(offset);
+        assertTrue(instance.equals(epsilon, pN2N2N1));
+    }
+    
     /**
      * Test of setOffset method, of class V3D_PointDouble.
      */
@@ -662,7 +696,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         boolean t = false;
         for (var x : result) {
             for (var y : expResult) {
-                if (x.equals(y, epsilon)) {
+                if (x.equals(epsilon, y)) {
                     t = true;
                     break;
                 }
@@ -672,7 +706,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         t = false;
         for (var x : expResult) {
             for (var y : result) {
-                if (x.equals(y, epsilon)) {
+                if (x.equals(epsilon, y)) {
                     t = true;
                     break;
                 }

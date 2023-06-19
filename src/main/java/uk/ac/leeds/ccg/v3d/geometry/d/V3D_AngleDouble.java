@@ -35,12 +35,15 @@ public class V3D_AngleDouble {
     public static double normalise(double theta) {
         double twoPi = Math.PI * 2d;
         // Change a negative angle into a positive one.
-        while (theta < 0d) {
-            theta = theta + twoPi;
-        }
-        // Only rotate less than 2Pi radians.
-        while (theta > twoPi) {
-            theta = theta - twoPi;
+        if (theta < 0d) {
+            int n = (int) (theta / twoPi) - 1;
+            theta = theta - (n * twoPi);
+        } else {
+            // Only rotate less than 2Pi radians.
+            if (theta > twoPi) {
+                int n = (int) (theta / twoPi);
+                theta = theta - (n * twoPi);
+            }
         }
         return theta;
     }

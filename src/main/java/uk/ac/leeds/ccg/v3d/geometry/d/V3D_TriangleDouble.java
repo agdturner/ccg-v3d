@@ -216,6 +216,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         this.r = r;
         this.pl = pl;
 
+        // Debugging code
         if (p.equals(q) || p.equals(r) || q.equals(r)) {
             int debug = 1;
             throw new RuntimeException("p.equals(q) || p.equals(r) || q.equals(r)");
@@ -490,7 +491,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      */
     public boolean isIntersectedBy(V3D_PointDouble pt, double epsilon) {
         if (getEnvelope().isIntersectedBy(pt.getEnvelope(), epsilon)) {
-            if (pl.isIntersectedBy(pt, epsilon)) {
+            if (pl.isIntersectedBy(epsilon, pt)) {
                 return isAligned(pt, epsilon);
                 //return isIntersectedBy0(pt);
             }
@@ -960,17 +961,16 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                 } else {
                     if (gRP == null) {
                         return gQR;
+                    } else if (gRP instanceof V3D_PointDouble gRPp) {
+                        return V3D_LineSegmentDouble.getGeometry(
+                                (V3D_PointDouble) gQR, gRPp, epsilon);
                     } else {
-                        if (gRP instanceof V3D_PointDouble gRPp) {
-                            return V3D_LineSegmentDouble.getGeometry(
-                                    (V3D_PointDouble) gQR, gRPp, epsilon);
-                        } else {
 //                            return V3D_TriangleDouble.getGeometry(
 //                                    (V3D_LineSegmentDouble) gRP,
 //                                    (V3D_PointDouble) gQR, epsilon);
-                            return gRP;
-                        }
+                        return gRP;
                     }
+
                 }
             } else if (gPQ instanceof V3D_LineSegmentDouble) {
                 return gPQ;
@@ -1666,32 +1666,32 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     public boolean equals(V3D_TriangleDouble t, double epsilon) {
         V3D_PointDouble tp = t.getP();
         V3D_PointDouble thisp = getP();
-        if (tp.equals(thisp, epsilon)) {
+        if (tp.equals(epsilon, thisp)) {
             V3D_PointDouble tq = t.getQ();
             V3D_PointDouble thisq = getQ();
-            if (tq.equals(thisq, epsilon)) {
-                return t.getR().equals(getR(), epsilon);
-            } else if (tq.equals(getR(), epsilon)) {
-                return t.getR().equals(thisq, epsilon);
+            if (tq.equals(epsilon, thisq)) {
+                return t.getR().equals(epsilon, getR());
+            } else if (tq.equals(epsilon, getR())) {
+                return t.getR().equals(epsilon, thisq);
             } else {
                 return false;
             }
-        } else if (tp.equals(getQ(), epsilon)) {
+        } else if (tp.equals(epsilon, getQ())) {
             V3D_PointDouble tq = t.getQ();
             V3D_PointDouble thisr = getR();
-            if (tq.equals(thisr, epsilon)) {
-                return t.getR().equals(thisp, epsilon);
-            } else if (tq.equals(thisp, epsilon)) {
-                return t.getR().equals(thisr, epsilon);
+            if (tq.equals(epsilon, thisr)) {
+                return t.getR().equals(epsilon, thisp);
+            } else if (tq.equals(epsilon, thisp)) {
+                return t.getR().equals(epsilon, thisr);
             } else {
                 return false;
             }
-        } else if (tp.equals(getR(), epsilon)) {
+        } else if (tp.equals(epsilon, getR())) {
             V3D_PointDouble tq = t.getQ();
-            if (tq.equals(thisp, epsilon)) {
-                return t.getR().equals(getQ(), epsilon);
-            } else if (tq.equals(getQ(), epsilon)) {
-                return t.getR().equals(thisp, epsilon);
+            if (tq.equals(epsilon, thisp)) {
+                return t.getR().equals(epsilon, getQ());
+            } else if (tq.equals(epsilon, getQ())) {
+                return t.getR().equals(epsilon, thisp);
             } else {
                 return false;
             }
@@ -1933,14 +1933,14 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             return new V3D_ConvexHullCoplanarDouble(t.pl.getN(),
                     epsilon, abp, cdp, ab.getQ(), cd.getQ());
         } else {
-            if (abp.equals(pt, epsilon)) {
-                if (cdp.equals(pt, epsilon)) {
+            if (abp.equals(epsilon, pt)) {
+                if (cdp.equals(epsilon, pt)) {
                     return new V3D_TriangleDouble(pt, ab.getQ(), cd.getQ());
                 } else {
                     return new V3D_TriangleDouble(pt, ab.getQ(), cdp);
                 }
             } else {
-                if (cdp.equals(pt, epsilon)) {
+                if (cdp.equals(epsilon, pt)) {
                     return new V3D_TriangleDouble(pt, abp, cd.getQ());
                 } else {
                     return new V3D_TriangleDouble(pt, abp, cdp);
@@ -1991,17 +1991,17 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      *
      * @param l a line segment either equal to one of the edges of this: null
      * null null null null null null null null null null null null null null
-     * null null null null null null null null null null null null null null     {@link #getPQ()},
+     * null null null null null null null null null null null null null null null     {@link #getPQ()},
      * {@link #getQR()} or {@link #getRP()}.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @return The point of {@code this} that does not intersect with {@code l}.
      */
     public V3D_PointDouble getOpposite(V3D_LineSegmentDouble l, double epsilon) {
-        if (getPQ().equals(l, epsilon)) {
+        if (getPQ().equalsIgnoreDirection(epsilon, l)) {
             return getR();
         } else {
-            if (getQR().equals(l, epsilon)) {
+            if (getQR().equalsIgnoreDirection(epsilon, l)) {
                 return getP();
             } else {
                 return getQ();
@@ -2030,7 +2030,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * @return The distance squared to {@code pv}.
      */
     public double getDistanceSquared(V3D_PointDouble pt, double epsilon) {
-        if (pl.isIntersectedBy(pt, epsilon)) {
+        if (pl.isIntersectedBy(epsilon, pt)) {
             //if (isIntersectedBy0(pt)) {
             if (isAligned(pt, epsilon)) {
                 return 0d;

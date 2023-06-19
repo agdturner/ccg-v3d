@@ -75,6 +75,180 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         assertTrue(expResult == result);
     }
 
+//    /**
+//     * Test of isOrthogonal method, of class V3D_VectorDouble.
+//     */
+//    @Test
+//    public void testIsOrthogonal() {
+//        System.out.println("isOrthogonal");
+//        double epsilon = 1 / 1000000d;
+//        V3D_VectorDouble v;
+//        V3D_VectorDouble instance;
+//        // Test 1
+//        v = P1P0P0;
+//        instance = P0P1P0;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0P0P1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0N1P0;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = N1P0P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1P1P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1N1P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1N1P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P1P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P0P1N1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0N1N1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0N1P1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0P1P1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0P1N1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0N1N1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0N1P1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0P1P1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P1P1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1P1P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P1P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1N1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1N1P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1N1P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1N1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1P0P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        // Test 2
+//        v = P1P1P0;
+//        instance = P1P0P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1N1P0;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0N1P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1N1P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P0P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P1P0;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0P1P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1P1P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1P1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1P0N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1N1N1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0N1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1N1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P0N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P1N1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0P1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P0P0N1;
+//        v = P1P1P0;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P1P1P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1P0P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1N1P1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0N1P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1N1P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P0P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P1P1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0P1P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P0P0P1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        // Test 3
+//        v = P1P1P1;
+//        instance = P1P1P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1P0P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1N1P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P0N1P1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = N1N1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P0P1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = N1P1P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P0P1P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P0P0P1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1P1P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1P0P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1N1P0;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0N1P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1N1P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P0P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P1P0;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0P1P0;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P0P0P0;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P1P1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P1P0N1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P1N1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P0N1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1N1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P0N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = N1P1N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//        instance = P0P1N1;
+//        assertTrue(instance.isOrthogonal(v, epsilon));
+//        instance = P0P0N1;
+//        assertFalse(instance.isOrthogonal(v, epsilon));
+//    }
+    
     /**
      * Test of isOrthogonal method, of class V3D_VectorDouble.
      */
@@ -87,173 +261,173 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         // Test 1
         v = P1P0P0;
         instance = P0P1P0;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0P0P1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0N1P0;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = N1P0P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1P1P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1N1P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1N1P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P1P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P0P1N1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0N1N1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0N1P1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0P1P1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0P1N1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0N1N1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0N1P1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0P1P1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P1P1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1P1P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P1P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1N1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1N1P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1N1P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1N1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1P0P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         // Test 2
         v = P1P1P0;
         instance = P1P0P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1N1P0;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0N1P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1N1P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P0P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P1P0;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0P1P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1P1P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1P1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1P0N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1N1N1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0N1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1N1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P0N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P1N1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0P1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P0P0N1;
         v = P1P1P0;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P1P1P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1P0P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1N1P1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0N1P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1N1P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P0P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P1P1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0P1P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P0P0P1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         // Test 3
         v = P1P1P1;
         instance = P1P1P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1P0P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1N1P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P0N1P1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = N1N1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P0P1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = N1P1P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P0P1P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P0P0P1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1P1P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1P0P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1N1P0;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0N1P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1N1P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P0P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P1P0;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0P1P0;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P0P0P0;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P1P1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P1P0N1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P1N1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P0N1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1N1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P0N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = N1P1N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
         instance = P0P1N1;
-        assertTrue(instance.isOrthogonal(v, epsilon));
+        assertTrue(instance.isOrthogonal(v));
         instance = P0P0N1;
-        assertFalse(instance.isOrthogonal(v, epsilon));
+        assertFalse(instance.isOrthogonal(v));
     }
 
     /**
      * Test of getMagnitude method, of class V3D_VectorDouble.
      */
     @Test
-    public void testGetMagnitude_0args() {
+    public void testGetMagnitude() {
         System.out.println("getMagnitude");
         V3D_VectorDouble instance = P0P0P0;
         double expResult = 0d;
@@ -299,137 +473,267 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
      * Test of isScalarMultiple method, of class V3D_VectorDouble.
      */
     @Test
-    public void testIsScalarMultiple() {
+    public void testIsScalarMultiple_double_V3D_Vector() {
         System.out.println("isScalarMultiple");
         double epsilon = 1 / 1000000d;
         V3D_VectorDouble v = P0P0P0;
         V3D_VectorDouble instance = P1P1P1;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 2
         v = P0P0P0;
         instance = P0P0P0;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 3
         v = N1N1N1;
         instance = P0P0P0;
-        assertFalse(instance.isScalarMultiple(v, epsilon));
+        assertFalse(instance.isScalarMultiple(epsilon, v));
         // Test 4
         v = N1N1N1;
         instance = P1P1P1;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 5
         v = P1P0P0;
         instance = P0P1P1;
-        assertFalse(instance.isScalarMultiple(v, epsilon));
+        assertFalse(instance.isScalarMultiple(epsilon, v));
         // Test 6
         v = new V3D_VectorDouble(0d, 1d, 10000d);
         instance = new V3D_VectorDouble(0d, 1d, 10000d);
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 7
         v = new V3D_VectorDouble(0d, 1d, 10000d);
         instance = new V3D_VectorDouble(0d, 1d, 10001d);
-        assertFalse(instance.isScalarMultiple(v, epsilon));        
+        assertFalse(instance.isScalarMultiple(epsilon, v));        
         // Test 8
         v = new V3D_VectorDouble(0d, 1d, 1d);
         instance = new V3D_VectorDouble(0d, 1d, 1d + (epsilon / 2.0d));
-        //assertFalse(instance.isScalarMultiple(v, epsilon));
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        //assertFalse(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 9
         v = new V3D_VectorDouble(0d, 1d, 10000d);
         instance = new V3D_VectorDouble(0d, 2d, 20000d);
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         
         // Test 10
         instance = P0P0N1;
         v = P0P0N2;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 11
         v = P0P0P2;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 12
         v = P0P0N2;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 13
         v = P0P0P2;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         
         // Test 14
         instance = P0N1P0;
         v = P0N2P0;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 15
         v = P0P2P0;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 16
         v = P0N2P0;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 17
         v = P0P2P0;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         
         // Test 18
         instance = N1P0P0;
         v = N2P0P0;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 19
         v = P2P0P0;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 20
         v = N2P0P0;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 21
         v = P2P0P0;
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         
         // Test 22
         instance = new V3D_VectorDouble(0d, 1d, 10000d);
         v = new V3D_VectorDouble(0d, 1d, 10000d);
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 23
         v = new V3D_VectorDouble(0d, 1d, 10001d);
-        assertFalse(instance.isScalarMultiple(v, epsilon));  
+        assertFalse(instance.isScalarMultiple(epsilon, v));  
         // Test 24
         v = new V3D_VectorDouble(0d, 1.01d, 10000d);
-        assertFalse(instance.isScalarMultiple(v, epsilon));  
+        assertFalse(instance.isScalarMultiple(epsilon, v));  
         // Test 25
         v = new V3D_VectorDouble(0.01d, 1d, 10000d);
-        assertFalse(instance.isScalarMultiple(v, epsilon));  
+        assertFalse(instance.isScalarMultiple(epsilon, v));  
         
         // Test 26
         instance = new V3D_VectorDouble(0d, 1d, 10000d);
         v = new V3D_VectorDouble(0d, 2d, 20000d);
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 27
         instance = new V3D_VectorDouble(3d, 1d, 10000d);
         v = new V3D_VectorDouble(6d, 2d, 20000d);
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 28
         instance = new V3D_VectorDouble(3d, 1d, 10000d);
         v = new V3D_VectorDouble(-6d, -2d, -20000d);
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 29
         instance = new V3D_VectorDouble(-3d, -1d, -10000d);
         v = new V3D_VectorDouble(6d, 2d, 20000d);
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         // Test 30
         instance = new V3D_VectorDouble(-3d, -1d, -10000d);
         v = new V3D_VectorDouble(-6d, -2d, -20000d);
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         
         // Test 31
         instance = new V3D_VectorDouble(-3d, 0d, -10000d);
         v = new V3D_VectorDouble(+6d, 0d, -20000d);
-        assertFalse(instance.isScalarMultiple(v, epsilon));
+        assertFalse(instance.isScalarMultiple(epsilon, v));
         // Test 32
         instance = new V3D_VectorDouble(-3d, 0d, -10000d);
         v = new V3D_VectorDouble(-6d, 0d, -20000d);
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
         
         // Test 31
         instance = new V3D_VectorDouble(0d, 1d, 1d);
         v = new V3D_VectorDouble(0d, 1d, 1d + (epsilon / 2.0d));
-        //assertFalse(instance.isScalarMultiple(v, epsilon));
-        assertTrue(instance.isScalarMultiple(v, epsilon));
+        //assertFalse(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(epsilon, v));
+    }
+    
+    /**
+     * Test of isScalarMultiple method, of class V3D_VectorDouble.
+     */
+    @Test
+    public void testIsScalarMultiple_V3D_Vector() {
+        System.out.println("isScalarMultiple");
+        V3D_VectorDouble v = P0P0P0;
+        V3D_VectorDouble instance = P1P1P1;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 2
+        v = P0P0P0;
+        instance = P0P0P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 3
+        v = N1N1N1;
+        instance = P0P0P0;
+        assertFalse(instance.isScalarMultiple(v));
+        // Test 4
+        v = N1N1N1;
+        instance = P1P1P1;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 5
+        v = P1P0P0;
+        instance = P0P1P1;
+        assertFalse(instance.isScalarMultiple(v));
+        // Test 6
+        v = new V3D_VectorDouble(0d, 1d, 10000d);
+        instance = new V3D_VectorDouble(0d, 1d, 10000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 7
+        v = new V3D_VectorDouble(0d, 1d, 10000d);
+        instance = new V3D_VectorDouble(0d, 1d, 10001d);
+        assertFalse(instance.isScalarMultiple(v));        
+        // Test 8
+        v = new V3D_VectorDouble(0d, 1d, 1d);
+        instance = new V3D_VectorDouble(0d, 1d, 1d);
+        //assertFalse(instance.isScalarMultiple(v));
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 9
+        v = new V3D_VectorDouble(0d, 1d, 10000d);
+        instance = new V3D_VectorDouble(0d, 2d, 20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        
+        // Test 10
+        instance = P0P0N1;
+        v = P0P0N2;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 11
+        v = P0P0P2;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 12
+        v = P0P0N2;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 13
+        v = P0P0P2;
+        assertTrue(instance.isScalarMultiple(v));
+        
+        // Test 14
+        instance = P0N1P0;
+        v = P0N2P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 15
+        v = P0P2P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 16
+        v = P0N2P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 17
+        v = P0P2P0;
+        assertTrue(instance.isScalarMultiple(v));
+        
+        // Test 18
+        instance = N1P0P0;
+        v = N2P0P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 19
+        v = P2P0P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 20
+        v = N2P0P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 21
+        v = P2P0P0;
+        assertTrue(instance.isScalarMultiple(v));
+        
+        // Test 22
+        instance = new V3D_VectorDouble(0d, 1d, 10000d);
+        v = new V3D_VectorDouble(0d, 1d, 10000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 23
+        v = new V3D_VectorDouble(0d, 1d, 10001d);
+        assertFalse(instance.isScalarMultiple(v));  
+        // Test 24
+        v = new V3D_VectorDouble(0d, 1.01d, 10000d);
+        assertFalse(instance.isScalarMultiple(v));  
+        // Test 25
+        v = new V3D_VectorDouble(0.01d, 1d, 10000d);
+        assertFalse(instance.isScalarMultiple(v));  
+        
+        // Test 26
+        instance = new V3D_VectorDouble(0d, 1d, 10000d);
+        v = new V3D_VectorDouble(0d, 2d, 20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 27
+        instance = new V3D_VectorDouble(3d, 1d, 10000d);
+        v = new V3D_VectorDouble(6d, 2d, 20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 28
+        instance = new V3D_VectorDouble(3d, 1d, 10000d);
+        v = new V3D_VectorDouble(-6d, -2d, -20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 29
+        instance = new V3D_VectorDouble(-3d, -1d, -10000d);
+        v = new V3D_VectorDouble(6d, 2d, 20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 30
+        instance = new V3D_VectorDouble(-3d, -1d, -10000d);
+        v = new V3D_VectorDouble(-6d, -2d, -20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        
+        // Test 31
+        instance = new V3D_VectorDouble(-3d, 0d, -10000d);
+        v = new V3D_VectorDouble(+6d, 0d, -20000d);
+        assertFalse(instance.isScalarMultiple(v));
+        // Test 32
+        instance = new V3D_VectorDouble(-3d, 0d, -10000d);
+        v = new V3D_VectorDouble(-6d, 0d, -20000d);
+        assertTrue(instance.isScalarMultiple(v));
     }
 
     /**
@@ -514,6 +818,32 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         // Test 2
         instance = new V3D_VectorDouble(1, 0, 0);
         assertFalse(instance.isZero());
+    }
+
+    /**
+     * Test of isZero method, of class V3D_VectorDouble.
+     */
+    @Test
+    public void testIsZeroVector_double() {
+        System.out.println("isZeroVector");
+        double epsilon = 0.000000001d;
+        V3D_VectorDouble instance = new V3D_VectorDouble(0, 0, 0);
+        assertTrue(instance.isZero(epsilon));
+        // Test 2
+        instance = new V3D_VectorDouble(1, 0, 0);
+        assertFalse(instance.isZero(epsilon));
+        // Test 3
+        instance = new V3D_VectorDouble(epsilon, 0, 0);
+        assertTrue(instance.isZero(epsilon));        
+        // Test 4
+        instance = new V3D_VectorDouble(epsilon, epsilon, epsilon);
+        assertTrue(instance.isZero(epsilon));
+        // Test 5
+        instance = new V3D_VectorDouble(2d * epsilon, 0, 0);
+        assertFalse(instance.isZero(epsilon));        
+        // Test 6
+        instance = new V3D_VectorDouble(2d * epsilon, 2d * epsilon, 2d * epsilon);
+        assertFalse(instance.isZero(epsilon));
     }
 
     /**
@@ -627,6 +957,11 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         // Test 3
         instance = new V3D_VectorDouble(2, 2, 2);
         expResult = 12d;
+        result = instance.getMagnitudeSquared();
+        assertTrue(expResult == result);
+        // Test 4
+        instance = new V3D_VectorDouble(-2, 3, 1);
+        expResult = 14d;
         result = instance.getMagnitudeSquared();
         assertTrue(expResult == result);
     }
@@ -850,19 +1185,19 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         double ediv2 = epsilon / 2.0d;
         V3D_VectorDouble v = new V3D_VectorDouble(1, 1, 1);
         V3D_VectorDouble instance = new V3D_VectorDouble(1, 1, 1);
-        assertTrue(instance.equals(v, epsilon));
+        assertTrue(instance.equals(epsilon, v));
         // Test 2
         instance = new V3D_VectorDouble(1, 1, 0);
-        assertFalse(instance.equals(v, epsilon));
+        assertFalse(instance.equals(epsilon, v));
         // Test 3
         instance = new V3D_VectorDouble(1, 1, 1 + ediv2);
-        assertTrue(instance.equals(v, epsilon));
+        assertTrue(instance.equals(epsilon, v));
         // Test 4
         instance = new V3D_VectorDouble(1, 1 + ediv2, 1);
-        assertTrue(instance.equals(v, epsilon));
+        assertTrue(instance.equals(epsilon, v));
         // Test 5
         instance = new V3D_VectorDouble(1 + ediv2, 1, 1);
-        assertTrue(instance.equals(v, epsilon));
+        assertTrue(instance.equals(epsilon, v));
         
     }
 
@@ -936,22 +1271,6 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
     }
 
     /**
-     * Test of getMagnitude0 method, of class V3D_VectorDouble.
-     */
-    @Test
-    public void testGetMagnitude0() {
-        System.out.println("getMagnitude0");
-    }
-
-    /**
-     * Test of getMagnitude method, of class V3D_VectorDouble.
-     */
-    @Test
-    public void testGetMagnitude_int() {
-        System.out.println("getMagnitude");
-    }
-
-    /**
      * Test of rotate method, of class V3D_VectorDouble.
      */
     @Test
@@ -964,7 +1283,7 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         V3D_VectorDouble instance = new V3D_VectorDouble(1, 0, 0);
         V3D_VectorDouble expResult = new V3D_VectorDouble(0, 0, -1);
         V3D_VectorDouble result = instance.rotate(uv, theta);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 2
         // From Example 2: https://graphics.stanford.edu/courses/cs348a-17-winter/Papers/quaternion.pdf
         uv = new V3D_VectorDouble(1, 1, 1).getUnitVector();
@@ -972,7 +1291,7 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         instance = new V3D_VectorDouble(1, 0, 0);
         expResult = new V3D_VectorDouble(0, 1, 0);
         result = instance.rotate(uv, theta);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
 //        // Test 3 Fails :(?
 //        // From Example 1: https://www.imsc.res.in/~knr/131129workshop/writeup_knr.pdf
 //        uv = new V3D_VectorDouble(0, 1, 0);
@@ -995,7 +1314,7 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         instance = new V3D_VectorDouble(0.6d, 0.8d, 0d);
         expResult = new V3D_VectorDouble(0.9196d, 0.3928d, 0d);
         result = instance.rotate(uv, theta);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
 //        // Test 5
 //        // From Case 2 https://www.tobynorris.com/work/prog/csharp/quatview/help/case_1.htm
 //        oom = -4;
@@ -1012,42 +1331,42 @@ public class V3D_VectorDoubleTest extends V3D_DoubleTest {
         instance = new V3D_VectorDouble(1, 0, 0);
         expResult = new V3D_VectorDouble(0, 1, 0);
         result = instance.rotate(uv, theta);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 7
         uv = new V3D_VectorDouble(1, 1, 0).getUnitVector();
         theta = Pi;
         instance = new V3D_VectorDouble(1, 0, 0);
         expResult = new V3D_VectorDouble(0, 1, 0);
         result = instance.rotate(uv, theta);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 8
         uv = new V3D_VectorDouble(1, 1, 0).getUnitVector();
         theta = Pi;
         instance = new V3D_VectorDouble(2, 0, 0);
         expResult = new V3D_VectorDouble(0, 2, 0);
         result = instance.rotate(uv, theta);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 9
         uv = new V3D_VectorDouble(1, 1, 0).getUnitVector();
         theta = Pi;
         instance = new V3D_VectorDouble(3, 1, 0);
         expResult = new V3D_VectorDouble(1, 3, 0);
         result = instance.rotate(uv, theta);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 10
         uv = new V3D_VectorDouble(1, 1, 0).getUnitVector();
         theta = Pi;
         instance = new V3D_VectorDouble(3, 2, 1);
         expResult = new V3D_VectorDouble(2, 3, -1);
         result = instance.rotate(uv, theta);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
         // Test 11
         uv = new V3D_VectorDouble(1, 1, 0).getUnitVector();
         theta = Pi * 2d;
         instance = new V3D_VectorDouble(3, 2, 1);
         expResult = new V3D_VectorDouble(3, 2, 1);
         result = instance.rotate(uv, theta);
-        assertTrue(expResult.equals(result, epsilon));
+        assertTrue(expResult.equals(epsilon, result));
     }
 
 }
