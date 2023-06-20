@@ -829,7 +829,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
                 if (rspit instanceof V3D_Point) {
                     return pqrit;
                 } else if (rspit instanceof V3D_LineSegment t2il) {
-                    return V3D_LineSegmentsCollinear.getGeometry(t1il, t2il, oom, rm);
+                    return V3D_LineSegment.getGeometry(oom, rm, t1il, t2il);
                 } else {
                     return rspit;
                 }

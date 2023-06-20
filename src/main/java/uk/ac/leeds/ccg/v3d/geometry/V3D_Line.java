@@ -880,7 +880,6 @@ public class V3D_Line extends V3D_Geometry {
             return null;
         }
         BigRational mua = num.divide(den);
-        BigRational mub = (a.add(b.multiply(mua))).divide(d).negate();
         V3D_Point pi = new V3D_Point(
                 (tp.getX(oom, rm).subtract(mua.multiply(qp.getDX(oom, rm)))),
                 (tp.getY(oom, rm).subtract(mua.multiply(qp.getDY(oom, rm)))),
@@ -888,6 +887,17 @@ public class V3D_Line extends V3D_Geometry {
         // If point pv is on both lines then return this as the intersection.
         if (isIntersectedBy(pi, oom, rm) && l.isIntersectedBy(pi, oom, rm)) {
             return pi;
+        }
+        BigRational mub;
+        BigRational num2 = a.add(b.multiply(mua));
+        if (d.isZero()) {
+            if (num2.isZero()) {
+                mub = BigRational.ONE;
+            } else {
+                throw new RuntimeException("Divide by"); 
+            }
+        } else {
+            mub = num2.divide(d).negate();
         }
         V3D_Point qi = new V3D_Point(
                 (lp.getX(oom, rm).add(mub.multiply(lqlp.getDX(oom, rm)))),

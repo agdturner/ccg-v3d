@@ -799,10 +799,10 @@ public class V3D_Vector implements Serializable {
              */
             if (v.dx.abs().equals(dx.abs(), oom)) {
                 // dx = v.dx
-                if (v.dx.isZero(oom)) {
+                if (dx.isZero(oom)) {
                     // dx = v.dx = 0d
                     if (v.dy.abs().equals(dy.abs(), oom)) {
-                        if (v.dy.isZero(oom)) {
+                        if (dy.isZero(oom)) {
                             return true;
                             //return !dz.isZero(oom);
                         } else {
@@ -837,21 +837,19 @@ public class V3D_Vector implements Serializable {
                     }
                 } else {
                     // |dx| = |v.dx| != 0d
+                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
                     if (v.dy.abs().equals(dy.abs(), oom)) {
-                        if (v.dy.isZero(oom)) {
+                        if (dy.isZero(oom)) {
                             if (v.dz.abs().equals(dz.abs(), oom)) {
                                 if (v.dz.isZero(oom)) {
                                     return true;
                                 } else {
-                                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
                                     return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
                                 }
                             } else {
-                                Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
                                 return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
                             }
                         } else {
-                            Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
                             if (v.dy.equals(dy.multiply(scalar, oom - 3, rm))) {
                                 if (v.dz.abs().equals(dz.abs(), oom)) {
                                     if (v.dz.isZero(oom)) {
@@ -868,7 +866,6 @@ public class V3D_Vector implements Serializable {
                         }
                     } else {
                         // |dx| = |v.dx| != 0d, |dy| != |v.dy|
-                        Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
                         if (v.dy.equals(dy.multiply(scalar, oom - 3, rm))) {
                             return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
                         } else {

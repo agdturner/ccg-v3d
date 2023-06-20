@@ -1122,30 +1122,34 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                     V3D_FiniteGeometry gRP = pl.getIntersection(getRP(oom, rm), oom, rm);
                     if (gRP == null) {
                         return null;
-                    } else if (gRP instanceof V3D_Point gRPp) {
-                            return V3D_LineSegment.getGeometry(
-                                    (V3D_Point) gQR, gRPp, oom, rm);
-                        } else {
-                            return gRP;
-                        }
-                } else if (gQR instanceof V3D_LineSegment gQRl) {
-                    V3D_FiniteGeometry gRP = pl.getIntersection(getRP(oom, rm), oom, rm);
-                    if (gRP == null) {
-                        return gQR;
-                    } else if (gRP instanceof V3D_Point gRPp) {
-                            return V3D_LineSegment.getGeometry(gQRl, gRPp, oom, rm);
-                        } else {
-                            return gRP;
-                        }
+                    } else {
+                        return gRP;
+                    }
+                } else if (gQR instanceof V3D_LineSegment) {
+                    /**
+                     * Logically for a triangle there would be non null
+                     * intersections with the other edges, but there could be
+                     * rounding error.
+                     */
+                    return gQR;
+//                    V3D_FiniteGeometry gRP = pl.getIntersection(getRP(oom, rm), oom, rm);
+//                    if (gRP == null) {
+//                        return gQR;
+//                    } else if (gRP instanceof V3D_Point gRPp) {
+//                        return V3D_LineSegment.getGeometry(gQRl, gRPp, oom, rm);
+//                    } else {
+//                        return gRP;
+//                    }
                 } else {
                     V3D_FiniteGeometry gRP = pl.getIntersection(getRP(oom, rm), oom, rm);
                     if (gRP == null) {
                         return gQR;
-                    } else if (gRP instanceof V3D_LineSegment gRPl) {
-                            return V3D_LineSegment.getGeometry(gRPl, (V3D_Point) gQR, oom, rm);
-                        } else {
-                            return V3D_LineSegment.getGeometry((V3D_Point) gRP, (V3D_Point) gQR, oom, rm);
-                        }
+                    } else if (gRP instanceof V3D_LineSegment) {
+                        return gRP;
+                        //return V3D_LineSegment.getGeometry(gRPl, (V3D_Point) gQR, oom, rm);
+                    } else {
+                        return V3D_LineSegment.getGeometry((V3D_Point) gRP, (V3D_Point) gQR, oom, rm);
+                    }
                 }
             } else if (gPQ instanceof V3D_LineSegment) {
                 return gPQ;
@@ -1154,13 +1158,15 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                 if (gQR == null) {
                     V3D_FiniteGeometry gRP = pl.getIntersection(getRP(oom, rm), oom, rm);
                     if (gRP == null) {
-                        return (V3D_Point) gPQ;
+                        return gPQ;
                     } else if (gRP instanceof V3D_LineSegment) {
                         return gRP;
                     } else {
                         return V3D_LineSegment.getGeometry((V3D_Point) gPQ,
                                 (V3D_Point) gRP, oom, rm);
                     }
+                } else if (gQR instanceof V3D_LineSegment) {
+                    return gQR;
                 } else {
                     if (gQR instanceof V3D_Point gQRp) {
                         return V3D_LineSegment.getGeometry((V3D_Point) gPQ, gQRp, oom, rm);
@@ -2163,7 +2169,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      *
      * @param l a line segment either equal to one of the edges of this - null
      * null null null null null null null null null null null null null null
-     * null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
+     * null null null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
      * {@link #getQR(int, java.math.RoundingMode)} or
      * {@link #getRP(int, java.math.RoundingMode)}.
      * @param oom The Order of Magnitude for the precision.

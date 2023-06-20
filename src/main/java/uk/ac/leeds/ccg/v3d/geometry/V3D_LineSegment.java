@@ -887,9 +887,9 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return either {@code pv} or {@code new V3D_LineSegment(pv, qv)}
      */
-    public static V3D_FiniteGeometry getGeometry(V3D_LineSegment l,
+    public static V3D_LineSegment getGeometry(V3D_LineSegment l,
             V3D_Point pt, int oom, RoundingMode rm) {
-        return getGeometry(l.getP(), l.getQ(), pt, oom, rm);
+        return (V3D_LineSegment) getGeometry(l.getP(), l.getQ(), pt, oom, rm);
     }
 
     /**
@@ -903,27 +903,62 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     public static V3D_FiniteGeometry getGeometry(int oom, RoundingMode rm,
             V3D_Point... pts) {
         int length = pts.length;
-        if (length == 0) {
-            return null;
-        } else if (length == 1) {
-            return pts[0];
-        } else if (length == 2) {
-            return getGeometry(pts[0], pts[1], oom, rm);
-        } else if (length == 3) {
-            return getGeometry(pts[0], pts[1], pts[2], oom, rm);
-        } else {
-            V3D_FiniteGeometry g = getGeometry(pts[0], pts[1], pts[2], oom, rm);
-            for (int i = 3; i < length; i++) {
-                if (g instanceof V3D_Point gp) {
-                    g = getGeometry(gp, pts[i], oom, rm);
-                } else {
-                    g = getGeometry((V3D_LineSegment) g, pts[i], oom, rm);
-                }
+        switch (length) {
+            case 0 -> {
+                return null;
             }
-            return g;
+            case 1 -> {
+                return pts[0];
+            }
+            case 2 -> {
+                return getGeometry(pts[0], pts[1], oom, rm);
+            }
+            case 3 -> {
+                return getGeometry(pts[0], pts[1], pts[2], oom, rm);
+            }
+            default -> {
+                V3D_FiniteGeometry g = getGeometry(pts[0], pts[1], pts[2], oom, rm);
+                for (int i = 3; i < length; i++) {
+                    if (g instanceof V3D_Point gp) {
+                        g = getGeometry(gp, pts[i], oom, rm);
+                    } else {
+                        g = getGeometry((V3D_LineSegment) g, pts[i], oom, rm);
+                    }
+                }
+                return g;
+            }
         }
     }
 
+    /**
+     * Calculates the shortest line segment which all line segments intersect
+     * with.
+     *
+     * @param ls Collinear line segments.
+     * @return The shortest line segment which all the line segment points in 
+     * ls intersect with.
+     */
+    public static V3D_LineSegment getGeometry(int oom, RoundingMode rm,
+            V3D_LineSegment... ls) {
+        switch (ls.length) {
+            case 0 -> {
+                return null;
+            }
+            case 1 -> {
+                return ls[0];
+            }
+            default -> {
+                V3D_LineSegment r = getGeometry(ls[0], ls[1].getP(), oom, rm);
+                r = getGeometry(r, ls[1].getQ(), oom, rm);
+                for (int i = 1; i < ls.length; i++) {
+                    r = getGeometry(r, ls[i].getP(), oom, rm);
+                    r = getGeometry(r, ls[i].getQ(), oom, rm);
+                }
+                return r;
+            }
+        }
+    }
+    
     /**
      * Get the line of intersection (the shortest line) between {@code this} and
      * {@code l}.

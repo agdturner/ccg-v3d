@@ -648,7 +648,7 @@ public class V3D_VectorDouble implements Serializable {
              */
             if (Math_Double.equals(Math.abs(v.dx), Math.abs(dx), epsilon)) {
                 // |dx| = |v.dx|
-                if (Math_Double.equals(v.dx, 0d, epsilon)) {
+                if (Math_Double.equals(dx, 0d, epsilon)) {
                     // dx = v.dx = 0d
                     if (Math_Double.equals(Math.abs(v.dy), Math.abs(dy), epsilon)) {
                         if (Math_Double.equals(v.dy, 0d, epsilon)) {
