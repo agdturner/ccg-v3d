@@ -357,11 +357,11 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
 //            return getP().equals(l.getQ(oom, rm), oom, rm) 
 //                    && getQ(oom, rm).equals(l.getP(), oom, rm);
 //        }
-        if (this.l.equals(l.l, oom, rm)) {
+        //if (this.l.equals(l.l, oom, rm)) {
             return isIntersectedBy(l.getQ(), oom, rm)
                     && l.isIntersectedBy(getQ(), oom, rm);
-        }
-        return false;
+        //}
+        //return false;
     }
 
 //    /**

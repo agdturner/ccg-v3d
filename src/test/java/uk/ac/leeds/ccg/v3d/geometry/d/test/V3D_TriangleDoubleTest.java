@@ -731,31 +731,31 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         expResult = new V3D_TriangleDouble(pP1P0P0, pP2P0P0, pP2P1P0);
         result = instance.getIntersection(t, epsilon);
         assertTrue(((V3D_TriangleDouble) expResult).equals((V3D_TriangleDouble) result, epsilon));
-//        // Test 5: From  https://stackoverflow.com/a/29563443/1998054
-//        t = new V3D_TriangleDouble(new V3D_PointDouble(-21, -72, 63),
-//                new V3D_PointDouble(-78, 99, 40),
-//                new V3D_PointDouble(-19, -78, -83));
-//        instance = new V3D_TriangleDouble(new V3D_PointDouble(96, 77, -51),
-//                new V3D_PointDouble(-95, -1, -16),
-//                new V3D_PointDouble(9, 5, -21));
-//        // This expected result is not given in the answer on stack overflow.
-//        expResult = new V3D_LineSegmentDouble(
-//                new V3D_PointDouble(-34.630630630630634, -31.108108108108105, -5.95495495495496),
-//                new V3D_PointDouble(-48.45827629341561, 10.37482888024681, -21.586983320506448));
-//        result = instance.getIntersection(t, epsilon);
-//        //System.out.println(result);
-//        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection((V3D_LineSegmentDouble) result, epsilon));
-//        // Test 6: From https://web.mst.edu/~chaman/home/pubs/2015WimoTriangleTrianglePublished.pdf
-//        t = new V3D_TriangleDouble(new V3D_PointDouble(0, 0, 0),
-//                new V3D_PointDouble(6, 0, 0),
-//                new V3D_PointDouble(0, 6, 0));
-//        instance = new V3D_TriangleDouble(new V3D_PointDouble(0, 3, 3),
-//                new V3D_PointDouble(0, 3, -3),
-//                new V3D_PointDouble(-3, 3, 3));
-//        // This expected result is not given in the answer on stack overflow.
-//        expResult = new V3D_PointDouble(0, 3, 0);
-//        result = instance.getIntersection(t, epsilon);
-//        assertTrue(((V3D_PointDouble) expResult).equals((V3D_PointDouble) result, epsilon));
+        // Test 5: From  https://stackoverflow.com/a/29563443/1998054
+        t = new V3D_TriangleDouble(new V3D_PointDouble(-21, -72, 63),
+                new V3D_PointDouble(-78, 99, 40),
+                new V3D_PointDouble(-19, -78, -83));
+        instance = new V3D_TriangleDouble(new V3D_PointDouble(96, 77, -51),
+                new V3D_PointDouble(-95, -1, -16),
+                new V3D_PointDouble(9, 5, -21));
+        // This expected result is not given in the answer on stack overflow.
+        expResult = new V3D_LineSegmentDouble(
+                new V3D_PointDouble(-34.630630630630634, -31.108108108108105, -5.95495495495496),
+                new V3D_PointDouble(-48.45827629341561, 10.37482888024681, -21.586983320506448));
+        result = instance.getIntersection(t, epsilon);
+        //System.out.println(result);
+        assertTrue(((V3D_LineSegmentDouble) expResult).equalsIgnoreDirection(epsilon, (V3D_LineSegmentDouble) result));
+        // Test 6: From https://web.mst.edu/~chaman/home/pubs/2015WimoTriangleTrianglePublished.pdf
+        t = new V3D_TriangleDouble(new V3D_PointDouble(0, 0, 0),
+                new V3D_PointDouble(6, 0, 0),
+                new V3D_PointDouble(0, 6, 0));
+        instance = new V3D_TriangleDouble(new V3D_PointDouble(0, 3, 3),
+                new V3D_PointDouble(0, 3, -3),
+                new V3D_PointDouble(-3, 3, 3));
+        // This expected result is not given in the answer on stack overflow.
+        expResult = new V3D_PointDouble(0, 3, 0);
+        result = instance.getIntersection(t, epsilon);
+        assertTrue(((V3D_PointDouble) expResult).equals(epsilon, (V3D_PointDouble) result));
         // Test 7: From https://web.mst.edu/~chaman/home/pubs/2015WimoTriangleTrianglePublished.pdf
         t = new V3D_TriangleDouble(new V3D_PointDouble(0, 6, 0),
                 new V3D_PointDouble(6, 0, 0),

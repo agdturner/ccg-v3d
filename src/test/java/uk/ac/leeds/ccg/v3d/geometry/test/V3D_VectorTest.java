@@ -306,12 +306,142 @@ public class V3D_VectorTest extends V3D_Test {
         System.out.println("initMagnitude");
         assertTrue(true); // No need to test.
     }
+    
+    /**
+     * Test of isScalarMultiple method, of class V3D_VectorDouble.
+     */
+    @Test
+    public void testIsScalarMultiple_V3D_Vector() {
+        System.out.println("isScalarMultiple");
+        V3D_Vector v = P0P0P0;
+        V3D_Vector instance = P1P1P1;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 2
+        v = P0P0P0;
+        instance = P0P0P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 3
+        v = N1N1N1;
+        instance = P0P0P0;
+        assertFalse(instance.isScalarMultiple(v));
+        // Test 4
+        v = N1N1N1;
+        instance = P1P1P1;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 5
+        v = P1P0P0;
+        instance = P0P1P1;
+        assertFalse(instance.isScalarMultiple(v));
+        // Test 6
+        v = new V3D_Vector(0d, 1d, 10000d);
+        instance = new V3D_Vector(0d, 1d, 10000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 7
+        v = new V3D_Vector(0d, 1d, 10000d);
+        instance = new V3D_Vector(0d, 1d, 10001d);
+        assertFalse(instance.isScalarMultiple(v));        
+        // Test 8
+        v = new V3D_Vector(0d, 1d, 1d);
+        instance = new V3D_Vector(0d, 1d, 1d);
+        //assertFalse(instance.isScalarMultiple(v));
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 9
+        v = new V3D_Vector(0d, 1d, 10000d);
+        instance = new V3D_Vector(0d, 2d, 20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        
+        // Test 10
+        instance = P0P0N1;
+        v = P0P0N2;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 11
+        v = P0P0P2;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 12
+        v = P0P0N2;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 13
+        v = P0P0P2;
+        assertTrue(instance.isScalarMultiple(v));
+        
+        // Test 14
+        instance = P0N1P0;
+        v = P0N2P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 15
+        v = P0P2P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 16
+        v = P0N2P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 17
+        v = P0P2P0;
+        assertTrue(instance.isScalarMultiple(v));
+        
+        // Test 18
+        instance = N1P0P0;
+        v = N2P0P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 19
+        v = P2P0P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 20
+        v = N2P0P0;
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 21
+        v = P2P0P0;
+        assertTrue(instance.isScalarMultiple(v));
+        
+        // Test 22
+        instance = new V3D_Vector(0d, 1d, 10000d);
+        v = new V3D_Vector(0d, 1d, 10000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 23
+        v = new V3D_Vector(0d, 1d, 10001d);
+        assertFalse(instance.isScalarMultiple(v));  
+        // Test 24
+        v = new V3D_Vector(0d, 1.01d, 10000d);
+        assertFalse(instance.isScalarMultiple(v));  
+        // Test 25
+        v = new V3D_Vector(0.01d, 1d, 10000d);
+        assertFalse(instance.isScalarMultiple(v));  
+        
+        // Test 26
+        instance = new V3D_Vector(0d, 1d, 10000d);
+        v = new V3D_Vector(0d, 2d, 20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 27
+        instance = new V3D_Vector(3d, 1d, 10000d);
+        v = new V3D_Vector(6d, 2d, 20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 28
+        instance = new V3D_Vector(3d, 1d, 10000d);
+        v = new V3D_Vector(-6d, -2d, -20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 29
+        instance = new V3D_Vector(-3d, -1d, -10000d);
+        v = new V3D_Vector(6d, 2d, 20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 30
+        instance = new V3D_Vector(-3d, -1d, -10000d);
+        v = new V3D_Vector(-6d, -2d, -20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        
+        // Test 31
+        instance = new V3D_Vector(-3d, 0d, -10000d);
+        v = new V3D_Vector(+6d, 0d, -20000d);
+        assertFalse(instance.isScalarMultiple(v));
+        // Test 32
+        instance = new V3D_Vector(-3d, 0d, -10000d);
+        v = new V3D_Vector(-6d, 0d, -20000d);
+        assertTrue(instance.isScalarMultiple(v));
+    }
 
     /**
      * Test of isScalarMultiple method, of class V3D_Vector.
      */
     @Test
-    public void testIsScalarMultiple() {
+    public void testIsScalarMultiple_V3D_Vector_int_RoundingMode() {
         System.out.println("isScalarMultiple");
         int oom = -1;
         RoundingMode rm = RoundingMode.HALF_UP;

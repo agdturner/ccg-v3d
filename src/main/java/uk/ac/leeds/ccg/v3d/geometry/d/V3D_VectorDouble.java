@@ -561,7 +561,6 @@ public class V3D_VectorDouble implements Serializable {
                             double dys = dy * scalar;
                             double epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys);
                             if (Math_Double.equals(v.dy, dy * scalar, epsilon)) {
-
                                 if (Math_Double.equals(Math.abs(v.dz), Math.abs(dz), epsilon)) {
                                     if (Math_Double.equals(v.dz, 0d, epsilon)) {
                                         return true;

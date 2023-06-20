@@ -168,7 +168,7 @@ public class V3D_Vector implements Serializable {
      * @param dz Used to initialise {@link #dz}.
      * @param m What {@link #m} is set to.
      */
-    public V3D_Vector(BigRational dx, BigRational dy, BigRational dz, 
+    public V3D_Vector(BigRational dx, BigRational dy, BigRational dz,
             Math_BigRationalSqrt m) {
         this(dx, dy, dz);
         this.m = m;
@@ -250,7 +250,7 @@ public class V3D_Vector implements Serializable {
      * @param dz What {@link #dz} is set to.
      */
     public V3D_Vector(long dx, long dy, long dz) {
-        this(BigRational.valueOf(dx), 
+        this(BigRational.valueOf(dx),
                 BigRational.valueOf(dy),
                 BigRational.valueOf(dz));
     }
@@ -261,7 +261,7 @@ public class V3D_Vector implements Serializable {
      * @param dz What {@link #dz} is set to.
      */
     public V3D_Vector(double dx, double dy, double dz) {
-        this(BigRational.valueOf(dx), 
+        this(BigRational.valueOf(dx),
                 BigRational.valueOf(dy),
                 BigRational.valueOf(dz));
     }
@@ -350,7 +350,7 @@ public class V3D_Vector implements Serializable {
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
-        } else if (obj instanceof V3D_Vector v3D_Vector){
+        } else if (obj instanceof V3D_Vector v3D_Vector) {
             return equals(v3D_Vector);
         }
         return false;
@@ -372,13 +372,13 @@ public class V3D_Vector implements Serializable {
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
     public boolean equals(V3D_Vector v) {
-        return dx.compareTo(v.dx) == 0 
+        return dx.compareTo(v.dx) == 0
                 && dy.compareTo(v.dy) == 0
                 && dz.compareTo(v.dz) == 0;
     }
 
     /**
-     * Indicates if {@code this} and {@code v} are equal at the oom precision 
+     * Indicates if {@code this} and {@code v} are equal at the oom precision
      * using the RoundingMode rm.
      *
      * @param v The vector to test for equality with {@code this}.
@@ -429,7 +429,7 @@ public class V3D_Vector implements Serializable {
     public BigRational getDX(int oom, RoundingMode rm) {
         return dx.getSqrt(oom, rm);
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode used in the calculation.
@@ -588,7 +588,7 @@ public class V3D_Vector implements Serializable {
         }
         return m;
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -600,6 +600,7 @@ public class V3D_Vector implements Serializable {
 
     /**
      * Returns the magnitude of m to at least oom precision.
+     *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The magnitude of m.
@@ -620,6 +621,147 @@ public class V3D_Vector implements Serializable {
         return m;
     }
 
+    /**
+     * Test if {@code v} is a scalar multiple of {@code this}.
+     *
+     * @param v The vector to test if it is a scalar multiple of {@code this}.
+     * @return {@code true} if {@code this} and {@code v} are scalar multiples.
+     */
+    public boolean isScalarMultiple(V3D_Vector v) {
+        if (equals(v)) {
+            return true;
+        } else {
+            // Special cases
+            boolean isZero = isZero();
+            if (isZero) {
+                /**
+                 * Can't multiply the zero vector by a scalar to get a non-zero
+                 * vector.
+                 */
+                return v.isZero();
+            }
+            if (v.isZero()) {
+                /**
+                 * Already tested that this is not equal to v, so the scalar is
+                 * zero.
+                 */
+                return true;
+            }
+
+            int oom = -3;
+            RoundingMode rm = RoundingMode.HALF_UP;
+
+            /**
+             * General case: A little complicated as there is a need to deal
+             * with zero vector components and cases where the vectors point in
+             * different directions.
+             */
+            if (v.dx.abs().compareTo(dx.abs()) == 0) {
+                // |dx| = |v.dx|
+                if (v.dx.isZero()) {
+                    // dx = v.dx = 0d
+                    if (v.dy.abs().compareTo(dy.abs()) == 0) {
+                        if (v.dy.isZero()) {
+                            return true;
+                        } else {
+                            if (v.dz.abs().compareTo(dz.abs()) == 0) {
+//                                    if (v.dz.isZero()) { 
+//                                        // This should not happen as it is already tested for. Commented code left for clarity.
+//                                        return true;
+//                                    } else {
+
+                                Math_BigRationalSqrt scalar = v.dy.divide(dy, oom - 6, rm);
+                                Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
+                                return v.dz.equals(dzs, oom);
+//                                    }
+                            } else {
+                                return false;
+                            }
+                        }
+                    } else {
+                        if (v.dy.isZero()) {
+                            return v.dz.isZero();
+                        } else {
+                            if (v.dz.abs().compareTo(dz.abs()) == 0) {
+                                if (v.dz.isZero()) {
+                                    return true;
+                                } else {
+                                    Math_BigRationalSqrt scalar = v.dy.divide(dy, oom - 6, rm);
+                                    Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
+                                    return v.dz.equals(dzs, oom);
+                                }
+                            } else {
+                                Math_BigRationalSqrt scalar = v.dy.divide(dy, oom - 6, rm);
+                                Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
+                                return v.dz.equals(dzs, oom);
+                            }
+                        }
+                    }
+                } else {
+                    // |dx| = |v.dx| != 0d
+                    if (v.dy.abs().compareTo(dy.abs()) == 0) {
+                        if (v.dy.isZero()) {
+                            if (v.dz.abs().compareTo(dz.abs()) == 0) {
+                                if (v.dz.isZero()) {
+                                    return true;
+                                } else {
+                                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
+                                    Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
+                                    return v.dz.equals(dzs, oom);
+                                }
+                            } else {
+                                Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
+                                Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
+                                return v.dz.equals(dzs, oom);
+                            }
+                        } else {
+                            Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
+                            Math_BigRationalSqrt dys = dy.multiply(scalar, oom - 3, rm);
+                            if (v.dy.equals(dys, oom)) {
+                                if (v.dz.abs().compareTo(dz.abs()) == 0) {
+                                    if (v.dz.isZero()) {
+                                        return true;
+                                    } else {
+                                        Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
+                                        return v.dz.equals(dzs, oom);
+                                    }
+                                } else {
+                                    Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
+                                    return v.dz.equals(dzs, oom);
+                                }
+                            } else {
+                                return false;
+                            }
+                        }
+                    } else {
+                        // |dx| = |v.dx| != 0d, |dy| != |v.dy|
+                        Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
+                        Math_BigRationalSqrt dys = dy.multiply(scalar, oom - 3, rm);
+                        if (v.dy.equals(dys, oom)) {
+                            Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
+                            return v.dz.equals(dzs, oom);
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                // |dx| != |v.dx|
+                if (dx.isZero()) {
+                    return isZero;
+                } else {
+                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
+                    Math_BigRationalSqrt dys = dy.multiply(scalar, oom - 3, rm);
+                    if (v.dy.equals(dys, oom)) {
+                        Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
+                        return v.dz.equals(dzs, oom);
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Test if {@code v} is a scalar multiple of {@code this}.
@@ -634,69 +776,119 @@ public class V3D_Vector implements Serializable {
             return true;
         } else {
             // Special case
-            if (isZero(oom, rm)) {
+            boolean isZero = isZero(oom, rm);
+            boolean visZero = v.isZero(oom, rm);
+            if (isZero) {
                 /**
-                 * Can't multiply the zero vector by a scalar to get a non-zero 
+                 * Can't multiply the zero vector by a scalar to get a non-zero
                  * vector.
                  */
-                return false;
-            }                    
-            if (v.isZero(oom, rm)) {
+                return visZero;
+            }
+            if (visZero) {
                 /**
-                 * Already tested that this is not equal to v, so the scalar is 
+                 * Already tested that this is not equal to v, so the scalar is
                  * zero.
                  */
                 return true;
             }
-            if (v.dx.equals(dx, oom)) {
+            /**
+             * General case: A little complicated as there is a need to deal
+             * with zero vector components and cases where the vectors point in
+             * different directions.
+             */
+            if (v.dx.abs().equals(dx.abs(), oom)) {
                 // dx = v.dx
                 if (v.dx.isZero(oom)) {
                     // dx = v.dx = 0d
-                    if (v.dy.equals(dy, oom)) {
+                    if (v.dy.abs().equals(dy.abs(), oom)) {
                         if (v.dy.isZero(oom)) {
-                            return !dz.isZero(oom);
+                            return true;
+                            //return !dz.isZero(oom);
+                        } else {
+                            if (v.dz.abs().equals(dz.abs(), oom)) {
+//                                    if (v.dz.isZero(oom)) {
+//                                        // This should not happen as it is already tested for. Commented code left for clarity.
+//                                        return true;
+//                                    } else {
+                                Math_BigRationalSqrt scalar = v.dy.divide(dy, oom - 6, rm);
+                                return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+//                                    }
+                            } else {
+                                return false;
+                            }
                         }
                     } else {
                         if (dy.isZero(oom)) {
                             return dz.isZero(oom);
                         } else {
-                            Math_BigRationalSqrt scalar = v.dy.divide(dy, oom, rm);
-                            return v.dz.equals(dz.multiply(scalar, oom, rm));
+                            if (v.dz.abs().equals(dz.abs(), oom)) {
+                                if (v.dz.isZero(oom)) {
+                                    return true;
+                                } else {
+                                    Math_BigRationalSqrt scalar = v.dy.divide(dy, oom - 6, rm);
+                                    return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+                                }
+                            } else {
+                                Math_BigRationalSqrt scalar = v.dy.divide(dy, oom - 3, rm);
+                                return v.dz.equals(dz.multiply(scalar, oom - 3, rm));
+                            }
                         }
                     }
                 } else {
-                    // dx != 0
-                    // v.dx != 0
-                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom, rm);
-                    if (v.dy.equals(dy.multiply(scalar, oom, rm))) {
-                        return v.dz.equals(dz.multiply(scalar, oom, rm));
+                    // |dx| = |v.dx| != 0d
+                    if (v.dy.abs().equals(dy.abs(), oom)) {
+                        if (v.dy.isZero(oom)) {
+                            if (v.dz.abs().equals(dz.abs(), oom)) {
+                                if (v.dz.isZero(oom)) {
+                                    return true;
+                                } else {
+                                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
+                                    return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+                                }
+                            } else {
+                                Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
+                                return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+                            }
+                        } else {
+                            Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
+                            if (v.dy.equals(dy.multiply(scalar, oom - 3, rm))) {
+                                if (v.dz.abs().equals(dz.abs(), oom)) {
+                                    if (v.dz.isZero(oom)) {
+                                        return true;
+                                    } else {
+                                        return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+                                    }
+                                } else {
+                                    return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+                                }
+                            } else {
+                                return false;
+                            }
+                        }
                     } else {
-                        return false;
+                        // |dx| = |v.dx| != 0d, |dy| != |v.dy|
+                        Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
+                        if (v.dy.equals(dy.multiply(scalar, oom - 3, rm))) {
+                            return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+                        } else {
+                            return false;
+                        }
                     }
                 }
             } else {
-                // dx != v.dx
+                // |dx| != |v.dx|
                 if (dx.isZero(oom)) {
-                    return false;
-//                    if (v.dy == 0d) {
-//                        return false;
-//                    } else {
-//                        if (v.dz == 0d) {
-//                            return false;
-//                        } else {
-//                            return true;
-//                        }
-//                    }
+                    return isZero;
                 } else {
-                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom, rm);
-                    if (v.dy.equals(dy.multiply(scalar, oom, rm))) {
-                        return v.dz.equals(dz.multiply(scalar, oom, rm));
+                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
+                    if (v.dy.equals(dy.multiply(scalar, oom - 3, rm), oom)) {
+                        return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
                     } else {
                         return false;
                     }
                 }
             }
-            return false;
         }
 // Previous way
 //        // Special case
@@ -826,7 +1018,7 @@ public class V3D_Vector implements Serializable {
      * @return The angle in radians between {@code this} and {@code v}.
      */
     public BigRational getAngle(V3D_Vector v, int oom, RoundingMode rm) {
-        int oomn2 = oom -2;
+        int oomn2 = oom - 2;
         BigRational dp = getDotProduct(v, oomn2, rm);
         BigRational mag = getMagnitude(oomn2, rm).getSqrt(oomn2, rm);
         BigRational vmag = v.getMagnitude(oomn2, rm).getSqrt(oomn2, rm);
@@ -841,8 +1033,8 @@ public class V3D_Vector implements Serializable {
      * rotate a vector by a unit quaternion?, URL (version: 2019-06-12):
      * https://math.stackexchange.com/q/535223)
      *
-     * @param axis The axis of rotation. This should be a unit vector
-     * accurate to a sufficient precision.
+     * @param axis The axis of rotation. This should be a unit vector accurate
+     * to a sufficient precision.
      * @param theta The angle of rotation.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -901,7 +1093,7 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
-     * Scales by {@link #m} to give a unit vector with length 1. Six further 
+     * Scales by {@link #m} to give a unit vector with length 1. Six further
      * orders of magnitude are used to produce the result.
      *
      * @param oom The Order of Magnitude for the precision.
@@ -926,7 +1118,7 @@ public class V3D_Vector implements Serializable {
                 getDY(oom, rm).divide(d),
                 getDZ(oom, rm).divide(d), Math_BigRationalSqrt.ONE);
     }
-    
+
     /**
      * The unit vector direction is given as being towards the point.
      *

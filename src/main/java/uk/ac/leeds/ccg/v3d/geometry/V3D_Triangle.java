@@ -1342,7 +1342,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                 }
             } else {
                 // Triangles are not coplanar.
-                V3D_FiniteGeometry i = getIntersection(t.pl, oom, rm);
+                V3D_FiniteGeometry i = getIntersection(t.pl, oom - 6, rm);
                 if (i == null) {
                     return i;
                 } else if (i instanceof V3D_Point pt) {
@@ -1353,7 +1353,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                     }
                 } else {
                     V3D_LineSegment il = (V3D_LineSegment) i;
-                    V3D_FiniteGeometry ti = t.getIntersection(pl, oom, rm);
+                    V3D_FiniteGeometry ti = t.getIntersection(pl, oom - 6, rm);
                     if (ti == null) {
                         return ti;
                     } else if (ti instanceof V3D_Point pt) {

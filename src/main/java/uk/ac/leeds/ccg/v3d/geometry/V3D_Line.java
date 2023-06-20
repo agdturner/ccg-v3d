@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 
@@ -351,13 +352,13 @@ public class V3D_Line extends V3D_Geometry {
 //        boolean t5 = getV(oom).isScalarMultiple(l.getV(oom), oom);
 //        return isIntersectedBy(l.getP(), oom, rm)
 //                && isIntersectedBy(l.getQ(oom, rm), oom, rm);
-        if (v.isScalarMultiple(l.v, oom, rm)) {
+        //if (v.isScalarMultiple(l.v, oom, rm)) {
             if (l.isIntersectedBy(getP(), oom, rm)) {
-                if (isIntersectedBy(l.getP(), oom, rm)) {
+                if (l.isIntersectedBy(getQ(oom, rm), oom, rm)) {
                     return true;
                 }
             }
-        }
+        //}
         return false;
     }
 
@@ -473,6 +474,11 @@ public class V3D_Line extends V3D_Geometry {
                 // If lines are coincident return this.
                 return this;
             } else {
+                
+                if (Math_BigRational.equals(this.getDistance(l, oom, rm), BigRational.ZERO, oom)) {
+                    return this;
+                }
+                
                 return null;
             }
         }
@@ -899,7 +905,17 @@ public class V3D_Line extends V3D_Geometry {
         if (pi.equals(qi, oom, rm)) {
             return pi;
         } else {
-            return null;
+            //return null;
+            
+            if (Math_BigRational.equals(new V3D_LineSegment(pi, qi, oom, rm)
+                    .getLength(oom, rm).getSqrt(oom, rm), BigRational.ZERO, oom)) {
+                int debug = 1;
+                //return pi;
+                return qi;
+            } else {
+                return null;
+            }
+            
         }
         //return new V3D_Line(pi, qi);
     }
