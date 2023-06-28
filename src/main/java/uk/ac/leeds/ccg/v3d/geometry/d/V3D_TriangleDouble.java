@@ -2425,4 +2425,9 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
             }
         }
     }
+
+    @Override
+    public boolean isIntersectedBy(V3D_EnvelopeDouble aabb, double epsilon) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

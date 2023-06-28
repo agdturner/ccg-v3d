@@ -78,6 +78,24 @@ public class V3D_Line extends V3D_Geometry {
     private static final long serialVersionUID = 1L;
     
     /**
+     * The x axis.
+     */
+    public static final V3D_Line X_AXIS = new V3D_Line(
+            V3D_Vector.ZERO, V3D_Vector.I);
+
+    /**
+     * The y axis.
+     */
+    public static final V3D_Line Y_AXIS = new V3D_Line(
+            V3D_Vector.ZERO, V3D_Vector.J);
+
+    /**
+     * The z axis.
+     */
+    public static final V3D_Line Z_AXIS = new V3D_Line(
+            V3D_Vector.ZERO, V3D_Vector.K);
+    
+    /**
      * If this line is defined by a vector, then the calculation of {@link #q}
      * may be imprecise. If this line is defined by points, then {@link #v} may
      * have been imprecisely calculated.
@@ -410,7 +428,7 @@ public class V3D_Line extends V3D_Geometry {
         this.oom = oom;
         this.rm = rm;
     }
-
+    
     /**
      * @param pt A point to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -1351,42 +1369,29 @@ public class V3D_Line extends V3D_Geometry {
         V3D_Vector rv = v.rotate(uv, theta, oom, rm);
         return new V3D_Line(rp, rv);
     }
-
+    
     /**
-     * @param pt The point to test if it is collinear.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
+     * @param ps The points to test for collinearity.
      * @return {@code true} iff all points are collinear with l.
      */
-    public boolean isCollinear(V3D_Point pt, int oom, RoundingMode rm) {
-        return this.isIntersectedBy(pt, oom, rm);
-    }
-
-    /**
-     * @param l The line to test if it is collinear.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} iff all points are collinear with l.
-     */
-    public boolean isCollinear(V3D_Line l, int oom, RoundingMode rm) {
-        if (isCollinear(l.getP(), oom, rm)) {
-            if (isCollinear(l.getQ(oom, rm), oom, rm)) {
-                return true;
-            }
+    public static boolean isCollinear(int oom, RoundingMode rm, V3D_Point... ps) {
+        V3D_Line l = getLine(oom, rm, ps);
+        if (l == null) {
+            return false;
         }
-        return false;
+        return isCollinear(oom, rm, l, ps);
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @param l The line to test points are collinear with.
-     * @param points The points to test if they are collinear with l.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @param ps The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public static boolean isCollinear(int oom, RoundingMode rm, V3D_Line l,
-            V3D_Point... points) {
-        for (V3D_Point p : points) {
+    public static boolean isCollinear(int oom, RoundingMode rm, V3D_Line l, 
+            V3D_Point... ps) {
+        for (var p : ps) {
             if (!l.isIntersectedBy(p, oom, rm)) {
                 return false;
             }
@@ -1395,96 +1400,36 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @param l The line to test points are collinear with.
-     * @param points The points to test if they are collinear with l.
-     * @return {@code true} iff all points are collinear with l.
-     */
-    public static boolean isCollinear(int oom, RoundingMode rm, V3D_Line l,
-            V3D_Vector... points) {
-        //V3D_Vector lv = l.getV(oom, rm);
-        V3D_Vector lv = l.v;
-        for (V3D_Vector p : points) {
-            if (!lv.isScalarMultiple(p, oom, rm)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @param points The points to test if they are collinear.
-     * @return {@code false} if all points are coincident. {@code true} iff all
-     * the points are collinear.
-     */
-    public static boolean isCollinear(int oom,
-            RoundingMode rm, V3D_Point... points) {
-        // For the points to be in a line at least two must be different.
-        if (V3D_Point.isCoincident(oom, rm, points)) {
-            return false;
-        }
-        return isCollinear0(oom, rm, points);
-    }
-
-    /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @param points The points to test if they are collinear.
-     * @return {@code true} iff all the points are collinear or coincident.
-     */
-    public static boolean isCollinear0(int oom, RoundingMode rm,
-            V3D_Point... points) {
-        // Get a line
-        V3D_Line l = getLine(oom, rm, points);
-        return isCollinear(oom, rm, l, points);
-    }
-
-    /**
      * There should be at least two different points in points. This does not
-     * check for collinearity of all the points.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
+     * check for collinearity of all the points. It returns a line defined by 
+     * the first points that have the greatest distance between them.
+     * 
      * @param points Any number of points, but with two being different.
      * @return A line defined by any two different points or null if the points
      * are coincident.
      */
-    public static V3D_Line getLine(int oom, RoundingMode rm,
-            V3D_Point... points) {
-        V3D_Point p0 = points[0];
-        for (V3D_Point p1 : points) {
-            if (!p1.equals(p0, oom, rm)) {
-                //return new V3D_Line(p0, p1, -1);
-                return new V3D_Line(p0, p1, oom, rm);
+    public static V3D_Line getLine(int oom, RoundingMode rm, V3D_Point... points) {
+        if (points.length < 2) {
+            return null;
+        }
+        // Find the points which are furthest apart.
+        BigRational max = BigRational.ZERO;
+        V3D_Point a = null;
+        V3D_Point b = null;
+        for (int i = 0; i < points.length; i ++) {
+            for (int j = i + 1; j < points.length; j ++) {
+                BigRational d2 = points[i].getDistanceSquared(points[j], oom, rm);
+                if (d2.compareTo(max) == 1) {
+                    a = points[i];
+                    b = points[j];
+                    max = d2;
+                }
             }
         }
-        return null;
-    }
-
-    /**
-     * @param l A line.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode.
-     * @return true if this and l are not skew.
-     */
-    public boolean isCoplanar(V3D_Line l, int oom, RoundingMode rm) {
-        V3D_Point lp = l.getP();
-        if (isCollinear(lp, oom, rm)) {
-            return true;
+        if (max.compareTo(BigRational.ZERO) == 0d) {
+            return null;
         } else {
-            V3D_Point lq = l.getQ(oom, rm);
-            if (isCollinear(lq, oom, rm)) {
-                return true;
-            } else {
-//                return V3D_Plane.isCoplanar(oom, rm, lp, lq, getP(),
-//                        getQ(oom,rm));
-                V3D_Plane pl = new V3D_Plane(getP(), lp, lq, oom, rm);
-                return pl.isIntersectedBy(getQ(oom, rm), oom, rm);
-            }
+            return new V3D_Line(a, b, oom, rm);
         }
-
     }
 }

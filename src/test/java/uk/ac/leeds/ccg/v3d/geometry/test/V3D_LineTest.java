@@ -41,7 +41,7 @@ import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
  * @version 1.0
  */
 public class V3D_LineTest extends V3D_Test {
-    
+
     public V3D_LineTest() {
     }
 
@@ -120,17 +120,7 @@ public class V3D_LineTest extends V3D_Test {
         assertFalse(instance.isIntersectedBy(pt, oom, rm));
         pt = new V3D_Point(a.add(BigInteger.ONE), a, a);
         assertTrue(instance.isIntersectedBy(pt, oom, rm));
-//        // Test 9 Results seem somewhat contrary. It would not matter if these 
-//        // results came out differently. The point is that oom is not set 
-//        // to be sufficiently sensitive, so we get intersections reported that 
-//        // are not wanted.  
-//        a = N0_1E12.add(N1E12);
-//        pt = new V3D_Point(a, a, a);
-//        assertTrue(instance.isIntersectedBy(pt, oom, rm)); // True as rounding in the cross product calculation is too general.
-//        pt = new V3D_Point(a.add(BigInteger.ONE), a, a);
-//        assertTrue(instance.isIntersectedBy(pt, oom, rm)); // True as rounding in the cross product calculation is too general, but it should be true anyway!
-        // Test 10 This is like test 9, but the oom is set appropriately so the
-        // coordinate and crossproduct rounding work fine.
+        // Test 9
         a = V3D_Test.N0_1E12.add(V3D_Test.N1E12);
         oom = -2; // In this case oom = -2 is sufficient.
         pt = new V3D_Point(a, a, a);
@@ -143,7 +133,7 @@ public class V3D_LineTest extends V3D_Test {
      * Test of isParallel method, of class V3D_Line.
      */
     @Test
-    public void testIsParallel() {
+    public void testIsParallel_V3D_Line_int_RoundingMode() {
         System.out.println("isParallel");
         int oom = -1;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -225,7 +215,7 @@ public class V3D_LineTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Line.
      */
     @Test
-    public void testGetIntersection() {
+    public void testGetIntersection_V3D_Line_int_RoundingMode() {
         System.out.println("getIntersection");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -254,14 +244,14 @@ public class V3D_LineTest extends V3D_Test {
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 4
         l = new V3D_Line(V3D_Test.pN1N1N1, V3D_Test.pP1P1P1, oom, rm);
-        instance = new V3D_Line(new V3D_Vector(V3D_Test.P3, V3D_Test.P1, V3D_Test.P1), 
+        instance = new V3D_Line(new V3D_Vector(V3D_Test.P3, V3D_Test.P1, V3D_Test.P1),
                 new V3D_Vector(V3D_Test.P1, V3D_Test.P3, V3D_Test.P3), oom, rm);
         expResult = V3D_Test.pP2P2P2;
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 5
         l = new V3D_Line(V3D_Test.pN1N1P0, V3D_Test.pP1P1P0, oom, rm);
-        instance = new V3D_Line(new V3D_Vector(V3D_Test.P3, V3D_Test.P3, V3D_Test.P0), 
+        instance = new V3D_Line(new V3D_Vector(V3D_Test.P3, V3D_Test.P3, V3D_Test.P0),
                 new V3D_Vector(V3D_Test.P3, V3D_Test.P3, V3D_Test.N1), oom, rm);
         expResult = new V3D_Point(V3D_Test.P3, V3D_Test.P3, V3D_Test.P0);
         result = instance.getIntersection(l, oom, rm);
@@ -299,7 +289,7 @@ public class V3D_LineTest extends V3D_Test {
         // Test 11
         l = new V3D_Line(V3D_Test.pN1N1N1, V3D_Test.pP1P1P1, oom, rm);
         expResult = new V3D_Line(V3D_Test.pN1N1N1, V3D_Test.pP1P1P1, oom, rm);
-        instance = new V3D_Line(new V3D_Vector(V3D_Test.N3, V3D_Test.N3, V3D_Test.N3), 
+        instance = new V3D_Line(new V3D_Vector(V3D_Test.N3, V3D_Test.N3, V3D_Test.N3),
                 new V3D_Vector(V3D_Test.N4, V3D_Test.N4, V3D_Test.N4), oom, rm);
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom, rm));
@@ -364,42 +354,62 @@ public class V3D_LineTest extends V3D_Test {
         instance = new V3D_Line(V3D_Test.pP1P2P0, V3D_Test.pP2P2P1, oom, rm);
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+        // Test 23
+        oom = -1;
+        rm = RoundingMode.HALF_UP;
+        l = new V3D_Line(V3D_Test.pP0P0P0, V3D_Test.pP1P1P1, oom, rm);
+        instance = new V3D_Line(V3D_Test.pP0P0P0, V3D_Test.pP1P1P1, oom, rm);
+        expResult = new V3D_Line(V3D_Test.pP0P0P0, V3D_Test.pP1P1P1, oom, rm);
+        result = instance.getIntersection(l, oom, rm);
+        assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom, rm));
+        // Test 24
+        instance = new V3D_Line(V3D_Test.pP1P1P1, V3D_Test.pP0P0P0, oom, rm);
+        expResult = new V3D_Line(V3D_Test.pP0P0P0, V3D_Test.pP1P1P1, oom, rm);
+        result = instance.getIntersection(l, oom, rm);
+        assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom, rm));
+        // Test 25
+        //instance = new V3D_Line(P0P1P0, P0N1P0, oom, rm);
+        instance = new V3D_Line(V3D_Test.pP0N1P0, V3D_Test.pP0P1P0, oom, rm);
+        l = new V3D_Line(V3D_Test.pP1P1P1, V3D_Test.pP0P0P0, oom, rm);
+        expResult = V3D_Test.pP0P0P0;
+        result = instance.getIntersection(l, oom, rm);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+        // Test 26
+        instance = new V3D_Line(V3D_Test.pN1P1P1, V3D_Test.pP1N1P1, oom, rm);
+        l = new V3D_Line(V3D_Test.pP0P2P1, V3D_Test.pP1P1P1, oom, rm);
+        //expResult = null;
+        result = instance.getIntersection(l, oom, rm);
+        //System.out.println(result);
+        assertNull(result);
+        // Test 27
+        l = new V3D_Line(V3D_Test.pN1N1N1, V3D_Test.pP1P1P1, oom, rm);
+        instance = new V3D_Line(V3D_Test.pN1P1P1, V3D_Test.pP1N1N1, oom, rm);
+        expResult = V3D_Test.pP0P0P0;
+        result = instance.getIntersection(l, oom, rm);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+        // Test 28
+        oom = -3;
+        l = new V3D_Line(V3D_Test.pN1N1N1, V3D_Test.pP1P1P1, oom, rm);
+        instance = new V3D_Line(V3D_Test.pN1P1P1, V3D_Test.pP1N1N1, oom, rm);
+        expResult = V3D_Test.pP0P0P0;
+        result = instance.getIntersection(l, oom, rm);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+        // Test 29
+        l = new V3D_Line(new V3D_Point(V3D_Test.N1.add(V3D_Test.P0_1),
+                V3D_Test.N1.add(V3D_Test.P0_1), V3D_Test.N1),
+                new V3D_Point(P1.add(P0_1), P1.add(P0_1), P1), oom, rm);
+        instance = new V3D_Line(new V3D_Point(N1.add(P0_1), P1.add(P0_1), P1),
+                new V3D_Point(P1.add(P0_1), N1.add(P0_1), N1), oom, rm);
+        expResult = new V3D_Point(P0.add(P0_1), P0.add(P0_1), P0);
+        result = instance.getIntersection(l, oom, rm);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
     }
-
-//    /**
-//     * Test of isIntersectedBy method, of class V3D_Line.
-//     */
-//    @Test
-//    public void testIsIntersectedBy_V3D_Line_int() {
-//        System.out.println("isIntersectedBy");
-//        int oom = -3;
-//        RoundingMode rm = RoundingMode.HALF_UP;
-//        V3D_Line l;
-//        V3D_Line instance;
-//        boolean result;
-//        // Test 1
-//        l = new V3D_Line(pN1N1N1, pP1P1P1, oom, rm);
-//        instance = new V3D_Line(pN1P1N1, pP1N1P1, oom, rm);
-//        result = instance.isIntersectedBy(l, oom, rm);
-//        assertTrue(result);
-//        // Test 2
-//        /**
-//         * This test fails, the lines don't intersect, but to be sure a further
-//         * test is needed! That further test might best involve calculating the
-//         * intersection and if it is not null, then the result is true (in other
-//         * words, there is an intersection as it has been computed)!
-//         */
-////        l = new V3D_Line(P0N1N1, P1P1P1, oom, rm);
-////        instance = new V3D_Line(N1P1N1, P1N1P1, oom, rm);
-////        result = instance.isIntersectedBy(l, oom, rm);
-////        assertFalse(result);
-//    }
 
     /**
      * Test of equals method, of class V3D_Line.
      */
     @Test
-    public void testEquals_V3D_Line() {
+    public void testEquals_V3D_Line_int_RoundingMode() {
         System.out.println("equals");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -419,63 +429,6 @@ public class V3D_LineTest extends V3D_Test {
     }
 
     /**
-     * Test of getIntersection method, of class V3D_Line. A useful tool for
-     * creating test cases: https://www.mathepower.com/en/lineintersection.php
-     */
-    @Test
-    public void testGetIntersection_V3D_Line_int() {
-        System.out.println("getIntersection");
-        int oom = -1;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Line l = new V3D_Line(V3D_Test.pP0P0P0, V3D_Test.pP1P1P1, oom, rm);
-        V3D_Line instance = new V3D_Line(V3D_Test.pP0P0P0, V3D_Test.pP1P1P1, oom, rm);
-        V3D_Geometry expResult = new V3D_Line(V3D_Test.pP0P0P0, V3D_Test.pP1P1P1, oom, rm);
-        V3D_Geometry result = instance.getIntersection(l, oom, rm);
-        assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom, rm));
-        // Test 2
-        instance = new V3D_Line(V3D_Test.pP1P1P1, V3D_Test.pP0P0P0, oom, rm);
-        expResult = new V3D_Line(V3D_Test.pP0P0P0, V3D_Test.pP1P1P1, oom, rm);
-        result = instance.getIntersection(l, oom, rm);
-        assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom, rm));
-        // Test 3
-        //instance = new V3D_Line(P0P1P0, P0N1P0, oom, rm);
-        instance = new V3D_Line(V3D_Test.pP0N1P0, V3D_Test.pP0P1P0, oom, rm);
-        l = new V3D_Line(V3D_Test.pP1P1P1, V3D_Test.pP0P0P0, oom, rm);
-        expResult = V3D_Test.pP0P0P0;
-        result = instance.getIntersection(l, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 4
-        instance = new V3D_Line(V3D_Test.pN1P1P1, V3D_Test.pP1N1P1, oom, rm);
-        l = new V3D_Line(V3D_Test.pP0P2P1, V3D_Test.pP1P1P1, oom, rm);
-        //expResult = null;
-        result = instance.getIntersection(l, oom, rm);
-        //System.out.println(result);
-        assertNull(result);
-        // Test 5
-        l = new V3D_Line(V3D_Test.pN1N1N1, V3D_Test.pP1P1P1, oom, rm);
-        instance = new V3D_Line(V3D_Test.pN1P1P1, V3D_Test.pP1N1N1, oom, rm);
-        expResult = V3D_Test.pP0P0P0;
-        result = instance.getIntersection(l, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 6
-        oom = -3;
-        l = new V3D_Line(V3D_Test.pN1N1N1, V3D_Test.pP1P1P1, oom, rm);
-        instance = new V3D_Line(V3D_Test.pN1P1P1, V3D_Test.pP1N1N1, oom, rm);
-        expResult = V3D_Test.pP0P0P0;
-        result = instance.getIntersection(l, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 7
-        l = new V3D_Line(new V3D_Point(V3D_Test.N1.add(V3D_Test.P0_1), 
-                V3D_Test.N1.add(V3D_Test.P0_1), V3D_Test.N1),
-                new V3D_Point(P1.add(P0_1), P1.add(P0_1), P1), oom, rm);
-        instance = new V3D_Line(new V3D_Point(N1.add(P0_1), P1.add(P0_1), P1),
-                new V3D_Point(P1.add(P0_1), N1.add(P0_1), N1), oom, rm);
-        expResult = new V3D_Point(P0.add(P0_1), P0.add(P0_1), P0);
-        result = instance.getIntersection(l, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-    }
-
-    /**
      * Test of isParallelToX0 method, of class V3D_Line.
      */
     @Test
@@ -485,10 +438,10 @@ public class V3D_LineTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line instance = new V3D_Line(pP1P0P0, pP1P1P0, oom, rm);
         assertTrue(instance.isParallelToX0(oom, rm));
-        // Test 1
+        // Test 2
         instance = new V3D_Line(pP0P0P0, pP0P1P0, oom, rm);
         assertTrue(instance.isParallelToX0(oom, rm));
-        // Test 2
+        // Test 3
         instance = new V3D_Line(pP0P0P1, pP1P1P0, oom, rm);
         assertFalse(instance.isParallelToX0(oom, rm));
     }
@@ -503,6 +456,12 @@ public class V3D_LineTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line instance = new V3D_Line(pP0P1P1, pP0P1N1, oom, rm);
         assertTrue(instance.isParallelToY0(oom, rm));
+        // Test 2
+        instance = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
+        assertTrue(instance.isParallelToX0(oom, rm));
+        // Test 3
+        instance = new V3D_Line(pP0P0P1, pP1P1P0, oom, rm);
+        assertFalse(instance.isParallelToX0(oom, rm));
     }
 
     /**
@@ -515,45 +474,14 @@ public class V3D_LineTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line instance = new V3D_Line(pP0P0P1, pP0P1P1, oom, rm);
         assertTrue(instance.isParallelToZ0(oom, rm));
+        // Test 2
+        instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
+        assertTrue(instance.isParallelToX0(oom, rm));
+        // Test 3
+        instance = new V3D_Line(pP0P0P1, pP1P1P0, oom, rm);
+        assertFalse(instance.isParallelToX0(oom, rm));
     }
 
-//    /**
-//     * Test of isEnvelopeIntersectedBy method, of class V3D_Line.
-//     */
-//    @Test
-//    public void testIsEnvelopeIntersectedBy() {
-//        System.out.println("isEnvelopeIntersectedBy");
-//        V3D_Line l = new V3D_Line(pP0P0P0, pP1P1P1);
-//        V3D_Line instance = new V3D_Line(pP0P0P1, pP0P0N1);
-//        assertTrue(instance.isEnvelopeIntersectedBy(l, oom, rm));
-//        // Test 2
-//        l = new V3D_Line(pP0P0P1, pP0P1P1);
-//        instance = new V3D_Line(pP0P0N1, pP0P1N1);
-//        assertFalse(instance.isEnvelopeIntersectedBy(l, oom, rm));
-//    }
-//    /**
-//     * Test of translate method, of class V3D_Line.
-//     */
-//    @Test
-//    public void testApply() {
-//        System.out.println("translate");
-//        int oom, rm = -1;
-//        V3D_Vector v = V3D_Vector.I;
-//        V3D_Line instance = V3D_Line.X_AXIS;
-//        V3D_Line expResult = V3D_Line.X_AXIS;
-//        V3D_Line result = instance.translate(v, oom, rm);
-//        assertTrue(expResult.equals(result));
-//        // Test 2
-//        instance = V3D_Line.Y_AXIS;
-//        expResult = new V3D_Line(P1P0P0, P1P1P0, oom, rm);
-//        result = instance.translate(v, oom, rm);
-//        assertTrue(expResult.equals(result));
-//        // Test 3
-//        instance = V3D_Line.Z_AXIS;
-//        expResult = new V3D_Line(P1P0P0, P1P0P1, oom, rm);
-//        result = instance.translate(v, oom, rm);
-//        assertTrue(expResult.equals(result));
-//    }
     /**
      * Test of getAsMatrix method, of class V3D_Line.
      */
@@ -579,7 +507,7 @@ public class V3D_LineTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Line.
      */
     @Test
-    public void testGetDistance_V3D_Point() {
+    public void testGetDistance_V3D_Point_int_RoundingMode() {
         System.out.println("getDistance");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -659,7 +587,7 @@ public class V3D_LineTest extends V3D_Test {
      * Test of getLineOfIntersection method, of class V3D_Line.
      */
     @Test
-    public void testGetLineOfIntersection_V3D_Point_int() {
+    public void testGetLineOfIntersection_V3D_Point_int_RoundingMode() {
         System.out.println("getLineOfIntersection");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -697,7 +625,23 @@ public class V3D_LineTest extends V3D_Test {
         V3D_Point result = instance.getPointOfIntersection(pt, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 2
-        // ...
+        pt = pN2P0P0;
+        instance = new V3D_Line(pP0P0P0, pP0P2P2, oom, rm);
+        expResult = pP0P0P0;
+        result = instance.getPointOfIntersection(pt, oom, rm);
+        assertTrue(expResult.equals(result, oom, rm));
+        // Test 3
+        pt = pN2P2P0;
+        instance = new V3D_Line(pP0P0P0, pP0P2P2, oom, rm);
+        expResult = pP0P1P1;
+        result = instance.getPointOfIntersection(pt, oom, rm);
+        assertTrue(expResult.equals(result, oom, rm));
+        // Test 4
+        pt = pN2N2P0;
+        instance = new V3D_Line(pP0P0P0, pP0P2P2, oom, rm);
+        expResult = pP0N1N1;
+        result = instance.getPointOfIntersection(pt, oom, rm);
+        assertTrue(expResult.equals(result, oom, rm));
     }
 
     /**
@@ -756,7 +700,7 @@ public class V3D_LineTest extends V3D_Test {
     public void testToString_String() {
         System.out.println("toString");
         String pad = "";
-        V3D_Line instance = new V3D_Line(pP0P0P0, V3D_Vector.I);
+        V3D_Line instance = V3D_Line.X_AXIS;
         String expResult = """
                            V3D_Line
                            (
@@ -796,69 +740,31 @@ public class V3D_LineTest extends V3D_Test {
         assertEquals(expResult, result);
     }
 
-//    /**
-//     * Test of toStringFields method, of class V3D_Line.
-//     */
-//    @Test
-//    public void testToStringFields() {
-//        System.out.println("toStringFields");
-//        String pad = "";
-//        V3D_Line instance = V3D_Line.X_AXIS;
-//        String expResult = """
-//                           offset=V3D_Vector
-//                           (
-//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
-//                           )
-//                           ,
-//                           p=V3D_Point
-//                           (
-//                            offset=V3D_Vector
-//                            (
-//                             dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                             dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                             dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
-//                            )
-//                            ,
-//                            rel=V3D_Vector
-//                            (
-//                             dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                             dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                             dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
-//                            )
-//                           )
-//                           ,
-//                           v=V3D_Vector
-//                           (
-//                            dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
-//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
-//                           )""";
-//        String result = instance.toStringFields(pad);
-//        //System.out.println(result);
-//        assertEquals(expResult, result);
-//    }
-
-//    /**
-//     * Test of getPAsVector method, of class V3D_Line.
-//     */
-//    @Test
-//    public void testGetPV() {
-//        System.out.println("getPV");
-//        int oom = -3;
-//        RoundingMode rm = RoundingMode.HALF_UP;
-//        V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-//        V3D_Vector expResult = P0P0P0;
-//        V3D_Vector result = instance.getPAsVector(oom, rm);
-//        assertTrue(expResult.equals(result));
-//    }
-
+    /**
+     * Test of toStringFields method, of class V3D_Line.
+     */
+    @Test
+    public void testToStringSimple() {
+        System.out.println("toStringSimple");
+        String pad = "";
+        V3D_Line instance = V3D_Line.X_AXIS;
+        String expResult = """
+                           V3D_Line
+                           (
+                            offset=V3D_Vector(dx=0, dy=0, dz=0),
+                            p=V3D_Point(offset=V3D_Vector(dx=0, dy=0, dz=0), rel=V3D_Vector(dx=0, dy=0, dz=0)),
+                            v= V3D_Vector(dx=1, dy=0, dz=0)
+                           )""";
+        String result = instance.toStringSimple(pad);
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+    
     /**
      * Test of getP method, of class V3D_Line.
      */
     @Test
-    public void testGetP_int() {
+    public void testGetP() {
         System.out.println("getP");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -868,38 +774,6 @@ public class V3D_LineTest extends V3D_Test {
         assertTrue(expResult.equals(result, oom, rm));
     }
 
-//    /**
-//     * Test of getQV method, of class V3D_Line.
-//     */
-//    @Test
-//    public void testGetQV() {
-//        System.out.println("getQV");
-//        int oom = -3;
-//        RoundingMode rm = RoundingMode.HALF_UP;
-//        V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-//        V3D_Vector expResult = new V3D_Vector(1, 0, 0);
-//        V3D_Vector result = instance.getQV(oom, rm);
-//        assertTrue(expResult.equals(result));
-//    }
-//    /**
-//     * Test of getV method, of class V3D_Line.
-//     */
-//    @Test
-//    public void testGetV_int_RoundingMode() {
-//        System.out.println("getV");
-//        int oom = -1;
-//        RoundingMode rm = RoundingMode.HALF_UP;
-//        V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-//        V3D_Vector expResult = new V3D_Vector(1, 0, 0);
-//        V3D_Vector result = instance.getV(oom, rm);
-//        assertTrue(expResult.equals(result));
-//        // Test 2
-//        oom = -12;
-//        instance = new V3D_Line(pP0P0P0, new V3D_Point(P0_1E12, P0, P0), oom, rm);
-//        expResult = new V3D_Vector(P0_1E12, P0, P0);
-//        result = instance.getV(oom, rm);
-//        assertTrue(expResult.equals(result));
-//    }
     /**
      * Test of rotate method, of class V3D_Line.
      */
@@ -941,28 +815,10 @@ public class V3D_LineTest extends V3D_Test {
     }
 
     /**
-     * Test of isCoincident method, of class V3D_Geometrics.
+     * Test of isCollinear method, of class V3D_Line.
      */
     @Test
-    public void testIsCoincident() {
-        System.out.println("isCoincident");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Point[] points = new V3D_Point[2];
-        points[0] = pP0P0P0;
-        points[1] = pP0P0P0;
-        assertTrue(V3D_Point.isCoincident(oom, rm, points));
-        points[1] = pP0P0P1;
-        assertFalse(V3D_Point.isCoincident(oom, rm, points));
-        points[0] = pP0P0P1;
-        assertTrue(V3D_Point.isCoincident(oom, rm, points));
-    }
-
-    /**
-     * Test of isCollinear method, of class V3D_Geometrics.
-     */
-    @Test
-    public void testIsCollinear_V3D_Line_V3D_PointArr() {
+    public void testIsCollinear_int_RoundingMode_V3D_Line_V3D_PointArr() {
         System.out.println("isCollinear");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -982,10 +838,10 @@ public class V3D_LineTest extends V3D_Test {
     }
 
     /**
-     * Test of isCollinear method, of class V3D_Geometrics.
+     * Test of isCollinear method, of class V3D_Line.
      */
     @Test
-    public void testIsCollinear_V3D_PointArr() {
+    public void testIsCollinear_int_RoundingMode_V3D_PointArr() {
         System.out.println("isCollinear");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;

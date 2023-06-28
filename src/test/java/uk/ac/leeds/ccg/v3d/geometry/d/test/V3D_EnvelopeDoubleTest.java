@@ -33,7 +33,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_EnvelopeDoubleTest extends V3D_DoubleTest {
+public class V3D_EnvelopeDoubleTest extends V3D_TestDouble {
 
     public V3D_EnvelopeDoubleTest() {
         super();

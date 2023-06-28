@@ -34,7 +34,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_PointDoubleTest extends V3D_DoubleTest {
+public class V3D_PointDoubleTest extends V3D_TestDouble {
 
     public V3D_PointDoubleTest() {
     }
@@ -78,13 +78,13 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         p = new V3D_PointDouble(0d, 10d, 1d);
         assertFalse(instance.equals(p));
     }
-    
+
     /**
      * Test of isCoincident method, of class V3D_LineDouble.
      */
     @Test
-    public void testIsCoincident() {
-        System.out.println("isCoincident");
+    public void testEquals_V3D_PointDoubleArray() {
+        System.out.println("equals");
         V3D_PointDouble[] points = new V3D_PointDouble[2];
         points[0] = pP0P0P0;
         points[1] = pP0P0P0;
@@ -96,10 +96,89 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
     }
 
     /**
-     * Test of isBetween method, of class V3D_Point.
+     * Test of isBetween method, of class V3D_PointDouble.
      */
     @Test
-    public void testIsBetween() {
+    public void testIsBetween_V3D_PointDouble_V3D_PointDouble() {
+        System.out.println("isBetween");
+        // Test 1
+        V3D_PointDouble p = pP0P0P0;
+        V3D_PointDouble a = pN1P0P0;
+        V3D_PointDouble b = pP1P0P0;
+        double epsilon = 1 / 100000000d;
+        assertTrue(p.isBetween(a, b));
+        // Test 2
+        p = pP0P0P0;
+        a = pP0N1P0;
+        b = pP0P1P0;
+        assertTrue(p.isBetween(a, b));
+        // Test 3
+        p = pP0P0P0;
+        a = pP0P0N1;
+        b = pP0P0P1;
+        assertTrue(p.isBetween(a, b));
+        // Test 4
+        p = pP0P0P0;
+        a = pN1N1N1;
+        b = pP1P1P1;
+        assertTrue(p.isBetween(a, b));
+        // Test 5
+        p = pP0P0P0;
+        a = pN1N1N1;
+        b = pP1P1P1;
+        assertTrue(p.isBetween(a, b));
+        // Test 6
+        p = pP0P0P0;
+        a = pN1N1P0;
+        b = pP1P1P0;
+        assertTrue(p.isBetween(a, b));
+        // Test 7
+        p = pP0P0P0;
+        a = pN1P0N1;
+        b = pP1P0P1;
+        assertTrue(p.isBetween(a, b));
+        // Test 8
+        p = pP0P0P0;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b));
+        // Test 9
+        p = pP0P0P0;
+        a = pN1P0N1;
+        b = pP1P0P1;
+        assertTrue(p.isBetween(a, b));
+        // Test 10
+        p = pP0P0P0;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b));
+        // Test 11
+        p = pP0P0P1;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b));
+        // Test 12
+        p = pP0P0P2;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b));
+        // Test 13
+        p = pP0P1P2;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertFalse(p.isBetween(a, b));
+        // Test 14
+        p = pP1P1P1;
+        a = pP0N1N1;
+        b = pP0P1P1;
+        assertTrue(p.isBetween(a, b));
+    }
+
+    /**
+     * Test of isBetween method, of class V3D_PointDouble.
+     */
+    @Test
+    public void testIsBetween_double_V3D_PointDouble_V3D_PointDouble() {
         System.out.println("isBetween");
         // Test 1
         V3D_PointDouble p = pP0P0P0;
@@ -243,37 +322,23 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         instance = new V3D_PointDouble(3d, 0d, -4d);
         result = instance.getDistance(p);
         assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of getDistance method, of class V3D_PointDouble.
-     */
-    @Test
-    public void testGetDistance() {
-        System.out.println("getDistance");
-        V3D_PointDouble instance = pP0P0P0;
-        double expResult = 0d;
-        double result = instance.getDistance(instance);
+        // Test 13
+        instance = pP0P0P0;
+        expResult = 0d;
+        result = instance.getDistance(instance);
         assertEquals(expResult, result);
-        // Test 2
+        // Test 14
         instance = new V3D_PointDouble(3d, 4d, 0d);
         expResult = 5d;
         result = instance.getDistance(pP0P0P0);
         assertTrue(expResult == result);
-    }
-
-    /**
-     * Test of getDistance method, of class V3D_PointDouble.
-     */
-    @Test
-    public void testGetDistance_V3D_PointDouble_int() {
-        System.out.println("getDistance");
-        V3D_PointDouble p = pP0P0P0;
-        V3D_PointDouble instance = pP1P0P0;
-        double expResult = 1d;
-        double result = instance.getDistance(p);
+        // Test 15
+        p = pP0P0P0;
+        instance = pP1P0P0;
+        expResult = 1d;
+        result = instance.getDistance(p);
         assertTrue(expResult == result);
-        // Test 2
+        // Test 16
         instance = new V3D_PointDouble(3d, 4d, 0d);
         expResult = 5d;
         result = instance.getDistance(p);
@@ -284,7 +349,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
      * Test of getDistanceSquared method, of class V3D_PointDouble.
      */
     @Test
-    public void testGetDistanceSquared() {
+    public void testGetDistanceSquared_V3D_PointDouble() {
         System.out.println("getDistanceSquared");
         V3D_PointDouble instance = pP0P0P0;
         double expResult = 0d;
@@ -294,6 +359,36 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         instance = new V3D_PointDouble(3d, 4d, 0d);
         expResult = 25d;
         result = instance.getDistanceSquared(pP0P0P0);
+        assertTrue(expResult == result);
+        // Test 3
+        V3D_PointDouble p = pP1P0P0;
+        instance = pP1P0P0;
+        expResult = 0d;
+        result = instance.getDistanceSquared(p);
+        assertTrue(expResult == result);
+        // Test 4
+        p = pP1P0P0;
+        instance = pP2P0P0;
+        expResult = 1d;
+        result = instance.getDistanceSquared(p);
+        assertTrue(expResult == result);
+        // Test 5
+        p = pP1P0P0;
+        instance = pP0P1P0;
+        expResult = 2d;
+        result = instance.getDistanceSquared(p);
+        assertTrue(expResult == result);
+        // Test 6
+        p = pP1P0P0;
+        instance = pP1P1P0;
+        expResult = 1d;
+        result = instance.getDistanceSquared(p);
+        assertTrue(expResult == result);
+        // Test 7
+        p = pP0P0P0;
+        instance = pP1P1P1;
+        expResult = 3d;
+        result = instance.getDistanceSquared(p);
         assertTrue(expResult == result);
     }
 
@@ -342,32 +437,21 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         assertEquals(expResult, result);
     }
 
-//    /**
-//     * Test of toStringFields method, of class V3D_PointDouble.
-//     */
-//    @Test
-//    public void testToStringFields() {
-//        System.out.println("toStringFields");
-//        String pad = "";
-//        V3D_PointDouble instance = pP0P1P2;
-//        String expResult = """
-//                           offset=V3D_VectorDouble
-//                           (
-//                            dx=0.0,
-//                            dy=0.0,
-//                            dz=0.0
-//                           )
-//                           ,
-//                           rel=V3D_VectorDouble
-//                           (
-//                            dx=0.0,
-//                            dy=1.0,
-//                            dz=2.0
-//                           )""";
-//        String result = instance.toStringFields(pad);
-//        System.out.println(result);
-//        assertEquals(expResult, result);
-//    }
+    /**
+     * Test of toStringFields method, of class V3D_PointDouble.
+     */
+    @Test
+    public void testToStringSimple() {
+        System.out.println("toStringSimple");
+        String pad = "";
+        V3D_PointDouble instance = pP0P1P2;
+        String expResult = """
+                           V3D_PointDouble(offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0), rel=V3D_VectorDouble(dx=0.0, dy=1.0, dz=2.0))""";
+        String result = instance.toStringSimple(pad);
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
+    
     /**
      * Test of getVector method, of class V3D_PointDouble.
      */
@@ -426,43 +510,6 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         assertFalse(instance.isOrigin());
         instance = pP0P0P0;
         assertTrue(instance.isOrigin());
-    }
-
-    /**
-     * Test of getDistanceSquared method, of class V3D_PointDouble.
-     */
-    @Test
-    public void testGetDistanceSquared_V3D_PointDouble() {
-        System.out.println("getDistanceSquared");
-        V3D_PointDouble p = pP1P0P0;
-        V3D_PointDouble instance = pP1P0P0;
-        double expResult = 0d;
-        double result = instance.getDistanceSquared(p);
-        assertTrue(expResult == result);
-        // Test 2
-        p = pP1P0P0;
-        instance = pP2P0P0;
-        expResult = 1d;
-        result = instance.getDistanceSquared(p);
-        assertTrue(expResult == result);
-        // Test 3
-        p = pP1P0P0;
-        instance = pP0P1P0;
-        expResult = 2d;
-        result = instance.getDistanceSquared(p);
-        assertTrue(expResult == result);
-        // Test 4
-        p = pP1P0P0;
-        instance = pP1P1P0;
-        expResult = 1d;
-        result = instance.getDistanceSquared(p);
-        assertTrue(expResult == result);
-        // Test 5
-        p = pP0P0P0;
-        instance = pP1P1P1;
-        expResult = 3d;
-        result = instance.getDistanceSquared(p);
-        assertTrue(expResult == result);
     }
 
     /**
@@ -550,7 +597,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = new V3D_PointDouble(0, 3, 0);
         assertTrue(expResult.equals(epsilon, result));
-        
+
         // Test 5
         axis = new V3D_RayDouble(P0P0P0, V3D_VectorDouble.K);
         uv = axis.l.v.getUnitVector();
@@ -571,7 +618,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pP2P0P0;
         assertTrue(expResult.equals(epsilon, result));
-        
+
         // Test 8
         axis = new V3D_RayDouble(P0P0P0, V3D_VectorDouble.IJK);
         uv = axis.l.v.getUnitVector();
@@ -593,7 +640,6 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         assertTrue(expResult.equals(epsilon, result));
     }
 
-    
     /**
      * Test of setOffset method, of class V3D_PointDouble.
      */
@@ -610,7 +656,7 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
         instance.translate(offset);
         assertTrue(instance.equals(epsilon, pN2N2N1));
     }
-    
+
     /**
      * Test of setOffset method, of class V3D_PointDouble.
      */
@@ -713,7 +759,6 @@ public class V3D_PointDoubleTest extends V3D_DoubleTest {
             }
             assertTrue(t);
         }
-
     }
 
 }

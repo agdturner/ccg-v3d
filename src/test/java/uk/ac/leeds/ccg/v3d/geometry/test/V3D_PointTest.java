@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Ray;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
@@ -58,88 +57,7 @@ public class V3D_PointTest extends V3D_Test {
     @AfterEach
     public void tearDown() {
     }
-    
-    /**
-     * Test of equals method, of class V3D_Point.
-     */
-    @Test
-    public void testGetUnique() {
-        System.out.println("getUnique");
-        ArrayList<V3D_Point> pts;
-        ArrayList<V3D_Point> expResult;
-        ArrayList<V3D_Point> result;
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        // Test 1
-        pts = new ArrayList<>();
-        pts.add(pP0P0P0);
-        pts.add(pP0P0P0);
-        expResult = new ArrayList<>();
-        expResult.add(pP0P0P0);
-        result = V3D_Point.getUnique(pts, oom, rm);
-        testContainsSamePoints(expResult, result, oom, rm);
-        // Test 2
-        pts = new ArrayList<>();
-        pts.add(pP0P0P0);
-        pts.add(pP0P0P0);
-        pts.add(pP0P0P0);
-        pts.add(pP1P0P0);
-        pts.add(pP0P0P0);
-        pts.add(pP0P0P0);
-        pts.add(pP0P0P0);
-        pts.add(pP1P0P0);
-        pts.add(pP0P0P0);
-        pts.add(pP1P0P0);
-        expResult = new ArrayList<>();
-        expResult.add(pP0P0P0);
-        expResult.add(pP1P0P0);
-        result = V3D_Point.getUnique(pts, oom, rm);
-        testContainsSamePoints(expResult, result, oom, rm);
-        // Test 3
-        pts = new ArrayList<>();
-        pts.add(pP0P1P0);
-        pts.add(pP0P0P0);
-        pts.add(pP0P0P0);
-        pts.add(pP1P0P0);
-        pts.add(pP0P0P0);
-        pts.add(pP0P0P0);
-        pts.add(pP0P0P0);
-        pts.add(pP1P0P0);
-        pts.add(pP0P0P0);
-        pts.add(pP1P0P0);
-        expResult = new ArrayList<>();
-        expResult.add(pP0P1P0);
-        expResult.add(pP0P0P0);
-        expResult.add(pP1P0P0);
-        result = V3D_Point.getUnique(pts, oom, rm);
-        testContainsSamePoints(expResult, result, oom, rm);
-    }
-    
-    private void testContainsSamePoints(ArrayList<V3D_Point> expResult,
-        ArrayList<V3D_Point> result, int oom, RoundingMode rm) {
-        assertEquals(expResult.size(), result.size());
-        boolean t = false;
-        for (var x: result) {
-            for (var y: expResult) {
-                if (x.equals(y, oom, rm)) {
-                    t = true;
-                    break;
-                }
-            }
-            assertTrue(t);
-        }
-        t = false;
-        for (var x: expResult) {
-            for (var y: result) {
-                if (x.equals(y, oom, rm)) {
-                    t = true;
-                    break;
-                }
-            }
-            assertTrue(t);
-        }
-    }
-    
+
     /**
      * Test of equals method, of class V3D_Point.
      */
@@ -171,6 +89,24 @@ public class V3D_PointTest extends V3D_Test {
         instance = new V3D_Point(x, y, z);
         p = new V3D_Point(x, y, z);
         assertTrue(instance.equals(p, oom, rm));
+    }
+
+    /**
+     * Test of isCoincident method, of class V3D_LineDouble.
+     */
+    @Test
+    public void testEquals_int_RoundingMode_V3D_PointArray() {
+        System.out.println("equals");
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Point[] points = new V3D_Point[2];
+        points[0] = pP0P0P0;
+        points[1] = pP0P0P0;
+        assertTrue(V3D_Point.equals(oom, rm, points));
+        points[1] = pP0P0P1;
+        assertFalse(V3D_Point.equals(oom, rm, points));
+        points[0] = pP0P0P1;
+        assertTrue(V3D_Point.equals(oom, rm, points));
     }
 
     /**
@@ -252,7 +188,7 @@ public class V3D_PointTest extends V3D_Test {
         b = pP0P1P1;
         assertTrue(p.isBetween(a, b, oom, rm));
     }
-        
+
     /**
      * Test of getEnvelope method, of class V3D_Point.
      */
@@ -331,7 +267,7 @@ public class V3D_PointTest extends V3D_Test {
      * Test of getDistance method, of class V3D_Point.
      */
     @Test
-    public void testGetDistance_int_RoundingMode() {
+    public void testGetDistance_V3D_Point_int_RoundingMode() {
         System.out.println("getDistance");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -344,22 +280,13 @@ public class V3D_PointTest extends V3D_Test {
         expResult = P5;
         result = instance.getDistance(pP0P0P0, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
-    }    
-    
-    /**
-     * Test of getDistance method, of class V3D_Point.
-     */
-    @Test
-    public void testGetDistance_V3D_Point_int() {
-        System.out.println("getDistance");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
+        // Test 3
         V3D_Point p = pP0P0P0;
-        V3D_Point instance = pP1P0P0;
-        BigRational expResult = P1;
-        BigRational result = instance.getDistance(p, oom, rm);
+        instance = pP1P0P0;
+        expResult = P1;
+        result = instance.getDistance(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
-        // Test 2
+        // Test 4
         instance = new V3D_Point(P3, P4, P0);
         expResult = P5;
         result = instance.getDistance(p, oom, rm);
@@ -370,7 +297,7 @@ public class V3D_PointTest extends V3D_Test {
      * Test of getDistanceSquared method, of class V3D_Point.
      */
     @Test
-    public void testGetDistanceSquared() {
+    public void testGetDistanceSquared_V3D_Point_int_RoundingMode() {
         System.out.println("getDistanceSquared");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -382,6 +309,36 @@ public class V3D_PointTest extends V3D_Test {
         instance = new V3D_Point(P3, P4, P0);
         expResult = BigRational.valueOf(25);
         result = instance.getDistanceSquared(pP0P0P0, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 3
+        V3D_Point p = pP1P0P0;
+        instance = pP1P0P0;
+        expResult = BigRational.ZERO;
+        result = instance.getDistanceSquared(p, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 4
+        p = pP1P0P0;
+        instance = pP2P0P0;
+        expResult = BigRational.ONE;
+        result = instance.getDistanceSquared(p, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 5
+        p = pP1P0P0;
+        instance = pP0P1P0;
+        expResult = BigRational.valueOf(2);
+        result = instance.getDistanceSquared(p, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 6
+        p = pP1P0P0;
+        instance = pP1P1P0;
+        expResult = BigRational.valueOf(1);
+        result = instance.getDistanceSquared(p, oom, rm);
+        assertTrue(expResult.compareTo(result) == 0);
+        // Test 7
+        p = pP0P0P0;
+        instance = pP1P1P1;
+        expResult = BigRational.valueOf(3);
+        result = instance.getDistanceSquared(p, oom, rm);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
@@ -429,32 +386,20 @@ public class V3D_PointTest extends V3D_Test {
         assertEquals(expResult, result);
     }
 
-//    /**
-//     * Test of toStringFields method, of class V3D_Point.
-//     */
-//    @Test
-//    public void testToStringFields() {
-//        System.out.println("toStringFields");
-//        String pad = "";
-//        V3D_Point instance = pP0P1P2;
-//        String expResult = """
-//                           offset=V3D_Vector
-//                           (
-//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
-//                           )
-//                           ,
-//                           rel=V3D_Vector
-//                           (
-//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                            dy=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
-//                            dz=Math_BigRationalSqrt(x=4, sqrtx=2, oom=0)
-//                           )""";
-//        String result = instance.toStringFields(pad);
-//        //System.out.println(result);
-//        assertEquals(expResult, result);
-//    }
+    /**
+     * Test of toStringFields method, of class V3D_Point.
+     */
+    @Test
+    public void testToStringSimple() {
+        System.out.println("toStringSimple");
+        String pad = "";
+        V3D_Point instance = pP0P1P2;
+        String expResult = """
+                           V3D_Point(offset=V3D_Vector(dx=0, dy=0, dz=0), rel=V3D_Vector(dx=0, dy=1, dz=2))""";
+        String result = instance.toStringSimple(pad);
+        //System.out.println(result);
+        assertEquals(expResult, result);
+    }
 
     /**
      * Test of getVector method, of class V3D_Point.
@@ -524,45 +469,6 @@ public class V3D_PointTest extends V3D_Test {
         assertFalse(instance.isOrigin(oom, rm));
         instance = pP0P0P0;
         assertTrue(instance.isOrigin(oom, rm));
-    }
-
-    /**
-     * Test of getDistanceSquared method, of class V3D_Point.
-     */
-    @Test
-    public void testGetDistanceSquared_V3D_Point_int_RoundingMode() {
-        System.out.println("getDistanceSquared");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Point p = pP1P0P0;
-        V3D_Point instance = pP1P0P0;
-        BigRational expResult = BigRational.ZERO;
-        BigRational result = instance.getDistanceSquared(p, oom, rm);
-        assertTrue(expResult.compareTo(result) == 0);
-        // Test 2
-        p = pP1P0P0;
-        instance = pP2P0P0;
-        expResult = BigRational.ONE;
-        result = instance.getDistanceSquared(p, oom, rm);
-        assertTrue(expResult.compareTo(result) == 0);
-        // Test 3
-        p = pP1P0P0;
-        instance = pP0P1P0;
-        expResult = BigRational.valueOf(2);
-        result = instance.getDistanceSquared(p, oom, rm);
-        assertTrue(expResult.compareTo(result) == 0);
-        // Test 4
-        p = pP1P0P0;
-        instance = pP1P1P0;
-        expResult = BigRational.valueOf(1);
-        result = instance.getDistanceSquared(p, oom, rm);
-        assertTrue(expResult.compareTo(result) == 0);
-        // Test 5
-        p = pP0P0P0;
-        instance = pP1P1P1;
-        expResult = BigRational.valueOf(3);
-        result = instance.getDistanceSquared(p, oom, rm);
-        assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
@@ -660,6 +566,24 @@ public class V3D_PointTest extends V3D_Test {
     }
 
     /**
+     * Test of setOffset method, of class V3D_PointDouble.
+     */
+    @Test
+    public void testTranslate() {
+        System.out.println("setOffset");
+        V3D_Point instance = new V3D_Point(pP0P0P0);
+        V3D_Vector offset = P0P0P1;
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        instance.translate(offset, oom, rm);
+        assertTrue(instance.equals(pP0P0P1, oom, rm));
+        // Test 2
+        offset = N2N2N2;
+        instance.translate(offset, oom, rm);
+        assertTrue(instance.equals(pN2N2N1, oom, rm));
+    }
+
+    /**
      * Test of setOffset method, of class V3D_Point.
      */
     @Test
@@ -687,4 +611,84 @@ public class V3D_PointTest extends V3D_Test {
         assertTrue(instance.equals(pP0P0P0, oom, rm));
     }
 
+    /**
+     * Test of equals method, of class V3D_Point.
+     */
+    @Test
+    public void testGetUnique() {
+        System.out.println("getUnique");
+        ArrayList<V3D_Point> pts;
+        ArrayList<V3D_Point> expResult;
+        ArrayList<V3D_Point> result;
+        int oom = -3;
+        RoundingMode rm = RoundingMode.HALF_UP;
+        // Test 1
+        pts = new ArrayList<>();
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        expResult = new ArrayList<>();
+        expResult.add(pP0P0P0);
+        result = V3D_Point.getUnique(pts, oom, rm);
+        testContainsSamePoints(expResult, result, oom, rm);
+        // Test 2
+        pts = new ArrayList<>();
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        expResult = new ArrayList<>();
+        expResult.add(pP0P0P0);
+        expResult.add(pP1P0P0);
+        result = V3D_Point.getUnique(pts, oom, rm);
+        testContainsSamePoints(expResult, result, oom, rm);
+        // Test 3
+        pts = new ArrayList<>();
+        pts.add(pP0P1P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        pts.add(pP0P0P0);
+        pts.add(pP1P0P0);
+        expResult = new ArrayList<>();
+        expResult.add(pP0P1P0);
+        expResult.add(pP0P0P0);
+        expResult.add(pP1P0P0);
+        result = V3D_Point.getUnique(pts, oom, rm);
+        testContainsSamePoints(expResult, result, oom, rm);
+    }
+
+    private void testContainsSamePoints(ArrayList<V3D_Point> expResult,
+            ArrayList<V3D_Point> result, int oom, RoundingMode rm) {
+        assertEquals(expResult.size(), result.size());
+        boolean t = false;
+        for (var x : result) {
+            for (var y : expResult) {
+                if (x.equals(y, oom, rm)) {
+                    t = true;
+                    break;
+                }
+            }
+            assertTrue(t);
+        }
+        t = false;
+        for (var x : expResult) {
+            for (var y : result) {
+                if (x.equals(y, oom, rm)) {
+                    t = true;
+                    break;
+                }
+            }
+            assertTrue(t);
+        }
+    }
 }

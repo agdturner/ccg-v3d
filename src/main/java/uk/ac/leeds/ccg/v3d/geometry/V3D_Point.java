@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.geometry.light.V3D_V;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
 
 /**
  * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding
@@ -81,7 +81,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
      */
     public V3D_Point(V3D_Point p) {
         super(new V3D_Vector(p.offset));
-        this.rel = new V3D_Vector(p.rel);
+        rel = new V3D_Vector(p.rel);
     }
 
     /**
@@ -115,7 +115,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
      */
     public V3D_Point(BigRational x, BigRational y, BigRational z) {
         super(V3D_Vector.ZERO);
-        this.rel = new V3D_Vector(x, y, z);
+        rel = new V3D_Vector(x, y, z);
     }
 
     /**
@@ -159,7 +159,6 @@ public class V3D_Point extends V3D_FiniteGeometry {
 
     @Override
     public String toString() {
-        //return toString("");
         return toStringSimple("");
     }
 
@@ -202,7 +201,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
     protected String toStringFieldsSimple(String pad) {
         return pad + super.toStringFieldsSimple("") + ", rel=" + rel.toStringSimple("");
     }
-
+    
     /**
      * Two points are equal if they are at the same location defined by each
      * points relative start location and translation vector at the given oom
@@ -214,6 +213,9 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @return {@code true} iff {@code pv} is the same as {@code this}.
      */
     public boolean equals(V3D_Point p, int oom, RoundingMode rm) {
+        if (p == null) {
+            return false;
+        }
         if (this.getX(oom, rm).compareTo(p.getX(oom, rm)) == 0) {
             if (this.getY(oom, rm).compareTo(p.getY(oom, rm)) == 0) {
                 if (this.getZ(oom, rm).compareTo(p.getZ(oom, rm)) == 0) {
@@ -224,6 +226,25 @@ public class V3D_Point extends V3D_FiniteGeometry {
         return false;
     }
 
+    /**
+     * @param ps The points to test if they are coincident.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff all the points are coincident.
+     */
+    public static boolean equals(int oom, RoundingMode rm,
+            V3D_Point... ps) {
+        if (ps.length < 2) {
+            return true;
+        }
+        for (int i = 1; i < ps.length; i++) {
+            if (!ps[0].equals(ps[i], oom, rm)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     @Override
     public V3D_Point[] getPoints() {
         V3D_Point[] r = new V3D_Point[1];
@@ -277,8 +298,9 @@ public class V3D_Point extends V3D_FiniteGeometry {
     }
 
     /**
-     * Returns true if this is between a and b. If this equal a or b then return
-     * true.
+     * Returns true if this is between a and b. If this equals a or b then return
+     * true. Being between does not necessarily mean being collinear.
+     * 
      * @param a A point
      * @param b A point
      * @param oom The Order of Magnitude for the precision.
@@ -297,10 +319,13 @@ public class V3D_Point extends V3D_FiniteGeometry {
             return false;
         }
         V3D_Plane ap = new V3D_Plane(a, ab);
-        V3D_Plane bp = new V3D_Plane(b, ab);
         int aps = ap.getSideOfPlane(this, oom, rm);
+        if (aps == -1) {
+            return false;
+        }
+        V3D_Plane bp = new V3D_Plane(b, ab);
         int bps = bp.getSideOfPlane(this, oom, rm);
-        return aps != bps;
+        return bps != 1;
     }
 
     /**
@@ -471,37 +496,6 @@ public class V3D_Point extends V3D_FiniteGeometry {
         }
         r.translate(tv, oomn9, rm);
         return r;
-    }
-
-    /**
-     * @param points The points to test if they are coincident.
-     * @return {@code true} iff all the points are coincident.
-     */
-    public static boolean isCoincident(V3D_Vector... points) {
-        V3D_Vector p0 = points[0];
-        for (V3D_Vector p1 : points) {
-            if (!p1.equals(p0)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @param points The points to test if they are coincident.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff all the points are coincident.
-     */
-    public static boolean isCoincident(int oom, RoundingMode rm,
-            V3D_Point... points) {
-        V3D_Point p0 = points[0];
-        for (V3D_Point p1 : points) {
-            if (!p1.equals(p0, oom, rm)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**

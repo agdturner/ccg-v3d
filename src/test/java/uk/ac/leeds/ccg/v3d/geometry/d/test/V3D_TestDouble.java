@@ -24,7 +24,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class V3D_DoubleTest {
+public abstract class V3D_TestDouble {
     
     
     public static final double P1E5 = 100000d;
@@ -334,5 +334,4 @@ public abstract class V3D_DoubleTest {
     public static final V3D_PointDouble pN2N2P0 = new V3D_PointDouble(-2.0d, -2.0d, 0.0d);
     public static final V3D_PointDouble pN2N2N1 = new V3D_PointDouble(-2.0d, -2.0d, -1.0d);
     public static final V3D_PointDouble pN2N2N2 = new V3D_PointDouble(-2.0d, -2.0d, -2.0d);
-    public V3D_DoubleTest() {}
 }

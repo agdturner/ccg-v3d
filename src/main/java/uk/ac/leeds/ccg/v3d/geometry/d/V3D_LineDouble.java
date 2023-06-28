@@ -16,6 +16,8 @@
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
 //import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_Double;
 
@@ -1161,113 +1163,17 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         V3D_VectorDouble rv = v.getUnitVector().rotate(uv, theta);
         return new V3D_LineDouble(rp, rv);
     }
-
+    
     /**
-     * Deprecated use
-     * {@link #isIntersectedBy(uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble)}.
-     *
-     * @param epsilon The tolerance within which vector components are
-     * considered equal.
-     * @param pt The point to test if it is collinear.
+     * @param ps The points to test for collinearity.
      * @return {@code true} iff all points are collinear with l.
      */
-    @Deprecated
-    public boolean isCollinear(V3D_PointDouble pt) {
-        return isIntersectedBy(pt);
-    }
-
-    /**
-     * @param epsilon The tolerance within which vector components are
-     * considered equal.
-     * @param ps The point to test if it is collinear.
-     * @return {@code true} iff all points are collinear with l.
-     */
-    public static boolean isCollinear(double epsilon, V3D_PointDouble... ps) {
+    public static boolean isCollinear(V3D_PointDouble... ps) {
         V3D_LineDouble l = getLine(ps);
         if (l == null) {
             return false;
         }
-        for (var p : ps) {
-            if (!l.isIntersectedBy(p)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @param l The line to test points are collinear with.
-     * @param epsilon The tolerance within which vector components are
-     * considered equal.
-     * @param points The points to test if they are collinear with l.
-     * @return {@code true} iff all points are collinear with l.
-     */
-    public static boolean isCollinear(V3D_LineDouble l, double epsilon,
-            V3D_VectorDouble... points) {
-        //V3D_VectorDouble lv = l.getV();
-        V3D_VectorDouble lv = l.v;
-        for (V3D_VectorDouble p : points) {
-            if (!lv.isScalarMultiple(epsilon, p)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Determine if points are collinear.
-     *
-     * @param ps The points to test if they are collinear.
-     * @return {@code false} if all points are equal. {@code true} iff all the
-     * points are collinear.
-     */
-    public static boolean isCollinear(V3D_LineDouble l, V3D_PointDouble... ps) {
-        // For the points to be in a line at least two must be different.
-        if (V3D_PointDouble.equals(ps)) {
-            return false;
-        }
-        return isCollinear0(ps);
-    }
-
-    /**
-     * @param points The points to test if they are collinear.
-     * @return {@code true} iff all the points are collinear or coincident.
-     */
-    public static boolean isCollinear0(V3D_PointDouble... points) {
-        // Get a line
-        V3D_LineDouble l = getLine(points);
-        return isCollinear(l, points);
-    }
-
-    /**
-     * Determine if points are collinear with l.
-     *
-     * @param epsilon The tolerance within which vector components are
-     * considered equal.
-     * @param ps The points to test if they are collinear.
-     * @return {@code false} if all points are equal. {@code true} iff all the
-     * points are collinear.
-     */
-    public static boolean isCollinear(V3D_LineDouble l, double epsilon,
-            V3D_PointDouble... ps) {
-        for (var p : ps) {
-            if (!l.isIntersectedBy(epsilon, p)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @param points The points to test if they are collinear.
-     * @param epsilon The tolerance within which vector components are
-     * considered equal.
-     * @return {@code true} iff all the points are collinear or coincident.
-     */
-    public static boolean isCollinear0(double epsilon, V3D_PointDouble... points) {
-        // Get a line
-        V3D_LineDouble l = getLine(epsilon, points);
-        return isCollinear(l, epsilon, points);
+        return isCollinear(l, ps);
     }
 
     /**
@@ -1289,42 +1195,83 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
     }
 
     /**
-     * There should be at least two different points in points. This does not
-     * check for collinearity of all the points.
-     *
-     * @param points Any number of points, but with two being different.
-     * @return A line defined by any two different points or null if the points
-     * are coincident.
+     * @param l The line to test points are collinear with.
+     * @param ps The points to test if they are collinear with l.
+     * @return {@code true} iff all points are collinear with l.
      */
-    public static V3D_LineDouble getLine(double epsilon, V3D_PointDouble... points) {
-        V3D_PointDouble pt0 = points[0];
-        for (V3D_PointDouble pt : points) {
-            if (!pt.equals(epsilon, pt0)) {
-                return new V3D_LineDouble(pt0, pt);
+    public static boolean isCollinear(V3D_LineDouble l, 
+            V3D_PointDouble... ps) {        
+        for (var p : ps) {
+            if (!l.isIntersectedBy(p)) {
+                return false;
             }
         }
-        return null;
+        return true;
     }
 
     /**
      * @param epsilon The tolerance within which vector components are
      * considered equal.
-     * @param l A line.
-     * @return true if this and l are not skew.
+     * @param ps The points to test for collinear within epsilon tolerance.
+     * @return {@code true} iff all points are collinear with l given epsilon 
+     * tolerance.
      */
-    public boolean isCoplanar(double epsilon, V3D_LineDouble l) {
-        V3D_PointDouble lp = l.getP();
-        if (isCollinear(epsilon, lp)) {
-            return true;
-        } else {
-            V3D_PointDouble lq = l.getQ();
-            if (isCollinear(epsilon, lq)) {
-                return true;
-            } else {
-                V3D_PlaneDouble pl = new V3D_PlaneDouble(getP(), lp, lq);
-                return pl.isIntersectedBy(epsilon, getQ());
+    public static boolean isCollinear(double epsilon, V3D_PointDouble... ps) {
+        V3D_LineDouble l = getLine(epsilon, ps);
+        if (l == null) {
+            return false;
+        }
+        return isCollinear(epsilon, l, ps);
+    }
+
+    /**
+     * @param l The line to test points are collinear with.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @param ps The points to test if they are collinear with l.
+     * @return {@code true} iff all points are collinear with l.
+     */
+    public static boolean isCollinear(double epsilon, V3D_LineDouble l, 
+            V3D_PointDouble... ps) {
+        for (var p : ps) {
+            if (!l.isIntersectedBy(epsilon, p)) {
+                return false;
             }
         }
+        return true;
+    }
 
+    /**
+     * There should be at least two different points in points. This does not
+     * check for collinearity of all the points. It returns a line defined by 
+     * the first points that have the greatest distance between them.
+     * 
+     * @param points Any number of points, but with two being different.
+     * @return A line defined by any two different points or null if the points
+     * are coincident.
+     */
+    public static V3D_LineDouble getLine(double epsilon, V3D_PointDouble... points) {
+        if (points.length < 2) {
+            return null;
+        }
+        // Find the points which are furthest apart.
+        double max = 0d;
+        V3D_PointDouble a = null;
+        V3D_PointDouble b = null;
+        for (int i = 0; i < points.length; i ++) {
+            for (int j = i + 1; j < points.length; j ++) {
+                double d2 = points[i].getDistanceSquared(points[j]);
+                if (d2 > max) {
+                    a = points[i];
+                    b = points[j];
+                    max = d2;
+                }
+            }
+        }
+        if (max == 0d) {
+            return null;
+        } else {
+            return new V3D_LineDouble(a, b);
+        }
     }
 }

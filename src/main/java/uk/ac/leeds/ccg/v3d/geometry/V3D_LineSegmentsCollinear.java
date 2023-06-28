@@ -434,7 +434,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * @return The V3D_Geometry.
      */
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment ls, int oom, RoundingMode rm) {
-        if (lineSegments.get(0).l.isCollinear(ls.l, oom, rm)) {
+        if (lineSegments.get(0).l.equals(ls.l, oom, rm)) {
             ArrayList<V3D_Point> ps = new ArrayList<>();
             ArrayList<V3D_LineSegment> lse = new ArrayList<>();
             Iterator<V3D_LineSegment> ite = lineSegments.iterator();

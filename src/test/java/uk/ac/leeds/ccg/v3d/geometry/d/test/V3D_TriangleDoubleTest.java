@@ -40,7 +40,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
+public class V3D_TriangleDoubleTest extends V3D_TestDouble {
 
     public V3D_TriangleDoubleTest() {
     }
@@ -369,7 +369,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         double Pi = Math.PI;
         // Test 1
         instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
-        V3D_RayDouble xaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
+        V3D_RayDouble xaxis = new V3D_RayDouble(pP0P0P0, pP1P0P0);
         theta = Pi;
         instance = instance.rotate(xaxis, xaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pP1P0P0, pP0N1P0, pP1N1P0);
@@ -407,7 +407,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         
         // Test 6
         instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
-        V3D_RayDouble yaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P1P0);
+        V3D_RayDouble yaxis = new V3D_RayDouble(pP0P0P0, pP0P1P0);
         theta = Pi;
         instance = instance.rotate(yaxis, yaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pN1P0P0, pP0P1P0, pN1P1P0);
@@ -442,10 +442,9 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         expResult = new V3D_TriangleDouble(pN2P0P0, pN1P1P0, pN2P1P0);
         assertTrue(expResult.equals(instance, epsilon));
         assertTrue(expResult.pl.equals(instance.pl, epsilon));
-        
         // Test 11
         instance = new V3D_TriangleDouble(pP1P0P0, pP0P1P0, pP1P1P0);
-        V3D_RayDouble zaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP0P0P1);
+        V3D_RayDouble zaxis = new V3D_RayDouble(pP0P0P0, pP0P0P1);
         theta = Pi;
         instance = instance.rotate(zaxis, zaxis.l.v, theta, epsilon);
         expResult = new V3D_TriangleDouble(pN1P0P0, pP0N1P0, pN1N1P0);
@@ -662,7 +661,7 @@ public class V3D_TriangleDoubleTest extends V3D_DoubleTest {
         V3D_VectorDouble pv = pl.getPV();
         double zoomFactor = 1.0d;
         V3D_RectangleDouble screen = envelope.getViewport3(pt, pv, zoomFactor, epsilon);
-        V3D_TriangleDouble pqr = screen.pqr;
+        V3D_TriangleDouble pqr = screen.getPQR();
         double screenWidth = pqr.getPQ().getLength();
         double screenHeight = screenWidth;
         double pixelSize = screenWidth / (double) width;

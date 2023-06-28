@@ -38,7 +38,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
  *
  * @author Andy Turner
  */
-public class V3D_TetrahedronDoubleTest extends V3D_DoubleTest {
+public class V3D_TetrahedronDoubleTest extends V3D_TestDouble {
 
     public V3D_TetrahedronDoubleTest() {
     }

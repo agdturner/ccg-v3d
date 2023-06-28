@@ -1829,4 +1829,9 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                                     t.getDistanceSquared(getSpr(), epsilon))));
         }
     }
+
+    @Override
+    public boolean isIntersectedBy(V3D_EnvelopeDouble aabb, double epsilon) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

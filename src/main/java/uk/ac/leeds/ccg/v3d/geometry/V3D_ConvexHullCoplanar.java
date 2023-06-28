@@ -893,10 +893,9 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      * V3D_ConvexHullCoplanar.
      */
     public static V3D_FiniteGeometry getGeometry(int oom, RoundingMode rm, V3D_Point... pts) {
-        Set<V3D_Point> s = new HashSet<>();
-        s.addAll(Arrays.asList(pts));
-        Iterator<V3D_Point> i = s.iterator();
-        switch (s.size()) {
+        ArrayList<V3D_Point> upts = V3D_Point.getUnique(Arrays.asList(pts), oom, rm);
+        Iterator<V3D_Point> i = upts.iterator();
+        switch (upts.size()) {
             case 1 -> {
                 return i.next();
             }

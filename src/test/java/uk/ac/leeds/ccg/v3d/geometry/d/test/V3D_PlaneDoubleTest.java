@@ -37,7 +37,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
+public class V3D_PlaneDoubleTest extends V3D_TestDouble {
 
     public V3D_PlaneDoubleTest() {
     }
@@ -2037,6 +2037,7 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
     @Test
     public void testGetIntersection_V3D_PlaneDouble() {
         System.out.println("getIntersection");
+        double epsilon = 1d / 10000000d;
         V3D_PlaneDouble pl;
         V3D_PlaneDouble instance;
         V3D_GeometryDouble expResult;
@@ -2071,12 +2072,12 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         instance = new V3D_PlaneDouble(new V3D_PointDouble(1, 0, 0), new V3D_VectorDouble(5, 5, 0));
         // A point on both planes
         V3D_PointDouble p = new V3D_PointDouble(0.5d, 0.5d, 0d);
-        assertTrue(V3D_PlaneDouble.isCoplanar(pl, p));
-        assertTrue(V3D_PlaneDouble.isCoplanar(instance, p));
+        assertTrue(V3D_PlaneDouble.isCoplanar(epsilon, pl, p));
+        assertTrue(V3D_PlaneDouble.isCoplanar(epsilon, instance, p));
         // A second point on both planes
         V3D_PointDouble q = new V3D_PointDouble(1d, 0d, 0d);
-        assertTrue(V3D_PlaneDouble.isCoplanar(pl, q));
-        assertTrue(V3D_PlaneDouble.isCoplanar(instance, q));
+        assertTrue(V3D_PlaneDouble.isCoplanar(epsilon, pl, q));
+        assertTrue(V3D_PlaneDouble.isCoplanar(epsilon, instance, q));
         expResult = new V3D_LineDouble(p, q);
         result = instance.getIntersection(pl);
         assertTrue(((V3D_LineDouble) expResult).equals((V3D_LineDouble) result));
@@ -3307,9 +3308,9 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         System.out.println("rotate");
         double epsilon = 1d / 10000000d;
         double Pi = Math.PI;
-        V3D_RayDouble xaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_VectorDouble.I);
-        V3D_RayDouble yaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_VectorDouble.J);
-        V3D_RayDouble zaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_VectorDouble.K);
+        V3D_RayDouble xaxis = new V3D_RayDouble(pP0P0P0, V3D_VectorDouble.I);
+        V3D_RayDouble yaxis = new V3D_RayDouble(pP0P0P0, V3D_VectorDouble.J);
+        V3D_RayDouble zaxis = new V3D_RayDouble(pP0P0P0, V3D_VectorDouble.K);
         // Test 1;
         double theta = Pi / 2d;
         V3D_PlaneDouble instance = new V3D_PlaneDouble(V3D_PlaneDouble.X0);
@@ -3499,6 +3500,7 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
     @Test
     public void testIsCoplanar_3args() {
         System.out.println("isCoplanar");
+        double epsilon = 1d / 10000000d;
         V3D_PlaneDouble p;
         V3D_PointDouble[] points;
         // Test 1
@@ -3507,19 +3509,19 @@ public class V3D_PlaneDoubleTest extends V3D_DoubleTest {
         points[0] = pP2P2P0;
         points[1] = pN2P2P0;
         points[2] = pP2N2P0;
-        assertTrue(V3D_PlaneDouble.isCoplanar(p, points));
+        assertTrue(V3D_PlaneDouble.isCoplanar(epsilon, p, points));
         // Test 2
         points[2] = pP2N2P1;
-        assertFalse(V3D_PlaneDouble.isCoplanar(p, points));
+        assertFalse(V3D_PlaneDouble.isCoplanar(epsilon, p, points));
         // Test 3
         p = new V3D_PlaneDouble(pP0P0P0, pP0P1P0, pP0P0P1);
         points[0] = pP0P2P2;
         points[1] = pP0N2P2;
         points[2] = pP0P2N2;
-        assertTrue(V3D_PlaneDouble.isCoplanar(p, points));
+        assertTrue(V3D_PlaneDouble.isCoplanar(epsilon, p, points));
         // Test 4
         points[2] = pP2N2P1;
-        assertFalse(V3D_PlaneDouble.isCoplanar(p, points));
+        assertFalse(V3D_PlaneDouble.isCoplanar(epsilon, p, points));
     }
 
     /**

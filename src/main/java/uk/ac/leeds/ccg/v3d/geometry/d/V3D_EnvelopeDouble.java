@@ -323,13 +323,6 @@ public class V3D_EnvelopeDouble implements Serializable {
                 && getYMin() >= e.getYMin()
                 && getZMax() <= e.getZMax()
                 && getZMin() >= e.getZMin();
-//    public boolean isContainedBy(V3D_EnvelopeDouble e, double epsilon) {
-//        return getXMax() <= e.getXMax() + epsilon
-//                && getXMin() >= e.getXMin() - epsilon
-//                && getYMax() <= e.getYMax() + epsilon
-//                && getYMin() >= e.getYMin() - epsilon
-//                && getZMax() <= e.getZMax() + epsilon
-//                && getZMin() >= e.getZMin() - epsilon;
     }
 
     /**
@@ -763,7 +756,7 @@ public class V3D_EnvelopeDouble implements Serializable {
         // Get the plane of the viewport.
         V3D_PointDouble c = getCentroid();
         double d = c.getDistance(getPoints()[0]);
-        double dby2 = d / 2;
+        double dby2 = d / 2d;
         V3D_PointDouble plpt = new V3D_PointDouble(c);
         V3D_VectorDouble cpt = new V3D_VectorDouble(c, pt);
         V3D_VectorDouble vo = cpt.getUnitVector();

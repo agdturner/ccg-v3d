@@ -3368,7 +3368,7 @@ public class V3D_PlaneTest extends V3D_Test {
     }
 
     /**
-     * Test of isCoincident method, of class V3D_Plane.
+     * Test of equals method, of class V3D_Plane.
      */
     @Test
     public void testIsCoincident() {

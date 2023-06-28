@@ -686,6 +686,11 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         }
     }
 
+    @Override
+    public boolean isIntersectedBy(V3D_EnvelopeDouble aabb, double epsilon) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     /**
      * A class for helping to calculate a convex hull.
      */

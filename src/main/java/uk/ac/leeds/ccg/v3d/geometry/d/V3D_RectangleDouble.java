@@ -22,13 +22,11 @@ import java.util.Arrays;
  * angled quadrilateral. The four corners are the points
  * {@link #p}, {@link #q}, {@link #r} and {@link #s}. The following depicts a
  * rectangle {@code
- *           qr
- * qv  *-------------* r
- *     |             |
- * pq  |             | rs
- *     |             |
- * p   *-------------* s
- *           sp
+ q  *-----* r
+    |   / |
+    |  /  | 
+    | /   |
+  p *-----* s
  * }
  * The angles PQR, QRS, RSP, SPQ are all 90 degrees or Pi/2 radians.
  *
@@ -41,68 +39,20 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     private static final long serialVersionUID = 1L;
 
     /**
-     * For calculating a corner of the rectangle opposite {@link #r}.
-     */
-    protected V3D_VectorDouble p;
-
-    /**
-     * For calculating a corner of the rectangle opposite {@link #s}.
-     */
-    protected V3D_VectorDouble q;
-
-    /**
-     * For calculating a corner of the rectangle opposite {@link #p}.
-     */
-    protected V3D_VectorDouble r;
-
-    /**
-     * For calculating a corner of the rectangle opposite {@link #q}.
-     */
-    protected V3D_VectorDouble s;
-
-    /**
      * For storing a triangle that makes up the rectangle.
      */
-    public final V3D_TriangleDouble pqr;
+    protected final V3D_TriangleDouble pqr;
 
     /**
      * For storing a triangle that makes up half the rectangle.
      */
-    public final V3D_TriangleDouble rsp;
+    protected final V3D_TriangleDouble rsp;
 
     /**
      * For storing the convex hull
      */
     protected V3D_ConvexHullCoplanarDouble convexHull;
 
-//    /**
-//     * @return {@link #rsp} initialising it first if it is {@code null}.
-//     */
-//    public V3D_TriangleDouble getRSP() {
-//        if (rsp == null) {
-//            rsp = new V3D_TriangleDouble(offset, r, s, p);
-//        }
-//        return rsp;
-//    }
-//    /**
-//     * @return {@link #rsp} initialising it first if it is {@code null}.
-//     */
-//    public V3D_TriangleDouble getRSP(V3D_PlaneDouble pl) {
-//        if (rsp == null) {
-//            rsp = new V3D_TriangleDouble(pl, offset, r, s, p);
-//        }
-//        return rsp;
-//    }
-//
-//    /**
-//     * @return {@link #pqr} initialising it first if it is {@code null}.
-//     */
-//    public V3D_TriangleDouble getPQR(V3D_PlaneDouble pl) {
-//        if (pqr == null) {
-//            pqr = new V3D_TriangleDouble(pl, offset, p, q, r);
-//        }
-//        return pqr;
-//    }
     /**
      * Create a new instance.
      */
@@ -124,22 +74,18 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     public V3D_RectangleDouble(V3D_VectorDouble offset, V3D_VectorDouble p,
             V3D_VectorDouble q, V3D_VectorDouble r, V3D_VectorDouble s) {
         super(offset);
-        this.p = p;
-        this.q = q;
-        this.r = r;
-        this.s = s;
         V3D_PlaneDouble pl = new V3D_PlaneDouble(offset, p, q, r);
-        rsp = new V3D_TriangleDouble(pl, this.offset, this.r, this.s, this.p);
-        pqr = new V3D_TriangleDouble(pl, this.offset, this.p, this.q, this.r);
+        rsp = new V3D_TriangleDouble(pl, offset, r, s, p);
+        pqr = new V3D_TriangleDouble(pl, offset, p, q, r);
     }
 
     /**
-     * Creates a new instance
+     * Creates a new instance.
      *
-     * @param p Used to initialise {@link #offset} and {@link #p}.
-     * @param q Used to initialise {@link #q}.
-     * @param r Used to initialise {@link #r}.
-     * @param s Used to initialise {@link #s}.
+     * @param p Used to initialise {@link #offset}, {@link #pqr} and {@link #rsp}.
+     * @param q Used to initialise {@link #pqr} and {@link #rsp}.
+     * @param r Used to initialise {@link #pqr} and {@link #rsp}.
+     * @param s Used to initialise {@link #rsp}.
      */
     public V3D_RectangleDouble(V3D_PointDouble p, V3D_PointDouble q,
             V3D_PointDouble r, V3D_PointDouble s) {
@@ -147,29 +93,25 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     }
 
     /**
-     * Creates a new instance
+     * Creates a new instance.
      *
      * @param pl Used to initialise the planes.
-     * @param p Used to initialise {@link #offset} and {@link #p}.
-     * @param q Used to initialise {@link #q}.
-     * @param r Used to initialise {@link #r}.
-     * @param s Used to initialise {@link #s}.
+     * @param p Used to initialise {@link #offset}, {@link #pqr} and {@link #rsp}.
+     * @param q Used to initialise {@link #pqr} and {@link #rsp}.
+     * @param r Used to initialise {@link #pqr} and {@link #rsp}.
+     * @param s Used to initialise {@link #rsp}.
      */
     public V3D_RectangleDouble(V3D_PlaneDouble pl, V3D_PointDouble p,
             V3D_PointDouble q, V3D_PointDouble r, V3D_PointDouble s) {
         super(p.offset);
-        this.p = p.rel;
         V3D_PointDouble qn = new V3D_PointDouble(q);
         qn.setOffset(p.offset);
-        this.q = qn.rel;
         V3D_PointDouble rn = new V3D_PointDouble(r);
         rn.setOffset(p.offset);
-        this.r = rn.rel;
         V3D_PointDouble sn = new V3D_PointDouble(s);
         sn.setOffset(p.offset);
-        this.s = sn.rel;
-        rsp = new V3D_TriangleDouble(pl, this.offset, this.r, this.s, this.p);
-        pqr = new V3D_TriangleDouble(pl, this.offset, this.p, this.q, this.r);
+        rsp = new V3D_TriangleDouble(pl, this.offset, rn.rel, sn.rel, p.rel);
+        pqr = new V3D_TriangleDouble(pl, this.offset, p.rel, qn.rel, rn.rel);
     }
 
     @Override
@@ -190,19 +132,15 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     @Override
     protected String toStringFields(String pad) {
         return "\n" + super.toStringFields(pad) + ",\n"
-                + pad + "p=" + p.toString(pad) + ",\n"
-                + pad + "q=" + q.toString(pad) + ",\n"
-                + pad + "r=" + r.toString(pad) + ",\n"
-                + pad + "s=" + s.toString(pad);
+                + pad + "pqr=" + getPQR().toString(pad) + ",\n"
+                + pad + "rsp=" + getRSP().toString(pad);
     }
 
     @Override
     protected String toStringFieldsSimple(String pad) {
         return "\n" + super.toStringFieldsSimple(pad) + ",\n"
-                + pad + "p=" + p.toStringSimple(pad) + ",\n"
-                + pad + "q=" + q.toStringSimple(pad) + ",\n"
-                + pad + "r=" + r.toStringSimple(pad) + ",\n"
-                + pad + "s=" + s.toStringSimple(pad);
+                + pad + "pqr=" + getPQR().toStringSimple(pad) + ",\n"
+                + pad + "rsp=" + getRSP().toStringSimple(pad);
     }
 
     @Override
@@ -216,31 +154,45 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     }
 
     /**
+     * @return {@link #pqr}.
+     */
+    public V3D_TriangleDouble getPQR() {
+        return pqr;
+    }
+    
+    /**
+     * @return {@link #rsp}.
+     */
+    public V3D_TriangleDouble getRSP() {
+        return rsp;
+    }
+    
+    /**
      * @return {@link #p} with {@link #offset} applied.
      */
     public V3D_PointDouble getP() {
-        return new V3D_PointDouble(offset, p);
+        return getPQR().getP();
     }
 
     /**
      * @return {@link #q} with {@link #offset} applied.
      */
     public V3D_PointDouble getQ() {
-        return new V3D_PointDouble(offset, q);
+        return getPQR().getQ();
     }
 
     /**
      * @return {@link #r} with {@link #offset} applied.
      */
     public V3D_PointDouble getR() {
-        return new V3D_PointDouble(offset, r);
+        return getPQR().getR();
     }
 
     /**
      * @return {@link #s} with {@link #offset} applied.
      */
     public V3D_PointDouble getS() {
-        return new V3D_PointDouble(offset, s);
+        return getRSP().getQ();
     }
 
     @Override
@@ -269,16 +221,14 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      * @return The line segment from {@link #r} to {@link #s}.
      */
     protected V3D_LineSegmentDouble getRS() {
-        //return new V3D_LineSegment(offset, rotate(r, theta), rotate(s, theta), oom);
-        return new V3D_LineSegmentDouble(offset, r, s);
+        return getRSP().getPQ();
     }
 
     /**
      * @return The line segment from {@link #s} to {@link #p}.
      */
     protected V3D_LineSegmentDouble getSP() {
-        //return new V3D_LineSegment(offset, rotate(s, theta), rotate(pl, theta), oom);
-        return new V3D_LineSegmentDouble(offset, s, p);
+        return getRSP().getQR();
     }
 
     /**
@@ -290,116 +240,6 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
         return pqr.pl;
     }
 
-//    @Override
-//    protected boolean isIntersectedBy0(V3D_Point pt, int oom, RoundingMode rm) {
-//        // Special cases
-//        V3D_Point tp = getP();
-//        if (tp.equals(pt)) {
-//            return true;
-//        }
-//        V3D_Point tq = getQ();
-//        if (tq.equals(pt)) {
-//            return true;
-//        }
-//        V3D_Point tr = getR();
-//        if (tr.equals(pt)) {
-//            return true;
-//        }
-//        V3D_Point ts = this.getS();
-//        if (ts.equals(pt)) {
-//            return true;
-//        }
-//        if (true) {
-//            //if (V3D_Geometrics.isCoplanar(this, pt)) {
-//            // Check the areas
-//            // Area pqpt
-//            Math_BigRational apqpt = new V3D_Triangle(tp.getVector(),
-//                    tq.getVector(), pt.getVector()).getArea();
-//            // Area qrpt
-//            Math_BigRational aqrpt = new V3D_Triangle(tq.getVector(),
-//                    tr.getVector(), pt.getVector()).getArea();
-//            // Area rspt
-//            Math_BigRational arspt = new V3D_Triangle(tr.getVector(),
-//                    ts.getVector(), pt.getVector()).getArea();
-//            // Area sppt
-//            Math_BigRational asppt = new V3D_Triangle(ts.getVector(),
-//                    tp.getVector(), pt.getVector()).getArea();
-//            if (this.getArea().compareTo(apqpt.add(aqrpt).add(arspt).add(asppt)) == 0) {
-//                return true;
-//                //return V3D_Geometrics.isCoplanar(this, pt);
-//            }
-//        }
-//        if (getQR().isIntersectedBy(pt)
-//                || getRS().isIntersectedBy(pt)
-//                || getSP().isIntersectedBy(pt)
-//                || getPQ().isIntersectedBy(pt)) {
-//            return true;
-//        }
-//        if (getQ().equals(V3D_Point.ORIGIN)) {
-//            V3D_Vector ppt = new V3D_Vector(tq, pt);
-//            V3D_Vector qpt = new V3D_Vector(tp, pt);
-//            V3D_Vector rpt = new V3D_Vector(tr, pt);
-//            V3D_Vector spt = new V3D_Vector(ts, pt);
-//            V3D_Vector rs = new V3D_Vector(tr, ts);
-//            V3D_Vector sp = new V3D_Vector(ts, tq);
-//            V3D_Vector cp = getPQV().reverse().getCrossProduct(ppt);
-//            V3D_Vector cq = getQRV().getCrossProduct(qpt);
-//            V3D_Vector cr = rs.getCrossProduct(rpt);
-//            V3D_Vector cs = sp.getCrossProduct(spt);
-//            /**
-//             * If cp, cq, cr, and cs are all in the same direction then pt
-//             * intersects.
-//             */
-//            Math_BigRational mp = cp.getMagnitudeSquared();
-//            Math_BigRational mq = cq.getMagnitudeSquared();
-//            V3D_Vector cpq = cp.add(cq);
-//            Math_BigRational mpq = cpq.getMagnitudeSquared();
-//            if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
-//                Math_BigRational mr = cr.getMagnitudeSquared();
-//                V3D_Vector cpqr = cpq.add(cr);
-//                Math_BigRational mpqr = cpqr.getMagnitudeSquared();
-//                if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
-//                    Math_BigRational ms = cs.getMagnitudeSquared();
-//                    Math_BigRational mpqrs = cpqr.add(cs).getMagnitudeSquared();
-//                    if (mpqrs.compareTo(ms) == 1 && mpqrs.compareTo(mpqr) == 1) {
-//                        return true;
-//                    }
-//                }
-//            }
-//        } else {
-//            V3D_Vector ppt = new V3D_Vector(tp, pt);
-//            V3D_Vector qpt = new V3D_Vector(tq, pt);
-//            V3D_Vector rpt = new V3D_Vector(tr, pt);
-//            V3D_Vector spt = new V3D_Vector(ts, pt);
-//            V3D_Vector rs = new V3D_Vector(tr, ts);
-//            V3D_Vector sp = new V3D_Vector(ts, tp);
-//            V3D_Vector cp = getPQV().getCrossProduct(ppt);
-//            V3D_Vector cq = getQRV().getCrossProduct(qpt);
-//            V3D_Vector cr = rs.getCrossProduct(rpt);
-//            V3D_Vector cs = sp.getCrossProduct(spt);
-//            /**
-//             * If cp, cq, cr, and cs are all in the same direction then pt
-//             * intersects.
-//             */
-//            Math_BigRational mp = cp.getMagnitudeSquared();
-//            Math_BigRational mq = cq.getMagnitudeSquared();
-//            V3D_Vector cpq = cp.add(cq);
-//            Math_BigRational mpq = cpq.getMagnitudeSquared();
-//            if (mpq.compareTo(mp) == 1 && mpq.compareTo(mq) == 1) {
-//                Math_BigRational mr = cr.getMagnitudeSquared();
-//                V3D_Vector cpqr = cpq.add(cr);
-//                Math_BigRational mpqr = cpqr.getMagnitudeSquared();
-//                if (mpqr.compareTo(mr) == 1 && mpqr.compareTo(mpq) == 1) {
-//                    Math_BigRational ms = cs.getMagnitudeSquared();
-//                    Math_BigRational mpqrs = cpqr.add(cs).getMagnitudeSquared();
-//                    if (mpqrs.compareTo(ms) == 1 && mpqrs.compareTo(mpqr) == 1) {
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-//        return false;
-//    }
     /**
      * @param l The line to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -502,26 +342,14 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     }
 
     /**
-     * Change {@link #offset} without changing the overall rectangle.
-     *
-     * @param offset What {@link #offset} is set to.
-     */
-    public void setOffset(V3D_VectorDouble offset) {
-        p = p.add(offset).subtract(this.offset);
-        q = q.add(offset).subtract(this.offset);
-        r = r.add(offset).subtract(this.offset);
-        s = s.add(offset).subtract(this.offset);
-        convexHull = null;
-    }
-
-    /**
      * Move the rectangle.
      *
      * @param v What is added to {@link #p}, {@link #q}, {@link #r}, {@link #s}.
      */
     @Override
     public void translate(V3D_VectorDouble v) {
-        super.translate(v);
+        pqr.translate(v);
+        rsp.translate(v);
         convexHull = null;
     }
 
@@ -562,7 +390,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     /**
      * Computes and returns the intersection between {@code this} and {@code t}.
      * The intersection could be: null, a point, a line segment, a triangle, or
-     * a V3D_ConvexHullCoplanar (with 4, 5, 6 or 7 sides).
+     * a convex hull (with 4, 5, 6 or 7 sides).
      *
      * @param t The triangle intersect with this.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -799,5 +627,13 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
             }
         }
         return false;
+    }
+    
+    @Override
+    public boolean isIntersectedBy(V3D_EnvelopeDouble aabb, double epsilon) {
+        if (pqr.isIntersectedBy(aabb, epsilon)) {
+            return true;
+        }
+        return rsp.isIntersectedBy(aabb, epsilon);
     }
 }

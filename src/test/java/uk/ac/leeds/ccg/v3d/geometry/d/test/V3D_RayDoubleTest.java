@@ -34,7 +34,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_RayDouble;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_RayDoubleTest extends V3D_DoubleTest {
+public class V3D_RayDoubleTest extends V3D_TestDouble {
 
     public V3D_RayDoubleTest() {
     }

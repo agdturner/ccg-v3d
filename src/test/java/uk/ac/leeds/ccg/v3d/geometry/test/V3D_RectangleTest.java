@@ -82,22 +82,22 @@ public class V3D_RectangleTest extends V3D_Test {
         V3D_Envelope result;
         instance = new V3D_Rectangle(pN1P1P0, pP1P1P0, pP1N1P0, pN1N1P0, oom, rm);
         expResult = new V3D_Envelope(oom, pN1N1P0, pP1P1P0);
-        result = instance.getEnvelope(oom, rm);
+        result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result, oom));
         // Test 2
         instance = new V3D_Rectangle(pN1P1P1, pP1P1P0, pP1N1P0, pN1N1P1, oom, rm);
         expResult = new V3D_Envelope(oom, pN1N1P0, pP1P1P1);
-        result = instance.getEnvelope(oom, rm);
+        result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result, oom));
         // Test 3
         instance = new V3D_Rectangle(pN1P1P1, pP1P1N1, pP1N1N1, pN1N1P1, oom, rm);
         expResult = new V3D_Envelope(oom, pN1N1N1, pP1P1P1);
-        result = instance.getEnvelope(oom, rm);
+        result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result, oom));
         // Test 4
         instance = new V3D_Rectangle(pN1N1N1, pP1N1N1, pP1P1N1, pN1P1N1, oom, rm);
         expResult = new V3D_Envelope(oom, pN1N1N1, pP1P1N1);
-        result = instance.getEnvelope(oom, rm);
+        result = instance.getEnvelope(oom);
         assertTrue(expResult.equals(result, oom));
     }
 
@@ -186,10 +186,24 @@ public class V3D_RectangleTest extends V3D_Test {
         String expResult = """
                            V3D_Rectangle(
                            offset=V3D_Vector(dx=0, dy=0, dz=0),
-                           p=V3D_Vector(dx=0, dy=0, dz=0),
-                           q=V3D_Vector(dx=0, dy=1, dz=0),
-                           r=V3D_Vector(dx=1, dy=1, dz=0),
-                           s=V3D_Vector(dx=1, dy=0, dz=0)
+                           pqr=V3D_Triangle(
+                            pl=( V3D_Plane(
+                             offset=V3D_Vector(dx=0, dy=0, dz=0),
+                             p=  V3D_Vector(dx=0, dy=0, dz=0),
+                             n=  V3D_Vector(dx=0, dy=0, dz=-1))),
+                            offset=(V3D_Vector(dx=0, dy=0, dz=0)),
+                            p=(V3D_Vector(dx=0, dy=0, dz=0)),
+                            q=(V3D_Vector(dx=0, dy=1, dz=0)),
+                            r=(V3D_Vector(dx=1, dy=1, dz=0))),
+                           rsp=V3D_Triangle(
+                            pl=( V3D_Plane(
+                             offset=V3D_Vector(dx=0, dy=0, dz=0),
+                             p=  V3D_Vector(dx=0, dy=0, dz=0),
+                             n=  V3D_Vector(dx=0, dy=0, dz=-1))),
+                            offset=(V3D_Vector(dx=0, dy=0, dz=0)),
+                            p=(V3D_Vector(dx=1, dy=1, dz=0)),
+                            q=(V3D_Vector(dx=1, dy=0, dz=0)),
+                            r=(V3D_Vector(dx=0, dy=0, dz=0)))
                            )""";
         String result = instance.toString();
         //System.out.println(result);
@@ -693,7 +707,7 @@ public class V3D_RectangleTest extends V3D_Test {
      * Test of getIntersection method, of class V3D_Rectangle.
      */
     @Test
-    public void testGetIntersection_V3D_Triangle_int() {
+    public void testGetIntersection_V3D_Triangle_int_RoundingMode() {
         System.out.println("getIntersection");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;

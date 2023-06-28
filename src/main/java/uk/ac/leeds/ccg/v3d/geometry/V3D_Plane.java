@@ -76,84 +76,6 @@ public class V3D_Plane extends V3D_Geometry {
             V3D_Vector.K);
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @param pl The plane to test points are coplanar with.
-     * @param points The points to test if they are coplanar with pl.
-     * @return {@code true} iff all points are coplanar with pl.
-     */
-    public static boolean isCoplanar(int oom,
-            RoundingMode rm, V3D_Plane pl, V3D_Point... points) {
-        for (V3D_Point pt : points) {
-            if (!pl.isIntersectedBy(pt, oom, rm)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @param points The points to test if they are coplanar.
-     * @return {@code false} if points are coincident or collinear. {@code true}
-     * iff all points are coplanar.
-     */
-    public static boolean isCoplanar(int oom,
-            RoundingMode rm, V3D_Point... points) {
-        // For the points to be in a plane at least one must not be collinear.
-        if (V3D_Point.isCoincident(oom, rm, points)) {
-            return false;
-        }
-        if (!V3D_Line.isCollinear0(oom, rm, points)) {
-            V3D_Plane p = getPlane0(oom, rm, points);
-            return isCoplanar(oom, rm, p, points);
-        }
-        return false;
-    }
-
-    /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @param points The points from which a plane is to be derived.
-     * @return A plane that may or may not contain all the points or
-     * {@code null} if there is no such plane (if the points are coincident or
-     * collinear).
-     */
-    public static V3D_Plane getPlane(int oom,
-            RoundingMode rm, V3D_Point... points) {
-        V3D_Line l = V3D_Line.getLine(oom, rm, points);
-        if (l == null) {
-            return null;
-        }
-        for (V3D_Point p : points) {
-            if (!V3D_Line.isCollinear(oom, rm, l, p)) {
-                return new V3D_Plane(l.getP(), l.getQ(oom, rm), p, oom, rm);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @param points The points from which a plane is to be derived.
-     * @return A plane that may or may not contain all the points or
-     * {@code null} if there is no such plane. This does not test if the points
-     * are coincident or collinear.
-     */
-    private static V3D_Plane getPlane0(int oom,
-            RoundingMode rm, V3D_Point... points) {
-        V3D_Line l = V3D_Line.getLine(oom, rm, points);
-        for (V3D_Point p : points) {
-            if (!V3D_Line.isCollinear(oom, rm, l, p)) {
-                return new V3D_Plane(l.getP(), l.getQ(oom, rm), p, oom, rm);
-            }
-        }
-        return null;
-    }
-
-    /**
      * The point that defines the plane.
      */
     protected V3D_Vector p;
@@ -684,6 +606,83 @@ public class V3D_Plane extends V3D_Geometry {
             return new Math_Matrix_BR(m).getDeterminant().compareTo(BigRational.ZERO) == 0;
         }
     }
+    
+    
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param pl The plane to test points are coplanar with.
+     * @param points The points to test if they are coplanar with pl.
+     * @return {@code true} iff all points are coplanar with pl.
+     */
+    public static boolean isCoplanar(int oom,
+            RoundingMode rm, V3D_Plane pl, V3D_Point... points) {
+        for (V3D_Point pt : points) {
+            if (!pl.isIntersectedBy(pt, oom, rm)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param points The points to test if they are coplanar.
+     * @return {@code false} if points are coincident or collinear. {@code true}
+     * iff all points are coplanar.
+     */
+    public static boolean isCoplanar(int oom, RoundingMode rm, 
+            V3D_Point... points) {
+        // For the points to be in a plane at least one must not be collinear.
+        if (V3D_Point.equals(oom, rm, points)) {
+            return false;
+        }
+        if (!V3D_Line.isCollinear(oom, rm, points)) {
+            V3D_Plane p = getPlane(oom, rm, points);
+            return isCoplanar(oom, rm, p, points);
+        }
+        return false;
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param ps The points from which a plane is to be derived.
+     * @return A plane that may or may not contain all the points or
+     * {@code null} if there is no such plane (if the points are coincident or
+     * collinear).
+     */
+    public static V3D_Plane getPlane(int oom, RoundingMode rm, 
+            V3D_Point... ps) {
+        V3D_Line l = V3D_Line.getLine(oom, rm, ps);
+        if (l == null) {
+            return null;
+        }
+        BigRational max = BigRational.ZERO;
+        V3D_Point pt = null;
+        for (var p : ps) {
+            BigRational d = l.getDistanceSquared(p, oom, rm);
+            if (d.compareTo(max) == 1) {
+                pt = p;
+                max = d;
+            }
+        }
+        if (max.compareTo(BigRational.ZERO) == 1) {
+            return new V3D_Plane(l.getP(), l.getQ(oom, rm), pt, oom, rm);
+        } else {
+            return null;
+        }
+    }
+    
+//    /**
+//     * @param l The line to test if it is on the plane.
+//     * @return {@code true} If {@code pt} is on the plane.
+//     */
+//    public boolean isOnPlane(V3D_Line l) {
+//        return isIntersectedBy(l.getP()) && isIntersectedBy(l.getQ());
+//    }
 
     /**
      * @param l The line to test if it is on the plane.
@@ -695,7 +694,7 @@ public class V3D_Plane extends V3D_Geometry {
         return isIntersectedBy(l.getP(), oom, rm)
                 && isIntersectedBy(l.getQ(oom, rm), oom, rm);
     }
-
+    
     /**
      * Method adapted from the python code given here:
      * https://stackoverflow.com/a/18543221/1998054

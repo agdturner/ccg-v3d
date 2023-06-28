@@ -58,6 +58,17 @@ public abstract class V3D_FiniteGeometryDouble extends V3D_GeometryDouble {
     }
     
     /**
+     * For evaluating if the geometry is intersected by the Axis Aligned 
+     * Bounding Box aabb.
+     *
+     * @param aabb The Axis Aligned Bounding Box to test for intersection.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return {@code true} iff the geometry intersects aabb at the given precision.
+     */
+    public abstract boolean isIntersectedBy(V3D_EnvelopeDouble aabb, double epsilon);
+    
+    /**
      * @return A copy of the points of the geometry.
      */
     public abstract V3D_PointDouble[] getPoints();

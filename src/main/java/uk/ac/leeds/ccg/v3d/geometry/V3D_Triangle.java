@@ -73,6 +73,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 //     * hand rule.
 //     */
 //    public V3D_Vector normal;
+    
     /**
      * Defines one of the corners of the triangle.
      */
@@ -249,6 +250,33 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         this.r = r;
     }
 
+    /**
+     * Creates a new triangle.
+     *
+     * Warning p, q and r must all be different. No checks are done for
+     * efficiency reasons.
+     *
+     * @param pl What {@link #pl} is set to.
+     * @param offset What {@link #offset} is set to.
+     * @param p What {@link #p} is set to.
+     * @param q What {@link #q} is set to.
+     * @param r What {@link #r} is set to.
+     */
+    public V3D_Triangle(V3D_Plane pl, V3D_Vector offset,
+            V3D_Vector p, V3D_Vector q, V3D_Vector r) {
+        super(offset);
+        this.p = p;
+        this.q = q;
+        this.r = r;
+        this.pl = pl;
+
+        // Debugging code
+        if (p.equals(q) || p.equals(r) || q.equals(r)) {
+            int debug = 1;
+            throw new RuntimeException("p.equals(q) || p.equals(r) || q.equals(r)");
+        }
+    }
+    
 //    /**
 //     * Creates a new triangle.
 //     *

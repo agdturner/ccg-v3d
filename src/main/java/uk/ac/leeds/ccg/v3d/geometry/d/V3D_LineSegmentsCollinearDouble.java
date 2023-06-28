@@ -429,4 +429,9 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
         return new V3D_LineSegmentsCollinearDouble(rls);
     }
 
+    @Override
+    public boolean isIntersectedBy(V3D_EnvelopeDouble aabb, double epsilon) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }

@@ -39,7 +39,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
  * @author Andy Turner
  * @version 1.0.0
  */
-public class V3D_RectangleDoubleTest extends V3D_DoubleTest {
+public class V3D_RectangleDoubleTest extends V3D_TestDouble {
 
     public V3D_RectangleDoubleTest() {
     }
@@ -169,10 +169,24 @@ public class V3D_RectangleDoubleTest extends V3D_DoubleTest {
         String expResult = """
                            V3D_RectangleDouble(
                            offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
-                           p=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
-                           q=V3D_VectorDouble(dx=0.0, dy=1.0, dz=0.0),
-                           r=V3D_VectorDouble(dx=1.0, dy=1.0, dz=0.0),
-                           s=V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0))""";
+                           pqr=V3D_TriangleDouble(
+                            pl=( V3D_PlaneDouble(
+                             offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
+                             p=  V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
+                             n=  V3D_VectorDouble(dx=0.0, dy=0.0, dz=-1.0))),
+                            offset=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0)),
+                            p=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0)),
+                            q=(V3D_VectorDouble(dx=0.0, dy=1.0, dz=0.0)),
+                            r=(V3D_VectorDouble(dx=1.0, dy=1.0, dz=0.0))),
+                           rsp=V3D_TriangleDouble(
+                            pl=( V3D_PlaneDouble(
+                             offset=V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
+                             p=  V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0),
+                             n=  V3D_VectorDouble(dx=0.0, dy=0.0, dz=-1.0))),
+                            offset=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0)),
+                            p=(V3D_VectorDouble(dx=1.0, dy=1.0, dz=0.0)),
+                            q=(V3D_VectorDouble(dx=1.0, dy=0.0, dz=0.0)),
+                            r=(V3D_VectorDouble(dx=0.0, dy=0.0, dz=0.0))))""";
         String result = instance.toString();
         //System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
@@ -478,7 +492,7 @@ public class V3D_RectangleDoubleTest extends V3D_DoubleTest {
     public void testRotate() {
         System.out.println("rotate");
         double epsilon = 1d / 10000000d;
-        V3D_RayDouble xaxis = new V3D_RayDouble(V3D_DoubleTest.pP0P0P0, V3D_DoubleTest.pP1P0P0);
+        V3D_RayDouble xaxis = new V3D_RayDouble(pP0P0P0, pP1P0P0);
         double theta = 0d;
         V3D_RectangleDouble instance = new V3D_RectangleDouble(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         instance.rotate(xaxis, xaxis.l.v, theta, epsilon);

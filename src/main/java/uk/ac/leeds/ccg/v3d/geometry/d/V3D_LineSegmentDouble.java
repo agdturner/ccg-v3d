@@ -1182,4 +1182,9 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
             return this;
         }
     }
+
+    @Override
+    public boolean isIntersectedBy(V3D_EnvelopeDouble aabb, double epsilon) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
