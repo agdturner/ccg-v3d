@@ -99,7 +99,7 @@ Changed to use BigRational directly and Math_BigRational for aditional arithmeti
 - APACHE LICENSE, VERSION 2.0: https://www.apache.org/licenses/LICENSE-2.0
 
 ## Acknowledgements and thanks
-- As my employer, the [University of Leeds](http://www.leeds.ac.uk) has supported the development of this library and some of the dependencies.
+- The [University of Leeds](http://www.leeds.ac.uk) has supported the development of this library and some of the dependencies.
 - Thank you to those that have and continue to develop the Java language.
 - Thank you Eric (_et al._) for the [BigMath](https://github.com/eobermuhlner/big-math) library.
 - Thank you developers and maintainers of [Apache Maven](https://maven.apache.org/), [Sonatype Nexus Repository Manager](https://oss.sonatype.org/), [Apache NetBeans](https://netbeans.apache.org/), [git](https://git-scm.com/) and [GitHub](http://github.com) for supporting the development of this code and for providing a means of creating a community of users/developers.
@@ -116,3 +116,19 @@ Handedness or [chirality](https://en.wikipedia.org/wiki/Chirality_(physics)) con
 ## Projections
 - [Spherical](https://en.wikipedia.org/wiki/Spherical_coordinate_system) and [ecliptic](https://en.wikipedia.org/wiki/Ecliptic_coordinate_system) coordinate systems and [Discrete_global_grid](https://en.wikipedia.org/wiki/Discrete_global_grid#Standard_equal-area_hierarchical_grids) systems are being used for some applications.
 - [Geographical projections](https://en.wikipedia.org/wiki/List_of_map_projections) are commonly used to represent part or all of the surface of Earth as plan view maps. [Equirectangular_projection](https://en.wikipedia.org/wiki/Equirectangular_projection)s have: the Y Axis used for lines of [latitude](https://en.wikipedia.org/wiki/Latitude), with zero on the [equator](https://en.wikipedia.org/wiki/Equator), increasing to the [North pole](https://en.wikipedia.org/wiki/North_Pole), and decreasing to the [South pole](https://en.wikipedia.org/wiki/South_Pole); the X Axis used for lines of [longitude](https://en.wikipedia.org/wiki/Longitude), typically with zero on the [prime meridian](https://en.wikipedia.org/wiki/Prime_meridian), increasing to the [East](https://en.wikipedia.org/wiki/East), and decreasing to the [West](https://en.wikipedia.org/wiki/West); and the Z axis represents height (often a measure of a surface height like above or below mean [sea-level](https://en.wikipedia.org/wiki/Sea_level). The choice of the [meridian](https://en.wikipedia.org/wiki/Meridian_(geography)) is arbitrary. For a 3D coordinate system with the origin at the centre of mass of Earth, the Y axis could be used for the axis of [Earth's rotation](https://en.wikipedia.org/wiki/Earth%27s_rotation)) aligning with latitude...
+
+## References
+### Similar software for review
+- [VTK-m](https://m.vtk.org/) - [README](https://gitlab.kitware.com/vtk/vtk-m/blob/master/README.md)
+  - Languages: C/C++.
+  - Uses floating point for the coordinate system.
+- [VisIt](https://visit-dav.github.io/visit-website/index.html)
+  - Open Source, interactive, scalable, visualization, animation and analysis tool.
+  - Langauges: C 75.8%, C++ 12.8%, Python 3.8%, Java 3.0%
+  - [Github repository](https://github.com/visit-dav/visit/)
+- [Fides](https://fides.readthedocs.io/en/latest/)
+  - Fides enables complex scientific workflows to seamlessly integrate simulation and visualization. This is done by providing a data model in JSON that describes the mesh and fields in the data to be read. Using this data model, Fides maps [ADIOS2](https://github.com/ornladios/ADIOS2) data arrays (from files or streams) to [VTK-m](https://m.vtk.org/) datasets, enabling visualization of the data using shared- and distributed-memory parallel algorithms.
+  - Can be used with Paraview
+- [ParaView](https://www.paraview.org/)
+  - Open source post-processing visualization engine.
+  - Uses [VTK](https://vtk.org/) - an open-source, freely available software system for 3D computer graphics, modeling, image processing, volume rendering, scientific visualization, and 2D plotting
