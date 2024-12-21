@@ -775,7 +775,7 @@ public class V3D_Vector implements Serializable {
         if (equals(v, oom, rm)) {
             return true;
         } else {
-            // Special case
+            // Special cases
             boolean isZero = isZero(oom, rm);
             boolean visZero = v.isZero(oom, rm);
             if (isZero) {
@@ -792,6 +792,9 @@ public class V3D_Vector implements Serializable {
                  */
                 return true;
             }
+            //if (this.getDotProduct(v, oom, rm).compareTo(BigRational.ZERO) == 0) {
+            //    return false;
+            //}
             /**
              * General case: A little complicated as there is a need to deal
              * with zero vector components and cases where the vectors point in

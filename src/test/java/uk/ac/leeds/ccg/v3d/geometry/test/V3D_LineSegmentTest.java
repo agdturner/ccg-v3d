@@ -161,6 +161,10 @@ public class V3D_LineSegmentTest extends V3D_Test {
         // Test 3
         instance = new V3D_LineSegment(pP0P0P0, pP1P1P0, oom, rm);
         assertTrue(instance.equalsIgnoreDirection(l, oom, rm));
+        // Test 4
+        l = new V3D_LineSegment(pP0P0P0, pP1N1P0, oom, rm);
+        instance = new V3D_LineSegment(pP1N1P0, pP0P0P0, oom, rm);
+        assertTrue(instance.equalsIgnoreDirection(l, oom, rm));
     }
 
     /**

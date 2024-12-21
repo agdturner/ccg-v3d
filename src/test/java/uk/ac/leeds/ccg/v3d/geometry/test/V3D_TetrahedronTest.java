@@ -573,6 +573,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 13 to Test 24 from each corner along an edge.
+        //instance = new V3D_Tetrahedron(P0P0P0, N1N1P0, P1N1P0, N1P1P0, P0P0P1);
         // Test 13 to Test 15 from corner A along an edge.
         // Test 13
         l = new V3D_LineSegment(pN1N1P0, pP1N1P0, oom, rm);
@@ -639,6 +640,30 @@ public class V3D_TetrahedronTest extends V3D_Test {
         result = instance.getIntersection(l, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equals((V3D_LineSegment) result, oom, rm));
         instance = new V3D_Tetrahedron(P0P0P0, N1N1P0, P1N1P0, N1P1P0, P0P0P1);
+        // Test 25 to Test 28 from the centre through each corner.
+        //instance = new V3D_Tetrahedron(P0P0P0, N1N1P0, P1N1P0, N1P1P0, P0P0P1);
+        // Test 25
+        l = new V3D_LineSegment(pP0P0P0, pN2N2P0, oom, rm);
+        expResult = new V3D_LineSegment(pP0P0P0, pN1N1P0, oom, rm);
+        result = instance.getIntersection(l, oom, rm);
+        System.out.println(result.toString());
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
+        // Test 26
+        l = new V3D_LineSegment(pP0P0P0, pP2N2P0, oom, rm);
+        expResult = new V3D_LineSegment(pP0P0P0, pP1N1P0, oom, rm);
+        result = instance.getIntersection(l, oom, rm);
+        System.out.println(result.toString());
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
+        // Test 27
+        l = new V3D_LineSegment(pP0P0P0, pN2P2P0, oom, rm);
+        expResult = new V3D_LineSegment(pP0P0P0, pN1P1P0, oom, rm);
+        result = instance.getIntersection(l, oom, rm);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
+        // Test 28
+        l = new V3D_LineSegment(pP0P0P0, pP0P0P2, oom, rm);
+        expResult = new V3D_LineSegment(pP0P0P0, pP0P0P1, oom, rm);
+        result = instance.getIntersection(l, oom, rm);
+        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
     }
 
     /**
