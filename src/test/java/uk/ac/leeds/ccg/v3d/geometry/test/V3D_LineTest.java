@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.geometry.Math_Angle;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
@@ -783,13 +784,14 @@ public class V3D_LineTest extends V3D_Test {
         V3D_Ray axis = new V3D_Ray(pP0P0P0, V3D_Vector.I);
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
+        Math_Angle ma = new Math_Angle();
         int oomt = oom - 2;
         BigRational Pi = BigRational.valueOf(
                 new Math_BigDecimal().getPi(oomt, RoundingMode.HALF_UP));
         BigRational theta = Pi.divide(2);
         V3D_Line instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
         V3D_Line expResult = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-        V3D_Line result = instance.rotate(axis, axis.l.v, theta, oom, rm);
+        V3D_Line result = instance.rotate(axis, axis.l.v, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 2
         axis = new V3D_Ray(pP0P0P0, V3D_Vector.J);
@@ -797,20 +799,20 @@ public class V3D_LineTest extends V3D_Test {
         instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
         //expResult = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
         expResult = new V3D_Line(pP0P0P0, pP0P0N1, oom, rm);
-        result = instance.rotate(axis, axis.l.v, theta, oom, rm);
+        result = instance.rotate(axis, axis.l.v, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 3
         theta = Pi.divide(2);
         instance = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(5, 0, 0), oom, rm);
         //expResult = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, 5), oom, rm);
         expResult = new V3D_Line(new V3D_Vector(0, 0, 0), new V3D_Vector(0, 0, -5), oom, rm);
-        result = instance.rotate(axis, axis.l.v, theta, oom, rm);
+        result = instance.rotate(axis, axis.l.v, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 4
         theta = Pi;
         instance = new V3D_Line(new V3D_Vector(3, 2, 0), new V3D_Vector(5, 0, 0), oom, rm);
         expResult = new V3D_Line(new V3D_Vector(-3, 2, 0), new V3D_Vector(-5, 0, 0), oom, rm);
-        result = instance.rotate(axis, axis.l.v, theta, oom, rm);
+        result = instance.rotate(axis, axis.l.v, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
 

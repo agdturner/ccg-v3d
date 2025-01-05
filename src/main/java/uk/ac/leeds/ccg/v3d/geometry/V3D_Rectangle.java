@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import uk.ac.leeds.ccg.math.geometry.Math_Angle;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -373,13 +374,13 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public V3D_Rectangle rotate(V3D_Ray ray, V3D_Vector uv,
+    public V3D_Rectangle rotate(V3D_Ray ray, V3D_Vector uv, Math_Angle ma, 
             BigRational theta, int oom, RoundingMode rm) {
         return new V3D_Rectangle(
-                getP().rotate(ray, uv, theta, oom, rm),
-                getQ().rotate(ray, uv, theta, oom, rm),
-                getR().rotate(ray, uv, theta, oom, rm),
-                getS().rotate(ray, uv, theta, oom, rm), oom, rm);
+                getP().rotate(ray, uv, ma, theta, oom, rm),
+                getQ().rotate(ray, uv, ma, theta, oom, rm),
+                getR().rotate(ray, uv, ma, theta, oom, rm),
+                getS().rotate(ray, uv, ma, theta, oom, rm), oom, rm);
     }
 
     /**

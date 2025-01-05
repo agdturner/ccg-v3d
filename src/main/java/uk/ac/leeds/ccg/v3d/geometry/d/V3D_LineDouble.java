@@ -380,14 +380,14 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
             return true;
         }
         V3D_VectorDouble dpt = new V3D_VectorDouble(
-                    pt.getX() - (tp.getX()),
-                    pt.getY() - (tp.getY()),
-                    pt.getZ() - (tp.getZ()));
+                    pt.getX() - tp.getX(),
+                    pt.getY() - tp.getY(),
+                    pt.getZ() - tp.getZ());
         if (dpt.isZero()) {
             dpt = new V3D_VectorDouble(
-                    pt.getX() - (tq.getX()),
-                    pt.getY() - (tq.getY()),
-                    pt.getZ() - (tq.getZ()));
+                    pt.getX() - tq.getX(),
+                    pt.getY() - tq.getY(),
+                    pt.getZ() - tq.getZ());
         }
         V3D_VectorDouble cp = v.getCrossProduct(dpt);
         double magnitude = cp.getMagnitude();

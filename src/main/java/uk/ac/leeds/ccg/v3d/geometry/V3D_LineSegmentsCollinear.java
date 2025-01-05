@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
+import uk.ac.leeds.ccg.math.geometry.Math_Angle;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -569,10 +570,10 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     
     @Override
     public V3D_LineSegmentsCollinear rotate(V3D_Ray ray, V3D_Vector uv, 
-            BigRational theta, int oom, RoundingMode rm) {
+            Math_Angle ma, BigRational theta, int oom, RoundingMode rm) {
         V3D_LineSegment[] rls = new V3D_LineSegment[lineSegments.size()];
         for (int i = 0; i < lineSegments.size(); i++) {
-            rls[0] = lineSegments.get(i).rotate(ray, uv, theta, oom, rm);
+            rls[0] = lineSegments.get(i).rotate(ray, uv, ma, theta, oom, rm);
         }
         return new V3D_LineSegmentsCollinear(rls);
     }

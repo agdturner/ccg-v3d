@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.leeds.ccg.v3d.geometry.test;
+package uk.ac.leeds.ccg.v3d.geometry.d.test;
 
-import ch.obermuhlner.math.big.BigRational;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Angle;
+import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_AngleDouble;
 
 /**
- * Test class for V3D_Angle.
+ * Test class for V3D_AngleDouble.
  *
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_AngleTest {
+public class V3D_GeometryDoubleTest {
 
-    public V3D_AngleTest() {
+    public V3D_GeometryDoubleTest() {
         super();
     }
 
@@ -62,31 +58,32 @@ public class V3D_AngleTest {
     @Test
     public void testNormalise() {
         System.out.println("normalise");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        BigRational pi = Math_BigRational.getPi(new Math_BigDecimal(), oom, rm);
-        BigRational dpi = pi.multiply(2);
-        BigRational hpi = pi.divide(2);
+        double epsilon = 1d/100000000000000d;
+        double pi = Math.PI;
+        double dpi = 2d * pi;
+        double hpi = pi / 2d;
         // Positive angle
-        BigRational theta = dpi.multiply(BigInteger.TEN).add(pi);
-        BigRational result = V3D_Angle.normalise(theta, oom, rm);
-        BigRational expResult = pi;
-        assertTrue(result.compareTo(expResult) == 0);
+        double theta = (dpi * 10d) + pi;
+        double result = V3D_AngleDouble.normalise(theta);
+        double expResult = pi;
+        assertTrue(Math_Double.equals(result, expResult, epsilon));
         // Test 2
-        theta = dpi.multiply(BigInteger.TEN).add(hpi);
-        result = V3D_Angle.normalise(theta, oom, rm);
+        theta = (dpi * 10d) + hpi;
+        result = V3D_AngleDouble.normalise(theta);
         expResult = hpi;
-        assertTrue(result.compareTo(expResult) == 0);
+        assertTrue(Math_Double.equals(result, expResult, epsilon));
         // Negative angle
-        theta = dpi.multiply(BigInteger.TEN).add(pi).negate();
-        result = V3D_Angle.normalise(theta, oom, rm);
+        // The epsilon has to be slightly larger!
+        epsilon = 1d/10000000000000d;
+        theta = (dpi * -10d) - pi;
+        result = V3D_AngleDouble.normalise(theta);
         expResult = pi;
-        assertTrue(result.compareTo(expResult) == 0);
+        assertTrue(Math_Double.equals(result, expResult, epsilon));
         // Test 4
-        theta = dpi.multiply(BigInteger.TEN).add(hpi).negate();
-        result = V3D_Angle.normalise(theta, oom, rm);
-        expResult = hpi.multiply(3);
-        assertTrue(result.compareTo(expResult) == 0);
+        theta = (dpi * -10d) - hpi;
+        result = V3D_AngleDouble.normalise(theta);
+        expResult = hpi * 3d;
+        assertTrue(Math_Double.equals(result, expResult, epsilon));
     }
 
 }

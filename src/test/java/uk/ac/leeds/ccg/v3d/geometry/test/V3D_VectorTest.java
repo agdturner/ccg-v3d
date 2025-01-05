@@ -24,6 +24,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
+import uk.ac.leeds.ccg.math.geometry.Math_Angle;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
@@ -1011,6 +1012,7 @@ public class V3D_VectorTest extends V3D_Test {
     public void testRotate() {
         System.out.println("rotate");
         V3D_Vector axisOfRotation = new V3D_Vector(0, 1, 0);
+        Math_Angle ma = new Math_Angle();
         int oom = -3;
         int oomt = oom - 2;
         RoundingMode rm = RoundingMode.HALF_UP;
@@ -1019,7 +1021,7 @@ public class V3D_VectorTest extends V3D_Test {
         BigRational theta = Pi.divide(2);
         V3D_Vector instance = new V3D_Vector(1, 0, 0);
         V3D_Vector expResult = new V3D_Vector(0, 0, -1);
-        V3D_Vector result = instance.rotate(axisOfRotation, theta, oom, rm);
+        V3D_Vector result = instance.rotate(axisOfRotation, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 2
         // From Example 2: https://graphics.stanford.edu/courses/cs348a-17-winter/Papers/quaternion.pdf
@@ -1027,7 +1029,7 @@ public class V3D_VectorTest extends V3D_Test {
         theta = Pi.multiply(2).divide(3);
         instance = new V3D_Vector(1, 0, 0);
         expResult = new V3D_Vector(0, 1, 0);
-        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axisOfRotation, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
 //        // Test 3 Fails :(
 //        // From Example 1: https://www.imsc.res.in/~knr/131129workshop/writeup_knr.pdf
@@ -1051,7 +1053,7 @@ public class V3D_VectorTest extends V3D_Test {
         theta = Pi.divide(6).negate();
         instance = new V3D_Vector(0.6, 0.8, 0);
         expResult = new V3D_Vector(0.9196, 0.3928, 0);
-        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axisOfRotation, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
 //        // Test 5
 //        // From Case 2 https://www.tobynorris.com/work/prog/csharp/quatview/help/case_1.htm
@@ -1069,7 +1071,7 @@ public class V3D_VectorTest extends V3D_Test {
         theta = Pi.divide(2);
         instance = new V3D_Vector(1, 0, 0);
         expResult = new V3D_Vector(0, 1, 0);
-        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axisOfRotation, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 7
         oom = -4;
@@ -1077,7 +1079,7 @@ public class V3D_VectorTest extends V3D_Test {
         theta = Pi;
         instance = new V3D_Vector(1, 0, 0);
         expResult = new V3D_Vector(0, 1, 0);
-        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axisOfRotation, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 8
         oom = -4;
@@ -1085,7 +1087,7 @@ public class V3D_VectorTest extends V3D_Test {
         theta = Pi;
         instance = new V3D_Vector(2, 0, 0);
         expResult = new V3D_Vector(0, 2, 0);
-        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axisOfRotation, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 9
         oom = -4;
@@ -1093,7 +1095,7 @@ public class V3D_VectorTest extends V3D_Test {
         theta = Pi;
         instance = new V3D_Vector(3, 1, 0);
         expResult = new V3D_Vector(1, 3, 0);
-        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axisOfRotation, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 10
         oom = -4;
@@ -1101,7 +1103,7 @@ public class V3D_VectorTest extends V3D_Test {
         theta = Pi;
         instance = new V3D_Vector(3, 2, 1);
         expResult = new V3D_Vector(2, 3, -1);
-        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axisOfRotation, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
         // Test 11
         oom = -4;
@@ -1109,7 +1111,7 @@ public class V3D_VectorTest extends V3D_Test {
         theta = Pi.multiply(2);
         instance = new V3D_Vector(3, 2, 1);
         expResult = new V3D_Vector(3, 2, 1);
-        result = instance.rotate(axisOfRotation, theta, oom, rm);
+        result = instance.rotate(axisOfRotation, ma, theta, oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
 

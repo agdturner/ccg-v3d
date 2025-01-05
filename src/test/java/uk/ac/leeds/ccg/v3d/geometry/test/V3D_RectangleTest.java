@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import uk.ac.leeds.ccg.math.geometry.Math_Angle;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
@@ -638,10 +639,11 @@ public class V3D_RectangleTest extends V3D_Test {
         System.out.println("rotate");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
+        Math_Angle ma = new Math_Angle();
         V3D_Ray xaxis = new V3D_Ray(pP0P0P0, V3D_Vector.I);
         BigRational theta = BigRational.ZERO;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-        instance.rotate(xaxis, xaxis.l.v, theta, oom, rm);
+        instance.rotate(xaxis, xaxis.l.v, ma, theta, oom, rm);
         V3D_Rectangle instance2 = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
         assertTrue(instance.equals(instance2, oom, rm));
     }

@@ -78,19 +78,9 @@ public class V3D_VectorDouble implements Serializable {
     public static final V3D_VectorDouble IJ = new V3D_VectorDouble(1, 1, 0);
 
     /**
-     * The IJ vector {@code <1,-1,0>}.
-     */
-    public static final V3D_VectorDouble InJ = new V3D_VectorDouble(1, -1, 0);
-
-    /**
      * The IK vector {@code <1,0,1>}.
      */
     public static final V3D_VectorDouble IK = new V3D_VectorDouble(1, 0, 1);
-
-    /**
-     * The IK vector {@code <1,0,-1>}.
-     */
-    public static final V3D_VectorDouble InK = new V3D_VectorDouble(1, 0, -1);
 
     /**
      * The JK vector {@code <0,1,1>}.
@@ -98,14 +88,79 @@ public class V3D_VectorDouble implements Serializable {
     public static final V3D_VectorDouble JK = new V3D_VectorDouble(0, 1, 1);
 
     /**
-     * The JK vector {@code <0,1,-1>}.
+     * The InJ vector {@code <1,-1,0>}.
+     */
+    public static final V3D_VectorDouble InJ = new V3D_VectorDouble(1, -1, 0);
+
+    /**
+     * The InK vector {@code <1,0,-1>}.
+     */
+    public static final V3D_VectorDouble InK = new V3D_VectorDouble(1, 0, -1);
+
+    /**
+     * The JnK vector {@code <0,1,-1>}.
      */
     public static final V3D_VectorDouble JnK = new V3D_VectorDouble(0, 1, -1);
+
+    /**
+     * The nIJ vector {@code <-1,1,0>}.
+     */
+    public static final V3D_VectorDouble nIJ = new V3D_VectorDouble(-1, 1, 0);
+
+    /**
+     * The nInJ vector {@code <-1,-1,0>}.
+     */
+    public static final V3D_VectorDouble nInJ = new V3D_VectorDouble(-1, -1, 0);
+
+    /**
+     * The nInK vector {@code <-1,0,-1>}.
+     */
+    public static final V3D_VectorDouble nInK = new V3D_VectorDouble(-1, 0, -1);
+
+    /**
+     * The nJnK vector {@code <-1,0,-1>}.
+     */
+    public static final V3D_VectorDouble nJnK = new V3D_VectorDouble(-1, 0, -1);
 
     /**
      * The IJK vector {@code <1,1,1>} where:
      */
     public static final V3D_VectorDouble IJK = new V3D_VectorDouble(1, 1, 1);
+
+    /**
+     * The IJnK vector {@code <1,1,-1>} where:
+     */
+    public static final V3D_VectorDouble IJnK = new V3D_VectorDouble(1, 1, -1);
+
+    /**
+     * The InJK vector {@code <1,-1,1>} where:
+     */
+    public static final V3D_VectorDouble InJK = new V3D_VectorDouble(1, -1, 1);
+
+    /**
+     * The nIJK vector {@code <-1,1,1>} where:
+     */
+    public static final V3D_VectorDouble nIJK = new V3D_VectorDouble(-1, 1, 1);
+
+    /**
+     * The InJnK vector {@code <1,-1,-1>} where:
+     */
+    public static final V3D_VectorDouble InJnK = new V3D_VectorDouble(1, -1, -1);
+
+    /**
+     * The nInJK vector {@code <-1,-1,1>} where:
+     */
+    public static final V3D_VectorDouble nInJK = new V3D_VectorDouble(-1, -1, 1);
+
+    /**
+     * The nIJnK vector {@code <-1,1,-1>} where:
+     */
+    public static final V3D_VectorDouble nIJnK = new V3D_VectorDouble(-1, 1, -1);
+
+    /**
+     * The nInJnK vector {@code <-1,-1,-1>} where:
+     */
+    public static final V3D_VectorDouble nInJnK = new V3D_VectorDouble(-1, -1, -1);
 
     /**
      * Create a new instance.
@@ -285,7 +340,6 @@ public class V3D_VectorDouble implements Serializable {
     }
 
     /**
-     *
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
      * @param vs The vectors to test for equality.

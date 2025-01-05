@@ -51,23 +51,23 @@
             <artifactId>ccg-generic</artifactId>
             <version>2.3-SNAPSHOT</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-io
+        <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-io -->
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>ccg-io</artifactId>
-            <version>${ccg-io.version}</version>
-        </dependency> -->
+            <version>1.1.2</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-math -->
         <dependency>
             <groupId>io.github.agdturner</groupId>
             <artifactId>ccg-math</artifactId>
-            <version>3.0.1</version>
+            <version>3.1.0-SNAPSHOT</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.9.3</version>
+            <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
@@ -112,7 +112,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.2</version>
                 <configuration>
                     <argLine>-Xms256m</argLine>
                     <!-- Ignore test failures -->
@@ -129,7 +129,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.1.2</version>
             </plugin>
             <!-- Skip 
             <plugin>
@@ -173,7 +173,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>3.2.2</version>
                         <configuration>
                             <argLine>-Xms256m -Xmx512m</argLine>
                         </configuration>
@@ -181,7 +181,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>3.1.2</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

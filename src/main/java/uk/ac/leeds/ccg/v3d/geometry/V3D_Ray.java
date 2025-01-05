@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
+import uk.ac.leeds.ccg.math.geometry.Math_Angle;
 
 /**
  * 3D representation of a ray - like a line, but one that starts at a point
@@ -533,12 +534,12 @@ public class V3D_Ray extends V3D_Geometry {
 //    }
 
     @Override
-    public V3D_Ray rotate(V3D_Ray ray, V3D_Vector uv, BigRational theta,
-            int oom, RoundingMode rm) {
+    public V3D_Ray rotate(V3D_Ray ray, V3D_Vector uv, Math_Angle ma, 
+            BigRational theta, int oom, RoundingMode rm) {
         if (theta.isZero()) {
            return new V3D_Ray(this);
         } else {
-            return new V3D_Ray(l.rotate(ray, uv, theta, oom, rm));
+            return new V3D_Ray(l.rotate(ray, uv, ma, theta, oom, rm));
         }
     }
 }

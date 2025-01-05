@@ -20,6 +20,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import uk.ac.leeds.ccg.math.geometry.Math_Angle;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VTriangle;
 
@@ -1706,12 +1707,12 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public V3D_Triangle rotate(V3D_Ray ray, V3D_Vector uv, BigRational theta,
-            int oom, RoundingMode rm) {
+    public V3D_Triangle rotate(V3D_Ray ray, V3D_Vector uv, Math_Angle ma, 
+            BigRational theta, int oom, RoundingMode rm) {
         return new V3D_Triangle(
-                getP().rotate(ray, uv, theta, oom, rm),
-                getQ().rotate(ray, uv, theta, oom, rm),
-                getR().rotate(ray, uv, theta, oom, rm), oom, rm);
+                getP().rotate(ray, uv, ma, theta, oom, rm),
+                getQ().rotate(ray, uv, ma, theta, oom, rm),
+                getR().rotate(ray, uv, ma, theta, oom, rm), oom, rm);
     }
 
     /**
