@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
-import uk.ac.leeds.ccg.math.geometry.Math_Angle;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_ConvexHullCoplanar;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
@@ -363,7 +363,7 @@ public class V3D_TriangleTest extends V3D_Test {
         System.out.println("rotate");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        Math_Angle ma = new Math_Angle();
+        Math_AngleBigRational ma = new Math_AngleBigRational();
         BigRational theta;
         V3D_Triangle instance;
         V3D_Triangle expResult;

@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.geometry.Math_Angle;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
@@ -784,7 +784,7 @@ public class V3D_LineTest extends V3D_Test {
         V3D_Ray axis = new V3D_Ray(pP0P0P0, V3D_Vector.I);
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        Math_Angle ma = new Math_Angle();
+        Math_AngleBigRational ma = new Math_AngleBigRational();
         int oomt = oom - 2;
         BigRational Pi = BigRational.valueOf(
                 new Math_BigDecimal().getPi(oomt, RoundingMode.HALF_UP));

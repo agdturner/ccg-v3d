@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.geometry.Math_Angle;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
@@ -532,7 +532,7 @@ public class V3D_PointTest extends V3D_Test {
         int oom = -3;
         int oomn9 = oom - 9;
         RoundingMode rm = RoundingMode.HALF_UP;
-        Math_Angle ma = new Math_Angle();
+        Math_AngleBigRational ma = new Math_AngleBigRational();
         BigRational Pi = BigRational.valueOf(bd.getPi(oomn9, rm));
         V3D_Ray xaxis = new V3D_Ray(V3D_Test.pP0P0P0, V3D_Vector.I);
         V3D_Ray yaxis = new V3D_Ray(V3D_Test.pP0P0P0, V3D_Vector.J);

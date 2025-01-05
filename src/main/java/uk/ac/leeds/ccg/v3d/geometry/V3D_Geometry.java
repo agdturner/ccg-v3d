@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
-import uk.ac.leeds.ccg.math.geometry.Math_Angle;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -134,13 +134,13 @@ public abstract class V3D_Geometry implements Serializable {
      * @param uv The unit vector of r. This is passed in as often there is a 
      * desire to rotate many geometries about a ray and this saves computation 
      * in calculating the unit vector each time.
-     * @param ma The Math_Angle for obtaining PI and normalising angles.
+     * @param ma The Math_AngleBigRational for obtaining PI and normalising angles.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The rotated geometry.
      */
     public abstract V3D_Geometry rotate(V3D_Ray r, V3D_Vector uv, 
-            Math_Angle ma, BigRational theta, int oom, RoundingMode rm);
+            Math_AngleBigRational ma, BigRational theta, int oom, RoundingMode rm);
 
     /**
      * For getting an angle between 0 and 2Pi

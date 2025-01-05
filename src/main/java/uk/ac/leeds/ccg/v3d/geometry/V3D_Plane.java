@@ -19,7 +19,7 @@ import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
-import uk.ac.leeds.ccg.math.geometry.Math_Angle;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -1936,7 +1936,7 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     @Override
-    public V3D_Plane rotate(V3D_Ray ray, V3D_Vector uv, Math_Angle ma, 
+    public V3D_Plane rotate(V3D_Ray ray, V3D_Vector uv, Math_AngleBigRational ma, 
             BigRational theta, int oom, RoundingMode rm) {
         return new V3D_Plane(getP().rotate(ray, uv, ma, theta, oom, rm),
                 n.rotate(uv, ma, theta, oom, rm));

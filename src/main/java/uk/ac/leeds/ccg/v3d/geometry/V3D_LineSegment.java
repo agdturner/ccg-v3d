@@ -17,7 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.geometry.Math_Angle;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -1187,7 +1187,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_LineSegment rotate(V3D_Ray ray, V3D_Vector uv, Math_Angle ma, 
+    public V3D_LineSegment rotate(V3D_Ray ray, V3D_Vector uv, Math_AngleBigRational ma, 
             BigRational theta, int oom, RoundingMode rm) {
         return new V3D_LineSegment(
                 getP().rotate(ray, uv, ma, theta, oom, rm),

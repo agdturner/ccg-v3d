@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Disabled;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
-import uk.ac.leeds.ccg.math.geometry.Math_Angle;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
@@ -3582,7 +3582,7 @@ public class V3D_PlaneTest extends V3D_Test {
         System.out.println("rotate");
         int oom = -5;
         RoundingMode rm = RoundingMode.HALF_UP;
-        Math_Angle ma = new Math_Angle();
+        Math_AngleBigRational ma = new Math_AngleBigRational();
         BigRational Pi = BigRational.valueOf(
                 new Math_BigDecimal().getPi(oom, RoundingMode.HALF_UP));
         V3D_Ray xaxis = new V3D_Ray(V3D_Test.pP0P0P0, V3D_Vector.I);

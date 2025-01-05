@@ -17,7 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
-import uk.ac.leeds.ccg.math.geometry.Math_Angle;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 
 /**
  * A collection of V3D_Point instances.
@@ -82,7 +82,7 @@ public class V3D_PointsCollinear extends V3D_FiniteGeometry {
     }
     
     @Override
-    public V3D_PointsCollinear rotate(V3D_Ray ray, V3D_Vector uv, Math_Angle ma, 
+    public V3D_PointsCollinear rotate(V3D_Ray ray, V3D_Vector uv, Math_AngleBigRational ma, 
             BigRational theta, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

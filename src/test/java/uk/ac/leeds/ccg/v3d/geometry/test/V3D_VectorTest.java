@@ -24,7 +24,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
-import uk.ac.leeds.ccg.math.geometry.Math_Angle;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
@@ -1012,7 +1012,7 @@ public class V3D_VectorTest extends V3D_Test {
     public void testRotate() {
         System.out.println("rotate");
         V3D_Vector axisOfRotation = new V3D_Vector(0, 1, 0);
-        Math_Angle ma = new Math_Angle();
+        Math_AngleBigRational ma = new Math_AngleBigRational();
         int oom = -3;
         int oomt = oom - 2;
         RoundingMode rm = RoundingMode.HALF_UP;

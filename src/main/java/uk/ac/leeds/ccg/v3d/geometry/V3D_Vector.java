@@ -22,7 +22,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
-import uk.ac.leeds.ccg.math.geometry.Math_Angle;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.math.number.Math_Quaternion_BigRational;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -1041,7 +1041,7 @@ public class V3D_Vector implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return The vector which is {@code #this} rotated using the parameters.
      */
-    public V3D_Vector rotate(V3D_Vector axis, Math_Angle ma, BigRational theta,
+    public V3D_Vector rotate(V3D_Vector axis, Math_AngleBigRational ma, BigRational theta,
             int oom, RoundingMode rm) {
         BigRational na = ma.normalise(theta, oom, rm);
         if (na.compareTo(BigRational.ZERO) == 1) {

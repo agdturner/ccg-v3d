@@ -19,9 +19,8 @@ import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.math.geometry.Math_Angle;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 //import java.util.ArrayList;
-
 /**
  * Comprising two collections of V3D_ConvexHullCoplanar one representing parts
  * and the other representing holes. Parts may intersect. Holes may intersect.
@@ -305,7 +304,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public V3D_Polygon rotate(V3D_Ray ray, V3D_Vector uv, Math_Angle ma, 
+    public V3D_Polygon rotate(V3D_Ray ray, V3D_Vector uv, Math_AngleBigRational ma, 
             BigRational theta, int oom, RoundingMode rm) {
         ArrayList<V3D_ConvexHullCoplanar> rparts = new ArrayList<>();
         ArrayList<V3D_ConvexHullCoplanar> rholes = new ArrayList<>();

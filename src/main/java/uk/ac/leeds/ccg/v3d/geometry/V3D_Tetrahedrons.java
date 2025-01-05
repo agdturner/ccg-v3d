@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import uk.ac.leeds.ccg.math.geometry.Math_Angle;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 
 /**
  * A set of V3D_Tetrahedron.
@@ -119,7 +119,7 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
     }
     
     @Override
-     public V3D_Tetrahedrons rotate(V3D_Ray ray, V3D_Vector uv, Math_Angle ma, 
+     public V3D_Tetrahedrons rotate(V3D_Ray ray, V3D_Vector uv, Math_AngleBigRational ma, 
              BigRational theta, int oom, RoundingMode rm) {
         V3D_Tetrahedron[] rls = new V3D_Tetrahedron[tetrahedrons.size()];
         for (int i = 0; i < tetrahedrons.size(); i ++) {
