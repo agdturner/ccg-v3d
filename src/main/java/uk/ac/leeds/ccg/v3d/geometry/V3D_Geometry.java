@@ -141,27 +141,4 @@ public abstract class V3D_Geometry implements Serializable {
      */
     public abstract V3D_Geometry rotate(V3D_Ray r, V3D_Vector uv, 
             Math_AngleBigRational ma, BigRational theta, int oom, RoundingMode rm);
-
-    /**
-     * For getting an angle between 0 and 2Pi
-     * @param theta The angle to be transformed.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return An angle between 0 and 2Pi.
-     */
-    public BigRational getAngleM(BigRational theta, int oom,
-            RoundingMode rm) {
-        BigRational twoPi = BigRational.valueOf(
-                V3D_Environment.bd.getPi(oom, rm)).multiply(2);
-        // Change a negative angle into a positive one.
-        while (theta.compareTo(BigRational.ZERO) == -1) {
-            theta = theta.add(twoPi);
-        }
-        // Only rotate less than 2Pi radians.
-        while (theta.compareTo(twoPi) == 1) {
-            theta = theta.subtract(twoPi);
-        }
-        return theta;
-    }
-    
 }

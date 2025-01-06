@@ -1096,30 +1096,21 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
      * @return {@code true} iff this is parallel to the plane defined by x=0.
      */
     public boolean isParallelToX0() {
-        if (v.dy == 0d) {
-            return true;
-        }
-        return v.dz == 0d;
+        return v.dx == 0d;
     }
 
     /**
      * @return {@code true} iff this is parallel to the plane defined by y=0.
      */
     public boolean isParallelToY0() {
-        if (v.dx == 0d) {
-            return true;
-        }
-        return v.dz == 0d;
+        return v.dy == 0d;
     }
 
     /**
      * @return {@code true} iff this is parallel to the plane defined by z=0.
      */
     public boolean isParallelToZ0() {
-        if (v.dx == 0d) {
-            return true;
-        }
-        return v.dy == 0d;
+        return v.dz == 0d;
     }
 
     /**

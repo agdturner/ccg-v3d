@@ -1288,13 +1288,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} iff this is parallel to the plane defined by x=0.
      */
     public boolean isParallelToX0(int oom, RoundingMode rm) {
-        //return v.dx.isZero();
-        //return pv.getX(oom).subtract(qv.getX(oom)).isZero();
-        //return pv.getDX(oom, rm).subtract(qv.getDX(oom, rm)).isZero();
-        if (v.dy.compareTo(Math_BigRationalSqrt.ZERO) == 0) {
-            return true;
-        }
-        return v.dz.compareTo(Math_BigRationalSqrt.ZERO) == 0;
+        return v.dx.compareTo(Math_BigRationalSqrt.ZERO) == 0;
     }
 
     /**
@@ -1303,13 +1297,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} iff this is parallel to the plane defined by y=0.
      */
     public boolean isParallelToY0(int oom, RoundingMode rm) {
-        //return v.dy.isZero();
-        //return pv.getY(oom).subtract(qv.getY(oom)).isZero();
-        //return pv.getDY(oom, rm).subtract(qv.getDY(oom, rm)).isZero();
-        if (v.dx.compareTo(Math_BigRationalSqrt.ZERO) == 0) {
-            return true;
-        }
-        return v.dz.compareTo(Math_BigRationalSqrt.ZERO) == 0;
+        return v.dy.compareTo(Math_BigRationalSqrt.ZERO) == 0;
     }
 
     /**
@@ -1318,13 +1306,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} iff this is parallel to the plane defined by z=0.
      */
     public boolean isParallelToZ0(int oom, RoundingMode rm) {
-        //return v.dz.isZero();
-        //return pv.getZ(oom).subtract(qv.getZ(oom)).isZero();
-        //return pv.getDZ(oom, rm).subtract(qv.getDZ(oom, rm)).isZero();
-        if (v.dx.compareTo(Math_BigRationalSqrt.ZERO) == 0) {
-            return true;
-        }
-        return v.dy.compareTo(Math_BigRationalSqrt.ZERO) == 0;
+        return v.dz.compareTo(Math_BigRationalSqrt.ZERO) == 0;
     }
 
     /**

@@ -1041,8 +1041,8 @@ public class V3D_Vector implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return The vector which is {@code #this} rotated using the parameters.
      */
-    public V3D_Vector rotate(V3D_Vector axis, Math_AngleBigRational ma, BigRational theta,
-            int oom, RoundingMode rm) {
+    public V3D_Vector rotate(V3D_Vector axis, Math_AngleBigRational ma, 
+            BigRational theta, int oom, RoundingMode rm) {
         BigRational na = ma.normalise(theta, oom, rm);
         if (na.compareTo(BigRational.ZERO) == 1) {
             int oomn2 = oom - 6;

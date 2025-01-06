@@ -477,10 +477,10 @@ public class V3D_LineTest extends V3D_Test {
         assertTrue(instance.isParallelToZ0(oom, rm));
         // Test 2
         instance = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
-        assertTrue(instance.isParallelToX0(oom, rm));
+        assertTrue(instance.isParallelToZ0(oom, rm));
         // Test 3
         instance = new V3D_Line(pP0P0P1, pP1P1P0, oom, rm);
-        assertFalse(instance.isParallelToX0(oom, rm));
+        assertFalse(instance.isParallelToZ0(oom, rm));
     }
 
     /**

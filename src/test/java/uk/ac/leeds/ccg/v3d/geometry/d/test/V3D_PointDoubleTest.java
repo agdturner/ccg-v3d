@@ -105,7 +105,6 @@ public class V3D_PointDoubleTest extends V3D_TestDouble {
         V3D_PointDouble p = pP0P0P0;
         V3D_PointDouble a = pN1P0P0;
         V3D_PointDouble b = pP1P0P0;
-        double epsilon = 1 / 100000000d;
         assertTrue(p.isBetween(a, b));
         // Test 2
         p = pP0P0P0;

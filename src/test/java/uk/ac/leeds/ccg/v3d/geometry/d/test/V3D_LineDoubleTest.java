@@ -469,6 +469,9 @@ public class V3D_LineDoubleTest extends V3D_TestDouble {
         // Test 3
         instance = new V3D_LineDouble(pP0P0P1, pP1P1P0);
         assertFalse(instance.isParallelToX0());
+        // Test 4
+        instance = new V3D_LineDouble(pP2N2N1, pP2N1P0);
+        assertTrue(instance.isParallelToX0());
     }
 
     /**
