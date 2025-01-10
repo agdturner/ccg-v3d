@@ -328,7 +328,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
      * @return {@code true} iff {@code this} is equal to {@code l}. This ignores
      * the order of the point of {@link #l} and {@link #qv}.
      */
-    public boolean equalsIgnoreDirection(double epsilon, 
+    public boolean equalsIgnoreDirection(double epsilon,
             V3D_LineSegmentDouble l) {
 //        if (l == null) {
 //            return false;
@@ -364,7 +364,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
         }
         return en;
     }
-    
+
     /**
      * @param pt A point to test for intersection.
      * @return {@code true} if {@code this} is intersected by {@code pv}.
@@ -439,7 +439,6 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
         // Check if infinite lines intersect.
         V3D_GeometryDouble i = this.l.getIntersection(l, epsilon);
         if (i == null) {
-            // There is no intersection.
             return null;
         }
         /**
@@ -454,10 +453,8 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
                 return null;
             }
         } else if (i instanceof V3D_LineDouble) {
-            // If the lines are the same, then return this. 
             return this;
         } else {
-            // There is no intersection.
             return null;
         }
     }
@@ -479,173 +476,206 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
         if (!getEnvelope().isIntersectedBy(ls.getEnvelope(), epsilon)) {
             return null;
         }
-        // Get intersection of infinite lines. 
-        V3D_GeometryDouble r = this.l.getIntersection(ls.l, epsilon);
-        if (r == null) {
+        // Get intersection with infinite lines.
+        V3D_GeometryDouble li = l.getIntersection(ls.l, epsilon);
+        V3D_FiniteGeometryDouble tils = getIntersection(ls.l, epsilon);
+        V3D_FiniteGeometryDouble lsil = ls.getIntersection(l, epsilon);
+        if (li == null) {
             return null;
-        }
-        if (r instanceof V3D_PointDouble rp) {
-            return rp;
-        }
-        /**
-         * Check the type of intersection. {@code
-         *
-         * A) p_q l.p_l.q
-         *
-         * 1)  p +----------+ q
-         *              l.p +----------+ l.q
-         *
-         * 2)  p +----------+ q
-         *         l.p +----------+ l.q
-         *
-         * 3)  p +------------------------+ q
-         *         l.p +----------+ l.q
-         *
-         * 4)        p +----------+ q
-         *     l.p +----------------------+ l.q
-         *
-         * 5)    p +----------+ q
-         *     l.p +----------+ l.q
-         *
-         * 6)         p +----------+ q
-         *     l.p +----------+ l.q
-         *
-         * 7)              p +----------+ q
-         *     l.p +---------+ l.q
-         *
-         * B) q_p l.p_l.q
-         *
-         * 8)  q +----------+ p
-         *              l.p +----------+ l.q
-         *
-         * 9)  q +----------+ p
-         *         l.p +----------+ l.q
-         *
-         * 10) q +------------------------+ p
-         *         l.p +----------+ l.q
-         *
-         * 11)       q +----------+ p
-         *     l.p +----------------------+ l.q
-         *
-         * 12)       q +----------+ p
-         *         l.p +----------+ l.q
-         *
-         * 13)       q +----------+ p
-         *     l.p +----------+ l.q
-         *
-         * 14)              q +----------+ p
-         *     l.p +----------+ l.q
-         *
-         * C) p_q l.q_l.p
-         *
-         * 15) p +----------+ q
-         *              l.q +----------+ l.p
-         *
-         * 16) p +----------+ q
-         *         l.q +----------+ l.p
-         *
-         * 17) p +------------------------+ q
-         *         l.q +----------+ l.p
-         *
-         * 18)       p +----------+ q
-         *     l.q +------------------------+ l.p
-         *
-         * 19)       p +----------+ q
-         *         l.q +----------+ l.p
-         *
-         * 20)       p +----------+ q
-         *     l.q +----------+ l.p
-         *
-         * 21)              p +----------+ q
-         *     l.q +----------+ l.p
-         *
-         * D) q_p l.q_l.p
-         *
-         * 22) q +----------+ p
-         *              l.q +----------+ l.p
-         *
-         * 23) q +----------+ p
-         *         l.q +----------+ l.p
-         *
-         * 24) q +------------------------+ p
-         *         l.q +----------+ l.p
-         *
-         * 25)       q +----------+ p
-         *     l.q +------------------------+ l.p
-         *
-         * 26)       p +----------+ q
-         *         l.q +----------+ l.p
-         *
-         * 27)       q +----------+ p
-         *    l.q +---------+ l.p
-         *
-         * 28)            q +----------+ p
-         *    l.q +---------+ l.p
-         * }
-         */
-        V3D_PointDouble lp = ls.getP();
-        V3D_PointDouble lq = ls.getQ();
-        V3D_PointDouble tp = getP();
-        V3D_PointDouble tq = getQ();
-        if (isIntersectedBy(lp, epsilon)) {
-            // Cases: 1, 2, 3, 5, 8, 9, 10, 12, 17, 19, 20, 21, 24, 26, 27, 28
-            if (isIntersectedBy(lq, epsilon)) {
-                // Cases: 3, 5, 10, 12, 17, 19, 24, 26
-                return ls;
-            } else {
-                // Cases: 1, 2, 8, 9, 20, 21, 27, 28
-                if (ls.isIntersectedBy(tp, epsilon)) {
-                    // Cases: 8, 9, 20, 21
-                    if (tp.equals(epsilon, lp)) {
-                        // Cases: 8, 21
-                        return tp;
-                    } else {
-                        // Cases: 9, 20
-                        return V3D_LineSegmentDouble.getGeometry(lp, tp, epsilon);
-                    }
+        } else {
+            if (tils == null) {
+                if (lsil == null) {
+                    return null;
                 } else {
-                    // Case: 1, 2, 27, 28
-                    if (lp.equals(epsilon, tq)) {
-                        // Case: 1, 28
-                        return lp;
+                    if (lsil instanceof V3D_PointDouble lsilp) {
+                        //if (isIntersectedBy(lsilp, epsilon)) {
+                        if (isBetween(lsilp, epsilon)) {
+                            return lsilp;
+                        } else {
+                            return null;
+                        }
                     } else {
-                        // Cases: 2, 27
-                        return V3D_LineSegmentDouble.getGeometry(lp, tq, epsilon);
+                        throw new RuntimeException();
+                        //return null;
                     }
                 }
-            }
-        } else {
-            // Cases: 4, 6, 7, 11, 13, 14, 15, 16, 18, 22, 23, 25
-            if (isIntersectedBy(lq, epsilon)) {
-                // Cases: 6, 7, 13, 14, 15, 16, 22, 23
-                if (ls.isIntersectedBy(tp, epsilon)) {
-                    // Cases: 6, 7, 22, 23
-                    if (ls.isIntersectedBy(tq, epsilon)) {
-                            // Case: 23
-                            return V3D_LineSegmentDouble.getGeometry(lq, tp, epsilon);
+            } else {
+                if (tils instanceof V3D_PointDouble tilsp) {
+                    //if (isIntersectedBy(tilsp, epsilon) && ls.isIntersectedBy(tilsp, epsilon)) {
+                    if (isBetween(tilsp, epsilon) && ls.isBetween(tilsp, epsilon)) {
+                        return tilsp;
                     } else {
-                        // Cases: 6, 7, 22, 
-                        if (tp.equals(epsilon, lq)) {
-                            // Cases: 7, 22
-                            return tp;
+                        return null;
+                    }
+                } else {
+                    /**
+                     * Check the type of intersection. {@code
+                     *
+                     * A) p_q l.p_l.q
+                     *
+                     * 1)  p +----------+ q
+                     *              l.p +----------+ l.q
+                     *
+                     * 2)  p +----------+ q
+                     *         l.p +----------+ l.q
+                     *
+                     * 3)  p +------------------------+ q
+                     *         l.p +----------+ l.q
+                     *
+                     * 4)        p +----------+ q
+                     *     l.p +----------------------+ l.q
+                     *
+                     * 5)    p +----------+ q
+                     *     l.p +----------+ l.q
+                     *
+                     * 6)         p +----------+ q
+                     *     l.p +----------+ l.q
+                     *
+                     * 7)              p +----------+ q
+                     *     l.p +---------+ l.q
+                     *
+                     * B) q_p l.p_l.q
+                     *
+                     * 8)  q +----------+ p
+                     *              l.p +----------+ l.q
+                     *
+                     * 9)  q +----------+ p
+                     *         l.p +----------+ l.q
+                     *
+                     * 10) q +------------------------+ p
+                     *         l.p +----------+ l.q
+                     *
+                     * 11)       q +----------+ p
+                     *     l.p +----------------------+ l.q
+                     *
+                     * 12)       q +----------+ p
+                     *         l.p +----------+ l.q
+                     *
+                     * 13)       q +----------+ p
+                     *     l.p +----------+ l.q
+                     *
+                     * 14)              q +----------+ p
+                     *     l.p +----------+ l.q
+                     *
+                     * C) p_q l.q_l.p
+                     *
+                     * 15) p +----------+ q
+                     *              l.q +----------+ l.p
+                     *
+                     * 16) p +----------+ q
+                     *         l.q +----------+ l.p
+                     *
+                     * 17) p +------------------------+ q
+                     *         l.q +----------+ l.p
+                     *
+                     * 18)       p +----------+ q
+                     *     l.q +------------------------+ l.p
+                     *
+                     * 19)       p +----------+ q
+                     *         l.q +----------+ l.p
+                     *
+                     * 20)       p +----------+ q
+                     *     l.q +----------+ l.p
+                     *
+                     * 21)              p +----------+ q
+                     *     l.q +----------+ l.p
+                     *
+                     * D) q_p l.q_l.p
+                     *
+                     * 22) q +----------+ p
+                     *              l.q +----------+ l.p
+                     *
+                     * 23) q +----------+ p
+                     *         l.q +----------+ l.p
+                     *
+                     * 24) q +------------------------+ p
+                     *         l.q +----------+ l.p
+                     *
+                     * 25)       q +----------+ p
+                     *     l.q +------------------------+ l.p
+                     *
+                     * 26)       p +----------+ q
+                     *         l.q +----------+ l.p
+                     *
+                     * 27)       q +----------+ p
+                     *    l.q +---------+ l.p
+                     *
+                     * 28)            q +----------+ p
+                     *    l.q +---------+ l.p
+                     * }
+                     */
+                    V3D_PointDouble lp = ls.getP();
+                    V3D_PointDouble lq = ls.getQ();
+                    V3D_PointDouble tp = getP();
+                    V3D_PointDouble tq = getQ();
+                    //if (isIntersectedBy(lp, epsilon)) {
+                    if (isBetween(lp, epsilon)) {
+                        // Cases: 1, 2, 3, 5, 8, 9, 10, 12, 17, 19, 20, 21, 24, 26, 27, 28
+                        //if (isIntersectedBy(lq, epsilon)) {
+                        if (isBetween(lq, epsilon)) {
+                            // Cases: 3, 5, 10, 12, 17, 19, 24, 26
+                            return ls;
                         } else {
-                            // Case: 6
-                            return V3D_LineSegmentDouble.getGeometry(tp, lq, epsilon);
+                            // Cases: 1, 2, 8, 9, 20, 21, 27, 28
+                            //if (ls.isIntersectedBy(tp, epsilon)) {
+                            if (ls.isBetween(tp, epsilon)) {
+                                // Cases: 8, 9, 20, 21
+                                if (tp.equals(epsilon, lp)) {
+                                    // Cases: 8, 21
+                                    return tp;
+                                } else {
+                                    // Cases: 9, 20
+                                    return V3D_LineSegmentDouble.getGeometry(lp, tp, epsilon);
+                                }
+                            } else {
+                                // Case: 1, 2, 27, 28
+                                if (lp.equals(epsilon, tq)) {
+                                    // Case: 1, 28
+                                    return lp;
+                                } else {
+                                    // Cases: 2, 27
+                                    return V3D_LineSegmentDouble.getGeometry(lp, tq, epsilon);
+                                }
+                            }
+                        }
+                    } else {
+                        // Cases: 4, 6, 7, 11, 13, 14, 15, 16, 18, 22, 23, 25
+                        //if (isIntersectedBy(lq, epsilon)) {
+                        if (isBetween(lq, epsilon)) {
+                            // Cases: 6, 7, 13, 14, 15, 16, 22, 23
+                            //if (ls.isIntersectedBy(tp, epsilon)) {
+                            if (ls.isBetween(tp, epsilon)) {
+                                // Cases: 6, 7, 22, 23
+                                //if (ls.isIntersectedBy(tq, epsilon)) {
+                                if (ls.isBetween(tq, epsilon)) {
+                                    // Case: 23
+                                    return V3D_LineSegmentDouble.getGeometry(lq, tp, epsilon);
+                                } else {
+                                    // Cases: 6, 7, 22, 
+                                    if (tp.equals(epsilon, lq)) {
+                                        // Cases: 7, 22
+                                        return tp;
+                                    } else {
+                                        // Case: 6
+                                        return V3D_LineSegmentDouble.getGeometry(tp, lq, epsilon);
+                                    }
+                                }
+                            } else {
+                                // Cases: 13, 14, 15, 16
+                                if (tq.equals(epsilon, lq)) {
+                                    // Cases: 14, 15
+                                    return tq;
+                                } else {
+                                    // Case: 13, 16
+                                    return V3D_LineSegmentDouble.getGeometry(tq, lq, epsilon);
+                                }
+                            }
+                        } else {
+                            // Cases: 4, 11, 18, 25
+                            return this;
                         }
                     }
-                } else {
-                    // Cases: 13, 14, 15, 16
-                    if (tq.equals(epsilon, lq)) {
-                        // Cases: 14, 15
-                        return tq;
-                    } else {
-                        // Case: 13, 16
-                        return V3D_LineSegmentDouble.getGeometry(tq, lq, epsilon);
-                    }
                 }
-            } else {
-                // Cases: 4, 11, 18, 25
-                return this;
             }
         }
     }
@@ -1144,7 +1174,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
     }
 
     @Override
-    public V3D_LineSegmentDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv, 
+    public V3D_LineSegmentDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
         return new V3D_LineSegmentDouble(
                 getP().rotate(ray, uv, theta, epsilon),

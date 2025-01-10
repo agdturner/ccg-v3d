@@ -871,13 +871,14 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
         if (pi.equals(epsilon, qi)) {
             return pi;
         } else {
-            if (new V3D_LineSegmentDouble(pi, qi).getLength() < epsilon) {
-                int debug = 1;
-                //return pi;
-                return qi;
-            } else {
-                return null;
-            }
+            return null;
+//            if (new V3D_LineSegmentDouble(pi, qi).getLength() < epsilon) {
+//                int debug = 1;
+//                //return pi;
+//                return qi;
+//            } else {
+//                return null;
+//            }
         }
     }
 

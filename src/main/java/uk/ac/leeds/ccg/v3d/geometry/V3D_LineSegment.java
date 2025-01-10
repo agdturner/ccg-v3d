@@ -359,8 +359,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
 //                    && getQ(oom, rm).equals(l.getP(), oom, rm);
 //        }
         //if (this.l.equals(l.l, oom, rm)) {
-            return isIntersectedBy(l.getQ(), oom, rm)
-                    && l.isIntersectedBy(getQ(), oom, rm);
+        return isIntersectedBy(l.getQ(), oom, rm)
+                && l.isIntersectedBy(getQ(), oom, rm);
         //}
         //return false;
     }
@@ -502,171 +502,206 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         }
         // Get intersection of infinite lines. 
         V3D_Geometry r = this.l.getIntersection(ls.l, oom, rm);
-        if (r == null) {
+        // Get intersection with infinite lines.
+        V3D_Geometry li = l.getIntersection(ls.l, oom, rm);
+        V3D_FiniteGeometry tils = getIntersection(ls.l, oom, rm);
+        V3D_FiniteGeometry lsil = ls.getIntersection(l, oom, rm);
+        if (li == null) {
             return null;
-        }
-        if (r instanceof V3D_Point rp) {
-            return rp;
-        }
-        /**
-         * Check the type of intersection. {@code
-         * A) p_q l.p_l.q
-         *
-         * 1)  p +----------+ q
-         *              l.p +----------+ l.q
-         *
-         * 2)  p +----------+ q
-         *         l.p +----------+ l.q
-         *
-         * 3)  p +------------------------+ q
-         *         l.p +----------+ l.q
-         *
-         * 4)        p +----------+ q
-         *     l.p +----------------------+ l.q
-         *
-         * 5)    p +----------+ q
-         *     l.p +----------+ l.q
-         *
-         * 6)         p +----------+ q
-         *     l.p +----------+ l.q
-         *
-         * 7)              p +----------+ q
-         *     l.p +---------+ l.q
-         *
-         * B) q_p l.p_l.q
-         *
-         * 8)  q +----------+ p
-         *              l.p +----------+ l.q
-         *
-         * 9)  q +----------+ p
-         *         l.p +----------+ l.q
-         *
-         * 10) q +------------------------+ p
-         *         l.p +----------+ l.q
-         *
-         * 11)       q +----------+ p
-         *     l.p +----------------------+ l.q
-         *
-         * 12)       q +----------+ p
-         *         l.p +----------+ l.q
-         *
-         * 13)       q +----------+ p
-         *     l.p +----------+ l.q
-         *
-         * 14)              q +----------+ p
-         *     l.p +----------+ l.q
-         *
-         * C) p_q l.q_l.p
-         *
-         * 15) p +----------+ q
-         *              l.q +----------+ l.p
-         *
-         * 16) p +----------+ q
-         *         l.q +----------+ l.p
-         *
-         * 17) p +------------------------+ q
-         *         l.q +----------+ l.p
-         *
-         * 18)       p +----------+ q
-         *     l.q +------------------------+ l.p
-         *
-         * 19)       p +----------+ q
-         *         l.q +----------+ l.p
-         *
-         * 20)       p +----------+ q
-         *     l.q +----------+ l.p
-         *
-         * 21)              p +----------+ q
-         *     l.q +----------+ l.p
-         *
-         * D) q_p l.q_l.p
-         *
-         * 22) q +----------+ p
-         *              l.q +----------+ l.p
-         *
-         * 23) q +----------+ p
-         *         l.q +----------+ l.p
-         *
-         * 24) q +------------------------+ p
-         *         l.q +----------+ l.p
-         *
-         * 25)       q +----------+ p
-         *     l.q +------------------------+ l.p
-         *
-         * 26)       p +----------+ q
-         *         l.q +----------+ l.p
-         *
-         * 27)       q +----------+ p
-         *    l.q +---------+ l.p
-         *
-         * 28)            q +----------+ p
-         *    l.q +---------+ l.p
-         * }
-         */
-        V3D_Point lp = ls.getP();
-        V3D_Point lq = ls.getQ();
-        V3D_Point tp = getP();
-        V3D_Point tq = getQ();
-        if (isIntersectedBy(lp, oom, rm)) {
-            // Cases: 1, 2, 3, 5, 8, 9, 10, 12, 17, 19, 20, 21, 24, 26, 27, 28
-            if (isIntersectedBy(lq, oom, rm)) {
-                // Cases: 3, 5, 10, 12, 17, 19, 24, 26
-                return ls;
-            } else {
-                // Cases: 1, 2, 8, 9, 20, 21, 27, 28
-                if (ls.isIntersectedBy(tp, oom, rm)) {
-                    // Cases: 8, 9, 20, 21
-                    if (tp.equals(lp, oom, rm)) {
-                        // Cases: 8, 21
-                        return tp;
-                    } else {
-                        // Cases: 9, 20
-                        return V3D_LineSegment.getGeometry(lp, tp, oom, rm);
-                    }
+        } else {
+            if (tils == null) {
+                if (lsil == null) {
+                    return null;
                 } else {
-                    // Cases: 1, 2, 27, 28
-                    if (lp.equals(tq, oom, rm)) {
-                        // Cases: 1, 28
-                        return lp;
+                    if (lsil instanceof V3D_Point lsilp) {
+                        //if (isIntersectedBy(lsilp, oom, rm)) {
+                        if (isBetween(lsilp, oom, rm)) {
+                            return lsilp;
+                        } else {
+                            return null;
+                        }
                     } else {
-                        // Case: 2, 27
-                        return V3D_LineSegment.getGeometry(lp, tq, oom, rm);
+                        throw new RuntimeException();
+                        //return null;
                     }
                 }
-            }
-        } else {
-            // Cases: 4, 6, 7, 11, 13, 14, 15, 16, 18, 22, 23, 25
-            if (isIntersectedBy(lq, oom, rm)) {
-                // Cases: 6, 7, 13, 14, 15, 16, 22, 23
-                if (ls.isIntersectedBy(tp, oom, rm)) {
-                    // Cases: 6, 7, 22, 23
-                    if (ls.isIntersectedBy(tq, oom, rm)) {
-                        // Cases: 23
-                        return V3D_LineSegment.getGeometry(lq, tp, oom, rm);
+            } else {
+                if (tils instanceof V3D_Point tilsp) {
+                    //if (isIntersectedBy(tilsp, oom, rm) && ls.isIntersectedBy(tilsp, oom, rm)) {
+                    if (isBetween(tilsp, oom, rm) && ls.isBetween(tilsp, oom, rm)) {
+                        return tilsp;
                     } else {
-                        // Cases: 6, 7, 22, 
-                        if (tp.equals(lq, oom, rm)) {
-                            // Cases: 7, 22
-                            return tp;
+                        return null;
+                    }
+                } else {
+                    /**
+                     * Check the type of intersection. {@code
+                     * A) p_q l.p_l.q
+                     *
+                     * 1)  p +----------+ q
+                     *              l.p +----------+ l.q
+                     *
+                     * 2)  p +----------+ q
+                     *         l.p +----------+ l.q
+                     *
+                     * 3)  p +------------------------+ q
+                     *         l.p +----------+ l.q
+                     *
+                     * 4)        p +----------+ q
+                     *     l.p +----------------------+ l.q
+                     *
+                     * 5)    p +----------+ q
+                     *     l.p +----------+ l.q
+                     *
+                     * 6)         p +----------+ q
+                     *     l.p +----------+ l.q
+                     *
+                     * 7)              p +----------+ q
+                     *     l.p +---------+ l.q
+                     *
+                     * B) q_p l.p_l.q
+                     *
+                     * 8)  q +----------+ p
+                     *              l.p +----------+ l.q
+                     *
+                     * 9)  q +----------+ p
+                     *         l.p +----------+ l.q
+                     *
+                     * 10) q +------------------------+ p
+                     *         l.p +----------+ l.q
+                     *
+                     * 11)       q +----------+ p
+                     *     l.p +----------------------+ l.q
+                     *
+                     * 12)       q +----------+ p
+                     *         l.p +----------+ l.q
+                     *
+                     * 13)       q +----------+ p
+                     *     l.p +----------+ l.q
+                     *
+                     * 14)              q +----------+ p
+                     *     l.p +----------+ l.q
+                     *
+                     * C) p_q l.q_l.p
+                     *
+                     * 15) p +----------+ q
+                     *              l.q +----------+ l.p
+                     *
+                     * 16) p +----------+ q
+                     *         l.q +----------+ l.p
+                     *
+                     * 17) p +------------------------+ q
+                     *         l.q +----------+ l.p
+                     *
+                     * 18)       p +----------+ q
+                     *     l.q +------------------------+ l.p
+                     *
+                     * 19)       p +----------+ q
+                     *         l.q +----------+ l.p
+                     *
+                     * 20)       p +----------+ q
+                     *     l.q +----------+ l.p
+                     *
+                     * 21)              p +----------+ q
+                     *     l.q +----------+ l.p
+                     *
+                     * D) q_p l.q_l.p
+                     *
+                     * 22) q +----------+ p
+                     *              l.q +----------+ l.p
+                     *
+                     * 23) q +----------+ p
+                     *         l.q +----------+ l.p
+                     *
+                     * 24) q +------------------------+ p
+                     *         l.q +----------+ l.p
+                     *
+                     * 25)       q +----------+ p
+                     *     l.q +------------------------+ l.p
+                     *
+                     * 26)       p +----------+ q
+                     *         l.q +----------+ l.p
+                     *
+                     * 27)       q +----------+ p
+                     *    l.q +---------+ l.p
+                     *
+                     * 28)            q +----------+ p
+                     *    l.q +---------+ l.p
+                     * }
+                     */
+                    V3D_Point lp = ls.getP();
+                    V3D_Point lq = ls.getQ();
+                    V3D_Point tp = getP();
+                    V3D_Point tq = getQ();
+                    //if (isIntersectedBy(lp, oom, rm)) {
+                    if (isBetween(lp, oom, rm)) {
+                        // Cases: 1, 2, 3, 5, 8, 9, 10, 12, 17, 19, 20, 21, 24, 26, 27, 28
+                        //if (isIntersectedBy(lq, oom, rm)) {
+                        if (isBetween(lq, oom, rm)) {
+                            // Cases: 3, 5, 10, 12, 17, 19, 24, 26
+                            return ls;
                         } else {
-                            // Case: 6
-                            return V3D_LineSegment.getGeometry(tp, lq, oom, rm);
+                            // Cases: 1, 2, 8, 9, 20, 21, 27, 28
+                            //if (ls.isIntersectedBy(tp, oom, rm)) {
+                            if (ls.isBetween(tp, oom, rm)) {
+                                // Cases: 8, 9, 20, 21
+                                if (tp.equals(lp, oom, rm)) {
+                                    // Cases: 8, 21
+                                    return tp;
+                                } else {
+                                    // Cases: 9, 20
+                                    return V3D_LineSegment.getGeometry(lp, tp, oom, rm);
+                                }
+                            } else {
+                                // Cases: 1, 2, 27, 28
+                                if (lp.equals(tq, oom, rm)) {
+                                    // Cases: 1, 28
+                                    return lp;
+                                } else {
+                                    // Case: 2, 27
+                                    return V3D_LineSegment.getGeometry(lp, tq, oom, rm);
+                                }
+                            }
+                        }
+                    } else {
+                        // Cases: 4, 6, 7, 11, 13, 14, 15, 16, 18, 22, 23, 25
+                        //if (isIntersectedBy(lq, oom, rm)) {
+                        if (isBetween(lq, oom, rm)) {
+                            // Cases: 6, 7, 13, 14, 15, 16, 22, 23
+                            //if (ls.isIntersectedBy(tp, oom, rm)) {
+                            if (ls.isBetween(tp, oom, rm)) {
+                                // Cases: 6, 7, 22, 23
+                                //if (ls.isIntersectedBy(tq, oom, rm)) {
+                                if (ls.isBetween(tq, oom, rm)) {
+                                    // Cases: 23
+                                    return V3D_LineSegment.getGeometry(lq, tp, oom, rm);
+                                } else {
+                                    // Cases: 6, 7, 22, 
+                                    if (tp.equals(lq, oom, rm)) {
+                                        // Cases: 7, 22
+                                        return tp;
+                                    } else {
+                                        // Case: 6
+                                        return V3D_LineSegment.getGeometry(tp, lq, oom, rm);
+                                    }
+                                }
+                            } else {
+                                // Cases: 13, 14, 15, 16
+                                if (tq.equals(lq, oom, rm)) {
+                                    // Cases: 14, 15
+                                    return tq;
+                                } else {
+                                    // Case: 13, 16
+                                    //return new V3D_LineSegment(e, l.qv, ls.l.qv);
+                                    return V3D_LineSegment.getGeometry(tq, lq, oom, rm);
+                                }
+                            }
+                        } else {
+                            // Cases: 4, 11, 18, 25
+                            return this;
                         }
                     }
-                } else {
-                    // Cases: 13, 14, 15, 16
-                    if (tq.equals(lq, oom, rm)) {
-                        // Cases: 14, 15
-                        return tq;
-                    } else {
-                        // Case: 13, 16
-                        //return new V3D_LineSegment(e, l.qv, ls.l.qv);
-                        return V3D_LineSegment.getGeometry(tq, lq, oom, rm);
-                    }
                 }
-            } else {
-                // Cases: 4, 11, 18, 25
-                return this;
             }
         }
     }
@@ -936,8 +971,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * with.
      *
      * @param ls Collinear line segments.
-     * @return The shortest line segment which all the line segment points in 
-     * ls intersect with.
+     * @return The shortest line segment which all the line segment points in ls
+     * intersect with.
      */
     public static V3D_LineSegment getGeometry(int oom, RoundingMode rm,
             V3D_LineSegment... ls) {
@@ -959,7 +994,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             }
         }
     }
-    
+
     /**
      * Get the line of intersection (the shortest line) between {@code this} and
      * {@code l}.
@@ -1187,7 +1222,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_LineSegment rotate(V3D_Ray ray, V3D_Vector uv, Math_AngleBigRational ma, 
+    public V3D_LineSegment rotate(V3D_Ray ray, V3D_Vector uv, Math_AngleBigRational ma,
             BigRational theta, int oom, RoundingMode rm) {
         return new V3D_LineSegment(
                 getP().rotate(ray, uv, ma, theta, oom, rm),
