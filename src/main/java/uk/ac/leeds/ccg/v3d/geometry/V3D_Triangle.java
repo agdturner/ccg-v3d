@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegmentDouble;
 import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VTriangle;
 
 /**
@@ -929,39 +930,47 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         }
         if (g instanceof V3D_Point gp) {
             if (l.isAligned(gp, oom, rm)) {
-                return gp;
-            } else {
-                return null;
+                if (l.isBetween(gp, oom, rm)) {
+                    return gp;
+                }
             }
+            return null;
         }
         V3D_LineSegment ls = (V3D_LineSegment) g;
-        V3D_Point lsp = ls.getP();
-        V3D_Point lsq = ls.getQ();
-        if (l.isAligned(lsp, oom, rm)) {
-            if (l.isAligned(lsq, oom, rm)) {
-                return ls;
-            } else {
-                V3D_Plane lippl = ls.getPPL();
-                V3D_Point lp = l.getP();
-                if (lippl.isOnSameSide(lp, lsq, oom, rm)) {
-                    return V3D_LineSegment.getGeometry(lsp, lp, oom, rm);
-                } else {
-                    return V3D_LineSegment.getGeometry(lsp, l.getQ(), oom, rm);
-                }
-            }
+        if (ls.isBetween(l.getP(), oom, rm) || ls.isBetween(l.getQ(), oom, rm) 
+                || l.isBetween(getP(), oom, rm)) {
+            return l.getIntersectionLS((V3D_LineSegment) g, oom, rm);
         } else {
-            if (l.isAligned(lsq, oom, rm)) {
-                V3D_Plane liqpl = ls.getQPL();
-                V3D_Point lp = l.getP();
-                if (liqpl.isOnSameSide(lp, lsp, oom, rm)) {
-                    return V3D_LineSegment.getGeometry(lsq, lp, oom, rm);
-                } else {
-                    return V3D_LineSegment.getGeometry(lsq, l.getQ(), oom, rm);
-                }
-            } else {
-                return l;
-            }
+            return null;
         }
+//        V3D_LineSegment ls = (V3D_LineSegment) g;
+//        V3D_Point lsp = ls.getP();
+//        V3D_Point lsq = ls.getQ();
+//        if (l.isAligned(lsp, oom, rm)) {
+//            if (l.isAligned(lsq, oom, rm)) {
+//                return ls;
+//            } else {
+//                V3D_Plane lippl = ls.getPPL();
+//                V3D_Point lp = l.getP();
+//                if (lippl.isOnSameSide(lp, lsq, oom, rm)) {
+//                    return V3D_LineSegment.getGeometry(lsp, lp, oom, rm);
+//                } else {
+//                    return V3D_LineSegment.getGeometry(lsp, l.getQ(), oom, rm);
+//                }
+//            }
+//        } else {
+//            if (l.isAligned(lsq, oom, rm)) {
+//                V3D_Plane liqpl = ls.getQPL();
+//                V3D_Point lp = l.getP();
+//                if (liqpl.isOnSameSide(lp, lsp, oom, rm)) {
+//                    return V3D_LineSegment.getGeometry(lsq, lp, oom, rm);
+//                } else {
+//                    return V3D_LineSegment.getGeometry(lsq, l.getQ(), oom, rm);
+//                }
+//            } else {
+//                return l;
+//            }
+//        }
     }
 
     /**
@@ -2403,44 +2412,11 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
         BigRational dtpq2 = t.getDistanceSquared(getPQ(oom, rm), oom, rm);
         BigRational dtqr2 = t.getDistanceSquared(getQR(oom, rm), oom, rm);
         BigRational dtrp2 = t.getDistanceSquared(getRP(oom, rm), oom, rm);
-        BigRational dpq2 = getDistanceSquared(t.getPQ(oom, rm), oom, rm);
-        BigRational dqr2 = getDistanceSquared(t.getQR(oom, rm), oom, rm);
-        BigRational drp2 = getDistanceSquared(t.getRP(oom, rm), oom, rm);
-        BigRational d2 = BigRational.min(dtpq2, dtqr2, dtrp2, dpq2,
-                dqr2, drp2);
-        /**
-         * If any of the points of t are aligned with this, then these could be
-         * closest.
-         */
-        V3D_Point pt = t.getP();
-        if (isAligned(pt, oom, rm)) {
-            d2 = BigRational.min(d2, getDistanceSquared(pt, oom, rm));
-        }
-        pt = t.getQ();
-        if (isAligned(pt, oom, rm)) {
-            d2 = BigRational.min(d2, getDistanceSquared(pt, oom, rm));
-        }
-        pt = t.getR();
-        if (isAligned(pt, oom, rm)) {
-            d2 = BigRational.min(d2, getDistanceSquared(pt, oom, rm));
-        }
-        /**
-         * If any of the points of this are aligned with t, then these could be
-         * closest.
-         */
-        pt = getP();
-        if (t.isAligned(pt, oom, rm)) {
-            d2 = BigRational.min(d2, t.getDistanceSquared(pt, oom, rm));
-        }
-        pt = getQ();
-        if (t.isAligned(pt, oom, rm)) {
-            d2 = BigRational.min(d2, t.getDistanceSquared(pt, oom, rm));
-        }
-        pt = getR();
-        if (t.isAligned(pt, oom, rm)) {
-            d2 = BigRational.min(d2, t.getDistanceSquared(pt, oom, rm));
-        }
-        return d2;
+        return BigRational.min(dtpq2, dtqr2, dtrp2);
+//        BigRational dpq2 = getDistanceSquared(t.getPQ(oom, rm), oom, rm);
+//        BigRational dqr2 = getDistanceSquared(t.getQR(oom, rm), oom, rm);
+//        BigRational drp2 = getDistanceSquared(t.getRP(oom, rm), oom, rm);
+//        return BigRational.min(dtpq2, dtqr2, dtrp2, dpq2, dqr2, drp2);
     }
 
     /**

@@ -253,8 +253,10 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
             try {
                 triangles.add(new V3D_TriangleDouble(pt, qt, rt));
             } catch(RuntimeException e) {
-                // Points are colinear!
-                triangles.add(new V3D_TriangleDouble(pt, qt, rt));
+                // Points are collinear!
+                //triangles.add(new V3D_TriangleDouble(pt, qt, rt));
+                System.out.println("Due to imprecision, triangle points are collinear!");
+                
             }
         }
 

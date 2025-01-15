@@ -545,9 +545,6 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * @return {@code true} iff pl is aligned with this.
      */
     public boolean isAligned(V3D_PointDouble pt, double epsilon) {
-//        if (pl.isIntersectedBy(pt)) {
-//            return isIntersectedBy0(pt);
-//        }
         if (getPQPl().isOnSameSide(pt, getR(), epsilon)) {
             if (getQRPl().isOnSameSide(pt, getP(), epsilon)) {
                 if (getRPPl().isOnSameSide(pt, getQ(), epsilon)) {
@@ -737,39 +734,48 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         }
         if (g instanceof V3D_PointDouble gp) {
             if (l.isAligned(gp, epsilon)) {
-                return gp;
-            } else {
-                return null;
+                if (l.isBetween(gp, epsilon)) {
+                    return gp;
+                }
             }
+            return null;
         }
         V3D_LineSegmentDouble ls = (V3D_LineSegmentDouble) g;
-        V3D_PointDouble lsp = ls.getP();
-        V3D_PointDouble lsq = ls.getQ();
-        if (l.isAligned(lsp, epsilon)) {
-            if (l.isAligned(lsq, epsilon)) {
-                return ls;
-            } else {
-                V3D_PlaneDouble lippl = ls.getPPL();
-                V3D_PointDouble lp = l.getP();
-                if (lippl.isOnSameSide(lp, lsq, epsilon)) {
-                    return V3D_LineSegmentDouble.getGeometry(lsp, lp, epsilon);
-                } else {
-                    return V3D_LineSegmentDouble.getGeometry(lsp, l.getQ(), epsilon);
-                }
-            }
+        if (ls.isBetween(l.getP(), epsilon) || ls.isBetween(l.getQ(), epsilon) 
+                || l.isBetween(getP(), epsilon)) {
+            return l.getIntersectionLS(epsilon, (V3D_LineSegmentDouble) g);
         } else {
-            if (l.isAligned(lsq, epsilon)) {
-                V3D_PlaneDouble liqpl = ls.getQPL();
-                V3D_PointDouble lp = l.getP();
-                if (liqpl.isOnSameSide(lp, lsp, epsilon)) {
-                    return V3D_LineSegmentDouble.getGeometry(lsq, lp, epsilon);
-                } else {
-                    return V3D_LineSegmentDouble.getGeometry(lsq, l.getQ(), epsilon);
-                }
-            } else {
-                return l;
-            }
+            return null;
         }
+//        V3D_PointDouble lsp = ls.getP();
+//        V3D_PointDouble lsq = ls.getQ();
+//        if (l.isAligned(lsp, epsilon)) {
+//            if (l.isAligned(lsq, epsilon)) {
+//                return ls;
+//            } else {
+//                V3D_PlaneDouble lippl = ls.getPPL();
+//                V3D_PointDouble lp = l.getP();
+//                if (lippl.isOnSameSide(lp, lsq, epsilon)) {
+//                    return V3D_LineSegmentDouble.getGeometry(lsp, lp, epsilon);
+//                } else {
+//                    return V3D_LineSegmentDouble.getGeometry(lsp, l.getQ(), epsilon);
+//                }
+//            }
+//        } else {
+//            if (l.isAligned(lsq, epsilon)) {
+//                V3D_PlaneDouble liqpl = ls.getQPL();
+//                V3D_PointDouble lq = l.getQ();
+//                if (liqpl.isOnSameSide(lq, lsp, epsilon)) {
+//                    //return V3D_LineSegmentDouble.getGeometry(lsq, lp, epsilon);
+//                    return V3D_LineSegmentDouble.getGeometry(lsq, lq, epsilon);
+//                } else {
+//                    //return V3D_LineSegmentDouble.getGeometry(lsq, l.getQ(), epsilon);
+//                    return V3D_LineSegmentDouble.getGeometry(lsq, l.getP(), epsilon);
+//                }
+//            } else {
+//                return l;
+//            }
+//        }
     }
 
     /**
@@ -2202,44 +2208,12 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         double dtpq2 = t.getDistanceSquared(getPQ(), epsilon);
         double dtqr2 = t.getDistanceSquared(getQR(), epsilon);
         double dtrp2 = t.getDistanceSquared(getRP(), epsilon);
-        double dpq2 = getDistanceSquared(t.getPQ(), epsilon);
-        double dqr2 = getDistanceSquared(t.getQR(), epsilon);
-        double drp2 = getDistanceSquared(t.getRP(), epsilon);
-        double d2 = Math.min(dtpq2, Math.min(dtqr2, Math.min(dtrp2, Math.min(dpq2,
-                Math.min(dqr2, drp2)))));
-        /**
-         * If any of the points of t are aligned with this, then these could be
-         * closest.
-         */
-        V3D_PointDouble pt = t.getP();
-        if (isAligned(pt, epsilon)) {
-            d2 = Math.min(d2, getDistanceSquared(pt, epsilon));
-        }
-        pt = t.getQ();
-        if (isAligned(pt, epsilon)) {
-            d2 = Math.min(d2, getDistanceSquared(pt, epsilon));
-        }
-        pt = t.getR();
-        if (isAligned(pt, epsilon)) {
-            d2 = Math.min(d2, getDistanceSquared(pt, epsilon));
-        }
-        /**
-         * If any of the points of this are aligned with t, then these could be
-         * closest.
-         */
-        pt = getP();
-        if (t.isAligned(pt, epsilon)) {
-            d2 = Math.min(d2, t.getDistanceSquared(pt, epsilon));
-        }
-        pt = getQ();
-        if (t.isAligned(pt, epsilon)) {
-            d2 = Math.min(d2, t.getDistanceSquared(pt, epsilon));
-        }
-        pt = getR();
-        if (t.isAligned(pt, epsilon)) {
-            d2 = Math.min(d2, t.getDistanceSquared(pt, epsilon));
-        }
-        return d2;
+        return Math.min(dtpq2, Math.min(dtqr2, dtrp2));
+//        double dpq2 = getDistanceSquared(t.getPQ(), epsilon);
+//        double dqr2 = getDistanceSquared(t.getQR(), epsilon);
+//        double drp2 = getDistanceSquared(t.getRP(), epsilon);
+//        double d2 = Math.min(dtpq2, Math.min(dtqr2, Math.min(dtrp2, Math.min(dpq2,
+//                Math.min(dqr2, drp2)))));
     }
 
     /**

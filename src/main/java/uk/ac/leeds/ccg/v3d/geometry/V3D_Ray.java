@@ -475,7 +475,11 @@ public class V3D_Ray extends V3D_Geometry {
             return null;
         } else if (g instanceof V3D_Point pt) {
             if (isAligned(pt, oom, rm)) {
-                return pt;
+                if (ls.isBetween(pt, oom, rm)) {
+                    return pt;
+                } else {
+                    return null;
+                }
             } else {
                 return null;
             }

@@ -468,7 +468,11 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
             return null;
         } else if (g instanceof V3D_PointDouble pt) {
             if (isAligned(pt, epsilon)) {
-                return pt;
+                if (ls.isBetween(pt, epsilon)) {
+                    return pt;
+                } else {
+                    return null;
+                }
             } else {
                 return null;
             }
