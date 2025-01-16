@@ -255,7 +255,6 @@ public class V3D_VectorDoubleTest extends V3D_TestDouble {
     @Test
     public void testIsOrthogonal() {
         System.out.println("isOrthogonal");
-        double epsilon = 1 / 1000000d;
         V3D_VectorDouble v;
         V3D_VectorDouble instance;
         // Test 1
@@ -733,6 +732,36 @@ public class V3D_VectorDoubleTest extends V3D_TestDouble {
         // Test 32
         instance = new V3D_VectorDouble(-3d, 0d, -10000d);
         v = new V3D_VectorDouble(-6d, 0d, -20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        
+        // Test 33
+        instance = new V3D_VectorDouble(0d, 0d, -10000d);
+        v = new V3D_VectorDouble(0d, 0d, -20000d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 34
+        instance = new V3D_VectorDouble(0d, -10000d, 0d);
+        v = new V3D_VectorDouble(0d, -20000d, 0d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 35
+        instance = new V3D_VectorDouble(-10000d, 0d, 0d);
+        v = new V3D_VectorDouble(-20000d, 0d, 0d);
+        assertTrue(instance.isScalarMultiple(v));
+        
+        // Test 36
+        instance = new V3D_VectorDouble(-10000d, 1d, 0d);
+        v = new V3D_VectorDouble(-20000d, 2d, 0d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 37
+        instance = new V3D_VectorDouble(-10000d, 0d, 10d);
+        v = new V3D_VectorDouble(-20000d, 0d, 20d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 38
+        instance = new V3D_VectorDouble(-10000d, 1d, 0d);
+        v = new V3D_VectorDouble(-20000d, 2d, 0d);
+        assertTrue(instance.isScalarMultiple(v));
+        // Test 39
+        instance = new V3D_VectorDouble(-10000d, 0d, -10d);
+        v = new V3D_VectorDouble(20000d, 0d, 20d);
         assertTrue(instance.isScalarMultiple(v));
     }
 
