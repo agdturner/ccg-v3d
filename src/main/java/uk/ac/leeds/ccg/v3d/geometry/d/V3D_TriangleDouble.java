@@ -189,9 +189,9 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
         this.q = q;
         this.r = r;
         this.pl = new V3D_PlaneDouble(offset, p, q, r);
-
+        
+        // Debugging code
         if (p.equals(q) || p.equals(r) || q.equals(r)) {
-            int debug = 1;
             throw new RuntimeException("p.equals(q) || p.equals(r) || q.equals(r)");
         }
     }
@@ -218,9 +218,9 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
 
         // Debugging code
         if (p.equals(q) || p.equals(r) || q.equals(r)) {
-            int debug = 1;
             throw new RuntimeException("p.equals(q) || p.equals(r) || q.equals(r)");
         }
+        
     }
 
     /**
@@ -239,6 +239,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     /**
      * Creates a new triangle.
      *
+     * @param pl What {@link #pl} is set to.
      * @param ls A line segment representing one of the three edges of the
      * triangle.
      * @param pt Defines the other point relative to l.offset that defines the
@@ -268,6 +269,9 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
 
     /**
      * Creates a new triangle.
+     * 
+     * @param ls A line segment.
+     * @param pt A point.
      */
     public V3D_TriangleDouble(V3D_LineSegmentDouble ls, V3D_PointDouble pt) {
         this(ls.getP(), ls.getQ(), pt);
@@ -280,6 +284,9 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * efficiency reasons.
      *
      * @param pl What {@link #pl} is set to.
+     * @param p A point.
+     * @param q A point.
+     * @param r A point.
      */
     public V3D_TriangleDouble(V3D_PlaneDouble pl, V3D_PointDouble p,
             V3D_PointDouble q, V3D_PointDouble r) {
@@ -1081,11 +1088,11 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
 
                         if (grp == null) {
                             return null;
-                        } else if (grp instanceof V3D_PointDouble grpp) {
+                        } else if (grp instanceof V3D_PointDouble) {
                             return grp;
                         } else {
                             if (qi) {
-                                return new V3D_TriangleDouble((V3D_LineSegmentDouble) grp, pttq);
+                                return getGeometry((V3D_LineSegmentDouble) grp, pttq, epsilon);
                             } else {
                                 return grp;
                             }
@@ -1107,7 +1114,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                         if (grp == null) {
 
                             if (pi) {
-                                return new V3D_TriangleDouble(gqrl, pttp);
+                                return getGeometry(gqrl, pttp, epsilon);
                             } else {
                                 return gqr;
                             }
@@ -1159,7 +1166,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
                         if (grp == null) {
 
                             if (ri) {
-                                return new V3D_TriangleDouble(gpql, pttr);
+                                return getGeometry(gpql, pttr, epsilon);
                             } else {
                                 return gpq;
                             }

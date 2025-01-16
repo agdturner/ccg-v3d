@@ -1283,7 +1283,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                             return grp;
                         } else {
                             if (qi) {
-                                return new V3D_Triangle((V3D_LineSegment) grp, pttq, oom, rm);
+                                return getGeometry((V3D_LineSegment) grp, pttq, oom, rm);
                             } else {
                                 return grp;
                             }
@@ -1305,7 +1305,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                         if (grp == null) {
 
                             if (pi) {
-                                return new V3D_Triangle(gqrl, pttp, oom, rm);
+                                return getGeometry(gqrl, pttp, oom, rm);
                             } else {
                                 return gqr;
                             }
@@ -1356,7 +1356,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
                         if (grp == null) {
                             
                             if (ri) {
-                                return new V3D_Triangle(gpql, pttr, oom, rm);
+                                return getGeometry(gpql, pttr, oom, rm);
                             } else {
                                 return gpq;
                             }
