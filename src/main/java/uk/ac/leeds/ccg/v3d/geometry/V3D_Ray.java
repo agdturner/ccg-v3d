@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 
 /**
@@ -538,12 +539,12 @@ public class V3D_Ray extends V3D_Geometry {
 //    }
 
     @Override
-    public V3D_Ray rotate(V3D_Ray ray, V3D_Vector uv, Math_AngleBigRational ma, 
+    public V3D_Ray rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
         if (theta.isZero()) {
            return new V3D_Ray(this);
         } else {
-            return new V3D_Ray(l.rotate(ray, uv, ma, theta, oom, rm));
+            return new V3D_Ray(l.rotate(ray, uv, bd, theta, oom, rm));
         }
     }
 }

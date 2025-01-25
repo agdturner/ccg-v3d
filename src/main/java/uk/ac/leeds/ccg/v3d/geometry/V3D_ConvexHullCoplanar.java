@@ -22,8 +22,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
@@ -550,10 +550,10 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 //    }
     @Override
     public V3D_ConvexHullCoplanar rotate(V3D_Ray ray, V3D_Vector uv, 
-            Math_AngleBigRational ma, BigRational theta, int oom, RoundingMode rm) {
+            Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
         V3D_Triangle[] rts = new V3D_Triangle[triangles.size()];
         for (int i = 0; i < triangles.size(); i++) {
-            rts[0] = triangles.get(i).rotate(ray, uv, ma, theta, oom, rm);
+            rts[0] = triangles.get(i).rotate(ray, uv, bd, theta, oom, rm);
         }
         return new V3D_ConvexHullCoplanar(oom, rm, rts);
     }

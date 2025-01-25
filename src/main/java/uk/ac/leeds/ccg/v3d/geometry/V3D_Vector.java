@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
@@ -83,14 +84,24 @@ public class V3D_Vector implements Serializable {
     public static final V3D_Vector K = new V3D_Vector(0, 0, 1);
 
     /**
+     * The NI vector {@code <-1,0,0>}.
+     */
+    public static final V3D_Vector NI = new V3D_Vector(-1, 0, 0);
+
+    /**
+     * The NJ vector {@code <0,-1,0>}.
+     */
+    public static final V3D_Vector NJ = new V3D_Vector(0, -1, 0);
+
+    /**
+     * The NK vector {@code <0,0,-1>}.
+     */
+    public static final V3D_Vector NK = new V3D_Vector(0, 0, -1);
+    
+    /**
      * The IJ vector {@code <1,1,0>}.
      */
     public static final V3D_Vector IJ = new V3D_Vector(1, 1, 0);
-
-    /**
-     * The IJ vector {@code <1,-1,0>}.
-     */
-    public static final V3D_Vector InJ = new V3D_Vector(1, -1, 0);
 
     /**
      * The IK vector {@code <1,0,1>}.
@@ -98,24 +109,94 @@ public class V3D_Vector implements Serializable {
     public static final V3D_Vector IK = new V3D_Vector(1, 0, 1);
 
     /**
-     * The IK vector {@code <1,0,-1>}.
-     */
-    public static final V3D_Vector InK = new V3D_Vector(1, 0, -1);
-
-    /**
      * The JK vector {@code <0,1,1>}.
      */
     public static final V3D_Vector JK = new V3D_Vector(0, 1, 1);
 
     /**
-     * The JK vector {@code <0,1,-1>}.
+     * The INK vector {@code <1,0,-1>}.
      */
-    public static final V3D_Vector JnK = new V3D_Vector(0, 1, -1);
+    public static final V3D_Vector INK = new V3D_Vector(1, 0, -1);
+
+    /**
+     * The INJ vector {@code <1,-1,0>}.
+     */
+    public static final V3D_Vector INJ = new V3D_Vector(1, -1, 0);
+
+    /**
+     * The JNK vector {@code <0,1,-1>}.
+     */
+    public static final V3D_Vector JNK = new V3D_Vector(0, 1, -1);
+
+    /**
+     * The NJK vector {@code <0,-1,1>}.
+     */
+    public static final V3D_Vector NJK = new V3D_Vector(0, -1, 1);
+
+    /**
+     * The NIJ vector {@code <-1,1,0>}.
+     */
+    public static final V3D_Vector NIJ = new V3D_Vector(-1, 1, 0);
+
+    /**
+     * The NIK vector {@code <-1,0,1>}.
+     */
+    public static final V3D_Vector NIK = new V3D_Vector(-1, 0, 1);
+
+    /**
+     * The NJNK vector {@code <0,-1,-1>}.
+     */
+    public static final V3D_Vector NJNK = new V3D_Vector(0, -1, -1);
+
+    /**
+     * The NINK vector {@code <-1,0,-1>}.
+     */
+    public static final V3D_Vector NINK = new V3D_Vector(-1, 0, -1);
+    
+    /**
+     * The NINJ vector {@code <-1,-1,0>}.
+     */
+    public static final V3D_Vector NINJ = new V3D_Vector(-1, -1, 0);
 
     /**
      * The IJK vector {@code <1,1,1>} where:
      */
     public static final V3D_Vector IJK = new V3D_Vector(1, 1, 1);
+
+    /**
+     * The IJNK vector {@code <1,1,-1>} where:
+     */
+    public static final V3D_Vector IJNK = new V3D_Vector(1, 1, -1);
+
+    /**
+     * The INJK vector {@code <1,-1,1>} where:
+     */
+    public static final V3D_Vector INJK = new V3D_Vector(1, -1, 1);
+
+    /**
+     * The NIJK vector {@code <-1,1,1>} where:
+     */
+    public static final V3D_Vector NIJK = new V3D_Vector(-1, 1, 1);
+
+    /**
+     * The INJNK vector {@code <1,-1,-1>} where:
+     */
+    public static final V3D_Vector INJNK = new V3D_Vector(1, -1, -1);
+
+    /**
+     * The NIJNK vector {@code <-1,1,-1>} where:
+     */
+    public static final V3D_Vector NIJNK = new V3D_Vector(-1, 1, -1);
+
+    /**
+     * The NINJK vector {@code <-1,-1,1>} where:
+     */
+    public static final V3D_Vector NINJK = new V3D_Vector(-1, -1, 1);
+
+    /**
+     * The NINJNK vector {@code <-1,-1,-1>} where:
+     */
+    public static final V3D_Vector NINJNK = new V3D_Vector(-1, -1, -1);
 
     /**
      * Create a new instance.
@@ -1041,9 +1122,9 @@ public class V3D_Vector implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return The vector which is {@code #this} rotated using the parameters.
      */
-    public V3D_Vector rotate(V3D_Vector axis, Math_AngleBigRational ma, 
+    public V3D_Vector rotate(V3D_Vector axis, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
-        BigRational na = ma.normalise(theta, oom, rm);
+        BigRational na = Math_AngleBigRational.normalise(theta, bd, oom, rm);
         if (na.compareTo(BigRational.ZERO) == 1) {
             int oomn2 = oom - 6;
             BigRational adx = axis.getDX(oomn2, rm);
@@ -1147,6 +1228,7 @@ public class V3D_Vector implements Serializable {
      * <tr><td>ID</td><td>Description (P is positive, N is Negative)</td></tr>
      * </thead>
      * <tbody>
+     * <tr><td>0</td><td>0, 0, 0</td></tr>
      * <tr><td>1</td><td>Pdx, Pdy, Pdz</td></tr>
      * <tr><td>2</td><td>Pdx, Pdy, Ndz</td></tr>
      * <tr><td>3</td><td>Pdx, Ndy, Pdz</td></tr>
@@ -1162,7 +1244,11 @@ public class V3D_Vector implements Serializable {
         if (dx.compareTo(Math_BigRationalSqrt.ZERO) != -1) {
             if (dy.compareTo(Math_BigRationalSqrt.ZERO) != -1) {
                 if (dz.compareTo(Math_BigRationalSqrt.ZERO) != -1) {
-                    return 1;
+                    if (isZero()) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
                 } else {
                     return 2;
                 }

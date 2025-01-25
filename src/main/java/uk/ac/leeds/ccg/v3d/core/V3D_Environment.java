@@ -66,7 +66,7 @@ public class V3D_Environment implements Serializable {
     public static final int DEFAULT_OOM = -3;
     
     /**
-     * The default Order of Magnitude.
+     * The default RoundingMode.
      */
     public static final RoundingMode DEFAULT_RM = RoundingMode.HALF_UP;
     

@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
@@ -1669,13 +1670,13 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Tetrahedron rotate(V3D_Ray ray, V3D_Vector uv, Math_AngleBigRational ma, 
+    public V3D_Tetrahedron rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
         return new V3D_Tetrahedron(
-                getP().rotate(ray, uv, ma, theta, oom, rm),
-                getQ().rotate(ray, uv, ma, theta, oom, rm),
-                getR().rotate(ray, uv, ma, theta, oom, rm),
-                getS().rotate(ray, uv, ma, theta, oom, rm), oom, rm);
+                getP().rotate(ray, uv, bd, theta, oom, rm),
+                getQ().rotate(ray, uv, bd, theta, oom, rm),
+                getR().rotate(ray, uv, bd, theta, oom, rm),
+                getS().rotate(ray, uv, bd, theta, oom, rm), oom, rm);
     }
 
     /**

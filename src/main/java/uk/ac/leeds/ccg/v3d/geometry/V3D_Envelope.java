@@ -283,15 +283,13 @@ public class V3D_Envelope implements Serializable {
      */
     public V3D_Envelope(int oom, V3D_Point... points) {
         //offset = points[0].offset;
-        //offset = V3D_Vector.ZERO;
+        offset = V3D_Vector.ZERO;
         int len = points.length;
         switch (len) {
             case 0 ->
                 throw new RuntimeException("Cannot create envelope from an empty "
                         + "collection of points.");
             case 1 -> {
-                //offset = points[0].offset;
-                offset = V3D_Vector.ZERO;
                 xMin = points[0].getX(oom, RoundingMode.FLOOR);
                 xMax = points[0].getX(oom, RoundingMode.CEILING);
                 yMin = points[0].getY(oom, RoundingMode.FLOOR);
@@ -300,8 +298,6 @@ public class V3D_Envelope implements Serializable {
                 zMax = points[0].getZ(oom, RoundingMode.CEILING);
             }
             default -> {
-                //offset = points[0].offset;
-                offset = V3D_Vector.ZERO;
                 BigRational xmin = points[0].getX(oom, RoundingMode.FLOOR);
                 BigRational xmax = points[0].getX(oom, RoundingMode.CEILING);
                 BigRational ymin = points[0].getY(oom, RoundingMode.FLOOR);
@@ -389,7 +385,6 @@ public class V3D_Envelope implements Serializable {
     /**
      * @param e The V3D_Envelope to union with this.
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return an Envelope which is {@code this} union {@code e}.
      */
     public V3D_Envelope union(V3D_Envelope e, int oom) {
@@ -490,7 +485,7 @@ public class V3D_Envelope implements Serializable {
     }
 
     /**
-     * @param l The point to test for intersection.
+     * @param l The line to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code pl}
@@ -499,7 +494,7 @@ public class V3D_Envelope implements Serializable {
         if (isIntersectedBy(l.getP(), oom, rm)) {
             return true;
         } else {
-            if (isIntersectedBy(l.getP(), oom, rm)) {
+            if (isIntersectedBy(l.getQ(oom, rm), oom, rm)) {
                 return true;
             } else {
                 V3D_Plane xMinPlane0 = getXMinPlane(oom);

@@ -21,6 +21,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
@@ -470,17 +471,17 @@ public class V3D_Point extends V3D_FiniteGeometry {
     /**
      * Rotates the point about {@link offset}.
      *
-     * @param axis The axis of rotation.
+     * @param ray The axis of rotation.
      * @param theta The angle of rotation.
-     * @param ma The Math_AngleBigRational for obtaining PI and normalising angles.
+     * @param ma The  for obtaining PI and normalising angles.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
      */
     @Override
-    public V3D_Point rotate(V3D_Ray ray, V3D_Vector uv, Math_AngleBigRational ma, 
+    public V3D_Point rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
         int oomn9 = oom - 9;
-        BigRational na = ma.normalise(theta, oomn9, rm);
+        BigRational na = Math_AngleBigRational.normalise(theta, bd, oomn9, rm);
         if (na.compareTo(BigRational.ZERO) == 0) {
             return new V3D_Point(this);
         }
@@ -493,7 +494,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
             r = new V3D_Point(tpv);
         } else {
             Math_BigRationalSqrt magnitude = tpv.getMagnitude(oomn9, rm);
-            V3D_Vector tpr = tpv.getUnitVector(oomn9, rm).rotate(uv, ma, theta, oomn9, rm);
+            V3D_Vector tpr = tpv.getUnitVector(oomn9, rm).rotate(uv, bd, theta, oomn9, rm);
             r = new V3D_Point(tpr.multiply(magnitude.getSqrt(oomn9, rm), oomn9, rm));
         }
         r.translate(tv, oomn9, rm);

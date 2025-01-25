@@ -281,7 +281,7 @@ public class V3D_V implements Serializable {
     public BigRational getDistance(V3D_V p, int oom, RoundingMode rm) {
         return new Math_BigRationalSqrt(x.subtract(p.x).pow(2)
                 .add(y.subtract(p.y).pow(2))
-                .add(y.subtract(p.y).pow(2)), oom, rm).getSqrt(oom, rm);
+                .add(z.subtract(p.z).pow(2)), oom, rm).getSqrt(oom, rm);
     }
 
     /**

@@ -3582,29 +3582,29 @@ public class V3D_PlaneTest extends V3D_Test {
         System.out.println("rotate");
         int oom = -5;
         RoundingMode rm = RoundingMode.HALF_UP;
-        Math_AngleBigRational ma = new Math_AngleBigRational();
+        Math_BigDecimal bd = new Math_BigDecimal();
         BigRational Pi = BigRational.valueOf(
-                new Math_BigDecimal().getPi(oom, RoundingMode.HALF_UP));
+                bd.getPi(oom, RoundingMode.HALF_UP));
         V3D_Ray xaxis = new V3D_Ray(V3D_Test.pP0P0P0, V3D_Vector.I);
         V3D_Ray yaxis = new V3D_Ray(V3D_Test.pP0P0P0, V3D_Vector.J);
         V3D_Ray zaxis = new V3D_Ray(V3D_Test.pP0P0P0, V3D_Vector.K);
         // Test1
         BigRational theta = Pi.divide(2);
         V3D_Plane instance = new V3D_Plane(V3D_Plane.X0);
-        instance = instance.rotate(xaxis, xaxis.l.v, ma, theta, oom, rm);
+        instance = instance.rotate(xaxis, xaxis.l.v, bd, theta, oom, rm);
         assertTrue(V3D_Plane.X0.equalsIgnoreOrientation(instance, oom, rm));
         // Test 2
         instance = new V3D_Plane(V3D_Plane.X0);
-        instance = instance.rotate(yaxis, yaxis.l.v, ma, theta, oom, rm);
+        instance = instance.rotate(yaxis, yaxis.l.v, bd, theta, oom, rm);
         assertTrue(V3D_Plane.Z0.equalsIgnoreOrientation(instance, oom, rm));
         // Test 3
         instance = new V3D_Plane(V3D_Plane.X0);
-        instance = instance.rotate(zaxis, zaxis.l.v, ma, theta, oom, rm);
+        instance = instance.rotate(zaxis, zaxis.l.v, bd, theta, oom, rm);
         assertTrue(V3D_Plane.Y0.equalsIgnoreOrientation(instance, oom, rm));
         // Test 4
         theta = Pi;
         instance = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm);
-        instance = instance.rotate(xaxis, xaxis.l.v, ma, theta, oom, rm);
+        instance = instance.rotate(xaxis, xaxis.l.v, bd, theta, oom, rm);
         assertTrue(new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm).equalsIgnoreOrientation(instance, oom, rm));
         // Test 5
         oom = -6;
@@ -3612,13 +3612,13 @@ public class V3D_PlaneTest extends V3D_Test {
                 new Math_BigDecimal().getPi(oom - 2, RoundingMode.HALF_UP));
         theta = Pi;
         instance = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm);
-        instance = instance.rotate(yaxis, yaxis.l.v, ma, theta, oom, rm);
+        instance = instance.rotate(yaxis, yaxis.l.v, bd, theta, oom, rm);
         V3D_Plane expResult = new V3D_Plane(N1P0P0, P0P0P0, P0P2P0, P0P2N2, oom, rm);
         assertTrue(expResult.equalsIgnoreOrientation(instance, oom, rm));
         // Test 6
         theta = Pi;
         instance = new V3D_Plane(P1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm);
-        instance = instance.rotate(zaxis, zaxis.l.v, ma, theta, oom, rm);
+        instance = instance.rotate(zaxis, zaxis.l.v, bd, theta, oom, rm);
         //expResult = new V3D_Plane(N1P0P0, P0P0P0, P0P2P0, P0P2P2, oom, rm);
         expResult = new V3D_Plane(N1P0P0, P0P0P0, P0P2P2, P0P2P0, oom, rm);
         assertTrue(expResult.equalsIgnoreOrientation(instance, oom, rm));

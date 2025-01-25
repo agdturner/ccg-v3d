@@ -19,6 +19,7 @@ import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 //import java.util.ArrayList;
 /**
@@ -304,17 +305,17 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public V3D_Polygon rotate(V3D_Ray ray, V3D_Vector uv, Math_AngleBigRational ma, 
+    public V3D_Polygon rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
         ArrayList<V3D_ConvexHullCoplanar> rparts = new ArrayList<>();
         ArrayList<V3D_ConvexHullCoplanar> rholes = new ArrayList<>();
         if (holes != null) {
             for (int i = 0; i < holes.size(); i++) {
-                rholes.add(holes.get(i).rotate(ray, uv, ma, theta, oom, rm));
+                rholes.add(holes.get(i).rotate(ray, uv, bd, theta, oom, rm));
             }
         }
         for (int i = 0; i < parts.size(); i++) {
-            rparts.add(parts.get(i).rotate(ray, uv, ma, theta, oom, rm));
+            rparts.add(parts.get(i).rotate(ray, uv, bd, theta, oom, rm));
         }
         return new V3D_Polygon(rparts, rholes);
     }
