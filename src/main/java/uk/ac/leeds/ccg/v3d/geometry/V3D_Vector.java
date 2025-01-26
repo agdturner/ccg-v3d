@@ -1126,15 +1126,15 @@ public class V3D_Vector implements Serializable {
             BigRational theta, int oom, RoundingMode rm) {
         BigRational na = Math_AngleBigRational.normalise(theta, bd, oom, rm);
         if (na.compareTo(BigRational.ZERO) == 1) {
-            int oomn2 = oom - 6;
-            BigRational adx = axis.getDX(oomn2, rm);
-            BigRational ady = axis.getDY(oomn2, rm);
-            BigRational adz = axis.getDZ(oomn2, rm);
+            int oomn9 = oom - 9;
+            BigRational adx = axis.getDX(oomn9, rm);
+            BigRational ady = axis.getDY(oomn9, rm);
+            BigRational adz = axis.getDZ(oomn9, rm);
             BigRational thetaDiv2 = na.divide(2);
             BigRational sinThetaDiv2 = Math_BigRational.sin(thetaDiv2,
-                    V3D_Environment.bd.getBi(), oomn2, rm);
+                    V3D_Environment.bd.getBi(), oomn9, rm);
             BigRational w = Math_BigRational.cos(thetaDiv2,
-                    V3D_Environment.bd.getBi(), oomn2, rm);
+                    V3D_Environment.bd.getBi(), oomn9, rm);
             BigRational x = sinThetaDiv2.multiply(adx);
             BigRational y = sinThetaDiv2.multiply(ady);
             BigRational z = sinThetaDiv2.multiply(adz);
@@ -1144,8 +1144,8 @@ public class V3D_Vector implements Serializable {
             Math_Quaternion_BigRational rR = new Math_Quaternion_BigRational(
                     w, x.negate(), y.negate(), z.negate());
             Math_Quaternion_BigRational p = new Math_Quaternion_BigRational(
-                    BigRational.ZERO, this.getDX(oomn2, rm),
-                    this.getDY(oomn2, rm), this.getDZ(oomn2, rm));
+                    BigRational.ZERO, this.getDX(oomn9, rm),
+                    this.getDY(oomn9, rm), this.getDZ(oomn9, rm));
             // P'=pP
             Math_Quaternion_BigRational pP = r.multiply(p).multiply(rR);
             return new V3D_Vector(pP.x, pP.y, pP.z);

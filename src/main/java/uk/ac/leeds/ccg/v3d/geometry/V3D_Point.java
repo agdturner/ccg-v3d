@@ -485,7 +485,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
         if (na.compareTo(BigRational.ZERO) == 0) {
             return new V3D_Point(this);
         }
-        V3D_Vector tv = ray.l.getPointOfIntersection(this, oom, rm).getVector(oomn9, rm);
+        V3D_Vector tv = ray.l.getPointOfIntersection(this, oomn9, rm).getVector(oomn9, rm);
         V3D_Point tp = new V3D_Point(this);
         tp.translate(tv.reverse(), oomn9, rm);
         V3D_Vector tpv = tp.getVector(oomn9, rm);
