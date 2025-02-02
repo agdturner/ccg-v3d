@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 
 /**
  * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding
@@ -458,7 +459,7 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
     @Override
     public V3D_PointDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
-        theta = V3D_AngleDouble.normalise(theta);
+        theta = Math_AngleDouble.normalise(theta);
         if (theta == 0d) {
             return new V3D_PointDouble(this);
         }

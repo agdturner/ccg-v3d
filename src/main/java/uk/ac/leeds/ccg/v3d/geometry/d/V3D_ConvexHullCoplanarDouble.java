@@ -68,7 +68,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
     private static final long serialVersionUID = 1L;
 
     /**
-     * The collection of triangles.
+     * The coplanar triangles that comprise the convex hull.
      */
     protected final ArrayList<V3D_TriangleDouble> triangles;
 

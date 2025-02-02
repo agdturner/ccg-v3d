@@ -20,8 +20,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
-//import java.util.ArrayList;
+
 /**
  * Comprising two collections of V3D_ConvexHullCoplanar one representing parts
  * and the other representing holes. Parts may intersect. Holes may intersect.

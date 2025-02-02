@@ -21,17 +21,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegmentDouble;
 import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VTriangle;
 
 /**
  * For representing and processing triangles in 3D. A triangle has a non-zero
- * area. The corner points are {@link #pl}, {@link #q} and {@link #r}. The
+ * area. The corner points are {@link #p}, {@link #q} and {@link #r}. The
  * following depicts a generic triangle {@code
  *                          pq
- * pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
+ *  p *- - - - - - - - - - - + - - - - - - - - - - -* q
  *     \~                   mpq                   ~/
  *      \  ~                 |                 ~  /
  *       \    ~              |              ~    /
@@ -69,13 +67,6 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * The plane of the triangle
      */
     protected V3D_Plane pl;
-
-//    /**
-//     * A provided unit normal. This can be used to force the normal of 
-//     * {@link #pl} in a particular direction - which may go against the right
-//     * hand rule.
-//     */
-//    public V3D_Vector normal;
     
     /**
      * Defines one of the corners of the triangle.

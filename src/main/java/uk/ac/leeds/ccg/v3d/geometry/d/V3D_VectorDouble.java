@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry.d;
 import java.io.Serializable;
 import java.util.Objects;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.math.number.Math_Quaternion_Double;
 import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VDouble;
 
@@ -824,7 +825,7 @@ public class V3D_VectorDouble implements Serializable {
      * @return The vector which is {@code #this} rotated using the parameters.
      */
     public V3D_VectorDouble rotate(V3D_VectorDouble uv, double theta) {
-        theta = V3D_AngleDouble.normalise(theta);
+        theta = Math_AngleDouble.normalise(theta);
         if (theta == 0d) {
             return new V3D_VectorDouble(this);
         } else {
