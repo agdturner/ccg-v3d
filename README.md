@@ -1,37 +1,20 @@
 # [ccg-v3d](https://github.com/agdturner/ccg-v3d)
 
 ## Description
-A three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry) Java library. The library is modularised, based on [openJDK 17](https://openjdk.java.net/projects/jdk/17/), and has very few lightweight dependencies.
+A modular three-dimensional ([3D](https://en.wikipedia.org/wiki/Euclidean_space)) [Euclidean geometry](https://en.wikipedia.org/wiki/Euclidean_geometry) Java library.
 
-Point positions in space are defined using [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinates with [orthogonal](https://en.wikipedia.org/wiki/Orthogonality) X, Y and Z axes that meet at the origin - a point <x,y,z> where x=y=z=0. Coordinates are either stored as [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java) numbers - a subset of [rational numbers](https://en.wikipedia.org/wiki/Rational_number), or [Math_BigRationalSqrt](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRationalSqrt.java) - that also support non-rational square roots. With these numbers, the precision of calculations is done to a user specified [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) (OOM). Additionally, coordinates can also be stored in IEEE double precision and calculations are done as precisely as this allows often requiring an epsilon (a small value) to be specified to determine whether two 
-vectors are the same or whether an intersection occurs.
+There are two main implementations in the library that are distinguished by the type of numbers used for calculations and to represent coordinates:
 
-The coordinate system is "right handed", so: if X increases to the right of this page; and, Y increases towards the top of this page, then Z increases out from the page, (see [Orientation](https://en.wikipedia.org/wiki/Orientation_(vector_space)) and the [note on the choice of right over left handedness](#handedness) for details of why this handedness was chosen. This library is being developed to support large scale Earth Science applications, but may have other uses. Notes about the cartesian [origin](#origin), and [projections](#projections) are also provided below.
+1. Coordinates and calculations using Java double precision primitive numbers.
+2. Coordinates and calculations using a combination of [BigRational](https://github.com/eobermuhlner/big-math/blob/master/ch.obermuhlner.math.big/src/main/java/ch/obermuhlner/math/big/BigRational.java) and [Math_BigRationalSqrt](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRationalSqrt.java) numbers.
 
-Supporting both IEEE double precision floating point and more arbitrary precision numbers could be useful for exploring precision issues.  
+Vectors are defined using [cartesian](https://en.wikipedia.org/wiki/Cartesian_coordinate_system) coordinates with [orthogonal](https://en.wikipedia.org/wiki/Orthogonality) X, Y and Z axes that meet at the origin - a point <x,y,z> where x=y=z=0. Geometry based on coordinates stored as Java double precision numbers typically use a small tollerance value (epsilon) to evaluate whether two vectors are the same. The accuracy of this geometry is variable which is due to the nature of [floating point arithmetic](https://en.wikipedia.org/wiki/Floating-point_arithmetic). Coordinates stored using [Math_BigRationalSqrt](https://github.com/agdturner/ccg-math/blob/master/src/main/java/uk/ac/leeds/ccg/math/number/Math_BigRationalSqrt.java) can have non-rational square root values and calculation can be done with these where the user can specify the [Order of Magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) (OOM) of the precision desired.
 
-## Latest versioned releases
-```
-<!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-v3d -->
-<dependency>
-    <groupId>io.github.agdturner</groupId>
-    <artifactId>ccg-v3d</artifactId>
-    <version>0.19</version>
-</dependency>
-```
-[JAR](https://repo1.maven.org/maven2/io/github/agdturner/ccg-v3d/0.19/ccg-v3d-0.19.jar)
-```
-<!-- https://mvnrepository.com/artifact/io.github.agdturner/ccg-v3d -->
-<dependency>
-    <groupId>io.github.agdturner</groupId>
-    <artifactId>ccg-v3d</artifactId>
-    <version>0.20-SNAPSHOT</version>
-</dependency>
-```
-[Sonatype SNAPSHOT Directory](https://oss.sonatype.org/content/repositories/snapshots/io/github/agdturner/ccg-v3d/0.20-SNAPSHOT/)
+The coordinate system is "right handed", so: if X increases to the right of this page; and, Y increases towards the top of this page, then Z increases out from the page, (see [Orientation](https://en.wikipedia.org/wiki/Orientation_(vector_space)) and the [note on the choice of right over left handedness](#handedness) for details of why this handedness was chosen.
 
-## Getting Started
-Please fork the repository and create a clone. Using [Maven](https://maven.apache.org/) is recommended (and your favourite Integrated Development Environment). The unit tests show how the library might be used for calculating things like the intersection of two geometries, or the minimum distance between two geometries. Another entry point is [ccg-r3d](https://github.com/agdturner/ccg-r3d) - a rendering library for geometry visualisation.
+The original intention was for this library to support large scale Earth Science applications.
+
+The development of the library is aided by [ccg-r3d](https://github.com/agdturner/ccg-r3d) - a rendering library for visualising 3D spatial geometry.
 
 ## Details
 ### Lightweight Geometry
@@ -52,13 +35,13 @@ Please fork the repository and create a clone. Using [Maven](https://maven.apach
 - [V3D_Tetrahedron](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/V3D_Tetrahedron.java) and [V3D_TetrahedronDouble](https://github.com/agdturner/ccg-v3d/blob/master/src/main/java/uk/ac/leeds/ccg/v3d/geometry/d/V3D_TetrahedronDouble.java) represent [tetrahedra](https://en.wikipedia.org/wiki/Tetrahedra).
 
 ## Geometry collections
-- There are rudimentary classes for: collections of collinear and coplanar points, and collinear line segments; Rectangle, coplanar [convex hull](https://en.wikipedia.org/wiki/Convex_hull)s and polygon; coplanar and non-coplanar triangles; and tetrahedrons.
+- There are rudimentary classes for: collections of collinear and coplanar points and line segments; Rectangle, coplanar [convex hull](https://en.wikipedia.org/wiki/Convex_hull)s and polygon; coplanar and non-coplanar triangles; and tetrahedrons.
 
 ## Development plans and progress
 - Translating (moving) geometries to new locations is supported.
 - Rotating geometries is supported.
 - Scaling and warping geometries is not yet supported.
-- [Apache Commons Geometry](https://commons.apache.org/proper/commons-geometry/) (see also: [Apache Commons Geometry GitHub Repository](https://github.com/apache/commons-geometry)) appears to be developing some similar arbitrary precision geometrical functionality... Collaboration should be explored!
+- [Apache Commons Geometry](https://commons.apache.org/proper/commons-geometry/) (see also: [Apache Commons Geometry GitHub Repository](https://github.com/apache/commons-geometry)) appears to be developing some similar arbitrary precision geometrical functionality... 
 - Intersections
 -- It would be useful to be able to distinguish between geometries that touch at a point, along a line or line_segment or over an area; and those that overlap (all or part of) another geometry.
 -- Geometry intersections calculations for triangular or simpler geometries are supported.
@@ -70,40 +53,15 @@ Please fork the repository and create a clone. Using [Maven](https://maven.apach
 - Surface Areas, Perimeters and Volumes
 -- For some shapes there are implementations of methods for calculating these.
 
-### Origins
-The library began development in March 2020. The original idea was to create a simple gravitational model of our [solar system](https://en.wikipedia.org/wiki/Solar_system) and learn more about 3D modelling and to also think about how to calculate the volumes of ice on Earth.
-### Summary of changes
-#### 0.16 to 0.20
-Changed to use BigRational directly and Math_BigRational for aditional arithmetic.
-#### 0.15 to 0.16
-- Major simplification of V3D_Envelope. V3D_Plane are now always stored as a point and a normal vector. Each traingle is associated with a plane.
-#### 0.14 to 0.15
-- Added more tests for intersections.
-#### 0.13 to 0.14
-- Added a package of lightweight geometries.
-- Enabled some rotation using quaternions.
-#### 0.10 to 0.13
-- Added an offset vector for geometries to allow them to be translated.
-#### 0.9 to 0.10
-- Added V3D_Tetrahedron class, and V3D_TetrahedronPoly, V3D_TrianglePolyPlanar and V3D_LineSegmentPolyCollinear collection classes.
-#### 0.8 to 0.9
-- Change from left-handed to right handed coordinate system.
-#### 0.7 to 0.8
-- Simplifications to the intersection methods removing the static methods.
-- Added a V3D_Ray class.
-
-## Contributions and supporting users
-- Contributions are welcome.
+## Contributions and collaboration
+- Please submit issues.
 
 ## LICENCE
 - APACHE LICENSE, VERSION 2.0: https://www.apache.org/licenses/LICENSE-2.0
 
 ## Acknowledgements and thanks
-- The [University of Leeds](http://www.leeds.ac.uk) has supported the development of this library and some of the dependencies.
-- Thank you to those that have and continue to develop the Java language.
-- Thank you Eric (_et al._) for the [BigMath](https://github.com/eobermuhlner/big-math) library.
-- Thank you developers and maintainers of [Apache Maven](https://maven.apache.org/), [Sonatype Nexus Repository Manager](https://oss.sonatype.org/), [Apache NetBeans](https://netbeans.apache.org/), [git](https://git-scm.com/) and [GitHub](http://github.com) for supporting the development of this code and for providing a means of creating a community of users/developers.
-- Thank you developers, maintainers and contributors of useful information content made available on the Web. Key information that has helped to develop this library is cited in the source code.
+- The [University of Leeds](http://www.leeds.ac.uk) and externally funded research projects supported the development of some of the library dependencies.
+- Thank you Eric for the [BigMath](https://github.com/eobermuhlner/big-math) library.
 
 # Notes
 
@@ -119,16 +77,16 @@ Handedness or [chirality](https://en.wikipedia.org/wiki/Chirality_(physics)) con
 
 ## References
 ### Similar software for review
-- [VTK-m](https://m.vtk.org/) - [README](https://gitlab.kitware.com/vtk/vtk-m/blob/master/README.md)
+- [VTK-m](https://m.vtk.org/) - [README](https://gitlab.kitware.com/vtk/vtk-m/blob/master/README.md) - [VTK-m GitHub Mirror](https://github.com/Kitware/VTK-M)
   - Languages: C/C++.
   - Uses floating point for the coordinate system.
 - [VisIt](https://visit-dav.github.io/visit-website/index.html)
   - Open Source, interactive, scalable, visualization, animation and analysis tool.
-  - Langauges: C 75.8%, C++ 12.8%, Python 3.8%, Java 3.0%
+  - Languages: C 75.8%, C++ 12.8%, Python 3.8%, Java 3.0%
   - [Github repository](https://github.com/visit-dav/visit/)
 - [Fides](https://fides.readthedocs.io/en/latest/)
   - Fides enables complex scientific workflows to seamlessly integrate simulation and visualization. This is done by providing a data model in JSON that describes the mesh and fields in the data to be read. Using this data model, Fides maps [ADIOS2](https://github.com/ornladios/ADIOS2) data arrays (from files or streams) to [VTK-m](https://m.vtk.org/) datasets, enabling visualization of the data using shared- and distributed-memory parallel algorithms.
   - Can be used with Paraview
 - [ParaView](https://www.paraview.org/)
   - Open source post-processing visualization engine.
-  - Uses [VTK](https://vtk.org/) - an open-source, freely available software system for 3D computer graphics, modeling, image processing, volume rendering, scientific visualization, and 2D plotting
+  - Uses [VTK](https://vtk.org/) - an open-source, freely available software system for 3D computer graphics, modeling, image processing, volume rendering, scientific visualization, and 2D plotting - [VTK GitHub Mirror](https://github.com/Kitware/VTK)
