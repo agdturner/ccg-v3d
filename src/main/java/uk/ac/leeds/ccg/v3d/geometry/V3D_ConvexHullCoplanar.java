@@ -81,6 +81,13 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      */
     protected final ArrayList<V3D_Point> points;
 
+    public V3D_ConvexHullCoplanar(V3D_ConvexHullCoplanar c) {
+        points = new ArrayList<>();
+        c.points.forEach(x -> points.add(new V3D_Point(x)));
+        triangles = new ArrayList<>();
+        c.triangles.forEach(x -> triangles.add(new V3D_Triangle(x)));
+    }
+    
     /**
      * Create a new instance.
      *
@@ -549,7 +556,18 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 //        return getEnvelope().isIntersectedBy(l, oom);
 //    }
     @Override
-    public V3D_ConvexHullCoplanar rotate(V3D_Ray ray, V3D_Vector uv, 
+    public V3D_ConvexHullCoplanar rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_ConvexHullCoplanar(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
+    @Override
+    public V3D_ConvexHullCoplanar rotateN(V3D_Ray ray, V3D_Vector uv, 
             Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
         V3D_Triangle[] rts = new V3D_Triangle[triangles.size()];
         for (int i = 0; i < triangles.size(); i++) {

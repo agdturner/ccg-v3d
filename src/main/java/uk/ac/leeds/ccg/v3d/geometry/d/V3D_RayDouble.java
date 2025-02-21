@@ -506,10 +506,11 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
     }
 
     /**
-     * Calculates and returns if pt is in the direction of the ray (i.e. the
-     * same side of the ray start point plane as another point on the ray).
+     * Calculates and returns if pt is in the direction of the ray (i.e.the
+ same side of the ray start point plane as another point on the ray).
      *
      * @param pt The point.
+     * @param epsilon
      * @return {@code true} If pt is in line with this.
      */
     public boolean isAligned(V3D_PointDouble pt, double epsilon) {
@@ -527,13 +528,19 @@ public class V3D_RayDouble extends V3D_GeometryDouble {
     }
     
     @Override
-    public V3D_RayDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv, 
+    public V3D_RayDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
         theta = Math_AngleDouble.normalise(theta);
         if (theta == 0d) {
             return new V3D_RayDouble(this);
         } else {
-            return new V3D_RayDouble(l.rotate(ray, uv, theta, epsilon));
+            return rotateN(ray, uv, theta, epsilon);
         }
+    }
+    
+    @Override
+    public V3D_RayDouble rotateN(V3D_RayDouble ray, V3D_VectorDouble uv, 
+            double theta, double epsilon) {
+        return new V3D_RayDouble(l.rotate(ray, uv, theta, epsilon));
     }
 }

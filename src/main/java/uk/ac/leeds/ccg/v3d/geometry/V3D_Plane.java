@@ -1939,8 +1939,19 @@ public class V3D_Plane extends V3D_Geometry {
     @Override
     public V3D_Plane rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
-        return new V3D_Plane(getP().rotate(ray, uv, bd, theta, oom, rm),
-                n.rotate(uv, bd, theta, oom, rm));
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_Plane(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
+    @Override
+    public V3D_Plane rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        return new V3D_Plane(getP().rotateN(ray, uv, bd, theta, oom, rm),
+                n.rotateN(uv, bd, theta, oom, rm));
     }
 
     /**

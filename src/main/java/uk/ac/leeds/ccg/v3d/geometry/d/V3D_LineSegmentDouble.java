@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.v3d.geometry.*;
 
 /**
@@ -1187,6 +1188,17 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
 
     @Override
     public V3D_LineSegmentDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
+        theta = Math_AngleDouble.normalise(theta);
+        if (theta == 0d) {
+            return new V3D_LineSegmentDouble(this);
+        } else {
+            return rotateN(ray, uv, theta, epsilon);
+        }
+    }
+
+    @Override
+    public V3D_LineSegmentDouble rotateN(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
         return new V3D_LineSegmentDouble(
                 getP().rotate(ray, uv, theta, epsilon),

@@ -19,6 +19,7 @@ import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 
 /**
@@ -56,6 +57,11 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
      */
     protected V3D_ConvexHullCoplanar convexHull;
 
+    public V3D_Rectangle(V3D_Rectangle r) {
+        pqr = new V3D_Triangle(r.pqr);
+        rsp = new V3D_Triangle(r.rsp);
+    }
+            
     /**
      * Create a new instance.
      * @param r
@@ -378,6 +384,17 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
 
     @Override
     public V3D_Rectangle rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_Rectangle(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
+    @Override
+    public V3D_Rectangle rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
         return new V3D_Rectangle(
                 getP().rotate(ray, uv, bd, theta, oom, rm),

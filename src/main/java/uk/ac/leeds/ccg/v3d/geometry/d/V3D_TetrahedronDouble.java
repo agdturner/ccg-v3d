@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry.d;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 
 /**
  *
@@ -104,6 +105,22 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
     public V3D_TriangleDouble psq;
 
     /**
+     * 
+     * @param t The tetrahedron to instantiate from/copy/clone.
+     */
+    public V3D_TetrahedronDouble(V3D_TetrahedronDouble t) {
+        super(new V3D_VectorDouble(t.offset));
+        p = new V3D_VectorDouble(t.p);
+        q = new V3D_VectorDouble(t.q);
+        r = new V3D_VectorDouble(t.r);
+        s = new V3D_VectorDouble(t.s);
+        pqr = new V3D_TriangleDouble(t.pqr);
+        qsr = new V3D_TriangleDouble(t.qsr);
+        spr = new V3D_TriangleDouble(t.spr);
+        psq = new V3D_TriangleDouble(t.psq);
+    }
+    
+    /**
      * Create a new instance. {@code pl}, {@code qv}, {@code r} and {@code s}
      * must all be different, not the zero vector and collectively they must be
      * three dimensional. This is generally the fastest way to construct a
@@ -118,10 +135,10 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
     public V3D_TetrahedronDouble(V3D_VectorDouble offset, V3D_VectorDouble p,
             V3D_VectorDouble q, V3D_VectorDouble r, V3D_VectorDouble s) {
         super(offset);
-        this.p = p;
-        this.q = q;
-        this.r = r;
-        this.s = s;
+        this.p = new V3D_VectorDouble(p);
+        this.q = new V3D_VectorDouble(q);
+        this.r = new V3D_VectorDouble(r);
+        this.s = new V3D_VectorDouble(s);
     }
 
     /**
@@ -1597,6 +1614,17 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
 
     @Override
     public V3D_TetrahedronDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
+        theta = Math_AngleDouble.normalise(theta);
+        if (theta == 0d) {
+            return new V3D_TetrahedronDouble(this);
+        } else {
+            return rotateN(ray, uv, theta, epsilon);
+        }
+    }
+    
+    @Override
+    public V3D_TetrahedronDouble rotateN(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
         return new V3D_TetrahedronDouble(
                 getP().rotate(ray, uv, theta, epsilon),

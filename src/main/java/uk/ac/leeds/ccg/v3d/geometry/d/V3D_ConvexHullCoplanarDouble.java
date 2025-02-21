@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 //import java.util.ArrayList;
 
 /**
@@ -77,6 +78,13 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
      */
     protected ArrayList<V3D_PointDouble> points;
 
+    public V3D_ConvexHullCoplanarDouble(V3D_ConvexHullCoplanarDouble c) {
+        points = new ArrayList<>();
+        c.points.forEach(x -> points.add(new V3D_PointDouble(x)));
+        triangles = new ArrayList<>();
+        c.triangles.forEach(x -> triangles.add(new V3D_TriangleDouble(x)));
+    }
+    
     /**
      * Create a new instance.
      *
@@ -585,7 +593,18 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
 //        return getEnvelope().isIntersectedBy(l, oom);
 //    }
     @Override
-    public V3D_ConvexHullCoplanarDouble rotate(V3D_RayDouble ray, 
+    public V3D_ConvexHullCoplanarDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
+        theta = Math_AngleDouble.normalise(theta);
+        if (theta == 0d) {
+            return new V3D_ConvexHullCoplanarDouble(this);
+        } else {
+            return rotateN(ray, uv, theta, epsilon);
+        }
+    }
+    
+    @Override
+    public V3D_ConvexHullCoplanarDouble rotateN(V3D_RayDouble ray, 
             V3D_VectorDouble uv, double theta, double epsilon) {
         V3D_TriangleDouble[] rts = new V3D_TriangleDouble[triangles.size()];
         for (int i = 0; i < triangles.size(); i++) {

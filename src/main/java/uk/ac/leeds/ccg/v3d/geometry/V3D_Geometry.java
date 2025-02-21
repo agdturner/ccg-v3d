@@ -139,4 +139,24 @@ public abstract class V3D_Geometry implements Serializable {
      */
     public abstract V3D_Geometry rotate(V3D_Ray r, V3D_Vector uv, 
             Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm);
+    
+    /**
+     * Returns the geometry rotated about the axis of rotation axisOfRotation by
+     * the angle theta. In this geometry a positive rotation angle is in the 
+     * direction of the fingers of the right hand as the thumb points in the 
+     * direction of the axis of rotation.
+     * @param ray The ray defining the axis of rotation about which the geometry
+     * is rotated.
+     * @param uv The unit vector of r. This is passed in as often there is a 
+     * desire to rotate many geometries about a ray and this saves computation 
+     * in calculating the unit vector each time.
+     * @param bd The Math_BigDecimal.
+     * @param theta The normal angle of rotation (theta &gt; 0 && theta &lt; 
+     * 2Pi.) around the the rotation axis in radians.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return The rotated geometry.
+     */
+    public abstract V3D_Geometry rotateN(V3D_Ray ray,  V3D_Vector uv, 
+            Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm);
 }

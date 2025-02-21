@@ -24,7 +24,6 @@ import java.util.List;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.geometry.d.V3D_PointDouble;
 
 /**
  * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding
@@ -468,23 +467,30 @@ public class V3D_Point extends V3D_FiniteGeometry {
         this.rel = rel;
     }
 
+    @Override
+    public V3D_Point rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_Point(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
     /**
      * Rotates the point about {@link offset}.
      *
      * @param ray The axis of rotation.
      * @param theta The angle of rotation.
-     * @param ma The  for obtaining PI and normalising angles.
+     * @param bd The  for obtaining PI and normalising angles.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
      */
     @Override
-    public V3D_Point rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+    public V3D_Point rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
         int oomn9 = oom - 9;
-        BigRational na = Math_AngleBigRational.normalise(theta, bd, oomn9, rm);
-        if (na.compareTo(BigRational.ZERO) == 0) {
-            return new V3D_Point(this);
-        }
         V3D_Vector tv = ray.l.getPointOfIntersection(this, oomn9, rm).getVector(oomn9, rm);
         V3D_Point tp = new V3D_Point(this);
         tp.translate(tv.reverse(), oomn9, rm);
@@ -494,7 +500,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
             r = new V3D_Point(tpv);
         } else {
             Math_BigRationalSqrt magnitude = tpv.getMagnitude(oomn9, rm);
-            V3D_Vector tpr = tpv.getUnitVector(oomn9, rm).rotate(uv, bd, theta, oomn9, rm);
+            V3D_Vector tpr = tpv.getUnitVector(oomn9, rm).rotateN(uv, bd, theta, oomn9, rm);
             r = new V3D_Point(tpr.multiply(magnitude.getSqrt(oomn9, rm), oomn9, rm));
         }
         r.translate(tv, oomn9, rm);

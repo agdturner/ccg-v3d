@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_Double;
 
 /**
@@ -50,7 +51,7 @@ import uk.ac.leeds.ccg.math.matrices.Math_Matrix_Double;
  * @version 1.0
  */
 public class V3D_PlaneDouble extends V3D_GeometryDouble {
-
+    
     private static final long serialVersionUID = 1L;
 
     /**
@@ -262,7 +263,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             p = pl.p.add(pl.offset).subtract(offset);
         }
     }
-
+    
     @Override
     public String toString() {
         //return toString("");
@@ -366,7 +367,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         if (v.isZero()) {
             throw new RuntimeException();
         }
-
+        
         return v;
     }
 
@@ -547,7 +548,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             coeffs[2] = n.dz;
             coeffs[3] = -k;
         }
-
+        
         @Override
         public String toString() {
             return "(" + coeffs[0] + " * x)"
@@ -882,7 +883,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
 //        m[0][1] = 1.0d;
 //        m[0][2] = 1.0d;
 //        m[0][3] = 1.0d;
-////        m[1][0] = pl.getX(oom);
+    ////        m[1][0] = pl.getX(oom);
 ////        m[1][1] = qv.getX(oom);
 ////        m[1][2] = r.getX(oom);
 ////        m[1][3] = lp.getX(oom);
@@ -1307,7 +1308,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
             pi = pl.getPointOfProjectedIntersection(getP(), epsilon / 100d);
             pi = pl.getPointOfProjectedIntersection(getP(), epsilon / 1000d);
         }
-
+        
         return new V3D_LineDouble(pi, v);
     }
 
@@ -1381,7 +1382,9 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
 //            return true;
 //        }
 //        
-////        if (n.getCrossProduct(l.v).isZero()) {
+    
+
+    ////        if (n.getCrossProduct(l.v).isZero()) {
 ////            return false;
 ////        }
 //        
@@ -1435,7 +1438,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         }
         return false;
     }
-
+    
     private boolean equalsIgnoreOrientationNoNormalCheck(V3D_PlaneDouble pl) {
         if (pl.isIntersectedBy(getP())) {
             if (isIntersectedBy(pl.getP())) {
@@ -1460,7 +1463,7 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         }
         return false;
     }
-
+    
     private boolean equalsIgnoreOrientationNoNormalCheck(V3D_PlaneDouble pl,
             double epsilon) {
         if (pl.isIntersectedBy(epsilon, getP())) {
@@ -1600,22 +1603,29 @@ public class V3D_PlaneDouble extends V3D_GeometryDouble {
         double lqd = getDistanceSquared(l.getQ(), epsilon);
         return Math.min(lpd, lqd);
     }
-
+    
     @Override
     public void translate(V3D_VectorDouble v) {
         super.translate(v);
         this.equation = null;
     }
-
+    
     @Override
     public V3D_PlaneDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
+        theta = Math_AngleDouble.normalise(theta);
+        if (theta == 0d) {
+            return new V3D_PlaneDouble(this);
+        } else {
+            return rotateN(ray, uv, theta, epsilon);
+        }
+    }
+    
+    @Override
+    public V3D_PlaneDouble rotateN(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
         return new V3D_PlaneDouble(getP().rotate(ray, uv, theta, epsilon),
                 n.rotate(uv, theta));
-//        return new V3D_PlaneDouble(
-//                getP().rotate(ray, uv, theta, epsilon),
-//                getQ(epsilon).rotate(ray, uv, theta, epsilon),
-//                getR(epsilon).rotate(ray, uv, theta, epsilon));
     }
 
     /**

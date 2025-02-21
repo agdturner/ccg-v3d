@@ -106,6 +106,18 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     public V3D_Triangle psq;
 
+    public V3D_Tetrahedron(V3D_Tetrahedron t) {
+        super(new V3D_Vector(t.offset));
+        p = new V3D_Vector(t.p);
+        q = new V3D_Vector(t.q);
+        r = new V3D_Vector(t.r);
+        s = new V3D_Vector(t.s);
+        pqr = new V3D_Triangle(t.pqr);
+        qsr = new V3D_Triangle(t.qsr);
+        spr = new V3D_Triangle(t.spr);
+        psq = new V3D_Triangle(t.psq);
+    }
+    
     /**
      * Create a new instance. {@code pl}, {@code qv}, {@code r} and {@code s}
      * must all be different, not the zero vector and collectively they must be
@@ -120,11 +132,11 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      */
     public V3D_Tetrahedron(V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r, V3D_Vector s) {
-        super(offset);
-        this.p = p;
-        this.q = q;
-        this.r = r;
-        this.s = s;
+        super(new V3D_Vector(offset));
+        this.p = new V3D_Vector(p);
+        this.q = new V3D_Vector(q);
+        this.r = new V3D_Vector(r);
+        this.s = new V3D_Vector(s);
     }
 
     /**
@@ -1671,6 +1683,17 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     @Override
     public V3D_Tetrahedron rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_Tetrahedron(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
+    @Override
+    public V3D_Tetrahedron rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
         return new V3D_Tetrahedron(
                 getP().rotate(ray, uv, bd, theta, oom, rm),

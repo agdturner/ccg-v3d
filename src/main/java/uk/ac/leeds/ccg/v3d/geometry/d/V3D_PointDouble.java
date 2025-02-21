@@ -455,14 +455,21 @@ public class V3D_PointDouble extends V3D_FiniteGeometryDouble {
         offset = offset.subtract(rel).add(this.rel);
         this.rel = rel;
     }
-
+    
     @Override
     public V3D_PointDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
         theta = Math_AngleDouble.normalise(theta);
         if (theta == 0d) {
             return new V3D_PointDouble(this);
+        } else {
+            return rotateN(ray, uv, theta, epsilon);
         }
+    }
+
+    @Override
+    public V3D_PointDouble rotateN(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
         V3D_VectorDouble tv = ray.l.getPointOfIntersection(this, epsilon).getVector();
         V3D_PointDouble tp = new V3D_PointDouble(this);
         tp.translate(tv.reverse());

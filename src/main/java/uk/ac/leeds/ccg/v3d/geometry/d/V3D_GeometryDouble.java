@@ -136,21 +136,22 @@ public abstract class V3D_GeometryDouble implements Serializable {
             V3D_VectorDouble uv, double theta, double epsilon);
 
     /**
-     * For getting an angle between 0 and 2Pi
-     * @param theta The angle to be transformed.
-     * @return An angle between 0 and 2Pi.
+     * Returns the geometry rotated about the axis of rotation axisOfRotation by
+     * the angle theta. In this geometry a positive rotation angle is in the 
+     * direction of the fingers of the right hand as the thumb points in the 
+     * direction of the axis of rotation.
+     * @param ray The ray defining the axis of rotation about which the geometry
+     * is rotated.
+     * @param uv The unit vector of r. This is passed in as often there is a 
+     * desire to rotate many geometries about a ray and this saves computation 
+     * in calculating the unit vector each time.
+     * @param theta The normal angle of rotation (theta &gt; 0 && theta &lt; 
+     * 2Pi.) around the the rotation axis in radians.
+     * @param epsilon The tolerance within which two vectors are regarded as 
+     * equal.
+     * @return The rotated geometry.
      */
-    public double getAngleM(double theta) {
-        double twoPi = Math.PI * 2;
-        // Change a negative angle into a positive one.
-        while (theta < 0d) {
-            theta = theta+ twoPi;
-        }
-        // Only rotate less than 2Pi radians.
-        while (theta > twoPi) {
-            theta = theta - twoPi;
-        }
-        return theta;
-    }
+    public abstract V3D_GeometryDouble rotateN(V3D_RayDouble ray,  
+            V3D_VectorDouble uv, double theta, double epsilon);
     
 }

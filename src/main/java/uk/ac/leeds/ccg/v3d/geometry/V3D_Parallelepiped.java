@@ -29,6 +29,10 @@ public class V3D_Parallelepiped extends V3D_FiniteGeometry {
     private static final long serialVersionUID = 1L;
     
     public V3D_Parallelepiped(){}
+    
+    public V3D_Parallelepiped(V3D_Parallelepiped p) {
+        
+    }
 
     @Override
     public V3D_Envelope getEnvelope(int oom) {
@@ -41,7 +45,18 @@ public class V3D_Parallelepiped extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Geometry rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+    public V3D_Parallelepiped rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_Parallelepiped(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
+    @Override
+    public V3D_Parallelepiped rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }

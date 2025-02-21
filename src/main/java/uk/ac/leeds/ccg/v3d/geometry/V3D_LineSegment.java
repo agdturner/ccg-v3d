@@ -1238,9 +1238,20 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     @Override
     public V3D_LineSegment rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_LineSegment(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
+    @Override
+    public V3D_LineSegment rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
         return new V3D_LineSegment(
-                getP().rotate(ray, uv, bd, theta, oom, rm),
-                getQ().rotate(ray, uv, bd, theta, oom, rm), oom, rm);
+                getP().rotateN(ray, uv, bd, theta, oom, rm),
+                getQ().rotateN(ray, uv, bd, theta, oom, rm), oom, rm);
     }
 
     /**

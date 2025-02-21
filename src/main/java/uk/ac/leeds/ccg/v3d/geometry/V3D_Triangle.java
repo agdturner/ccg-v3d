@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VTriangle;
 
@@ -1744,9 +1746,20 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
             rppl.translate(v, oom, rm);
         }
     }
-
+    
     @Override
     public V3D_Triangle rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_Triangle(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
+    @Override
+    public V3D_Triangle rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
         return new V3D_Triangle(
                 getP().rotate(ray, uv, bd, theta, oom, rm),

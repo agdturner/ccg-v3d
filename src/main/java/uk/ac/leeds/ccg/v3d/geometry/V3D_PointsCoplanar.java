@@ -35,6 +35,11 @@ public class V3D_PointsCoplanar extends V3D_FiniteGeometry {
      */
     protected final V3D_Vector[] rels;
 
+    public V3D_PointsCoplanar(V3D_PointsCoplanar p) {
+        rels = new V3D_Vector[p.rels.length];
+        //p.rels.
+    }
+    
     /**
      * Create a new instance.
      *
@@ -83,7 +88,18 @@ public class V3D_PointsCoplanar extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Geometry rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+    public V3D_PointsCoplanar rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_PointsCoplanar(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
+    @Override
+    public V3D_PointsCoplanar rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }

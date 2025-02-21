@@ -23,6 +23,12 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
      */
     protected final ArrayList<V3D_Tetrahedron> tetrahedrons;
 
+    public V3D_Tetrahedrons(V3D_Tetrahedrons ts) {
+        offset = new V3D_Vector(ts.offset);
+        tetrahedrons = new ArrayList<>();
+        ts.tetrahedrons.forEach(x -> tetrahedrons.add(new V3D_Tetrahedron(x)));
+    }
+    
     /**
      * Creates a new instance.
      *
@@ -120,7 +126,18 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
     }
     
     @Override
-     public V3D_Tetrahedrons rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+    public V3D_Tetrahedrons rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_Tetrahedrons(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
+    @Override
+     public V3D_Tetrahedrons rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
              BigRational theta, int oom, RoundingMode rm) {
         V3D_Tetrahedron[] rls = new V3D_Tetrahedron[tetrahedrons.size()];
         for (int i = 0; i < tetrahedrons.size(); i ++) {

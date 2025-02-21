@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry.d;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 
 /**
  * Comprising two collections of V3D_ConvexHullCoplanarDouble one representing parts
@@ -49,6 +50,16 @@ public class V3D_PolygonDouble extends V3D_FiniteGeometryDouble
      */
     protected V3D_ConvexHullCoplanarDouble convexHull;
 
+    /**
+     * Create a new instance.
+     *
+     */
+    public V3D_PolygonDouble(V3D_PolygonDouble p) {
+        parts = p.parts;
+        holes = p.holes;
+        convexHull = p.convexHull;
+    }
+    
     /**
      * Create a new instance.
      *
@@ -219,6 +230,17 @@ public class V3D_PolygonDouble extends V3D_FiniteGeometryDouble
 
     @Override
     public V3D_PolygonDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
+        theta = Math_AngleDouble.normalise(theta);
+        if (theta == 0d) {
+            return new V3D_PolygonDouble(this);
+        } else {
+            return rotateN(ray, uv, theta, epsilon);
+        }
+    }
+    
+    @Override
+    public V3D_PolygonDouble rotateN(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
         ArrayList<V3D_ConvexHullCoplanarDouble> rparts = new ArrayList<>();
         ArrayList<V3D_ConvexHullCoplanarDouble> rholes = new ArrayList<>();

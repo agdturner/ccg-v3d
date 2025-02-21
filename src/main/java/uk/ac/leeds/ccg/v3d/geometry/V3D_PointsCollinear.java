@@ -35,6 +35,11 @@ public class V3D_PointsCollinear extends V3D_FiniteGeometry {
      */
     protected final V3D_Vector[] rels;
 
+    public V3D_PointsCollinear(V3D_PointsCollinear p) {
+        rels = new V3D_Vector[p.rels.length];
+        
+    }
+    
     /**
      * Create a new instance.
      *
@@ -83,7 +88,18 @@ public class V3D_PointsCollinear extends V3D_FiniteGeometry {
     }
     
     @Override
-    public V3D_PointsCollinear rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd,  
+    public V3D_PointsCollinear rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_PointsCollinear(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
+    @Override
+    public V3D_PointsCollinear rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd,  
             BigRational theta, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

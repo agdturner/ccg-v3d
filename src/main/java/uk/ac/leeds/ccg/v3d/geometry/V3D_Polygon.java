@@ -20,6 +20,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 
 /**
  * Comprising two collections of V3D_ConvexHullCoplanar one representing parts
@@ -51,6 +52,13 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      */
     protected V3D_ConvexHullCoplanar convexHull;
 
+    public V3D_Polygon(V3D_Polygon p) {
+        parts = p.parts;
+        holes = p.holes;
+        convexHull = p.convexHull;
+    }
+    
+    
     /**
      * Create a new instance.
      *
@@ -305,6 +313,17 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
 
     @Override
     public V3D_Polygon rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_Polygon(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
+    @Override
+    public V3D_Polygon rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
         ArrayList<V3D_ConvexHullCoplanar> rparts = new ArrayList<>();
         ArrayList<V3D_ConvexHullCoplanar> rholes = new ArrayList<>();

@@ -48,6 +48,12 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      */
     public final ArrayList<V3D_LineSegment> lineSegments;
 
+    public V3D_LineSegmentsCollinear(V3D_LineSegmentsCollinear ls) {
+        offset = ls.offset;
+        lineSegments = new ArrayList<>(ls.lineSegments.size());
+        ls.lineSegments.forEach(x -> lineSegments.add(new V3D_LineSegment(x)));
+    }
+    
     /**
      * Create a new instance.
      *
@@ -570,7 +576,18 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
     
     @Override
-    public V3D_LineSegmentsCollinear rotate(V3D_Ray ray, V3D_Vector uv, 
+    public V3D_LineSegmentsCollinear rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_LineSegmentsCollinear(this);
+        } else {
+            return rotateN(ray, uv, bd, theta, oom, rm);
+        }
+    }
+    
+    @Override
+    public V3D_LineSegmentsCollinear rotateN(V3D_Ray ray, V3D_Vector uv, 
             Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
         V3D_LineSegment[] rls = new V3D_LineSegment[lineSegments.size()];
         for (int i = 0; i < lineSegments.size(); i++) {

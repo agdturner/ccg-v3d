@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
 import java.util.Arrays;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 
 /**
  * For representing and processing rectangles in 3D. A rectangle is a right
@@ -355,6 +356,17 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
 
     @Override
     public V3D_RectangleDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
+        theta = Math_AngleDouble.normalise(theta);
+        if (theta == 0d) {
+            return new V3D_RectangleDouble(this);
+        } else {
+            return rotateN(ray, uv, theta, epsilon);
+        }
+    }
+    
+    @Override
+    public V3D_RectangleDouble rotateN(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
         return new V3D_RectangleDouble(
                 getP().rotate(ray, uv, theta, epsilon),

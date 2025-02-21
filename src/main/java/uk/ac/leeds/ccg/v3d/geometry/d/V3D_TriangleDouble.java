@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry.d;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VTriangleDouble;
 
 /**
@@ -1795,6 +1796,17 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
 
     @Override
     public V3D_TriangleDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
+        theta = Math_AngleDouble.normalise(theta);
+        if (theta == 0d) {
+            return new V3D_TriangleDouble(this);
+        } else {
+            return rotateN(ray, uv, theta, epsilon);
+        }
+    }
+    
+    @Override
+    public V3D_TriangleDouble rotateN(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
         return new V3D_TriangleDouble(
                 getP().rotate(ray, uv, theta, epsilon),

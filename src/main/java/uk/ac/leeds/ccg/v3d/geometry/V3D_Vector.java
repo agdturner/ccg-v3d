@@ -97,7 +97,7 @@ public class V3D_Vector implements Serializable {
      * The NK vector {@code <0,0,-1>}.
      */
     public static final V3D_Vector NK = new V3D_Vector(0, 0, -1);
-    
+
     /**
      * The IJ vector {@code <1,1,0>}.
      */
@@ -152,7 +152,7 @@ public class V3D_Vector implements Serializable {
      * The NINK vector {@code <-1,0,-1>}.
      */
     public static final V3D_Vector NINK = new V3D_Vector(-1, 0, -1);
-    
+
     /**
      * The NINJ vector {@code <-1,-1,0>}.
      */
@@ -1109,6 +1109,16 @@ public class V3D_Vector implements Serializable {
                 dp.divide(mag.multiply(vmag)).toBigDecimal(mc), mc));
     }
 
+    public V3D_Vector rotate(V3D_Vector axis, Math_BigDecimal bd,
+            BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_Vector(this);
+        } else {
+            return rotateN(axis, bd, theta, oom, rm);
+        }
+    }
+
     /**
      * Calculate and return {@code #this} rotated using the parameters. (see
      * Doug (https://math.stackexchange.com/users/102399/doug), How do you
@@ -1122,35 +1132,31 @@ public class V3D_Vector implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return The vector which is {@code #this} rotated using the parameters.
      */
-    public V3D_Vector rotate(V3D_Vector axis, Math_BigDecimal bd, 
+    public V3D_Vector rotateN(V3D_Vector axis, Math_BigDecimal bd,
             BigRational theta, int oom, RoundingMode rm) {
-        BigRational na = Math_AngleBigRational.normalise(theta, bd, oom, rm);
-        if (na.compareTo(BigRational.ZERO) == 1) {
-            int oomn9 = oom - 9;
-            BigRational adx = axis.getDX(oomn9, rm);
-            BigRational ady = axis.getDY(oomn9, rm);
-            BigRational adz = axis.getDZ(oomn9, rm);
-            BigRational thetaDiv2 = na.divide(2);
-            BigRational sinThetaDiv2 = Math_BigRational.sin(thetaDiv2,
-                    V3D_Environment.bd.getBi(), oomn9, rm);
-            BigRational w = Math_BigRational.cos(thetaDiv2,
-                    V3D_Environment.bd.getBi(), oomn9, rm);
-            BigRational x = sinThetaDiv2.multiply(adx);
-            BigRational y = sinThetaDiv2.multiply(ady);
-            BigRational z = sinThetaDiv2.multiply(adz);
-            Math_Quaternion_BigRational r = new Math_Quaternion_BigRational(
-                    w, x, y, z);
-            // R'=rR
-            Math_Quaternion_BigRational rR = new Math_Quaternion_BigRational(
-                    w, x.negate(), y.negate(), z.negate());
-            Math_Quaternion_BigRational p = new Math_Quaternion_BigRational(
-                    BigRational.ZERO, this.getDX(oomn9, rm),
-                    this.getDY(oomn9, rm), this.getDZ(oomn9, rm));
-            // P'=pP
-            Math_Quaternion_BigRational pP = r.multiply(p).multiply(rR);
-            return new V3D_Vector(pP.x, pP.y, pP.z);
-        }
-        return new V3D_Vector(this);
+        int oomn9 = oom - 9;
+        BigRational adx = axis.getDX(oomn9, rm);
+        BigRational ady = axis.getDY(oomn9, rm);
+        BigRational adz = axis.getDZ(oomn9, rm);
+        BigRational thetaDiv2 = theta.divide(2);
+        BigRational sinThetaDiv2 = Math_BigRational.sin(thetaDiv2,
+                V3D_Environment.bd.getBi(), oomn9, rm);
+        BigRational w = Math_BigRational.cos(thetaDiv2,
+                V3D_Environment.bd.getBi(), oomn9, rm);
+        BigRational x = sinThetaDiv2.multiply(adx);
+        BigRational y = sinThetaDiv2.multiply(ady);
+        BigRational z = sinThetaDiv2.multiply(adz);
+        Math_Quaternion_BigRational r = new Math_Quaternion_BigRational(
+                w, x, y, z);
+        // R'=rR
+        Math_Quaternion_BigRational rR = new Math_Quaternion_BigRational(
+                w, x.negate(), y.negate(), z.negate());
+        Math_Quaternion_BigRational p = new Math_Quaternion_BigRational(
+                BigRational.ZERO, this.getDX(oomn9, rm),
+                this.getDY(oomn9, rm), this.getDZ(oomn9, rm));
+        // P'=pP
+        Math_Quaternion_BigRational pP = r.multiply(p).multiply(rR);
+        return new V3D_Vector(pP.x, pP.y, pP.z);
     }
 
     /**

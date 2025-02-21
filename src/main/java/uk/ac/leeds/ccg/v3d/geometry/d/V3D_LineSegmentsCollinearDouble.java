@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 
 /**
  * For representing multiple collinear line segments.
@@ -40,6 +41,12 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      * The collinear line segments.
      */
     public final ArrayList<V3D_LineSegmentDouble> lineSegments;
+
+    public V3D_LineSegmentsCollinearDouble(V3D_LineSegmentsCollinearDouble ls) {
+        offset = ls.offset;
+        lineSegments = new ArrayList<>(ls.lineSegments.size());
+        ls.lineSegments.forEach(x -> lineSegments.add(new V3D_LineSegmentDouble(x)));
+    }
 
     /**
      * Create a new instance.
@@ -420,7 +427,18 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
     }
 
     @Override
-    public V3D_LineSegmentsCollinearDouble rotate(V3D_RayDouble ray, 
+    public V3D_LineSegmentsCollinearDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
+        theta = Math_AngleDouble.normalise(theta);
+        if (theta == 0d) {
+            return new V3D_LineSegmentsCollinearDouble(this);
+        } else {
+            return rotateN(ray, uv, theta, epsilon);
+        }
+    }
+
+    @Override
+    public V3D_LineSegmentsCollinearDouble rotateN(V3D_RayDouble ray,
             V3D_VectorDouble uv, double theta, double epsilon) {
         V3D_LineSegmentDouble[] rls = new V3D_LineSegmentDouble[lineSegments.size()];
         for (int i = 0; i < lineSegments.size(); i++) {

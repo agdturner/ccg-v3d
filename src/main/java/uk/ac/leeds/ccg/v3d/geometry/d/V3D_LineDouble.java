@@ -15,10 +15,8 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-//import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_Double;
 
 /**
@@ -1150,6 +1148,17 @@ public class V3D_LineDouble extends V3D_GeometryDouble {
 
     @Override
     public V3D_LineDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+            double theta, double epsilon) {
+        theta = Math_AngleDouble.normalise(theta);
+        if (theta == 0d) {
+            return new V3D_LineDouble(this);
+        } else {
+            return rotateN(ray, uv, theta, epsilon);
+        }
+    }
+
+    @Override
+    public V3D_LineDouble rotateN(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
         V3D_PointDouble rp = getP().rotate(ray, uv, theta, epsilon);
         V3D_VectorDouble rv = v.getUnitVector().rotate(uv, theta);

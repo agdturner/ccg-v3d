@@ -541,10 +541,17 @@ public class V3D_Ray extends V3D_Geometry {
     @Override
     public V3D_Ray rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
-        if (theta.isZero()) {
-           return new V3D_Ray(this);
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_Ray(this);
         } else {
-            return new V3D_Ray(l.rotate(ray, uv, bd, theta, oom, rm));
+            return rotateN(ray, uv, bd, theta, oom, rm);
         }
+    }
+    
+    @Override
+    public V3D_Ray rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+            BigRational theta, int oom, RoundingMode rm) {
+        return new V3D_Ray(l.rotateN(ray, uv, bd, theta, oom, rm));
     }
 }
