@@ -19,6 +19,7 @@ import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * For 3D Euclidean geometrical objects. The three dimensions have are
@@ -65,21 +66,30 @@ public abstract class V3D_Geometry implements Serializable {
     public V3D_Vector offset;
 
     /**
-     * Creates a new instance.
+     * The environment.
      */
-    public V3D_Geometry() {
-        this(V3D_Vector.ZERO);
+    public final V3D_Environment env;
+    
+    /**
+     * Creates a new instance.
+     * 
+     * @param env The environment.
+     */
+    public V3D_Geometry(V3D_Environment env) {
+        this(env, V3D_Vector.ZERO);
     }
 
     /**
      * Creates a new instance.
      *
+     * @param env The environment.
      * @param offset What {@link #offset} is set to.
      */
-    public V3D_Geometry(V3D_Vector offset) {
+    public V3D_Geometry(V3D_Environment env, V3D_Vector offset) {
+        this.env = env;
         this.offset = offset;
     }
-
+    
     /**
      * @param pad The padding.
      * @return A padded description.
@@ -124,7 +134,6 @@ public abstract class V3D_Geometry implements Serializable {
      * <li>https://en.wikipedia.org/wiki/3D_rotation_group</li>
      * </ul>
      *
-     * @param r The axis of rotation.
      * @param theta The angle of rotation around the {@code axisOfRotation} in
      * radians. 
      * @param r The ray defining the axis of rotation about which the geometry

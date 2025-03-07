@@ -424,7 +424,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
         // Check envelopes intersect.
-        if (getEnvelope(oom).isIntersectedBy(pt, oom, rm)) {
+        if (getEnvelope(oom).intersects(pt, oom, rm)) {
             // Check point is on the plane. 
             if (triangles.get(0).getPl(oom, rm).isIntersectedBy(pt, oom, rm)) {
                 // Check point is in a triangle
@@ -553,7 +553,7 @@ public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
 
 //    @Override
 //    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-//        return getEnvelope().isIntersectedBy(l, oom);
+//        return getEnvelope().intersects(l, oom);
 //    }
     @Override
     public V3D_ConvexHullCoplanar rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 

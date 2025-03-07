@@ -18,7 +18,10 @@ package uk.ac.leeds.ccg.v3d.core;
 import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.HashSet;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_2DShape;
 
 /**
  * V3D_Environment
@@ -71,8 +74,65 @@ public class V3D_Environment implements Serializable {
     public static final RoundingMode DEFAULT_RM = RoundingMode.HALF_UP;
     
     /**
+    /**
+     * The Order of Magnitude for any rounding.
+     */
+    public int oom;
+    
+    /**
+     * The RoundingMode for any rounding.
+     */
+    public RoundingMode rm;
+    
+    /**
+     * The shapes.
+     */
+    public HashMap<Integer, V3D_2DShape> shapes;
+    
+    /**
+     * The ids of shapes.
+     */
+    HashSet<Integer> ids;
+    
+    /**
      * Creates a new instance.
      */
-    public V3D_Environment(){
+    public V3D_Environment(int oom, RoundingMode rm){
+        this.oom = oom;
+        this.rm = rm;
+        shapes = new HashMap<>();
+        ids = new HashSet<>();
+    }
+    
+    /**
+     * @return The next id that has not yet been used; 
+     */
+    public int getNextID() {
+        int id;
+        if (!ids.isEmpty()) {
+            id = ids.iterator().next();
+            ids.remove(id);
+        } else {
+            id = shapes.size();
+        }
+        return id;
+    }
+    
+    /**
+     * @param shape The shape to be put in {@link #shapes}.
+     * @return The id of the shape allocated. 
+     */
+    public int add(V3D_2DShape shape) {
+        int id = getNextID();
+        shapes.put(id, shape);
+        return id;
+    }
+    
+    /**
+     * @param id The id of the shape to remove. 
+     */
+    public void remove(int id) {
+        shapes.remove(id);
+        ids.add(id);
     }
 }

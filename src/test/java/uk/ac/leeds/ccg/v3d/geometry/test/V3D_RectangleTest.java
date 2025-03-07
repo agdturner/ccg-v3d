@@ -104,7 +104,7 @@ public class V3D_RectangleTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_Rectangle.
+     * Test of intersects method, of class V3D_Rectangle.
      */
     @Test
     public void testIsIntersectedBy_V3D_Point_int() {
@@ -221,33 +221,33 @@ public class V3D_RectangleTest extends V3D_Test {
     }
 
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Rectangle.
+//     * Test of intersects method, of class V3D_Rectangle.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Line() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Line l = new V3D_Line(pN1N1N1, pP2P2P2, oom, rm);
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //        //Test 2
-//        assertFalse(instance.isIntersectedBy(new V3D_Line(pN1N1N1, pN1N1P1, oom, rm), oom, rm));
+//        assertFalse(instance.intersects(new V3D_Line(pN1N1N1, pN1N1P1, oom, rm), oom, rm));
 //    }
 //
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Rectangle.
+//     * Test of intersects method, of class V3D_Rectangle.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_LineSegment_boolean() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_LineSegment l = new V3D_LineSegment(pN1N1P0, pP1P1P0, oom, rm);
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //        //Test 2
-//        assertFalse(instance.isIntersectedBy(new V3D_Line(pP0N1P1, pP0N1N1, oom, rm), oom, rm));
+//        assertFalse(instance.intersects(new V3D_Line(pP0N1P1, pP0N1N1, oom, rm), oom, rm));
 //    }
     /**
      * Test of getIntersection method, of class V3D_Rectangle.
@@ -421,29 +421,29 @@ public class V3D_RectangleTest extends V3D_Test {
 //    }
 
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Rectangle.
+//     * Test of intersects method, of class V3D_Rectangle.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Line_int() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //    }
 //
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Rectangle.
+//     * Test of intersects method, of class V3D_Rectangle.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_3args() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //    }
     /**
      * Test of getIntersection method, of class V3D_Rectangle.
@@ -509,32 +509,32 @@ public class V3D_RectangleTest extends V3D_Test {
     }
 
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Rectangle.
+//     * Test of intersects method, of class V3D_Rectangle.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Ray_int() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Ray ray = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
 //        boolean expResult = true;
-//        boolean result = instance.isIntersectedBy(ray, oom, rm);
+//        boolean result = instance.intersects(ray, oom, rm);
 //        assertEquals(expResult, result);
 //    }
 //
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Rectangle.
+//     * Test of intersects method, of class V3D_Rectangle.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_LineSegment_int() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
 //        boolean expResult = true;
-//        boolean result = instance.isIntersectedBy(l, oom, rm);
+//        boolean result = instance.intersects(l, oom, rm);
 //        assertEquals(expResult, result);
 //    }
     /**
@@ -650,45 +650,45 @@ public class V3D_RectangleTest extends V3D_Test {
     }
 
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Rectangle.
+//     * Test of intersects method, of class V3D_Rectangle.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Plane_int() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Plane pv = new V3D_Plane(pP0P0P0, pP1P0P0, pP1P1P0, oom, rm);
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(pv, oom, rm));
+//        assertTrue(instance.intersects(pv, oom, rm));
 //    }
 //
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Rectangle.
+//     * Test of intersects method, of class V3D_Rectangle.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Triangle_int() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Triangle t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P1P0, oom, rm);
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
 //        boolean expResult = true;
-//        boolean result = instance.isIntersectedBy(t, oom, rm);
+//        boolean result = instance.intersects(t, oom, rm);
 //        assertEquals(expResult, result);
 //    }
 //
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Rectangle.
+//     * Test of intersects method, of class V3D_Rectangle.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Tetrahedron_int() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Tetrahedron t = new V3D_Tetrahedron(pP0P0P0, pP0P1P0, pP1P1P0, pP0P0P1, oom, rm);
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0, oom, rm);
 //        boolean expResult = true;
-//        boolean result = instance.isIntersectedBy(t, oom, rm);
+//        boolean result = instance.intersects(t, oom, rm);
 //        assertEquals(expResult, result);
 //    }
     /**

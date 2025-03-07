@@ -67,7 +67,7 @@ public class V3D_TriangleTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_Triangle.
+     * Test of intersects method, of class V3D_Triangle.
      */
     @Test
     public void testIsAligned_V3D_Point_int_RoundingMode() {
@@ -82,7 +82,7 @@ public class V3D_TriangleTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_Triangle.
+     * Test of intersects method, of class V3D_Triangle.
      */
     @Test
     public void testIsIntersectedBy() {
@@ -228,7 +228,7 @@ public class V3D_TriangleTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_Triangle.
+     * Test of intersects method, of class V3D_Triangle.
      */
     @Test
     public void testIsIntersectedBy_V3D_Point() {
@@ -958,11 +958,11 @@ public class V3D_TriangleTest extends V3D_Test {
     }
 
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Triangle.
+//     * Test of intersects method, of class V3D_Triangle.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Plane() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Plane pl;
@@ -971,30 +971,30 @@ public class V3D_TriangleTest extends V3D_Test {
 //        pl = new V3D_Plane(V3D_Plane.Y0);
 //        pl.translate(P0P1P0, oom, rm);
 //        instance = new V3D_Triangle(pP0P0P0, pP2P0P0, pP0P2P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(pl, oom, rm));
+//        assertTrue(instance.intersects(pl, oom, rm));
 //        // Test 2
 //        pl = V3D_Plane.X0;
 //        instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(pl, oom, rm));
+//        assertTrue(instance.intersects(pl, oom, rm));
 //        // Test 3
 //        pl = V3D_Plane.Y0;
-//        assertTrue(instance.isIntersectedBy(pl, oom, rm));
+//        assertTrue(instance.intersects(pl, oom, rm));
 //        // Test 4
 //        pl = V3D_Plane.Z0;
-//        assertTrue(instance.isIntersectedBy(pl, oom, rm));
+//        assertTrue(instance.intersects(pl, oom, rm));
 //    }
 //
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Triangle.
+//     * Test of intersects method, of class V3D_Triangle.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Tetrahedron() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        V3D_Tetrahedron t = null;
 //        int oom = 0;
 //        V3D_Triangle instance = null;
 //        boolean expResult = false;
-//        boolean result = instance.isIntersectedBy(t, oom);
+//        boolean result = instance.intersects(t, oom);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");

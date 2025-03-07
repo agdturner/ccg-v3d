@@ -1193,7 +1193,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         } else {
             if (i instanceof V3D_Point ip) {
                 if (t.isAligned(ip, oom, rm)) {
-                    //if (t.isIntersectedBy(pip, oom, rm)) {
+                    //if (t.intersects(pip, oom, rm)) {
                     return i;
                 } else {
                     return null;

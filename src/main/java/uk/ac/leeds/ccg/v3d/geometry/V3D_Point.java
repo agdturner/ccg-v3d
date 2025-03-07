@@ -559,6 +559,6 @@ public class V3D_Point extends V3D_FiniteGeometry {
 
     @Override
     public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
-        return aabb.isIntersectedBy(this, oom, rm);
+        return aabb.intersects(this, oom, rm);
     }
 }

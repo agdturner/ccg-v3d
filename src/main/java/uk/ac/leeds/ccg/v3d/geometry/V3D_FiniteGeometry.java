@@ -18,6 +18,8 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * V3D_FiniteGeometry for representing finite geometries.
@@ -36,18 +38,21 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry {
     
     /**
      * Creates a new instance with offset V3D_Vector.ZERO.
+     * 
+     * @param env The environment.
      */
-    public V3D_FiniteGeometry() {
-        this(V3D_Vector.ZERO);
+    public V3D_FiniteGeometry(V3D_Environment env) {
+        this(env, V3D_Vector.ZERO);
     }
     
     /**
      * Creates a new instance.
      *
+     * @param env The environment.
      * @param offset What {@link #offset} is set to.
      */
-    public V3D_FiniteGeometry(V3D_Vector offset) {
-        super(offset);
+    public V3D_FiniteGeometry(V3D_Environment env, V3D_Vector offset) {
+        super(env, offset);
     }
     
     /**
@@ -59,20 +64,11 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry {
     public abstract V3D_Envelope getEnvelope(int oom);
     
     /**
-     * For evaluating if the geometry is intersected by the Axis Aligned 
-     * Bounding Box aabb.
-     *
-     * @param aabb The Axis Aligned Bounding Box to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} iff the geometry intersects aabb at the given precision.
-     */
-    public abstract boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm);
-    
-    /**
      * @return A copy of the points of the geometry.
      */
-    public abstract V3D_Point[] getPoints();
+    public abstract V3D_Point[] getPointsArray(int oom, RoundingMode rm);
     
     /**
      * @return A copy of the points of the geometries gs.
@@ -80,21 +76,38 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @param gs The geometries.
      */
-    public static V3D_Point[] getPoints(V3D_FiniteGeometry... gs) {
+    public static V3D_Point[] getPoints(int oom, RoundingMode rm, V3D_FiniteGeometry... gs) {
         ArrayList<V3D_Point> list = new ArrayList<>();
         for (var x: gs) {
-            V3D_Point[] pts = x.getPoints();
-            list.addAll(Arrays.asList(pts));
+            list.addAll(Arrays.asList(x.getPointsArray(oom, rm)));
         }
         return list.toArray(V3D_Point[]::new);
     }
     
     /**
+     * For collecting and returning all the points.
+     *
+     * @param gs The input.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A Set of points that are the corners of the triangles.
+     */
+    public static V3D_Point[] getPoints(V3D_FiniteGeometry[] gs, int oom, RoundingMode rm) {
+        List<V3D_Point> s = new ArrayList<>();
+        for (var g : gs) {
+            V3D_Point[] gps = g.getPointsArray(oom, rm);
+            s.addAll(Arrays.asList(gps));
+        }
+        ArrayList<V3D_Point> points = V3D_Point.getUnique(s, oom, rm);
+        return points.toArray(V3D_Point[]::new);
+    }
+
+    /**
      * Translate (move relative to the origin).
      *
      * @param v The vector to translate.
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
+     * @param rm The RoundingMode if rounding is needed.
      */
     @Override
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {

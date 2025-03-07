@@ -659,7 +659,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @return A point or line segment.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
-        if (getEnvelope(oom).isIntersectedBy(pt, oom, rm)) {
+        if (getEnvelope(oom).intersects(pt, oom, rm)) {
             if (getPl(oom, rm).isIntersectedBy(pt, oom, rm)) {
                 return isAligned(pt, oom, rm);
                 //return isIntersectedBy0(pt, oom, rm);
@@ -726,7 +726,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @return {@code true} iff pl is aligned with this.
      */
     public boolean isAligned(V3D_Point pt, int oom, RoundingMode rm) {
-//        if (pl.isIntersectedBy(pt, oom, rm)) {
+//        if (pl.intersects(pt, oom, rm)) {
 //            return isIntersectedBy0(pt, oom, rm);
 //        }
         if (getPQPl(oom, rm).isOnSameSide(pt, getR(), oom, rm)) {
@@ -1631,7 +1631,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
 //    @Override
 //    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-//        return getEnvelope().isIntersectedBy(l, oom);
+//        return getEnvelope().intersects(l, oom);
 //    }
     /**
      * Calculate and return the centroid as a point. The original implementation
@@ -2639,6 +2639,53 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
 
     @Override
     public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (getEnvelope(oom, rm).intersects(aabb, oom)) {
+            if (aabb.contains(getP(oom, rm), oom)
+                    || aabb.contains(getQ(oom, rm), oom)
+                    || aabb.contains(getR(oom, rm), oom)) {
+                return true;
+            }
+            V2D_FiniteGeometry l = aabb.getLeft(oom, rm);
+            if (l instanceof V2D_LineSegment ll) {
+                if (intersects(ll, oom, rm)) {
+                    return true;
+                }
+            } else {
+                if(intersects((V2D_Point) l, oom, rm)) {
+                    return true;
+                }
+            }
+            V2D_FiniteGeometry right = aabb.getRight(oom, rm);
+            if (right instanceof V2D_LineSegment rl) {
+                if (intersects(rl, oom, rm)) {
+                    return true;
+                }
+            } else {
+                if (intersects((V2D_Point) right, oom, rm)) {
+                    return true;
+                }
+            }
+            V2D_FiniteGeometry t = aabb.getTop(oom, rm);
+            if (t instanceof V2D_LineSegment tl) {
+                if (intersects(tl, oom, rm)) {
+                    return true;
+                }
+            } else {
+                if (intersects((V2D_Point) t, oom, rm)) {
+                    return true;
+                }
+            }
+            V2D_FiniteGeometry b = aabb.getBottom(oom, rm);
+            if (b instanceof V2D_LineSegment bl) {
+                if (intersects(bl, oom, rm)) {
+                    return true;
+                }
+            } else {
+                if (intersects((V2D_Point) b, oom, rm)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

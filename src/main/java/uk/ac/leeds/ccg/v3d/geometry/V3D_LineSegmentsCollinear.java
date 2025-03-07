@@ -341,7 +341,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
      * @return The minimum distance squared to {@code l}.
      */
     public BigRational getDistanceSquared(V3D_Line l, int oom, RoundingMode rm) {
-//        if (isIntersectedBy(l, oom, rm)) {
+//        if (intersects(l, oom, rm)) {
 //            return BigRational.ZERO;
 //        }
         Iterator<V3D_LineSegment> ite = lineSegments.iterator();

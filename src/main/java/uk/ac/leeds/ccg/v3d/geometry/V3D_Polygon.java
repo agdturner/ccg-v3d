@@ -217,7 +217,7 @@ public class V3D_Polygon extends V3D_FiniteGeometry implements V3D_Face {
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
-        if (getEnvelope(oom).isIntersectedBy(pt, oom, rm)) {
+        if (getEnvelope(oom).intersects(pt, oom, rm)) {
             if (parts.get(0).triangles.get(0).getPl(oom, rm).isIntersectedBy(pt, oom, rm)) {
 //                // Holes and parts could be checked in parallel.
 //                if (holes != null) {

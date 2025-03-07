@@ -470,7 +470,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
          * this.
          */
         if (i instanceof V3D_Point v3D_Point) {
-            //if (isIntersectedBy(v3D_Point, oom, rm)) {
+            //if (intersects(v3D_Point, oom, rm)) {
             if (isBetween(v3D_Point, oom, rm)) {
                 return v3D_Point;
             } else {
@@ -515,7 +515,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                     return null;
                 } else {
                     if (lsil instanceof V3D_Point lsilp) {
-                        //if (isIntersectedBy(lsilp, oom, rm)) {
+                        //if (intersects(lsilp, oom, rm)) {
                         if (isBetween(lsilp, oom, rm)) {
                             return lsilp;
                         } else {
@@ -528,7 +528,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                 }
             } else {
                 if (tils instanceof V3D_Point tilsp) {
-                    //if (isIntersectedBy(tilsp, oom, rm) && ls.isIntersectedBy(tilsp, oom, rm)) {
+                    //if (intersects(tilsp, oom, rm) && ls.intersects(tilsp, oom, rm)) {
                     if (isBetween(tilsp, oom, rm) && ls.isBetween(tilsp, oom, rm)) {
                         return tilsp;
                     } else {
@@ -650,16 +650,16 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         V3D_Point lq = ls.getQ();
         V3D_Point tp = getP();
         V3D_Point tq = getQ();
-        //if (isIntersectedBy(lp, oom, rm)) {
+        //if (intersects(lp, oom, rm)) {
         if (isBetween(lp, oom, rm)) {
             // Cases: 1, 2, 3, 5, 8, 9, 10, 12, 17, 19, 20, 21, 24, 26, 27, 28
-            //if (isIntersectedBy(lq, oom, rm)) {
+            //if (intersects(lq, oom, rm)) {
             if (isBetween(lq, oom, rm)) {
                 // Cases: 3, 5, 10, 12, 17, 19, 24, 26
                 return ls;
             } else {
                 // Cases: 1, 2, 8, 9, 20, 21, 27, 28
-                //if (ls.isIntersectedBy(tp, oom, rm)) {
+                //if (ls.intersects(tp, oom, rm)) {
                 if (ls.isBetween(tp, oom, rm)) {
                     // Cases: 8, 9, 20, 21
                     if (tp.equals(lp, oom, rm)) {
@@ -682,13 +682,13 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             }
         } else {
             // Cases: 4, 6, 7, 11, 13, 14, 15, 16, 18, 22, 23, 25
-            //if (isIntersectedBy(lq, oom, rm)) {
+            //if (intersects(lq, oom, rm)) {
             if (isBetween(lq, oom, rm)) {
                 // Cases: 6, 7, 13, 14, 15, 16, 22, 23
-                //if (ls.isIntersectedBy(tp, oom, rm)) {
+                //if (ls.intersects(tp, oom, rm)) {
                 if (ls.isBetween(tp, oom, rm)) {
                     // Cases: 6, 7, 22, 23
-                    //if (ls.isIntersectedBy(tq, oom, rm)) {
+                    //if (ls.intersects(tq, oom, rm)) {
                     if (ls.isBetween(tq, oom, rm)) {
                         // Cases: 23
                         return V3D_LineSegment.getGeometry(lq, tp, oom, rm);
@@ -910,13 +910,13 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             return getGeometry(p, q, oom, rm);
         } else {
             //V3D_LineSegment ls = new V3D_LineSegment(p, q, oom, rm);
-            //if (ls.isIntersectedBy(r, oom, rm)) {
+            //if (ls.intersects(r, oom, rm)) {
             if (r.isBetween(p, q, oom, rm)) {
                 //return ls;
                 return new V3D_LineSegment(p, q, oom, rm);
             } else {
                 //ls = new V3D_LineSegment(p, r, oom, rm);
-                //if (ls.isIntersectedBy(q, oom, rm)) {
+                //if (ls.intersects(q, oom, rm)) {
                 if (p.isBetween(r, q, oom, rm)) {
                     //return ls;
                     return new V3D_LineSegment(q, r, oom, rm);
@@ -1288,13 +1288,13 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     @Override
     public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
         if (getEnvelope(oom).isIntersectedBy(aabb, oom)) {
-            if (aabb.isIntersectedBy(getP(), oom, rm)) {
+            if (aabb.intersects(getP(), oom, rm)) {
                 return true;
             } else {
-                if (aabb.isIntersectedBy(getQ(), oom, rm)) {
+                if (aabb.intersects(getQ(), oom, rm)) {
                     return true;
                 } else {
-                    return aabb.isIntersectedBy(l, oom, rm);
+                    return aabb.intersects(l, oom, rm);
                 }
             }
         } else {

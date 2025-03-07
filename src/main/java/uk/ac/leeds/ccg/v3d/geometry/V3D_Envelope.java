@@ -19,6 +19,8 @@ import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashSet;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * An envelope contains all the extreme values with respect to the X, Y and Z
@@ -41,7 +43,7 @@ import java.util.ArrayList;
  *                                    |               /
  *                                    |              /
  *                                    |
- *                     lta _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ rta
+ *                     lul _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ uul
  *                        /|                                /|
  *                       / |                               / |
  *                      /  |                              /  |
@@ -52,12 +54,12 @@ import java.util.ArrayList;
  *                 /       |                         /       |
  *                /        |                        /        |
  *               /         |                       /         |
- *          ltf /_ _ _ _ _ |_ _ _ _ _ _ _ _ _ _ _ /rtf       |
+ *          luu /_ _ _ _ _ |_ _ _ _ _ _ _ _ _ _ _ /uuu       |
  *             |           |                     |           |
  *             |           |                     |           |
  *     x - ----|--         |                     |           |  ------ + x
  *             |           |                     |           |
- *             |        lba|_ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _|rba
+ *             |        lll|_ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _|ull
  *             |           /                     |           /
  *             |          /                      |          /
  *             |         /                       |         /
@@ -70,7 +72,7 @@ import java.util.ArrayList;
  *             |  /                              |  /
  *             | /                               | /
  *             |/_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ |/
- *          lbf                                  rbf
+ *           llu                                ulu
  *                                     |
  *                      /              |
  *                     /               |
@@ -88,6 +90,11 @@ public class V3D_Envelope implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The environment.
+     */
+    protected final V3D_Environment env;
+    
     /**
      * For storing the offset of this.
      */
@@ -124,172 +131,215 @@ public class V3D_Envelope implements Serializable {
     private final BigRational zMax;
 
     /**
-     * The minimum x-coordinate Plane.
+     * llu.
      */
-    private V3D_Plane xMinPlane;
+    private V3D_Point llu;
 
     /**
-     * xMinPlane oom.
+     * luu.
      */
-    private int xMinPlane_oom;
+    private V3D_Point luu;
+
+    /**
+     * uuu.
+     */
+    private V3D_Point uuu;
+
+    /**
+     * ulu.
+     */
+    private V3D_Point ulu;
+
+    /**
+     * lll.
+     */
+    private V3D_Point lll;
+
+    /**
+     * lul.
+     */
+    private V3D_Point lul;
+
+    /**
+     * uul.
+     */
+    private V3D_Point uul;
+
+    /**
+     * ull.
+     */
+    private V3D_Point ull;
+
+
+    /**
+     * The minimum x-coordinate Plane.
+     */
+    protected V3D_Plane l;
 
     /**
      * The maximum x-coordinate Plane.
      */
-    private V3D_Plane xMaxPlane;
-
-    /**
-     * xMaxPlane oom.
-     */
-    private int xMaxPlane_oom;
+    protected V3D_Plane r;
 
     /**
      * The minimum y-coordinate Plane.
      */
-    private V3D_Plane yMinPlane;
-
-    /**
-     * yMinPlane oom.
-     */
-    private int yMinPlane_oom;
+    protected V3D_Plane b;
 
     /**
      * The maximum y-coordinate Plane.
      */
-    private V3D_Plane yMaxPlane;
-
-    /**
-     * yMaxPlane oom.
-     */
-    private int yMaxPlane_oom;
+    protected V3D_Plane t;
 
     /**
      * The minimum z-coordinate Plane.
      */
-    private V3D_Plane zMinPlane;
-
-    /**
-     * zMinPlane oom.
-     */
-    private int zMinPlane_oom;
+    protected V3D_Plane a;
 
     /**
      * The maximum z-coordinate Plane.
      */
-    private V3D_Plane zMaxPlane;
-
-    /**
-     * zMaxPlane oom.
-     */
-    private int zMaxPlane_oom;
-
-    /**
-     * lbf.
-     */
-    private V3D_Point lbf;
-
-    /**
-     * lbf oom.
-     */
-    private int lbf_oom;
-
-    /**
-     * ltf.
-     */
-    private V3D_Point ltf;
-
-    /**
-     * ltf oom.
-     */
-    private int ltf_oom;
-
-    /**
-     * rtf.
-     */
-    private V3D_Point rtf;
-
-    /**
-     * rtf oom.
-     */
-    private int rtf_oom;
-
-    /**
-     * rbf.
-     */
-    private V3D_Point rbf;
-
-    /**
-     * rbf oom.
-     */
-    private int rbf_oom;
-
-    /**
-     * lba.
-     */
-    private V3D_Point lba;
-
-    /**
-     * lba oom.
-     */
-    private int lba_oom;
-
-    /**
-     * lta.
-     */
-    private V3D_Point lta;
-
-    /**
-     * lta oom.
-     */
-    private int lta_oom;
-
-    /**
-     * rta.
-     */
-    private V3D_Point rta;
-
-    /**
-     * rta oom.
-     */
-    private int rta_oom;
-
-    /**
-     * rba.
-     */
-    private V3D_Point rba;
-
-    /**
-     * rba oom.
-     */
-    private int rba_oom;
-
+    protected V3D_Plane f;
+    
     /**
      * For storing all the corner points. These are in order: lbf, lba, ltf,
      * lta, rbf, rba, rtf, rta.
      */
-    protected V3D_Point[] pts;
-
     /**
-     * For storing the precision of pts.
+     * For storing all the points. N.B {@link #lll}, {@link #llu}, {@link #lul},
+     * {@link #luu}, {@link #ull}, {@link #ulu}, {@link #uul}, {@link #uuu}
+     * may all be the same.
      */
-    protected int pts_oom;
+    protected HashSet<V3D_Point> pts;
+    
+    /**
+     * @param e An envelope.
+     */
+    public V3D_Envelope(V3D_Envelope e) {
+        env = e.env;
+        offset = e.offset;
+        yMin = e.yMin;
+        yMax = e.yMax;
+        xMin = e.xMin;
+        xMax = e.xMax;
+        zMin = e.zMin;
+        zMax = e.zMax;
+        lll = e.lll;
+        llu = e.llu;
+        lul = e.lul;
+        luu = e.luu;
+        ull = e.ull;
+        ulu = e.ulu;
+        uul = e.uul;
+        uuu = e.uuu;
+        l = e.l;
+        r = e.r;
+        b = e.b;
+        t = e.t;
+        a = e.a;
+        f = e.f;
+        pts = e.pts;
+    }
+    
+    /**
+     * Create a new instance.
+     *
+     * @param env What {@link #env} is set to.
+     * @param oom The Order of Magnitude for the precision.
+     * @param x The x-coordinate of a point.
+     * @param y The y-coordinate of a point.
+     * @param z The z-coordinate of a point.
+     */
+    public V3D_Envelope(V3D_Environment env, int oom, BigRational x, 
+            BigRational y, BigRational z) {
+        this(oom, new V3D_Point(env, x, y, z));
+    }
 
+    
+    /**
+     * Create a new instance.
+     *
+     * @param env What {@link #env} is set to.
+     * @param oom The Order of Magnitude for the precision.
+     * @param xMin What {@link xMin} is set to.
+     * @param xMax What {@link xMax} is set to.
+     * @param yMin What {@link yMin} is set to.
+     * @param yMax What {@link yMax} is set to.
+     * @param zMin What {@link zMin} is set to.
+     * @param zMax What {@link zMax} is set to.
+     */
+    public V3D_Envelope(V3D_Environment env, int oom,
+            BigRational xMin, BigRational xMax,
+            BigRational yMin, BigRational yMax,
+            BigRational zMin, BigRational zMax) {
+        this(oom, new V3D_Point(env, xMin, yMin, zMin),
+                new V3D_Point(env, xMax, yMax, zMax));
+    }
+    
     /**
      * Create a new instance.
      *
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
+     * @param rm The RoundingMode if rounding is needed.
+     * @param gs The geometries used to form the envelope.
+     */
+    public V3D_Envelope(int oom, RoundingMode rm, V3D_FiniteGeometry... gs) {
+        V3D_Envelope e = new V3D_Envelope(gs[0], oom, rm);
+        for (V3D_FiniteGeometry g : gs) {
+            e = e.union(new V3D_Envelope(g, oom, rm), oom);
+        }
+        env = e.env;
+        offset = e.offset;
+        yMin = e.yMin;
+        yMax = e.yMax;
+        xMin = e.xMin;
+        xMax = e.xMax;
+        zMin = e.zMin;
+        zMax = e.zMax;
+        lll = e.lll;
+        llu = e.llu;
+        lul = e.lul;
+        luu = e.luu;
+        ull = e.ull;
+        ulu = e.ulu;
+        uul = e.uul;
+        uuu = e.uuu;
+        l = e.l;
+        r = e.r;
+        b = e.b;
+        t = e.t;
+        a = e.a;
+        f = e.f;
+        pts = e.pts;
+    }
+
+    /**
+     * Create a new instance.
+     *
+     * @param g The geometry used to form the envelope.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     */
+    public V3D_Envelope(V3D_FiniteGeometry g, int oom, RoundingMode rm) {
+        this(oom, g.getPointsArray(oom, rm));
+    }
+    
+    /**
+     * Create a new instance.
+     *
+     * @param oom The Order of Magnitude for the precision.
      * @param points The points used to form the envelop.
      */
     public V3D_Envelope(int oom, V3D_Point... points) {
         //offset = points[0].offset;
-        offset = V3D_Vector.ZERO;
+        //offset = V3D_Vector.ZERO;
         int len = points.length;
         switch (len) {
             case 0 ->
                 throw new RuntimeException("Cannot create envelope from an empty "
                         + "collection of points.");
             case 1 -> {
+                offset = V3D_Vector.ZERO;
                 xMin = points[0].getX(oom, RoundingMode.FLOOR);
                 xMax = points[0].getX(oom, RoundingMode.CEILING);
                 yMin = points[0].getY(oom, RoundingMode.FLOOR);
@@ -298,6 +348,7 @@ public class V3D_Envelope implements Serializable {
                 zMax = points[0].getZ(oom, RoundingMode.CEILING);
             }
             default -> {
+                offset = V3D_Vector.ZERO;
                 BigRational xmin = points[0].getX(oom, RoundingMode.FLOOR);
                 BigRational xmax = points[0].getX(oom, RoundingMode.CEILING);
                 BigRational ymin = points[0].getY(oom, RoundingMode.FLOOR);
@@ -322,40 +373,9 @@ public class V3D_Envelope implements Serializable {
         }
     }
 
-    /**
-     * Create a new instance.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @param x The x-coordinate of a point.
-     * @param y The y-coordinate of a point.
-     * @param z The z-coordinate of a point.
-     */
-    public V3D_Envelope(int oom, BigRational x, BigRational y, BigRational z) {
-        this(oom, new V3D_Point(x, y, z));
-    }
-
-    /**
-     * Create a new instance.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @param xMin What {@link xMin} is set to.
-     * @param xMax What {@link xMax} is set to.
-     * @param yMin What {@link yMin} is set to.
-     * @param yMax What {@link yMax} is set to.
-     * @param zMin What {@link zMin} is set to.
-     * @param zMax What {@link zMax} is set to.
-     */
-    public V3D_Envelope(int oom,
-            BigRational xMin, BigRational xMax,
-            BigRational yMin, BigRational yMax,
-            BigRational zMin, BigRational zMax) {
-        this(oom, new V3D_Point(xMin, yMin, zMin),
-                new V3D_Point(xMax, yMax, zMax));
-    }
-
     @Override
     public String toString() {
-        return toString(-3, RoundingMode.HALF_UP);
+        return toString(env.oom, env.rm);
     }
 
     /**
@@ -371,333 +391,21 @@ public class V3D_Envelope implements Serializable {
     }
 
     /**
-     * Translates this using {@code v}.
-     *
-     * @param v The vector of translation.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
+     * @return {@link #pts} initialising first if it is null.
      */
-    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
-        offset = offset.add(v, oom, rm);
-        pts = null;
-    }
-
-    /**
-     * @param e The V3D_Envelope to union with this.
-     * @param oom The Order of Magnitude for the precision.
-     * @return an Envelope which is {@code this} union {@code e}.
-     */
-    public V3D_Envelope union(V3D_Envelope e, int oom) {
-        if (e.isContainedBy(this, oom)) {
-            return this;
-        } else {
-            return new V3D_Envelope(oom,
-                    BigRational.min(e.getXMin(oom), getXMin(oom)),
-                    BigRational.max(e.getXMax(oom), getXMax(oom)),
-                    BigRational.min(e.getYMin(oom), getYMin(oom)),
-                    BigRational.max(e.getYMax(oom), getYMax(oom)),
-                    BigRational.min(e.getZMin(oom), getZMin(oom)),
-                    BigRational.max(e.getZMax(oom), getZMax(oom)));
+    public HashSet<V3D_Point> getPoints() {
+        if (pts == null) {
+            pts = new HashSet<>(4);
+            pts.add(getlll());
+            pts.add(getllu());
+            pts.add(getlul());
+            pts.add(getluu());
+            pts.add(getull());
+            pts.add(getulu());
+            pts.add(V3D_Envelope.this.getuul());
+            pts.add(getuuu());
         }
-    }
-
-    /**
-     * If {@code e} touches, or overlaps then it intersects. For collision 
-     * avoidance, this is biased towards returning an intersection even if there 
-     * may not be one at a lower oom precision.
-     *
-     * @param e The Vector_Envelope2D to test for intersection.
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} if this intersects with {@code e} it the {@code oom}
-     * level of precision.
-     */
-    public boolean isIntersectedBy(V3D_Envelope e, int oom) {
-        if (isBeyond(e, oom)) {
-            return !e.isBeyond(this, oom);
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * @param e The envelope to test against.
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} iff e is beyond this (i.e. they do not touch or
-     * intersect).
-     */
-    public boolean isBeyond(V3D_Envelope e, int oom) {
-        if (getXMax(oom).compareTo(e.getXMin(oom)) == -1) {
-            return true;
-        } else if (getXMin(oom).compareTo(e.getXMax(oom)) == 1) {
-            return true;
-        } else if (getYMax(oom).compareTo(e.getYMin(oom)) == -1) {
-            return true;
-        } else if (getYMin(oom).compareTo(e.getYMax(oom)) == 1) {
-            return true;
-        } else if (getZMax(oom).compareTo(e.getZMin(oom)) == -1) {
-            return true;
-        } else {
-            return getZMin(oom).compareTo(e.getZMax(oom)) == 1;
-        }
-    }
-
-    /**
-     * Containment includes the boundary. So anything in or on the boundary is
-     * contained.
-     *
-     * @param e V3D_Envelope
-     * @param oom The Order of Magnitude for the precision.
-     * @return if this is contained by {@code e}
-     */
-    public boolean isContainedBy(V3D_Envelope e, int oom) {
-        return getXMax(oom).compareTo(e.getXMax(oom)) != 1
-                && getXMin(oom).compareTo(e.getXMin(oom)) != -1
-                && getYMax(oom).compareTo(e.getYMax(oom)) != 1
-                && getYMin(oom).compareTo(e.getYMin(oom)) != -1
-                && getZMax(oom).compareTo(e.getZMax(oom)) != 1
-                && getZMin(oom).compareTo(e.getZMin(oom)) != -1;
-    }
-
-    /**
-     * @param p The point to test for intersection.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this intersects with {@code pl}
-     */
-    public boolean isIntersectedBy(V3D_Point p, int oom, RoundingMode rm) {
-        return isIntersectedBy(p.getX(oom, rm), p.getY(oom, rm), p.getZ(oom, rm), oom);
-    }
-
-    /**
-     * This biases intersection.
-     * 
-     * @param x The x-coordinate of the point to test for intersection.
-     * @param y The y-coordinate of the point to test for intersection.
-     * @param z The z-coordinate of the point to test for intersection.
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} if this intersects with {@code pl}
-     */
-    public boolean isIntersectedBy(BigRational x, BigRational y, BigRational z, 
-            int oom) {
-        return x.compareTo(getXMin(oom)) != -1 && x.compareTo(getXMax(oom)) != 1
-                && y.compareTo(getYMin(oom)) != -1 && y.compareTo(getYMax(oom)) != 1
-                && z.compareTo(getZMin(oom)) != -1 && z.compareTo(getZMax(oom)) != 1;
-    }
-
-    /**
-     * @param l The line to test for intersection.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this intersects with {@code pl}
-     */
-    public boolean isIntersectedBy(V3D_Line l, int oom, RoundingMode rm) {
-        if (isIntersectedBy(l.getP(), oom, rm)) {
-            return true;
-        } else {
-            if (isIntersectedBy(l.getQ(oom, rm), oom, rm)) {
-                return true;
-            } else {
-                V3D_Plane xMinPlane0 = getXMinPlane(oom);
-                V3D_Geometry xMinPlaneIntersection = xMinPlane0.getIntersection(l, oom, rm);
-                if (xMinPlaneIntersection != null) {
-                    if (xMinPlaneIntersection instanceof V3D_Line) {
-                        return true;
-                    }
-                }
-                V3D_Plane xMaxPlane0 = getXMaxPlane(oom);
-                V3D_Geometry xMaxPlaneIntersection = xMaxPlane0.getIntersection(l, oom, rm);
-                if (xMaxPlaneIntersection != null) {
-                    if (xMaxPlaneIntersection instanceof V3D_Line) {
-                        return true;
-                    }
-                }
-                V3D_Plane yMinPlane0 = getYMinPlane(oom);
-                V3D_Geometry yMinPlaneIntersection = yMinPlane0.getIntersection(l, oom, rm);
-                if (yMinPlaneIntersection != null) {
-                    if (yMinPlaneIntersection instanceof V3D_Line) {
-                        return true;
-                    }
-                }
-                V3D_Plane yMaxPlane0 = getYMaxPlane(oom);
-                V3D_Geometry yMaxPlaneIntersection = yMaxPlane0.getIntersection(l, oom, rm);
-                if (yMaxPlaneIntersection != null) {
-                    if (yMaxPlaneIntersection instanceof V3D_Line) {
-                        return true;
-                    }
-                }
-                V3D_Plane zMinPlane0 = getZMinPlane(oom);
-                V3D_Geometry zMinPlaneIntersection = zMinPlane0.getIntersection(l, oom, rm);
-                if (zMinPlaneIntersection != null) {
-                    if (zMinPlaneIntersection instanceof V3D_Line) {
-                        return true;
-                    }
-                }
-                V3D_Plane zMaxPlane0 = getZMaxPlane(oom);
-                V3D_Geometry zMaxPlaneIntersection = zMaxPlane0.getIntersection(l, oom, rm);
-                if (zMaxPlaneIntersection != null) {
-                    if (zMaxPlaneIntersection instanceof V3D_Line) {
-                        return true;
-                    }
-                }
-                // There are 8 cases.
-                if (xMinPlaneIntersection == null) {
-                    if (yMinPlaneIntersection == null) {
-                        V3D_Point zP = (V3D_Point) zMinPlaneIntersection;
-                        return zMinPlane0.isBetweenPlanes(zMaxPlane0, zP, oom, rm);
-                    } else {
-                        V3D_Point yP = (V3D_Point) yMinPlaneIntersection;
-                        if (yMinPlane0.isBetweenPlanes(yMaxPlane0, yP, oom, rm)) {
-                            return true;
-                        } else {
-                            if (zMinPlaneIntersection == null) {
-                                return false;
-                            } else {
-                                V3D_Point zP = (V3D_Point) zMinPlaneIntersection;
-                                return zMinPlane0.isBetweenPlanes(zMaxPlane0, zP, oom, rm);
-                            }
-                        }
-                    }
-                } else {
-                    V3D_Point xP = (V3D_Point) xMinPlaneIntersection;
-                    if (xMinPlane0.isBetweenPlanes(xMaxPlane0, xP, oom, rm)) {
-                        return true;
-                    } else {
-                        if (yMinPlaneIntersection == null) {
-                            if (zMinPlaneIntersection == null) {
-                                return false;
-                            } else {
-                                V3D_Point zP = (V3D_Point) zMinPlaneIntersection;
-                                return zMinPlane0.isBetweenPlanes(zMaxPlane0, zP, oom, rm);
-                            }
-                        } else {
-                            V3D_Point yP = (V3D_Point) yMinPlaneIntersection;
-                            if (yMinPlane0.isBetweenPlanes(yMaxPlane0, yP, oom, rm)) {
-                                return true;
-                            } else {
-                                if (zMinPlaneIntersection == null) {
-                                    return false;
-                                } else {
-                                    V3D_Point zP = (V3D_Point) zMinPlaneIntersection;
-                                    return zMinPlane0.isBetweenPlanes(zMaxPlane0, zP, oom, rm);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * The normal points away from the envelope.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@link #xMinPlane} at oom precision.
-     */
-    public V3D_Plane getXMinPlane(int oom) {
-        if (xMinPlane == null || xMinPlane_oom > oom) {
-            xMinPlane = new V3D_Plane(getLbf(oom), V3D_Vector.I.reverse());
-            return xMinPlane;
-        } else {
-            return new V3D_Plane(getLbf(oom), V3D_Vector.I.reverse());
-        }
-    }
-
-    /**
-     * The normal points away from the envelope.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@link #xMaxPlane} at oom precision.
-     */
-    public V3D_Plane getXMaxPlane(int oom) {
-        if (xMaxPlane == null || xMaxPlane_oom > oom) {
-            xMaxPlane = new V3D_Plane(getRbf(oom), V3D_Vector.I);
-            return xMaxPlane;
-        } else {
-            return new V3D_Plane(getRbf(oom), V3D_Vector.I);
-        }
-    }
-
-    /**
-     * The normal points away from the envelope.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@link #yMinPlane} at oom precision.
-     */
-    public V3D_Plane getYMinPlane(int oom) {
-        if (yMinPlane == null || xMinPlane_oom > oom) {
-            yMinPlane = new V3D_Plane(getLbf(oom), V3D_Vector.J.reverse());
-            return yMinPlane;
-        } else {
-            return new V3D_Plane(getLbf(oom), V3D_Vector.J.reverse());
-        }
-    }
-
-    /**
-     * The normal points away from the envelope.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@link #yMaxPlane} at oom precision.
-     */
-    public V3D_Plane getYMaxPlane(int oom) {
-        if (yMaxPlane == null || yMaxPlane_oom > oom) {
-            yMaxPlane = new V3D_Plane(getRtf(oom), V3D_Vector.J);
-            return yMaxPlane;
-        } else {
-            return new V3D_Plane(getRtf(oom), V3D_Vector.J);
-        }
-    }
-
-    /**
-     * The normal points away from the envelope.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@link #zMinPlane} at oom precision.
-     */
-    public V3D_Plane getZMinPlane(int oom) {
-        if (zMinPlane == null || zMinPlane_oom > oom) {
-            zMinPlane = new V3D_Plane(getLba(oom), V3D_Vector.K.reverse());
-            return zMinPlane;
-        } else {
-            return new V3D_Plane(getLba(oom), V3D_Vector.K.reverse());
-        }
-    }
-
-    /**
-     * The normal points away from the envelope.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@link #zMaxPlane} at oom precision.
-     */
-    public V3D_Plane getZMaxPlane(int oom) {
-        if (zMaxPlane == null || zMaxPlane_oom > oom) {
-            zMaxPlane = new V3D_Plane(getRbf(oom), V3D_Vector.K);
-            return zMaxPlane;
-        } else {
-            return new V3D_Plane(getRbf(oom), V3D_Vector.K);
-        }
-    }
-
-    /**
-     * @param en The envelope to intersect.
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@code null} if there is no intersection; {@code en} if
-     * {@code this.equals(en)}; otherwise returns the intersection.
-     */
-    public V3D_Envelope getIntersection(V3D_Envelope en, int oom) {
-        if (this.equals(en, oom)) {
-            return en;
-        }
-        if (!this.isIntersectedBy(en, oom)) {
-            return null;
-        }
-        return new V3D_Envelope(oom,
-                BigRational.max(getXMin(oom), en.getXMin(oom)),
-                BigRational.min(getXMax(oom), en.getXMax(oom)),
-                BigRational.max(getYMin(oom), en.getYMin(oom)),
-                BigRational.min(getYMax(oom), en.getYMax(oom)),
-                BigRational.max(getZMin(oom), en.getZMin(oom)),
-                BigRational.min(getZMax(oom), en.getZMax(oom)));
+        return pts;
     }
 
     /**
@@ -843,6 +551,200 @@ public class V3D_Envelope implements Serializable {
     }
 
     /**
+     * @return {@link #llu} setting it first if it is null.
+     */
+    public V3D_Point getllu() {
+        if (llu == null) {
+            llu = new V3D_Point(env xMin, yMin, zMin);
+        }
+        return llu;
+    }
+
+    /**
+     * @return {@link #luu} setting it first if it is null.
+     */
+    public V3D_Point getluu(int oom) {
+        if (luu == null) {
+            luu = new V3D_Point(env, xMin, yMax, zMax);
+        }
+        return luu;
+    }
+
+    /**
+     * @return {@link #uuu} setting it first if it is null.
+     */
+    public V3D_Point getuuu() {
+        if (uuu == null) {
+            uuu = new V3D_Point(env, xMax, yMax, zMax);
+        }
+        return uuu;
+    }
+
+    /**
+     * @return {@link #ulu} setting it first if it is null.
+     */
+    public V3D_Point getulu() {
+        if (ulu == null) {
+            ulu = new V3D_Point(env, xMax, yMin, zMax);
+        }
+        return ulu;
+    }
+
+    /**
+     * @return {@link #lll} setting it first if it is null.
+     */
+    public V3D_Point getlll() {
+        if (lll == null) {
+            lll = new V3D_Point(env, xMin, yMin, zMin);
+        }
+        return lll;
+    }
+
+    /**
+     * @return {@link #lul} setting it first if it is null.
+     */
+    public V3D_Point getlul() {
+        if (lul == null) {
+            lul = new V3D_Point(env, xMin, yMax, zMin);
+        }
+        return lul;
+    }
+
+    /**
+     * @return {@link #uul} setting it first if it is null.
+     */
+    public V3D_Point getuul() {
+        if (uul == null) {
+            uul = new V3D_Point(env, xMin, yMax, zMin);
+        }
+        return uul;
+    }
+
+    /**
+     * @return {@link #ull} setting it first if it is null.
+     */
+    public V3D_Point getull(int oom) {
+        if (ull == null) {
+            ull = new V3D_Point(env, xMax, yMin, zMin);
+        }
+        return ull;
+    }
+    
+    /**
+     * @return {@link #l} setting it first if it is null.
+     */
+    public V3D_Plane getl() {
+        if (l == null) {
+            l = new V3D_Plane(getlll(), V3D_Vector.I.reverse());
+        }
+        return l;
+    }
+
+    /**
+     * @return {@link #r} setting it first if it is null.
+     */
+    public V3D_Plane getr() {
+        if (r == null) {
+            r = new V3D_Plane(getuuu(), V3D_Vector.I);
+        }
+        return r;
+    }
+
+    /**
+     * @return {@link #b} setting it first if it is null.
+     */
+    public V3D_Plane getb() {
+        if (b == null) {
+            b = new V3D_Plane(getlll(), V3D_Vector.J.reverse());
+        }
+        return b;
+    }
+
+    /**
+     * @return {@link #t} setting it first if it is null.
+     */
+    public V3D_Plane gett() {
+        if (t == null) {
+            t = new V3D_Plane(getuuu(), V3D_Vector.J);
+        }
+        return t;
+    }
+
+    /**
+     * @return {@link #a} setting it first if it is null.
+     */
+    public V3D_Plane geta() {
+        if (a == null) {
+            a = new V3D_Plane(getlll(), V3D_Vector.K.reverse());
+        }
+        return a;
+    }
+
+    /**
+     * @return {@link #f} setting it first if it is null.
+     */
+    public V3D_Plane getf() {
+        if (f == null) {
+            f = new V3D_Plane(getuuu(), V3D_Vector.K);
+        }
+        return f;
+    }
+    
+    /**
+     * Translates this using {@code v}.
+     *
+     * @param v The vector of translation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     */
+    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        offset = offset.add(v, oom, rm);
+        pts = null;
+        if (lll != null) {
+            lll.translate(v, oom, rm);
+        }
+        if (llu != null) {
+            llu.translate(v, oom, rm);
+        }
+        if (lul != null) {
+            lul.translate(v, oom, rm);
+        }
+        if (luu != null) {
+            luu.translate(v, oom, rm);
+        }
+        if (ull != null) {
+            ull.translate(v, oom, rm);
+        }
+        if (ulu != null) {
+            ulu.translate(v, oom, rm);
+        }
+        if (uul != null) {
+            uul.translate(v, oom, rm);
+        }
+        if (uuu != null) {
+            uuu.translate(v, oom, rm);
+        }
+        if (l != null) {
+            l.translate(v, oom, rm);
+        }
+        if (t != null) {
+            t.translate(v, oom, rm);
+        }
+        if (r != null) {
+            r.translate(v, oom, rm);
+        }
+        if (b != null) {
+            b.translate(v, oom, rm);
+        }
+        if (f != null) {
+            f.translate(v, oom, rm);
+        }
+        if (a != null) {
+            a.translate(v, oom, rm);
+        }
+    }
+    
+    /**
      * Calculate and return the approximate (or exact) centroid of the envelope.
      *
      * @param oom The Order of Magnitude for the precision.
@@ -855,119 +757,303 @@ public class V3D_Envelope implements Serializable {
                 this.getYMax(oom, rm).add(this.getYMin(oom, rm)).divide(2),
                 this.getZMax(oom, rm).add(this.getZMin(oom, rm)).divide(2));
     }
-
+    
     /**
-     * @param oom The Order of Magnitude for the precision
-     * @return {@link #lbf} to oom precision.
+     * @param e The V3D_Envelope to union with this.
+     * @param oom The Order of Magnitude for the precision.
+     * @return an Envelope which is {@code this} union {@code e}.
      */
-    public V3D_Point getLbf(int oom) {
-        if (lbf == null || lbf_oom > oom) {
-            lbf_oom = oom;
-            lbf = new V3D_Point(getXMin(oom), getYMin(oom), getZMin(oom));
-            return lbf;
+    public V3D_Envelope union(V3D_Envelope e, int oom) {
+        if (this.contains(e, oom)) {
+            return this;
         } else {
-            return new V3D_Point(getXMin(oom), getYMin(oom), getZMin(oom));
+            return new V3D_Envelope(env, oom,
+                    BigRational.min(e.getXMin(oom), getXMin(oom)),
+                    BigRational.max(e.getXMax(oom), getXMax(oom)),
+                    BigRational.min(e.getYMin(oom), getYMin(oom)),
+                    BigRational.max(e.getYMax(oom), getYMax(oom)),
+                    BigRational.min(e.getZMin(oom), getZMin(oom)),
+                    BigRational.max(e.getZMax(oom), getZMax(oom)));
+        }
+    }
+    
+    /**
+     * If {@code e} touches, or overlaps then it intersects. For collision
+     * avoidance, this is biased towards returning an intersection even if there
+     * may not be one at a lower oom precision.
+     *
+     * @param e The Vector_Envelope2D to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @return {@code true} if this intersects with {@code e} it the {@code oom}
+     * level of precision.
+     */
+    public boolean intersects(V3D_Envelope e, int oom) {
+        if (isBeyond(e, oom)) {
+            return !e.isBeyond(this, oom);
+        } else {
+            return true;
         }
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision
-     * @return {@link #ltf} to oom precision.
+     * @param e The envelope to test if {@code this} is beyond.
+     * @param oom The Order of Magnitude for the precision.
+     * @return {@code true} iff {@code this} is beyond {@code e} (i.e. they do
+     * not touch or intersect).
      */
-    public V3D_Point getLtf(int oom) {
-        if (ltf == null || ltf_oom > oom) {
-            ltf_oom = oom;
-            ltf = new V3D_Point(getXMin(oom), getYMax(oom), getZMin(oom));
-            return ltf;
-        } else {
-            return new V3D_Point(getXMin(oom), getYMax(oom), getZMin(oom));
-        }
+    public boolean isBeyond(V3D_Envelope e, int oom) {
+        return getXMax(oom).compareTo(e.getXMin(oom)) == -1
+                || getXMin(oom).compareTo(e.getXMax(oom)) == 1
+                || getYMax(oom).compareTo(e.getYMin(oom)) == -1
+                || getYMin(oom).compareTo(e.getYMax(oom)) == 1
+                || getZMax(oom).compareTo(e.getZMin(oom)) == -1
+                || getZMin(oom).compareTo(e.getZMax(oom)) == 1;
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision
-     * @return {@link #rtf} to oom precision.
+     * @param e V3D_Envelope The envelope to test if it is contained.
+     * @param oom The Order of Magnitude for the precision.
+     * @return {@code true} iff {@code this} contains {@code e}.
      */
-    public V3D_Point getRtf(int oom) {
-        if (rtf == null || rtf_oom > oom) {
-            rtf_oom = oom;
-            rtf = new V3D_Point(getXMax(oom), getYMax(oom), getZMin(oom));
-            return rtf;
-        } else {
-            return new V3D_Point(getXMax(oom), getYMax(oom), getZMin(oom));
-        }
+    public boolean contains(V3D_Envelope e, int oom) {
+        return getXMax(oom).compareTo(e.getXMax(oom)) != -1
+                && getXMin(oom).compareTo(e.getXMin(oom)) != 1
+                && getYMax(oom).compareTo(e.getYMax(oom)) != -1
+                && getYMin(oom).compareTo(e.getYMin(oom)) != 1
+                && getZMax(oom).compareTo(e.getZMax(oom)) != -1
+                && getZMin(oom).compareTo(e.getZMin(oom)) != 1;
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision
-     * @return {@link #rbf} to oom precision.
+     * The location of p may get rounded.
+     *
+     * @param p The point to test if it is contained.
+     * @param oom The Order of Magnitude for the precision.
+     * @return {@code} true iff {@code this} contains {@code p}.
      */
-    public V3D_Point getRbf(int oom) {
-        if (rbf == null || rbf_oom > oom) {
-            rbf_oom = oom;
-            rbf = new V3D_Point(getXMax(oom), getYMin(oom), getZMin(oom));
-            return rbf;
-        } else {
-            return new V3D_Point(getXMax(oom), getYMin(oom), getZMin(oom));
-        }
+    public boolean contains(V3D_Point p, int oom) {
+        BigRational xu = p.getX(oom, RoundingMode.CEILING);
+        BigRational xl = p.getX(oom, RoundingMode.FLOOR);
+        BigRational yu = p.getY(oom, RoundingMode.CEILING);
+        BigRational yl = p.getY(oom, RoundingMode.FLOOR);
+        BigRational zu = p.getZ(oom, RoundingMode.CEILING);
+        BigRational zl = p.getZ(oom, RoundingMode.FLOOR);
+        return getXMax(oom).compareTo(xl) != -1
+                && getXMin(oom).compareTo(xu) != 1
+                && getYMax(oom).compareTo(yl) != -1
+                && getYMin(oom).compareTo(yu) != 1
+                && getZMax(oom).compareTo(zl) != -1
+                && getZMin(oom).compareTo(zu) != 1;
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision
-     * @return {@link #lba} to oom precision.
+     * @param x The x-coordinate of the point to test for containment.
+     * @param y The y-coordinate of the point to test for containment.
+     * @param z The z-coordinate of the point to test for containment.
+     * @param oom The Order of Magnitude for the precision.
+     * @return {@code true} iff {@code this} contains the point defined by
+     * {@code x}, {@code y} and {@code z}.
      */
-    public V3D_Point getLba(int oom) {
-        if (lba == null || lba_oom > oom) {
-            lba_oom = oom;
-            lba = new V3D_Point(getXMin(oom), getYMin(oom), getZMax(oom));
-            return lba;
-        } else {
-            return new V3D_Point(getXMin(oom), getYMin(oom), getZMax(oom));
-        }
+    public boolean contains(BigRational x, BigRational y, BigRational z, int oom) {
+        return getXMax(oom).compareTo(x) != -1
+                && getXMin(oom).compareTo(x) != 1
+                && getYMax(oom).compareTo(y) != -1
+                && getYMin(oom).compareTo(y) != 1;
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision
-     * @return {@link #lta} to oom precision.
+     * @param l The line to test for containment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if this contains {@code l}.
      */
-    public V3D_Point getLta(int oom) {
-        if (lta == null || lta_oom > oom) {
-            lta_oom = oom;
-            lta = new V3D_Point(getXMin(oom), getYMax(oom), getZMax(oom));
-            return lta;
-        } else {
-            return new V3D_Point(getXMin(oom), getYMax(oom), getZMax(oom));
-        }
+    public boolean contains(V3D_LineSegment l, int oom, RoundingMode rm) {
+        return contains(l.getP(), oom) && contains(l.getQ(oom, rm), oom);
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision
-     * @return {@link #rta} to oom precision.
+     * @param s The shape to test for containment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if this contains {@code s}.
      */
-    public V3D_Point getRta(int oom) {
-        if (rta == null || rta_oom > oom) {
-            rta_oom = oom;
-            rta = new V3D_Point(getXMax(oom), getYMax(oom), getZMax(oom));
-            return rta;
-        } else {
-            return new V3D_Point(getXMax(oom), getYMax(oom), getZMax(oom));
-        }
+    public boolean contains(V3D_2DShape s, int oom, RoundingMode rm) {
+        return contains(s.getEnvelope(oom, rm), oom)
+                && contains0(s, oom, rm);
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision
-     * @return {@link #rba} to oom precision.
+     * @param s The shape to test for containment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if this intersects with {@code s}
      */
-    public V3D_Point getRba(int oom) {
-        if (rba == null || rba_oom > oom) {
-            rba_oom = oom;
-            rba = new V3D_Point(getXMax(oom), getYMin(oom), getZMax(oom));
-            return rba;
-        } else {
-            return new V3D_Point(getXMax(oom), getYMin(oom), getZMax(oom));
-        }
+    public boolean contains0(V3D_2DShape s, int oom, RoundingMode rm) {
+        return s.getPoints(oom, rm).values().parallelStream().allMatch(x
+                -> contains(x, oom));
     }
 
+    /**
+     * @param p The point to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if this intersects with {@code pl}
+     */
+    public boolean intersects(V3D_Point p, int oom, RoundingMode rm) {
+        return V3D_Envelope.this.intersects(p.getX(oom, rm), p.getY(oom, rm), p.getZ(oom, rm), oom);
+    }
+
+    /**
+     * This biases intersection.
+     * 
+     * @param x The x-coordinate of the point to test for intersection.
+     * @param y The y-coordinate of the point to test for intersection.
+     * @param z The z-coordinate of the point to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @return {@code true} if this intersects with {@code pl}
+     */
+    public boolean intersects(BigRational x, BigRational y, BigRational z, 
+            int oom) {
+        return x.compareTo(getXMin(oom)) != -1
+                && x.compareTo(getXMax(oom)) != 1
+                && y.compareTo(getYMin(oom)) != -1
+                && y.compareTo(getYMax(oom)) != 1
+                && z.compareTo(getZMin(oom)) != -1
+                && z.compareTo(getZMax(oom)) != 1;
+    }
+
+//    /**
+//     * @param l The line to test for intersection.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode for any rounding.
+//     * @return {@code true} if this intersects with {@code pl}
+//     */
+//    public boolean intersects(V3D_Line l, int oom, RoundingMode rm) {
+//        if (V3D_Envelope.this.intersects(l.getP(), oom, rm)) {
+//            return true;
+//        } else {
+//            if (V3D_Envelope.this.intersects(l.getQ(oom, rm), oom, rm)) {
+//                return true;
+//            } else {
+//                V3D_Plane xMinPlane0 = getl(oom);
+//                V3D_Geometry xMinPlaneIntersection = xMinPlane0.getIntersection(l, oom, rm);
+//                if (xMinPlaneIntersection != null) {
+//                    if (xMinPlaneIntersection instanceof V3D_Line) {
+//                        return true;
+//                    }
+//                }
+//                V3D_Plane xMaxPlane0 = getr(oom);
+//                V3D_Geometry xMaxPlaneIntersection = xMaxPlane0.getIntersection(l, oom, rm);
+//                if (xMaxPlaneIntersection != null) {
+//                    if (xMaxPlaneIntersection instanceof V3D_Line) {
+//                        return true;
+//                    }
+//                }
+//                V3D_Plane yMinPlane0 = getb(oom);
+//                V3D_Geometry yMinPlaneIntersection = yMinPlane0.getIntersection(l, oom, rm);
+//                if (yMinPlaneIntersection != null) {
+//                    if (yMinPlaneIntersection instanceof V3D_Line) {
+//                        return true;
+//                    }
+//                }
+//                V3D_Plane yMaxPlane0 = gett(oom);
+//                V3D_Geometry yMaxPlaneIntersection = yMaxPlane0.getIntersection(l, oom, rm);
+//                if (yMaxPlaneIntersection != null) {
+//                    if (yMaxPlaneIntersection instanceof V3D_Line) {
+//                        return true;
+//                    }
+//                }
+//                V3D_Plane zMinPlane0 = geta(oom);
+//                V3D_Geometry zMinPlaneIntersection = zMinPlane0.getIntersection(l, oom, rm);
+//                if (zMinPlaneIntersection != null) {
+//                    if (zMinPlaneIntersection instanceof V3D_Line) {
+//                        return true;
+//                    }
+//                }
+//                V3D_Plane zMaxPlane0 = getf(oom);
+//                V3D_Geometry zMaxPlaneIntersection = zMaxPlane0.getIntersection(l, oom, rm);
+//                if (zMaxPlaneIntersection != null) {
+//                    if (zMaxPlaneIntersection instanceof V3D_Line) {
+//                        return true;
+//                    }
+//                }
+//                // There are 8 cases.
+//                if (xMinPlaneIntersection == null) {
+//                    if (yMinPlaneIntersection == null) {
+//                        V3D_Point zP = (V3D_Point) zMinPlaneIntersection;
+//                        return zMinPlane0.isBetweenPlanes(zMaxPlane0, zP, oom, rm);
+//                    } else {
+//                        V3D_Point yP = (V3D_Point) yMinPlaneIntersection;
+//                        if (yMinPlane0.isBetweenPlanes(yMaxPlane0, yP, oom, rm)) {
+//                            return true;
+//                        } else {
+//                            if (zMinPlaneIntersection == null) {
+//                                return false;
+//                            } else {
+//                                V3D_Point zP = (V3D_Point) zMinPlaneIntersection;
+//                                return zMinPlane0.isBetweenPlanes(zMaxPlane0, zP, oom, rm);
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    V3D_Point xP = (V3D_Point) xMinPlaneIntersection;
+//                    if (xMinPlane0.isBetweenPlanes(xMaxPlane0, xP, oom, rm)) {
+//                        return true;
+//                    } else {
+//                        if (yMinPlaneIntersection == null) {
+//                            if (zMinPlaneIntersection == null) {
+//                                return false;
+//                            } else {
+//                                V3D_Point zP = (V3D_Point) zMinPlaneIntersection;
+//                                return zMinPlane0.isBetweenPlanes(zMaxPlane0, zP, oom, rm);
+//                            }
+//                        } else {
+//                            V3D_Point yP = (V3D_Point) yMinPlaneIntersection;
+//                            if (yMinPlane0.isBetweenPlanes(yMaxPlane0, yP, oom, rm)) {
+//                                return true;
+//                            } else {
+//                                if (zMinPlaneIntersection == null) {
+//                                    return false;
+//                                } else {
+//                                    V3D_Point zP = (V3D_Point) zMinPlaneIntersection;
+//                                    return zMinPlane0.isBetweenPlanes(zMaxPlane0, zP, oom, rm);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    
+
+    /**
+     * @param en The envelope to intersect.
+     * @param oom The Order of Magnitude for the precision.
+     * @return {@code null} if there is no intersection; {@code en} if
+     * {@code this.equals(en)}; otherwise returns the intersection.
+     */
+    public V3D_Envelope getIntersection(V3D_Envelope en, int oom) {
+        if (!V3D_Envelope.this.intersects(en, oom)) {
+            return null;
+        }
+// Probably quicker without: 
+//        if (contains(en, oom)) {
+//            return this;
+//        }
+//        if (en.contains(this, oom)) {
+//            return en;
+//        }
+        return new V3D_Envelope(env, oom,
+                BigRational.max(getXMin(oom), en.getXMin(oom)),
+                BigRational.min(getXMax(oom), en.getXMax(oom)),
+                BigRational.max(getYMin(oom), en.getYMin(oom)),
+                BigRational.min(getYMax(oom), en.getYMax(oom)),
+                BigRational.max(getZMin(oom), en.getZMin(oom)),
+                BigRational.min(getZMax(oom), en.getZMax(oom)));
+    }
+    
     /**
      * Return an array containing lbf, lba, ltf, lta, rbf, rba, rtf, rta with
      * oom precision.
@@ -976,16 +1062,16 @@ public class V3D_Envelope implements Serializable {
      * @return The corners of this as points.
      */
     public V3D_Point[] getPoints(int oom) {
-        if (pts == null || pts_oom > oom) {
+        if (pts == null) {
             pts = new V3D_Point[8];
-            pts[0] = getLbf(oom);
-            pts[1] = getLba(oom);
-            pts[2] = getLtf(oom);
-            pts[3] = getLta(oom);
-            pts[4] = getRbf(oom);
-            pts[5] = getRba(oom);
-            pts[6] = getRtf(oom);
-            pts[7] = getRta(oom);
+            pts[0] = getllu();
+            pts[1] = getllu();
+            pts[2] = getluu();
+            pts[3] = getlul();
+            pts[4] = getulu();
+            pts[5] = getull();
+            pts[6] = getuuu();
+            pts[7] = getuul();
             pts_oom = oom;
         }
         return pts;
