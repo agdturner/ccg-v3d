@@ -23,6 +23,7 @@ import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_BR;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of an infinite plane. The plane is defined by the point
@@ -99,7 +100,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param p The plane used to create this.
      */
     public V3D_Plane(V3D_Plane p) {
-        super(new V3D_Vector(p.offset));
+        super(p.env, new V3D_Vector(p.offset));
         this.p = new V3D_Vector(p.p);
         this.n = new V3D_Vector(p.n);
     }
@@ -111,7 +112,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param n The normal of the plane.
      */
     public V3D_Plane(V3D_Point p, V3D_Vector n) {
-        super(new V3D_Vector(p.offset));
+        super(p.env, new V3D_Vector(p.offset));
         this.p = new V3D_Vector(p.rel);
         this.n = new V3D_Vector(n);
     }
@@ -127,7 +128,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public V3D_Plane(V3D_LineSegment l, V3D_Vector inplane, int oom,
             RoundingMode rm) {
-        super(new V3D_Vector(l.offset));
+        super(l.env, new V3D_Vector(l.offset));
         this.p = new V3D_Vector(l.getP().rel);
         this.n = l.l.v.getCrossProduct(inplane, oom, rm);
     }
@@ -145,7 +146,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public V3D_Plane(V3D_Point p, V3D_Point q, V3D_Point r, int oom,
             RoundingMode rm) {
-        super(new V3D_Vector(p.offset));
+        super(p.env, new V3D_Vector(p.offset));
         V3D_Vector qv = q.getVector(oom, rm);
         V3D_Vector pq = qv.subtract(p.getVector(oom, rm), oom, rm);
         V3D_Vector qr = r.getVector(oom, rm).subtract(qv, oom, rm);
@@ -156,6 +157,7 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param p Used to initialise {@link #p}.
      * @param q A point coplanar to pl and r, not collinear to both pl and r,
      * and not equal to pl or r.
@@ -164,14 +166,15 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_Plane(V3D_Vector p, V3D_Vector q, V3D_Vector r, int oom,
+    public V3D_Plane(V3D_Environment env, V3D_Vector p, V3D_Vector q, V3D_Vector r, int oom,
             RoundingMode rm) {
-        this(V3D_Vector.ZERO, p, q, r, oom, rm);
+        this(env, V3D_Vector.ZERO, p, q, r, oom, rm);
     }
 
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p Used to initialise {@link #p}.
      * @param q A point coplanar to pl and r, not collinear to both pl and r,
@@ -181,14 +184,15 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_Plane(V3D_Vector offset, V3D_Vector p, V3D_Vector q, V3D_Vector r, int oom,
+    public V3D_Plane(V3D_Environment env, V3D_Vector offset, V3D_Vector p, V3D_Vector q, V3D_Vector r, int oom,
             RoundingMode rm) {
-        this(p, offset, p, q, r, oom, rm);
+        this(env, p, offset, p, q, r, oom, rm);
     }
 
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param ptv A point vector giving the direction of the normal vector.
      * @param offset What {@link #offset} is set to.
      * @param p Used to initialise {@link #p}.
@@ -199,9 +203,9 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_Plane(V3D_Vector ptv, V3D_Vector offset, V3D_Vector p,
+    public V3D_Plane(V3D_Environment env, V3D_Vector ptv, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r, int oom, RoundingMode rm) {
-        super(new V3D_Vector(offset));
+        super(env, new V3D_Vector(offset));
         V3D_Vector pq = q.subtract(p, oom, rm);
         if (pq.equals(V3D_Vector.ZERO)) {
             throw new RuntimeException("Cannot define plane as p equals q.");
@@ -249,7 +253,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public V3D_Plane(V3D_Point pt, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, V3D_Vector r, int oom, RoundingMode rm) {
-        this(pt.getVector(oom, rm), offset, p, q, r, oom, rm);
+        this(pt.env, pt.getVector(oom, rm), offset, p, q, r, oom, rm);
     }
 
     /**
@@ -262,7 +266,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      */
     public V3D_Plane(V3D_Vector offset, V3D_Plane pl, int oom, RoundingMode rm) {
-        this.offset = offset;
+        super(pl.env, offset);
         n = pl.getN();
         if (offset.equals(pl.offset, oom, rm)) {
             p = new V3D_Vector(pl.p);
@@ -332,7 +336,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@link #p} with {@link #offset} and rotations applied.
      */
     public final V3D_Point getP() {
-        return new V3D_Point(offset, p);
+        return new V3D_Point(env, offset, p);
     }
 
     /**
@@ -397,7 +401,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return A point on the plane.
      */
     public final V3D_Point getQ(V3D_Vector pv, int oom, RoundingMode rm) {
-        return new V3D_Point(offset, this.p.add(pv, oom, rm));
+        return new V3D_Point(env, offset, this.p.add(pv, oom, rm));
     }
 
     /**
@@ -421,7 +425,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public final V3D_Point getR(V3D_Vector pv, int oom, RoundingMode rm) {
         V3D_Vector pvx = pv.getCrossProduct(n, oom, rm);
-        return new V3D_Point(offset, this.p.add(pvx, oom, rm));
+        return new V3D_Point(env, offset, this.p.add(pvx, oom, rm));
     }
 
     /**
@@ -683,7 +687,7 @@ public class V3D_Plane extends V3D_Geometry {
 //     * @return {@code true} If {@code pt} is on the plane.
 //     */
 //    public boolean isOnPlane(V3D_Line l) {
-//        return isIntersectedBy(l.getP()) && isIntersectedBy(l.getQ());
+//        return intersects(l.getP()) && intersects(l.getQ());
 //    }
 
     /**
@@ -808,11 +812,11 @@ public class V3D_Plane extends V3D_Geometry {
 //        // Are either of the points of l on the plane.
 //        //V3D_Point lp = l.getP(oom);
 //        V3D_Point lp = l.getP();
-//        if (this.isIntersectedBy(lp, oom, rm)) {
+//        if (this.intersects(lp, oom, rm)) {
 //            return lp;
 //        }
 //        V3D_Point lq = l.getQ(oom, rm);
-//        if (this.isIntersectedBy(lq, oom, rm)) {
+//        if (this.intersects(lq, oom, rm)) {
 //            return lq;
 //        }
 //        V3D_Point tp = getP();
@@ -820,13 +824,13 @@ public class V3D_Plane extends V3D_Geometry {
 //        V3D_Point tq = getQ(pv, oom, rm);
 //        V3D_Point tr = getR(pv, oom, rm);
 //        // Are any of these points on the line?
-//        if (l.isIntersectedBy(tp, oom, rm)) {
+//        if (l.intersects(tp, oom, rm)) {
 //            return tp;
 //        }
-//        if (l.isIntersectedBy(tp, oom, rm)) {
+//        if (l.intersects(tp, oom, rm)) {
 //            return tq;
 //        }
-//        if (l.isIntersectedBy(tp, oom, rm)) {
+//        if (l.intersects(tp, oom, rm)) {
 //            return tr;
 //        }
 //        
@@ -917,11 +921,11 @@ public class V3D_Plane extends V3D_Geometry {
 //                lp.getZ(oomN6, rm).add(lv.getDZ(oomN6, rm).multiply(t)));
 //        if (false) {
 //            // Check if res is on the line.
-//            if (!l.isIntersectedBy(res, oom, rm)) {
-//                System.out.println("Not on line! - l.isIntersectedBy(r, oom, rm)");
+//            if (!l.intersects(res, oom, rm)) {
+//                System.out.println("Not on line! - l.intersects(r, oom, rm)");
 //            }
-//            if (!isIntersectedBy(res, oom, rm)) {
-//                System.out.println("Not on plane! - !isIntersectedBy(r, oom, rm)");
+//            if (!intersects(res, oom, rm)) {
+//                System.out.println("Not on plane! - !intersects(r, oom, rm)");
 //                // Check side of line
 //                if (isOnSameSide(res, lp, oom, rm)) {
 //                    System.out.println("isOnSameSide(res, lp, oom, rm)");
@@ -1048,7 +1052,7 @@ public class V3D_Plane extends V3D_Geometry {
         m[3][3] = lv.getDZ(oomn6, rm);
         Math_Matrix_BR denm = new Math_Matrix_BR(m);
         BigRational t = numm.getDeterminant().divide(denm.getDeterminant()).negate();
-        V3D_Point res = new V3D_Point(
+        V3D_Point res = new V3D_Point(env, 
                 lp.getX(oomn6, rm).add(lv.getDX(oomn6, rm).multiply(t)),
                 lp.getY(oomn6, rm).add(lv.getDY(oomn6, rm).multiply(t)),
                 lp.getZ(oomn6, rm).add(lv.getDZ(oomn6, rm).multiply(t)));
@@ -1071,11 +1075,11 @@ public class V3D_Plane extends V3D_Geometry {
             return l;
         } else {
             V3D_Point pt = (V3D_Point) g;
-            if (l.getPPL().isOnSameSide(pt, l.getQ(), oom, rm)
+            if (l.getPPL().isOnSameSide(pt, l.getQ(oom, rm), oom, rm)
                     && l.getQPL().isOnSameSide(pt, l.getP(), oom, rm)) {
                 return pt;
             }
-//            if (l.isIntersectedBy(pt, oom, rm)) {
+//            if (l.intersects(pt, oom, rm)) {
 //                return pt;
 //            }
             return null;
@@ -1926,7 +1930,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public BigRational getDistanceSquared(V3D_LineSegment l, int oom, RoundingMode rm) {
         BigRational lpd = getDistanceSquared(l.getP(), oom, rm);
-        BigRational lqd = getDistanceSquared(l.getQ(), oom, rm);
+        BigRational lqd = getDistanceSquared(l.getQ(oom, rm), oom, rm);
         return BigRational.min(lpd, lqd);
     }
 

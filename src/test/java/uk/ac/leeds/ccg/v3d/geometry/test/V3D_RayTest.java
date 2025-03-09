@@ -84,7 +84,7 @@ public class V3D_RayTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_Ray.
+     * Test of intersects method, of class V3D_Ray.
      */
     @Test
     public void testIsIntersectedBy_V3D_Point_int() {
@@ -115,90 +115,90 @@ public class V3D_RayTest extends V3D_Test {
     }
 
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Ray.
+//     * Test of intersects method, of class V3D_Ray.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Ray_boolean() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Ray r = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
 //        V3D_Ray instance = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(r, oom, rm));
+//        assertTrue(instance.intersects(r, oom, rm));
 //        // Test 2
 //        instance = new V3D_Ray(pP0P0P0, pP1P1P1, oom, rm);
-//        assertTrue(instance.isIntersectedBy(r, oom, rm));
+//        assertTrue(instance.intersects(r, oom, rm));
 //        // Test 3
 //        instance = new V3D_Ray(pN1N1N1, pN1N1P0, oom, rm);
-//        assertFalse(instance.isIntersectedBy(r, oom, rm));
+//        assertFalse(instance.intersects(r, oom, rm));
 //        // Test 4
 //        r = new V3D_Ray(pN1N1P0, pP1P1P0, oom, rm);
 //        instance = new V3D_Ray(pN1N1N1, pP1P1P1, oom, rm);
 //        instance.getIntersection(r, oom, rm);
-//        assertTrue(instance.isIntersectedBy(r, oom, rm));
+//        assertTrue(instance.intersects(r, oom, rm));
 //    }
 
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Ray.
+//     * Test of intersects method, of class V3D_Ray.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_LineSegment_boolean() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
 //        V3D_Ray instance = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //        // Test 2
 //        instance = new V3D_Ray(pP0P0P0, pP1P1P1, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //        // Test 3
 //        instance = new V3D_Ray(pN1N1N1, pN1N1P0, oom, rm);
-//        assertFalse(instance.isIntersectedBy(l, oom, rm));
+//        assertFalse(instance.intersects(l, oom, rm));
 //        // Test 4
 //        l = new V3D_LineSegment(pN1N1P0, pP1P1P0, oom, rm);
 //        instance = new V3D_Ray(pN1N1N1, pP1P1P1, oom, rm);
 //        instance.getIntersection(l, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //    }
 
 //    /**
-//     * Test of isIntersectedBy method, of class V3D_Ray.
+//     * Test of intersects method, of class V3D_Ray.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Line_int() {
-//        System.out.println("isIntersectedBy");
+//        System.out.println("intersects");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
 //        V3D_Ray instance = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //        // Test 2
 //        instance = new V3D_Ray(pP0P0P0, pP1P1P1, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //        // Test 3
 //        instance = new V3D_Ray(pN1N1N1, pN1N1P0, oom, rm);
-//        assertFalse(instance.isIntersectedBy(l, oom, rm));
+//        assertFalse(instance.intersects(l, oom, rm));
 //        // Test 4
 //        l = new V3D_Line(pN1N1P0, pP1P1P0, oom, rm);
 //        instance = new V3D_Ray(pN1N1N1, pP1P1P1, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //        // Test 5
 //        l = new V3D_Line(P0P0P0, P0P0P0, P1P0P0, oom, rm);
 //        instance = new V3D_Ray(P0P0P0, P0P0P0, P1P0P0, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //        // Test 6
 //        l = new V3D_Line(P0P0P0, P0P0P0, P1P0P0, oom, rm);
 //        instance = new V3D_Ray(P0P0P0, P0P0P0, P0P0P1, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //        // Test 7
 //        l = new V3D_Line(P0P0P0, P0P0P0, P1P0P0, oom, rm);
 //        instance = new V3D_Ray(P0P0P0, P0P0N1, P0P0P1, oom, rm);
-//        assertTrue(instance.isIntersectedBy(l, oom, rm));
+//        assertTrue(instance.intersects(l, oom, rm));
 //        // Test 8
 //        l = new V3D_Line(P0P0P0, P0P0P0, P1P0P0, oom, rm);
 //        instance = new V3D_Ray(P0P0P0, P0P0P1, P0P0P2, oom, rm);
-//        assertFalse(instance.isIntersectedBy(l, oom, rm));
+//        assertFalse(instance.intersects(l, oom, rm));
 //    }
 
     /**

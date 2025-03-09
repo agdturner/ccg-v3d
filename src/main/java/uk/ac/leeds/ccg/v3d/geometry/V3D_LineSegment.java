@@ -17,40 +17,42 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of a finite length line (a line segment). The line begins
  * at the point of {@link #l} and ends at the point {@link #qv}. The "*" denotes
  * a point in 3D and the line is shown with a line of "e" symbols in the
  * following depiction: {@code
- * z
- * y           -
- * +          /                * pv=<x0,y0,z0>
- * |         /                e
- * |        /                e
- * |    z0-/                e
- * |      /                e
- * |     /               e
- * |    /               e
- * |   /               e
- * y0-|  /               e
- * | /               e
- * |/         x1    e
+ *                                       z
+ *                          y           -
+ *                          +          /                * pv=<x0,y0,z0>
+ *                          |         /                e
+ *                          |        /                e
+ *                          |    z0-/                e
+ *                          |      /                e
+ *                          |     /               e
+ *                          |    /               e
+ *                          |   /               e
+ *                       y0-|  /               e
+ *                          | /               e
+ *                          |/         x1    e
  * x - ---------------------|-----------/---e---/---- + x
- * /|              e   x0
- * / |-y1          e
- * /  |           e
- * /   |          e
- * z1-/    |         e
- * /     |        e
- * /      |       * qv=<x1,y1,z1>
- * /       |
- * /        |
- * +         -
- * z          y
+ *                         /|              e   x0
+ *                        / |-y1          e
+ *                       /  |           e
+ *                      /   |          e
+ *                  z1-/    |         e
+ *                    /     |        e
+ *                   /      |       * qv=<x1,y1,z1>
+ *                  /       |
+ *                 /        |
+ *                +         -
+ *               z          y
  * }
  *
  * @author Andy Turner
@@ -65,17 +67,6 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * the line is one end point of this segment.
      */
     public final V3D_Line l;
-
-    /**
-     * For defining {@link q} which is given relative to {@link #offset}.
-     */
-    protected V3D_Vector qv;
-
-    /**
-     * For defining the other end point of the line segment (the other given in
-     * {@link #l}.
-     */
-    protected V3D_Point q;
 
     /**
      * For storing the plane at l.getP() with a normal given l.v.
@@ -98,36 +89,38 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param l What {@code this} is cloned from.
      */
     public V3D_LineSegment(V3D_LineSegment l) {
-        super(l.offset);
+        super(l.env, l.offset);
         this.l = new V3D_Line(l.l);
     }
 
     /**
      * Create a new instance. {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
+     * @param env What {@link #env} is set to.
      * @param p What the point of {@link #l} is cloned from.
      * @param q What {@link #qv} is cloned from.
      * @param oom The Order of Magnitude for the precision of the result.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_LineSegment(V3D_Vector p, V3D_Vector q,
+    public V3D_LineSegment(V3D_Environment env, V3D_Vector p, V3D_Vector q,
             int oom, RoundingMode rm) {
-        this(V3D_Vector.ZERO, p, q, oom, rm);
+        this(env, V3D_Vector.ZERO, p, q, oom, rm);
     }
 
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p What the point of {@link #l} is cloned from.
      * @param q What {@link #qv} is cloned from.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_LineSegment(V3D_Vector offset, V3D_Vector p,
+    public V3D_LineSegment(V3D_Environment env, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, int oom, RoundingMode rm) {
-        super(offset);
-        l = new V3D_Line(offset, p, q, oom, rm);
+        super(env, offset);
+        l = new V3D_Line(env, offset, p, q, oom, rm);
         this.qv = q;
     }
 
@@ -140,10 +133,10 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param rm The RoundingMode for any rounding.
      */
     public V3D_LineSegment(V3D_Point p, V3D_Point q, int oom, RoundingMode rm) {
-        super(p.offset);
+        super(p.env, p.offset);
         V3D_Point q2 = new V3D_Point(q);
         q2.setOffset(offset, oom, rm);
-        l = new V3D_Line(offset, p.rel, q2.rel, oom, rm);
+        l = new V3D_Line(env, offset, p.rel, q2.rel, oom, rm);
         this.qv = q2.rel;
     }
 
@@ -154,8 +147,20 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param rm The RoundingMode for any rounding.
      * @param points Any number of collinear points, with two being different.
      */
+    public V3D_LineSegment(int oom, RoundingMode rm,
+            ArrayList<V3D_Point> points) {
+        this(oom, rm, points.toArray(V3D_Point[]::new));
+    }
+
+    /**
+     * Create a new instance that intersects all points.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param points Any number of collinear points, with two being different.
+     */
     public V3D_LineSegment(int oom, RoundingMode rm, V3D_Point... points) {
-        super(points[0].offset);
+        super(points[0].env, points[0].offset);
         V3D_Point p0 = points[0];
         V3D_Point p1 = points[1];
         V3D_LineSegment ls = new V3D_LineSegment(p0, p1, oom, rm);
@@ -175,6 +180,16 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     /**
+     * Create a new instance.
+     *
+     * @param l What {@code this} is created from.
+     */
+    public V3D_LineSegment(V3D_Line l) {
+        super(l.env);
+        this.l = new V3D_Line(l);
+    }
+
+    /**
      * @return {@link #l} pv with {@link #l} offset applied.
      */
     public V3D_Point getP() {
@@ -182,13 +197,12 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     /**
-     * @return {@link #qv} with {@link #offset} applied.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code l.getQ(oom, rm)}.
      */
-    public V3D_Point getQ() {
-        if (q == null) {
-            q = new V3D_Point(offset, qv);
-        }
-        return q;
+    public V3D_Point getQ(int oom, RoundingMode rm) {
+        return l.getQ(oom, rm);
     }
 
     /**
@@ -202,9 +216,6 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
         super.translate(v, oom, rm);
         l.translate(v, oom, rm);
-        if (q != null) {
-            q.translate(v, oom, rm);
-        }
         if (ppl != null) {
             ppl.translate(v, oom, rm);
         }
@@ -213,32 +224,6 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         }
     }
 
-    @Override
-    public V3D_Point[] getPoints() {
-        V3D_Point[] r = new V3D_Point[2];
-        r[0] = getP();
-        r[1] = getQ();
-        return r;
-    }
-
-    /**
-     * Create a new instance.
-     *
-     * @param l What {@code this} is created from.
-     */
-    public V3D_LineSegment(V3D_Line l) {
-        super();
-        this.l = new V3D_Line(l);
-    }
-
-//    /**
-//     * Create a new instance.
-//     *
-//     * @param l What {@code this} is created from.
-//     */
-//    public V3D_LineSegment(V3D_Envelope.LineSegment l, int oom, RoundingMode rm) {
-//        this(l.e, new V3D_Vector(l.pv), new V3D_Vector(l.qv), oom, rm);
-//    }
     @Override
     public String toString() {
         //return toString("");
@@ -275,30 +260,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     protected String toStringFields(String pad) {
         String r = super.toStringFields(pad) + "\n"
                 + pad + ",\n";
-        r += pad + "l=" + l.toStringFields(pad) + "\n"
-                + pad + ",\n"
-                + pad + "q=" + qv.toStringFields(pad);
-//        if (l.qv == null) {
-//            r += pad + "pv=" + l.getP().toString(pad) + "\n"
-//                    + pad + ",\n"
-//                    + pad + "qv=null" + "\n"
-//                    + pad + ",\n"
-//                    + pad + "v=" + l.v.toString(pad);
-//        } else {
-//            if (l.v == null) {
-//                r += pad + "pv=" + l.getP().toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "qv=" + l.qv.toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "v=null";
-//            } else {
-//                r += pad + "pv=" + l.getP().toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "qv=" + l.qv.toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "v=" + l.v.toString(pad);
-//            }
-//        }
+        r += pad + "l=" + l.toStringFields(pad);
         return r;
     }
 
@@ -309,23 +271,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     @Override
     protected String toStringFieldsSimple(String pad) {
         String r = super.toStringFieldsSimple(pad) + ",\n";
-        r += pad + "l=" + l.toStringFieldsSimple(pad) + ",\n"
-                + pad + "q=" + qv.toStringFieldsSimple("");
-//        if (l.qv == null) {
-//            r += pad + "pv=" + l.getP().toStringSimple("") + ",\n"
-//                    + pad + "qv=null" + ",\n"
-//                    + pad + "v=" + l.v.toStringSimple(pad);
-//        } else {
-//            if (l.v == null) {
-//                r += pad + "pv=" + l.getP().toStringSimple(pad) + ",\n"
-//                        + pad + "qv=" + l.qv.toStringSimple(pad) + ",\n"
-//                        + pad + "v=null";
-//            } else {
-//                r += pad + "pv=" + l.getP().toStringSimple(pad) + ",\n"
-//                        + pad + "qv=" + l.qv.toStringSimple(pad) + ",\n"
-//                        + pad + "v=" + l.v.toStringSimple(pad);
-//            }
-//        }
+        r += pad + "l=" + l.toStringFieldsSimple(pad);
         return r;
     }
 
@@ -336,7 +282,6 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_LineSegment l, int oom, RoundingMode rm) {
-        //return getP().equals(l.getP(), oom, rm) && getQ(oom, rm).equals(l.getQ(oom, rm), oom, rm);
         if (equalsIgnoreDirection(l, oom, rm)) {
             return this.l.getP().equals(l.getP(), oom, rm);
         }
@@ -351,32 +296,13 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * the order of the point of {@link #l} and {@link #qv}.
      */
     public boolean equalsIgnoreDirection(V3D_LineSegment l, int oom, RoundingMode rm) {
-//        if (equals(l, oom, rm)) {
-//            return true;
-//        } else {
-////            return getP().equals(l.getQ(oom, rm), oom, rm) 
-////                    && getQ(oom, rm).equals(l.getP(), oom, rm);
-//            return getP().equals(l.getQ(oom, rm), oom, rm) 
-//                    && getQ(oom, rm).equals(l.getP(), oom, rm);
-//        }
-        //if (this.l.equals(l.l, oom, rm)) {
-        return isIntersectedBy(l.getQ(), oom, rm)
-                && l.isIntersectedBy(getQ(), oom, rm);
-        //}
-        //return false;
+        if (this.l.equals(l.l, oom, rm)) {
+            return isIntersectedBy(l.getQ(), oom, rm)
+                    && l.isIntersectedBy(getQ(), oom, rm);
+        }
+        return false;
     }
 
-//    /**
-//     * @param v The vector to translate.
-//     * @param oom The Order of Magnitude for the precision of the calculation.
-//     * @return a new line.
-//     */
-//    @Override
-//    public V3D_LineSegment translate(V3D_Vector v, int oom) {
-//        V3D_LineSegment l = new V3D_LineSegment(this, oom);
-//        l.translate(oom, v);
-//        return l;
-//    }
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -401,13 +327,21 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code new V3D_Envelope(start, end)}
      */
     @Override
-    public V3D_Envelope getEnvelope(int oom) {
+    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
         if (en == null) {
-            en = new V3D_Envelope(oom, getP(), getQ());
+            en = new V3D_Envelope(oom, getP(), getQ(oom, rm));
         }
         return en;
     }
 
+    @Override
+    public V3D_Point[] getPointsArray(int oom, RoundingMode rm) {
+        V3D_Point[] r = new V3D_Point[2];
+        r[0] = getP();
+        r[1] = getQ(oom, rm);
+        return r;
+    }
+    
     /**
      * @param pt A point to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -415,9 +349,9 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if {@code this} is intersected by {@code pv}.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
-        boolean ei = getEnvelope(oom).isIntersectedBy(pt.getEnvelope(oom), oom);
+        boolean ei = getEnvelope(oom).intersects(pt.getEnvelope(oom), oom);
         if (ei) {
-            if (l.isIntersectedBy(pt, oom, rm)) {
+            if (l.intersects(pt, oom, rm)) {
                 V3D_Point tp = getP();
                 Math_BigRationalSqrt a = pt.getDistance(oom, rm, tp);
                 if (a.getX().isZero()) {
@@ -498,7 +432,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment ls, int oom, RoundingMode rm) {
-        if (!getEnvelope(oom).isIntersectedBy(ls.getEnvelope(oom), oom)) {
+        if (!getEnvelope(oom).intersects(ls.getEnvelope(oom), oom)) {
             return null;
         }
         // Get intersection of infinite lines. 
@@ -850,7 +784,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         //V3D_Vector pmpq = l.getV(oom, rm).divide(BigRational.valueOf(2), oom, rm);
         V3D_Vector pmpq = l.v.divide(BigRational.valueOf(2), oom, rm);
         //return getP(oom).translate(pmpq, oom);
-        return new V3D_Point(offset, l.pv.add(pmpq, oom, rm));
+        return new V3D_Point(env, offset, l.pv.add(pmpq, oom, rm));
     }
 
     /**
@@ -1236,7 +1170,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_LineSegment rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+    public V3D_LineSegment rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd,
             BigRational theta, int oom, RoundingMode rm) {
         theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
         if (theta.compareTo(BigRational.ZERO) == 0) {
@@ -1245,9 +1179,9 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             return rotateN(ray, uv, bd, theta, oom, rm);
         }
     }
-    
+
     @Override
-    public V3D_LineSegment rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+    public V3D_LineSegment rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd,
             BigRational theta, int oom, RoundingMode rm) {
         return new V3D_LineSegment(
                 getP().rotateN(ray, uv, bd, theta, oom, rm),
@@ -1286,8 +1220,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
-        if (getEnvelope(oom).isIntersectedBy(aabb, oom)) {
+    public boolean intersects(V3D_Envelope aabb, int oom, RoundingMode rm) {
+        if (getEnvelope(oom).intersects(aabb, oom)) {
             if (aabb.intersects(getP(), oom, rm)) {
                 return true;
             } else {

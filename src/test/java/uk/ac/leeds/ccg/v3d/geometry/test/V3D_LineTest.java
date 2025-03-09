@@ -84,7 +84,7 @@ public class V3D_LineTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_Line.
+     * Test of intersects method, of class V3D_Line.
      */
     @Test
     public void testIsIntersectedBy_V3D_Point_int_RoundingMode() {
@@ -93,41 +93,41 @@ public class V3D_LineTest extends V3D_Test {
         int oom = -1;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line instance = new V3D_Line(V3D_Test.pN1N1N1, V3D_Test.pP1P1P1, oom, rm);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 2
         pt = new V3D_Point(V3D_Test.P0_1E2, V3D_Test.P0_1E2, V3D_Test.P0_1E2);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 3 works as the rounding puts pt on the line.
         pt = new V3D_Point(V3D_Test.P0_1E12, V3D_Test.P0_1E12, V3D_Test.P0_1E12);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 4 works as the rounding puts pt on the line.
         pt = new V3D_Point(V3D_Test.N0_1E12, V3D_Test.N0_1E12, V3D_Test.N0_1E12);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 5 works as the rounding puts pt on the line.
         BigRational a = V3D_Test.P0_1E2.add(V3D_Test.P1E12);
         pt = new V3D_Point(a, a, a);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 6 works as the rounding puts pt on the line.
         a = V3D_Test.N0_1E2.add(V3D_Test.N1E12);
         pt = new V3D_Point(a, a, a);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 7
         instance = new V3D_Line(V3D_Test.pP0N1N1, V3D_Test.pP2P1P1, oom, rm);
         pt = new V3D_Point(V3D_Test.N1, V3D_Test.N2, V3D_Test.N2);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 8 fails as the rounding does not put pt on the line.
         a = V3D_Test.N0_1E2.add(V3D_Test.N1E12);
         pt = new V3D_Point(a, a, a);
-        assertFalse(instance.isIntersectedBy(pt, oom, rm));
+        assertFalse(instance.intersects(pt, oom, rm));
         pt = new V3D_Point(a.add(BigInteger.ONE), a, a);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 9
         a = V3D_Test.N0_1E12.add(V3D_Test.N1E12);
         oom = -2; // In this case oom = -2 is sufficient.
         pt = new V3D_Point(a, a, a);
-        assertFalse(instance.isIntersectedBy(pt, oom, rm));
+        assertFalse(instance.intersects(pt, oom, rm));
         pt = new V3D_Point(a.add(BigInteger.ONE), a, a);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        assertTrue(instance.intersects(pt, oom, rm));
     }
 
     /**

@@ -66,8 +66,8 @@ public class V3D_Ray extends V3D_Geometry {
     public V3D_Line l;
 
     /**
-     * For storing the plane at {@link #l} pv with normal in direction of the 
- ray vector.
+     * For storing the plane at the point P of {@link #l} with normal in 
+     * direction of the ray vector.
      */
     private V3D_Plane pl;
     
@@ -77,7 +77,7 @@ public class V3D_Ray extends V3D_Geometry {
      * @param r What {@code this} is created from.
      */
     public V3D_Ray(V3D_Ray r) {
-        super();
+        super(r.env);
         l = new V3D_Line(r.l);
     }
 
@@ -88,35 +88,37 @@ public class V3D_Ray extends V3D_Geometry {
      * @param v What {@code this} is created from.
      */
     public V3D_Ray(V3D_Point p, V3D_Vector v) {
-        super(p.offset);
+        super(p.env, p.offset);
         l = new V3D_Line(p, v);
     }
 
     /**
      * Create a new instance. {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
+     * @param env What {@link #env} is set to.
      * @param p What {@code this} is created from.
      * @param q What {@code this} is created from.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_Ray(V3D_Vector p, V3D_Vector q, int oom, RoundingMode rm) {
-        this(V3D_Vector.ZERO, p, q, oom, rm);
+    public V3D_Ray(V3D_Environment env, V3D_Vector p, V3D_Vector q, int oom, RoundingMode rm) {
+        this(env, V3D_Vector.ZERO, p, q, oom, rm);
     }
 
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #l} point is set to.
      * @param q What {@link #l} vector is set from.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_Ray(V3D_Vector offset, V3D_Vector p,
+    public V3D_Ray(V3D_Environment env, V3D_Vector offset, V3D_Vector p,
             V3D_Vector q, int oom, RoundingMode rm) {
-        super(offset);
-        l = new V3D_Line(offset, p, q, oom, rm);
+        super(env, offset);
+        l = new V3D_Line(env, offset, p, q, oom, rm);
     }
 
     /**
@@ -125,7 +127,7 @@ public class V3D_Ray extends V3D_Geometry {
      * @param l What {@code this} is created from.
      */
     public V3D_Ray(V3D_Line l) {
-        super(l.offset);
+        super(l.env, l.offset);
         this.l = new V3D_Line(l);
     }
 
@@ -138,7 +140,7 @@ public class V3D_Ray extends V3D_Geometry {
      * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Ray(V3D_Point p, V3D_Point q, int oom, RoundingMode rm) {
-        super(p.offset);
+        super(p.env, p.offset);
         this.l = new V3D_Line(p, q, oom, rm);
     }
 
@@ -149,8 +151,15 @@ public class V3D_Ray extends V3D_Geometry {
      * @return {@code true} iff {@code r} is the same as {@code this}.
      */
     public boolean equals(V3D_Ray r, int oom, RoundingMode rm) {
-        return l.getP().equals(r.l.getP(), oom, rm)
-                && l.v.isScalarMultiple(r.l.v, oom, rm);
+        if (l.getP().equals(r.l.getP(), oom, rm)) {
+            if (l.v.getDirection() == r.l.v.getDirection()) {
+                return l.v.isScalarMultiple(r.l.v, oom, rm);
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -220,29 +229,10 @@ public class V3D_Ray extends V3D_Geometry {
         if (pt.equals(l.getP(), oom, rm)) {
             return true;
         }
-        if (l.isIntersectedBy(pt, oom, rm)) {
-//            V3D_Point poi = l.getPointOfIntersection(pt, oom, rm);
-//            V3D_Ray r = new V3D_Ray(e, getP(), poi.getVector(oom, rm));
+        if (l.intersects(pt, oom, rm)) {
             pl = getPl();
-//            V3D_Ray r = new V3D_Ray(l.getP(), pt, oom, rm);
-//            return r.l.getV(oom, rm).getDirection() == l.getV(oom, rm).getDirection();
             return pl.isOnSameSide(pt, this.l.getQ(oom, rm), oom, rm);
         }
-//        boolean isPossibleIntersection = isPossibleIntersection(pt, oom, rm);
-//        if (isPossibleIntersection) {
-//            Math_BigRationalSqrt a = pl.getDistance(this.pl);
-//            if (a.getX().isZero()) {
-//                return true;
-//            }
-//            Math_BigRationalSqrt b = pl.getDistance(this.qv);
-//            if (b.getX().isZero()) {
-//                return true;
-//            }
-//            Math_BigRationalSqrt l = this.pl.getDistance(this.qv);
-//            if (a.add(b, oom).compareTo(l) != 1) {
-//                return true;
-//            }
-//        }
         return false;
     }
 
@@ -253,7 +243,7 @@ public class V3D_Ray extends V3D_Geometry {
      *
      * It is possible to distinguish a ray intersection with a plane (ray-plane)
      * and a plane intersection with a ray (plane-ray). In some cases the two
-     * are the same, but due to coordinate number imprecision, sometimes an
+     * are the same, but due to coordinate imprecision, sometimes an
      * intersection point cannot be found that is both on the ray and on the
      * plane. For a ray-plane intersection we can force the point to be on the
      * ray and either choose a point on or before the plane, or on or after the
@@ -293,7 +283,7 @@ public class V3D_Ray extends V3D_Geometry {
 //        } else {
 //            if (g instanceof V3D_Point pt) {
 //                if 
-//                if (isIntersectedBy(pt, oom, rm)) {
+//                if (intersects(pt, oom, rm)) {
 //                    return pt;
 //                } else {
 //                    return null;
@@ -303,7 +293,7 @@ public class V3D_Ray extends V3D_Geometry {
 //                V3D_Line gl = (V3D_Line) g;
 //                V3D_Point glp = gl.getP();
 //                int dir = l.getV(oom, rm).getDirection();
-//                if (isIntersectedBy(pt, oom, rm)) {
+//                if (intersects(pt, oom, rm)) {
 //                    if (pt.equals(glp, oom, rm)) {
 //                        V3D_Point glq = gl.getQ(oom, rm);
 //                        V3D_Vector ptglq = new V3D_Vector(pt, glq, oom, rm);
@@ -353,7 +343,7 @@ public class V3D_Ray extends V3D_Geometry {
 //            } else {
 //                V3D_Geometry g2 = t.getIntersection(l, oom, rm);
 //                if (g2 instanceof V3D_Point g2p) {
-//                    //if (isIntersectedBy(g2p, oom, rm)) {
+//                    //if (intersects(g2p, oom, rm)) {
 //                    if (t.isAligned(g2p, oom, rm)) {
 //                        return g2p;
 //                    } else {
@@ -488,7 +478,7 @@ public class V3D_Ray extends V3D_Geometry {
             V3D_Point rp = l.getP();
             //V3D_Point rq = l.getQ(oom, rm);
             V3D_Point lsp = ls.getP();
-            V3D_Point lsq = ls.getQ();
+            V3D_Point lsq = ls.getQ(oom, rm);
             if (isAligned(lsp, oom, rm)) {
                 if (isAligned(lsq, oom, rm)) {
                     return ls;

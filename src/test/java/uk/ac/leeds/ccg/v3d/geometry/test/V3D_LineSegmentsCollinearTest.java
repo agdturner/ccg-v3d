@@ -171,7 +171,7 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_LineSegmentsCollinear.
+     * Test of intersects method, of class V3D_LineSegmentsCollinear.
      */
     @Test
     public void testIsIntersectedBy_V3D_Point_int() {
@@ -181,14 +181,14 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
 //        int oom = 0;
 //        V3D_LineSegmentsCollinear instance = null;
 //        boolean expResult = false;
-//        boolean result = instance.isIntersectedBy(pt, oom);
+//        boolean result = instance.intersects(pt, oom);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_LineSegmentsCollinear.
+     * Test of intersects method, of class V3D_LineSegmentsCollinear.
      */
     @Test
     public void testIsIntersectedBy_V3D_Line_int() {
@@ -197,7 +197,7 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_LineSegmentsCollinear.
+     * Test of intersects method, of class V3D_LineSegmentsCollinear.
      */
     @Test
     public void testIsIntersectedBy_V3D_LineSegment_int() {
@@ -242,7 +242,7 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_LineSegmentsCollinear.
+     * Test of intersects method, of class V3D_LineSegmentsCollinear.
      */
     @Test
     public void testIsIntersectedBy_V3D_Plane_int() {
@@ -250,7 +250,7 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_LineSegmentsCollinear.
+     * Test of intersects method, of class V3D_LineSegmentsCollinear.
      */
     @Test
     public void testIsIntersectedBy_V3D_Triangle_int() {
@@ -258,7 +258,7 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_LineSegmentsCollinear.
+     * Test of intersects method, of class V3D_LineSegmentsCollinear.
      */
     @Test
     public void testIsIntersectedBy_V3D_Tetrahedron_int() {

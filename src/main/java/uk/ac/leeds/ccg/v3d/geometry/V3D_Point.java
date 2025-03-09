@@ -24,6 +24,7 @@ import java.util.List;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding
@@ -67,7 +68,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
     /**
      * The origin of the Euclidean space.
      */
-    public static final V3D_Point ORIGIN = new V3D_Point(0, 0, 0);
+    public static final V3D_Point ORIGIN = new V3D_Point(null, 0, 0, 0);
 
     /**
      * The position relative to the {@link #offset}. Taken together with
@@ -76,12 +77,12 @@ public class V3D_Point extends V3D_FiniteGeometry {
     public V3D_Vector rel;
 
     /**
-     * Create a new instance which is completely independent of {@code pv}.
+     * Create a new instance.
      *
      * @param p The point to clone/duplicate.
      */
     public V3D_Point(V3D_Point p) {
-        super(new V3D_Vector(p.offset));
+        super(p.env, new V3D_Vector(p.offset));
         rel = new V3D_Vector(p.rel);
     }
 
@@ -89,20 +90,22 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
      *
+     * @param env What {@link #env} is set to.
      * @param rel Cloned to initialise {@link #rel}.
      */
-    public V3D_Point(V3D_Vector rel) {
-        this(V3D_Vector.ZERO, rel);
+    public V3D_Point(V3D_Environment env, V3D_Vector rel) {
+        this(env, V3D_Vector.ZERO, rel);
     }
 
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      * @param rel Cloned to initialise {@link #rel}.
      */
-    public V3D_Point(V3D_Vector offset, V3D_Vector rel) {
-        super(offset);
+    public V3D_Point(V3D_Environment env, V3D_Vector offset, V3D_Vector rel) {
+        super(env, offset);
         this.rel = new V3D_Vector(rel);
     }
 
@@ -110,12 +113,13 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
      *
+     * @param env What {@link #env} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(BigRational x, BigRational y, BigRational z) {
-        super(V3D_Vector.ZERO);
+    public V3D_Point(V3D_Environment env, BigRational x, BigRational y, BigRational z) {
+        super(env, V3D_Vector.ZERO);
         rel = new V3D_Vector(x, y, z);
     }
 
@@ -123,12 +127,13 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
      *
+     * @param env What {@link #env} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(BigDecimal x, BigDecimal y, BigDecimal z) {
-        this(BigRational.valueOf(x), BigRational.valueOf(y), 
+    public V3D_Point(V3D_Environment env, BigDecimal x, BigDecimal y, BigDecimal z) {
+        this(env, BigRational.valueOf(x), BigRational.valueOf(y), 
                 BigRational.valueOf(z));
     }
 
@@ -136,12 +141,13 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
      *
+     * @param env What {@link #env} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(double x, double y, double z) {
-        this(BigRational.valueOf(x), BigRational.valueOf(y),
+    public V3D_Point(V3D_Environment env, double x, double y, double z) {
+        this(env, BigRational.valueOf(x), BigRational.valueOf(y),
                 BigRational.valueOf(z));
     }
 
@@ -149,12 +155,13 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector#ZERO}.
      *
+     * @param env What {@link #env} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(long x, long y, long z) {
-        this(BigRational.valueOf(x), BigRational.valueOf(y),
+    public V3D_Point(V3D_Environment env, long x, long y, long z) {
+        this(env, BigRational.valueOf(x), BigRational.valueOf(y),
                 BigRational.valueOf(z));
     }
 
@@ -247,7 +254,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
     }
     
     @Override
-    public V3D_Point[] getPoints() {
+    public V3D_Point[] getPointsArray(int oom, RoundingMode rm) {
         V3D_Point[] r = new V3D_Point[1];
         r[0] = this;
         return r;
@@ -497,11 +504,11 @@ public class V3D_Point extends V3D_FiniteGeometry {
         V3D_Vector tpv = tp.getVector(oomn9, rm);
         V3D_Point r;
         if (tpv.isZero()) {
-            r = new V3D_Point(tpv);
+            r = new V3D_Point(env, tpv);
         } else {
             Math_BigRationalSqrt magnitude = tpv.getMagnitude(oomn9, rm);
             V3D_Vector tpr = tpv.getUnitVector(oomn9, rm).rotateN(uv, bd, theta, oomn9, rm);
-            r = new V3D_Point(tpr.multiply(magnitude.getSqrt(oomn9, rm), oomn9, rm));
+            r = new V3D_Point(env, tpr.multiply(magnitude.getSqrt(oomn9, rm), oomn9, rm));
         }
         r.translate(tv, oomn9, rm);
         return r;
@@ -555,10 +562,5 @@ public class V3D_Point extends V3D_FiniteGeometry {
 //            }
 //        }
         return r;
-    }
-
-    @Override
-    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
-        return aabb.intersects(this, oom, rm);
     }
 }

@@ -644,7 +644,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
     }
 
     @Override
-    public V3D_Point[] getPoints() {
+    public V3D_Point[] getPointsArray() {
         V3D_Point[] re = new V3D_Point[3];
         re[0] = getP();
         re[1] = getQ();
@@ -2470,7 +2470,7 @@ public class V3D_Triangle extends V3D_FiniteGeometry implements V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return A Set of points that are the corners of the triangles.
      */
-    //public static ArrayList<V3D_Point> getPoints(V3D_Triangle[] triangles) {
+    //public static ArrayList<V3D_Point> getPointsArray(V3D_Triangle[] triangles) {
     public static V3D_Point[] getPoints(V3D_Triangle[] triangles, int oom, RoundingMode rm) {
         List<V3D_Point> s = new ArrayList<>();
         for (var t : triangles) {
