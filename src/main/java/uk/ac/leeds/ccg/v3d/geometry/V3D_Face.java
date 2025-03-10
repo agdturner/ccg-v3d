@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Andy Turner, University of Leeds.
+ * Copyright 2025 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,80 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * V3D_Face
+ * V3D_FiniteGeometry for representing finite geometries.
  *
  * @author Andy Turner
  * @version 1.0
  */
-public interface V3D_Face {
+public abstract class V3D_Face extends V3D_FiniteGeometry {
 
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * The id of the shape.
+     */
+    protected final int id;
+    
+    /**
+     * Creates a new instance with offset V3D_Vector.ZERO.
+     * 
+     * @param env What {@link #env} is set to.
+     * @param offset What {@link #offset} is set to.
+     */
+    public V3D_Face(V3D_Environment env, V3D_Vector offset) {
+        super(env, offset);
+        this.id = env.getNextID();
+    }
+    
+    /**
+     * For storing the points.
+     */
+    protected HashMap<Integer, V3D_Point> points;
+
+    /**
+     * For storing the edges.
+     */
+    protected HashMap<Integer, V3D_LineSegment> edges;
+    
+    /**
+     * For getting the points of a shape.
+     * 
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A HashMap of the points with integer identifier keys.
+     */
+    public abstract HashMap<Integer, V3D_Point> getPoints(int oom, 
+            RoundingMode rm);
+    
+    /**
+     * For getting the edges of a shape.
+     * 
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A HashMap of the edges with integer identifier keys.
+     */
+    public abstract HashMap<Integer, V3D_LineSegment> getEdges(int oom, 
+            RoundingMode rm);
+    
+    /**
+     * @return A copy of the points of the geometries gs.
+     * 
+     * @param ss The geometries.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     */
+    public static ArrayList<V3D_Point> getPoints(HashMap<Integer, V3D_Face> ss, 
+            int oom, RoundingMode rm) {
+        ArrayList<V3D_Point> list = new ArrayList<>();
+        ss.values().forEach(x -> list.addAll(x.getPoints(oom, rm).values()));
+        return list;
+    }
+    
     /**
      * For calculating and returning the perimeter.
      * @param oom The Order of Magnitude for the precision.
@@ -41,4 +106,5 @@ public interface V3D_Face {
      * @return The area.
      */
     public abstract BigRational getArea(int oom, RoundingMode rm);
+    
 }

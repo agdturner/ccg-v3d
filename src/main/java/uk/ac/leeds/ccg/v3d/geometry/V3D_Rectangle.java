@@ -38,7 +38,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
+public class V3D_Rectangle extends V3D_Face {
 
     private static final long serialVersionUID = 1L;
 
@@ -58,6 +58,7 @@ public class V3D_Rectangle extends V3D_FiniteGeometry implements V3D_Face {
     protected V3D_ConvexHullCoplanar convexHull;
 
     public V3D_Rectangle(V3D_Rectangle r) {
+        super(r.env, r.offset);
         pqr = new V3D_Triangle(r.pqr);
         rsp = new V3D_Triangle(r.rsp);
     }

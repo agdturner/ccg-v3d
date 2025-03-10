@@ -66,8 +66,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_ConvexHullCoplanar extends V3D_FiniteGeometry
-        implements V3D_Face {
+public class V3D_ConvexHullCoplanar extends V3D_Face {
 
     private static final long serialVersionUID = 1L;
 

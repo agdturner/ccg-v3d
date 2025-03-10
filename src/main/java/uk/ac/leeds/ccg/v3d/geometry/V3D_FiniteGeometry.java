@@ -59,9 +59,10 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry {
      * For getting the envelope (the Axis Aligned Bounding Box) of the geometry.
      *
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The V3D_Envelope.
      */
-    public abstract V3D_Envelope getEnvelope(int oom);
+    public abstract V3D_Envelope getEnvelope(int oom, RoundingMode rm);
     
     /**
      * @param oom The Order of Magnitude for the precision.

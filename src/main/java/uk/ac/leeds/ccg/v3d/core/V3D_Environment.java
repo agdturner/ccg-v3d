@@ -21,7 +21,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.HashSet;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_2DShape;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Face;
 
 /**
  * V3D_Environment
@@ -87,7 +87,7 @@ public class V3D_Environment implements Serializable {
     /**
      * The shapes.
      */
-    public HashMap<Integer, V3D_2DShape> shapes;
+    public HashMap<Integer, V3D_Face> shapes;
     
     /**
      * The ids of shapes.
@@ -122,7 +122,7 @@ public class V3D_Environment implements Serializable {
      * @param shape The shape to be put in {@link #shapes}.
      * @return The id of the shape allocated. 
      */
-    public int add(V3D_2DShape shape) {
+    public int add(V3D_Face shape) {
         int id = getNextID();
         shapes.put(id, shape);
         return id;

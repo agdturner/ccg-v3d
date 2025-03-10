@@ -19,7 +19,7 @@ import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashSet;
+//import java.util.HashSet;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -204,13 +204,12 @@ public class V3D_Envelope implements Serializable {
     /**
      * For storing all the corner points. These are in order: lbf, lba, ltf,
      * lta, rbf, rba, rtf, rta.
-     */
-    /**
      * For storing all the points. N.B {@link #lll}, {@link #llu}, {@link #lul},
      * {@link #luu}, {@link #ull}, {@link #ulu}, {@link #uul}, {@link #uuu}
      * may all be the same.
      */
-    protected HashSet<V3D_Point> pts;
+    protected V3D_Point[] pts;
+    //protected HashSet<V3D_Point> pts;
     
     /**
      * @param e An envelope.
@@ -340,6 +339,7 @@ public class V3D_Envelope implements Serializable {
                         + "collection of points.");
             case 1 -> {
                 offset = V3D_Vector.ZERO;
+                env = points[0].env;
                 xMin = points[0].getX(oom, RoundingMode.FLOOR);
                 xMax = points[0].getX(oom, RoundingMode.CEILING);
                 yMin = points[0].getY(oom, RoundingMode.FLOOR);
@@ -349,6 +349,7 @@ public class V3D_Envelope implements Serializable {
             }
             default -> {
                 offset = V3D_Vector.ZERO;
+                env = points[0].env;
                 BigRational xmin = points[0].getX(oom, RoundingMode.FLOOR);
                 BigRational xmax = points[0].getX(oom, RoundingMode.CEILING);
                 BigRational ymin = points[0].getY(oom, RoundingMode.FLOOR);
@@ -390,23 +391,23 @@ public class V3D_Envelope implements Serializable {
                 + ", zMin=" + getZMin(oom, rm) + ", zMax=" + getZMax(oom, rm) + ")";
     }
 
-    /**
-     * @return {@link #pts} initialising first if it is null.
-     */
-    public HashSet<V3D_Point> getPoints() {
-        if (pts == null) {
-            pts = new HashSet<>(4);
-            pts.add(getlll());
-            pts.add(getllu());
-            pts.add(getlul());
-            pts.add(getluu());
-            pts.add(getull());
-            pts.add(getulu());
-            pts.add(V3D_Envelope.this.getuul());
-            pts.add(getuuu());
-        }
-        return pts;
-    }
+//    /**
+//     * @return {@link #pts} initialising first if it is null.
+//     */
+//    public HashSet<V3D_Point> getPoints() {
+//        if (pts == null) {
+//            pts = new HashSet<>(8);
+//            pts.add(getlll());
+//            pts.add(getllu());
+//            pts.add(getlul());
+//            pts.add(getluu());
+//            pts.add(getull());
+//            pts.add(getulu());
+//            pts.add(getuul());
+//            pts.add(getuuu());
+//        }
+//        return pts;
+//    }
 
     /**
      * Test for equality.
@@ -555,7 +556,7 @@ public class V3D_Envelope implements Serializable {
      */
     public V3D_Point getllu() {
         if (llu == null) {
-            llu = new V3D_Point(env xMin, yMin, zMin);
+            llu = new V3D_Point(env, xMin, yMin, zMin);
         }
         return llu;
     }
@@ -563,7 +564,7 @@ public class V3D_Envelope implements Serializable {
     /**
      * @return {@link #luu} setting it first if it is null.
      */
-    public V3D_Point getluu(int oom) {
+    public V3D_Point getluu() {
         if (luu == null) {
             luu = new V3D_Point(env, xMin, yMax, zMax);
         }
@@ -623,7 +624,7 @@ public class V3D_Envelope implements Serializable {
     /**
      * @return {@link #ull} setting it first if it is null.
      */
-    public V3D_Point getull(int oom) {
+    public V3D_Point getull() {
         if (ull == null) {
             ull = new V3D_Point(env, xMax, yMin, zMin);
         }
@@ -752,7 +753,7 @@ public class V3D_Envelope implements Serializable {
      * @return The approximate or exact centre of this.
      */
     public V3D_Point getCentroid(int oom, RoundingMode rm) {
-        return new V3D_Point(
+        return new V3D_Point(env,
                 this.getXMax(oom, rm).add(this.getXMin(oom, rm)).divide(2),
                 this.getYMax(oom, rm).add(this.getYMin(oom, rm)).divide(2),
                 this.getZMax(oom, rm).add(this.getZMin(oom, rm)).divide(2));
@@ -782,7 +783,7 @@ public class V3D_Envelope implements Serializable {
      * avoidance, this is biased towards returning an intersection even if there
      * may not be one at a lower oom precision.
      *
-     * @param e The Vector_Envelope2D to test for intersection.
+     * @param e The Vector_Envelope3D to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @return {@code true} if this intersects with {@code e} it the {@code oom}
      * level of precision.
@@ -877,8 +878,8 @@ public class V3D_Envelope implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this contains {@code s}.
      */
-    public boolean contains(V3D_2DShape s, int oom, RoundingMode rm) {
-        return contains(s.getEnvelope(oom, rm), oom)
+    public boolean contains(V3D_Face s, int oom, RoundingMode rm) {
+        return contains(s.getEnvelope(oom), oom)
                 && contains0(s, oom, rm);
     }
 
@@ -888,7 +889,7 @@ public class V3D_Envelope implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code s}
      */
-    public boolean contains0(V3D_2DShape s, int oom, RoundingMode rm) {
+    public boolean contains0(V3D_Face s, int oom, RoundingMode rm) {
         return s.getPoints(oom, rm).values().parallelStream().allMatch(x
                 -> contains(x, oom));
     }
@@ -1055,13 +1056,12 @@ public class V3D_Envelope implements Serializable {
     }
     
     /**
-     * Return an array containing lbf, lba, ltf, lta, rbf, rba, rtf, rta with
-     * oom precision.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @return The corners of this as points.
+     * For storing all the points. N.B 
+     * @return The corners of this as points: {@link #lll}, {@link #llu}, 
+     * {@link #lul}, {@link #luu}, {@link #ull}, {@link #ulu}, {@link #uul},
+     * {@link #uuu}
      */
-    public V3D_Point[] getPoints(int oom) {
+    public V3D_Point[] getPoints() {
         if (pts == null) {
             pts = new V3D_Point[8];
             pts[0] = getllu();
@@ -1072,10 +1072,23 @@ public class V3D_Envelope implements Serializable {
             pts[5] = getull();
             pts[6] = getuuu();
             pts[7] = getuul();
-            pts_oom = oom;
         }
         return pts;
     }
+//    public HashSet<V3D_Point> getPoints() {
+//        if (pts == null) {
+//            pts = new HashSet<>(8);
+//            pts.add(getllu());
+//            pts.add(getllu());
+//            pts.add(getluu());
+//            pts.add(getlul());
+//            pts.add(getulu());
+//            pts.add(getull());
+//            pts.add(getuuu());
+//            pts.add(getuul());
+//        }
+//        return pts;
+//    }
 
     /**
      * Calculate and return the viewport - a rectangle between the point pt and
@@ -1096,8 +1109,8 @@ public class V3D_Envelope implements Serializable {
      */
     public V3D_Rectangle getViewport(V3D_Point pt, V3D_Vector v, int oom,
             RoundingMode rm) {
-        V3D_Rectangle r;
-        pts = getPoints(oom);
+        V3D_Rectangle rect;
+        pts = getPoints();
         V3D_Point c = getCentroid(oom, rm);
         V3D_Vector cv = new V3D_Vector(pt, c, oom, rm);
         V3D_Vector v2 = cv.getCrossProduct(v, oom, rm);
@@ -1140,18 +1153,18 @@ public class V3D_Envelope implements Serializable {
         for (var x : ipts) {
             V3D_Point pp = vpl.getPointOfProjectedIntersection(x, oom, rm);
             //BigRational a = v2.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
-            BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
+            BigRational angle = cv.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
             if (v2pl.isOnSameSide(ap, x, oom, rm)) {
-                if (a.compareTo(aa) == 1) {
-                    aa = a;
+                if (angle.compareTo(aa) == 1) {
+                    aa = angle;
                     //System.out.println(a);
                     V3D_Point xv = new V3D_Point(x);
                     xv.translate(v, oom, rm);
                     tpl = new V3D_Plane(x, pt, xv, oom, rm);
                 }
             } else {
-                if (a.compareTo(ba) == 1) {
-                    ba = a;
+                if (angle.compareTo(ba) == 1) {
+                    ba = angle;
                     V3D_Point xv = new V3D_Point(x);
                     xv.translate(v, oom, rm);
                     bpl = new V3D_Plane(x, pt, xv, oom, rm);
@@ -1170,17 +1183,17 @@ public class V3D_Envelope implements Serializable {
         for (var x : ipts) {
             V3D_Point pp = v2pl.getPointOfProjectedIntersection(x, oom, rm);
             //BigRational a = v.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
-            BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
+            BigRational angle = cv.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
             if (vpl.isOnSameSide(lp, x, oom, rm)) {
-                if (a.compareTo(la) == 1) {
-                    la = a;
+                if (angle.compareTo(la) == 1) {
+                    la = angle;
                     V3D_Point xv = new V3D_Point(x);
                     xv.translate(v2, oom, rm);
                     lpl = new V3D_Plane(x, pt, xv, oom, rm);
                 }
             } else {
-                if (a.compareTo(ra) == 1) {
-                    ra = a;
+                if (angle.compareTo(ra) == 1) {
+                    ra = angle;
                     V3D_Point xv = new V3D_Point(x);
                     xv.translate(v2, oom, rm);
                     rpl = new V3D_Plane(x, pt, xv, oom, rm);
@@ -1205,13 +1218,13 @@ public class V3D_Envelope implements Serializable {
 //        rp.n = rp.n.getUnitVector(oom, rm);
 //        tp.n = tp.n.getUnitVector(oom, rm);
 //        bp.n = bp.n.getUnitVector(oom, rm);
-        r = new V3D_Rectangle(
+        rect = new V3D_Rectangle(
                 (V3D_Point) lpl.getIntersection(pl0, bpl, oom, rm),
                 (V3D_Point) lpl.getIntersection(pl0, tpl, oom, rm),
                 (V3D_Point) rpl.getIntersection(pl0, tpl, oom, rm),
                 (V3D_Point) rpl.getIntersection(pl0, bpl, oom, rm), oom, rm);
 
-        return r;
+        return rect;
     }
 
     /**
@@ -1231,10 +1244,10 @@ public class V3D_Envelope implements Serializable {
             RoundingMode rm) {
         //int oomn2 = oom - 2;
         int oomn4 = oom - 4;
-        V3D_Rectangle r;
+        V3D_Rectangle rect;
         // Get the plane of the viewport.
         V3D_Point c = getCentroid(oomn4, rm);
-        BigRational distance = c.getDistance(getPoints(oom)[0], oomn4, rm);
+        BigRational distance = c.getDistance(getPoints()[0], oomn4, rm);
         V3D_Point plpt = new V3D_Point(c);
         V3D_Vector vo = new V3D_Vector(c, pt, oomn4, rm).getUnitVector(oomn4, rm);
         plpt.translate(vo.multiply(distance, oomn4, rm), oomn4, rm);
@@ -1243,7 +1256,7 @@ public class V3D_Envelope implements Serializable {
         // Figure out the extremes in relation to v (and v2).
         V3D_Vector v2 = cv.getCrossProduct(v, oomn4, rm);
         // Intersect the rays from pts to each point with the screen.
-        pts = getPoints(oomn4);
+        pts = getPoints();
         V3D_Point[] ipts = new V3D_Point[pts.length];
         // Get the intersecting points on the screen plane from pt
         for (int i = 0; i < pts.length; i++) {
@@ -1265,18 +1278,18 @@ public class V3D_Envelope implements Serializable {
         for (var x : ipts) {
             V3D_Point pp = vpl.getPointOfProjectedIntersection(x, oomn4, rm);
             //BigRational a = v2.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
-            BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oomn4, rm), oomn4, rm).abs();
+            BigRational angle = cv.getAngle(new V3D_Vector(pt, pp, oomn4, rm), oomn4, rm).abs();
             if (v2pl.isOnSameSide(ap, x, oomn4, rm)) {
-                if (a.compareTo(aa) == 1) {
-                    aa = a;
+                if (angle.compareTo(aa) == 1) {
+                    aa = angle;
                     //System.out.println(a);
                     V3D_Point xv = new V3D_Point(x);
                     xv.translate(v, oomn4, rm);
                     tpl = new V3D_Plane(x, pt, xv, oomn4, rm);
                 }
             } else {
-                if (a.compareTo(ba) == 1) {
-                    ba = a;
+                if (angle.compareTo(ba) == 1) {
+                    ba = angle;
                     V3D_Point xv = new V3D_Point(x);
                     xv.translate(v, oomn4, rm);
                     bpl = new V3D_Plane(x, pt, xv, oomn4, rm);
@@ -1295,17 +1308,17 @@ public class V3D_Envelope implements Serializable {
         for (var x : ipts) {
             V3D_Point pp = v2pl.getPointOfProjectedIntersection(x, oomn4, rm);
             //BigRational a = v.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
-            BigRational a = cv.getAngle(new V3D_Vector(pt, pp, oomn4, rm), oomn4, rm).abs();
+            BigRational angle = cv.getAngle(new V3D_Vector(pt, pp, oomn4, rm), oomn4, rm).abs();
             if (vpl.isOnSameSide(lp, x, oomn4, rm)) {
-                if (a.compareTo(la) == 1) {
-                    la = a;
+                if (angle.compareTo(la) == 1) {
+                    la = angle;
                     V3D_Point xv = new V3D_Point(x);
                     xv.translate(v2, oomn4, rm);
                     lpl = new V3D_Plane(x, pt, xv, oomn4, rm);
                 }
             } else {
-                if (a.compareTo(ra) == 1) {
-                    ra = a;
+                if (angle.compareTo(ra) == 1) {
+                    ra = angle;
                     V3D_Point xv = new V3D_Point(x);
                     xv.translate(v2, oomn4, rm);
                     rpl = new V3D_Plane(x, pt, xv, oomn4, rm);
@@ -1331,13 +1344,13 @@ public class V3D_Envelope implements Serializable {
 //        tp.n = tp.n.getUnitVector(oom, rm);
 //        bp.n = bp.n.getUnitVector(oom, rm);
 
-        r = new V3D_Rectangle(
+        rect = new V3D_Rectangle(
                 (V3D_Point) lpl.getIntersection(pl0, bpl, oomn4, rm),
                 (V3D_Point) lpl.getIntersection(pl0, tpl, oomn4, rm),
                 (V3D_Point) rpl.getIntersection(pl0, tpl, oomn4, rm),
                 (V3D_Point) rpl.getIntersection(pl0, bpl, oomn4, rm), oom, rm);
 
-        return r;
+        return rect;
     }
 
     /**
@@ -1360,10 +1373,10 @@ public class V3D_Envelope implements Serializable {
             int oom, RoundingMode rm) {
         //int oomn2 = oom - 2;
         int oomn4 = oom - 4;
-        V3D_Rectangle r;
+        V3D_Rectangle rect;
         // Get the plane of the viewport.
         V3D_Point c = getCentroid(oomn4, rm);
-        BigRational d = c.getDistance(getPoints(oom)[0], oomn4, rm);
+        BigRational d = c.getDistance(getPoints()[0], oomn4, rm);
         BigRational dby2 = d.divide(2);
         V3D_Point plpt = new V3D_Point(c);
         V3D_Vector cpt = new V3D_Vector(c, pt, oomn4, rm);
@@ -1394,12 +1407,12 @@ public class V3D_Envelope implements Serializable {
         V3D_Point rppt = new V3D_Point(plpt);
         rppt.translate(hv, oomn4, rm);
         V3D_Plane rpl = new V3D_Plane(rppt, pt, ptv2, oomn4, rm);
-        r = new V3D_Rectangle(
+        rect = new V3D_Rectangle(
                 (V3D_Point) lpl.getIntersection(pl0, bpl, oomn4, rm),
                 (V3D_Point) lpl.getIntersection(pl0, tpl, oomn4, rm),
                 (V3D_Point) rpl.getIntersection(pl0, tpl, oomn4, rm),
                 (V3D_Point) rpl.getIntersection(pl0, bpl, oomn4, rm), oom, rm);
-        return r;
+        return rect;
     }
 
     /**
