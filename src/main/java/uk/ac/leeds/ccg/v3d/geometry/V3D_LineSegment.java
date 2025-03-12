@@ -324,12 +324,12 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code new V3D_Envelope(start, end)}
+     * @return {@code new V3D_AABB(start, end)}
      */
     @Override
-    public V3D_Envelope getEnvelope(int oom, RoundingMode rm) {
+    public V3D_AABB getAABB(int oom, RoundingMode rm) {
         if (en == null) {
-            en = new V3D_Envelope(oom, getP(), getQ(oom, rm));
+            en = new V3D_AABB(oom, getP(), getQ(oom, rm));
         }
         return en;
     }
@@ -349,7 +349,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if {@code this} is intersected by {@code pv}.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
-        boolean ei = getEnvelope(oom).intersects(pt.getEnvelope(oom), oom);
+        boolean ei = getAABB(oom).intersects(pt.getAABB(oom), oom);
         if (ei) {
             if (l.intersects(pt, oom, rm)) {
                 V3D_Point tp = getP();
@@ -432,7 +432,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_FiniteGeometry getIntersection(V3D_LineSegment ls, int oom, RoundingMode rm) {
-        if (!getEnvelope(oom).intersects(ls.getEnvelope(oom), oom)) {
+        if (!getAABB(oom).intersects(ls.getAABB(oom), oom)) {
             return null;
         }
         // Get intersection of infinite lines. 
@@ -1220,8 +1220,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     @Override
-    public boolean intersects(V3D_Envelope aabb, int oom, RoundingMode rm) {
-        if (getEnvelope(oom).intersects(aabb, oom)) {
+    public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
+        if (getAABB(oom).intersects(aabb, oom)) {
             if (aabb.intersects(getP(), oom, rm)) {
                 return true;
             } else {

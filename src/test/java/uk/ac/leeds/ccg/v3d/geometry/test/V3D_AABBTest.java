@@ -24,18 +24,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_AABB;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Rectangle;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
- * Test class for V3D_Envelope.
+ * Test class for V3D_AABB.
  *
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_EnvelopeTest extends V3D_Test {
+public class V3D_AABBTest extends V3D_Test {
 
     @BeforeAll
     public static void setUpClass() {
@@ -54,14 +54,14 @@ public class V3D_EnvelopeTest extends V3D_Test {
     }
 
     /**
-     * Test of toString method, of class V3D_Envelope.
+     * Test of toString method, of class V3D_AABB.
      */
     @Test
     public void testToString() {
         System.out.println("toString");
         int oom = -3;
-        V3D_Envelope instance = new V3D_Envelope(oom, pP0P0P0);
-        String expResult = "V3D_Envelope(xMin=0, xMax=0, yMin=0, yMax=0"
+        V3D_AABB instance = new V3D_AABB(oom, pP0P0P0);
+        String expResult = "V3D_AABB(xMin=0, xMax=0, yMin=0, yMax=0"
                 + ", zMin=0, zMax=0)";
         String result = instance.toString();
         //System.out.println(result);
@@ -69,50 +69,50 @@ public class V3D_EnvelopeTest extends V3D_Test {
     }
 
     /**
-     * Test of envelop method, of class V3D_Envelope.
+     * Test of envelop method, of class V3D_AABB.
      */
     @Test
-    public void testEnvelope() {
+    public void testAABB() {
         System.out.println("envelope");
         int oom = -3;
-        V3D_Envelope e1 = new V3D_Envelope(oom, pP0P0P0);
-        V3D_Envelope instance = new V3D_Envelope(oom, pP1P1P1);
-        V3D_Envelope expResult = new V3D_Envelope(oom, pP0P0P0, pP1P1P1);
-        V3D_Envelope result = instance.union(e1, oom);
+        V3D_AABB e1 = new V3D_AABB(oom, pP0P0P0);
+        V3D_AABB instance = new V3D_AABB(oom, pP1P1P1);
+        V3D_AABB expResult = new V3D_AABB(oom, pP0P0P0, pP1P1P1);
+        V3D_AABB result = instance.union(e1, oom);
         assertTrue(result.equals(expResult, oom));
     }
 
     /**
-     * Test of intersects method, of class V3D_Envelope.
+     * Test of intersects method, of class V3D_AABB.
      */
     @Test
-    public void testIsIntersectedBy_V3D_Envelope() {
+    public void testIsIntersectedBy_V3D_AABB() {
         System.out.println("isIntersectedBy");
         int oom = -3;
-        V3D_Envelope instance = new V3D_Envelope(oom, pP0P0P0);
-        V3D_Envelope en = new V3D_Envelope(oom, pP0P0P0, pP1P1P1);
+        V3D_AABB instance = new V3D_AABB(oom, pP0P0P0);
+        V3D_AABB en = new V3D_AABB(oom, pP0P0P0, pP1P1P1);
         assertTrue(instance.isIntersectedBy(en, oom));
         // Test 2
-        instance = new V3D_Envelope(oom, pN1N1N1, pP0P0P0);
+        instance = new V3D_AABB(oom, pN1N1N1, pP0P0P0);
         assertTrue(instance.isIntersectedBy(en, oom));
         // Test 3
-        en = new V3D_Envelope(oom, pN2N2N2, pP2P2P2);
+        en = new V3D_AABB(oom, pN2N2N2, pP2P2P2);
         assertTrue(instance.isIntersectedBy(en, oom));
         // Test 4
-        en = new V3D_Envelope(oom, pP0P0P0, pP1P1P1);
-        instance = new V3D_Envelope(oom, pN1N1N1, pN1P0P0);
+        en = new V3D_AABB(oom, pP0P0P0, pP1P1P1);
+        instance = new V3D_AABB(oom, pN1N1N1, pN1P0P0);
         assertFalse(instance.isIntersectedBy(en, oom));
     }
 
     /**
-     * Test of intersects method, of class V3D_Envelope.
+     * Test of intersects method, of class V3D_AABB.
      */
     @Test
     public void testIsIntersectedBy_V3D_Point() {
         System.out.println("isIntersectedBy");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Envelope instance = new V3D_Envelope(oom, pN1N1N1, pP1P1P1);
+        V3D_AABB instance = new V3D_AABB(oom, pN1N1N1, pP1P1P1);
         // Test 1 the centre
         assertTrue(instance.intersects(pP0P0P0, oom, rm));
         // Test 2 to 9 the corners
@@ -173,62 +173,62 @@ public class V3D_EnvelopeTest extends V3D_Test {
     }
 
     /**
-     * Test of equals method, of class V3D_Envelope.
+     * Test of equals method, of class V3D_AABB.
      */
     @Test
     public void testEquals() {
         System.out.println("equals");
         int oom = -3;
-        V3D_Envelope instance = new V3D_Envelope(oom, pP0P0P0, pP1P1P1);
-        V3D_Envelope en = new V3D_Envelope(oom, pP0P0P0, pP1P1P1);
+        V3D_AABB instance = new V3D_AABB(oom, pP0P0P0, pP1P1P1);
+        V3D_AABB en = new V3D_AABB(oom, pP0P0P0, pP1P1P1);
         assertTrue(instance.equals(en, oom));
         // Test 2
-        en = new V3D_Envelope(oom, pP1P1P1, pP0P0P0);
+        en = new V3D_AABB(oom, pP1P1P1, pP0P0P0);
         assertTrue(instance.equals(en, oom));
         // Test 3
-        en = new V3D_Envelope(oom, pP1N1P1, pP0P0P0);
+        en = new V3D_AABB(oom, pP1N1P1, pP0P0P0);
         assertFalse(instance.equals(en, oom));
     }
 
     /**
-     * Test of getIntersection method, of class V3D_Envelope.
+     * Test of getIntersection method, of class V3D_AABB.
      */
     @Test
-    public void testGetIntersection_V3D_Envelope() {
+    public void testGetIntersection_V3D_AABB() {
         System.out.println("getIntersection");
         int oom = -3;
-        V3D_Envelope en;
-        V3D_Envelope instance;
-        V3D_Envelope expResult;
-        V3D_Envelope result;
+        V3D_AABB en;
+        V3D_AABB instance;
+        V3D_AABB expResult;
+        V3D_AABB result;
         // Test 1
-        en = new V3D_Envelope(oom, pN1N1N1, pP1P1P1);
-        instance = new V3D_Envelope(oom, pP0P0P0, pP1P1P1);
-        expResult = new V3D_Envelope(oom, pP0P0P0, pP1P1P1);
+        en = new V3D_AABB(oom, pN1N1N1, pP1P1P1);
+        instance = new V3D_AABB(oom, pP0P0P0, pP1P1P1);
+        expResult = new V3D_AABB(oom, pP0P0P0, pP1P1P1);
         result = instance.getIntersection(en, oom);
         assertTrue(result.equals(expResult, oom));
         // Test 2
-        en = new V3D_Envelope(oom, pN1N1N1, pP0P0P0);
-        instance = new V3D_Envelope(oom, pP0P0P0, pP1P1P1);
-        expResult = new V3D_Envelope(oom, pP0P0P0);
+        en = new V3D_AABB(oom, pN1N1N1, pP0P0P0);
+        instance = new V3D_AABB(oom, pP0P0P0, pP1P1P1);
+        expResult = new V3D_AABB(oom, pP0P0P0);
         result = instance.getIntersection(en, oom);
         assertTrue(result.equals(expResult, oom));
         // Test 3
-        en = new V3D_Envelope(oom, pN1N1N1, pP0P0P0);
-        instance = new V3D_Envelope(oom, pP0P0P0, pP1P1P1);
-        expResult = new V3D_Envelope(oom, pP0P0P0);
+        en = new V3D_AABB(oom, pN1N1N1, pP0P0P0);
+        instance = new V3D_AABB(oom, pP0P0P0, pP1P1P1);
+        expResult = new V3D_AABB(oom, pP0P0P0);
         result = instance.getIntersection(en, oom);
         assertTrue(result.equals(expResult, oom));
         // Test 4
-        en = new V3D_Envelope(oom, pN1N1N1, pP0P0P1);
-        instance = new V3D_Envelope(oom, pP0P0N1, pP1P1P1);
-        expResult = new V3D_Envelope(oom, pP0P0N1, pP0P0P1);
+        en = new V3D_AABB(oom, pN1N1N1, pP0P0P1);
+        instance = new V3D_AABB(oom, pP0P0N1, pP1P1P1);
+        expResult = new V3D_AABB(oom, pP0P0N1, pP0P0P1);
         result = instance.getIntersection(en, oom);
         assertTrue(result.equals(expResult, oom));
     }
 
 //    /**
-//     * Test of getIntersection method, of class V3D_Envelope.
+//     * Test of getIntersection method, of class V3D_AABB.
 //     */
 //    @Test
 //    public void testGetIntersection_V3D_Line_int() {
@@ -236,7 +236,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Line li = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
-//        V3D_Envelope instance = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1P1);
+//        V3D_AABB instance = new V3D_AABB(oom, rm, pN1N1N1, pP1P1P1);
 //        V3D_Geometry expResult = new V3D_LineSegment(pP0P0N1, pP0P0P1, oom, rm);
 //        V3D_Geometry result = instance.getIntersection(li, oom, rm);
 //        assertTrue(((V3D_LineSegment) result).equalsIgnoreDirection((V3D_LineSegment) expResult, oom, rm));
@@ -274,39 +274,39 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //    }
 
     /**
-     * Test of union method, of class V3D_Envelope.
+     * Test of union method, of class V3D_AABB.
      */
     @Test
     public void testUnion() {
         System.out.println("union");
         int oom = -3;
-        V3D_Envelope en = new V3D_Envelope(oom, pN2N2N2, pP1P1P1);
-        V3D_Envelope instance = new V3D_Envelope(oom, pN1N1N1, pP2P2P2);
-        V3D_Envelope expResult = new V3D_Envelope(oom, pN2N2N2, pP2P2P2);
-        V3D_Envelope result = instance.union(en, oom);
+        V3D_AABB en = new V3D_AABB(oom, pN2N2N2, pP1P1P1);
+        V3D_AABB instance = new V3D_AABB(oom, pN1N1N1, pP2P2P2);
+        V3D_AABB expResult = new V3D_AABB(oom, pN2N2N2, pP2P2P2);
+        V3D_AABB result = instance.union(en, oom);
         assertTrue(result.equals(expResult, oom));
     }
 
     /**
-     * Test of isContainedBy method, of class V3D_Envelope.
+     * Test of isContainedBy method, of class V3D_AABB.
      */
     @Test
     public void testIsContainedBy() {
         System.out.println("isContainedBy");
         int oom = -3;
-        V3D_Envelope en = new V3D_Envelope(oom, pN2N2N2, pP2P2P2);
-        V3D_Envelope instance = new V3D_Envelope(oom, pN1N1N1, pP1P1P1);
+        V3D_AABB en = new V3D_AABB(oom, pN2N2N2, pP2P2P2);
+        V3D_AABB instance = new V3D_AABB(oom, pN1N1N1, pP1P1P1);
         assertTrue(instance.isContainedBy(en, oom));
         // Test 2
-        instance = new V3D_Envelope(oom, pN2N2N2, pP2P2P2);
+        instance = new V3D_AABB(oom, pN2N2N2, pP2P2P2);
         assertTrue(instance.isContainedBy(en, oom));
         // Test 3
-        en = new V3D_Envelope(oom, pN1N1N1, pP2P2P2);
+        en = new V3D_AABB(oom, pN1N1N1, pP2P2P2);
         assertFalse(instance.isContainedBy(en, oom));
     }
 
 //    /**
-//     * Test of getIntersection method, of class V3D_Envelope.
+//     * Test of getIntersection method, of class V3D_AABB.
 //     */
 //    @Test
 //    public void testGetIntersection_V3D_LineSegment_int() {
@@ -314,7 +314,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_LineSegment li = new V3D_LineSegment(pN2N2N2, pP0P0P0, oom, rm);
-//        V3D_Envelope instance = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1P1);
+//        V3D_AABB instance = new V3D_AABB(oom, rm, pN1N1N1, pP1P1P1);
 //        V3D_Geometry expResult = new V3D_LineSegment(pN1N1N1, pP0P0P0, oom, rm);
 //        V3D_Geometry result = instance.getIntersection(li, oom, rm);
 //        assertTrue(((V3D_LineSegment) result).equalsIgnoreDirection((V3D_LineSegment) expResult, oom, rm));
@@ -367,99 +367,99 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //    }
 
 //    /**
-//     * Test of getEnvelope method, of class V3D_Envelope.
+//     * Test of getAABB method, of class V3D_AABB.
 //     */
 //    @Test
-//    public void testGetEnvelope() {
-//        System.out.println("getEnvelope");
+//    public void testGetAABB() {
+//        System.out.println("getAABB");
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
-//        V3D_Envelope instance = new V3D_Envelope(oom, rm, pP0P0P0);
-//        V3D_Envelope expResult = new V3D_Envelope(oom, rm, pP0P0P0);
-//        V3D_Envelope result = instance.getEnvelope(oom, rm);
+//        V3D_AABB instance = new V3D_AABB(oom, rm, pP0P0P0);
+//        V3D_AABB expResult = new V3D_AABB(oom, rm, pP0P0P0);
+//        V3D_AABB result = instance.getAABB(oom, rm);
 //        assertTrue(result.equals(expResult, oom, rm));
 //    }
 
     /**
-     * Test of getXMin method, of class V3D_Envelope.
+     * Test of getXMin method, of class V3D_AABB.
      */
     @Test
     public void testGetXMin() {
         System.out.println("getxMin");
         int oom = -3;
-        V3D_Envelope instance = new V3D_Envelope(oom, pP0N1N1, pP0N1P0, pN2N2N2);
+        V3D_AABB instance = new V3D_AABB(oom, pP0N1N1, pP0N1P0, pN2N2N2);
         BigRational expResult = N2;
         BigRational result = instance.getXMin(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
-     * Test of getXMax method, of class V3D_Envelope.
+     * Test of getXMax method, of class V3D_AABB.
      */
     @Test
     public void testGetXMax() {
         System.out.println("getxMax");
         int oom = -3;
-        V3D_Envelope instance = new V3D_Envelope(oom, pP0N1N1, pP0N1P0, pN2N2N2);
+        V3D_AABB instance = new V3D_AABB(oom, pP0N1N1, pP0N1P0, pN2N2N2);
         BigRational expResult = P0;
         BigRational result = instance.getXMax(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
-     * Test of getYMin method, of class V3D_Envelope.
+     * Test of getYMin method, of class V3D_AABB.
      */
     @Test
     public void testGetYMin() {
         System.out.println("getyMin");
         int oom = -3;
-        V3D_Envelope instance = new V3D_Envelope(oom, pP0N1N1, pP0N1P0, pN2N2N2);
+        V3D_AABB instance = new V3D_AABB(oom, pP0N1N1, pP0N1P0, pN2N2N2);
         BigRational expResult = N2;
         BigRational result = instance.getYMin(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
-     * Test of getYMax method, of class V3D_Envelope.
+     * Test of getYMax method, of class V3D_AABB.
      */
     @Test
     public void testGetYMax() {
         System.out.println("getyMax");
         int oom = -3;
-        V3D_Envelope instance = new V3D_Envelope(oom, pP0N1N1, pP0N1P0, pN2N2N2);
+        V3D_AABB instance = new V3D_AABB(oom, pP0N1N1, pP0N1P0, pN2N2N2);
         BigRational expResult = N1;
         BigRational result = instance.getYMax(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
-     * Test of getZMin method, of class V3D_Envelope.
+     * Test of getZMin method, of class V3D_AABB.
      */
     @Test
     public void testGetZMin() {
         System.out.println("getzMin");
         int oom = -3;
-        V3D_Envelope instance = new V3D_Envelope(oom, pP0N1N1, pP0N1P0, pN2N2N2);
+        V3D_AABB instance = new V3D_AABB(oom, pP0N1N1, pP0N1P0, pN2N2N2);
         BigRational expResult = N2;
         BigRational result = instance.getZMin(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
     /**
-     * Test of getZMax method, of class V3D_Envelope.
+     * Test of getZMax method, of class V3D_AABB.
      */
     @Test
     public void testGetZMax() {
         System.out.println("getzMax");
         int oom = -3;
-        V3D_Envelope instance = new V3D_Envelope(oom, pP0N1N1, pP0N1P0, pN2N2N2);
+        V3D_AABB instance = new V3D_AABB(oom, pP0N1N1, pP0N1P0, pN2N2N2);
         BigRational expResult = P0;
         BigRational result = instance.getZMax(oom);
         assertTrue(expResult.compareTo(result) == 0);
     }
 
 //    /**
-//     * Test of intersects method, of class V3D_Envelope.
+//     * Test of intersects method, of class V3D_AABB.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Line_int() {
@@ -467,7 +467,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Line li = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
-//        V3D_Envelope instance = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1P1);
+//        V3D_AABB instance = new V3D_AABB(oom, rm, pN1N1N1, pP1P1P1);
 //        assertTrue(instance.intersects(li, oom, rm));
 //        // Test 2
 //        li = new V3D_Line(pP0P0P0, pP0P1P0, oom, rm);
@@ -488,17 +488,17 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        li = new V3D_Line(pP1P1P0, pP0P2P2, oom, rm);
 //        assertTrue(instance.intersects(li, oom, rm));
 //        // Test 7 Internal
-//        instance = new V3D_Envelope(oom, rm, pN2N2N2, pP2P2P2);
+//        instance = new V3D_AABB(oom, rm, pN2N2N2, pP2P2P2);
 //        li = new V3D_Line(pP0P0P0, pP0P1P0, oom, rm);
 //        assertTrue(instance.intersects(li, oom, rm));
 //        // To do: add some false test cases.
 //        li = V3D_Line.X_AXIS;
-//        instance = new V3D_Envelope(oom, rm, pP0P0P0);
+//        instance = new V3D_AABB(oom, rm, pP0P0P0);
 //        assertTrue(instance.intersects(li, oom, rm));
 //    }
 
     /**
-     * Test of intersects method, of class V3D_Envelope.
+     * Test of intersects method, of class V3D_AABB.
      */
     @Test
     public void testIsIntersectedBy_4args() {
@@ -507,23 +507,23 @@ public class V3D_EnvelopeTest extends V3D_Test {
         BigRational x;
         BigRational y;
         BigRational z;
-        V3D_Envelope instance;
+        V3D_AABB instance;
         // Test 1
         x = P0;
         y = P0;
         z = P0;
-        instance = new V3D_Envelope(oom, pP0P0P0);
+        instance = new V3D_AABB(oom, pP0P0P0);
         assertTrue(instance.intersects(x, y, z, oom));
         // Test 2
-        instance = new V3D_Envelope(oom, pP1P0P0);
+        instance = new V3D_AABB(oom, pP1P0P0);
         assertFalse(instance.intersects(x, y, z, oom));
         // Test 3
-        instance = new V3D_Envelope(oom, pN1N1N1, pP1P1P1);
+        instance = new V3D_AABB(oom, pN1N1N1, pP1P1P1);
         assertTrue(instance.intersects(x, y, z, oom));
     }
 
 //    /**
-//     * Test of intersects method, of class V3D_Envelope.
+//     * Test of intersects method, of class V3D_AABB.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_LineSegment_int() {
@@ -531,7 +531,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_LineSegment li = new V3D_LineSegment(pN2N2N2, pP0P0P0, oom, rm);
-//        V3D_Envelope instance = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1P1);
+//        V3D_AABB instance = new V3D_AABB(oom, rm, pN1N1N1, pP1P1P1);
 //        assertTrue(instance.intersects(li, oom, rm));
 //        // Test 2
 //        li = new V3D_LineSegment(pP0P0P0, pP0P1P0, oom, rm);
@@ -564,21 +564,21 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //    }
 
 //    /**
-//     * Test of isEnvelopeIntersectedBy method, of class V3D_Envelope.
+//     * Test of isAABBIntersectedBy method, of class V3D_AABB.
 //     */
 //    @Test
-//    public void testIsEnvelopeIntersectedBy() {
-//        System.out.println("isEnvelopeIntersectedBy");
+//    public void testIsAABBIntersectedBy() {
+//        System.out.println("isAABBIntersectedBy");
 //        V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0);
-//        V3D_Envelope instance = new V3D_Envelope(pN1N1N1, pP1P1P1);
-//        assertTrue(instance.isEnvelopeIntersectedBy(l, oom, rm));
+//        V3D_AABB instance = new V3D_AABB(pN1N1N1, pP1P1P1);
+//        assertTrue(instance.isAABBIntersectedBy(l, oom, rm));
 //        // Test 2
 //        l = new V3D_Line(pN1N1N1, pN1N1P0);
-//        instance = new V3D_Envelope(pP0P0P0, pP1P1P1);
-//        assertFalse(instance.isEnvelopeIntersectedBy(l, oom, rm));
+//        instance = new V3D_AABB(pP0P0P0, pP1P1P1);
+//        assertFalse(instance.isAABBIntersectedBy(l, oom, rm));
 //    }
     /**
-     * Test of translate method, of class V3D_Envelope.
+     * Test of translate method, of class V3D_AABB.
      */
     @Test
     public void testTranslate() {
@@ -586,20 +586,20 @@ public class V3D_EnvelopeTest extends V3D_Test {
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector v = P1P1P1;
-        V3D_Envelope instance = new V3D_Envelope(oom, pP0P0P0, pP1P1P1);
-        V3D_Envelope expResult = new V3D_Envelope(oom, pP1P1P1, pP2P2P2);
+        V3D_AABB instance = new V3D_AABB(oom, pP0P0P0, pP1P1P1);
+        V3D_AABB expResult = new V3D_AABB(oom, pP1P1P1, pP2P2P2);
         instance.translate(v, oom, rm);
         assertTrue(expResult.equals(instance, oom));
         // Test 2
         v = N1N1N1;
-        instance = new V3D_Envelope(oom, pP0P0P0, pP1P1P1);
-        expResult = new V3D_Envelope(oom, pN1N1N1, pP0P0P0);
+        instance = new V3D_AABB(oom, pP0P0P0, pP1P1P1);
+        expResult = new V3D_AABB(oom, pN1N1N1, pP0P0P0);
         instance.translate(v, oom, rm);
         assertTrue(expResult.equals(instance, oom));
     }
 
 //    /**
-//     * Test of getDistance method, of class V3D_Envelope.
+//     * Test of getDistance method, of class V3D_AABB.
 //     */
 //    @Test
 //    public void testGetDistance_V3D_Point_int() {
@@ -607,12 +607,12 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Point p = pP0P0P0;
-//        V3D_Envelope instance = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1P1);
+//        V3D_AABB instance = new V3D_AABB(oom, rm, pN1N1N1, pP1P1P1);
 //        BigDecimal expResult = new BigRationalSqrt(0, oom, rm).toBigDecimal(oom, rm);
 //        BigDecimal result = instance.getDistance(p, oom, rm);
 //        assertTrue(expResult.compareTo(result) == 0);
 //        // Test
-//        instance = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1P1);
+//        instance = new V3D_AABB(oom, rm, pN1N1N1, pP1P1P1);
 //        // Corners
 //        // Test 2
 //        result = instance.getDistance(pN2N2N2, oom, rm);
@@ -688,7 +688,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //    }
 
 //    /**
-//     * Test of intersects method, of class V3D_Envelope.
+//     * Test of intersects method, of class V3D_AABB.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Triangle_int() {
@@ -696,23 +696,23 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Triangle t;
-//        V3D_Envelope instance;
+//        V3D_AABB instance;
 //        // Test 1
 //        t = new V3D_Triangle(pN2P2P0, pN2N2P0, pP2P0P0, oom, rm);
-//        instance = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1P1);
+//        instance = new V3D_AABB(oom, rm, pN1N1N1, pP1P1P1);
 //        assertTrue(instance.intersects(t, oom, rm));
 //        // Test 2
 //        t = new V3D_Triangle(new V3D_Point(N10, P2, P0), new V3D_Point(N10, N2, P0), pP2P0P0, oom, rm);
-//        instance = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1P1);
+//        instance = new V3D_AABB(oom, rm, pN1N1N1, pP1P1P1);
 //        assertTrue(instance.intersects(t, oom, rm));
 //        // Test 2
 //        t = new V3D_Triangle(new V3D_Point(N10, P10, P0), new V3D_Point(N10, N10, P0), new V3D_Point(P10, P0, P0), oom, rm);
-//        instance = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1P1);
+//        instance = new V3D_AABB(oom, rm, pN1N1N1, pP1P1P1);
 //        assertTrue(instance.intersects(t, oom, rm));
 //    }
 
 //    /**
-//     * Test of intersects method, of class V3D_Envelope.
+//     * Test of intersects method, of class V3D_AABB.
 //     */
 //    @Test
 //    public void testIsIntersectedBy_V3D_Plane_int() {
@@ -720,10 +720,10 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //        int oom = -3;
 //        RoundingMode rm = RoundingMode.HALF_UP;
 //        V3D_Plane p = V3D_Plane.X0;
-//        V3D_Envelope instance = new V3D_Envelope(oom, rm, pP0P0P0);
+//        V3D_AABB instance = new V3D_AABB(oom, rm, pP0P0P0);
 //        assertTrue(instance.intersects(p, oom, rm));
 //        // Test 2
-//        instance = new V3D_Envelope(oom, rm, pN1N1N1, pP1P1P1);
+//        instance = new V3D_AABB(oom, rm, pN1N1N1, pP1P1P1);
 //        assertTrue(instance.intersects(p, oom, rm));
 //        // Test 3
 //        p = new V3D_Plane(pN2P2P0, pP2N2P0, pP0P0P2, oom, rm);
@@ -731,7 +731,7 @@ public class V3D_EnvelopeTest extends V3D_Test {
 //    }
 
     /**
-     * Test of getViewport method, of class V3D_Envelope.
+     * Test of getViewport method, of class V3D_AABB.
      */
     @Test
     public void testGetViewport() {
@@ -740,10 +740,10 @@ public class V3D_EnvelopeTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point pt;
         V3D_Vector v;
-        V3D_Envelope instance;
+        V3D_AABB instance;
         V3D_Rectangle expResult;
         V3D_Rectangle result;
-        instance = new V3D_Envelope(oom, pN1N1N1, pP1P1P1);
+        instance = new V3D_AABB(oom, pN1N1N1, pP1P1P1);
         // Test front face square on.
         pt = pP0P0N2;
         // Test 1

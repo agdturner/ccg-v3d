@@ -53,6 +53,7 @@ public class V3D_Polygon extends V3D_Face {
     protected V3D_ConvexHullCoplanar convexHull;
 
     public V3D_Polygon(V3D_Polygon p) {
+        super(p.env, p.offset);
         parts = p.parts;
         holes = p.holes;
         convexHull = p.convexHull;
@@ -67,20 +68,9 @@ public class V3D_Polygon extends V3D_Face {
      */
     public V3D_Polygon(ArrayList<V3D_ConvexHullCoplanar> parts,
             ArrayList<V3D_ConvexHullCoplanar> holes) {
-        super();
+        super(parts.get(0).env, V3D_Vector.ZERO);
         this.parts = parts;
         this.holes = holes;
-    }
-
-    /**
-     * Create a new instance.
-     *
-     * @param parts A non-empty list of coplanar triangles.
-     */
-    public V3D_Polygon(V3D_Triangle... parts) {
-        super();
-        this.parts = new ArrayList<>();
-        this.holes = null;
     }
 
     @Override
@@ -193,7 +183,7 @@ public class V3D_Polygon extends V3D_Face {
 //        return true;
 //    }
     @Override
-    public V3D_Envelope getEnvelope(int oom) {
+    public V3D_AABB getEnvelope(int oom) {
         if (en == null) {
             Iterator<V3D_ConvexHullCoplanar> ite = parts.iterator();
             en = ite.next().getEnvelope(oom);
@@ -222,7 +212,7 @@ public class V3D_Polygon extends V3D_Face {
 //                // Holes and parts could be checked in parallel.
 //                if (holes != null) {
 //                    for (V3D_ConvexHullCoplanar h : holes) {
-//                        if (h.isAligned(pt, oom, rm)) {
+//                        if (h.intersects0(pt, oom, rm)) {
 //                            return false;
 //                        }
 //                    }
@@ -360,7 +350,7 @@ public class V3D_Polygon extends V3D_Face {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
+    public boolean isIntersectedBy(V3D_AABB aabb, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

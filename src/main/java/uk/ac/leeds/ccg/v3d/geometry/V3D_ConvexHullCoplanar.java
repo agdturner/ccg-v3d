@@ -81,6 +81,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
     protected final ArrayList<V3D_Point> points;
 
     public V3D_ConvexHullCoplanar(V3D_ConvexHullCoplanar c) {
+        super(c.env, c.offset);
         points = new ArrayList<>();
         c.points.forEach(x -> points.add(new V3D_Point(x)));
         triangles = new ArrayList<>();
@@ -107,7 +108,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      * @param points A non-empty list of points in a plane given by n.
      */
     public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_Vector n, V3D_Point... points) {
-        super();
+        super(points[0].env, points[0].offset);
         this.points = new ArrayList<>();
         this.triangles = new ArrayList<>();
         // Get a list of unique points.
@@ -259,7 +260,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      * @param gs The input convex hulls.
      */
     public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_ConvexHullCoplanar... gs) {
-        this(oom, rm, gs[0].triangles.get(0).getPl(oom, rm).n, V3D_FiniteGeometry.getPoints(gs));
+        this(oom, rm, gs[0].triangles.get(0).getPl(oom, rm).n, V3D_FiniteGeometry.getPoints(gs, oom, rm));
     }
 
     /**
@@ -272,11 +273,11 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      * hull with ch.
      */
     public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_ConvexHullCoplanar ch, V3D_Triangle t) {
-        this(oom, rm, ch.triangles.get(0).getPl(oom, rm).n, V3D_FiniteGeometry.getPoints(ch, t));
+        this(oom, rm, ch.triangles.get(0).getPl(oom, rm).n, V3D_FiniteGeometry.getPoints(oom, rm, ch, t));
     }
 
     @Override
-    public V3D_Point[] getPoints() {
+    public V3D_Point[] getPointsArray(int oom, RoundingMode rm) {
         int np = points.size();
         V3D_Point[] re = new V3D_Point[np];
         for (int i = 0; i < np; i++) {
@@ -382,11 +383,11 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom) {
+    public V3D_AABB getAABB(int oom, RoundingMode rm) {
         if (en == null) {
-            en = points.get(0).getEnvelope(oom);
+            en = points.get(0).getAABB(oom, rm);
             for (int i = 1; i < points.size(); i++) {
-                en = en.union(points.get(i).getEnvelope(oom), oom);
+                en = en.union(points.get(i).getAABB(oom, rm), oom);
             }
         }
         return en;
@@ -422,13 +423,12 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      * @return {@code true} iff the geometry is intersected by {@code p}.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
-        // Check envelopes intersect.
-        if (getEnvelope(oom).intersects(pt, oom, rm)) {
+        if (getAABB(oom, rm).intersects(pt, oom, rm)) {
             // Check point is on the plane. 
             if (triangles.get(0).getPl(oom, rm).isIntersectedBy(pt, oom, rm)) {
                 // Check point is in a triangle
                 for (var t : triangles) {
-                    if (t.isAligned(pt, oom, rm)) {
+                    if (t.intersects0(pt, oom, rm)) {
                         return true;
                     }
                 }
@@ -445,7 +445,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      */
     protected boolean isAligned(V3D_Point pt, int oom, RoundingMode rm) {
         for (V3D_Triangle triangle : triangles) {
-            if (triangle.isAligned(pt, oom, rm)) {
+            if (triangle.intersects0(pt, oom, rm)) {
                 return true;
             }
         }
@@ -529,7 +529,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
         List<V3D_Point> ts = new ArrayList<>();
         for (V3D_Triangle t2 : triangles) {
             V3D_FiniteGeometry i = t2.getIntersection(t, oom, rm);
-            ts.addAll(Arrays.asList(i.getPoints()));
+            ts.addAll(Arrays.asList(i.getPointsArray(oom, rm)));
         }
         ArrayList<V3D_Point> tsu = V3D_Point.getUnique(ts, oom, rm);
         if (tsu.isEmpty()) {
@@ -550,10 +550,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
 //                return getGeometry(oom, t2s.toArray(V3D_Triangle[]::new));
     }
 
-//    @Override
-//    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-//        return getEnvelope().intersects(l, oom);
-//    }
+    
     @Override
     public V3D_ConvexHullCoplanar rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
@@ -588,7 +585,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      */
     private void compute(ArrayList<V3D_Point> pts, V3D_Point p0, V3D_Point p1,
             V3D_Vector n, int index, int oom, RoundingMode rm) {
-        V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(
+        V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(env, 
                 offset, p0.rel.add(n, oom, rm)), oom, rm);
         AB ab = new AB(pts, p0, p1, pl, oom, rm);
         {
@@ -601,7 +598,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
                     V3D_Triangle atr = new V3D_Triangle(p0, p1, apt, oom, rm);
                     TreeSet<Integer> removeIndexes = new TreeSet<>();
                     for (int i = 0; i < ab.a.size(); i++) {
-                        if (atr.isIntersectedBy(ab.a.get(i), oom, rm)) {
+                        if (atr.intersects(ab.a.get(i), oom, rm)) {
                             removeIndexes.add(i);
                             //index--;
                         }
@@ -637,7 +634,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
                     V3D_Triangle btr = new V3D_Triangle(p0, p1, bpt, oom, rm);
                     TreeSet<Integer> removeIndexes = new TreeSet<>();
                     for (int i = 0; i < ab.b.size(); i++) {
-                        if (btr.isIntersectedBy(ab.b.get(i), oom, rm)) {
+                        if (btr.intersects(ab.b.get(i), oom, rm)) {
                             removeIndexes.add(i);
                             //index--;
                         }
@@ -664,7 +661,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
+    public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -835,15 +832,15 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      * @return null, the whole or a part of this.
      */
     public V3D_FiniteGeometry clip(V3D_Triangle t, V3D_Point pt, int oom, RoundingMode rm) {
-        V3D_Point tp = t.getP();
-        V3D_Point tq = t.getQ();
-        V3D_Point tr = t.getR();
+        V3D_Point tp = t.getP(oom, rm);
+        V3D_Point tq = t.getQ(oom, rm);
+        V3D_Point tr = t.getR(oom, rm);
         V3D_Vector n = t.getPl(oom, rm).n;
-        V3D_Point pp = new V3D_Point(tp.offset.add(n, oom, rm), tp.rel);
+        V3D_Point pp = new V3D_Point(env, tp.offset.add(n, oom, rm), tp.rel);
         V3D_Plane ppl = new V3D_Plane(tp, tq, pp, oom, rm);
-        V3D_Point qp = new V3D_Point(tq.offset.add(n, oom, rm), tq.rel);
+        V3D_Point qp = new V3D_Point(env, tq.offset.add(n, oom, rm), tq.rel);
         V3D_Plane qpl = new V3D_Plane(tq, tr, qp, oom, rm);
-        V3D_Point rp = new V3D_Point(tr.offset.add(n, oom, rm), tr.rel);
+        V3D_Point rp = new V3D_Point(env, tr.offset.add(n, oom, rm), tr.rel);
         V3D_Plane rpl = new V3D_Plane(tr, tp, rp, oom, rm);
         V3D_FiniteGeometry cppl = clip(ppl, tr, oom, rm);
         if (cppl == null) {

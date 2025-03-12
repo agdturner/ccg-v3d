@@ -212,7 +212,7 @@ public class V3D_Rectangle extends V3D_Face {
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom) {
+    public V3D_AABB getEnvelope(int oom) {
         if (en == null) {
             en = getPQR().getEnvelope(oom).union(getRSP().getEnvelope(oom), oom);
         }
@@ -226,10 +226,10 @@ public class V3D_Rectangle extends V3D_Face {
      * @return A point or line segment.
      */
     public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
-        if (pqr.isIntersectedBy(pt, oom, rm)) {
+        if (pqr.intersects(pt, oom, rm)) {
             return true;
         } else {
-            return rsp.isIntersectedBy(pt, oom, rm);
+            return rsp.intersects(pt, oom, rm);
         }
     }
 
@@ -675,7 +675,7 @@ public class V3D_Rectangle extends V3D_Face {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
+    public boolean isIntersectedBy(V3D_AABB aabb, int oom, RoundingMode rm) {
         if (pqr.isIntersectedBy(aabb, oom, rm)) {
             return true;
         }

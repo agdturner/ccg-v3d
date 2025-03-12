@@ -273,12 +273,12 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom) {
+    public V3D_AABB getAABB(int oom) {
         if (en == null) {
             Iterator<V3D_LineSegment> ite = lineSegments.iterator();
-            en = ite.next().getEnvelope(oom);
+            en = ite.next().getAABB(oom);
             while (ite.hasNext()) {
-                en = en.union(ite.next().getEnvelope(oom), oom);
+                en = en.union(ite.next().getAABB(oom), oom);
             }
         }
         return en;
@@ -597,7 +597,7 @@ public class V3D_LineSegmentsCollinear extends V3D_FiniteGeometry {
     }
 
     @Override
-    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
+    public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

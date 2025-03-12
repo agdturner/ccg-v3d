@@ -385,8 +385,8 @@ public class V3D_Point extends V3D_FiniteGeometry {
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom) {
-        return new V3D_Envelope(oom, this);
+    public V3D_AABB getAABB(int oom, RoundingMode rm) {
+        return new V3D_AABB(oom, this);
     }
 
     /**

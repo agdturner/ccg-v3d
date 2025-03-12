@@ -32,9 +32,9 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry {
     private static final long serialVersionUID = 1L;
 
     /**
-     * For storing the envelope.
+     * For storing the Axis Aligned Bounding Box.
      */
-    protected V3D_Envelope en;
+    protected V3D_AABB en;
     
     /**
      * Creates a new instance with offset V3D_Vector.ZERO.
@@ -56,13 +56,13 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry {
     }
     
     /**
-     * For getting the envelope (the Axis Aligned Bounding Box) of the geometry.
+     * For getting the Axis Aligned Bounding Box.
      *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return The V3D_Envelope.
+     * @return The V3D_AABB.
      */
-    public abstract V3D_Envelope getEnvelope(int oom, RoundingMode rm);
+    public abstract V3D_AABB getAABB(int oom, RoundingMode rm);
     
     /**
      * @param oom The Order of Magnitude for the precision.
