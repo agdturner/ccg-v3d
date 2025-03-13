@@ -540,7 +540,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
-    public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
+    public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
         oom -= 2;
         equation = getEquation(oom, rm);
         return ((equation.coeffs[0].multiply(pt.getX(oom, rm)))
@@ -559,7 +559,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
-    public boolean isIntersectedByAlternative(V3D_Point pt, int oom, RoundingMode rm) {
+    public boolean intersectsAlternative(V3D_Point pt, int oom, RoundingMode rm) {
         BigRational[][] m = new BigRational[4][4];
         V3D_Point tp = getP();
         if (tp.isOrigin(oom, rm)) {
@@ -625,7 +625,7 @@ public class V3D_Plane extends V3D_Geometry {
     public static boolean isCoplanar(int oom,
             RoundingMode rm, V3D_Plane pl, V3D_Point... points) {
         for (V3D_Point pt : points) {
-            if (!pl.isIntersectedBy(pt, oom, rm)) {
+            if (!pl.intersects(pt, oom, rm)) {
                 return false;
             }
         }
@@ -687,7 +687,7 @@ public class V3D_Plane extends V3D_Geometry {
 //     * @return {@code true} If {@code pt} is on the plane.
 //     */
 //    public boolean isOnPlane(V3D_Line l) {
-//        return intersects(l.getP()) && intersects(l.getQ());
+//        return getIntersect(l.getP()) && getIntersect(l.getQ());
 //    }
 
     /**
@@ -697,8 +697,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} If {@code pt} is on the plane.
      */
     public boolean isOnPlane(V3D_Line l, int oom, RoundingMode rm) {
-        return isIntersectedBy(l.getP(), oom, rm)
-                && isIntersectedBy(l.getQ(oom, rm), oom, rm);
+        return intersects(l.getP(), oom, rm)
+                && intersects(l.getQ(oom, rm), oom, rm);
     }
     
     /**
@@ -801,7 +801,7 @@ public class V3D_Plane extends V3D_Geometry {
 //     * {@code null} a line or a point.
 //     */
 //    @Override
-//    public V3D_Geometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
+//    public V3D_Geometry getIntersect(V3D_Line l, int oom, RoundingMode rm) {
 //        if (this.isParallel(l, oom, rm)) {
 //            if (this.isOnPlane(l, oom, rm)) {
 //                return l;
@@ -812,11 +812,11 @@ public class V3D_Plane extends V3D_Geometry {
 //        // Are either of the points of l on the plane.
 //        //V3D_Point lp = l.getP(oom);
 //        V3D_Point lp = l.getP();
-//        if (this.intersects(lp, oom, rm)) {
+//        if (this.getIntersect(lp, oom, rm)) {
 //            return lp;
 //        }
 //        V3D_Point lq = l.getQ(oom, rm);
-//        if (this.intersects(lq, oom, rm)) {
+//        if (this.getIntersect(lq, oom, rm)) {
 //            return lq;
 //        }
 //        V3D_Point tp = getP();
@@ -824,13 +824,13 @@ public class V3D_Plane extends V3D_Geometry {
 //        V3D_Point tq = getQ(pv, oom, rm);
 //        V3D_Point tr = getR(pv, oom, rm);
 //        // Are any of these points on the line?
-//        if (l.intersects(tp, oom, rm)) {
+//        if (l.getIntersect(tp, oom, rm)) {
 //            return tp;
 //        }
-//        if (l.intersects(tp, oom, rm)) {
+//        if (l.getIntersect(tp, oom, rm)) {
 //            return tq;
 //        }
-//        if (l.intersects(tp, oom, rm)) {
+//        if (l.getIntersect(tp, oom, rm)) {
 //            return tr;
 //        }
 //        
@@ -902,7 +902,7 @@ public class V3D_Plane extends V3D_Geometry {
 //        Math_Matrix_BR denm = new Math_Matrix_BR(m);
 //
 //        if (denm.getDeterminant().compareTo(BigRational.ZERO) == 0) {
-//            System.out.println("Determinant is zero in getIntersection");
+//            System.out.println("Determinant is zero in getIntersect");
 //            System.out.println("Plane:");
 //            System.out.println(this.toString());
 //            System.out.println("Line:");
@@ -921,11 +921,11 @@ public class V3D_Plane extends V3D_Geometry {
 //                lp.getZ(oomN6, rm).add(lv.getDZ(oomN6, rm).multiply(t)));
 //        if (false) {
 //            // Check if res is on the line.
-//            if (!l.intersects(res, oom, rm)) {
-//                System.out.println("Not on line! - l.intersects(r, oom, rm)");
+//            if (!l.getIntersect(res, oom, rm)) {
+//                System.out.println("Not on line! - l.getIntersect(r, oom, rm)");
 //            }
-//            if (!intersects(res, oom, rm)) {
-//                System.out.println("Not on plane! - !intersects(r, oom, rm)");
+//            if (!getIntersect(res, oom, rm)) {
+//                System.out.println("Not on plane! - !getIntersect(r, oom, rm)");
 //                // Check side of line
 //                if (isOnSameSide(res, lp, oom, rm)) {
 //                    System.out.println("isOnSameSide(res, lp, oom, rm)");
@@ -967,7 +967,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public V3D_Geometry getIntersection(V3D_Line l, int oom, RoundingMode rm) {
+    public V3D_Geometry getIntersect(V3D_Line l, int oom, RoundingMode rm) {
         int oomn6 = oom - 6;
         if (isParallel(l, oomn6, rm)) {
             if (isOnPlane(l, oomn6, rm)) {
@@ -979,11 +979,11 @@ public class V3D_Plane extends V3D_Geometry {
         // Are either of the points of l on the plane.
         //V3D_Point lp = l.getP(oom);
         V3D_Point lp = l.getP();
-        if (isIntersectedBy(lp, oomn6, rm)) {
+        if (intersects(lp, oomn6, rm)) {
             return lp;
         }
         V3D_Point lq = l.getQ(oom, rm);
-        if (isIntersectedBy(lq, oomn6, rm)) {
+        if (intersects(lq, oomn6, rm)) {
             return lq;
         }
         //V3D_Vector lv = l.getV(oomN2, rm);
@@ -1067,8 +1067,8 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom, RoundingMode rm) {
-        V3D_Geometry g = getIntersection(l.l, oom, rm);
+    public V3D_FiniteGeometry getIntersect(V3D_LineSegment l, int oom, RoundingMode rm) {
+        V3D_Geometry g = getIntersect(l.l, oom, rm);
         if (g == null) {
             return null;
         } else if (g instanceof V3D_Line) {
@@ -1076,10 +1076,10 @@ public class V3D_Plane extends V3D_Geometry {
         } else {
             V3D_Point pt = (V3D_Point) g;
             if (l.getPPL().isOnSameSide(pt, l.getQ(oom, rm), oom, rm)
-                    && l.getQPL().isOnSameSide(pt, l.getP(), oom, rm)) {
+                    && l.getQPL(oom, rm).isOnSameSide(pt, l.getP(), oom, rm)) {
                 return pt;
             }
-//            if (l.intersects(pt, oom, rm)) {
+//            if (l.getIntersect(pt, oom, rm)) {
 //                return pt;
 //            }
             return null;
@@ -1098,7 +1098,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @return The intersection between {@code this} and {@code pl}
      */
-    public V3D_Geometry getIntersection(V3D_Plane pl, int oom, RoundingMode rm) {
+    public V3D_Geometry getIntersect(V3D_Plane pl, int oom, RoundingMode rm) {
         /**
          * Calculate the cross product of the normal vectors to get the
          * direction of the line.
@@ -1112,7 +1112,7 @@ public class V3D_Plane extends V3D_Geometry {
          */
         if (v.isZero()) {
             // The planes are parallel.
-            if (pl.isIntersectedBy(getP(), oom, rm)) {
+            if (pl.intersects(getP(), oom, rm)) {
                 // The planes are the same.
                 return this;
             }
@@ -1197,20 +1197,20 @@ public class V3D_Plane extends V3D_Geometry {
 //        V3D_Point tq = getQ();
 //        if (getPQV().isScalarMultiple(v, oomN5)) {
 //        //if (pl.getPQV().isScalarMultiple(v, oomN5)) {
-//            //pi = (V3D_Point) pl.getIntersection(new V3D_Line(tq, getR(oom), oom), oom);
+//            //pi = (V3D_Point) pl.getIntersect(new V3D_Line(tq, getR(oom), oom), oom);
 ////            pi = (V3D_Point) pl.getIntersection(
 ////                    new V3D_Line(e, tq.getVector(oomN5), getR().getVector(oomN5)), oomN5);
 ////            pi = (V3D_Point) pl.getIntersection(
 ////                    new V3D_Line(tq.getVector(oomN5), getR().getVector(oomN5)), oomN5);
-//            pi = (V3D_Point) pl.getIntersection(
+//            pi = (V3D_Point) pl.getIntersect(
 //                    new V3D_Line(getP(), getR()), oomN5);
 //        } else {
-//            //pi = (V3D_Point) pl.getIntersection(new V3D_Line(getP(oom), tq, oom), oom);
+//            //pi = (V3D_Point) pl.getIntersect(new V3D_Line(getP(oom), tq, oom), oom);
 ////            pi = (V3D_Point) pl.getIntersection(
 ////                    new V3D_Line(e, getP().getVector(oomN5), getR().getVector(oomN5)), oomN5);
 ////            pi = (V3D_Point) getIntersection(
 ////                    new V3D_Line(e, pl.getP().getVector(oomN5), pl.getQ().getVector(oomN5)), oomN5);
-//            pi = (V3D_Point) pl.getIntersection(
+//            pi = (V3D_Point) pl.getIntersect(
 //                    new V3D_Line(getP(), getQ()), oomN5);
 //        }
 //
@@ -1236,7 +1236,7 @@ public class V3D_Plane extends V3D_Geometry {
 //     * @param rm
 //     * @return 
 //     */
-//    public V3D_Point getIntersection(V3D_Plane pl1, V3D_Plane pl2, int oom,
+//    public V3D_Point getIntersect(V3D_Plane pl1, V3D_Plane pl2, int oom,
 //            RoundingMode rm) {
 //        BigRational[][] m = new BigRational[3][3];
 //        m[0][0] = n.getDX(oom, rm);
@@ -1263,16 +1263,16 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @return The intersection between {@code this} and {@code pl}
      */
-    public V3D_Geometry getIntersection(V3D_Plane pl1, V3D_Plane pl2, int oom,
+    public V3D_Geometry getIntersect(V3D_Plane pl1, V3D_Plane pl2, int oom,
             RoundingMode rm) {
-        V3D_Geometry g = getIntersection(pl1, oom, rm);
+        V3D_Geometry g = getIntersect(pl1, oom, rm);
         if (g == null) {
             return null;
         } else {
             if (g instanceof V3D_Plane gp) {
-                return gp.getIntersection(pl2, oom, rm);
+                return gp.getIntersect(pl2, oom, rm);
             } else {
-                return pl2.getIntersection((V3D_Line) g, oom, rm);
+                return pl2.getIntersect((V3D_Line) g, oom, rm);
             }
         }
     }
@@ -1739,8 +1739,8 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public boolean equalsIgnoreOrientation(V3D_Plane pl, int oom, RoundingMode rm) {
         if (n.isScalarMultiple(pl.n, oom, rm)) {
-            if (pl.isIntersectedBy(getP(), oom, rm)) {
-                if (this.isIntersectedBy(pl.getP(), oom, rm)) {
+            if (pl.intersects(getP(), oom, rm)) {
+                if (this.intersects(pl.getP(), oom, rm)) {
                     return true;
                 }
             }
@@ -1780,7 +1780,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The distance from {@code this} to {@code pl}.
      */
     public BigRational getDistance(V3D_Point pt, int oom, RoundingMode rm) {
-        if (this.isIntersectedBy(pt, oom, rm)) {
+        if (this.intersects(pt, oom, rm)) {
             return BigRational.ZERO;
         }
         return new Math_BigRationalSqrt(getDistanceSquared(pt, true, oom, rm),
@@ -1796,7 +1796,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return The distance from {@code this} to {@code pl}.
      */
     public BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
-        if (this.isIntersectedBy(pt, oom, rm)) {
+        if (this.intersects(pt, oom, rm)) {
             return BigRational.ZERO;
         }
         return getDistanceSquared(pt, true, oom, rm);
@@ -1972,7 +1972,7 @@ public class V3D_Plane extends V3D_Geometry {
      * is the point of intersection
      */
     public V3D_Point getPointOfProjectedIntersection(V3D_Point pt, int oom, RoundingMode rm) {
-        if (isIntersectedBy(pt, oom, rm)) {
+        if (intersects(pt, oom, rm)) {
             return pt;
         }
 //        V3D_Point pt2 = new V3D_Point(pt);
@@ -1981,17 +1981,17 @@ public class V3D_Plane extends V3D_Geometry {
 //        V3D_Line l = new V3D_Line(pt2.rel, nn, e);
         //V3D_Line l = new V3D_Line(pt2.rel, n, e);
         V3D_Line l = new V3D_Line(pt, n);
-        return (V3D_Point) getIntersection(l, oom, rm);
+        return (V3D_Point) getIntersect(l, oom, rm);
     }
 
     /**
-     * Check a and b are on the same side of this. If either are on the boundary
-     * then return {@code true}.
+     * Check a and b are on the same side of this.If either are on the boundary
+ then return {@code true}.
      *
      * @param a A point.
      * @param b Another point. The triangle to check the points to see if they
-     * are all on the same side of a line that intersects the edge of another
-     * triangle.
+ are all on the same side of a line that getIntersect the edge of another
+ triangle.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
      * @return {@code true} if an intersection is found and {@code false}
@@ -2064,13 +2064,13 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * Check a and b are on the same side of this. If either are on the boundary
-     * then return {@code true}.
+     * Check a and b are on the same side of this.If either are on the boundary
+ then return {@code true}.
      *
      * @param a A point.
      * @param b Another point. The triangle to check the points to see if they
-     * are all on the same side of a line that intersects the edge of another
-     * triangle.
+ are all on the same side of a line that getIntersect the edge of another
+ triangle.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
      * @return {@code true} if an intersection is found and {@code false}

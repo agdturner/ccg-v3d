@@ -679,7 +679,7 @@ public class V3D_AABBY implements Serializable {
      * to be in the same Y plane.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this intersects with {@code pl}
+     * @return {@code true} if this intersects with {@code p}
      */
     public boolean intersects(V3D_Point p, int oom, RoundingMode rm) {
         return intersects(p.getX(oom, rm), p.getZ(oom, rm), oom);
@@ -689,7 +689,8 @@ public class V3D_AABBY implements Serializable {
      * @param x The x-coordinate of the point to test for intersection.
      * @param z The z-coordinate of the point to test for intersection.
      * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} if this intersects with {@code pl}
+     * @return {@code true} if this intersects with a point defined by 
+     * {@code x}, {@link #y}, and {@code z}}.
      */
     public boolean intersects(BigRational x, BigRational z, int oom) {
         return x.compareTo(getXMin(oom)) != -1

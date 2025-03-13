@@ -795,13 +795,13 @@ public class V3D_AABB implements Serializable {
     }
     
     /**
-     * If {@code e} touches, or overlaps then it intersects. For collision
-     * avoidance, this is biased towards returning an intersection even if there
-     * may not be one at a lower oom precision.
+     * If {@code e} touches, or overlaps then it intersects.For collision
+ avoidance, this is biased towards returning an intersection even if there
+ may not be one at a lower oom precision.
      *
      * @param e The Vector_Envelope3D to test for intersection.
      * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} if this intersects with {@code e} it the {@code oom}
+     * @return {@code true} if this getIntersect with {@code e} it the {@code oom}
      * level of precision.
      */
     public boolean intersects(V3D_AABB e, int oom) {
@@ -903,7 +903,7 @@ public class V3D_AABB implements Serializable {
      * @param s The shape to test for containment.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this intersects with {@code s}
+     * @return {@code true} if this getIntersect with {@code s}
      */
     public boolean contains0(V3D_Face s, int oom, RoundingMode rm) {
         return s.getPoints(oom, rm).values().parallelStream().allMatch(x
@@ -914,7 +914,7 @@ public class V3D_AABB implements Serializable {
      * @param p The point to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this intersects with {@code pl}
+     * @return {@code true} if this getIntersect with {@code pl}
      */
     public boolean intersects(V3D_Point p, int oom, RoundingMode rm) {
         return V3D_AABB.this.intersects(p.getX(oom, rm), p.getY(oom, rm), p.getZ(oom, rm), oom);
@@ -927,7 +927,7 @@ public class V3D_AABB implements Serializable {
      * @param y The y-coordinate of the point to test for intersection.
      * @param z The z-coordinate of the point to test for intersection.
      * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} if this intersects with {@code pl}
+     * @return {@code true} if this getIntersect with {@code pl}
      */
     public boolean intersects(BigRational x, BigRational y, BigRational z, 
             int oom) {
@@ -940,116 +940,12 @@ public class V3D_AABB implements Serializable {
     }
 
     /**
-     * @param l The line to test for intersection.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this intersects with {@code pl}
-     */
-    public boolean intersects(V3D_Line l, int oom, RoundingMode rm) {
-        if (intersects(l.getP(), oom, rm)) {
-            return true;
-        } else {
-            if (intersects(l.getQ(oom, rm), oom, rm)) {
-                return true;
-            } else {
-                V3D_AABBX l = getl(oom, rm);
-                V3D_Geometry xMinPlaneIntersection = l.getIntersection(l, oom, rm);
-                if (xMinPlaneIntersection != null) {
-                    if (xMinPlaneIntersection instanceof V3D_Line) {
-                        return true;
-                    }
-                }
-                V3D_Plane xMaxPlane0 = getr(oom);
-                V3D_Geometry xMaxPlaneIntersection = xMaxPlane0.getIntersection(l, oom, rm);
-                if (xMaxPlaneIntersection != null) {
-                    if (xMaxPlaneIntersection instanceof V3D_Line) {
-                        return true;
-                    }
-                }
-                V3D_Plane yMinPlane0 = getb(oom);
-                V3D_Geometry yMinPlaneIntersection = yMinPlane0.getIntersection(l, oom, rm);
-                if (yMinPlaneIntersection != null) {
-                    if (yMinPlaneIntersection instanceof V3D_Line) {
-                        return true;
-                    }
-                }
-                V3D_Plane yMaxPlane0 = gett(oom);
-                V3D_Geometry yMaxPlaneIntersection = yMaxPlane0.getIntersection(l, oom, rm);
-                if (yMaxPlaneIntersection != null) {
-                    if (yMaxPlaneIntersection instanceof V3D_Line) {
-                        return true;
-                    }
-                }
-                V3D_Plane zMinPlane0 = geta(oom);
-                V3D_Geometry zMinPlaneIntersection = zMinPlane0.getIntersection(l, oom, rm);
-                if (zMinPlaneIntersection != null) {
-                    if (zMinPlaneIntersection instanceof V3D_Line) {
-                        return true;
-                    }
-                }
-                V3D_Plane zMaxPlane0 = getf(oom);
-                V3D_Geometry zMaxPlaneIntersection = zMaxPlane0.getIntersection(l, oom, rm);
-                if (zMaxPlaneIntersection != null) {
-                    if (zMaxPlaneIntersection instanceof V3D_Line) {
-                        return true;
-                    }
-                }
-                // There are 8 cases.
-                if (xMinPlaneIntersection == null) {
-                    if (yMinPlaneIntersection == null) {
-                        V3D_Point zP = (V3D_Point) zMinPlaneIntersection;
-                        return zMinPlane0.isBetweenPlanes(zMaxPlane0, zP, oom, rm);
-                    } else {
-                        V3D_Point yP = (V3D_Point) yMinPlaneIntersection;
-                        if (yMinPlane0.isBetweenPlanes(yMaxPlane0, yP, oom, rm)) {
-                            return true;
-                        } else {
-                            if (zMinPlaneIntersection == null) {
-                                return false;
-                            } else {
-                                V3D_Point zP = (V3D_Point) zMinPlaneIntersection;
-                                return zMinPlane0.isBetweenPlanes(zMaxPlane0, zP, oom, rm);
-                            }
-                        }
-                    }
-                } else {
-                    V3D_Point xP = (V3D_Point) xMinPlaneIntersection;
-                    if (xMinPlane0.isBetweenPlanes(xMaxPlane0, xP, oom, rm)) {
-                        return true;
-                    } else {
-                        if (yMinPlaneIntersection == null) {
-                            if (zMinPlaneIntersection == null) {
-                                return false;
-                            } else {
-                                V3D_Point zP = (V3D_Point) zMinPlaneIntersection;
-                                return zMinPlane0.isBetweenPlanes(zMaxPlane0, zP, oom, rm);
-                            }
-                        } else {
-                            V3D_Point yP = (V3D_Point) yMinPlaneIntersection;
-                            if (yMinPlane0.isBetweenPlanes(yMaxPlane0, yP, oom, rm)) {
-                                return true;
-                            } else {
-                                if (zMinPlaneIntersection == null) {
-                                    return false;
-                                } else {
-                                    V3D_Point zP = (V3D_Point) zMinPlaneIntersection;
-                                    return zMinPlane0.isBetweenPlanes(zMaxPlane0, zP, oom, rm);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * @param en The Axis Aligned Bounding Box to intersect.
      * @param oom The Order of Magnitude for the precision.
      * @return {@code null} if there is no intersection; {@code en} if
      * {@code this.equals(en)}; otherwise returns the intersection.
      */
-    public V3D_AABB getIntersection(V3D_AABB en, int oom) {
+    public V3D_AABB getIntersect(V3D_AABB en, int oom) {
         if (!V3D_AABB.this.intersects(en, oom)) {
             return null;
         }
@@ -1233,10 +1129,10 @@ public class V3D_AABB implements Serializable {
 //        tp.n = tp.n.getUnitVector(oom, rm);
 //        bp.n = bp.n.getUnitVector(oom, rm);
         rect = new V3D_Rectangle(
-                (V3D_Point) lpl.getIntersection(pl0, bpl, oom, rm),
-                (V3D_Point) lpl.getIntersection(pl0, tpl, oom, rm),
-                (V3D_Point) rpl.getIntersection(pl0, tpl, oom, rm),
-                (V3D_Point) rpl.getIntersection(pl0, bpl, oom, rm), oom, rm);
+                (V3D_Point) lpl.getIntersect(pl0, bpl, oom, rm),
+                (V3D_Point) lpl.getIntersect(pl0, tpl, oom, rm),
+                (V3D_Point) rpl.getIntersect(pl0, tpl, oom, rm),
+                (V3D_Point) rpl.getIntersect(pl0, bpl, oom, rm), oom, rm);
 
         return rect;
     }
@@ -1359,10 +1255,10 @@ public class V3D_AABB implements Serializable {
 //        bp.n = bp.n.getUnitVector(oom, rm);
 
         rect = new V3D_Rectangle(
-                (V3D_Point) lpl.getIntersection(pl0, bpl, oomn4, rm),
-                (V3D_Point) lpl.getIntersection(pl0, tpl, oomn4, rm),
-                (V3D_Point) rpl.getIntersection(pl0, tpl, oomn4, rm),
-                (V3D_Point) rpl.getIntersection(pl0, bpl, oomn4, rm), oom, rm);
+                (V3D_Point) lpl.getIntersect(pl0, bpl, oomn4, rm),
+                (V3D_Point) lpl.getIntersect(pl0, tpl, oomn4, rm),
+                (V3D_Point) rpl.getIntersect(pl0, tpl, oomn4, rm),
+                (V3D_Point) rpl.getIntersect(pl0, bpl, oomn4, rm), oom, rm);
 
         return rect;
     }
@@ -1422,10 +1318,10 @@ public class V3D_AABB implements Serializable {
         rppt.translate(hv, oomn4, rm);
         V3D_Plane rpl = new V3D_Plane(rppt, pt, ptv2, oomn4, rm);
         rect = new V3D_Rectangle(
-                (V3D_Point) lpl.getIntersection(pl0, bpl, oomn4, rm),
-                (V3D_Point) lpl.getIntersection(pl0, tpl, oomn4, rm),
-                (V3D_Point) rpl.getIntersection(pl0, tpl, oomn4, rm),
-                (V3D_Point) rpl.getIntersection(pl0, bpl, oomn4, rm), oom, rm);
+                (V3D_Point) lpl.getIntersect(pl0, bpl, oomn4, rm),
+                (V3D_Point) lpl.getIntersect(pl0, tpl, oomn4, rm),
+                (V3D_Point) rpl.getIntersect(pl0, tpl, oomn4, rm),
+                (V3D_Point) rpl.getIntersect(pl0, bpl, oomn4, rm), oom, rm);
         return rect;
     }
 

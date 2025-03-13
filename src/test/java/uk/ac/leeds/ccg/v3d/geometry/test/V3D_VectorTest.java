@@ -23,7 +23,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -816,9 +815,10 @@ public class V3D_VectorTest extends V3D_Test {
         System.out.println("divide");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Environment env = new V3D_Environment(oom, rm);
         BigRational s = BigRational.TWO;
         V3D_Vector instance = V3D_Vector.I;
-        V3D_Vector expResult = new V3D_Vector(new V3D_Point(0.5d, 0d, 0d), -2, rm);
+        V3D_Vector expResult = new V3D_Vector(new V3D_Point(env, 0.5d, 0d, 0d), -2, rm);
         V3D_Vector result = instance.divide(s, oom, rm);
         assertTrue(expResult.equals(result));
     }

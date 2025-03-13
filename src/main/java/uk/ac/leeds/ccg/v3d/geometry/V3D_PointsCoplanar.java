@@ -19,6 +19,7 @@ import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * A collection of V3D_Point instances.
@@ -72,7 +73,7 @@ public class V3D_PointsCoplanar extends V3D_FiniteGeometry {
         if (en == null) {
             en = new V3D_AABB(oom, new V3D_Point(env, offset, rels[0]));
             for (int i = 1; i < rels.length; i++) {
-                en = en.getIntersection(new V3D_AABB(oom, rm,
+                en = en.getIntersect(new V3D_AABB(oom, rm,
                         new V3D_Point(env, offset, rels[0])), oom);
             }
         }
@@ -106,7 +107,7 @@ public class V3D_PointsCoplanar extends V3D_FiniteGeometry {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
+    //@Override
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }

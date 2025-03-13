@@ -206,11 +206,11 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
     }
 
     /**
-     * Test of getIntersection method, of class V3D_LineSegmentsCollinear.
+     * Test of getIntersect method, of class V3D_LineSegmentsCollinear.
      */
     @Test
     public void testGetIntersection_V3D_Line_int() {
-        System.out.println("getIntersection");
+        System.out.println("getIntersect");
         int oom = -1;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line l = new V3D_Line(pP0P0P0, pP1P0P0, oom, rm);
@@ -220,16 +220,16 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
         V3D_Geometry expResult = new V3D_LineSegmentsCollinear(
                 new V3D_LineSegment(pN1P0P0, pP0P0P0, oom, rm),
                 new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm));
-        V3D_Geometry result = instance.getIntersection(l, oom, rm);
+        V3D_Geometry result = instance.getIntersect(l, oom, rm);
         assertTrue(((V3D_LineSegmentsCollinear) expResult).equals((V3D_LineSegmentsCollinear) result, oom, rm));
     }
 
     /**
-     * Test of getIntersection method, of class V3D_LineSegmentsCollinear.
+     * Test of getIntersect method, of class V3D_LineSegmentsCollinear.
      */
     @Test
     public void testGetIntersection_V3D_LineSegment_int() {
-        System.out.println("getIntersection");
+        System.out.println("getIntersect");
         int oom = -1;
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment l = new V3D_LineSegment(pN1P0P0, pP0P0P0, oom, rm);
@@ -237,7 +237,7 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
                 new V3D_LineSegment(pN1P0P0, pP0P0P0, oom, rm),
                 new V3D_LineSegment(pP1P0P0, pP2P0P0, oom, rm));
         V3D_Geometry expResult = new V3D_LineSegment(pN1P0P0, pP0P0P0, oom, rm);
-        V3D_Geometry result = instance.getIntersection(l, oom, rm);
+        V3D_Geometry result = instance.getIntersect(l, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equals((V3D_LineSegment) result, oom, rm));
     }
 
@@ -298,51 +298,51 @@ public class V3D_LineSegmentsCollinearTest extends V3D_Test {
     }
 
     /**
-     * Test of getIntersection method, of class V3D_LineSegmentsCollinear.
+     * Test of getIntersect method, of class V3D_LineSegmentsCollinear.
      */
     @Test
     public void testGetIntersection_V3D_Plane_int() {
-        System.out.println("getIntersection");
+        System.out.println("getIntersect");
         // No test yet.
 //        V3D_Plane p = null;
 //        int oom = 0;
 //        V3D_LineSegmentsCollinear instance = null;
 //        V3D_Geometry expResult = null;
-//        V3D_Geometry result = instance.getIntersection(p, oom);
+//        V3D_Geometry result = instance.getIntersect(p, oom);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getIntersection method, of class V3D_LineSegmentsCollinear.
+     * Test of getIntersect method, of class V3D_LineSegmentsCollinear.
      */
     @Test
     public void testGetIntersection_V3D_Triangle_int() {
-        System.out.println("getIntersection");
+        System.out.println("getIntersect");
         // No test yet.
 //        V3D_Triangle t = null;
 //        int oom = 0;
 //        V3D_LineSegmentsCollinear instance = null;
 //        V3D_Geometry expResult = null;
-//        V3D_Geometry result = instance.getIntersection(t, oom);
+//        V3D_Geometry result = instance.getIntersect(t, oom);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getIntersection method, of class V3D_LineSegmentsCollinear.
+     * Test of getIntersect method, of class V3D_LineSegmentsCollinear.
      */
     @Test
     public void testGetIntersection_V3D_Tetrahedron_int() {
-        System.out.println("getIntersection");
+        System.out.println("getIntersect");
         // No test yet.
 //        V3D_Tetrahedron t = null;
 //        int oom = 0;
 //        V3D_LineSegmentsCollinear instance = null;
 //        V3D_Geometry expResult = null;
-//        V3D_Geometry result = instance.getIntersection(t, oom);
+//        V3D_Geometry result = instance.getIntersect(t, oom);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");

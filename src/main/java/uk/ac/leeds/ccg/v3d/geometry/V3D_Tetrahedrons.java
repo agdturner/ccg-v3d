@@ -24,7 +24,7 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
     protected final ArrayList<V3D_Tetrahedron> tetrahedrons;
 
     public V3D_Tetrahedrons(V3D_Tetrahedrons ts) {
-        offset = new V3D_Vector(ts.offset);
+        super(ts.env, ts.offset);
         tetrahedrons = new ArrayList<>();
         ts.tetrahedrons.forEach(x -> tetrahedrons.add(new V3D_Tetrahedron(x)));
     }
@@ -36,7 +36,7 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
      * individually.
      */
     public V3D_Tetrahedrons(V3D_Tetrahedron... tetrahedrons) {
-        super(tetrahedrons[0].offset);
+        super(tetrahedrons[0].env, tetrahedrons[0].offset);
         this.tetrahedrons = new ArrayList<>();
         this.tetrahedrons.addAll(Arrays.asList(tetrahedrons));
     }
@@ -55,18 +55,18 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
     }
 
     @Override
-    public V3D_Envelope getEnvelope(int oom) {
+    public V3D_AABB getAABB(int oom, RoundingMode rm) {
         if (en == null) {
-            en = tetrahedrons.stream().findAny().get().getEnvelope(oom);
+            en = tetrahedrons.stream().findAny().get().getAABB(oom, rm);
             tetrahedrons.forEach((V3D_Tetrahedron t) -> {
-                en = en.union(t.getEnvelope(oom), oom);
+                en = en.union(t.getAABB(oom, rm), oom);
             });
         }
         return en;
     }
 
     @Override
-    public V3D_Point[] getPoints() {
+    public V3D_Point[] getPointsArray(int oom, RoundingMode rm) {
         int np = tetrahedrons.size() * 4;
         V3D_Point[] r = new V3D_Point[np];
         int i = 0;
@@ -84,6 +84,7 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
     
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param rm The RoundingMode for any rounding.
      * @return The area of the triangle (rounded).
      */
     @Override
@@ -98,6 +99,7 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
 
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
+     * @param rm The RoundingMode for any rounding.
      */
     @Override
     public BigRational getVolume(int oom, RoundingMode rm) {
@@ -108,11 +110,6 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
         }
         return r;
     }
-
-//    @Override
-//    public boolean isEnvelopeIntersectedBy(V3D_Line l, int oom) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
 
     @Override
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
@@ -146,8 +143,8 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
         return new V3D_Tetrahedrons(rls);
     }
 
-    @Override
-    public boolean isIntersectedBy(V3D_Envelope aabb, int oom, RoundingMode rm) {
+    //@Override
+    public boolean isIntersectedBy(V3D_AABB aabb, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
