@@ -258,7 +258,7 @@ public class V3D_Rectangle extends V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return A point or line segment.
      */
-    public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
+    public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
         if (pqr.intersects(pt, oom, rm)) {
             return true;
         } else {
@@ -300,7 +300,7 @@ public class V3D_Rectangle extends V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return A point or line segment.
      */
-    public V3D_FiniteGeometry getIntersection(V3D_Line l, int oom, 
+    public V3D_FiniteGeometry getIntersect(V3D_Line l, int oom, 
             RoundingMode rm) {
         if (getPlane().getIntersect(l, oom, rm) != null) {
             V3D_FiniteGeometry pqri = pqr.getIntersect(l, oom, rm);
@@ -348,7 +348,7 @@ public class V3D_Rectangle extends V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The intersection or {@code null} iff there is no intersection.
      */
-    public V3D_FiniteGeometry getIntersection(V3D_LineSegment l, int oom, 
+    public V3D_FiniteGeometry getIntersect(V3D_LineSegment l, int oom, 
             RoundingMode rm) {
         if (getPlane().getIntersect(l, oom, rm) != null) {
             V3D_FiniteGeometry pqri = pqr.getIntersect(l, oom, rm);
@@ -445,7 +445,7 @@ public class V3D_Rectangle extends V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The intersection between {@code this} and {@code pl}.
      */
-    public V3D_FiniteGeometry getIntersection(V3D_Plane pl, int oom, RoundingMode rm) {
+    public V3D_FiniteGeometry getIntersect(V3D_Plane pl, int oom, RoundingMode rm) {
         if (getPlane().equals(pl, oom, rm)) {
             return new V3D_Rectangle(this, oom, rm);
         }
@@ -471,7 +471,7 @@ public class V3D_Rectangle extends V3D_Face {
      * @return The intersection between {@code t} and {@code this} or
      * {@code null} if there is no intersection.
      */
-    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, 
+    public V3D_FiniteGeometry getIntersect(V3D_Triangle t, int oom, 
             RoundingMode rm) {
         if (getPlane().equals(t.getPl(oom, rm), oom, rm)) {
             V3D_FiniteGeometry pqrit = pqr.getIntersect(t, oom, rm);
@@ -512,7 +512,7 @@ public class V3D_Rectangle extends V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometry getIntersection(V3D_Ray r, int oom,
+    public V3D_FiniteGeometry getIntersect(V3D_Ray r, int oom,
             RoundingMode rm) {
         V3D_FiniteGeometry gpqr = pqr.getIntersect(r, oom, rm);
         V3D_FiniteGeometry grsp = rsp.getIntersect(r, oom, rm);

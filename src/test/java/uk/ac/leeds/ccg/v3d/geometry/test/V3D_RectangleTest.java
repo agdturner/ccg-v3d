@@ -26,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Envelope;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_AABB;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
@@ -65,11 +66,11 @@ public class V3D_RectangleTest extends V3D_Test {
     }
 
     /**
-     * Test of getEnvelope method, of class V3D_Rectangle.
+     * Test of getAABB method, of class V3D_Rectangle.
      */
     @Test
-    public void testGetEnvelope() {
-        System.out.println("getEnvelope");
+    public void testGetAABB() {
+        System.out.println("getAABB");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
         /*
@@ -80,26 +81,26 @@ public class V3D_RectangleTest extends V3D_Test {
          * pv ----------- s
          */
         V3D_Rectangle instance;
-        V3D_Envelope expResult;
-        V3D_Envelope result;
+        V3D_AABB expResult;
+        V3D_AABB result;
         instance = new V3D_Rectangle(pN1P1P0, pP1P1P0, pP1N1P0, pN1N1P0, oom, rm);
-        expResult = new V3D_Envelope(oom, pN1N1P0, pP1P1P0);
-        result = instance.getEnvelope(oom);
+        expResult = new V3D_AABB(oom, pN1N1P0, pP1P1P0);
+        result = instance.getAABB(oom, rm);
         assertTrue(expResult.equals(result, oom));
         // Test 2
         instance = new V3D_Rectangle(pN1P1P1, pP1P1P0, pP1N1P0, pN1N1P1, oom, rm);
-        expResult = new V3D_Envelope(oom, pN1N1P0, pP1P1P1);
-        result = instance.getEnvelope(oom);
+        expResult = new V3D_AABB(oom, pN1N1P0, pP1P1P1);
+        result = instance.getAABB(oom, rm);
         assertTrue(expResult.equals(result, oom));
         // Test 3
         instance = new V3D_Rectangle(pN1P1P1, pP1P1N1, pP1N1N1, pN1N1P1, oom, rm);
-        expResult = new V3D_Envelope(oom, pN1N1N1, pP1P1P1);
-        result = instance.getEnvelope(oom);
+        expResult = new V3D_AABB(oom, pN1N1N1, pP1P1P1);
+        result = instance.getAABB(oom, rm);
         assertTrue(expResult.equals(result, oom));
         // Test 4
         instance = new V3D_Rectangle(pN1N1N1, pP1N1N1, pP1P1N1, pN1P1N1, oom, rm);
-        expResult = new V3D_Envelope(oom, pN1N1N1, pP1P1N1);
-        result = instance.getEnvelope(oom);
+        expResult = new V3D_AABB(oom, pN1N1N1, pP1P1N1);
+        result = instance.getAABB(oom, rm);
         assertTrue(expResult.equals(result, oom));
     }
 
@@ -108,54 +109,55 @@ public class V3D_RectangleTest extends V3D_Test {
      */
     @Test
     public void testIsIntersectedBy_V3D_Point_int() {
-        System.out.println("isIntersectedBy");
+        System.out.println("intersects");
         int oom = -3;
         RoundingMode rm = RoundingMode.HALF_UP;
+        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Point pt = pP0P0P0;
         V3D_Rectangle instance = new V3D_Rectangle(pN1P1P0, pP1P1P0, pP1N1P0, pN1N1P0, oom, rm);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 2
         instance = new V3D_Rectangle(pN1P0P0, pP0P1P0, pP1P0P0, pP0N1P0, oom, rm);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 3
         BigRational half = BigRational.ONE.divide(2);
-        pt = new V3D_Point(half, half, P0);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        pt = new V3D_Point(env, half, half, P0);
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 4
         BigRational epsilon = BigRational.valueOf("0.00000000001");
         BigRational halfpe = half.add(epsilon);
         BigRational halfne = half.subtract(epsilon);
         oom = -12;
-        pt = new V3D_Point(halfpe, half, P0);
-        assertFalse(instance.isIntersectedBy(pt, oom, rm));
+        pt = new V3D_Point(env, halfpe, half, P0);
+        assertFalse(instance.intersects(pt, oom, rm));
         // Test 5
         oom = -12;
-        pt = new V3D_Point(halfpe.negate(), half, P0);
-        assertFalse(instance.isIntersectedBy(pt, oom, rm));
+        pt = new V3D_Point(env, halfpe.negate(), half, P0);
+        assertFalse(instance.intersects(pt, oom, rm));
         // Test 6
         oom = -12;
-        pt = new V3D_Point(half, halfpe, P0);
-        assertFalse(instance.isIntersectedBy(pt, oom, rm));
+        pt = new V3D_Point(env, half, halfpe, P0);
+        assertFalse(instance.intersects(pt, oom, rm));
         // Test 7
         oom = -12;
-        pt = new V3D_Point(half, halfpe.negate(), P0);
-        assertFalse(instance.isIntersectedBy(pt, oom, rm));
+        pt = new V3D_Point(env, half, halfpe.negate(), P0);
+        assertFalse(instance.intersects(pt, oom, rm));
         // Test 8
         oom = -12;
-        pt = new V3D_Point(halfne, half, P0);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        pt = new V3D_Point(env, halfne, half, P0);
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 9
         oom = -12;
-        pt = new V3D_Point(halfne.negate(), half, P0);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        pt = new V3D_Point(env, halfne.negate(), half, P0);
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 10
         oom = -12;
-        pt = new V3D_Point(half, halfne, P0);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        pt = new V3D_Point(env, half, halfne, P0);
+        assertTrue(instance.intersects(pt, oom, rm));
         // Test 11
         oom = -12;
-        pt = new V3D_Point(half, halfne.negate(), P0);
-        assertTrue(instance.isIntersectedBy(pt, oom, rm));
+        pt = new V3D_Point(env, half, halfne.negate(), P0);
+        assertTrue(instance.intersects(pt, oom, rm));
     }
 
     /**
@@ -265,14 +267,14 @@ public class V3D_RectangleTest extends V3D_Test {
     }
 
 //    /**
-//     * Test of isEnvelopeIntersectedBy method, of class V3D_Rectangle.
+//     * Test of isAABBIntersectedBy method, of class V3D_Rectangle.
 //     */
 //    @Test
-//    public void testIsEnvelopeIntersectedBy() {
-//        System.out.println("isEnvelopeIntersectedBy");
+//    public void testIsAABBIntersectedBy() {
+//        System.out.println("isAABBIntersectedBy");
 //        V3D_Line l = new V3D_LineSegment(pN1N1P0, pP2P2P0);
 //        V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
-//        assertTrue(instance.isEnvelopeIntersectedBy(l, oom));
+//        assertTrue(instance.isAABBIntersectedBy(l, oom));
 //    }
     /**
      * Test of getPerimeter method, of class V3D_Rectangle.
@@ -388,7 +390,7 @@ public class V3D_RectangleTest extends V3D_Test {
         RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Rectangle instance = new V3D_Rectangle(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0, oom, rm);
         V3D_Point expResult = pP0P1P0;
-        V3D_Point result = instance.getS();
+        V3D_Point result = instance.getS(oom, rm);
         assertTrue(expResult.equals(result, oom, rm));
     }
 
@@ -500,11 +502,11 @@ public class V3D_RectangleTest extends V3D_Test {
     }
 
     /**
-     * Test of isIntersectedBy0 method, of class V3D_Rectangle.
+     * Test of intersects0 method, of class V3D_Rectangle.
      */
     @Test
     public void testIsIntersectedBy0() {
-        System.out.println("isIntersectedBy0");
+        System.out.println("intersects0");
         // No test
     }
 

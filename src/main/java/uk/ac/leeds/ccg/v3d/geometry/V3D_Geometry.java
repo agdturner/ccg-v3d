@@ -68,7 +68,7 @@ public abstract class V3D_Geometry implements Serializable {
     /**
      * The environment.
      */
-    public final V3D_Environment env;
+    public V3D_Environment env;
     
     /**
      * Creates a new instance.

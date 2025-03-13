@@ -1045,7 +1045,7 @@ public class V3D_AABB implements Serializable {
         // Get the intersecting points on the screen plane from pt
         for (int i = 0; i < pts.length; i++) {
             V3D_Ray ray = new V3D_Ray(pt, pts[i], oom, rm);
-            ipts[i] = (V3D_Point) ray.getIntersection(pl0, oom, rm);
+            ipts[i] = (V3D_Point) ray.getIntersect(pl0, oom, rm);
         }
         // Figure out the extremes in relation to v and v2
         // Find top, bottom, left and right planes
@@ -1171,7 +1171,7 @@ public class V3D_AABB implements Serializable {
         // Get the intersecting points on the screen plane from pt
         for (int i = 0; i < pts.length; i++) {
             V3D_Ray ray = new V3D_Ray(pt, pts[i], oomn4, rm);
-            ipts[i] = (V3D_Point) ray.getIntersection(pl0, oomn4, rm);
+            ipts[i] = (V3D_Point) ray.getIntersect(pl0, oomn4, rm);
         }
         // Find top, bottom, left and right planes
         V3D_Plane vpl = new V3D_Plane(c, v);
