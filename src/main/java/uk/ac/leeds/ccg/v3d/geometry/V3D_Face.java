@@ -17,7 +17,6 @@ package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.HashMap;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
@@ -76,20 +75,6 @@ public abstract class V3D_Face extends V3D_FiniteGeometry {
      */
     public abstract HashMap<Integer, V3D_LineSegment> getEdges(int oom, 
             RoundingMode rm);
-    
-    /**
-     * @return A copy of the points of the geometries gs.
-     * 
-     * @param ss The geometries.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     */
-    public static ArrayList<V3D_Point> getPoints(HashMap<Integer, V3D_Face> ss, 
-            int oom, RoundingMode rm) {
-        ArrayList<V3D_Point> list = new ArrayList<>();
-        ss.values().forEach(x -> list.addAll(x.getPoints(oom, rm).values()));
-        return list;
-    }
     
     /**
      * For calculating and returning the perimeter.

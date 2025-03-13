@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Andy Turner, University of Leeds.
+ * Copyright 2020-2025 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,39 +28,39 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VTriangle;
 
 /**
- * For representing and processing triangles in 3D.A triangle has a non-zero
- * area.The corner points are {@link #pv}, {@link #qv} and {@link #rv}.The
- * following depicts a generic triangle {@code
- * pq
+ * For representing and processing triangles in 3D. A triangle has a non-zero
+ * area. The corner points are defined by {@link #pv}, {@link #qv} and
+ * {@link #rv}. The following depicts a generic triangle {@code
+ *                          pq
  * pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
- * \~                   mpq                   ~/
- * \  ~                 |                 ~  /
- * \    ~              |              ~    /
- * \      ~           |           ~      /
- * \        ~        |        ~        /
- * \          ~     |     ~          /
- * \            ~  |  ~            /
- * \  -n  -n  -n  c  +n  +n  +n  +n  normal going out of the page.
- * \          ~  |  ~          /
- * \      ~     |     ~      /
- * \  ~        |        ~  /
- * + mrp      |      mqr +
- * rp  \         |         /  qr
- * \        |        /
- * \       |       /
- * \      |      /
- * \     |     /
- * \    |    /
- * \   |   /
- * \  |  /
- * \ | /
- * \|/
- *
- * rv
+ *     \~                   mpq                   ~/
+ *      \  ~                 |                 ~  /
+ *       \    ~              |              ~    /
+ *        \      ~           |           ~      /
+ *         \        ~        |        ~        /
+ *          \          ~     |     ~          /
+ *           \            ~  |  ~            /
+ *            \  -n  -n  -n  c  +n  +n  +n  +n  normal going out of the page.
+ *             \          ~  |  ~          /
+ *              \      ~     |     ~      /
+ *               \  ~        |        ~  /
+ *                + mrp      |      mqr +
+ *             rp  \         |         /  qr
+ *                  \        |        /
+ *                   \       |       /
+ *                    \      |      /
+ *                     \     |     /
+ *                      \    |    /
+ *                       \   |   /
+ *                        \  |  /
+ *                         \ | /
+ *                          \|/
+ *                           *
+ *                           rv
  * }
  *
  * @author Andy Turner
- * @version 1.0
+ * @version 2.0
  */
 public class V3D_Triangle extends V3D_Face {
 
@@ -885,8 +885,8 @@ public class V3D_Triangle extends V3D_Face {
      */
     public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
         if (getAABB(oom, rm).intersects(pt, oom, rm)
-            && getPl(oom, rm).intersects(pt, oom, rm)) {
-                return intersects0(pt, oom, rm);
+                && getPl(oom, rm).intersects(pt, oom, rm)) {
+            return intersects0(pt, oom, rm);
         }
         return false;
     }
@@ -2185,6 +2185,7 @@ public class V3D_Triangle extends V3D_Face {
 //            BigRational dl1pl3q = l1p.getDistanceSquared(l3q, oom);
 //            BigRational dl1ql3p = l1q.getDistanceSquared(l3p, oom);
 //            BigRational dl1ql3q = l1q.getDistanceSquared(l3q, oom);
+
     
 
     ////            // dl2l3
@@ -2454,7 +2455,7 @@ public class V3D_Triangle extends V3D_Face {
      *
      * @param l a line segment either equal to one of the edges of this - null
      * null null null null null null null null null null null null null null
-     * null null null null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
+     * null null null null null null null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
      * {@link #getQR(int, java.math.RoundingMode)} or
      * {@link #getRP(int, java.math.RoundingMode)}.
      * @param oom The Order of Magnitude for the precision.
@@ -2841,19 +2842,18 @@ public class V3D_Triangle extends V3D_Face {
         }
     }
 
-    
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
         // Return true if any edge intersects
         return getEdges(oom, rm).values().parallelStream().anyMatch(x
                 -> x.intersects(aabb, oom, rm));
     }
-    
+
     /**
-     * 
+     *
      * @param t Another triangle to test fr intersection.
-     * @param oom 
+     * @param oom
      * @param rm
-     * @return 
+     * @return
      */
     public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
         // Return true if any edge intersects

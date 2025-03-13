@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Andy Turner, University of Leeds.
+ * Copyright 2020-2025 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,32 +28,32 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * 3D representation of an infinite length line. The line passes through the
  * point {@link #pv} with vector {@link #v}. The "*" denotes a point in 3D and
  * the line is shown with a line of "e" symbols in the following depiction: {@code
- * z                e
- * y           -                e
- * +          /                * pv=<x0,y0,z0>
- * |         /                e
- * |        /                e
- * |    z0-/                e
- * |      /                e
- * |     /               e
- * |    /               e
- * |   /               e
- * y0-|  /               e
- * | /               e
- * |/         x1    e
- * x - ---------------------|-----------/---e---/---- + x
- * /|              e   x0
- * / |-y1          e
- * /  |           e
- * /   |          e
- * z1-/    |         e
- * /     |        e
- * /      |       e v=(dx,dy,dz)
- * /       |      e
- * /        |     e
- * +         |    e
- * z          -   e
- * y
+ *                                         z                e
+ *                            y           -                e
+ *                            +          /                * pv=<x0,y0,z0>
+ *                            |         /                e
+ *                            |        /                e
+ *                            |    z0-/                e
+ *                            |      /                e
+ *                            |     /               e
+ *                            |    /               e
+ *                            |   /               e
+ *                         y0-|  /               e
+ *                            | /               e
+ *                            |/         x1    e
+ *   x - ---------------------|-----------/---e---/---- + x
+ *                           /|              e   x0
+ *                          / |-y1          e
+ *                         /  |           e
+ *                        /   |          e
+ *                    z1-/    |         e
+ *                      /     |        e
+ *                     /      |       e v=(dx,dy,dz)
+ *                    /       |      e
+ *                   /        |     e
+ *                  +         |    e
+ *                 z          -   e
+ *                            y
  * }
  * <ul>
  * <li>Vector Form
@@ -74,12 +74,12 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * </ul>
  *
  * @author Andy Turner
- * @version 1.0
+ * @version 2.0
  */
 public class V3D_Line extends V3D_Geometry {
 
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * The x axis.
      */
@@ -97,7 +97,7 @@ public class V3D_Line extends V3D_Geometry {
      */
     public static final V3D_Line Z_AXIS = new V3D_Line(null,
             V3D_Vector.ZERO, V3D_Vector.K);
-    
+
     /**
      * If this line is defined by a vector, then the calculation of {@link #q}
      * may be imprecise. If this line is defined by points, then {@link #v} may
@@ -305,27 +305,6 @@ public class V3D_Line extends V3D_Geometry {
         r += pad + "p=" + getP().toString(pad) + "\n"
                 + pad + ",\n"
                 + pad + "v=" + v.toString(pad);
-//        if (qv == null) {
-//            r += pad + "pv=" + getP().toString(pad) + "\n"
-//                    + pad + ",\n"
-//                    + pad + "qv=null" + "\n"
-//                    + pad + ",\n"
-//                    + pad + "v=" + v.toString(pad);
-//        } else {
-//            if (v == null) {
-//                r += pad + "pv=" + getP().toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "qv=" + qv.toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "v=null";
-//            } else {
-//                r += pad + "pv=" + getP().toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "qv=" + qv.toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "v=" + v.toString(pad);
-//            }
-//        }
         return r;
     }
 
@@ -338,21 +317,6 @@ public class V3D_Line extends V3D_Geometry {
         String r = super.toStringFieldsSimple(pad) + ",\n";
         r += pad + "p=" + getP().toStringSimple("") + ",\n"
                 + pad + "v=" + v.toStringSimple(pad);
-//        if (qv == null) {
-//            r += pad + "pv=" + getP().toStringSimple("") + ",\n"
-//                    + pad + "qv=null" + ",\n"
-//                    + pad + "v=" + v.toStringSimple(pad);
-//        } else {
-//            if (v == null) {
-//                r += pad + "pv=" + getP().toStringSimple(pad) + ",\n"
-//                        + pad + "qv=" + qv.toStringSimple(pad) + ",\n"
-//                        + pad + "v=null";
-//            } else {
-//                r += pad + "pv=" + getP().toStringSimple(pad) + ",\n"
-//                        + pad + "qv=" + qv.toStringSimple(pad) + ",\n"
-//                        + pad + "v=" + v.toStringSimple(pad);
-//            }
-//        }
         return r;
     }
 
@@ -363,21 +327,8 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_Line l, int oom, RoundingMode rm) {
-//        boolean t1 = getIntersect(l.getP(oom), oom);
-//        boolean t2 = getIntersect(l.getQ(oom), oom);
-//        boolean t3 = l.getIntersect(getP(oom), oom);
-//        boolean t4 = l.getIntersect(getQ(oom),oom);
-//        boolean t5 = getV(oom).isScalarMultiple(l.getV(oom), oom);
-//        return getIntersect(l.getP(), oom, rm)
-//                && getIntersect(l.getQ(oom, rm), oom, rm);
-        //if (v.isScalarMultiple(l.v, oom, rm)) {
-            if (l.intersects(getP(), oom, rm)) {
-                if (l.intersects(getQ(oom, rm), oom, rm)) {
-                    return true;
-                }
-            }
-        //}
-        return false;
+        return l.intersects(getP(), oom, rm)
+                && l.intersects(getQ(oom, rm), oom, rm);
     }
 
 //    /**
@@ -414,7 +365,7 @@ public class V3D_Line extends V3D_Geometry {
         } else {
             if (oom < this.oom) {
                 initQ(oom, rm);
-            } else {
+            } else if (oom == this.oom) {
                 if (!rm.equals(this.rm)) {
                     initQ(oom, rm);
                 }
@@ -428,7 +379,7 @@ public class V3D_Line extends V3D_Geometry {
         this.oom = oom;
         this.rm = rm;
     }
-    
+
     /**
      * @param pt A point to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -436,33 +387,43 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if pv is on the line.
      */
     public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
-        int oomN2 = oom - 2;
-        V3D_Point tp = getP();
-        V3D_Point tq = getQ(oom, rm);
-        if (tp.equals(pt, oom, rm)) {
+        p = getP();
+        q = getQ(oom, rm);
+        if (p.equals(pt, oom, rm) || q.equals(pt, oom, rm)) {
             return true;
         }
-        if (tq.equals(pt, oom, rm)) {
-            return true;
-        }
-        V3D_Vector cp;
-        if (tp.equals(V3D_Point.ORIGIN, oom, rm)) {
-            V3D_Vector ppt = new V3D_Vector(
-                    pt.getX(oomN2, rm).subtract(tq.getX(oomN2, rm)),
-                    pt.getY(oomN2, rm).subtract(tq.getY(oomN2, rm)),
-                    pt.getZ(oomN2, rm).subtract(tq.getZ(oomN2, rm)));
-            cp = v.getCrossProduct(ppt, oomN2, rm);
-        } else {
-            V3D_Vector ppt = new V3D_Vector(
-                    pt.getX(oomN2, rm).subtract(tp.getX(oomN2, rm)),
-                    pt.getY(oomN2, rm).subtract(tp.getY(oomN2, rm)),
-                    pt.getZ(oomN2, rm).subtract(tp.getZ(oomN2, rm)));
-            cp = v.getCrossProduct(ppt, oomN2, rm);
-        }
-        return cp.getDX(oom, rm).isZero() && cp.getDY(oom, rm).isZero()
-                && cp.getDZ(oom, rm).isZero();
+        V3D_Vector dpt = new V3D_Vector(
+                pt.getX(oom, rm).subtract(p.getX(oom, rm)),
+                pt.getY(oom, rm).subtract(p.getY(oom, rm)),
+                pt.getZ(oom, rm).subtract(p.getZ(oom, rm)));
+        return dpt.isScalarMultiple(v, oom, rm);
+//        int oomN2 = oom - 2;
+//        V3D_Point tp = getP();
+//        V3D_Point tq = getQ(oom, rm);
+//        if (tp.equals(pt, oom, rm)) {
+//            return true;
+//        }
+//        if (tq.equals(pt, oom, rm)) {
+//            return true;
+//        }
+//        V3D_Vector cp;
+//        if (tp.equals(V3D_Point.ORIGIN, oom, rm)) {
+//            V3D_Vector ppt = new V3D_Vector(
+//                    pt.getX(oomN2, rm).subtract(tq.getX(oomN2, rm)),
+//                    pt.getY(oomN2, rm).subtract(tq.getY(oomN2, rm)),
+//                    pt.getZ(oomN2, rm).subtract(tq.getZ(oomN2, rm)));
+//            cp = v.getCrossProduct(ppt, oomN2, rm);
+//        } else {
+//            V3D_Vector ppt = new V3D_Vector(
+//                    pt.getX(oomN2, rm).subtract(tp.getX(oomN2, rm)),
+//                    pt.getY(oomN2, rm).subtract(tp.getY(oomN2, rm)),
+//                    pt.getZ(oomN2, rm).subtract(tp.getZ(oomN2, rm)));
+//            cp = v.getCrossProduct(ppt, oomN2, rm);
+//        }
+//        return cp.getDX(oom, rm).isZero() && cp.getDY(oom, rm).isZero()
+//                && cp.getDZ(oom, rm).isZero();
     }
-    
+
     /**
      * @param aabb The V3D_AABB to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -470,14 +431,14 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
-        return V3D_Line.this.getIntersect(aabb.getl(oom, rm), oom, rm) != null
-                || V3D_Line.this.getIntersect(aabb.getr(oom, rm), oom, rm) != null
-                || V3D_Line.this.getIntersect(aabb.gett(oom, rm), oom, rm) != null
-                || V3D_Line.this.getIntersect(aabb.getb(oom, rm), oom, rm) != null
-                || V3D_Line.this.getIntersect(aabb.getf(oom, rm), oom, rm) != null
-                || V3D_Line.this.getIntersect(aabb.geta(oom, rm), oom, rm) != null;
+        return getIntersect(aabb.getl(oom, rm), oom, rm) != null
+                || getIntersect(aabb.getr(oom, rm), oom, rm) != null
+                || getIntersect(aabb.gett(oom, rm), oom, rm) != null
+                || getIntersect(aabb.getb(oom, rm), oom, rm) != null
+                || getIntersect(aabb.getf(oom, rm), oom, rm) != null
+                || getIntersect(aabb.geta(oom, rm), oom, rm) != null;
     }
-    
+
     /**
      * @param aabbx The V3D_AABBX to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -485,7 +446,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public V3D_Point getIntersect(V3D_AABBX aabbx, int oom, RoundingMode rm) {
-        V3D_Plane pl = aabbx.getXPl(); 
+        V3D_Plane pl = aabbx.getXPl();
         if (pl.isParallel(this, oom, rm)) {
             return null;
         }
@@ -496,7 +457,7 @@ public class V3D_Line extends V3D_Geometry {
         }
         return null;
     }
-    
+
     /**
      * @param aabby The V3D_AABBY to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -504,7 +465,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public V3D_Point getIntersect(V3D_AABBY aabby, int oom, RoundingMode rm) {
-        V3D_Plane pl = aabby.getYPl(); 
+        V3D_Plane pl = aabby.getYPl();
         if (pl.isParallel(this, oom, rm)) {
             return null;
         }
@@ -523,7 +484,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public V3D_Point getIntersect(V3D_AABBZ aabbz, int oom, RoundingMode rm) {
-        V3D_Plane pl = aabbz.getZPl(); 
+        V3D_Plane pl = aabbz.getZPl();
         if (pl.isParallel(this, oom, rm)) {
             return null;
         }
@@ -564,11 +525,11 @@ public class V3D_Line extends V3D_Geometry {
                 // If lines are coincident return this.
                 return this;
             } else {
-                
+
                 if (Math_BigRational.equals(this.getDistance(l, oom, rm), BigRational.ZERO, oom)) {
                     return this;
                 }
-                
+
                 return null;
             }
         }
@@ -970,7 +931,7 @@ public class V3D_Line extends V3D_Geometry {
             return null;
         }
         BigRational mua = num.divide(den);
-        V3D_Point pi = new V3D_Point(env, 
+        V3D_Point pi = new V3D_Point(env,
                 (tp.getX(oom, rm).subtract(mua.multiply(qp.getDX(oom, rm)))),
                 (tp.getY(oom, rm).subtract(mua.multiply(qp.getDY(oom, rm)))),
                 (tp.getZ(oom, rm).subtract(mua.multiply(qp.getDZ(oom, rm)))));
@@ -984,12 +945,12 @@ public class V3D_Line extends V3D_Geometry {
             if (num2.isZero()) {
                 mub = BigRational.ONE;
             } else {
-                throw new RuntimeException("Divide by"); 
+                throw new RuntimeException("Divide by");
             }
         } else {
             mub = num2.divide(d).negate();
         }
-        V3D_Point qi = new V3D_Point(env, 
+        V3D_Point qi = new V3D_Point(env,
                 (lp.getX(oom, rm).add(mub.multiply(lqlp.getDX(oom, rm)))),
                 (lp.getY(oom, rm).add(mub.multiply(lqlp.getDY(oom, rm)))),
                 (lp.getZ(oom, rm).add(mub.multiply(lqlp.getDZ(oom, rm)))));
@@ -1006,7 +967,7 @@ public class V3D_Line extends V3D_Geometry {
             return pi;
         } else {
             //return null;
-            
+
             if (Math_BigRational.equals(new V3D_LineSegment(pi, qi, oom, rm)
                     .getLength(oom, rm).getSqrt(oom, rm), BigRational.ZERO, oom)) {
                 int debug = 1;
@@ -1015,7 +976,7 @@ public class V3D_Line extends V3D_Geometry {
             } else {
                 return null;
             }
-            
+
         }
         //return new V3D_Line(pi, qi);
     }
@@ -1068,7 +1029,10 @@ public class V3D_Line extends V3D_Geometry {
 //                .subtract(tv.dy.getSqrt(oom, rm).multiply((tp.getY(oom, rm).subtract(pt.getY(oom, rm)))))
 //                .subtract(tv.dz.getSqrt(oom, rm).multiply(tp.getZ(oom, rm).subtract(pt.getZ(oom, rm)))))
 //                .divide(tv.dx.getX().add(tv.dy.getX()).add(tv.dz.getX()));
-////        BigRational t2 = (vdx.negate().multiply((qv.getX(oom).subtract(pt.getX(oom))))
+
+    
+
+    ////        BigRational t2 = (vdx.negate().multiply((qv.getX(oom).subtract(pt.getX(oom))))
 ////                .subtract(v.dy.getSqrt(oom).multiply((qv.getY(oom).subtract(pt.getY(oom))))) 
 ////                .subtract(v.dz.getSqrt(oom).multiply(qv.getZ(oom).subtract(pt.getZ(oom))))) 
 ////                .divide(v.dx.getX().add(v.dy.getX()).add(v.dz.getX()));
@@ -1417,7 +1381,7 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     @Override
-    public V3D_Line rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+    public V3D_Line rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd,
             BigRational theta, int oom, RoundingMode rm) {
         theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
         if (theta.compareTo(BigRational.ZERO) == 0) {
@@ -1426,15 +1390,15 @@ public class V3D_Line extends V3D_Geometry {
             return rotateN(ray, uv, bd, theta, oom, rm);
         }
     }
-    
+
     @Override
-    public V3D_Line rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+    public V3D_Line rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd,
             BigRational theta, int oom, RoundingMode rm) {
         V3D_Point rp = getP().rotateN(ray, uv, bd, theta, oom, rm);
         V3D_Vector rv = v.rotateN(uv, bd, theta, oom, rm);
         return new V3D_Line(rp, rv);
     }
-    
+
     /**
      * @param ps The points to test for collinearity.
      * @return {@code true} iff all points are collinear with l.
@@ -1454,7 +1418,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param ps The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public static boolean isCollinear(int oom, RoundingMode rm, V3D_Line l, 
+    public static boolean isCollinear(int oom, RoundingMode rm, V3D_Line l,
             V3D_Point... ps) {
         for (var p : ps) {
             if (!l.intersects(p, oom, rm)) {
@@ -1466,9 +1430,9 @@ public class V3D_Line extends V3D_Geometry {
 
     /**
      * There should be at least two different points in points. This does not
-     * check for collinearity of all the points. It returns a line defined by 
+     * check for collinearity of all the points. It returns a line defined by
      * the first points that have the greatest distance between them.
-     * 
+     *
      * @param points Any number of points, but with two being different.
      * @return A line defined by any two different points or null if the points
      * are coincident.
@@ -1481,8 +1445,8 @@ public class V3D_Line extends V3D_Geometry {
         BigRational max = BigRational.ZERO;
         V3D_Point a = null;
         V3D_Point b = null;
-        for (int i = 0; i < points.length; i ++) {
-            for (int j = i + 1; j < points.length; j ++) {
+        for (int i = 0; i < points.length; i++) {
+            for (int j = i + 1; j < points.length; j++) {
                 BigRational d2 = points[i].getDistanceSquared(points[j], oom, rm);
                 if (d2.compareTo(max) == 1) {
                     a = points[i];

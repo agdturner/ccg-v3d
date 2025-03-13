@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Andy Turner, University of Leeds.
+ * Copyright 2020-2025 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * }
  *
  * @author Andy Turner
- * @version 1.0
+ * @version 2.0
  */
 public class V3D_Point extends V3D_FiniteGeometry {
 
@@ -118,7 +118,8 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(V3D_Environment env, BigRational x, BigRational y, BigRational z) {
+    public V3D_Point(V3D_Environment env, BigRational x, BigRational y, 
+            BigRational z) {
         super(env, V3D_Vector.ZERO);
         rel = new V3D_Vector(x, y, z);
     }
@@ -132,7 +133,8 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.
      */
-    public V3D_Point(V3D_Environment env, BigDecimal x, BigDecimal y, BigDecimal z) {
+    public V3D_Point(V3D_Environment env, BigDecimal x, BigDecimal y, 
+            BigDecimal z) {
         this(env, BigRational.valueOf(x), BigRational.valueOf(y), 
                 BigRational.valueOf(z));
     }
@@ -207,13 +209,13 @@ public class V3D_Point extends V3D_FiniteGeometry {
      */
     @Override
     protected String toStringFieldsSimple(String pad) {
-        return pad + super.toStringFieldsSimple("") + ", rel=" + rel.toStringSimple("");
+        return pad + super.toStringFieldsSimple("") + ", rel=" 
+                + rel.toStringSimple("");
     }
     
     /**
      * Two points are equal if they are at the same location defined by each
-     * points relative start location and translation vector at the given oom
-     * and rm precision.
+     * points relative and offset vectors at the given oom and rm precision.
      *
      * @param p The point to test if it is the same as {@code this}.
      * @param oom The Order of Magnitude for the precision.
@@ -223,15 +225,11 @@ public class V3D_Point extends V3D_FiniteGeometry {
     public boolean equals(V3D_Point p, int oom, RoundingMode rm) {
         if (p == null) {
             return false;
+        } else {
+            return getX(oom, rm).compareTo(p.getX(oom, rm)) == 0
+                && getY(oom, rm).compareTo(p.getY(oom, rm)) == 0
+                && getZ(oom, rm).compareTo(p.getZ(oom, rm)) == 0;
         }
-        if (this.getX(oom, rm).compareTo(p.getX(oom, rm)) == 0) {
-            if (this.getY(oom, rm).compareTo(p.getY(oom, rm)) == 0) {
-                if (this.getZ(oom, rm).compareTo(p.getZ(oom, rm)) == 0) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**
