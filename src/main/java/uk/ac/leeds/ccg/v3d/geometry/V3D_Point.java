@@ -496,7 +496,7 @@ public class V3D_Point extends V3D_FiniteGeometry {
     public V3D_Point rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
             BigRational theta, int oom, RoundingMode rm) {
         int oomn9 = oom - 9;
-        V3D_Vector tv = ray.l.getPointOfIntersection(this, oomn9, rm).getVector(oomn9, rm);
+        V3D_Vector tv = ray.l.getPointOfIntersect(this, oomn9, rm).getVector(oomn9, rm);
         V3D_Point tp = new V3D_Point(this);
         tp.translate(tv.reverse(), oomn9, rm);
         V3D_Vector tpv = tp.getVector(oomn9, rm);

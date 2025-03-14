@@ -765,7 +765,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         if (intersects(pt, oom, rm)) {
             return BigRational.ZERO;
         }
-        V3D_Point poi = l.getPointOfIntersection(pt, oom, rm);
+        V3D_Point poi = l.getPointOfIntersect(pt, true, oom, rm);
         if (isAligned(poi, oom, rm)) {
             return poi.getDistanceSquared(pt, oom, rm);
         } else {
@@ -1036,9 +1036,9 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             BigRational pd = l.getDistanceSquared(tp, oom, rm);
             BigRational qd = l.getDistanceSquared(tq, oom, rm);
             if (pd.compareTo(qd) == 1) {
-                return new V3D_LineSegment(tq, l.getPointOfIntersection(tq, oom, rm), oom, rm);
+                return new V3D_LineSegment(tq, l.getPointOfIntersect(tq, true, oom, rm), oom, rm);
             } else {
-                return new V3D_LineSegment(tp, l.getPointOfIntersection(tp, oom, rm), oom, rm);
+                return new V3D_LineSegment(tp, l.getPointOfIntersect(tp, true, oom, rm), oom, rm);
             }
         } else {
             V3D_Point lsp = loi.getP();

@@ -989,13 +989,13 @@ public class V3D_Line extends V3D_Geometry {
      * @return The line segment having the shortest distance between {@code pt}
      * and {@code this}.
      */
-    public V3D_FiniteGeometry getLineOfIntersection(V3D_Point pt, int oom,
+    public V3D_FiniteGeometry getLineOfIntersect(V3D_Point pt, int oom,
             RoundingMode rm) {
         if (intersects(pt, oom, rm)) {
             return pt;
         }
-        return new V3D_LineSegment(pt, getPointOfIntersection(pt, oom, rm), oom, rm);
-        //return new V3D_LineSegment(pt.getVector(oom), getPointOfIntersection(pt, oom).getVector(oom), oom);
+        return new V3D_LineSegment(pt, getPointOfIntersect(pt, true, oom, rm), oom, rm);
+        //return new V3D_LineSegment(pt.getVector(oom), getPointOfIntersect(pt, oom).getVector(oom), oom);
     }
 
     /**
@@ -1008,13 +1008,12 @@ public class V3D_Line extends V3D_Geometry {
      * @return A point on {@code this} which is the shortest distance from
      * {@code pt}.
      */
-    public V3D_Point getPointOfIntersection(V3D_Point pt, int oom,
+    public V3D_Point getPointOfIntersect(V3D_Point pt, int oom,
             RoundingMode rm) {
         if (intersects(pt, oom, rm)) {
             return pt;
         }
-        V3D_Plane ptv = new V3D_Plane(pt, v);
-        return (V3D_Point) ptv.getIntersect(this, oom, rm);
+        return getPointOfIntersect(pt, true, oom, rm);
 //        // a = v
 //        // p1 = pv
 //        // p0 = pt
@@ -1065,6 +1064,23 @@ public class V3D_Line extends V3D_Geometry {
 //        //return pv.translate(v.multiply(adb.divide(vdv)));
     }
 
+    /**
+     * Adapted from:
+     * https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line
+     *
+     * @param pt The point projected onto this.
+     * @param noint A flag indicating there is no intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return A point on {@code this} which is the shortest distance from
+     * {@code pt}.
+     */
+    public V3D_Point getPointOfIntersect(V3D_Point pt, boolean noint, int oom,
+            RoundingMode rm) {
+        V3D_Plane ptv = new V3D_Plane(pt, v);
+        return (V3D_Point) ptv.getIntersect(this, oom, rm);
+    }
+    
     /**
      * Calculate and return the line of intersection (the shortest line) between
      * this and l. If this and l intersect then return null. If this and l are

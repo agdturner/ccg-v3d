@@ -625,7 +625,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
                             if (ab.a.size() > 1) {
                                 // Divide again
                                 V3D_Line l = new V3D_Line(p0, p1, oom, rm);
-                                V3D_Point proj = l.getPointOfIntersection(apt, oom, rm);
+                                V3D_Point proj = l.getPointOfIntersect(apt, oom, rm);
                                 compute(ab.a, proj, apt, n, index, oom, rm);
                             } else {
                                 points.put(index, ab.a.get(0));
@@ -662,7 +662,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
                         if (ab.b.size() > 1) {
                             // Divide again
                             V3D_Line l = new V3D_Line(p0, p1, oom, rm);
-                            V3D_Point proj = l.getPointOfIntersection(bpt, oom, rm);
+                            V3D_Point proj = l.getPointOfIntersect(bpt, oom, rm);
                             compute(ab.b, bpt, proj, n, index, oom, rm);
                         } else {
                             points.put(index, ab.b.get(0));

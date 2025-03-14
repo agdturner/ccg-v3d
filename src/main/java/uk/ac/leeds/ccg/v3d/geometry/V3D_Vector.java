@@ -879,210 +879,129 @@ public class V3D_Vector implements Serializable {
             //}
             /**
              * General case: A little complicated as there is a need to deal
-             * with zero vector components and cases where the vectors point in
-             * different directions.
+             * with: zero vector components; cases where the vectors point in
+             * different directions; and, precision issues.
              */
             if (v.dx.abs().equals(dx.abs(), oom)) {
-                // dx = v.dx
+                // |v.dx| = |dx|
                 if (dx.isZero(oom)) {
-                    // dx = v.dx = 0d
+                    // dx = 0d
                     if (v.dy.abs().equals(dy.abs(), oom)) {
+                        // |v.dy| = |dy|
                         if (dy.isZero(oom)) {
+                            // dy = 0
+                            // dz != 0 and can have any non-zero value.
                             return true;
-                            //return !dz.isZero(oom);
                         } else {
                             if (v.dz.abs().equals(dz.abs(), oom)) {
-//                                    if (v.dz.isZero(oom)) {
-//                                        // This should not happen as it is already tested for. Commented code left for clarity.
-//                                        return true;
-//                                    } else {
-                                Math_BigRationalSqrt scalar = v.dy.divide(dy, oom - 6, rm);
-                                return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
-//                                    }
+                                // |v.dz| = |dz|
+                                // scalar = 1 or -1
+                                Math_BigRationalSqrt scalar = v.dy.divide(dy, oom, rm);
+                                return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
                             } else {
                                 return false;
                             }
                         }
                     } else {
+                        // |v.dy| != |dy|
                         if (dy.isZero(oom)) {
-                            return dz.isZero(oom);
+                            // dy = 0
+                            return dz.isZero();
                         } else {
-                            if (v.dz.abs().equals(dz.abs(), oom)) {
-                                if (v.dz.isZero(oom)) {
-                                    return true;
-                                } else {
-                                    Math_BigRationalSqrt scalar = v.dy.divide(dy, oom - 6, rm);
-                                    return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
-                                }
+                            // Divide bigger by smaller number for precision reasons.
+                            if (v.dy.abs().compareTo(dy.abs()) == 1) {
+                                // dy != 0
+                                Math_BigRationalSqrt scalar = v.dy.divide(dy, oom, rm);
+                                return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
                             } else {
-                                Math_BigRationalSqrt scalar = v.dy.divide(dy, oom - 3, rm);
-                                return v.dz.equals(dz.multiply(scalar, oom - 3, rm));
+                                if (v.dy.isZero()) {
+                                    return false;
+                                } else {
+                                    if (v.dy.isZero()){
+                                        return v.dz.isZero();
+                                    } else {
+                                        Math_BigRationalSqrt scalar = dy.divide(v.dy, oom, rm);
+                                        return dz.equals(v.dz.multiply(scalar, oom, rm), oom);
+                                    }
+                                }
                             }
                         }
                     }
                 } else {
-                    // |dx| = |v.dx| != 0d
-                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
+                    // |v.dx| = |dx| != 0d
+                    // scalar will be 1 or -1
+                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom, rm);
                     if (v.dy.abs().equals(dy.abs(), oom)) {
+                        // |v.dy| = |dy|
                         if (dy.isZero(oom)) {
+                            // dy = 0
                             if (v.dz.abs().equals(dz.abs(), oom)) {
+                                // |v.dz| = |dz|
                                 if (v.dz.isZero(oom)) {
                                     return true;
                                 } else {
-                                    return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+                                    return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
                                 }
                             } else {
-                                return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+                                // |v.dz| != |dz|
+                                return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
                             }
                         } else {
-                            if (v.dy.equals(dy.multiply(scalar, oom - 3, rm))) {
+                            if (v.dy.equals(dy.multiply(scalar, oom, rm))) {
                                 if (v.dz.abs().equals(dz.abs(), oom)) {
+                                    // |v.dz| = |dz|
                                     if (v.dz.isZero(oom)) {
                                         return true;
                                     } else {
-                                        return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+                                        return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
                                     }
                                 } else {
-                                    return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+                                    // |v.dz| != |dz|
+                                    return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
                                 }
                             } else {
                                 return false;
                             }
                         }
                     } else {
-                        // |dx| = |v.dx| != 0d, |dy| != |v.dy|
-                        if (v.dy.equals(dy.multiply(scalar, oom - 3, rm))) {
-                            return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+                        // |v.dx| = |dx| != 0d, |v.dy| != |dy|
+                        if (v.dy.equals(dy.multiply(scalar, oom, rm))) {
+                            return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
                         } else {
                             return false;
                         }
                     }
                 }
             } else {
-                // |dx| != |v.dx|
-                if (dx.isZero(oom)) {
-                    return isZero;
-                } else {
-                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
-                    if (v.dy.equals(dy.multiply(scalar, oom - 3, rm), oom)) {
-                        return v.dz.equals(dz.multiply(scalar, oom - 3, rm), oom);
+                // |v.dx| != |dx|
+                // Divide bigger by smaller number for precision reasons.
+                if (v.dx.abs().compareTo(dx.abs()) == 1) {
+                    if (dx.isZero(oom)) {
+                        // dx = 0
+                        return isZero;
                     } else {
-                        return false;
+                        Math_BigRationalSqrt scalar = v.dx.divide(dx, oom, rm);
+                        if (v.dy.equals(dy.multiply(scalar, oom, rm), oom)) {
+                            return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
+                        } else {
+                            return false;
+                        }
+                    }
+                } else {
+                    if (v.dx.isZero(oom)) {
+                        // v.dx = 0
+                        return isZero;
+                    } else {
+                        Math_BigRationalSqrt scalar = dx.divide(v.dx, oom, rm);
+                        if (dy.equals(v.dy.multiply(scalar, oom, rm), oom)) {
+                            return dz.equals(v.dz.multiply(scalar, oom, rm), oom);
+                        } else {
+                            return false;
+                        }
                     }
                 }
             }
         }
-// Previous way
-//        // Special case
-//        if (this.isZero() || v.isZero()) {
-//            return false;
-//        }
-//        return this.multiply(getDotProduct(v, oom, rm), oom, rm).equals(
-//                v.multiply(getDotProduct(this, oom, rm), oom, rm));
-// Old way
-//        if (dx.isZero()) {
-//            if (v.dx.isZero()) {
-//                if (dy.isZero()) {
-//                    return true;
-//                } else {
-//                    if (v.dy.isZero()) {
-//                        return true;
-//                    } else {
-//                        if (dz.isZero()) {
-//                            return true;
-//                        } else {
-//                            if (v.dz.isZero()) {
-//                                return true;
-//                            } else {
-//                                BigRational sy = getDY(oom, rm)
-//                                        .divide(v.getDY(oom, rm));
-//                                BigRational sz = getDZ(oom, rm)
-//                                        .divide(v.getDZ(oom, rm));
-//                                return sy.compareTo(sz) == 0;
-//                            }
-//                        }
-//                    }
-//                }
-//            } else {
-//                if (dy.isZero()) {
-//                    return true;
-//                } else {
-//                    if (v.dy.isZero()) {
-//                        return true;
-//                    } else {
-//                        if (dz.isZero()) {
-//                            return true;
-//                        } else {
-//                            if (v.dz.isZero()) {
-//                                return true;
-//                            } else {
-//                                BigRational sy = getDY(oom, rm)
-//                                        .divide(v.getDY(oom, rm));
-//                                BigRational sz = getDZ(oom, rm)
-//                                        .divide(v.getDZ(oom, rm));
-//                                return sy.compareTo(sz) == 0;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        } else {
-//            if (v.dx.isZero()) {
-//                return false;
-//            } else {
-//                if (dy.isZero()) {
-//                    if (v.dy.isZero()) {
-//                        if (dz.isZero()) {
-//                            return v.dz.isZero();
-//                        } else {
-//                            if (v.dz.isZero()) {
-//                                return false;
-//                            } else {
-//                                BigRational sx = getDX(oom, rm)
-//                                        .divide(v.getDX(oom, rm));
-//                                BigRational sz = getDZ(oom, rm)
-//                                        .divide(v.getDZ(oom, rm));
-//                                return sx.compareTo(sz) == 0;
-//                            }
-//                        }
-//                    } else {
-//                        return false;
-//                    }
-//                } else {
-//                    if (v.dy.isZero()) {
-//                        return false;
-//                    } else {
-//                        if (dz.isZero()) {
-//                            if (v.dz.isZero()) {
-//                                BigRational sx = getDX(oom, rm)
-//                                        .divide(v.getDX(oom, rm));
-//                                BigRational sy = getDY(oom, rm)
-//                                        .divide(v.getDY(oom, rm));
-//                                return sx.compareTo(sy) == 0;
-//                            } else {
-//                                return false;
-//                            }
-//                        } else {
-//                            if (v.dz.isZero()) {
-//                                return false;
-//                            } else {
-//                                BigRational sx = getDX(oom, rm)
-//                                        .divide(v.getDX(oom, rm));
-//                                BigRational sy = getDY(oom, rm)
-//                                        .divide(v.getDY(oom, rm));
-//                                if (sx.compareTo(sy) == 0) {
-//                                    BigRational sz = getDZ(oom, rm)
-//                                            .divide(v.getDZ(oom, rm));
-//                                    return sy.compareTo(sz) == 0;
-//                                } else {
-//                                    return false;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
     }
 
     /**

@@ -505,7 +505,7 @@ public class V3D_LineSegmentTest extends V3D_Test {
     }
 
     /**
-     * Test of getLineOfIntersection method, of class V3D_Line.
+     * Test of getLineOfIntersect method, of class V3D_Line.
      */
     @Test
     public void testGetLineOfIntersection_V3D_Line() {
@@ -532,12 +532,12 @@ public class V3D_LineSegmentTest extends V3D_Test {
 //        l0 = new V3D_LineSegment(pP1P0P0, pP0P1P0, oom, rm);
 //        l1 = new V3D_Line(pN1P0P1, pN1P1P0, oom, rm);
 //        expResult = new V3D_LineSegment(pN1P1P0, pP0P1P0, oom, rm);
-//        result = l0.getLineOfIntersection(l1, oom, rm);
+//        result = l0.getLineOfIntersect(l1, oom, rm);
 //        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
     }
 
     /**
-     * Test of getLineOfIntersection method, of class V3D_Line.
+     * Test of getLineOfIntersect method, of class V3D_Line.
      */
     @Test
     public void testGetLineOfIntersection_V3D_LineSegment() {
