@@ -16,7 +16,7 @@ Geometry calculation with [BigRational](https://github.com/eobermuhlner/big-math
 
 The coordinate systems are "right handed", so: if X increases to the right of this page; and, Y increases towards the top of this page, then Z increases out from the page, (see [Orientation](https://en.wikipedia.org/wiki/Orientation_(vector_space)) and the [note on the choice of right over left handedness](#handedness) for details of why this handedness was chosen.
 
-An envisaged use of this library is in developing a Digital Twin Earth.
+I envisaged using this library to develop a Digital Twin Earth.
 
 The development of the library is aided by [ccg-r3d](https://github.com/agdturner/ccg-r3d) - a rendering library for visualising 3D spatial geometry.
 
