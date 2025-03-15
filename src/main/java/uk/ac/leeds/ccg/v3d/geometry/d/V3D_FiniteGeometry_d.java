@@ -24,27 +24,27 @@ import java.util.Arrays;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class V3D_FiniteGeometryDouble extends V3D_GeometryDouble {
+public abstract class V3D_FiniteGeometry_d extends V3D_Geometry_d {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * For storing the envelope.
+     * For storing the Axis Aligned Bounding Box.
      */
-    protected V3D_EnvelopeDouble en;
+    protected V3D_AABB_d en;
     
     /**
      * For getting the envelope of the geometry
      *
-     * @return The envelope.
+     * @return The Axis.
      */
-    public abstract V3D_EnvelopeDouble getEnvelope();
+    public abstract V3D_AABB_d getAABB();
     
     /**
      * Creates a new instance with offset V3D_Vector.ZERO.
      */
-    public V3D_FiniteGeometryDouble() {
-        this(V3D_VectorDouble.ZERO);
+    public V3D_FiniteGeometry_d(V3D_Environment_d env) {
+        this(env, V3D_Vector_d.ZERO);
     }
     
     /**
@@ -52,8 +52,8 @@ public abstract class V3D_FiniteGeometryDouble extends V3D_GeometryDouble {
      *
      * @param offset What {@link #offset} is set to.
      */
-    public V3D_FiniteGeometryDouble(V3D_VectorDouble offset) {
-        super(offset);
+    public V3D_FiniteGeometry_d(V3D_Environment_d env, V3D_Vector_d offset) {
+        super(env, offset);
     }
     
     /**
@@ -65,23 +65,23 @@ public abstract class V3D_FiniteGeometryDouble extends V3D_GeometryDouble {
      * considered equal.
      * @return {@code true} iff the geometry intersects aabb at the given precision.
      */
-    public abstract boolean isIntersectedBy(V3D_EnvelopeDouble aabb, double epsilon);
+    //public abstract boolean isIntersectedBy(V3D_AABB_d aabb, double epsilon);
     
     /**
      * @return A copy of the points of the geometry.
      */
-    public abstract V3D_PointDouble[] getPoints();
+    public abstract V3D_Point_d[] getPoints();
     
     /**
      * @return A copy of the points of the geometries gs.
      * @param gs The geometries.
      */
-    public static V3D_PointDouble[] getPoints(V3D_FiniteGeometryDouble... gs) {
-        ArrayList<V3D_PointDouble> list = new ArrayList<>();
+    public static V3D_Point_d[] getPoints(V3D_FiniteGeometry_d... gs) {
+        ArrayList<V3D_Point_d> list = new ArrayList<>();
         for (var x: gs) {
             list.addAll(Arrays.asList(x.getPoints()));
         }
-        return list.toArray(V3D_PointDouble[]::new);
+        return list.toArray(V3D_Point_d[]::new);
     }
     
     /**
@@ -90,7 +90,7 @@ public abstract class V3D_FiniteGeometryDouble extends V3D_GeometryDouble {
      * @param v The vector to translate.
      */
     @Override
-    public void translate(V3D_VectorDouble v) {
+    public void translate(V3D_Vector_d v) {
         super.translate(v);
         if (en != null) {
             en.translate(v);

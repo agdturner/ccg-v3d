@@ -29,7 +29,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_VectorDouble;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_VDouble implements Serializable {
+public class V3D_V_d implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -51,12 +51,12 @@ public class V3D_VDouble implements Serializable {
     /**
      * The origin {@code <0,0,0>}.
      */
-    public static final V3D_VDouble ZERO = new V3D_VDouble(0, 0, 0);
+    public static final V3D_V_d ZERO = new V3D_V_d(0, 0, 0);
 
     /**
      * @param v Used to construct this.
      */
-    public V3D_VDouble(V3D_VDouble v) {
+    public V3D_V_d(V3D_V_d v) {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
@@ -67,7 +67,7 @@ public class V3D_VDouble implements Serializable {
      * @param y What {@link #y} is set to.
      * @param z What {@link #z} is set to.
      */
-    public V3D_VDouble(double x, double y, double z) {
+    public V3D_V_d(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -76,14 +76,14 @@ public class V3D_VDouble implements Serializable {
     /**
      * @param p A point to construct from.
      */
-    public V3D_VDouble(V3D_PointDouble p) {
+    public V3D_V_d(V3D_PointDouble p) {
         this(p.getX(), p.getY(), p.getZ());
     }
 
     /**
      * @param v A vector to construct from.
      */
-    public V3D_VDouble(V3D_VectorDouble v) {
+    public V3D_V_d(V3D_VectorDouble v) {
         this(v.dx, v.dy, v.dz);
     }
 
@@ -94,7 +94,7 @@ public class V3D_VDouble implements Serializable {
      * @param p The start.
      * @param q The end.
      */
-    public V3D_VDouble(V3D_VDouble p, V3D_VDouble q) {
+    public V3D_V_d(V3D_V_d p, V3D_V_d q) {
         this(q.x - p.x, q.y - p.y, q.z - p.z);
     }
 
@@ -126,7 +126,7 @@ public class V3D_VDouble implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_VDouble v) {
+        if (o instanceof V3D_V_d v) {
             return equals(v);
         }
         return false;
@@ -138,7 +138,7 @@ public class V3D_VDouble implements Serializable {
      * @param v The instance to test for equality with {@code this}.
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
-    public boolean equals(V3D_VDouble v) {
+    public boolean equals(V3D_V_d v) {
         return x == v.x && y == v.y && z == v.z;
     }
 
@@ -185,7 +185,7 @@ public class V3D_VDouble implements Serializable {
      *
      * @param v The coordinate to apply.
      */
-    public void translate(V3D_VDouble v) {
+    public void translate(V3D_V_d v) {
         x = x + v.x;
         y = y + v.y;
         z = z + v.z;
@@ -207,8 +207,8 @@ public class V3D_VDouble implements Serializable {
      * @param v V3D_V
      * @return The CrossProduct.
      */
-    public V3D_VDouble getCrossProduct(V3D_VDouble v) {
-        return new V3D_VDouble(
+    public V3D_V_d getCrossProduct(V3D_V_d v) {
+        return new V3D_V_d(
                 y * v.z - z * v.y,
                 z * v.x - x * v.z,
                 x * v.y - y * v.x);
@@ -220,9 +220,9 @@ public class V3D_VDouble implements Serializable {
      *
      * @return this scaled by the magnitude.
      */
-    public V3D_VDouble getUnitVector() {
+    public V3D_V_d getUnitVector() {
         double d = getMagnitude();
-        V3D_VDouble r = new V3D_VDouble(this);
+        V3D_V_d r = new V3D_V_d(this);
         r.divide(d);
         return r;
     }
@@ -234,7 +234,7 @@ public class V3D_VDouble implements Serializable {
      * @param v The other vector.
      * @return dot product
      */
-    public double getDotProduct(V3D_VDouble v) {
+    public double getDotProduct(V3D_V_d v) {
         return v.x * x + v.y * y + v.z * z;
     }
 
@@ -244,7 +244,7 @@ public class V3D_VDouble implements Serializable {
      * @param p A point.
      * @return The distance from {@code p} to this.
      */
-    public double getDistance(V3D_VDouble p) {
+    public double getDistance(V3D_V_d p) {
         return Math.sqrt(Math.pow(x - p.x, 2d) + Math.pow(y - p.y, 2d) 
                 + Math.pow(z - p.z, 2d));
     }
@@ -252,7 +252,7 @@ public class V3D_VDouble implements Serializable {
     /**
      * @return A new vector which is the opposite to {@code this}.
      */
-    public V3D_VDouble reverse() {
-        return new V3D_VDouble(-x, -y, -z);
+    public V3D_V_d reverse() {
+        return new V3D_V_d(-x, -y, -z);
     }
 }

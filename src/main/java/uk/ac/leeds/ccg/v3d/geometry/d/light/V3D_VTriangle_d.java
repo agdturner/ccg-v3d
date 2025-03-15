@@ -53,29 +53,29 @@ import java.io.Serializable;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_VTriangleDouble implements Serializable {
+public class V3D_VTriangle_d implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * The pq edge.
      */
-    public V3D_VLineDouble pq;
+    public V3D_VLine_d pq;
 
     /**
      * The qr edge.
      */
-    public V3D_VLineDouble qr;
+    public V3D_VLine_d qr;
 
     /**
      * The rp edge.
      */
-    public V3D_VLineDouble rp;
+    public V3D_VLine_d rp;
 
     /**
      * For storing the normal.
      */
-    public V3D_VDouble n;
+    public V3D_V_d n;
 
     /**
      * Creates a new triangle.
@@ -84,8 +84,8 @@ public class V3D_VTriangleDouble implements Serializable {
      * @param qr What {@link #qr} is set to.
      * @param rp What {@link #rp} is set to.
      */
-    public V3D_VTriangleDouble(V3D_VLineDouble pq, V3D_VLineDouble qr, 
-            V3D_VLineDouble rp) {
+    public V3D_VTriangle_d(V3D_VLine_d pq, V3D_VLine_d qr, 
+            V3D_VLine_d rp) {
         this.pq = pq;
         this.qr = qr;
         this.rp = rp;
@@ -125,10 +125,9 @@ public class V3D_VTriangleDouble implements Serializable {
      *
      * @return {@link #n} initialising it first if it is {@code null}.
      */
-    public V3D_VDouble getNormal() {
+    public V3D_V_d getNormal() {
         if (n == null) {
-            n = new V3D_VDouble(pq.p, pq.q).getCrossProduct(
-                    new V3D_VDouble(qr.p, qr.q));
+            n = new V3D_V_d(pq.p, pq.q).getCrossProduct(new V3D_V_d(qr.p, qr.q));
         }
         return n;
     }

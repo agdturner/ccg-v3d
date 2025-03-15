@@ -50,29 +50,29 @@ import java.io.Serializable;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_VTetrahedronDouble implements Serializable {
+public class V3D_VTetrahedron_d implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * The pqr triangle of the tetrahedron.
      */
-    public final V3D_VTriangleDouble pqr;
+    public final V3D_VTriangle_d pqr;
 
     /**
      * The qsr triangle of the tetrahedron.
      */
-    public final V3D_VTriangleDouble qsr;
+    public final V3D_VTriangle_d qsr;
 
     /**
      * The spr triangle of the tetrahedron.
      */
-    public final V3D_VTriangleDouble spr;
+    public final V3D_VTriangle_d spr;
 
     /**
      * The psq triangle of the tetrahedron.
      */
-    public final V3D_VTriangleDouble psq;
+    public final V3D_VTriangle_d psq;
 
     /**
      * Create a new instance.
@@ -82,9 +82,9 @@ public class V3D_VTetrahedronDouble implements Serializable {
      * @param spr What {@link #spr} is set to.
      * @param psq What {@link #psq} is set to.
      */
-    public V3D_VTetrahedronDouble(V3D_VTriangleDouble pqr, 
-            V3D_VTriangleDouble qsr, V3D_VTriangleDouble spr, 
-            V3D_VTriangleDouble psq) {
+    public V3D_VTetrahedron_d(V3D_VTriangle_d pqr, 
+            V3D_VTriangle_d qsr, V3D_VTriangle_d spr, 
+            V3D_VTriangle_d psq) {
         this.pqr = pqr;
         this.qsr = qsr;
         this.spr = spr;

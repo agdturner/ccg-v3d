@@ -18,6 +18,7 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
@@ -33,37 +34,37 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * stored independently in that the order of the points and the directions of
  * the vectors might be opposite. The points are shared between all the
  * triangles. {@code
- * pl *- - - - - - - - - - - + - - - - - - - - - - -* qv
- * \ ~                                         /|
- * \     ~                                   / |
- * \         ~                             /  |
- * \             ~                       /   |
- * \                 ~                 /    |
- * \                      ~          /     |
- * \                          ~    /      |
- * \                             / ~     |
- * \                           /       ~sv
- * \                         /        :
- * \                       /
- * \                     /      :
- * \                   /
- * \                 /     :
- * \               /
- * \             /    :
- * \           /
- * \         /   :
- * \       /
- * \     /  :
- * \   /
- * \ /:
- *
- * rv
+ * pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
+ *     \ ~                                         /|
+ *      \     ~                                   / |
+ *       \         ~                             /  |
+ *        \             ~                       /   |
+ *         \                 ~                 /    |
+ *          \                      ~          /     |
+ *           \                          ~    /      |
+ *            \                             / ~     |
+ *             \                           /       ~*sv
+ *              \                         /        :
+ *               \                       /
+ *                \                     /       :
+ *                 \                   /
+ *                  \                 /      :
+ *                   \               /
+ *                    \             /     :
+ *                     \           /
+ *                      \         /    :
+ *                       \       /
+ *                        \     /   :
+ *                         \   / 
+ *                          \ / :
+ *                           *
+ *                           rv
  * }
  *
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
+public class V3D_Tetrahedron extends V3D_Shape {
 
     private static final long serialVersionUID = 1L;
 
@@ -129,8 +130,8 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 
     /**
      * Create a new instance.
-     * 
-     * @param t The tetrahedron to base this on. 
+     *
+     * @param t The tetrahedron to base this on.
      */
     public V3D_Tetrahedron(V3D_Tetrahedron t) {
         super(t.env, new V3D_Vector(t.offset));
@@ -157,7 +158,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
      * @param rv What {@link #rv} is set to.
      * @param sv What {@link #sv} is set to.
      */
-    public V3D_Tetrahedron(V3D_Environment env, V3D_Vector offset, 
+    public V3D_Tetrahedron(V3D_Environment env, V3D_Vector offset,
             V3D_Vector pv, V3D_Vector qv, V3D_Vector rv, V3D_Vector sv) {
         super(env, new V3D_Vector(offset));
         this.pv = new V3D_Vector(pv);
@@ -1452,6 +1453,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 //                                                }
 //                                            } else {
 //                                                if (itqpl.isOnSameSide(tr, itp, oom)) {
+
               
                 ////                                                    V3D_LineSegment ititpq = (V3D_LineSegment) it.getIntersect(t.pl.getPQ(), oom);
 ////                                                    return V3D_Triangle.getGeometry(ititpq, t.pl.getQR());
@@ -1522,6 +1524,7 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
 //                 * intersections are needed to derive the final shape.
 //                 */
 //                throw new UnsupportedOperationException();
+
             
         
     
@@ -1618,6 +1621,30 @@ public class V3D_Tetrahedron extends V3D_FiniteGeometry implements V3D_Volume {
         re[2] = getR();
         re[3] = getS();
         return re;
+    }
+    
+    @Override
+    public HashMap<Integer, V3D_Point> getPoints(int oom, RoundingMode rm) {
+        if (points == null) {
+            points = new HashMap<>(4);
+            points.put(0, getP());
+            points.put(1, getQ());
+            points.put(2, getR());
+            points.put(3, getS());
+        }
+        return points;
+    }
+    
+    @Override
+    public HashMap<Integer, V3D_Face> getFaces(int oom, RoundingMode rm) {
+        if (faces == null) {
+            faces = new HashMap<>(4);
+            faces.put(0, getPqr());
+            faces.put(1, getPsq());
+            faces.put(2, getQsr());
+            faces.put(3, getSpr());
+        }
+        return faces;
     }
 
     /**

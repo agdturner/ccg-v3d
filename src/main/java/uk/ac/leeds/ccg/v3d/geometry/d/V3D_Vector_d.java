@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Andy Turner, University of Leeds.
+ * Copyright 2020-2025 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_V_d;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_VectorDouble implements Serializable {
+public class V3D_Vector_d implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -56,112 +56,119 @@ public class V3D_VectorDouble implements Serializable {
      * The zero vector {@code <0,0,0>} where:
      * {@link #dx} = {@link #dy} = {@link #dz} = 0.
      */
-    public static final V3D_VectorDouble ZERO = new V3D_VectorDouble(0, 0, 0);
+    public static final V3D_Vector_d ZERO = new V3D_Vector_d(0, 0, 0);
 
     /**
      * The I vector {@code <1,0,0>}.
      */
-    public static final V3D_VectorDouble I = new V3D_VectorDouble(1, 0, 0);
+    public static final V3D_Vector_d I = new V3D_Vector_d(1, 0, 0);
 
     /**
      * The J vector {@code <0,1,0>}.
      */
-    public static final V3D_VectorDouble J = new V3D_VectorDouble(0, 1, 0);
+    public static final V3D_Vector_d J = new V3D_Vector_d(0, 1, 0);
 
     /**
      * The K vector {@code <0,0,1>}.
      */
-    public static final V3D_VectorDouble K = new V3D_VectorDouble(0, 0, 1);
+    public static final V3D_Vector_d K = new V3D_Vector_d(0, 0, 1);
 
     /**
      * The IJ vector {@code <1,1,0>}.
      */
-    public static final V3D_VectorDouble IJ = new V3D_VectorDouble(1, 1, 0);
+    public static final V3D_Vector_d IJ = new V3D_Vector_d(1, 1, 0);
 
     /**
      * The IK vector {@code <1,0,1>}.
      */
-    public static final V3D_VectorDouble IK = new V3D_VectorDouble(1, 0, 1);
+    public static final V3D_Vector_d IK = new V3D_Vector_d(1, 0, 1);
 
     /**
      * The JK vector {@code <0,1,1>}.
      */
-    public static final V3D_VectorDouble JK = new V3D_VectorDouble(0, 1, 1);
+    public static final V3D_Vector_d JK = new V3D_Vector_d(0, 1, 1);
 
     /**
      * The InJ vector {@code <1,-1,0>}.
      */
-    public static final V3D_VectorDouble InJ = new V3D_VectorDouble(1, -1, 0);
+    public static final V3D_Vector_d InJ = new V3D_Vector_d(1, -1, 0);
 
     /**
      * The InK vector {@code <1,0,-1>}.
      */
-    public static final V3D_VectorDouble InK = new V3D_VectorDouble(1, 0, -1);
+    public static final V3D_Vector_d InK = new V3D_Vector_d(1, 0, -1);
 
     /**
      * The JnK vector {@code <0,1,-1>}.
      */
-    public static final V3D_VectorDouble JnK = new V3D_VectorDouble(0, 1, -1);
+    public static final V3D_Vector_d JnK = new V3D_Vector_d(0, 1, -1);
 
     /**
      * The nIJ vector {@code <-1,1,0>}.
      */
-    public static final V3D_VectorDouble nIJ = new V3D_VectorDouble(-1, 1, 0);
+    public static final V3D_Vector_d nIJ = new V3D_Vector_d(-1, 1, 0);
 
     /**
      * The nInJ vector {@code <-1,-1,0>}.
      */
-    public static final V3D_VectorDouble nInJ = new V3D_VectorDouble(-1, -1, 0);
+    public static final V3D_Vector_d nInJ = new V3D_Vector_d(-1, -1, 0);
 
     /**
      * The nInK vector {@code <-1,0,-1>}.
      */
-    public static final V3D_VectorDouble nInK = new V3D_VectorDouble(-1, 0, -1);
+    public static final V3D_Vector_d nInK = new V3D_Vector_d(-1, 0, -1);
 
     /**
      * The nJnK vector {@code <-1,0,-1>}.
      */
-    public static final V3D_VectorDouble nJnK = new V3D_VectorDouble(-1, 0, -1);
+    public static final V3D_Vector_d nJnK = new V3D_Vector_d(-1, 0, -1);
 
     /**
      * The IJK vector {@code <1,1,1>} where:
      */
-    public static final V3D_VectorDouble IJK = new V3D_VectorDouble(1, 1, 1);
+    public static final V3D_Vector_d IJK = new V3D_Vector_d(1, 1, 1);
 
     /**
      * The IJnK vector {@code <1,1,-1>} where:
      */
-    public static final V3D_VectorDouble IJnK = new V3D_VectorDouble(1, 1, -1);
+    public static final V3D_Vector_d IJnK = new V3D_Vector_d(1, 1, -1);
 
     /**
      * The InJK vector {@code <1,-1,1>} where:
      */
-    public static final V3D_VectorDouble InJK = new V3D_VectorDouble(1, -1, 1);
+    public static final V3D_Vector_d InJK = new V3D_Vector_d(1, -1, 1);
 
     /**
      * The nIJK vector {@code <-1,1,1>} where:
      */
-    public static final V3D_VectorDouble nIJK = new V3D_VectorDouble(-1, 1, 1);
+    public static final V3D_Vector_d nIJK = new V3D_Vector_d(-1, 1, 1);
 
     /**
      * The InJnK vector {@code <1,-1,-1>} where:
      */
-    public static final V3D_VectorDouble InJnK = new V3D_VectorDouble(1, -1, -1);
+    public static final V3D_Vector_d InJnK = new V3D_Vector_d(1, -1, -1);
 
     /**
      * The nInJK vector {@code <-1,-1,1>} where:
      */
-    public static final V3D_VectorDouble nInJK = new V3D_VectorDouble(-1, -1, 1);
+    public static final V3D_Vector_d nInJK = new V3D_Vector_d(-1, -1, 1);
 
     /**
      * The nIJnK vector {@code <-1,1,-1>} where:
      */
-    public static final V3D_VectorDouble nIJnK = new V3D_VectorDouble(-1, 1, -1);
+    public static final V3D_Vector_d nIJnK = new V3D_Vector_d(-1, 1, -1);
 
     /**
      * The nInJnK vector {@code <-1,-1,-1>} where:
      */
-    public static final V3D_VectorDouble nInJnK = new V3D_VectorDouble(-1, -1, -1);
+    public static final V3D_Vector_d nInJnK = new V3D_Vector_d(-1, -1, -1);
+
+    /**
+     * Create a new zero vector.
+     */
+    public V3D_Vector_d() {
+        this(0d, 0d, 0d);
+    }
 
     /**
      * Create a new instance.
@@ -169,10 +176,8 @@ public class V3D_VectorDouble implements Serializable {
      * @param v Used to initialise this. A deep copy of all components is made
      * so that {@code this} is completely independent of {@code v}.
      */
-    public V3D_VectorDouble(V3D_VectorDouble v) {
-        this.dx = v.dx;
-        this.dy = v.dy;
-        this.dz = v.dz;
+    public V3D_Vector_d(V3D_Vector_d v) {
+        this(v.dx, v.dy, v.dz);
     }
 
     /**
@@ -182,7 +187,7 @@ public class V3D_VectorDouble implements Serializable {
      * @param dy What {@link #dy} is set to.
      * @param dz What {@link #dz} is set to.
      */
-    public V3D_VectorDouble(double dx, double dy, double dz) {
+    public V3D_Vector_d(double dx, double dy, double dz) {
         this.dx = dx;
         this.dy = dy;
         this.dz = dz;
@@ -194,7 +199,7 @@ public class V3D_VectorDouble implements Serializable {
      * @param dz Used to initialise {@link #dz}.
      * @param m What {@link #m} is set to.
      */
-    public V3D_VectorDouble(double dx, double dy, double dz, double m) {
+    public V3D_Vector_d(double dx, double dy, double dz, double m) {
         this(dx, dy, dz);
         this.m = m;
     }
@@ -205,7 +210,7 @@ public class V3D_VectorDouble implements Serializable {
      * @param p the point where the vector starts.
      * @param q the point where the vector ends.
      */
-    public V3D_VectorDouble(V3D_PointDouble p, V3D_PointDouble q) {
+    public V3D_Vector_d(V3D_Point_d p, V3D_Point_d q) {
         this(q.getX() - p.getX(), q.getY() - p.getY(), q.getZ() - p.getZ());
     }
 
@@ -214,7 +219,7 @@ public class V3D_VectorDouble implements Serializable {
      *
      * @param p the point where the vector starts.
      */
-    public V3D_VectorDouble(V3D_PointDouble p) {
+    public V3D_Vector_d(V3D_Point_d p) {
         this(p.getVector());
     }
 
@@ -223,7 +228,7 @@ public class V3D_VectorDouble implements Serializable {
      *
      * @param v the light Vector.
      */
-    public V3D_VectorDouble(V3D_V_d v) {
+    public V3D_Vector_d(V3D_V_d v) {
         this(v.x, v.y, v.z);
     }
 
@@ -277,7 +282,7 @@ public class V3D_VectorDouble implements Serializable {
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
-        } else if (obj instanceof V3D_VectorDouble v) {
+        } else if (obj instanceof V3D_Vector_d v) {
             return equals(v);
         }
         return false;
@@ -298,7 +303,7 @@ public class V3D_VectorDouble implements Serializable {
      * @param v The vector to test for equality with {@code this}.
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
-    public boolean equals(V3D_VectorDouble v) {
+    public boolean equals(V3D_Vector_d v) {
         /**
          * The hashcode cannot be used to speed things up as there is the case
          * of -0.0 == 0.0!
@@ -313,9 +318,9 @@ public class V3D_VectorDouble implements Serializable {
      * @param points The points to test if they are coincident.
      * @return {@code true} iff all the points are coincident.
      */
-    public static boolean equals(V3D_VectorDouble... v) {
-        V3D_VectorDouble v0 = v[0];
-        for (V3D_VectorDouble v1 : v) {
+    public static boolean equals(V3D_Vector_d... v) {
+        V3D_Vector_d v0 = v[0];
+        for (V3D_Vector_d v1 : v) {
             if (!v1.equals(v0)) {
                 return false;
             }
@@ -334,7 +339,7 @@ public class V3D_VectorDouble implements Serializable {
      * @param v The vector to test for equality with {@code this}.
      * @return {@code true} iff {@code this} is the same as {@code v}.
      */
-    public boolean equals(double epsilon, V3D_VectorDouble v) {
+    public boolean equals(double epsilon, V3D_Vector_d v) {
         return Math_Double.equals(dx, v.dx, epsilon)
                 && Math_Double.equals(dy, v.dy, epsilon)
                 && Math_Double.equals(dz, v.dz, epsilon);
@@ -346,12 +351,12 @@ public class V3D_VectorDouble implements Serializable {
      * @param vs The vectors to test for equality.
      * @return {@code true} iff all vs are equal within epsilon.
      */
-    public static boolean equals(double epsilon, V3D_VectorDouble... vs) {
+    public static boolean equals(double epsilon, V3D_Vector_d... vs) {
         if (vs.length < 2) {
             return true;
         }
-        V3D_VectorDouble v0 = vs[0];
-        for (V3D_VectorDouble v : vs) {
+        V3D_Vector_d v0 = vs[0];
+        for (V3D_Vector_d v : vs) {
             if (!v.equals(v0)) {
                 return false;
             }
@@ -365,7 +370,7 @@ public class V3D_VectorDouble implements Serializable {
      * @param v The vector to compare with {@code this}.
      * @return {@code true} iff {@code this} is the reverse of {@code v}.
      */
-    public boolean isReverse(V3D_VectorDouble v) {
+    public boolean isReverse(V3D_Vector_d v) {
         return equals(v.reverse());
     }
 
@@ -377,7 +382,7 @@ public class V3D_VectorDouble implements Serializable {
      * equal.
      * @return {@code true} iff {@code this} is the reverse of {@code v}.
      */
-    public boolean isReverse(V3D_VectorDouble v, double epsilon) {
+    public boolean isReverse(V3D_Vector_d v, double epsilon) {
         return equals(epsilon, v.reverse());
     }
 
@@ -400,16 +405,16 @@ public class V3D_VectorDouble implements Serializable {
      * @param s The scalar value to multiply this by.
      * @return Scaled vector.
      */
-    public V3D_VectorDouble multiply(double s) {
-        return new V3D_VectorDouble(dx * s, dy * s, dz * s);
+    public V3D_Vector_d multiply(double s) {
+        return new V3D_Vector_d(dx * s, dy * s, dz * s);
     }
 
     /**
      * @param s The scalar value to divide this by.
      * @return Scaled vector.
      */
-    public V3D_VectorDouble divide(double s) {
-        return new V3D_VectorDouble(dx / s, dy / s, dz / s);
+    public V3D_Vector_d divide(double s) {
+        return new V3D_Vector_d(dx / s, dy / s, dz / s);
     }
 
     /**
@@ -418,23 +423,23 @@ public class V3D_VectorDouble implements Serializable {
      * @param v The vector to add.
      * @return A new vector which is {@code this} add {@code v}.
      */
-    public V3D_VectorDouble add(V3D_VectorDouble v) {
-        return new V3D_VectorDouble(dx + v.dx, dy + v.dy, dz + v.dz);
+    public V3D_Vector_d add(V3D_Vector_d v) {
+        return new V3D_Vector_d(dx + v.dx, dy + v.dy, dz + v.dz);
     }
 
     /**
      * @param v The vector to subtract.
      * @return A new vector which is {@code this} minus {@code v}.
      */
-    public V3D_VectorDouble subtract(V3D_VectorDouble v) {
-        return new V3D_VectorDouble(dx - v.dx, dy - v.dy, dz - v.dz);
+    public V3D_Vector_d subtract(V3D_Vector_d v) {
+        return new V3D_Vector_d(dx - v.dx, dy - v.dy, dz - v.dz);
     }
 
     /**
      * @return A new vector which is the opposite to {@code this}.
      */
-    public V3D_VectorDouble reverse() {
-        return new V3D_VectorDouble(-dx, -dy, -dz);
+    public V3D_Vector_d reverse() {
+        return new V3D_Vector_d(-dx, -dy, -dz);
     }
 
     /**
@@ -444,7 +449,7 @@ public class V3D_VectorDouble implements Serializable {
      * @param v The other vector to compose the cross product from.
      * @return The dot product.
      */
-    public double getDotProduct(V3D_VectorDouble v) {
+    public double getDotProduct(V3D_Vector_d v) {
         return dx * v.dx + dy * v.dy + dz * v.dz;
     }
 
@@ -454,14 +459,10 @@ public class V3D_VectorDouble implements Serializable {
      * @param v The vector to test for orthogonality with.
      * @return {@code true} if this and {@code v} are orthogonal.
      */
-    public boolean isOrthogonal(V3D_VectorDouble v) {
+    public boolean isOrthogonal(V3D_Vector_d v) {
 //        // Special case
 //        if (isScalarMultiple(v)) {
 //            return false;
-//        }
-
-//        if (getCrossProduct(v).isZero()) {
-//            return true;
 //        }
         return getDotProduct(v) == 0d;
     }
@@ -474,36 +475,14 @@ public class V3D_VectorDouble implements Serializable {
      * @param v The vector to test for orthogonality with.
      * @return {@code true} if this and {@code v} are orthogonal.
      */
-    public boolean isOrthogonal(double epsilon, V3D_VectorDouble v) {
+    public boolean isOrthogonal(double epsilon, V3D_Vector_d v) {
         // Special case
         if (isScalarMultiple(epsilon, v)) {
             return false;
         }
-
-//        if (getCrossProduct(v).isZero()) {
-//            return true;
-//        }
         return Math_Double.equals(getDotProduct(v), 0d, epsilon);
     }
 
-//    /**
-//     * Test if this is orthogonal to {@code v}.
-//     *
-//     * @param v The vector to test for orthogonality with.
-//     * @param epsilon The tolerance within which two vectors are regarded as
-//     * equal.
-//     * @return {@code true} if this and {@code v} are orthogonal.
-//     */
-//    public boolean isOrthogonal(V3D_VectorDouble v, double epsilon) {
-////        // Special case
-////        if (isScalarMultiple(v, epsilon)) {
-////            return false;
-////        }
-//        //return getDotProduct(v) == 0d;
-//        double dp = getDotProduct(v);
-//        return Math_Double.equals(dp, 0d, epsilon);
-//        //return Math.abs(getDotProduct(v)) < epsilon;
-//    }
     /**
      * @return The magnitude of m.
      */
@@ -524,20 +503,21 @@ public class V3D_VectorDouble implements Serializable {
      * @param v The vector to test if it is a scalar multiple of {@code this}.
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
-    public boolean isScalarMultiple(V3D_VectorDouble v) {
+    public boolean isScalarMultiple(V3D_Vector_d v) {
         if (equals(v)) {
             return true;
         } else {
             // Special cases
             boolean isZero = isZero();
+            boolean visZero = v.isZero();
             if (isZero) {
                 /**
                  * Can't multiply the zero vector by a scalar to get a non-zero
                  * vector.
                  */
-                return v.isZero();
+                return visZero;
             }
-            if (v.isZero()) {
+            if (visZero) {
                 /**
                  * Already tested that this is not equal to v, so the scalar is
                  * zero.
@@ -550,83 +530,90 @@ public class V3D_VectorDouble implements Serializable {
              * different directions.
              */
             if (Math.abs(v.dx) == Math.abs(dx)) {
-                // |dx| = |v.dx|
-                if (v.dx == 0d) {
-                    // dx = v.dx = 0d
+                // |v.dx| = |dx|
+                if (dx == 0d) {
+                    // dx = 0d
                     if (Math.abs(v.dy) == Math.abs(dy)) {
+                        // |v.dy| = |dy|
                         if (v.dy == 0d) {
+                            // dy = 0
+                            // dz != 0 and can have any non-zero value.
                             return true;
                         } else {
                             if (Math.abs(v.dz) == Math.abs(dz)) {
-//                                    if (v.dz == 0d) { 
-//                                        // This should not happen as it is already tested for. Commented code left for clarity.
-//                                        return true;
-//                                    } else {
+                                // |v.dz| = |dz|
+                                // scalar = 1 or -1
                                 double scalar = v.dy / dy;
                                 double dzs = dz * scalar;
                                 double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
                                 return Math_Double.equals(v.dz, dzs, epsilon);
-//                                    }
                             } else {
                                 return false;
                             }
                         }
                     } else {
-                        if (v.dy == 0d) {
-                            return v.dz == 0d;
+                        // |v.dy| != |dy|
+                        if (dy == 0d) {
+                            // dy = 0
+                            return dz == 0d;
                         } else {
-                            if (Math.abs(v.dz) == Math.abs(dz)) {
-                                if (v.dz == 0d) {
-                                    return true;
-                                } else {
-                                    double scalar = v.dy / dy;
-                                    double dzs = dz * scalar;
-                                    double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
-                                    return Math_Double.equals(v.dz, dzs, epsilon);
-                                }
-                            } else {
+                            // Divide bigger by smaller number for precision reasons.
+                            if (Math.abs(v.dy) > Math.abs(dy)) {
+                                // dy != 0
                                 double scalar = v.dy / dy;
                                 double dzs = dz * scalar;
                                 double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
                                 return Math_Double.equals(v.dz, dzs, epsilon);
+                            } else {
+                                if (v.dy == 0d) {
+                                    return false;
+                                } else {
+                                    double scalar = dy / v.dy;
+                                    double dzs = v.dz * scalar;
+                                    double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
+                                    return Math_Double.equals(dz, dzs, epsilon);
+                                }
                             }
                         }
                     }
                 } else {
-                    // |dx| = |v.dx| != 0d
+                    // |v.dx| = |dx| != 0d
+                    // scalar will be 1 or -1
+                    double scalar = v.dx / dx;
                     if (Math.abs(v.dy) == Math.abs(dy)) {
-                        if (v.dy == 0d) {
+                        // |v.dy| = |dy|
+                        if (dy == 0d) {
+                            // dy = 0
                             if (Math.abs(v.dz) == Math.abs(dz)) {
-                                if (v.dz == 0d) {
+                                // |v.dz| = |dz|
+                                if (v.dz == 0) {
                                     return true;
                                 } else {
-                                    double scalar = v.dx / dx;
                                     double dzs = dz * scalar;
                                     double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
                                     return Math_Double.equals(v.dz, dzs, epsilon);
                                 }
                             } else {
-                                double scalar = v.dx / dx;
+                                // |v.dz| != |dz|
                                 double dzs = dz * scalar;
                                 double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
                                 return Math_Double.equals(v.dz, dzs, epsilon);
                             }
                         } else {
-                            double scalar = v.dx / dx;
-                            double dys = dy * scalar;
-                            double epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys);
-                            if (Math_Double.equals(v.dy, dy * scalar, epsilon)) {
-                                if (Math_Double.equals(Math.abs(v.dz), Math.abs(dz), epsilon)) {
-                                    if (Math_Double.equals(v.dz, 0d, epsilon)) {
+                            if (v.dy == dy * scalar) {
+                                if (Math.abs(v.dz) == Math.abs(dz)) {
+                                    // |v.dz| = |dz|
+                                    if (v.dz == 0) {
                                         return true;
                                     } else {
                                         double dzs = dz * scalar;
-                                        epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys, v.dz, dz, dzs);
+                                        double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
                                         return Math_Double.equals(v.dz, dzs, epsilon);
                                     }
                                 } else {
+                                    // |v.dz| != |dz|
                                     double dzs = dz * scalar;
-                                    epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys, v.dz, dz, dzs);
+                                    double epsilon = Math_Double.getTolerance(v.dy, dy, scalar, v.dz, dz, dzs);
                                     return Math_Double.equals(v.dz, dzs, epsilon);
                                 }
                             } else {
@@ -634,8 +621,7 @@ public class V3D_VectorDouble implements Serializable {
                             }
                         }
                     } else {
-                        // |dx| = |v.dx| != 0d, |dy| != |v.dy|
-                        double scalar = v.dx / dx;
+                        // |v.dx| = |dx| != 0d, |v.dy| != |dy|
                         double dys = dy * scalar;
                         double epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys);
                         if (Math_Double.equals(v.dy, dys, epsilon)) {
@@ -648,19 +634,39 @@ public class V3D_VectorDouble implements Serializable {
                     }
                 }
             } else {
-                // |dx| != |v.dx|
-                if (dx == 0d) {
-                    return isZero;
-                } else {
-                    double scalar = v.dx / dx;
-                    double dys = dy * scalar;
-                    double epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys);
-                    if (Math_Double.equals(v.dy, dys, epsilon)) {
-                        double dzs = dz * scalar;
-                        epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys, v.dz, dz, dzs);
-                        return Math_Double.equals(v.dz, dzs, epsilon);
+                // |v.dx| != |dx|
+                // Divide bigger by smaller number for precision reasons.
+                if (Math.abs(v.dx) > Math.abs(dx)) {
+                    if (dx == 0d) {
+                        // dx = 0
+                        return isZero;
                     } else {
-                        return false;
+                        double scalar = v.dx / dx;
+                        double dys = dy * scalar;
+                        double epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys);
+                        if (Math_Double.equals(v.dy, dys, epsilon)) {
+                            double dzs = dz * scalar;
+                            epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys, v.dz, dz, dzs);
+                            return Math_Double.equals(v.dz, dzs, epsilon);
+                        } else {
+                            return false;
+                        }
+                    }
+                } else {
+                    if (v.dx == 0d) {
+                        // v.dx = 0
+                        return isZero;
+                    } else {
+                        double scalar = dx / v.dx;
+                        double vdys = v.dy * scalar;
+                        double epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, vdys);
+                        if (Math_Double.equals(dy, vdys, epsilon)) {
+                            double vdzs = v.dz * scalar;
+                            epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, vdys, v.dz, dz, vdzs);
+                            return Math_Double.equals(v.dz, vdzs, epsilon);
+                        } else {
+                            return false;
+                        }
                     }
                 }
             }
@@ -675,7 +681,7 @@ public class V3D_VectorDouble implements Serializable {
      * @param v The vector to test if it is a scalar multiple of {@code this}.
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
-    public boolean isScalarMultiple(double epsilon, V3D_VectorDouble v) {
+    public boolean isScalarMultiple(double epsilon, V3D_Vector_d v) {
         if (equals(epsilon, v)) {
             return true;
         } else {
@@ -702,93 +708,132 @@ public class V3D_VectorDouble implements Serializable {
              * different directions.
              */
             if (Math_Double.equals(Math.abs(v.dx), Math.abs(dx), epsilon)) {
-                // |dx| = |v.dx|
+                // |v.dx| = |dx|
                 if (Math_Double.equals(dx, 0d, epsilon)) {
-                    // dx = v.dx = 0d
+                    // dx = 0d
                     if (Math_Double.equals(Math.abs(v.dy), Math.abs(dy), epsilon)) {
+                        // |v.dy| = |dy|
                         if (Math_Double.equals(v.dy, 0d, epsilon)) {
+                            // dy = 0
+                            // dz != 0 and can have any non-zero value.
                             return true;
                         } else {
                             if (Math_Double.equals(Math.abs(v.dz), Math.abs(dz), epsilon)) {
-//                                    if (Math_Double.equals(v.dz, 0d, epsilon)) { 
-//                                        // This should not happen as it is already tested for. Commented code left for clarity.
-//                                        return true;
-//                                    } else {
+                                // |v.dz| = |dz|
+                                // scalar = 1 or -1
                                 double scalar = v.dy / dy;
                                 return Math_Double.equals(v.dz, dz * scalar, epsilon);
-//                                    }
                             } else {
                                 return false;
                             }
                         }
                     } else {
+                        // |v.dy| != |dy|
                         if (Math_Double.equals(v.dy, 0d, epsilon)) {
+                            // dy = 0
                             return Math_Double.equals(v.dz, 0d, epsilon);
                         } else {
-                            if (Math_Double.equals(Math.abs(v.dz), Math.abs(dz), epsilon)) {
-                                if (Math_Double.equals(v.dz, 0d, epsilon)) {
-                                    return true;
-                                } else {
-                                    double scalar = v.dy / dy;
-                                    return Math_Double.equals(v.dz, dz * scalar, epsilon);
-                                }
-                            } else {
+                            // Divide bigger by smaller number for precision reasons.
+                            if (Math.abs(v.dy) > Math.abs(dy)) {
+                                // dy != 0
                                 double scalar = v.dy / dy;
-                                return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                                double dzs = dz * scalar;
+                                return Math_Double.equals(v.dz, dzs, epsilon);
+                            } else {
+                                if (v.dy == 0d) {
+                                    return false;
+                                } else {
+                                    double scalar = dy / v.dy;
+                                    double dzs = v.dz * scalar;
+                                    return Math_Double.equals(dz, dzs, epsilon);
+                                }
                             }
                         }
                     }
                 } else {
-                    // |dx| = |v.dx| != 0d
-                    if (Math_Double.equals(Math.abs(v.dy), Math.abs(dy), epsilon)) {
-                        if (Math_Double.equals(v.dy, 0d, epsilon)) {
-                            if (Math_Double.equals(Math.abs(v.dz), Math.abs(dz), epsilon)) {
-                                if (Math_Double.equals(v.dz, 0d, epsilon)) {
+                    // |v.dx| = |dx| != 0d
+                    // scalar will be 1 or -1
+                    double scalar = v.dx / dx;
+                    if (Math.abs(v.dy) == Math.abs(dy)) {
+                        // |v.dy| = |dy|
+                        if (dy == 0d) {
+                            // dy = 0
+                            if (Math.abs(v.dz) == Math.abs(dz)) {
+                                // |v.dz| = |dz|
+                                if (v.dz == 0) {
                                     return true;
                                 } else {
-                                    double scalar = v.dx / dx;
-                                    return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                                    double dzs = dz * scalar;
+                                    return Math_Double.equals(v.dz, dzs, epsilon);
                                 }
                             } else {
-                                double scalar = v.dx / dx;
-                                return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                                // |v.dz| != |dz|
+                                double dzs = dz * scalar;
+                                return Math_Double.equals(v.dz, dzs, epsilon);
                             }
                         } else {
-                            double scalar = v.dx / dx;
-                            if (Math_Double.equals(v.dy, dy * scalar, epsilon)) {
-                                if (Math_Double.equals(Math.abs(v.dz), Math.abs(dz), epsilon)) {
-                                    if (Math_Double.equals(v.dz, 0d, epsilon)) {
+                            if (v.dy == dy * scalar) {
+                                if (Math.abs(v.dz) == Math.abs(dz)) {
+                                    // |v.dz| = |dz|
+                                    if (v.dz == 0) {
                                         return true;
                                     } else {
-                                        return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                                        double dzs = dz * scalar;
+                                        return Math_Double.equals(v.dz, dzs, epsilon);
                                     }
                                 } else {
-                                    return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                                    // |v.dz| != |dz|
+                                    double dzs = dz * scalar;
+                                    return Math_Double.equals(v.dz, dzs, epsilon);
                                 }
                             } else {
                                 return false;
                             }
                         }
                     } else {
-                        // |dx| = |v.dx| != 0d, |dy| != |v.dy|
-                        double scalar = v.dx / dx;
-                        if (Math_Double.equals(v.dy, dy * scalar, epsilon)) {
-                            return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                        // |v.dx| = |dx| != 0d, |v.dy| != |dy|
+                        double dys = dy * scalar;
+                        if (Math_Double.equals(v.dy, dys, epsilon)) {
+                            double dzs = dz * scalar;
+                            epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys, v.dz, dz, dzs);
+                            return Math_Double.equals(v.dz, dzs, epsilon);
                         } else {
                             return false;
                         }
                     }
                 }
             } else {
-                // |dx| != |v.dx|
-                if (Math_Double.equals(dx, 0d, epsilon)) {
-                    return isZero;
-                } else {
-                    double scalar = v.dx / dx;
-                    if (Math_Double.equals(v.dy, dy * scalar, epsilon)) {
-                        return Math_Double.equals(v.dz, dz * scalar, epsilon);
+                // |v.dx| != |dx|
+                // Divide bigger by smaller number for precision reasons.
+                if (Math.abs(v.dx) > Math.abs(dx)) {
+                    if (dx == 0d) {
+                        // dx = 0
+                        return isZero;
                     } else {
-                        return false;
+                        double scalar = v.dx / dx;
+                        double dys = dy * scalar;
+                        if (Math_Double.equals(v.dy, dys, epsilon)) {
+                            double dzs = dz * scalar;
+                            epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, dys, v.dz, dz, dzs);
+                            return Math_Double.equals(v.dz, dzs, epsilon);
+                        } else {
+                            return false;
+                        }
+                    }
+                } else {
+                    if (v.dx == 0d) {
+                        // v.dx = 0
+                        return isZero;
+                    } else {
+                        double scalar = dx / v.dx;
+                        double vdys = v.dy * scalar;
+                        if (Math_Double.equals(dy, vdys, epsilon)) {
+                            double vdzs = v.dz * scalar;
+                            epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, vdys, v.dz, dz, vdzs);
+                            return Math_Double.equals(v.dz, vdzs, epsilon);
+                        } else {
+                            return false;
+                        }
                     }
                 }
             }
@@ -807,7 +852,7 @@ public class V3D_VectorDouble implements Serializable {
      * @param v The vector to find the angle between.
      * @return The angle in radians between {@code this} and {@code v}.
      */
-    public double getAngle(V3D_VectorDouble v) {
+    public double getAngle(V3D_Vector_d v) {
         double dp = getDotProduct(v);
         double mag = getMagnitude();
         double vmag = v.getMagnitude();
@@ -824,11 +869,26 @@ public class V3D_VectorDouble implements Serializable {
      * @param theta The angle of rotation.
      * @return The vector which is {@code #this} rotated using the parameters.
      */
-    public V3D_VectorDouble rotate(V3D_VectorDouble uv, double theta) {
+    public V3D_Vector_d rotate(V3D_Vector_d uv, double theta) {
         theta = Math_AngleDouble.normalise(theta);
         if (theta == 0d) {
-            return new V3D_VectorDouble(this);
+            return new V3D_Vector_d(this);
         } else {
+            return rotateN(uv, theta);
+        }
+    }
+
+    /**
+     * Calculate and return {@code #this} rotated using the parameters. (see
+     * Doug (https://math.stackexchange.com/users/102399/doug), How do you
+     * rotate a vector by a unit quaternion?, URL (version: 2019-06-12):
+     * https://math.stackexchange.com/q/535223)
+     *
+     * @param uv The rotation unit vector.
+     * @param theta The angle of rotation between 0 and 2Pi.
+     * @return The vector which is {@code #this} rotated using the parameters.
+     */
+    public V3D_Vector_d rotateN(V3D_Vector_d uv, double theta) {
             double thetaDiv2 = theta / 2.0d;
             double sinThetaDiv2 = Math.sin(thetaDiv2);
             double w = Math.cos(thetaDiv2);
@@ -842,8 +902,7 @@ public class V3D_VectorDouble implements Serializable {
             //Math_Quaternion_Double p = new Math_Quaternion_Double(0, x, y, z);
             // P'=pP
             Math_Quaternion_Double pP = r.multiply(p).multiply(rR);
-            return new V3D_VectorDouble(pP.x, pP.y, pP.z);
-        }
+            return new V3D_Vector_d(pP.x, pP.y, pP.z);
     }
 
     /**
@@ -855,8 +914,8 @@ public class V3D_VectorDouble implements Serializable {
      * @param v The other vector to compose the cross product from.
      * @return The cross product as a vector.
      */
-    public V3D_VectorDouble getCrossProduct(V3D_VectorDouble v) {
-        return new V3D_VectorDouble(
+    public V3D_Vector_d getCrossProduct(V3D_Vector_d v) {
+        return new V3D_Vector_d(
                 dy * v.dz - dz * v.dy,
                 dz * v.dx - dx * v.dz,
                 dx * v.dy - dy * v.dx);
@@ -868,7 +927,7 @@ public class V3D_VectorDouble implements Serializable {
      *
      * @return this scaled by {@link #m}.
      */
-    public V3D_VectorDouble getUnitVector() {
+    public V3D_Vector_d getUnitVector() {
         return divide(getMagnitude());
     }
 
@@ -878,9 +937,9 @@ public class V3D_VectorDouble implements Serializable {
      * @param pt The point controlling the direction of the unit vector.
      * @return this scaled by {@link #m}.
      */
-    public V3D_VectorDouble getUnitVector(V3D_PointDouble pt) {
+    public V3D_Vector_d getUnitVector(V3D_Point_d pt) {
         double direction = getDotProduct(pt.getVector()) / getDotProduct(this);
-        V3D_VectorDouble r = getUnitVector();
+        V3D_Vector_d r = getUnitVector();
         if (direction < 0) {
             r = r.reverse();
         }

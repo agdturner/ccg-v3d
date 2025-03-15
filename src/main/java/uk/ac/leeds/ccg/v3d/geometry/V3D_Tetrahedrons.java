@@ -4,6 +4,7 @@ import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
@@ -14,12 +15,12 @@ import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
+public class V3D_Tetrahedrons extends V3D_Shape {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * The list of tetrahedron. Stored as a list so that the list can be 
+     * The list of tetrahedron. Stored as a list so that the list can be
      */
     protected final ArrayList<V3D_Tetrahedron> tetrahedrons;
 
@@ -28,7 +29,7 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
         tetrahedrons = new ArrayList<>();
         ts.tetrahedrons.forEach(x -> tetrahedrons.add(new V3D_Tetrahedron(x)));
     }
-    
+
     /**
      * Creates a new instance.
      *
@@ -70,18 +71,58 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
         int np = tetrahedrons.size() * 4;
         V3D_Point[] r = new V3D_Point[np];
         int i = 0;
-        for (var x: tetrahedrons) {
+        for (var x : tetrahedrons) {
             r[i] = x.getP();
-            i ++;
+            i++;
             r[i] = x.getQ();
-            i ++;
+            i++;
             r[i] = x.getR();
-            i ++;
+            i++;
             r[i] = x.getS();
         }
         return r;
     }
-    
+
+    @Override
+    public HashMap<Integer, V3D_Point> getPoints(int oom, RoundingMode rm) {
+        if (points == null) {
+            int np = tetrahedrons.size() * 4;
+            points = new HashMap<>(np);
+            int i;
+            for (var x : tetrahedrons) {
+                i = points.size();
+                points.put(i, x.getP());
+                i++;
+                points.put(i, x.getQ());
+                i++;
+                points.put(i, x.getR());
+                i++;
+                points.put(i, x.getS());
+            }
+        }
+        return points;
+    }
+
+    @Override
+    public HashMap<Integer, V3D_Face> getFaces(int oom, RoundingMode rm) {
+        if (faces == null) {
+            int np = tetrahedrons.size() * 4;
+            faces = new HashMap<>(np);
+            int i;
+            for (var x : tetrahedrons) {
+                i = faces.size();
+                faces.put(i, x.getPqr());
+                i++;
+                faces.put(i, x.getPsq());
+                i++;
+                faces.put(i, x.getQsr());
+                i++;
+                faces.put(i, x.getSpr());
+            }
+        }
+        return faces;
+    }
+
     /**
      * @param oom The Order of Magnitude for the precision of the calculation.
      * @param rm The RoundingMode for any rounding.
@@ -121,9 +162,9 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
             tetrahedrons.get(i).translate(v, oom, rm);
         }
     }
-    
+
     @Override
-    public V3D_Tetrahedrons rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+    public V3D_Tetrahedrons rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd,
             BigRational theta, int oom, RoundingMode rm) {
         theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
         if (theta.compareTo(BigRational.ZERO) == 0) {
@@ -132,12 +173,12 @@ public class V3D_Tetrahedrons extends V3D_FiniteGeometry implements V3D_Volume {
             return rotateN(ray, uv, bd, theta, oom, rm);
         }
     }
-    
+
     @Override
-     public V3D_Tetrahedrons rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
-             BigRational theta, int oom, RoundingMode rm) {
+    public V3D_Tetrahedrons rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd,
+            BigRational theta, int oom, RoundingMode rm) {
         V3D_Tetrahedron[] rls = new V3D_Tetrahedron[tetrahedrons.size()];
-        for (int i = 0; i < tetrahedrons.size(); i ++) {
+        for (int i = 0; i < tetrahedrons.size(); i++) {
             rls[0] = tetrahedrons.get(i).rotate(ray, uv, bd, theta, oom, rm);
         }
         return new V3D_Tetrahedrons(rls);

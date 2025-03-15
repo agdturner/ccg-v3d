@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
-import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VTriangleDouble;
+import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VTriangle_d;
 
 /**
  * For representing and processing triangles in 3D. A triangle has a non-zero
@@ -154,7 +154,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * @param offset What {@link #offset} is set to.
      * @param t The triangle to initialise this from.
      */
-    public V3D_TriangleDouble(V3D_VectorDouble offset, V3D_VTriangleDouble t) {
+    public V3D_TriangleDouble(V3D_VectorDouble offset, V3D_VTriangle_d t) {
         this(offset, new V3D_VectorDouble(t.pq.p), new V3D_VectorDouble(t.pq.q),
                 new V3D_VectorDouble(t.qr.q));
     }

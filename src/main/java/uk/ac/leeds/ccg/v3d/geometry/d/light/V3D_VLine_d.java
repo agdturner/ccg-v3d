@@ -69,33 +69,33 @@ import java.io.Serializable;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_VLineDouble implements Serializable {
+public class V3D_VLine_d implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * A point defining the line.
      */
-    public final V3D_VDouble p;
+    public final V3D_V_d p;
 
     /**
      * A point defining the line.
      */
-    public final V3D_VDouble q;
+    public final V3D_V_d q;
 
     /**
      * @param l Used to initialise this.
      */
-    public V3D_VLineDouble(V3D_VLineDouble l) {
-        this.p = new V3D_VDouble(l.p);
-        this.q = new V3D_VDouble(l.q);
+    public V3D_VLine_d(V3D_VLine_d l) {
+        this.p = new V3D_V_d(l.p);
+        this.q = new V3D_V_d(l.q);
     }
 
     /**
      * @param p What {@link #p} is set to.
      * @param q What {@link #q} is set to.
      */
-    public V3D_VLineDouble(V3D_VDouble p, V3D_VDouble q) {
+    public V3D_VLine_d(V3D_V_d p, V3D_V_d q) {
         this.p = p;
         this.q = q;
     }
@@ -131,7 +131,7 @@ public class V3D_VLineDouble implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof V3D_VLineDouble l) {
+        if (o instanceof V3D_VLine_d l) {
             return equals(l);
         }
         return false;
@@ -149,7 +149,7 @@ public class V3D_VLineDouble implements Serializable {
      * @param l The line to test if it is the same as {@code this}.
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
-    public boolean equals(V3D_VLineDouble l) {
+    public boolean equals(V3D_VLine_d l) {
         return (p.equals(l.p) && q.equals(l.q))
                 || (p.equals(l.q) && q.equals(l.p));
     }

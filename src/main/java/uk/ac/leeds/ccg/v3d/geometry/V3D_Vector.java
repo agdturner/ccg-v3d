@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Andy Turner, University of Leeds.
+ * Copyright 2020-2025 Andy Turner, University of Leeds.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -199,12 +199,11 @@ public class V3D_Vector implements Serializable {
     public static final V3D_Vector NINJNK = new V3D_Vector(-1, -1, -1);
 
     /**
-     * Create a new instance.
+     * Create a new zero vector.
      */
     public V3D_Vector() {
-        this.dx = Math_BigRationalSqrt.ZERO;
-        this.dy = Math_BigRationalSqrt.ZERO;
-        this.dz = Math_BigRationalSqrt.ZERO;
+        this(Math_BigRationalSqrt.ZERO, Math_BigRationalSqrt.ZERO,
+                Math_BigRationalSqrt.ZERO);
     }
 
     /**
@@ -214,9 +213,7 @@ public class V3D_Vector implements Serializable {
      * so that {@code this} is completely independent of {@code v}.
      */
     public V3D_Vector(V3D_Vector v) {
-        this.dx = v.dx;
-        this.dy = v.dy;
-        this.dz = v.dz;
+        this(v.dx, v.dy, v.dz);
     }
 
     /**
@@ -239,9 +236,10 @@ public class V3D_Vector implements Serializable {
      * @param dz Used to initialise {@link #dz}.
      */
     public V3D_Vector(BigRational dx, BigRational dy, BigRational dz) {
-        this.dx = new Math_BigRationalSqrt(dx.pow(2), dx);
-        this.dy = new Math_BigRationalSqrt(dy.pow(2), dy);
-        this.dz = new Math_BigRationalSqrt(dz.pow(2), dz);
+        this(
+                new Math_BigRationalSqrt(dx.pow(2), dx),
+                new Math_BigRationalSqrt(dy.pow(2), dy),
+                new Math_BigRationalSqrt(dz.pow(2), dz));
     }
 
     /**
@@ -490,6 +488,18 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * Indicates if {@code this} is the reverse of {@code v}.
+     *
+     * @param v The vector to compare with {@code this}.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode used in the calculation.
+     * @return {@code true} iff {@code this} is the reverse of {@code v}.
+     */
+    public boolean isReverse(V3D_Vector v, int oom, RoundingMode rm) {
+        return equals(v.reverse(), oom, rm);
+    }
+
+    /**
      * @return {@code true} if {@code this.equals(e.zeroVector)}
      */
     public boolean isZero() {
@@ -707,148 +717,6 @@ public class V3D_Vector implements Serializable {
      * Test if {@code v} is a scalar multiple of {@code this}.
      *
      * @param v The vector to test if it is a scalar multiple of {@code this}.
-     * @return {@code true} if {@code this} and {@code v} are scalar multiples.
-     */
-    public boolean isScalarMultiple(V3D_Vector v) {
-        if (equals(v)) {
-            return true;
-        } else {
-            // Special cases
-            boolean isZero = isZero();
-            if (isZero) {
-                /**
-                 * Can't multiply the zero vector by a scalar to get a non-zero
-                 * vector.
-                 */
-                return v.isZero();
-            }
-            if (v.isZero()) {
-                /**
-                 * Already tested that this is not equal to v, so the scalar is
-                 * zero.
-                 */
-                return true;
-            }
-
-            int oom = -3;
-            RoundingMode rm = RoundingMode.HALF_UP;
-
-            /**
-             * General case: A little complicated as there is a need to deal
-             * with zero vector components and cases where the vectors point in
-             * different directions.
-             */
-            if (v.dx.abs().compareTo(dx.abs()) == 0) {
-                // |dx| = |v.dx|
-                if (v.dx.isZero()) {
-                    // dx = v.dx = 0d
-                    if (v.dy.abs().compareTo(dy.abs()) == 0) {
-                        if (v.dy.isZero()) {
-                            return true;
-                        } else {
-                            if (v.dz.abs().compareTo(dz.abs()) == 0) {
-//                                    if (v.dz.isZero()) { 
-//                                        // This should not happen as it is already tested for. Commented code left for clarity.
-//                                        return true;
-//                                    } else {
-
-                                Math_BigRationalSqrt scalar = v.dy.divide(dy, oom - 6, rm);
-                                Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
-                                return v.dz.equals(dzs, oom);
-//                                    }
-                            } else {
-                                return false;
-                            }
-                        }
-                    } else {
-                        if (v.dy.isZero()) {
-                            return v.dz.isZero();
-                        } else {
-                            if (v.dz.abs().compareTo(dz.abs()) == 0) {
-                                if (v.dz.isZero()) {
-                                    return true;
-                                } else {
-                                    Math_BigRationalSqrt scalar = v.dy.divide(dy, oom - 6, rm);
-                                    Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
-                                    return v.dz.equals(dzs, oom);
-                                }
-                            } else {
-                                Math_BigRationalSqrt scalar = v.dy.divide(dy, oom - 6, rm);
-                                Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
-                                return v.dz.equals(dzs, oom);
-                            }
-                        }
-                    }
-                } else {
-                    // |dx| = |v.dx| != 0d
-                    if (v.dy.abs().compareTo(dy.abs()) == 0) {
-                        if (v.dy.isZero()) {
-                            if (v.dz.abs().compareTo(dz.abs()) == 0) {
-                                if (v.dz.isZero()) {
-                                    return true;
-                                } else {
-                                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
-                                    Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
-                                    return v.dz.equals(dzs, oom);
-                                }
-                            } else {
-                                Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
-                                Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
-                                return v.dz.equals(dzs, oom);
-                            }
-                        } else {
-                            Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
-                            Math_BigRationalSqrt dys = dy.multiply(scalar, oom - 3, rm);
-                            if (v.dy.equals(dys, oom)) {
-                                if (v.dz.abs().compareTo(dz.abs()) == 0) {
-                                    if (v.dz.isZero()) {
-                                        return true;
-                                    } else {
-                                        Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
-                                        return v.dz.equals(dzs, oom);
-                                    }
-                                } else {
-                                    Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
-                                    return v.dz.equals(dzs, oom);
-                                }
-                            } else {
-                                return false;
-                            }
-                        }
-                    } else {
-                        // |dx| = |v.dx| != 0d, |dy| != |v.dy|
-                        Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
-                        Math_BigRationalSqrt dys = dy.multiply(scalar, oom - 3, rm);
-                        if (v.dy.equals(dys, oom)) {
-                            Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
-                            return v.dz.equals(dzs, oom);
-                        } else {
-                            return false;
-                        }
-                    }
-                }
-            } else {
-                // |dx| != |v.dx|
-                if (dx.isZero()) {
-                    return isZero;
-                } else {
-                    Math_BigRationalSqrt scalar = v.dx.divide(dx, oom - 6, rm);
-                    Math_BigRationalSqrt dys = dy.multiply(scalar, oom - 3, rm);
-                    if (v.dy.equals(dys, oom)) {
-                        Math_BigRationalSqrt dzs = dz.multiply(scalar, oom - 3, rm);
-                        return v.dz.equals(dzs, oom);
-                    } else {
-                        return false;
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Test if {@code v} is a scalar multiple of {@code this}.
-     *
-     * @param v The vector to test if it is a scalar multiple of {@code this}.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
@@ -874,9 +742,6 @@ public class V3D_Vector implements Serializable {
                  */
                 return true;
             }
-            //if (this.getDotProduct(v, oom, rm).compareTo(BigRational.ZERO) == 0) {
-            //    return false;
-            //}
             /**
              * General case: A little complicated as there is a need to deal
              * with: zero vector components; cases where the vectors point in
@@ -917,12 +782,8 @@ public class V3D_Vector implements Serializable {
                                 if (v.dy.isZero()) {
                                     return false;
                                 } else {
-                                    if (v.dy.isZero()){
-                                        return v.dz.isZero();
-                                    } else {
-                                        Math_BigRationalSqrt scalar = dy.divide(v.dy, oom, rm);
-                                        return dz.equals(v.dz.multiply(scalar, oom, rm), oom);
-                                    }
+                                    Math_BigRationalSqrt scalar = dy.divide(v.dy, oom, rm);
+                                    return dz.equals(v.dz.multiply(scalar, oom, rm), oom);
                                 }
                             }
                         }
@@ -1028,13 +889,23 @@ public class V3D_Vector implements Serializable {
                 dp.divide(mag.multiply(vmag)).toBigDecimal(mc), mc));
     }
 
-    public V3D_Vector rotate(V3D_Vector axis, Math_BigDecimal bd,
+    /**
+     * Calculate and return {@code #this} rotated using the parameters. (see
+     * Doug (https://math.stackexchange.com/users/102399/doug), How do you
+     * rotate a vector by a unit quaternion?, URL (version: 2019-06-12):
+     * https://math.stackexchange.com/q/535223)
+     *
+     * @param uv The rotation unit vector.
+     * @param theta The angle of rotation.
+     * @return The vector which is {@code #this} rotated using the parameters.
+     */
+    public V3D_Vector rotate(V3D_Vector uv, Math_BigDecimal bd,
             BigRational theta, int oom, RoundingMode rm) {
         theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
         if (theta.compareTo(BigRational.ZERO) == 0) {
             return new V3D_Vector(this);
         } else {
-            return rotateN(axis, bd, theta, oom, rm);
+            return rotateN(uv, bd, theta, oom, rm);
         }
     }
 
@@ -1044,19 +915,18 @@ public class V3D_Vector implements Serializable {
      * rotate a vector by a unit quaternion?, URL (version: 2019-06-12):
      * https://math.stackexchange.com/q/535223)
      *
-     * @param axis The axis of rotation. This should be a unit vector accurate
-     * to a sufficient precision.
-     * @param theta The angle of rotation.
+     * @param uv The rotation unit vector.
+     * @param theta The angle of rotation between 0 and 2Pi.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The vector which is {@code #this} rotated using the parameters.
      */
-    public V3D_Vector rotateN(V3D_Vector axis, Math_BigDecimal bd,
+    public V3D_Vector rotateN(V3D_Vector uv, Math_BigDecimal bd,
             BigRational theta, int oom, RoundingMode rm) {
         int oomn9 = oom - 9;
-        BigRational adx = axis.getDX(oomn9, rm);
-        BigRational ady = axis.getDY(oomn9, rm);
-        BigRational adz = axis.getDZ(oomn9, rm);
+        BigRational adx = uv.getDX(oomn9, rm);
+        BigRational ady = uv.getDY(oomn9, rm);
+        BigRational adz = uv.getDZ(oomn9, rm);
         BigRational thetaDiv2 = theta.divide(2);
         BigRational sinThetaDiv2 = Math_BigRational.sin(thetaDiv2,
                 V3D_Environment.bd.getBi(), oomn9, rm);
