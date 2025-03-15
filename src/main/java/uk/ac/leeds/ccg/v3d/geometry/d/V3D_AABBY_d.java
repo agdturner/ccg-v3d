@@ -15,10 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import uk.ac.leeds.ccg.v3d.geometry.*;
-import ch.obermuhlner.math.big.double;
 import java.io.Serializable;
-import java.math.RoundingMode;
 import java.util.HashSet;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 
@@ -157,7 +154,7 @@ public class V3D_AABBY_d implements Serializable {
      * @param y The y-coordinate of a point.
      * @param z What {@link #z} is set to.
      */
-    public V3D_AABBY_d(V3D_Environment_d env
+    public V3D_AABBY_d(V3D_Environment_d env,
             double x, double y, double z) {
         this(new V3D_Point_d(env, x, y, z));
     }
@@ -172,7 +169,7 @@ public class V3D_AABBY_d implements Serializable {
      * @param zMin What {@link zMin} is set to.
      * @param zMax What {@link zMax} is set to.
      */
-    public V3D_AABBY_d(V3D_Environment_d env
+    public V3D_AABBY_d(V3D_Environment_d env,
             double xMin, double xMax, double y,
             double zMin, double zMax) {
         this(new V3D_Point_d(env, xMin, y, zMin),
@@ -247,10 +244,10 @@ public class V3D_AABBY_d implements Serializable {
                 double zmin = points[0].getZ();
                 double zmax = points[0].getZ();
                 for (int i = 1; i < points.length; i++) {
-                    xmin = double.min(xmin, points[i].getX());
-                    xmax = double.max(xmax, points[i].getX());
-                    zmin = double.min(zmin, points[i].getZ());
-                    zmax = double.max(zmax, points[i].getZ());
+                    xmin = Math.min(xmin, points[i].getX());
+                    xmax = Math.max(xmax, points[i].getX());
+                    zmin = Math.min(zmin, points[i].getZ());
+                    zmax = Math.max(zmax, points[i].getZ());
                 }
                 this.xMin = xmin;
                 this.xMax = xmax;
@@ -271,7 +268,7 @@ public class V3D_AABBY_d implements Serializable {
     public String toString() {
         return this.getClass().getSimpleName()
                 + "(xMin=" + getXMin() + ", xMax=" + getXMax()
-                + ", y=" + y.toString()
+                + ", y=" + y
                 + ", zMin=" + getZMin() + ", zMax=" + getZMax()
                 + ")";
     }
@@ -298,39 +295,39 @@ public class V3D_AABBY_d implements Serializable {
      * @return {@code true} iff {@code this} and {@code e} are equal.
      */
     public boolean equals(V3D_AABBY_d e) {
-        return this.getXMin().compareTo(e.getXMin()) == 0
-                && this.getXMax().compareTo(e.getXMax()) == 0
-                && this.y.compareTo(e.y) == 0
-                && this.getZMin().compareTo(e.getZMin()) == 0
-                && this.getZMax().compareTo(e.getZMax()) == 0;
+        return getXMin() == e.getXMin()
+                && getXMax() == e.getXMax()
+                && y == e.y
+                && getZMin() == e.getZMin()
+                && getZMax() == e.getZMax();
     }
 
     /**
      * @return {@link #xMin} with {@link #offset} added.
      */
     public double getXMin() {
-        return xMin.add(offset.getDX(oom - 2, rm));
+        return xMin + offset.dx;
     }
 
     /**
      * @return {@link #xMax} with {@link #offset} added.
      */
     public double getXMax() {
-        return xMax.add(offset.getDX());
+        return xMax + offset.dx;
     }
 
     /**
      * @return {@link #zMin} with {@link #offset} added.
      */
     public double getZMin() {
-        return zMin.add(offset.getDZ());
+        return zMin + offset.dz;
     }
 
     /**
      * @return {@link #zMax} with {@link #offset} added.
      */
     public double getZMax() {
-        return zMax.add(offset.getDY();
+        return zMax + offset.dz;
     }
 
     /**
@@ -393,10 +390,10 @@ public class V3D_AABBY_d implements Serializable {
             double xmin = getXMin();
             double zmin = getZMin();
             double zmax = getZMax();
-            if (zmin.compareTo(zmax) == 0) {
+            if (zmin == zmax) {
                 l = new V3D_Point_d(env, xmin, y, zmax);
             } else {
-                l = new V3D_LineSegment(
+                l = new V3D_LineSegment_d(
                         new V3D_Point_d(env, xmin, y, zmin),
                         new V3D_Point_d(env, xmin, y, zmax));
             }
@@ -405,8 +402,6 @@ public class V3D_AABBY_d implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return the right of the envelope.
      */
     public V3D_FiniteGeometry_d getRight() {
@@ -414,10 +409,10 @@ public class V3D_AABBY_d implements Serializable {
             double xmax = getXMax();
             double zmin = getZMin();
             double zmax = getZMax();
-            if (zmin.compareTo(zmax) == 0) {
+            if (zmin == zmax) {
                 r = new V3D_Point_d(env, xmax, y, zmax);
             } else {
-                r = new V3D_LineSegment(
+                r = new V3D_LineSegment_d(
                         new V3D_Point_d(env, xmax, y, zmin),
                         new V3D_Point_d(env, xmax, y, zmax));
             }
@@ -426,8 +421,6 @@ public class V3D_AABBY_d implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return the top of the envelope.
      */
     public V3D_FiniteGeometry_d getTop() {
@@ -435,10 +428,10 @@ public class V3D_AABBY_d implements Serializable {
             double xmin = getXMin();
             double xmax = getXMax();
             double zmax = getZMax();
-            if (xmin.compareTo(xmax) == 0) {
+            if (xmin == xmax) {
                 t = new V3D_Point_d(env, xmin, y, zmax);
             } else {
-                t = new V3D_LineSegment(
+                t = new V3D_LineSegment_d(
                         new V3D_Point_d(env, xmin, y, zmax),
                         new V3D_Point_d(env, xmax, y, zmax));
             }
@@ -447,8 +440,6 @@ public class V3D_AABBY_d implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return the bottom of the envelope.
      */
     public V3D_FiniteGeometry_d getBottom() {
@@ -456,10 +447,10 @@ public class V3D_AABBY_d implements Serializable {
             double xmin = getXMin();
             double xmax = getXMax();
             double zmin = getZMin();
-            if (xmin.compareTo(xmax) == 0) {
+            if (xmin == xmax) {
                 b = new V3D_Point_d(env, xmin, y, zmin);
             } else {
-                b = new V3D_LineSegment(
+                b = new V3D_LineSegment_d(
                         new V3D_Point_d(env, xmin, y, zmin),
                         new V3D_Point_d(env, xmax, y, zmin));
             }
@@ -471,8 +462,6 @@ public class V3D_AABBY_d implements Serializable {
      * Translates this using {@code v}.
      *
      * @param v The vector of translation.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      */
     public void translate(V3D_Vector_d v) {
         offset = offset.add(v);
@@ -510,21 +499,18 @@ public class V3D_AABBY_d implements Serializable {
     /**
      * Calculate and return the approximate (or exact) centroid of the envelope.
      *
-     * @param oom The Order of Magnitude for the precision.
      * @return The approximate or exact centre of this.
      */
     public V3D_Point_d getCentroid() {
         return new V3D_Point_d(env,
-                getXMax().add(getXMin()).divide(2),
+                (getXMax() + getXMin()) / 2d,
                 y,
-                getZMax().add(getZMin()).divide(2));
+                (getZMax() + getZMin()) / 2d);
     }
 
     /**
      * @param e The V3D_AABBY to union with this. It is assumed
      * to be in the same Y plane.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
      * @return a V3D_AABBZ which is {@code this} union {@code e}.
      */
     public V3D_AABBY_d union(V3D_AABBY_d e) {
@@ -532,18 +518,17 @@ public class V3D_AABBY_d implements Serializable {
             return this;
         } else {
             return new V3D_AABBY_d(env,
-                    double.min(e.getXMin(), getXMin()),
-                    double.max(e.getXMax(), getXMax()),
+                    Math.min(e.getXMin(), getXMin()),
+                    Math.max(e.getXMax(), getXMax()),
                     y,
-                    double.min(e.getZMin(), getZMin()),
-                    double.max(e.getZMax(), getZMax()));
+                    Math.min(e.getZMin(), getZMin()),
+                    Math.max(e.getZMax(), getZMax()));
         }
     }
 
     /**
      * @param e The V3D_AABBY to test for intersection. It is assumed
      * to be in the same Y plane.
-     * @param oom The Order of Magnitude for the precision.
      * @return {@code true} if this intersects with {@code e} it the {@code oom}
      * level of precision.
      */
@@ -558,58 +543,53 @@ public class V3D_AABBY_d implements Serializable {
     /**
      * @param e The V3D_AABBY to test if {@code this} is beyond. It is assumed
      * to be in the same Y plane.
-     * @param oom The Order of Magnitude for the precision.
      * @return {@code true} iff {@code this} is beyond {@code e} (i.e. they do
      * not touch or intersect).
      */
     public boolean isBeyond(V3D_AABBY_d e) {
-        return getXMax().compareTo(e.getXMin()) == -1
-                || getXMin().compareTo(e.getXMax()) == 1
-                || getZMax().compareTo(e.getZMin()) == -1
-                || getZMin().compareTo(e.getZMax()) == 1;
+        return getXMax() < e.getXMin()
+                || getXMin() > e.getXMax()
+                || getZMax() < e.getZMin()
+                || getZMin() > e.getZMax();
     }
 
     /**
      * @param e V3D_AABB The envelope to test if it is contained. It is assumed
      * to be in the same Y plane.
-     * @param oom The Order of Magnitude for the precision.
      * @return {@code true} iff {@code this} contains {@code e}.
      */
     public boolean contains(V3D_AABBY_d e) {
-        return getXMax().compareTo(e.getXMax()) != -1
-                && getXMin().compareTo(e.getXMin()) != 1
-                && getZMax().compareTo(e.getZMax()) != -1
-                && getZMin().compareTo(e.getZMin()) != 1;
+        return getXMax() >= e.getXMax()
+                && getXMin() <= e.getXMin()
+                && getZMax() >= e.getZMax()
+                && getZMin() <= e.getZMin();
     }
 
     /**
      * @param p The point to test if it is contained. It is assumed
      * to be in the same Y plane.
-     * @param oom The Order of Magnitude for the precision.
      * @return {@code} true iff {@code this} contains {@code p}.
      */
     public boolean contains(V3D_Point_d p) {
-        return getXMax().compareTo(p.getX()) != -1
-                && getXMin().compareTo(p.getX()) != 1
-                && getZMax().compareTo(p.getZ()) != -1
-                && getZMin().compareTo(p.getZ()) != 1;
+        double px = p.getX();
+        double pz = p.getZ();
+        return getXMax() >= px
+                && getXMin() <= px                
+                && getZMax() >= pz
+                && getZMin() <= pz;
     }
 
     /**
      * @param l The line to test for containment.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this contains {@code l}
      */
-    public boolean contains(V3D_LineSegment l) {
+    public boolean contains(V3D_LineSegment_d l) {
         return contains(l.getP()) && contains(l.getQ());
     }
 
     /**
      * @param p The point to test for intersection. It is assumed
      * to be in the same Y plane.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code p}
      */
     public boolean intersects(V3D_Point_d p) {
@@ -619,14 +599,13 @@ public class V3D_AABBY_d implements Serializable {
     /**
      * @param x The x-coordinate of the point to test for intersection.
      * @param z The z-coordinate of the point to test for intersection.
-     * @param oom The Order of Magnitude for the precision.
      * @return {@code true} if this intersects with a point defined by 
      * {@code x}, {@link #y}, and {@code z}}.
      */
     public boolean intersects(double x, double z) {
-        return x.compareTo(getXMin()) != -1
-                && x.compareTo(getXMax()) != 1
-                && z.compareTo(getZMin()) != -1
-                && z.compareTo(getZMax()) != 1;
+        return x >= getXMin()
+                && x <= getXMax()
+                && z >= getZMin()
+                && z <= getZMax();
     }
 }

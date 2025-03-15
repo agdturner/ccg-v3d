@@ -399,7 +399,7 @@ public class V3D_AABBY implements Serializable {
      * @return {@link #zMax} rounded.
      */
     public BigRational getZMax(int oom, RoundingMode rm) {
-        return zMax.add(offset.getDY(oom - 2, rm));
+        return zMax.add(offset.getDZ(oom - 2, rm));
     }
 
     /**

@@ -357,7 +357,7 @@ public class V3D_AABBX implements Serializable {
      * @return {@link #yMax} rounded.
      */
     public BigRational getYMax(int oom, RoundingMode rm) {
-        return zMax.add(offset.getDY(oom - 2, rm));
+        return yMax.add(offset.getDY(oom - 2, rm));
     }
 
     /**
@@ -367,7 +367,7 @@ public class V3D_AABBX implements Serializable {
      * @return {@link #zMin} rounded.
      */
     public BigRational getZMin(int oom) {
-        return getYMin(oom, RoundingMode.FLOOR);
+        return getZMin(oom, RoundingMode.FLOOR);
     }
 
     /**
@@ -647,8 +647,8 @@ public class V3D_AABBX implements Serializable {
     public boolean contains(V3D_AABBX e, int oom) {
         return getYMax(oom).compareTo(e.getYMax(oom)) != -1
                 && getYMin(oom).compareTo(e.getYMin(oom)) != 1
-                && getYMax(oom).compareTo(e.getYMax(oom)) != -1
-                && getYMin(oom).compareTo(e.getYMin(oom)) != 1;
+                && getZMax(oom).compareTo(e.getZMax(oom)) != -1
+                && getZMin(oom).compareTo(e.getZMin(oom)) != 1;
     }
 
     /**

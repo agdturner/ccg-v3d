@@ -22,6 +22,7 @@ module uk.ac.leeds.ccg.v3d {
     requires transitive uk.ac.leeds.ccg.math;
     requires transitive uk.ac.leeds.ccg.generic;
     exports uk.ac.leeds.ccg.v3d.core;
+    exports uk.ac.leeds.ccg.v3d.core.d;
     exports uk.ac.leeds.ccg.v3d.geometry;
     exports uk.ac.leeds.ccg.v3d.geometry.d;
     exports uk.ac.leeds.ccg.v3d.geometry.d.light;

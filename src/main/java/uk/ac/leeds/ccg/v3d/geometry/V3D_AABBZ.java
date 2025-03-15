@@ -698,34 +698,32 @@ public class V3D_AABBZ implements Serializable {
                 && y.compareTo(getYMax(oom)) != 1;
     }
     
-    /**
-     * @param l The line to test for intersection.
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} if this intersects with {@code l}
-     */
-    public boolean intersects(V3D_Line l, int oom, RoundingMode rm) {
-        return true;
-    }
-    
-    /**
-     * https://www.geometrictools.com/Documentation/IntersectionLineBox.pdf
-     * @param l The ray to test for intersection.
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} if this intersects with {@code l}
-     */
-    public boolean intersects(V3D_Ray r, int oom, RoundingMode rm) {
-        return true;
-    }
-    
-    /**
-     * https://www.geometrictools.com/Documentation/IntersectionLineBox.pdf
-     * @param x The x-coordinate of the point to test for intersection.
-     * @param y The y-coordinate of the point to test for intersection.
-     * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} if this intersects with {@code l}
-     */
-    public boolean intersects(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return true;
-    }
+//    /**
+//     * https://www.geometrictools.com/Documentation/IntersectionLineBox.pdf
+//     * @param l The line to test for intersection.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @return {@code true} if this intersects with {@code l}
+//     */
+//    public boolean intersects(V3D_Line l, int oom, RoundingMode rm) {
+//        return true;
+//    }
+//    
+//    /**
+//     * @param l The ray to test for intersection.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @return {@code true} if this intersects with {@code l}
+//     */
+//    public boolean intersects(V3D_Ray r, int oom, RoundingMode rm) {
+//        return true;
+//    }
+//    
+//    /**
+//     * https://www.geometrictools.com/Documentation/IntersectionLineBox.pdf
+//     * @param oom The Order of Magnitude for the precision.
+//     * @return {@code true} if this intersects with {@code l}
+//     */
+//    public boolean intersects(V3D_LineSegment l, int oom, RoundingMode rm) {
+//        return true;
+//    }
     
 }

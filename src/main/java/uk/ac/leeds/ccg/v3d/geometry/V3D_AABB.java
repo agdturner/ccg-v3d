@@ -559,7 +559,7 @@ public class V3D_AABB implements Serializable {
      */
     public V3D_Point getllu() {
         if (llu == null) {
-            llu = new V3D_Point(env, xMin, yMin, zMin);
+            llu = new V3D_Point(env, xMin, yMin, zMax);
         }
         return llu;
     }
@@ -875,7 +875,9 @@ public class V3D_AABB implements Serializable {
         return getXMax(oom).compareTo(x) != -1
                 && getXMin(oom).compareTo(x) != 1
                 && getYMax(oom).compareTo(y) != -1
-                && getYMin(oom).compareTo(y) != 1;
+                && getYMin(oom).compareTo(y) != 1
+                && getZMax(oom).compareTo(z) != -1
+                && getZMin(oom).compareTo(z) != 1;
     }
 
     /**

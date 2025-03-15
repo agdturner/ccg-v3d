@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
+import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 
 /**
  * A point is defined by two vectors: {@link #offset} and {@link #rel}. Adding
@@ -84,6 +85,7 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector_d#ZERO}.
      *
+     * @param env What {@link #env} is set to.
      * @param rel Cloned to initialise {@link #rel}.
      */
     public V3D_Point_d(V3D_Environment_d env, V3D_Vector_d rel) {
@@ -93,11 +95,13 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      * @param rel Cloned to initialise {@link #rel}.
      */
-    public V3D_Point_d(V3D_Environment_d env, V3D_Vector_d offset, V3D_Vector_d rel) {
-        super(offset);
+    public V3D_Point_d(V3D_Environment_d env, V3D_Vector_d offset, 
+            V3D_Vector_d rel) {
+        super(env, offset);
         this.rel = new V3D_Vector_d(rel);
     }
 
@@ -105,6 +109,7 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
      * Create a new instance with {@link #offset} set to
      * {@link V3D_Vector_d#ZERO}.
      *
+     * @param env What {@link #env} is set to.
      * @param x What {@link #rel} x component is set to.
      * @param y What {@link #rel} y component is set to.
      * @param z What {@link #rel} z component is set to.

@@ -174,7 +174,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
             throw new RuntimeException("" + pv + " and " + qv + " are the same"
                     + " so do not define a line.");
         }
-        q = new V3D_Point_d(offset, qv);
+        q = new V3D_Point_d(env, offset, qv);
         v = qv.subtract(pv);
         isDefinedByVector = false;
     }
@@ -190,7 +190,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * {@link #V3D_Line_d(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Vector_d, uk.ac.leeds.ccg.v3d.geometry.d.V3D_Vector_d)}
      */
     public V3D_Line_d(V3D_Environment_d env, V3D_Vector_d p, V3D_Vector_d v, boolean flag) {
-        this(env, 3D_Vector_d.ZERO, p, v, flag);
+        this(env, V3D_Vector_d.ZERO, p, v, flag);
     }
 
     /**
@@ -340,7 +340,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      */
     public V3D_Point_d getP() {
         if (p == null) {
-            p = new V3D_Point_d(offset, pv);
+            p = new V3D_Point_d(env, offset, pv);
         }
         return p;
     }
@@ -353,7 +353,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      */
     public V3D_Point_d getQ() {
         if (q == null) {
-            q = new V3D_Point_d(offset, pv.add(v));
+            q = new V3D_Point_d(env, offset, pv.add(v));
         }
         return q;
     }

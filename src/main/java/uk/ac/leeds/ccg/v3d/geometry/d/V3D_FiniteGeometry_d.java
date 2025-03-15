@@ -17,6 +17,7 @@ package uk.ac.leeds.ccg.v3d.geometry.d;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 
 /**
  * V3D_FiniteGeometry for representing finite geometries.
@@ -42,6 +43,8 @@ public abstract class V3D_FiniteGeometry_d extends V3D_Geometry_d {
     
     /**
      * Creates a new instance with offset V3D_Vector.ZERO.
+     * 
+     * @param env What {@link #env} is set to.
      */
     public V3D_FiniteGeometry_d(V3D_Environment_d env) {
         this(env, V3D_Vector_d.ZERO);
@@ -50,6 +53,7 @@ public abstract class V3D_FiniteGeometry_d extends V3D_Geometry_d {
     /**
      * Creates a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      */
     public V3D_FiniteGeometry_d(V3D_Environment_d env, V3D_Vector_d offset) {
@@ -70,7 +74,7 @@ public abstract class V3D_FiniteGeometry_d extends V3D_Geometry_d {
     /**
      * @return A copy of the points of the geometry.
      */
-    public abstract V3D_Point_d[] getPoints();
+    public abstract V3D_Point_d[] getPointsArray();
     
     /**
      * @return A copy of the points of the geometries gs.
