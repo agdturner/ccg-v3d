@@ -18,7 +18,6 @@ package uk.ac.leeds.ccg.v3d.geometry.d;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VTriangle_d;
@@ -1220,11 +1219,11 @@ public class V3D_Triangle_d extends V3D_Face_d {
                                         gpql.getQ(), gqrp);
                             }
                         } else if (grp instanceof V3D_Point_d grpp) {
-                            ArrayList<V3D_Point_d> pts = new ArrayList<>();
-                            pts.add(gpql.getP());
-                            pts.add(gpql.getQ());
-                            pts.add(gqrp);
-                            pts.add(grpp);
+                            HashMap<Integer, V3D_Point_d> pts = new HashMap<>(4);
+                            pts.put(0, gpql.getP());
+                            pts.put(1, gpql.getQ());
+                            pts.put(2, gqrp);
+                            pts.put(3, grpp);
                             ArrayList<V3D_Point_d> pts2 = V3D_Point_d.getUnique(pts, epsilon);
                             return switch (pts2.size()) {
                                 case 2 ->
@@ -1949,12 +1948,12 @@ public class V3D_Triangle_d extends V3D_Face_d {
         V3D_Point_d l2q = l2.getQ();
         ArrayList<V3D_Point_d> points;
         {
-            List<V3D_Point_d> pts = new ArrayList<>();
-            pts.add(l1p);
-            pts.add(l1q);
-            pts.add(l2p);
-            pts.add(l2q);
-            pts.add(pt);
+            HashMap<Integer, V3D_Point_d> pts = new HashMap<>(5);
+            pts.put(0, l1p);
+            pts.put(1, l1q);
+            pts.put(2, l2p);
+            pts.put(3, l2q);
+            pts.put(4, pt);
             points = V3D_Point_d.getUnique(pts, epsilon);
         }
         int n = points.size();
@@ -2023,6 +2022,7 @@ public class V3D_Triangle_d extends V3D_Face_d {
     /**
      * Useful in calculating the intersection of two triangles.
      *
+     * @param pl
      * @param ab A line segment and triangle edge.
      * @param cd A line segment and triangle edge.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -2059,6 +2059,7 @@ public class V3D_Triangle_d extends V3D_Face_d {
     /**
      * Useful in calculating the intersection of two triangles.
      *
+     * @param pl
      * @param l A line segment.
      * @param a A point that is either not collinear to l or intersects l.
      * @param b A point that is either not collinear to l or intersects l.
@@ -2243,6 +2244,8 @@ public class V3D_Triangle_d extends V3D_Face_d {
      * Get the minimum distance to {@code pl}.
      *
      * @param pl A plane.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code pv}.
      */
     public double getDistance(V3D_Plane_d pl, double epsilon) {
@@ -2253,6 +2256,8 @@ public class V3D_Triangle_d extends V3D_Face_d {
      * Get the minimum distance squared to {@code pl}.
      *
      * @param pl A plane.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code pv}.
      */
     public double getDistanceSquared(V3D_Plane_d pl, double epsilon) {
@@ -2309,11 +2314,11 @@ public class V3D_Triangle_d extends V3D_Face_d {
     //public static ArrayList<V3D_Point> getPointsArray(V3D_Triangle[] triangles) {
     public static V3D_Point_d[] getPoints(V3D_Triangle_d[] triangles,
             double epsilon) {
-        List<V3D_Point_d> s = new ArrayList<>();
+        HashMap<Integer, V3D_Point_d> s = new HashMap<>(3);
         for (var t : triangles) {
-            s.add(t.getP());
-            s.add(t.getQ());
-            s.add(t.getR());
+            s.put(0, t.getP());
+            s.put(1, t.getQ());
+            s.put(2, t.getR());
         }
         ArrayList<V3D_Point_d> points = V3D_Point_d.getUnique(s, epsilon);
         return points.toArray(V3D_Point_d[]::new);

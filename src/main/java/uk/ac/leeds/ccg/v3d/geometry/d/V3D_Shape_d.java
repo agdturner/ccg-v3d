@@ -15,12 +15,9 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import uk.ac.leeds.ccg.v3d.geometry.*;
-import ch.obermuhlner.math.big.BigRational;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 
 /**
  * For representing 3D Shapes in double precision.
@@ -28,7 +25,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class V3D_Shape_d extends V3D_FiniteGeometry {
+public abstract class V3D_Shape_d extends V3D_FiniteGeometry_d {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,12 +35,12 @@ public abstract class V3D_Shape_d extends V3D_FiniteGeometry {
     protected final int id;
     
     /**
-     * Creates a new instance with offset V3D_Vector.ZERO.
+     * Creates a new instance with offset V3D_Vector_d.ZERO.
      * 
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      */
-    public V3D_Shape_d(V3D_Environment env, V3D_Vector offset) {
+    public V3D_Shape_d(V3D_Environment_d env, V3D_Vector_d offset) {
         super(env, offset);
         this.id = env.getNextID();
     }
@@ -51,60 +48,48 @@ public abstract class V3D_Shape_d extends V3D_FiniteGeometry {
     /**
      * For storing the points.
      */
-    protected HashMap<Integer, V3D_Point> points;
+    protected HashMap<Integer, V3D_Point_d> points;
 
     /**
      * For storing the faces.
      */
-    protected HashMap<Integer, V3D_Face> faces;
+    protected HashMap<Integer, V3D_Face_d> faces;
     
     /**
      * For getting the points of a shape.
      * 
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
      * @return A HashMap of the points with integer identifier keys.
      */
-    public abstract HashMap<Integer, V3D_Point> getPoints(int oom, 
-            RoundingMode rm);
+    public abstract HashMap<Integer, V3D_Point_d> getPoints();
     
     /**
      * For getting the faces of a shape.
      * 
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
      * @return A HashMap of the edges with integer identifier keys.
      */
-    public abstract HashMap<Integer, V3D_Face> getFaces(int oom, 
-            RoundingMode rm);
+    public abstract HashMap<Integer, V3D_Face_d> getFaces();
     
     /**
      * For calculating and returning the area.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
      * @return The area.
      */
-    public abstract BigRational getArea(int oom, RoundingMode rm);
+    public abstract double getArea();
     
     /**
      * For calculating and returning the perimeter.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
      * @return The Perimeter.
      */
-    public abstract BigRational getVolume(int oom, RoundingMode rm);
+    public abstract double getVolume();
     
     /**
      * @return A copy of the points of the geometries gs.
      * 
      * @param ss The geometries.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
      */
-    public static ArrayList<V3D_Point> getPoints(HashMap<Integer, V3D_Shape_d> ss, 
-            int oom, RoundingMode rm) {
-        ArrayList<V3D_Point> list = new ArrayList<>();
-        ss.values().forEach(x -> list.addAll(x.getPoints(oom, rm).values()));
+    public static ArrayList<V3D_Point_d> getPoints(
+            HashMap<Integer, V3D_Shape_d> ss) {
+        ArrayList<V3D_Point_d> list = new ArrayList<>();
+        ss.values().forEach(x -> list.addAll(x.getPoints().values()));
         return list;
     }
 }

@@ -15,8 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import ch.obermuhlner.math.big.BigRational;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 

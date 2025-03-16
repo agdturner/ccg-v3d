@@ -16,6 +16,8 @@
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
@@ -500,7 +502,7 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
      * @return A unique list made from those in pts.
      */
     public static ArrayList<V3D_Point_d> getUnique(
-            List<V3D_Point_d> pts, double epsilon) {
+            HashMap<Integer, V3D_Point_d> pts, double epsilon) {
         HashSet<Integer> indexes = new HashSet<>();
         ArrayList<V3D_Point_d> r = new ArrayList<>();
         for (int i = 0; i < pts.size(); i++) {

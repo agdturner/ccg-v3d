@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,9 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
-import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
-//import java.util.ArrayList;
 
 /**
  * A class for representing and using coplanar convex hulls. These are a special
@@ -74,19 +70,16 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
     /**
      * The coplanar triangles that comprise the convex hull.
      */
-    protected final ArrayList<V3D_Triangle_d> triangles;
-
-    /**
-     * The collection of points. (Todo: organise to be final)
-     */
-    protected ArrayList<V3D_Point_d> points;
+    protected final HashMap<Integer, V3D_Triangle_d> triangles;
 
     public V3D_ConvexHullCoplanar_d(V3D_ConvexHullCoplanar_d c) {
         super(c.env, c.offset);
-        points = new ArrayList<>();
-        c.points.forEach(x -> points.add(new V3D_Point_d(x)));
-        triangles = new ArrayList<>();
-        c.triangles.forEach(x -> triangles.add(new V3D_Triangle_d(x)));
+        points = new HashMap<>();
+        c.points.values().forEach(x ->
+                points.put(points.size(), new V3D_Point_d(x)));
+        triangles = new HashMap<>();
+        c.triangles.values().forEach(x ->
+                triangles.put(triangles.size(), new V3D_Triangle_d(x)));
     }
     
     /**
@@ -125,156 +118,157 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
     public V3D_ConvexHullCoplanar_d(V3D_Vector_d n, 
             double epsilon, V3D_Point_d... points) {
         super(points[0].env, points[0].offset);
-        this.points = new ArrayList<>();
-        this.triangles = new ArrayList<>();
-        // Get a list of unique points.
-        ArrayList<V3D_Point_d> pts = V3D_Point_d.getUnique(
-                Arrays.asList(points), epsilon);
-        V3D_Vector_d v0 = new V3D_Vector_d(pts.get(0).rel);
-        double xmin = v0.dx;
-        double xmax = v0.dx;
-        double ymin = v0.dy;
-        double ymax = v0.dy;
-        double zmin = v0.dz;
-        double zmax = v0.dz;
-        int xminIndex = 0;
-        int xmaxIndex = 0;
-        int yminIndex = 0;
-        int ymaxIndex = 0;
-        int zminIndex = 0;
-        int zmaxIndex = 0;
-        for (int i = 1; i < pts.size(); i++) {
-            V3D_Point_d pt = pts.get(i);
-            double x = pt.rel.dx;
-            double y = pt.rel.dy;
-            double z = pt.rel.dz;
-            if (x < xmin) {
-                xmin = x;
-                xminIndex = i;
-            }
-            if (x > xmax) {
-                xmax = x;
-                xmaxIndex = i;
-            }
-            if (y < ymin) {
-                ymin = y;
-                yminIndex = i;
-            }
-            if (y > ymax) {
-                ymax = y;
-                ymaxIndex = i;
-            }
-            if (z < zmin) {
-                zmin = z;
-                zminIndex = i;
-            }
-            if (z > zmax) {
-                zmax = z;
-                zmaxIndex = i;
-            }
-        }
-        V3D_Point_d xminp = pts.get(xminIndex);
-        V3D_Point_d xmaxp = pts.get(xmaxIndex);
-        V3D_Point_d yminp = pts.get(yminIndex);
-        V3D_Point_d ymaxp = pts.get(ymaxIndex);
-        V3D_Point_d zminp = pts.get(zminIndex);
-        V3D_Point_d zmaxp = pts.get(zmaxIndex);
-        this.offset = xminp.offset;
-        if (xminIndex == xmaxIndex) {
-            V3D_LineSegment_d yd = new V3D_LineSegment_d(ymaxp, yminp);
-            V3D_LineSegment_d zd = new V3D_LineSegment_d(zmaxp, zminp);
-            double ydl2 = yd.getLength2();
-            double zdl2 = zd.getLength2();
-            if (ydl2 > zdl2) {
-                this.points.add(yminp);
-                this.points.add(ymaxp);
-                compute(pts, yminp, ymaxp, n, 1, epsilon);
-            } else {
-                this.points.add(zminp);
-                this.points.add(zmaxp);
-                compute(pts, zminp, zmaxp, n, 1, epsilon);
-            }
-        } else if (yminIndex == ymaxIndex) {
-            V3D_LineSegment_d xd = new V3D_LineSegment_d(xmaxp, xminp);
-            V3D_LineSegment_d zd = new V3D_LineSegment_d(zmaxp, zminp);
-            double xdl2 = xd.getLength2();
-            double zdl2 = zd.getLength2();
-            if (xdl2 > zdl2) {
-                this.points.add(xminp);
-                this.points.add(xmaxp);
-                compute(pts, xminp, xmaxp, n, 1, epsilon);
-            } else {
-                this.points.add(zminp);
-                this.points.add(zmaxp);
-                compute(pts, zminp, zmaxp, n, 1, epsilon);
-            }
-        } else if (zminIndex == zmaxIndex) {
-            V3D_LineSegment_d xd = new V3D_LineSegment_d(xmaxp, xminp);
-            V3D_LineSegment_d yd = new V3D_LineSegment_d(ymaxp, yminp);
-            double xdl2 = xd.getLength2();
-            double ydl2 = yd.getLength2();
-            if (xdl2 > ydl2) {
-                this.points.add(xminp);
-                this.points.add(xmaxp);
-                compute(pts, xminp, xmaxp, n, 1, epsilon);
-            } else {
-                this.points.add(yminp);
-                this.points.add(ymaxp);
-                compute(pts, yminp, ymaxp, n, 1, epsilon);
-            }
-        } else {
-            V3D_LineSegment_d xd = new V3D_LineSegment_d(xmaxp, xminp);
-            V3D_LineSegment_d yd = new V3D_LineSegment_d(ymaxp, yminp);
-            V3D_LineSegment_d zd = new V3D_LineSegment_d(zmaxp, zminp);
-            double xdl2 = xd.getLength2();
-            double ydl2 = yd.getLength2();
-            double zdl2 = zd.getLength2();
-            if (xdl2 > ydl2) {
-                if (xdl2 > zdl2) {
-                    this.points.add(xminp);
-                    this.points.add(xmaxp);
-                    compute(pts, xminp, xmaxp, n, 1, epsilon);
-                } else {
-                    this.points.add(zminp);
-                    this.points.add(zmaxp);
-                    compute(pts, zminp, zmaxp, n, 1, epsilon);
-                }
-            } else {
-                if (ydl2 > zdl2) {
-                    this.points.add(yminp);
-                    this.points.add(ymaxp);
-                    compute(pts, yminp, ymaxp, n, 1, epsilon);
-                } else {
-                    this.points.add(zminp);
-                    this.points.add(zmaxp);
-                    compute(pts, zminp, zmaxp, n, 1, epsilon);
-                }
-            }
-        }
-        this.points = V3D_Point_d.getUnique(this.points, epsilon);
-
-        if (this.points.size() < 3) {
-            int debug = 1;
-        }
-
-        V3D_Point_d pt = this.points.get(0);
-        for (int i = 1; i < this.points.size() - 1; i++) {
-            V3D_Point_d qt = this.points.get(i);
-            V3D_Point_d rt = this.points.get(i + 1);
-            
-            try {
-                triangles.add(new V3D_Triangle_d(pt, qt, rt));
-            } catch(RuntimeException e) {
-                // Points are collinear!
-                //triangles.add(new V3D_Triangle_d(pt, qt, rt));
-                System.out.println("Due to imprecision, triangle points are collinear!");
-                
-            }
-        }
-
-        if (triangles.isEmpty()) {
-            int debug = 1;
-        }
+        
+        this.points = new HashMap<>();
+       this.triangles = new HashMap<>();
+//        // Get a list of unique points.
+//        ArrayList<V3D_Point_d> pts = V3D_Point_d.getUnique(
+//               this.points, epsilon);
+//        V3D_Vector_d v0 = new V3D_Vector_d(pts.get(0).rel);
+//        double xmin = v0.dx;
+//        double xmax = v0.dx;
+//        double ymin = v0.dy;
+//        double ymax = v0.dy;
+//        double zmin = v0.dz;
+//        double zmax = v0.dz;
+//        int xminIndex = 0;
+//        int xmaxIndex = 0;
+//        int yminIndex = 0;
+//        int ymaxIndex = 0;
+//        int zminIndex = 0;
+//        int zmaxIndex = 0;
+//        for (int i = 1; i < pts.size(); i++) {
+//            V3D_Point_d pt = pts.get(i);
+//            double x = pt.rel.dx;
+//            double y = pt.rel.dy;
+//            double z = pt.rel.dz;
+//            if (x < xmin) {
+//                xmin = x;
+//                xminIndex = i;
+//            }
+//            if (x > xmax) {
+//                xmax = x;
+//                xmaxIndex = i;
+//            }
+//            if (y < ymin) {
+//                ymin = y;
+//                yminIndex = i;
+//            }
+//            if (y > ymax) {
+//                ymax = y;
+//                ymaxIndex = i;
+//            }
+//            if (z < zmin) {
+//                zmin = z;
+//                zminIndex = i;
+//            }
+//            if (z > zmax) {
+//                zmax = z;
+//                zmaxIndex = i;
+//            }
+//        }
+//        V3D_Point_d xminp = pts.get(xminIndex);
+//        V3D_Point_d xmaxp = pts.get(xmaxIndex);
+//        V3D_Point_d yminp = pts.get(yminIndex);
+//        V3D_Point_d ymaxp = pts.get(ymaxIndex);
+//        V3D_Point_d zminp = pts.get(zminIndex);
+//        V3D_Point_d zmaxp = pts.get(zmaxIndex);
+//        this.offset = xminp.offset;
+//        if (xminIndex == xmaxIndex) {
+//            V3D_LineSegment_d yd = new V3D_LineSegment_d(ymaxp, yminp);
+//            V3D_LineSegment_d zd = new V3D_LineSegment_d(zmaxp, zminp);
+//            double ydl2 = yd.getLength2();
+//            double zdl2 = zd.getLength2();
+//            if (ydl2 > zdl2) {
+//                this.points.put(this.points.size(), yminp);
+//                this.points.put(this.points.size(), ymaxp);
+//                compute(pts, yminp, ymaxp, n, 1, epsilon);
+//            } else {
+//                this.points.put(this.points.size(), zminp);
+//                this.points.put(this.points.size(), zmaxp);
+//                compute(pts, zminp, zmaxp, n, 1, epsilon);
+//            }
+//        } else if (yminIndex == ymaxIndex) {
+//            V3D_LineSegment_d xd = new V3D_LineSegment_d(xmaxp, xminp);
+//            V3D_LineSegment_d zd = new V3D_LineSegment_d(zmaxp, zminp);
+//            double xdl2 = xd.getLength2();
+//            double zdl2 = zd.getLength2();
+//            if (xdl2 > zdl2) {
+//                this.points.put(this.points.size(), xminp);
+//                this.points.put(this.points.size(), xmaxp);
+//                compute(pts, xminp, xmaxp, n, 1, epsilon);
+//            } else {
+//                this.points.put(this.points.size(), zminp);
+//                this.points.put(this.points.size(), zmaxp);
+//                compute(pts, zminp, zmaxp, n, 1, epsilon);
+//            }
+//        } else if (zminIndex == zmaxIndex) {
+//            V3D_LineSegment_d xd = new V3D_LineSegment_d(xmaxp, xminp);
+//            V3D_LineSegment_d yd = new V3D_LineSegment_d(ymaxp, yminp);
+//            double xdl2 = xd.getLength2();
+//            double ydl2 = yd.getLength2();
+//            if (xdl2 > ydl2) {
+//                this.points.put(this.points.size(), xminp);
+//                this.points.put(this.points.size(), xmaxp);
+//                compute(pts, xminp, xmaxp, n, 1, epsilon);
+//            } else {
+//                this.points.put(this.points.size(), yminp);
+//                this.points.put(this.points.size(), ymaxp);
+//                compute(pts, yminp, ymaxp, n, 1, epsilon);
+//            }
+//        } else {
+//            V3D_LineSegment_d xd = new V3D_LineSegment_d(xmaxp, xminp);
+//            V3D_LineSegment_d yd = new V3D_LineSegment_d(ymaxp, yminp);
+//            V3D_LineSegment_d zd = new V3D_LineSegment_d(zmaxp, zminp);
+//            double xdl2 = xd.getLength2();
+//            double ydl2 = yd.getLength2();
+//            double zdl2 = zd.getLength2();
+//            if (xdl2 > ydl2) {
+//                if (xdl2 > zdl2) {
+//                    this.points.put(this.points.size(), xminp);
+//                    this.points.put(this.points.size(), xmaxp);
+//                    compute(pts, xminp, xmaxp, n, 1, epsilon);
+//                } else {
+//                    this.points.put(this.points.size(), zminp);
+//                    this.points.put(this.points.size(), zmaxp);
+//                    compute(pts, zminp, zmaxp, n, 1, epsilon);
+//                }
+//            } else {
+//                if (ydl2 > zdl2) {
+//                    this.points.put(this.points.size(), yminp);
+//                    this.points.put(this.points.size(), ymaxp);
+//                    compute(pts, yminp, ymaxp, n, 1, epsilon);
+//                } else {
+//                    this.points.put(this.points.size(), zminp);
+//                    this.points.put(this.points.size(), zmaxp);
+//                    compute(pts, zminp, zmaxp, n, 1, epsilon);
+//                }
+//            }
+//        }
+//        this.points = V3D_Point_d.getUnique(this.points, epsilon);
+//
+//        if (this.points.size() < 3) {
+//            int debug = 1;
+//        }
+//
+//        V3D_Point_d pt = this.points.get(0);
+//        for (int i = 1; i < this.points.size() - 1; i++) {
+//            V3D_Point_d qt = this.points.get(i);
+//            V3D_Point_d rt = this.points.get(i + 1);
+//            
+//            try {
+//                triangles.put(triangles.size(), new V3D_Triangle_d(pt, qt, rt));
+//            } catch(RuntimeException e) {
+//                // Points are collinear!
+//                //triangles.add(new V3D_Triangle_d(pt, qt, rt));
+//                System.out.println("Due to imprecision, triangle points are collinear!");
+//                
+//            }
+//        }
+//
+//        if (triangles.isEmpty()) {
+//            int debug = 1;
+//        }
     }
 
     /**
@@ -332,7 +326,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
     @Override
     public String toString() {
         String s = this.getClass().getName() + "(";
-        Iterator<V3D_Point_d> ite = points.iterator();
+        Iterator<V3D_Point_d> ite = points.values().iterator();
         s += ite.next().toString();
         while (ite.hasNext()) {
             s += ", " + ite.next().toString("");
@@ -346,7 +340,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      */
     public String toStringSimple() {
         String s = this.getClass().getName() + "(";
-        Iterator<V3D_Point_d> ite = points.iterator();
+        Iterator<V3D_Point_d> ite = points.values().iterator();
         s += ite.next().toString();
         while (ite.hasNext()) {
             s += ", " + ite.next().toStringSimple(s);
@@ -365,7 +359,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      */
     public boolean equals(V3D_ConvexHullCoplanar_d c, double epsilon) {
         HashSet<Integer> indexes = new HashSet<>();
-        for (var x : points) {
+        for (var x : points.values()) {
             boolean found = false;
             for (int i = 0; i < c.points.size(); i++) {
                 if (x.equals(epsilon, c.points.get(i))) {
@@ -381,7 +375,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
         for (int i = 0; i < c.points.size(); i++) {
             if (!indexes.contains(i)) {
                 boolean found = false;
-                for (var x : points) {
+                for (var x : points.values()) {
                     if (x.equals(epsilon, c.points.get(i))) {
                         found = true;
                         break;
@@ -471,7 +465,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
             // Check point is on the plane. 
             if (triangles.get(0).pl.intersects(epsilon, pt)) {
                 // Check point is in a triangle
-                for (var t : triangles) {
+                for (var t : triangles.values()) {
                     //if (t.intersects(pt, epsilon)) {
                     if (t.isAligned(pt, epsilon)) {
                         return true;
@@ -489,7 +483,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      * @return {@code true} if the point is aligned with any of the parts.
      */
     protected boolean isAligned(V3D_Point_d pt, double epsilon) {
-        for (V3D_Triangle_d triangle : triangles) {
+        for (V3D_Triangle_d triangle : triangles.values()) {
             if (triangle.isAligned(pt, epsilon)) {
                 return true;
             }
@@ -506,7 +500,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      */
     @Deprecated
     protected boolean intersects0(V3D_Point_d pt, double epsilon) {
-        for (V3D_Triangle_d triangle : triangles) {
+        for (V3D_Triangle_d triangle : triangles.values()) {
             if (triangle.intersects0(pt, epsilon)) {
                 return true;
             }
@@ -523,7 +517,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
     @Override
     public double getArea() {
         double sum = 0d;
-        for (var t : triangles) {
+        for (var t : triangles.values()) {
             sum = sum + t.getArea();
         }
         return sum;
@@ -535,7 +529,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
     @Override
     public double getPerimeter() {
         double sum = 0d;
-        for (var t : triangles) {
+        for (var t : triangles.values()) {
             sum = sum + t.getPerimeter();
         }
         return sum;
@@ -555,23 +549,24 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
             return this;
         }
         ArrayList<V3D_Point_d> pts = new ArrayList<>();
-        for (var t : triangles) {
+        for (var t : triangles.values()) {
             V3D_FiniteGeometry_d ti = t.getIntersect(p, epsilon);
             if (ti != null) {
                 pts.addAll(Arrays.asList(ti.getPoints()));
             }
         }
-        pts = V3D_Point_d.getUnique(pts, epsilon);
-        int n = pts.size();
-        return switch (n) {
-            case 0 ->
-                null;
-            case 1 ->
-                pts.iterator().next();
-            default ->
-                V3D_LineSegment_d.getGeometry(epsilon, pts.toArray(
-                V3D_Point_d[]::new));
-        };
+//        pts = V3D_Point_d.getUnique(pts, epsilon);
+//        int n = pts.size();
+//        return switch (n) {
+//            case 0 ->
+//                null;
+//            case 1 ->
+//                pts.iterator().next();
+//            default ->
+//                V3D_LineSegment_d.getGeometry(epsilon, pts.toArray(
+//                V3D_Point_d[]::new));
+//        };
+        return null;
     }
 
     /**
@@ -584,19 +579,20 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      */
     public V3D_FiniteGeometry_d getIntersect(V3D_Triangle_d t,
             double epsilon) {
-        // Create a set all the intersecting triangles from this.
-        List<V3D_Point_d> ts = new ArrayList<>();
-        for (V3D_Triangle_d t2 : triangles) {
-            V3D_FiniteGeometry_d i = t2.getIntersect(t, epsilon);
-            ts.addAll(Arrays.asList(i.getPoints()));
-        }
-        ArrayList<V3D_Point_d> tsu = V3D_Point_d.getUnique(ts, epsilon);
-        if (tsu.isEmpty()) {
-            return null;
-        } else {
-            return new V3D_ConvexHullCoplanar_d(t.pl.n, epsilon,
-                    tsu.toArray(V3D_Point_d[]::new)).simplify(epsilon);
-        }
+//        // Create a set all the intersecting triangles from this.
+//        List<V3D_Point_d> ts = new ArrayList<>();
+//        for (V3D_Triangle_d t2 : triangles.values()) {
+//            V3D_FiniteGeometry_d i = t2.getIntersect(t, epsilon);
+//            ts.addAll(Arrays.asList(i.getPoints()));
+//        }
+//        ArrayList<V3D_Point_d> tsu = V3D_Point_d.getUnique(ts, epsilon);
+//        if (tsu.isEmpty()) {
+//            return null;
+//        } else {
+//            return new V3D_ConvexHullCoplanar_d(t.pl.n, epsilon,
+//                    tsu.toArray(V3D_Point_d[]::new)).simplify(epsilon);
+//        }
+        return null;
 //        switch (size) {
 //            case 0:
 //                return null;
@@ -654,11 +650,11 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
         // Process ab.a
         if (!ab.a.isEmpty()) {
             if (ab.a.size() == 1) {
-                points.add(index, ab.a.get(0));
+                points.put(index, ab.a.get(0));
                 index++;
             } else {
                 V3D_Point_d apt = ab.a.get(ab.maxaIndex);
-                points.add(index, apt);
+                points.put(index, apt);
                 index++;
                 V3D_Triangle_d atr = new V3D_Triangle_d(p0, p1, apt);
                 TreeSet<Integer> removeIndexes = new TreeSet<>();
@@ -674,7 +670,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
                 }
                 if (!ab.a.isEmpty()) {
                     if (ab.a.size() == 1) {
-                        points.add(index, ab.a.get(0));
+                        points.put(index, ab.a.get(0));
                         index++;
                     } else {
                         // Divide again
@@ -688,11 +684,11 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
         // Process ab.b
         if (!ab.b.isEmpty()) {
             if (ab.b.size() == 1) {
-                points.add(index, ab.b.get(0));
+                points.put(index, ab.b.get(0));
                 index++;
             } else {
                 V3D_Point_d bpt = ab.b.get(ab.maxbIndex);
-                points.add(index, bpt);
+                points.put(index, bpt);
                 index++;
                 
                 // Debug
@@ -715,7 +711,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
                 }
                 if (!ab.b.isEmpty()) {
                     if (ab.b.size() == 1) {
-                        points.add(index, ab.b.get(0));
+                        points.put(index, ab.b.get(0));
                         index++;
                     } else {
                         // Divide again
@@ -778,7 +774,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
                     b.add(pt);
                 }
             }
-            a = V3D_Point_d.getUnique(a, epsilon);
+//            a = V3D_Point_d.getUnique(a, epsilon);
             maxaIndex = 0;
             if (a.size() > 1) {
                 V3D_Point_d pt0 = a.get(0);
@@ -792,7 +788,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
                     }
                 }
             }
-            b = V3D_Point_d.getUnique(b, epsilon);
+    //        b = V3D_Point_d.getUnique(b, epsilon);
             maxbIndex = 0;
             if (b.size() > 1) {
                 V3D_Point_d pt0 = b.get(0);
@@ -866,7 +862,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
         } else if (i instanceof V3D_LineSegment_d il) {
             //V3D_LineSegment_d il = (V3D_LineSegment_d) i;
             ArrayList<V3D_Point_d> pts = new ArrayList<>();
-            for (V3D_Point_d pt : points) {
+            for (V3D_Point_d pt : points.values()) {
                 if (pl.isOnSameSide(pt, p, epsilon)) {
                     pts.add(pt);
                 }
@@ -876,7 +872,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
             } else {
                 pts.add(il.getP());
                 pts.add(il.getQ());
-                pts = V3D_Point_d.getUnique(pts, epsilon);
+          //      pts = V3D_Point_d.getUnique(pts, epsilon);
                 return V3D_ConvexHullCoplanar_d.getGeometry(epsilon,
                         pts.toArray(V3D_Point_d[]::new));
 //                return new V3D_ConvexHullCoplanarDouble(
@@ -977,39 +973,40 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      * V3D_ConvexHullCoplanar.
      */
     public static V3D_FiniteGeometry_d getGeometry(double epsilon, V3D_Point_d... pts) {
-        ArrayList<V3D_Point_d> upts = V3D_Point_d.getUnique(Arrays.asList(pts), epsilon);
-        Iterator<V3D_Point_d> i = upts.iterator();
-        switch (upts.size()) {
-            case 1 -> {
-                return i.next();
-            }
-            case 2 -> {
-                return new V3D_LineSegment_d(i.next(), i.next());
-            }
-            case 3 -> {
-                if (V3D_Line_d.isCollinear(epsilon, pts)) {
-                    return V3D_LineSegment_d.getGeometry(epsilon, pts);
-                } else {
-                    return new V3D_Triangle_d(i.next(), i.next(), i.next());
-                }
-            }
-            default -> {
-                V3D_Point_d ip = i.next();
-                V3D_Point_d iq = i.next();
-                V3D_Point_d ir = i.next();
-                while (V3D_Line_d.isCollinear(epsilon, ip, iq, ir) && i.hasNext()) {
-                    ir = i.next();
-                }
-                V3D_Plane_d pl;
-                if (V3D_Line_d.isCollinear(epsilon, ip, iq, ir)) {
-                    return new V3D_LineSegment_d(epsilon, pts);
-                } else {
-                    pl = new V3D_Plane_d(ip, iq, ir);
-                    return new V3D_ConvexHullCoplanar_d(pl.n, epsilon, pts);
-                }
-            }
-
-        }
+//        ArrayList<V3D_Point_d> upts = V3D_Point_d.getUnique(Arrays.asList(pts), epsilon);
+//        Iterator<V3D_Point_d> i = upts.iterator();
+//        switch (upts.size()) {
+//            case 1 -> {
+//                return i.next();
+//            }
+//            case 2 -> {
+//                return new V3D_LineSegment_d(i.next(), i.next());
+//            }
+//            case 3 -> {
+//                if (V3D_Line_d.isCollinear(epsilon, pts)) {
+//                    return V3D_LineSegment_d.getGeometry(epsilon, pts);
+//                } else {
+//                    return new V3D_Triangle_d(i.next(), i.next(), i.next());
+//                }
+//            }
+//            default -> {
+//                V3D_Point_d ip = i.next();
+//                V3D_Point_d iq = i.next();
+//                V3D_Point_d ir = i.next();
+//                while (V3D_Line_d.isCollinear(epsilon, ip, iq, ir) && i.hasNext()) {
+//                    ir = i.next();
+//                }
+//                V3D_Plane_d pl;
+//                if (V3D_Line_d.isCollinear(epsilon, ip, iq, ir)) {
+//                    return new V3D_LineSegment_d(epsilon, pts);
+//                } else {
+//                    pl = new V3D_Plane_d(ip, iq, ir);
+//                    return new V3D_ConvexHullCoplanar_d(pl.n, epsilon, pts);
+//                }
+//            }
+//
+//        }
+return null;
     }
 
 }
