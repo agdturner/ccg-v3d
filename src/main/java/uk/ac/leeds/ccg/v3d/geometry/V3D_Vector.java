@@ -749,44 +749,48 @@ public class V3D_Vector implements Serializable {
              */
             if (v.dx.abs().equals(dx.abs(), oom)) {
                 // |v.dx| = |dx|
-                if (dx.isZero(oom)) {
-                    // dx = 0d
-                    if (v.dy.abs().equals(dy.abs(), oom)) {
-                        // |v.dy| = |dy|
-                        if (dy.isZero(oom)) {
-                            // dy = 0
-                            // dz != 0 and can have any non-zero value.
-                            return true;
-                        } else {
-                            if (v.dz.abs().equals(dz.abs(), oom)) {
-                                // |v.dz| = |dz|
-                                // scalar = 1 or -1
-                                Math_BigRationalSqrt scalar = v.dy.divide(dy, oom, rm);
-                                return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
+                if (dx.isZero()) {
+                    if (v.dx.isZero(oom * 2)) {
+                        // dx = 0d
+                        if (v.dy.abs().equals(dy.abs(), oom)) {
+                            // |v.dy| = |dy|
+                            if (dy.isZero()) {
+                                // dy = 0
+                                // dz != 0 and can have any non-zero value.
+                                return true;
                             } else {
-                                return false;
-                            }
-                        }
-                    } else {
-                        // |v.dy| != |dy|
-                        if (dy.isZero(oom)) {
-                            // dy = 0
-                            return dz.isZero();
-                        } else {
-                            // Divide bigger by smaller number for precision reasons.
-                            if (v.dy.abs().compareTo(dy.abs()) == 1) {
-                                // dy != 0
-                                Math_BigRationalSqrt scalar = v.dy.divide(dy, oom, rm);
-                                return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
-                            } else {
-                                if (v.dy.isZero()) {
-                                    return false;
+                                if (v.dz.abs().equals(dz.abs(), oom)) {
+                                    // |v.dz| = |dz|
+                                    // scalar = 1 or -1
+                                    Math_BigRationalSqrt scalar = v.dy.divide(dy, oom, rm);
+                                    return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
                                 } else {
-                                    Math_BigRationalSqrt scalar = dy.divide(v.dy, oom, rm);
-                                    return dz.equals(v.dz.multiply(scalar, oom, rm), oom);
+                                    return false;
+                                }
+                            }
+                        } else {
+                            // |v.dy| != |dy|
+                            if (dy.isZero()) {
+                                // dy = 0
+                                return dz.isZero();
+                            } else {
+                                // Divide bigger by smaller number for precision reasons.
+                                if (v.dy.abs().compareTo(dy.abs()) == 1) {
+                                    // dy != 0
+                                    Math_BigRationalSqrt scalar = v.dy.divide(dy, oom, rm);
+                                    return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
+                                } else {
+                                    if (v.dy.isZero()) {
+                                        return false;
+                                    } else {
+                                        Math_BigRationalSqrt scalar = dy.divide(v.dy, oom, rm);
+                                        return dz.equals(v.dz.multiply(scalar, oom, rm), oom);
+                                    }
                                 }
                             }
                         }
+                    } else {
+                        return false;
                     }
                 } else {
                     // |v.dx| = |dx| != 0d
@@ -794,11 +798,11 @@ public class V3D_Vector implements Serializable {
                     Math_BigRationalSqrt scalar = v.dx.divide(dx, oom, rm);
                     if (v.dy.abs().equals(dy.abs(), oom)) {
                         // |v.dy| = |dy|
-                        if (dy.isZero(oom)) {
+                        if (dy.isZero()) {
                             // dy = 0
                             if (v.dz.abs().equals(dz.abs(), oom)) {
                                 // |v.dz| = |dz|
-                                if (v.dz.isZero(oom)) {
+                                if (v.dz.isZero(oom * 2)) {
                                     return true;
                                 } else {
                                     return v.dz.equals(dz.multiply(scalar, oom, rm), oom);
@@ -837,7 +841,7 @@ public class V3D_Vector implements Serializable {
                 // |v.dx| != |dx|
                 // Divide bigger by smaller number for precision reasons.
                 if (v.dx.abs().compareTo(dx.abs()) == 1) {
-                    if (dx.isZero(oom)) {
+                    if (dx.isZero()) {
                         // dx = 0
                         return isZero;
                     } else {
@@ -849,7 +853,7 @@ public class V3D_Vector implements Serializable {
                         }
                     }
                 } else {
-                    if (v.dx.isZero(oom)) {
+                    if (v.dx.isZero(oom * 2)) {
                         // v.dx = 0
                         return isZero;
                     } else {
