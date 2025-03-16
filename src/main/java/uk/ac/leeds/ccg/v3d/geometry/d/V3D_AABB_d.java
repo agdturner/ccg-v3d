@@ -360,17 +360,10 @@ public class V3D_AABB_d implements Serializable {
         }
     }
 
-    @Override
-    public String toString() {
-        return toString(env.oom, env.rm);
-    }
-
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return This represented as a string.
      */
-    public String toString(int oom, RoundingMode rm) {
+    public String toString() {
         return this.getClass().getSimpleName()
                 + "(xMin=" + getXMin() + ", xMax=" + getXMax()
                 + ", yMin=" + getYMin() + ", yMax=" + getYMax()
@@ -380,7 +373,7 @@ public class V3D_AABB_d implements Serializable {
 //    /**
 //     * @return {@link #pts} initialising first if it is null.
 //     */
-//    public HashSet<V3D_Point_d> getPoints() {
+//    public HashSet<V3D_Point_d> getPointsArray() {
 //        if (pts == null) {
 //            pts = new HashSet<>(8);
 //            pts.add(getlll());
@@ -737,10 +730,9 @@ public class V3D_AABB_d implements Serializable {
      * The location of p may get rounded.
      *
      * @param p The point to test if it is contained.
-     * @param oom The Order of Magnitude for the precision.
      * @return {@code} true iff {@code this} contains {@code p}.
      */
-    public boolean contains(V3D_Point_d p, int oom) {        
+    public boolean contains(V3D_Point_d p) {        
         double px = p.getX();
         double py = p.getY();
         double pz = p.getZ();        
@@ -755,11 +747,10 @@ public class V3D_AABB_d implements Serializable {
      * @param x The x-coordinate of the point to test for containment.
      * @param y The y-coordinate of the point to test for containment.
      * @param z The z-coordinate of the point to test for containment.
-     * @param oom The Order of Magnitude for the precision.
      * @return {@code true} iff {@code this} contains the point defined by
      * {@code x}, {@code y} and {@code z}.
      */
-    public boolean contains(double x, double y, double z, int oom) {
+    public boolean contains(double x, double y, double z) {
         return getXMax() >= x
                 && getXMin() <= x
                 && getYMax() >= y
@@ -865,7 +856,7 @@ public class V3D_AABB_d implements Serializable {
         }
         return pts;
     }
-//    public HashSet<V3D_Point_d> getPoints() {
+//    public HashSet<V3D_Point_d> getPointsArray() {
 //        if (pts == null) {
 //            pts = new HashSet<>(8);
 //            pts.add(getllu());
@@ -897,9 +888,9 @@ public class V3D_AABB_d implements Serializable {
      * @return A viewport - a rectangle between pt and this such that all of
      * this is contained in the planes from the point through the viewport.
      */
-    public V3D_RectangleDouble getViewport(V3D_Point_d pt,
+    public V3D_Rectangle_d getViewport(V3D_Point_d pt,
             V3D_Vector_d v, double epsilon) {
-        V3D_RectangleDouble r;
+        V3D_Rectangle_d r;
         pts = getPoints();
 //        pts[0] = new V3D_Point_d(lba);
 //        pts[1] = new V3D_Point_d(lbf);
@@ -1014,7 +1005,7 @@ public class V3D_AABB_d implements Serializable {
 //        rp.n = rp.n.getUnitVector();
 //        tp.n = tp.n.getUnitVector();
 //        bp.n = bp.n.getUnitVector();
-        r = new V3D_RectangleDouble(
+        r = new V3D_Rectangle_d(
                 (V3D_Point_d) lpl.getIntersection(pl0, bpl, epsilon),
                 (V3D_Point_d) lpl.getIntersection(pl0, tpl, epsilon),
                 (V3D_Point_d) rpl.getIntersection(pl0, tpl, epsilon),
@@ -1036,9 +1027,9 @@ public class V3D_AABB_d implements Serializable {
      * @return A viewport - a rectangle between pt and this such that all of
      * this is contained in the planes from the point through the viewport.
      */
-    public V3D_RectangleDouble getViewport2(V3D_Point_d pt,
+    public V3D_Rectangle_d getViewport2(V3D_Point_d pt,
             V3D_Vector_d v, double epsilon) {
-        V3D_RectangleDouble r;
+        V3D_Rectangle_d r;
         // Get the plane of the viewport.
         V3D_Point_d c = getCentroid();
         double distance = c.getDistance(getPoints()[0]);
@@ -1136,7 +1127,7 @@ public class V3D_AABB_d implements Serializable {
 //        tp.n = tp.n.getUnitVector();
 //        bp.n = bp.n.getUnitVector();
 
-        r = new V3D_RectangleDouble(
+        r = new V3D_Rectangle_d(
                 (V3D_Point_d) lpl.getIntersection(pl0, bpl, epsilon),
                 (V3D_Point_d) lpl.getIntersection(pl0, tpl, epsilon),
                 (V3D_Point_d) rpl.getIntersection(pl0, tpl, epsilon),
@@ -1163,9 +1154,9 @@ public class V3D_AABB_d implements Serializable {
      * @return A viewport - a rectangle between pt and this such that all of
      * this is contained in the planes from the point through the viewport.
      */
-    public V3D_RectangleDouble getViewport3(V3D_Point_d pt,
+    public V3D_Rectangle_d getViewport3(V3D_Point_d pt,
             V3D_Vector_d v, double zoomFactor, double epsilon) {
-        V3D_RectangleDouble r;
+        V3D_Rectangle_d r;
         // Get the plane of the viewport.
         V3D_Point_d c = getCentroid();
         double d = c.getDistance(getPoints()[0]);
@@ -1199,7 +1190,7 @@ public class V3D_AABB_d implements Serializable {
         V3D_Point_d rppt = new V3D_Point_d(plpt);
         rppt.translate(hv);
         V3D_Plane_d rpl = new V3D_Plane_d(rppt, pt, ptv2);
-        r = new V3D_RectangleDouble(
+        r = new V3D_Rectangle_d(
                 (V3D_Point_d) lpl.getIntersection(pl0, bpl, epsilon),
                 (V3D_Point_d) lpl.getIntersection(pl0, tpl, epsilon),
                 (V3D_Point_d) rpl.getIntersection(pl0, tpl, epsilon),

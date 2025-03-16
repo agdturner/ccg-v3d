@@ -15,11 +15,10 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import uk.ac.leeds.ccg.v3d.geometry.*;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.HashMap;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 
 /**
  * V3D_FiniteGeometry for representing finite geometries.
@@ -27,7 +26,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public abstract class V3D_Face_d extends V3D_FiniteGeometry {
+public abstract class V3D_Face_d extends V3D_FiniteGeometry_d {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,7 +41,7 @@ public abstract class V3D_Face_d extends V3D_FiniteGeometry {
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      */
-    public V3D_Face_d(V3D_Environment env, V3D_Vector offset) {
+    public V3D_Face_d(V3D_Environment_d env, V3D_Vector_d offset) {
         super(env, offset);
         this.id = env.getNextID();
     }
@@ -50,47 +49,37 @@ public abstract class V3D_Face_d extends V3D_FiniteGeometry {
     /**
      * For storing the points.
      */
-    protected HashMap<Integer, V3D_Point> points;
+    protected HashMap<Integer, V3D_Point_d> points;
 
     /**
      * For storing the edges.
      */
-    protected HashMap<Integer, V3D_LineSegment> edges;
+    protected HashMap<Integer, V3D_LineSegment_d> edges;
     
     /**
      * For getting the points of a shape.
      * 
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
      * @return A HashMap of the points with integer identifier keys.
      */
-    public abstract HashMap<Integer, V3D_Point> getPoints(int oom, 
-            RoundingMode rm);
+    public abstract HashMap<Integer, V3D_Point_d> getPoints();
     
     /**
      * For getting the edges of a shape.
      * 
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
      * @return A HashMap of the edges with integer identifier keys.
      */
-    public abstract HashMap<Integer, V3D_LineSegment> getEdges(int oom, 
-            RoundingMode rm);
+    public abstract HashMap<Integer, V3D_LineSegment_d> getEdges();
     
     /**
      * For calculating and returning the perimeter.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return The Perimeter.
      */
-    public abstract BigRational getPerimeter(int oom, RoundingMode rm);
+    public abstract double getPerimeter();
 
     /**
      * For calculating and returning the area.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return The area.
      */
-    public abstract BigRational getArea(int oom, RoundingMode rm);
+    public abstract double getArea();
     
 }

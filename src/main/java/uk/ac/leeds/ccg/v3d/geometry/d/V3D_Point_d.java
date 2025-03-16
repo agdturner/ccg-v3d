@@ -250,7 +250,7 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
     }
 
     @Override
-    public V3D_Point_d[] getPoints() {
+    public V3D_Point_d[] getPointsArray() {
         V3D_Point_d[] r = new V3D_Point_d[1];
         r[0] = this;
         return r;

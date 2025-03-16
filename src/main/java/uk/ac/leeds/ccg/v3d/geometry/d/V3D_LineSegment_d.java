@@ -132,7 +132,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @param q What {@link #qv} is cloned from.
      */
     public V3D_LineSegment_d(V3D_Point_d p, V3D_Point_d q) {
-        super(p.offset);
+        super(p.env, p.offset);
         V3D_Point_d q2 = new V3D_Point_d(q);
         q2.setOffset(offset);
         l = new V3D_Line_d(env, offset, p.rel, q2.rel);
@@ -147,7 +147,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * equal.
      */
     public V3D_LineSegment_d(double epsilon, V3D_Point_d... points) {
-        super(points[0].offset);
+        super(points[0].env, points[0].offset);
         V3D_Point_d p0 = points[0];
         V3D_Point_d p1 = points[1];
         V3D_LineSegment_d ls = new V3D_LineSegment_d(p0, p1);
@@ -178,7 +178,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public V3D_Point_d getQ() {
         if (q == null) {
-            q = new V3D_Point_d(offset, qv);
+            q = new V3D_Point_d(env, offset, qv);
         }
         return q;
     }
@@ -203,7 +203,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
     }
 
     @Override
-    public V3D_Point_d[] getPoints() {
+    public V3D_Point_d[] getPointsArray() {
         V3D_Point_d[] r = new V3D_Point_d[2];
         r[0] = getP();
         r[1] = getQ();
@@ -392,6 +392,20 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
         }
         return false;
     }
+    
+    /**
+     * @param aabb The V3D_AABB to test for intersection.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public boolean intersects(V3D_AABB_d aabb, double epsilon) {
+        return aabb.intersects(l.p)
+                || getIntersect(aabb.getl(), espilon) != null
+                || getIntersect(aabb.getr(), espilon) != null
+                || getIntersect(aabb.gett(), espilon) != null
+                || getIntersect(aabb.getb(), espilon) != null
+                || getIntersect(aabb.getf(), espilon) != null
+                || getIntersect(aabb.geta(), espilon) != null;
+    }
 
     /**
      * @param pt A point to test for intersection.
@@ -400,7 +414,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} if {@code this} is intersected by {@code pv}.
      */
     public boolean intersects(V3D_Point_d pt, double epsilon) {
-        boolean ei = getAABB().intersects(pt.getAABB(), epsilon);
+        boolean ei = getAABB().intersects(pt.getAABB());
         if (ei) {
             if (l.intersects(epsilon, pt)) {
                 V3D_Point_d tp = getP();
@@ -436,10 +450,10 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * equal.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_FiniteGeometry_d getIntersection(V3D_Line_d l,
+    public V3D_FiniteGeometry_d getIntersect(V3D_Line_d l,
             double epsilon) {
         // Check if infinite lines intersect.
-        V3D_Geometry_d i = this.l.getIntersection(l, epsilon);
+        V3D_Geometry_d i = this.l.getIntersect(l, epsilon);
         if (i == null) {
             return null;
         }
@@ -473,15 +487,15 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * equal.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_FiniteGeometry_d getIntersection(V3D_LineSegment_d ls,
+    public V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d ls,
             double epsilon) {
-        if (!getAABB().intersects(ls.getAABB(), epsilon)) {
+        if (!getAABB().intersects(ls.getAABB())) {
             return null;
         }
         // Get intersection with infinite lines.
-        V3D_Geometry_d li = l.getIntersection(ls.l, epsilon);
-        V3D_FiniteGeometry_d tils = getIntersection(ls.l, epsilon);
-        V3D_FiniteGeometry_d lsil = ls.getIntersection(l, epsilon);
+        V3D_Geometry_d li = l.getIntersect(ls.l, epsilon);
+        V3D_FiniteGeometry_d tils = getIntersect(ls.l, epsilon);
+        V3D_FiniteGeometry_d lsil = ls.getIntersect(l, epsilon);
         if (li == null) {
             return null;
         } else {
@@ -789,7 +803,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return The minimum distance squared to {@code l}.
      */
     public double getDistanceSquared(V3D_LineSegment_d l, double epsilon) {
-        if (getIntersection(l, epsilon) != null) {
+        if (V3D_LineSegment_d.this.getIntersect(l, epsilon) != null) {
             return 0d;
         }
         V3D_LineSegment_d loi = getLineOfIntersection(l, epsilon);
@@ -810,7 +824,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public V3D_Point_d getMidpoint() {
         V3D_Vector_d pmpq = l.v.divide(2.0d);
-        return new V3D_Point_d(offset, l.pv.add(pmpq));
+        return new V3D_Point_d(env, offset, l.pv.add(pmpq));
     }
 
     /**
@@ -976,7 +990,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public V3D_LineSegment_d getLineOfIntersection(V3D_Line_d l,
             double epsilon) {
-        if (getIntersection(l, epsilon) != null) {
+        if (getIntersect(l, epsilon) != null) {
             return null;
         }
         V3D_LineSegment_d loi = this.l.getLineOfIntersection(l, epsilon);
@@ -1022,7 +1036,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public V3D_LineSegment_d getLineOfIntersection(V3D_LineSegment_d ls,
             double epsilon) {
-        V3D_FiniteGeometry_d ilsl = getIntersection(ls, epsilon);
+        V3D_FiniteGeometry_d ilsl = V3D_LineSegment_d.this.getIntersect(ls, epsilon);
         if (ilsl == null) {
             V3D_Point_d lsp = ls.getP();
             V3D_Point_d lsq = ls.getQ();
@@ -1178,7 +1192,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return The minimum distance squared to {@code l}.
      */
     public double getDistanceSquared(V3D_Line_d l, double epsilon) {
-        if (getIntersection(l, epsilon) != null) {
+        if (getIntersect(l, epsilon) != null) {
             return 0d;
         }
         V3D_LineSegment_d loi = getLineOfIntersection(l, epsilon);

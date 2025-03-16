@@ -302,10 +302,10 @@ public class V3D_Line_d extends V3D_Geometry_d {
      */
     public boolean equals(V3D_Line_d l) {
 //        if (v.isScalarMultiple(l.v)) {
-//            if (isIntersectedBy(l.getP())) {
-//                if (isIntersectedBy(l.getQ())) {
-                    if (l.isIntersectedBy(getP())) {
-                        if (l.isIntersectedBy(getQ())) {
+//            if (intersects(l.getP())) {
+//                if (intersects(l.getQ())) {
+                    if (l.intersects(getP())) {
+                        if (l.intersects(getQ())) {
                             return true;
                         }
                     }
@@ -324,8 +324,8 @@ public class V3D_Line_d extends V3D_Geometry_d {
      */
     public boolean equals(double epsilon, V3D_Line_d l) {
         //if (v.isScalarMultiple(epsilon, l.v)) {
-        if (l.isIntersectedBy(epsilon, getP())) {
-            if (l.isIntersectedBy(epsilon, getQ())) {
+        if (l.intersects(epsilon, getP())) {
+            if (l.intersects(epsilon, getQ())) {
                 return true;
             }
         }
@@ -362,7 +362,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @param pt A point to test for intersection.
      * @return {@code true} if pv is on the line.
      */
-    public boolean isIntersectedBy(V3D_Point_d pt) {
+    public boolean intersects(V3D_Point_d pt) {
         V3D_Point_d tp = getP();
         V3D_Point_d tq = getQ();
         if (tp.equals(pt)) {
@@ -397,7 +397,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @param pt A point to test for intersection.
      * @return {@code true} if pv is on the line.
      */
-    public boolean isIntersectedBy(double epsilon, V3D_Point_d pt) {
+    public boolean intersects(double epsilon, V3D_Point_d pt) {
         V3D_Point_d tp = getP();
         V3D_Point_d tq = getQ();
         if (tp.equals(epsilon, pt)) {
@@ -449,11 +449,11 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * considered equal.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry_d getIntersection(V3D_Line_d l, double epsilon) {
+    public V3D_Geometry_d getIntersect(V3D_Line_d l, double epsilon) {
         // Special case of parallel lines.
         V3D_Point_d tp = getP();
         if (isParallel(l, epsilon)) {
-            if (l.isIntersectedBy(epsilon, tp)) {
+            if (l.intersects(epsilon, tp)) {
                 // If lines are coincident return this.
                 return this;
             } else {
@@ -469,13 +469,13 @@ public class V3D_Line_d extends V3D_Geometry_d {
         V3D_Vector_d plp = new V3D_Vector_d(tp, lp);
         V3D_Vector_d lqlp = new V3D_Vector_d(lq, lp);
         if (lqlp.getMagnitudeSquared() == 0d) {
-            if (isIntersectedBy(epsilon, lp)) {
+            if (intersects(epsilon, lp)) {
                 return lp;
             }
         }
         V3D_Vector_d qp = new V3D_Vector_d(tq, tp);
         if (qp.getMagnitudeSquared() == 0d) {
-            if (l.isIntersectedBy(epsilon, tp)) {
+            if (l.intersects(epsilon, tp)) {
                 return tp;
             }
         }
@@ -844,7 +844,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
                 (tp.getY() - (mua * (qp.dy))),
                 (tp.getZ() - (mua * (qp.dz))));
         // If point pv is on both lines then return this as the intersection.
-        if (isIntersectedBy(epsilon, pi) && l.isIntersectedBy(epsilon, pi)) {
+        if (intersects(epsilon, pi) && l.intersects(epsilon, pi)) {
             return pi;
         }
         V3D_Point_d qi = new V3D_Point_d(env, 
@@ -852,7 +852,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
                 (lp.getY() + (mub * (lqlp.dy))),
                 (lp.getZ() + (mub * (lqlp.dz))));
         // If point qv is on both lines then return this as the intersection.
-        if (isIntersectedBy(epsilon, qi) && l.isIntersectedBy(epsilon, qi)) {
+        if (intersects(epsilon, qi) && l.intersects(epsilon, qi)) {
             return qi;
         }
         /**
@@ -884,7 +884,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      */
     public V3D_FiniteGeometry_d getLineOfIntersection(V3D_Point_d pt,
             double epsilon) {
-        if (isIntersectedBy(epsilon, pt)) {
+        if (intersects(epsilon, pt)) {
             return pt;
         }
         return new V3D_LineSegment_d(pt, getPointOfIntersection(pt, epsilon));
@@ -901,7 +901,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * {@code pt}.
      */
     public V3D_Point_d getPointOfIntersection(V3D_Point_d pt, double epsilon) {
-        if (isIntersectedBy(epsilon, pt)) {
+        if (intersects(epsilon, pt)) {
             return pt;
         }
         V3D_Plane_d ptv = new V3D_Plane_d(pt, v);
@@ -934,7 +934,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
         if (isParallel(l, epsilon)) {
             return null;
         }
-        if (getIntersection(l, epsilon) != null) {
+        if (getIntersect(l, epsilon) != null) {
             return null;
         }
         V3D_Point_d tp = getP();
@@ -982,7 +982,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return The minimum distance between this and {@code pv}.
      */
     public double getDistance(V3D_Point_d pt, double epsilon) {
-        if (isIntersectedBy(epsilon, pt)) {
+        if (intersects(epsilon, pt)) {
             return 0d;
         }
         return Math.sqrt(getDistanceSquared(pt, true));
@@ -1006,7 +1006,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return The minimum distance between this and {@code pv}.
      */
     public double getDistanceSquared(V3D_Point_d pt, double epsilon) {
-        if (isIntersectedBy(epsilon, pt)) {
+        if (intersects(epsilon, pt)) {
             return 0d;
         } else {
             return getDistanceSquared(pt, true);
@@ -1197,7 +1197,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
     public static boolean isCollinear(V3D_Line_d l, 
             V3D_Point_d... ps) {        
         for (var p : ps) {
-            if (!l.isIntersectedBy(p)) {
+            if (!l.intersects(p)) {
                 return false;
             }
         }
@@ -1229,7 +1229,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
     public static boolean isCollinear(double epsilon, V3D_Line_d l, 
             V3D_Point_d... ps) {
         for (var p : ps) {
-            if (!l.isIntersectedBy(epsilon, p)) {
+            if (!l.intersects(epsilon, p)) {
                 return false;
             }
         }
