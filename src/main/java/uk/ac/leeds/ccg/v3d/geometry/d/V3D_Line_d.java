@@ -905,7 +905,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
             return pt;
         }
         V3D_Plane_d ptv = new V3D_Plane_d(pt, v);
-        V3D_Geometry_d i = ptv.getIntersection(this, epsilon);
+        V3D_Geometry_d i = ptv.getIntersect(this, epsilon);
         if (i instanceof V3D_Line_d) {
             return pt;
         } else {

@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 
@@ -154,6 +155,30 @@ public class V3D_Rectangle_d extends V3D_Face_d {
         re[3] = getS();
         return re;
     }
+    
+    @Override
+    public HashMap<Integer, V3D_Point_d> getPoints() {
+        if (points == null) {
+            points = new HashMap<>(4);
+            points.put(0, getP());
+            points.put(1, getQ());
+            points.put(2, getR());
+            points.put(3, getS());
+        }
+        return points;
+    }
+
+    @Override
+    public HashMap<Integer, V3D_LineSegment_d> getEdges() {
+        if (edges == null) {
+            edges = new HashMap<>(4);
+            edges.put(0, pqr.getPQ());
+            edges.put(1, pqr.getQR());
+            edges.put(2, rsp.getPQ());
+            edges.put(3, rsp.getQR());
+        }
+        return edges;
+    }
 
     /**
      * @return {@link #pqr}.
@@ -246,11 +271,11 @@ public class V3D_Rectangle_d extends V3D_Face_d {
      * equal.
      * @return A point or line segment.
      */
-    public V3D_FiniteGeometry_d getIntersection(V3D_Line_d l,
+    public V3D_FiniteGeometry_d getIntersect(V3D_Line_d l,
             double epsilon) {
-        if (getPlane().getIntersection(l, epsilon) != null) {
-            V3D_FiniteGeometry_d pqri = pqr.getIntersection(l, epsilon);
-            V3D_FiniteGeometry_d rspi = rsp.getIntersection(l, epsilon);
+        if (getPlane().getIntersect(l, epsilon) != null) {
+            V3D_FiniteGeometry_d pqri = pqr.getIntersect(l, epsilon);
+            V3D_FiniteGeometry_d rspi = rsp.getIntersect(l, epsilon);
             return join(epsilon, pqri, rspi);
         } else {
             return null;
@@ -294,11 +319,11 @@ public class V3D_Rectangle_d extends V3D_Face_d {
      * equal.
      * @return The intersection or {@code null} iff there is no intersection.
      */
-    public V3D_FiniteGeometry_d getIntersection(V3D_LineSegment_d l,
+    public V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d l,
             double epsilon) {
-        if (getPlane().getIntersection(l, epsilon) != null) {
-            V3D_FiniteGeometry_d pqri = pqr.getIntersection(l, epsilon);
-            V3D_FiniteGeometry_d rspi = rsp.getIntersection(l, epsilon);
+        if (getPlane().getIntersect(l, epsilon) != null) {
+            V3D_FiniteGeometry_d pqri = pqr.getIntersect(l, epsilon);
+            V3D_FiniteGeometry_d rspi = rsp.getIntersect(l, epsilon);
             return join(epsilon, pqri, rspi);
         } else {
             return null;
@@ -382,18 +407,18 @@ public class V3D_Rectangle_d extends V3D_Face_d {
      * equal.
      * @return The intersection between {@code this} and {@code pl}.
      */
-    public V3D_FiniteGeometry_d getIntersection(V3D_Plane_d pl,
+    public V3D_FiniteGeometry_d getIntersect(V3D_Plane_d pl,
             double epsilon) {
         if (getPlane().equals(pl, epsilon)) {
             return new V3D_Rectangle_d(this);
         }
-        V3D_FiniteGeometry_d pqri = pqr.getIntersection(pl, epsilon);
+        V3D_FiniteGeometry_d pqri = pqr.getIntersect(pl, epsilon);
         if (pqri == null) {
-            return rsp.getIntersection(pl, epsilon);
+            return rsp.getIntersect(pl, epsilon);
         } else if (pqri instanceof V3D_Triangle_d) {
             return new V3D_Rectangle_d(this);
         } else {
-            V3D_FiniteGeometry_d rspi = rsp.getIntersection(pl, epsilon);
+            V3D_FiniteGeometry_d rspi = rsp.getIntersect(pl, epsilon);
             return join(epsilon, pqri, rspi);
         }
     }
@@ -409,11 +434,11 @@ public class V3D_Rectangle_d extends V3D_Face_d {
      * @return The intersection between {@code t} and {@code this} or
      * {@code null} if there is no intersection.
      */
-    public V3D_FiniteGeometry_d getIntersection(V3D_Triangle_d t,
+    public V3D_FiniteGeometry_d getIntersect(V3D_Triangle_d t,
             double epsilon) {
         if (getPlane().equals(t.pl, epsilon)) {
-            V3D_FiniteGeometry_d pqrit = pqr.getIntersection(t, epsilon);
-            V3D_FiniteGeometry_d rspit = rsp.getIntersection(t, epsilon);
+            V3D_FiniteGeometry_d pqrit = pqr.getIntersect(t, epsilon);
+            V3D_FiniteGeometry_d rspit = rsp.getIntersect(t, epsilon);
             if (pqrit == null) {
                 return rspit;
             } else if (pqrit instanceof V3D_Point_d) {
@@ -436,8 +461,8 @@ public class V3D_Rectangle_d extends V3D_Face_d {
                 return V3D_ConvexHullCoplanar_d.getGeometry(epsilon, pts);
             }
         } else {
-            V3D_FiniteGeometry_d pqrit = pqr.getIntersection(t, epsilon);
-            V3D_FiniteGeometry_d rspit = rsp.getIntersection(t, epsilon);
+            V3D_FiniteGeometry_d pqrit = pqr.getIntersect(t, epsilon);
+            V3D_FiniteGeometry_d rspit = rsp.getIntersect(t, epsilon);
             return join(epsilon, pqrit, rspit);
         }
     }
@@ -450,10 +475,10 @@ public class V3D_Rectangle_d extends V3D_Face_d {
      * equal.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometry_d getIntersection(V3D_Ray_d r,
+    public V3D_FiniteGeometry_d getIntersect(V3D_Ray_d r,
             double epsilon) {
-        V3D_FiniteGeometry_d gpqr = pqr.getIntersection(r, epsilon);
-        V3D_FiniteGeometry_d grsp = rsp.getIntersection(r, epsilon);
+        V3D_FiniteGeometry_d gpqr = pqr.getIntersect(r, epsilon);
+        V3D_FiniteGeometry_d grsp = rsp.getIntersect(r, epsilon);
         if (gpqr == null) {
             return grsp;
         } else {

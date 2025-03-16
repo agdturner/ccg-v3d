@@ -271,8 +271,8 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The intersection between {@code this} and {@code pl}.
      */
-    public V3D_Geometry_d getIntersection(V3D_Plane_d pl, double epsilon) {
-        V3D_Geometry_d g = pl.getIntersection(l, epsilon);
+    public V3D_Geometry_d getIntersect(V3D_Plane_d pl, double epsilon) {
+        V3D_Geometry_d g = pl.getIntersect(l, epsilon);
         if (g == null) {
             return null;
         }
@@ -375,7 +375,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry_d getIntersection(V3D_Line_d l, double epsilon) {
+    public V3D_Geometry_d getIntersect(V3D_Line_d l, double epsilon) {
         // Check if infinite lines intersect.
         V3D_Geometry_d g = this.l.getIntersect(l, epsilon);
         if (g == null) {
@@ -405,8 +405,8 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The intersection between {@code this} and {@code r}.
      */
-    public V3D_Geometry_d getIntersection(V3D_Ray_d r, double epsilon) {
-        V3D_Geometry_d rtl = r.getIntersection(l, epsilon);
+    public V3D_Geometry_d getIntersect(V3D_Ray_d r, double epsilon) {
+        V3D_Geometry_d rtl = r.getIntersect(l, epsilon);
         if (rtl == null) {
             return null;
         } else if (rtl instanceof V3D_Point_d pt) {
@@ -418,7 +418,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
             }
         } else {
             // Then rtl is an instance of V3D_Ray.
-            V3D_Geometry_d grl = getIntersection(r.l, epsilon);
+            V3D_Geometry_d grl = V3D_Ray_d.this.getIntersect(r.l, epsilon);
             if (grl instanceof V3D_Point_d) {
                 return grl;
             } else {
@@ -465,9 +465,9 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_FiniteGeometry_d getIntersection(V3D_LineSegment_d ls,
+    public V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d ls,
             double epsilon) {
-        V3D_Geometry_d g = getIntersection(ls.l, epsilon);
+        V3D_Geometry_d g = V3D_Ray_d.this.getIntersect(ls.l, epsilon);
         if (g == null) {
             return null;
         } else if (g instanceof V3D_Point_d pt) {

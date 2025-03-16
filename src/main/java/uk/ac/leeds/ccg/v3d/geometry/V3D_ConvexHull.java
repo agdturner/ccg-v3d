@@ -40,6 +40,12 @@ public class V3D_ConvexHull extends V3D_Shape {
      */
     public ArrayList<V3D_Triangle> triangles;
 
+    public V3D_ConvexHull(V3D_ConvexHull ch) {
+        super(ch.env, ch.offset);
+        //ch.faces
+                
+    }
+    
     /**
      * Create a new instance.
      *
@@ -105,44 +111,44 @@ public class V3D_ConvexHull extends V3D_Shape {
      */
     public V3D_ConvexHull(int oom, RoundingMode rm, List<V3D_Point> points) {
         super(points.get(0).env, V3D_Vector.ZERO);
-        ArrayList<V3D_Point> h = new ArrayList<>();
-        ArrayList<V3D_Point> uniquePoints = V3D_Point.getUnique(
-                points, oom, rm);
-        //uniquePoints.sort(V3D_Point::compareTo);
-        uniquePoints.sort((p1, p2) -> p1.compareTo(p2, oom, rm));
-        // Compute convex hull
-        // https://rosettacode.org/wiki/Convex_hull#Java
-        // lower hull
-        for (V3D_Point pt : uniquePoints) {
-            while (h.size() >= 2 && !ccw(h.get(h.size() - 2),
-                    h.get(h.size() - 1), pt, oom, rm)) {
-                h.remove(h.size() - 1);
-            }
-            h.add(pt);
-        }
-        // upper hull
-        int t = h.size() + 1;
-        for (int i = uniquePoints.size() - 1; i >= 0; i--) {
-            V3D_Point pt = uniquePoints.get(i);
-            while (h.size() >= t && !ccw(h.get(h.size() - 2), h.get(h.size() - 1), pt, oom, rm)) {
-                h.remove(h.size() - 1);
-            }
-            h.add(pt);
-        }
-        ArrayList<V3D_Point> ups = V3D_Point.getUnique(h, oom, rm);
-        this.points = new HashMap<>();
-        for (var p : ups) {
-            this.points.put(this.points.size(), p);
-        }
-        // Add edge
-        edges = new HashMap<>();
-        V3D_Point p0 = this.points.get(0);
-        for (int i = 1; i < this.points.size(); i++) {
-            V3D_Point p1 = this.points.get(i);
-            edges.put(edges.size(), new V3D_LineSegment(p0, p1, oom, rm));
-            p0 = p1;
-        }
-        edges.put(edges.size(), new V3D_LineSegment(p0, this.points.get(0), oom, rm));
+//        ArrayList<V3D_Point> h = new ArrayList<>();
+//        ArrayList<V3D_Point> uniquePoints = V3D_Point.getUnique(
+//                points, oom, rm);
+//        //uniquePoints.sort(V3D_Point::compareTo);
+//        uniquePoints.sort((p1, p2) -> p1.compareTo(p2, oom, rm));
+//        // Compute convex hull
+//        // https://rosettacode.org/wiki/Convex_hull#Java
+//        // lower hull
+//        for (V3D_Point pt : uniquePoints) {
+//            while (h.size() >= 2 && !ccw(h.get(h.size() - 2),
+//                    h.get(h.size() - 1), pt, oom, rm)) {
+//                h.remove(h.size() - 1);
+//            }
+//            h.add(pt);
+//        }
+//        // upper hull
+//        int t = h.size() + 1;
+//        for (int i = uniquePoints.size() - 1; i >= 0; i--) {
+//            V3D_Point pt = uniquePoints.get(i);
+//            while (h.size() >= t && !ccw(h.get(h.size() - 2), h.get(h.size() - 1), pt, oom, rm)) {
+//                h.remove(h.size() - 1);
+//            }
+//            h.add(pt);
+//        }
+//        ArrayList<V3D_Point> ups = V3D_Point.getUnique(h, oom, rm);
+//        this.points = new HashMap<>();
+//        for (var p : ups) {
+//            this.points.put(this.points.size(), p);
+//        }
+//        // Add face
+//        faces = new HashMap<>();
+//        V3D_Point p0 = this.points.get(0);
+//        for (int i = 1; i < this.points.size(); i++) {
+//            V3D_Point p1 = this.points.get(i);
+//            //faces.put(faces.size(), new V3D_LineSegment(p0, p1, oom, rm));
+//            p0 = p1;
+//        }
+//        faces.put(faces.size(), new V3D_LineSegment(p0, this.points.get(0), oom, rm));
     }
 
     // ccw returns true if the three points make a counter-clockwise turn
@@ -248,11 +254,11 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @return {@code true} iff all the triangles are the same.
      */
     public boolean equals(V3D_ConvexHull c, int oom, RoundingMode rm) {
-        if (points.values().parallelStream().allMatch(x
-                -> x.equalsAny(c.points.values(), oom, rm))) {
-            return c.points.values().parallelStream().allMatch(x
-                    -> x.equalsAny(points.values(), oom, rm));
-        }
+//        if (points.values().parallelStream().allMatch(x
+//                -> x.equalsAny(c.points.values(), oom, rm))) {
+//            return c.points.values().parallelStream().allMatch(x
+//                    -> x.equalsAny(points.values(), oom, rm));
+//        }
         return false;
 //        HashSet<Integer> indexes = new HashSet<>();
 //        for (var x : points.values()) {
@@ -306,15 +312,16 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @return Either a triangle, rectangle or this.
      */
     public V3D_FiniteGeometry simplify(int oom, RoundingMode rm) {
-        if (isTriangle()) {
-            return new V3D_Triangle(points.get(0), points.get(1),
-                    points.get(2), oom, rm);
-        } else if (isRectangle(oom, rm)) {
-            return new V3D_Rectangle(points.get(0), points.get(2),
-                    points.get(1), points.get(3), oom, rm);
-        } else {
-            return this;
-        }
+//        if (isTriangle()) {
+//            return new V3D_Triangle(points.get(0), points.get(1),
+//                    points.get(2), oom, rm);
+//        } else if (isRectangle(oom, rm)) {
+//            return new V3D_Rectangle(points.get(0), points.get(2),
+//                    points.get(1), points.get(3), oom, rm);
+//        } else {
+//            return this;
+//        }
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -352,8 +359,9 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @return {@code true} iff {@code this} contains {@code p}.
      */
     public boolean contains(V3D_Point pt, int oom, RoundingMode rm) {
-        return intersects(pt, oom, rm)
-                && !V3D_LineSegment.intersects(oom, rm, pt, edges.values());
+//        return intersects(pt, oom, rm)
+//                && !V3D_LineSegment.intersects(oom, rm, pt, edges.values());
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -365,8 +373,9 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @return {@code true} iff {@code this} contains {@code l}.
      */
     public boolean contains(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return intersects(l, oom, rm)
-                && !V3D_LineSegment.intersects(oom, rm, l, edges.values());
+//        return intersects(l, oom, rm)
+//                && !V3D_LineSegment.intersects(oom, rm, l, edges.values());
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -441,8 +450,9 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @return {@code true} iff {@code this} is intersected by {@code p}.
      */
     public boolean intersects0(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return getTriangles(oom, rm).parallelStream().anyMatch(x
-                -> x.intersects(l, oom, rm));
+//        return getTriangles(oom, rm).parallelStream().anyMatch(x
+//                -> x.intersects(l, oom, rm));
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -493,8 +503,9 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @return {@code true} iff {@code this} is intersected by {@code r}.
      */
     public boolean intersects0(V3D_Rectangle r, int oom, RoundingMode rm) {
-        return getTriangles(oom, rm).parallelStream().anyMatch(x
-                -> r.intersects(x, oom, rm));
+//        return getTriangles(oom, rm).parallelStream().anyMatch(x
+//                -> r.intersects(x, oom, rm));
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -590,24 +601,24 @@ public class V3D_ConvexHull extends V3D_Shape {
     }
 
     @Override
-    public V3D_ConvexHull rotate(V3D_Point pt, BigRational theta,
-            Math_BigDecimal bd, int oom, RoundingMode rm) {
-        theta = Math_AngleBigRational.normalise(theta, bd, oom - 2, rm);
-        if (theta.compareTo(BigRational.ZERO) == 0d) {
-            return new V3D_ConvexHull(this, oom, rm);
+    public V3D_ConvexHull rotate(V3D_Ray ray, V3D_Vector uv, 
+            Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
+        theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
+        if (theta.compareTo(BigRational.ZERO) == 0) {
+            return new V3D_ConvexHull(this);
         } else {
-            return rotateN(pt, theta, bd, oom, rm);
+            return rotateN(ray, uv, bd, theta, oom, rm);
         }
     }
-
+    
     @Override
-    public V3D_ConvexHull rotateN(V3D_Point pt, BigRational theta,
-            Math_BigDecimal bd, int oom, RoundingMode rm) {
-        V3D_Point[] pts = new V3D_Point[points.size()];
-        for (int i = 0; i < points.size(); i++) {
-            pts[0] = points.get(i).rotateN(pt, theta, bd, oom, rm);
+    public V3D_ConvexHull rotateN(V3D_Ray ray, V3D_Vector uv, 
+            Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
+        V3D_Triangle[] rts = new V3D_Triangle[triangles.size()];
+        for (int i = 0; i < triangles.size(); i++) {
+            rts[0] = triangles.get(i).rotate(ray, uv, bd, theta, oom, rm);
         }
-        return new V3D_ConvexHull(oom, rm, V3D_Triangle.getPoints(pts, oom, rm));
+        return new V3D_ConvexHull(oom, rm, rts);
     }
 
     /**
@@ -638,152 +649,6 @@ public class V3D_ConvexHull extends V3D_Shape {
                 -> x.intersects(aabb, oom, rm));
     }
 
-    /**
-     * If all {@link #triangles} form a single triangle return true
-     *
-     * @return {@code true} iff this is a triangle.
-     */
-    public final boolean isTriangle() {
-        return points.size() == 3;
-    }
-
-    /**
-     * If all {@link #triangles} form a single triangle return true
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} iff this is a rectangle.
-     */
-    public boolean isRectangle(int oom, RoundingMode rm) {
-        if (points.size() == 4) {
-            return V3D_Rectangle.isRectangle(points.get(0),
-                    points.get(1), points.get(2), points.get(3), oom, rm);
-        }
-        return false;
-    }
-
-//    /**
-//     * Clips this using the pl and return the part that is on the same side as
-//     * pl.
-//     *
-//     * @param pl The plane that clips.
-//     * @param p A point that is used to return the side of the clipped triangle.
-//     * @param oom The Order of Magnitude for the precision.
-//     * @param rm The RoundingMode for any rounding.
-//     * @return null, the whole or a part of this.
-//     */
-//    public V3D_FiniteGeometry clip(V3D_Plane pl, V3D_Point p, int oom, RoundingMode rm) {
-//        V3D_FiniteGeometry i = getIntersect(pl, oom, rm);
-//        if (i == null) {
-//            V3D_Point pp = this.triangles.get(0).getPl(oom, rm).getP();
-//            if (pl.isOnSameSide(pp, p, oom, rm)) {
-//                return this;
-//            } else {
-//                return null;
-//            }
-//        } else if (i instanceof V3D_Point ip) {
-//            if (pl.isOnSameSide(ip, p, oom, rm)) {
-//                V3D_Point pp = this.triangles.get(0).getPl(oom, rm).getP();
-//                if (pl.isOnSameSide(pp, p, oom, rm)) {
-//                    return this;
-//                } else {
-//                    return ip;
-//                }
-//            } else {
-//                return null;
-//            }
-//        } else {
-//            // i instanceof V3D_LineSegment
-//            V3D_LineSegment il = (V3D_LineSegment) i;
-//            ArrayList<V3D_Point> pts = new ArrayList<>();
-//            for (V3D_Point pt : points) {
-//                if (pl.isOnSameSide(pt, p, oom, rm)) {
-//                    pts.add(pt);
-//                }
-//            }
-//            if (pts.isEmpty()) {
-//                return il;
-//            } else {
-//                return new V3D_ConvexHull(oom, rm,
-//                        this.triangles.get(0).getPl(oom, rm).n,
-//                        pts.toArray(V3D_Point[]::new));
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Clips this using t.
-//     *
-//     * @param t The triangle to clip this with.
-//     * @param pt A point that is used to return the side of this that is
-//     * clipped.
-//     * @param oom The Order of Magnitude for the precision.
-//     * @param rm The RoundingMode for any rounding.
-//     * @return null, the whole or a part of this.
-//     */
-//    public V3D_FiniteGeometry clip(V3D_Triangle t, V3D_Point pt, int oom, RoundingMode rm) {
-//        V3D_Point tp = t.getP();
-//        V3D_Point tq = t.getQ();
-//        V3D_Point tr = t.getR();
-//        V3D_Vector n = t.getPl(oom, rm).n;
-//        V3D_Point pp = new V3D_Point(tp.offset.add(n, oom, rm), tp.rel);
-//        V3D_Plane ppl = new V3D_Plane(tp, tq, pp, oom, rm);
-//        V3D_Point qp = new V3D_Point(tq.offset.add(n, oom, rm), tq.rel);
-//        V3D_Plane qpl = new V3D_Plane(tq, tr, qp, oom, rm);
-//        V3D_Point rp = new V3D_Point(tr.offset.add(n, oom, rm), tr.rel);
-//        V3D_Plane rpl = new V3D_Plane(tr, tp, rp, oom, rm);
-//        V3D_FiniteGeometry cppl = clip(ppl, tr, oom, rm);
-//        if (cppl == null) {
-//            return null;
-//        } else if (cppl instanceof V3D_Point) {
-//            return cppl;
-//        } else if (cppl instanceof V3D_LineSegment cppll) {
-//            V3D_FiniteGeometry cppllcqpl = cppll.clip(qpl, pt, oom, rm);
-//            if (cppllcqpl == null) {
-//                return null;
-//            } else if (cppllcqpl instanceof V3D_Point) {
-//                return cppllcqpl;
-//            } else {
-//                return ((V3D_LineSegment) cppllcqpl).clip(rpl, pt, oom, rm);
-//            }
-//        } else if (cppl instanceof V3D_Triangle cpplt) {
-//            V3D_FiniteGeometry cppltcqpl = cpplt.clip(qpl, pt, oom, rm);
-//            if (cppltcqpl == null) {
-//                return null;
-//            } else if (cppltcqpl instanceof V3D_Point) {
-//                return cppltcqpl;
-//            } else if (cppltcqpl instanceof V3D_LineSegment cppltcqpll) {
-//                return cppltcqpll.clip(rpl, pt, oom, rm);
-//            } else if (cppltcqpl instanceof V3D_Triangle cppltcqplt) {
-//                return cppltcqplt.clip(rpl, pt, oom, rm);
-//            } else {
-//                V3D_ConvexHull c = (V3D_ConvexHull) cppltcqpl;
-//                return c.clip(rpl, tq, oom, rm);
-//            }
-//        } else {
-//            V3D_ConvexHull c = (V3D_ConvexHull) cppl;
-//            V3D_FiniteGeometry cc = c.clip(qpl, pt, oom, rm);
-//            if (cc == null) {
-//                return cc;
-//            } else if (cc instanceof V3D_Point) {
-//                return cc;
-//            } else if (cc instanceof V3D_LineSegment cppll) {
-//                V3D_FiniteGeometry cccqpl = cppll.clip(qpl, pt, oom, rm);
-//                if (cccqpl == null) {
-//                    return null;
-//                } else if (cccqpl instanceof V3D_Point) {
-//                    return cccqpl;
-//                } else {
-//                    return ((V3D_LineSegment) cccqpl).clip(rpl, pt, oom, rm);
-//                }
-//            } else if (cc instanceof V3D_Triangle ccct) {
-//                return ccct.clip(rpl, tq, oom, rm);
-//            } else {
-//                V3D_ConvexHull ccc = (V3D_ConvexHull) cc;
-//                return ccc.clip(rpl, pt, oom, rm);
-//            }
-//        }
-//    }
     /**
      * If pts are all equal then a V3D_Point is returned. If two are different,
      * then a V3D_LineSegment is returned. Three different, then a V3D_Triangle
@@ -878,22 +743,28 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @return A list of triangles that make up the convex hull.
      */
     @Override
-    public HashMap<Integer, V3D_LineSegment> getEdges(int oom, RoundingMode rm) {
-        if (edges == null) {
-            edges = new HashMap<>();
-            V3D_Point p0 = this.points.get(0);
-            V3D_Point p1 = this.points.get(1);
-            this.edges.put(this.edges.size(), new V3D_LineSegment(p0, p1,
-                    oom, rm));
-            for (int i = 2; i < this.points.size(); i++) {
-                p0 = p1;
-                p1 = this.points.get(i);
-                this.edges.put(this.edges.size(), new V3D_LineSegment(p0, p1,
-                        oom, rm));
-            }
-            edges.put(this.edges.size(), new V3D_LineSegment(p1,
-                    this.points.get(0), oom, rm));
-        }
-        return edges;
+    public HashMap<Integer, V3D_Face> getFaces(int oom, RoundingMode rm) {
+//        if (faces == null) {
+//            faces = new HashMap<>();
+//            V3D_Point p0 = this.points.get(0);
+//            V3D_Point p1 = this.points.get(1);
+//            this.faces.put(this.faces.size(), new V3D_LineSegment(p0, p1,
+//                    oom, rm));
+//            for (int i = 2; i < this.points.size(); i++) {
+//                p0 = p1;
+//                p1 = this.points.get(i);
+//                this.faces.put(this.faces.size(), new V3D_LineSegment(p0, p1,
+//                        oom, rm));
+//            }
+//            faces.put(this.faces.size(), new V3D_LineSegment(p1,
+//                    this.points.get(0), oom, rm));
+//        }
+//        return faces;
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public BigRational getVolume(int oom, RoundingMode rm){
+        throw new UnsupportedOperationException();
     }
 }

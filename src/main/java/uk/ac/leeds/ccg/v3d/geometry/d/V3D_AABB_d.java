@@ -527,11 +527,9 @@ public class V3D_AABB_d implements Serializable {
     }
     
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return {@link #l} setting it first if it is null.
      */
-    public V3D_AABBX_d getl(int oom, RoundingMode rm) {
+    public V3D_AABBX_d getl() {
         if (l == null) {
             l = new V3D_AABBX_d(env, xMin, yMin, yMax, zMin, zMax);
         }
@@ -539,11 +537,9 @@ public class V3D_AABB_d implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return {@link #r} setting it first if it is null.
      */
-    public V3D_AABBX_d getr(int oom, RoundingMode rm) {
+    public V3D_AABBX_d getr() {
         if (r == null) {
             r = new V3D_AABBX_d(env, xMax, yMin, yMax, zMin, zMax);
         }
@@ -551,11 +547,9 @@ public class V3D_AABB_d implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return {@link #b} setting it first if it is null.
      */
-    public V3D_AABBY_d getb(int oom, RoundingMode rm) {
+    public V3D_AABBY_d getb() {
         if (b == null) {
             b = new V3D_AABBY_d(env, xMin, xMax, yMin, zMin, zMax);
         }
@@ -563,11 +557,9 @@ public class V3D_AABB_d implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return {@link #t} setting it first if it is null.
      */
-    public V3D_AABBY_d gett(int oom, RoundingMode rm) {
+    public V3D_AABBY_d gett() {
         if (t == null) {
             t = new V3D_AABBY_d(env, xMin, xMax, yMax, zMin, zMax);
         }
@@ -575,11 +567,9 @@ public class V3D_AABB_d implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return {@link #a} setting it first if it is null.
      */
-    public V3D_AABBZ_d geta(int oom, RoundingMode rm) {
+    public V3D_AABBZ_d geta() {
         if (a == null) {
             a = new V3D_AABBZ_d(env, xMin, xMax, yMin, yMax, zMin);
         }
@@ -587,11 +577,9 @@ public class V3D_AABB_d implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return {@link #f} setting it first if it is null.
      */
-    public V3D_AABBZ_d getf(int oom, RoundingMode rm) {
+    public V3D_AABBZ_d getf() {
         if (f == null) {
             f = new V3D_AABBZ_d(env, xMin, xMax, yMin, yMax, zMax);
         }
@@ -924,7 +912,7 @@ public class V3D_AABB_d implements Serializable {
         // Get the intersecting points on the screen plane from pt
         for (int i = 0; i < pts.length; i++) {
             V3D_Ray_d ray = new V3D_Ray_d(pt, pts[i]);
-            ipts[i] = (V3D_Point_d) ray.getIntersection(pl0, epsilon);
+            ipts[i] = (V3D_Point_d) ray.getIntersect(pl0, epsilon);
         }
         // Figure out the extremes in relation to v and v2
         // Find top, bottom, left and right planes
@@ -1006,10 +994,10 @@ public class V3D_AABB_d implements Serializable {
 //        tp.n = tp.n.getUnitVector();
 //        bp.n = bp.n.getUnitVector();
         r = new V3D_Rectangle_d(
-                (V3D_Point_d) lpl.getIntersection(pl0, bpl, epsilon),
-                (V3D_Point_d) lpl.getIntersection(pl0, tpl, epsilon),
-                (V3D_Point_d) rpl.getIntersection(pl0, tpl, epsilon),
-                (V3D_Point_d) rpl.getIntersection(pl0, bpl, epsilon));
+                (V3D_Point_d) lpl.getIntersect(pl0, bpl, epsilon),
+                (V3D_Point_d) lpl.getIntersect(pl0, tpl, epsilon),
+                (V3D_Point_d) rpl.getIntersect(pl0, tpl, epsilon),
+                (V3D_Point_d) rpl.getIntersect(pl0, bpl, epsilon));
 
         return r;
     }
@@ -1046,7 +1034,7 @@ public class V3D_AABB_d implements Serializable {
         // Get the intersecting points on the screen plane from pt
         for (int i = 0; i < pts.length; i++) {
             V3D_Ray_d ray = new V3D_Ray_d(pt, pts[i]);
-            ipts[i] = (V3D_Point_d) ray.getIntersection(pl0, epsilon);
+            ipts[i] = (V3D_Point_d) ray.getIntersect(pl0, epsilon);
         }
         // Find top, bottom, left and right planes
         V3D_Plane_d vpl = new V3D_Plane_d(c, v);
@@ -1128,10 +1116,10 @@ public class V3D_AABB_d implements Serializable {
 //        bp.n = bp.n.getUnitVector();
 
         r = new V3D_Rectangle_d(
-                (V3D_Point_d) lpl.getIntersection(pl0, bpl, epsilon),
-                (V3D_Point_d) lpl.getIntersection(pl0, tpl, epsilon),
-                (V3D_Point_d) rpl.getIntersection(pl0, tpl, epsilon),
-                (V3D_Point_d) rpl.getIntersection(pl0, bpl, epsilon));
+                (V3D_Point_d) lpl.getIntersect(pl0, bpl, epsilon),
+                (V3D_Point_d) lpl.getIntersect(pl0, tpl, epsilon),
+                (V3D_Point_d) rpl.getIntersect(pl0, tpl, epsilon),
+                (V3D_Point_d) rpl.getIntersect(pl0, bpl, epsilon));
 
         return r;
     }
@@ -1191,10 +1179,10 @@ public class V3D_AABB_d implements Serializable {
         rppt.translate(hv);
         V3D_Plane_d rpl = new V3D_Plane_d(rppt, pt, ptv2);
         r = new V3D_Rectangle_d(
-                (V3D_Point_d) lpl.getIntersection(pl0, bpl, epsilon),
-                (V3D_Point_d) lpl.getIntersection(pl0, tpl, epsilon),
-                (V3D_Point_d) rpl.getIntersection(pl0, tpl, epsilon),
-                (V3D_Point_d) rpl.getIntersection(pl0, bpl, epsilon));
+                (V3D_Point_d) lpl.getIntersect(pl0, bpl, epsilon),
+                (V3D_Point_d) lpl.getIntersect(pl0, tpl, epsilon),
+                (V3D_Point_d) rpl.getIntersect(pl0, tpl, epsilon),
+                (V3D_Point_d) rpl.getIntersect(pl0, bpl, epsilon));
         return r;
     }
 

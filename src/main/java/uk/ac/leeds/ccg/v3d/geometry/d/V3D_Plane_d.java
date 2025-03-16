@@ -1008,7 +1008,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * equal.
      * @return The V3D_Geometry.
      */
-    public V3D_Geometry_d getIntersection(V3D_Line_d l, double epsilon) {
+    public V3D_Geometry_d getIntersect(V3D_Line_d l, double epsilon) {
         //if (isParallel(l)){
         if (isParallel(l, epsilon)) {
             //if (isParallel(l, 0d)) {
@@ -1115,7 +1115,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * equal.
      * @return The V3D_Geometry.
      */
-    public V3D_Geometry_d getIntersection(V3D_Line_d l) {
+    public V3D_Geometry_d getIntersect(V3D_Line_d l) {
         if (isParallel(l)) {
             if (isOnPlane(l)) {
                 return l;
@@ -1213,8 +1213,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * equal.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometry_d getIntersection(V3D_LineSegment_d l, double epsilon) {
-        V3D_Geometry_d g = getIntersection(l.l, epsilon);
+    public V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d l, double epsilon) {
+        V3D_Geometry_d g = getIntersect(l.l, epsilon);
         if (g == null) {
             return null;
         } else if (g instanceof V3D_Line_d) {
@@ -1242,7 +1242,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @param pl The plane to intersect.
      * @return The intersection between {@code this} and {@code pl}
      */
-    public V3D_Geometry_d getIntersection(V3D_Plane_d pl) {
+    public V3D_Geometry_d getIntersect(V3D_Plane_d pl) {
         /**
          * Calculate the cross product of the normal vectors to get the
          * direction of the line.
@@ -1278,7 +1278,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * equal.
      * @return The intersection between {@code this} and {@code pl}
      */
-    public V3D_Geometry_d getIntersection(V3D_Plane_d pl,
+    public V3D_Geometry_d getIntersect(V3D_Plane_d pl,
             double epsilon) {
         /**
          * Calculate the cross product of the normal vectors to get the
@@ -1325,16 +1325,16 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * equal.
      * @return The intersection between {@code this} and {@code pl}
      */
-    public V3D_Geometry_d getIntersection(V3D_Plane_d pl1,
+    public V3D_Geometry_d getIntersect(V3D_Plane_d pl1,
             V3D_Plane_d pl2, double epsilon) {
-        V3D_Geometry_d g = getIntersection(pl1, epsilon);
+        V3D_Geometry_d g = getIntersect(pl1, epsilon);
         if (g == null) {
             return null;
         } else {
             if (g instanceof V3D_Plane_d gp) {
-                return gp.getIntersection(pl2, epsilon);
+                return gp.getIntersect(pl2, epsilon);
             } else {
-                return pl2.getIntersection((V3D_Line_d) g, epsilon);
+                return pl2.getIntersect((V3D_Line_d) g, epsilon);
             }
         }
     }
@@ -1644,7 +1644,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             return pt;
         }
         V3D_Line_d l = new V3D_Line_d(pt, n);
-        return (V3D_Point_d) getIntersection(l);
+        return (V3D_Point_d) getIntersect(l);
     }
 
     /**
@@ -1666,7 +1666,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             return pt;
         }
         V3D_Line_d l = new V3D_Line_d(pt, n);
-        return (V3D_Point_d) getIntersection(l, epsilon);
+        return (V3D_Point_d) getIntersect(l, epsilon);
     }
 
     /**

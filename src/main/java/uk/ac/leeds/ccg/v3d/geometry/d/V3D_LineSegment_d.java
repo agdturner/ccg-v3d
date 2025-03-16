@@ -395,16 +395,78 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
     
     /**
      * @param aabb The V3D_AABB to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if this getIntersect with {@code l}
      */
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
         return aabb.intersects(l.p)
-                || getIntersect(aabb.getl(), espilon) != null
-                || getIntersect(aabb.getr(), espilon) != null
-                || getIntersect(aabb.gett(), espilon) != null
-                || getIntersect(aabb.getb(), espilon) != null
-                || getIntersect(aabb.getf(), espilon) != null
-                || getIntersect(aabb.geta(), espilon) != null;
+                || getIntersect(aabb.getl(), epsilon) != null
+                || getIntersect(aabb.getr(), epsilon) != null
+                || getIntersect(aabb.gett(), epsilon) != null
+                || getIntersect(aabb.getb(), epsilon) != null
+                || getIntersect(aabb.getf(), epsilon) != null
+                || getIntersect(aabb.geta(), epsilon) != null;
+    }
+    
+    /**
+     * @param aabbx The V3D_AABBX to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public V3D_Point_d getIntersect(V3D_AABBX_d aabbx, double epsilon) {
+        V3D_Plane_d pl = aabbx.getXPl(); 
+        if (pl.isParallel(l, epsilon)) {
+            return null;
+        }
+        // Calculate the intersection point
+        V3D_Point_d pt = (V3D_Point_d) pl.getIntersect(l, epsilon);
+        if (isBetween(pt, epsilon)
+            && aabbx.intersects(pt)) {
+                return pt;
+        }
+        return null;
+    }
+    
+    /**
+     * @param aabby The V3D_AABBY to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public V3D_Point_d getIntersect(V3D_AABBY_d aabby, double epsilon) {
+        V3D_Plane_d pl = aabby.getYPl(); 
+        if (pl.isParallel(l, epsilon)) {
+            return null;
+        }
+        // Calculate the intersection point
+        V3D_Point_d pt = (V3D_Point_d) pl.getIntersect(l, epsilon);
+        if (isBetween(pt, epsilon)
+            && aabby.intersects(pt)) {
+            return pt;
+        }
+        return null;
+    }
+
+    /**
+     * @param aabbz The V3D_AABBZ to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public V3D_Point_d getIntersect(V3D_AABBZ_d aabbz, double epsilon) {
+        V3D_Plane_d zpl = aabbz.getZPl(); 
+        if (zpl.isParallel(l, epsilon)) {
+            return null;
+        }
+        // Calculate the intersection point
+        V3D_Point_d pt = (V3D_Point_d) zpl.getIntersect(l, epsilon);
+        if (isBetween(pt, epsilon)
+            && aabbz.intersects(pt)) {
+            return pt;
+        }
+        return null;
     }
 
     /**
@@ -524,7 +586,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                         return null;
                     }
                 } else {
-                    return getIntersectionLS(epsilon, ls);
+                    return getIntersectLS(epsilon, ls);
                 }
             }
         }
@@ -537,7 +599,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @param epsilon
      * @return The intersection.
      */
-    public V3D_FiniteGeometry_d getIntersectionLS(double epsilon,
+    public V3D_FiniteGeometry_d getIntersectLS(double epsilon,
             V3D_LineSegment_d ls) {
         /**
          * Check the type of intersection. {@code
@@ -1234,7 +1296,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public V3D_FiniteGeometry_d clip(V3D_Plane_d pl, V3D_Point_d pt,
             double epsilon) {
-        V3D_FiniteGeometry_d i = pl.getIntersection(this, epsilon);
+        V3D_FiniteGeometry_d i = pl.getIntersect(this, epsilon);
         V3D_Point_d tp = getP();
         if (i == null) {
             if (pl.isOnSameSide(tp, pt, epsilon)) {

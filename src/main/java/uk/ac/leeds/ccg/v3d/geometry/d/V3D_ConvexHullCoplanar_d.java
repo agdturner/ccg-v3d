@@ -15,14 +15,17 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
 //import java.util.ArrayList;
 
 /**
@@ -79,6 +82,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
     protected ArrayList<V3D_Point_d> points;
 
     public V3D_ConvexHullCoplanar_d(V3D_ConvexHullCoplanar_d c) {
+        super(c.env, c.offset);
         points = new ArrayList<>();
         c.points.forEach(x -> points.add(new V3D_Point_d(x)));
         triangles = new ArrayList<>();
@@ -307,6 +311,23 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
         }
         return re;
     }
+    
+    /**
+     * @return A collection of the external edges.
+     */
+    @Override
+    public HashMap<Integer, V3D_LineSegment_d> getEdges() {
+        throw new UnsupportedOperationException("Not supported yet.");
+//        if (edges == null) {
+//            edges = new HashMap<>();
+//        }
+//        return edges;
+    }
+    
+    @Override
+    public HashMap<Integer, V3D_Point_d> getPoints() {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
     public String toString() {
@@ -528,14 +549,14 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      * equal.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometry_d getIntersection(V3D_Plane_d p,
+    public V3D_FiniteGeometry_d getIntersect(V3D_Plane_d p,
             double epsilon) {
         if (triangles.get(0).pl.equalsIgnoreOrientation(p, epsilon)) {
             return this;
         }
         ArrayList<V3D_Point_d> pts = new ArrayList<>();
         for (var t : triangles) {
-            V3D_FiniteGeometry_d ti = t.getIntersection(p, epsilon);
+            V3D_FiniteGeometry_d ti = t.getIntersect(p, epsilon);
             if (ti != null) {
                 pts.addAll(Arrays.asList(ti.getPoints()));
             }
@@ -561,12 +582,12 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      * equal.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometry_d getIntersection(V3D_Triangle_d t,
+    public V3D_FiniteGeometry_d getIntersect(V3D_Triangle_d t,
             double epsilon) {
         // Create a set all the intersecting triangles from this.
         List<V3D_Point_d> ts = new ArrayList<>();
         for (V3D_Triangle_d t2 : triangles) {
-            V3D_FiniteGeometry_d i = t2.getIntersection(t, epsilon);
+            V3D_FiniteGeometry_d i = t2.getIntersect(t, epsilon);
             ts.addAll(Arrays.asList(i.getPoints()));
         }
         ArrayList<V3D_Point_d> tsu = V3D_Point_d.getUnique(ts, epsilon);
@@ -824,7 +845,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      */
     public V3D_FiniteGeometry_d clip(V3D_Plane_d pl, V3D_Point_d p,
             double epsilon) {
-        V3D_FiniteGeometry_d i = getIntersection(pl, epsilon);
+        V3D_FiniteGeometry_d i = getIntersect(pl, epsilon);
         if (i == null) {
             if (pl.isOnSameSide(points.get(0), p, epsilon)) {
                 return this;

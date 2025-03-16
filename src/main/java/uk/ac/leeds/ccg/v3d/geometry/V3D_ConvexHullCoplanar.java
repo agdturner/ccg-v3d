@@ -567,8 +567,8 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
 
     
     @Override
-    public V3D_ConvexHullCoplanar rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
-            BigRational theta, int oom, RoundingMode rm) {
+    public V3D_ConvexHullCoplanar rotate(V3D_Ray ray, V3D_Vector uv, 
+            Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
         theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
         if (theta.compareTo(BigRational.ZERO) == 0) {
             return new V3D_ConvexHullCoplanar(this);
