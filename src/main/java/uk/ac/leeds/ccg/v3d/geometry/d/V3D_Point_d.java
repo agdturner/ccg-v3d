@@ -521,4 +521,33 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
         }
         return r;
     }
+    
+    /**
+     * A collection method for getting unique points.
+     *
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @param pts The points to derive a unique list from.
+     * @return A unique list made from those in pts.
+     */
+    public static ArrayList<V3D_Point_d> getUnique(
+            List<V3D_Point_d> pts, double epsilon) {
+        HashSet<Integer> indexes = new HashSet<>();
+        ArrayList<V3D_Point_d> r = new ArrayList<>();
+        for (int i = 0; i < pts.size(); i++) {
+            if (!indexes.contains(i)) {
+                V3D_Point_d p = pts.get(i);
+                r.add(p);
+                for (int j = i + 1; j < pts.size(); j++) {
+                    if (!indexes.contains(j)) {
+                        V3D_Point_d p2 = pts.get(j);
+                        if (p.equals(epsilon, p2)) {
+                            indexes.add(j);
+                        }
+                    }
+                }
+            }
+        }
+        return r;
+    }
 }

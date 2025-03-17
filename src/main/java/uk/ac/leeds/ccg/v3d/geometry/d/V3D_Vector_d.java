@@ -830,7 +830,7 @@ public class V3D_Vector_d implements Serializable {
                         if (Math_Double.equals(dy, vdys, epsilon)) {
                             double vdzs = v.dz * scalar;
                             epsilon = Math_Double.getTolerance(v.dx, dx, scalar, v.dy, dy, vdys, v.dz, dz, vdzs);
-                            return Math_Double.equals(v.dz, vdzs, epsilon);
+                            return Math_Double.equals(dz, vdzs, epsilon);
                         } else {
                             return false;
                         }

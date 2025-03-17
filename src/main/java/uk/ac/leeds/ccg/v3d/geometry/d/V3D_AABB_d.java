@@ -21,22 +21,22 @@ import java.util.ArrayList;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 
 /**
- * An Axis Aligned Bounding Box defined by the extreme values with respect to 
- * the X, Y and Z axes. If {@link xMin} &LT; {@link xMax} and {@link yMin} &LT; 
- * {@link yMax} and {@link zMin} &LT; {@link zMax} the bounding box defines a
- * 3D box region with each face being parallel to an axis. If {@link xMin} = 
- * {@link xMax} or {@link yMin} = {@link yMax} or {@link zMin} = {@link zMax} 
+ * An Axis Aligned Bounding Box defined by the extreme values with respect to
+ * the X, Y and Z axes. If {@link xMin} &LT; {@link xMax} and {@link yMin} &LT;
+ * {@link yMax} and {@link zMin} &LT; {@link zMax} the bounding box defines a 3D
+ * box region with each face being parallel to an axis. If {@link xMin} =
+ * {@link xMax} or {@link yMin} = {@link yMax} or {@link zMin} = {@link zMax}
  * the bounding box is a rectangular area parallel to the ZY, XZ or XY plane
  * respectively. If {@link xMin} = {@link xMax} and {@link yMin} = {@link yMax}
  * the bounding box is a line segment parallel to the Z axis. If {@link xMin} =
- * {@link xMax} and {@link zMin} = {@link zMax} the bounding box is a line 
+ * {@link xMax} and {@link zMin} = {@link zMax} the bounding box is a line
  * segment parallel to the Y axis. If {@link yMin} =
- * {@link yMax} and {@link zMin} = {@link zMax} the bounding box is a line 
+ * {@link yMax} and {@link zMin} = {@link zMax} the bounding box is a line
  * segment parallel to the X axis. If {@link xMin} =
- * {@link xMax} and {@link yMin} = {@link yMax} and {@link zMin} = {@link zMax} 
+ * {@link xMax} and {@link yMin} = {@link yMax} and {@link zMin} = {@link zMax}
  * the bounding box is a point.
- * 
- * The following depiction of 3D box type bounding box indicate the location and 
+ *
+ * The following depiction of 3D box type bounding box indicate the location and
  * name of the components. {@code
  *                                                         z
  *                                    y                   -
@@ -97,7 +97,7 @@ public class V3D_AABB_d implements Serializable {
      * The environment.
      */
     protected final V3D_Environment_d env;
-    
+
     /**
      * For storing the offset of this.
      */
@@ -172,7 +172,7 @@ public class V3D_AABB_d implements Serializable {
      * ull.
      */
     private V3D_Point_d ull;
-    
+
     /**
      * The left geometry.
      */
@@ -197,22 +197,21 @@ public class V3D_AABB_d implements Serializable {
      * The fore geometry.
      */
     protected V3D_AABBZ_d f;
-    
+
     /**
      * The aft geometry.
      */
     protected V3D_AABBZ_d a;
-    
+
     /**
      * For storing all the corner points. These are in order: lbf, lba, ltf,
-     * lta, rbf, rba, rtf, rta.
-     * For storing all the points. N.B {@link #lll}, {@link #llu}, {@link #lul},
-     * {@link #luu}, {@link #ull}, {@link #ulu}, {@link #uul}, {@link #uuu}
-     * may all be the same.
+     * lta, rbf, rba, rtf, rta. For storing all the points. N.B {@link #lll}, {@link #llu}, {@link #lul},
+     * {@link #luu}, {@link #ull}, {@link #ulu}, {@link #uul}, {@link #uuu} may
+     * all be the same.
      */
     protected V3D_Point_d[] pts;
     //protected HashSet<V3D_Point_d> pts;
-    
+
     /**
      * @param e An Axis Aligned Bounding Box.
      */
@@ -241,7 +240,7 @@ public class V3D_AABB_d implements Serializable {
         f = e.f;
         pts = e.pts;
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -250,11 +249,10 @@ public class V3D_AABB_d implements Serializable {
      * @param y The y-coordinate of a point.
      * @param z The z-coordinate of a point.
      */
-    public V3D_AABB_d(V3D_Environment_d env, double x,  double y, double z) {
+    public V3D_AABB_d(V3D_Environment_d env, double x, double y, double z) {
         this(new V3D_Point_d(env, x, y, z));
     }
 
-    
     /**
      * Create a new instance.
      *
@@ -273,7 +271,7 @@ public class V3D_AABB_d implements Serializable {
         this(new V3D_Point_d(env, xMin, yMin, zMin),
                 new V3D_Point_d(env, xMax, yMax, zMax));
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -308,11 +306,10 @@ public class V3D_AABB_d implements Serializable {
         f = e.f;
         pts = e.pts;
     }
-    
+
     /**
      * Create a new instance.
      *
-     * @param oom The Order of Magnitude for the precision.
      * @param points The points used to form the envelop.
      */
     public V3D_AABB_d(V3D_Point_d... points) {
@@ -363,6 +360,7 @@ public class V3D_AABB_d implements Serializable {
     /**
      * @return This represented as a string.
      */
+    @Override
     public String toString() {
         return this.getClass().getSimpleName()
                 + "(xMin=" + getXMin() + ", xMax=" + getXMax()
@@ -387,15 +385,13 @@ public class V3D_AABB_d implements Serializable {
 //        }
 //        return pts;
 //    }
-
     /**
      * Test for equality.
      *
      * @param e The V3D_AABB to test for equality with this.
-     * @param oom The Order of Magnitude for the precision.
      * @return {@code true} iff this and e are equal.
      */
-    public boolean equals(V3D_AABB_d e, int oom) {
+    public boolean equals(V3D_AABB_d e) {
         return getXMin() == e.getXMin()
                 && getXMax() == e.getXMax()
                 && getYMin() == e.getYMin()
@@ -525,7 +521,7 @@ public class V3D_AABB_d implements Serializable {
         }
         return ull;
     }
-    
+
     /**
      * @return {@link #l} setting it first if it is null.
      */
@@ -585,7 +581,7 @@ public class V3D_AABB_d implements Serializable {
         }
         return f;
     }
-    
+
     /**
      * Translates this using {@code v}.
      *
@@ -637,9 +633,9 @@ public class V3D_AABB_d implements Serializable {
             a.translate(v);
         }
     }
-    
+
     /**
-     * Calculate and return the approximate (or exact) centroid of the Axis 
+     * Calculate and return the approximate (or exact) centroid of the Axis
      * Aligned Bounding Box.
      *
      * @return The approximate or exact centre of this.
@@ -650,10 +646,10 @@ public class V3D_AABB_d implements Serializable {
                 (getYMax() + getYMin()) / 2d,
                 (getZMax() + getZMin()) / 2d);
     }
-    
+
     /**
      * @param e The Axis Aligned Bounding Box to union with this.
-     * @return the Axis Aligned Bounding Box which contains both {@code this} 
+     * @return the Axis Aligned Bounding Box which contains both {@code this}
      * and {@code e}.
      */
     public V3D_AABB_d union(V3D_AABB_d e) {
@@ -669,19 +665,38 @@ public class V3D_AABB_d implements Serializable {
                     Math.max(e.getZMax(), getZMax()));
         }
     }
-    
+
     /**
      * If {@code e} touches, or overlaps then it intersects.For collision
- avoidance, this is biased towards returning an intersection even if there
- may not be one at a lower oom precision.
+     * avoidance, this is biased towards returning an intersection even if there
+     * may not be one at a lower oom precision.
      *
      * @param e The Vector_Envelope3D to test for intersection.
-     * @return {@code true} if this getIntersect with {@code e} it the {@code oom}
-     * level of precision.
+     * @return {@code true} if this getIntersect with {@code e} it the
+     * {@code oom} level of precision.
      */
     public boolean intersects(V3D_AABB_d e) {
         if (isBeyond(e)) {
             return !e.isBeyond(this);
+        } else {
+            return true;
+        }
+    }
+    
+    /**
+     * If {@code e} touches, or overlaps then it intersects.For collision
+     * avoidance, this is biased towards returning an intersection even if there
+     * may not be one at a lower oom precision.
+     *
+     * @param e The Vector_Envelope3D to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if this getIntersect with {@code e} it the
+     * {@code oom} level of precision.
+     */
+    public boolean intersects(V3D_AABB_d e, double epsilon) {
+        if (isBeyond(e, epsilon)) {
+            return !e.isBeyond(this, epsilon);
         } else {
             return true;
         }
@@ -700,6 +715,22 @@ public class V3D_AABB_d implements Serializable {
                 || getZMax() < e.getZMin()
                 || getZMin() > e.getZMax();
     }
+    
+    /**
+     * @param e The Axis Aligned Bounding Box to test if {@code this} is beyond.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} iff {@code this} is beyond {@code e} (i.e. they do
+     * not touch or intersect).
+     */
+    public boolean isBeyond(V3D_AABB_d e, double epsilon) {
+        return getXMax() < e.getXMin()
+                || getXMin() > e.getXMax() + epsilon
+                || getYMax() < e.getYMin() - epsilon
+                || getYMin() > e.getYMax() + epsilon
+                || getZMax() < e.getZMin() - epsilon
+                || getZMin() > e.getZMax() + epsilon;
+    }
 
     /**
      * @param e The Axis Aligned Bounding Box to test if it is contained.
@@ -713,6 +744,21 @@ public class V3D_AABB_d implements Serializable {
                 && getZMax() >= e.getZMax()
                 && getZMin() <= e.getZMin();
     }
+    
+    /**
+     * @param e The Axis Aligned Bounding Box to test if it is contained.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} iff {@code this} contains {@code e}.
+     */
+    public boolean contains(V3D_AABB_d e, double epsilon) {
+        return getXMax() >= e.getXMax() - epsilon
+                && getXMin() <= e.getXMin() + epsilon
+                && getYMax() >= e.getYMax() - epsilon
+                && getYMin() <= e.getYMin() + epsilon
+                && getZMax() >= e.getZMax() - epsilon
+                && getZMin() <= e.getZMin() + epsilon;
+    }
 
     /**
      * The location of p may get rounded.
@@ -720,15 +766,20 @@ public class V3D_AABB_d implements Serializable {
      * @param p The point to test if it is contained.
      * @return {@code} true iff {@code this} contains {@code p}.
      */
-    public boolean contains(V3D_Point_d p) {        
-        double px = p.getX();
-        double py = p.getY();
-        double pz = p.getZ();        
-        return getXMax() >= px
-                && getXMin() <= px
-                && getYMin() <= py                
-                && getZMax() >= pz
-                && getZMin() <= pz;
+    public boolean contains(V3D_Point_d p) {
+        return contains(p.getX(), p.getY(), p.getZ());
+    }
+
+    /**
+     * The location of p may get rounded.
+     *
+     * @param p The point to test if it is contained.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code} true iff {@code this} contains {@code p}.
+     */
+    public boolean contains(V3D_Point_d p, double epsilon) {
+        return contains(p.getX(), p.getY(), p.getZ(), epsilon);
     }
 
     /**
@@ -746,6 +797,24 @@ public class V3D_AABB_d implements Serializable {
                 && getZMax() >= z
                 && getZMin() <= z;
     }
+    
+    /**
+     * @param x The x-coordinate of the point to test for containment.
+     * @param y The y-coordinate of the point to test for containment.
+     * @param z The z-coordinate of the point to test for containment.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} iff {@code this} contains the point defined by
+     * {@code x}, {@code y} and {@code z}.
+     */
+    public boolean contains(double x, double y, double z, double epsilon) {
+        return getXMax() >= x + epsilon
+                && getXMin() <= x - epsilon
+                && getYMax() >= y + epsilon
+                && getYMin() <= y - epsilon
+                && getZMax() >= z + epsilon
+                && getZMin() <= z - epsilon;
+    }
 
     /**
      * @param l The line to test for containment.
@@ -753,6 +822,16 @@ public class V3D_AABB_d implements Serializable {
      */
     public boolean contains(V3D_LineSegment_d l) {
         return contains(l.getP()) && contains(l.getQ());
+    }
+
+    /**
+     * @param l The line to test for containment.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if this contains {@code l}.
+     */
+    public boolean contains(V3D_LineSegment_d l, double epsilon) {
+        return contains(l.getP(), epsilon) && contains(l.getQ(), epsilon);
     }
 
     /**
@@ -783,7 +862,7 @@ public class V3D_AABB_d implements Serializable {
 
     /**
      * This biases intersection.
-     * 
+     *
      * @param x The x-coordinate of the point to test for intersection.
      * @param y The y-coordinate of the point to test for intersection.
      * @param z The z-coordinate of the point to test for intersection.
@@ -799,12 +878,30 @@ public class V3D_AABB_d implements Serializable {
     }
 
     /**
+     * This biases intersection.
+     *
+     * @param x The x-coordinate of the point to test for intersection.
+     * @param y The y-coordinate of the point to test for intersection.
+     * @param z The z-coordinate of the point to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if this getIntersect with {@code pl}
+     */
+    public boolean intersects(double x, double y, double z, double epsilon) {
+        return x >= getXMin() - epsilon
+                && x <= getXMax() + epsilon
+                && y >= getYMin() - epsilon
+                && y <= getYMax() + epsilon
+                && z >= getZMin() - epsilon
+                && z <= getZMax() + epsilon;
+    }
+
+    /**
      * @param en The Axis Aligned Bounding Box to intersect.
-     * @param oom The Order of Magnitude for the precision.
      * @return {@code null} if there is no intersection; {@code en} if
      * {@code this.equals(en)}; otherwise returns the intersection.
      */
-    public V3D_AABB_d getIntersect(V3D_AABB_d en, double epsilon) {
+    public V3D_AABB_d getIntersect(V3D_AABB_d en) {
         if (!intersects(en)) {
             return null;
         }
@@ -823,10 +920,11 @@ public class V3D_AABB_d implements Serializable {
                 Math.max(getZMin(), en.getZMin()),
                 Math.min(getZMax(), en.getZMax()));
     }
-    
+
     /**
-     * For storing all the points. N.B 
-     * @return The corners of this as points: {@link #lll}, {@link #llu}, 
+     * For storing all the points. N.B
+     *
+     * @return The corners of this as points: {@link #lll}, {@link #llu},
      * {@link #lul}, {@link #luu}, {@link #ull}, {@link #ulu}, {@link #uul},
      * {@link #uuu}
      */
@@ -878,7 +976,7 @@ public class V3D_AABB_d implements Serializable {
      */
     public V3D_Rectangle_d getViewport(V3D_Point_d pt,
             V3D_Vector_d v, double epsilon) {
-        V3D_Rectangle_d r;
+        V3D_Rectangle_d rect;
         pts = getPoints();
 //        pts[0] = new V3D_Point_d(lba);
 //        pts[1] = new V3D_Point_d(lbf);
@@ -929,18 +1027,18 @@ public class V3D_AABB_d implements Serializable {
         V3D_Plane_d bpl = null;
         for (var x : ipts) {
             V3D_Point_d pp = vpl.getPointOfProjectedIntersection(x, epsilon);
-            double a = Math.abs(cv.getAngle(new V3D_Vector_d(pt, pp)));
+            double angle = Math.abs(cv.getAngle(new V3D_Vector_d(pt, pp)));
             if (v2pl.isOnSameSide(ap, x, epsilon)) {
-                if (a > aa) {
-                    aa = a;
+                if (angle > aa) {
+                    aa = angle;
                     //System.out.println(a);
                     V3D_Point_d xv = new V3D_Point_d(x);
                     xv.translate(v);
                     tpl = new V3D_Plane_d(x, pt, xv);
                 }
             } else {
-                if (a > ba) {
-                    ba = a;
+                if (angle > ba) {
+                    ba = angle;
                     V3D_Point_d xv = new V3D_Point_d(x);
                     xv.translate(v);
                     bpl = new V3D_Plane_d(x, pt, xv);
@@ -958,17 +1056,17 @@ public class V3D_AABB_d implements Serializable {
         V3D_Plane_d rpl = null;
         for (var x : ipts) {
             V3D_Point_d pp = v2pl.getPointOfProjectedIntersection(x, epsilon);
-            double a = Math.abs(cv.getAngle(new V3D_Vector_d(pt, pp)));
+            double angle = Math.abs(cv.getAngle(new V3D_Vector_d(pt, pp)));
             if (vpl.isOnSameSide(lp, x, epsilon)) {
-                if (a > la) {
-                    la = a;
+                if (angle > la) {
+                    la = angle;
                     V3D_Point_d xv = new V3D_Point_d(x);
                     xv.translate(v2);
                     lpl = new V3D_Plane_d(x, pt, xv);
                 }
             } else {
-                if (a > ra) {
-                    ra = a;
+                if (angle > ra) {
+                    ra = angle;
                     V3D_Point_d xv = new V3D_Point_d(x);
                     xv.translate(v2);
                     rpl = new V3D_Plane_d(x, pt, xv);
@@ -993,13 +1091,13 @@ public class V3D_AABB_d implements Serializable {
 //        rp.n = rp.n.getUnitVector();
 //        tp.n = tp.n.getUnitVector();
 //        bp.n = bp.n.getUnitVector();
-        r = new V3D_Rectangle_d(
+        rect = new V3D_Rectangle_d(
                 (V3D_Point_d) lpl.getIntersect(pl0, bpl, epsilon),
                 (V3D_Point_d) lpl.getIntersect(pl0, tpl, epsilon),
                 (V3D_Point_d) rpl.getIntersect(pl0, tpl, epsilon),
                 (V3D_Point_d) rpl.getIntersect(pl0, bpl, epsilon));
 
-        return r;
+        return rect;
     }
 
     /**
@@ -1017,7 +1115,7 @@ public class V3D_AABB_d implements Serializable {
      */
     public V3D_Rectangle_d getViewport2(V3D_Point_d pt,
             V3D_Vector_d v, double epsilon) {
-        V3D_Rectangle_d r;
+        V3D_Rectangle_d rect;
         // Get the plane of the viewport.
         V3D_Point_d c = getCentroid();
         double distance = c.getDistance(getPoints()[0]);
@@ -1050,18 +1148,18 @@ public class V3D_AABB_d implements Serializable {
         V3D_Plane_d bpl = null;
         for (var x : ipts) {
             V3D_Point_d pp = vpl.getPointOfProjectedIntersection(x, epsilon);
-            double a = Math.abs(cv.getAngle(new V3D_Vector_d(pt, pp)));
+            double angle = Math.abs(cv.getAngle(new V3D_Vector_d(pt, pp)));
             if (v2pl.isOnSameSide(ap, x, epsilon)) {
-                if (a > aa) {
-                    aa = a;
+                if (angle > aa) {
+                    aa = angle;
                     //System.out.println(a);
                     V3D_Point_d xv = new V3D_Point_d(x);
                     xv.translate(v);
                     tpl = new V3D_Plane_d(x, pt, xv);
                 }
             } else {
-                if (a > ba) {
-                    ba = a;
+                if (angle > ba) {
+                    ba = angle;
                     V3D_Point_d xv = new V3D_Point_d(x);
                     xv.translate(v);
                     bpl = new V3D_Plane_d(x, pt, xv);
@@ -1079,17 +1177,17 @@ public class V3D_AABB_d implements Serializable {
         V3D_Plane_d rpl = null;
         for (var x : ipts) {
             V3D_Point_d pp = v2pl.getPointOfProjectedIntersection(x, epsilon);
-            double a = Math.abs(cv.getAngle(new V3D_Vector_d(pt, pp)));
+            double angle = Math.abs(cv.getAngle(new V3D_Vector_d(pt, pp)));
             if (vpl.isOnSameSide(lp, x, epsilon)) {
-                if (a > la) {
-                    la = a;
+                if (angle > la) {
+                    la = angle;
                     V3D_Point_d xv = new V3D_Point_d(x);
                     xv.translate(v2);
                     lpl = new V3D_Plane_d(x, pt, xv);
                 }
             } else {
-                if (a > ra) {
-                    ra = a;
+                if (angle > ra) {
+                    ra = angle;
                     V3D_Point_d xv = new V3D_Point_d(x);
                     xv.translate(v2);
                     rpl = new V3D_Plane_d(x, pt, xv);
@@ -1115,13 +1213,13 @@ public class V3D_AABB_d implements Serializable {
 //        tp.n = tp.n.getUnitVector();
 //        bp.n = bp.n.getUnitVector();
 
-        r = new V3D_Rectangle_d(
+        rect = new V3D_Rectangle_d(
                 (V3D_Point_d) lpl.getIntersect(pl0, bpl, epsilon),
                 (V3D_Point_d) lpl.getIntersect(pl0, tpl, epsilon),
                 (V3D_Point_d) rpl.getIntersect(pl0, tpl, epsilon),
                 (V3D_Point_d) rpl.getIntersect(pl0, bpl, epsilon));
 
-        return r;
+        return rect;
     }
 
     /**
@@ -1144,7 +1242,7 @@ public class V3D_AABB_d implements Serializable {
      */
     public V3D_Rectangle_d getViewport3(V3D_Point_d pt,
             V3D_Vector_d v, double zoomFactor, double epsilon) {
-        V3D_Rectangle_d r;
+        V3D_Rectangle_d rect;
         // Get the plane of the viewport.
         V3D_Point_d c = getCentroid();
         double d = c.getDistance(getPoints()[0]);
@@ -1178,12 +1276,12 @@ public class V3D_AABB_d implements Serializable {
         V3D_Point_d rppt = new V3D_Point_d(plpt);
         rppt.translate(hv);
         V3D_Plane_d rpl = new V3D_Plane_d(rppt, pt, ptv2);
-        r = new V3D_Rectangle_d(
+        rect = new V3D_Rectangle_d(
                 (V3D_Point_d) lpl.getIntersect(pl0, bpl, epsilon),
                 (V3D_Point_d) lpl.getIntersect(pl0, tpl, epsilon),
                 (V3D_Point_d) rpl.getIntersect(pl0, tpl, epsilon),
                 (V3D_Point_d) rpl.getIntersect(pl0, bpl, epsilon));
-        return r;
+        return rect;
     }
 
     /**

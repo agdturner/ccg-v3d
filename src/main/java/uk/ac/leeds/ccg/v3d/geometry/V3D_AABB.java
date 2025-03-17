@@ -23,22 +23,22 @@ import java.util.ArrayList;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
- * An Axis Aligned Bounding Box defined by the extreme values with respect to 
- * the X, Y and Z axes. If {@link xMin} &LT; {@link xMax} and {@link yMin} &LT; 
- * {@link yMax} and {@link zMin} &LT; {@link zMax} the bounding box defines a
- * 3D box region with each face being parallel to an axis. If {@link xMin} = 
- * {@link xMax} or {@link yMin} = {@link yMax} or {@link zMin} = {@link zMax} 
+ * An Axis Aligned Bounding Box defined by the extreme values with respect to
+ * the X, Y and Z axes. If {@link xMin} &LT; {@link xMax} and {@link yMin} &LT;
+ * {@link yMax} and {@link zMin} &LT; {@link zMax} the bounding box defines a 3D
+ * box region with each face being parallel to an axis. If {@link xMin} =
+ * {@link xMax} or {@link yMin} = {@link yMax} or {@link zMin} = {@link zMax}
  * the bounding box is a rectangular area parallel to the ZY, XZ or XY plane
  * respectively. If {@link xMin} = {@link xMax} and {@link yMin} = {@link yMax}
  * the bounding box is a line segment parallel to the Z axis. If {@link xMin} =
- * {@link xMax} and {@link zMin} = {@link zMax} the bounding box is a line 
+ * {@link xMax} and {@link zMin} = {@link zMax} the bounding box is a line
  * segment parallel to the Y axis. If {@link yMin} =
- * {@link yMax} and {@link zMin} = {@link zMax} the bounding box is a line 
+ * {@link yMax} and {@link zMin} = {@link zMax} the bounding box is a line
  * segment parallel to the X axis. If {@link xMin} =
- * {@link xMax} and {@link yMin} = {@link yMax} and {@link zMin} = {@link zMax} 
+ * {@link xMax} and {@link yMin} = {@link yMax} and {@link zMin} = {@link zMax}
  * the bounding box is a point.
- * 
- * The following depiction of 3D box type bounding box indicate the location and 
+ *
+ * The following depiction of 3D box type bounding box indicate the location and
  * name of the components. {@code
  *                                                         z
  *                                    y                   -
@@ -99,7 +99,7 @@ public class V3D_AABB implements Serializable {
      * The environment.
      */
     protected final V3D_Environment env;
-    
+
     /**
      * For storing the offset of this.
      */
@@ -174,7 +174,7 @@ public class V3D_AABB implements Serializable {
      * ull.
      */
     private V3D_Point ull;
-    
+
     /**
      * The left geometry.
      */
@@ -199,21 +199,20 @@ public class V3D_AABB implements Serializable {
      * The fore geometry.
      */
     protected V3D_AABBZ f;
-    
+
     /**
      * The aft geometry.
      */
     protected V3D_AABBZ a;
     /**
      * For storing all the corner points. These are in order: lbf, lba, ltf,
-     * lta, rbf, rba, rtf, rta.
-     * For storing all the points. N.B {@link #lll}, {@link #llu}, {@link #lul},
-     * {@link #luu}, {@link #ull}, {@link #ulu}, {@link #uul}, {@link #uuu}
-     * may all be the same.
+     * lta, rbf, rba, rtf, rta. For storing all the points. N.B {@link #lll}, {@link #llu}, {@link #lul},
+     * {@link #luu}, {@link #ull}, {@link #ulu}, {@link #uul}, {@link #uuu} may
+     * all be the same.
      */
     protected V3D_Point[] pts;
     //protected HashSet<V3D_Point> pts;
-    
+
     /**
      * @param e An Axis Aligned Bounding Box.
      */
@@ -242,7 +241,7 @@ public class V3D_AABB implements Serializable {
         f = e.f;
         pts = e.pts;
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -252,12 +251,11 @@ public class V3D_AABB implements Serializable {
      * @param y The y-coordinate of a point.
      * @param z The z-coordinate of a point.
      */
-    public V3D_AABB(V3D_Environment env, int oom, BigRational x, 
+    public V3D_AABB(V3D_Environment env, int oom, BigRational x,
             BigRational y, BigRational z) {
         this(oom, new V3D_Point(env, x, y, z));
     }
 
-    
     /**
      * Create a new instance.
      *
@@ -277,7 +275,7 @@ public class V3D_AABB implements Serializable {
         this(oom, new V3D_Point(env, xMin, yMin, zMin),
                 new V3D_Point(env, xMax, yMax, zMax));
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -325,7 +323,7 @@ public class V3D_AABB implements Serializable {
     public V3D_AABB(V3D_FiniteGeometry g, int oom, RoundingMode rm) {
         this(oom, g.getPointsArray(oom, rm));
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -411,7 +409,6 @@ public class V3D_AABB implements Serializable {
 //        }
 //        return pts;
 //    }
-
     /**
      * Test for equality.
      *
@@ -633,7 +630,7 @@ public class V3D_AABB implements Serializable {
         }
         return ull;
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -705,7 +702,7 @@ public class V3D_AABB implements Serializable {
         }
         return f;
     }
-    
+
     /**
      * Translates this using {@code v}.
      *
@@ -759,9 +756,10 @@ public class V3D_AABB implements Serializable {
             a.translate(v, oom, rm);
         }
     }
-    
+
     /**
-     * Calculate and return the approximate (or exact) centroid of the Axis Aligned Bounding Box.
+     * Calculate and return the approximate (or exact) centroid of the Axis
+     * Aligned Bounding Box.
      *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode used in the calculation.
@@ -773,11 +771,11 @@ public class V3D_AABB implements Serializable {
                 this.getYMax(oom, rm).add(this.getYMin(oom, rm)).divide(2),
                 this.getZMax(oom, rm).add(this.getZMin(oom, rm)).divide(2));
     }
-    
+
     /**
      * @param e The Axis Aligned Bounding Box to union with this.
      * @param oom The Order of Magnitude for the precision.
-     * @return the Axis Aligned Bounding Box which contains both {@code this} 
+     * @return the Axis Aligned Bounding Box which contains both {@code this}
      * and {@code e}.
      */
     public V3D_AABB union(V3D_AABB e, int oom) {
@@ -793,16 +791,16 @@ public class V3D_AABB implements Serializable {
                     BigRational.max(e.getZMax(oom), getZMax(oom)));
         }
     }
-    
+
     /**
      * If {@code e} touches, or overlaps then it intersects.For collision
- avoidance, this is biased towards returning an intersection even if there
- may not be one at a lower oom precision.
+     * avoidance, this is biased towards returning an intersection even if there
+     * may not be one at a lower oom precision.
      *
      * @param e The Vector_Envelope3D to test for intersection.
      * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} if this getIntersect with {@code e} it the {@code oom}
-     * level of precision.
+     * @return {@code true} if this getIntersect with {@code e} it the
+     * {@code oom} level of precision.
      */
     public boolean intersects(V3D_AABB e, int oom) {
         if (isBeyond(e, oom)) {
@@ -924,14 +922,14 @@ public class V3D_AABB implements Serializable {
 
     /**
      * This biases intersection.
-     * 
+     *
      * @param x The x-coordinate of the point to test for intersection.
      * @param y The y-coordinate of the point to test for intersection.
      * @param z The z-coordinate of the point to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @return {@code true} if this getIntersect with {@code pl}
      */
-    public boolean intersects(BigRational x, BigRational y, BigRational z, 
+    public boolean intersects(BigRational x, BigRational y, BigRational z,
             int oom) {
         return x.compareTo(getXMin(oom)) != -1
                 && x.compareTo(getXMax(oom)) != 1
@@ -966,10 +964,11 @@ public class V3D_AABB implements Serializable {
                 BigRational.max(getZMin(oom), en.getZMin(oom)),
                 BigRational.min(getZMax(oom), en.getZMax(oom)));
     }
-    
+
     /**
-     * For storing all the points. N.B 
-     * @return The corners of this as points: {@link #lll}, {@link #llu}, 
+     * For storing all the points. N.B
+     *
+     * @return The corners of this as points: {@link #lll}, {@link #llu},
      * {@link #lul}, {@link #luu}, {@link #ull}, {@link #ulu}, {@link #uul},
      * {@link #uuu}
      */

@@ -454,8 +454,8 @@ public class V3D_Rectangle_d extends V3D_Face_d {
                     return rspit;
                 }
             } else {
-                V3D_Point_d[] pqritps = pqrit.getPoints();
-                V3D_Point_d[] rspitps = rspit.getPoints();
+                V3D_Point_d[] pqritps = pqrit.getPointsArray();
+                V3D_Point_d[] rspitps = rspit.getPointsArray();
                 V3D_Point_d[] pts = Arrays.copyOf(pqritps, pqritps.length + rspitps.length);
                 System.arraycopy(rspitps, 0, pts, pqritps.length, rspitps.length);
                 return V3D_ConvexHullCoplanar_d.getGeometry(epsilon, pts);

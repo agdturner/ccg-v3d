@@ -476,7 +476,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} if {@code this} is intersected by {@code pv}.
      */
     public boolean intersects(V3D_Point_d pt, double epsilon) {
-        boolean ei = getAABB().intersects(pt.getAABB());
+        boolean ei = getAABB().intersects(pt.getAABB(), epsilon);
         if (ei) {
             if (l.intersects(epsilon, pt)) {
                 V3D_Point_d tp = getP();

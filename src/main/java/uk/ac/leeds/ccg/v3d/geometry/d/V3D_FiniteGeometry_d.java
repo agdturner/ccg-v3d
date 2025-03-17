@@ -83,7 +83,7 @@ public abstract class V3D_FiniteGeometry_d extends V3D_Geometry_d {
     public static V3D_Point_d[] getPoints(V3D_FiniteGeometry_d... gs) {
         ArrayList<V3D_Point_d> list = new ArrayList<>();
         for (var x: gs) {
-            list.addAll(Arrays.asList(x.getPoints()));
+            list.addAll(Arrays.asList(x.getPointsArray()));
         }
         return list.toArray(V3D_Point_d[]::new);
     }
