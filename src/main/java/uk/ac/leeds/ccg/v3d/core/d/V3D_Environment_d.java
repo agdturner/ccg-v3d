@@ -18,7 +18,7 @@ package uk.ac.leeds.ccg.v3d.core.d;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
-import uk.ac.leeds.ccg.v3d.geometry.d.V3D_Shape_d;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_Volume_d;
 
 /**
  * V3D_Environment
@@ -33,7 +33,7 @@ public class V3D_Environment_d implements Serializable {
     /**
      * The shapes.
      */
-    public HashMap<Integer, V3D_Shape_d> shapes;
+    public HashMap<Integer, V3D_Volume_d> shapes;
     
     /**
      * The ids of shapes.
@@ -66,7 +66,7 @@ public class V3D_Environment_d implements Serializable {
      * @param shape The shape to be put in {@link #shapes}.
      * @return The id of the shape allocated. 
      */
-    public int add(V3D_Shape_d shape) {
+    public int add(V3D_Volume_d shape) {
         int id = getNextID();
         shapes.put(id, shape);
         return id;

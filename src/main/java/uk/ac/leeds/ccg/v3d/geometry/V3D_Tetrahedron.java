@@ -64,7 +64,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Tetrahedron extends V3D_Shape {
+public class V3D_Tetrahedron extends V3D_Volume {
 
     private static final long serialVersionUID = 1L;
 
@@ -1433,7 +1433,7 @@ public class V3D_Tetrahedron extends V3D_Shape {
 //                } else if (itc instanceof V3D_Triangle) {
 //                    
 //                } else {
-//                    // itc instanceof V3D_ConvexHullCoplanar
+//                    // itc instanceof V3D_ConvexArea
 //                
 //                }
 //                // There are 512 cases to deal with!
@@ -1516,7 +1516,7 @@ public class V3D_Tetrahedron extends V3D_Shape {
                 /**
                  * Quadrilateral.
                  */
-                V3D_ConvexHullCoplanar ic = (V3D_ConvexHullCoplanar) i;
+                V3D_ConvexArea ic = (V3D_ConvexArea) i;
                 return ic.clip(t, t.getCentroid(oom, rm), oom, rm);
 //                /**
 //                 * If all the points of t are within the planes of ic, then
@@ -1581,18 +1581,18 @@ public class V3D_Tetrahedron extends V3D_Shape {
                 return i_pqr;
             } else {
                 if (i_rsp instanceof V3D_Triangle i_rspt) {
-                    V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(oom,
+                    V3D_ConvexArea ch = new V3D_ConvexArea(oom,
                             rm, i_pqrt, i_rspt);
                     return ch.simplify(oom, rm);
                 } else {
-                    // i_rsp instanceof V3D_ConvexHullCoplanar
-                    V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(oom,
-                            rm, (V3D_ConvexHullCoplanar) i_rsp, i_pqrt);
+                    // i_rsp instanceof V3D_ConvexArea
+                    V3D_ConvexArea ch = new V3D_ConvexArea(oom,
+                            rm, (V3D_ConvexArea) i_rsp, i_pqrt);
                     return ch.simplify(oom, rm);
                 }
             }
         } else {
-            // i_pqr instanceof V3D_ConvexHullCoplanar
+            // i_pqr instanceof V3D_ConvexArea
             if (i_rsp == null) {
                 return i_pqr;
             } else if (i_rsp instanceof V3D_Point) {
@@ -1600,14 +1600,14 @@ public class V3D_Tetrahedron extends V3D_Shape {
             } else if (i_rsp instanceof V3D_LineSegment) {
                 return i_pqr;
             } else if (i_rsp instanceof V3D_Triangle i_rspt) {
-                V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(oom, rm,
-                        (V3D_ConvexHullCoplanar) i_pqr, i_rspt);
+                V3D_ConvexArea ch = new V3D_ConvexArea(oom, rm,
+                        (V3D_ConvexArea) i_pqr, i_rspt);
                 return ch.simplify(oom, rm);
             } else {
-                // i_rsp instanceof V3D_ConvexHullCoplanar
-                V3D_ConvexHullCoplanar ch = new V3D_ConvexHullCoplanar(oom, rm,
-                        (V3D_ConvexHullCoplanar) i_pqr,
-                        (V3D_ConvexHullCoplanar) i_rsp);
+                // i_rsp instanceof V3D_ConvexArea
+                V3D_ConvexArea ch = new V3D_ConvexArea(oom, rm,
+                        (V3D_ConvexArea) i_pqr,
+                        (V3D_ConvexArea) i_rsp);
                 return ch.simplify(oom, rm);
             }
         }
@@ -1636,7 +1636,7 @@ public class V3D_Tetrahedron extends V3D_Shape {
     }
     
     @Override
-    public HashMap<Integer, V3D_Face> getFaces(int oom, RoundingMode rm) {
+    public HashMap<Integer, V3D_Area> getFaces(int oom, RoundingMode rm) {
         if (faces == null) {
             faces = new HashMap<>(4);
             faces.put(0, getPqr());

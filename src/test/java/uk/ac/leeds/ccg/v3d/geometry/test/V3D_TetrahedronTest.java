@@ -795,7 +795,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
 
     /**
      * Test of getDistance method, of class V3D_Tetrahedron covered by
-     * {@link #testGetDistanceSquared_V3D_Point_int()}.
+ {@link #testGetDistanceSquared_V3D_Point_int()}.
      */
     @Test
     public void testGetDistance_V3D_Point_int() {

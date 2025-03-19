@@ -202,7 +202,7 @@ public class V3D_LineSegmentDouble extends V3D_FiniteGeometryDouble {
     }
 
     @Override
-    public V3D_PointDouble[] getPoints() {
+    public V3D_PointDouble[] getPointsArray() {
         V3D_PointDouble[] r = new V3D_PointDouble[2];
         r[0] = getP();
         r[1] = getQ();

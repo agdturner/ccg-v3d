@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
@@ -57,14 +58,9 @@ import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VTriangle_d;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Triangle_d extends V3D_Face_d {
+public class V3D_Triangle_d extends V3D_Area_d {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * The plane of the triangle
-     */
-    public final V3D_Plane_d pl;
 
     /**
      * Defines one of the corners of the triangle.
@@ -142,8 +138,7 @@ public class V3D_Triangle_d extends V3D_Face_d {
      * @param t The triangle to clone.
      */
     public V3D_Triangle_d(V3D_Triangle_d t) {
-        super(t.env, new V3D_Vector_d(t.offset));
-        pl = new V3D_Plane_d(t.pl);
+        super(t.env, new V3D_Vector_d(t.offset), t.pl);
         p = new V3D_Vector_d(t.p);
         q = new V3D_Vector_d(t.q);
         r = new V3D_Vector_d(t.r);
@@ -190,11 +185,10 @@ public class V3D_Triangle_d extends V3D_Face_d {
      */
     public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d offset, 
             V3D_Vector_d p, V3D_Vector_d q, V3D_Vector_d r) {
-        super(env, offset);
+        super(env, offset, new V3D_Plane_d(env, offset, p, q, r));
         this.p = p;
         this.q = q;
         this.r = r;
-        this.pl = new V3D_Plane_d(env, offset, p, q, r);
         // Debugging code
         if (p.equals(q) || p.equals(r) || q.equals(r)) {
             throw new RuntimeException("p.equals(q) || p.equals(r) || q.equals(r)");
@@ -215,11 +209,10 @@ public class V3D_Triangle_d extends V3D_Face_d {
      */
     public V3D_Triangle_d(V3D_Plane_d pl, V3D_Vector_d offset,
             V3D_Vector_d p, V3D_Vector_d q, V3D_Vector_d r) {
-        super(pl.env, offset);
+        super(pl.env, offset, pl);
         this.p = p;
         this.q = q;
         this.r = r;
-        this.pl = pl;
         // Debugging code
         if (p.equals(q) || p.equals(r) || q.equals(r)) {
             throw new RuntimeException("p.equals(q) || p.equals(r) || q.equals(r)");
@@ -489,11 +482,7 @@ public class V3D_Triangle_d extends V3D_Face_d {
 
     @Override
     public V3D_Point_d[] getPointsArray() {
-        V3D_Point_d[] re = new V3D_Point_d[3];
-        re[0] = getP();
-        re[1] = getQ();
-        re[2] = getR();
-        return re;
+        return getPoints().values().toArray(new V3D_Point_d[3]);
     }
     
     @Override
@@ -1214,7 +1203,7 @@ public class V3D_Triangle_d extends V3D_Face_d {
                             if (gpql.intersects(gqrp, epsilon)) {
                                 return gpql;
                             } else {
-                                return new V3D_ConvexHullCoplanar_d(
+                                return new V3D_ConvexArea_d(
                                         pl.n, epsilon, gpql.getP(),
                                         gpql.getQ(), gqrp);
                             }
@@ -1231,13 +1220,13 @@ public class V3D_Triangle_d extends V3D_Face_d {
                                 case 3 ->
                                     new V3D_Triangle_d(pts2.get(0), pts2.get(1), pts2.get(2));
                                 default ->
-                                    new V3D_ConvexHullCoplanar_d(
+                                    new V3D_ConvexArea_d(
                                     pl.n, epsilon, gpql.getP(),
                                     gpql.getQ(), gqrp, grpp);
                             };
                         } else {
                             V3D_LineSegment_d grpl = (V3D_LineSegment_d) grp;
-                            return V3D_ConvexHullCoplanar_d.getGeometry(
+                            return V3D_ConvexArea_d.getGeometry(
                                     epsilon, gpql.getP(),
                                     gpql.getQ(), gqrp, grpl.getP(),
                                     grpl.getQ());
@@ -1245,18 +1234,18 @@ public class V3D_Triangle_d extends V3D_Face_d {
                     } else {
                         V3D_LineSegment_d gqrl = (V3D_LineSegment_d) gqr;
                         if (grp == null) {
-                            return V3D_ConvexHullCoplanar_d.getGeometry(
+                            return V3D_ConvexArea_d.getGeometry(
                                     epsilon,
                                     gpql.getP(), gpql.getQ(),
                                     gqrl.getP(), gqrl.getQ());
                         } else if (grp instanceof V3D_Point_d grpp) {
-                            return V3D_ConvexHullCoplanar_d.getGeometry(
+                            return V3D_ConvexArea_d.getGeometry(
                                     epsilon, gpql.getP(),
                                     gpql.getQ(), gqrl.getP(),
                                     gqrl.getQ(), grpp);
                         } else {
                             V3D_LineSegment_d grpl = (V3D_LineSegment_d) grp;
-                            return V3D_ConvexHullCoplanar_d.getGeometry(
+                            return V3D_ConvexArea_d.getGeometry(
                                     epsilon, gpql.getP(),
                                     gpql.getQ(), gqrl.getP(),
                                     gqrl.getQ(), grpl.getP(),
@@ -1970,7 +1959,7 @@ public class V3D_Triangle_d extends V3D_Face_d {
                 i++;
             }
             V3D_Plane_d pl = new V3D_Plane_d(pts[0], pts[1], pts[2]);
-            return new V3D_ConvexHullCoplanar_d(pl.n, epsilon, pts);
+            return new V3D_ConvexArea_d(pl.n, epsilon, pts);
         }
     }
 
@@ -2016,7 +2005,7 @@ public class V3D_Triangle_d extends V3D_Face_d {
 //                    i++;
 //                }
 //                V3D_Plane_d pl = new V3D_Plane_d(pts[0], pts[1], pts[2]);
-//                return new V3D_ConvexHullCoplanar_d(pl.n, epsilon, pts);
+//                return new V3D_ConvexArea_d(pl.n, epsilon, pts);
 //        }
 //    }
     /**
@@ -2037,7 +2026,7 @@ public class V3D_Triangle_d extends V3D_Face_d {
         V3D_Point_d cdp = cd.getP();
         if (pt == null) {
             V3D_Triangle_d t = new V3D_Triangle_d(pl, cd, abp);
-            return new V3D_ConvexHullCoplanar_d(t.pl.getN(),
+            return new V3D_ConvexArea_d(t.pl.getN(),
                     epsilon, abp, cdp, ab.getQ(), cd.getQ());
         } else {
             if (abp.equals(epsilon, pt)) {
@@ -2379,13 +2368,13 @@ public class V3D_Triangle_d extends V3D_Face_d {
                         return this;
                     } else {
                         //return getGeometry(il, getPQ(), epsilon);
-                        return V3D_ConvexHullCoplanar_d.getGeometry(epsilon,
+                        return V3D_ConvexArea_d.getGeometry(epsilon,
                                 il.getP(), il.getQ(), getP(), getQ());
                     }
                 } else {
                     if (pl.isOnSameSide(rpt, pt, epsilon)) {
                         //return getGeometry(il, getRP(), epsilon);
-                        return V3D_ConvexHullCoplanar_d.getGeometry(epsilon,
+                        return V3D_ConvexArea_d.getGeometry(epsilon,
                                 il.getP(), il.getQ(), getR(), getP());
                     } else {
                         return getGeometry(il, ppt, epsilon);
@@ -2395,7 +2384,7 @@ public class V3D_Triangle_d extends V3D_Face_d {
                 if (pl.isOnSameSide(qpt, pt, epsilon)) {
                     if (pl.isOnSameSide(rpt, pt, epsilon)) {
                         //return getGeometry(il, getQR(), epsilon);
-                        return V3D_ConvexHullCoplanar_d.getGeometry(epsilon,
+                        return V3D_ConvexArea_d.getGeometry(epsilon,
                                 il.getP(), il.getQ(), getQ(), getR());
                     } else {
                         return getGeometry(il, qpt, epsilon);
@@ -2459,11 +2448,11 @@ public class V3D_Triangle_d extends V3D_Face_d {
             } else if (cppltcqpl instanceof V3D_Triangle_d cppltcqplt) {
                 return cppltcqplt.clip(rpl, pt, epsilon);
             } else {
-                V3D_ConvexHullCoplanar_d c = (V3D_ConvexHullCoplanar_d) cppltcqpl;
+                V3D_ConvexArea_d c = (V3D_ConvexArea_d) cppltcqpl;
                 return c.clip(rpl, pt, epsilon);
             }
         } else {
-            V3D_ConvexHullCoplanar_d c = (V3D_ConvexHullCoplanar_d) cppl;
+            V3D_ConvexArea_d c = (V3D_ConvexArea_d) cppl;
             V3D_FiniteGeometry_d cc = c.clip(qpl, pt, epsilon);
             if (cc == null) {
                 return cc;
@@ -2481,7 +2470,7 @@ public class V3D_Triangle_d extends V3D_Face_d {
             } else if (cc instanceof V3D_Triangle_d ccct) {
                 return ccct.clip(rpl, pt, epsilon);
             } else {
-                V3D_ConvexHullCoplanar_d ccc = (V3D_ConvexHullCoplanar_d) cc;
+                V3D_ConvexArea_d ccc = (V3D_ConvexArea_d) cc;
                 return ccc.clip(rpl, pt, epsilon);
             }
         }
@@ -2493,4 +2482,73 @@ public class V3D_Triangle_d extends V3D_Face_d {
                 -> x.intersects(aabb, epsilon));
     }
 
+    /**
+     * If there is intersection with the Axis Aligned Bounding Boxes, then the
+     * intersection is computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int, java.math.RoundingMode)}.
+     *
+     * @param l The V3D_Line to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    @Override
+    public boolean intersects(V3D_Line_d l, double epsilon) {
+        if (l.intersects(getAABB(), epsilon)) {
+            return getIntersect(l, epsilon) != null;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * If there is intersection with the Axis Aligned Bounding Boxes, then the
+     * intersection is computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment, int, java.math.RoundingMode)}
+     *
+     * @param l The line segment to test if it intersects.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if l intersects this.
+     */
+     @Override
+    public boolean intersects(V3D_LineSegment_d l, double epsilon) {
+        if (intersects(l.getAABB(), epsilon)
+                || l.intersects(getAABB(), epsilon)) {
+            // Compute the intersection and return true if it is not null.
+            return getIntersect(l, epsilon) != null;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param t Another triangle to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if t intersects this.
+     */
+    public boolean intersects(V3D_Triangle_d t, double epsilon) {
+        if (intersects(t.getAABB(), epsilon)
+                && t.intersects(getAABB(), epsilon)) {
+            return getEdges().values().parallelStream().anyMatch(x
+                    -> intersects(x, epsilon))
+                    || t.getEdges().values().parallelStream().anyMatch(x
+                            -> intersects(x, epsilon));
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @param ls A line segment to test for intersection.
+     * @param faces The faces to test for intersection with p.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     */
+    public static boolean intersects(double epsilon,
+            V3D_LineSegment_d ls, Collection<V3D_Area_d> faces) {
+        return faces.parallelStream().anyMatch(x -> x.intersects(ls, epsilon));
+    }
 }

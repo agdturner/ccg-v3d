@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
-import uk.ac.leeds.ccg.v3d.geometry.d.V3D_ConvexHullCoplanar_d;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_ConvexArea_d;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_AABB_d;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_Geometry_d;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_Line_d;
@@ -653,7 +653,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
         points[7] = rta;
         V3D_AABB_d envelope = new V3D_AABB_d(points);
         int width = 100;
-        double radius = envelope.getPoints()[0].getDistance(centroid);
+        double radius = envelope.getPointsArray()[0].getDistance(centroid);
         V3D_Vector_d direction = new V3D_Vector_d(0, 0, 1).getUnitVector();
         V3D_Point_d pt = new V3D_Point_d(centroid);
         pt.translate(direction.multiply(radius * 2d));
@@ -785,7 +785,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
         instance = new V3D_Triangle_d(pP1P0P0, new V3D_Point_d(env, 3, 0, 0), 
                 new V3D_Point_d(env, 3, 2, 0));
         System.out.println(pP1P0P0.toString());
-        expResult = new V3D_ConvexHullCoplanar_d(epsilon,
+        expResult = new V3D_ConvexArea_d(epsilon,
                 new V3D_Triangle_d(pP2P0P0, new V3D_Point_d(env, 3, 0, 0),
                         pP2P1P0),
                 new V3D_Triangle_d(
@@ -794,7 +794,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
                         pP2P1P0));
         result = instance.getIntersect(t, epsilon);
         //System.out.println(result);
-        assertTrue(((V3D_ConvexHullCoplanar_d) expResult).equals((V3D_ConvexHullCoplanar_d) result, epsilon));
+        assertTrue(((V3D_ConvexArea_d) expResult).equals((V3D_ConvexArea_d) result, epsilon));
         // Test 10: 5 sides
         epsilon = 1d / 10000000000d;
         t = new V3D_Triangle_d(pP0P0P0, new V3D_Point_d(env, 4, 0, 0), 
@@ -803,7 +803,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
                 new V3D_Point_d(env, 4, -2, 0));
         V3D_Point_d m = new V3D_Point_d(env, 2d/3d, -4d/3d, 0);
         V3D_Point_d n = new V3D_Point_d(env, 10d/3d, -4d/3d, 0);
-        expResult = new V3D_ConvexHullCoplanar_d(epsilon,
+        expResult = new V3D_ConvexArea_d(epsilon,
                 new V3D_Triangle_d(pP2P0P0, m, n),
                 //new V3D_Triangle_d(m, n, pP1N2P0),
                 new V3D_Triangle_d(m, n, new V3D_Point_d(env, 3, -2, 0)),
@@ -811,15 +811,15 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
                         new V3D_Point_d(env, 3, -2, 0),
                         n));
         result = instance.getIntersect(t, epsilon);
-        //System.out.println(((V3D_ConvexHullCoplanar_d) expResult).toStringSimple());
-        //System.out.println(((V3D_ConvexHullCoplanar_d) result).toStringSimple());
-        assertTrue(((V3D_ConvexHullCoplanar_d) expResult).equals((V3D_ConvexHullCoplanar_d) result, epsilon));
+        //System.out.println(((V3D_ConvexArea_d) expResult).toStringSimple());
+        //System.out.println(((V3D_ConvexArea_d) result).toStringSimple());
+        assertTrue(((V3D_ConvexArea_d) expResult).equals((V3D_ConvexArea_d) result, epsilon));
 //        // Test 11: 6 sides
 //        t = new V3D_Triangle_d(pP0P0P0, new V3D_Point_d(6, 0, 0), 
 //                new V3D_Point_d(3, -3, 0));
 //        instance = new V3D_Triangle_d(pP0N2P0, new V3D_Point_d(3, 1, 0),
 //                new V3D_Point_d(6, -2, 0));
-//        expResult = new V3D_ConvexHullCoplanar_d(epsilon,
+//        expResult = new V3D_ConvexArea_d(epsilon,
 //                new V3D_Triangle_d(pP2P0P0, new V3D_Point_d(4, 0, 0), pP1N1P0),
 //                new V3D_Triangle_d(pP1N1P0, pP2N2P0, new V3D_Point_d(4, -2, 0)),
 //                new V3D_Triangle_d(
@@ -830,11 +830,11 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
 //                        new V3D_Point_d(4, -2, 0)));
 //        result = instance.getIntersect(t, epsilon);
 //        //System.out.println(result);
-//        assertTrue(((V3D_ConvexHullCoplanar_d) expResult).equals((V3D_ConvexHullCoplanar_d) result, epsilon));
+//        assertTrue(((V3D_ConvexArea_d) expResult).equals((V3D_ConvexArea_d) result, epsilon));
 //        // Test 12: 6 sides
 //        t = new V3D_Triangle_d(new V3D_Point_d(6, 0, 0), pP0P0P0, new V3D_Point_d(3, -3, 0));
 //        instance = new V3D_Triangle_d(pP0N2P0, new V3D_Point_d(3, 1, 0), new V3D_Point_d(6, -2, 0));
-//        expResult = new V3D_ConvexHullCoplanar_d(epsilon,
+//        expResult = new V3D_ConvexArea_d(epsilon,
 //                new V3D_Triangle_d(pP2P0P0, new V3D_Point_d(4, 0, 0), pP1N1P0),
 //                new V3D_Triangle_d(pP1N1P0, pP2N2P0, new V3D_Point_d(4, 2, 0)),
 //                new V3D_Triangle_d(
@@ -845,7 +845,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
 //                        new V3D_Point_d(4, 2, 0)));
 //        result = instance.getIntersect(t, epsilon);
 //        //System.out.println(result);
-//        assertTrue(((V3D_ConvexHullCoplanar_d) expResult).equals((V3D_ConvexHullCoplanar_d) result, epsilon));
+//        assertTrue(((V3D_ConvexArea_d) expResult).equals((V3D_ConvexArea_d) result, epsilon));
 
     }
 

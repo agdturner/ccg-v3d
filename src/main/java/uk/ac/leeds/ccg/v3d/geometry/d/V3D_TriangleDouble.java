@@ -483,7 +483,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
     }
 
     @Override
-    public V3D_PointDouble[] getPoints() {
+    public V3D_PointDouble[] getPointsArray() {
         V3D_PointDouble[] re = new V3D_PointDouble[3];
         re[0] = getP();
         re[1] = getQ();
@@ -2275,7 +2275,7 @@ public class V3D_TriangleDouble extends V3D_FiniteGeometryDouble implements V3D_
      * equal.
      * @return A Set of points that are the corners of the triangles.
      */
-    //public static ArrayList<V3D_Point> getPoints(V3D_Triangle[] triangles) {
+    //public static ArrayList<V3D_Point> getPointsArray(V3D_Triangle[] triangles) {
     public static V3D_PointDouble[] getPoints(V3D_TriangleDouble[] triangles,
             double epsilon) {
         List<V3D_PointDouble> s = new ArrayList<>();

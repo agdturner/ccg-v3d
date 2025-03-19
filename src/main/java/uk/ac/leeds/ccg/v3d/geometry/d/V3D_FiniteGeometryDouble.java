@@ -70,7 +70,7 @@ public abstract class V3D_FiniteGeometryDouble extends V3D_GeometryDouble {
     /**
      * @return A copy of the points of the geometry.
      */
-    public abstract V3D_PointDouble[] getPoints();
+    public abstract V3D_PointDouble[] getPointsArray();
     
     /**
      * @return A copy of the points of the geometries gs.
@@ -79,7 +79,7 @@ public abstract class V3D_FiniteGeometryDouble extends V3D_GeometryDouble {
     public static V3D_PointDouble[] getPoints(V3D_FiniteGeometryDouble... gs) {
         ArrayList<V3D_PointDouble> list = new ArrayList<>();
         for (var x: gs) {
-            list.addAll(Arrays.asList(x.getPoints()));
+            list.addAll(Arrays.asList(x.getPointsArray()));
         }
         return list.toArray(V3D_PointDouble[]::new);
     }

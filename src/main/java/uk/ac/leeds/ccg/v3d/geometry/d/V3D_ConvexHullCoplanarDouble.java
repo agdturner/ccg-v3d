@@ -299,7 +299,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
     }
 
     @Override
-    public V3D_PointDouble[] getPoints() {
+    public V3D_PointDouble[] getPointsArray() {
         int np = points.size();
         V3D_PointDouble[] re = new V3D_PointDouble[np];
         for (int i = 0; i < np; i++) {
@@ -537,7 +537,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         for (var t : triangles) {
             V3D_FiniteGeometryDouble ti = t.getIntersection(p, epsilon);
             if (ti != null) {
-                pts.addAll(Arrays.asList(ti.getPoints()));
+                pts.addAll(Arrays.asList(ti.getPointsArray()));
             }
         }
         pts = V3D_PointDouble.getUnique(pts, epsilon);
@@ -567,7 +567,7 @@ public class V3D_ConvexHullCoplanarDouble extends V3D_FiniteGeometryDouble
         List<V3D_PointDouble> ts = new ArrayList<>();
         for (V3D_TriangleDouble t2 : triangles) {
             V3D_FiniteGeometryDouble i = t2.getIntersection(t, epsilon);
-            ts.addAll(Arrays.asList(i.getPoints()));
+            ts.addAll(Arrays.asList(i.getPointsArray()));
         }
         ArrayList<V3D_PointDouble> tsu = V3D_PointDouble.getUnique(ts, epsilon);
         if (tsu.isEmpty()) {

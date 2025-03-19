@@ -59,7 +59,7 @@ import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
+public class V3D_TetrahedraDouble extends V3D_FiniteGeometryDouble
         implements V3D_VolumeDouble {
 
     private static final long serialVersionUID = 1L;
@@ -108,7 +108,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * 
      * @param t The tetrahedron to instantiate from/copy/clone.
      */
-    public V3D_TetrahedronDouble(V3D_TetrahedronDouble t) {
+    public V3D_TetrahedraDouble(V3D_TetrahedraDouble t) {
         super(new V3D_VectorDouble(t.offset));
         p = new V3D_VectorDouble(t.p);
         q = new V3D_VectorDouble(t.q);
@@ -132,7 +132,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * @param r A point that defines the tetrahedron.
      * @param s A point that defines the tetrahedron.
      */
-    public V3D_TetrahedronDouble(V3D_VectorDouble offset, V3D_VectorDouble p,
+    public V3D_TetrahedraDouble(V3D_VectorDouble offset, V3D_VectorDouble p,
             V3D_VectorDouble q, V3D_VectorDouble r, V3D_VectorDouble s) {
         super(offset);
         this.p = new V3D_VectorDouble(p);
@@ -151,7 +151,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * @param r Used to set {@link #r}.
      * @param s Used to set {@link #s}.
      */
-    public V3D_TetrahedronDouble(V3D_PointDouble p, V3D_PointDouble q,
+    public V3D_TetrahedraDouble(V3D_PointDouble p, V3D_PointDouble q,
             V3D_PointDouble r, V3D_PointDouble s, double epsilon) {
         super(p.offset);
         this.p = new V3D_VectorDouble(p.rel);
@@ -178,7 +178,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * @param p Used to set {@link #p} and {@link #offset}.
      * @param t Used to set {@link #q}, {@link #r} and {@link #s}.
      */
-    public V3D_TetrahedronDouble(V3D_PointDouble p, V3D_TriangleDouble t, double epsilon) {
+    public V3D_TetrahedraDouble(V3D_PointDouble p, V3D_TriangleDouble t, double epsilon) {
         this(p, t.getP(), t.getQ(), t.getR(), epsilon);
     }
 
@@ -572,7 +572,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
                     }
                 }
             }
-            return new V3D_TetrahedronDouble(p, q, r, s, epsilon);
+            return new V3D_TetrahedraDouble(p, q, r, s, epsilon);
         }
     }
 
@@ -1489,8 +1489,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
             } else if (rspi instanceof V3D_LineSegmentDouble) {
                 return pqri;
             } else {
-                V3D_PointDouble[] pqritp = pqrit.getPoints();
-                V3D_PointDouble[] rspip = rspi.getPoints();
+                V3D_PointDouble[] pqritp = pqrit.getPointsArray();
+                V3D_PointDouble[] rspip = rspi.getPointsArray();
                 V3D_PointDouble[] pts = new V3D_PointDouble[pqritp.length + rspip.length];
                 System.arraycopy(pqritp, 0, pts, 0, pqritp.length);
                 System.arraycopy(rspip, 0, pts, pqritp.length, rspip.length);
@@ -1505,8 +1505,8 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
             } else if (rspi instanceof V3D_LineSegmentDouble) {
                 return pqri;
             } else {
-                V3D_PointDouble[] pqrip = pqri.getPoints();
-                V3D_PointDouble[] rspip = rspi.getPoints();
+                V3D_PointDouble[] pqrip = pqri.getPointsArray();
+                V3D_PointDouble[] rspip = rspi.getPointsArray();
                 V3D_PointDouble[] pts = new V3D_PointDouble[pqrip.length + rspip.length];
                 System.arraycopy(pqrip, 0, pts, 0, pqrip.length);
                 System.arraycopy(rspip, 0, pts, pqrip.length, rspip.length);
@@ -1516,7 +1516,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
     }
 
     @Override
-    public V3D_PointDouble[] getPoints() {
+    public V3D_PointDouble[] getPointsArray() {
         V3D_PointDouble[] re = new V3D_PointDouble[4];
         re[0] = getP();
         re[1] = getQ();
@@ -1613,20 +1613,20 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
     }
 
     @Override
-    public V3D_TetrahedronDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
+    public V3D_TetrahedraDouble rotate(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
         theta = Math_AngleDouble.normalise(theta);
         if (theta == 0d) {
-            return new V3D_TetrahedronDouble(this);
+            return new V3D_TetrahedraDouble(this);
         } else {
             return rotateN(ray, uv, theta, epsilon);
         }
     }
     
     @Override
-    public V3D_TetrahedronDouble rotateN(V3D_RayDouble ray, V3D_VectorDouble uv,
+    public V3D_TetrahedraDouble rotateN(V3D_RayDouble ray, V3D_VectorDouble uv,
             double theta, double epsilon) {
-        return new V3D_TetrahedronDouble(
+        return new V3D_TetrahedraDouble(
                 getP().rotate(ray, uv, theta, epsilon),
                 getQ().rotate(ray, uv, theta, epsilon),
                 getR().rotate(ray, uv, theta, epsilon),
@@ -1641,7 +1641,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * equal.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometryDouble getIntersection(V3D_TetrahedronDouble t,
+    public V3D_FiniteGeometryDouble getIntersection(V3D_TetrahedraDouble t,
             double epsilon) {
         if (!getEnvelope().isIntersectedBy(t.getEnvelope(), epsilon)) {
             return null;
@@ -1835,7 +1835,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * equal.
      * @return The minimum distance to {@code t}.
      */
-    public double getDistance(V3D_TetrahedronDouble t, double epsilon) {
+    public double getDistance(V3D_TetrahedraDouble t, double epsilon) {
         return Math.sqrt(getDistanceSquared(t, epsilon));
     }
 
@@ -1847,7 +1847,7 @@ public class V3D_TetrahedronDouble extends V3D_FiniteGeometryDouble
      * equal.
      * @return The minimum distance to {@code t}.
      */
-    public double getDistanceSquared(V3D_TetrahedronDouble t, double epsilon) {
+    public double getDistanceSquared(V3D_TetrahedraDouble t, double epsilon) {
         if (getIntersection(t, epsilon) != null) {
             return 0d;
         } else {

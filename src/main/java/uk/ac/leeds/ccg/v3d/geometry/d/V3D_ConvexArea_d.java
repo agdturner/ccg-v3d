@@ -61,7 +61,7 @@ import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
+public class V3D_ConvexArea_d extends V3D_Area_d {
 
     private static final long serialVersionUID = 1L;
 
@@ -73,8 +73,8 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
     /**
      * @param c The V3D_ConvexHullCoplanar_d to clone.
      */
-    public V3D_ConvexHullCoplanar_d(V3D_ConvexHullCoplanar_d c) {
-        super(c.env, c.offset);
+    public V3D_ConvexArea_d(V3D_ConvexArea_d c) {
+        super(c.env, c.offset, c.pl);
         points = new HashMap<>();
         c.points.values().forEach(x ->
                 points.put(points.size(), new V3D_Point_d(x)));
@@ -90,7 +90,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      * equal.
      * @param triangles A non-empty list of coplanar triangles.
      */
-    public V3D_ConvexHullCoplanar_d(double epsilon,
+    public V3D_ConvexArea_d(double epsilon,
             V3D_Triangle_d... triangles) {
         this(triangles[0].pl.n, epsilon,
                 V3D_Triangle_d.getPoints(triangles));
@@ -104,7 +104,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      * equal.
      * @param points A non-empty list of points in a plane given by n.
      */
-    public V3D_ConvexHullCoplanar_d(V3D_Plane_d pl, double epsilon,
+    public V3D_ConvexArea_d(V3D_Plane_d pl, double epsilon,
             V3D_Point_d... points) {
         this(pl.n, epsilon, points);
     }
@@ -116,10 +116,9 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      * equal.
      * @param points A non-empty list of points in a plane given by n.
      */
-    public V3D_ConvexHullCoplanar_d(V3D_Vector_d n, 
+    public V3D_ConvexArea_d(V3D_Vector_d n, 
             double epsilon, V3D_Point_d... points) {
-        super(points[0].env, points[0].offset);
-        
+        super(points[0].env, points[0].offset, new V3D_Plane_d(points[0], n));
         this.points = new HashMap<>();
        this.triangles = new HashMap<>();
 //        // Get a list of unique points.
@@ -279,7 +278,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      * equal.
      * @param gs The input convex hulls.
      */
-    public V3D_ConvexHullCoplanar_d(double epsilon, V3D_ConvexHullCoplanar_d... gs) {
+    public V3D_ConvexArea_d(double epsilon, V3D_ConvexArea_d... gs) {
         this(gs[0].triangles.get(0).pl.n, epsilon, V3D_FiniteGeometry_d.getPoints(gs));
     }
 
@@ -292,7 +291,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      */
-    public V3D_ConvexHullCoplanar_d(V3D_ConvexHullCoplanar_d ch,
+    public V3D_ConvexArea_d(V3D_ConvexArea_d ch,
             V3D_Triangle_d t, double epsilon) {
         this(ch.triangles.get(0).pl.n, epsilon, V3D_FiniteGeometry_d.getPoints(ch, t));
     }
@@ -358,7 +357,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
      * equal.
      * @return {@code true} iff all the triangles are the same.
      */
-    public boolean equals(V3D_ConvexHullCoplanar_d c, double epsilon) {
+    public boolean equals(V3D_ConvexArea_d c, double epsilon) {
         HashSet<Integer> indexes = new HashSet<>();
         for (var x : points.values()) {
             boolean found = false;
@@ -589,7 +588,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
         if (tsu.isEmpty()) {
             return null;
         } else {
-            return new V3D_ConvexHullCoplanar_d(t.pl.n, epsilon,
+            return new V3D_ConvexArea_d(t.pl.n, epsilon,
                     tsu.toArray(V3D_Point_d[]::new)).simplify(epsilon);
         }
 //        switch (size) {
@@ -609,24 +608,24 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
 //        return getAABB().intersects(l, oom);
 //    }
     @Override
-    public V3D_ConvexHullCoplanar_d rotate(V3D_Ray_d ray, V3D_Vector_d uv,
+    public V3D_ConvexArea_d rotate(V3D_Ray_d ray, V3D_Vector_d uv,
             double theta, double epsilon) {
         theta = Math_AngleDouble.normalise(theta);
         if (theta == 0d) {
-            return new V3D_ConvexHullCoplanar_d(this);
+            return new V3D_ConvexArea_d(this);
         } else {
             return rotateN(ray, uv, theta, epsilon);
         }
     }
     
     @Override
-    public V3D_ConvexHullCoplanar_d rotateN(V3D_Ray_d ray, 
+    public V3D_ConvexArea_d rotateN(V3D_Ray_d ray, 
             V3D_Vector_d uv, double theta, double epsilon) {
         V3D_Triangle_d[] rts = new V3D_Triangle_d[triangles.size()];
         for (int i = 0; i < triangles.size(); i++) {
             rts[0] = triangles.get(i).rotate(ray, uv, theta, epsilon);
         }
-        return new V3D_ConvexHullCoplanar_d(epsilon, rts);
+        return new V3D_ConvexArea_d(epsilon, rts);
     }
 
     /**
@@ -721,6 +720,21 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean intersects(V3D_AABB_d aabb, double epsilon) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean intersects(V3D_Line_d l, double epsilon) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean intersects(V3D_LineSegment_d l, double epsilon) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     /**
@@ -870,7 +884,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
                 pts.add(il.getP());
                 pts.add(il.getQ());
           //      pts = V3D_Point_d.getUnique(pts, epsilon);
-                return V3D_ConvexHullCoplanar_d.getGeometry(epsilon,
+                return V3D_ConvexArea_d.getGeometry(epsilon,
                         pts.toArray(V3D_Point_d[]::new));
 //                return new V3D_ConvexHullCoplanarDouble(
 //                        this.triangles.get(0).getPl(epsilon).n, epsilon,
@@ -929,11 +943,11 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
             } else if (cppltcqpl instanceof V3D_Triangle_d cppltcqplt) {
                 return cppltcqplt.clip(rpl, pt, epsilon);
             } else {
-                V3D_ConvexHullCoplanar_d c = (V3D_ConvexHullCoplanar_d) cppltcqpl;
+                V3D_ConvexArea_d c = (V3D_ConvexArea_d) cppltcqpl;
                 return c.clip(rpl, tq, epsilon);
             }
         } else {
-            V3D_ConvexHullCoplanar_d c = (V3D_ConvexHullCoplanar_d) cppl;
+            V3D_ConvexArea_d c = (V3D_ConvexArea_d) cppl;
             V3D_FiniteGeometry_d cc = c.clip(qpl, pt, epsilon);
             if (cc == null) {
                 return cc;
@@ -951,7 +965,7 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
             } else if (cc instanceof V3D_Triangle_d ccct) {
                 return ccct.clip(rpl, tq, epsilon);
             } else {
-                V3D_ConvexHullCoplanar_d ccc = (V3D_ConvexHullCoplanar_d) cc;
+                V3D_ConvexArea_d ccc = (V3D_ConvexArea_d) cc;
                 return ccc.clip(rpl, pt, epsilon);
             }
         }
@@ -998,9 +1012,10 @@ public class V3D_ConvexHullCoplanar_d extends V3D_Face_d {
                     return new V3D_LineSegment_d(epsilon, pts);
                 } else {
                     pl = new V3D_Plane_d(ip, iq, ir);
-                    return new V3D_ConvexHullCoplanar_d(pl.n, epsilon, pts);
+                    return new V3D_ConvexArea_d(pl.n, epsilon, pts);
                 }
             }
+
 
         }
     }

@@ -145,7 +145,7 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
     }
 
     @Override
-    public V3D_PointDouble[] getPoints() {
+    public V3D_PointDouble[] getPointsArray() {
         V3D_PointDouble[] re = new V3D_PointDouble[4];
         re[0] = getP();
         re[1] = getQ();
@@ -430,8 +430,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
                     return rspit;
                 }
             } else {
-                V3D_PointDouble[] pqritps = pqrit.getPoints();
-                V3D_PointDouble[] rspitps = rspit.getPoints();
+                V3D_PointDouble[] pqritps = pqrit.getPointsArray();
+                V3D_PointDouble[] rspitps = rspit.getPointsArray();
                 V3D_PointDouble[] pts = Arrays.copyOf(pqritps, pqritps.length + rspitps.length);
                 System.arraycopy(rspitps, 0, pts, pqritps.length, rspitps.length);
                 return V3D_ConvexHullCoplanarDouble.getGeometry(epsilon, pts);
@@ -572,8 +572,8 @@ public class V3D_RectangleDouble extends V3D_FiniteGeometryDouble
      * @return {@code true} iff this is equal to r.
      */
     public boolean equals(V3D_RectangleDouble r, double epsilon) {
-        V3D_PointDouble[] pts = getPoints();
-        V3D_PointDouble[] rpts = r.getPoints();
+        V3D_PointDouble[] pts = getPointsArray();
+        V3D_PointDouble[] rpts = r.getPointsArray();
         for (var x : pts) {
             boolean found = false;
             for (var y : rpts) {

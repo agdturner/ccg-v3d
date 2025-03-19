@@ -40,7 +40,7 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Rectangle extends V3D_Face {
+public class V3D_Rectangle extends V3D_Area {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,7 +57,7 @@ public class V3D_Rectangle extends V3D_Face {
     /**
      * For storing the convex hull
      */
-    protected V3D_ConvexHullCoplanar convexHull;
+    protected V3D_ConvexArea convexHull;
 
     public V3D_Rectangle(V3D_Rectangle r) {
         super(r.env, r.offset);
@@ -93,7 +93,7 @@ public class V3D_Rectangle extends V3D_Face {
             V3D_Vector q, V3D_Vector r, V3D_Vector s, int oom, 
             RoundingMode rm) {
         super(env, offset);
-        V3D_Plane pl = new V3D_Plane(env, offset, p, q, r, oom, rm);
+        pl = new V3D_Plane(env, offset, p, q, r, oom, rm);
         rsp = new V3D_Triangle(pl, offset, r, s, p);
         pqr = new V3D_Triangle(pl, offset, p, q, r);
     }
@@ -121,6 +121,8 @@ public class V3D_Rectangle extends V3D_Face {
      * @param q Used to initialise {@link #pqr} and {@link #rsp}.
      * @param r Used to initialise {@link #pqr} and {@link #rsp}.
      * @param s Used to initialise {@link #rsp}.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Rectangle(V3D_Plane pl, V3D_Point p, V3D_Point q, V3D_Point r, 
             V3D_Point s, int oom, RoundingMode rm) {
@@ -165,12 +167,7 @@ public class V3D_Rectangle extends V3D_Face {
 
     @Override
     public V3D_Point[] getPointsArray(int oom, RoundingMode rm) {
-        V3D_Point[] re = new V3D_Point[4];
-        re[0] = getP(oom, rm);
-        re[1] = getQ(oom, rm);
-        re[2] = getR(oom, rm);
-        re[3] = getS(oom, rm);
-        return re;
+        return getPoints(oom, rm).values().toArray(new V3D_Point[4]);
     }
     
     @Override
@@ -216,8 +213,22 @@ public class V3D_Rectangle extends V3D_Face {
         return rsp;
     }
     
+    @Override
+    protected void initPl(int oom, RoundingMode rm) {
+        pqr.initPl(oom, rm);
+        pl = pqr.pl;
+    }
+
+    @Override
+    protected void initPl(V3D_Point pt, int oom, RoundingMode rm) {
+        pqr.initPl(pt, oom, rm);
+        pl = pqr.pl;
+    }
+    
     /**
      * @return {@link #p} with {@link #offset} applied.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Point getP(int oom, RoundingMode rm) {
         return getPQR().getP(oom, rm);
@@ -225,6 +236,8 @@ public class V3D_Rectangle extends V3D_Face {
 
     /**
      * @return {@link #q} with {@link #offset} applied.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Point getQ(int oom, RoundingMode rm) {
         return getPQR().getQ(oom, rm);
@@ -232,6 +245,8 @@ public class V3D_Rectangle extends V3D_Face {
 
     /**
      * @return {@link #r} with {@link #offset} applied.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Point getR(int oom, RoundingMode rm) {
         return getPQR().getR(oom, rm);
@@ -239,6 +254,8 @@ public class V3D_Rectangle extends V3D_Face {
 
     /**
      * @return {@link #s} with {@link #offset} applied.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      */
     public V3D_Point getS(int oom, RoundingMode rm) {
         return getRSP().getQ(oom, rm);
@@ -252,20 +269,6 @@ public class V3D_Rectangle extends V3D_Face {
         return en;
     }
     
-    /**
-     * @param pt The point to intersect with.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return A point or line segment.
-     */
-    public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
-        if (pqr.intersects(pt, oom, rm)) {
-            return true;
-        } else {
-            return rsp.intersects(pt, oom, rm);
-        }
-    }
-
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
@@ -285,16 +288,6 @@ public class V3D_Rectangle extends V3D_Face {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return The plane of the rectangle from
-     * {@link #getPQR(int, java.math.RoundingMode)}.
-     */
-    public V3D_Plane getPlane() {
-        return pqr.pl;
-    }
-
-    /**
      * @param l The line to intersect with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
@@ -302,7 +295,7 @@ public class V3D_Rectangle extends V3D_Face {
      */
     public V3D_FiniteGeometry getIntersect(V3D_Line l, int oom, 
             RoundingMode rm) {
-        if (getPlane().getIntersect(l, oom, rm) != null) {
+        if (getPl(oom, rm).getIntersect(l, oom, rm) != null) {
             V3D_FiniteGeometry pqri = pqr.getIntersect(l, oom, rm);
             V3D_FiniteGeometry rspi = rsp.getIntersect(l, oom, rm);
             return join(oom, rm, pqri, rspi);
@@ -350,7 +343,7 @@ public class V3D_Rectangle extends V3D_Face {
      */
     public V3D_FiniteGeometry getIntersect(V3D_LineSegment l, int oom, 
             RoundingMode rm) {
-        if (getPlane().getIntersect(l, oom, rm) != null) {
+        if (getPl(oom, rm).getIntersect(l, oom, rm) != null) {
             V3D_FiniteGeometry pqri = pqr.getIntersect(l, oom, rm);
             V3D_FiniteGeometry rspi = rsp.getIntersect(l, oom, rm);
             return join(oom, rm, pqri, rspi);
@@ -446,7 +439,7 @@ public class V3D_Rectangle extends V3D_Face {
      * @return The intersection between {@code this} and {@code pl}.
      */
     public V3D_FiniteGeometry getIntersect(V3D_Plane pl, int oom, RoundingMode rm) {
-        if (getPlane().equals(pl, oom, rm)) {
+        if (getPl(oom, rm).equals(pl, oom, rm)) {
             return new V3D_Rectangle(this, oom, rm);
         }
         V3D_FiniteGeometry pqri = pqr.getIntersect(pl, oom, rm);
@@ -466,14 +459,14 @@ public class V3D_Rectangle extends V3D_Face {
      * a convex hull (with 4, 5, 6 or 7 sides).
      *
      * @param t The triangle intersect with this.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return The intersection between {@code t} and {@code this} or
      * {@code null} if there is no intersection.
      */
     public V3D_FiniteGeometry getIntersect(V3D_Triangle t, int oom, 
             RoundingMode rm) {
-        if (getPlane().equals(t.getPl(oom, rm), oom, rm)) {
+        if (getPl(oom, rm).equals(t.getPl(oom, rm), oom, rm)) {
             V3D_FiniteGeometry pqrit = pqr.getIntersect(t, oom, rm);
             V3D_FiniteGeometry rspit = rsp.getIntersect(t, oom, rm);
             if (pqrit == null) {
@@ -495,7 +488,7 @@ public class V3D_Rectangle extends V3D_Face {
                 V3D_Point[] rspitps = rspit.getPointsArray(oom, rm);
                 V3D_Point[] pts = Arrays.copyOf(pqritps, pqritps.length + rspitps.length);
                 System.arraycopy(rspitps, 0, pts, pqritps.length, rspitps.length);
-                return V3D_ConvexHullCoplanar.getGeometry(oom, rm, pts);
+                return V3D_ConvexArea.getGeometry(oom, rm, pts);
             }
         } else {
             V3D_FiniteGeometry pqrit = pqr.getIntersect(t, oom, rm);
@@ -675,9 +668,9 @@ public class V3D_Rectangle extends V3D_Face {
      * @param rm The RoundingMode if rounding is needed.
      * @return {@link #convexHull} initialising it if it is {@code null}.
      */
-    public V3D_ConvexHullCoplanar getConvexHull(int oom, RoundingMode rm) {
+    public V3D_ConvexArea getConvexHull(int oom, RoundingMode rm) {
         if (convexHull == null) {
-            convexHull = new V3D_ConvexHullCoplanar(oom, rm, pqr, rsp);
+            convexHull = new V3D_ConvexArea(oom, rm, pqr, rsp);
         }
         return convexHull;
     }
@@ -699,19 +692,84 @@ public class V3D_Rectangle extends V3D_Face {
         V3D_LineSegment qr = new V3D_LineSegment(q, r, oom, rm);
         V3D_LineSegment rs = new V3D_LineSegment(r, s, oom, rm);
         V3D_LineSegment sp = new V3D_LineSegment(s, p, oom, rm);
-        if (pq.l.isParallel(rs.l, oom, rm)) {
-            if (qr.l.isParallel(sp.l, oom, rm)) {
-                return true;
-            }
-        }
-        return false;
+        return pq.l.isParallel(rs.l, oom, rm)
+                && qr.l.isParallel(sp.l, oom, rm);
     }
 
-    //@Override
-    public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
-        if (pqr.intersects(aabb, oom, rm)) {
+    /**
+     * @param pt The point to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A point or line segment.
+     */
+    @Override
+    public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
+        if (pqr.intersects(pt, oom, rm)) {
             return true;
+        } else {
+            return rsp.intersects(pt, oom, rm);
         }
-        return rsp.intersects(aabb, oom, rm);
+    }
+
+    @Override
+    public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
+        return pqr.intersects(aabb, oom, rm)
+                || rsp.intersects(aabb, oom, rm);
+    }
+    
+    /**
+     * If there is intersection with the Axis Aligned Bounding Boxes of pqr 
+     * or rsp, then intersections are computed, so if the intersection is wanted 
+     * consider using:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int, java.math.RoundingMode)}
+     *
+     * @param l The line segment to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if l intersects this.
+     */
+    @Override
+    public boolean intersects(V3D_Line l, int oom, RoundingMode rm) {
+        return pqr.intersects(l, oom, rm)
+            || rsp.intersects(l, oom, rm);
+    }
+    
+    /**
+     * If there is intersection with the Axis Aligned Bounding Boxes of pqr 
+     * or rsp, then intersections are computed, so if the intersection is wanted 
+     * consider using:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment, int, java.math.RoundingMode)}
+     *
+     * @param l The line segment to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if l intersects this.
+     */
+    @Override
+    public boolean intersects(V3D_LineSegment l, int oom, RoundingMode rm) {
+        return pqr.intersects(l, oom, rm)
+            || rsp.intersects(l, oom, rm);
+    }
+    
+    /**
+     * @param t A triangle to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if t intersects this.
+     */
+    public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
+        return pqr.intersects(t, oom, rm)
+                || rsp.intersects(t, oom, rm);
+    }
+    
+    /**
+     * @param r Another rectangle to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if t intersects this.
+     */
+    public boolean intersects(V3D_Rectangle r, int oom, RoundingMode rm) {
+        return r.intersects(pqr, oom, rm)
+                || r.intersects(rsp, oom, rm);
     }
 }

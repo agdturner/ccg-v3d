@@ -60,7 +60,7 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
     }
 
     @Override
-    public V3D_PointDouble[] getPoints() {
+    public V3D_PointDouble[] getPointsArray() {
         int nl = lineSegments.size();
         V3D_PointDouble[] r = new V3D_PointDouble[nl * 2];
         for (int i = 0; i < nl; i++) {
@@ -292,7 +292,7 @@ public class V3D_LineSegmentsCollinearDouble extends V3D_FiniteGeometryDouble {
      */
     public V3D_FiniteGeometryDouble getIntersection(V3D_LineSegmentDouble ls,
             double epsilon) {
-        //if (lineSegments.get(0).l.isCollinear(epsilon, ls.getPoints())) {
+        //if (lineSegments.get(0).l.isCollinear(epsilon, ls.getPointsArray())) {
         if (ls.l.equals(epsilon, lineSegments.get(0).l)) {
             ArrayList<V3D_PointDouble> ps = new ArrayList<>();
             ArrayList<V3D_LineSegmentDouble> lse = new ArrayList<>();

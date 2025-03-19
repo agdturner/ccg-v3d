@@ -304,34 +304,35 @@ public class V3D_Point extends V3D_FiniteGeometry {
     }
 
     /**
-     * Returns true if this is between a and b. If this equals a or b then return
-     * true. Being between does not necessarily mean being collinear.
+     * NB. Being aligned does not necessarily mean being collinear.
      * 
      * @param a A point
      * @param b A point
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
-     * @return true iff this is equal to the ORIGIN.
+     * @return true if this is aligned with the line segment defined by a and b.
      */
-    public boolean isBetween(V3D_Point a, V3D_Point b, int oom, RoundingMode rm) {
-        if (this.equals(a, oom, rm)) {
-            return true;
-        }
-        if (this.equals(b, oom, rm)) {
-            return true;
-        }
-        V3D_Vector ab = new V3D_Vector(a, b, oom, rm);
-        if (ab.isZero()) {
-            return false;
-        }
-        V3D_Plane ap = new V3D_Plane(a, ab);
-        int aps = ap.getSideOfPlane(this, oom, rm);
-        if (aps == -1) {
-            return false;
-        }
-        V3D_Plane bp = new V3D_Plane(b, ab);
-        int bps = bp.getSideOfPlane(this, oom, rm);
-        return bps != 1;
+    public boolean isAligned(V3D_Point a, V3D_Point b, int oom, RoundingMode rm) {
+        V3D_LineSegment ls = new V3D_LineSegment(a, b, oom, rm);
+        return ls.isAligned(this, oom, rm);
+//        if (this.equals(a, oom, rm)) {
+//            return true;
+//        }
+//        if (this.equals(b, oom, rm)) {
+//            return true;
+//        }
+//        V3D_Vector ab = new V3D_Vector(a, b, oom, rm);
+//        if (ab.isZero()) {
+//            return false;
+//        }
+//        V3D_Plane ap = new V3D_Plane(a, ab);
+//        int aps = ap.getSideOfPlane(this, oom, rm);
+//        if (aps == -1) {
+//            return false;
+//        }
+//        V3D_Plane bp = new V3D_Plane(b, ab);
+//        int bps = bp.getSideOfPlane(this, oom, rm);
+//        return bps != 1;
     }
 
     /**

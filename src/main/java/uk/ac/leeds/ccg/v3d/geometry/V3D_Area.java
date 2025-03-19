@@ -1,0 +1,282 @@
+/*
+ * Copyright 2025 Andy Turner, University of Leeds.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package uk.ac.leeds.ccg.v3d.geometry;
+
+import ch.obermuhlner.math.big.BigRational;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
+
+/**
+ * V3D_FiniteGeometry for representing finite geometries.
+ *
+ * @author Andy Turner
+ * @version 1.0
+ */
+public abstract class V3D_Area extends V3D_FiniteGeometry {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * The id of the area.
+     */
+    protected final int id;
+    
+    /**
+     * For storing the plane of the area.
+     */
+    protected V3D_Plane pl;
+
+    /**
+     * The order of magnitude used for the calculation of {@link #pl}.
+     */
+    public int ploom;
+
+    /**
+     * The RoundingMode used for the calculation of {@link #pl}.
+     */
+    public RoundingMode plrm;
+    
+    /**
+     * Creates a new instance with offset V3D_Vector.ZERO.
+     * 
+     * @param env What {@link #env} is set to.
+     * @param offset What {@link #offset} is set to.
+     */
+    public V3D_Area(V3D_Environment env, V3D_Vector offset) {
+        super(env, offset);
+        this.id = env.getNextID();
+    }
+    
+    /**
+     * For storing the points.
+     */
+    protected HashMap<Integer, V3D_Point> points;
+
+    /**
+     * For storing the edges.
+     */
+    protected HashMap<Integer, V3D_LineSegment> edges;
+    
+    /**
+     * For getting the points of a shape.
+     * 
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A HashMap of the points with integer identifier keys.
+     */
+    public abstract HashMap<Integer, V3D_Point> getPoints(int oom, 
+            RoundingMode rm);
+    
+    /**
+     * For getting the edges of a shape.
+     * 
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A HashMap of the edges with integer identifier keys.
+     */
+    public abstract HashMap<Integer, V3D_LineSegment> getEdges(int oom, 
+            RoundingMode rm);
+    
+    /**
+     * For calculating and returning the perimeter.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return The Perimeter.
+     */
+    public abstract BigRational getPerimeter(int oom, RoundingMode rm);
+
+    /**
+     * For calculating and returning the area.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return The area.
+     */
+    public abstract BigRational getArea(int oom, RoundingMode rm);
+    
+    /**
+     * @param pt The point to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if pt intersects this.
+     */
+    public abstract boolean intersects(V3D_Point pt, int oom, RoundingMode rm);
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param p A point to test for intersection.
+     * @param as The areas to test for intersection with p.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     */
+    public static boolean intersects(int oom, RoundingMode rm, V3D_Point p,
+            V3D_Area... as) {
+        return intersects(oom, rm, p, Arrays.asList(as));
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param p A point to test for intersection.
+     * @param as The areas to test for intersection with p.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     */
+    public static boolean intersects(int oom, RoundingMode rm, V3D_Point p,
+            Collection<V3D_Area> as) {
+        return as.parallelStream().anyMatch(x -> x.intersects(p, oom, rm));
+    }
+    
+    /**
+     * @param aabb The Axis Aligned Bounding Box to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if pt intersects this.
+     */
+    public abstract boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm);
+    
+    /**
+     * @param l The line to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if l intersects this.
+     */
+    public abstract boolean intersects(V3D_Line l, int oom, RoundingMode rm);
+
+    /**
+     * @param l The line segment to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if l intersects this.
+     */
+    public abstract boolean intersects(V3D_LineSegment l, int oom, RoundingMode rm);
+
+    /**
+     * @param a The area to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if l intersects this.
+     */
+//    public abstract boolean intersects(V3D_Area a, int oom, RoundingMode rm);
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param l A line segment to test for intersection with any of the areas
+     * in as.
+     * @param as The areas to test for intersection with l.
+     * @return {@code true} if {@code this} is intersected by {@code l}.
+     */
+    public static boolean intersects(int oom, RoundingMode rm, 
+            V3D_LineSegment l, V3D_Area... as) {
+        return intersects(oom, rm, l, Arrays.asList(as));
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param l A line segment to test for intersection with any of the areas
+     * in as.
+     * @param as The areas to test for intersection with l.
+     * @return {@code true} if {@code this} is intersected by {@code l}.
+     */
+    public static boolean intersects(int oom, RoundingMode rm,
+            V3D_LineSegment l, Collection<V3D_Area> as) {
+        return as.parallelStream().anyMatch(x -> x.intersects(l, oom, rm));
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param a An area to test for intersection.
+     * @param as The areas to test for intersection with a.
+     * @return {@code true} if {@code this} is intersected by {@code a}.
+     */
+    public static boolean intersects(int oom, RoundingMode rm, V3D_Area a,
+            V3D_Area... as) {
+        return intersects(oom, rm, a, Arrays.asList(as));
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param a An area to test for intersection.
+     * @param as The areas to test for intersection with a.
+     * @return {@code true} if {@code this} is intersected by {@code a}.
+     */
+    public static boolean intersects(int oom, RoundingMode rm, V3D_Area a,
+            Collection<V3D_Area> as) {
+        return as.parallelStream().anyMatch(x -> x.intersects(a, oom, rm));
+    }
+    
+    public boolean intersects(V3D_Area a, int oom, RoundingMode rm) {
+        throw new UnsupportedOperationException();
+    }
+
+    
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@link pl} accurate to at least the oom precision using
+     * RoundingMode rm.
+     */
+    public final V3D_Plane getPl(int oom, RoundingMode rm) {
+        if (pl == null) {
+            initPl(oom, rm);
+        } else if (ploom < oom) {
+            return pl;
+        } else if (ploom == oom && plrm.equals(rm)) {
+            return pl;
+        }
+        initPl(oom, rm);
+        return pl;
+    }
+    
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * For initialising {@link #pl}.
+     */
+    protected abstract void initPl(int oom, RoundingMode rm);
+    
+    /**
+     * @param pt The normal will point to this side of the plane.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@link pl} accurate to at least the oom precision using
+     * RoundingMode rm.
+     */
+    public final V3D_Plane getPl(V3D_Point pt, int oom, RoundingMode rm) {
+        if (pl == null) {
+            initPl(pt, oom, rm);
+        } else if (ploom < oom) {
+            return pl;
+        } else if (ploom == oom && plrm.equals(rm)) {
+            return pl;
+        }
+        initPl(pt, oom, rm);
+        return pl;
+    }
+
+    /**
+     * @param pt The normal will point to this side of the plane.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * For initialising {@link #pl}.
+     */
+    protected abstract void initPl(V3D_Point pt, int oom, RoundingMode rm);
+}

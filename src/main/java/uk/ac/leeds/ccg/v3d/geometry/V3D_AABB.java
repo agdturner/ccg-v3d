@@ -395,7 +395,7 @@ public class V3D_AABB implements Serializable {
 //    /**
 //     * @return {@link #pts} initialising first if it is null.
 //     */
-//    public HashSet<V3D_Point> getPoints() {
+//    public HashSet<V3D_Point> getPointsArray() {
 //        if (pts == null) {
 //            pts = new HashSet<>(8);
 //            pts.add(getlll());
@@ -894,7 +894,7 @@ public class V3D_AABB implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this contains {@code s}.
      */
-    public boolean contains(V3D_Face s, int oom, RoundingMode rm) {
+    public boolean contains(V3D_Area s, int oom, RoundingMode rm) {
         return contains(s.getAABB(oom, rm), oom)
                 && contains0(s, oom, rm);
     }
@@ -905,7 +905,7 @@ public class V3D_AABB implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this getIntersect with {@code s}
      */
-    public boolean contains0(V3D_Face s, int oom, RoundingMode rm) {
+    public boolean contains0(V3D_Area s, int oom, RoundingMode rm) {
         return s.getPoints(oom, rm).values().parallelStream().allMatch(x
                 -> contains(x, oom));
     }
@@ -972,7 +972,7 @@ public class V3D_AABB implements Serializable {
      * {@link #lul}, {@link #luu}, {@link #ull}, {@link #ulu}, {@link #uul},
      * {@link #uuu}
      */
-    public V3D_Point[] getPoints() {
+    public V3D_Point[] getPointsArray() {
         if (pts == null) {
             pts = new V3D_Point[8];
             pts[0] = getllu();
@@ -1021,7 +1021,7 @@ public class V3D_AABB implements Serializable {
     public V3D_Rectangle getViewport(V3D_Point pt, V3D_Vector v, int oom,
             RoundingMode rm) {
         V3D_Rectangle rect;
-        pts = getPoints();
+        pts = getPointsArray();
         V3D_Point c = getCentroid(oom, rm);
         V3D_Vector cv = new V3D_Vector(pt, c, oom, rm);
         V3D_Vector v2 = cv.getCrossProduct(v, oom, rm);
@@ -1158,7 +1158,7 @@ public class V3D_AABB implements Serializable {
         V3D_Rectangle rect;
         // Get the plane of the viewport.
         V3D_Point c = getCentroid(oomn4, rm);
-        BigRational distance = c.getDistance(getPoints()[0], oomn4, rm);
+        BigRational distance = c.getDistance(getPointsArray()[0], oomn4, rm);
         V3D_Point plpt = new V3D_Point(c);
         V3D_Vector vo = new V3D_Vector(c, pt, oomn4, rm).getUnitVector(oomn4, rm);
         plpt.translate(vo.multiply(distance, oomn4, rm), oomn4, rm);
@@ -1167,7 +1167,7 @@ public class V3D_AABB implements Serializable {
         // Figure out the extremes in relation to v (and v2).
         V3D_Vector v2 = cv.getCrossProduct(v, oomn4, rm);
         // Intersect the rays from pts to each point with the screen.
-        pts = getPoints();
+        pts = getPointsArray();
         V3D_Point[] ipts = new V3D_Point[pts.length];
         // Get the intersecting points on the screen plane from pt
         for (int i = 0; i < pts.length; i++) {
@@ -1287,7 +1287,7 @@ public class V3D_AABB implements Serializable {
         V3D_Rectangle rect;
         // Get the plane of the viewport.
         V3D_Point c = getCentroid(oomn4, rm);
-        BigRational d = c.getDistance(getPoints()[0], oomn4, rm);
+        BigRational d = c.getDistance(getPointsArray()[0], oomn4, rm);
         BigRational dby2 = d.divide(2);
         V3D_Point plpt = new V3D_Point(c);
         V3D_Vector cpt = new V3D_Vector(c, pt, oomn4, rm);

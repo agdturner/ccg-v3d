@@ -18,7 +18,6 @@ package uk.ac.leeds.ccg.v3d.geometry.d;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 
@@ -61,7 +60,7 @@ import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Tetrahedron_d extends V3D_Shape_d {
+public class V3D_Tetrahedron_d extends V3D_Volume_d {
 
     private static final long serialVersionUID = 1L;
 
@@ -981,7 +980,7 @@ public class V3D_Tetrahedron_d extends V3D_Shape_d {
                 } else {
                     V3D_LineSegment_d qsril = (V3D_LineSegment_d) qsri;
                     // The result is a triangle
-                    return V3D_ConvexHullCoplanar_d.getGeometry(epsilon,
+                    return V3D_ConvexArea_d.getGeometry(epsilon,
                             psqil.getP(), psqil.getQ(), qsril.getP(), qsril.getQ());
                 }
             } else {
@@ -1016,7 +1015,7 @@ public class V3D_Tetrahedron_d extends V3D_Shape_d {
                     //throw new RuntimeException("Paradox C");
                 } else if (qsri instanceof V3D_LineSegment_d qsril) {
                     // The result is a triangle
-                    return V3D_ConvexHullCoplanar_d.getGeometry(epsilon,
+                    return V3D_ConvexArea_d.getGeometry(epsilon,
                             pqril.getP(), pqril.getQ(), qsril.getP(), qsril.getQ());
                 } else {
 
@@ -1041,16 +1040,16 @@ public class V3D_Tetrahedron_d extends V3D_Shape_d {
                     getSpr().getIntersect(pl, epsilon);
                     //V3D_Plane_d.isCoplanar(epsilon, getP(), getQ(), getR(), getS());
 
-                    return V3D_ConvexHullCoplanar_d.getGeometry(epsilon,
+                    return V3D_ConvexArea_d.getGeometry(epsilon,
                             pqril.getP(), pqril.getQ(), psqip);
                     //throw new RuntimeException("Paradox E");
                 } else if (qsri instanceof V3D_Point_d qsrip) {
                     // Triangle
-                    return V3D_ConvexHullCoplanar_d.getGeometry(epsilon,
+                    return V3D_ConvexArea_d.getGeometry(epsilon,
                             pqril.getP(), pqril.getQ(), qsrip, psqip);
                 } else if (qsri instanceof V3D_LineSegment_d qsril) {
                     // Triangle
-                    return V3D_ConvexHullCoplanar_d.getGeometry(epsilon,
+                    return V3D_ConvexArea_d.getGeometry(epsilon,
                             pqril.getP(), pqril.getQ(), qsril.getP(),
                             qsril.getQ(), psqip);
                 } else {
@@ -1067,7 +1066,7 @@ public class V3D_Tetrahedron_d extends V3D_Shape_d {
                 }
             } else if (psqi instanceof V3D_LineSegment_d psqil) {
                 //return V3D_Triangle_d.getGeometry2(psqil, pqril, epsilon);
-                return V3D_ConvexHullCoplanar_d.getGeometry(epsilon,
+                return V3D_ConvexArea_d.getGeometry(epsilon,
                         psqil.getP(), psqil.getQ(), pqril.getP(), pqril.getQ());
             } else {
                 // Triangle
@@ -1128,8 +1127,9 @@ public class V3D_Tetrahedron_d extends V3D_Shape_d {
                     pts[i] = p;
                     i++;
                 }
-                return new V3D_ConvexHullCoplanar_d(pl.n, epsilon, pts);
+                return new V3D_ConvexArea_d(pl.n, epsilon, pts);
             }
+
         }
     }
 
@@ -1357,7 +1357,7 @@ public class V3D_Tetrahedron_d extends V3D_Shape_d {
 //                } else if (itc instanceof V3D_Triangle_d) {
 //                    
 //                } else {
-//                    // itc instanceof V3D_ConvexHullCoplanar_d
+//                    // itc instanceof V3D_ConvexArea_d
 //                
 //                }
 //                // There are 512 cases to deal with!
@@ -1439,7 +1439,7 @@ public class V3D_Tetrahedron_d extends V3D_Shape_d {
             /**
              * Quadrilateral.
              */
-            V3D_ConvexHullCoplanar_d ic = (V3D_ConvexHullCoplanar_d) i;
+            V3D_ConvexArea_d ic = (V3D_ConvexArea_d) i;
             return ic.clip(t, t.getCentroid(), epsilon);
 //                /**
 //                 * If all the points of t are within the planes of ic, then
@@ -1499,14 +1499,14 @@ public class V3D_Tetrahedron_d extends V3D_Shape_d {
                 return pqri;
             } else {
                 V3D_Point_d[] pqritp = pqrit.getPointsArray();
-                V3D_Point_d[] rspip = rspi.getPoints();
+                V3D_Point_d[] rspip = rspi.getPointsArray();
                 V3D_Point_d[] pts = new V3D_Point_d[pqritp.length + rspip.length];
                 System.arraycopy(pqritp, 0, pts, 0, pqritp.length);
                 System.arraycopy(rspip, 0, pts, pqritp.length, rspip.length);
-                return V3D_ConvexHullCoplanar_d.getGeometry(epsilon, pts);
+                return V3D_ConvexArea_d.getGeometry(epsilon, pts);
             }
         } else {
-            // pqr instanceof V3D_ConvexHullCoplanar_d
+            // pqr instanceof V3D_ConvexArea_d
             if (rspi == null) {
                 return pqri;
             } else if (rspi instanceof V3D_Point_d) {
@@ -1514,12 +1514,12 @@ public class V3D_Tetrahedron_d extends V3D_Shape_d {
             } else if (rspi instanceof V3D_LineSegment_d) {
                 return pqri;
             } else {
-                V3D_Point_d[] pqrip = pqri.getPoints();
-                V3D_Point_d[] rspip = rspi.getPoints();
+                V3D_Point_d[] pqrip = pqri.getPointsArray();
+                V3D_Point_d[] rspip = rspi.getPointsArray();
                 V3D_Point_d[] pts = new V3D_Point_d[pqrip.length + rspip.length];
                 System.arraycopy(pqrip, 0, pts, 0, pqrip.length);
                 System.arraycopy(rspip, 0, pts, pqrip.length, rspip.length);
-                return V3D_ConvexHullCoplanar_d.getGeometry(epsilon, pts);
+                return V3D_ConvexArea_d.getGeometry(epsilon, pts);
             }
         }
     }
@@ -1547,7 +1547,7 @@ public class V3D_Tetrahedron_d extends V3D_Shape_d {
     }
 
     @Override
-    public HashMap<Integer, V3D_Face_d> getFaces() {
+    public HashMap<Integer, V3D_Area_d> getFaces() {
         if (faces == null) {
             faces = new HashMap<>(4);
             faces.put(0, getPqr());

@@ -838,7 +838,7 @@ public class V3D_AABB_d implements Serializable {
      * @param s The shape to test for containment.
      * @return {@code true} if this contains {@code s}.
      */
-    public boolean contains(V3D_Face_d s) {
+    public boolean contains(V3D_Area_d s) {
         return contains(s.getAABB())
                 && contains0(s);
     }
@@ -847,7 +847,7 @@ public class V3D_AABB_d implements Serializable {
      * @param s The shape to test for containment.
      * @return {@code true} if this getIntersect with {@code s}
      */
-    public boolean contains0(V3D_Face_d s) {
+    public boolean contains0(V3D_Area_d s) {
         return s.getPoints().values().parallelStream().allMatch(x
                 -> contains(x));
     }
@@ -928,7 +928,7 @@ public class V3D_AABB_d implements Serializable {
      * {@link #lul}, {@link #luu}, {@link #ull}, {@link #ulu}, {@link #uul},
      * {@link #uuu}
      */
-    public V3D_Point_d[] getPoints() {
+    public V3D_Point_d[] getPointsArray() {
         if (pts == null) {
             pts = new V3D_Point_d[8];
             pts[0] = getllu();
@@ -942,7 +942,7 @@ public class V3D_AABB_d implements Serializable {
         }
         return pts;
     }
-//    public HashSet<V3D_Point_d> getPointsArray() {
+//    public HashSet<V3D_Point_d> getPoints() {
 //        if (pts == null) {
 //            pts = new HashSet<>(8);
 //            pts.add(getllu());
@@ -977,7 +977,7 @@ public class V3D_AABB_d implements Serializable {
     public V3D_Rectangle_d getViewport(V3D_Point_d pt,
             V3D_Vector_d v, double epsilon) {
         V3D_Rectangle_d rect;
-        pts = getPoints();
+        pts = getPointsArray();
 //        pts[0] = new V3D_Point_d(lba);
 //        pts[1] = new V3D_Point_d(lbf);
 //        pts[2] = new V3D_Point_d(lta);
@@ -1118,7 +1118,7 @@ public class V3D_AABB_d implements Serializable {
         V3D_Rectangle_d rect;
         // Get the plane of the viewport.
         V3D_Point_d c = getCentroid();
-        double distance = c.getDistance(getPoints()[0]);
+        double distance = c.getDistance(getPointsArray()[0]);
         V3D_Point_d plpt = new V3D_Point_d(c);
         V3D_Vector_d vo = new V3D_Vector_d(c, pt).getUnitVector();
         plpt.translate(vo.multiply(distance));
@@ -1127,7 +1127,7 @@ public class V3D_AABB_d implements Serializable {
         // Figure out the extremes in relation to v (and v2).
         V3D_Vector_d v2 = cv.getCrossProduct(v);
         // Intersect the rays from pts to each point with the screen.
-        pts = getPoints();
+        pts = getPointsArray();
         V3D_Point_d[] ipts = new V3D_Point_d[pts.length];
         // Get the intersecting points on the screen plane from pt
         for (int i = 0; i < pts.length; i++) {
@@ -1245,7 +1245,7 @@ public class V3D_AABB_d implements Serializable {
         V3D_Rectangle_d rect;
         // Get the plane of the viewport.
         V3D_Point_d c = getCentroid();
-        double d = c.getDistance(getPoints()[0]);
+        double d = c.getDistance(getPointsArray()[0]);
         double dby2 = d / 2d;
         V3D_Point_d plpt = new V3D_Point_d(c);
         V3D_Vector_d cpt = new V3D_Vector_d(c, pt);

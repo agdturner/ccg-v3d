@@ -67,7 +67,7 @@ import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_ConvexHullCoplanar extends V3D_Face {
+public class V3D_ConvexArea extends V3D_Area {
 
     private static final long serialVersionUID = 1L;
 
@@ -76,7 +76,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      */
     protected final ArrayList<V3D_Triangle> triangles;
 
-    public V3D_ConvexHullCoplanar(V3D_ConvexHullCoplanar c) {
+    public V3D_ConvexArea(V3D_ConvexArea c) {
         super(c.env, c.offset);
         points = new HashMap<>();
         //c.points.forEach(x -> points.put(points.size(), new V3D_Point(x)));
@@ -91,7 +91,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      * @param rm The RoundingMode for any rounding.
      * @param triangles A non-empty list of coplanar triangles.
      */
-    public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_Triangle... triangles) {
+    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Triangle... triangles) {
         this(oom, rm, triangles[0].getPl(oom, rm).n, V3D_Triangle.getPoints(triangles, oom, rm));
     }
 
@@ -103,7 +103,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      * @param n The normal for the plane.
      * @param points A non-empty list of points in a plane given by n.
      */
-    public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_Vector n, V3D_Point... points) {
+    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Vector n, V3D_Point... points) {
         super(points[0].env, points[0].offset);
         this.points = new HashMap<>();
         this.triangles = new ArrayList<>();
@@ -255,7 +255,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      * @param rm The RoundingMode for any rounding.
      * @param gs The input convex hulls.
      */
-    public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_ConvexHullCoplanar... gs) {
+    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_ConvexArea... gs) {
         this(oom, rm, gs[0].triangles.get(0).getPl(oom, rm).n, V3D_FiniteGeometry.getPoints(gs, oom, rm));
     }
 
@@ -268,7 +268,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      * @param t The triangle used to set the normal and to add to the convex
      * hull with ch.
      */
-    public V3D_ConvexHullCoplanar(int oom, RoundingMode rm, V3D_ConvexHullCoplanar ch, V3D_Triangle t) {
+    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_ConvexArea ch, V3D_Triangle t) {
         this(oom, rm, ch.triangles.get(0).getPl(oom, rm).n, V3D_FiniteGeometry.getPoints(oom, rm, ch, t));
     }
     
@@ -335,7 +335,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff all the triangles are the same.
      */
-    public boolean equals(V3D_ConvexHullCoplanar c, int oom, RoundingMode rm) {
+    public boolean equals(V3D_ConvexArea c, int oom, RoundingMode rm) {
         HashSet<Integer> indexes = new HashSet<>();
         for (var x : points.values()) {
             boolean found = false;
@@ -398,6 +398,17 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
     }
 
     @Override
+    protected void initPl(int oom, RoundingMode rm) {
+        pl = triangles.get(0).getPl(oom, rm);
+    }
+
+    @Override
+    protected void initPl(V3D_Point pt, int oom, RoundingMode rm) {
+        V3D_Triangle t = triangles.get(0);
+        pl = new V3D_Plane(pt, offset, t.pv, t.qv, t.rv, oom, rm);
+    }
+    
+    @Override
     public V3D_AABB getAABB(int oom, RoundingMode rm) {
         if (en == null) {
             en = points.get(0).getAABB(oom, rm);
@@ -430,52 +441,12 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
     }
 
     /**
-     * Identify if this is intersected by point {@code p}.
-     *
-     * @param pt The point to test for intersection with.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff the geometry is intersected by {@code p}.
-     */
-    public boolean isIntersectedBy(V3D_Point pt, int oom, RoundingMode rm) {
-        if (getAABB(oom, rm).intersects(pt, oom, rm)) {
-            // Check point is on the plane. 
-            if (triangles.get(0).getPl(oom, rm).intersects(pt, oom, rm)) {
-                // Check point is in a triangle
-                for (var t : triangles) {
-                    if (t.intersects0(pt, oom, rm)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * @param pt The point.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if the point is aligned with any of the parts.
      */
     protected boolean isAligned(V3D_Point pt, int oom, RoundingMode rm) {
-        for (V3D_Triangle triangle : triangles) {
-            if (triangle.intersects0(pt, oom, rm)) {
-                return true;
-            }
-        }
-        return false;
-        //return triangles.parallelStream().anyMatch(t -> (t.isIntersectedBy0(pt, oom)));
-    }
-
-    /**
-     * @param pt The point.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this getIntersect with {@code pt}.
-     */
-    @Deprecated
-    protected boolean isIntersectedBy0(V3D_Point pt, int oom, RoundingMode rm) {
         for (V3D_Triangle triangle : triangles) {
             if (triangle.intersects0(pt, oom, rm)) {
                 return true;
@@ -550,7 +521,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
         if (tsu.isEmpty()) {
             return null;
         } else {
-            return new V3D_ConvexHullCoplanar(oom, rm, t.getPl(oom, rm).n,
+            return new V3D_ConvexArea(oom, rm, t.getPl(oom, rm).n,
                     tsu.toArray(V3D_Point[]::new)).simplify(oom, rm);
         }
 //        switch (size) {
@@ -567,24 +538,24 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
 
     
     @Override
-    public V3D_ConvexHullCoplanar rotate(V3D_Ray ray, V3D_Vector uv, 
+    public V3D_ConvexArea rotate(V3D_Ray ray, V3D_Vector uv, 
             Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
         theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
         if (theta.compareTo(BigRational.ZERO) == 0) {
-            return new V3D_ConvexHullCoplanar(this);
+            return new V3D_ConvexArea(this);
         } else {
             return rotateN(ray, uv, bd, theta, oom, rm);
         }
     }
     
     @Override
-    public V3D_ConvexHullCoplanar rotateN(V3D_Ray ray, V3D_Vector uv, 
+    public V3D_ConvexArea rotateN(V3D_Ray ray, V3D_Vector uv, 
             Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
         V3D_Triangle[] rts = new V3D_Triangle[triangles.size()];
         for (int i = 0; i < triangles.size(); i++) {
             rts[0] = triangles.get(i).rotate(ray, uv, bd, theta, oom, rm);
         }
-        return new V3D_ConvexHullCoplanar(oom, rm, rts);
+        return new V3D_ConvexArea(oom, rm, rts);
     }
 
     /**
@@ -824,7 +795,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
             if (pts.isEmpty()) {
                 return il;
             } else {
-                return new V3D_ConvexHullCoplanar(oom, rm,
+                return new V3D_ConvexArea(oom, rm,
                         this.triangles.get(0).getPl(oom, rm).n,
                         pts.toArray(V3D_Point[]::new));
             }
@@ -877,11 +848,11 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
             } else if (cppltcqpl instanceof V3D_Triangle cppltcqplt) {
                 return cppltcqplt.clip(rpl, pt, oom, rm);
             } else {
-                V3D_ConvexHullCoplanar c = (V3D_ConvexHullCoplanar) cppltcqpl;
+                V3D_ConvexArea c = (V3D_ConvexArea) cppltcqpl;
                 return c.clip(rpl, tq, oom, rm);
             }
         } else {
-            V3D_ConvexHullCoplanar c = (V3D_ConvexHullCoplanar) cppl;
+            V3D_ConvexArea c = (V3D_ConvexArea) cppl;
             V3D_FiniteGeometry cc = c.clip(qpl, pt, oom, rm);
             if (cc == null) {
                 return cc;
@@ -899,7 +870,7 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
             } else if (cc instanceof V3D_Triangle ccct) {
                 return ccct.clip(rpl, tq, oom, rm);
             } else {
-                V3D_ConvexHullCoplanar ccc = (V3D_ConvexHullCoplanar) cc;
+                V3D_ConvexArea ccc = (V3D_ConvexArea) cc;
                 return ccc.clip(rpl, pt, oom, rm);
             }
         }
@@ -908,14 +879,14 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
     /**
      * If pts are all equal then a V3D_Point is returned. If two are different,
      * then a V3D_LineSegment is returned. Three different, then a V3D_Triangle
-     * is returned. If four or more are different then a V3D_ConvexHullCoplanar
+     * is returned. If four or more are different then a V3D_ConvexArea
      * is returned.
      *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @param pts The points.
      * @return Either a V3D_Point, V3D_LineSegment, V3D_Triangle, or
-     * V3D_ConvexHullCoplanar.
+     * V3D_ConvexArea.
      */
     public static V3D_FiniteGeometry getGeometry(int oom, RoundingMode rm, V3D_Point... pts) {
         ArrayList<V3D_Point> upts = V3D_Point.getUnique(Arrays.asList(pts), oom, rm);
@@ -942,10 +913,193 @@ public class V3D_ConvexHullCoplanar extends V3D_Face {
                     return new V3D_LineSegment(oom, rm, pts);
                 } else {
                     pl = new V3D_Plane(ip, iq, ir, oom, rm);
-                    return new V3D_ConvexHullCoplanar(oom, rm, pl.n, pts);
+                    return new V3D_ConvexArea(oom, rm, pl.n, pts);
                 }
             }
         }
+    }
+    
+    /**
+     * Identify if this is intersected by point {@code p}.
+     *
+     * @param pt The point to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff the geometry is intersected by {@code p}.
+     */
+    @Override
+    public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
+        if (getAABB(oom, rm).intersects(pt, oom, rm)) {
+            // Check point is on the plane. 
+            if (getPl(oom, rm).intersects(pt, oom, rm)) {
+                // Check point is in a triangle
+                return intersects0(pt, oom, rm);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Identify if this is intersected by line segment {@code l}.
+     *
+     * @param pt The point to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff {@code this} is intersected by {@code p}.
+     */
+    public boolean intersects0(V3D_Point pt, int oom, RoundingMode rm) {
+        return triangles.parallelStream().anyMatch(x
+                -> x.intersects(pt, oom, rm));
+    }
+    
+    /**
+     * Identify if this is intersected by point {@code p}.
+     *
+     * @param aabb The Axis Aligned Bounding Box to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff the geometry is intersected by {@code p}.
+     */
+    @Override
+    public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
+        if (getAABB(oom, rm).intersects(aabb, oom)) {
+            return triangles.parallelStream().anyMatch(x
+                    -> x.intersects(aabb, oom, rm));
+        }
+        return false;
+    }
+    
+    /**
+     * Identify if this is intersected by line {@code l}.
+     *
+     * @param l The line to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff {@code this} is intersected by {@code l}.
+     */
+    public boolean intersects(V3D_Line l, int oom, RoundingMode rm) {
+        return l.intersects(getAABB(oom, rm), oom, rm)
+                && intersects0(l, oom, rm);
+    }
+
+    /**
+     * Identify if this is intersected by line {@code l}.
+     *
+     * @param l The line to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff {@code this} is intersected by {@code p}.
+     */
+    public boolean intersects0(V3D_Line l, int oom, RoundingMode rm) {
+        return triangles.parallelStream().anyMatch(x
+                -> x.intersects(l, oom, rm));
+    }
+    
+    /**
+     * Identify if this is intersected by line segment {@code l}.
+     *
+     * @param l The line segment to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff {@code this} is intersected by {@code l}.
+     */
+    public boolean intersects(V3D_LineSegment l, int oom, RoundingMode rm) {
+        return l.intersects(getAABB(oom, rm), oom, rm)
+                && intersects0(l, oom, rm);
+    }
+
+    /**
+     * Identify if this is intersected by line segment {@code l}.
+     *
+     * @param l The line segment to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff {@code this} is intersected by {@code p}.
+     */
+    public boolean intersects0(V3D_LineSegment l, int oom, RoundingMode rm) {
+        return triangles.parallelStream().anyMatch(x
+                -> x.intersects(l, oom, rm));
+    }
+
+    /**
+     * Identify if this is intersected by triangle {@code t}.
+     *
+     * @param t The triangle to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff {@code this} is intersected by {@code t}.
+     */
+    public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
+        return t.intersects(getAABB(oom, rm), oom, rm)
+                && intersects0(t, oom, rm);
+    }
+
+    /**
+     * Identify if this is intersected by triangle {@code t}.
+     *
+     * @param t The triangle to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff {@code this} is intersected by {@code t}.
+     */
+    public boolean intersects0(V3D_Triangle t, int oom, RoundingMode rm) {
+        return triangles.parallelStream().anyMatch(x
+                -> x.intersects(t, oom, rm));
+    }
+
+    /**
+     * Identify if this is intersected by rectangle {@code r}.
+     *
+     * @param r The rectangle to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff {@code this} is intersected by {@code r}.
+     */
+    public boolean intersects(V3D_Rectangle r, int oom, RoundingMode rm) {
+        return r.intersects(getAABB(oom, rm), oom, rm)
+                && intersects0(r, oom, rm);
+    }
+
+    /**
+     * Identify if this is intersected by rectangle {@code r}.
+     *
+     * @param r The rectangle to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff {@code this} is intersected by {@code r}.
+     */
+    public boolean intersects0(V3D_Rectangle r, int oom, RoundingMode rm) {
+        return triangles.parallelStream().anyMatch(x
+                -> r.intersects(x, oom, rm));
+    }
+
+    /**
+     * Identify if this is intersected by convex hull {@code ch}.
+     *
+     * @param ch The convex hull to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff {@code this} is intersected by {@code ch}.
+     */
+    public boolean intersects(V3D_ConvexArea ch, int oom, RoundingMode rm) {
+        return ch.intersects(getAABB(oom, rm), oom, rm)
+                && intersects(ch.getAABB(oom, rm), oom, rm)
+                && intersects0(ch, oom, rm);
+    }
+
+    /**
+     * Identify if this is intersected by convex hull {@code ch}.
+     *
+     * @param ch The convex hull to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff {@code this} is intersected by {@code ch.
+     */
+    public boolean intersects0(V3D_ConvexArea ch, int oom, RoundingMode rm) {
+        return triangles.parallelStream().anyMatch(x
+                -> ch.intersects0(x, oom, rm))
+                || ch.triangles.parallelStream().anyMatch(x
+                        -> intersects0(x, oom, rm));
     }
 
 }

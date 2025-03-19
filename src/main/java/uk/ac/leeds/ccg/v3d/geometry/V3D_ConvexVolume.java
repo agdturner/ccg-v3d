@@ -31,7 +31,7 @@ import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
  * @author Andy Turner
  * @version 2.0
  */
-public class V3D_ConvexHull extends V3D_Shape {
+public class V3D_ConvexVolume extends V3D_Volume {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,7 +40,7 @@ public class V3D_ConvexHull extends V3D_Shape {
      */
     public ArrayList<V3D_Triangle> triangles;
 
-    public V3D_ConvexHull(V3D_ConvexHull ch) {
+    public V3D_ConvexVolume(V3D_ConvexVolume ch) {
         super(ch.env, ch.offset);
         //ch.faces
                 
@@ -53,7 +53,7 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @param rm The RoundingMode for any rounding.
      * @param triangles A non-empty list of coplanar triangles.
      */
-    public V3D_ConvexHull(int oom, RoundingMode rm, V3D_Triangle... triangles) {
+    public V3D_ConvexVolume(int oom, RoundingMode rm, V3D_Triangle... triangles) {
         this(oom, rm, V3D_Triangle.getPoints(triangles, oom, rm));
     }
 
@@ -64,7 +64,7 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @param rm The RoundingMode for any rounding.
      * @param points A list of points with at least 3 that are non-coplanar.
      */
-    public V3D_ConvexHull(int oom, RoundingMode rm, V3D_Point... points) {
+    public V3D_ConvexVolume(int oom, RoundingMode rm, V3D_Point... points) {
         this(oom, rm, Arrays.asList(points));
     }
 
@@ -109,7 +109,7 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @param points The points from which to construct the convex hull. There
      * must be at least three non-linear points.
      */
-    public V3D_ConvexHull(int oom, RoundingMode rm, List<V3D_Point> points) {
+    public V3D_ConvexVolume(int oom, RoundingMode rm, List<V3D_Point> points) {
         super(points.get(0).env, V3D_Vector.ZERO);
 //        ArrayList<V3D_Point> h = new ArrayList<>();
 //        ArrayList<V3D_Point> uniquePoints = V3D_Point.getUnique(
@@ -169,7 +169,7 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_ConvexHull(V3D_ConvexHull ch, int oom, RoundingMode rm) {
+    public V3D_ConvexVolume(V3D_ConvexVolume ch, int oom, RoundingMode rm) {
         this(oom, rm, ch.getPointsArray(oom, rm));
     }
 
@@ -181,7 +181,7 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_ConvexHull(V3D_ConvexHull ch, V3D_Triangle t,
+    public V3D_ConvexVolume(V3D_ConvexVolume ch, V3D_Triangle t,
             int oom, RoundingMode rm) {
         this(oom, rm, V3D_FiniteGeometry.getPoints(oom, rm, ch, t));
     }
@@ -253,7 +253,7 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff all the triangles are the same.
      */
-    public boolean equals(V3D_ConvexHull c, int oom, RoundingMode rm) {
+    public boolean equals(V3D_ConvexVolume c, int oom, RoundingMode rm) {
 //        if (points.values().parallelStream().allMatch(x
 //                -> x.equalsAny(c.points.values(), oom, rm))) {
 //            return c.points.values().parallelStream().allMatch(x
@@ -418,7 +418,7 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff {@code this} contains {@code ch}.
      */
-    public boolean contains(V3D_ConvexHull ch, int oom, RoundingMode rm) {
+    public boolean contains(V3D_ConvexVolume ch, int oom, RoundingMode rm) {
         return intersects(ch, oom, rm)
                 && ch.getPoints(oom, rm).values().parallelStream().allMatch(x
                         -> contains(x, oom, rm));
@@ -516,7 +516,7 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff {@code this} is intersected by {@code ch}.
      */
-    public boolean intersects(V3D_ConvexHull ch, int oom, RoundingMode rm) {
+    public boolean intersects(V3D_ConvexVolume ch, int oom, RoundingMode rm) {
         return ch.intersects(getAABB(oom, rm), oom, rm)
                 && intersects(ch.getAABB(oom, rm), oom, rm)
                 && intersects0(ch, oom, rm);
@@ -530,7 +530,7 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff {@code this} is intersected by {@code ch.
      */
-    public boolean intersects0(V3D_ConvexHull ch, int oom, RoundingMode rm) {
+    public boolean intersects0(V3D_ConvexVolume ch, int oom, RoundingMode rm) {
         return getTriangles(oom, rm).parallelStream().anyMatch(x
                 -> ch.intersects(x, oom, rm))
                 || ch.getTriangles(oom, rm).parallelStream().anyMatch(x
@@ -585,7 +585,7 @@ public class V3D_ConvexHull extends V3D_Shape {
         if (tsu.isEmpty()) {
             return null;
         } else {
-            return new V3D_ConvexHull(oom, rm,
+            return new V3D_ConvexVolume(oom, rm,
                     tsu.toArray(V3D_Point[]::new)).simplify(oom, rm);
         }
 //        switch (size) {
@@ -601,24 +601,24 @@ public class V3D_ConvexHull extends V3D_Shape {
     }
 
     @Override
-    public V3D_ConvexHull rotate(V3D_Ray ray, V3D_Vector uv, 
+    public V3D_ConvexVolume rotate(V3D_Ray ray, V3D_Vector uv, 
             Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
         theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
         if (theta.compareTo(BigRational.ZERO) == 0) {
-            return new V3D_ConvexHull(this);
+            return new V3D_ConvexVolume(this);
         } else {
             return rotateN(ray, uv, bd, theta, oom, rm);
         }
     }
     
     @Override
-    public V3D_ConvexHull rotateN(V3D_Ray ray, V3D_Vector uv, 
+    public V3D_ConvexVolume rotateN(V3D_Ray ray, V3D_Vector uv, 
             Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
         V3D_Triangle[] rts = new V3D_Triangle[triangles.size()];
         for (int i = 0; i < triangles.size(); i++) {
             rts[0] = triangles.get(i).rotate(ray, uv, bd, theta, oom, rm);
         }
-        return new V3D_ConvexHull(oom, rm, rts);
+        return new V3D_ConvexVolume(oom, rm, rts);
     }
 
     /**
@@ -668,15 +668,15 @@ public class V3D_ConvexHull extends V3D_Shape {
 
     /**
      * If pts are all equal then a V3D_Point is returned.If two are different,
-     * then a V3D_LineSegment is returned. Three different, then a V3D_Triangle
-     * is returned. If four or more are different then a V3D_ConvexHull is
-     * returned.
+     * then a V3D_LineSegment is returned.Three different, then a V3D_Triangle
+ is returned. If four or more are different then a V3D_ConvexHull is
+ returned.
      *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @param pts The points.
      * @return Either a V3D_Point, V3D_LineSegment, V3D_Triangle, or
-     * V3D_ConvexHull.
+ V3D_ConvexVolume.
      */
     public static V3D_FiniteGeometry getGeometry(int oom, RoundingMode rm,
             V3D_Point... pts) {
@@ -703,9 +703,10 @@ public class V3D_ConvexHull extends V3D_Shape {
                 if (V3D_Line.isCollinear(oom, rm, ip, iq, ir)) {
                     return new V3D_LineSegment(oom, rm, pts);
                 } else {
-                    return new V3D_ConvexHull(oom, rm, pts);
+                    return new V3D_ConvexVolume(oom, rm, pts);
                 }
             }
+
 
         }
     }
@@ -743,7 +744,7 @@ public class V3D_ConvexHull extends V3D_Shape {
      * @return A list of triangles that make up the convex hull.
      */
     @Override
-    public HashMap<Integer, V3D_Face> getFaces(int oom, RoundingMode rm) {
+    public HashMap<Integer, V3D_Area> getFaces(int oom, RoundingMode rm) {
 //        if (faces == null) {
 //            faces = new HashMap<>();
 //            V3D_Point p0 = this.points.get(0);

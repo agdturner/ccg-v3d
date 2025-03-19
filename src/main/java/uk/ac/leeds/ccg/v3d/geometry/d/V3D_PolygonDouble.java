@@ -112,7 +112,7 @@ public class V3D_PolygonDouble extends V3D_FiniteGeometryDouble
     }
 
     @Override
-    public V3D_PointDouble[] getPoints() {
+    public V3D_PointDouble[] getPointsArray() {
         int np = 0;
         for (var x : parts) {
             np += x.points.size();

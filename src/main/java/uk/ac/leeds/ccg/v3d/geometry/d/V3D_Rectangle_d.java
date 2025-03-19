@@ -15,10 +15,13 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.HashMap;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Rectangle;
+import uk.ac.leeds.ccg.v3d.geometry.V3D_Triangle;
 
 /**
  * For representing and processing rectangles in 3D. A rectangle is a right
@@ -36,7 +39,7 @@ import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_Rectangle_d extends V3D_Face_d {
+public class V3D_Rectangle_d extends V3D_Area_d {
 
     private static final long serialVersionUID = 1L;
 
@@ -53,10 +56,11 @@ public class V3D_Rectangle_d extends V3D_Face_d {
     /**
      * For storing the convex hull
      */
-    protected V3D_ConvexHullCoplanar_d convexHull;
+    protected V3D_ConvexArea_d convexHull;
 
     /**
      * Create a new instance.
+     * @param r The rectangle to clone.
      */
     public V3D_Rectangle_d(V3D_Rectangle_d r) {
         this(r.getP(), r.getQ(), r.getR(), r.getS());
@@ -65,6 +69,7 @@ public class V3D_Rectangle_d extends V3D_Face_d {
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p The bottom left corner of the rectangle.
      * @param q The top left corner of the rectangle.
@@ -76,8 +81,7 @@ public class V3D_Rectangle_d extends V3D_Face_d {
     public V3D_Rectangle_d(V3D_Environment_d env, V3D_Vector_d offset, 
             V3D_Vector_d p, V3D_Vector_d q, V3D_Vector_d r, 
             V3D_Vector_d s) {
-        super(env, offset);
-        V3D_Plane_d pl = new V3D_Plane_d(env, offset, p, q, r);
+        super(env, offset, new V3D_Plane_d(env, offset, p, q, r));
         rsp = new V3D_Triangle_d(pl, offset, r, s, p);
         pqr = new V3D_Triangle_d(pl, offset, p, q, r);
     }
@@ -106,7 +110,7 @@ public class V3D_Rectangle_d extends V3D_Face_d {
      */
     public V3D_Rectangle_d(V3D_Plane_d pl, V3D_Point_d p,
             V3D_Point_d q, V3D_Point_d r, V3D_Point_d s) {
-        super(pl.env, p.offset);
+        super(pl.env, p.offset, pl);
         V3D_Point_d qn = new V3D_Point_d(q);
         qn.setOffset(p.offset);
         V3D_Point_d rn = new V3D_Point_d(r);
@@ -148,12 +152,7 @@ public class V3D_Rectangle_d extends V3D_Face_d {
 
     @Override
     public V3D_Point_d[] getPointsArray() {
-        V3D_Point_d[] re = new V3D_Point_d[4];
-        re[0] = getP();
-        re[1] = getQ();
-        re[2] = getR();
-        re[3] = getS();
-        return re;
+        return getPoints().values().toArray(new V3D_Point_d[4]);
     }
     
     @Override
@@ -458,7 +457,7 @@ public class V3D_Rectangle_d extends V3D_Face_d {
                 V3D_Point_d[] rspitps = rspit.getPointsArray();
                 V3D_Point_d[] pts = Arrays.copyOf(pqritps, pqritps.length + rspitps.length);
                 System.arraycopy(rspitps, 0, pts, pqritps.length, rspitps.length);
-                return V3D_ConvexHullCoplanar_d.getGeometry(epsilon, pts);
+                return V3D_ConvexArea_d.getGeometry(epsilon, pts);
             }
         } else {
             V3D_FiniteGeometry_d pqrit = pqr.getIntersect(t, epsilon);
@@ -632,9 +631,9 @@ public class V3D_Rectangle_d extends V3D_Face_d {
      * equal.
      * @return {@link #convexHull} initialising it if it is {@code null}.
      */
-    public V3D_ConvexHullCoplanar_d getConvexHull(double epsilon) {
+    public V3D_ConvexArea_d getConvexHull(double epsilon) {
         if (convexHull == null) {
-            convexHull = new V3D_ConvexHullCoplanar_d(epsilon, pqr,
+            convexHull = new V3D_ConvexArea_d(epsilon, pqr,
                     rsp);
         }
         return convexHull;
@@ -657,19 +656,69 @@ public class V3D_Rectangle_d extends V3D_Face_d {
         V3D_LineSegment_d qr = new V3D_LineSegment_d(q, r);
         V3D_LineSegment_d rs = new V3D_LineSegment_d(r, s);
         V3D_LineSegment_d sp = new V3D_LineSegment_d(s, p);
-        if (pq.l.isParallel(rs.l, epsilon)) {
-            if (qr.l.isParallel(sp.l, epsilon)) {
-                return true;
-            }
-        }
-        return false;
+        return pq.l.isParallel(rs.l, epsilon)
+                && qr.l.isParallel(sp.l, epsilon);
     }
     
     //@Override
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
-        if (pqr.intersects(aabb, epsilon)) {
-            return true;
-        }
-        return rsp.intersects(aabb, epsilon);
+        return pqr.intersects(aabb, epsilon)
+            || rsp.intersects(aabb, epsilon);
+    }
+
+    /**
+     * If there is intersection with the Axis Aligned Bounding Boxes of pqr 
+     * or rsp, then intersections are computed, so if the intersection is wanted 
+     * consider using:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int, java.math.RoundingMode)}
+     *
+     * @param l The line segment to test if it intersects.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @return {@code true} if l intersects this.
+     */
+    @Override
+    public boolean intersects(V3D_Line_d l, double epsilon) {
+        return pqr.intersects(l, epsilon)
+            || rsp.intersects(l, epsilon);
+    }
+
+    /**
+     * If there is intersection with the Axis Aligned Bounding Boxes of pqr 
+     * or rsp, then intersections are computed, so if the intersection is wanted 
+     * consider using:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegment_d, int, java.math.RoundingMode)}
+     *
+     * @param l The line segment to test if it intersects.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @return {@code true} if l intersects this.
+     */
+    @Override
+    public boolean intersects(V3D_LineSegment_d l, double epsilon) {
+        return pqr.intersects(l, epsilon)
+            || rsp.intersects(l, epsilon);
+    }
+    
+    /**
+     * @param t A triangle to test for intersection.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @return {@code true} if t intersects this.
+     */
+    public boolean intersects(V3D_Triangle_d t, double epsilon) {
+        return pqr.intersects(t, epsilon)
+                || rsp.intersects(t, epsilon);
+    }
+    
+    /**
+     * @param r Another rectangle to test for intersection.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @return {@code true} if t intersects this.
+     */
+    public boolean intersects(V3D_Rectangle_d r, double epsilon) {
+        return r.intersects(pqr, epsilon)
+                || r.intersects(rsp, epsilon);
     }
 }

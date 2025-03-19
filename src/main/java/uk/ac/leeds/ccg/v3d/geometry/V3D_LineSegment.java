@@ -18,6 +18,8 @@ package uk.ac.leeds.ccg.v3d.geometry;
 import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
@@ -338,7 +340,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         r[1] = getQ(oom, rm);
         return r;
     }
-    
+
     /**
      * @param pt A point to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -376,7 +378,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         }
         return false;
     }
-    
+
     /**
      * @param aabb The V3D_AABB to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -385,14 +387,88 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      */
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
         return aabb.intersects(l.p, oom, rm)
-                || getIntersect(aabb.getl(oom, rm), oom, rm) != null
-                || getIntersect(aabb.getr(oom, rm), oom, rm) != null
-                || getIntersect(aabb.gett(oom, rm), oom, rm) != null
-                || getIntersect(aabb.getb(oom, rm), oom, rm) != null
-                || getIntersect(aabb.getf(oom, rm), oom, rm) != null
-                || getIntersect(aabb.geta(oom, rm), oom, rm) != null;
+                || aabb.intersects(l.getQ(oom, rm), oom, rm);
     }
-    
+
+    /**
+     * NB. The intersection is computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int, java.math.RoundingMode)}.
+     *
+     * @param l The V3D_Line to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public boolean intersects(V3D_Line l, int oom, RoundingMode rm) {
+        return getIntersect(l, oom, rm) != null;
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param l A line to test for with any of the lines in ls.
+     * @param ls The other lines to test for intersection with l.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     */
+    public static boolean intersects(int oom, RoundingMode rm, 
+            V3D_LineSegment l, V3D_LineSegment... ls) {
+        return intersects(oom, rm, l, Arrays.asList(ls));
+    }
+
+    /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param l A line to test for with any of the lines in ls.
+     * @param ls The other lines to test for intersection with l.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     */
+    public static boolean intersects(int oom, RoundingMode rm,
+            V3D_LineSegment l, Collection<V3D_LineSegment> ls) {
+        return ls.parallelStream().anyMatch(x -> x.intersects(l, oom, rm));
+    }
+
+    /**
+     * @param p A point to test for intersection.
+     * @param ls The lines to test for intersection with p.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     */
+    public static boolean intersects(int oom, RoundingMode rm, V3D_Point p,
+            V3D_LineSegment... ls) {
+        return intersects(oom, rm, p, Arrays.asList(ls));
+    }
+
+    /**
+     * @param p A point to test for intersection.
+     * @param ls The lines to test for intersection with p.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     */
+    public static boolean intersects(int oom, RoundingMode rm, V3D_Point p,
+            Collection<V3D_LineSegment> ls) {
+        return ls.parallelStream().anyMatch(x -> x.intersects(p, oom, rm));
+    }
+
+    /**
+     * If there is intersection with the Axis Aligned Bounding Box, then the 
+     * intersection is computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment, int, java.math.RoundingMode) }
+     *
+     * @param l The V3D_Line to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public boolean intersects(V3D_LineSegment l, int oom, RoundingMode rm) {
+        if (intersects(l.getAABB(oom, rm), oom, rm)) {
+            return getIntersect(l, oom, rm) != null;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * @param aabbx The V3D_AABBX to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -400,19 +476,19 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public V3D_Point getIntersect(V3D_AABBX aabbx, int oom, RoundingMode rm) {
-        V3D_Plane pl = aabbx.getXPl(); 
+        V3D_Plane pl = aabbx.getXPl();
         if (pl.isParallel(l, oom, rm)) {
             return null;
         }
         // Calculate the intersection point
         V3D_Point pt = (V3D_Point) pl.getIntersect(l, oom, rm);
-        if (isBetween(pt, oom, rm)
-            && aabbx.intersects(pt, oom, rm)) {
-                return pt;
+        if (isAligned(pt, oom, rm)
+                && aabbx.intersects(pt, oom, rm)) {
+            return pt;
         }
         return null;
     }
-    
+
     /**
      * @param aabby The V3D_AABBY to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -420,14 +496,14 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public V3D_Point getIntersect(V3D_AABBY aabby, int oom, RoundingMode rm) {
-        V3D_Plane pl = aabby.getYPl(); 
+        V3D_Plane pl = aabby.getYPl();
         if (pl.isParallel(l, oom, rm)) {
             return null;
         }
         // Calculate the intersection point
         V3D_Point pt = (V3D_Point) pl.getIntersect(l, oom, rm);
-        if (isBetween(pt, oom, rm)
-            && aabby.intersects(pt, oom, rm)) {
+        if (isAligned(pt, oom, rm)
+                && aabby.intersects(pt, oom, rm)) {
             return pt;
         }
         return null;
@@ -440,14 +516,14 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public V3D_Point getIntersect(V3D_AABBZ aabbz, int oom, RoundingMode rm) {
-        V3D_Plane zpl = aabbz.getZPl(); 
+        V3D_Plane zpl = aabbz.getZPl();
         if (zpl.isParallel(l, oom, rm)) {
             return null;
         }
         // Calculate the intersection point
         V3D_Point pt = (V3D_Point) zpl.getIntersect(l, oom, rm);
-        if (isBetween(pt, oom, rm)
-            && aabbz.intersects(pt, oom, rm)) {
+        if (isAligned(pt, oom, rm)
+                && aabbz.intersects(pt, oom, rm)) {
             return pt;
         }
         return null;
@@ -478,7 +554,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
          */
         if (i instanceof V3D_Point v3D_Point) {
             //if (intersects(v3D_Point, oom, rm)) {
-            if (isBetween(v3D_Point, oom, rm)) {
+            if (isAligned(v3D_Point, oom, rm)) {
                 return v3D_Point;
             } else {
                 return null;
@@ -508,8 +584,6 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         if (!getAABB(oom, rm).intersects(ls.getAABB(oom, rm), oom)) {
             return null;
         }
-        // Get intersection of infinite lines. 
-        V3D_Geometry r = this.l.getIntersect(ls.l, oom, rm);
         // Get intersection with infinite lines.
         V3D_Geometry li = l.getIntersect(ls.l, oom, rm);
         V3D_FiniteGeometry tils = getIntersect(ls.l, oom, rm);
@@ -523,7 +597,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                 } else {
                     if (lsil instanceof V3D_Point lsilp) {
                         //if (intersects(lsilp, oom, rm)) {
-                        if (isBetween(lsilp, oom, rm)) {
+                        if (isAligned(lsilp, oom, rm)) {
                             return lsilp;
                         } else {
                             return null;
@@ -536,7 +610,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             } else {
                 if (tils instanceof V3D_Point tilsp) {
                     //if (intersects(tilsp, oom, rm) && ls.intersects(tilsp, oom, rm)) {
-                    if (isBetween(tilsp, oom, rm) && ls.isBetween(tilsp, oom, rm)) {
+                    if (isAligned(tilsp, oom, rm) && ls.isAligned(tilsp, oom, rm)) {
                         return tilsp;
                     } else {
                         return null;
@@ -658,16 +732,16 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         V3D_Point tp = getP();
         V3D_Point tq = getQ(oom, rm);
         //if (intersects(lp, oom, rm)) {
-        if (isBetween(lp, oom, rm)) {
+        if (isAligned(lp, oom, rm)) {
             // Cases: 1, 2, 3, 5, 8, 9, 10, 12, 17, 19, 20, 21, 24, 26, 27, 28
             //if (intersects(lq, oom, rm)) {
-            if (isBetween(lq, oom, rm)) {
+            if (isAligned(lq, oom, rm)) {
                 // Cases: 3, 5, 10, 12, 17, 19, 24, 26
                 return ls;
             } else {
                 // Cases: 1, 2, 8, 9, 20, 21, 27, 28
                 //if (ls.intersects(tp, oom, rm)) {
-                if (ls.isBetween(tp, oom, rm)) {
+                if (ls.isAligned(tp, oom, rm)) {
                     // Cases: 8, 9, 20, 21
                     if (tp.equals(lp, oom, rm)) {
                         // Cases: 8, 21
@@ -690,13 +764,13 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         } else {
             // Cases: 4, 6, 7, 11, 13, 14, 15, 16, 18, 22, 23, 25
             //if (intersects(lq, oom, rm)) {
-            if (isBetween(lq, oom, rm)) {
+            if (isAligned(lq, oom, rm)) {
                 // Cases: 6, 7, 13, 14, 15, 16, 22, 23
                 //if (ls.intersects(tp, oom, rm)) {
-                if (ls.isBetween(tp, oom, rm)) {
+                if (ls.isAligned(tp, oom, rm)) {
                     // Cases: 6, 7, 22, 23
                     //if (ls.intersects(tq, oom, rm)) {
-                    if (ls.isBetween(tq, oom, rm)) {
+                    if (ls.isAligned(tq, oom, rm)) {
                         // Cases: 23
                         return V3D_LineSegment.getGeometry(lq, tp, oom, rm);
                     } else {
@@ -785,10 +859,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} If pt is in line with this.
      */
     public boolean isAligned(V3D_Point pt, int oom, RoundingMode rm) {
-        if (getPPL().isOnSameSide(pt, getQ(oom, rm), oom, rm)) {
-            return getQPL(oom, rm).isOnSameSide(pt, getP(), oom, rm);
-        }
-        return false;
+        return getPPL().isOnSameSide(pt, getQ(oom, rm), oom, rm)
+                && getQPL(oom, rm).isOnSameSide(pt, getP(), oom, rm);
     }
 
     /**
@@ -918,13 +990,13 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         } else {
             //V3D_LineSegment ls = new V3D_LineSegment(p, q, oom, rm);
             //if (ls.intersects(r, oom, rm)) {
-            if (r.isBetween(p, q, oom, rm)) {
+            if (r.isAligned(p, q, oom, rm)) {
                 //return ls;
                 return new V3D_LineSegment(p, q, oom, rm);
             } else {
                 //ls = new V3D_LineSegment(p, r, oom, rm);
                 //if (ls.intersects(q, oom, rm)) {
-                if (p.isBetween(r, q, oom, rm)) {
+                if (p.isAligned(r, q, oom, rm)) {
                     //return ls;
                     return new V3D_LineSegment(q, r, oom, rm);
                 } else {
@@ -991,6 +1063,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * Calculates the shortest line segment which all line segments intersect
      * with.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param ls Collinear line segments.
      * @return The shortest line segment which all the line segment points in ls
      * intersect with.
@@ -1133,7 +1207,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                     //return new V3D_LineSegment(tloiq, getNearestPoint(this, tloiq, oom, rm), oom, rm);
                 } else {
                     // tloip is on
-                    if (isBetween(tloip, oom, rm)) {
+                    if (isAligned(tloip, oom, rm)) {
                         return new V3D_LineSegment(tloip, getNearestPoint(ls, tloip, oom, rm), oom, rm);
                     } else {
                         return new V3D_LineSegment(
@@ -1162,6 +1236,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     /**
      * Useful for intersection tests.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The plane with a point at l.getQ() and normal l.v
      */
     public V3D_Plane getQPL(int oom, RoundingMode rm) {
@@ -1169,25 +1245,6 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             qpl = new V3D_Plane(getQ(oom, rm), l.v);
         }
         return qpl;
-    }
-
-    /**
-     * Useful for intersection tests.
-     *
-     * @param pt The point to test if it is between {@link #qv} and the point of
-     * {@link #l}.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} iff pt lies between the planes at the end of the
-     * line segment.
-     */
-    public boolean isBetween(V3D_Point pt, int oom, RoundingMode rm) {
-        if (getPPL().isOnSameSide(pt, getQ(oom, rm), oom, rm)) {
-            if (getQPL(oom, rm).isOnSameSide(pt, getP(), oom, rm)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
