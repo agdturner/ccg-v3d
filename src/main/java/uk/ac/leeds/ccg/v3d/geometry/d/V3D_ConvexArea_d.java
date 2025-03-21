@@ -105,12 +105,24 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     public V3D_ConvexArea_d(double epsilon, V3D_Vector_d n, 
             V3D_Point_d... points) {
-        super(points[0].env, points[0].offset, new V3D_Plane_d(points[0], n));
+        this(epsilon, n, Arrays.asList(points));
+    }
+    
+    /**
+     * Create a new instance.
+     *
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @param n The normal for the plane.
+     * @param points A non-empty list of points in a plane given by n.
+     */
+    public V3D_ConvexArea_d(double epsilon, V3D_Vector_d n, 
+            List<V3D_Point_d> points) {
+        super(points.get(0).env, points.get(0).offset, new V3D_Plane_d( points.get(0), n));
         this.points = new HashMap<>();
         this.triangles = new HashMap<>();
         // Get a list of unique points.
-        ArrayList<V3D_Point_d> pts = V3D_Point_d.getUnique(
-               Arrays.asList(points), epsilon);
+        ArrayList<V3D_Point_d> pts = V3D_Point_d.getUnique(points, epsilon);
         V3D_Vector_d v0 = new V3D_Vector_d(pts.get(0).rel);
         double xmin = v0.dx;
         double xmax = v0.dx;
@@ -167,12 +179,8 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
             double ydl2 = yd.getLength2();
             double zdl2 = zd.getLength2();
             if (ydl2 > zdl2) {
-                this.points.put(this.points.size(), yminp);
-                this.points.put(this.points.size(), ymaxp);
                 compute(pts, yminp, ymaxp, n, 1, epsilon);
             } else {
-                this.points.put(this.points.size(), zminp);
-                this.points.put(this.points.size(), zmaxp);
                 compute(pts, zminp, zmaxp, n, 1, epsilon);
             }
         } else if (yminIndex == ymaxIndex) {
@@ -181,12 +189,8 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
             double xdl2 = xd.getLength2();
             double zdl2 = zd.getLength2();
             if (xdl2 > zdl2) {
-                this.points.put(this.points.size(), xminp);
-                this.points.put(this.points.size(), xmaxp);
                 compute(pts, xminp, xmaxp, n, 1, epsilon);
             } else {
-                this.points.put(this.points.size(), zminp);
-                this.points.put(this.points.size(), zmaxp);
                 compute(pts, zminp, zmaxp, n, 1, epsilon);
             }
         } else if (zminIndex == zmaxIndex) {
@@ -195,12 +199,8 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
             double xdl2 = xd.getLength2();
             double ydl2 = yd.getLength2();
             if (xdl2 > ydl2) {
-                this.points.put(this.points.size(), xminp);
-                this.points.put(this.points.size(), xmaxp);
                 compute(pts, xminp, xmaxp, n, 1, epsilon);
             } else {
-                this.points.put(this.points.size(), yminp);
-                this.points.put(this.points.size(), ymaxp);
                 compute(pts, yminp, ymaxp, n, 1, epsilon);
             }
         } else {
@@ -212,22 +212,14 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
             double zdl2 = zd.getLength2();
             if (xdl2 > ydl2) {
                 if (xdl2 > zdl2) {
-                    this.points.put(this.points.size(), xminp);
-                    this.points.put(this.points.size(), xmaxp);
                     compute(pts, xminp, xmaxp, n, 1, epsilon);
                 } else {
-                    this.points.put(this.points.size(), zminp);
-                    this.points.put(this.points.size(), zmaxp);
                     compute(pts, zminp, zmaxp, n, 1, epsilon);
                 }
             } else {
                 if (ydl2 > zdl2) {
-                    this.points.put(this.points.size(), yminp);
-                    this.points.put(this.points.size(), ymaxp);
                     compute(pts, yminp, ymaxp, n, 1, epsilon);
                 } else {
-                    this.points.put(this.points.size(), zminp);
-                    this.points.put(this.points.size(), zmaxp);
                     compute(pts, zminp, zmaxp, n, 1, epsilon);
                 }
             }
@@ -305,28 +297,30 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
 
     @Override
     public String toString() {
-        String s = this.getClass().getName() + "(";
-        Iterator<V3D_Point_d> ite = points.values().iterator();
-        s += ite.next().toString();
-        while (ite.hasNext()) {
-            s += ", " + ite.next().toString("");
+        StringBuilder s = new StringBuilder();
+        s.append(this.getClass().getName()).append("(\n");
+        {
+            s.append(" points (\n");
+            for (var entry : points.entrySet()) {
+                s.append("  (");
+                s.append(entry.getKey());
+                s.append(", ");
+                s.append(entry.getValue().toString());
+                s.append("),\n");
+            }
+            int l = s.length();
+            s = s.delete(l - 2, l);
+            s.append("\n )");
         }
-        s += ")";
-        return s;
+        s.append("\n)");
+        return s.toString();
     }
 
     /**
      * @return Simple string representation.
      */
     public String toStringSimple() {
-        String s = this.getClass().getName() + "(";
-        Iterator<V3D_Point_d> ite = points.values().iterator();
-        s += ite.next().toString();
-        while (ite.hasNext()) {
-            s += ", " + ite.next().toStringSimple(s);
-        }
-        s += ")";
-        return s;
+        return toString();
     }
 
     /**
@@ -626,6 +620,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
                 p0.offset, p0.rel.add(n)));
         AB ab = new AB(pts, pl, epsilon);
         // Process ab.a
+        points.put(points.size(), p0);
         if (!ab.a.isEmpty()) {
             if (ab.a.size() == 1) {
                 points.put(index, ab.a.get(0));
@@ -659,6 +654,8 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
                 }
             }
         }
+        points.put(this.points.size(), p1);
+        index ++;
         // Process ab.b
         if (!ab.b.isEmpty()) {
             if (ab.b.size() == 1) {

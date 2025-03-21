@@ -107,12 +107,24 @@ public class V3D_ConvexArea extends V3D_Area {
      */
     public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Vector n, 
             V3D_Point... points) {
-        super(points[0].env, points[0].offset, new V3D_Plane(points[0], n));
+        this(oom, rm, n, Arrays.asList(points));
+    }
+    
+    /**
+     * Create a new instance.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @param n The normal for the plane.
+     * @param points A non-empty list of points in a plane given by n.
+     */
+    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Vector n, 
+            List<V3D_Point> points) {
+        super(points.get(0).env, points.get(0).offset, new V3D_Plane( points.get(0), n));
         this.points = new HashMap<>();
         this.triangles = new HashMap<>();
         // Get a list of unique points.
-        ArrayList<V3D_Point> pts = V3D_Point.getUnique(
-                Arrays.asList(points), oom, rm);
+        ArrayList<V3D_Point> pts = V3D_Point.getUnique(points, oom, rm);
         V3D_Vector v0 = new V3D_Vector(pts.get(0).rel);
         Math_BigRationalSqrt xmin = v0.dx;
         Math_BigRationalSqrt xmax = v0.dx;
@@ -169,12 +181,8 @@ public class V3D_ConvexArea extends V3D_Area {
             BigRational ydl2 = yd.getLength2(oom, rm);
             BigRational zdl2 = zd.getLength2(oom, rm);
             if (ydl2.compareTo(zdl2) == 1) {
-                this.points.put(this.points.size(), yminp);
-                this.points.put(this.points.size(), ymaxp);
                 compute(pts, yminp, ymaxp, n, 1, oom, rm);
             } else {
-                this.points.put(this.points.size(), zminp);
-                this.points.put(this.points.size(), zmaxp);
                 compute(pts, zminp, zmaxp, n, 1, oom, rm);
             }
         } else if (yminIndex == ymaxIndex) {
@@ -183,12 +191,8 @@ public class V3D_ConvexArea extends V3D_Area {
             BigRational xdl2 = xd.getLength2(oom, rm);
             BigRational zdl2 = zd.getLength2(oom, rm);
             if (xdl2.compareTo(zdl2) == 1) {
-                this.points.put(this.points.size(), xminp);
-                this.points.put(this.points.size(), xmaxp);
                 compute(pts, xminp, xmaxp, n, 1, oom, rm);
             } else {
-                this.points.put(this.points.size(), zminp);
-                this.points.put(this.points.size(), zmaxp);
                 compute(pts, zminp, zmaxp, n, 1, oom, rm);
             }
         } else if (zminIndex == zmaxIndex) {
@@ -197,12 +201,8 @@ public class V3D_ConvexArea extends V3D_Area {
             BigRational xdl2 = xd.getLength2(oom, rm);
             BigRational ydl2 = yd.getLength2(oom, rm);
             if (xdl2.compareTo(ydl2) == 1) {
-                this.points.put(this.points.size(), xminp);
-                this.points.put(this.points.size(), xmaxp);
                 compute(pts, xminp, xmaxp, n, 1, oom, rm);
             } else {
-                this.points.put(this.points.size(), yminp);
-                this.points.put(this.points.size(), ymaxp);
                 compute(pts, yminp, ymaxp, n, 1, oom, rm);
             }
         } else {
@@ -214,22 +214,14 @@ public class V3D_ConvexArea extends V3D_Area {
             BigRational zdl2 = zd.getLength2(oom, rm);
             if (xdl2.compareTo(ydl2) == 1) {
                 if (xdl2.compareTo(zdl2) == 1) {
-                    this.points.put(this.points.size(), xminp);
-                    this.points.put(this.points.size(), xmaxp);
                     compute(pts, xminp, xmaxp, n, 1, oom, rm);
                 } else {
-                    this.points.put(this.points.size(), zminp);
-                    this.points.put(this.points.size(), zmaxp);
                     compute(pts, zminp, zmaxp, n, 1, oom, rm);
                 }
             } else {
                 if (ydl2.compareTo(zdl2) == 1) {
-                    this.points.put(this.points.size(), yminp);
-                    this.points.put(this.points.size(), ymaxp);
                     compute(pts, yminp, ymaxp, n, 1, oom, rm);
                 } else {
-                    this.points.put(this.points.size(), zminp);
-                    this.points.put(this.points.size(), zmaxp);
                     compute(pts, zminp, zmaxp, n, 1, oom, rm);
                 }
             }
@@ -295,18 +287,6 @@ public class V3D_ConvexArea extends V3D_Area {
         return re;
     }
 
-    @Override
-    public String toString() {
-        String s = this.getClass().getName() + "(";
-        Iterator<V3D_Point> ite = points.values().iterator();
-        s += ite.next().toString();
-        while (ite.hasNext()) {
-            s += ", " + ite.next();
-        }
-        s += ")";
-        return s;
-    }
-
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
@@ -321,18 +301,32 @@ public class V3D_ConvexArea extends V3D_Area {
 //        return edges;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append(this.getClass().getName()).append("(\n");
+        {
+            s.append(" points (\n");
+            for (var entry : points.entrySet()) {
+                s.append("  (");
+                s.append(entry.getKey());
+                s.append(", ");
+                s.append(entry.getValue().toString());
+                s.append("),\n");
+            }
+            int l = s.length();
+            s = s.delete(l - 2, l);
+            s.append("\n )");
+        }
+        s.append("\n)");
+        return s.toString();
+    }
+
     /**
      * @return Simple string representation.
      */
     public String toStringSimple() {
-        String s = this.getClass().getName() + "(";
-        Iterator<V3D_Point> ite = points.values().iterator();
-        s += ite.next().toString();
-        while (ite.hasNext()) {
-            s += ", " + ite.next().toStringSimple(s);
-        }
-        s += ")";
-        return s;
+        return toString();
     }
 
     /**
@@ -584,6 +578,7 @@ public class V3D_ConvexArea extends V3D_Area {
         AB ab = new AB(pts, p0, p1, pl, oom, rm);
         {
             // Process ab.a
+            points.put(points.size(), p0);
             if (!ab.a.isEmpty()) {
                 if (ab.a.size() > 1) {
                     V3D_Point apt = ab.a.get(ab.maxaIndex);
@@ -620,6 +615,8 @@ public class V3D_ConvexArea extends V3D_Area {
         }
         {
             // Process ab.b
+            points.put(this.points.size(), p1);
+            index ++;
             if (!ab.b.isEmpty()) {
                 if (ab.b.size() > 1) {
                     V3D_Point bpt = ab.b.get(ab.maxbIndex);
