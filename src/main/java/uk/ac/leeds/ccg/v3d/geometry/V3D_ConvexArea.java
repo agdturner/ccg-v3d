@@ -83,6 +83,9 @@ public class V3D_ConvexArea extends V3D_Area {
         triangles = new HashMap<>();
         c.triangles.values().forEach(x ->
                 triangles.put(triangles.size(), new V3D_Triangle(x)));
+        edges = new HashMap<>();
+        c.edges.values().forEach(x ->
+                edges.put(edges.size(), new V3D_LineSegment(x)));
     }
     
     /**
@@ -122,7 +125,8 @@ public class V3D_ConvexArea extends V3D_Area {
             List<V3D_Point> points) {
         super(points.get(0).env, points.get(0).offset, new V3D_Plane( points.get(0), n));
         this.points = new HashMap<>();
-        this.triangles = new HashMap<>();
+        triangles = new HashMap<>();
+        edges = new HashMap<>();
         // Get a list of unique points.
         ArrayList<V3D_Point> pts = V3D_Point.getUnique(points, oom, rm);
         V3D_Vector v0 = new V3D_Vector(pts.get(0).rel);
@@ -232,12 +236,15 @@ public class V3D_ConvexArea extends V3D_Area {
         }
 
         V3D_Point pt = this.points.get(0);
+        edges.put(edges.size(), new V3D_LineSegment(pt, this.points.get(1), oom, rm));
+        V3D_Point rt = null;
         for (int i = 1; i < this.points.size() - 1; i++) {
             V3D_Point qt = this.points.get(i);
-            V3D_Point rt = this.points.get(i + 1);
+            rt = this.points.get(i + 1);
             triangles.put(triangles.size(), new V3D_Triangle(pt, qt, rt, oom, rm));
-            //triangles.add(new V3D_Triangle(pt, qt, rt, oom, rm));
+            edges.put(edges.size(), new V3D_LineSegment(qt, rt, oom, rm));
         }
+        edges.put(edges.size(), new V3D_LineSegment(rt, pt, oom, rm));
 
         if (triangles.isEmpty()) {
             int debug = 1;

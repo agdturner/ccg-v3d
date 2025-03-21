@@ -111,7 +111,7 @@ public class V3D_ConvexArea_dTest extends V3D_Test_d {
                             )
                            )""";
         String result = instance.toString();
-        System.out.println(result);
+        //System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
     }
 
