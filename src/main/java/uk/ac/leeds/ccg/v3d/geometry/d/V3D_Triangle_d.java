@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VTriangle_d;
@@ -2303,11 +2304,19 @@ public class V3D_Triangle_d extends V3D_Area_d {
     //public static ArrayList<V3D_Point> getPointsArray(V3D_Triangle[] triangles) {
     public static V3D_Point_d[] getPoints(V3D_Triangle_d[] triangles,
             double epsilon) {
-        HashMap<Integer, V3D_Point_d> s = new HashMap<>(3);
+//        HashMap<Integer, V3D_Point_d> s = new HashMap<>(3 * triangles.length);
+//        for (var t : triangles) {
+//            s.put(s.size(), t.getP());
+//            s.put(s.size(), t.getQ());
+//            s.put(s.size(), t.getR());
+//        }
+//        ArrayList<V3D_Point_d> points = V3D_Point_d.getUnique(s, epsilon);
+//        return points.toArray(V3D_Point_d[]::new);
+        List<V3D_Point_d> s = new ArrayList<>();
         for (var t : triangles) {
-            s.put(0, t.getP());
-            s.put(1, t.getQ());
-            s.put(2, t.getR());
+            s.add(t.getP());
+            s.add(t.getQ());
+            s.add(t.getR());
         }
         ArrayList<V3D_Point_d> points = V3D_Point_d.getUnique(s, epsilon);
         return points.toArray(V3D_Point_d[]::new);
@@ -2550,5 +2559,51 @@ public class V3D_Triangle_d extends V3D_Area_d {
     public static boolean intersects(double epsilon,
             V3D_LineSegment_d ls, Collection<V3D_Area_d> faces) {
         return faces.parallelStream().anyMatch(x -> x.intersects(ls, epsilon));
+    }
+    
+    /**
+     * Intersected, but not on the edge.
+     *
+     * @param pt The point to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return True iff pt is in the triangle and not on the edge.
+     */
+    public boolean contains(V3D_Point_d pt, double epsilon) {
+        if (intersects(pt, epsilon)) {
+//            return !(getPQ().intersects(pt, epsilon)
+//                    || getQR().intersects(pt, epsilon)
+//                    || getRP().intersects(pt, epsilon));
+            return !getEdges().values().parallelStream().anyMatch(x 
+                    -> x.intersects(pt, epsilon));
+        }
+        return false;
+    }
+
+    /**
+     * @param ls The line segments to test for containment.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return True iff ls is contained in the triangle.
+     */
+    public boolean contains(V3D_LineSegment_d ls, double epsilon) {
+        return contains(ls.getP(), epsilon)
+                && contains(ls.getQ(), epsilon);
+    }
+
+    /**
+     * Identify if this contains triangle.
+     *
+     * @param t The triangle to test for containment.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} iff {@code this} is intersected by {@code t}.
+     */
+    public boolean contains(V3D_Triangle_d t, double epsilon) {
+//        return contains(t.getP(), oom, rm)
+//                && contains(t.getQ(), oom, rm)
+//                && contains(t.getR(), oom, rm);
+        return t.getPoints().values().parallelStream().allMatch(x
+                -> contains(x, epsilon));
     }
 }

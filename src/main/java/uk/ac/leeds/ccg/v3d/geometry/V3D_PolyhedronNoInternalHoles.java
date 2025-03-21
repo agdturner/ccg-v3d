@@ -520,8 +520,7 @@ public class V3D_PolyhedronNoInternalHoles extends V3D_Volume {
                  * other, there is an intersection.
                  */
                 faces.values().parallelStream().anyMatch(x
-                        -> V3D_Area.intersects(oom, rm, x,
-                        ch.getFaces(oom, rm).values()))
+                        -> x.intersects(oom, rm, ch.getFaces(oom, rm).values()))
                 || ch.getPoints(oom, rm).values().parallelStream().anyMatch(x
                         -> intersects(x, oom, rm))
                 || getPoints(oom, rm).values().parallelStream().anyMatch(x
@@ -544,7 +543,7 @@ public class V3D_PolyhedronNoInternalHoles extends V3D_Volume {
                  * other, there is an intersection.
                  */
                 faces.values().parallelStream().anyMatch(x
-                        -> V3D_Area.intersects(oom, rm, x, p.faces.values()))
+                        -> x.intersects(oom, rm, p.faces.values()))
                 || getPoints(oom, rm).values().parallelStream().anyMatch(x
                         -> p.intersects(x, oom, rm))
                 || p.getPoints(oom, rm).values().parallelStream().anyMatch(x

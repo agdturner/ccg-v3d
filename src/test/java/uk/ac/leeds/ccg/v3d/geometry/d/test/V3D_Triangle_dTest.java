@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
+import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_ConvexArea_d;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_AABB_d;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_Geometry_d;
@@ -95,24 +96,6 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
     }
 
     /**
-     * Test of intersects method, of class V3D_Triangle_d.
-     */
-    @Test
-    public void testIsIntersectedBy() {
-        System.out.println("intersects");
-        double epsilon = 1d / 10000000d;
-        V3D_Point_d pt = pP0P0P0;
-        V3D_Triangle_d instance = new V3D_Triangle_d(pP0P0P0, pP1P0P0, pP1P1P0);
-        assertTrue(instance.intersects(pt, epsilon));
-        // Test 2
-        pt = pN1N1P0;
-        assertFalse(instance.intersects(pt, epsilon));
-        // Test 3
-        pt = new V3D_Point_d(env, 1d / 2d, 0d, 0d);
-        assertTrue(instance.intersects(pt, epsilon));
-    }
-
-    /**
      * Test of getAABB method, of class V3D_Triangle_d.
      */
     @Test
@@ -165,7 +148,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
      * Test of getIntersect method, of class V3D_Triangle_d.
      */
     @Test
-    public void testGetIntersection_V3D_Line_d() {
+    public void testGetIntersect_V3D_Line_d() {
         System.out.println("getIntersect");
         double epsilon = 1d / 10000000d;
         V3D_Line_d l = new V3D_Line_d(pP1N1P0, pP1P2P0);
@@ -234,7 +217,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
      * Test of intersects method, of class V3D_Triangle_d.
      */
     @Test
-    public void testIsIntersectedBy_V3D_Point_d() {
+    public void testIntersectsPoint_d() {
         System.out.println("intersects");
         double epsilon = 1d / 10000000d;
         V3D_Point_d pt;
@@ -270,12 +253,80 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
         pt = new V3D_Point_d(env, P0P0P0, new V3D_Vector_d(3d / 2d, 1d, 0d));
         assertTrue(instance.intersects(pt, epsilon));
     }
+    
+    /**
+     * Test of contains method, of class V3D_Triangle.
+     */
+    @Test
+    public void testContainsPoint() {
+        System.out.println("contains point");
+        int oom = -3;
+        double epsilon = 0.000001d;
+        V3D_Environment_d env = new V3D_Environment_d();
+        V3D_Point_d pt = pP1P1P1;
+        V3D_Triangle_d instance = new V3D_Triangle_d(pP0P0P0, pP1P0P0, pP1P1P0);
+        assertFalse(instance.contains(pt, epsilon));
+        // Test 2
+        pt = pN1N1P0;
+        assertFalse(instance.contains(pt, epsilon));
+        // Test 3
+        pt = new V3D_Point_d(env, 0.5d, 0.5d, 0d);
+        assertFalse(instance.contains(pt, epsilon));
+        pt = new V3D_Point_d(env, 0.75d, 0.5d, 0d);
+        assertTrue(instance.contains(pt, epsilon));
+        assertFalse(instance.contains(pP0P0P0, epsilon));
+        assertFalse(instance.contains(pP1P0P0, epsilon));
+        assertFalse(instance.contains(pP1P1P0, epsilon));
+        pt = new V3D_Point_d(env, 0.5d, 0d, 0d);
+        assertFalse(instance.contains(pt, epsilon));
+    }
+    
+    /**
+     * Test of contains method, of class V3D_Triangle.
+     */
+    @Test
+    public void testContainsLineSegement() {
+        System.out.println("contains line segment");
+        double epsilon = 0.000001d;
+        V3D_Environment_d env = new V3D_Environment_d();
+        V3D_LineSegment_d l = new V3D_LineSegment_d(pP0P0P0, pP1P0P0);
+        V3D_Triangle_d instance = new V3D_Triangle_d(pP0P0P0, pP1P0P0, pP1P1P0);
+        assertFalse(instance.contains(l, epsilon));
+        V3D_Point_d a = new V3D_Point_d(env, 0.5d, 0.5d, 0d);
+        V3D_Point_d b = new V3D_Point_d(env, 0.75d, 0.5d, 0d);
+        l = new V3D_LineSegment_d(a, b);
+        assertFalse(instance.contains(l, epsilon));
+        a = new V3D_Point_d(env, 0.75d, 0.25d, 0d);
+        l = new V3D_LineSegment_d(a, b);
+        assertTrue(instance.contains(l, epsilon));
+    }
+    
+    /**
+     * Test of contains method, of class V3D_Triangle.
+     */
+    @Test
+    public void testContainsTriangle() {
+        System.out.println("contains triangle");
+        double epsilon = 0.000001d;
+        V3D_Environment_d env = new V3D_Environment_d();
+        V3D_Triangle_d t = new V3D_Triangle_d(pP0P0P0, pP1P0P0, pP1P1P0);
+        V3D_Triangle_d instance = new V3D_Triangle_d(pP0P0P0, pP1P0P0, pP1P1P0);
+        assertFalse(instance.contains(t, epsilon));
+        V3D_Point_d a = new V3D_Point_d(env, 0.5d, 0.5d, 0d);
+        V3D_Point_d b = new V3D_Point_d(env, 0.75d, 0.5d, 0d);
+        V3D_Point_d c = new V3D_Point_d(env, 0.5d, 0.25d, 0d);
+        t = new V3D_Triangle_d(a, b, c);
+        assertFalse(instance.contains(t, epsilon));
+        a = new V3D_Point_d(env, 0.75d, 0.25d, 0d);
+        t = new V3D_Triangle_d(a, b, c);
+        assertTrue(instance.contains(t, epsilon));
+    }
 
     /**
      * Test of getIntersect method, of class V3D_Triangle_d.
      */
     @Test
-    public void testGetIntersection_V3D_LineSegment_d() {
+    public void testGetIntersect_V3D_LineSegment_d() {
         System.out.println("getIntersect");
         double epsilon = 1d / 10000000d;
         V3D_LineSegment_d l;
@@ -484,7 +535,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
      * Test of getIntersect method, of class V3D_Triangle_d.
      */
     @Test
-    public void testGetIntersection_V3D_Plane_d() {
+    public void testGetIntersect_V3D_Plane_d() {
         System.out.println("getIntersect");
         double epsilon = 1d / 10000000d;
         V3D_Triangle_d t;
@@ -547,7 +598,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
      * Test of getIntersect method, of class V3D_Triangle_d.
      */
     @Test
-    public void testGetIntersection_V3D_Ray_d() {
+    public void testGetIntersect_V3D_Ray_d() {
         System.out.println("getIntersect");
         double epsilon = 1d / 10000000d;
         V3D_Triangle_d t;
@@ -704,7 +755,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
      * https://math.stackexchange.com/questions/1220102/how-do-i-find-the-intersection-of-two-3d-triangles
      */
     @Test
-    public void testGetIntersection_V3D_Triangle_d() {
+    public void testGetIntersect_V3D_Triangle_d() {
         System.out.println("getIntersect");
         double epsilon = 1d / 10000000d;
         V3D_Triangle_d t = new V3D_Triangle_d(pP0P0P0, pP0P1P0, pP1P0P0);

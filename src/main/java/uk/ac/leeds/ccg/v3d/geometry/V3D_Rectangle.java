@@ -60,7 +60,7 @@ public class V3D_Rectangle extends V3D_Area {
     protected V3D_ConvexArea convexHull;
 
     public V3D_Rectangle(V3D_Rectangle r) {
-        super(r.env, r.offset);
+        super(r.env, r.offset, null);
         pqr = new V3D_Triangle(r.pqr);
         rsp = new V3D_Triangle(r.rsp);
     }
@@ -92,8 +92,7 @@ public class V3D_Rectangle extends V3D_Area {
     public V3D_Rectangle(V3D_Environment env, V3D_Vector offset, V3D_Vector p, 
             V3D_Vector q, V3D_Vector r, V3D_Vector s, int oom, 
             RoundingMode rm) {
-        super(env, offset);
-        pl = new V3D_Plane(env, offset, p, q, r, oom, rm);
+        super(env, offset, new V3D_Plane(env, offset, p, q, r, oom, rm));
         rsp = new V3D_Triangle(pl, offset, r, s, p);
         pqr = new V3D_Triangle(pl, offset, p, q, r);
     }
@@ -116,7 +115,8 @@ public class V3D_Rectangle extends V3D_Area {
     /**
      * Creates a new instance.
      *
-     * @param pl Used to initialise the planes.
+     * @param pl What {@link #pl} is set to, and used to initialise the triangle 
+     * planes.
      * @param p Used to initialise {@link #offset}, {@link #pqr} and {@link #rsp}.
      * @param q Used to initialise {@link #pqr} and {@link #rsp}.
      * @param r Used to initialise {@link #pqr} and {@link #rsp}.
@@ -126,7 +126,7 @@ public class V3D_Rectangle extends V3D_Area {
      */
     public V3D_Rectangle(V3D_Plane pl, V3D_Point p, V3D_Point q, V3D_Point r, 
             V3D_Point s, int oom, RoundingMode rm) {
-        super(p.env, p.offset);
+        super(p.env, p.offset, pl);
         V3D_Point qn = new V3D_Point(q);
         qn.setOffset(p.offset, oom, rm);
         V3D_Point rn = new V3D_Point(r);

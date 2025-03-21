@@ -231,8 +231,7 @@ public class V3D_Triangle extends V3D_Area {
      * @param t The triangle to clone.
      */
     public V3D_Triangle(V3D_Triangle t) {
-        super(t.env, new V3D_Vector(t.offset));
-        pl = new V3D_Plane(t.pl);
+        super(t.env, new V3D_Vector(t.offset), new V3D_Plane(t.pl));
         pv = new V3D_Vector(t.pv);
         qv = new V3D_Vector(t.qv);
         rv = new V3D_Vector(t.rv);
@@ -309,7 +308,7 @@ public class V3D_Triangle extends V3D_Area {
      */
     public V3D_Triangle(V3D_Environment env, V3D_Vector offset, V3D_Vector pv,
             V3D_Vector qv, V3D_Vector rv) {
-        super(env, offset);
+        super(env, offset, null);
         this.pv = pv;
         this.qv = qv;
         this.rv = rv;
@@ -335,11 +334,10 @@ public class V3D_Triangle extends V3D_Area {
      */
     public V3D_Triangle(V3D_Plane pl, V3D_Vector offset,
             V3D_Vector pv, V3D_Vector qv, V3D_Vector rv) {
-        super(pl.env, offset);
+        super(pl.env, offset, pl);
         this.pv = pv;
         this.qv = qv;
         this.rv = rv;
-        this.pl = pl;
         // Debugging code:
         if (pv.equals(qv, env.oom, env.rm) || pv.equals(rv, env.oom, env.rm)
                 || qv.equals(rv, env.oom, env.rm)) {
@@ -361,7 +359,7 @@ public class V3D_Triangle extends V3D_Area {
      */
     public V3D_Triangle(V3D_Environment env, V3D_Vector offset, V3D_Vector pv,
             V3D_Vector qv, V3D_Vector rv, V3D_Vector normal) {
-        super(env, offset);
+        super(env, offset, null);
         this.pv = pv;
         this.qv = qv;
         this.rv = rv;
@@ -408,7 +406,7 @@ public class V3D_Triangle extends V3D_Area {
      */
     public V3D_Triangle(V3D_Point p, V3D_Point q, V3D_Point r,
             int oom, RoundingMode rm) {
-        super(p.env, new V3D_Vector(p.offset));
+        super(p.env, new V3D_Vector(p.offset), null);
         this.pv = new V3D_Vector(p.rel);
         this.qv = q.getVector(oom, rm).subtract(p.offset, oom, rm);
         this.rv = r.getVector(oom, rm).subtract(p.offset, oom, rm);
@@ -426,12 +424,12 @@ public class V3D_Triangle extends V3D_Area {
      */
     public V3D_Triangle(V3D_Point pt, V3D_Point p, V3D_Point q, V3D_Point r,
             int oom, RoundingMode rm) {
-        super(pt.env, new V3D_Vector(p.offset));
+        super(pt.env, new V3D_Vector(p.offset), null);
         this.pv = new V3D_Vector(p.rel);
         this.qv = q.getVector(oom, rm).subtract(p.offset, oom, rm);
         this.rv = r.getVector(oom, rm).subtract(p.offset, oom, rm);
-        this.pl = new V3D_Plane(pt, p.offset, p.getVector(oom, rm),
-                q.getVector(oom, rm), r.getVector(oom, rm), oom, rm);
+        //this.pl = new V3D_Plane(pt, p.offset, p.getVector(oom, rm),
+        //        q.getVector(oom, rm), r.getVector(oom, rm), oom, rm);
     }
 
     /**
@@ -902,31 +900,34 @@ public class V3D_Triangle extends V3D_Area {
     }
 
     /**
-     * @param l The line segment to check for containment.
+     * Intersected, but not on the edge.
+     *
+     * @param pt The point to intersect with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff l is contained.
+     * @return True iff pt is in the triangle and not on the edge.
      */
-    public boolean contains(V3D_LineSegment l, int oom, RoundingMode rm) {
-        if (intersects(l.getP(), oom, rm)) {
-            return intersects(l.getQ(oom, rm), oom, rm);
+    public boolean contains(V3D_Point pt, int oom, RoundingMode rm) {
+        if (intersects(pt, oom, rm)) {
+//            return !(getPQ(oom, rm).intersects(pt, oom, rm)
+//                    || getQR(oom, rm).intersects(pt, oom, rm)
+//                    || getRP(oom, rm).intersects(pt, oom, rm));
+            return !getEdges(oom, rm).values().parallelStream().anyMatch(x 
+                    -> x.intersects(pt, oom, rm));
         }
         return false;
     }
 
-    /**
-     * A triangle aligns with this if all points are aligned according to
-     * {@link #intersects0(uk.ac.leeds.ccg.v3d.geometry.V3D_Point, int, java.math.RoundingMode)}.
-     *
-     * @param t The triangle to check if it is in alignment.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff l is aligned with this.
-     */
-    public boolean contains(V3D_Triangle t, int oom, RoundingMode rm) {
-        return intersects(t.getP(oom, rm), oom, rm)
-                && intersects(t.getQ(oom, rm), oom, rm)
-                && intersects(t.getR(oom, rm), oom, rm);
+    @Override
+    public boolean contains(V3D_LineSegment ls, int oom, RoundingMode rm) {
+        return contains(ls.getP(), oom, rm)
+                && contains(ls.getQ(oom, rm), oom, rm);
+    }
+    
+    @Override
+    public boolean contains(V3D_Area a, int oom, RoundingMode rm) {
+        return a.getPoints(oom, rm).values().parallelStream().allMatch(x
+                -> contains(x, oom, rm));
     }
 
     @Override
@@ -2841,18 +2842,36 @@ public class V3D_Triangle extends V3D_Area {
         }
     }
 
+//    /**
+//     * @param t Another triangle to test for intersection.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode for any rounding.
+//     * @return {@code true} if t intersects this.
+//     */
+//    public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
+//        if (intersects(t.getAABB(oom, rm), oom, rm)
+//                && t.intersects(getAABB(oom, rm), oom, rm)) {
+//            return getEdges(oom, rm).values().parallelStream().anyMatch(x
+//                    -> intersects(x, oom, rm))
+//                    || t.getEdges(oom, rm).values().parallelStream().anyMatch(x
+//                            -> intersects(x, oom, rm));
+//        } else {
+//            return false;
+//        }
+//    }
+    
     /**
-     * @param t Another triangle to test for intersection.
+     * @param a An area to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if t intersects this.
      */
-    public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
-        if (intersects(t.getAABB(oom, rm), oom, rm)
-                && t.intersects(getAABB(oom, rm), oom, rm)) {
+    public boolean intersects(V3D_Area a, int oom, RoundingMode rm) {
+        if (intersects(a.getAABB(oom, rm), oom, rm)
+                && a.intersects(getAABB(oom, rm), oom, rm)) {
             return getEdges(oom, rm).values().parallelStream().anyMatch(x
                     -> intersects(x, oom, rm))
-                    || t.getEdges(oom, rm).values().parallelStream().anyMatch(x
+                    || a.getEdges(oom, rm).values().parallelStream().anyMatch(x
                             -> intersects(x, oom, rm));
         } else {
             return false;

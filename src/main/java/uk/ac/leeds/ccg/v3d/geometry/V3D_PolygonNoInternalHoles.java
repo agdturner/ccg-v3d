@@ -104,7 +104,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      */
     public V3D_PolygonNoInternalHoles(V3D_Point[] points, V3D_ConvexArea ch,
             int oom, RoundingMode rm) {
-        super(points[0].env, V3D_Vector.ZERO);
+        super(points[0].env, V3D_Vector.ZERO, null);
         this.points = new HashMap<>();
         this.ch = ch;
         edges = new HashMap<>();
@@ -225,7 +225,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     public V3D_PolygonNoInternalHoles(HashMap<Integer, V3D_Point> points,
             V3D_ConvexArea ch, HashMap<Integer, V3D_LineSegment> edges,
             HashMap<Integer, V3D_PolygonNoInternalHoles> externalHoles) {
-        super(ch.env, V3D_Vector.ZERO);
+        super(ch.env, V3D_Vector.ZERO, ch.pl);
         this.points = points;
         this.ch = ch;
         this.edges = edges;

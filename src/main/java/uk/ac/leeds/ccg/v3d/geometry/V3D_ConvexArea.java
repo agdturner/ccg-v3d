@@ -74,14 +74,15 @@ public class V3D_ConvexArea extends V3D_Area {
     /**
      * The collection of triangles.
      */
-    protected final ArrayList<V3D_Triangle> triangles;
+    protected final HashMap<Integer, V3D_Triangle> triangles;
 
     public V3D_ConvexArea(V3D_ConvexArea c) {
-        super(c.env, c.offset);
+        super(c.env, c.offset, c.pl);
         points = new HashMap<>();
         //c.points.forEach(x -> points.put(points.size(), new V3D_Point(x)));
-        triangles = new ArrayList<>();
-        c.triangles.forEach(x -> triangles.add(new V3D_Triangle(x)));
+        triangles = new HashMap<>();
+        c.triangles.values().forEach(x ->
+                triangles.put(triangles.size(), new V3D_Triangle(x)));
     }
     
     /**
@@ -92,7 +93,8 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param triangles A non-empty list of coplanar triangles.
      */
     public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Triangle... triangles) {
-        this(oom, rm, triangles[0].getPl(oom, rm).n, V3D_Triangle.getPoints(triangles, oom, rm));
+        this(oom, rm, triangles[0].getPl(oom, rm).n, V3D_Triangle.getPoints(
+                triangles, oom, rm));
     }
 
     /**
@@ -104,11 +106,12 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param points A non-empty list of points in a plane given by n.
      */
     public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Vector n, V3D_Point... points) {
-        super(points[0].env, points[0].offset);
+        super(points[0].env, points[0].offset, null);
         this.points = new HashMap<>();
-        this.triangles = new ArrayList<>();
+        this.triangles = new HashMap<>();
         // Get a list of unique points.
-        ArrayList<V3D_Point> pts = V3D_Point.getUnique(Arrays.asList(points), oom, rm);
+        ArrayList<V3D_Point> pts = V3D_Point.getUnique(
+                Arrays.asList(points), oom, rm);
         V3D_Vector v0 = new V3D_Vector(pts.get(0).rel);
         Math_BigRationalSqrt xmin = v0.dx;
         Math_BigRationalSqrt xmax = v0.dx;
@@ -239,10 +242,11 @@ public class V3D_ConvexArea extends V3D_Area {
         for (int i = 1; i < this.points.size() - 1; i++) {
             V3D_Point qt = this.points.get(i);
             V3D_Point rt = this.points.get(i + 1);
-            triangles.add(new V3D_Triangle(pt, qt, rt, oom, rm));
+            triangles.put(triangles.size(), new V3D_Triangle(pt, qt, rt, oom, rm));
+            //triangles.add(new V3D_Triangle(pt, qt, rt, oom, rm));
         }
 
-        if (triangles.size() == 0) {
+        if (triangles.isEmpty()) {
             int debug = 1;
         }
 
@@ -447,7 +451,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @return {@code true} if the point is aligned with any of the parts.
      */
     protected boolean isAligned(V3D_Point pt, int oom, RoundingMode rm) {
-        for (V3D_Triangle triangle : triangles) {
+        for (V3D_Triangle triangle : triangles.values()) {
             if (triangle.intersects0(pt, oom, rm)) {
                 return true;
             }
@@ -466,7 +470,7 @@ public class V3D_ConvexArea extends V3D_Area {
     @Override
     public BigRational getArea(int oom, RoundingMode rm) {
         BigRational sum = BigRational.ZERO;
-        for (var t : triangles) {
+        for (var t : triangles.values()) {
             sum = sum.add(t.getArea(oom, rm));
         }
         return sum;
@@ -481,7 +485,7 @@ public class V3D_ConvexArea extends V3D_Area {
     @Override
     public BigRational getPerimeter(int oom, RoundingMode rm) {
         BigRational sum = BigRational.ZERO;
-        for (var t : triangles) {
+        for (var t : triangles.values()) {
             sum = sum.add(t.getPerimeter(oom, rm));
         }
         return sum;
@@ -513,7 +517,7 @@ public class V3D_ConvexArea extends V3D_Area {
     public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, RoundingMode rm) {
         // Create a set all the intersecting triangles from this.
         List<V3D_Point> ts = new ArrayList<>();
-        for (V3D_Triangle t2 : triangles) {
+        for (V3D_Triangle t2 : triangles.values()) {
             V3D_FiniteGeometry i = t2.getIntersect(t, oom, rm);
             ts.addAll(Arrays.asList(i.getPointsArray(oom, rm)));
         }
@@ -644,6 +648,25 @@ public class V3D_ConvexArea extends V3D_Area {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean contains(V3D_Point pt, int oom, RoundingMode rm) {
+        if (intersects(pt, oom, rm)) {
+            return !getEdges(oom, rm).values().parallelStream().anyMatch(x 
+                    -> x.intersects(pt, oom, rm));
+        }
+        return false;
+    }
+
+    @Override
+    public boolean contains(V3D_LineSegment ls, int oom, RoundingMode rm) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean contains(V3D_Area a, int oom, RoundingMode rm) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     /**
@@ -948,7 +971,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @return {@code true} iff {@code this} is intersected by {@code p}.
      */
     public boolean intersects0(V3D_Point pt, int oom, RoundingMode rm) {
-        return triangles.parallelStream().anyMatch(x
+        return triangles.values().parallelStream().anyMatch(x
                 -> x.intersects(pt, oom, rm));
     }
     
@@ -963,7 +986,7 @@ public class V3D_ConvexArea extends V3D_Area {
     @Override
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
         if (getAABB(oom, rm).intersects(aabb, oom)) {
-            return triangles.parallelStream().anyMatch(x
+            return triangles.values().parallelStream().anyMatch(x
                     -> x.intersects(aabb, oom, rm));
         }
         return false;
@@ -991,7 +1014,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @return {@code true} iff {@code this} is intersected by {@code p}.
      */
     public boolean intersects0(V3D_Line l, int oom, RoundingMode rm) {
-        return triangles.parallelStream().anyMatch(x
+        return triangles.values().parallelStream().anyMatch(x
                 -> x.intersects(l, oom, rm));
     }
     
@@ -1017,7 +1040,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @return {@code true} iff {@code this} is intersected by {@code p}.
      */
     public boolean intersects0(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return triangles.parallelStream().anyMatch(x
+        return triangles.values().parallelStream().anyMatch(x
                 -> x.intersects(l, oom, rm));
     }
 
@@ -1043,7 +1066,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @return {@code true} iff {@code this} is intersected by {@code t}.
      */
     public boolean intersects0(V3D_Triangle t, int oom, RoundingMode rm) {
-        return triangles.parallelStream().anyMatch(x
+        return triangles.values().parallelStream().anyMatch(x
                 -> x.intersects(t, oom, rm));
     }
 
@@ -1069,7 +1092,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @return {@code true} iff {@code this} is intersected by {@code r}.
      */
     public boolean intersects0(V3D_Rectangle r, int oom, RoundingMode rm) {
-        return triangles.parallelStream().anyMatch(x
+        return triangles.values().parallelStream().anyMatch(x
                 -> r.intersects(x, oom, rm));
     }
 
@@ -1096,9 +1119,9 @@ public class V3D_ConvexArea extends V3D_Area {
      * @return {@code true} iff {@code this} is intersected by {@code ch.
      */
     public boolean intersects0(V3D_ConvexArea ch, int oom, RoundingMode rm) {
-        return triangles.parallelStream().anyMatch(x
+        return triangles.values().parallelStream().anyMatch(x
                 -> ch.intersects0(x, oom, rm))
-                || ch.triangles.parallelStream().anyMatch(x
+                || ch.triangles.values().parallelStream().anyMatch(x
                         -> intersects0(x, oom, rm));
     }
 

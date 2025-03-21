@@ -93,7 +93,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     public V3D_ConvexArea_d(double epsilon,
             V3D_Triangle_d... triangles) {
         this(triangles[0].pl.n, epsilon,
-                V3D_Triangle_d.getPoints(triangles));
+                V3D_Triangle_d.getPoints(triangles, epsilon));
     }
 
     /**
@@ -120,155 +120,146 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
             double epsilon, V3D_Point_d... points) {
         super(points[0].env, points[0].offset, new V3D_Plane_d(points[0], n));
         this.points = new HashMap<>();
-       this.triangles = new HashMap<>();
-//        // Get a list of unique points.
-//        ArrayList<V3D_Point_d> pts = V3D_Point_d.getUnique(
-//               this.points, epsilon);
-//        V3D_Vector_d v0 = new V3D_Vector_d(pts.get(0).rel);
-//        double xmin = v0.dx;
-//        double xmax = v0.dx;
-//        double ymin = v0.dy;
-//        double ymax = v0.dy;
-//        double zmin = v0.dz;
-//        double zmax = v0.dz;
-//        int xminIndex = 0;
-//        int xmaxIndex = 0;
-//        int yminIndex = 0;
-//        int ymaxIndex = 0;
-//        int zminIndex = 0;
-//        int zmaxIndex = 0;
-//        for (int i = 1; i < pts.size(); i++) {
-//            V3D_Point_d pt = pts.get(i);
-//            double x = pt.rel.dx;
-//            double y = pt.rel.dy;
-//            double z = pt.rel.dz;
-//            if (x < xmin) {
-//                xmin = x;
-//                xminIndex = i;
-//            }
-//            if (x > xmax) {
-//                xmax = x;
-//                xmaxIndex = i;
-//            }
-//            if (y < ymin) {
-//                ymin = y;
-//                yminIndex = i;
-//            }
-//            if (y > ymax) {
-//                ymax = y;
-//                ymaxIndex = i;
-//            }
-//            if (z < zmin) {
-//                zmin = z;
-//                zminIndex = i;
-//            }
-//            if (z > zmax) {
-//                zmax = z;
-//                zmaxIndex = i;
-//            }
-//        }
-//        V3D_Point_d xminp = pts.get(xminIndex);
-//        V3D_Point_d xmaxp = pts.get(xmaxIndex);
-//        V3D_Point_d yminp = pts.get(yminIndex);
-//        V3D_Point_d ymaxp = pts.get(ymaxIndex);
-//        V3D_Point_d zminp = pts.get(zminIndex);
-//        V3D_Point_d zmaxp = pts.get(zmaxIndex);
-//        this.offset = xminp.offset;
-//        if (xminIndex == xmaxIndex) {
-//            V3D_LineSegment_d yd = new V3D_LineSegment_d(ymaxp, yminp);
-//            V3D_LineSegment_d zd = new V3D_LineSegment_d(zmaxp, zminp);
-//            double ydl2 = yd.getLength2();
-//            double zdl2 = zd.getLength2();
-//            if (ydl2 > zdl2) {
-//                this.points.put(this.points.size(), yminp);
-//                this.points.put(this.points.size(), ymaxp);
-//                compute(pts, yminp, ymaxp, n, 1, epsilon);
-//            } else {
-//                this.points.put(this.points.size(), zminp);
-//                this.points.put(this.points.size(), zmaxp);
-//                compute(pts, zminp, zmaxp, n, 1, epsilon);
-//            }
-//        } else if (yminIndex == ymaxIndex) {
-//            V3D_LineSegment_d xd = new V3D_LineSegment_d(xmaxp, xminp);
-//            V3D_LineSegment_d zd = new V3D_LineSegment_d(zmaxp, zminp);
-//            double xdl2 = xd.getLength2();
-//            double zdl2 = zd.getLength2();
-//            if (xdl2 > zdl2) {
-//                this.points.put(this.points.size(), xminp);
-//                this.points.put(this.points.size(), xmaxp);
-//                compute(pts, xminp, xmaxp, n, 1, epsilon);
-//            } else {
-//                this.points.put(this.points.size(), zminp);
-//                this.points.put(this.points.size(), zmaxp);
-//                compute(pts, zminp, zmaxp, n, 1, epsilon);
-//            }
-//        } else if (zminIndex == zmaxIndex) {
-//            V3D_LineSegment_d xd = new V3D_LineSegment_d(xmaxp, xminp);
-//            V3D_LineSegment_d yd = new V3D_LineSegment_d(ymaxp, yminp);
-//            double xdl2 = xd.getLength2();
-//            double ydl2 = yd.getLength2();
-//            if (xdl2 > ydl2) {
-//                this.points.put(this.points.size(), xminp);
-//                this.points.put(this.points.size(), xmaxp);
-//                compute(pts, xminp, xmaxp, n, 1, epsilon);
-//            } else {
-//                this.points.put(this.points.size(), yminp);
-//                this.points.put(this.points.size(), ymaxp);
-//                compute(pts, yminp, ymaxp, n, 1, epsilon);
-//            }
-//        } else {
-//            V3D_LineSegment_d xd = new V3D_LineSegment_d(xmaxp, xminp);
-//            V3D_LineSegment_d yd = new V3D_LineSegment_d(ymaxp, yminp);
-//            V3D_LineSegment_d zd = new V3D_LineSegment_d(zmaxp, zminp);
-//            double xdl2 = xd.getLength2();
-//            double ydl2 = yd.getLength2();
-//            double zdl2 = zd.getLength2();
-//            if (xdl2 > ydl2) {
-//                if (xdl2 > zdl2) {
-//                    this.points.put(this.points.size(), xminp);
-//                    this.points.put(this.points.size(), xmaxp);
-//                    compute(pts, xminp, xmaxp, n, 1, epsilon);
-//                } else {
-//                    this.points.put(this.points.size(), zminp);
-//                    this.points.put(this.points.size(), zmaxp);
-//                    compute(pts, zminp, zmaxp, n, 1, epsilon);
-//                }
-//            } else {
-//                if (ydl2 > zdl2) {
-//                    this.points.put(this.points.size(), yminp);
-//                    this.points.put(this.points.size(), ymaxp);
-//                    compute(pts, yminp, ymaxp, n, 1, epsilon);
-//                } else {
-//                    this.points.put(this.points.size(), zminp);
-//                    this.points.put(this.points.size(), zmaxp);
-//                    compute(pts, zminp, zmaxp, n, 1, epsilon);
-//                }
-//            }
-//        }
-//        this.points = V3D_Point_d.getUnique(this.points, epsilon);
-//
-//        if (this.points.size() < 3) {
-//            int debug = 1;
-//        }
-//
-//        V3D_Point_d pt = this.points.get(0);
-//        for (int i = 1; i < this.points.size() - 1; i++) {
-//            V3D_Point_d qt = this.points.get(i);
-//            V3D_Point_d rt = this.points.get(i + 1);
-//            
-//            try {
-//                triangles.put(triangles.size(), new V3D_Triangle_d(pt, qt, rt));
-//            } catch(RuntimeException e) {
-//                // Points are collinear!
-//                //triangles.add(new V3D_Triangle_d(pt, qt, rt));
-//                System.out.println("Due to imprecision, triangle points are collinear!");
-//                
-//            }
-//        }
-//
-//        if (triangles.isEmpty()) {
-//            int debug = 1;
-//        }
+        this.triangles = new HashMap<>();
+        // Get a list of unique points.
+        ArrayList<V3D_Point_d> pts = V3D_Point_d.getUnique(
+               Arrays.asList(points), epsilon);
+        V3D_Vector_d v0 = new V3D_Vector_d(pts.get(0).rel);
+        double xmin = v0.dx;
+        double xmax = v0.dx;
+        double ymin = v0.dy;
+        double ymax = v0.dy;
+        double zmin = v0.dz;
+        double zmax = v0.dz;
+        int xminIndex = 0;
+        int xmaxIndex = 0;
+        int yminIndex = 0;
+        int ymaxIndex = 0;
+        int zminIndex = 0;
+        int zmaxIndex = 0;
+        for (int i = 1; i < pts.size(); i++) {
+            V3D_Point_d pt = pts.get(i);
+            double x = pt.rel.dx;
+            double y = pt.rel.dy;
+            double z = pt.rel.dz;
+            if (x < xmin) {
+                xmin = x;
+                xminIndex = i;
+            }
+            if (x > xmax) {
+                xmax = x;
+                xmaxIndex = i;
+            }
+            if (y < ymin) {
+                ymin = y;
+                yminIndex = i;
+            }
+            if (y > ymax) {
+                ymax = y;
+                ymaxIndex = i;
+            }
+            if (z < zmin) {
+                zmin = z;
+                zminIndex = i;
+            }
+            if (z > zmax) {
+                zmax = z;
+                zmaxIndex = i;
+            }
+        }
+        V3D_Point_d xminp = pts.get(xminIndex);
+        V3D_Point_d xmaxp = pts.get(xmaxIndex);
+        V3D_Point_d yminp = pts.get(yminIndex);
+        V3D_Point_d ymaxp = pts.get(ymaxIndex);
+        V3D_Point_d zminp = pts.get(zminIndex);
+        V3D_Point_d zmaxp = pts.get(zmaxIndex);
+        this.offset = xminp.offset;
+        if (xminIndex == xmaxIndex) {
+            V3D_LineSegment_d yd = new V3D_LineSegment_d(ymaxp, yminp);
+            V3D_LineSegment_d zd = new V3D_LineSegment_d(zmaxp, zminp);
+            double ydl2 = yd.getLength2();
+            double zdl2 = zd.getLength2();
+            if (ydl2 > zdl2) {
+                this.points.put(this.points.size(), yminp);
+                this.points.put(this.points.size(), ymaxp);
+                compute(pts, yminp, ymaxp, n, 1, epsilon);
+            } else {
+                this.points.put(this.points.size(), zminp);
+                this.points.put(this.points.size(), zmaxp);
+                compute(pts, zminp, zmaxp, n, 1, epsilon);
+            }
+        } else if (yminIndex == ymaxIndex) {
+            V3D_LineSegment_d xd = new V3D_LineSegment_d(xmaxp, xminp);
+            V3D_LineSegment_d zd = new V3D_LineSegment_d(zmaxp, zminp);
+            double xdl2 = xd.getLength2();
+            double zdl2 = zd.getLength2();
+            if (xdl2 > zdl2) {
+                this.points.put(this.points.size(), xminp);
+                this.points.put(this.points.size(), xmaxp);
+                compute(pts, xminp, xmaxp, n, 1, epsilon);
+            } else {
+                this.points.put(this.points.size(), zminp);
+                this.points.put(this.points.size(), zmaxp);
+                compute(pts, zminp, zmaxp, n, 1, epsilon);
+            }
+        } else if (zminIndex == zmaxIndex) {
+            V3D_LineSegment_d xd = new V3D_LineSegment_d(xmaxp, xminp);
+            V3D_LineSegment_d yd = new V3D_LineSegment_d(ymaxp, yminp);
+            double xdl2 = xd.getLength2();
+            double ydl2 = yd.getLength2();
+            if (xdl2 > ydl2) {
+                this.points.put(this.points.size(), xminp);
+                this.points.put(this.points.size(), xmaxp);
+                compute(pts, xminp, xmaxp, n, 1, epsilon);
+            } else {
+                this.points.put(this.points.size(), yminp);
+                this.points.put(this.points.size(), ymaxp);
+                compute(pts, yminp, ymaxp, n, 1, epsilon);
+            }
+        } else {
+            V3D_LineSegment_d xd = new V3D_LineSegment_d(xmaxp, xminp);
+            V3D_LineSegment_d yd = new V3D_LineSegment_d(ymaxp, yminp);
+            V3D_LineSegment_d zd = new V3D_LineSegment_d(zmaxp, zminp);
+            double xdl2 = xd.getLength2();
+            double ydl2 = yd.getLength2();
+            double zdl2 = zd.getLength2();
+            if (xdl2 > ydl2) {
+                if (xdl2 > zdl2) {
+                    this.points.put(this.points.size(), xminp);
+                    this.points.put(this.points.size(), xmaxp);
+                    compute(pts, xminp, xmaxp, n, 1, epsilon);
+                } else {
+                    this.points.put(this.points.size(), zminp);
+                    this.points.put(this.points.size(), zmaxp);
+                    compute(pts, zminp, zmaxp, n, 1, epsilon);
+                }
+            } else {
+                if (ydl2 > zdl2) {
+                    this.points.put(this.points.size(), yminp);
+                    this.points.put(this.points.size(), ymaxp);
+                    compute(pts, yminp, ymaxp, n, 1, epsilon);
+                } else {
+                    this.points.put(this.points.size(), zminp);
+                    this.points.put(this.points.size(), zmaxp);
+                    compute(pts, zminp, zmaxp, n, 1, epsilon);
+                }
+            }
+        }
+
+        if (this.points.size() < 3) {
+            int debug = 1;
+        }
+
+        V3D_Point_d pt = this.points.get(0);
+        for (int i = 1; i < this.points.size() - 1; i++) {
+            V3D_Point_d qt = this.points.get(i);
+            V3D_Point_d rt = this.points.get(i + 1);
+            triangles.put(triangles.size(), new V3D_Triangle_d(pt, qt, rt));
+        }
+
+        if (triangles.isEmpty()) {
+            int debug = 1;
+        }
     }
 
     /**

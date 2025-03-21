@@ -36,7 +36,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * The id of the area.
      */
     protected final int id;
-    
+
     /**
      * For storing the plane of the area.
      */
@@ -51,18 +51,20 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * The RoundingMode used for the calculation of {@link #pl}.
      */
     public RoundingMode plrm;
-    
+
     /**
      * Creates a new instance with offset V3D_Vector.ZERO.
-     * 
+     *
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
+     * @param pl What {@link #pl} is set to.
      */
-    public V3D_Area(V3D_Environment env, V3D_Vector offset) {
+    public V3D_Area(V3D_Environment env, V3D_Vector offset, V3D_Plane pl) {
         super(env, offset);
         this.id = env.getNextID();
+        this.pl = pl;
     }
-    
+
     /**
      * For storing the points.
      */
@@ -72,29 +74,30 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * For storing the edges.
      */
     protected HashMap<Integer, V3D_LineSegment> edges;
-    
+
     /**
      * For getting the points of a shape.
-     * 
+     *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      * @return A HashMap of the points with integer identifier keys.
      */
-    public abstract HashMap<Integer, V3D_Point> getPoints(int oom, 
+    public abstract HashMap<Integer, V3D_Point> getPoints(int oom,
             RoundingMode rm);
-    
+
     /**
      * For getting the edges of a shape.
-     * 
+     *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      * @return A HashMap of the edges with integer identifier keys.
      */
-    public abstract HashMap<Integer, V3D_LineSegment> getEdges(int oom, 
+    public abstract HashMap<Integer, V3D_LineSegment> getEdges(int oom,
             RoundingMode rm);
-    
+
     /**
      * For calculating and returning the perimeter.
+     *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The Perimeter.
@@ -103,12 +106,13 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
 
     /**
      * For calculating and returning the area.
+     *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The area.
      */
     public abstract BigRational getArea(int oom, RoundingMode rm);
-    
+
     /**
      * @param pt The point to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
@@ -140,7 +144,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
             Collection<V3D_Area> as) {
         return as.parallelStream().anyMatch(x -> x.intersects(p, oom, rm));
     }
-    
+
     /**
      * @param aabb The Axis Aligned Bounding Box to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
@@ -148,7 +152,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @return {@code true} if pt intersects this.
      */
     public abstract boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm);
-    
+
     /**
      * @param l The line to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
@@ -166,22 +170,25 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
     public abstract boolean intersects(V3D_LineSegment l, int oom, RoundingMode rm);
 
     /**
-     * @param a The area to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if l intersects this.
+     * @param a An area to test for intersection.
+     * @return {@code true} if {@code this} is intersected by {@code a}.
      */
-//    public abstract boolean intersects(V3D_Area a, int oom, RoundingMode rm);
+    public boolean intersects(V3D_Area a, int oom, RoundingMode rm) {
+        return a.getPoints(oom, rm).values().parallelStream().anyMatch(x 
+            -> a.intersects(x, oom, rm));
+    }
 
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @param l A line segment to test for intersection with any of the areas
-     * in as.
+     * @param l A line segment to test for intersection with any of the areas in
+     * as.
      * @param as The areas to test for intersection with l.
      * @return {@code true} if {@code this} is intersected by {@code l}.
      */
-    public static boolean intersects(int oom, RoundingMode rm, 
+    public static boolean intersects(int oom, RoundingMode rm,
             V3D_LineSegment l, V3D_Area... as) {
         return intersects(oom, rm, l, Arrays.asList(as));
     }
@@ -189,8 +196,8 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @param l A line segment to test for intersection with any of the areas
-     * in as.
+     * @param l A line segment to test for intersection with any of the areas in
+     * as.
      * @param as The areas to test for intersection with l.
      * @return {@code true} if {@code this} is intersected by {@code l}.
      */
@@ -202,32 +209,71 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @param a An area to test for intersection.
      * @param as The areas to test for intersection with a.
      * @return {@code true} if {@code this} is intersected by {@code a}.
      */
-    public static boolean intersects(int oom, RoundingMode rm, V3D_Area a,
-            V3D_Area... as) {
-        return intersects(oom, rm, a, Arrays.asList(as));
+    public boolean intersects(int oom, RoundingMode rm, V3D_Area... as) {
+        return intersects(oom, rm, Arrays.asList(as));
     }
 
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @param a An area to test for intersection.
      * @param as The areas to test for intersection with a.
      * @return {@code true} if {@code this} is intersected by {@code a}.
      */
-    public static boolean intersects(int oom, RoundingMode rm, V3D_Area a,
-            Collection<V3D_Area> as) {
-        return as.parallelStream().anyMatch(x -> x.intersects(a, oom, rm));
-    }
-    
-    public boolean intersects(V3D_Area a, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException();
+    public boolean intersects(int oom, RoundingMode rm, Collection<V3D_Area> as) {
+        return as.parallelStream().anyMatch(x -> intersects(x, oom, rm));
     }
 
-    
+    /**
+     * Identify if {@code this} contains {@code pt}. Containment excludes the
+     * edge.
+     *
+     * @param pt The point to test for containment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} if {@code this} contains {@code pt}.
+     */
+    //public abstract boolean contains(V3D_Point pt, int oom, RoundingMode rm);
+    public boolean contains(V3D_Point pt, int oom, RoundingMode rm) {
+        if (intersects(pt, oom, rm)) {
+            return !getEdges(oom, rm).values().parallelStream().anyMatch(x 
+                    -> x.intersects(pt, oom, rm));
+        }
+        return false;
+    }
+
+    /**
+     * Identify if {@code this} contains {@code ls}. Containment excludes the
+     * edge.
+     *
+     * @param ls The line segments to test for containment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} if {@code this} contains {@code ls}.
+     */
+    //public abstract boolean contains(V3D_LineSegment ls, int oom, RoundingMode rm);
+    public boolean contains(V3D_LineSegment ls, int oom, RoundingMode rm) {
+        return contains(ls.getP(), oom, rm)
+                && contains(ls.getQ(oom, rm), oom, rm);
+    }
+
+    /**
+     * Identify if {@code this} contains {@code a}. Containment excludes the
+     * edge.
+     *
+     * @param a The area to test for containment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} if {@code this} contains {@code a}.
+     */
+    //public abstract boolean contains(V3D_Area a, int oom, RoundingMode rm);
+    public boolean contains(V3D_Area a, int oom, RoundingMode rm) {
+        return a.getPoints(oom, rm).values().parallelStream().allMatch(x
+                -> contains(x, oom, rm));
+    }   
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
@@ -245,14 +291,14 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
         initPl(oom, rm);
         return pl;
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * For initialising {@link #pl}.
+     * @param rm The RoundingMode if rounding is needed. For initialising
+     * {@link #pl}.
      */
     protected abstract void initPl(int oom, RoundingMode rm);
-    
+
     /**
      * @param pt The normal will point to this side of the plane.
      * @param oom The Order of Magnitude for the precision.
@@ -275,8 +321,8 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
     /**
      * @param pt The normal will point to this side of the plane.
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * For initialising {@link #pl}.
+     * @param rm The RoundingMode if rounding is needed. For initialising
+     * {@link #pl}.
      */
     protected abstract void initPl(V3D_Point pt, int oom, RoundingMode rm);
 }
