@@ -15,41 +15,42 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
+import java.util.Arrays;
+import java.util.Collection;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
-import uk.ac.leeds.ccg.v3d.geometry.*;
 
 /**
  * 3D representation of a finite length line (a line segment). The line begins
  * at the point of {@link #l} and ends at the point {@link #qv}. The "*" denotes
  * a point in 3D and the line is shown with a line of "e" symbols in the
  * following depiction: {@code
- * z
- * y           -
- * +          /                * pv=<x0,y0,z0>
- * |         /                e
- * |        /                e
- * |    z0-/                e
- * |      /                e
- * |     /               e
- * |    /               e
- * |   /               e
- * y0-|  /               e
- * | /               e
- * |/         x1    e
+ *                                       z
+ *                          y           -
+ *                          +          /                * pv=<x0,y0,z0>
+ *                          |         /                e
+ *                          |        /                e
+ *                          |    z0-/                e
+ *                          |      /                e
+ *                          |     /               e
+ *                          |    /               e
+ *                          |   /               e
+ *                       y0-|  /               e
+ *                          | /               e
+ *                          |/         x1    e
  * x - ---------------------|-----------/---e---/---- + x
- * /|              e   x0
- * / |-y1          e
- * /  |           e
- * /   |          e
- * z1-/    |         e
- * /     |        e
- * /      |       * qv=<x1,y1,z1>
- * /       |
- * /        |
- * +         -
- * z          y
+ *                         /|              e   x0
+ *                        / |-y1          e
+ *                       /  |           e
+ *                      /   |          e
+ *                  z1-/    |         e
+ *                    /     |        e
+ *                   /      |       * qv=<x1,y1,z1>
+ *                  /       |
+ *                 /        |
+ *                +         -
+ *               z          y
  * }
  *
  * @author Andy Turner
@@ -104,6 +105,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
     /**
      * Create a new instance. {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
+     * @param env What {@link #env} is set to.
      * @param p What the point of {@link #l} is cloned from.
      * @param q What {@link #qv} is cloned from.
      */
@@ -114,6 +116,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p What the point of {@link #l} is cloned from.
      * @param q What {@link #qv} is cloned from.
@@ -330,8 +333,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} iff {@code this} is equal to {@code l}. This ignores
      * the order of the point of {@link #l} and {@link #qv}.
      */
-    public boolean equalsIgnoreDirection(double epsilon,
-            V3D_LineSegment_d l) {
+    public boolean equalsIgnoreDirection(double epsilon, V3D_LineSegment_d l) {
 //        if (l == null) {
 //            return false;
 //        }
@@ -498,6 +500,85 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
             }
         }
         return false;
+    }
+    
+    /**
+     * NB. The intersection is computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int, java.math.RoundingMode)}.
+     *
+     * @param l The V3D_Line to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public boolean intersects(V3D_Line_d l, double epsilon) {
+        return getIntersect(l, epsilon) != null;
+    }
+
+    /**
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @param l A line to test for with any of the lines in ls.
+     * @param ls The other lines to test for intersection with l.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     */
+    public static boolean intersects(double epsilon, 
+            V3D_LineSegment_d l, V3D_LineSegment_d... ls) {
+        return intersects(epsilon, l, Arrays.asList(ls));
+    }
+
+    /**
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @param l A line to test for with any of the lines in ls.
+     * @param ls The other lines to test for intersection with l.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     */
+    public static boolean intersects(double epsilon,
+            V3D_LineSegment_d l, Collection<V3D_LineSegment_d> ls) {
+        return ls.parallelStream().anyMatch(x -> x.intersects(l, epsilon));
+    }
+
+    /**
+     * @param p A point to test for intersection.
+     * @param ls The lines to test for intersection with p.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     */
+    public static boolean intersects(double epsilon, V3D_Point_d p,
+            V3D_LineSegment_d... ls) {
+        return intersects(epsilon, p, Arrays.asList(ls));
+    }
+
+    /**
+     * @param p A point to test for intersection.
+     * @param ls The lines to test for intersection with p.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     */
+    public static boolean intersects(double epsilon, V3D_Point_d p,
+            Collection<V3D_LineSegment_d> ls) {
+        return ls.parallelStream().anyMatch(x -> x.intersects(p, epsilon));
+    }
+
+    /**
+     * If there is intersection with the Axis Aligned Bounding Box, then the 
+     * intersection is computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment, int, java.math.RoundingMode) }
+     *
+     * @param l The V3D_Line to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public boolean intersects(V3D_LineSegment_d l, double epsilon) {
+        if (intersects(l.getAABB(), epsilon)) {
+            return getIntersect(l, epsilon) != null;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -821,6 +902,8 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * normal vector as the vector of the line.
      *
      * @param pt The point.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} If pt is in line with this.
      */
     public boolean isAligned(V3D_Point_d pt, double epsilon) {
@@ -835,6 +918,8 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * end points of l are in line with this as according to
      * {@link #isAligned(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Point_d)}.
      *
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @param l The line segment.
      * @return {@code true} If pt is in line with this.
      */
@@ -1203,6 +1288,8 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      *
      * @param pt The point to test if it is between {@link #qv} and the point of
      * {@link #l}.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff pt lies between the planes at the end of the
      * line segment.
      */

@@ -517,6 +517,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * equal.
      * @return A point or line segment.
      */
+    @Override
     public boolean intersects(V3D_Point_d pt, double epsilon) {
         if (getAABB().intersects(pt)) {
             if (pl.intersects(epsilon, pt)) {
@@ -1204,8 +1205,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
                             if (gpql.intersects(gqrp, epsilon)) {
                                 return gpql;
                             } else {
-                                return new V3D_ConvexArea_d(
-                                        pl.n, epsilon, gpql.getP(),
+                                return new V3D_ConvexArea_d(epsilon, 
+                                        pl.n, gpql.getP(),
                                         gpql.getQ(), gqrp);
                             }
                         } else if (grp instanceof V3D_Point_d grpp) {
@@ -1221,8 +1222,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
                                 case 3 ->
                                     new V3D_Triangle_d(pts2.get(0), pts2.get(1), pts2.get(2));
                                 default ->
-                                    new V3D_ConvexArea_d(
-                                    pl.n, epsilon, gpql.getP(),
+                                    new V3D_ConvexArea_d(epsilon, 
+                                    pl.n, gpql.getP(),
                                     gpql.getQ(), gqrp, grpp);
                             };
                         } else {
@@ -1960,7 +1961,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
                 i++;
             }
             V3D_Plane_d pl = new V3D_Plane_d(pts[0], pts[1], pts[2]);
-            return new V3D_ConvexArea_d(pl.n, epsilon, pts);
+            return new V3D_ConvexArea_d(epsilon, pl.n, pts);
         }
     }
 
@@ -2027,8 +2028,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
         V3D_Point_d cdp = cd.getP();
         if (pt == null) {
             V3D_Triangle_d t = new V3D_Triangle_d(pl, cd, abp);
-            return new V3D_ConvexArea_d(t.pl.getN(),
-                    epsilon, abp, cdp, ab.getQ(), cd.getQ());
+            return new V3D_ConvexArea_d(epsilon, t.pl.getN(),
+                    abp, cdp, ab.getQ(), cd.getQ());
         } else {
             if (abp.equals(epsilon, pt)) {
                 if (cdp.equals(epsilon, pt)) {
@@ -2485,6 +2486,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
         }
     }
     
+    @Override
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
         // Return true if any edge intersects
         return getEdges().values().parallelStream().anyMatch(x
@@ -2569,6 +2571,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * equal.
      * @return True iff pt is in the triangle and not on the edge.
      */
+    @Override
     public boolean contains(V3D_Point_d pt, double epsilon) {
         if (intersects(pt, epsilon)) {
 //            return !(getPQ().intersects(pt, epsilon)
@@ -2586,6 +2589,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * equal.
      * @return True iff ls is contained in the triangle.
      */
+    @Override
     public boolean contains(V3D_LineSegment_d ls, double epsilon) {
         return contains(ls.getP(), epsilon)
                 && contains(ls.getQ(), epsilon);

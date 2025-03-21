@@ -1082,8 +1082,9 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
      * Useful in calculating the intersection of a tetrahedron and a plane. If
      * ab, cd and ef are equal then the line segment is returned. If there are 3
      * unique points then a triangle is returned. If there are 4 or more unique
-     * points, then a V3D_ConvexHullCoplanar_d is returned.
+     * points, then a V3D_ConvexArea_d is returned.
      *
+     * @param pl For the normal of any constructed V3D_ConvexArea_d.
      * @param ab A line segment.
      * @param cd A line segment.
      * @param ef A line segment.
@@ -1127,7 +1128,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
                     pts[i] = p;
                     i++;
                 }
-                return new V3D_ConvexArea_d(pl.n, epsilon, pts);
+                return new V3D_ConvexArea_d(epsilon, pl.n, pts);
             }
 
         }
@@ -1377,6 +1378,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
 //                                                }
 //                                            } else {
 //                                                if (itqpl.isOnSameSide(tr, itp, oom)) {
+
           
             ////                                                    V3D_LineSegment_d ititpq = (V3D_LineSegment_d) it.getIntersect(t.pl.getPQ(), oom);
 ////                                                    return V3D_Triangle_d.getGeometry(ititpq, t.pl.getQR());
@@ -1447,6 +1449,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
 //                 * intersections are needed to derive the final shape.
 //                 */
 //                throw new UnsupportedOperationException();
+
         
     
 

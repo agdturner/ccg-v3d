@@ -105,8 +105,9 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param n The normal for the plane.
      * @param points A non-empty list of points in a plane given by n.
      */
-    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Vector n, V3D_Point... points) {
-        super(points[0].env, points[0].offset, null);
+    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Vector n, 
+            V3D_Point... points) {
+        super(points[0].env, points[0].offset, new V3D_Plane(points[0], n));
         this.points = new HashMap<>();
         this.triangles = new HashMap<>();
         // Get a list of unique points.
@@ -260,7 +261,8 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param gs The input convex hulls.
      */
     public V3D_ConvexArea(int oom, RoundingMode rm, V3D_ConvexArea... gs) {
-        this(oom, rm, gs[0].triangles.get(0).getPl(oom, rm).n, V3D_FiniteGeometry.getPoints(gs, oom, rm));
+        this(oom, rm, gs[0].triangles.get(0).getPl(oom, rm).n, 
+                V3D_FiniteGeometry.getPoints(gs, oom, rm));
     }
 
     /**
@@ -272,8 +274,10 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param t The triangle used to set the normal and to add to the convex
      * hull with ch.
      */
-    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_ConvexArea ch, V3D_Triangle t) {
-        this(oom, rm, ch.triangles.get(0).getPl(oom, rm).n, V3D_FiniteGeometry.getPoints(oom, rm, ch, t));
+    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_ConvexArea ch, 
+            V3D_Triangle t) {
+        this(oom, rm, ch.triangles.get(0).getPl(oom, rm).n, 
+                V3D_FiniteGeometry.getPoints(oom, rm, ch, t));
     }
     
     @Override
@@ -1000,6 +1004,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff {@code this} is intersected by {@code l}.
      */
+    @Override
     public boolean intersects(V3D_Line l, int oom, RoundingMode rm) {
         return l.intersects(getAABB(oom, rm), oom, rm)
                 && intersects0(l, oom, rm);
@@ -1026,6 +1031,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff {@code this} is intersected by {@code l}.
      */
+    @Override
     public boolean intersects(V3D_LineSegment l, int oom, RoundingMode rm) {
         return l.intersects(getAABB(oom, rm), oom, rm)
                 && intersects0(l, oom, rm);

@@ -90,34 +90,21 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * equal.
      * @param triangles A non-empty list of coplanar triangles.
      */
-    public V3D_ConvexArea_d(double epsilon,
-            V3D_Triangle_d... triangles) {
-        this(triangles[0].pl.n, epsilon,
+    public V3D_ConvexArea_d(double epsilon, V3D_Triangle_d... triangles) {
+        this(epsilon, triangles[0].pl.n, 
                 V3D_Triangle_d.getPoints(triangles, epsilon));
     }
-
+    
     /**
      * Create a new instance.
      *
-     * @param pl The plane.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @param points A non-empty list of points in a plane given by n.
-     */
-    public V3D_ConvexArea_d(V3D_Plane_d pl, double epsilon,
-            V3D_Point_d... points) {
-        this(pl.n, epsilon, points);
-    }
-    /**
-     * Create a new instance.
-     *
      * @param n The normal for the plane.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      * @param points A non-empty list of points in a plane given by n.
      */
-    public V3D_ConvexArea_d(V3D_Vector_d n, 
-            double epsilon, V3D_Point_d... points) {
+    public V3D_ConvexArea_d(double epsilon, V3D_Vector_d n, 
+            V3D_Point_d... points) {
         super(points[0].env, points[0].offset, new V3D_Plane_d(points[0], n));
         this.points = new HashMap<>();
         this.triangles = new HashMap<>();
@@ -270,7 +257,8 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * @param gs The input convex hulls.
      */
     public V3D_ConvexArea_d(double epsilon, V3D_ConvexArea_d... gs) {
-        this(gs[0].triangles.get(0).pl.n, epsilon, V3D_FiniteGeometry_d.getPoints(gs));
+        this(epsilon, gs[0].triangles.get(0).pl.n, 
+                V3D_FiniteGeometry_d.getPoints(gs));
     }
 
     /**
@@ -282,11 +270,17 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      */
-    public V3D_ConvexArea_d(V3D_ConvexArea_d ch,
-            V3D_Triangle_d t, double epsilon) {
-        this(ch.triangles.get(0).pl.n, epsilon, V3D_FiniteGeometry_d.getPoints(ch, t));
+    public V3D_ConvexArea_d(double epsilon, V3D_ConvexArea_d ch,
+            V3D_Triangle_d t) {
+        this(epsilon, ch.triangles.get(0).pl.n, 
+                V3D_FiniteGeometry_d.getPoints(ch, t));
     }
 
+    @Override
+    public HashMap<Integer, V3D_Point_d> getPoints() {
+        throw new UnsupportedOperationException();
+    }
+    
     @Override
     public V3D_Point_d[] getPointsArray() {
         int np = points.size();
@@ -307,11 +301,6 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
 //            edges = new HashMap<>();
 //        }
 //        return edges;
-    }
-    
-    @Override
-    public HashMap<Integer, V3D_Point_d> getPoints() {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -579,7 +568,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
         if (tsu.isEmpty()) {
             return null;
         } else {
-            return new V3D_ConvexArea_d(t.pl.n, epsilon,
+            return new V3D_ConvexArea_d(epsilon, t.pl.n, 
                     tsu.toArray(V3D_Point_d[]::new)).simplify(epsilon);
         }
 //        switch (size) {
@@ -1003,7 +992,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
                     return new V3D_LineSegment_d(epsilon, pts);
                 } else {
                     pl = new V3D_Plane_d(ip, iq, ir);
-                    return new V3D_ConvexArea_d(pl.n, epsilon, pts);
+                    return new V3D_ConvexArea_d(epsilon, pl.n, pts);
                 }
             }
 
