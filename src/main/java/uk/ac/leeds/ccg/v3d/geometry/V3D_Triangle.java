@@ -2842,23 +2842,27 @@ public class V3D_Triangle extends V3D_Area {
         }
     }
 
-//    /**
-//     * @param t Another triangle to test for intersection.
-//     * @param oom The Order of Magnitude for the precision.
-//     * @param rm The RoundingMode for any rounding.
-//     * @return {@code true} if t intersects this.
-//     */
-//    public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
-//        if (intersects(t.getAABB(oom, rm), oom, rm)
-//                && t.intersects(getAABB(oom, rm), oom, rm)) {
-//            return getEdges(oom, rm).values().parallelStream().anyMatch(x
-//                    -> intersects(x, oom, rm))
-//                    || t.getEdges(oom, rm).values().parallelStream().anyMatch(x
-//                            -> intersects(x, oom, rm));
-//        } else {
-//            return false;
-//        }
-//    }
+    /**
+     * @param t Another triangle to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if t intersects this.
+     */
+    @Override
+    public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
+        if (intersects(t.getAABB(oom, rm), oom, rm)
+                && t.intersects(getAABB(oom, rm), oom, rm)) {
+            // Faster than using the general method?
+            return t.intersects(getPQ(oom, rm), oom, rm)
+                    || t.intersects(getQR(oom, rm), oom, rm)
+                    || t.intersects(getRP(oom, rm), oom, rm)
+                    || intersects(t.getPQ(oom, rm), oom, rm)
+                    || intersects(t.getQR(oom, rm), oom, rm)
+                    || intersects(t.getRP(oom, rm), oom, rm);
+        } else {
+            return false;
+        }
+    }
     
     /**
      * @param a An area to test for intersection with.

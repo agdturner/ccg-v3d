@@ -435,31 +435,6 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this is intersected by point {@code p}.
-     *
-     * @param pt The point to test for intersection with.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
-     * @return {@code true} iff the geometry is intersected by {@code p}.
-     */
-    public boolean intersects(V3D_Point_d pt, double epsilon) {
-        // Check envelopes intersect.
-        if (getAABB().intersects(pt)) {
-            // Check point is on the plane. 
-            if (triangles.get(0).pl.intersects(epsilon, pt)) {
-                // Check point is in a triangle
-                for (var t : triangles.values()) {
-                    //if (t.intersects(pt, epsilon)) {
-                    if (t.isAligned(pt, epsilon)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * @param pt The point.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
@@ -468,23 +443,6 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     protected boolean isAligned(V3D_Point_d pt, double epsilon) {
         for (V3D_Triangle_d triangle : triangles.values()) {
             if (triangle.isAligned(pt, epsilon)) {
-                return true;
-            }
-        }
-        return false;
-        //return triangles.parallelStream().anyMatch(t -> (t.intersects0(pt, oom)));
-    }
-
-    /**
-     * @param pt The point.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
-     * @return {@code true} if this intersects with {@code pt}.
-     */
-    @Deprecated
-    protected boolean intersects0(V3D_Point_d pt, double epsilon) {
-        for (V3D_Triangle_d triangle : triangles.values()) {
-            if (triangle.intersects0(pt, epsilon)) {
                 return true;
             }
         }
@@ -708,19 +666,133 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
         }
     }
 
+    /**
+     * Identify if this is intersected by {@code p}.
+     *
+     * @param p The point to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if {@code this} is intersected by {@code p}.
+     */
+    public boolean intersects(V3D_Point_d p, double epsilon) {
+        if (getAABB().intersects(p)) {
+            // Check point is on the plane. 
+            if (triangles.get(0).pl.intersects(epsilon, p)) {
+                // Check point is in a triangle
+                return intersects0(p, epsilon);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Identify if this is intersected by {@code p}.
+     *
+     * @param p The point to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if {@code this} is intersected by {@code p}.
+     */
+    public boolean intersects0(V3D_Point_d p, double epsilon) {
+        return triangles.values().parallelStream().anyMatch(x
+                -> x.intersects(p, epsilon));
+    }
+    
+    /**
+     * Identify if this is intersected by point {@code p}.
+     *
+     * @param aabb The Axis Aligned Bounding Box to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} iff the geometry is intersected by {@code p}.
+     */
     @Override
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (getAABB().intersects(aabb)) {
+            return triangles.values().parallelStream().anyMatch(x
+                    -> x.intersects(aabb, epsilon));
+        }
+        return false;
     }
-
+    
+    /**
+     * Identify if this is intersected by line {@code l}.
+     *
+     * @param l The line to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} iff {@code this} is intersected by {@code l}.
+     */
     @Override
     public boolean intersects(V3D_Line_d l, double epsilon) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return l.intersects(getAABB(), epsilon)
+                && intersects0(l, epsilon);
     }
 
+    /**
+     * Identify if this is intersected by line {@code l}.
+     *
+     * @param l The line to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} iff {@code this} is intersected by {@code p}.
+     */
+    public boolean intersects0(V3D_Line_d l, double epsilon) {
+        return triangles.values().parallelStream().anyMatch(x
+                -> x.intersects(l, epsilon));
+    }
+    
+    /**
+     * Identify if this is intersected by line segment {@code l}.
+     *
+     * @param l The line segment to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} iff {@code this} is intersected by {@code l}.
+     */
     @Override
     public boolean intersects(V3D_LineSegment_d l, double epsilon) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return l.intersects(getAABB(), epsilon)
+                && intersects0(l, epsilon);
+    }
+
+    /**
+     * Identify if this is intersected by line segment {@code l}.
+     *
+     * @param l The line segment to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} iff {@code this} is intersected by {@code p}.
+     */
+    public boolean intersects0(V3D_LineSegment_d l, double epsilon) {
+        return triangles.values().parallelStream().anyMatch(x
+                -> x.intersects(l, epsilon));
+    }
+    
+    /**
+     * Identify if this is intersected by triangle {@code t}.
+     *
+     * @param t The triangle to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if {@code this} is intersected by {@code t}.
+     */
+    public boolean intersects(V3D_Triangle_d t, double epsilon) {
+        return t.intersects(getAABB(), epsilon)
+                && intersects0(t, epsilon);
+    }
+
+    /**
+     * Identify if this is intersected by triangle {@code t}.
+     *
+     * @param t The triangle to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if {@code this} is intersected by {@code t}.
+     */
+    public boolean intersects0(V3D_Triangle_d t, double epsilon) {
+        return triangles.values().parallelStream().anyMatch(x
+                -> x.intersects(t, epsilon));
     }
 
     /**

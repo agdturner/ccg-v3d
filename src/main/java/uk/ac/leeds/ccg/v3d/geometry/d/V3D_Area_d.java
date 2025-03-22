@@ -99,19 +99,19 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
     public abstract double getArea();
     
     /**
-     * @param pt The point to test if it intersects.
+     * @param p The point to test if it intersects.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
-     * @return {@code true} if pt intersects this.
+     * @return {@code true} if {@code this} is intersected by {@code p}.
      */
-    public abstract boolean intersects(V3D_Point_d pt, double epsilon);
+    public abstract boolean intersects(V3D_Point_d p, double epsilon);
 
     /**
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
      * @param p A point to test for intersection.
      * @param as The areas to test for intersection with p.
-     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     * @return {@code true} if any {@code as} are intersected by {@code p}.
      */
     public static boolean intersects(double epsilon, V3D_Point_d p,
             V3D_Area_d... as) {
@@ -123,7 +123,7 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
      * considered equal.
      * @param p A point to test for intersection.
      * @param as The areas to test for intersection with p.
-     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     * @return {@code true} if any {@code as} are intersected by {@code p}.
      */
     public static boolean intersects(double epsilon, V3D_Point_d p,
             Collection<V3D_Area_d> as) {
@@ -134,7 +134,7 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
      * @param aabb The Axis Aligned Bounding Box to test if it intersects.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
-     * @return {@code true} if pt intersects this.
+     * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public abstract boolean intersects(V3D_AABB_d aabb, double epsilon);
     
@@ -142,7 +142,7 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
      * @param l The line to test if it intersects.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
-     * @return {@code true} if l intersects this.
+     * @return {@code true} if {@code this} is intersected by {@code l}.
      */
     public abstract boolean intersects(V3D_Line_d l, double epsilon);
 
@@ -150,9 +150,17 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
      * @param l The line segment to test if it intersects.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
-     * @return {@code true} if l intersects this.
+     * @return {@code true} if {@code this} is intersected by {@code l}.
      */
     public abstract boolean intersects(V3D_LineSegment_d l, double epsilon);
+    
+    /**
+     * @param t The triangle to test if it intersects.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return {@code true} if {@code this} is intersected by {@code t}.
+     */
+    public abstract boolean intersects(V3D_Triangle_d t, double epsilon);
     
     /**
      * @param epsilon The tolerance within which two vector components are
@@ -171,7 +179,7 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
      * @param l A line segment to test for intersection with any of the areas
      * in as.
      * @param as The areas to test for intersection with l.
-     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     * @return {@code true} if any of {@code as} is intersected by {@code l}.
      */
     public static boolean intersects(double epsilon,
             V3D_LineSegment_d l, V3D_Area_d... as) {
@@ -184,7 +192,7 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
      * @param l A line segment to test for intersection with any of the areas
      * in as.
      * @param as The areas to test for intersection with l.
-     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     * @return {@code true} if any of {@code as} is intersected by {@code l}.
      */
     public static boolean intersects(double epsilon,
             V3D_LineSegment_d l, Collection<V3D_Area_d> as) {
@@ -195,7 +203,8 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
      * @param as The areas to test for intersection with a.
-     * @return {@code true} if {@code this} is intersected by {@code a}.
+     * @return {@code true} if {@code this} is intersected by any areas in 
+     * {@code as}.
      */
     public boolean intersects(double epsilon, V3D_Area_d... as) {
         return intersects(epsilon, Arrays.asList(as));
@@ -205,7 +214,8 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
      * @param as The areas to test for intersection with a.
-     * @return {@code true} if {@code this} is intersected by {@code a}.
+     * @return {@code true} if {@code this} is intersected by any areas in 
+     * {@code as}.
      */
     public boolean intersects(double epsilon, Collection<V3D_Area_d> as) {
         return as.parallelStream().anyMatch(x -> intersects(x, epsilon));
@@ -215,16 +225,16 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
      * Identify if {@code this} contains {@code pt}. Containment excludes the
      * edge.
      *
-     * @param pt The point to test for containment.
+     * @param p The point to test for containment.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
-     * @return {@code true} if {@code this} contains {@code pt}.
+     * @return {@code true} if {@code this} contains {@code p}.
      */
-    //public abstract boolean contains(V3D_Point pt, double epsilon);
-    public boolean contains(V3D_Point_d pt, double epsilon) {
-        if (intersects(pt, epsilon)) {
+    //public abstract boolean contains(V3D_Point p, double epsilon);
+    public boolean contains(V3D_Point_d p, double epsilon) {
+        if (intersects(p, epsilon)) {
             return !getEdges().values().parallelStream().anyMatch(x 
-                    -> x.intersects(pt, epsilon));
+                    -> x.intersects(p, epsilon));
         }
         return false;
     }

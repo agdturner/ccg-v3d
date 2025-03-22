@@ -114,19 +114,19 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
     public abstract BigRational getArea(int oom, RoundingMode rm);
 
     /**
-     * @param pt The point to test if it intersects.
+     * @param p The point to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if pt intersects this.
+     * @return {@code true} if {@code this} is intersected by {@code p}.
      */
-    public abstract boolean intersects(V3D_Point pt, int oom, RoundingMode rm);
+    public abstract boolean intersects(V3D_Point p, int oom, RoundingMode rm);
 
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @param p A point to test for intersection.
      * @param as The areas to test for intersection with p.
-     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     * @return {@code true} if any {@code as} are intersected by {@code p}.
      */
     public static boolean intersects(int oom, RoundingMode rm, V3D_Point p,
             V3D_Area... as) {
@@ -138,7 +138,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @param rm The RoundingMode for any rounding.
      * @param p A point to test for intersection.
      * @param as The areas to test for intersection with p.
-     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     * @return {@code true} if any {@code as} are intersected by {@code p}.
      */
     public static boolean intersects(int oom, RoundingMode rm, V3D_Point p,
             Collection<V3D_Area> as) {
@@ -149,7 +149,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @param aabb The Axis Aligned Bounding Box to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if pt intersects this.
+     * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public abstract boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm);
 
@@ -157,7 +157,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @param l The line to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if l intersects this.
+     * @return {@code true} if {@code this} is intersected by {@code l}.
      */
     public abstract boolean intersects(V3D_Line l, int oom, RoundingMode rm);
 
@@ -165,9 +165,17 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @param l The line segment to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if l intersects this.
+     * @return {@code true} if {@code this} is intersected by {@code l}.
      */
     public abstract boolean intersects(V3D_LineSegment l, int oom, RoundingMode rm);
+
+    /**
+     * @param t The triangle to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if {@code this} is intersected by {@code t}.
+     */
+    public abstract boolean intersects(V3D_Triangle t, int oom, RoundingMode rm);
 
     /**
      * @param oom The Order of Magnitude for the precision.
@@ -186,7 +194,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @param l A line segment to test for intersection with any of the areas in
      * as.
      * @param as The areas to test for intersection with l.
-     * @return {@code true} if {@code this} is intersected by {@code l}.
+     * @return {@code true} if any of {@code as} is intersected by {@code l}.
      */
     public static boolean intersects(int oom, RoundingMode rm,
             V3D_LineSegment l, V3D_Area... as) {
@@ -199,7 +207,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @param l A line segment to test for intersection with any of the areas in
      * as.
      * @param as The areas to test for intersection with l.
-     * @return {@code true} if {@code this} is intersected by {@code l}.
+     * @return {@code true} if any of {@code as} is intersected by {@code l}.
      */
     public static boolean intersects(int oom, RoundingMode rm,
             V3D_LineSegment l, Collection<V3D_Area> as) {
@@ -210,7 +218,8 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @param as The areas to test for intersection with a.
-     * @return {@code true} if {@code this} is intersected by {@code a}.
+     * @return {@code true} if {@code this} is intersected by any areas in 
+     * {@code as}.
      */
     public boolean intersects(int oom, RoundingMode rm, V3D_Area... as) {
         return intersects(oom, rm, Arrays.asList(as));
@@ -220,43 +229,44 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @param as The areas to test for intersection with a.
-     * @return {@code true} if {@code this} is intersected by {@code a}.
+     * @return {@code true} if {@code this} is intersected by any areas in 
+     * {@code as}.
      */
     public boolean intersects(int oom, RoundingMode rm, Collection<V3D_Area> as) {
         return as.parallelStream().anyMatch(x -> intersects(x, oom, rm));
     }
 
     /**
-     * Identify if {@code this} contains {@code pt}. Containment excludes the
+     * Identify if {@code this} contains {@code p}. Containment excludes the
      * edge.
      *
-     * @param pt The point to test for containment.
+     * @param p The point to test for containment.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} if {@code this} contains {@code pt}.
+     * @return {@code true} if {@code this} contains {@code p}.
      */
-    //public abstract boolean contains(V3D_Point pt, int oom, RoundingMode rm);
-    public boolean contains(V3D_Point pt, int oom, RoundingMode rm) {
-        if (intersects(pt, oom, rm)) {
+    //public abstract boolean contains(V3D_Point p, int oom, RoundingMode rm);
+    public boolean contains(V3D_Point p, int oom, RoundingMode rm) {
+        if (intersects(p, oom, rm)) {
             return !getEdges(oom, rm).values().parallelStream().anyMatch(x 
-                    -> x.intersects(pt, oom, rm));
+                    -> x.intersects(p, oom, rm));
         }
         return false;
     }
 
     /**
-     * Identify if {@code this} contains {@code ls}. Containment excludes the
+     * Identify if {@code this} contains {@code l}. Containment excludes the
      * edge.
      *
-     * @param ls The line segments to test for containment.
+     * @param l The line segments to test for containment.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} if {@code this} contains {@code ls}.
+     * @return {@code true} if {@code this} contains {@code l}.
      */
-    //public abstract boolean contains(V3D_LineSegment ls, int oom, RoundingMode rm);
-    public boolean contains(V3D_LineSegment ls, int oom, RoundingMode rm) {
-        return contains(ls.getP(), oom, rm)
-                && contains(ls.getQ(oom, rm), oom, rm);
+    //public abstract boolean contains(V3D_LineSegment l, int oom, RoundingMode rm);
+    public boolean contains(V3D_LineSegment l, int oom, RoundingMode rm) {
+        return contains(l.getP(), oom, rm)
+                && contains(l.getQ(oom, rm), oom, rm);
     }
 
     /**

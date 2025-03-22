@@ -2535,11 +2535,34 @@ public class V3D_Triangle_d extends V3D_Area_d {
 
     /**
      * @param t Another triangle to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if t intersects this.
+     */
+    @Override
+    public boolean intersects(V3D_Triangle_d t, double epsilon) {
+        if (intersects(t.getAABB(), epsilon)
+                && t.intersects(getAABB(), epsilon)) {
+            // Faster than using the general method?
+            return t.intersects(getPQ(), epsilon)
+                    || t.intersects(getQR(), epsilon)
+                    || t.intersects(getRP(), epsilon)
+                    || intersects(t.getPQ(), epsilon)
+                    || intersects(t.getQR(), epsilon)
+                    || intersects(t.getRP(), epsilon);
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * @param t Another triangle to test for intersection.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @return {@code true} if t intersects this.
      */
-    public boolean intersects(V3D_Triangle_d t, double epsilon) {
+    @Override
+    public boolean intersects(V3D_Area_d t, double epsilon) {
         if (intersects(t.getAABB(), epsilon)
                 && t.intersects(getAABB(), epsilon)) {
             return getEdges().values().parallelStream().anyMatch(x
@@ -2550,7 +2573,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
             return false;
         }
     }
-
+    
     /**
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
@@ -2604,9 +2627,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @return {@code true} iff {@code this} is intersected by {@code t}.
      */
     public boolean contains(V3D_Triangle_d t, double epsilon) {
-//        return contains(t.getP(), oom, rm)
-//                && contains(t.getQ(), oom, rm)
-//                && contains(t.getR(), oom, rm);
+//        return contains(t.getP(), epsilon)
+//                && contains(t.getQ(), epsilon)
+//                && contains(t.getR(), epsilon);
         return t.getPoints().values().parallelStream().allMatch(x
                 -> contains(x, epsilon));
     }

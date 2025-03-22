@@ -757,6 +757,7 @@ public class V3D_Rectangle extends V3D_Area {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if t intersects this.
      */
+    @Override
     public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
         return pqr.intersects(t, oom, rm)
                 || rsp.intersects(t, oom, rm);
