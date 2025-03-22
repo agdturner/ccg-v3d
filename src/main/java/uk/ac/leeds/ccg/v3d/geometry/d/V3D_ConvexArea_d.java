@@ -68,7 +68,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     /**
      * The coplanar triangles that comprise the convex hull.
      */
-    protected final HashMap<Integer, V3D_Triangle_d> triangles;
+    public final HashMap<Integer, V3D_Triangle_d> triangles;
 
     /**
      * @param c The V3D_ConvexHullCoplanar_d to clone.

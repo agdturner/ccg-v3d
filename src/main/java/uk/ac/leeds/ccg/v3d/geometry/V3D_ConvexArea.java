@@ -74,7 +74,7 @@ public class V3D_ConvexArea extends V3D_Area {
     /**
      * The collection of triangles.
      */
-    protected final HashMap<Integer, V3D_Triangle> triangles;
+    public final HashMap<Integer, V3D_Triangle> triangles;
 
     public V3D_ConvexArea(V3D_ConvexArea c) {
         super(c.env, c.offset, c.pl);

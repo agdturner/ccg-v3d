@@ -103,7 +103,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      */
     public V3D_PolygonNoInternalHoles_d(V3D_Point_d[] points, 
             V3D_ConvexArea_d ch, double epsilon) {
-        super(points[0].env, V3D_Vector_d.ZERO, null);
+        super(points[0].env, V3D_Vector_d.ZERO, ch.pl);
         this.points = new HashMap<>();
         this.ch = ch;
         edges = new HashMap<>();
