@@ -15,13 +15,10 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.HashMap;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Rectangle;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Triangle;
 
 /**
  * For representing and processing rectangles in 3D. A rectangle is a right
@@ -698,6 +695,28 @@ public class V3D_Rectangle_d extends V3D_Area_d {
     public boolean intersects(V3D_LineSegment_d l, double epsilon) {
         return pqr.intersects(l, epsilon)
             || rsp.intersects(l, epsilon);
+    }
+    
+    /**
+     * If no point aligns, then returns false, otherwise the intersection is 
+     * computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Ray_d, double)}
+     *
+     * @param r The ray to test if it intersects.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @return {@code true} if l intersects this.
+     */
+    @Override
+    public boolean intersects(V3D_Ray_d r, double epsilon) {
+        if (r.isAligned(getP(), epsilon)
+            || r.isAligned(getQ(), epsilon)
+            || r.isAligned(getR(), epsilon)
+            || r.isAligned(getS(), epsilon)) {
+            return getIntersect(r, epsilon) != null;
+        } else {
+            return false;
+        }
     }
     
     /**

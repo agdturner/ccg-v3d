@@ -277,34 +277,34 @@ public class V3D_ConvexAreaTest extends V3D_Test {
 //    }
 //
 //    /**
-//     * Test of getIntersection method, of class V3D_ConvexArea.
+//     * Test of getIntersect method, of class V3D_ConvexArea.
 //     */
 //    @Test
 //    public void testGetIntersection_3args_1() {
-//        System.out.println("getIntersection");
+//        System.out.println("getIntersect");
 //        V3D_Plane p = null;
 //        int oom = 0;
 //        RoundingMode rm = null;
 //        V3D_ConvexArea instance = null;
 //        V3D_FiniteGeometry expResult = null;
-//        V3D_FiniteGeometry result = instance.getIntersection(p, oom, rm);
+//        V3D_FiniteGeometry result = instance.getIntersect(p, oom, rm);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
 //
 //    /**
-//     * Test of getIntersection method, of class V3D_ConvexArea.
+//     * Test of getIntersect method, of class V3D_ConvexArea.
 //     */
 //    @Test
 //    public void testGetIntersection_3args_2() {
-//        System.out.println("getIntersection");
+//        System.out.println("getIntersect");
 //        V3D_Triangle t = null;
 //        int oom = 0;
 //        RoundingMode rm = null;
 //        V3D_ConvexArea instance = null;
 //        V3D_FiniteGeometry expResult = null;
-//        V3D_FiniteGeometry result = instance.getIntersection(t, oom, rm);
+//        V3D_FiniteGeometry result = instance.getIntersect(t, oom, rm);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");

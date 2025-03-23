@@ -835,11 +835,24 @@ public class V3D_Triangle extends V3D_Area {
      */
     @Override
     public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
-        if (getAABB(oom, rm).intersects(pt, oom, rm)
-                && getPl(oom, rm).intersects(pt, oom, rm)) {
+        if (getAABB(oom, rm).intersects(pt, oom, rm)) {
             return intersects0(pt, oom, rm);
         }
         return false;
+    }
+
+    /**
+     * @param pt A point to check for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff pt getIntersect.
+     */
+    public boolean intersects0(V3D_Point pt, int oom, RoundingMode rm) {
+        if (getPl(oom, rm).intersects(pt, oom, rm)) {
+            return intersects00(pt, oom, rm);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -848,55 +861,10 @@ public class V3D_Triangle extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff pt getIntersect.
      */
-    public boolean intersects0(V3D_Point pt, int oom, RoundingMode rm) {
+    public boolean intersects00(V3D_Point pt, int oom, RoundingMode rm) {
         return getPQPl(oom, rm).isOnSameSide(pt, getR(oom, rm), oom, rm)
                 && getQRPl(oom, rm).isOnSameSide(pt, getP(oom, rm), oom, rm)
                 && getRPPl(oom, rm).isOnSameSide(pt, getQ(oom, rm), oom, rm);
-    }
-
-    /**
-     * @param pt The point.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} if this getIntersect with {@code pt}.
-     */
-    @Deprecated
-    protected boolean intersects00(V3D_Point pt, int oom, RoundingMode rm) {
-        V3D_LineSegment tpq = getPQ(oom, rm);
-        V3D_LineSegment tqr = getQR(oom, rm);
-        V3D_LineSegment trp = getRP(oom, rm);
-        if (tpq.intersects(pt, oom, rm)
-                || tqr.intersects(pt, oom, rm)
-                || trp.intersects(pt, oom, rm)) {
-            return true;
-        }
-        V3D_Vector ppt = new V3D_Vector(getP(oom, rm), pt, oom, rm);
-        V3D_Vector qpt = new V3D_Vector(getQ(oom, rm), pt, oom, rm);
-        V3D_Vector rpt = new V3D_Vector(getR(oom, rm), pt, oom, rm);
-        V3D_Vector cp = tpq.l.v.getCrossProduct(ppt, oom, rm);
-        V3D_Vector cq = tqr.l.v.getCrossProduct(qpt, oom, rm);
-        V3D_Vector cr = trp.l.v.getCrossProduct(rpt, oom, rm);
-        /**
-         * If cp, cq and cr are all in the same direction then pt intersects.
-         */
-//        if (cp.dx.isNegative() && cq.dx.isNegative() && cr.dx.isNegative()) {
-//            if (cp.dy.isNegative() && cq.dy.isNegative() && cr.dy.isNegative()) {
-//                if (cp.dz.isNegative() && cq.dz.isNegative() && cr.dz.isNegative()) {
-//                    return true;
-//                }
-//            }
-//        }
-        if (cp.dx.isNegative() == cq.dx.isNegative()
-                && cp.dx.isNegative() == cr.dx.isNegative()) {
-            if (cp.dy.isNegative() == cq.dy.isNegative()
-                    && cp.dy.isNegative() == cr.dy.isNegative()) {
-                if (cp.dz.isNegative() == cq.dz.isNegative()
-                        && cp.dz.isNegative() == cr.dz.isNegative()) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**
@@ -909,13 +877,14 @@ public class V3D_Triangle extends V3D_Area {
      */
     public boolean contains(V3D_Point pt, int oom, RoundingMode rm) {
         if (intersects(pt, oom, rm)) {
-//            return !(getPQ(oom, rm).intersects(pt, oom, rm)
-//                    || getQR(oom, rm).intersects(pt, oom, rm)
-//                    || getRP(oom, rm).intersects(pt, oom, rm));
-            return !getEdges(oom, rm).values().parallelStream().anyMatch(x 
-                    -> x.intersects(pt, oom, rm));
+            return !(getPQ(oom, rm).intersects(pt, oom, rm)
+                    || getQR(oom, rm).intersects(pt, oom, rm)
+                    || getRP(oom, rm).intersects(pt, oom, rm));
+//            return !getEdges(oom, rm).values().parallelStream().anyMatch(x 
+//                    -> x.intersects(pt, oom, rm));
+        } else {
+            return false;
         }
-        return false;
     }
 
     @Override
@@ -2822,8 +2791,9 @@ public class V3D_Triangle extends V3D_Area {
     }
 
     /**
-     * If there is intersection with the Axis Aligned Bounding Boxes, then the
-     * intersection is computed, so if that is needed use:
+     * This first tests if there is intersection with the Axis Aligned Bounding 
+     * Boxes, then computes the intersect and tests if it is null. If the 
+     * intersection is wanted use:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment, int, java.math.RoundingMode)}
      *
      * @param l The line segment to test if it intersects.
@@ -2837,6 +2807,27 @@ public class V3D_Triangle extends V3D_Area {
                 || l.intersects(getAABB(oom, rm), oom, rm)) {
             // Compute the intersection and return true if it is not null.
             return getIntersect(l, oom, rm) != null;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * If no point aligns, then returns false, otherwise the intersection is 
+     * computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Ray, int, java.math.RoundingMode)}
+     *
+     * @param r The ray to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if l intersects this.
+     */
+    @Override
+    public boolean intersects(V3D_Ray r, int oom, RoundingMode rm) {
+        if (r.isAligned(getP(oom, rm), oom, rm)
+            || r.isAligned(getQ(oom, rm), oom, rm)
+            || r.isAligned(getR(oom, rm), oom, rm)) {
+            return getIntersect(r, oom, rm) != null;
         } else {
             return false;
         }

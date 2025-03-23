@@ -15,10 +15,8 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 
 /**
@@ -325,7 +323,39 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * @return {@code true} iff there is an intersection.
      */
     @Override
-    public boolean intersects(V3D_Point_d  pt, double epsilon) {
+    public boolean intersects(V3D_Point_d pt, double epsilon) {
+        if (getAABB().intersects(pt)) {
+            return intersects0(pt, epsilon);
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Identify if this is intersected by pt. No AABB check.
+     *
+     * @param pt The point to test for intersection with.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return {@code true} iff there is an intersection.
+     */
+    public boolean intersects0(V3D_Point_d pt, double epsilon) {
+        if (pl.intersects(pt)) {
+            return intersects00(pt, epsilon);
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Identify if this is intersected by pt.
+     *
+     * @param pt The point to test for intersection with.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return {@code true} iff there is an intersection.
+     */
+    public boolean intersects00(V3D_Point_d  pt, double epsilon) {
         return ch.intersects(pt, epsilon)
                 && (!V3D_LineSegment_d.intersects(epsilon, pt, ch.edges.values())
                 && !externalHoles.values().parallelStream().anyMatch(x
@@ -473,6 +503,26 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
                         -> x.contains(l, epsilon)));
     }
 
+    /**
+     * If no point aligns, then returns false, otherwise the intersection is 
+     * computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Ray, int, java.math.RoundingMode)}
+     *
+     * @param r The ray to test if it intersects.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return {@code true} if l intersects this.
+     */
+    @Override
+    public boolean intersects(V3D_Ray_d r, double epsilon) {
+        if (getPoints().values().parallelStream().anyMatch(x 
+                -> r.isAligned(x, epsilon))) {
+            return getIntersect(r, epsilon) != null;
+        } else {
+            return false;
+        }
+    }
+    
     /**
      * Identify if this is intersected by t.
      *
@@ -647,5 +697,110 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
         int pid = externalHoles.size();
         externalHoles.put(pid, p);
         return pid;
+    }
+    
+    /**
+     * @param l The line to intersect with.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return A point or line segment.
+     */
+    public V3D_FiniteGeometry_d getIntersect(V3D_Line_d l,double epsilon) {
+        V3D_Geometry_d i = ch.pl.getIntersect(l, epsilon);
+        if (i == null) {
+            return null;
+        } else if (i instanceof V3D_Point_d ip) {
+            if (intersects0(ip, epsilon)) {
+                return ip;
+            } else {
+                return null;
+            }
+        } else {
+            throw new UnsupportedOperationException();
+//            /**
+//             * Get the intersection of the line and each edge of the triangle.
+//             */
+//            V3D_FiniteGeometry lpqi = getPQ(epsilon).getIntersect(l, epsilon);
+//            V3D_FiniteGeometry lqri = getQR(epsilon).getIntersect(l, epsilon);
+//            V3D_FiniteGeometry lrpi = getRP(epsilon).getIntersect(l, epsilon);
+//            if (lpqi == null) {
+//                if (lqri == null) {
+//                    return null; // This should not happen!
+//                } else {
+//                    if (lrpi == null) {
+//                        return lqri;
+//                    } else {
+//                        return getGeometry(env, ((V3D_Point) lqri).getVector(epsilon),
+//                                ((V3D_Point) lrpi).getVector(epsilon), epsilon);
+//                    }
+//                }
+//            } else if (lpqi instanceof V3D_Point lpqip) {
+//                if (lqri == null) {
+//                    if (lrpi == null) {
+//                        return lpqi;
+//                    } else {
+//                        return getGeometry(env, lpqip.getVector(epsilon),
+//                                ((V3D_Point) lrpi).getVector(epsilon), epsilon);
+//                    }
+//                } else if (lqri instanceof V3D_Point lqrip) {
+//                    if (lrpi == null) {
+//                        return getGeometry(env, lqrip.getVector(epsilon),
+//                                lpqip.getVector(epsilon), epsilon);
+//                    } else if (lrpi instanceof V3D_LineSegment) {
+//                        return lrpi;
+//                    } else {
+//                        return getGeometry(lpqip, lqrip, (V3D_Point) lrpi, epsilon);
+//                    }
+//                } else {
+//                    return lqri;
+//                }
+//            } else {
+//                return lpqi;
+//            }
+        }
+    }
+    
+    /**
+     * Get the intersection between the geometry and the ray {@code rv}.
+     *
+     * @param r The ray to intersect with.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return The V3D_Geometry.
+     */
+    public V3D_FiniteGeometry_d getIntersect(V3D_Ray_d r, double epsilon) {
+        V3D_FiniteGeometry_d g = getIntersect(r.l, epsilon);
+        if (g == null) {
+            return null;
+        }
+        if (g instanceof V3D_Point_d gp) {
+            if (r.isAligned(gp, epsilon)) {
+//                BigRational[] coeffs = this.pl.equation.coeffs;
+//                V3D_Point pt = new V3D_Point(
+//                        coeffs[0].multiply(gp.getX(epsilon)),
+//                        coeffs[1].multiply(gp.getY(epsilon)),
+//                        coeffs[2].multiply(gp.getZ(epsilon)));
+//                return pt;
+                return gp;
+            } else {
+                return null;
+            }
+        }
+        V3D_LineSegment_d ls = (V3D_LineSegment_d) g;
+        V3D_Point_d lsp = ls.getP();
+        V3D_Point_d lsq = ls.getQ();
+        if (r.isAligned(lsp, epsilon)) {
+            if (r.isAligned(lsq, epsilon)) {
+                return ls;
+            } else {
+                return V3D_LineSegment_d.getGeometry(r.l.getP(), lsp, epsilon);
+            }
+        } else {
+            if (r.isAligned(lsq, epsilon)) {
+                return V3D_LineSegment_d.getGeometry(r.l.getP(), lsq, epsilon);
+            } else {
+                throw new RuntimeException("Exception in triangle-linesegment intersection.");
+            }
+        }
     }
 }

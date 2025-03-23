@@ -23,7 +23,7 @@ import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 
 /**
- * Defined by a V3D_ConvexArea and a collection of non edge sharing 
+ * Defined by a V3D_ConvexArea and a collection of non edge sharing
  * V3D_PolygonNoInternalHoles areas each defining an external hole or concavity.
  *
  * @author Andy Turner
@@ -119,11 +119,11 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
         while (!foundStart) {
             p.p0 = points[i0];
             p.p0int = V3D_LineSegment.intersects(oom, rm, p.p0,
-                ch.edges.values());
+                    ch.edges.values());
             if (p.p0int) {
                 foundStart = true;
             }
-            i0 ++;
+            i0++;
         }
         int i1 = i0;
         p.p1 = points[i1];
@@ -165,7 +165,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
                     p.pts.add(p.p1);
                     externalHoles.put(externalHoles.size(),
                             new V3D_PolygonNoInternalHoles(
-                                    p.pts.toArray(V3D_Point[]::new), 
+                                    p.pts.toArray(V3D_Point[]::new),
                                     ch.pl.n, oom, rm));
 //                                    getPl(oom, rm).n, oom, rm));
                     p.pts = new ArrayList<>();
@@ -198,6 +198,11 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
 
     @Override
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -278,13 +283,13 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     protected void initPl(int oom, RoundingMode rm) {
         pl = ch.triangles.get(0).getPl(oom, rm);
     }
-    
+
     @Override
     protected void initPl(V3D_Point pt, int oom, RoundingMode rm) {
         V3D_Triangle t = ch.triangles.get(0);
         pl = new V3D_Plane(pt, offset, t.pv, t.qv, t.rv, oom, rm);
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -293,7 +298,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     public V3D_ConvexArea getConvexHull(int oom, RoundingMode rm) {
         return new V3D_ConvexArea(ch);
     }
-    
+
     /**
      * @return {@link edges}.
      */
@@ -360,8 +365,41 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff there is an intersection.
      */
+    @Override
     public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
-        return ch.intersects(pt, oom, rm)
+        if (getAABB(oom, rm).intersects(pt, oom, rm)) {
+            return intersects0(pt, oom, rm);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Identify if this is intersected by pt. No AABB check.
+     *
+     * @param pt The point to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} iff there is an intersection.
+     */
+    public boolean intersects0(V3D_Point pt, int oom, RoundingMode rm) {
+        if (pl.intersects(pt, oom, rm)) {
+            return intersects00(pt, oom, rm);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Identify if this is intersected by pt. No AABB or Plane check.
+     *
+     * @param pt The point to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} iff there is an intersection.
+     */
+    public boolean intersects00(V3D_Point pt, int oom, RoundingMode rm) {
+        return ch.intersects0(pt, oom, rm)
                 && (!V3D_LineSegment.intersects(oom, rm, pt, ch.edges.values())
                 && !externalHoles.values().parallelStream().anyMatch(x
                         -> x.contains(pt, oom, rm)));
@@ -488,7 +526,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
 //                || !externalHoles.values().parallelStream().anyMatch(x
 //                        -> x.contains(l, oom, rm)));
     }
-    
+
     /**
      * Identify if this is intersected by l.
      *
@@ -502,6 +540,26 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
                 && (V3D_LineSegment.intersects(oom, rm, l, edges.values())
                 || !externalHoles.values().parallelStream().anyMatch(x
                         -> x.contains(l, oom, rm)));
+    }
+
+    /**
+     * If no point aligns, then returns false, otherwise the intersection is
+     * computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Ray, int, java.math.RoundingMode)}
+     *
+     * @param r The ray to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if l intersects this.
+     */
+    @Override
+    public boolean intersects(V3D_Ray r, int oom, RoundingMode rm) {
+        if (getPoints(oom, rm).values().parallelStream().anyMatch(x
+                -> r.isAligned(x, oom, rm))) {
+            return getIntersect(r, oom, rm) != null;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -652,7 +710,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     }
 
     //@Override
-    public V3D_PolygonNoInternalHoles rotate(V3D_Ray ray, V3D_Vector uv, 
+    public V3D_PolygonNoInternalHoles rotate(V3D_Ray ray, V3D_Vector uv,
             Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
         theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
         if (theta.compareTo(BigRational.ZERO) == 0) {
@@ -663,7 +721,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     }
 
     //@Override
-    public V3D_PolygonNoInternalHoles rotateN(V3D_Ray ray, V3D_Vector uv, 
+    public V3D_PolygonNoInternalHoles rotateN(V3D_Ray ray, V3D_Vector uv,
             Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
         V3D_ConvexArea rch = getConvexHull(oom, rm).rotate(ray, uv, bd, theta, oom, rm);
         HashMap<Integer, V3D_Point> rPoints = new HashMap<>();
@@ -708,5 +766,112 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
         int pid = externalHoles.size();
         externalHoles.put(pid, p);
         return pid;
+    }
+
+    /**
+     * @param l The line to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A point or line segment.
+     */
+    public V3D_FiniteGeometry getIntersect(V3D_Line l, int oom,
+            RoundingMode rm) {
+        V3D_Geometry i = getPl(oom, rm).getIntersect(l, oom, rm);
+        if (i == null) {
+            return null;
+        } else if (i instanceof V3D_Point ip) {
+            if (intersects0(ip, oom, rm)) {
+                return ip;
+            } else {
+                return null;
+            }
+        } else {
+            throw new UnsupportedOperationException();
+//            /**
+//             * Get the intersection of the line and each edge of the triangle.
+//             */
+//            V3D_FiniteGeometry lpqi = getPQ(oom, rm).getIntersect(l, oom, rm);
+//            V3D_FiniteGeometry lqri = getQR(oom, rm).getIntersect(l, oom, rm);
+//            V3D_FiniteGeometry lrpi = getRP(oom, rm).getIntersect(l, oom, rm);
+//            if (lpqi == null) {
+//                if (lqri == null) {
+//                    return null; // This should not happen!
+//                } else {
+//                    if (lrpi == null) {
+//                        return lqri;
+//                    } else {
+//                        return getGeometry(env, ((V3D_Point) lqri).getVector(oom, rm),
+//                                ((V3D_Point) lrpi).getVector(oom, rm), oom, rm);
+//                    }
+//                }
+//            } else if (lpqi instanceof V3D_Point lpqip) {
+//                if (lqri == null) {
+//                    if (lrpi == null) {
+//                        return lpqi;
+//                    } else {
+//                        return getGeometry(env, lpqip.getVector(oom, rm),
+//                                ((V3D_Point) lrpi).getVector(oom, rm), oom, rm);
+//                    }
+//                } else if (lqri instanceof V3D_Point lqrip) {
+//                    if (lrpi == null) {
+//                        return getGeometry(env, lqrip.getVector(oom, rm),
+//                                lpqip.getVector(oom, rm), oom, rm);
+//                    } else if (lrpi instanceof V3D_LineSegment) {
+//                        return lrpi;
+//                    } else {
+//                        return getGeometry(lpqip, lqrip, (V3D_Point) lrpi, oom, rm);
+//                    }
+//                } else {
+//                    return lqri;
+//                }
+//            } else {
+//                return lpqi;
+//            }
+        }
+    }
+
+    /**
+     * Get the intersection between the geometry and the ray {@code rv}.
+     *
+     * @param r The ray to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
+     */
+    public V3D_FiniteGeometry getIntersect(V3D_Ray r, int oom,
+            RoundingMode rm) {
+        V3D_FiniteGeometry g = getIntersect(r.l, oom, rm);
+        if (g == null) {
+            return null;
+        }
+        if (g instanceof V3D_Point gp) {
+            if (r.isAligned(gp, oom, rm)) {
+//                BigRational[] coeffs = this.pl.equation.coeffs;
+//                V3D_Point pt = new V3D_Point(
+//                        coeffs[0].multiply(gp.getX(oom, rm)),
+//                        coeffs[1].multiply(gp.getY(oom, rm)),
+//                        coeffs[2].multiply(gp.getZ(oom, rm)));
+//                return pt;
+                return gp;
+            } else {
+                return null;
+            }
+        }
+        V3D_LineSegment ls = (V3D_LineSegment) g;
+        V3D_Point lsp = ls.getP();
+        V3D_Point lsq = ls.getQ(oom, rm);
+        if (r.isAligned(lsp, oom, rm)) {
+            if (r.isAligned(lsq, oom, rm)) {
+                return ls;
+            } else {
+                return V3D_LineSegment.getGeometry(r.l.getP(), lsp, oom, rm);
+            }
+        } else {
+            if (r.isAligned(lsq, oom, rm)) {
+                return V3D_LineSegment.getGeometry(r.l.getP(), lsq, oom, rm);
+            } else {
+                throw new RuntimeException("Exception in triangle-linesegment intersection.");
+            }
+        }
     }
 }

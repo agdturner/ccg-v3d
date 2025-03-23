@@ -170,6 +170,14 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
     public abstract boolean intersects(V3D_LineSegment l, int oom, RoundingMode rm);
 
     /**
+     * @param r The ray to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if {@code this} is intersected by {@code r}.
+     */
+    public abstract boolean intersects(V3D_Ray r, int oom, RoundingMode rm);
+
+    /**
      * @param t The triangle to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -270,6 +278,27 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
     }
 
     /**
+     * Identify if {@code this} contains {@code t}. Containment excludes the
+     * edge.
+     *
+     * @param t The triangle to test for containment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} if {@code this} contains {@code t}.
+     */
+    //public abstract boolean contains(V3D_Area a, int oom, RoundingMode rm);
+    public boolean contains(V3D_Triangle t, int oom, RoundingMode rm) {
+        if (getAABB(oom, rm).contains(t.getAABB(oom, rm), oom)) {
+            // Faster than using the general method?
+            return contains(t.getPQ(oom, rm), oom, rm)
+                    && contains(t.getQR(oom, rm), oom, rm)
+                    && contains(t.getRP(oom, rm), oom, rm);
+        } else {
+            return false;
+        }
+    }
+    
+    /**
      * Identify if {@code this} contains {@code a}. Containment excludes the
      * edge.
      *
@@ -282,7 +311,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
     public boolean contains(V3D_Area a, int oom, RoundingMode rm) {
         return a.getPoints(oom, rm).values().parallelStream().allMatch(x
                 -> contains(x, oom, rm));
-    }   
+    }
 
     /**
      * @param oom The Order of Magnitude for the precision.
@@ -335,4 +364,15 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * {@link #pl}.
      */
     protected abstract void initPl(V3D_Point pt, int oom, RoundingMode rm);
+    
+    
+    /**
+     * Get the minimum distance squared to {@code pt}.
+     *
+     * @param pt A point.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The distance squared to {@code pv}.
+     */
+    public abstract BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm);
 }

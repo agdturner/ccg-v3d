@@ -2105,10 +2105,9 @@ public class V3D_Plane extends V3D_Geometry {
                 .add(coeffs[2].multiply(pt.getZ(oom, rm))).add(coeffs[3]))
                 .compareTo(BigRational.ZERO);
     }
-
+    
     /**
-     * Check if all points in pts are on the same side of this. Points on this
-     * count either way.
+     * Check if all points in pts are on the same side of this.
      *
      * @param pts The points to check.
      * @param oom The Order of Magnitude for the precision.

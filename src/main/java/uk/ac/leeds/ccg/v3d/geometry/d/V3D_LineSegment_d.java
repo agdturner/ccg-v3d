@@ -950,7 +950,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return The minimum distance squared to {@code l}.
      */
     public double getDistanceSquared(V3D_LineSegment_d l, double epsilon) {
-        if (V3D_LineSegment_d.this.getIntersect(l, epsilon) != null) {
+        if (getIntersect(l, epsilon) != null) {
             return 0d;
         }
         V3D_LineSegment_d loi = getLineOfIntersection(l, epsilon);
@@ -1153,7 +1153,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
             }
         } else {
             V3D_Point_d lsp = loi.getP();
-            //V3D_Point lsq = loi.getQ();
+            V3D_Point_d lsq = loi.getQ();
             V3D_Plane_d plp = new V3D_Plane_d(tp, l.v);
             V3D_Plane_d plq = new V3D_Plane_d(tq, l.v);
             if (plp.isOnSameSide(lsp, tq, epsilon)) {
@@ -1164,10 +1164,14 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                      */
                     return loi;
                 } else {
-                    return new V3D_LineSegment_d(tq, lsp);
+                    return new V3D_LineSegment_d(tq, lsq);
                 }
             } else {
-                return new V3D_LineSegment_d(tp, lsp);
+                if (plq.isOnSameSide(lsp, tp, epsilon)) {
+                    return new V3D_LineSegment_d(tp, lsq);
+                } else {
+                    return new V3D_LineSegment_d(tp, lsp);
+                }
             }
         }
     }
@@ -1183,7 +1187,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public V3D_LineSegment_d getLineOfIntersection(V3D_LineSegment_d ls,
             double epsilon) {
-        V3D_FiniteGeometry_d ilsl = V3D_LineSegment_d.this.getIntersect(ls, epsilon);
+        V3D_FiniteGeometry_d ilsl = getIntersect(ls, epsilon);
         if (ilsl == null) {
             V3D_Point_d lsp = ls.getP();
             V3D_Point_d lsq = ls.getQ();
@@ -1244,9 +1248,12 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                     //return new V3D_LineSegment(tp, lsip);
                     //return new V3D_LineSegment(tloiq, getNearestPoint(this, tloiq));
                 } else {
-                    // tloip is on
-                    if (isBetween(tloip, epsilon)) {
-                        return new V3D_LineSegment_d(tloip, getNearestPoint(ls, tloip));
+                    if (isAligned(tloip, epsilon)) {
+                        if (ls.isAligned(tloiq, epsilon)) {
+                            return new V3D_LineSegment_d(tloip, tloiq);
+                        } else {
+                            return new V3D_LineSegment_d(tloip, getNearestPoint(ls, tloip));
+                        }
                     } else {
                         return new V3D_LineSegment_d(
                                 getNearestPoint(this, tloip),

@@ -155,6 +155,14 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
     public abstract boolean intersects(V3D_LineSegment_d l, double epsilon);
     
     /**
+     * @param r The ray to test if it intersects.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return {@code true} if {@code this} is intersected by {@code r}.
+     */
+    public abstract boolean intersects(V3D_Ray_d r, double epsilon);
+    
+    /**
      * @param t The triangle to test if it intersects.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
@@ -254,6 +262,27 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
                 && contains(ls.getQ(), epsilon);
     }
 
+    /**
+     * Identify if {@code this} contains {@code t}. Containment excludes the
+     * edge.
+     *
+     * @param t The triangle to test for containment.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return {@code true} if {@code this} contains {@code t}.
+     */
+    //public abstract boolean contains(V3D_Area_d a, double epsilon);
+    public boolean contains(V3D_Triangle_d t, double epsilon) {
+        if (getAABB().contains(t.getAABB())) {
+            // Faster than using the general method?
+            return contains(t.getPQ(), epsilon)
+                    && contains(t.getQR(), epsilon)
+                    && contains(t.getRP(), epsilon);
+        } else {
+            return false;
+        }
+    }
+    
     /**
      * Identify if {@code this} contains {@code a}. Containment excludes the
      * edge.

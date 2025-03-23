@@ -81,13 +81,13 @@ public class V3D_ConvexArea extends V3D_Area {
         points = new HashMap<>();
         //c.points.forEach(x -> points.put(points.size(), new V3D_Point(x)));
         triangles = new HashMap<>();
-        c.triangles.values().forEach(x ->
-                triangles.put(triangles.size(), new V3D_Triangle(x)));
+        c.triangles.values().forEach(x
+                -> triangles.put(triangles.size(), new V3D_Triangle(x)));
         edges = new HashMap<>();
-        c.edges.values().forEach(x ->
-                edges.put(edges.size(), new V3D_LineSegment(x)));
+        c.edges.values().forEach(x
+                -> edges.put(edges.size(), new V3D_LineSegment(x)));
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -108,11 +108,11 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param n The normal for the plane.
      * @param points A non-empty list of points in a plane given by n.
      */
-    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Vector n, 
+    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Vector n,
             V3D_Point... points) {
         this(oom, rm, n, Arrays.asList(points));
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -121,9 +121,9 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param n The normal for the plane.
      * @param points A non-empty list of points in a plane given by n.
      */
-    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Vector n, 
+    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Vector n,
             List<V3D_Point> points) {
-        super(points.get(0).env, points.get(0).offset, new V3D_Plane( points.get(0), n));
+        super(points.get(0).env, points.get(0).offset, new V3D_Plane(points.get(0), n));
         this.points = new HashMap<>();
         triangles = new HashMap<>();
         edges = new HashMap<>();
@@ -260,7 +260,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param gs The input convex hulls.
      */
     public V3D_ConvexArea(int oom, RoundingMode rm, V3D_ConvexArea... gs) {
-        this(oom, rm, gs[0].triangles.get(0).getPl(oom, rm).n, 
+        this(oom, rm, gs[0].triangles.get(0).getPl(oom, rm).n,
                 V3D_FiniteGeometry.getPoints(gs, oom, rm));
     }
 
@@ -273,17 +273,17 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param t The triangle used to set the normal and to add to the convex
      * hull with ch.
      */
-    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_ConvexArea ch, 
+    public V3D_ConvexArea(int oom, RoundingMode rm, V3D_ConvexArea ch,
             V3D_Triangle t) {
-        this(oom, rm, ch.triangles.get(0).getPl(oom, rm).n, 
+        this(oom, rm, ch.triangles.get(0).getPl(oom, rm).n,
                 V3D_FiniteGeometry.getPoints(oom, rm, ch, t));
     }
-    
+
     @Override
-    public HashMap<Integer, V3D_Point> getPoints(int oom,  RoundingMode rm) {
+    public HashMap<Integer, V3D_Point> getPoints(int oom, RoundingMode rm) {
         throw new UnsupportedOperationException();
     }
-            
+
     @Override
     public V3D_Point[] getPointsArray(int oom, RoundingMode rm) {
         int np = points.size();
@@ -388,7 +388,9 @@ public class V3D_ConvexArea extends V3D_Area {
 //            V3D_Geometry g = i.getIntersect(t, oom, rm);
 //            if (g instanceof V3D_Triangle gt) {
 //                if (!t.equals(gt, oom, rm)) {
-////                    System.out.println(gt);
+    
+
+    ////                    System.out.println(gt);
 ////                    System.out.println(t);
 ////                    t.equals(gt, oom, rm);
 //                    return false;
@@ -416,7 +418,7 @@ public class V3D_ConvexArea extends V3D_Area {
         V3D_Triangle t = triangles.get(0);
         pl = new V3D_Plane(pt, offset, t.pv, t.qv, t.rv, oom, rm);
     }
-    
+
     @Override
     public V3D_AABB getAABB(int oom, RoundingMode rm) {
         if (en == null) {
@@ -504,13 +506,102 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometry getIntersection(V3D_Plane p, int oom, RoundingMode rm) {
+    public V3D_FiniteGeometry getIntersect(V3D_Plane p, int oom, RoundingMode rm) {
         if (this.triangles.get(0).getPl(oom, rm).equalsIgnoreOrientation(p, oom, rm)) {
             return this;
         }
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * @param l The line to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A point or line segment.
+     */
+    public V3D_FiniteGeometry getIntersect(V3D_Line l, int oom,
+            RoundingMode rm) {
+        V3D_Geometry i = getPl(oom, rm).getIntersect(l, oom, rm);
+        if (i == null) {
+            return null;
+        } else if (i instanceof V3D_Point ip) {
+            if (intersects00(ip, oom, rm)) {
+                return ip;
+            } else {
+                return null;
+            }
+        } else {
+            throw new UnsupportedOperationException();
+            /**
+             * As the area is convex, there is a line segment which is 
+             * the intersection. Either the plane of an edge is parallel to the 
+             * line or intersects the line at a point. The points of the line 
+             * segment are those intersection points that are different and that 
+             * are a minimum distance apart (and are on the edge of the area).
+             */
+//            V3D_FiniteGeometry lpqi = getPQ(oom, rm).getIntersect(l, oom, rm);
+//            V3D_FiniteGeometry lqri = getQR(oom, rm).getIntersect(l, oom, rm);
+//            V3D_FiniteGeometry lrpi = getRP(oom, rm).getIntersect(l, oom, rm);
+//            if (lpqi == null) {
+//                if (lqri == null) {
+//                    return null; // This should not happen!
+//                } else {
+//                    if (lrpi == null) {
+//                        return lqri;
+//                    } else {
+//                        return getGeometry(env, ((V3D_Point) lqri).getVector(oom, rm),
+//                                ((V3D_Point) lrpi).getVector(oom, rm), oom, rm);
+//                    }
+//                }
+//            } else if (lpqi instanceof V3D_Point lpqip) {
+//                if (lqri == null) {
+//                    if (lrpi == null) {
+//                        return lpqi;
+//                    } else {
+//                        return getGeometry(env, lpqip.getVector(oom, rm),
+//                                ((V3D_Point) lrpi).getVector(oom, rm), oom, rm);
+//                    }
+//                } else if (lqri instanceof V3D_Point lqrip) {
+//                    if (lrpi == null) {
+//                        return getGeometry(env, lqrip.getVector(oom, rm),
+//                                lpqip.getVector(oom, rm), oom, rm);
+//                    } else if (lrpi instanceof V3D_LineSegment) {
+//                        return lrpi;
+//                    } else {
+//                        return getGeometry(lpqip, lqrip, (V3D_Point) lrpi, oom, rm);
+//                    }
+//                } else {
+//                    return lqri;
+//                }
+//            } else {
+//                return lpqi;
+//            }
+        }
+    }
+
+    /**
+     * @param r The ray to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A point or line segment.
+     */
+    public V3D_FiniteGeometry getIntersect(V3D_Ray r, int oom,
+            RoundingMode rm) {
+        V3D_Geometry i = getPl(oom, rm).getIntersect(r.l, oom, rm);
+        if (i == null) {
+            return null;
+        } else if (i instanceof V3D_Point ip) {
+            if (r.isAligned(ip, oom, rm)
+                && intersects00(ip, oom, rm)) {
+                return ip;
+            } else {
+                return null;
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+    
     /**
      * Get the intersection between the geometry and the triangle {@code t}.
      *
@@ -519,7 +610,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometry getIntersection(V3D_Triangle t, int oom, RoundingMode rm) {
+    public V3D_FiniteGeometry getIntersect(V3D_Triangle t, int oom, RoundingMode rm) {
         // Create a set all the intersecting triangles from this.
         List<V3D_Point> ts = new ArrayList<>();
         for (V3D_Triangle t2 : triangles.values()) {
@@ -545,9 +636,8 @@ public class V3D_ConvexArea extends V3D_Area {
 //                return getGeometry(oom, t2s.toArray(V3D_Triangle[]::new));
     }
 
-    
     @Override
-    public V3D_ConvexArea rotate(V3D_Ray ray, V3D_Vector uv, 
+    public V3D_ConvexArea rotate(V3D_Ray ray, V3D_Vector uv,
             Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
         theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
         if (theta.compareTo(BigRational.ZERO) == 0) {
@@ -556,9 +646,9 @@ public class V3D_ConvexArea extends V3D_Area {
             return rotateN(ray, uv, bd, theta, oom, rm);
         }
     }
-    
+
     @Override
-    public V3D_ConvexArea rotateN(V3D_Ray ray, V3D_Vector uv, 
+    public V3D_ConvexArea rotateN(V3D_Ray ray, V3D_Vector uv,
             Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
         V3D_Triangle[] rts = new V3D_Triangle[triangles.size()];
         for (int i = 0; i < triangles.size(); i++) {
@@ -580,7 +670,7 @@ public class V3D_ConvexArea extends V3D_Area {
      */
     private void compute(ArrayList<V3D_Point> pts, V3D_Point p0, V3D_Point p1,
             V3D_Vector n, int index, int oom, RoundingMode rm) {
-        V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(env, 
+        V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(env,
                 offset, p0.rel.add(n, oom, rm)), oom, rm);
         AB ab = new AB(pts, p0, p1, pl, oom, rm);
         {
@@ -623,7 +713,7 @@ public class V3D_ConvexArea extends V3D_Area {
         {
             // Process ab.b
             points.put(this.points.size(), p1);
-            index ++;
+            index++;
             if (!ab.b.isEmpty()) {
                 if (ab.b.size() > 1) {
                     V3D_Point bpt = ab.b.get(ab.maxbIndex);
@@ -661,7 +751,7 @@ public class V3D_ConvexArea extends V3D_Area {
     @Override
     public boolean contains(V3D_Point pt, int oom, RoundingMode rm) {
         if (intersects(pt, oom, rm)) {
-            return !getEdges(oom, rm).values().parallelStream().anyMatch(x 
+            return !getEdges(oom, rm).values().parallelStream().anyMatch(x
                     -> x.intersects(pt, oom, rm));
         }
         return false;
@@ -795,7 +885,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @return null, the whole or a part of this.
      */
     public V3D_FiniteGeometry clip(V3D_Plane pl, V3D_Point p, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry i = getIntersection(pl, oom, rm);
+        V3D_FiniteGeometry i = getIntersect(pl, oom, rm);
         if (i == null) {
             V3D_Point pp = this.triangles.get(0).getPl(oom, rm).getP();
             if (pl.isOnSameSide(pp, p, oom, rm)) {
@@ -910,8 +1000,8 @@ public class V3D_ConvexArea extends V3D_Area {
     /**
      * If pts are all equal then a V3D_Point is returned. If two are different,
      * then a V3D_LineSegment is returned. Three different, then a V3D_Triangle
-     * is returned. If four or more are different then a V3D_ConvexArea
-     * is returned.
+     * is returned. If four or more are different then a V3D_ConvexArea is
+     * returned.
      *
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -949,9 +1039,10 @@ public class V3D_ConvexArea extends V3D_Area {
             }
         }
     }
-    
+
     /**
-     * Identify if this is intersected by point {@code p}.
+     * Identify if this is intersected by point {@code p} first checking the
+     * Axis Aligned Bounding Box, then checking the point is on the plane.
      *
      * @param pt The point to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
@@ -961,28 +1052,49 @@ public class V3D_ConvexArea extends V3D_Area {
     @Override
     public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
         if (getAABB(oom, rm).intersects(pt, oom, rm)) {
-            // Check point is on the plane. 
-            if (getPl(oom, rm).intersects(pt, oom, rm)) {
-                // Check point is in a triangle
-                return intersects0(pt, oom, rm);
-            }
+            return intersects0(pt, oom, rm);
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**
-     * Identify if this is intersected by line segment {@code l}.
+     * Identify if this is intersected by point {@code p} first checking if the
+     * point is on the plane. There is no check on the Axis Aligned Bounding 
+     * Box.
      *
      * @param pt The point to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} iff the geometry is intersected by {@code p}.
+     */
+    //@Override
+    public boolean intersects0(V3D_Point pt, int oom, RoundingMode rm) {
+        // Check point is on the plane. 
+        if (getPl(oom, rm).intersects(pt, oom, rm)) {
+            // Check point is in a triangle
+            return intersects00(pt, oom, rm);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Identify if this is intersected by point {@code p}. There is no check to 
+     * evaluate if {@code p} intersects the Axis Aligned Bounding Box or if it 
+     * intersects the plane.
+     *
+     * @param p The point to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff {@code this} is intersected by {@code p}.
      */
-    public boolean intersects0(V3D_Point pt, int oom, RoundingMode rm) {
+    //@Override
+    public boolean intersects00(V3D_Point p, int oom, RoundingMode rm) {
         return triangles.values().parallelStream().anyMatch(x
-                -> x.intersects(pt, oom, rm));
+                -> x.intersects00(p, oom, rm));
     }
-    
+
     /**
      * Identify if this is intersected by point {@code p}.
      *
@@ -999,7 +1111,7 @@ public class V3D_ConvexArea extends V3D_Area {
         }
         return false;
     }
-    
+
     /**
      * Identify if this is intersected by line {@code l}.
      *
@@ -1026,7 +1138,7 @@ public class V3D_ConvexArea extends V3D_Area {
         return triangles.values().parallelStream().anyMatch(x
                 -> x.intersects(l, oom, rm));
     }
-    
+
     /**
      * Identify if this is intersected by line segment {@code l}.
      *
@@ -1054,6 +1166,26 @@ public class V3D_ConvexArea extends V3D_Area {
                 -> x.intersects(l, oom, rm));
     }
 
+    /**
+     * If no point aligns, then returns false, otherwise the intersection is 
+     * computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Ray, int, java.math.RoundingMode)}
+     *
+     * @param r The ray to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if l intersects this.
+     */
+    @Override
+    public boolean intersects(V3D_Ray r, int oom, RoundingMode rm) {
+        if (getPoints(oom, rm).values().parallelStream().anyMatch(x
+            -> r.isAligned(x, oom, rm))) {
+            return getIntersect(r, oom, rm) != null;
+        } else {
+            return false;
+        }
+    }
+    
     /**
      * Identify if this is intersected by triangle {@code t}.
      *
@@ -1133,6 +1265,23 @@ public class V3D_ConvexArea extends V3D_Area {
                 -> ch.intersects0(x, oom, rm))
                 || ch.triangles.values().parallelStream().anyMatch(x
                         -> intersects0(x, oom, rm));
+    }
+    
+    /**
+     * Get the minimum distance squared to {@code pt}.
+     *
+     * @param pt A point.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The distance squared to {@code p}.
+     */
+    public BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
+        Iterator<V3D_Triangle> ite = triangles.values().iterator();
+        BigRational r = ite.next().getDistanceSquared(pt, oom, rm);
+        while(ite.hasNext()) {
+            r = BigRational.min(r, ite.next().getDistanceSquared(pt, oom, rm));
+        }
+        return r;
     }
 
 }

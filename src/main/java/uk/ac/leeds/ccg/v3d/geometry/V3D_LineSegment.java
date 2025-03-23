@@ -1116,7 +1116,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             }
         } else {
             V3D_Point lsp = loi.getP();
-            //V3D_Point lsq = loi.getQ();
+            V3D_Point lsq = loi.getQ(oom, rm);
             V3D_Plane plp = new V3D_Plane(tp, l.v);
             V3D_Plane plq = new V3D_Plane(tq, l.v);
             if (plp.isOnSameSide(lsp, tq, oom, rm)) {
@@ -1127,10 +1127,14 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                      */
                     return loi;
                 } else {
-                    return new V3D_LineSegment(tq, lsp, oom, rm);
+                    return new V3D_LineSegment(tq, lsq, oom, rm);
                 }
             } else {
-                return new V3D_LineSegment(tp, lsp, oom, rm);
+                if (plq.isOnSameSide(lsp, tp, oom, rm)) {
+                    return new V3D_LineSegment(tp, lsq, oom, rm);
+                } else {
+                    return new V3D_LineSegment(tp, lsp, oom, rm);
+                }
             }
         }
     }
@@ -1206,9 +1210,12 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                     //return new V3D_LineSegment(tp, lsip, oom, rm);
                     //return new V3D_LineSegment(tloiq, getNearestPoint(this, tloiq, oom, rm), oom, rm);
                 } else {
-                    // tloip is on
                     if (isAligned(tloip, oom, rm)) {
-                        return new V3D_LineSegment(tloip, getNearestPoint(ls, tloip, oom, rm), oom, rm);
+                        if (ls.isAligned(tloiq, oom, rm)) {
+                            return new V3D_LineSegment(tloip, tloiq, oom, rm);
+                        } else {
+                            return new V3D_LineSegment(tloip, getNearestPoint(ls, tloip, oom, rm), oom, rm);
+                        }
                     } else {
                         return new V3D_LineSegment(
                                 getNearestPoint(this, tloip, oom, rm),

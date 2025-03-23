@@ -25,9 +25,9 @@ import java.util.TreeSet;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 
 /**
- * A class for representing coplanar convex hulls. An algorithm for generating 
- * a convex hull from a set of coplanar points known as the "quick hull" 
- * (see <a href="https://en.wikipedia.org/wiki/Quickhull">
+ * A class for representing coplanar convex hulls. An algorithm for generating a
+ * convex hull from a set of coplanar points known as the "quick hull" (see
+ * <a href="https://en.wikipedia.org/wiki/Quickhull">
  * https://en.wikipedia.org/wiki/Quickhull</a>) :
  * <ol>
  * <li>Partition the points:
@@ -76,16 +76,16 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     public V3D_ConvexArea_d(V3D_ConvexArea_d c) {
         super(c.env, c.offset, c.pl);
         points = new HashMap<>();
-        c.points.values().forEach(x ->
-                points.put(points.size(), new V3D_Point_d(x)));
+        c.points.values().forEach(x
+                -> points.put(points.size(), new V3D_Point_d(x)));
         triangles = new HashMap<>();
-        c.triangles.values().forEach(x ->
-                triangles.put(triangles.size(), new V3D_Triangle_d(x)));
+        c.triangles.values().forEach(x
+                -> triangles.put(triangles.size(), new V3D_Triangle_d(x)));
         edges = new HashMap<>();
-        c.edges.values().forEach(x ->
-                edges.put(edges.size(), new V3D_LineSegment_d(x)));
+        c.edges.values().forEach(x
+                -> edges.put(edges.size(), new V3D_LineSegment_d(x)));
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -94,10 +94,10 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * @param triangles A non-empty list of coplanar triangles.
      */
     public V3D_ConvexArea_d(double epsilon, V3D_Triangle_d... triangles) {
-        this(epsilon, triangles[0].pl.n, 
+        this(epsilon, triangles[0].pl.n,
                 V3D_Triangle_d.getPoints(triangles, epsilon));
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -106,11 +106,11 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * @param n The normal for the plane.
      * @param points A non-empty list of points in a plane given by n.
      */
-    public V3D_ConvexArea_d(double epsilon, V3D_Vector_d n, 
+    public V3D_ConvexArea_d(double epsilon, V3D_Vector_d n,
             V3D_Point_d... points) {
         this(epsilon, n, Arrays.asList(points));
     }
-    
+
     /**
      * Create a new instance.
      *
@@ -119,9 +119,9 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * @param n The normal for the plane.
      * @param points A non-empty list of points in a plane given by n.
      */
-    public V3D_ConvexArea_d(double epsilon, V3D_Vector_d n, 
+    public V3D_ConvexArea_d(double epsilon, V3D_Vector_d n,
             List<V3D_Point_d> points) {
-        super(points.get(0).env, points.get(0).offset, new V3D_Plane_d( points.get(0), n));
+        super(points.get(0).env, points.get(0).offset, new V3D_Plane_d(points.get(0), n));
         this.points = new HashMap<>();
         triangles = new HashMap<>();
         edges = new HashMap<>();
@@ -244,7 +244,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
         }
         edges.put(edges.size(), new V3D_LineSegment_d(rt, pt));
         // The edges should only intersect at the ends!
-        
+
         if (triangles.isEmpty()) {
             int debug = 1;
         }
@@ -258,7 +258,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * @param gs The input convex hulls.
      */
     public V3D_ConvexArea_d(double epsilon, V3D_ConvexArea_d... gs) {
-        this(epsilon, gs[0].triangles.get(0).pl.n, 
+        this(epsilon, gs[0].triangles.get(0).pl.n,
                 V3D_FiniteGeometry_d.getPoints(gs));
     }
 
@@ -273,7 +273,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     public V3D_ConvexArea_d(double epsilon, V3D_ConvexArea_d ch,
             V3D_Triangle_d t) {
-        this(epsilon, ch.triangles.get(0).pl.n, 
+        this(epsilon, ch.triangles.get(0).pl.n,
                 V3D_FiniteGeometry_d.getPoints(ch, t));
     }
 
@@ -281,7 +281,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     public HashMap<Integer, V3D_Point_d> getPoints() {
         throw new UnsupportedOperationException();
     }
-    
+
     @Override
     public V3D_Point_d[] getPointsArray() {
         int np = points.size();
@@ -291,7 +291,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
         }
         return re;
     }
-    
+
     /**
      * @return A collection of the external edges.
      */
@@ -384,7 +384,9 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
 //            V3D_Geometry g = i.getIntersect(t);
 //            if (g instanceof V3D_Triangle gt) {
 //                if (!t.equals(gt)) {
-////                    System.out.println(gt);
+    
+
+    ////                    System.out.println(gt);
 ////                    System.out.println(t);
 ////                    t.equals(gt);
 //                    return false;
@@ -510,6 +512,28 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     }
 
     /**
+     * @param r The ray to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return A point or line segment.
+     */
+    public V3D_FiniteGeometry_d getIntersect(V3D_Ray_d r, double epsilon) {
+        V3D_Geometry_d i = triangles.get(0).pl.getIntersect(r.l, epsilon);
+        if (i == null) {
+            return null;
+        } else if (i instanceof V3D_Point_d ip) {
+            if (r.isAligned(ip, epsilon)
+                    && intersects0(ip, epsilon)) {
+                return ip;
+            } else {
+                return null;
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    /**
      * Get the intersection between the geometry and the triangle {@code t}.
      *
      * @param t The triangle to intersect with.
@@ -529,7 +553,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
         if (tsu.isEmpty()) {
             return null;
         } else {
-            return new V3D_ConvexArea_d(epsilon, t.pl.n, 
+            return new V3D_ConvexArea_d(epsilon, t.pl.n,
                     tsu.toArray(V3D_Point_d[]::new)).simplify(epsilon);
         }
 //        switch (size) {
@@ -558,9 +582,9 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
             return rotateN(ray, uv, theta, epsilon);
         }
     }
-    
+
     @Override
-    public V3D_ConvexArea_d rotateN(V3D_Ray_d ray, 
+    public V3D_ConvexArea_d rotateN(V3D_Ray_d ray,
             V3D_Vector_d uv, double theta, double epsilon) {
         V3D_Triangle_d[] rts = new V3D_Triangle_d[triangles.size()];
         for (int i = 0; i < triangles.size(); i++) {
@@ -583,7 +607,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     private void compute(ArrayList<V3D_Point_d> pts, V3D_Point_d p0,
             V3D_Point_d p1, V3D_Vector_d n, int index, double epsilon) {
-        V3D_Plane_d pl = new V3D_Plane_d(p0, p1, new V3D_Point_d(env, 
+        V3D_Plane_d pl = new V3D_Plane_d(p0, p1, new V3D_Point_d(env,
                 p0.offset, p0.rel.add(n)));
         AB ab = new AB(pts, pl, epsilon);
         // Process ab.a
@@ -622,7 +646,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
             }
         }
         points.put(this.points.size(), p1);
-        index ++;
+        index++;
         // Process ab.b
         if (!ab.b.isEmpty()) {
             if (ab.b.size() == 1) {
@@ -632,13 +656,13 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
                 V3D_Point_d bpt = ab.b.get(ab.maxbIndex);
                 points.put(index, bpt);
                 index++;
-                
+
                 // Debug
                 if (bpt.equals(epsilon, p1)) {
                     int debug = 1;
                     ab = new AB(pts, pl, epsilon);
                 }
-                
+
                 V3D_Triangle_d btr = new V3D_Triangle_d(p0, p1, bpt); // p1 and bpt might be the same!
                 TreeSet<Integer> removeIndexes = new TreeSet<>();
                 for (int i = 0; i < ab.b.size(); i++) {
@@ -676,11 +700,25 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     public boolean intersects(V3D_Point_d p, double epsilon) {
         if (getAABB().intersects(p)) {
-            // Check point is on the plane. 
-            if (triangles.get(0).pl.intersects(epsilon, p)) {
-                // Check point is in a triangle
-                return intersects0(p, epsilon);
-            }
+            return intersects0(p, epsilon);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Identify if this is intersected by {@code p}.
+     *
+     * @param p The point to test for intersection with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if {@code this} is intersected by {@code p}.
+     */
+    public boolean intersects0(V3D_Point_d p, double epsilon) {
+        // Check point is on the plane. 
+        if (triangles.get(0).pl.intersects(epsilon, p)) {
+            // Check point is in a triangle
+            return intersects00(p, epsilon);
         }
         return false;
     }
@@ -693,11 +731,11 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * equal.
      * @return {@code true} if {@code this} is intersected by {@code p}.
      */
-    public boolean intersects0(V3D_Point_d p, double epsilon) {
+    public boolean intersects00(V3D_Point_d p, double epsilon) {
         return triangles.values().parallelStream().anyMatch(x
                 -> x.intersects(p, epsilon));
     }
-    
+
     /**
      * Identify if this is intersected by point {@code p}.
      *
@@ -714,7 +752,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
         }
         return false;
     }
-    
+
     /**
      * Identify if this is intersected by line {@code l}.
      *
@@ -741,7 +779,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
         return triangles.values().parallelStream().anyMatch(x
                 -> x.intersects(l, epsilon));
     }
-    
+
     /**
      * Identify if this is intersected by line segment {@code l}.
      *
@@ -768,7 +806,27 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
         return triangles.values().parallelStream().anyMatch(x
                 -> x.intersects(l, epsilon));
     }
-    
+
+    /**
+     * If no point aligns, then returns false, otherwise the intersection is
+     * computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Ray, int, java.math.RoundingMode)}
+     *
+     * @param r The ray to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if l intersects this.
+     */
+    @Override
+    public boolean intersects(V3D_Ray_d r, double epsilon) {
+        if (getPoints().values().parallelStream().anyMatch(x
+                -> r.isAligned(x, epsilon))) {
+            return getIntersect(r, epsilon) != null;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Identify if this is intersected by triangle {@code t}.
      *
@@ -857,7 +915,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
                     }
                 }
             }
-    //        b = V3D_Point_d.getUnique(b, epsilon);
+            //        b = V3D_Point_d.getUnique(b, epsilon);
             maxbIndex = 0;
             if (b.size() > 1) {
                 V3D_Point_d pt0 = b.get(0);
@@ -941,7 +999,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
             } else {
                 pts.add(il.getP());
                 pts.add(il.getQ());
-          //      pts = V3D_Point_d.getUnique(pts, epsilon);
+                //      pts = V3D_Point_d.getUnique(pts, epsilon);
                 return V3D_ConvexArea_d.getGeometry(epsilon,
                         pts.toArray(V3D_Point_d[]::new));
 //                return new V3D_ConvexHullCoplanarDouble(
@@ -1073,7 +1131,6 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
                     return new V3D_ConvexArea_d(epsilon, pl.n, pts);
                 }
             }
-
 
         }
     }
