@@ -892,7 +892,7 @@ public class V3D_Triangle extends V3D_Area {
         return contains(ls.getP(), oom, rm)
                 && contains(ls.getQ(oom, rm), oom, rm);
     }
-    
+
     @Override
     public boolean contains(V3D_Area a, int oom, RoundingMode rm) {
         return a.getPoints(oom, rm).values().parallelStream().allMatch(x
@@ -1004,6 +1004,7 @@ public class V3D_Triangle extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
+    @Override
     public V3D_FiniteGeometry getIntersect(V3D_Ray r, int oom,
             RoundingMode rm) {
         V3D_FiniteGeometry g = getIntersect(r.l, oom, rm);
@@ -1054,20 +1055,21 @@ public class V3D_Triangle extends V3D_Area {
         V3D_FiniteGeometry g = getIntersect(l.l, oom, rm);
         if (g == null) {
             return null;
-        }
-        if (g instanceof V3D_Point gp) {
+        } else if (g instanceof V3D_Point gp) {
             if (l.isAligned(gp, oom, rm)) {
                 return gp;
             } else {
                 return null;
             }
-        }
-        V3D_LineSegment ls = (V3D_LineSegment) g;
-        if (ls.isAligned(l.getP(), oom, rm) || ls.isAligned(l.getQ(oom, rm), oom, rm)
-                || l.isAligned(getP(oom, rm), oom, rm)) {
-            return l.getIntersectLS((V3D_LineSegment) g, oom, rm);
         } else {
-            return null;
+            V3D_LineSegment ls = (V3D_LineSegment) g;
+            if (ls.isAligned(l.getP(), oom, rm)
+                    || ls.isAligned(l.getQ(oom, rm), oom, rm)
+                    || l.isAligned(getP(oom, rm), oom, rm)) {
+                return l.getIntersectLS((V3D_LineSegment) g, oom, rm);
+            } else {
+                return null;
+            }
         }
 //        V3D_LineSegment ls = (V3D_LineSegment) g;
 //        V3D_Point lsp = ls.getP();
@@ -1368,18 +1370,18 @@ public class V3D_Triangle extends V3D_Area {
                 V3D_Point pttp = t.getP(oom, rm);
                 V3D_Point pttq = t.getQ(oom, rm);
                 V3D_Point pttr = t.getR(oom, rm);
-                boolean pi = intersects(pttp, oom, rm);
-                boolean qi = intersects(pttq, oom, rm);
-                boolean ri = intersects(pttr, oom, rm);
+                boolean pi = intersects00(pttp, oom, rm);
+                boolean qi = intersects00(pttq, oom, rm);
+                boolean ri = intersects00(pttr, oom, rm);
                 if (pi && qi && ri) {
                     return t;
                 }
                 V3D_Point ptp = getP(oom, rm);
                 V3D_Point ptq = getQ(oom, rm);
                 V3D_Point ptr = getR(oom, rm);
-                boolean pit = t.intersects(ptp, oom, rm);
-                boolean qit = t.intersects(ptq, oom, rm);
-                boolean rit = t.intersects(ptr, oom, rm);
+                boolean pit = t.intersects00(ptp, oom, rm);
+                boolean qit = t.intersects00(ptq, oom, rm);
+                boolean rit = t.intersects00(ptr, oom, rm);
                 if (pit && qit && rit) {
                     return this;
                 }
@@ -2377,7 +2379,7 @@ public class V3D_Triangle extends V3D_Area {
      *
      * @param l a line segment either equal to one of the edges of this - null
      * null null null null null null null null null null null null null null
-     * null null null null null null null null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
+     * null null null null null null null null null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
      * {@link #getQR(int, java.math.RoundingMode)} or
      * {@link #getRP(int, java.math.RoundingMode)}.
      * @param oom The Order of Magnitude for the precision.
@@ -2791,8 +2793,8 @@ public class V3D_Triangle extends V3D_Area {
     }
 
     /**
-     * This first tests if there is intersection with the Axis Aligned Bounding 
-     * Boxes, then computes the intersect and tests if it is null. If the 
+     * This first tests if there is intersection with the Axis Aligned Bounding
+     * Boxes, then computes the intersect and tests if it is null. If the
      * intersection is wanted use:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment, int, java.math.RoundingMode)}
      *
@@ -2811,9 +2813,9 @@ public class V3D_Triangle extends V3D_Area {
             return false;
         }
     }
-    
+
     /**
-     * If no point aligns, then returns false, otherwise the intersection is 
+     * If no point aligns, then returns false, otherwise the intersection is
      * computed, so if that is needed use:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Ray, int, java.math.RoundingMode)}
      *
@@ -2825,8 +2827,8 @@ public class V3D_Triangle extends V3D_Area {
     @Override
     public boolean intersects(V3D_Ray r, int oom, RoundingMode rm) {
         if (r.isAligned(getP(oom, rm), oom, rm)
-            || r.isAligned(getQ(oom, rm), oom, rm)
-            || r.isAligned(getR(oom, rm), oom, rm)) {
+                || r.isAligned(getQ(oom, rm), oom, rm)
+                || r.isAligned(getR(oom, rm), oom, rm)) {
             return getIntersect(r, oom, rm) != null;
         } else {
             return false;
@@ -2854,7 +2856,7 @@ public class V3D_Triangle extends V3D_Area {
             return false;
         }
     }
-    
+
     /**
      * @param a An area to test for intersection with.
      * @param oom The Order of Magnitude for the precision.

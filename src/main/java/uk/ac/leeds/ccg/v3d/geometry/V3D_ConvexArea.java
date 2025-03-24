@@ -585,6 +585,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return A point or line segment.
      */
+    @Override
     public V3D_FiniteGeometry getIntersect(V3D_Ray r, int oom,
             RoundingMode rm) {
         V3D_Geometry i = getPl(oom, rm).getIntersect(r.l, oom, rm);

@@ -838,6 +838,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
+    @Override
     public V3D_FiniteGeometry getIntersect(V3D_Ray r, int oom,
             RoundingMode rm) {
         V3D_FiniteGeometry g = getIntersect(r.l, oom, rm);

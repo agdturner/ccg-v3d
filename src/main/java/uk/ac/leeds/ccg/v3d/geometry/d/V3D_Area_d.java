@@ -297,4 +297,15 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
         return a.getPoints().values().parallelStream().allMatch(x
                 -> contains(x, epsilon));
     }
+    
+    /**
+     * Get the intersection between the geometry and the ray {@code r}.
+     *
+     * @param r The ray to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The V3D_Geometry.
+     */
+    public abstract V3D_FiniteGeometry_d getIntersect(V3D_Ray_d r,
+            double epsilon);
 }

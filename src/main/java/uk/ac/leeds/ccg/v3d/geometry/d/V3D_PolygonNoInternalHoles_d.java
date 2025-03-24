@@ -20,8 +20,8 @@ import java.util.HashMap;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 
 /**
- * Defined by a V3D_ConvexArea_d and a collection of non edge sharing 
- * V3D_PolygonNoInternalHoles_d areas each defining an external hole or 
+ * Defined by a V3D_ConvexArea_d and a collection of non edge sharing
+ * V3D_PolygonNoInternalHoles_d areas each defining an external hole or
  * concavity.
  *
  * @author Andy Turner
@@ -86,7 +86,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      */
-    public V3D_PolygonNoInternalHoles_d(V3D_Point_d[] points, V3D_Vector_d n, 
+    public V3D_PolygonNoInternalHoles_d(V3D_Point_d[] points, V3D_Vector_d n,
             double epsilon) {
         this(points, new V3D_ConvexArea_d(epsilon, n, points), epsilon);
     }
@@ -99,7 +99,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      */
-    public V3D_PolygonNoInternalHoles_d(V3D_Point_d[] points, 
+    public V3D_PolygonNoInternalHoles_d(V3D_Point_d[] points,
             V3D_ConvexArea_d ch, double epsilon) {
         super(points[0].env, V3D_Vector_d.ZERO, ch.pl);
         this.points = new HashMap<>();
@@ -116,11 +116,11 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
         while (!foundStart) {
             p.p0 = points[i0];
             p.p0int = V3D_LineSegment_d.intersects(epsilon, p.p0,
-                ch.edges.values());
+                    ch.edges.values());
             if (p.p0int) {
                 foundStart = true;
             }
-            i0 ++;
+            i0++;
         }
         int i1 = i0;
         p.p1 = points[i1];
@@ -162,7 +162,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
                     p.pts.add(p.p1);
                     externalHoles.put(externalHoles.size(),
                             new V3D_PolygonNoInternalHoles_d(
-                                    p.pts.toArray(V3D_Point_d []::new), 
+                                    p.pts.toArray(V3D_Point_d[]::new),
                                     pl.n, epsilon));
                     p.pts = new ArrayList<>();
                     p.isHole = false;
@@ -219,7 +219,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * @param edges What {@link #edges} is set to.
      * @param externalHoles What {@link #externalHoles} is set to.
      */
-    public V3D_PolygonNoInternalHoles_d(HashMap<Integer, V3D_Point_d > points,
+    public V3D_PolygonNoInternalHoles_d(HashMap<Integer, V3D_Point_d> points,
             V3D_ConvexArea_d ch, HashMap<Integer, V3D_LineSegment_d> edges,
             HashMap<Integer, V3D_PolygonNoInternalHoles_d> externalHoles) {
         super(ch.env, V3D_Vector_d.ZERO, ch.pl);
@@ -269,7 +269,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
         s.append("\n)");
         return s.toString();
     }
-    
+
     /**
      * @return {@link edges}.
      */
@@ -296,18 +296,18 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     }
 
     @Override
-    public V3D_Point_d [] getPointsArray() {
-        return points.values().toArray(new V3D_Point_d [points.size()]);
+    public V3D_Point_d[] getPointsArray() {
+        return points.values().toArray(new V3D_Point_d[points.size()]);
         //return points.values().toArray(V3D_Point_d []::new);
     }
 
     @Override
-    public HashMap<Integer, V3D_Point_d > getPoints() {
+    public HashMap<Integer, V3D_Point_d> getPoints() {
         return points;
     }
 
     @Override
-    public V3D_AABB_d  getAABB() {
+    public V3D_AABB_d getAABB() {
         if (en == null) {
             en = ch.getAABB();
         }
@@ -330,7 +330,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
             return false;
         }
     }
-    
+
     /**
      * Identify if this is intersected by pt. No AABB check.
      *
@@ -346,7 +346,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
             return false;
         }
     }
-    
+
     /**
      * Identify if this is intersected by pt.
      *
@@ -355,11 +355,24 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * considered equal.
      * @return {@code true} iff there is an intersection.
      */
-    public boolean intersects00(V3D_Point_d  pt, double epsilon) {
+    public boolean intersects00(V3D_Point_d pt, double epsilon) {
         return ch.intersects(pt, epsilon)
-                && (!V3D_LineSegment_d.intersects(epsilon, pt, ch.edges.values())
+                && intersects000(pt, epsilon);
+    }
+
+    /**
+     * Identify if this is intersected by pt. It is assumed {@code pt}
+     * intersects with the convex hull;
+     *
+     * @param pt The point to test for intersection with.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return {@code true} iff there is an intersection.
+     */
+    public boolean intersects000(V3D_Point_d pt, double epsilon) {
+        return !V3D_LineSegment_d.intersects(epsilon, pt, ch.edges.values())
                 && !externalHoles.values().parallelStream().anyMatch(x
-                        -> x.contains(pt, epsilon)));
+                        -> x.contains(pt, epsilon));
     }
 
     /**
@@ -371,7 +384,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * @return {@code true} iff there is an intersection.
      */
     @Override
-    public boolean contains(V3D_Point_d  pt, double epsilon) {
+    public boolean contains(V3D_Point_d pt, double epsilon) {
         return intersects(pt, epsilon)
                 && !V3D_LineSegment_d.intersects(epsilon, pt, edges.values());
     }
@@ -398,7 +411,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * considered equal.
      * @return {@code true} iff there is containment.
      */
-    public boolean contains(V3D_Triangle_d  t, double epsilon) {
+    public boolean contains(V3D_Triangle_d t, double epsilon) {
         return contains(t.getP(), epsilon)
                 && contains(t.getQ(), epsilon)
                 && contains(t.getR(), epsilon);
@@ -412,7 +425,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * considered equal.
      * @return {@code true} iff there is containment.
      */
-    public boolean contains(V3D_Rectangle_d  r, double epsilon) {
+    public boolean contains(V3D_Rectangle_d r, double epsilon) {
         return contains(r.getP(), epsilon)
                 && contains(r.getQ(), epsilon)
                 && contains(r.getR(), epsilon)
@@ -427,19 +440,19 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * considered equal.
      * @return {@code true} iff there is containment.
      */
-    public boolean contains(V3D_AABB_d  aabb, double epsilon) {
+    public boolean contains(V3D_AABB_d aabb, double epsilon) {
         double xmin = aabb.getXMin();
         double xmax = aabb.getXMax();
         double ymin = aabb.getYMin();
         double ymax = aabb.getYMax();
         double zmin = aabb.getZMin();
         double zmax = aabb.getZMax();
-        return contains(new V3D_Point_d (env, xmin, ymin, zmin), epsilon)
-                && contains(new V3D_Point_d (env, xmin, ymin, zmax), epsilon)
-                && contains(new V3D_Point_d (env, xmin, ymax, zmin), epsilon)
-                && contains(new V3D_Point_d (env, xmin, ymax, zmax), epsilon)
-                && contains(new V3D_Point_d (env, xmax, ymax, zmin), epsilon)
-                && contains(new V3D_Point_d (env, xmax, ymin, zmax), epsilon);
+        return contains(new V3D_Point_d(env, xmin, ymin, zmin), epsilon)
+                && contains(new V3D_Point_d(env, xmin, ymin, zmax), epsilon)
+                && contains(new V3D_Point_d(env, xmin, ymax, zmin), epsilon)
+                && contains(new V3D_Point_d(env, xmin, ymax, zmax), epsilon)
+                && contains(new V3D_Point_d(env, xmax, ymax, zmin), epsilon)
+                && contains(new V3D_Point_d(env, xmax, ymin, zmax), epsilon);
     }
 
     /**
@@ -486,7 +499,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
 //                || !externalHoles.values().parallelStream().anyMatch(x
 //                        -> x.contains(l, epsilon)));
     }
-    
+
     /**
      * Identify if this is intersected by l.
      *
@@ -504,7 +517,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     }
 
     /**
-     * If no point aligns, then returns false, otherwise the intersection is 
+     * If no point aligns, then returns false, otherwise the intersection is
      * computed, so if that is needed use:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Ray, int, java.math.RoundingMode)}
      *
@@ -515,14 +528,14 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      */
     @Override
     public boolean intersects(V3D_Ray_d r, double epsilon) {
-        if (getPoints().values().parallelStream().anyMatch(x 
+        if (getPoints().values().parallelStream().anyMatch(x
                 -> r.isAligned(x, epsilon))) {
             return getIntersect(r, epsilon) != null;
         } else {
             return false;
         }
     }
-    
+
     /**
      * Identify if this is intersected by t.
      *
@@ -531,7 +544,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * considered equal.
      * @return {@code true} iff there is an intersection.
      */
-    public boolean intersects(V3D_Triangle_d  t, double epsilon) {
+    public boolean intersects(V3D_Triangle_d t, double epsilon) {
         return ch.intersects(t, epsilon)
                 && intersects0(t, epsilon);
     }
@@ -544,10 +557,10 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * considered equal.
      * @return {@code true} iff there is an intersection.
      */
-    public boolean intersects0(V3D_Triangle_d  t, double epsilon) {
-        V3D_Point_d  tp = t.getP();
-        V3D_Point_d  tq = t.getQ();
-        V3D_Point_d  tr = t.getR();
+    public boolean intersects0(V3D_Triangle_d t, double epsilon) {
+        V3D_Point_d tp = t.getP();
+        V3D_Point_d tq = t.getQ();
+        V3D_Point_d tr = t.getR();
         return (intersects(tp, epsilon)
                 || intersects(tq, epsilon)
                 || intersects(tr, epsilon))
@@ -568,7 +581,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * considered equal.
      * @return {@code true} iff the geometry is intersected by {@code ch.
      */
-    public boolean intersects(V3D_Rectangle_d  r, double epsilon) {
+    public boolean intersects(V3D_Rectangle_d r, double epsilon) {
         return ch.intersects(r, epsilon)
                 && (intersects0(r.getPQR(), epsilon)
                 || intersects0(r.getRSP(), epsilon));
@@ -620,7 +633,6 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
                         -> intersects(x, epsilon));
     }
 
-
     @Override
     public void translate(V3D_Vector_d v) {
         super.translate(v);
@@ -641,7 +653,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     }
 
     @Override
-    public V3D_PolygonNoInternalHoles_d rotate(V3D_Ray_d ray, V3D_Vector_d uv, 
+    public V3D_PolygonNoInternalHoles_d rotate(V3D_Ray_d ray, V3D_Vector_d uv,
             double theta, double epsilon) {
         theta = Math_AngleDouble.normalise(theta);
         if (theta == 0) {
@@ -652,10 +664,10 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     }
 
     @Override
-    public V3D_PolygonNoInternalHoles_d rotateN(V3D_Ray_d ray, V3D_Vector_d uv, 
+    public V3D_PolygonNoInternalHoles_d rotateN(V3D_Ray_d ray, V3D_Vector_d uv,
             double theta, double epsilon) {
         V3D_ConvexArea_d rch = ch.rotate(ray, uv, theta, epsilon);
-        HashMap<Integer, V3D_Point_d > rPoints = new HashMap<>();
+        HashMap<Integer, V3D_Point_d> rPoints = new HashMap<>();
         for (var x : this.points.entrySet()) {
             rPoints.put(x.getKey(), x.getValue().rotateN(ray, uv, theta, epsilon));
         }
@@ -698,24 +710,29 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
         externalHoles.put(pid, p);
         return pid;
     }
-    
+
     /**
      * @param l The line to intersect with.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
      * @return A point or line segment.
      */
-    public V3D_FiniteGeometry_d getIntersect(V3D_Line_d l,double epsilon) {
+    public V3D_FiniteGeometry_d getIntersect(V3D_Line_d l, double epsilon) {
         V3D_Geometry_d i = ch.pl.getIntersect(l, epsilon);
         if (i == null) {
             return null;
         } else if (i instanceof V3D_Point_d ip) {
-            if (intersects0(ip, epsilon)) {
+            if (intersects000(ip, epsilon)) {
                 return ip;
             } else {
                 return null;
             }
         } else {
+            /**
+             * Maybe better to return null? Is there a use case for knowing the
+             * intersection across the surface of an area rather than treating
+             * this as though there is no intersection?
+             */
             throw new UnsupportedOperationException();
 //            /**
 //             * Get the intersection of the line and each edge of the triangle.
@@ -759,7 +776,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
 //            }
         }
     }
-    
+
     /**
      * Get the intersection between the geometry and the ray {@code rv}.
      *
@@ -768,38 +785,41 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * considered equal.
      * @return The V3D_Geometry.
      */
+    @Override
     public V3D_FiniteGeometry_d getIntersect(V3D_Ray_d r, double epsilon) {
         V3D_FiniteGeometry_d g = getIntersect(r.l, epsilon);
         if (g == null) {
             return null;
-        }
-        if (g instanceof V3D_Point_d gp) {
-            if (r.isAligned(gp, epsilon)) {
+        } else {
+            if (g instanceof V3D_Point_d gp) {
+                if (r.isAligned(gp, epsilon)) {
 //                BigRational[] coeffs = this.pl.equation.coeffs;
 //                V3D_Point pt = new V3D_Point(
 //                        coeffs[0].multiply(gp.getX(epsilon)),
 //                        coeffs[1].multiply(gp.getY(epsilon)),
 //                        coeffs[2].multiply(gp.getZ(epsilon)));
 //                return pt;
-                return gp;
+                    return gp;
+                } else {
+                    return null;
+                }
             } else {
-                return null;
-            }
-        }
-        V3D_LineSegment_d ls = (V3D_LineSegment_d) g;
-        V3D_Point_d lsp = ls.getP();
-        V3D_Point_d lsq = ls.getQ();
-        if (r.isAligned(lsp, epsilon)) {
-            if (r.isAligned(lsq, epsilon)) {
-                return ls;
-            } else {
-                return V3D_LineSegment_d.getGeometry(r.l.getP(), lsp, epsilon);
-            }
-        } else {
-            if (r.isAligned(lsq, epsilon)) {
-                return V3D_LineSegment_d.getGeometry(r.l.getP(), lsq, epsilon);
-            } else {
-                throw new RuntimeException("Exception in triangle-linesegment intersection.");
+                V3D_LineSegment_d ls = (V3D_LineSegment_d) g;
+                V3D_Point_d lsp = ls.getP();
+                V3D_Point_d lsq = ls.getQ();
+                if (r.isAligned(lsp, epsilon)) {
+                    if (r.isAligned(lsq, epsilon)) {
+                        return ls;
+                    } else {
+                        return V3D_LineSegment_d.getGeometry(r.l.getP(), lsp, epsilon);
+                    }
+                } else {
+                    if (r.isAligned(lsq, epsilon)) {
+                        return V3D_LineSegment_d.getGeometry(r.l.getP(), lsq, epsilon);
+                    } else {
+                        throw new RuntimeException();
+                    }
+                }
             }
         }
     }

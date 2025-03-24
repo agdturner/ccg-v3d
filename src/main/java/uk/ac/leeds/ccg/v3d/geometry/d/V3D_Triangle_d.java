@@ -184,7 +184,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param q What {@link #q} is set to.
      * @param r What {@link #r} is set to.
      */
-    public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d offset, 
+    public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d offset,
             V3D_Vector_d p, V3D_Vector_d q, V3D_Vector_d r) {
         super(env, offset, new V3D_Plane_d(env, offset, p, q, r));
         this.p = p;
@@ -218,7 +218,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
         if (p.equals(q) || p.equals(r) || q.equals(r)) {
             throw new RuntimeException("p.equals(q) || p.equals(r) || q.equals(r)");
         }
-        
+
     }
 
     /**
@@ -267,7 +267,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
 
     /**
      * Creates a new triangle.
-     * 
+     *
      * @param ls A line segment.
      * @param pt A point.
      */
@@ -314,7 +314,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param offset What {@link #offset} is set to.
      * @param t The triangle to initialise this from.
      */
-    public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d offset, 
+    public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d offset,
             V3D_Triangle_d t) {
         this(env, offset,
                 new V3D_Vector_d(t.p).add(t.offset).subtract(offset),
@@ -485,7 +485,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
     public V3D_Point_d[] getPointsArray() {
         return getPoints().values().toArray(new V3D_Point_d[3]);
     }
-    
+
     @Override
     public HashMap<Integer, V3D_Point_d> getPoints() {
         if (points == null) {
@@ -511,56 +511,28 @@ public class V3D_Triangle_d extends V3D_Area_d {
         return edges;
     }
 
+    @Override
+    public boolean intersects(V3D_Point_d pt, double epsilon) {
+        if (getAABB().intersects(pt)) {
+            return intersects0(pt, epsilon);
+        } else {
+            return false;
+        }
+    }
+
     /**
      * @param pt The point to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @return A point or line segment.
      */
-    @Override
-    public boolean intersects(V3D_Point_d pt, double epsilon) {
-        if (getAABB().intersects(pt)) {
-            if (pl.intersects(epsilon, pt)) {
-                return isAligned(pt, epsilon);
-                //return intersects0(pt);
-            }
+    //@Override
+    public boolean intersects0(V3D_Point_d pt, double epsilon) {
+        if (pl.intersects(epsilon, pt)) {
+            return isAligned(pt, epsilon);
+        } else {
+            return false;
         }
-        return false;
-    }
-
-    /**
-     * @param pt The point.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
-     * @return {@code true} if this intersects with {@code pt}.
-     */
-    @Deprecated
-    protected boolean intersects0(V3D_Point_d pt, double epsilon) {
-        V3D_LineSegment_d tpq = getPQ();
-        V3D_LineSegment_d tqr = getQR();
-        V3D_LineSegment_d trp = getRP();
-        if (tpq.intersects(pt, epsilon)
-                || tqr.intersects(pt, epsilon)
-                || trp.intersects(pt, epsilon)) {
-            return true;
-        }
-        V3D_Vector_d ppt = new V3D_Vector_d(getP(), pt);
-        V3D_Vector_d qpt = new V3D_Vector_d(getQ(), pt);
-        V3D_Vector_d rpt = new V3D_Vector_d(getR(), pt);
-        V3D_Vector_d cp = tpq.l.v.getCrossProduct(ppt);
-        V3D_Vector_d cq = tqr.l.v.getCrossProduct(qpt);
-        V3D_Vector_d cr = trp.l.v.getCrossProduct(rpt);
-        /**
-         * If cp, cq and cr are all in the same direction then pt intersects.
-         */
-        if (cp.dx < 0d == cq.dx < 0d && cp.dx < 0d == cr.dx < 0d) {
-            if (cp.dy < 0d == cq.dy < 0d && cp.dy < 0d == cr.dy < 0d) {
-                if (cp.dz < 0d == cq.dz < 0d && cp.dz < 0d == cr.dz < 0d) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**
@@ -574,30 +546,22 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @return {@code true} iff pl is aligned with this.
      */
     public boolean isAligned(V3D_Point_d pt, double epsilon) {
-        if (getPQPl().isOnSameSide(pt, getR(), epsilon)) {
-            if (getQRPl().isOnSameSide(pt, getP(), epsilon)) {
-                if (getRPPl().isOnSameSide(pt, getQ(), epsilon)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return getPQPl().isOnSameSide(pt, getR(), epsilon)
+                && getQRPl().isOnSameSide(pt, getP(), epsilon)
+                && getRPPl().isOnSameSide(pt, getQ(), epsilon);
     }
 
     /**
      * A line segment aligns with this if both end points are aligned according
-     * to
-     * {@link #isAligned(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Point_d, double)}
+     * to {@link #isAligned(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Point_d, double)}
      *
      * @param l The line segment to check if it is in alignment.
      * @param epsilon The tolerance.
      * @return {@code true} iff l is aligned with this.
      */
     public boolean isAligned(V3D_LineSegment_d l, double epsilon) {
-        if (isAligned(l.getP(), epsilon)) {
-            return isAligned(l.getQ(), epsilon);
-        }
-        return false;
+        return isAligned(l.getP(), epsilon)
+                && isAligned(l.getQ(), epsilon);
     }
 
     /**
@@ -609,12 +573,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @return {@code true} iff l is aligned with this.
      */
     public boolean isAligned(V3D_Triangle_d t, double epsilon) {
-        if (isAligned(t.getP(), epsilon)) {
-            if (isAligned(t.getQ(), epsilon)) {
-                return isAligned(t.getR(), epsilon);
-            }
-        }
-        return false;
+        return isAligned(t.getP(), epsilon)
+                && isAligned(t.getQ(), epsilon)
+                && isAligned(t.getR(), epsilon);
     }
 
     @Override
@@ -691,7 +652,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * Get the intersection between the geometry and the ray {@code r}.
+     * Get the intersection between the triangle and the ray {@code r}.
      *
      * @param r The ray to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -1205,7 +1166,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
                             if (gpql.intersects(gqrp, epsilon)) {
                                 return gpql;
                             } else {
-                                return new V3D_ConvexArea_d(epsilon, 
+                                return new V3D_ConvexArea_d(epsilon,
                                         pl.n, gpql.getP(),
                                         gpql.getQ(), gqrp);
                             }
@@ -1222,7 +1183,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
                                 case 3 ->
                                     new V3D_Triangle_d(pts2.get(0), pts2.get(1), pts2.get(2));
                                 default ->
-                                    new V3D_ConvexArea_d(epsilon, 
+                                    new V3D_ConvexArea_d(epsilon,
                                     pl.n, gpql.getP(),
                                     gpql.getQ(), gqrp, grpp);
                             };
@@ -1446,7 +1407,10 @@ public class V3D_Triangle_d extends V3D_Area_d {
 //                                }
 //                            }
 //                        }
-////                            }
+                
+            
+          
+            ////                            }
 ////                        } else {
 ////                            // lp !lq
 ////                            if (t.isAligned(lp, epsilon)) {
@@ -1825,7 +1789,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
             return rotateN(ray, uv, theta, epsilon);
         }
     }
-    
+
     @Override
     public V3D_Triangle_d rotateN(V3D_Ray_d ray, V3D_Vector_d uv,
             double theta, double epsilon) {
@@ -2091,7 +2055,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param l a line segment either equal to one of the edges of this: null
      * null null null null null null null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null null     {@link #getPQ()},
+     * null null null null     {@link #getPQ()},
      * {@link #getQR()} or {@link #getRP()}.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
@@ -2485,7 +2449,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
             }
         }
     }
-    
+
     @Override
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
         // Return true if any edge intersects
@@ -2522,7 +2486,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * equal.
      * @return {@code true} if l intersects this.
      */
-     @Override
+    @Override
     public boolean intersects(V3D_LineSegment_d l, double epsilon) {
         if (intersects(l.getAABB(), epsilon)
                 || l.intersects(getAABB(), epsilon)) {
@@ -2534,7 +2498,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * If no point aligns, then returns false, otherwise the intersection is 
+     * If no point aligns, then returns false, otherwise the intersection is
      * computed, so if that is needed use:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Ray_d, double)}
      *
@@ -2546,14 +2510,14 @@ public class V3D_Triangle_d extends V3D_Area_d {
     @Override
     public boolean intersects(V3D_Ray_d r, double epsilon) {
         if (r.isAligned(getP(), epsilon)
-            || r.isAligned(getQ(), epsilon)
-            || r.isAligned(getR(), epsilon)) {
+                || r.isAligned(getQ(), epsilon)
+                || r.isAligned(getR(), epsilon)) {
             return getIntersect(r, epsilon) != null;
         } else {
             return false;
         }
     }
-    
+
     /**
      * @param t Another triangle to test for intersection.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -2575,7 +2539,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
             return false;
         }
     }
-    
+
     /**
      * @param t Another triangle to test for intersection.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -2594,7 +2558,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
             return false;
         }
     }
-    
+
     /**
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
@@ -2606,7 +2570,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
             V3D_LineSegment_d ls, Collection<V3D_Area_d> faces) {
         return faces.parallelStream().anyMatch(x -> x.intersects(ls, epsilon));
     }
-    
+
     /**
      * Intersected, but not on the edge.
      *
@@ -2621,7 +2585,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
 //            return !(getPQ().intersects(pt, epsilon)
 //                    || getQR().intersects(pt, epsilon)
 //                    || getRP().intersects(pt, epsilon));
-            return !getEdges().values().parallelStream().anyMatch(x 
+            return !getEdges().values().parallelStream().anyMatch(x
                     -> x.intersects(pt, epsilon));
         }
         return false;

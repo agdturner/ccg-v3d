@@ -23,6 +23,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_ConvexArea_d;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_FiniteGeometry_d;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_Plane_d;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_Point_d;
+import uk.ac.leeds.ccg.v3d.geometry.d.V3D_Ray_d;
 import uk.ac.leeds.ccg.v3d.geometry.d.V3D_Vector_d;
 
 /**
@@ -249,23 +253,51 @@ public class V3D_ConvexArea_dTest extends V3D_Test_d {
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
-//
-//    /**
-//     * Test of getIntersect method, of class V3D_ConvexArea_d.
-//     */
-//    @Test
-//    public void testGetIntersect_V3D_Plane_d_double() {
-//        System.out.println("getIntersect");
-//        V3D_Plane_d p = null;
-//        double epsilon = 0.0;
-//        V3D_ConvexArea_d instance = null;
-//        V3D_FiniteGeometry_d expResult = null;
-//        V3D_FiniteGeometry_d result = instance.getIntersect(p, epsilon);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+
+    /**
+     * Test of getIntersect method, of class V3D_ConvexArea_d.
+     */
+    @Test
+    public void testGetIntersectRay() {
+        System.out.println("getIntersect");
+        V3D_Ray_d r;
+        double epsilon = 0.0000001d;
+        V3D_ConvexArea_d instance;
+        V3D_FiniteGeometry_d result;
+        V3D_FiniteGeometry_d expResult;
+        V3D_Point_d[] pts;
+        
+        // Test 1;
+        r = new V3D_Ray_d(pP0P0P1, pP0P0P0);
+        pts = new V3D_Point_d[8];
+        pts[0] = new V3D_Point_d(env, -30d, -30d, 0d);
+        pts[1] = new V3D_Point_d(env, -40d, 0d, 0d);
+        pts[2] = new V3D_Point_d(env, -30d, 30d, 0d);
+        pts[3] = new V3D_Point_d(env, 0d, 40d, 0d);
+        pts[4] = new V3D_Point_d(env, 30d, 30d, 0d);
+        pts[5] = new V3D_Point_d(env, 40d, 0d, 0d);
+        pts[6] = new V3D_Point_d(env, 30d, -30d, 0d);
+        pts[7] = new V3D_Point_d(env, 0d, -40d, 0d);
+        instance = new V3D_ConvexArea_d(epsilon, V3D_Plane_d.Z0.getN(), pts);
+        result = instance.getIntersect(r, epsilon);
+        expResult = pP0P0P0;
+        assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));
+        // Test 2;
+        r = new V3D_Ray_d(new V3D_Point_d(env, 0d, 35d, 1d),
+                new V3D_Point_d(env, 0d, 35d, 0d));
+        instance = new V3D_ConvexArea_d(epsilon, V3D_Plane_d.Z0.getN(), pts);
+        result = instance.getIntersect(r, epsilon);
+        expResult = new V3D_Point_d(env, 0d, 35d, 0d);
+        assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));
+        // Test 2;
+        r = new V3D_Ray_d(new V3D_Point_d(env, -30d, 43d, 1d),
+                new V3D_Point_d(env, -30d, 43d, 0d));
+        instance = new V3D_ConvexArea_d(epsilon, V3D_Plane_d.Z0.getN(), pts);
+        result = instance.getIntersect(r, epsilon);
+        expResult = null;
+        assertNull(result);
+    }
+
 //    /**
 //     * Test of getIntersect method, of class V3D_ConvexArea_d.
 //     */

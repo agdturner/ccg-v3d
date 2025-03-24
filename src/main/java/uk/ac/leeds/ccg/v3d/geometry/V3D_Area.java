@@ -375,4 +375,15 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @return The distance squared to {@code pv}.
      */
     public abstract BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm);
+    
+    /**
+     * Get the intersection between with the ray {@code r}.
+     *
+     * @param r The ray to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
+     */
+    public abstract V3D_FiniteGeometry getIntersect(V3D_Ray r, int oom,
+            RoundingMode rm);
 }
