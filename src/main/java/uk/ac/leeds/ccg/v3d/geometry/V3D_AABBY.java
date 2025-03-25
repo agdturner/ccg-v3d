@@ -59,6 +59,7 @@ public class V3D_AABBY implements Serializable {
      * V3D_Plane(getll(), V3D_Vector.J);
      */
     protected V3D_Plane ypl;
+    
     /**
      * The minimum x-coordinate.
      */
@@ -124,7 +125,27 @@ public class V3D_AABBY implements Serializable {
      * {@link #lu} may all be the same.
      */
     protected HashSet<V3D_Point> pts;
+    
+    /**
+     * For storing the top plane.
+     */
+    protected V3D_Plane tpl;
 
+    /**
+     * For storing the right plane.
+     */
+    protected V3D_Plane rpl;
+
+    /**
+     * For storing the bottom plane.
+     */
+    protected V3D_Plane bpl;
+
+    /**
+     * For storing the left plane.
+     */
+    protected V3D_Plane lpl;
+    
     /**
      * @param e An envelope.
      */
@@ -472,6 +493,21 @@ public class V3D_AABBY implements Serializable {
         }
         return l;
     }
+    
+    /**
+     * The left plane is orthogonal to the yPlane. With a normal pointing away.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #lpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane getLeftPlane(int oom, RoundingMode rm) {
+        if (lpl == null) {
+            lpl = new V3D_Plane(new V3D_Point(env, getXMin(oom), y, getZMin(oom)),
+                    V3D_Vector.NI);
+        }
+        return lpl;
+    }
 
     /**
      * @param oom The Order of Magnitude for the precision.
@@ -495,6 +531,21 @@ public class V3D_AABBY implements Serializable {
     }
 
     /**
+     * The right plane is orthogonal to the yPlane. With a normal pointing away.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #rpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane getRightPlane(int oom, RoundingMode rm) {
+        if (rpl == null) {
+            rpl = new V3D_Plane(new V3D_Point(env, getXMax(oom), y, getZMax(oom)),
+                    V3D_Vector.I);
+        }
+        return rpl;
+    }
+    
+    /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return the top of the envelope.
@@ -516,6 +567,21 @@ public class V3D_AABBY implements Serializable {
     }
 
     /**
+     * The top plane is orthogonal to the yPlane. With a normal pointing away.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #tpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane getTopPlane(int oom, RoundingMode rm) {
+        if (tpl == null) {
+            tpl = new V3D_Plane(new V3D_Point(env, getXMax(oom), y, getZMax(oom)),
+                    V3D_Vector.K);
+        }
+        return tpl;
+    }
+    
+    /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return the bottom of the envelope.
@@ -535,7 +601,23 @@ public class V3D_AABBY implements Serializable {
         }
         return b;
     }
-
+    
+    /**
+     * The bottom plane is orthogonal to the yPlane. With a normal pointing
+     * away.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #bpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane getBottomPlane(int oom, RoundingMode rm) {
+        if (bpl == null) {
+            bpl = new V3D_Plane(new V3D_Point(env, getXMin(oom), y, getZMin(oom)),
+                    V3D_Vector.NK);
+        }
+        return bpl;
+    }
+    
     /**
      * Translates this using {@code v}.
      *

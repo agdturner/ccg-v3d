@@ -402,7 +402,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
-        return aabb.intersects(l.p)
+        return aabb.intersects(l.getP())
                 || getIntersect(aabb.getl(), epsilon) != null
                 || getIntersect(aabb.getr(), epsilon) != null
                 || getIntersect(aabb.gett(), epsilon) != null

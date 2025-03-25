@@ -2449,14 +2449,56 @@ public class V3D_Triangle_d extends V3D_Area_d {
             }
         }
     }
+    
+    //@Override
+    public boolean intersects(V3D_Plane_d pl, double epsilon) {
+        if (pl.isParallel(this.pl, epsilon)) {
+            if (pl.equals(this.pl, epsilon)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (getIntersect(pl, epsilon) == null) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
 
-    @Override
+    //@Override
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
+        return intersects(aabb.l, epsilon)
+                || intersects(aabb.r, epsilon)
+                || intersects(aabb.t, epsilon)
+                || intersects(aabb.b, epsilon)
+                || intersects(aabb.f, epsilon)
+                || intersects(aabb.a, epsilon)
+                || getEdges().values().parallelStream().anyMatch(x
+                -> x.intersects(aabb, epsilon));
+    }
+
+    //@Override
+    public boolean intersects(V3D_AABBX_d aabbx, double epsilon) {
+        if (intersects(aabbx.getXPl(), epsilon)) {
+            
+        }
         // Return true if any edge intersects
         return getEdges().values().parallelStream().anyMatch(x
                 -> x.intersects(aabb, epsilon));
     }
 
+    //@Override
+    public boolean intersects(V3D_AABBY_d aabby, double epsilon) {
+        return true;
+    }
+    
+    //@Override
+    public boolean intersects(V3D_AABBZ_d aabbz, double epsilon) {
+        return true;
+    }
+    
     /**
      * If there is intersection with the Axis Aligned Bounding Boxes, then the
      * intersection is computed, so if that is needed use:

@@ -147,6 +147,26 @@ public class V3D_AABBX_d implements Serializable {
     }
 
     /**
+     * For storing the top plane.
+     */
+    protected V3D_Plane_d tpl;
+
+    /**
+     * For storing the right plane.
+     */
+    protected V3D_Plane_d rpl;
+
+    /**
+     * For storing the bottom plane.
+     */
+    protected V3D_Plane_d bpl;
+
+    /**
+     * For storing the left plane.
+     */
+    protected V3D_Plane_d lpl;
+
+    /**
      * Create a new instance.
      *
      * @param env What {@link #env} is set to.
@@ -397,6 +417,19 @@ public class V3D_AABBX_d implements Serializable {
     }
 
     /**
+     * The left plane is orthogonal to the xPlane. With a normal pointing away.
+     *
+     * @return {@link #lpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane_d getLeftPlane() {
+        if (lpl == null) {
+            lpl = new V3D_Plane_d(new V3D_Point_d(env, x, getYMin(), getZMin()),
+                    V3D_Vector_d.NJ);
+        }
+        return lpl;
+    }
+    
+    /**
      * @return the right of the envelope.
      */
     public V3D_FiniteGeometry_d getRight() {
@@ -415,6 +448,19 @@ public class V3D_AABBX_d implements Serializable {
         return r;
     }
 
+    /**
+     * The right plane is orthogonal to the xPlane. With a normal pointing away.
+     *
+     * @return {@link #rpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane_d getRightPlane() {
+        if (rpl == null) {
+            rpl = new V3D_Plane_d(new V3D_Point_d(env, x, getYMax(), getZMax()),
+                    V3D_Vector_d.J);
+        }
+        return rpl;
+    }
+    
     /**
      * @return the top of the envelope.
      */
@@ -435,6 +481,19 @@ public class V3D_AABBX_d implements Serializable {
     }
 
     /**
+     * The top plane is orthogonal to the xPlane. With a normal pointing away.
+     *
+     * @return {@link #tpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane_d getTopPlane() {
+        if (tpl == null) {
+            tpl = new V3D_Plane_d(new V3D_Point_d(env, x, getYMax(), getZMax()),
+                    V3D_Vector_d.K);
+        }
+        return tpl;
+    }
+
+    /**
      * @return the bottom of the envelope.
      */
     public V3D_FiniteGeometry_d getBottom() {
@@ -451,6 +510,20 @@ public class V3D_AABBX_d implements Serializable {
             }
         }
         return b;
+    }
+
+    /**
+     * The bottom plane is orthogonal to the xPlane. With a normal pointing
+     * away.
+     *
+     * @return {@link #bpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane_d getBottomPlane() {
+        if (bpl == null) {
+            bpl = new V3D_Plane_d(new V3D_Point_d(env, x, getYMin(), getZMin()),
+                    V3D_Vector_d.NK);
+        }
+        return bpl;
     }
 
     /**

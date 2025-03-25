@@ -124,6 +124,26 @@ public class V3D_AABBY_d implements Serializable {
     protected HashSet<V3D_Point_d> pts;
 
     /**
+     * For storing the top plane.
+     */
+    protected V3D_Plane_d tpl;
+
+    /**
+     * For storing the right plane.
+     */
+    protected V3D_Plane_d rpl;
+
+    /**
+     * For storing the bottom plane.
+     */
+    protected V3D_Plane_d bpl;
+
+    /**
+     * For storing the left plane.
+     */
+    protected V3D_Plane_d lpl;
+
+    /**
      * @param e An envelope.
      */
     public V3D_AABBY_d(V3D_AABBY_d e) {
@@ -260,8 +280,6 @@ public class V3D_AABBY_d implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return This represented as a string.
      */
     @Override
@@ -291,7 +309,6 @@ public class V3D_AABBY_d implements Serializable {
      * Test for equality.
      *
      * @param e The V3D_AABBZ to test for equality with this.
-     * @param oom The Order of Magnitude for the precision.
      * @return {@code true} iff {@code this} and {@code e} are equal.
      */
     public boolean equals(V3D_AABBY_d e) {
@@ -381,8 +398,6 @@ public class V3D_AABBY_d implements Serializable {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
      * @return the left of the envelope.
      */
     public V3D_FiniteGeometry_d getLeft() {
@@ -399,6 +414,19 @@ public class V3D_AABBY_d implements Serializable {
             }
         }
         return l;
+    }
+
+    /**
+     * The left plane is orthogonal to the yPlane. With a normal pointing away.
+     *
+     * @return {@link #lpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane_d getLeftPlane() {
+        if (lpl == null) {
+            lpl = new V3D_Plane_d(new V3D_Point_d(env, getXMin(), y, getZMin()),
+                    V3D_Vector_d.NI);
+        }
+        return lpl;
     }
 
     /**
@@ -421,6 +449,19 @@ public class V3D_AABBY_d implements Serializable {
     }
 
     /**
+     * The right plane is orthogonal to the yPlane. With a normal pointing away.
+     *
+     * @return {@link #rpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane_d getRightPlane() {
+        if (rpl == null) {
+            rpl = new V3D_Plane_d(new V3D_Point_d(env, getXMax(), y, getZMax()),
+                    V3D_Vector_d.I);
+        }
+        return rpl;
+    }
+
+    /**
      * @return the top of the envelope.
      */
     public V3D_FiniteGeometry_d getTop() {
@@ -440,6 +481,19 @@ public class V3D_AABBY_d implements Serializable {
     }
 
     /**
+     * The top plane is orthogonal to the yPlane. With a normal pointing away.
+     *
+     * @return {@link #tpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane_d getTopPlane() {
+        if (tpl == null) {
+            tpl = new V3D_Plane_d(new V3D_Point_d(env, getXMax(), y, getZMax()),
+                    V3D_Vector_d.K);
+        }
+        return tpl;
+    }
+
+    /**
      * @return the bottom of the envelope.
      */
     public V3D_FiniteGeometry_d getBottom() {
@@ -456,6 +510,20 @@ public class V3D_AABBY_d implements Serializable {
             }
         }
         return b;
+    }
+
+    /**
+     * The bottom plane is orthogonal to the yPlane. With a normal pointing
+     * away.
+     *
+     * @return {@link #bpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane_d getBottomPlane() {
+        if (bpl == null) {
+            bpl = new V3D_Plane_d(new V3D_Point_d(env, getXMin(), y, getZMin()),
+                    V3D_Vector_d.NK);
+        }
+        return bpl;
     }
 
     /**

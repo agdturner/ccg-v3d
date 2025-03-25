@@ -961,7 +961,8 @@ public class V3D_Plane extends V3D_Geometry {
 //    }
     /**
      * Get the intersection between the geometry and the line {@code l}.
-     *
+     * https://stackoverflow.com/questions/5666222/3d-line-plane-intersection
+     * 
      * @param l The line to intersect with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.

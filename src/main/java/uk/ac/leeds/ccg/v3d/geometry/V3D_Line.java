@@ -438,6 +438,37 @@ public class V3D_Line extends V3D_Geometry {
                 || getIntersect(aabb.getf(oom, rm), oom, rm) != null
                 || getIntersect(aabb.geta(oom, rm), oom, rm) != null;
     }
+    
+    /**
+     * If this goes 
+     * @param aabbx The V3D_AABBX to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public boolean intersects(V3D_AABBX aabbx, int oom, RoundingMode rm) {
+        V3D_Plane pl = aabbx.getXPl();
+        if (pl.isParallel(this, oom, rm)) {
+            if (pl.isOnPlane(this, oom, rm)) {
+                // Find if the line crosses any of the edges of aabbx
+                // This is like a 2D line and line segment intersection.
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            V3D_Geometry i = aabbx.xpl.getIntersect(this, oom, rm);
+            if (i == null) {
+                return false;
+            } else {
+                V3D_Point ip = (V3D_Point) i;
+                return aabbx.getTopPlane(oom, rm).isOnSameSide(aabbx.getll(), ip, oom, rm)
+                    && aabbx.getBottomPlane(oom, rm).isOnSameSide(aabbx.getuu(), ip, oom, rm)
+                    && aabbx.getRightPlane(oom, rm).isOnSameSide(aabbx.getll(), ip, oom, rm)
+                    && aabbx.getLeftPlane(oom, rm).isOnSameSide(aabbx.getuu(), ip, oom, rm);
+            }
+        }
+    }
 
     /**
      * @param aabbx The V3D_AABBX to test for intersection.
@@ -467,7 +498,11 @@ public class V3D_Line extends V3D_Geometry {
     public V3D_Point getIntersect(V3D_AABBY aabby, int oom, RoundingMode rm) {
         V3D_Plane pl = aabby.getYPl();
         if (pl.isParallel(this, oom, rm)) {
-            return null;
+            if (pl.isOnPlane(this, oom, rm)) {
+                return true;
+            } else {
+                return false;
+            }
         }
         // Calculate the intersection point
         V3D_Point pt = (V3D_Point) pl.getIntersect(this, oom, rm);

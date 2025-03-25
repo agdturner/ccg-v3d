@@ -59,6 +59,7 @@ public class V3D_AABBX implements Serializable {
      * V3D_Plane(getll(), V3D_Vector.I);
      */
     protected V3D_Plane xpl;
+
     /**
      * The minimum y-coordinate.
      */
@@ -126,6 +127,26 @@ public class V3D_AABBX implements Serializable {
     protected HashSet<V3D_Point> pts;
 
     /**
+     * For storing the top plane.
+     */
+    protected V3D_Plane tpl;
+
+    /**
+     * For storing the right plane.
+     */
+    protected V3D_Plane rpl;
+
+    /**
+     * For storing the bottom plane.
+     */
+    protected V3D_Plane bpl;
+
+    /**
+     * For storing the left plane.
+     */
+    protected V3D_Plane lpl;
+
+    /**
      * @param e An envelope.
      */
     public V3D_AABBX(V3D_AABBX e) {
@@ -176,7 +197,7 @@ public class V3D_AABBX implements Serializable {
      * @param zMax What {@link zMax} is set to.
      */
     public V3D_AABBX(V3D_Environment env, int oom, RoundingMode rm,
-            BigRational x, BigRational yMin, BigRational yMax, 
+            BigRational x, BigRational yMin, BigRational yMax,
             BigRational zMin, BigRational zMax) {
         this(oom, rm, new V3D_Point(env, x, yMin, zMin),
                 new V3D_Point(env, x, yMax, zMax));
@@ -311,7 +332,7 @@ public class V3D_AABBX implements Serializable {
      * @return {@code true} iff {@code this} and {@code e} are equal.
      */
     public boolean equals(V3D_AABBX e, int oom) {
-        return  x.compareTo(e.x) == 0
+        return x.compareTo(e.x) == 0
                 && getYMin(oom).compareTo(e.getYMin(oom)) == 0
                 && getYMax(oom).compareTo(e.getYMax(oom)) == 0
                 && getZMin(oom).compareTo(e.getZMin(oom)) == 0
@@ -474,6 +495,21 @@ public class V3D_AABBX implements Serializable {
     }
 
     /**
+     * The left plane is orthogonal to the xPlane. With a normal pointing away.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #lpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane getLeftPlane(int oom, RoundingMode rm) {
+        if (lpl == null) {
+            lpl = new V3D_Plane(new V3D_Point(env, x, getYMin(oom), getZMin(oom)),
+                    V3D_Vector.NJ);
+        }
+        return lpl;
+    }
+
+    /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return the right of the envelope.
@@ -492,6 +528,21 @@ public class V3D_AABBX implements Serializable {
             }
         }
         return r;
+    }
+
+    /**
+     * The right plane is orthogonal to the xPlane. With a normal pointing away.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #rpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane getRightPlane(int oom, RoundingMode rm) {
+        if (rpl == null) {
+            rpl = new V3D_Plane(new V3D_Point(env, x, getYMax(oom), getZMax(oom)),
+                    V3D_Vector.J);
+        }
+        return rpl;
     }
 
     /**
@@ -516,6 +567,21 @@ public class V3D_AABBX implements Serializable {
     }
 
     /**
+     * The top plane is orthogonal to the xPlane. With a normal pointing away.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #tpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane getTopPlane(int oom, RoundingMode rm) {
+        if (tpl == null) {
+            tpl = new V3D_Plane(new V3D_Point(env, x, getYMax(oom), getZMax(oom)),
+                    V3D_Vector.K);
+        }
+        return tpl;
+    }
+
+    /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return the bottom of the envelope.
@@ -534,6 +600,22 @@ public class V3D_AABBX implements Serializable {
             }
         }
         return b;
+    }
+
+    /**
+     * The bottom plane is orthogonal to the xPlane. With a normal pointing
+     * away.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #bpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane getBottomPlane(int oom, RoundingMode rm) {
+        if (bpl == null) {
+            bpl = new V3D_Plane(new V3D_Point(env, x, getYMin(oom), getZMin(oom)),
+                    V3D_Vector.NK);
+        }
+        return bpl;
     }
 
     /**
@@ -590,8 +672,8 @@ public class V3D_AABBX implements Serializable {
     }
 
     /**
-     * @param e The V3D_AABBZ to union with this. It is assumed
-     * to be in the same Y plane.
+     * @param e The V3D_AABBZ to union with this. It is assumed to be in the
+     * same Y plane.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      * @return a V3D_AABBZ which is {@code this} union {@code e}.
@@ -610,8 +692,8 @@ public class V3D_AABBX implements Serializable {
     }
 
     /**
-     * @param e The V3D_AABBX to test for intersection. It is assumed
-     * to be in the same Y plane.
+     * @param e The V3D_AABBX to test for intersection. It is assumed to be in
+     * the same Y plane.
      * @param oom The Order of Magnitude for the precision.
      * @return {@code true} if this intersects with {@code e} it the {@code oom}
      * level of precision.
@@ -654,8 +736,8 @@ public class V3D_AABBX implements Serializable {
     /**
      * The location of p may get rounded.
      *
-     * @param p The point to test if it is contained. It is assumed
-     * to be in the same Y plane.
+     * @param p The point to test if it is contained. It is assumed to be in the
+     * same Y plane.
      * @param oom The Order of Magnitude for the precision.
      * @return {@code} true iff {@code this} contains {@code p}.
      */
@@ -677,8 +759,8 @@ public class V3D_AABBX implements Serializable {
     }
 
     /**
-     * @param p The point to test for intersection. It is assumed
-     * to be in the same X plane.
+     * @param p The point to test for intersection. It is assumed to be in the
+     * same X plane.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code p}
@@ -691,7 +773,7 @@ public class V3D_AABBX implements Serializable {
      * @param y The y-coordinate of the point to test for intersection.
      * @param z The z-coordinate of the point to test for intersection.
      * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} if this intersects with a point defined by 
+     * @return {@code true} if this intersects with a point defined by
      * {@link #x}, {@code y}, and {@code z}}.
      */
     public boolean intersects(BigRational y, BigRational z, int oom) {

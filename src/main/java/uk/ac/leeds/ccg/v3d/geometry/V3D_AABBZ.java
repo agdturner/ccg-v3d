@@ -126,6 +126,26 @@ public class V3D_AABBZ implements Serializable {
     protected HashSet<V3D_Point> pts;
 
     /**
+     * For storing the top plane.
+     */
+    protected V3D_Plane tpl;
+
+    /**
+     * For storing the right plane.
+     */
+    protected V3D_Plane rpl;
+
+    /**
+     * For storing the bottom plane.
+     */
+    protected V3D_Plane bpl;
+
+    /**
+     * For storing the left plane.
+     */
+    protected V3D_Plane lpl;
+    
+    /**
      * @param e An envelope.
      */
     public V3D_AABBZ(V3D_AABBZ e) {
@@ -473,7 +493,22 @@ public class V3D_AABBZ implements Serializable {
         }
         return l;
     }
-
+    
+    /**
+     * The left plane is orthogonal to the zPlane. With a normal pointing away.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #lpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane getLeftPlane(int oom, RoundingMode rm) {
+        if (lpl == null) {
+            lpl = new V3D_Plane(new V3D_Point(env, getXMin(oom), getYMin(oom), z),
+                    V3D_Vector.NJ);
+        }
+        return lpl;
+    }
+    
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -493,6 +528,21 @@ public class V3D_AABBZ implements Serializable {
             }
         }
         return r;
+    }
+
+    /**
+     * The right plane is orthogonal to the zPlane. With a normal pointing away.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #rpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane getRightPlane(int oom, RoundingMode rm) {
+        if (rpl == null) {
+            rpl = new V3D_Plane(new V3D_Point(env, getXMax(oom), getYMax(oom), z),
+                    V3D_Vector.J);
+        }
+        return rpl;
     }
 
     /**
@@ -517,6 +567,21 @@ public class V3D_AABBZ implements Serializable {
     }
 
     /**
+     * The top plane is orthogonal to the zPlane. With a normal pointing away.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #tpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane getTopPlane(int oom, RoundingMode rm) {
+        if (tpl == null) {
+            tpl = new V3D_Plane(new V3D_Point(env, getXMax(oom), getYMax(oom), z),
+                    V3D_Vector.I);
+        }
+        return tpl;
+    }
+
+    /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return the bottom of the envelope.
@@ -535,6 +600,22 @@ public class V3D_AABBZ implements Serializable {
             }
         }
         return b;
+    }
+    
+    /**
+     * The bottom plane is orthogonal to the zPlane. With a normal pointing
+     * away.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #bpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane getBottomPlane(int oom, RoundingMode rm) {
+        if (bpl == null) {
+            bpl = new V3D_Plane(new V3D_Point(env, getXMin(oom), getYMin(oom), z),
+                    V3D_Vector.NI);
+        }
+        return bpl;
     }
 
     /**
@@ -726,4 +807,123 @@ public class V3D_AABBZ implements Serializable {
 //        return true;
 //    }
     
+    
+    
+    
+    
+    
+    /**
+     * Gets the intersect {@code l} with {@code ls} where {@code ls} is a side 
+     * either {@link #t}, {@link #b}, {@link #l} or {@link #r} when a 
+     * line segment.
+     *
+     * @param ls The line segment to get the intersect with l. 
+     * @param l The line to get intersection with this. The line must be lying 
+     * in the same zPlane. 
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return The intersection between {@code this} and {@code l}.
+     */
+    public V3D_FiniteGeometry getIntersect(V3D_LineSegment ls, V3D_Line l, int oom, RoundingMode rm) {
+        BigRational x1 = ls.getP().getX(oom, rm);
+        BigRational x2 = ls.getQ(oom, rm).getX(oom, rm);
+        BigRational x3 = l.getP().getX(oom, rm);
+        BigRational x4 = l.getQ(oom, rm).getX(oom, rm);
+        BigRational y1 = ls.l.p.getY(oom, rm);
+        BigRational y2 = ls.l.q.getY(oom, rm);
+        BigRational y3 = l.p.getY(oom, rm);
+        BigRational y4 = l.q.getY(oom, rm);
+        BigRational den = V3D_AABBZ.getIntersectDenominator(x1, x2, x3, x4, y1, y2, y3, y4);
+        V3D_Geometry li = getIntersect(ls.l, l, den, x1, x2, x3, x4, y1, y2, y3, y4, oom, rm);
+        if (li != null) {
+            if (li instanceof V3D_Point pli) {
+                //if (intersects(pli, oom, rm)) {
+                if (ls.isAligned(pli, oom, rm)) {
+                    return pli;
+                } else {
+                    return null;
+                }
+            } else {
+                return ls;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * @param x1 p.getX()
+     * @param x2 q.getX()
+     * @param x3 l.p.getX()
+     * @param x4 l.q.getX()
+     * @param y1 p.getY()
+     * @param y2 q.getY()
+     * @param y3 l.p.getY()
+     * @param y4 l.q.getY()
+     * @return ((x1 - x2) * (y3 - y4)) - ((y1 - y2) * (x3 - x4))
+     */
+    public static BigRational getIntersectDenominator(BigRational x1,
+            BigRational x2, BigRational x3, BigRational x4, BigRational y1,
+            BigRational y2, BigRational y3, BigRational y4) {
+        return ((x1.subtract(x2)).multiply(y3.subtract(y4))).subtract(
+                (y1.subtract(y2)).multiply(x3.subtract(x4)));
+    }
+    
+    /**
+     * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
+     *
+     * @param l Line to intersect with.
+     * @param den getIntersectDenominator(x1, x2, x3, x4, y1, y2, y3, y4)
+     * @param x1 getP().getX(oom, rm)
+     * @param x2 getQ(oom, rm).getX(oom, rm)
+     * @param x3 l.getP().getX(oom, rm)
+     * @param x4 l.getQ(oom, rm).getX(oom, rm)
+     * @param y1 p.getY(oom, rm)
+     * @param y2 q.getY(oom, rm)
+     * @param y3 l.p.getY(oom, rm)
+     * @param y4 l.q.getY(oom, rm)
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return The geometry or null if there is no intersection.
+     */
+    public V3D_Geometry getIntersect(V3D_Line l0, V3D_Line l, BigRational den,
+            BigRational x1, BigRational x2, BigRational x3, BigRational x4,
+            BigRational y1, BigRational y2, BigRational y3, BigRational y4,
+            int oom, RoundingMode rm) {
+        if (intersects(l0, l, den, oom, rm)) {
+            // Check for coincident lines
+            if (l0.equals(l, oom - 1, rm)) {
+                return l;
+            }
+            BigRational x1y2sy1x2 = ((x1.multiply(y2)).subtract(y1.multiply(x2)));
+            BigRational x3y4sy3x4 = ((x3.multiply(y4)).subtract(y3.multiply(x4)));
+            BigRational numx = (x1y2sy1x2.multiply(x3.subtract(x4))).subtract(
+                    (x1.subtract(x2)).multiply(x3y4sy3x4));
+            BigRational numy = (x1y2sy1x2.multiply(y3.subtract(y4))).subtract(
+                    (y1.subtract(y2)).multiply(x3y4sy3x4));
+            return new V3D_Point(env, numx.divide(den), numy.divide(den), z);
+        }
+        return null;
+    }
+    
+    /**
+     * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
+     *
+     * @param l0 A line to test for intersection.
+     * @param l A line to test for intersection.
+     * @param den getIntersectDenominator(getP().getX(oom, rm), getQ(oom,
+     * rm).getX(oom, rm), l.getP().getX(oom, rm), l.getQ(oom, rm).getX(oom, rm),
+     * getP().getY(oom, rm), getQ(oom, rm).getY(oom, rm), l.getP().getY(oom,
+     * rm), l.getQ(oom, rm).getY(oom, rm))
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if lines intersect.
+     */
+    public boolean intersects(V3D_Line l0, V3D_Line l, BigRational den, int oom,
+            RoundingMode rm) {
+        if (den.compareTo(BigRational.ZERO) == 0) {
+            // Lines are parallel or coincident.
+            return l0.equals(l, oom, rm);
+        }
+        return true;
+    }
 }

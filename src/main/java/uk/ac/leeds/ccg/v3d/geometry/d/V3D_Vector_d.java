@@ -74,6 +74,20 @@ public class V3D_Vector_d implements Serializable {
     public static final V3D_Vector_d K = new V3D_Vector_d(0, 0, 1);
 
     /**
+     * The NI vector {@code <-1,0,0>}.
+     */
+    public static final V3D_Vector_d NI = new V3D_Vector_d(-1, 0, 0);
+
+    /**
+     * The NJ vector {@code <0,-1,0>}.
+     */
+    public static final V3D_Vector_d NJ = new V3D_Vector_d(0, -1, 0);
+
+    /**
+     * The NK vector {@code <0,0,-1>}.
+     */
+    public static final V3D_Vector_d NK = new V3D_Vector_d(0, 0, -1);
+    /**
      * The IJ vector {@code <1,1,0>}.
      */
     public static final V3D_Vector_d IJ = new V3D_Vector_d(1, 1, 0);

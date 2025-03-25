@@ -122,6 +122,26 @@ public class V3D_AABBZ_d implements Serializable {
      * {@link #lu} may all be the same.
      */
     protected HashSet<V3D_Point_d> pts;
+    
+    /**
+     * For storing the top plane.
+     */
+    protected V3D_Plane_d tpl;
+
+    /**
+     * For storing the right plane.
+     */
+    protected V3D_Plane_d rpl;
+
+    /**
+     * For storing the bottom plane.
+     */
+    protected V3D_Plane_d bpl;
+
+    /**
+     * For storing the left plane.
+     */
+    protected V3D_Plane_d lpl;
 
     /**
      * @param e An envelope.
@@ -396,6 +416,19 @@ public class V3D_AABBZ_d implements Serializable {
     }
 
     /**
+     * The left plane is orthogonal to the zPlane. With a normal pointing away.
+     *
+     * @return {@link #lpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane_d getLeftPlane() {
+        if (lpl == null) {
+            lpl = new V3D_Plane_d(new V3D_Point_d(env, getXMin(), getYMin(), z),
+                    V3D_Vector_d.NJ);
+        }
+        return lpl;
+    }
+
+    /**
      * @return the right of the envelope.
      */
     public V3D_FiniteGeometry_d getRight() {
@@ -415,6 +448,19 @@ public class V3D_AABBZ_d implements Serializable {
     }
 
     /**
+     * The right plane is orthogonal to the zPlane. With a normal pointing away.
+     *
+     * @return {@link #rpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane_d getRightPlane() {
+        if (rpl == null) {
+            rpl = new V3D_Plane_d(new V3D_Point_d(env, getXMax(), getYMax(), z),
+                    V3D_Vector_d.J);
+        }
+        return rpl;
+    }
+
+    /**
      * @return the top of the envelope.
      */
     public V3D_FiniteGeometry_d getTop() {
@@ -431,6 +477,19 @@ public class V3D_AABBZ_d implements Serializable {
             }
         }
         return t;
+    }
+
+    /**
+     * The top plane is orthogonal to the zPlane. With a normal pointing away.
+     *
+     * @return {@link #tpl} initialising first if it is {@code null}.
+     */
+    public V3D_Plane_d getTopPlane() {
+        if (tpl == null) {
+            tpl = new V3D_Plane_d(new V3D_Point_d(env, getXMax(), getYMax(), z),
+                    V3D_Vector_d.I);
+        }
+        return tpl;
     }
 
     /**
@@ -600,4 +659,10 @@ public class V3D_AABBZ_d implements Serializable {
                 && y >= getYMin()
                 && y <= getYMax();
     }
+    
+    
+    
+    
+    
+    
 }
