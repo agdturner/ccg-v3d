@@ -1289,15 +1289,14 @@ public class V3D_AABB_d implements Serializable {
      *
      * @param ls The collection.
      * @param l The line segment to add.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @return {@code true} iff l is unique and is added to ls.
      */
-    protected boolean addUnique(ArrayList<V3D_Line_d> ls, V3D_Line_d l, int oom,
-            RoundingMode rm) {
+    protected boolean addUnique(ArrayList<V3D_Line_d> ls, V3D_Line_d l, double epsilon) {
         boolean unique = true;
         for (var x : ls) {
-            if (x.equals(l)) {
+            if (x.equals(epsilon, l)) {
                 unique = false;
                 break;
             }
@@ -1314,15 +1313,15 @@ public class V3D_AABB_d implements Serializable {
      *
      * @param pts The collection.
      * @param pt The point to add.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @return {@code true} iff l is unique and is added to ls.
      */
-    protected boolean addUnique(ArrayList<V3D_Point_d> pts, V3D_Point_d pt, int oom,
-            RoundingMode rm) {
+    protected boolean addUnique(ArrayList<V3D_Point_d> pts, V3D_Point_d pt, 
+            double epsilon) {
         boolean unique = true;
         for (var x : pts) {
-            if (x.equals(pt)) {
+            if (x.equals(epsilon, pt)) {
                 unique = false;
                 break;
             }
@@ -1331,5 +1330,45 @@ public class V3D_AABB_d implements Serializable {
             pts.add(pt);
         }
         return unique;
+    }
+    
+    /**
+     * The parameters with names starting d1 are from the first dimension.
+     * The parameters with names starting d2 are from the second dimension.
+     * The examples are for the x and z dimensions respectively.
+     * 
+     * @param d11 p.getX()
+     * @param d12 q.getX()
+     * @param d13 l.p.getX()
+     * @param d14 l.q.getX()
+     * @param d21 p.getZ()
+     * @param d22 q.getZ()
+     * @param d23 l.p.getZ()
+     * @param d24 l.q.getZ()
+     * @return ((d11 - d12) * (d23 - d24)) - ((d21 - d22) * (d13 - d14))
+     */
+    public static double getIntersectDenominator(double d11,
+            double d12, double d13, double d14, double d21,
+            double d22, double d23, double d24) {
+        return ((d11 - d12) * (d23 - d24)) - ((d21 - d22) * (d13 - d14));
+    }
+    
+    /**
+     * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
+     *
+     * @param l0 A line to test for intersection.
+     * @param l A line to test for intersection.
+     * @param den The intersection denominator.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @return {@code true} if lines intersect.
+     */
+    public static boolean intersects(V3D_Line_d l0, V3D_Line_d l, double den, 
+            double epsilon) {
+        if (den == 0d) {
+            // Lines are parallel or coincident.
+            return l0.equals(epsilon, l);
+        }
+        return true;
     }
 }

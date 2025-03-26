@@ -15,8 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import java.io.Serializable;
-import java.util.HashSet;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 
 /**
@@ -27,25 +25,15 @@ import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
  * is a line segment parallel to either the Y axis or X axis respectively. If
  * {@link xMin} = {@link xMax} and {@link yMin} = {@link yMax} the bounding box
  * is a point. It is wanted to calculate if there is intersection/containment of
- * a shape in the V3D_AABB instance. A general rectangle cannot easily be used
- * instead without additional complication.
+ * finite geometries in the V3D_AABB_d instance. A general rectangle cannot 
+ * be used due to recursive complications.
  *
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_AABBZ_d implements Serializable {
+public class V3D_AABBZ_d extends V3D_AABB2D_d {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * The environment.
-     */
-    protected final V3D_Environment_d env;
-
-    /**
-     * For storing the offset of this.
-     */
-    private V3D_Vector_d offset;
 
     /**
      * The z value.
@@ -57,6 +45,7 @@ public class V3D_AABBZ_d implements Serializable {
      * V3D_Plane_d(getll(), V3D_Vector_d.K);
      */
     protected V3D_Plane_d zpl;
+    
     /**
      * The minimum x-coordinate.
      */
@@ -78,92 +67,16 @@ public class V3D_AABBZ_d implements Serializable {
     private final double yMax;
 
     /**
-     * For storing the left lower point.
-     */
-    protected V3D_Point_d ll;
-
-    /**
-     * For storing the left upper point.
-     */
-    protected V3D_Point_d lu;
-
-    /**
-     * For storing the right upper point.
-     */
-    protected V3D_Point_d uu;
-
-    /**
-     * For storing the right lower point.
-     */
-    protected V3D_Point_d ul;
-
-    /**
-     * The top/upper edge.
-     */
-    protected V3D_FiniteGeometry_d t;
-
-    /**
-     * The right edge.
-     */
-    protected V3D_FiniteGeometry_d r;
-
-    /**
-     * The bottom/lower edge.
-     */
-    protected V3D_FiniteGeometry_d b;
-
-    /**
-     * The left edge.
-     */
-    protected V3D_FiniteGeometry_d l;
-
-    /**
-     * For storing all the points.N.B {@link #ll}, {@link #lu}, {@link #uu},
-     * {@link #lu} may all be the same.
-     */
-    protected HashSet<V3D_Point_d> pts;
-    
-    /**
-     * For storing the top plane.
-     */
-    protected V3D_Plane_d tpl;
-
-    /**
-     * For storing the right plane.
-     */
-    protected V3D_Plane_d rpl;
-
-    /**
-     * For storing the bottom plane.
-     */
-    protected V3D_Plane_d bpl;
-
-    /**
-     * For storing the left plane.
-     */
-    protected V3D_Plane_d lpl;
-
-    /**
      * @param e An envelope.
      */
     public V3D_AABBZ_d(V3D_AABBZ_d e) {
-        env = e.env;
-        offset = e.offset;
+        super(e);
         z = e.z;
         zpl = e.zpl;
         xMin = e.xMin;
         xMax = e.xMax;
         yMin = e.yMin;
         yMax = e.yMax;
-        ll = e.ll;
-        lu = e.lu;
-        uu = e.uu;
-        ul = e.ul;
-        l = e.l;
-        r = e.r;
-        b = e.b;
-        t = e.t;
-        pts = e.pts;
     }
 
     /**
@@ -291,20 +204,6 @@ public class V3D_AABBZ_d implements Serializable {
     }
 
     /**
-     * @return {@link #pts} initialising first if it is null.
-     */
-    public HashSet<V3D_Point_d> getPoints() {
-        if (pts == null) {
-            pts = new HashSet<>(4);
-            pts.add(getll());
-            pts.add(getlu());
-            pts.add(getuu());
-            pts.add(getul());
-        }
-        return pts;
-    }
-
-    /**
      * Test for equality.
      *
      * @param e The V3D_AABBZ to test for equality with this.
@@ -349,6 +248,7 @@ public class V3D_AABBZ_d implements Serializable {
     /**
      * @return {@link #ll} setting it first if it is null.
      */
+    @Override
     public V3D_Point_d getll() {
         if (ll == null) {
             ll = new V3D_Point_d(env, xMin, yMin, z);
@@ -359,6 +259,7 @@ public class V3D_AABBZ_d implements Serializable {
     /**
      * @return {@link #lu} setting it first if it is null.
      */
+    @Override
     public V3D_Point_d getlu() {
         if (lu == null) {
             lu = new V3D_Point_d(env, xMin, yMax, z);
@@ -369,6 +270,7 @@ public class V3D_AABBZ_d implements Serializable {
     /**
      * @return {@link #uu} setting it first if it is null.
      */
+    @Override
     public V3D_Point_d getuu() {
         if (uu == null) {
             uu = new V3D_Point_d(env, xMax, yMax, z);
@@ -379,6 +281,7 @@ public class V3D_AABBZ_d implements Serializable {
     /**
      * @return {@link #ul} setting it first if it is null.
      */
+    @Override
     public V3D_Point_d getul() {
         if (ul == null) {
             ul = new V3D_Point_d(env, xMax, yMin, z);
@@ -399,6 +302,7 @@ public class V3D_AABBZ_d implements Serializable {
     /**
      * @return the left of the envelope.
      */
+    @Override
     public V3D_FiniteGeometry_d getLeft() {
         if (l == null) {
             double xmin = getXMin();
@@ -420,6 +324,7 @@ public class V3D_AABBZ_d implements Serializable {
      *
      * @return {@link #lpl} initialising first if it is {@code null}.
      */
+    @Override
     public V3D_Plane_d getLeftPlane() {
         if (lpl == null) {
             lpl = new V3D_Plane_d(new V3D_Point_d(env, getXMin(), getYMin(), z),
@@ -431,6 +336,7 @@ public class V3D_AABBZ_d implements Serializable {
     /**
      * @return the right of the envelope.
      */
+    @Override
     public V3D_FiniteGeometry_d getRight() {
         if (r == null) {
             double xmax = getXMax();
@@ -452,6 +358,7 @@ public class V3D_AABBZ_d implements Serializable {
      *
      * @return {@link #rpl} initialising first if it is {@code null}.
      */
+    @Override
     public V3D_Plane_d getRightPlane() {
         if (rpl == null) {
             rpl = new V3D_Plane_d(new V3D_Point_d(env, getXMax(), getYMax(), z),
@@ -463,6 +370,7 @@ public class V3D_AABBZ_d implements Serializable {
     /**
      * @return the top of the envelope.
      */
+    @Override
     public V3D_FiniteGeometry_d getTop() {
         if (t == null) {
             double xmin = getXMin();
@@ -484,6 +392,7 @@ public class V3D_AABBZ_d implements Serializable {
      *
      * @return {@link #tpl} initialising first if it is {@code null}.
      */
+    @Override
     public V3D_Plane_d getTopPlane() {
         if (tpl == null) {
             tpl = new V3D_Plane_d(new V3D_Point_d(env, getXMax(), getYMax(), z),
@@ -495,6 +404,7 @@ public class V3D_AABBZ_d implements Serializable {
     /**
      * @return the bottom of the envelope.
      */
+    @Override
     public V3D_FiniteGeometry_d getBottom() {
         if (b == null) {
             double xmin = getXMin();
@@ -512,41 +422,18 @@ public class V3D_AABBZ_d implements Serializable {
     }
 
     /**
-     * Translates this using {@code v}.
+     * The bottom plane is orthogonal to the xPlane. With a normal pointing
+     * away.
      *
-     * @param v The vector of translation.
+     * @return {@link #bpl} initialising first if it is {@code null}.
      */
-    public void translate(V3D_Vector_d v) {
-        offset = offset.add(v);
-        pts = null;
-        if (ll != null) {
-            ll.translate(v);
+    @Override
+    public V3D_Plane_d getBottomPlane() {
+        if (bpl == null) {
+            bpl = new V3D_Plane_d(new V3D_Point_d(env, getXMin(), getYMin(), z),
+                    V3D_Vector_d.NI);
         }
-        if (lu != null) {
-            lu.translate(v);
-        }
-        if (uu != null) {
-            uu.translate(v);
-        }
-        if (ul != null) {
-            ul.translate(v);
-        }
-        if (l != null) {
-            l.translate(v);
-        }
-        if (t != null) {
-            t.translate(v);
-        }
-        if (r != null) {
-            r.translate(v);
-        }
-        if (b != null) {
-            b.translate(v);
-        }
-//        xMax = xMax.add(v.getDX());
-//        xMin = xMin.add(v.getDX());
-//        yMax = yMax.add(v.getDY());
-//        yMin = yMin.add(v.getDY());
+        return bpl;
     }
 
     /**
@@ -554,6 +441,7 @@ public class V3D_AABBZ_d implements Serializable {
      *
      * @return The approximate or exact centre of this.
      */
+    @Override
     public V3D_Point_d getCentroid() {
         return new V3D_Point_d(env,
                 (getXMax() + getXMin()) / 2d,
@@ -621,6 +509,7 @@ public class V3D_AABBZ_d implements Serializable {
      * same Z plane.
      * @return {@code} true iff {@code this} contains {@code p}.
      */
+    @Override
     public boolean contains(V3D_Point_d p) {
         double px = p.getX();
         double py = p.getY();
@@ -634,6 +523,7 @@ public class V3D_AABBZ_d implements Serializable {
      * @param l The line to test for containment.
      * @return {@code true} if this contains {@code l}
      */
+    @Override
     public boolean contains(V3D_LineSegment_d l) {
         return contains(l.getP()) && contains(l.getQ());
     }
@@ -643,6 +533,7 @@ public class V3D_AABBZ_d implements Serializable {
      * to be in the same Z plane.
      * @return {@code true} if this intersects with {@code p}
      */
+    @Override
     public boolean intersects(V3D_Point_d p) {
         return intersects(p.getX(), p.getY());
     }
@@ -660,9 +551,81 @@ public class V3D_AABBZ_d implements Serializable {
                 && y <= getYMax();
     }
     
+    /**
+     * Gets the intersect {@code l} with {@code ls} where {@code ls} is a side 
+     * either {@link #t}, {@link #b}, {@link #l} or {@link #r} when a 
+     * line segment.
+     *     
+     * @param ls The line segment to get the intersect with l. The line segment 
+     * must be lying in the same zPlane. 
+     * @param l The line to get intersection with this. The line must be lying 
+     * in the same zPlane. 
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return The intersection between {@code this} and {@code l}.
+     */
+    @Override
+    public V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d ls, V3D_Line_d l,
+            double epsilon) {
+        double x1 = ls.getP().getX();
+        double x2 = ls.getQ().getX();
+        double x3 = l.getP().getX();
+        double x4 = l.getQ().getX();
+        double y1 = ls.l.p.getY();
+        double y2 = ls.l.q.getY();
+        double y3 = l.p.getY();
+        double y4 = l.q.getY();
+        double den = V3D_AABB_d.getIntersectDenominator(x1, x2, x3, x4, y1, y2, y3, y4);
+        V3D_Geometry_d li = getIntersect(ls.l, l, den, x1, x2, x3, x4, y1, y2, y3, y4, epsilon);
+        if (li != null) {
+            if (li instanceof V3D_Point_d pli) {
+                //if (intersects(pli,epsilon)) {
+                if (ls.isAligned(pli, epsilon)) {
+                    return pli;
+                } else {
+                    return null;
+                }
+            } else {
+                return ls;
+            }
+        }
+        return null;
+    }
     
-    
-    
-    
-    
+    /**
+     * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
+     *     
+     * @param l0 A line to get the intersect with l. The line must be lying in 
+     * the same plane as this and l.
+     * @param l Line to intersect with.
+     * @param den getIntersectDenominator(x1, x2, x3, x4, y1, y2, y3, y4)
+     * @param x1 getP().getX()
+     * @param x2 getQ().getX()
+     * @param x3 l.getP().getX()
+     * @param x4 l.getQ().getX()
+     * @param y1 p.getY()
+     * @param y2 q.getY()
+     * @param y3 l.p.getY()
+     * @param y4 l.q.getY()
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return The geometry or null if there is no intersection.
+     */
+    public V3D_Geometry_d getIntersect(V3D_Line_d l0, V3D_Line_d l, double den,
+            double x1, double x2, double x3, double x4,
+            double y1, double y2, double y3, double y4,
+            double epsilon) {
+        if (V3D_AABB_d.intersects(l0, l, den, epsilon)) {
+            // Check for coincident lines
+            if (l0.equals(epsilon, l)) {
+                return l;
+            }
+            double x1y2sy1x2 = (x1 * y2) - (y1 * x2);
+            double x3y4sy3x4 = (x3 * y4) - (y3 * x4);
+            double numx = (x1y2sy1x2 * (x3 - x4)) - ((x1 - x2) * x3y4sy3x4);
+            double numy = (x1y2sy1x2 * (y3 - y4)) - ((y1 - y2) * x3y4sy3x4);
+            return new V3D_Point_d(env, numx / den, numy / den, z);
+        }
+        return null;
+    }
 }

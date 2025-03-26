@@ -16,9 +16,7 @@
 package uk.ac.leeds.ccg.v3d.geometry;
 
 import ch.obermuhlner.math.big.BigRational;
-import java.io.Serializable;
 import java.math.RoundingMode;
-import java.util.HashSet;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
@@ -29,25 +27,15 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * is a line segment parallel to either the Z axis or Y axis respectively. If
  * {@link yMin} = {@link yMax} and {@link zMin} = {@link zMax} the bounding box
  * is a point. It is wanted to calculate if there is intersection/containment of
- * a shape in the V3D_AABB instance. A general rectangle cannot easily be used
- * instead without additional complication.
+ * finite geometries in the V3D_AABB instance. A general rectangle cannot 
+ * be used due to recursive complications.
  *
  * @author Andy Turner
  * @version 1.0
  */
-public class V3D_AABBX implements Serializable {
+public class V3D_AABBX extends V3D_AABB2D {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * The environment.
-     */
-    protected final V3D_Environment env;
-
-    /**
-     * For storing the offset of this.
-     */
-    private V3D_Vector offset;
 
     /**
      * The x value.
@@ -81,92 +69,16 @@ public class V3D_AABBX implements Serializable {
     private final BigRational zMax;
 
     /**
-     * For storing the left lower point.
-     */
-    protected V3D_Point ll;
-
-    /**
-     * For storing the left upper point.
-     */
-    protected V3D_Point lu;
-
-    /**
-     * For storing the right upper point.
-     */
-    protected V3D_Point uu;
-
-    /**
-     * For storing the right lower point.
-     */
-    protected V3D_Point ul;
-
-    /**
-     * The top/upper edge.
-     */
-    protected V3D_FiniteGeometry t;
-
-    /**
-     * The right edge.
-     */
-    protected V3D_FiniteGeometry r;
-
-    /**
-     * The bottom/lower edge.
-     */
-    protected V3D_FiniteGeometry b;
-
-    /**
-     * The left edge.
-     */
-    protected V3D_FiniteGeometry l;
-
-    /**
-     * For storing all the points.N.B {@link #ll}, {@link #lu}, {@link #uu},
-     * {@link #lu} may all be the same.
-     */
-    protected HashSet<V3D_Point> pts;
-
-    /**
-     * For storing the top plane.
-     */
-    protected V3D_Plane tpl;
-
-    /**
-     * For storing the right plane.
-     */
-    protected V3D_Plane rpl;
-
-    /**
-     * For storing the bottom plane.
-     */
-    protected V3D_Plane bpl;
-
-    /**
-     * For storing the left plane.
-     */
-    protected V3D_Plane lpl;
-
-    /**
      * @param e An envelope.
      */
     public V3D_AABBX(V3D_AABBX e) {
-        env = e.env;
-        offset = e.offset;
+        super(e);
         x = e.x;
         xpl = e.xpl;
         yMin = e.yMin;
         yMax = e.yMax;
         zMin = e.zMin;
         zMax = e.zMax;
-        ll = e.ll;
-        lu = e.lu;
-        uu = e.uu;
-        ul = e.ul;
-        l = e.l;
-        r = e.r;
-        b = e.b;
-        t = e.t;
-        pts = e.pts;
     }
 
     /**
@@ -211,6 +123,7 @@ public class V3D_AABBX implements Serializable {
      * @param gs The geometries used to form the envelope.
      */
     public V3D_AABBX(int oom, RoundingMode rm, V3D_FiniteGeometry... gs) {
+        super();
         V3D_AABBX e = new V3D_AABBX(gs[0], oom, rm);
         for (V3D_FiniteGeometry g : gs) {
             e = e.union(new V3D_AABBX(g, oom, rm), oom, rm);
@@ -308,20 +221,6 @@ public class V3D_AABBX implements Serializable {
                 + ", yMin=" + getYMin(oom, rm) + ", yMax=" + getYMax(oom, rm)
                 + ", zMin=" + getZMin(oom, rm) + ", zMax=" + getZMax(oom, rm)
                 + ")";
-    }
-
-    /**
-     * @return {@link #pts} initialising first if it is null.
-     */
-    public HashSet<V3D_Point> getPoints() {
-        if (pts == null) {
-            pts = new HashSet<>(4);
-            pts.add(getll());
-            pts.add(getlu());
-            pts.add(getuu());
-            pts.add(getul());
-        }
-        return pts;
     }
 
     /**
@@ -426,6 +325,7 @@ public class V3D_AABBX implements Serializable {
     /**
      * @return {@link #ll} setting it first if it is null.
      */
+    @Override
     public V3D_Point getll() {
         if (ll == null) {
             ll = new V3D_Point(env, x, yMin, zMin);
@@ -436,6 +336,7 @@ public class V3D_AABBX implements Serializable {
     /**
      * @return {@link #lu} setting it first if it is null.
      */
+    @Override
     public V3D_Point getlu() {
         if (lu == null) {
             lu = new V3D_Point(env, x, yMin, zMax);
@@ -446,6 +347,7 @@ public class V3D_AABBX implements Serializable {
     /**
      * @return {@link #uu} setting it first if it is null.
      */
+    @Override
     public V3D_Point getuu() {
         if (uu == null) {
             uu = new V3D_Point(env, x, yMax, zMax);
@@ -456,6 +358,7 @@ public class V3D_AABBX implements Serializable {
     /**
      * @return {@link #ul} setting it first if it is null.
      */
+    @Override
     public V3D_Point getul() {
         if (ul == null) {
             ul = new V3D_Point(env, x, yMax, zMin);
@@ -478,6 +381,7 @@ public class V3D_AABBX implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return the left of the envelope.
      */
+    @Override
     public V3D_FiniteGeometry getLeft(int oom, RoundingMode rm) {
         if (l == null) {
             BigRational ymin = getYMin(oom);
@@ -501,6 +405,7 @@ public class V3D_AABBX implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return {@link #lpl} initialising first if it is {@code null}.
      */
+    @Override
     public V3D_Plane getLeftPlane(int oom, RoundingMode rm) {
         if (lpl == null) {
             lpl = new V3D_Plane(new V3D_Point(env, x, getYMin(oom), getZMin(oom)),
@@ -514,6 +419,7 @@ public class V3D_AABBX implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return the right of the envelope.
      */
+    @Override
     public V3D_FiniteGeometry getRight(int oom, RoundingMode rm) {
         if (r == null) {
             BigRational ymax = getYMax(oom);
@@ -537,6 +443,7 @@ public class V3D_AABBX implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return {@link #rpl} initialising first if it is {@code null}.
      */
+    @Override
     public V3D_Plane getRightPlane(int oom, RoundingMode rm) {
         if (rpl == null) {
             rpl = new V3D_Plane(new V3D_Point(env, x, getYMax(oom), getZMax(oom)),
@@ -550,6 +457,7 @@ public class V3D_AABBX implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return the top of the envelope.
      */
+    @Override
     public V3D_FiniteGeometry getTop(int oom, RoundingMode rm) {
         if (t == null) {
             BigRational ymin = getYMin(oom);
@@ -573,6 +481,7 @@ public class V3D_AABBX implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return {@link #tpl} initialising first if it is {@code null}.
      */
+    @Override
     public V3D_Plane getTopPlane(int oom, RoundingMode rm) {
         if (tpl == null) {
             tpl = new V3D_Plane(new V3D_Point(env, x, getYMax(oom), getZMax(oom)),
@@ -586,6 +495,7 @@ public class V3D_AABBX implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return the bottom of the envelope.
      */
+    @Override
     public V3D_FiniteGeometry getBottom(int oom, RoundingMode rm) {
         if (b == null) {
             BigRational ymin = getYMin(oom);
@@ -610,6 +520,7 @@ public class V3D_AABBX implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return {@link #bpl} initialising first if it is {@code null}.
      */
+    @Override
     public V3D_Plane getBottomPlane(int oom, RoundingMode rm) {
         if (bpl == null) {
             bpl = new V3D_Plane(new V3D_Point(env, x, getYMin(oom), getZMin(oom)),
@@ -619,51 +530,12 @@ public class V3D_AABBX implements Serializable {
     }
 
     /**
-     * Translates this using {@code v}.
-     *
-     * @param v The vector of translation.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     */
-    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
-        offset = offset.add(v, oom, rm);
-        pts = null;
-        if (ll != null) {
-            ll.translate(v, oom, rm);
-        }
-        if (lu != null) {
-            lu.translate(v, oom, rm);
-        }
-        if (uu != null) {
-            uu.translate(v, oom, rm);
-        }
-        if (ul != null) {
-            ul.translate(v, oom, rm);
-        }
-        if (l != null) {
-            l.translate(v, oom, rm);
-        }
-        if (t != null) {
-            t.translate(v, oom, rm);
-        }
-        if (r != null) {
-            r.translate(v, oom, rm);
-        }
-        if (b != null) {
-            b.translate(v, oom, rm);
-        }
-//        xMax = xMax.add(v.getDX(oom, rm));
-//        xMin = xMin.add(v.getDX(oom, rm));
-//        yMax = yMax.add(v.getDY(oom, rm));
-//        yMin = yMin.add(v.getDY(oom, rm));
-    }
-
-    /**
      * Calculate and return the approximate (or exact) centroid of the envelope.
      *
      * @param oom The Order of Magnitude for the precision.
      * @return The approximate or exact centre of this.
      */
+    @Override
     public V3D_Point getCentroid(int oom) {
         return new V3D_Point(env,
                 x,
@@ -741,6 +613,7 @@ public class V3D_AABBX implements Serializable {
      * @param oom The Order of Magnitude for the precision.
      * @return {@code} true iff {@code this} contains {@code p}.
      */
+    @Override
     public boolean contains(V3D_Point p, int oom) {
         return getYMax(oom).compareTo(p.getY(oom, RoundingMode.FLOOR)) != -1
                 && getYMin(oom).compareTo(p.getY(oom, RoundingMode.CEILING)) != 1
@@ -754,6 +627,7 @@ public class V3D_AABBX implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this contains {@code l}
      */
+    @Override
     public boolean contains(V3D_LineSegment l, int oom, RoundingMode rm) {
         return contains(l.getP(), oom) && contains(l.getQ(oom, rm), oom);
     }
@@ -765,6 +639,7 @@ public class V3D_AABBX implements Serializable {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code p}
      */
+    @Override
     public boolean intersects(V3D_Point p, int oom, RoundingMode rm) {
         return intersects(p.getY(oom, rm), p.getZ(oom, rm), oom);
     }
@@ -781,5 +656,85 @@ public class V3D_AABBX implements Serializable {
                 && y.compareTo(getYMax(oom)) != 1
                 && z.compareTo(getZMin(oom)) != -1
                 && z.compareTo(getZMax(oom)) != 1;
+    }
+    
+    /**
+     * Gets the intersect {@code l} with {@code ls} where {@code ls} is a side 
+     * either {@link #t}, {@link #b}, {@link #l} or {@link #r} when a 
+     * line segment.
+     *
+     * @param ls The line segment to get the intersect with l. The line segment 
+     * must be lying in the same xPlane. 
+     * @param l The line to get intersection with this. The line must be lying 
+     * in the same xPlane. 
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return The intersection between {@code this} and {@code l}.
+     */
+    @Override
+    public V3D_FiniteGeometry getIntersect(V3D_LineSegment ls, V3D_Line l, 
+            int oom, RoundingMode rm) {
+        BigRational y1 = ls.getP().getY(oom, rm);
+        BigRational y2 = ls.getQ(oom, rm).getY(oom, rm);
+        BigRational y3 = l.getP().getY(oom, rm);
+        BigRational y4 = l.getQ(oom, rm).getY(oom, rm);
+        BigRational z1 = ls.l.p.getZ(oom, rm);
+        BigRational z2 = ls.l.q.getZ(oom, rm);
+        BigRational z3 = l.p.getZ(oom, rm);
+        BigRational z4 = l.q.getZ(oom, rm);
+        BigRational den = V3D_AABB.getIntersectDenominator(y1, y2, y3, y4, z1, z2, z3, z4);
+        V3D_Geometry li = getIntersect(ls.l, l, den, y1, y2, y3, y4, z1, z2, z3, z4, oom, rm);
+        if (li != null) {
+            if (li instanceof V3D_Point pli) {
+                //if (intersects(pli, oom, rm)) {
+                if (ls.isAligned(pli, oom, rm)) {
+                    return pli;
+                } else {
+                    return null;
+                }
+            } else {
+                return ls;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
+     *     
+     * @param l0 A line to get the intersect with l. The line must be lying in 
+     * the same plane as this and l. 
+     * @param l Line to intersect with.
+     * @param den getIntersectDenominator(y1, y2, y3, y4, z1, z2, z3, z4)
+     * @param y1 getP().getY(oom, rm)
+     * @param y2 getQ(oom, rm).getY(oom, rm)
+     * @param y3 l.getP().getY(oom, rm)
+     * @param y4 l.getQ(oom, rm).getY(oom, rm)
+     * @param z1 p.getZ(oom, rm)
+     * @param z2 q.getZ(oom, rm)
+     * @param z3 l.p.getZ(oom, rm)
+     * @param z4 l.q.getZ(oom, rm)
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return The geometry or null if there is no intersection.
+     */
+    public V3D_Geometry getIntersect(V3D_Line l0, V3D_Line l, BigRational den,
+            BigRational y1, BigRational y2, BigRational y3, BigRational y4,
+            BigRational z1, BigRational z2, BigRational z3, BigRational z4,
+            int oom, RoundingMode rm) {
+        if (V3D_AABB.intersects(l0, l, den, oom, rm)) {
+            // Check for coincident lines
+            if (l0.equals(l, oom - 1, rm)) {
+                return l;
+            }
+            BigRational y1z2sz1y2 = ((y1.multiply(z2)).subtract(z1.multiply(y2)));
+            BigRational y3z4sz3y4 = ((y3.multiply(z4)).subtract(z3.multiply(y4)));
+            BigRational numy = (y1z2sz1y2.multiply(y3.subtract(y4))).subtract(
+                    (y1.subtract(y2)).multiply(y3z4sz3y4));
+            BigRational numz = (y1z2sz1y2.multiply(z3.subtract(z4))).subtract(
+                    (z1.subtract(z2)).multiply(y3z4sz3y4));
+            return new V3D_Point(env, x, numy.divide(den), numz.divide(den));
+        }
+        return null;
     }
 }

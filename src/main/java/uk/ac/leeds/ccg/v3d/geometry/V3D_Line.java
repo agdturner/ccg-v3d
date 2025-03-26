@@ -431,33 +431,34 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
-        return getIntersect(aabb.getl(oom, rm), oom, rm) != null
-                || getIntersect(aabb.getr(oom, rm), oom, rm) != null
-                || getIntersect(aabb.gett(oom, rm), oom, rm) != null
-                || getIntersect(aabb.getb(oom, rm), oom, rm) != null
-                || getIntersect(aabb.getf(oom, rm), oom, rm) != null
-                || getIntersect(aabb.geta(oom, rm), oom, rm) != null;
+        return intersects(aabb.getl(oom, rm), oom, rm)
+                || intersects(aabb.getr(oom, rm), oom, rm)
+                || intersects(aabb.gett(oom, rm), oom, rm)
+                || intersects(aabb.getb(oom, rm), oom, rm)
+                || intersects(aabb.getf(oom, rm), oom, rm)
+                || intersects(aabb.geta(oom, rm), oom, rm);
     }
     
     /**
-     * If this goes 
      * @param aabbx The V3D_AABBX to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this getIntersect with {@code l}
+     * @return {@code true} if this intersects with {@code aabbx}
      */
     public boolean intersects(V3D_AABBX aabbx, int oom, RoundingMode rm) {
         V3D_Plane pl = aabbx.getXPl();
         if (pl.isParallel(this, oom, rm)) {
             if (pl.isOnPlane(this, oom, rm)) {
-                // Find if the line crosses any of the edges of aabbx
-                // This is like a 2D line and line segment intersection.
-                return true;
+                if (aabbx.intersects(this, oom, rm)) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
         } else {
-            V3D_Geometry i = aabbx.xpl.getIntersect(this, oom, rm);
+            V3D_Geometry i = pl.getIntersect(this, oom, rm);
             if (i == null) {
                 return false;
             } else {
@@ -471,65 +472,149 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * @param aabbx The V3D_AABBX to test for intersection.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this getIntersect with {@code l}
-     */
-    public V3D_Point getIntersect(V3D_AABBX aabbx, int oom, RoundingMode rm) {
-        V3D_Plane pl = aabbx.getXPl();
-        if (pl.isParallel(this, oom, rm)) {
-            return null;
-        }
-        // Calculate the intersection point
-        V3D_Point pt = (V3D_Point) pl.getIntersect(this, oom, rm);
-        if (aabbx.intersects(pt, oom, rm)) {
-            return pt;
-        }
-        return null;
-    }
-
-    /**
      * @param aabby The V3D_AABBY to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this getIntersect with {@code l}
+     * @return {@code true} if this intersects with {@code aabby}
      */
-    public V3D_Point getIntersect(V3D_AABBY aabby, int oom, RoundingMode rm) {
+    public boolean intersects(V3D_AABBY aabby, int oom, RoundingMode rm) {
         V3D_Plane pl = aabby.getYPl();
         if (pl.isParallel(this, oom, rm)) {
             if (pl.isOnPlane(this, oom, rm)) {
-                return true;
+                if (aabby.intersects(this, oom, rm)) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
+        } else {
+            V3D_Geometry i = pl.getIntersect(this, oom, rm);
+            if (i == null) {
+                return false;
+            } else {
+                V3D_Point ip = (V3D_Point) i;
+                return aabby.getTopPlane(oom, rm).isOnSameSide(aabby.getll(), ip, oom, rm)
+                    && aabby.getBottomPlane(oom, rm).isOnSameSide(aabby.getuu(), ip, oom, rm)
+                    && aabby.getRightPlane(oom, rm).isOnSameSide(aabby.getll(), ip, oom, rm)
+                    && aabby.getLeftPlane(oom, rm).isOnSameSide(aabby.getuu(), ip, oom, rm);
+            }
         }
-        // Calculate the intersection point
-        V3D_Point pt = (V3D_Point) pl.getIntersect(this, oom, rm);
-        if (aabby.intersects(pt, oom, rm)) {
-            return pt;
-        }
-        return null;
     }
 
     /**
      * @param aabbz The V3D_AABBZ to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this getIntersect with {@code l}
+     * @return {@code true} if this intersects with {@code aabbz}
      */
-    public V3D_Point getIntersect(V3D_AABBZ aabbz, int oom, RoundingMode rm) {
+    public boolean intersects(V3D_AABBZ aabbz, int oom, RoundingMode rm) {
         V3D_Plane pl = aabbz.getZPl();
         if (pl.isParallel(this, oom, rm)) {
-            return null;
+            if (pl.isOnPlane(this, oom, rm)) {
+                if (aabbz.intersects(this, oom, rm)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            V3D_Geometry i = pl.getIntersect(this, oom, rm);
+            if (i == null) {
+                return false;
+            } else {
+                V3D_Point ip = (V3D_Point) i;
+                return aabbz.getTopPlane(oom, rm).isOnSameSide(aabbz.getll(), ip, oom, rm)
+                    && aabbz.getBottomPlane(oom, rm).isOnSameSide(aabbz.getuu(), ip, oom, rm)
+                    && aabbz.getRightPlane(oom, rm).isOnSameSide(aabbz.getll(), ip, oom, rm)
+                    && aabbz.getLeftPlane(oom, rm).isOnSameSide(aabbz.getuu(), ip, oom, rm);
+            }
         }
-        // Calculate the intersection point
-        V3D_Point pt = (V3D_Point) pl.getIntersect(this, oom, rm);
-        if (aabbz.intersects(pt, oom, rm)) {
-            return pt;
-        }
-        return null;
     }
+
+//    /**
+//     * @param aabbx The V3D_AABBX to test for intersection.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode for any rounding.
+//     * @return {@code true} if this getIntersect with {@code l}
+//     */
+//    public V3D_Point getIntersect(V3D_AABBX aabbx, int oom, RoundingMode rm) {
+//        V3D_Plane pl = aabbx.getXPl();
+//        if (pl.isParallel(this, oom, rm)) {
+//            if (pl.isOnPlane(this, oom, rm)) {
+//                if (aabbx.intersects(this, oom, rm)) {
+//                    throw new UnsupportedOperationException();
+//                } else {
+//                    return null;
+//                }
+//            } else {
+//                return null;
+//            }
+//        }
+//        // Calculate the intersection point
+//        V3D_Point pt = (V3D_Point) pl.getIntersect(this, oom, rm);
+//        if (aabbx.intersects(pt, oom, rm)) {
+//            return pt;
+//        }
+//        return null;
+//    }
+//
+//    /**
+//     * @param aabby The V3D_AABBY to test for intersection.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode for any rounding.
+//     * @return {@code true} if this getIntersect with {@code l}
+//     */
+//    public V3D_Point getIntersect(V3D_AABBY aabby, int oom, RoundingMode rm) {
+//        V3D_Plane pl = aabby.getYPl();
+//        if (pl.isParallel(this, oom, rm)) {
+//            if (pl.isOnPlane(this, oom, rm)) {
+//                if (aabby.intersects(this, oom, rm)) {
+//                    throw new UnsupportedOperationException();
+//                } else {
+//                    return null;
+//                }
+//            } else {
+//                return null;
+//            }
+//        }
+//        // Calculate the intersection point
+//        V3D_Point pt = (V3D_Point) pl.getIntersect(this, oom, rm);
+//        if (aabby.intersects(pt, oom, rm)) {
+//            return pt;
+//        }
+//        return null;
+//    }
+//
+//    /**
+//     * @param aabbz The V3D_AABBZ to test for intersection.
+//     * @param oom The Order of Magnitude for the precision.
+//     * @param rm The RoundingMode for any rounding.
+//     * @return {@code true} if this getIntersect with {@code l}
+//     */
+//    public V3D_Point getIntersect(V3D_AABBZ aabbz, int oom, RoundingMode rm) {
+//        V3D_Plane pl = aabbz.getZPl();
+//        if (pl.isParallel(this, oom, rm)) {
+//            if (pl.isOnPlane(this, oom, rm)) {
+//                if (aabbz.intersects(this, oom, rm)) {
+//                    throw new UnsupportedOperationException();
+//                } else {
+//                    return null;
+//                }
+//            } else {
+//                return null;
+//            }
+//        }
+//        // Calculate the intersection point
+//        V3D_Point pt = (V3D_Point) pl.getIntersect(this, oom, rm);
+//        if (aabbz.intersects(pt, oom, rm)) {
+//            return pt;
+//        }
+//        return null;
+//    }
 
     /**
      * @param l The line to test if it is parallel to this.

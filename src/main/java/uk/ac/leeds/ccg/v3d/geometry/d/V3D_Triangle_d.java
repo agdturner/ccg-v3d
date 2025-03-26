@@ -2469,12 +2469,12 @@ public class V3D_Triangle_d extends V3D_Area_d {
 
     //@Override
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
-        return intersects(aabb.l, epsilon)
-                || intersects(aabb.r, epsilon)
-                || intersects(aabb.t, epsilon)
-                || intersects(aabb.b, epsilon)
-                || intersects(aabb.f, epsilon)
-                || intersects(aabb.a, epsilon)
+        return intersects(aabb.getl(), epsilon)
+                || intersects(aabb.getr(), epsilon)
+                || intersects(aabb.gett(), epsilon)
+                || intersects(aabb.getb(), epsilon)
+                || intersects(aabb.getf(), epsilon)
+                || intersects(aabb.geta(), epsilon)
                 || getEdges().values().parallelStream().anyMatch(x
                 -> x.intersects(aabb, epsilon));
     }
@@ -2482,21 +2482,31 @@ public class V3D_Triangle_d extends V3D_Area_d {
     //@Override
     public boolean intersects(V3D_AABBX_d aabbx, double epsilon) {
         if (intersects(aabbx.getXPl(), epsilon)) {
-            
+            return getEdges().values().parallelStream().anyMatch(x
+                -> aabbx.intersects(x.l, epsilon));
+        } else {
+            return false;
         }
-        // Return true if any edge intersects
-        return getEdges().values().parallelStream().anyMatch(x
-                -> x.intersects(aabb, epsilon));
     }
 
     //@Override
     public boolean intersects(V3D_AABBY_d aabby, double epsilon) {
-        return true;
+        if (intersects(aabby.getYPl(), epsilon)) {
+            return getEdges().values().parallelStream().anyMatch(x
+                -> aabby.intersects(x.l, epsilon));
+        } else {
+            return false;
+        }
     }
     
     //@Override
     public boolean intersects(V3D_AABBZ_d aabbz, double epsilon) {
-        return true;
+        if (intersects(aabbz.getZPl(), epsilon)) {
+            return getEdges().values().parallelStream().anyMatch(x
+                -> aabbz.intersects(x.l, epsilon));
+        } else {
+            return false;
+        }
     }
     
     /**

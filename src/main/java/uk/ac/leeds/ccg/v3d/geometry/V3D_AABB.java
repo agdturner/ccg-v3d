@@ -1374,4 +1374,45 @@ public class V3D_AABB implements Serializable {
         }
         return unique;
     }
+    
+    /**
+     * The parameters with names starting d1 are from the first dimension.
+     * The parameters with names starting d2 are from the second dimension.
+     * The examples are for the x and z dimensions respectively.
+     * 
+     * @param d11 p.getX()
+     * @param d12 q.getX()
+     * @param d13 l.p.getX()
+     * @param d14 l.q.getX()
+     * @param d21 p.getZ()
+     * @param d22 q.getZ()
+     * @param d23 l.p.getZ()
+     * @param d24 l.q.getZ()
+     * @return ((d11 - d12) * (d23 - d24)) - ((d21 - d22) * (d13 - d14))
+     */
+    public static BigRational getIntersectDenominator(BigRational d11,
+            BigRational d12, BigRational d13, BigRational d14, BigRational d21,
+            BigRational d22, BigRational d23, BigRational d24) {
+        return ((d11.subtract(d12)).multiply(d23.subtract(d24))).subtract(
+                (d21.subtract(d22)).multiply(d13.subtract(d14)));
+    }
+    
+    /**
+     * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
+     *
+     * @param l0 A line to test for intersection.
+     * @param l A line to test for intersection.
+     * @param den The intersection denominator.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if lines intersect.
+     */
+    public static boolean intersects(V3D_Line l0, V3D_Line l, BigRational den, 
+            int oom, RoundingMode rm) {
+        if (den.compareTo(BigRational.ZERO) == 0) {
+            // Lines are parallel or coincident.
+            return l0.equals(l, oom, rm);
+        }
+        return true;
+    }
 }
