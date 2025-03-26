@@ -127,10 +127,10 @@ public class V3D_AABBX_d extends V3D_AABB2D_d {
         zMax = e.zMax;
         x = e.x;
         xpl = e.xpl;
-        t = e.t;
-        r = e.r;
-        b = e.b;
-        l = e.l;
+        top = e.top;
+        right = e.right;
+        bottom = e.bottom;
+        left = e.left;
         ll = e.ll;
         lu = e.lu;
         uu = e.uu;
@@ -165,10 +165,10 @@ public class V3D_AABBX_d extends V3D_AABB2D_d {
                 yMax = points[0].getY();
                 zMin = points[0].getZ();
                 zMax = points[0].getZ();
-                t = points[0];
-                l = t;
-                r = t;
-                b = t;
+                top = points[0];
+                left = top;
+                right = top;
+                bottom = top;
             }
             default -> {
                 offset = V3D_Vector_d.ZERO;
@@ -305,19 +305,19 @@ public class V3D_AABBX_d extends V3D_AABB2D_d {
      */
     @Override
     public V3D_FiniteGeometry_d getLeft() {
-        if (l == null) {
+        if (left == null) {
             double ymin = getYMin();
             double zmin = getZMin();
             double zmax = getZMax();
             if (zmin == zmax) {
-                l = new V3D_Point_d(env, x, ymin, zmax);
+                left = new V3D_Point_d(env, x, ymin, zmax);
             } else {
-                l = new V3D_LineSegment_d(
+                left = new V3D_LineSegment_d(
                         new V3D_Point_d(env, x, ymin, zmin),
                         new V3D_Point_d(env, x, ymin, zmax));
             }
         }
-        return l;
+        return left;
     }
 
     /**
@@ -339,19 +339,19 @@ public class V3D_AABBX_d extends V3D_AABB2D_d {
      */
     @Override
     public V3D_FiniteGeometry_d getRight() {
-        if (r == null) {
+        if (right == null) {
             double ymax = getYMax();
             double zmin = getZMin();
             double zmax = getZMax();
             if (zmin == zmax) {
-                r = new V3D_Point_d(env, x, ymax, zmax);
+                right = new V3D_Point_d(env, x, ymax, zmax);
             } else {
-                r = new V3D_LineSegment_d(
+                right = new V3D_LineSegment_d(
                         new V3D_Point_d(env, x, ymax, zmin),
                         new V3D_Point_d(env, x, ymax, zmax));
             }
         }
-        return r;
+        return right;
     }
 
     /**
@@ -373,19 +373,19 @@ public class V3D_AABBX_d extends V3D_AABB2D_d {
      */
     @Override
     public V3D_FiniteGeometry_d getTop() {
-        if (t == null) {
+        if (top == null) {
             double ymin = getYMin();
             double ymax = getYMax();
             double zmax = getZMax();
             if (ymin == ymax) {
-                t = new V3D_Point_d(env, x, ymin, zmax);
+                top = new V3D_Point_d(env, x, ymin, zmax);
             } else {
-                t = new V3D_LineSegment_d(
+                top = new V3D_LineSegment_d(
                         new V3D_Point_d(env, x, ymin, zmax),
                         new V3D_Point_d(env, x, ymax, zmax));
             }
         }
-        return t;
+        return top;
     }
 
     /**
@@ -407,19 +407,19 @@ public class V3D_AABBX_d extends V3D_AABB2D_d {
      */
     @Override
     public V3D_FiniteGeometry_d getBottom() {
-        if (b == null) {
+        if (bottom == null) {
             double ymin = getYMin();
             double ymax = getYMax();
             double zmin = getZMin();
             if (ymin == ymax) {
-                b = new V3D_Point_d(env, x, ymin, zmin);
+                bottom = new V3D_Point_d(env, x, ymin, zmin);
             } else {
-                b = new V3D_LineSegment_d(
+                bottom = new V3D_LineSegment_d(
                         new V3D_Point_d(env, x, ymin, zmin),
                         new V3D_Point_d(env, x, ymax, zmin));
             }
         }
-        return b;
+        return bottom;
     }
 
     /**
@@ -525,7 +525,7 @@ public class V3D_AABBX_d extends V3D_AABB2D_d {
 
     /**
      * @param l The line to test for containment.
-     * @return {@code true} if this contains {@code l}
+     * @return {@code true} if this contains {@code left}
      */
     @Override
     public boolean contains(V3D_LineSegment_d l) {
@@ -556,17 +556,17 @@ public class V3D_AABBX_d extends V3D_AABB2D_d {
     }
     
     /**
-     * Gets the intersect {@code l} with {@code ls} where {@code ls} is a side 
-     * either {@link #t}, {@link #b}, {@link #l} or {@link #r} when a 
+     * Gets the intersect {@code left} with {@code ls} where {@code ls} is a side 
+     * either {@link #top}, {@link #bottom}, {@link #left} or {@link #right} when a 
      * line segment.
      *
-     * @param ls The line segment to get the intersect with l. The line segment 
-     * must be lying in the same xPlane. 
+     * @param ls The line segment to get the intersect with left. The line segment 
+ must be lying in the same xPlane. 
      * @param l The line to get intersection with this. The line must be lying 
      * in the same xPlane. 
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
-     * @return The intersection between {@code this} and {@code l}.
+     * @return The intersection between {@code this} and {@code left}.
      */
     @Override
     public V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d ls, V3D_Line_d l,
@@ -599,18 +599,18 @@ public class V3D_AABBX_d extends V3D_AABB2D_d {
     /**
      * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
      *
-     * @param l0 A line to get the intersect with l. The line must be lying in 
-     * the same plane as this and l. 
+     * @param l0 A line to get the intersect with left. The line must be lying in 
+ the same plane as this and left. 
      * @param l Line to intersect with.
      * @param den getIntersectDenominator(x1, x2, x3, x4, z1, z2, z3, z4)
      * @param y1 getP().getY()
      * @param y2 getQ().getY()
-     * @param y3 l.getP().getY()
-     * @param y4 l.getQ().getY()
+     * @param y3 left.getP().getY()
+     * @param y4 left.getQ().getY()
      * @param z1 p.getZ()
      * @param z2 q.getZ()
-     * @param z3 l.p.getZ()
-     * @param z4 l.q.getZ()
+     * @param z3 left.p.getZ()
+     * @param z4 left.q.getZ()
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
      * @return The geometry or null if there is no intersection.

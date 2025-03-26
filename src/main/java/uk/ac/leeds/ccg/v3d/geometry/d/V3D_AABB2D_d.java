@@ -64,22 +64,22 @@ public abstract class V3D_AABB2D_d implements Serializable {
     /**
      * The top/upper edge.
      */
-    protected V3D_FiniteGeometry_d t;
+    protected V3D_FiniteGeometry_d top;
 
     /**
      * The right edge.
      */
-    protected V3D_FiniteGeometry_d r;
+    protected V3D_FiniteGeometry_d right;
 
     /**
      * The bottom/lower edge.
      */
-    protected V3D_FiniteGeometry_d b;
+    protected V3D_FiniteGeometry_d bottom;
 
     /**
      * The left edge.
      */
-    protected V3D_FiniteGeometry_d l;
+    protected V3D_FiniteGeometry_d left;
 
     /**
      * For storing all the points.N.B {@link #ll}, {@link #lu}, {@link #uu},
@@ -122,10 +122,10 @@ public abstract class V3D_AABB2D_d implements Serializable {
         lu = e.lu;
         uu = e.uu;
         ul = e.ul;
-        l = e.l;
-        r = e.r;
-        b = e.b;
-        t = e.t;
+        left = e.left;
+        right = e.right;
+        bottom = e.bottom;
+        top = e.top;
         pts = e.pts;
     }
 
@@ -232,17 +232,17 @@ public abstract class V3D_AABB2D_d implements Serializable {
         if (ul != null) {
             ul.translate(v);
         }
-        if (l != null) {
-            l.translate(v);
+        if (left != null) {
+            left.translate(v);
         }
-        if (t != null) {
-            t.translate(v);
+        if (top != null) {
+            top.translate(v);
         }
-        if (r != null) {
-            r.translate(v);
+        if (right != null) {
+            right.translate(v);
         }
-        if (b != null) {
-            b.translate(v);
+        if (bottom != null) {
+            bottom.translate(v);
         }
 //        xMax = xMax.add(v.getDX());
 //        xMin = xMin.add(v.getDX());
@@ -266,7 +266,7 @@ public abstract class V3D_AABB2D_d implements Serializable {
 
     /**
      * @param l The line to test for containment.
-     * @return {@code true} if this contains {@code l}
+     * @return {@code true} if this contains {@code left}
      */
     public abstract boolean contains(V3D_LineSegment_d l);
 
@@ -291,39 +291,39 @@ public abstract class V3D_AABB2D_d implements Serializable {
             if (intersects(l.getQ())) {
                 return true;
             }
-        if (t instanceof V3D_Point_d tp) {
+        if (getTop() instanceof V3D_Point_d tp) {
             if (l.intersects(epsilon, tp)) {
                 return true;
             }
         } else {
-            if (getIntersect((V3D_LineSegment_d) t, l, epsilon) != null) {
+            if (getIntersect((V3D_LineSegment_d) getTop(), l, epsilon) != null) {
                 return true;
             }
         }
-        if (b instanceof V3D_Point_d bbp) {
+        if (getBottom() instanceof V3D_Point_d bbp) {
             if (l.intersects(epsilon, bbp)) {
                 return true;
             }
         } else {
-            if (getIntersect((V3D_LineSegment_d) b, l, epsilon) != null) {
+            if (getIntersect((V3D_LineSegment_d) getBottom(), l, epsilon) != null) {
                 return true;
             }
         }
-        if (r instanceof V3D_Point_d rp) {
+        if (getRight() instanceof V3D_Point_d rp) {
             if (l.intersects(epsilon, rp)) {
                 return true;
             }
         } else {
-            if (getIntersect((V3D_LineSegment_d) r, l, epsilon) != null) {
+            if (getIntersect((V3D_LineSegment_d) getRight(), l, epsilon) != null) {
                 return true;
             }
         }
-        if (this.l instanceof V3D_Point_d lp) {
+        if (getLeft() instanceof V3D_Point_d lp) {
             if (l.intersects(epsilon, lp)) {
                 return true;
             }
         } else {
-            if (getIntersect((V3D_LineSegment_d) this.l, l, epsilon) != null) {
+            if (getIntersect((V3D_LineSegment_d) getLeft(), l, epsilon) != null) {
                 return true;
             }
         }
@@ -331,17 +331,17 @@ public abstract class V3D_AABB2D_d implements Serializable {
     }
     
     /**
-     * Gets the intersect {@code l} with {@code ls} where {@code ls} is a side 
-     * either {@link #t}, {@link #b}, {@link #l} or {@link #r} when a 
+     * Gets the intersect {@code left} with {@code ls} where {@code ls} is a side 
+     * either {@link #top}, {@link #bottom}, {@link #left} or {@link #right} when a 
      * line segment.
      *
-     * @param ls The line segment to get the intersect with l. The line segment 
-     * must be lying in the same xPlane. 
+     * @param ls The line segment to get the intersect with left. The line segment 
+ must be lying in the same xPlane. 
      * @param l The line to get intersection with this. The line must be lying 
      * in the same xPlane. 
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
-     * @return The intersection between {@code this} and {@code l}.
+     * @return The intersection between {@code this} and {@code left}.
      */
     public abstract V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d ls, 
             V3D_Line_d l, double epsilon);

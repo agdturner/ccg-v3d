@@ -65,22 +65,22 @@ public abstract class V3D_AABB2D implements Serializable {
     /**
      * The top/upper edge.
      */
-    protected V3D_FiniteGeometry t;
+    protected V3D_FiniteGeometry top;
 
     /**
      * The right edge.
      */
-    protected V3D_FiniteGeometry r;
+    protected V3D_FiniteGeometry right;
 
     /**
      * The bottom/lower edge.
      */
-    protected V3D_FiniteGeometry b;
+    protected V3D_FiniteGeometry bottom;
 
     /**
      * The left edge.
      */
-    protected V3D_FiniteGeometry l;
+    protected V3D_FiniteGeometry left;
 
     /**
      * For storing all the points.N.B {@link #ll}, {@link #lu}, {@link #uu},
@@ -123,10 +123,10 @@ public abstract class V3D_AABB2D implements Serializable {
         lu = e.lu;
         uu = e.uu;
         ul = e.ul;
-        l = e.l;
-        r = e.r;
-        b = e.b;
-        t = e.t;
+        left = e.left;
+        right = e.right;
+        bottom = e.bottom;
+        top = e.top;
         pts = e.pts;
     }
     
@@ -167,7 +167,7 @@ public abstract class V3D_AABB2D implements Serializable {
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@link #l} initialising it first if it is {@code null}.
+     * @return {@link #left} initialising it first if it is {@code null}.
      */
     public abstract V3D_FiniteGeometry getLeft(int oom, RoundingMode rm);
 
@@ -181,7 +181,7 @@ public abstract class V3D_AABB2D implements Serializable {
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@link #r} initialising it first if it is {@code null}.
+     * @return {@link #right} initialising it first if it is {@code null}.
      */
     public abstract V3D_FiniteGeometry getRight(int oom, RoundingMode rm);
 
@@ -195,7 +195,7 @@ public abstract class V3D_AABB2D implements Serializable {
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@link #t} initialising it first if it is {@code null}.
+     * @return {@link #top} initialising it first if it is {@code null}.
      */
     public abstract V3D_FiniteGeometry getTop(int oom, RoundingMode rm);
 
@@ -209,7 +209,7 @@ public abstract class V3D_AABB2D implements Serializable {
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@link #b} initialising it first if it is {@code null}.
+     * @return {@link #bottom} initialising it first if it is {@code null}.
      */
     public abstract V3D_FiniteGeometry getBottom(int oom, RoundingMode rm);
 
@@ -242,17 +242,17 @@ public abstract class V3D_AABB2D implements Serializable {
         if (ul != null) {
             ul.translate(v, oom, rm);
         }
-        if (l != null) {
-            l.translate(v, oom, rm);
+        if (left != null) {
+            left.translate(v, oom, rm);
         }
-        if (t != null) {
-            t.translate(v, oom, rm);
+        if (top != null) {
+            top.translate(v, oom, rm);
         }
-        if (r != null) {
-            r.translate(v, oom, rm);
+        if (right != null) {
+            right.translate(v, oom, rm);
         }
-        if (b != null) {
-            b.translate(v, oom, rm);
+        if (bottom != null) {
+            bottom.translate(v, oom, rm);
         }
 //        xMax = xMax.add(v.getDX(oom, rm));
 //        xMin = xMin.add(v.getDX(oom, rm));
@@ -280,7 +280,7 @@ public abstract class V3D_AABB2D implements Serializable {
      * @param l The line to test for containment.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this contains {@code l}
+     * @return {@code true} if this contains {@code left}
      */
     public abstract boolean contains(V3D_LineSegment l, int oom, RoundingMode rm);
 
@@ -307,39 +307,39 @@ public abstract class V3D_AABB2D implements Serializable {
             if (intersects(l.getQ(oom, rm), oom, rm)) {
                 return true;
             }
-        if (t instanceof V3D_Point tp) {
+        if (getTop(oom, rm) instanceof V3D_Point tp) {
             if (l.intersects(tp, oom, rm)) {
                 return true;
             }
         } else {
-            if (getIntersect((V3D_LineSegment) t, l, oom, rm) != null) {
+            if (getIntersect((V3D_LineSegment) getTop(oom, rm), l, oom, rm) != null) {
                 return true;
             }
         }
-        if (b instanceof V3D_Point bbp) {
+        if (getBottom(oom, rm) instanceof V3D_Point bbp) {
             if (l.intersects(bbp, oom, rm)) {
                 return true;
             }
         } else {
-            if (getIntersect((V3D_LineSegment) b, l, oom, rm) != null) {
+            if (getIntersect((V3D_LineSegment) getBottom(oom, rm), l, oom, rm) != null) {
                 return true;
             }
         }
-        if (r instanceof V3D_Point rp) {
+        if (getRight(oom, rm) instanceof V3D_Point rp) {
             if (l.intersects(rp, oom, rm)) {
                 return true;
             }
         } else {
-            if (getIntersect((V3D_LineSegment) r, l, oom, rm) != null) {
+            if (getIntersect((V3D_LineSegment) getRight(oom, rm), l, oom, rm) != null) {
                 return true;
             }
         }
-        if (this.l instanceof V3D_Point lp) {
+        if (getLeft(oom, rm) instanceof V3D_Point lp) {
             if (l.intersects(lp, oom, rm)) {
                 return true;
             }
         } else {
-            if (getIntersect((V3D_LineSegment) this.l, l, oom, rm) != null) {
+            if (getIntersect((V3D_LineSegment) getLeft(oom, rm), l, oom, rm) != null) {
                 return true;
             }
         }
@@ -347,17 +347,17 @@ public abstract class V3D_AABB2D implements Serializable {
     }
     
     /**
-     * Gets the intersect {@code l} with {@code ls} where {@code ls} is a side 
-     * either {@link #t}, {@link #b}, {@link #l} or {@link #r} when a 
+     * Gets the intersect {@code left} with {@code ls} where {@code ls} is a side 
+     * either {@link #top}, {@link #bottom}, {@link #left} or {@link #right} when a 
      * line segment.
      *
-     * @param ls The line segment to get the intersect with l. The line segment 
-     * must be lying in the same plane. 
+     * @param ls The line segment to get the intersect with left. The line segment 
+ must be lying in the same plane. 
      * @param l The line to get intersection with this. The line must be lying 
      * in the same plane. 
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return The intersection between {@code this} and {@code l}.
+     * @return The intersection between {@code this} and {@code left}.
      */
     public abstract V3D_FiniteGeometry getIntersect(V3D_LineSegment ls, 
             V3D_Line l, int oom, RoundingMode rm);

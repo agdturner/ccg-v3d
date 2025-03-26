@@ -135,10 +135,10 @@ public class V3D_AABBY extends V3D_AABB2D {
         zMax = e.zMax;
         y = e.y;
         ypl = e.ypl;
-        t = e.t;
-        r = e.r;
-        b = e.b;
-        l = e.l;
+        top = e.top;
+        right = e.right;
+        bottom = e.bottom;
+        left = e.left;
         ll = e.ll;
         lu = e.lu;
         uu = e.uu;
@@ -177,10 +177,10 @@ public class V3D_AABBY extends V3D_AABB2D {
                 xMax = points[0].getX(oom, RoundingMode.CEILING);
                 zMin = points[0].getZ(oom, RoundingMode.FLOOR);
                 zMax = points[0].getZ(oom, RoundingMode.CEILING);
-                t = points[0];
-                l = t;
-                r = t;
-                b = t;
+                top = points[0];
+                left = top;
+                right = top;
+                bottom = top;
             }
             default -> {
                 offset = V3D_Vector.ZERO;
@@ -382,19 +382,19 @@ public class V3D_AABBY extends V3D_AABB2D {
      */
     @Override
     public V3D_FiniteGeometry getLeft(int oom, RoundingMode rm) {
-        if (l == null) {
+        if (left == null) {
             BigRational xmin = getXMin(oom);
             BigRational zmin = getZMin(oom);
             BigRational zmax = getZMax(oom);
             if (zmin.compareTo(zmax) == 0) {
-                l = new V3D_Point(env, xmin, y, zmax);
+                left = new V3D_Point(env, xmin, y, zmax);
             } else {
-                l = new V3D_LineSegment(
+                left = new V3D_LineSegment(
                         new V3D_Point(env, xmin, y, zmin),
                         new V3D_Point(env, xmin, y, zmax), oom, rm);
             }
         }
-        return l;
+        return left;
     }
     
     /**
@@ -420,19 +420,19 @@ public class V3D_AABBY extends V3D_AABB2D {
      */
     @Override
     public V3D_FiniteGeometry getRight(int oom, RoundingMode rm) {
-        if (r == null) {
+        if (right == null) {
             BigRational xmax = getXMax(oom);
             BigRational zmin = getZMin(oom);
             BigRational zmax = getZMax(oom);
             if (zmin.compareTo(zmax) == 0) {
-                r = new V3D_Point(env, xmax, y, zmax);
+                right = new V3D_Point(env, xmax, y, zmax);
             } else {
-                r = new V3D_LineSegment(
+                right = new V3D_LineSegment(
                         new V3D_Point(env, xmax, y, zmin),
                         new V3D_Point(env, xmax, y, zmax), oom, rm);
             }
         }
-        return r;
+        return right;
     }
 
     /**
@@ -458,19 +458,19 @@ public class V3D_AABBY extends V3D_AABB2D {
      */
     @Override
     public V3D_FiniteGeometry getTop(int oom, RoundingMode rm) {
-        if (t == null) {
+        if (top == null) {
             BigRational xmin = getXMin(oom);
             BigRational xmax = getXMax(oom);
             BigRational zmax = getZMax(oom);
             if (xmin.compareTo(xmax) == 0) {
-                t = new V3D_Point(env, xmin, y, zmax);
+                top = new V3D_Point(env, xmin, y, zmax);
             } else {
-                t = new V3D_LineSegment(
+                top = new V3D_LineSegment(
                         new V3D_Point(env, xmin, y, zmax),
                         new V3D_Point(env, xmax, y, zmax), oom, rm);
             }
         }
-        return t;
+        return top;
     }
 
     /**
@@ -496,19 +496,19 @@ public class V3D_AABBY extends V3D_AABB2D {
      */
     @Override
     public V3D_FiniteGeometry getBottom(int oom, RoundingMode rm) {
-        if (b == null) {
+        if (bottom == null) {
             BigRational xmin = getXMin(oom);
             BigRational xmax = getXMax(oom);
             BigRational zmin = getZMin(oom);
             if (xmin.compareTo(xmax) == 0) {
-                b = new V3D_Point(env, xmin, y, zmin);
+                bottom = new V3D_Point(env, xmin, y, zmin);
             } else {
-                b = new V3D_LineSegment(
+                bottom = new V3D_LineSegment(
                         new V3D_Point(env, xmin, y, zmin),
                         new V3D_Point(env, xmax, y, zmin), oom, rm);
             }
         }
-        return b;
+        return bottom;
     }
     
     /**
@@ -622,7 +622,7 @@ public class V3D_AABBY extends V3D_AABB2D {
      * @param l The line to test for containment.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if this contains {@code l}
+     * @return {@code true} if this contains {@code left}
      */
     @Override
     public boolean contains(V3D_LineSegment l, int oom, RoundingMode rm) {
@@ -656,17 +656,17 @@ public class V3D_AABBY extends V3D_AABB2D {
     }
     
     /**
-     * Gets the intersect {@code l} with {@code ls} where {@code ls} is a side 
-     * either {@link #t}, {@link #b}, {@link #l} or {@link #r} when a 
+     * Gets the intersect {@code left} with {@code ls} where {@code ls} is a side 
+     * either {@link #top}, {@link #bottom}, {@link #left} or {@link #right} when a 
      * line segment.
      *
-     * @param ls The line segment to get the intersect with l. The line segment 
-     * must be lying in the same yPlane. 
+     * @param ls The line segment to get the intersect with left. The line segment 
+ must be lying in the same yPlane. 
      * @param l The line to get intersection with this. The line must be lying 
      * in the same yPlane. 
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return The intersection between {@code this} and {@code l}.
+     * @return The intersection between {@code this} and {@code left}.
      */
     @Override
     public V3D_FiniteGeometry getIntersect(V3D_LineSegment ls, V3D_Line l, int oom, RoundingMode rm) {
@@ -698,18 +698,18 @@ public class V3D_AABBY extends V3D_AABB2D {
     /**
      * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
      *     
-     * @param l0 A line to get the intersect with l. The line must be lying in 
-     * the same plane as this and l. 
+     * @param l0 A line to get the intersect with left. The line must be lying in 
+ the same plane as this and left. 
      * @param l Line to intersect with.
      * @param den getIntersectDenominator(x1, x2, x3, x4, z1, z2, z3, z4)
      * @param x1 getP().getX(oom, rm)
      * @param x2 getQ(oom, rm).getX(oom, rm)
-     * @param x3 l.getP().getX(oom, rm)
-     * @param x4 l.getQ(oom, rm).getX(oom, rm)
+     * @param x3 left.getP().getX(oom, rm)
+     * @param x4 left.getQ(oom, rm).getX(oom, rm)
      * @param z1 p.getZ(oom, rm)
      * @param z2 q.getZ(oom, rm)
-     * @param z3 l.p.getZ(oom, rm)
-     * @param z4 l.q.getZ(oom, rm)
+     * @param z3 left.p.getZ(oom, rm)
+     * @param z4 left.q.getZ(oom, rm)
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The geometry or null if there is no intersection.
