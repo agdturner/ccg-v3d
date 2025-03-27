@@ -260,7 +260,7 @@ public class V3D_Ray extends V3D_Geometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public V3D_Point getIntersect(V3D_AABBX aabbx, int oom, RoundingMode rm) {
-        V3D_Plane xpl = aabbx.getXPl(); 
+        V3D_Plane xpl = aabbx.getXPl(oom, rm); 
         if (xpl.isParallel(l, oom, rm)) {
             return null;
         }
@@ -280,7 +280,7 @@ public class V3D_Ray extends V3D_Geometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public V3D_Point getIntersect(V3D_AABBY aabby, int oom, RoundingMode rm) {
-        V3D_Plane ypl = aabby.getYPl(); 
+        V3D_Plane ypl = aabby.getYPl(oom, rm); 
         if (ypl.isParallel(l, oom, rm)) {
             return null;
         }
@@ -300,7 +300,7 @@ public class V3D_Ray extends V3D_Geometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public V3D_Point getIntersect(V3D_AABBZ aabbz, int oom, RoundingMode rm) {
-        V3D_Plane zpl = aabbz.getZPl(); 
+        V3D_Plane zpl = aabbz.getZPl(oom, rm); 
         if (zpl.isParallel(l, oom, rm)) {
             return null;
         }

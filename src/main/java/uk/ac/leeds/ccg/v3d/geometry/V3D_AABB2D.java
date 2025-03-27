@@ -131,38 +131,48 @@ public abstract class V3D_AABB2D implements Serializable {
     }
     
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #pts} initialising first if it is null.
      */
-    public HashSet<V3D_Point> getPoints() {
+    public HashSet<V3D_Point> getPoints(int oom, RoundingMode rm) {
         if (pts == null) {
             pts = new HashSet<>(4);
-            pts.add(getll());
-            pts.add(getlu());
-            pts.add(getuu());
-            pts.add(getul());
+            pts.add(getll(oom, rm));
+            pts.add(getlu(oom, rm));
+            pts.add(getuu(oom, rm));
+            pts.add(getul(oom, rm));
         }
         return pts;
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #ll} setting it first if it is null.
      */
-    public abstract V3D_Point getll();
+    public abstract V3D_Point getll(int oom, RoundingMode rm);
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #lu} setting it first if it is null.
      */
-    public abstract V3D_Point getlu();
+    public abstract V3D_Point getlu(int oom, RoundingMode rm);
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #uu} setting it first if it is null.
      */
-    public abstract V3D_Point getuu();
+    public abstract V3D_Point getuu(int oom, RoundingMode rm);
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #ul} setting it first if it is null.
      */
-    public abstract V3D_Point getul();
+    public abstract V3D_Point getul(int oom, RoundingMode rm);
 
     /**
      * @param oom The Order of Magnitude for the precision.
@@ -254,19 +264,28 @@ public abstract class V3D_AABB2D implements Serializable {
         if (bottom != null) {
             bottom.translate(v, oom, rm);
         }
-//        xMax = xMax.add(v.getDX(oom, rm));
-//        xMin = xMin.add(v.getDX(oom, rm));
-//        yMax = yMax.add(v.getDY(oom, rm));
-//        yMin = yMin.add(v.getDY(oom, rm));
+        if (lpl != null) {
+            lpl.translate(v, oom, rm);
+        }
+        if (tpl != null) {
+            tpl.translate(v, oom, rm);
+        }
+        if (rpl != null) {
+            rpl.translate(v, oom, rm);
+        }
+        if (bpl != null) {
+            bpl.translate(v, oom, rm);
+        }
     }
 
     /**
      * Calculate and return the approximate (or exact) centroid of the envelope.
      *
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The approximate or exact centre of this.
      */
-    public abstract V3D_Point getCentroid(int oom);
+    public abstract V3D_Point getCentroid(int oom, RoundingMode rm);
 
     /**
      * @param p The point to test if it is contained. It is assumed to be in the

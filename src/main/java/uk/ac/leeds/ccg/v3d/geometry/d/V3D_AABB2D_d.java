@@ -244,10 +244,18 @@ public abstract class V3D_AABB2D_d implements Serializable {
         if (bottom != null) {
             bottom.translate(v);
         }
-//        xMax = xMax.add(v.getDX());
-//        xMin = xMin.add(v.getDX());
-//        yMax = yMax.add(v.getDY());
-//        yMin = yMin.add(v.getDY());
+        if (lpl != null) {
+            lpl.translate(v);
+        }
+        if (tpl != null) {
+            tpl.translate(v);
+        }
+        if (rpl != null) {
+            rpl.translate(v);
+        }
+        if (bpl != null) {
+            bpl.translate(v);
+        }
     }
 
     /**

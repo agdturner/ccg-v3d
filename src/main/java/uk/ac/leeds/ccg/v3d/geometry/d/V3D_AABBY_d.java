@@ -199,7 +199,7 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     public String toString() {
         return this.getClass().getSimpleName()
                 + "(xMin=" + getXMin() + ", xMax=" + getXMax()
-                + ", y=" + y
+                + ", y=" + getY()
                 + ", zMin=" + getZMin() + ", zMax=" + getZMax()
                 + ")";
     }
@@ -213,34 +213,41 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     public boolean equals(V3D_AABBY_d e) {
         return getXMin() == e.getXMin()
                 && getXMax() == e.getXMax()
-                && y == e.y
+                && getY() == e.getY()
                 && getZMin() == e.getZMin()
                 && getZMax() == e.getZMax();
     }
 
     /**
-     * @return {@link #xMin} with {@link #offset} added.
+     * @return {@link #xMin} with {@link #offset}.dx added.
      */
     public double getXMin() {
         return xMin + offset.dx;
     }
 
     /**
-     * @return {@link #xMax} with {@link #offset} added.
+     * @return {@link #xMax} with {@link #offset}.dx added.
      */
     public double getXMax() {
         return xMax + offset.dx;
     }
+    
+    /**
+     * @return {@link #y} with {@link #offset}.dy added.
+     */
+    public double getY() {
+        return y + offset.dy;
+    }
 
     /**
-     * @return {@link #zMin} with {@link #offset} added.
+     * @return {@link #zMin} with {@link #offset}.dz added.
      */
     public double getZMin() {
         return zMin + offset.dz;
     }
 
     /**
-     * @return {@link #zMax} with {@link #offset} added.
+     * @return {@link #zMax} with {@link #offset}.dz added.
      */
     public double getZMax() {
         return zMax + offset.dz;
@@ -252,7 +259,7 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     @Override
     public V3D_Point_d getll() {
         if (ll == null) {
-            ll = new V3D_Point_d(env, xMin, y, zMin);
+            ll = new V3D_Point_d(env, getXMin(), getY(), getZMin());
         }
         return ll;
     }
@@ -263,7 +270,7 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     @Override
     public V3D_Point_d getlu() {
         if (lu == null) {
-            lu = new V3D_Point_d(env, xMin, y, zMax);
+            lu = new V3D_Point_d(env, getXMin(), getY(), getZMax());
         }
         return lu;
     }
@@ -274,7 +281,7 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     @Override
     public V3D_Point_d getuu() {
         if (uu == null) {
-            uu = new V3D_Point_d(env, xMax, y, zMax);
+            uu = new V3D_Point_d(env, getXMax(), getY(), getZMax());
         }
         return uu;
     }
@@ -285,7 +292,7 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     @Override
     public V3D_Point_d getul() {
         if (ul == null) {
-            ul = new V3D_Point_d(env, xMax, y, zMin);
+            ul = new V3D_Point_d(env, getXMax(), getY(), getZMin());
         }
         return ul;
     }
@@ -307,14 +314,15 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     public V3D_FiniteGeometry_d getLeft() {
         if (left == null) {
             double xmin = getXMin();
+            double ty = getY();
             double zmin = getZMin();
             double zmax = getZMax();
             if (zmin == zmax) {
-                left = new V3D_Point_d(env, xmin, y, zmax);
+                left = new V3D_Point_d(env, xmin, ty, zmax);
             } else {
                 left = new V3D_LineSegment_d(
-                        new V3D_Point_d(env, xmin, y, zmin),
-                        new V3D_Point_d(env, xmin, y, zmax));
+                        new V3D_Point_d(env, xmin, ty, zmin),
+                        new V3D_Point_d(env, xmin, ty, zmax));
             }
         }
         return left;
@@ -328,8 +336,8 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     @Override
     public V3D_Plane_d getLeftPlane() {
         if (lpl == null) {
-            lpl = new V3D_Plane_d(new V3D_Point_d(env, getXMin(), y, getZMin()),
-                    V3D_Vector_d.NI);
+            lpl = new V3D_Plane_d(new V3D_Point_d(env, getXMin(), getY(), 
+                    getZMin()), V3D_Vector_d.NI);
         }
         return lpl;
     }
@@ -341,14 +349,15 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     public V3D_FiniteGeometry_d getRight() {
         if (right == null) {
             double xmax = getXMax();
+            double ty = getY();
             double zmin = getZMin();
             double zmax = getZMax();
             if (zmin == zmax) {
-                right = new V3D_Point_d(env, xmax, y, zmax);
+                right = new V3D_Point_d(env, xmax, ty, zmax);
             } else {
                 right = new V3D_LineSegment_d(
-                        new V3D_Point_d(env, xmax, y, zmin),
-                        new V3D_Point_d(env, xmax, y, zmax));
+                        new V3D_Point_d(env, xmax, ty, zmin),
+                        new V3D_Point_d(env, xmax, ty, zmax));
             }
         }
         return right;
@@ -362,7 +371,7 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     @Override
     public V3D_Plane_d getRightPlane() {
         if (rpl == null) {
-            rpl = new V3D_Plane_d(new V3D_Point_d(env, getXMax(), y, getZMax()),
+            rpl = new V3D_Plane_d(new V3D_Point_d(env, getXMax(), getY(), getZMax()),
                     V3D_Vector_d.I);
         }
         return rpl;
@@ -376,13 +385,14 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
         if (top == null) {
             double xmin = getXMin();
             double xmax = getXMax();
+            double ty = getY();
             double zmax = getZMax();
             if (xmin == xmax) {
-                top = new V3D_Point_d(env, xmin, y, zmax);
+                top = new V3D_Point_d(env, xmin, ty, zmax);
             } else {
                 top = new V3D_LineSegment_d(
-                        new V3D_Point_d(env, xmin, y, zmax),
-                        new V3D_Point_d(env, xmax, y, zmax));
+                        new V3D_Point_d(env, xmin, ty, zmax),
+                        new V3D_Point_d(env, xmax, ty, zmax));
             }
         }
         return top;
@@ -396,7 +406,7 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     @Override
     public V3D_Plane_d getTopPlane() {
         if (tpl == null) {
-            tpl = new V3D_Plane_d(new V3D_Point_d(env, getXMax(), y, getZMax()),
+            tpl = new V3D_Plane_d(new V3D_Point_d(env, getXMax(), getY(), getZMax()),
                     V3D_Vector_d.K);
         }
         return tpl;
@@ -410,13 +420,14 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
         if (bottom == null) {
             double xmin = getXMin();
             double xmax = getXMax();
+            double ty = getY();
             double zmin = getZMin();
             if (xmin == xmax) {
-                bottom = new V3D_Point_d(env, xmin, y, zmin);
+                bottom = new V3D_Point_d(env, xmin, ty, zmin);
             } else {
                 bottom = new V3D_LineSegment_d(
-                        new V3D_Point_d(env, xmin, y, zmin),
-                        new V3D_Point_d(env, xmax, y, zmin));
+                        new V3D_Point_d(env, xmin, ty, zmin),
+                        new V3D_Point_d(env, xmax, ty, zmin));
             }
         }
         return bottom;
@@ -431,12 +442,25 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     @Override
     public V3D_Plane_d getBottomPlane() {
         if (bpl == null) {
-            bpl = new V3D_Plane_d(new V3D_Point_d(env, getXMin(), y, getZMin()),
+            bpl = new V3D_Plane_d(new V3D_Point_d(env, getXMin(), getY(), getZMin()),
                     V3D_Vector_d.NK);
         }
         return bpl;
     }
 
+    /**
+     * Translates this using {@code v}.
+     *
+     * @param v The vector of translation.
+     */
+    @Override
+    public void translate(V3D_Vector_d v) {
+        super.translate(v);
+        if (ypl != null) {
+            ypl.translate(v);
+        }
+    }
+    
     /**
      * Calculate and return the approximate (or exact) centroid of the envelope.
      *
@@ -446,7 +470,7 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
     public V3D_Point_d getCentroid() {
         return new V3D_Point_d(env,
                 (getXMax() + getXMin()) / 2d,
-                y,
+                getY(),
                 (getZMax() + getZMin()) / 2d);
     }
 
@@ -462,7 +486,7 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
             return new V3D_AABBY_d(env,
                     Math.min(e.getXMin(), getXMin()),
                     Math.max(e.getXMax(), getXMax()),
-                    y,
+                    getY(),
                     Math.min(e.getZMin(), getZMin()),
                     Math.max(e.getZMax(), getZMax()));
         }
@@ -627,7 +651,7 @@ public class V3D_AABBY_d extends V3D_AABB2D_d {
             double x3z4sz3x4 = (x3 * z4) - (z3 * x4);
             double numx = (x1z2sz1x2 * (x3 - x4)) - ((x1 - x2) * x3z4sz3x4);
             double numz = (x1z2sz1x2 * (z3 - z4)) - ((z1 - z2) * x3z4sz3x4);
-            return new V3D_Point_d(env, numx / den, y, numz / den);
+            return new V3D_Point_d(env, numx / den, getY(), numz / den);
         }
         return null;
     }

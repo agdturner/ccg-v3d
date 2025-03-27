@@ -40,7 +40,7 @@ public class V3D_AABBX extends V3D_AABB2D {
     /**
      * The x value.
      */
-    private final BigRational x;
+    private BigRational x;
 
     /**
      * For storing the plane, the x value defines the plane. new
@@ -51,22 +51,22 @@ public class V3D_AABBX extends V3D_AABB2D {
     /**
      * The minimum y-coordinate.
      */
-    private final BigRational yMin;
+    private BigRational yMin;
 
     /**
      * The maximum y-coordinate.
      */
-    private final BigRational yMax;
+    private BigRational yMax;
 
     /**
      * The minimum z-coordinate.
      */
-    private final BigRational zMin;
+    private BigRational zMin;
 
     /**
      * The maximum z-coordinate.
      */
-    private final BigRational zMax;
+    private BigRational zMax;
 
     /**
      * @param e An envelope.
@@ -217,7 +217,7 @@ public class V3D_AABBX extends V3D_AABB2D {
      */
     public String toString(int oom, RoundingMode rm) {
         return this.getClass().getSimpleName()
-                + "(x=" + x.toString()
+                + "(x=" + getX(oom, rm).toString()
                 + ", yMin=" + getYMin(oom, rm) + ", yMax=" + getYMax(oom, rm)
                 + ", zMin=" + getZMin(oom, rm) + ", zMax=" + getZMax(oom, rm)
                 + ")";
@@ -228,14 +228,26 @@ public class V3D_AABBX extends V3D_AABB2D {
      *
      * @param e The V3D_AABBZ to test for equality with this.
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff {@code this} and {@code e} are equal.
      */
-    public boolean equals(V3D_AABBX e, int oom) {
-        return x.compareTo(e.x) == 0
+    public boolean equals(V3D_AABBX e, int oom, RoundingMode rm) {
+        return getX(oom, rm).compareTo(e.getX(oom, rm)) == 0
                 && getYMin(oom).compareTo(e.getYMin(oom)) == 0
                 && getYMax(oom).compareTo(e.getYMax(oom)) == 0
                 && getZMin(oom).compareTo(e.getZMin(oom)) == 0
                 && getZMax(oom).compareTo(e.getZMax(oom)) == 0;
+    }
+
+    /**
+     * For getting {@link #yMin} rounded. RoundingMode.FLOOR is used.
+     *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@link #yMin} rounded.
+     */
+    public BigRational getX(int oom, RoundingMode rm) {
+        return x.add(offset.getDX(oom - 2, rm));
     }
 
     /**
@@ -252,7 +264,7 @@ public class V3D_AABBX extends V3D_AABB2D {
      * For getting {@link #yMin} rounded.
      *
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #yMin} rounded.
      */
     public BigRational getYMin(int oom, RoundingMode rm) {
@@ -273,7 +285,7 @@ public class V3D_AABBX extends V3D_AABB2D {
      * For getting {@link #yMax} rounded.
      *
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #yMax} rounded.
      */
     public BigRational getYMax(int oom, RoundingMode rm) {
@@ -294,7 +306,7 @@ public class V3D_AABBX extends V3D_AABB2D {
      * For getting {@link #zMin} rounded.
      *
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #zMin} rounded.
      */
     public BigRational getZMin(int oom, RoundingMode rm) {
@@ -315,7 +327,7 @@ public class V3D_AABBX extends V3D_AABB2D {
      * For getting {@link #zMax} rounded.
      *
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #zMax} rounded.
      */
     public BigRational getZMax(int oom, RoundingMode rm) {
@@ -323,55 +335,69 @@ public class V3D_AABBX extends V3D_AABB2D {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #ll} setting it first if it is null.
      */
     @Override
-    public V3D_Point getll() {
+    public V3D_Point getll(int oom, RoundingMode rm) {
         if (ll == null) {
-            ll = new V3D_Point(env, x, yMin, zMin);
+            ll = new V3D_Point(env, getX(oom, rm), getYMin(oom, rm), 
+                    getZMin(oom, rm));
         }
         return ll;
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #lu} setting it first if it is null.
      */
     @Override
-    public V3D_Point getlu() {
+    public V3D_Point getlu(int oom, RoundingMode rm) {
         if (lu == null) {
-            lu = new V3D_Point(env, x, yMin, zMax);
+            lu = new V3D_Point(env, getX(oom, rm), getYMin(oom, rm), 
+                    getZMax(oom, rm));
         }
         return lu;
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #uu} setting it first if it is null.
      */
     @Override
-    public V3D_Point getuu() {
+    public V3D_Point getuu(int oom, RoundingMode rm) {
         if (uu == null) {
-            uu = new V3D_Point(env, x, yMax, zMax);
+            uu = new V3D_Point(env, getX(oom, rm), getYMax(oom, rm),
+                    getZMax(oom, rm));
         }
         return uu;
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@link #ul} setting it first if it is null.
      */
     @Override
-    public V3D_Point getul() {
+    public V3D_Point getul(int oom, RoundingMode rm) {
         if (ul == null) {
-            ul = new V3D_Point(env, x, yMax, zMin);
+            ul = new V3D_Point(env, getX(oom, rm), getYMax(oom, rm), 
+                    getZMin(oom, rm));
         }
         return ul;
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The {@link #ypl} initialising it first if it is null.
      */
-    public V3D_Plane getXPl() {
+    public V3D_Plane getXPl(int oom, RoundingMode rm) {
         if (xpl == null) {
-            xpl = new V3D_Plane(getll(), V3D_Vector.I);
+            xpl = new V3D_Plane(getll(oom, rm), V3D_Vector.I);
         }
         return xpl;
     }
@@ -384,15 +410,16 @@ public class V3D_AABBX extends V3D_AABB2D {
     @Override
     public V3D_FiniteGeometry getLeft(int oom, RoundingMode rm) {
         if (left == null) {
+            BigRational tx = getX(oom, rm);
             BigRational ymin = getYMin(oom);
             BigRational zmin = getZMin(oom);
             BigRational zmax = getZMax(oom);
             if (zmin.compareTo(zmax) == 0) {
-                left = new V3D_Point(env, x, ymin, zmax);
+                left = new V3D_Point(env, tx, ymin, zmax);
             } else {
                 left = new V3D_LineSegment(
-                        new V3D_Point(env, x, ymin, zmin),
-                        new V3D_Point(env, x, ymin, zmax), oom, rm);
+                        new V3D_Point(env, tx, ymin, zmin),
+                        new V3D_Point(env, tx, ymin, zmax), oom, rm);
             }
         }
         return left;
@@ -408,8 +435,8 @@ public class V3D_AABBX extends V3D_AABB2D {
     @Override
     public V3D_Plane getLeftPlane(int oom, RoundingMode rm) {
         if (lpl == null) {
-            lpl = new V3D_Plane(new V3D_Point(env, x, getYMin(oom), getZMin(oom)),
-                    V3D_Vector.NJ);
+            lpl = new V3D_Plane(new V3D_Point(env, getX(oom, rm),
+                    getYMin(oom), getZMin(oom)), V3D_Vector.NJ);
         }
         return lpl;
     }
@@ -422,15 +449,16 @@ public class V3D_AABBX extends V3D_AABB2D {
     @Override
     public V3D_FiniteGeometry getRight(int oom, RoundingMode rm) {
         if (right == null) {
+            BigRational tx = getX(oom, rm);
             BigRational ymax = getYMax(oom);
             BigRational zmin = getZMin(oom);
             BigRational zmax = getZMax(oom);
             if (zmin.compareTo(zmax) == 0) {
-                right = new V3D_Point(env, x, ymax, zmax);
+                right = new V3D_Point(env, tx, ymax, zmax);
             } else {
                 right = new V3D_LineSegment(
-                        new V3D_Point(env, x, ymax, zmin),
-                        new V3D_Point(env, x, ymax, zmax), oom, rm);
+                        new V3D_Point(env, tx, ymax, zmin),
+                        new V3D_Point(env, tx, ymax, zmax), oom, rm);
             }
         }
         return right;
@@ -446,8 +474,8 @@ public class V3D_AABBX extends V3D_AABB2D {
     @Override
     public V3D_Plane getRightPlane(int oom, RoundingMode rm) {
         if (rpl == null) {
-            rpl = new V3D_Plane(new V3D_Point(env, x, getYMax(oom), getZMax(oom)),
-                    V3D_Vector.J);
+            rpl = new V3D_Plane(new V3D_Point(env, getX(oom, rm), getYMax(oom), 
+                    getZMax(oom)), V3D_Vector.J);
         }
         return rpl;
     }
@@ -460,15 +488,16 @@ public class V3D_AABBX extends V3D_AABB2D {
     @Override
     public V3D_FiniteGeometry getTop(int oom, RoundingMode rm) {
         if (top == null) {
+            BigRational tx = getX(oom, rm);
             BigRational ymin = getYMin(oom);
             BigRational ymax = getYMax(oom);
             BigRational zmax = getZMax(oom);
             if (ymin.compareTo(ymax) == 0) {
-                top = new V3D_Point(env, x, ymin, zmax);
+                top = new V3D_Point(env, tx, ymin, zmax);
             } else {
                 top = new V3D_LineSegment(
-                        new V3D_Point(env, x, ymin, zmax),
-                        new V3D_Point(env, x, ymax, zmax), oom, rm);
+                        new V3D_Point(env, tx, ymin, zmax),
+                        new V3D_Point(env, tx, ymax, zmax), oom, rm);
             }
         }
         return top;
@@ -484,7 +513,7 @@ public class V3D_AABBX extends V3D_AABB2D {
     @Override
     public V3D_Plane getTopPlane(int oom, RoundingMode rm) {
         if (tpl == null) {
-            tpl = new V3D_Plane(new V3D_Point(env, x, getYMax(oom), getZMax(oom)),
+            tpl = new V3D_Plane(new V3D_Point(env, getX(oom, rm), getYMax(oom), getZMax(oom)),
                     V3D_Vector.K);
         }
         return tpl;
@@ -498,15 +527,16 @@ public class V3D_AABBX extends V3D_AABB2D {
     @Override
     public V3D_FiniteGeometry getBottom(int oom, RoundingMode rm) {
         if (bottom == null) {
+            BigRational tx = getX(oom, rm);
             BigRational ymin = getYMin(oom);
             BigRational ymax = getYMax(oom);
             BigRational zmin = getZMin(oom);
             if (ymin.compareTo(ymax) == 0) {
-                bottom = new V3D_Point(env, x, ymin, zmin);
+                bottom = new V3D_Point(env, tx, ymin, zmin);
             } else {
                 bottom = new V3D_LineSegment(
-                        new V3D_Point(env, x, ymin, zmin),
-                        new V3D_Point(env, x, ymax, zmin), oom, rm);
+                        new V3D_Point(env, tx, ymin, zmin),
+                        new V3D_Point(env, tx, ymax, zmin), oom, rm);
             }
         }
         return bottom;
@@ -523,22 +553,38 @@ public class V3D_AABBX extends V3D_AABB2D {
     @Override
     public V3D_Plane getBottomPlane(int oom, RoundingMode rm) {
         if (bpl == null) {
-            bpl = new V3D_Plane(new V3D_Point(env, x, getYMin(oom), getZMin(oom)),
+            bpl = new V3D_Plane(new V3D_Point(env, getX(oom, rm), getYMin(oom), getZMin(oom)),
                     V3D_Vector.NK);
         }
         return bpl;
     }
 
+     /**
+     * Translates this using {@code v}.
+     *
+     * @param v The vector of translation.
+     */
+    @Override
+    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        super.translate(v, oom, rm);
+        x = x.add(v.getDY(oom, rm));
+        yMax = yMax.add(v.getDY(oom, rm));
+        yMin = yMin.add(v.getDY(oom, rm));
+        zMax = zMax.add(v.getDZ(oom, rm));
+        zMin = zMin.add(v.getDZ(oom, rm));
+    }
+    
     /**
      * Calculate and return the approximate (or exact) centroid of the envelope.
      *
      * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The approximate or exact centre of this.
      */
     @Override
-    public V3D_Point getCentroid(int oom) {
+    public V3D_Point getCentroid(int oom, RoundingMode rm) {
         return new V3D_Point(env,
-                x,
+                getX(oom, rm),
                 getYMax(oom).add(getYMin(oom)).divide(2),
                 getZMax(oom).add(getZMin(oom)).divide(2));
     }
@@ -555,7 +601,7 @@ public class V3D_AABBX extends V3D_AABB2D {
             return this;
         } else {
             return new V3D_AABBX(env, oom, rm,
-                    x,
+                    getX(oom, rm),
                     BigRational.min(e.getYMin(oom), getYMin(oom)),
                     BigRational.max(e.getYMax(oom), getYMax(oom)),
                     BigRational.min(e.getZMin(oom), getZMin(oom)),
@@ -733,7 +779,8 @@ public class V3D_AABBX extends V3D_AABB2D {
                     (y1.subtract(y2)).multiply(y3z4sz3y4));
             BigRational numz = (y1z2sz1y2.multiply(z3.subtract(z4))).subtract(
                     (z1.subtract(z2)).multiply(y3z4sz3y4));
-            return new V3D_Point(env, x, numy.divide(den), numz.divide(den));
+            return new V3D_Point(env, getX(oom, rm), numy.divide(den), 
+                    numz.divide(den));
         }
         return null;
     }

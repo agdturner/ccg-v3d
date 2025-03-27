@@ -446,14 +446,10 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if this intersects with {@code aabbx}
      */
     public boolean intersects(V3D_AABBX aabbx, int oom, RoundingMode rm) {
-        V3D_Plane pl = aabbx.getXPl();
+        V3D_Plane pl = aabbx.getXPl(oom, rm);
         if (pl.isParallel(this, oom, rm)) {
             if (pl.isOnPlane(this, oom, rm)) {
-                if (aabbx.intersects(this, oom, rm)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return aabbx.intersects(this, oom, rm);
             } else {
                 return false;
             }
@@ -463,10 +459,14 @@ public class V3D_Line extends V3D_Geometry {
                 return false;
             } else {
                 V3D_Point ip = (V3D_Point) i;
-                return aabbx.getTopPlane(oom, rm).isOnSameSide(aabbx.getll(), ip, oom, rm)
-                    && aabbx.getBottomPlane(oom, rm).isOnSameSide(aabbx.getuu(), ip, oom, rm)
-                    && aabbx.getRightPlane(oom, rm).isOnSameSide(aabbx.getll(), ip, oom, rm)
-                    && aabbx.getLeftPlane(oom, rm).isOnSameSide(aabbx.getuu(), ip, oom, rm);
+                return aabbx.getTopPlane(oom, rm).isOnSameSide(
+                        aabbx.getll(oom, rm), ip, oom, rm)
+                    && aabbx.getBottomPlane(oom, rm).isOnSameSide(
+                            aabbx.getuu(oom, rm), ip, oom, rm)
+                    && aabbx.getRightPlane(oom, rm).isOnSameSide(
+                            aabbx.getll(oom, rm), ip, oom, rm)
+                    && aabbx.getLeftPlane(oom, rm).isOnSameSide(
+                            aabbx.getuu(oom, rm), ip, oom, rm);
             }
         }
     }
@@ -478,14 +478,10 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if this intersects with {@code aabby}
      */
     public boolean intersects(V3D_AABBY aabby, int oom, RoundingMode rm) {
-        V3D_Plane pl = aabby.getYPl();
+        V3D_Plane pl = aabby.getYPl(oom, rm);
         if (pl.isParallel(this, oom, rm)) {
             if (pl.isOnPlane(this, oom, rm)) {
-                if (aabby.intersects(this, oom, rm)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return aabby.intersects(this, oom, rm);
             } else {
                 return false;
             }
@@ -495,10 +491,14 @@ public class V3D_Line extends V3D_Geometry {
                 return false;
             } else {
                 V3D_Point ip = (V3D_Point) i;
-                return aabby.getTopPlane(oom, rm).isOnSameSide(aabby.getll(), ip, oom, rm)
-                    && aabby.getBottomPlane(oom, rm).isOnSameSide(aabby.getuu(), ip, oom, rm)
-                    && aabby.getRightPlane(oom, rm).isOnSameSide(aabby.getll(), ip, oom, rm)
-                    && aabby.getLeftPlane(oom, rm).isOnSameSide(aabby.getuu(), ip, oom, rm);
+                return aabby.getTopPlane(oom, rm).isOnSameSide(
+                        aabby.getll(oom, rm), ip, oom, rm)
+                    && aabby.getBottomPlane(oom, rm).isOnSameSide(
+                            aabby.getuu(oom, rm), ip, oom, rm)
+                    && aabby.getRightPlane(oom, rm).isOnSameSide(
+                            aabby.getll(oom, rm), ip, oom, rm)
+                    && aabby.getLeftPlane(oom, rm).isOnSameSide(
+                            aabby.getuu(oom, rm), ip, oom, rm);
             }
         }
     }
@@ -510,14 +510,10 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if this intersects with {@code aabbz}
      */
     public boolean intersects(V3D_AABBZ aabbz, int oom, RoundingMode rm) {
-        V3D_Plane pl = aabbz.getZPl();
+        V3D_Plane pl = aabbz.getZPl(oom, rm);
         if (pl.isParallel(this, oom, rm)) {
             if (pl.isOnPlane(this, oom, rm)) {
-                if (aabbz.intersects(this, oom, rm)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return aabbz.intersects(this, oom, rm);
             } else {
                 return false;
             }
@@ -527,10 +523,14 @@ public class V3D_Line extends V3D_Geometry {
                 return false;
             } else {
                 V3D_Point ip = (V3D_Point) i;
-                return aabbz.getTopPlane(oom, rm).isOnSameSide(aabbz.getll(), ip, oom, rm)
-                    && aabbz.getBottomPlane(oom, rm).isOnSameSide(aabbz.getuu(), ip, oom, rm)
-                    && aabbz.getRightPlane(oom, rm).isOnSameSide(aabbz.getll(), ip, oom, rm)
-                    && aabbz.getLeftPlane(oom, rm).isOnSameSide(aabbz.getuu(), ip, oom, rm);
+                return aabbz.getTopPlane(oom, rm).isOnSameSide(
+                        aabbz.getll(oom, rm), ip, oom, rm)
+                    && aabbz.getBottomPlane(oom, rm).isOnSameSide(
+                            aabbz.getuu(oom, rm), ip, oom, rm)
+                    && aabbz.getRightPlane(oom, rm).isOnSameSide(
+                            aabbz.getll(oom, rm), ip, oom, rm)
+                    && aabbz.getLeftPlane(oom, rm).isOnSameSide(
+                            aabbz.getuu(oom, rm), ip, oom, rm);
             }
         }
     }
@@ -1536,6 +1536,8 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param ps The points to test for collinearity.
      * @return {@code true} iff all points are collinear with l.
      */
@@ -1548,9 +1550,9 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param l The line to test points are collinear with.
-     * @param epsilon The tolerance within which vector components are
-     * considered equal.
      * @param ps The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
@@ -1569,6 +1571,8 @@ public class V3D_Line extends V3D_Geometry {
      * check for collinearity of all the points. It returns a line defined by
      * the first points that have the greatest distance between them.
      *
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @param points Any number of points, but with two being different.
      * @return A line defined by any two different points or null if the points
      * are coincident.
