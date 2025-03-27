@@ -691,13 +691,16 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this is intersected by {@code p}.
+     * Identify if this is intersected by {@code p}. This first check if 
+     * {@code pt} intersects the Axis Aligned Bounding Box of {@code this},
+     * then checks the point is on the plane.
      *
      * @param p The point to test for intersection with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @return {@code true} if {@code this} is intersected by {@code p}.
      */
+    @Override
     public boolean intersects(V3D_Point_d p, double epsilon) {
         if (getAABB().intersects(p)) {
             return intersects0(p, epsilon);
@@ -707,7 +710,9 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this is intersected by {@code p}.
+     * Identify if this is intersected by {@code p}. There is no check to 
+     * evaluate if {@code p} intersects the Axis Aligned Bounding Box, but there 
+     * is a check that the point intersects the plane.
      *
      * @param p The point to test for intersection with.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -724,7 +729,9 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this is intersected by {@code p}.
+     * Identify if this is intersected by {@code p}. There is no check to 
+     * evaluate if {@code p} intersects the Axis Aligned Bounding Box or if it 
+     * intersects the plane.
      *
      * @param p The point to test for intersection with.
      * @param epsilon The tolerance within which two vectors are regarded as

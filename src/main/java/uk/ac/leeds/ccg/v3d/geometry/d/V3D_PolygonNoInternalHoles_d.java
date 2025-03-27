@@ -356,13 +356,13 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * @return {@code true} iff there is an intersection.
      */
     public boolean intersects00(V3D_Point_d pt, double epsilon) {
-        return ch.intersects(pt, epsilon)
+        return ch.intersects00(pt, epsilon)
                 && intersects000(pt, epsilon);
     }
 
     /**
      * Identify if this is intersected by pt. It is assumed {@code pt}
-     * intersects with the convex hull;
+     * intersects with the convex hull.
      *
      * @param pt The point to test for intersection with.
      * @param epsilon The tolerance within which two vector components are
@@ -722,7 +722,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
         if (i == null) {
             return null;
         } else if (i instanceof V3D_Point_d ip) {
-            if (intersects000(ip, epsilon)) {
+            if (intersects00(ip, epsilon)) {
                 return ip;
             } else {
                 return null;

@@ -399,10 +399,23 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @return {@code true} iff there is an intersection.
      */
     public boolean intersects00(V3D_Point pt, int oom, RoundingMode rm) {
-        return ch.intersects0(pt, oom, rm)
-                && (!V3D_LineSegment.intersects(oom, rm, pt, ch.edges.values())
+        return ch.intersects00(pt, oom, rm)
+                && intersects000(pt, oom, rm);
+    }
+    
+    /**
+     * Identify if this is intersected by pt. It is assumed {@code pt}
+     * intersects with the convex hull.
+     * 
+     * @param pt The point to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} iff there is an intersection.
+     */
+    public boolean intersects000(V3D_Point pt, int oom, RoundingMode rm) {
+        return !V3D_LineSegment.intersects(oom, rm, pt, ch.edges.values())
                 && !externalHoles.values().parallelStream().anyMatch(x
-                        -> x.contains(pt, oom, rm)));
+                        -> x.contains(pt, oom, rm));
     }
 
     /**
@@ -780,7 +793,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
         if (i == null) {
             return null;
         } else if (i instanceof V3D_Point ip) {
-            if (intersects0(ip, oom, rm)) {
+            if (intersects00(ip, oom, rm)) {
                 return ip;
             } else {
                 return null;

@@ -1042,8 +1042,9 @@ public class V3D_ConvexArea extends V3D_Area {
     }
 
     /**
-     * Identify if this is intersected by point {@code p} first checking the
-     * Axis Aligned Bounding Box, then checking the point is on the plane.
+     * Identify if this is intersected by point {@code p}. This first check if 
+     * {@code pt} intersects the Axis Aligned Bounding Box of {@code this},
+     * then checks the point is on the plane.
      *
      * @param pt The point to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
@@ -1060,9 +1061,9 @@ public class V3D_ConvexArea extends V3D_Area {
     }
 
     /**
-     * Identify if this is intersected by point {@code p} first checking if the
-     * point is on the plane. There is no check on the Axis Aligned Bounding 
-     * Box.
+     * Identify if this is intersected by point {@code p}. There is no check to 
+     * evaluate if {@code p} intersects the Axis Aligned Bounding Box, but there 
+     * is a check that the point intersects the plane.
      *
      * @param pt The point to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
