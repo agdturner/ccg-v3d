@@ -88,40 +88,40 @@ public class V3D_Line_dTest extends V3D_Test_d {
         double epsilon = 1d / 10000000d;
         V3D_Point_d pt = pP0P0P0;
         V3D_Line_d instance = new V3D_Line_d(pN1N1N1, pP1P1P1);
-        assertTrue(instance.intersects(epsilon, pt));
+        assertTrue(instance.intersects(pt, epsilon));
         // Test 2
         pt = new V3D_Point_d(env, P0_1E2, P0_1E2, P0_1E2);
-        assertTrue(instance.intersects(epsilon, pt));
+        assertTrue(instance.intersects(pt, epsilon));
         // Test 3 works as the rounding puts pt on the line.
         pt = new V3D_Point_d(env, P0_1E12, P0_1E12, P0_1E12);
-        assertTrue(instance.intersects(epsilon, pt));
+        assertTrue(instance.intersects(pt, epsilon));
         // Test 4 works as the rounding puts pt on the line.
         pt = new V3D_Point_d(env, N0_1E12, N0_1E12, N0_1E12);
-        assertTrue(instance.intersects(epsilon, pt));
+        assertTrue(instance.intersects(pt, epsilon));
         // Test 5 works as the rounding puts pt on the line.
         double a = P0_1E2 + P1E12;
         pt = new V3D_Point_d(env, a, a, a);
-        assertTrue(instance.intersects(epsilon, pt));
+        assertTrue(instance.intersects(pt, epsilon));
         // Test 6 works as the rounding puts pt on the line.
         a = N0_1E2 + N1E12;
         pt = new V3D_Point_d(env, a, a, a);
-        assertTrue(instance.intersects(epsilon, pt));
+        assertTrue(instance.intersects(pt, epsilon));
         // Test 7
         instance = new V3D_Line_d(pP0N1N1, pP2P1P1);
         pt = new V3D_Point_d(env, -1d, -2d, -2d);
-        assertTrue(instance.intersects(epsilon, pt));
+        assertTrue(instance.intersects(pt, epsilon));
         // Test 8
         a = N0_1E2 + N1E12;
         pt = new V3D_Point_d(env, a, a, a);
-        assertFalse(instance.intersects(epsilon, pt));
+        assertFalse(instance.intersects(pt, epsilon));
         pt = new V3D_Point_d(env, a + 1d, a, a);
-        assertTrue(instance.intersects(epsilon, pt));
+        assertTrue(instance.intersects(pt, epsilon));
         // Test 9
         a = N0_1E12 + N1E12;
         pt = new V3D_Point_d(env, a, a, a);
-        assertFalse(instance.intersects(epsilon, pt));
+        assertFalse(instance.intersects(pt, epsilon));
         pt = new V3D_Point_d(env, a + 1d, a, a);
-        assertTrue(instance.intersects(epsilon, pt));
+        assertTrue(instance.intersects(pt, epsilon));
     }
 
     /**

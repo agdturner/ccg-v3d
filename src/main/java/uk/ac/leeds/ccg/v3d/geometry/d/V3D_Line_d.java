@@ -15,7 +15,6 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
-import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.math.matrices.Math_Matrix_Double;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
@@ -79,19 +78,19 @@ public class V3D_Line_d extends V3D_Geometry_d {
     /**
      * The x axis.
      */
-    public static final V3D_Line_d X_AXIS = new V3D_Line_d(null, 
+    public static final V3D_Line_d X_AXIS = new V3D_Line_d(null,
             V3D_Vector_d.ZERO, V3D_Vector_d.I);
 
     /**
      * The y axis.
      */
-    public static final V3D_Line_d Y_AXIS = new V3D_Line_d(null, 
+    public static final V3D_Line_d Y_AXIS = new V3D_Line_d(null,
             V3D_Vector_d.ZERO, V3D_Vector_d.J);
 
     /**
      * The z axis.
      */
-    public static final V3D_Line_d Z_AXIS = new V3D_Line_d(null, 
+    public static final V3D_Line_d Z_AXIS = new V3D_Line_d(null,
             V3D_Vector_d.ZERO, V3D_Vector_d.K);
 
     /**
@@ -305,18 +304,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return {@code true} iff {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_Line_d l) {
-//        if (v.isScalarMultiple(l.v)) {
-//            if (intersects(l.getP())) {
-//                if (intersects(l.getQ())) {
-                    if (l.intersects(getP())) {
-                        if (l.intersects(getQ())) {
-                            return true;
-                        }
-                    }
-//                }
-//            }
-//        }
-        return false;
+        return l.intersects(getP()) && l.intersects(getQ());
     }
 
     /**
@@ -327,14 +315,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * epsilon.
      */
     public boolean equals(double epsilon, V3D_Line_d l) {
-        //if (v.isScalarMultiple(epsilon, l.v)) {
-        if (l.intersects(epsilon, getP())) {
-            if (l.intersects(epsilon, getQ())) {
-                return true;
-            }
-        }
-        //}
-        return false;
+        return l.intersects(getP(), epsilon) && l.intersects(getQ(), epsilon);
     }
 
     /**
@@ -367,34 +348,35 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return {@code true} if pv is on the line.
      */
     public boolean intersects(V3D_Point_d pt) {
-        V3D_Point_d tp = getP();
-        V3D_Point_d tq = getQ();
-        if (tp.equals(pt)) {
-            return true;
-        }
-        if (tq.equals(pt)) {
+        if (getP().equals(pt) || getQ().equals(pt)) {
             return true;
         }
         V3D_Vector_d dpt = new V3D_Vector_d(
-                    pt.getX() - tp.getX(),
-                    pt.getY() - tp.getY(),
-                    pt.getZ() - tp.getZ());
-        if (dpt.isZero()) {
-            dpt = new V3D_Vector_d(
-                    pt.getX() - tq.getX(),
-                    pt.getY() - tq.getY(),
-                    pt.getZ() - tq.getZ());
-        }
-        V3D_Vector_d cp = v.getCrossProduct(dpt);
-        double magnitude = cp.getMagnitude();
-        double epsilon = Math_Double.getTolerance(
-                tp.getX(), tp.getY(), tp.getZ(), 
-                tq.getX(), tq.getY(), tq.getZ(), 
-                pt.getX(), pt.getY(), pt.getZ(), 
-                v.dx, v.dy, v.dz, magnitude);
-        return Math_Double.equals(magnitude, 0d, epsilon);
+                pt.getX() - p.getX(),
+                pt.getY() - p.getY(),
+                pt.getZ() - p.getZ());
+        return dpt.isScalarMultiple(v);
     }
-    
+
+    /**
+     * @param pt A point to test for intersection.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @return {@code true} if pv is on the line.
+     */
+    public boolean intersects(V3D_Point_d pt, double epsilon) {
+        p = getP();
+        q = getQ();
+        if (p.equals(epsilon, pt) || q.equals(epsilon, pt)) {
+            return true;
+        }
+        V3D_Vector_d dpt = new V3D_Vector_d(
+                pt.getX() - p.getX(),
+                pt.getY() - p.getY(),
+                pt.getZ() - p.getZ());
+        return dpt.isScalarMultiple(epsilon, v);
+    }
+
     /**
      * @param aabb The V3D_AABB to test for intersection.
      * @param epsilon The tolerance within which vector components are
@@ -402,66 +384,44 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
-        return getIntersect(aabb.getl(), epsilon) != null
-                || getIntersect(aabb.getr(), epsilon) != null
-                || getIntersect(aabb.gett(), epsilon) != null
-                || getIntersect(aabb.getb(), epsilon) != null
-                || getIntersect(aabb.getf(), epsilon) != null
-                || getIntersect(aabb.geta(), epsilon) != null;
-    }
-
-    /**
-     * @param epsilon The tolerance within which vector components are
-     * considered equal.
-     * @param pt A point to test for intersection.
-     * @return {@code true} if pv is on the line.
-     */
-    public boolean intersects(double epsilon, V3D_Point_d pt) {
-        V3D_Point_d tp = getP();
-        V3D_Point_d tq = getQ();
-        if (tp.equals(epsilon, pt)) {
-            return true;
-        }
-        if (tq.equals(epsilon, pt)) {
-            return true;
-        }
-        V3D_Vector_d cp;
-        if (tp.equals(epsilon, V3D_Point_d.ORIGIN)) {
-            V3D_Vector_d ppt = new V3D_Vector_d(
-                    pt.getX() - (tq.getX()),
-                    pt.getY() - (tq.getY()),
-                    pt.getZ() - (tq.getZ()));
-            cp = v.getCrossProduct(ppt);
-        } else {
-            V3D_Vector_d ppt = new V3D_Vector_d(
-                    pt.getX() - (tp.getX()),
-                    pt.getY() - (tp.getY()),
-                    pt.getZ() - (tp.getZ()));
-            cp = v.getCrossProduct(ppt);
-        }
-        //return cp.dx == 0d && cp.dy == 0d && cp.dz == 0d;
-        //return Math.abs(cp.dx) <= epsilon && Math.abs(cp.dy) <= epsilon && Math.abs(cp.dz) <= epsilon;
-        //return cp.getMagnitude() <= epsilon;
-        return Math_Double.equals(cp.getMagnitude(), 0d, epsilon);
+        return intersects(aabb.getl(), epsilon)
+                || intersects(aabb.getr(), epsilon)
+                || intersects(aabb.gett(), epsilon)
+                || intersects(aabb.getb(), epsilon)
+                || intersects(aabb.getf(), epsilon)
+                || intersects(aabb.geta(), epsilon);
     }
 
     /**
      * @param aabbx The V3D_AABBX to test for intersection.
      * @param epsilon The tolerance within which vector components are
      * considered equal.
-     * @return {@code true} if this getIntersect with {@code l}
+     * @return {@code true} if this intersects with {@code aabbx}
      */
-    public V3D_Point_d getIntersect(V3D_AABBX_d aabbx, double epsilon) {
+    public boolean intersects(V3D_AABBX_d aabbx, double epsilon) {
         V3D_Plane_d pl = aabbx.getXPl();
         if (pl.isParallel(this, epsilon)) {
-            return null;
+            if (pl.isOnPlane(this, epsilon)) {
+                return aabbx.intersects(this, epsilon);
+            } else {
+                return false;
+            }
+        } else {
+            V3D_Geometry_d i = pl.getIntersect(this, epsilon);
+            if (i == null) {
+                return false;
+            } else {
+                V3D_Point_d ip = (V3D_Point_d) i;
+                return aabbx.getTopPlane().isOnSameSide(
+                        aabbx.getll(), ip, epsilon)
+                        && aabbx.getBottomPlane().isOnSameSide(
+                                aabbx.getuu(), ip, epsilon)
+                        && aabbx.getRightPlane().isOnSameSide(
+                                aabbx.getll(), ip, epsilon)
+                        && aabbx.getLeftPlane().isOnSameSide(
+                                aabbx.getuu(), ip, epsilon);
+            }
         }
-        // Calculate the intersection point
-        V3D_Point_d pt = (V3D_Point_d) pl.getIntersect(this, epsilon);
-        if (aabbx.intersects(pt)) {
-            return pt;
-        }
-        return null;
     }
 
     /**
@@ -470,17 +430,30 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * considered equal.
      * @return {@code true} if this getIntersect with {@code l}
      */
-    public V3D_Point_d getIntersect(V3D_AABBY_d aabby, double epsilon) {
+    public boolean intersects(V3D_AABBY_d aabby, double epsilon) {
         V3D_Plane_d pl = aabby.getYPl();
         if (pl.isParallel(this, epsilon)) {
-            return null;
+            if (pl.isOnPlane(this, epsilon)) {
+                return aabby.intersects(this, epsilon);
+            } else {
+                return false;
+            }
+        } else {
+            V3D_Geometry_d i = pl.getIntersect(this, epsilon);
+            if (i == null) {
+                return false;
+            } else {
+                V3D_Point_d ip = (V3D_Point_d) i;
+                return aabby.getTopPlane().isOnSameSide(
+                        aabby.getll(), ip, epsilon)
+                        && aabby.getBottomPlane().isOnSameSide(
+                                aabby.getuu(), ip, epsilon)
+                        && aabby.getRightPlane().isOnSameSide(
+                                aabby.getll(), ip, epsilon)
+                        && aabby.getLeftPlane().isOnSameSide(
+                                aabby.getuu(), ip, epsilon);
+            }
         }
-        // Calculate the intersection point
-        V3D_Point_d pt = (V3D_Point_d) pl.getIntersect(this, epsilon);
-        if (aabby.intersects(pt)) {
-            return pt;
-        }
-        return null;
     }
 
     /**
@@ -489,19 +462,32 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * considered equal.
      * @return {@code true} if this getIntersect with {@code l}
      */
-    public V3D_Point_d getIntersect(V3D_AABBZ_d aabbz, double epsilon) {
+    public boolean intersects(V3D_AABBZ_d aabbz, double epsilon) {
         V3D_Plane_d pl = aabbz.getZPl();
         if (pl.isParallel(this, epsilon)) {
-            return null;
+            if (pl.isOnPlane(this, epsilon)) {
+                return aabbz.intersects(this, epsilon);
+            } else {
+                return false;
+            }
+        } else {
+            V3D_Geometry_d i = pl.getIntersect(this, epsilon);
+            if (i == null) {
+                return false;
+            } else {
+                V3D_Point_d ip = (V3D_Point_d) i;
+                return aabbz.getTopPlane().isOnSameSide(
+                        aabbz.getll(), ip, epsilon)
+                        && aabbz.getBottomPlane().isOnSameSide(
+                                aabbz.getuu(), ip, epsilon)
+                        && aabbz.getRightPlane().isOnSameSide(
+                                aabbz.getll(), ip, epsilon)
+                        && aabbz.getLeftPlane().isOnSameSide(
+                                aabbz.getuu(), ip, epsilon);
+            }
         }
-        // Calculate the intersection point
-        V3D_Point_d pt = (V3D_Point_d) pl.getIntersect(this, epsilon);
-        if (aabbz.intersects(pt)) {
-            return pt;
-        }
-        return null;
     }
-    
+
     /**
      * @param epsilon The tolerance within which vector components are
      * considered equal.
@@ -529,7 +515,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
         // Special case of parallel lines.
         V3D_Point_d tp = getP();
         if (isParallel(l, epsilon)) {
-            if (l.intersects(epsilon, tp)) {
+            if (l.intersects(tp, epsilon)) {
                 // If lines are coincident return this.
                 return this;
             } else {
@@ -545,13 +531,13 @@ public class V3D_Line_d extends V3D_Geometry_d {
         V3D_Vector_d plp = new V3D_Vector_d(tp, lp);
         V3D_Vector_d lqlp = new V3D_Vector_d(lq, lp);
         if (lqlp.getMagnitudeSquared() == 0d) {
-            if (intersects(epsilon, lp)) {
+            if (intersects(lp, epsilon)) {
                 return lp;
             }
         }
         V3D_Vector_d qp = new V3D_Vector_d(tq, tp);
         if (qp.getMagnitudeSquared() == 0d) {
-            if (l.intersects(epsilon, tp)) {
+            if (l.intersects(tp, epsilon)) {
                 return tp;
             }
         }
@@ -915,20 +901,20 @@ public class V3D_Line_d extends V3D_Geometry_d {
         }
         double mua = num / (den);
         double mub = (a + (b * (mua))) / -d;
-        V3D_Point_d pi = new V3D_Point_d(env, 
+        V3D_Point_d pi = new V3D_Point_d(env,
                 (tp.getX() - (mua * (qp.dx))),
                 (tp.getY() - (mua * (qp.dy))),
                 (tp.getZ() - (mua * (qp.dz))));
         // If point pv is on both lines then return this as the intersection.
-        if (intersects(epsilon, pi) && l.intersects(epsilon, pi)) {
+        if (intersects(pi, epsilon) && l.intersects(pi, epsilon)) {
             return pi;
         }
-        V3D_Point_d qi = new V3D_Point_d(env, 
+        V3D_Point_d qi = new V3D_Point_d(env,
                 (lp.getX() + (mub * (lqlp.dx))),
                 (lp.getY() + (mub * (lqlp.dy))),
                 (lp.getZ() + (mub * (lqlp.dz))));
         // If point qv is on both lines then return this as the intersection.
-        if (intersects(epsilon, qi) && l.intersects(epsilon, qi)) {
+        if (intersects(qi, epsilon) && l.intersects(qi, epsilon)) {
             return qi;
         }
         /**
@@ -960,7 +946,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      */
     public V3D_FiniteGeometry_d getLineOfIntersection(V3D_Point_d pt,
             double epsilon) {
-        if (intersects(epsilon, pt)) {
+        if (intersects(pt, epsilon)) {
             return pt;
         }
         return new V3D_LineSegment_d(pt, getPointOfIntersection(pt, epsilon));
@@ -977,7 +963,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * {@code pt}.
      */
     public V3D_Point_d getPointOfIntersection(V3D_Point_d pt, double epsilon) {
-        if (intersects(epsilon, pt)) {
+        if (intersects(pt, epsilon)) {
             return pt;
         }
         V3D_Plane_d ptv = new V3D_Plane_d(pt, v);
@@ -1058,7 +1044,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return The minimum distance between this and {@code pv}.
      */
     public double getDistance(V3D_Point_d pt, double epsilon) {
-        if (intersects(epsilon, pt)) {
+        if (intersects(pt, epsilon)) {
             return 0d;
         }
         return Math.sqrt(getDistanceSquared(pt, true));
@@ -1082,7 +1068,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return The minimum distance between this and {@code pv}.
      */
     public double getDistanceSquared(V3D_Point_d pt, double epsilon) {
-        if (intersects(epsilon, pt)) {
+        if (intersects(pt, epsilon)) {
             return 0d;
         } else {
             return getDistanceSquared(pt, true);
@@ -1234,7 +1220,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
         V3D_Vector_d rv = v.getUnitVector().rotate(uv, theta);
         return new V3D_Line_d(rp, rv);
     }
-    
+
     /**
      * @param ps The points to test for collinearity.
      * @return {@code true} iff all points are collinear with l.
@@ -1270,8 +1256,8 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @param ps The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public static boolean isCollinear(V3D_Line_d l, 
-            V3D_Point_d... ps) {        
+    public static boolean isCollinear(V3D_Line_d l,
+            V3D_Point_d... ps) {
         for (var p : ps) {
             if (!l.intersects(p)) {
                 return false;
@@ -1284,7 +1270,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @param epsilon The tolerance within which vector components are
      * considered equal.
      * @param ps The points to test for collinear within epsilon tolerance.
-     * @return {@code true} iff all points are collinear with l given epsilon 
+     * @return {@code true} iff all points are collinear with l given epsilon
      * tolerance.
      */
     public static boolean isCollinear(double epsilon, V3D_Point_d... ps) {
@@ -1302,10 +1288,10 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @param ps The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public static boolean isCollinear(double epsilon, V3D_Line_d l, 
+    public static boolean isCollinear(double epsilon, V3D_Line_d l,
             V3D_Point_d... ps) {
         for (var p : ps) {
-            if (!l.intersects(epsilon, p)) {
+            if (!l.intersects(p, epsilon)) {
                 return false;
             }
         }
@@ -1314,9 +1300,9 @@ public class V3D_Line_d extends V3D_Geometry_d {
 
     /**
      * There should be at least two different points in points. This does not
-     * check for collinearity of all the points. It returns a line defined by 
+     * check for collinearity of all the points. It returns a line defined by
      * the first points that have the greatest distance between them.
-     * 
+     *
      * @param epsilon The tolerance within which vector components are
      * considered equal.
      * @param points Any number of points, but with two being different.
@@ -1331,8 +1317,8 @@ public class V3D_Line_d extends V3D_Geometry_d {
         double max = 0d;
         V3D_Point_d a = null;
         V3D_Point_d b = null;
-        for (int i = 0; i < points.length; i ++) {
-            for (int j = i + 1; j < points.length; j ++) {
+        for (int i = 0; i < points.length; i++) {
+            for (int j = i + 1; j < points.length; j++) {
                 double d2 = points[i].getDistanceSquared(points[j]);
                 if (d2 > max) {
                     a = points[i];

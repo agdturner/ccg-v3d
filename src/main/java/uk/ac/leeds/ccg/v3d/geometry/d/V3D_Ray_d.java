@@ -220,7 +220,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
         if (pt.equals(l.getP())) {
             return true;
         }
-        if (l.intersects(epsilon, pt)) {
+        if (l.intersects(pt, epsilon)) {
 //            V3D_Point poi = l.getPointOfIntersection(pt);
 //            V3D_Ray r = new V3D_Ray(e, getP(), poi.getVector());
             pl = getPl();

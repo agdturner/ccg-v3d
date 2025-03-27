@@ -22,8 +22,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * For a 2D Axis Aligned Bounding Box. These are wanted to calculate if there is
- * intersection/containment of finite geometries. General rectangles cannot 
- * be used due to recursive complications.
+ * intersection/containment of finite geometries. General rectangles cannot be
+ * used due to recursive complications.
  *
  * @author Andy Turner
  * @version 1.0
@@ -107,11 +107,12 @@ public abstract class V3D_AABB2D implements Serializable {
      * For storing the left plane.
      */
     protected V3D_Plane lpl;
-    
+
     /**
      * Create a new instance.
      */
-    public V3D_AABB2D() {}
+    public V3D_AABB2D() {
+    }
 
     /**
      * @param e An envelope.
@@ -129,7 +130,7 @@ public abstract class V3D_AABB2D implements Serializable {
         top = e.top;
         pts = e.pts;
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -313,19 +314,16 @@ public abstract class V3D_AABB2D implements Serializable {
     public abstract boolean intersects(V3D_Point p, int oom, RoundingMode rm);
 
     /**
-     * @param l The line to test for intersection. It is assumed
-     * to be in the same plane.
+     * @param l The line to test for intersection. It is assumed to be in the
+     * same plane.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if this intersects with {@code p}
      */
     public boolean intersects(V3D_Line l, int oom, RoundingMode rm) {
-        if (intersects(l.getP(), oom, rm)) {
-                return true;
-            }
-            if (intersects(l.getQ(oom, rm), oom, rm)) {
-                return true;
-            }
+        if (intersects(l.getP(), oom, rm) || intersects(l.getQ(oom, rm), oom, rm)) {
+            return true;
+        }
         if (getTop(oom, rm) instanceof V3D_Point tp) {
             if (l.intersects(tp, oom, rm)) {
                 return true;
@@ -364,20 +362,20 @@ public abstract class V3D_AABB2D implements Serializable {
         }
         return false;
     }
-    
+
     /**
-     * Gets the intersect {@code left} with {@code ls} where {@code ls} is a side 
-     * either {@link #top}, {@link #bottom}, {@link #left} or {@link #right} when a 
-     * line segment.
+     * Gets the intersect {@code left} with {@code ls} where {@code ls} is a
+     * side either {@link #top}, {@link #bottom}, {@link #left} or
+     * {@link #right} when a line segment.
      *
-     * @param ls The line segment to get the intersect with left. The line segment 
- must be lying in the same plane. 
-     * @param l The line to get intersection with this. The line must be lying 
-     * in the same plane. 
+     * @param ls The line segment to get the intersect with left. The line
+     * segment must be lying in the same plane.
+     * @param l The line to get intersection with this. The line must be lying
+     * in the same plane.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The intersection between {@code this} and {@code left}.
      */
-    public abstract V3D_FiniteGeometry getIntersect(V3D_LineSegment ls, 
+    public abstract V3D_FiniteGeometry getIntersect(V3D_LineSegment ls,
             V3D_Line l, int oom, RoundingMode rm);
 }

@@ -21,8 +21,8 @@ import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 
 /**
  * For a 2D Axis Aligned Bounding Box. These are wanted to calculate if there is
- * intersection/containment of finite geometries. General rectangles cannot 
- * be used due to recursive complications.
+ * intersection/containment of finite geometries. General rectangles cannot be
+ * used due to recursive complications.
  *
  * @author Andy Turner
  * @version 1.0
@@ -40,7 +40,7 @@ public abstract class V3D_AABB2D_d implements Serializable {
      * For storing the offset of this.
      */
     protected V3D_Vector_d offset;
-    
+
     /**
      * For storing the left lower point.
      */
@@ -106,12 +106,13 @@ public abstract class V3D_AABB2D_d implements Serializable {
      * For storing the left plane.
      */
     protected V3D_Plane_d lpl;
-    
+
     /**
      * Create a new instance.
      */
-    public V3D_AABB2D_d() {}
-    
+    public V3D_AABB2D_d() {
+    }
+
     /**
      * @param e An envelope.
      */
@@ -174,7 +175,7 @@ public abstract class V3D_AABB2D_d implements Serializable {
      * @return {@link #lpl} initialising first if it is {@code null}.
      */
     public abstract V3D_Plane_d getLeftPlane();
-    
+
     /**
      * @return the right of the envelope.
      */
@@ -186,7 +187,7 @@ public abstract class V3D_AABB2D_d implements Serializable {
      * @return {@link #rpl} initialising first if it is {@code null}.
      */
     public abstract V3D_Plane_d getRightPlane();
-    
+
     /**
      * @return the top of the envelope.
      */
@@ -266,8 +267,8 @@ public abstract class V3D_AABB2D_d implements Serializable {
     public abstract V3D_Point_d getCentroid();
 
     /**
-     * @param p The point to test if it is contained. It is assumed
-     * to be in the same Y plane.
+     * @param p The point to test if it is contained. It is assumed to be in the
+     * same Y plane.
      * @return {@code} true iff {@code this} contains {@code p}.
      */
     public abstract boolean contains(V3D_Point_d p);
@@ -279,28 +280,25 @@ public abstract class V3D_AABB2D_d implements Serializable {
     public abstract boolean contains(V3D_LineSegment_d l);
 
     /**
-     * @param p The point to test for intersection. It is assumed
-     * to be in the same X plane.
+     * @param p The point to test for intersection. It is assumed to be in the
+     * same X plane.
      * @return {@code true} if this intersects with {@code p}
      */
     public abstract boolean intersects(V3D_Point_d p);
 
     /**
-     * @param l The line to test for intersection. It is assumed
-     * to be in the same X plane.
+     * @param l The line to test for intersection. It is assumed to be in the
+     * same X plane.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
      * @return {@code true} if this intersects with {@code p}
      */
     public boolean intersects(V3D_Line_d l, double epsilon) {
-        if (intersects(l.getP())) {
-                return true;
-            }
-            if (intersects(l.getQ())) {
-                return true;
-            }
+        if (intersects(l.getP()) || intersects(l.getQ())) {
+            return true;
+        }
         if (getTop() instanceof V3D_Point_d tp) {
-            if (l.intersects(epsilon, tp)) {
+            if (l.intersects(tp, epsilon)) {
                 return true;
             }
         } else {
@@ -309,7 +307,7 @@ public abstract class V3D_AABB2D_d implements Serializable {
             }
         }
         if (getBottom() instanceof V3D_Point_d bbp) {
-            if (l.intersects(epsilon, bbp)) {
+            if (l.intersects(bbp, epsilon)) {
                 return true;
             }
         } else {
@@ -318,7 +316,7 @@ public abstract class V3D_AABB2D_d implements Serializable {
             }
         }
         if (getRight() instanceof V3D_Point_d rp) {
-            if (l.intersects(epsilon, rp)) {
+            if (l.intersects(rp, epsilon)) {
                 return true;
             }
         } else {
@@ -327,7 +325,7 @@ public abstract class V3D_AABB2D_d implements Serializable {
             }
         }
         if (getLeft() instanceof V3D_Point_d lp) {
-            if (l.intersects(epsilon, lp)) {
+            if (l.intersects(lp, epsilon)) {
                 return true;
             }
         } else {
@@ -337,20 +335,20 @@ public abstract class V3D_AABB2D_d implements Serializable {
         }
         return false;
     }
-    
+
     /**
-     * Gets the intersect {@code left} with {@code ls} where {@code ls} is a side 
-     * either {@link #top}, {@link #bottom}, {@link #left} or {@link #right} when a 
-     * line segment.
+     * Gets the intersect {@code left} with {@code ls} where {@code ls} is a
+     * side either {@link #top}, {@link #bottom}, {@link #left} or
+     * {@link #right} when a line segment.
      *
-     * @param ls The line segment to get the intersect with left. The line segment 
- must be lying in the same xPlane. 
-     * @param l The line to get intersection with this. The line must be lying 
-     * in the same xPlane. 
+     * @param ls The line segment to get the intersect with left. The line
+     * segment must be lying in the same xPlane.
+     * @param l The line to get intersection with this. The line must be lying
+     * in the same xPlane.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
      * @return The intersection between {@code this} and {@code left}.
      */
-    public abstract V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d ls, 
+    public abstract V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d ls,
             V3D_Line_d l, double epsilon);
 }

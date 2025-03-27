@@ -209,9 +209,9 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
      * For determining if all points are coincident within a tolerance given by 
      * epsilon.
      *
+     * @param p The point to test if it is the same as {@code this}.
      * @param epsilon The tolerance within which vector components are
      * considered equal.
-     * @param p The point to test if it is the same as {@code this}.
      * @return {@code true} iff {@code pv} is equal to {@code this} given the
      * epsilon.
      */

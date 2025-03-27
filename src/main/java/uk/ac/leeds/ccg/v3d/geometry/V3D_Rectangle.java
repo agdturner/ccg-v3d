@@ -435,7 +435,7 @@ public class V3D_Rectangle extends V3D_Area {
      *
      * @param pl The plane to intersect with.
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
+     * @param rm The RoundingMode for any rounding.
      * @return The intersection between {@code this} and {@code pl}.
      */
     public V3D_FiniteGeometry getIntersect(V3D_Plane pl, int oom, RoundingMode rm) {

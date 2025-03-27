@@ -27,8 +27,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
  * is a line segment parallel to either the Y axis or X axis respectively. If
  * {@link xMin} = {@link xMax} and {@link yMin} = {@link yMax} the bounding box
  * is a point. It is wanted to calculate if there is intersection/containment of
- * finite geometries in the V3D_AABB instance. A general rectangle cannot 
- * be used due to recursive complications.
+ * finite geometries in the V3D_AABB instance. A general rectangle cannot be
+ * used due to recursive complications.
  *
  * @author Andy Turner
  * @version 1.0
@@ -43,8 +43,8 @@ public class V3D_AABBZ extends V3D_AABB2D {
     private final BigRational z;
 
     /**
-     * For storing the plane, the z value defines the plane.
-     * new V3D_Plane(getll(), V3D_Vector.K);
+     * For storing the plane, the z value defines the plane. new
+     * V3D_Plane(getll(), V3D_Vector.K);
      */
     protected V3D_Plane zpl;
     /**
@@ -107,7 +107,7 @@ public class V3D_AABBZ extends V3D_AABB2D {
      * @param yMax What {@link yMax} is set to.
      * @param z What {@link #z} is set to.
      */
-    public V3D_AABBZ(V3D_Environment env, int oom, RoundingMode rm, 
+    public V3D_AABBZ(V3D_Environment env, int oom, RoundingMode rm,
             BigRational xMin, BigRational xMax,
             BigRational yMin, BigRational yMax, BigRational z) {
         this(oom, rm, new V3D_Point(env, xMin, yMin, z),
@@ -201,7 +201,7 @@ public class V3D_AABBZ extends V3D_AABB2D {
         }
         env = points[0].env;
         z = points[0].getZ(oom, rm);
-        
+
     }
 
     @Override
@@ -321,7 +321,7 @@ public class V3D_AABBZ extends V3D_AABB2D {
         return yMax.add(offset.getDY(oom - 2, rm));
     }
 
-   /**
+    /**
      * For getting {@link #z} rounded.
      *
      * @param oom The Order of Magnitude for the precision.
@@ -331,7 +331,7 @@ public class V3D_AABBZ extends V3D_AABB2D {
     public BigRational getZ(int oom, RoundingMode rm) {
         return yMax.add(offset.getDY(oom - 2, rm));
     }
-            
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -383,11 +383,11 @@ public class V3D_AABBZ extends V3D_AABB2D {
         }
         return ul;
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return The {@link #zpl} initialising it first if it is null. 
+     * @return The {@link #zpl} initialising it first if it is null.
      */
     public V3D_Plane getZPl(int oom, RoundingMode rm) {
         if (zpl == null) {
@@ -395,7 +395,6 @@ public class V3D_AABBZ extends V3D_AABB2D {
         }
         return zpl;
     }
-        
 
     /**
      * @param oom The Order of Magnitude for the precision.
@@ -419,7 +418,7 @@ public class V3D_AABBZ extends V3D_AABB2D {
         }
         return left;
     }
-    
+
     /**
      * The left plane is orthogonal to the zPlane. With a normal pointing away.
      *
@@ -435,7 +434,7 @@ public class V3D_AABBZ extends V3D_AABB2D {
         }
         return lpl;
     }
-    
+
     /**
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -468,7 +467,7 @@ public class V3D_AABBZ extends V3D_AABB2D {
     @Override
     public V3D_Plane getRightPlane(int oom, RoundingMode rm) {
         if (rpl == null) {
-            rpl = new V3D_Plane(new V3D_Point(env, getXMax(oom), getYMax(oom), 
+            rpl = new V3D_Plane(new V3D_Point(env, getXMax(oom), getYMax(oom),
                     getZ(oom, rm)), V3D_Vector.J);
         }
         return rpl;
@@ -533,7 +532,7 @@ public class V3D_AABBZ extends V3D_AABB2D {
         }
         return bottom;
     }
-    
+
     /**
      * The bottom plane is orthogonal to the zPlane. With a normal pointing
      * away.
@@ -567,8 +566,8 @@ public class V3D_AABBZ extends V3D_AABB2D {
     }
 
     /**
-     * @param e The V3D_AABBZ to union with this. It is assumed
-     * to be in the same Z plane.
+     * @param e The V3D_AABBZ to union with this. It is assumed to be in the
+     * same Z plane.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      * @return a V3D_AABBZ which is {@code this} union {@code e}.
@@ -587,8 +586,8 @@ public class V3D_AABBZ extends V3D_AABB2D {
     }
 
     /**
-     * @param e The V3D_AABBZ to test for intersection. It is assumed
-     * to be in the same Z plane.
+     * @param e The V3D_AABBZ to test for intersection. It is assumed to be in
+     * the same Z plane.
      * @param oom The Order of Magnitude for the precision.
      * @return {@code true} if this intersects with {@code e} it the {@code oom}
      * level of precision.
@@ -629,7 +628,7 @@ public class V3D_AABBZ extends V3D_AABB2D {
     }
 
     /**
-     * @param p The point to test if it is contained. It is assumed to be in the 
+     * @param p The point to test if it is contained. It is assumed to be in the
      * same Z plane.
      * @param oom The Order of Magnitude for the precision.
      * @return {@code} true iff {@code this} contains {@code p}.
@@ -668,7 +667,7 @@ public class V3D_AABBZ extends V3D_AABB2D {
      * @param x The x-coordinate of the point to test for intersection.
      * @param y The y-coordinate of the point to test for intersection.
      * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} if this intersects with a point defined by 
+     * @return {@code true} if this intersects with a point defined by
      * {@code x}, {@code y}, and {@link #z}}.
      */
     public boolean intersects(BigRational x, BigRational y, int oom) {
@@ -677,22 +676,22 @@ public class V3D_AABBZ extends V3D_AABB2D {
                 && y.compareTo(getYMin(oom)) != -1
                 && y.compareTo(getYMax(oom)) != 1;
     }
-    
+
     /**
-     * Gets the intersect {@code left} with {@code ls} where {@code ls} is a side 
-     * either {@link #top}, {@link #bottom}, {@link #left} or {@link #right} when a 
-     * line segment.
-     *     
-     * @param ls The line segment to get the intersect with left. The line segment 
- must be lying in the same zPlane. 
-     * @param l The line to get intersection with this. The line must be lying 
-     * in the same zPlane. 
+     * Gets the intersect {@code left} with {@code ls} where {@code ls} is a
+     * side either {@link #top}, {@link #bottom}, {@link #left} or
+     * {@link #right} when a line segment.
+     *
+     * @param ls The line segment to get the intersect with left. The line
+     * segment must be lying in the same zPlane.
+     * @param l The line to get intersection with this. The line must be lying
+     * in the same zPlane.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The intersection between {@code this} and {@code left}.
      */
     @Override
-    public V3D_FiniteGeometry getIntersect(V3D_LineSegment ls, V3D_Line l, 
+    public V3D_FiniteGeometry getIntersect(V3D_LineSegment ls, V3D_Line l,
             int oom, RoundingMode rm) {
         BigRational x1 = ls.getP().getX(oom, rm);
         BigRational x2 = ls.getQ(oom, rm).getX(oom, rm);
@@ -718,12 +717,12 @@ public class V3D_AABBZ extends V3D_AABB2D {
         }
         return null;
     }
-    
+
     /**
      * https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
-     *     
-     * @param l0 A line to get the intersect with left. The line must be lying in 
- the same plane as this and left. 
+     *
+     * @param l0 A line to get the intersect with left. The line must be lying
+     * in the same plane as this and left.
      * @param l Line to intersect with.
      * @param den getIntersectDenominator(x1, x2, x3, x4, y1, y2, y3, y4)
      * @param x1 getP().getX(oom, rm)
@@ -753,7 +752,7 @@ public class V3D_AABBZ extends V3D_AABB2D {
                     (x1.subtract(x2)).multiply(x3y4sy3x4));
             BigRational numy = (x1y2sy1x2.multiply(y3.subtract(y4))).subtract(
                     (y1.subtract(y2)).multiply(x3y4sy3x4));
-            return new V3D_Point(env, numx.divide(den), numy.divide(den), 
+            return new V3D_Point(env, numx.divide(den), numy.divide(den),
                     getZ(oom, rm));
         }
         return null;
