@@ -712,7 +712,7 @@ public class V3D_Plane extends V3D_Geometry {
      * {@code null} a line or a point.
      */
     //@Override
-    public V3D_Geometry getIntersectionOption(V3D_Line l, int oom, RoundingMode rm) {
+    public V3D_Geometry getIntersectAlternative(V3D_Line l, int oom, RoundingMode rm) {
         // Special case
         if (isParallel(l, oom, rm)) {
             if (isOnPlane(l, oom, rm)) {

@@ -771,7 +771,8 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * return {@code this}. If they overlap in a line return the part that
      * overlaps (the order of points is not defined). If they intersect at a
      * point, the point is returned. {@code null} is returned if the two line
-     * segments do not intersect.
+     * segments do not intersect. This first conducts a bounding box 
+     * intersection test...
      *
      * @param ls The line to get intersection with this.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -782,7 +783,25 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
             double epsilon) {
         if (!getAABB().intersects(ls.getAABB())) {
             return null;
+        } else {
+            return getIntersect0(ls, epsilon);
         }
+    }
+
+    /**
+     * Intersects {@code this} with {@code l}. If they are equivalent then
+     * return {@code this}. If they overlap in a line return the part that
+     * overlaps (the order of points is not defined). If they intersect at a
+     * point, the point is returned. {@code null} is returned if the two line
+     * segments do not intersect.
+     *
+     * @param ls The line to get intersection with this.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The intersection between {@code this} and {@code l}.
+     */
+    public V3D_FiniteGeometry_d getIntersect0(V3D_LineSegment_d ls,
+            double epsilon) {
         // Get intersection with infinite lines.
         V3D_Geometry_d li = l.getIntersect(ls.l, epsilon);
         V3D_FiniteGeometry_d tils = getIntersect(ls.l, epsilon);
@@ -1101,7 +1120,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
         if (getIntersect(l, epsilon) != null) {
             return 0d;
         }
-        V3D_LineSegment_d loi = V3D_LineSegment_d.this.getLineOfIntersect(l, epsilon);
+        V3D_LineSegment_d loi = getLineOfIntersect(l, epsilon);
         if (loi == null) {
             /**
              * Lines are parallel.

@@ -156,6 +156,8 @@ public class V3D_Frustum extends V3D_Geometry {
         this.right = new V3D_Plane(focus, rectR, rectS, oom, rm);
         this.bottom = new V3D_Plane(focus, rectS, rectP, oom, rm);
     }
+    
+    
 
     @Override
     public V3D_Geometry rotate(V3D_Ray r, V3D_Vector uv, Math_BigDecimal bd, BigRational theta, int oom, RoundingMode rm) {
