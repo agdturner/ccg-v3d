@@ -475,7 +475,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
             }
         }
         V3D_FiniteGeometry_d t = aabb2d.getTop();
-        if (left instanceof V3D_LineSegment_d tl) {
+        if (t instanceof V3D_LineSegment_d tl) {
             if (intersects(tl, epsilon)) {
                 return true;
             }
@@ -569,7 +569,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public boolean intersects(V3D_LineSegment_d l, double epsilon) {
-        if (intersects(l.getAABB(), epsilon)) {
+        if (getAABB().intersects(l.getAABB(), epsilon)) {
             return getIntersect(l, epsilon) != null;
         } else {
             return false;
