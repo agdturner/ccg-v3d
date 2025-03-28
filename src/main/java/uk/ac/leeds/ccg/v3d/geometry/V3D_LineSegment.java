@@ -408,7 +408,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBX aabbx, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry i = aabbx.xpl.getIntersect(this, oom, rm);
+        V3D_FiniteGeometry i = aabbx.getXPl(oom, rm).getIntersect(this, oom, rm);
         if (i == null) {
             return false;
         } else {
@@ -477,7 +477,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBY aabby, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry i = aabby.ypl.getIntersect(this, oom, rm);
+        V3D_FiniteGeometry i = aabby.getYPl(oom, rm).getIntersect(this, oom, rm);
         if (i == null) {
             return false;
         } else {
@@ -546,7 +546,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBZ aabbz, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry i = aabbz.zpl.getIntersect(this, oom, rm);
+        V3D_FiniteGeometry i = aabbz.getZPl(oom, rm).getIntersect(this, oom, rm);
         if (i == null) {
             return false;
         } else {

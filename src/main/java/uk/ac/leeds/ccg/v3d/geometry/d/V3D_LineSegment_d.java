@@ -450,7 +450,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBX_d aabbx, double epsilon) {
-        V3D_FiniteGeometry_d i = aabbx.xpl.getIntersect(this, epsilon);
+        V3D_FiniteGeometry_d i = aabbx.getXPl().getIntersect(this, epsilon);
         if (i == null) {
             return false;
         } else {
@@ -519,7 +519,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBY_d aabby, double epsilon) {
-        V3D_FiniteGeometry_d i = aabby.ypl.getIntersect(this, epsilon);
+        V3D_FiniteGeometry_d i = aabby.getYPl().getIntersect(this, epsilon);
         if (i == null) {
             return false;
         } else {
@@ -588,7 +588,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBZ_d aabbz, double epsilon) {
-        V3D_FiniteGeometry_d i = aabbz.zpl.getIntersect(this, epsilon);
+        V3D_FiniteGeometry_d i = aabbz.getZPl().getIntersect(this, epsilon);
         if (i == null) {
             return false;
         } else {
