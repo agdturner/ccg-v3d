@@ -82,7 +82,7 @@ public class V3D_Ray_dTest extends V3D_Test_d {
     }
 
     /**
-     * Test of isIntersectedBy method, of class V3D_Ray_d.
+     * Test of intersects method, of class V3D_Ray_d.
      */
     @Test
     public void testIsIntersectedBy_V3D_Point_d_int() {
@@ -90,25 +90,25 @@ public class V3D_Ray_dTest extends V3D_Test_d {
         double epsilon = 1d / 10000000d;
         V3D_Point_d pt = pP0P0P0;
         V3D_Ray_d instance = new V3D_Ray_d(pN1N1N1, pP1P1P1);
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.intersects(pt, epsilon));
         // Test 2
         pt = pP1P1P1;
         instance = new V3D_Ray_d(pN1N1N1, pP1P1P1);
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.intersects(pt, epsilon));
         // Test 3
         pt = pN2N2N2;
         instance = new V3D_Ray_d(pN1N1N1, pP1P1P1);
-        assertFalse(instance.isIntersectedBy(pt, epsilon));
+        assertFalse(instance.intersects(pt, epsilon));
         // Test 4
         pt = pP1P0P0;
         instance = new V3D_Ray_d(pP0P0P0, pP1P0P0);
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.intersects(pt, epsilon));
         // Test 5
         pt = pP2P0P0;
-        assertTrue(instance.isIntersectedBy(pt, epsilon));
+        assertTrue(instance.intersects(pt, epsilon));
         // Test 6
         pt = pN2P0P0;
-        assertFalse(instance.isIntersectedBy(pt, epsilon));
+        assertFalse(instance.intersects(pt, epsilon));
     }
 
     /**

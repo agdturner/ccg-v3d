@@ -752,10 +752,10 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
          * If infinite lines intersects at a point, then check this point is on
          * this.
          */
-        if (i instanceof V3D_Point_d v3D_Point) {
-            //if (intersects(v3D_Point, epsilon)) {
-            if (isBetween(v3D_Point, epsilon)) {
-                return v3D_Point;
+        if (i instanceof V3D_Point_d ip) {
+            //if (intersects(ip, epsilon)) {
+            if (isBetween(ip, epsilon)) {
+                return ip;
             } else {
                 return null;
             }
@@ -1054,7 +1054,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
         if (intersects(pt, epsilon)) {
             return 0d;
         }
-        V3D_Point_d poi = l.getPointOfIntersection(pt, epsilon);
+        V3D_Point_d poi = l.getPointOfIntersect(pt, epsilon);
         if (isAligned(poi, epsilon)) {
             return poi.getDistanceSquared(pt);
         } else {
@@ -1307,16 +1307,16 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
         if (getIntersect(l, epsilon) != null) {
             return null;
         }
-        V3D_LineSegment_d loi = this.l.getLineOfIntersection(l, epsilon);
+        V3D_LineSegment_d loi = this.l.getLineOfIntersect(l, epsilon);
         V3D_Point_d tp = getP();
         V3D_Point_d tq = getQ();
         if (loi == null) {
             double pd = l.getDistanceSquared(tp, epsilon);
             double qd = l.getDistanceSquared(tq, epsilon);
             if (pd > qd) {
-                return new V3D_LineSegment_d(tq, l.getPointOfIntersection(tq, epsilon));
+                return new V3D_LineSegment_d(tq, l.getPointOfIntersect(tq, epsilon));
             } else {
-                return new V3D_LineSegment_d(tp, l.getPointOfIntersection(tp, epsilon));
+                return new V3D_LineSegment_d(tp, l.getPointOfIntersect(tp, epsilon));
             }
         } else {
             V3D_Point_d lsp = loi.getP();

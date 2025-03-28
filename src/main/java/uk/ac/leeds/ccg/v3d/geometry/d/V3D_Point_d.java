@@ -477,7 +477,7 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
     @Override
     public V3D_Point_d rotateN(V3D_Ray_d ray, V3D_Vector_d uv,
             double theta, double epsilon) {
-        V3D_Vector_d tv = ray.l.getPointOfIntersection(this, epsilon).getVector();
+        V3D_Vector_d tv = ray.l.getPointOfIntersect(this, epsilon).getVector();
         V3D_Point_d tp = new V3D_Point_d(this);
         tp.translate(tv.reverse());
         V3D_Vector_d tpv = tp.getVector();

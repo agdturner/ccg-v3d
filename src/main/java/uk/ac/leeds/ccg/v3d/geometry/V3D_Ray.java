@@ -244,13 +244,13 @@ public class V3D_Ray extends V3D_Geometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
-        return aabb.intersects(l.p, oom, rm)
-                || V3D_Ray.this.getIntersect(aabb.getl(oom, rm), oom, rm) != null
-                || V3D_Ray.this.getIntersect(aabb.getr(oom, rm), oom, rm) != null
-                || V3D_Ray.this.getIntersect(aabb.gett(oom, rm), oom, rm) != null
-                || V3D_Ray.this.getIntersect(aabb.getb(oom, rm), oom, rm) != null
-                || V3D_Ray.this.getIntersect(aabb.getf(oom, rm), oom, rm) != null
-                || V3D_Ray.this.getIntersect(aabb.geta(oom, rm), oom, rm) != null;
+        return aabb.intersects(l.getP(), oom, rm)
+                || getIntersect(aabb.getl(oom, rm), oom, rm) != null
+                || getIntersect(aabb.getr(oom, rm), oom, rm) != null
+                || getIntersect(aabb.gett(oom, rm), oom, rm) != null
+                || getIntersect(aabb.getb(oom, rm), oom, rm) != null
+                || getIntersect(aabb.getf(oom, rm), oom, rm) != null
+                || getIntersect(aabb.geta(oom, rm), oom, rm) != null;
     }
     
     /**
@@ -481,15 +481,14 @@ public class V3D_Ray extends V3D_Geometry {
         if (rtl == null) {
             return null;
         } else if (rtl instanceof V3D_Point pt) {
-            pl = getPl();
-            if (pl.isOnSameSide(pt, l.getQ(oom, rm), oom, rm)) {
+            if (getPl().isOnSameSide(pt, l.getQ(oom, rm), oom, rm)) {
                 return pt;
             } else {
                 return null;
             }
         } else {
             // Then rtl is an instance of V3D_Ray.
-            V3D_Geometry grl = V3D_Ray.this.getIntersect(r.l, oom, rm);
+            V3D_Geometry grl = getIntersect(r.l, oom, rm);
             if (grl instanceof V3D_Point) {
                 return grl;
             } else {
@@ -504,9 +503,8 @@ public class V3D_Ray extends V3D_Geometry {
                  */
                 V3D_Point tp = l.getP();
                 V3D_Point rp = r.l.getP();
-                pl = getPl();
                 V3D_Plane rpl = r.getPl();
-                if (pl.isOnSameSide(rp, l.getQ(oom, rm), oom, rm)) {
+                if (getPl().isOnSameSide(rp, l.getQ(oom, rm), oom, rm)) {
                     if (rpl.isOnSameSide(tp, r.l.getQ(oom, rm), oom, rm)) {
                         if (tp.equals(rp, oom, rm)) {
                             return tp;
@@ -538,7 +536,7 @@ public class V3D_Ray extends V3D_Geometry {
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_FiniteGeometry getIntersect(V3D_LineSegment ls, int oom, RoundingMode rm) {
-        V3D_Geometry g = V3D_Ray.this.getIntersect(ls.l, oom, rm);
+        V3D_Geometry g = getIntersect(ls.l, oom, rm);
         if (g == null) {
             return null;
         } else if (g instanceof V3D_Point pt) {

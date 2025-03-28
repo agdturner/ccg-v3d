@@ -105,6 +105,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p What {@link #l} point is set to.
      * @param q What {@link #l} vector is set from.
@@ -216,34 +217,83 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      * @param epsilon The tolerance within which two vectors are regarded as equal.
      * @return {@code true} if {@code this} is intersected by {@code pl}.
      */
-    public boolean isIntersectedBy(V3D_Point_d pt, double epsilon) {
+    public boolean intersects(V3D_Point_d pt, double epsilon) {
         if (pt.equals(l.getP())) {
             return true;
         }
         if (l.intersects(pt, epsilon)) {
-//            V3D_Point poi = l.getPointOfIntersection(pt);
-//            V3D_Ray r = new V3D_Ray(e, getP(), poi.getVector());
-            pl = getPl();
-//            V3D_Ray r = new V3D_Ray(l.getP(), pt);
-//            return r.l.getV().getDirection() == l.getV().getDirection();
-            return pl.isOnSameSide(pt, this.l.getQ(), epsilon);
+            return getPl().isOnSameSide(pt, this.l.getQ(), epsilon);
         }
-//        boolean isPossibleIntersection = isPossibleIntersection(pt);
-//        if (isPossibleIntersection) {
-//            Math_BigRationalSqrt a = pl.getDistance(this.pl);
-//            if (a.getX().isZero()) {
-//                return true;
-//            }
-//            Math_BigRationalSqrt b = pl.getDistance(this.qv);
-//            if (b.getX().isZero()) {
-//                return true;
-//            }
-//            Math_BigRationalSqrt l = this.pl.getDistance(this.qv);
-//            if (a.add(b, oom).compareTo(l) != 1) {
-//                return true;
-//            }
-//        }
         return false;
+    }
+    
+    /**
+     * @param aabb The V3D_AABB to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public boolean intersects(V3D_AABB_d aabb, double epsilon) {
+        return aabb.intersects(l.getP())
+                || getIntersect(aabb.getl(), epsilon) != null
+                || getIntersect(aabb.getr(), epsilon) != null
+                || getIntersect(aabb.gett(), epsilon) != null
+                || getIntersect(aabb.getb(), epsilon) != null
+                || getIntersect(aabb.getf(), epsilon) != null
+                || getIntersect(aabb.geta(), epsilon) != null;
+    }
+    
+    /**
+     * @param aabbx The V3D_AABBX to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public V3D_Point_d getIntersect(V3D_AABBX_d aabbx, double epsilon) {
+        V3D_Plane_d xpl = aabbx.getXPl(); 
+        if (xpl.isParallel(l, epsilon)) {
+            return null;
+        }
+        // Calculate the intersection point
+        V3D_Point_d pt = (V3D_Point_d) xpl.getIntersect(l, epsilon);
+        if (isAligned(pt, epsilon) && aabbx.intersects(pt)) {
+            return pt;
+        }
+        return null;
+    }
+    
+    /**
+     * @param aabby The V3D_AABBY to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public V3D_Point_d getIntersect(V3D_AABBY_d aabby, double epsilon) {
+        V3D_Plane_d ypl = aabby.getYPl(); 
+        if (ypl.isParallel(l, epsilon)) {
+            return null;
+        }
+        // Calculate the intersection point
+        V3D_Point_d pt = (V3D_Point_d) ypl.getIntersect(l);
+        if (isAligned(pt, epsilon) && aabby.intersects(pt)) {
+            return pt;
+        }
+        return null;
+    }
+
+    /**
+     * @param aabbz The V3D_AABBZ to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public V3D_Point_d getIntersect(V3D_AABBZ_d aabbz, double epsilon) {
+        V3D_Plane_d zpl = aabbz.getZPl(); 
+        if (zpl.isParallel(l, epsilon)) {
+            return null;
+        }
+        // Calculate the intersection point
+        V3D_Point_d pt = (V3D_Point_d) zpl.getIntersect(l, epsilon);
+        if (isAligned(pt, epsilon) && aabbz.intersects(pt)) {
+            return pt;
+        }
+        return null;
     }
 
     /**
@@ -272,6 +322,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      * @return The intersection between {@code this} and {@code pl}.
      */
     public V3D_Geometry_d getIntersect(V3D_Plane_d pl, double epsilon) {
+        // Check if infinite line intersects.
         V3D_Geometry_d g = pl.getIntersect(l, epsilon);
         if (g == null) {
             return null;
@@ -406,19 +457,19 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      * @return The intersection between {@code this} and {@code r}.
      */
     public V3D_Geometry_d getIntersect(V3D_Ray_d r, double epsilon) {
+        // Check if infinite line intersects.
         V3D_Geometry_d rtl = r.getIntersect(l, epsilon);
         if (rtl == null) {
             return null;
         } else if (rtl instanceof V3D_Point_d pt) {
-            pl = getPl();
-            if (pl.isOnSameSide(pt, l.getQ(), epsilon)) {
+            if (getPl().isOnSameSide(pt, l.getQ(), epsilon)) {
                 return pt;
             } else {
                 return null;
             }
         } else {
             // Then rtl is an instance of V3D_Ray.
-            V3D_Geometry_d grl = V3D_Ray_d.this.getIntersect(r.l, epsilon);
+            V3D_Geometry_d grl = getIntersect(r.l, epsilon);
             if (grl instanceof V3D_Point_d) {
                 return grl;
             } else {
@@ -433,9 +484,8 @@ public class V3D_Ray_d extends V3D_Geometry_d {
                  */
                 V3D_Point_d tp = l.getP();
                 V3D_Point_d rp = r.l.getP();
-                pl = getPl();
                 V3D_Plane_d rpl = r.getPl();
-                if (pl.isOnSameSide(rp, l.getQ(), epsilon)) {
+                if (getPl().isOnSameSide(rp, l.getQ(), epsilon)) {
                     if (rpl.isOnSameSide(tp, r.l.getQ(), epsilon)) {
                         if (tp.equals(rp)) {
                             return tp;
@@ -467,7 +517,8 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      */
     public V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d ls,
             double epsilon) {
-        V3D_Geometry_d g = V3D_Ray_d.this.getIntersect(ls.l, epsilon);
+        // Check if infinite lines intersect.
+        V3D_Geometry_d g = getIntersect(ls.l, epsilon);
         if (g == null) {
             return null;
         } else if (g instanceof V3D_Point_d pt) {
@@ -495,10 +546,10 @@ public class V3D_Ray_d extends V3D_Geometry_d {
                 if (isAligned(lsq, epsilon)) {
                     return V3D_LineSegment_d.getGeometry(rp, lsq, epsilon);
                 } else {
-                    if (isIntersectedBy(lsp, epsilon)) {
+                    if (intersects(lsp, epsilon)) {
                         return lsp;
                     }
-                    if (isIntersectedBy(lsq, epsilon)) {
+                    if (intersects(lsq, epsilon)) {
                         return lsq;
                     }
                     return null;

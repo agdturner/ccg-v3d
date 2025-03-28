@@ -1240,10 +1240,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
                         }
                     } else {
                         // il and ti are collinear
-                        
-                        il.getIntersect((V3D_LineSegment_d) ti,
-                                epsilon);
-                        
+//                        il.getIntersect((V3D_LineSegment_d) ti,
+//                                epsilon);
                         return il.getIntersect0((V3D_LineSegment_d) ti,
                                 epsilon);
                     }

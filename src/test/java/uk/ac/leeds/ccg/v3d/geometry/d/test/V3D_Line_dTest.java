@@ -38,8 +38,6 @@ import uk.ac.leeds.ccg.v3d.geometry.d.V3D_Vector_d;
  */
 public class V3D_Line_dTest extends V3D_Test_d {
 
-    private static final long serialVersionUID = 1L;
-
     public V3D_Line_dTest() {
         super();
     }
@@ -615,14 +613,14 @@ public class V3D_Line_dTest extends V3D_Test_d {
         pt = pP0P0P0;
         instance = new V3D_Line_d(pP1P0P0, pP1P1P0);
         expResult = new V3D_LineSegment_d(pP0P0P0, pP1P0P0);
-        result = instance.getLineOfIntersection(pt, epsilon);
+        result = instance.getLineOfIntersect(pt, epsilon);
         assertTrue(expResult.equalsIgnoreDirection(epsilon, (V3D_LineSegment_d) result));
         // Test 2
         instance = new V3D_Line_d(pP1N1P0, pP1P1P0);
         expResult = new V3D_LineSegment_d(pP0P0P0, pP1P0P0);
         //result = instance.getLineOfIntersect(pt, epsilon);
         //System.out.println(result);
-        result = instance.getLineOfIntersection(pt, epsilon);
+        result = instance.getLineOfIntersect(pt, epsilon);
         assertTrue(expResult.equalsIgnoreDirection(epsilon, (V3D_LineSegment_d) result));
     }
 
@@ -637,25 +635,25 @@ public class V3D_Line_dTest extends V3D_Test_d {
         V3D_Point_d pt = pP2P0P0;
         V3D_Line_d instance = new V3D_Line_d(pP0P0P0, pP0P2P2);
         V3D_Point_d expResult = pP0P0P0;
-        V3D_Point_d result = instance.getPointOfIntersection(pt, epsilon);
+        V3D_Point_d result = instance.getPointOfIntersect(pt, epsilon);
         assertTrue(expResult.equals(epsilon, result));
         // Test 2
          pt = pN2P0P0;
          instance = new V3D_Line_d(pP0P0P0, pP0P2P2);
          expResult = pP0P0P0;
-         result = instance.getPointOfIntersection(pt, epsilon);
+         result = instance.getPointOfIntersect(pt, epsilon);
         assertTrue(expResult.equals(epsilon, result));
         // Test 3
          pt = pN2P2P0;
          instance = new V3D_Line_d(pP0P0P0, pP0P2P2);
          expResult = pP0P1P1;
-         result = instance.getPointOfIntersection(pt, epsilon);
+         result = instance.getPointOfIntersect(pt, epsilon);
         assertTrue(expResult.equals(epsilon, result));
         // Test 4
          pt = pN2N2P0;
          instance = new V3D_Line_d(pP0P0P0, pP0P2P2);
          expResult = pP0N1N1;
-         result = instance.getPointOfIntersection(pt, epsilon);
+         result = instance.getPointOfIntersect(pt, epsilon);
         assertTrue(expResult.equals(epsilon, result));
     }
 
@@ -669,11 +667,11 @@ public class V3D_Line_dTest extends V3D_Test_d {
         V3D_Line_d l0 = new V3D_Line_d(pP1P0P0, pP1P1P0);
         V3D_Line_d l1 = new V3D_Line_d(pP0P0P0, pP0P0P1);
         V3D_LineSegment_d expResult = new V3D_LineSegment_d(pP0P0P0, pP1P0P0);
-        V3D_LineSegment_d result = l0.getLineOfIntersection(l1, epsilon);
+        V3D_LineSegment_d result = l0.getLineOfIntersect(l1, epsilon);
         assertTrue(expResult.equalsIgnoreDirection(epsilon, result));
         // Test 2
         l1 = new V3D_Line_d(pP0P0P0, pP0P1P0);
-        result = l0.getLineOfIntersection(l1, epsilon);
+        result = l0.getLineOfIntersect(l1, epsilon);
         assertNull(result);
     }
 

@@ -639,7 +639,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
                     } else {
                         // Divide again
                         V3D_Line_d l = new V3D_Line_d(p0, p1);
-                        V3D_Point_d proj = l.getPointOfIntersection(apt, epsilon);
+                        V3D_Point_d proj = l.getPointOfIntersect(apt, epsilon);
                         compute(ab.a, proj, apt, n, index, epsilon);
                     }
                 }
@@ -682,7 +682,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
                     } else {
                         // Divide again
                         V3D_Line_d l = new V3D_Line_d(p0, p1);
-                        V3D_Point_d proj = l.getPointOfIntersection(bpt, epsilon);
+                        V3D_Point_d proj = l.getPointOfIntersect(bpt, epsilon);
                         compute(ab.b, bpt, proj, n, index, epsilon);
                     }
                 }

@@ -23,32 +23,32 @@ import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
  * 3D representation of an infinite length line. The line passes through the
  * point {@link #pv} with vector {@link #v}. The "*" denotes a point in 3D and
  * the line is shown with a line of "e" symbols in the following depiction: {@code
- * z                e
- * y           -                e
- * +          /                * pv=<x0,y0,z0>
- * |         /                e
- * |        /                e
- * |    z0-/                e
- * |      /                e
- * |     /               e
- * |    /               e
- * |   /               e
- * y0-|  /               e
- * | /               e
- * |/         x1    e
- * x - ---------------------|-----------/---e---/---- + x
- * /|              e   x0
- * / |-y1          e
- * /  |           e
- * /   |          e
- * z1-/    |         e
- * /     |        e
- * /      |       e v=(dx,dy,dz)
- * /       |      e
- * /        |     e
- * +         |    e
- * z          -   e
- * y
+ *                                         z                e
+ *                            y           -                e
+ *                            +          /                * pv=<x0,y0,z0>
+ *                            |         /                e
+ *                            |        /                e
+ *                            |    z0-/                e
+ *                            |      /                e
+ *                            |     /               e
+ *                            |    /               e
+ *                            |   /               e
+ *                         y0-|  /               e
+ *                            | /               e
+ *                            |/         x1    e
+ *   x - ---------------------|-----------/---e---/---- + x
+ *                           /|              e   x0
+ *                          / |-y1          e
+ *                         /  |           e
+ *                        /   |          e
+ *                    z1-/    |         e
+ *                      /     |        e
+ *                     /      |       e v=(dx,dy,dz)
+ *                    /       |      e
+ *                   /        |     e
+ *                  +         |    e
+ *                 z          -   e
+ *                            y
  * }
  * <ul>
  * <li>Vector Form
@@ -365,9 +365,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return {@code true} if pv is on the line.
      */
     public boolean intersects(V3D_Point_d pt, double epsilon) {
-        p = getP();
-        q = getQ();
-        if (p.equals(epsilon, pt) || q.equals(epsilon, pt)) {
+        if (getP().equals(epsilon, pt) || getQ().equals(epsilon, pt)) {
             return true;
         }
         V3D_Vector_d dpt = new V3D_Vector_d(
@@ -499,13 +497,11 @@ public class V3D_Line_d extends V3D_Geometry_d {
     }
 
     /**
-     * Intersects {@code this} with {@code l}. If they are equivalent then
-     * return {@code this}. If the lines are parallel, but are less than epsilon
-     * in distance apart, then they are regarded as intersecting. Also if they
-     * are less than epsilon distance apart, they are regarded as intersecting
-     * (and the closest point to this on the line of intersection is returned as
-     * the intersection).
-     *
+     * Computes and returns the intersect of {@code this} and {@code l}. This 
+     * first checks if the lines are parallel. Then if parallel if coincident.
+     * Two lines are considered equal if the distance between them is less
+     * than epsilon.
+     * 
      * @param l The line to get the intersection with {@code this}.
      * @param epsilon The tolerance within which vector components are
      * considered equal.
@@ -525,6 +521,22 @@ public class V3D_Line_d extends V3D_Geometry_d {
                 return null;
             }
         }
+        return getIntersect0(l, epsilon);
+    }
+
+    /**
+     * Computes and returns the intersect of {@code this} and {@code l}. This 
+     * first checks if the lines are parallel. Then if parallel if coincident.
+     * Two lines are considered equal if the distance between them is less
+     * than epsilon.
+     * 
+     * @param l The line to get the intersection with {@code this}.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @return The intersection between {@code this} and {@code l}.
+     */
+    public V3D_Geometry_d getIntersect0(V3D_Line_d l, double epsilon) {
+        V3D_Point_d tp = getP();
         V3D_Point_d tq = getQ();
         V3D_Point_d lp = l.getP();
         V3D_Point_d lq = l.getQ();
@@ -944,12 +956,12 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return The line segment having the shortest distance between {@code pt}
      * and {@code this}.
      */
-    public V3D_FiniteGeometry_d getLineOfIntersection(V3D_Point_d pt,
+    public V3D_FiniteGeometry_d getLineOfIntersect(V3D_Point_d pt,
             double epsilon) {
         if (intersects(pt, epsilon)) {
             return pt;
         }
-        return new V3D_LineSegment_d(pt, getPointOfIntersection(pt, epsilon));
+        return new V3D_LineSegment_d(pt, getPointOfIntersect(pt, epsilon));
     }
 
     /**
@@ -962,7 +974,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return A point on {@code this} which is the shortest distance from
      * {@code pt}.
      */
-    public V3D_Point_d getPointOfIntersection(V3D_Point_d pt, double epsilon) {
+    public V3D_Point_d getPointOfIntersect(V3D_Point_d pt, double epsilon) {
         if (intersects(pt, epsilon)) {
             return pt;
         }
@@ -991,7 +1003,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * near l. Whether the points are on or near is down to rounding error and
      * precision.
      */
-    public V3D_LineSegment_d getLineOfIntersection(V3D_Line_d l,
+    public V3D_LineSegment_d getLineOfIntersect(V3D_Line_d l,
             double epsilon) {
         if (isParallel(l, epsilon)) {
             return null;
