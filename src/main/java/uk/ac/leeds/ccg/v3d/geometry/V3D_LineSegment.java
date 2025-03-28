@@ -400,56 +400,209 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                 || intersects(aabb.getf(oom, rm), oom, rm)
                 || intersects(aabb.geta(oom, rm), oom, rm);
     }
-    
+
     /**
-     * @param aabb2d The Axis Aligned Bounding Box to test for intersection.
+     * @param aabbx The Axis Aligned Bounding Box to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
-    public boolean intersects(V3D_AABB2D aabb2d, int oom, RoundingMode rm) {
-        if (aabb2d.intersects(getP(), oom, rm)
-                || aabb2d.intersects(getQ(oom, rm), oom, rm)) {
-            return true;
-        }
-        V3D_FiniteGeometry left = aabb2d.getLeft(oom, rm);
-        if (left instanceof V3D_LineSegment ll) {
-            if (intersects(ll, oom, rm)) {
-                return true;
-            }
+    public boolean intersects(V3D_AABBX aabbx, int oom, RoundingMode rm) {
+        V3D_FiniteGeometry i = aabbx.xpl.getIntersect(this, oom, rm);
+        if (i == null) {
+            return false;
         } else {
-            if (intersects((V3D_Point) left, oom, rm)) {
-                return true;
+            if (i instanceof V3D_Point ip) {
+                return aabbx.intersects(ip, oom, rm);
+            } else {
+                V3D_LineSegment il = (V3D_LineSegment) i;
+                // 2D AABB interesection
+                V3D_AABBX aabbx2 = new V3D_AABBX(oom, rm, getP(), getQ(oom, rm));
+                if (aabbx.intersects(aabbx2, oom)) {
+                    if (aabbx2.intersects(getP(), oom, rm)
+                            || aabbx2.intersects(getQ(oom, rm), oom, rm)) {
+                        return true;
+                    } else {
+                        V3D_FiniteGeometry left = aabbx.getLeft(oom, rm);
+                        if (left instanceof V3D_LineSegment ll) {
+                            if (il.intersects(ll, oom, rm)) {
+                                return true;
+                            }
+                        } else {
+                            if (intersects((V3D_Point) left, oom, rm)) {
+                                return true;
+                            }
+                        }
+                        V3D_FiniteGeometry r = aabbx.getRight(oom, rm);
+                        if (r instanceof V3D_LineSegment rl) {
+                            if (il.intersects(rl, oom, rm)) {
+                                return true;
+                            }
+                        } else {
+                            if (intersects((V3D_Point) r, oom, rm)) {
+                                return true;
+                            }
+                        }
+                        V3D_FiniteGeometry t = aabbx.getTop(oom, rm);
+                        if (t instanceof V3D_LineSegment tl) {
+                            if (il.intersects(tl, oom, rm)) {
+                                return true;
+                            }
+                        } else {
+                            if (intersects((V3D_Point) t, oom, rm)) {
+                                return true;
+                            }
+                        }
+                        V3D_FiniteGeometry b = aabbx.getBottom(oom, rm);
+                        if (b instanceof V3D_LineSegment bl) {
+                            if (il.intersects(bl, oom, rm)) {
+                                return true;
+                            }
+                        } else {
+                            if (intersects((V3D_Point) b, oom, rm)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
             }
         }
-        V3D_FiniteGeometry r = aabb2d.getRight(oom, rm);
-        if (r instanceof V3D_LineSegment rl) {
-            if (intersects(rl, oom, rm)) {
-                return true;
-            }
+        return false;
+    }
+
+    /**
+     * @param aabby The Axis Aligned Bounding Box to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if {@code this} is intersected by {@code aabb}.
+     */
+    public boolean intersects(V3D_AABBY aabby, int oom, RoundingMode rm) {
+        V3D_FiniteGeometry i = aabby.ypl.getIntersect(this, oom, rm);
+        if (i == null) {
+            return false;
         } else {
-            if (intersects((V3D_Point) r, oom, rm)) {
-                return true;
+            if (i instanceof V3D_Point ip) {
+                return aabby.intersects(ip, oom, rm);
+            } else {
+                V3D_LineSegment il = (V3D_LineSegment) i;
+                // 2D AABB interesection
+                V3D_AABBY aabby2 = new V3D_AABBY(oom, rm, getP(), getQ(oom, rm));
+                if (aabby.intersects(aabby2, oom)) {
+                    if (aabby2.intersects(getP(), oom, rm)
+                            || aabby2.intersects(getQ(oom, rm), oom, rm)) {
+                        return true;
+                    } else {
+                        V3D_FiniteGeometry left = aabby.getLeft(oom, rm);
+                        if (left instanceof V3D_LineSegment ll) {
+                            if (il.intersects(ll, oom, rm)) {
+                                return true;
+                            }
+                        } else {
+                            if (intersects((V3D_Point) left, oom, rm)) {
+                                return true;
+                            }
+                        }
+                        V3D_FiniteGeometry r = aabby.getRight(oom, rm);
+                        if (r instanceof V3D_LineSegment rl) {
+                            if (il.intersects(rl, oom, rm)) {
+                                return true;
+                            }
+                        } else {
+                            if (intersects((V3D_Point) r, oom, rm)) {
+                                return true;
+                            }
+                        }
+                        V3D_FiniteGeometry t = aabby.getTop(oom, rm);
+                        if (t instanceof V3D_LineSegment tl) {
+                            if (il.intersects(tl, oom, rm)) {
+                                return true;
+                            }
+                        } else {
+                            if (intersects((V3D_Point) t, oom, rm)) {
+                                return true;
+                            }
+                        }
+                        V3D_FiniteGeometry b = aabby.getBottom(oom, rm);
+                        if (b instanceof V3D_LineSegment bl) {
+                            if (il.intersects(bl, oom, rm)) {
+                                return true;
+                            }
+                        } else {
+                            if (intersects((V3D_Point) b, oom, rm)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
             }
         }
-        V3D_FiniteGeometry t = aabb2d.getTop(oom, rm);
-        if (t instanceof V3D_LineSegment tl) {
-            if (intersects(tl, oom, rm)) {
-                return true;
-            }
+        return false;
+    }
+
+    /**
+     * @param aabbz The Axis Aligned Bounding Box to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if {@code this} is intersected by {@code aabb}.
+     */
+    public boolean intersects(V3D_AABBZ aabbz, int oom, RoundingMode rm) {
+        V3D_FiniteGeometry i = aabbz.zpl.getIntersect(this, oom, rm);
+        if (i == null) {
+            return false;
         } else {
-            if (intersects((V3D_Point) t, oom, rm)) {
-                return true;
-            }
-        }
-        V3D_FiniteGeometry b = aabb2d.getBottom(oom, rm);
-        if (b instanceof V3D_LineSegment bl) {
-            if (intersects(bl, oom, rm)) {
-                return true;
-            }
-        } else {
-            if (intersects((V3D_Point) b, oom, rm)) {
-                return true;
+            if (i instanceof V3D_Point ip) {
+                return aabbz.intersects(ip, oom, rm);
+            } else {
+                V3D_LineSegment il = (V3D_LineSegment) i;
+                // 2D AABB interesection
+                V3D_AABBZ aabbz2 = new V3D_AABBZ(oom, rm, getP(), getQ(oom, rm));
+                if (aabbz.intersects(aabbz2, oom)) {
+                    if (aabbz2.intersects(getP(), oom, rm)
+                            || aabbz2.intersects(getQ(oom, rm), oom, rm)) {
+                        return true;
+                    } else {
+                        V3D_FiniteGeometry left = aabbz.getLeft(oom, rm);
+                        if (left instanceof V3D_LineSegment ll) {
+                            if (il.intersects(ll, oom, rm)) {
+                                return true;
+                            }
+                        } else {
+                            if (intersects((V3D_Point) left, oom, rm)) {
+                                return true;
+                            }
+                        }
+                        V3D_FiniteGeometry r = aabbz.getRight(oom, rm);
+                        if (r instanceof V3D_LineSegment rl) {
+                            if (il.intersects(rl, oom, rm)) {
+                                return true;
+                            }
+                        } else {
+                            if (intersects((V3D_Point) r, oom, rm)) {
+                                return true;
+                            }
+                        }
+                        V3D_FiniteGeometry t = aabbz.getTop(oom, rm);
+                        if (t instanceof V3D_LineSegment tl) {
+                            if (il.intersects(tl, oom, rm)) {
+                                return true;
+                            }
+                        } else {
+                            if (intersects((V3D_Point) t, oom, rm)) {
+                                return true;
+                            }
+                        }
+                        V3D_FiniteGeometry b = aabbz.getBottom(oom, rm);
+                        if (b instanceof V3D_LineSegment bl) {
+                            if (il.intersects(bl, oom, rm)) {
+                                return true;
+                            }
+                        } else {
+                            if (intersects((V3D_Point) b, oom, rm)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
             }
         }
         return false;

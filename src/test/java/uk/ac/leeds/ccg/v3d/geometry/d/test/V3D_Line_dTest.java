@@ -601,7 +601,7 @@ public class V3D_Line_dTest extends V3D_Test_d {
     }
 
     /**
-     * Test of getLineOfIntersection method, of class V3D_Line_d.
+     * Test of getLineOfIntersect method, of class V3D_Line_d.
      */
     @Test
     public void testGetLineOfIntersection_V3D_Point_d_double() {
@@ -620,7 +620,7 @@ public class V3D_Line_dTest extends V3D_Test_d {
         // Test 2
         instance = new V3D_Line_d(pP1N1P0, pP1P1P0);
         expResult = new V3D_LineSegment_d(pP0P0P0, pP1P0P0);
-        //result = instance.getLineOfIntersection(pt, epsilon);
+        //result = instance.getLineOfIntersect(pt, epsilon);
         //System.out.println(result);
         result = instance.getLineOfIntersection(pt, epsilon);
         assertTrue(expResult.equalsIgnoreDirection(epsilon, (V3D_LineSegment_d) result));
@@ -660,7 +660,7 @@ public class V3D_Line_dTest extends V3D_Test_d {
     }
 
     /**
-     * Test of getLineOfIntersection method, of class V3D_Line_d.
+     * Test of getLineOfIntersect method, of class V3D_Line_d.
      */
     @Test
     public void testGetLineOfIntersection_V3D_Line_d_double() {
