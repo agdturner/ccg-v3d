@@ -46,7 +46,7 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
     /**
      * The plane of the area.
      */
-    public final V3D_Plane_d pl;
+    public V3D_Plane_d pl;
     
     /**
      * Creates a new instance with offset V3D_Vector.ZERO.

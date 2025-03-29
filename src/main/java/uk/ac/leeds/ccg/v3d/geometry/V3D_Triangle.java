@@ -875,6 +875,7 @@ public class V3D_Triangle extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return True iff pt is in the triangle and not on the edge.
      */
+    @Override
     public boolean contains(V3D_Point pt, int oom, RoundingMode rm) {
         if (intersects(pt, oom, rm)) {
             return !(getPQ(oom, rm).intersects(pt, oom, rm)
@@ -2419,6 +2420,7 @@ public class V3D_Triangle extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared to {@code pv}.
      */
+    @Override
     public BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
         if (getPl(oom, rm).intersects(pt, oom, rm)) {
             //if (intersects0(pt, oom, rm)) {
@@ -2766,11 +2768,65 @@ public class V3D_Triangle extends V3D_Area {
         }
     }
 
+    //@Override
+    public boolean intersects(V3D_Plane pl, int oom, RoundingMode rm) {
+        V3D_Plane tpl = getPl(oom, rm);
+        if (pl.isParallel(tpl, oom, rm)) {
+            return pl.equals(tpl, oom, rm);
+        } else {
+            return getIntersect(pl, oom, rm) != null;
+        }
+    }
+
     @Override
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
-        // Return true if any edge intersects
-        return getEdges(oom, rm).values().parallelStream().anyMatch(x
-                -> x.intersects(aabb, oom, rm));
+        return aabb.intersects(getP(oom, rm), oom, rm)
+                || aabb.intersects(getQ(oom, rm), oom, rm)
+                || aabb.intersects(getR(oom, rm), oom, rm)
+                || intersects(aabb.getl(oom, rm), oom, rm)
+                || intersects(aabb.getr(oom, rm), oom, rm)
+                || intersects(aabb.gett(oom, rm), oom, rm)
+                || intersects(aabb.getb(oom, rm), oom, rm)
+                || intersects(aabb.getf(oom, rm), oom, rm)
+                || intersects(aabb.geta(oom, rm), oom, rm);
+//        return getEdges(oom, rm).values().parallelStream().anyMatch(x
+//                -> x.intersects(aabb, oom, rm));
+//                || getPQ(oom, rm).intersects(aabb, oom, rm)
+//                || getQR(oom, rm).intersects(aabb, oom, rm)
+//                || getRP(oom, rm).intersects(aabb, oom, rm);
+    }
+    
+    //@Override
+    public boolean intersects(V3D_AABBX aabbx, int oom, RoundingMode rm) {
+        if (intersects(aabbx.getXPl(oom, rm), oom, rm)) {
+            return getPQ( oom, rm).intersects(aabbx,  oom, rm)
+                    || getQR( oom, rm).intersects(aabbx,  oom, rm)
+                    || getRP( oom, rm).intersects(aabbx,  oom, rm);
+        } else {
+            return false;
+        }
+    }
+
+    //@Override
+    public boolean intersects(V3D_AABBY aabby, int oom, RoundingMode rm) {
+        if (intersects(aabby.getYPl(oom, rm), oom, rm)) {
+            return getPQ( oom, rm).intersects(aabby,  oom, rm)
+                    || getQR( oom, rm).intersects(aabby,  oom, rm)
+                    || getRP( oom, rm).intersects(aabby,  oom, rm);
+        } else {
+            return false;
+        }
+    }
+    
+    //@Override
+    public boolean intersects(V3D_AABBZ aabbz, int oom, RoundingMode rm) {
+        if (intersects(aabbz.getZPl(oom, rm), oom, rm)) {
+            return getPQ( oom, rm).intersects(aabbz,  oom, rm)
+                    || getQR( oom, rm).intersects(aabbz,  oom, rm)
+                    || getRP( oom, rm).intersects(aabbz,  oom, rm);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -2863,6 +2919,7 @@ public class V3D_Triangle extends V3D_Area {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if t intersects this.
      */
+    @Override
     public boolean intersects(V3D_Area a, int oom, RoundingMode rm) {
         if (intersects(a.getAABB(oom, rm), oom, rm)
                 && a.intersects(getAABB(oom, rm), oom, rm)) {

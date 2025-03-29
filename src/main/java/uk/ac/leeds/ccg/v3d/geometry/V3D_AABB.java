@@ -917,7 +917,7 @@ public class V3D_AABB implements Serializable {
      * @return {@code true} if this getIntersect with {@code pl}
      */
     public boolean intersects(V3D_Point p, int oom, RoundingMode rm) {
-        return V3D_AABB.this.intersects(p.getX(oom, rm), p.getY(oom, rm), p.getZ(oom, rm), oom);
+        return intersects(p.getX(oom, rm), p.getY(oom, rm), p.getZ(oom, rm), oom);
     }
 
     /**
@@ -946,7 +946,7 @@ public class V3D_AABB implements Serializable {
      * {@code this.equals(en)}; otherwise returns the intersection.
      */
     public V3D_AABB getIntersect(V3D_AABB en, int oom) {
-        if (!V3D_AABB.this.intersects(en, oom)) {
+        if (!intersects(en, oom)) {
             return null;
         }
 // Probably quicker without: 

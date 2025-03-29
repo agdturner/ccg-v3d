@@ -498,6 +498,16 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
+     * @return {@link #pl} initialising it first if it is null.
+     */
+    public V3D_Plane_d getPl() {
+        if (pl == null) {
+            pl = new V3D_Plane_d(getP(), getQ(), getR());
+        }
+        return pl;
+    }
+    
+    /**
      * @return A collection of the external edges.
      */
     @Override
@@ -659,6 +669,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * equal.
      * @return The V3D_Geometry.
      */
+    @Override
     public V3D_FiniteGeometry_d getIntersect(V3D_Ray_d r,
             double epsilon) {
         V3D_FiniteGeometry_d g = getIntersect(r.l, epsilon);
@@ -2455,38 +2466,38 @@ public class V3D_Triangle_d extends V3D_Area_d {
     
     //@Override
     public boolean intersects(V3D_Plane_d pl, double epsilon) {
-        if (pl.isParallel(this.pl, epsilon)) {
-            if (pl.equals(this.pl, epsilon)) {
-                return true;
-            } else {
-                return false;
-            }
+        V3D_Plane_d tpl = getPl();
+        if (pl.isParallel(tpl, epsilon)) {
+            return pl.equals(tpl, epsilon);
         } else {
-            if (getIntersect(pl, epsilon) == null) {
-                return false;
-            } else {
-                return true;
-            }
+            return getIntersect(pl, epsilon) != null;
         }
     }
 
-    //@Override
+    @Override
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
-        return intersects(aabb.getl(), epsilon)
+        return aabb.intersects(getP())
+                || aabb.intersects(getQ())
+                || aabb.intersects(getR())
+                || intersects(aabb.getl(), epsilon)
                 || intersects(aabb.getr(), epsilon)
                 || intersects(aabb.gett(), epsilon)
                 || intersects(aabb.getb(), epsilon)
                 || intersects(aabb.getf(), epsilon)
-                || intersects(aabb.geta(), epsilon)
-                || getEdges().values().parallelStream().anyMatch(x
-                -> x.intersects(aabb, epsilon));
+                || intersects(aabb.geta(), epsilon);
+//                || getEdges().values().parallelStream().anyMatch(x
+//                -> x.intersects(aabb, epsilon));
+//                || getPQ().intersects(aabb, epsilon)
+//                || getQR().intersects(aabb, epsilon)
+//                || getRP().intersects(aabb, epsilon);
     }
 
     //@Override
     public boolean intersects(V3D_AABBX_d aabbx, double epsilon) {
         if (intersects(aabbx.getXPl(), epsilon)) {
-            return getEdges().values().parallelStream().anyMatch(x
-                -> aabbx.intersects(x.l, epsilon));
+            return getPQ().intersects(aabbx, epsilon)
+                    || getQR().intersects(aabbx, epsilon)
+                    || getRP().intersects(aabbx, epsilon);
         } else {
             return false;
         }
@@ -2495,8 +2506,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
     //@Override
     public boolean intersects(V3D_AABBY_d aabby, double epsilon) {
         if (intersects(aabby.getYPl(), epsilon)) {
-            return getEdges().values().parallelStream().anyMatch(x
-                -> aabby.intersects(x.l, epsilon));
+            return getPQ().intersects(aabby, epsilon)
+                    || getQR().intersects(aabby, epsilon)
+                    || getRP().intersects(aabby, epsilon);
         } else {
             return false;
         }
@@ -2505,8 +2517,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
     //@Override
     public boolean intersects(V3D_AABBZ_d aabbz, double epsilon) {
         if (intersects(aabbz.getZPl(), epsilon)) {
-            return getEdges().values().parallelStream().anyMatch(x
-                -> aabbz.intersects(x.l, epsilon));
+            return getPQ().intersects(aabbz, epsilon)
+                    || getQR().intersects(aabbz, epsilon)
+                    || getRP().intersects(aabbz, epsilon);
         } else {
             return false;
         }
@@ -2666,6 +2679,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * equal.
      * @return {@code true} iff {@code this} is intersected by {@code t}.
      */
+    @Override
     public boolean contains(V3D_Triangle_d t, double epsilon) {
 //        return contains(t.getP(), epsilon)
 //                && contains(t.getQ(), epsilon)
