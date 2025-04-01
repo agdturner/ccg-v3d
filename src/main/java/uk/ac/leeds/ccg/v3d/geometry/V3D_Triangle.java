@@ -875,23 +875,40 @@ public class V3D_Triangle extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return True iff pt is in the triangle and not on the edge.
      */
+    //@Override
+    public boolean contains00(V3D_Point pt, int oom, RoundingMode rm) {
+        return getPQPl(oom, rm).isOnSameSideNotOn(pt, getR(oom, rm), oom, rm)
+                && getQRPl(oom, rm).isOnSameSideNotOn(pt, getP(oom, rm), oom, rm)
+                && getRPPl(oom, rm).isOnSameSideNotOn(pt, getQ(oom, rm), oom, rm);
+    }
+
     @Override
-    public boolean contains(V3D_Point pt, int oom, RoundingMode rm) {
-        if (intersects(pt, oom, rm)) {
-            return !(getPQ(oom, rm).intersects(pt, oom, rm)
-                    || getQR(oom, rm).intersects(pt, oom, rm)
-                    || getRP(oom, rm).intersects(pt, oom, rm));
-//            return !getEdges(oom, rm).values().parallelStream().anyMatch(x 
-//                    -> x.intersects(pt, oom, rm));
+    public boolean contains(V3D_LineSegment l, int oom, RoundingMode rm) {
+        if (getAABB(oom, rm).contains(l, oom, rm)) {
+            return contains0(l, oom, rm);
         } else {
             return false;
         }
     }
 
-    @Override
-    public boolean contains(V3D_LineSegment ls, int oom, RoundingMode rm) {
-        return contains(ls.getP(), oom, rm)
-                && contains(ls.getQ(oom, rm), oom, rm);
+    /**
+     * @param l The line segment to check for containment.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@code true} if {@code this} contains {@code l}.
+     */
+    //@Override
+    public boolean contains0(V3D_LineSegment l, int oom, RoundingMode rm) {
+        if (getPl(oom, rm).isOnPlane(l.l, oom, rm)) {
+            return contains00(l, oom, rm);
+        } else {
+            return false;
+        }
+    }
+    
+    public boolean contains00(V3D_LineSegment ls, int oom, RoundingMode rm) {
+        return contains00(ls.getP(), oom, rm)
+                && contains00(ls.getQ(oom, rm), oom, rm);
     }
 
     @Override
@@ -1067,7 +1084,7 @@ public class V3D_Triangle extends V3D_Area {
             if (ls.isAligned(l.getP(), oom, rm)
                     || ls.isAligned(l.getQ(oom, rm), oom, rm)
                     || l.isAligned(getP(oom, rm), oom, rm)) {
-                return l.getIntersectLS((V3D_LineSegment) g, oom, rm);
+                return l.getIntersectLS(ls, oom, rm);
             } else {
                 return null;
             }
@@ -2380,7 +2397,7 @@ public class V3D_Triangle extends V3D_Area {
      *
      * @param l a line segment either equal to one of the edges of this - null
      * null null null null null null null null null null null null null null
-     * null null null null null null null null null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
+     * null null null null null null null null null null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
      * {@link #getQR(int, java.math.RoundingMode)} or
      * {@link #getRP(int, java.math.RoundingMode)}.
      * @param oom The Order of Magnitude for the precision.
@@ -2780,28 +2797,31 @@ public class V3D_Triangle extends V3D_Area {
 
     @Override
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
-        return aabb.intersects(getP(oom, rm), oom, rm)
-                || aabb.intersects(getQ(oom, rm), oom, rm)
-                || aabb.intersects(getR(oom, rm), oom, rm)
-                || intersects(aabb.getl(oom, rm), oom, rm)
+        /**
+         * Test each 2D AABB part of the aabb and at least one point.
+         */
+        return intersects(aabb.getl(oom, rm), oom, rm)
                 || intersects(aabb.getr(oom, rm), oom, rm)
                 || intersects(aabb.gett(oom, rm), oom, rm)
                 || intersects(aabb.getb(oom, rm), oom, rm)
                 || intersects(aabb.getf(oom, rm), oom, rm)
-                || intersects(aabb.geta(oom, rm), oom, rm);
+                || intersects(aabb.geta(oom, rm), oom, rm)
+                || aabb.intersects(getP(oom, rm), oom, rm);
+//                || aabb.intersects(getQ(oom, rm), oom, rm)
+//                || aabb.intersects(getR(oom, rm), oom, rm)
 //        return getEdges(oom, rm).values().parallelStream().anyMatch(x
 //                -> x.intersects(aabb, oom, rm));
 //                || getPQ(oom, rm).intersects(aabb, oom, rm)
 //                || getQR(oom, rm).intersects(aabb, oom, rm)
 //                || getRP(oom, rm).intersects(aabb, oom, rm);
     }
-    
+
     //@Override
     public boolean intersects(V3D_AABBX aabbx, int oom, RoundingMode rm) {
         if (intersects(aabbx.getXPl(oom, rm), oom, rm)) {
-            return getPQ( oom, rm).intersects(aabbx,  oom, rm)
-                    || getQR( oom, rm).intersects(aabbx,  oom, rm)
-                    || getRP( oom, rm).intersects(aabbx,  oom, rm);
+            return getPQ(oom, rm).intersects(aabbx, oom, rm)
+                    || getQR(oom, rm).intersects(aabbx, oom, rm)
+                    || getRP(oom, rm).intersects(aabbx, oom, rm);
         } else {
             return false;
         }
@@ -2810,20 +2830,20 @@ public class V3D_Triangle extends V3D_Area {
     //@Override
     public boolean intersects(V3D_AABBY aabby, int oom, RoundingMode rm) {
         if (intersects(aabby.getYPl(oom, rm), oom, rm)) {
-            return getPQ( oom, rm).intersects(aabby,  oom, rm)
-                    || getQR( oom, rm).intersects(aabby,  oom, rm)
-                    || getRP( oom, rm).intersects(aabby,  oom, rm);
+            return getPQ(oom, rm).intersects(aabby, oom, rm)
+                    || getQR(oom, rm).intersects(aabby, oom, rm)
+                    || getRP(oom, rm).intersects(aabby, oom, rm);
         } else {
             return false;
         }
     }
-    
+
     //@Override
     public boolean intersects(V3D_AABBZ aabbz, int oom, RoundingMode rm) {
         if (intersects(aabbz.getZPl(oom, rm), oom, rm)) {
-            return getPQ( oom, rm).intersects(aabbz,  oom, rm)
-                    || getQR( oom, rm).intersects(aabbz,  oom, rm)
-                    || getRP( oom, rm).intersects(aabbz,  oom, rm);
+            return getPQ(oom, rm).intersects(aabbz, oom, rm)
+                    || getQR(oom, rm).intersects(aabbz, oom, rm)
+                    || getRP(oom, rm).intersects(aabbz, oom, rm);
         } else {
             return false;
         }
@@ -2890,26 +2910,44 @@ public class V3D_Triangle extends V3D_Area {
             return false;
         }
     }
-
+    
     /**
      * @param t Another triangle to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} if t intersects this.
+     * @return {@code true} if {@code this} intersects {@code t}.
      */
     @Override
     public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
-        if (intersects(t.getAABB(oom, rm), oom, rm)
-                && t.intersects(getAABB(oom, rm), oom, rm)) {
-            // Faster than using the general method?
+    if (getPl(oom, rm).equalsIgnoreOrientation(t.getPl(oom, rm), oom, rm)) {
+            return t.intersects(getP(oom, rm), oom, rm)
+                    || t.intersects(getQ(oom, rm), oom, rm)
+                    || t.intersects(getR(oom, rm), oom, rm);
+        } else {
+            return intersects0(t, oom, rm);
+        }
+    }
+
+    /**
+     * @param t Another triangle to test for intersection. {@code this} and
+     * {@code t} are not coplanar.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+         * @return {@code true} if {@code this} intersects {@code t}.
+ */
+    public boolean intersects0(V3D_Triangle t, int oom, RoundingMode rm) {
+        if (getPl(oom, rm).allOnSameSideNotOn(oom, rm, t.getP(oom, rm),
+                t.getQ(oom, rm), t.getR(oom, rm)) //&& intersects(t.getAABB(), epsilon)
+                //&& t.intersects(getAABB(), epsilon)
+                ) {
+            return false;
+        } else {
             return t.intersects(getPQ(oom, rm), oom, rm)
                     || t.intersects(getQR(oom, rm), oom, rm)
                     || t.intersects(getRP(oom, rm), oom, rm)
                     || intersects(t.getPQ(oom, rm), oom, rm)
                     || intersects(t.getQR(oom, rm), oom, rm)
                     || intersects(t.getRP(oom, rm), oom, rm);
-        } else {
-            return false;
         }
     }
 
@@ -2922,10 +2960,13 @@ public class V3D_Triangle extends V3D_Area {
     @Override
     public boolean intersects(V3D_Area a, int oom, RoundingMode rm) {
         if (intersects(a.getAABB(oom, rm), oom, rm)
-                && a.intersects(getAABB(oom, rm), oom, rm)) {
-            return getEdges(oom, rm).values().parallelStream().anyMatch(x
-                    -> intersects(x, oom, rm))
-                    || a.getEdges(oom, rm).values().parallelStream().anyMatch(x
+                && a.intersects(getAABB(oom, rm), oom, rm)
+                && !a.getPl(oom, rm).allOnSameSide(oom, rm, getP(oom, rm),
+                        getQ(oom, rm), getR(oom, rm))) {
+            return a.intersects(getPQ(oom, rm), oom, rm)
+                    || a.intersects(getQR(oom, rm), oom, rm)
+                    || a.intersects(getRP(oom, rm), oom, rm)
+                    || getEdges(oom, rm).values().parallelStream().anyMatch(x
                             -> intersects(x, oom, rm));
         } else {
             return false;

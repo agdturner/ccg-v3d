@@ -97,160 +97,82 @@ public class V3D_Point_dTest extends V3D_Test_d {
     }
 
     /**
-     * Test of isBetween method, of class V3D_Point_d.
+     * Test of isAligned method, of class V3D_Point_d.
      */
     @Test
     public void testIsBetween_V3D_Point_d_V3D_Point_d() {
-        System.out.println("isBetween");
+        System.out.println("isAligned");
+        double epsilon = 0.0000000d;
         // Test 1
         V3D_Point_d p = pP0P0P0;
         V3D_Point_d a = pN1P0P0;
         V3D_Point_d b = pP1P0P0;
-        assertTrue(p.isBetween(a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
         // Test 2
         p = pP0P0P0;
         a = pP0N1P0;
         b = pP0P1P0;
-        assertTrue(p.isBetween(a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
         // Test 3
         p = pP0P0P0;
         a = pP0P0N1;
         b = pP0P0P1;
-        assertTrue(p.isBetween(a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
         // Test 4
         p = pP0P0P0;
         a = pN1N1N1;
         b = pP1P1P1;
-        assertTrue(p.isBetween(a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
         // Test 5
         p = pP0P0P0;
         a = pN1N1N1;
         b = pP1P1P1;
-        assertTrue(p.isBetween(a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
         // Test 6
         p = pP0P0P0;
         a = pN1N1P0;
         b = pP1P1P0;
-        assertTrue(p.isBetween(a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
         // Test 7
         p = pP0P0P0;
         a = pN1P0N1;
         b = pP1P0P1;
-        assertTrue(p.isBetween(a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
         // Test 8
         p = pP0P0P0;
         a = pP0N1N1;
         b = pP0P1P1;
-        assertTrue(p.isBetween(a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
         // Test 9
         p = pP0P0P0;
         a = pN1P0N1;
         b = pP1P0P1;
-        assertTrue(p.isBetween(a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
         // Test 10
         p = pP0P0P0;
         a = pP0N1N1;
         b = pP0P1P1;
-        assertTrue(p.isBetween(a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
         // Test 11
         p = pP0P0P1;
         a = pP0N1N1;
         b = pP0P1P1;
-        assertTrue(p.isBetween(a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
         // Test 12
         p = pP0P0P2;
         a = pP0N1N1;
         b = pP0P1P1;
-        assertTrue(p.isBetween(a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
         // Test 13
         p = pP0P1P2;
         a = pP0N1N1;
         b = pP0P1P1;
-        assertFalse(p.isBetween(a, b));
+        assertFalse(p.isAligned(a, b, epsilon));
         // Test 14
         p = pP1P1P1;
         a = pP0N1N1;
         b = pP0P1P1;
-        assertTrue(p.isBetween(a, b));
-    }
-
-    /**
-     * Test of isBetween method, of class V3D_Point_d.
-     */
-    @Test
-    public void testIsBetween_double_V3D_Point_d_V3D_Point_d() {
-        System.out.println("isBetween");
-        // Test 1
-        V3D_Point_d p = pP0P0P0;
-        V3D_Point_d a = pN1P0P0;
-        V3D_Point_d b = pP1P0P0;
-        double epsilon = 1 / 100000000d;
-        assertTrue(p.isBetween(epsilon, a, b));
-        // Test 2
-        p = pP0P0P0;
-        a = pP0N1P0;
-        b = pP0P1P0;
-        assertTrue(p.isBetween(epsilon, a, b));
-        // Test 3
-        p = pP0P0P0;
-        a = pP0P0N1;
-        b = pP0P0P1;
-        assertTrue(p.isBetween(epsilon, a, b));
-        // Test 4
-        p = pP0P0P0;
-        a = pN1N1N1;
-        b = pP1P1P1;
-        assertTrue(p.isBetween(epsilon, a, b));
-        // Test 5
-        p = pP0P0P0;
-        a = pN1N1N1;
-        b = pP1P1P1;
-        assertTrue(p.isBetween(epsilon, a, b));
-        // Test 6
-        p = pP0P0P0;
-        a = pN1N1P0;
-        b = pP1P1P0;
-        assertTrue(p.isBetween(epsilon, a, b));
-        // Test 7
-        p = pP0P0P0;
-        a = pN1P0N1;
-        b = pP1P0P1;
-        assertTrue(p.isBetween(epsilon, a, b));
-        // Test 8
-        p = pP0P0P0;
-        a = pP0N1N1;
-        b = pP0P1P1;
-        assertTrue(p.isBetween(epsilon, a, b));
-        // Test 9
-        p = pP0P0P0;
-        a = pN1P0N1;
-        b = pP1P0P1;
-        assertTrue(p.isBetween(epsilon, a, b));
-        // Test 10
-        p = pP0P0P0;
-        a = pP0N1N1;
-        b = pP0P1P1;
-        assertTrue(p.isBetween(epsilon, a, b));
-        // Test 11
-        p = pP0P0P1;
-        a = pP0N1N1;
-        b = pP0P1P1;
-        assertTrue(p.isBetween(epsilon, a, b));
-        // Test 12
-        p = pP0P0P2;
-        a = pP0N1N1;
-        b = pP0P1P1;
-        assertTrue(p.isBetween(epsilon, a, b));
-        // Test 13
-        p = pP0P1P2;
-        a = pP0N1N1;
-        b = pP0P1P1;
-        assertFalse(p.isBetween(epsilon, a, b));
-        // Test 14
-        p = pP1P1P1;
-        a = pP0N1N1;
-        b = pP0P1P1;
-        assertTrue(p.isBetween(epsilon, a, b));
+        assertTrue(p.isAligned(a, b, epsilon));
     }
 
     /**

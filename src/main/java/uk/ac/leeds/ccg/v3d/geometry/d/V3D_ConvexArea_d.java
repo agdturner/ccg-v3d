@@ -444,7 +444,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     protected boolean isAligned(V3D_Point_d pt, double epsilon) {
         for (V3D_Triangle_d triangle : triangles.values()) {
-            if (triangle.isAligned(pt, epsilon)) {
+            if (triangle.intersects00(pt, epsilon)) {
                 return true;
             }
         }
@@ -740,7 +740,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     public boolean intersects00(V3D_Point_d p, double epsilon) {
         return triangles.values().parallelStream().anyMatch(x
-                -> x.isAligned(p, epsilon));
+                -> x.intersects00(p, epsilon));
     }
 
     /**

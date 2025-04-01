@@ -301,56 +301,9 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
      * @param b A point.
      * @return true iff this is between a and b.
      */
-    public boolean isBetween(V3D_Point_d a, V3D_Point_d b) {
-        V3D_Vector_d ab = new V3D_Vector_d(a, b);
-        if (this.equals(a)) {
-            return true;
-        }
-        if (this.equals(b)) {
-            return true;
-        }
-        if (a.equals(b)) {
-            return false;
-        }
-        V3D_Plane_d ap = new V3D_Plane_d(a, ab);
-        int aps = ap.getSideOfPlane(this);
-        if (aps == -1) {
-            return false;
-        }
-        V3D_Plane_d bp = new V3D_Plane_d(b, ab);
-        int bps = bp.getSideOfPlane(this);
-        return bps != 1;
-    }
-
-    /**
-     * Returns true if this is between a and b. If this equals a or b then
-     * return true. Being between does not necessarily mean being collinear.
-     *
-     * @param epsilon The tolerance within which vector components are
-     * considered equal.
-     * @param a A point
-     * @param b A point
-     * @return true iff this is equal to the ORIGIN.
-     */
-    public boolean isBetween(double epsilon, V3D_Point_d a, V3D_Point_d b) {
-        V3D_Vector_d ab = new V3D_Vector_d(a, b);
-        if (this.equals(a)) {
-            return true;
-        }
-        if (this.equals(b)) {
-            return true;
-        }
-        if (a.equals(b)) {
-            return false;
-        }
-        V3D_Plane_d ap = new V3D_Plane_d(a, ab);
-        int aps = ap.getSideOfPlane(this, epsilon);
-        if (aps == -1) {
-            return false;
-        }
-        V3D_Plane_d bp = new V3D_Plane_d(b, ab);
-        int bps = bp.getSideOfPlane(this, epsilon);
-        return bps != 1;
+    public boolean isAligned(V3D_Point_d a, V3D_Point_d b, double epsilon) {
+        V3D_LineSegment_d ls = new V3D_LineSegment_d(epsilon, a, b);
+        return ls.isAligned(this, epsilon);
     }
 
     /**

@@ -433,6 +433,9 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
+        /**
+         * Test for intersection with each 2D AABB part aabb and point.  
+        */
         return aabb.intersects(l.getP())
                 || aabb.intersects(l.getQ())
                 || intersects(aabb.getl(), epsilon)
@@ -450,14 +453,11 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBX_d aabbx, double epsilon) {
-        V3D_FiniteGeometry_d i = aabbx.getXPl().getIntersect(this, epsilon);
-        if (i == null) {
+        V3D_Plane_d aabxpl = aabbx.getXPl();
+        if (aabxpl.isOnSameSideNotOn(getP(), getQ(), epsilon)) {
             return false;
         } else {
-            if (i instanceof V3D_Point_d ip) {
-                return aabbx.intersects(ip);
-            } else {
-                V3D_LineSegment_d il = (V3D_LineSegment_d) i;
+            if (aabxpl.isOnPlane(l)) {
                 // 2D AABB interesection
                 V3D_AABBX_d aabbx2 = new V3D_AABBX_d(getP(), getQ());
                 if (aabbx.intersects(aabbx2)) {
@@ -467,27 +467,27 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                     } else {
                         V3D_FiniteGeometry_d left = aabbx.getLeft();
                         if (left instanceof V3D_LineSegment_d ll) {
-                            if (il.intersects(ll, epsilon)) {
+                            if (intersects(ll, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (il.intersects((V3D_Point_d) left, epsilon)) {
+                            if (intersects((V3D_Point_d) left, epsilon)) {
                                 return true;
                             }
                         }
                         V3D_FiniteGeometry_d r = aabbx.getRight();
                         if (r instanceof V3D_LineSegment_d rl) {
-                            if (il.intersects(rl, epsilon)) {
+                            if (intersects(rl, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (il.intersects((V3D_Point_d) r, epsilon)) {
+                            if (intersects((V3D_Point_d) r, epsilon)) {
                                 return true;
                             }
                         }
                         V3D_FiniteGeometry_d t = aabbx.getTop();
                         if (t instanceof V3D_LineSegment_d tl) {
-                            if (il.intersects(tl, epsilon)) {
+                            if (intersects(tl, epsilon)) {
                                 return true;
                             }
                         } else {
@@ -497,7 +497,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                         }
                         V3D_FiniteGeometry_d b = aabbx.getBottom();
                         if (b instanceof V3D_LineSegment_d bl) {
-                            if (il.intersects(bl, epsilon)) {
+                            if (intersects(bl, epsilon)) {
                                 return true;
                             }
                         } else {
@@ -507,9 +507,11 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                         }
                     }
                 }
+                return false;
+            } else {
+                return aabbx.intersects(aabxpl.getIntersect0(this, epsilon));
             }
         }
-        return false;
     }
     
     /**
@@ -519,14 +521,11 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBY_d aabby, double epsilon) {
-        V3D_FiniteGeometry_d i = aabby.getYPl().getIntersect(this, epsilon);
-        if (i == null) {
+        V3D_Plane_d aabypl = aabby.getYPl();
+        if (aabypl.isOnSameSideNotOn(getP(), getQ(), epsilon)) {
             return false;
         } else {
-            if (i instanceof V3D_Point_d ip) {
-                return aabby.intersects(ip);
-            } else {
-                V3D_LineSegment_d il = (V3D_LineSegment_d) i;
+            if (aabypl.isOnPlane(l)) {
                 // 2D AABB interesection
                 V3D_AABBY_d aabby2 = new V3D_AABBY_d(getP(), getQ());
                 if (aabby.intersects(aabby2)) {
@@ -536,7 +535,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                     } else {
                         V3D_FiniteGeometry_d left = aabby.getLeft();
                         if (left instanceof V3D_LineSegment_d ll) {
-                            if (il.intersects(ll, epsilon)) {
+                            if (intersects(ll, epsilon)) {
                                 return true;
                             }
                         } else {
@@ -546,7 +545,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                         }
                         V3D_FiniteGeometry_d r = aabby.getRight();
                         if (r instanceof V3D_LineSegment_d rl) {
-                            if (il.intersects(rl, epsilon)) {
+                            if (intersects(rl, epsilon)) {
                                 return true;
                             }
                         } else {
@@ -556,7 +555,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                         }
                         V3D_FiniteGeometry_d t = aabby.getTop();
                         if (t instanceof V3D_LineSegment_d tl) {
-                            if (il.intersects(tl, epsilon)) {
+                            if (intersects(tl, epsilon)) {
                                 return true;
                             }
                         } else {
@@ -566,7 +565,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                         }
                         V3D_FiniteGeometry_d b = aabby.getBottom();
                         if (b instanceof V3D_LineSegment_d bl) {
-                            if (il.intersects(bl, epsilon)) {
+                            if (intersects(bl, epsilon)) {
                                 return true;
                             }
                         } else {
@@ -576,9 +575,11 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                         }
                     }
                 }
+                return false;
+            } else {
+                return aabby.intersects(aabypl.getIntersect0(this, epsilon));
             }
         }
-        return false;
     }
     
     /**
@@ -588,14 +589,11 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBZ_d aabbz, double epsilon) {
-        V3D_FiniteGeometry_d i = aabbz.getZPl().getIntersect(this, epsilon);
-        if (i == null) {
+        V3D_Plane_d aabypl = aabbz.getZPl();
+        if (aabypl.isOnSameSideNotOn(getP(), getQ(), epsilon)) {
             return false;
         } else {
-            if (i instanceof V3D_Point_d ip) {
-                return aabbz.intersects(ip);
-            } else {
-                V3D_LineSegment_d il = (V3D_LineSegment_d) i;
+            if (aabypl.isOnPlane(l)) {
                 // 2D AABB interesection
                 V3D_AABBZ_d aabbz2 = new V3D_AABBZ_d(getP(), getQ());
                 if (aabbz.intersects(aabbz2)) {
@@ -605,7 +603,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                     } else {
                         V3D_FiniteGeometry_d left = aabbz.getLeft();
                         if (left instanceof V3D_LineSegment_d ll) {
-                            if (il.intersects(ll, epsilon)) {
+                            if (intersects(ll, epsilon)) {
                                 return true;
                             }
                         } else {
@@ -615,7 +613,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                         }
                         V3D_FiniteGeometry_d r = aabbz.getRight();
                         if (r instanceof V3D_LineSegment_d rl) {
-                            if (il.intersects(rl, epsilon)) {
+                            if (intersects(rl, epsilon)) {
                                 return true;
                             }
                         } else {
@@ -625,7 +623,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                         }
                         V3D_FiniteGeometry_d t = aabbz.getTop();
                         if (t instanceof V3D_LineSegment_d tl) {
-                            if (il.intersects(tl, epsilon)) {
+                            if (intersects(tl, epsilon)) {
                                 return true;
                             }
                         } else {
@@ -635,7 +633,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                         }
                         V3D_FiniteGeometry_d b = aabbz.getBottom();
                         if (b instanceof V3D_LineSegment_d bl) {
-                            if (il.intersects(bl, epsilon)) {
+                            if (intersects(bl, epsilon)) {
                                 return true;
                             }
                         } else {
@@ -645,9 +643,11 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                         }
                     }
                 }
+                return false;
+            } else {
+                return aabbz.intersects(aabypl.getIntersect0(this, epsilon));
             }
         }
-        return false;
     }
 
     /**
@@ -754,7 +754,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
          */
         if (i instanceof V3D_Point_d ip) {
             //if (intersects(ip, epsilon)) {
-            if (isBetween(ip, epsilon)) {
+            if (isAligned(ip, epsilon)) {
                 return ip;
             } else {
                 return null;
@@ -815,7 +815,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                 } else {
                     if (lsil instanceof V3D_Point_d lsilp) {
                         //if (intersects(lsilp, epsilon)) {
-                        if (isBetween(lsilp, epsilon)) {
+                        if (isAligned(lsilp, epsilon)) {
                             return lsilp;
                         } else {
                             return null;
@@ -828,7 +828,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
             } else {
                 if (tils instanceof V3D_Point_d tilsp) {
                     //if (intersects(tilsp, epsilon) && ls.intersects(tilsp, epsilon)) {
-                    if (isBetween(tilsp, epsilon) && ls.isBetween(tilsp, epsilon)) {
+                    if (isAligned(tilsp, epsilon) && ls.isAligned(tilsp, epsilon)) {
                         return tilsp;
                     } else {
                         return null;
@@ -950,16 +950,16 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
         V3D_Point_d tp = getP();
         V3D_Point_d tq = getQ();
         //if (intersects(lp, epsilon)) {
-        if (isBetween(lp, epsilon)) {
+        if (isAligned(lp, epsilon)) {
             // Cases: 1, 2, 3, 5, 8, 9, 10, 12, 17, 19, 20, 21, 24, 26, 27, 28
             //if (intersects(lq, epsilon)) {
-            if (isBetween(lq, epsilon)) {
+            if (isAligned(lq, epsilon)) {
                 // Cases: 3, 5, 10, 12, 17, 19, 24, 26
                 return ls;
             } else {
                 // Cases: 1, 2, 8, 9, 20, 21, 27, 28
                 //if (ls.intersects(tp, epsilon)) {
-                if (ls.isBetween(tp, epsilon)) {
+                if (ls.isAligned(tp, epsilon)) {
                     // Cases: 8, 9, 20, 21
                     if (tp.equals(epsilon, lp)) {
                         // Cases: 8, 21
@@ -982,13 +982,13 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
         } else {
             // Cases: 4, 6, 7, 11, 13, 14, 15, 16, 18, 22, 23, 25
             //if (intersects(lq, epsilon)) {
-            if (isBetween(lq, epsilon)) {
+            if (isAligned(lq, epsilon)) {
                 // Cases: 6, 7, 13, 14, 15, 16, 22, 23
                 //if (ls.intersects(tp, epsilon)) {
-                if (ls.isBetween(tp, epsilon)) {
+                if (ls.isAligned(tp, epsilon)) {
                     // Cases: 6, 7, 22, 23
                     //if (ls.intersects(tq, epsilon)) {
-                    if (ls.isBetween(tq, epsilon)) {
+                    if (ls.isAligned(tq, epsilon)) {
                         // Case: 23
                         return V3D_LineSegment_d.getGeometry(lq, tp, epsilon);
                     } else {
@@ -1074,10 +1074,8 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} If pt is in line with this.
      */
     public boolean isAligned(V3D_Point_d pt, double epsilon) {
-        if (getPPL().isOnSameSide(pt, getQ(), epsilon)) {
-            return getQPL().isOnSameSide(pt, getP(), epsilon);
-        }
-        return false;
+        return getPPL().isOnSameSide(pt, getQ(), epsilon)
+            && getQPL().isOnSameSide(pt, getP(), epsilon);
     }
 
     /**
@@ -1091,10 +1089,8 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} If pt is in line with this.
      */
     public boolean isAligned(V3D_LineSegment_d l, double epsilon) {
-        if (isAligned(l.getP(), epsilon)) {
-            return isAligned(l.getQ(), epsilon);
-        }
-        return false;
+        return isAligned(l.getP(), epsilon)
+            && isAligned(l.getQ(), epsilon);
     }
 
     /**
@@ -1195,13 +1191,17 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
         } else if (p.equals(epsilon, r)) {
             return getGeometry(epsilon, p, q);
         } else {
-            V3D_LineSegment_d ls = new V3D_LineSegment_d(epsilon, p, q);
-            if (ls.intersects(r, epsilon)) {
-                return ls;
+            //V3D_LineSegment_d ls = new V3D_LineSegment_d(epsilon, p, q);
+            //if (ls.intersects(r, epsilon)) {
+            if (r.isAligned(p, q, epsilon)) {
+                //return ls;
+                return new V3D_LineSegment_d(epsilon, p, q);
             } else {
-                ls = new V3D_LineSegment_d(epsilon, p, r);
-                if (ls.intersects(q, epsilon)) {
-                    return ls;
+                //ls = new V3D_LineSegment_d(epsilon, p, r);
+                //if (ls.intersects(q, epsilon)) {
+                if (p.isAligned(r, q, epsilon)) {
+                    //return ls;
+                    return new V3D_LineSegment_d(epsilon, q, r);
                 } else {
                     return new V3D_LineSegment_d(epsilon, q, r);
                 }
@@ -1455,25 +1455,6 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
             qpl = new V3D_Plane_d(getQ(), l.v);
         }
         return qpl;
-    }
-
-    /**
-     * Useful for intersection tests.
-     *
-     * @param pt The point to test if it is between {@link #qv} and the point of
-     * {@link #l}.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
-     * @return {@code true} iff pt lies between the planes at the end of the
-     * line segment.
-     */
-    public boolean isBetween(V3D_Point_d pt, double epsilon) {
-        if (getPPL().isOnSameSide(pt, getQ(), epsilon)) {
-            if (getQPL().isOnSameSide(pt, getP(), epsilon)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

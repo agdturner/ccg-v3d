@@ -2116,7 +2116,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} iff all points in pts are on or are on the same side
      * of this.
      */
-    protected boolean allOnSameSide(V3D_Point[] pts, int oom, RoundingMode rm) {
+    protected boolean allOnSameSide(int oom, RoundingMode rm, V3D_Point... pts) {
         // Special cases
         if (pts == null) {
             return false;
@@ -2149,7 +2149,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code true} iff all points in pts are on or are on the same side
      * of this.
      */
-    protected boolean allOnSameSideNotOn(V3D_Point[] pts, int oom, RoundingMode rm) {
+    protected boolean allOnSameSideNotOn(int oom, RoundingMode rm, V3D_Point... pts) {
         // Special cases
         if (pts == null) {
             return false;

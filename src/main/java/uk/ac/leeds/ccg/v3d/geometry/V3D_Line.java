@@ -1217,7 +1217,7 @@ public class V3D_Line extends V3D_Geometry {
      * near l. Whether the points are on or near is down to rounding error and
      * precision.
      */
-    public V3D_LineSegment getLineOfIntersection(V3D_Line l, int oom, RoundingMode rm) {
+    public V3D_LineSegment getLineOfIntersect(V3D_Line l, int oom, RoundingMode rm) {
         int oomn6 = oom - 6;
         if (isParallel(l, oom, rm)) {
             return null;

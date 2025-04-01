@@ -664,11 +664,11 @@ public class V3D_LineTest extends V3D_Test {
         V3D_Line l0 = new V3D_Line(pP1P0P0, pP1P1P0, oom, rm);
         V3D_Line l1 = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
         V3D_LineSegment expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        V3D_LineSegment result = l0.getLineOfIntersection(l1, oom, rm);
+        V3D_LineSegment result = l0.getLineOfIntersect(l1, oom, rm);
         assertTrue(expResult.equalsIgnoreDirection(result, oom, rm));
         // Test 2
         l1 = new V3D_Line(pP0P0P0, pP0P1P0, oom, rm);
-        result = l0.getLineOfIntersection(l1, oom, rm);
+        result = l0.getLineOfIntersect(l1, oom, rm);
         assertNull(result);
     }
 

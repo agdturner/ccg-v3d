@@ -24,11 +24,6 @@ import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.geometry.d.V3D_AABBX_d;
-import uk.ac.leeds.ccg.v3d.geometry.d.V3D_AABBY_d;
-import uk.ac.leeds.ccg.v3d.geometry.d.V3D_AABBZ_d;
-import uk.ac.leeds.ccg.v3d.geometry.d.V3D_Plane_d;
-import uk.ac.leeds.ccg.v3d.geometry.d.V3D_Point_d;
 
 /**
  * 3D representation of a finite length line (a line segment). The line begins
@@ -391,6 +386,9 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
+        /**
+         * Test for intersection with each 2D AABB part aabb and point.  
+        */
         return aabb.intersects(l.getP(), oom, rm)
                 || aabb.intersects(l.getQ(oom, rm), oom, rm)
                 || intersects(aabb.getl(oom, rm), oom, rm)
@@ -408,14 +406,11 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBX aabbx, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry i = aabbx.getXPl(oom, rm).getIntersect(this, oom, rm);
-        if (i == null) {
+        V3D_Plane aabxpl = aabbx.getXPl(oom, rm);
+        if (aabxpl.isOnSameSideNotOn(getP(), getQ(oom, rm), oom, rm)) {
             return false;
         } else {
-            if (i instanceof V3D_Point ip) {
-                return aabbx.intersects(ip, oom, rm);
-            } else {
-                V3D_LineSegment il = (V3D_LineSegment) i;
+            if (aabxpl.isOnPlane(l, oom, rm)) {
                 // 2D AABB interesection
                 V3D_AABBX aabbx2 = new V3D_AABBX(oom, rm, getP(), getQ(oom, rm));
                 if (aabbx.intersects(aabbx2, oom)) {
@@ -425,7 +420,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                     } else {
                         V3D_FiniteGeometry left = aabbx.getLeft(oom, rm);
                         if (left instanceof V3D_LineSegment ll) {
-                            if (il.intersects(ll, oom, rm)) {
+                            if (intersects(ll, oom, rm)) {
                                 return true;
                             }
                         } else {
@@ -435,7 +430,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         }
                         V3D_FiniteGeometry r = aabbx.getRight(oom, rm);
                         if (r instanceof V3D_LineSegment rl) {
-                            if (il.intersects(rl, oom, rm)) {
+                            if (intersects(rl, oom, rm)) {
                                 return true;
                             }
                         } else {
@@ -445,7 +440,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         }
                         V3D_FiniteGeometry t = aabbx.getTop(oom, rm);
                         if (t instanceof V3D_LineSegment tl) {
-                            if (il.intersects(tl, oom, rm)) {
+                            if (intersects(tl, oom, rm)) {
                                 return true;
                             }
                         } else {
@@ -455,7 +450,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         }
                         V3D_FiniteGeometry b = aabbx.getBottom(oom, rm);
                         if (b instanceof V3D_LineSegment bl) {
-                            if (il.intersects(bl, oom, rm)) {
+                            if (intersects(bl, oom, rm)) {
                                 return true;
                             }
                         } else {
@@ -477,14 +472,11 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBY aabby, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry i = aabby.getYPl(oom, rm).getIntersect(this, oom, rm);
-        if (i == null) {
+        V3D_Plane aabypl = aabby.getYPl(oom, rm);
+        if (aabypl.isOnSameSideNotOn(getP(), getQ(oom, rm), oom, rm)) {
             return false;
         } else {
-            if (i instanceof V3D_Point ip) {
-                return aabby.intersects(ip, oom, rm);
-            } else {
-                V3D_LineSegment il = (V3D_LineSegment) i;
+            if (aabypl.isOnPlane(l, oom, rm)) {
                 // 2D AABB interesection
                 V3D_AABBY aabby2 = new V3D_AABBY(oom, rm, getP(), getQ(oom, rm));
                 if (aabby.intersects(aabby2, oom)) {
@@ -494,7 +486,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                     } else {
                         V3D_FiniteGeometry left = aabby.getLeft(oom, rm);
                         if (left instanceof V3D_LineSegment ll) {
-                            if (il.intersects(ll, oom, rm)) {
+                            if (intersects(ll, oom, rm)) {
                                 return true;
                             }
                         } else {
@@ -504,7 +496,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         }
                         V3D_FiniteGeometry r = aabby.getRight(oom, rm);
                         if (r instanceof V3D_LineSegment rl) {
-                            if (il.intersects(rl, oom, rm)) {
+                            if (intersects(rl, oom, rm)) {
                                 return true;
                             }
                         } else {
@@ -514,7 +506,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         }
                         V3D_FiniteGeometry t = aabby.getTop(oom, rm);
                         if (t instanceof V3D_LineSegment tl) {
-                            if (il.intersects(tl, oom, rm)) {
+                            if (intersects(tl, oom, rm)) {
                                 return true;
                             }
                         } else {
@@ -524,7 +516,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         }
                         V3D_FiniteGeometry b = aabby.getBottom(oom, rm);
                         if (b instanceof V3D_LineSegment bl) {
-                            if (il.intersects(bl, oom, rm)) {
+                            if (intersects(bl, oom, rm)) {
                                 return true;
                             }
                         } else {
@@ -546,14 +538,11 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBZ aabbz, int oom, RoundingMode rm) {
-        V3D_FiniteGeometry i = aabbz.getZPl(oom, rm).getIntersect(this, oom, rm);
-        if (i == null) {
+        V3D_Plane aabzpl = aabbz.getZPl(oom, rm);
+        if (aabzpl.isOnSameSideNotOn(getP(), getQ(oom, rm), oom, rm)) {
             return false;
         } else {
-            if (i instanceof V3D_Point ip) {
-                return aabbz.intersects(ip, oom, rm);
-            } else {
-                V3D_LineSegment il = (V3D_LineSegment) i;
+            if (aabzpl.isOnPlane(l, oom, rm)) {
                 // 2D AABB interesection
                 V3D_AABBZ aabbz2 = new V3D_AABBZ(oom, rm, getP(), getQ(oom, rm));
                 if (aabbz.intersects(aabbz2, oom)) {
@@ -563,7 +552,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                     } else {
                         V3D_FiniteGeometry left = aabbz.getLeft(oom, rm);
                         if (left instanceof V3D_LineSegment ll) {
-                            if (il.intersects(ll, oom, rm)) {
+                            if (intersects(ll, oom, rm)) {
                                 return true;
                             }
                         } else {
@@ -573,7 +562,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         }
                         V3D_FiniteGeometry r = aabbz.getRight(oom, rm);
                         if (r instanceof V3D_LineSegment rl) {
-                            if (il.intersects(rl, oom, rm)) {
+                            if (intersects(rl, oom, rm)) {
                                 return true;
                             }
                         } else {
@@ -583,7 +572,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         }
                         V3D_FiniteGeometry t = aabbz.getTop(oom, rm);
                         if (t instanceof V3D_LineSegment tl) {
-                            if (il.intersects(tl, oom, rm)) {
+                            if (intersects(tl, oom, rm)) {
                                 return true;
                             }
                         } else {
@@ -593,7 +582,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                         }
                         V3D_FiniteGeometry b = aabbz.getBottom(oom, rm);
                         if (b instanceof V3D_LineSegment bl) {
-                            if (il.intersects(bl, oom, rm)) {
+                            if (intersects(bl, oom, rm)) {
                                 return true;
                             }
                         } else {
@@ -710,10 +699,10 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
          * If infinite lines intersects at a point, then check this point is on
          * this.
          */
-        if (i instanceof V3D_Point v3D_Point) {
-            //if (intersects(v3D_Point, oom, rm)) {
-            if (isAligned(v3D_Point, oom, rm)) {
-                return v3D_Point;
+        if (i instanceof V3D_Point ip) {
+            //if (intersects(ip, oom, rm)) {
+            if (isAligned(ip, oom, rm)) {
+                return ip;
             } else {
                 return null;
             }
@@ -741,7 +730,24 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     public V3D_FiniteGeometry getIntersect(V3D_LineSegment ls, int oom, RoundingMode rm) {
         if (!getAABB(oom, rm).intersects(ls.getAABB(oom, rm), oom)) {
             return null;
+        } else {
+            return getIntersect0(ls, oom, rm);
         }
+    }
+
+    /**
+     * Intersects {@code this} with {@code l}. If they are equivalent then
+     * return {@code this}. If they overlap in a line return the part that
+     * overlaps (the order of points is not defined). If they intersect at a
+     * point, the point is returned. {@code null} is returned if the two line
+     * segments do not intersect.
+     *
+     * @param ls The line to get intersection with this.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return The intersection between {@code this} and {@code l}.
+     */
+    public V3D_FiniteGeometry getIntersect0(V3D_LineSegment ls, int oom, RoundingMode rm) {
         // Get intersection with infinite lines.
         V3D_Geometry li = l.getIntersect(ls.l, oom, rm);
         V3D_FiniteGeometry tils = getIntersect(ls.l, oom, rm);
@@ -1032,10 +1038,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} If pt is in line with this.
      */
     public boolean isAligned(V3D_LineSegment l, int oom, RoundingMode rm) {
-        if (isAligned(l.getP(), oom, rm)) {
-            return isAligned(l.getQ(oom, rm), oom, rm);
-        }
-        return false;
+        return isAligned(l.getP(), oom, rm)
+            && isAligned(l.getQ(oom, rm), oom, rm);
     }
 
     /**
@@ -1261,7 +1265,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         if (getIntersect(l, oom, rm) != null) {
             return null;
         }
-        V3D_LineSegment loi = this.l.getLineOfIntersection(l, oom, rm);
+        V3D_LineSegment loi = this.l.getLineOfIntersect(l, oom, rm);
         V3D_Point tp = getP();
         V3D_Point tq = getQ(oom, rm);
         if (loi == null) {

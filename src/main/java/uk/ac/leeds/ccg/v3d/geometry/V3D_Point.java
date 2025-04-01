@@ -315,24 +315,6 @@ public class V3D_Point extends V3D_FiniteGeometry {
     public boolean isAligned(V3D_Point a, V3D_Point b, int oom, RoundingMode rm) {
         V3D_LineSegment ls = new V3D_LineSegment(a, b, oom, rm);
         return ls.isAligned(this, oom, rm);
-//        if (this.equals(a, oom, rm)) {
-//            return true;
-//        }
-//        if (this.equals(b, oom, rm)) {
-//            return true;
-//        }
-//        V3D_Vector ab = new V3D_Vector(a, b, oom, rm);
-//        if (ab.isZero()) {
-//            return false;
-//        }
-//        V3D_Plane ap = new V3D_Plane(a, ab);
-//        int aps = ap.getSideOfPlane(this, oom, rm);
-//        if (aps == -1) {
-//            return false;
-//        }
-//        V3D_Plane bp = new V3D_Plane(b, ab);
-//        int bps = bp.getSideOfPlane(this, oom, rm);
-//        return bps != 1;
     }
 
     /**

@@ -139,7 +139,8 @@ public class V3D_Ray_d extends V3D_Geometry_d {
 
     /**
      * @param r The ray to test if it is the same as {@code this}.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} iff {@code r} is the same as {@code this}.
      */
     public boolean equals(V3D_Ray_d r, double epsilon) {
@@ -214,7 +215,8 @@ public class V3D_Ray_d extends V3D_Geometry_d {
 
     /**
      * @param pt A point to test for intersection.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if {@code this} is intersected by {@code pl}.
      */
     public boolean intersects(V3D_Point_d pt, double epsilon) {
@@ -226,10 +228,11 @@ public class V3D_Ray_d extends V3D_Geometry_d {
         }
         return false;
     }
-    
+
     /**
      * @param aabb The V3D_AABB to test for intersection.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if this getIntersect with {@code l}
      */
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
@@ -241,14 +244,15 @@ public class V3D_Ray_d extends V3D_Geometry_d {
                 || getIntersect(aabb.getf(), epsilon) != null
                 || getIntersect(aabb.geta(), epsilon) != null;
     }
-    
+
     /**
      * @param aabbx The V3D_AABBX to test for intersection.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if this getIntersect with {@code l}
      */
     public V3D_Point_d getIntersect(V3D_AABBX_d aabbx, double epsilon) {
-        V3D_Plane_d xpl = aabbx.getXPl(); 
+        V3D_Plane_d xpl = aabbx.getXPl();
         if (xpl.isParallel(l, epsilon)) {
             return null;
         }
@@ -259,14 +263,15 @@ public class V3D_Ray_d extends V3D_Geometry_d {
         }
         return null;
     }
-    
+
     /**
      * @param aabby The V3D_AABBY to test for intersection.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if this getIntersect with {@code l}
      */
     public V3D_Point_d getIntersect(V3D_AABBY_d aabby, double epsilon) {
-        V3D_Plane_d ypl = aabby.getYPl(); 
+        V3D_Plane_d ypl = aabby.getYPl();
         if (ypl.isParallel(l, epsilon)) {
             return null;
         }
@@ -280,11 +285,12 @@ public class V3D_Ray_d extends V3D_Geometry_d {
 
     /**
      * @param aabbz The V3D_AABBZ to test for intersection.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if this getIntersect with {@code l}
      */
     public V3D_Point_d getIntersect(V3D_AABBZ_d aabbz, double epsilon) {
-        V3D_Plane_d zpl = aabbz.getZPl(); 
+        V3D_Plane_d zpl = aabbz.getZPl();
         if (zpl.isParallel(l, epsilon)) {
             return null;
         }
@@ -318,7 +324,8 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      * Support ray-plane intersection to choose on or before, or on or after?
      *
      * @param pl The plane to get the geometrical intersection with this.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The intersection between {@code this} and {@code pl}.
      */
     public V3D_Geometry_d getIntersect(V3D_Plane_d pl, double epsilon) {
@@ -423,7 +430,8 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      * intersection.
      *
      * @param l The line to get the geometrical intersection with this.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_Geometry_d getIntersect(V3D_Line_d l, double epsilon) {
@@ -453,7 +461,8 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      * returned if {@code this} and {@code r} do not intersect.
      *
      * @param r The line to get intersection with this.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The intersection between {@code this} and {@code r}.
      */
     public V3D_Geometry_d getIntersect(V3D_Ray_d r, double epsilon) {
@@ -512,7 +521,8 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      * returned if {@code this} and {@code l} do not intersect.
      *
      * @param ls The line to get intersection with this.
-     * @param epsilon The tolerance within which two vectors are regarded as equal.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d ls,
@@ -523,11 +533,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
             return null;
         } else if (g instanceof V3D_Point_d pt) {
             if (isAligned(pt, epsilon)) {
-                if (ls.isBetween(pt, epsilon)) {
-                    return pt;
-                } else {
-                    return null;
-                }
+                return pt;
             } else {
                 return null;
             }
@@ -559,8 +565,8 @@ public class V3D_Ray_d extends V3D_Geometry_d {
     }
 
     /**
-     * Calculates and returns if pt is in the direction of the ray (i.e.the
- same side of the ray start point plane as another point on the ray).
+     * Calculates and returns if pt is in the direction of the ray (i.e.the same
+     * side of the ray start point plane as another point on the ray).
      *
      * @param pt The point.
      * @param epsilon
@@ -579,7 +585,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
     public void translate(V3D_Vector_d v) {
         this.l.translate(v);
     }
-    
+
     @Override
     public V3D_Ray_d rotate(V3D_Ray_d ray, V3D_Vector_d uv,
             double theta, double epsilon) {
@@ -590,9 +596,9 @@ public class V3D_Ray_d extends V3D_Geometry_d {
             return rotateN(ray, uv, theta, epsilon);
         }
     }
-    
+
     @Override
-    public V3D_Ray_d rotateN(V3D_Ray_d ray, V3D_Vector_d uv, 
+    public V3D_Ray_d rotateN(V3D_Ray_d ray, V3D_Vector_d uv,
             double theta, double epsilon) {
         return new V3D_Ray_d(l.rotate(ray, uv, theta, epsilon));
     }

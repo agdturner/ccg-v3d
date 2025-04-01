@@ -71,27 +71,12 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
         double epsilon = 1d / 10000000d;
         V3D_Point_d pt = pP0N1P0;
         V3D_Triangle_d instance = new V3D_Triangle_d(pP0P2P0, pP0N2P0, pP2P0P0);
-        assertTrue(instance.isAligned(pt, epsilon));
+        assertTrue(instance.intersects00(pt, epsilon));
         pt = pN1P0P0;
-        assertFalse(instance.isAligned(pt, epsilon));
+        assertFalse(instance.intersects00(pt, epsilon));
         instance = new V3D_Triangle_d(pP0P0P0, pP0P1P0, pP1P1P0);
         pt = pP0P2P2;
-        assertFalse(instance.isAligned(pt, epsilon));
-        
-    }
-
-    /**
-     * Test of intersects method, of class V3D_Triangle_d.
-     */
-    @Test
-    public void testIsAligned_V3D_LineSegment_d_double() {
-        System.out.println("isAligned");
-        double epsilon = 1d / 10000000d;
-        V3D_LineSegment_d ls;
-        V3D_Triangle_d instance;
-        instance = new V3D_Triangle_d(pP0P0P0, pP0P1P0, pP1P1P0);
-        ls = new V3D_LineSegment_d(pP0P2P2, new V3D_Point_d(env, 0d, 3d, 3d));
-        assertFalse(instance.isAligned(ls, epsilon));
+        assertFalse(instance.intersects00(pt, epsilon));
         
     }
 

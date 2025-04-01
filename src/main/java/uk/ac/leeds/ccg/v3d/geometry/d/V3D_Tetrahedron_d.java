@@ -1150,7 +1150,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
         if (i == null) {
             return null;
         } else if (i instanceof V3D_Point_d ip) {
-            if (t.isAligned(ip, epsilon)) {
+            if (t.intersects00(ip, epsilon)) {
                 //if (t.intersects(pip)) {
                 return i;
             } else {

@@ -25,11 +25,11 @@ import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
  * angled quadrilateral. The four corners are the points
  * {@link #p}, {@link #q}, {@link #r} and {@link #s}. The following depicts a
  * rectangle {@code
- q  *-----* r
-    |   / |
-    |  /  | 
-    | /   |
-  p *-----* s
+ * q  *-----* r
+ * |   / |
+ * |  /  |
+ * | /   |
+ * p *-----* s
  * }
  * The angles PQR, QRS, RSP, SPQ are all 90 degrees or Pi/2 radians.
  *
@@ -57,6 +57,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
 
     /**
      * Create a new instance.
+     *
      * @param r The rectangle to clone.
      */
     public V3D_Rectangle_d(V3D_Rectangle_d r) {
@@ -75,8 +76,8 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      * @throws java.lang.RuntimeException iff the points do not define a
      * rectangle.
      */
-    public V3D_Rectangle_d(V3D_Environment_d env, V3D_Vector_d offset, 
-            V3D_Vector_d p, V3D_Vector_d q, V3D_Vector_d r, 
+    public V3D_Rectangle_d(V3D_Environment_d env, V3D_Vector_d offset,
+            V3D_Vector_d p, V3D_Vector_d q, V3D_Vector_d r,
             V3D_Vector_d s) {
         super(env, offset, new V3D_Plane_d(env, offset, p, q, r));
         rsp = new V3D_Triangle_d(pl, offset, r, s, p);
@@ -86,7 +87,8 @@ public class V3D_Rectangle_d extends V3D_Area_d {
     /**
      * Creates a new instance.
      *
-     * @param p Used to initialise {@link #offset}, {@link #pqr} and {@link #rsp}.
+     * @param p Used to initialise {@link #offset}, {@link #pqr} and
+     * {@link #rsp}.
      * @param q Used to initialise {@link #pqr} and {@link #rsp}.
      * @param r Used to initialise {@link #pqr} and {@link #rsp}.
      * @param s Used to initialise {@link #rsp}.
@@ -100,7 +102,8 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      * Creates a new instance.
      *
      * @param pl Used to initialise the planes.
-     * @param p Used to initialise {@link #offset}, {@link #pqr} and {@link #rsp}.
+     * @param p Used to initialise {@link #offset}, {@link #pqr} and
+     * {@link #rsp}.
      * @param q Used to initialise {@link #pqr} and {@link #rsp}.
      * @param r Used to initialise {@link #pqr} and {@link #rsp}.
      * @param s Used to initialise {@link #rsp}.
@@ -151,7 +154,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
     public V3D_Point_d[] getPointsArray() {
         return getPoints().values().toArray(new V3D_Point_d[4]);
     }
-    
+
     @Override
     public HashMap<Integer, V3D_Point_d> getPoints() {
         if (points == null) {
@@ -182,14 +185,14 @@ public class V3D_Rectangle_d extends V3D_Area_d {
     public V3D_Triangle_d getPQR() {
         return pqr;
     }
-    
+
     /**
      * @return {@link #rsp}.
      */
     public V3D_Triangle_d getRSP() {
         return rsp;
     }
-    
+
     /**
      * @return {@link #p} with {@link #offset} applied.
      */
@@ -384,7 +387,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
             return rotateN(ray, uv, theta, epsilon);
         }
     }
-    
+
     @Override
     public V3D_Rectangle_d rotateN(V3D_Ray_d ray, V3D_Vector_d uv,
             double theta, double epsilon) {
@@ -432,9 +435,9 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      */
     public V3D_FiniteGeometry_d getIntersect(V3D_Triangle_d t,
             double epsilon) {
-        if (getPlane().equals(t.pl, epsilon)) {
-            V3D_FiniteGeometry_d pqrit = pqr.getIntersect(t, epsilon);
-            V3D_FiniteGeometry_d rspit = rsp.getIntersect(t, epsilon);
+        if (getPlane().equalsIgnoreOrientation(t.pl, epsilon)) {
+            V3D_FiniteGeometry_d pqrit = pqr.getIntersectCoplanar(t, epsilon);
+            V3D_FiniteGeometry_d rspit = rsp.getIntersectCoplanar(t, epsilon);
             if (pqrit == null) {
                 return rspit;
             } else if (pqrit instanceof V3D_Point_d) {
@@ -457,14 +460,30 @@ public class V3D_Rectangle_d extends V3D_Area_d {
                 return V3D_ConvexArea_d.getGeometry(epsilon, pts);
             }
         } else {
-            V3D_FiniteGeometry_d pqrit = pqr.getIntersect(t, epsilon);
-            V3D_FiniteGeometry_d rspit = rsp.getIntersect(t, epsilon);
-            return join(epsilon, pqrit, rspit);
+            return getIntersect0(t, epsilon);
         }
     }
 
     /**
-     * Get the intersection between the geometry and the line segment {@code l}.
+     * Computes and returns the intersection between {@code this} and {@code t}.
+     * The intersection could be: null, a point or a line segment. It is assumed
+     * that this and t are not coplanar.
+     *
+     * @param t The triangle intersect with this.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The intersection between {@code t} and {@code this} or
+     * {@code null} if there is no intersection.
+     */
+    public V3D_FiniteGeometry_d getIntersect0(V3D_Triangle_d t,
+            double epsilon) {
+        V3D_FiniteGeometry_d pqrit = pqr.getIntersect0(t, epsilon);
+        V3D_FiniteGeometry_d rspit = rsp.getIntersect0(t, epsilon);
+        return join(epsilon, pqrit, rspit);
+    }
+
+    /**
+     * Get the intersection between the geometry and the ray {@code r}.
      *
      * @param r The ray to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -656,16 +675,16 @@ public class V3D_Rectangle_d extends V3D_Area_d {
         return pq.l.isParallel(rs.l, epsilon)
                 && qr.l.isParallel(sp.l, epsilon);
     }
-    
+
     //@Override
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
         return pqr.intersects(aabb, epsilon)
-            || rsp.intersects(aabb, epsilon);
+                || rsp.intersects(aabb, epsilon);
     }
 
     /**
-     * If there is intersection with the Axis Aligned Bounding Boxes of pqr 
-     * or rsp, then intersections are computed, so if the intersection is wanted 
+     * If there is intersection with the Axis Aligned Bounding Boxes of pqr or
+     * rsp, then intersections are computed, so if the intersection is wanted
      * consider using:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int, java.math.RoundingMode)}
      *
@@ -677,12 +696,12 @@ public class V3D_Rectangle_d extends V3D_Area_d {
     @Override
     public boolean intersects(V3D_Line_d l, double epsilon) {
         return pqr.intersects(l, epsilon)
-            || rsp.intersects(l, epsilon);
+                || rsp.intersects(l, epsilon);
     }
 
     /**
-     * If there is intersection with the Axis Aligned Bounding Boxes of pqr 
-     * or rsp, then intersections are computed, so if the intersection is wanted 
+     * If there is intersection with the Axis Aligned Bounding Boxes of pqr or
+     * rsp, then intersections are computed, so if the intersection is wanted
      * consider using:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegment_d, int, java.math.RoundingMode)}
      *
@@ -694,11 +713,11 @@ public class V3D_Rectangle_d extends V3D_Area_d {
     @Override
     public boolean intersects(V3D_LineSegment_d l, double epsilon) {
         return pqr.intersects(l, epsilon)
-            || rsp.intersects(l, epsilon);
+                || rsp.intersects(l, epsilon);
     }
-    
+
     /**
-     * If no point aligns, then returns false, otherwise the intersection is 
+     * If no point aligns, then returns false, otherwise the intersection is
      * computed, so if that is needed use:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Ray_d, double)}
      *
@@ -710,34 +729,73 @@ public class V3D_Rectangle_d extends V3D_Area_d {
     @Override
     public boolean intersects(V3D_Ray_d r, double epsilon) {
         if (r.isAligned(getP(), epsilon)
-            || r.isAligned(getQ(), epsilon)
-            || r.isAligned(getR(), epsilon)
-            || r.isAligned(getS(), epsilon)) {
+                || r.isAligned(getQ(), epsilon)
+                || r.isAligned(getR(), epsilon)
+                || r.isAligned(getS(), epsilon)) {
             return getIntersect(r, epsilon) != null;
         } else {
             return false;
         }
     }
-    
+
     /**
      * @param t A triangle to test for intersection.
      * @param epsilon The tolerance within which vector components are
      * considered equal.
      * @return {@code true} if t intersects this.
      */
+    @Override
     public boolean intersects(V3D_Triangle_d t, double epsilon) {
-        return pqr.intersects(t, epsilon)
-                || rsp.intersects(t, epsilon);
+        if (getPlane().equalsIgnoreOrientation(t.getPl(), epsilon)) {
+            return intersectsCoplanar(t, epsilon);
+        } else {
+            return intersects0(t, epsilon);
+        }
     }
-    
+
+    /**
+     * Use when {@code this} and {@code t} are known to be coplanar.
+     *
+     * @param t A triangle to test for intersection.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @return {@code true} if t intersects this.
+     */
+    public boolean intersectsCoplanar(V3D_Triangle_d t, double epsilon) {
+        return t.intersects00(pqr.getP(), epsilon)
+                || t.intersects00(pqr.getQ(), epsilon)
+                || t.intersects00(pqr.getR(), epsilon)
+                || t.intersects00(rsp.getP(), epsilon)
+                || t.intersects00(rsp.getQ(), epsilon)
+                || t.intersects00(rsp.getR(), epsilon);
+    }
+
+    /**
+     * Only use if {@code this} and {@code t} are not coplanar.
+     *
+     * @param t A triangle to test for intersection.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @return {@code true} if t intersects this.
+     */
+    public boolean intersects0(V3D_Triangle_d t, double epsilon) {
+        return pqr.intersects0(t, epsilon)
+                || rsp.intersects0(t, epsilon);
+    }
+
     /**
      * @param r Another rectangle to test for intersection.
      * @param epsilon The tolerance within which vector components are
      * considered equal.
      * @return {@code true} if t intersects this.
      */
-    public boolean intersects(V3D_Rectangle_d r, double epsilon) {
-        return r.intersects(pqr, epsilon)
-                || r.intersects(rsp, epsilon);
+    public boolean intersects0(V3D_Rectangle_d r, double epsilon) {
+        if (getPlane().equalsIgnoreOrientation(r.getPlane(), epsilon)) {
+            return r.intersectsCoplanar(pqr, epsilon)
+                    || r.intersectsCoplanar(rsp, epsilon);
+        } else {
+            return r.intersects0(pqr, epsilon)
+                    || r.intersects0(rsp, epsilon);
+        }
     }
 }

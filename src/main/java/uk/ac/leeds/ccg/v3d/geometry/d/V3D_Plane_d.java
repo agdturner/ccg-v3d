@@ -52,7 +52,7 @@ import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
  * @version 1.0
  */
 public class V3D_Plane_d extends V3D_Geometry_d {
-    
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -263,7 +263,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             p = pl.p.add(pl.offset).subtract(offset);
         }
     }
-    
+
     @Override
     public String toString() {
         //return toString("");
@@ -367,7 +367,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         if (v.isZero()) {
             throw new RuntimeException();
         }
-        
+
         return v;
     }
 
@@ -548,7 +548,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             coeffs[2] = n.dz;
             coeffs[3] = -k;
         }
-        
+
         @Override
         public String toString() {
             return "(" + coeffs[0] + " * x)"
@@ -1009,16 +1009,26 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @return The V3D_Geometry.
      */
     public V3D_Geometry_d getIntersect(V3D_Line_d l, double epsilon) {
-        //if (isParallel(l)){
         if (isParallel(l, epsilon)) {
-            //if (isParallel(l, 0d)) {
             if (isOnPlane(l, epsilon)) {
-                //if (isOnPlane(l, 0d)) {
                 return l;
             } else {
                 return null;
             }
+        } else {
+            return getIntersect0(l, epsilon);
         }
+    }
+
+    /**
+     * Get the intersection with l. l is assumed not to be parallel with this.
+     *
+     * @param l The line to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The V3D_Geometry.
+     */
+    public V3D_Point_d getIntersect0(V3D_Line_d l, double epsilon) {
         // Are either of the points of l on the plane.
         //V3D_Point lp = l.getP(oom);
         V3D_Point_d lp = l.getP();
@@ -1100,7 +1110,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         } else {
             t = -nummdet / denmdet;
         }
-        V3D_Point_d res = new V3D_Point_d(env, 
+        V3D_Point_d res = new V3D_Point_d(env,
                 lp.getX() + (lv.dx * (t)),
                 lp.getY() + (lv.dy * (t)),
                 lp.getZ() + (lv.dz * (t)));
@@ -1198,7 +1208,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         } else {
             t = -nummdet / denmdet;
         }
-        V3D_Point_d res = new V3D_Point_d(env, 
+        V3D_Point_d res = new V3D_Point_d(env,
                 lp.getX() + (lv.dx * (t)),
                 lp.getY() + (lv.dy * (t)),
                 lp.getZ() + (lv.dz * (t)));
@@ -1214,20 +1224,32 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @return The V3D_Geometry.
      */
     public V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d l, double epsilon) {
-        V3D_Geometry_d g = getIntersect(l.l, epsilon);
-        if (g == null) {
-            return null;
-        } else if (g instanceof V3D_Line_d) {
-            return l;
-        } else {
-            V3D_Point_d pt = (V3D_Point_d) g;
-            if (l.getPPL().isOnSameSide(pt, l.getQ(), epsilon)
-                    && l.getQPL().isOnSameSide(pt, l.getP(), epsilon)) {
-                return pt;
+        if (isParallel(l.l, epsilon)) {
+            if (isOnPlane(l.l, epsilon)) {
+                return l;
+            } else {
+                return null;
             }
-//            if (l.intersects(pt)) {
-//                return pt;
-//            }
+        } else {
+            return getIntersect0(l, epsilon);
+        }
+    }
+
+    /**
+     * Get the intersection with the line segment {@code l} which is assumed 
+     * to be not parallel to the plane.
+     *
+     * @param l The line segment to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The V3D_Geometry.
+     */
+    public V3D_Point_d getIntersect0(V3D_LineSegment_d l, double epsilon) {
+        V3D_Point_d pt = getIntersect0(l.l, epsilon);
+        if (l.getPPL().isOnSameSide(pt, l.getQ(), epsilon)
+                && l.getQPL().isOnSameSide(pt, l.getP(), epsilon)) {
+            return pt;
+        } else {
             return null;
         }
     }
@@ -1308,7 +1330,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             pi = pl.getPointOfProjectedIntersection(getP(), epsilon / 100d);
             pi = pl.getPointOfProjectedIntersection(getP(), epsilon / 1000d);
         }
-        
+
         return new V3D_Line_d(pi, v);
     }
 
@@ -1382,6 +1404,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
 //            return true;
 //        }
 //        
+
     
 
     ////        if (n.getCrossProduct(l.v).isZero()) {
@@ -1438,7 +1461,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         }
         return false;
     }
-    
+
     private boolean equalsIgnoreOrientationNoNormalCheck(V3D_Plane_d pl) {
         if (pl.intersects(getP())) {
             if (intersects(pl.getP())) {
@@ -1463,7 +1486,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         }
         return false;
     }
-    
+
     private boolean equalsIgnoreOrientationNoNormalCheck(V3D_Plane_d pl,
             double epsilon) {
         if (pl.intersects(epsilon, getP())) {
@@ -1603,13 +1626,13 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         double lqd = getDistanceSquared(l.getQ(), epsilon);
         return Math.min(lpd, lqd);
     }
-    
+
     @Override
     public void translate(V3D_Vector_d v) {
         super.translate(v);
         this.equation = null;
     }
-    
+
     @Override
     public V3D_Plane_d rotate(V3D_Ray_d ray, V3D_Vector_d uv,
             double theta, double epsilon) {
@@ -1620,7 +1643,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             return rotateN(ray, uv, theta, epsilon);
         }
     }
-    
+
     @Override
     public V3D_Plane_d rotateN(V3D_Ray_d ray, V3D_Vector_d uv,
             double theta, double epsilon) {
@@ -1775,7 +1798,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @return {@code true} iff all points in pts are on or are on the same side
      * of this.
      */
-    protected boolean allOnSameSide(V3D_Point_d[] pts, double epsilon) {
+    protected boolean allOnSameSide(double epsilon, V3D_Point_d... pts) {
         // Special cases
         if (pts == null) {
             return false;
@@ -1808,7 +1831,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @return {@code true} iff all points in pts are on or are on the same side
      * of this.
      */
-    protected boolean allOnSameSideNotOn(V3D_Point_d[] pts, double epsilon) {
+    protected boolean allOnSameSideNotOn(double epsilon, V3D_Point_d... pts) {
         // Special cases
         if (pts == null) {
             return false;

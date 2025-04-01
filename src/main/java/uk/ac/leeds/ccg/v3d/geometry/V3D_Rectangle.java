@@ -782,8 +782,41 @@ public class V3D_Rectangle extends V3D_Area {
      */
     @Override
     public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
-        return pqr.intersects(t, oom, rm)
-                || rsp.intersects(t, oom, rm);
+        if (getPl(oom, rm).equalsIgnoreOrientation(t.getPl(oom, rm), oom, rm)) {
+            return intersectsCoplanar(t, oom, rm);
+        } else {
+            return intersects0(t, oom, rm);
+        }
+    }
+
+    /**
+     * Use when {@code this} and {@code t} are known to be coplanar.
+     *
+     * @param t A triangle to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if t intersects this.
+     */
+    public boolean intersectsCoplanar(V3D_Triangle t, int oom, RoundingMode rm) {
+        return t.intersects00(pqr.getP(oom, rm), oom, rm)
+                || t.intersects00(pqr.getQ(oom, rm), oom, rm)
+                || t.intersects00(pqr.getR(oom, rm), oom, rm)
+                || t.intersects00(rsp.getP(oom, rm), oom, rm)
+                || t.intersects00(rsp.getQ(oom, rm), oom, rm)
+                || t.intersects00(rsp.getR(oom, rm), oom, rm);
+    }
+
+    /**
+     * Only use if {@code this} and {@code t} are not coplanar.
+     *
+     * @param t A triangle to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if t intersects this.
+     */
+    public boolean intersects0(V3D_Triangle t, int oom, RoundingMode rm) {
+        return pqr.intersects0(t, oom, rm)
+                || rsp.intersects0(t, oom, rm);
     }
     
     /**
@@ -792,8 +825,13 @@ public class V3D_Rectangle extends V3D_Area {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if t intersects this.
      */
-    public boolean intersects(V3D_Rectangle r, int oom, RoundingMode rm) {
-        return r.intersects(pqr, oom, rm)
-                || r.intersects(rsp, oom, rm);
+    public boolean intersects0(V3D_Rectangle r, int oom, RoundingMode rm) {
+        if (getPl(oom, rm).equalsIgnoreOrientation(r.getPl(oom, rm), oom, rm)) {
+            return r.intersectsCoplanar(pqr, oom, rm)
+                || r.intersectsCoplanar(rsp, oom, rm);
+        } else {
+            return r.intersects0(pqr, oom, rm)
+                || r.intersects0(rsp, oom, rm);
+        }
     }
 }

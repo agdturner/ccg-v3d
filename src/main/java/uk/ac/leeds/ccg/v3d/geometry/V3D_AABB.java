@@ -940,13 +940,13 @@ public class V3D_AABB implements Serializable {
     }
 
     /**
-     * @param en The Axis Aligned Bounding Box to intersect.
+     * @param aabb The Axis Aligned Bounding Box to intersect.
      * @param oom The Order of Magnitude for the precision.
      * @return {@code null} if there is no intersection; {@code en} if
      * {@code this.equals(en)}; otherwise returns the intersection.
      */
-    public V3D_AABB getIntersect(V3D_AABB en, int oom) {
-        if (!intersects(en, oom)) {
+    public V3D_AABB getIntersect(V3D_AABB aabb, int oom) {
+        if (!intersects(aabb, oom)) {
             return null;
         }
 // Probably quicker without: 
@@ -957,12 +957,12 @@ public class V3D_AABB implements Serializable {
 //            return en;
 //        }
         return new V3D_AABB(env, oom,
-                BigRational.max(getXMin(oom), en.getXMin(oom)),
-                BigRational.min(getXMax(oom), en.getXMax(oom)),
-                BigRational.max(getYMin(oom), en.getYMin(oom)),
-                BigRational.min(getYMax(oom), en.getYMax(oom)),
-                BigRational.max(getZMin(oom), en.getZMin(oom)),
-                BigRational.min(getZMax(oom), en.getZMax(oom)));
+                BigRational.max(getXMin(oom), aabb.getXMin(oom)),
+                BigRational.min(getXMax(oom), aabb.getXMax(oom)),
+                BigRational.max(getYMin(oom), aabb.getYMin(oom)),
+                BigRational.min(getYMax(oom), aabb.getYMax(oom)),
+                BigRational.max(getZMin(oom), aabb.getZMin(oom)),
+                BigRational.min(getZMax(oom), aabb.getZMax(oom)));
     }
 
     /**
