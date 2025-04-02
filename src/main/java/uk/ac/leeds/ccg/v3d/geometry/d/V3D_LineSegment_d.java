@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import uk.ac.leeds.ccg.math.arithmetic.Math_Double;
@@ -67,17 +68,6 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
     public final V3D_Line_d l;
 
     /**
-     * For defining {@link q} which is given relative to {@link #offset}.
-     */
-    protected V3D_Vector_d qv;
-
-    /**
-     * For defining the other end point of the line segment (the other given in
-     * {@link #l}.
-     */
-    protected V3D_Point_d q;
-
-    /**
      * For storing the plane at l.getP() with a normal given l.v.
      */
     protected V3D_Plane_d ppl;
@@ -109,7 +99,8 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @param p What the point of {@link #l} is cloned from.
      * @param q What {@link #qv} is cloned from.
      */
-    public V3D_LineSegment_d(V3D_Environment_d env, V3D_Vector_d p, V3D_Vector_d q) {
+    public V3D_LineSegment_d(V3D_Environment_d env, V3D_Vector_d p, 
+            V3D_Vector_d q) {
         this(env, V3D_Vector_d.ZERO, p, q);
     }
 
@@ -118,14 +109,13 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      *
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
-     * @param p What the point of {@link #l} is cloned from.
-     * @param q What {@link #qv} is cloned from.
+     * @param pv What the point of {@link #l.pv} is cloned from.
+     * @param v What {@link #l.v} is cloned from.
      */
-    public V3D_LineSegment_d(V3D_Environment_d env, V3D_Vector_d offset, V3D_Vector_d p,
-            V3D_Vector_d q) {
+    public V3D_LineSegment_d(V3D_Environment_d env, V3D_Vector_d offset, 
+            V3D_Vector_d pv, V3D_Vector_d v) {
         super(env, offset);
-        l = new V3D_Line_d(env, offset, p, q);
-        this.qv = q;
+        l = new V3D_Line_d(env, offset, pv, v);
     }
 
     /**
@@ -136,10 +126,18 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public V3D_LineSegment_d(V3D_Point_d p, V3D_Point_d q) {
         super(p.env, p.offset);
-        V3D_Point_d q2 = new V3D_Point_d(q);
-        q2.setOffset(offset);
-        l = new V3D_Line_d(env, offset, p.rel, q2.rel);
-        this.qv = q2.rel;
+        l = new V3D_Line_d(env, offset, p.rel, new V3D_Vector_d(p, q));
+    }
+    
+    /**
+     * Create a new instance that intersects all points.
+     *
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @param points Any number of collinear points, with two being different.
+     */
+    public V3D_LineSegment_d(double epsilon, ArrayList<V3D_Point_d> points) {
+        this(epsilon, points.toArray(V3D_Point_d[]::new));
     }
 
     /**
@@ -166,7 +164,6 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
             }
         }
         this.l = ls.l;
-        this.qv = ls.qv;
     }
 
     /**
@@ -180,10 +177,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@link #qv} with {@link #offset} applied.
      */
     public V3D_Point_d getQ() {
-        if (q == null) {
-            q = new V3D_Point_d(env, offset, qv);
-        }
-        return q;
+        return l.getQ();
     }
 
     /**
@@ -194,9 +188,6 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
     public void translate(V3D_Vector_d v) {
         super.translate(v);
         l.translate(v);
-        if (q != null) {
-            q.translate(v);
-        }
         if (ppl != null) {
             ppl.translate(v);
         }
@@ -259,30 +250,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
     protected String toStringFields(String pad) {
         String r = super.toStringFields(pad) + "\n"
                 + pad + ",\n";
-        r += pad + "l=" + l.toStringFields(pad) + "\n"
-                + pad + ",\n"
-                + pad + "q=" + qv.toStringFields(pad);
-//        if (l.qv == null) {
-//            r += pad + "pv=" + l.getP().toString(pad) + "\n"
-//                    + pad + ",\n"
-//                    + pad + "qv=null" + "\n"
-//                    + pad + ",\n"
-//                    + pad + "v=" + l.v.toString(pad);
-//        } else {
-//            if (l.v == null) {
-//                r += pad + "pv=" + l.getP().toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "qv=" + l.qv.toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "v=null";
-//            } else {
-//                r += pad + "pv=" + l.getP().toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "qv=" + l.qv.toString(pad) + "\n"
-//                        + pad + ",\n"
-//                        + pad + "v=" + l.v.toString(pad);
-//            }
-//        }
+        r += pad + "l=" + l.toStringFields(pad);
         return r;
     }
 
@@ -293,23 +261,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
     @Override
     protected String toStringFieldsSimple(String pad) {
         String r = super.toStringFieldsSimple(pad) + ",\n";
-        r += pad + "l=" + l.toStringFieldsSimple(pad) + ",\n"
-                + pad + "q=" + qv.toStringFieldsSimple("");
-//        if (l.qv == null) {
-//            r += pad + "pv=" + l.getP().toStringSimple("") + ",\n"
-//                    + pad + "qv=null" + ",\n"
-//                    + pad + "v=" + l.v.toStringSimple(pad);
-//        } else {
-//            if (l.v == null) {
-//                r += pad + "pv=" + l.getP().toStringSimple(pad) + ",\n"
-//                        + pad + "qv=" + l.qv.toStringSimple(pad) + ",\n"
-//                        + pad + "v=null";
-//            } else {
-//                r += pad + "pv=" + l.getP().toStringSimple(pad) + ",\n"
-//                        + pad + "qv=" + l.qv.toStringSimple(pad) + ",\n"
-//                        + pad + "v=" + l.v.toStringSimple(pad);
-//            }
-//        }
+        r += pad + "l=" + l.toStringFieldsSimple(pad);
         return r;
     }
 

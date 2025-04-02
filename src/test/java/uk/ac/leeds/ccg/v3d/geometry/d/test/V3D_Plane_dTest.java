@@ -2347,16 +2347,14 @@ public class V3D_Plane_dTest extends V3D_Test_d {
         pl = new V3D_Plane_d(
                 new V3D_Point_d(env, 8d / 3d, -2d / 3d, 0d),
                 new V3D_Vector_d(2d, 8d, 0d));
-        //new V3D_Vector_d(2, 8, 0)N5);
         instance = new V3D_Plane_d(
                 new V3D_Point_d(env, 8d / 3d, 0d, -2d / 3d),
-                new V3D_Vector_d(2, 0, 8));
-        //new V3D_Vector_d(2, 0, 8)N5);
-        expResult = new V3D_Line_d(env, 
-                new V3D_Vector_d(68d / 27d, -17d / 27d, -17d / 27d),
-                new V3D_Vector_d(1d / 4d, -1d / 16d, -1d / 16d));
+                new V3D_Vector_d(2d, 0d, 8d));
+        expResult = new V3D_Line_d( 
+                new V3D_Point_d(env, 68d / 27d, -17d / 27d, -17d / 27d),
+                new V3D_Point_d(env, 1d / 4d, -1d / 16d, -1d / 16d));
         result = instance.getIntersect(pl, epsilon);
-        //assertTrue(((V3D_Line_d) expResult).equals((V3D_Line_d) result));
+//        assertTrue(((V3D_Line_d) expResult).equals((V3D_Line_d) result));
 //        /**
 //         * The following is from:
 //         * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc
@@ -2729,7 +2727,7 @@ public class V3D_Plane_dTest extends V3D_Test_d {
         // line
         // x = t, y = 2 + 3t, z = t
         // points (0, 2, 0), (1, 5, 1) 
-        l = new V3D_Line_d(env, V3D_Vector_d.ZERO, P0P2P0, new V3D_Vector_d(1d, 5d, 1d));
+        l = new V3D_Line_d(pP0P2P0, new V3D_Point_d(env, 1d, 5d, 1d));
         // plane
         // 2x + y − 4z = 4
         // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
@@ -2742,7 +2740,7 @@ public class V3D_Plane_dTest extends V3D_Test_d {
         // line
         // x = t, y = 2 + 3t, z = t
         // points (0, 2, 0), (1, 5, 1) 
-        l = new V3D_Line_d(env, P0P2P0, new V3D_Vector_d(1d, 5d, 1d));
+        l = new V3D_Line_d(pP0P2P0, new V3D_Point_d(env, 1d, 5d, 1d));
         // plane
         // 2x + y − 4z = 4
         // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
@@ -2875,7 +2873,7 @@ public class V3D_Plane_dTest extends V3D_Test_d {
         // line
         // x = t, y = 2 + 3t, z = t
         // points (0, 2, 0), (1, 5, 1) 
-        l = new V3D_Line_d(env, V3D_Vector_d.ZERO, P0P2P0, new V3D_Vector_d(1d, 5d, 1d));
+        l = new V3D_Line_d(pP0P2P0, new V3D_Point_d(env, 1d, 5d, 1d));
         // plane
         // 2x + y − 4z = 4
         // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
@@ -2888,7 +2886,7 @@ public class V3D_Plane_dTest extends V3D_Test_d {
         // line
         // x = t, y = 2 + 3t, z = t
         // points (0, 2, 0), (1, 5, 1) 
-        l = new V3D_Line_d(env, P0P2P0, new V3D_Vector_d(1d, 5d, 1d));
+        l = new V3D_Line_d(pP0P2P0, new V3D_Point_d(env, 1d, 5d, 1d));
         // plane
         // 2x + y − 4z = 4
         // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
@@ -3032,13 +3030,13 @@ public class V3D_Plane_dTest extends V3D_Test_d {
         result = instance.getIntersect(l, epsilon);
         assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));
         // Test 7
-        l = new V3D_LineSegment_d(env, P0P2P0, new V3D_Vector_d(1d, 5d, 1d));
+        l = new V3D_LineSegment_d(pP0P2P0, new V3D_Point_d(env, 1d, 5d, 1d));
         instance = new V3D_Plane_d(env, P0P0N1, new V3D_Vector_d(0d, 4d, 0d),
                 new V3D_Vector_d(2d, 0d, 0d));
         assertNull(instance.getIntersect(l, epsilon));
         // Test 8
         epsilon = 1d / 10000d;
-        l = new V3D_LineSegment_d(env, P0P2P0, new V3D_Vector_d(2d, 8d, 2d));
+        l = new V3D_LineSegment_d(pP0P2P0, new V3D_Point_d(env, 2d, 8d, 2d));
         result = instance.getIntersect(l, epsilon);
         expResult = new V3D_Point_d(env, 2d, 8d, 2d);
         assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));
@@ -3046,7 +3044,7 @@ public class V3D_Plane_dTest extends V3D_Test_d {
         // line
         // x = t, y = 2 + 3t, z = t
         // points (0, 2, 0), (1, 5, 1) 
-        l = new V3D_LineSegment_d(env, P0P2P0, new V3D_Vector_d(1d, 5d, 1d));
+        l = new V3D_LineSegment_d(pP0P2P0, new V3D_Point_d(env, 1d, 5d, 1d));
         // plane
         // 2x + y − 4z = 4
         // points (0, 0, -1), (0, 4, 0), (2, 0, 0)
@@ -3055,7 +3053,7 @@ public class V3D_Plane_dTest extends V3D_Test_d {
         expResult = new V3D_Point_d(env, 2d, 8d, 2d);
         result = instance.getIntersect(l, epsilon);
         assertNotEquals(expResult, result);
-        l = new V3D_LineSegment_d(env, P0P2P0, new V3D_Vector_d(2d, 8d, 2d));
+        l = new V3D_LineSegment_d(pP0P2P0, new V3D_Point_d(env, 2d, 8d, 2d));
         result = instance.getIntersect(l, epsilon);
         assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));
         // Test 10
@@ -3068,7 +3066,7 @@ public class V3D_Plane_dTest extends V3D_Test_d {
         instance = new V3D_Plane_d(env, P0P0P2, P1P0P2, P0P1P2);
         result = instance.getIntersect(l, epsilon);
         assertNull(result);
-        l = new V3D_LineSegment_d(env, P0P0P0, new V3D_Vector_d(0d, 0d, 4d));
+        l = new V3D_LineSegment_d(pP0P0P0, new V3D_Point_d(env, 0d, 0d, 4d));
         expResult = pP0P0P2;
         result = instance.getIntersect(l, epsilon);
         assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));

@@ -115,14 +115,14 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p What the point of {@link #l} is cloned from.
-     * @param q What {@link #qv} is cloned from.
+     * @param v What {@link #l.v} is set to.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
     public V3D_LineSegment(V3D_Environment env, V3D_Vector offset, V3D_Vector p,
-            V3D_Vector q, int oom, RoundingMode rm) {
+            V3D_Vector v, int oom, RoundingMode rm) {
         super(env, offset);
-        l = new V3D_Line(env, offset, p, q, oom, rm);
+        l = new V3D_Line(env, offset, p, v);
     }
 
     /**
@@ -135,9 +135,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      */
     public V3D_LineSegment(V3D_Point p, V3D_Point q, int oom, RoundingMode rm) {
         super(p.env, p.offset);
-        V3D_Point q2 = new V3D_Point(q);
-        q2.setOffset(offset, oom, rm);
-        l = new V3D_Line(env, offset, p.rel, q2.rel, oom, rm);
+        l = new V3D_Line(env, offset, p.rel, new V3D_Vector(p, q, oom, rm));
     }
 
     /**
@@ -184,7 +182,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param l What {@code this} is created from.
      */
     public V3D_LineSegment(V3D_Line l) {
-        super(l.env);
+        super(l.env, l.offset);
         this.l = new V3D_Line(l);
     }
 
@@ -1067,7 +1065,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         if (getIntersect(l, oom, rm) != null) {
             return BigRational.ZERO;
         }
-        V3D_LineSegment loi = getLineOfIntersection(l, oom, rm);
+        V3D_LineSegment loi = getLineOfIntersect(l, oom, rm);
         if (loi == null) {
             /**
              * Lines are parallel.
@@ -1261,7 +1259,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return The line of intersection between {@code this} and {@code l}.
      */
-    public V3D_LineSegment getLineOfIntersection(V3D_Line l, int oom, RoundingMode rm) {
+    public V3D_LineSegment getLineOfIntersect(V3D_Line l, int oom, RoundingMode rm) {
         if (getIntersect(l, oom, rm) != null) {
             return null;
         }
@@ -1310,7 +1308,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return The line of intersection between {@code this} and {@code l}.
      */
-    public V3D_LineSegment getLineOfIntersection(V3D_LineSegment ls, int oom, RoundingMode rm) {
+    public V3D_LineSegment getLineOfIntersect(V3D_LineSegment ls, int oom, RoundingMode rm) {
         V3D_FiniteGeometry ilsl = getIntersect(ls, oom, rm);
         if (ilsl == null) {
             V3D_Point lsp = ls.getP();
@@ -1318,8 +1316,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
             V3D_Point tp = getP();
             V3D_Point tq = getQ(oom, rm);
             // Get the line of intersection between this and ls.l
-            V3D_LineSegment tloi = getLineOfIntersection(ls.l, oom, rm);
-            V3D_LineSegment lsloi = ls.getLineOfIntersection(l, oom, rm);
+            V3D_LineSegment tloi = getLineOfIntersect(ls.l, oom, rm);
+            V3D_LineSegment lsloi = ls.getLineOfIntersect(l, oom, rm);
             if (tloi == null) {
                 V3D_Point tip;
                 V3D_Point lsloiq = lsloi.getQ(oom, rm);
@@ -1460,7 +1458,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         if (getIntersect(l, oom, rm) != null) {
             return BigRational.ZERO;
         }
-        V3D_LineSegment loi = getLineOfIntersection(l, oom, rm);
+        V3D_LineSegment loi = getLineOfIntersect(l, oom, rm);
         if (loi == null) {
             // Lines are parallel.
             return l.getDistanceSquared(getP(), oom, rm);

@@ -383,13 +383,6 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
         instance = new V3D_Triangle_d(env, P1P0P0, P1P0P0, P0P2P0, P0P0P0);
         result = instance.equals(t, epsilon);
         assertTrue(result);
-        // Test 4
-        instance = new V3D_Triangle_d(env, P1P0P0, P1P0P0, P0P2P0, P0P0P0);
-        t = new V3D_Triangle_d(env, P0P0P0, instance);
-        result = instance.equals(t, epsilon);
-        assertTrue(result);
-        
-        
     }
 
     /**

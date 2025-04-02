@@ -70,8 +70,7 @@ public class V3D_LineSegment_dTest extends V3D_Test_d {
                             offset=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
                             l= offset=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
                             p=V3D_Point_d(offset=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0), rel=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0)),
-                            v= V3D_Vector_d(dx=1.0, dy=0.0, dz=0.0),
-                            q=dx=1.0, dy=0.0, dz=0.0
+                            v= V3D_Vector_d(dx=1.0, dy=0.0, dz=0.0)
                            )""";
         String result = instance.toString();
         //System.out.println(result);

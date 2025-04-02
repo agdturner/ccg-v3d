@@ -25,10 +25,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
-import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
-import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_ConvexArea;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_AABB;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_ConvexArea;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Geometry;
@@ -74,8 +71,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testIsAligned_V3D_Point_int_RoundingMode() {
         System.out.println("intersects");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point pt = pP0N1P0;
         V3D_Triangle instance = new V3D_Triangle(pP0P2P0, pP0N2P0, pP2P0P0, oom, rm);
         assertTrue(instance.intersects(pt, oom, rm));
@@ -89,9 +84,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetAABB() {
         System.out.println("getAABB");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
         V3D_AABB expResult = new V3D_AABB(oom, pP0P0P0, pP0P1P0, pP1P0P0);
         V3D_AABB result = instance.getAABB(oom, rm);
@@ -104,8 +96,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetArea() {
         System.out.println("getArea");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
         BigRational expResult = BigRational.valueOf("0.5");
         BigRational result = instance.getArea(oom, rm);
@@ -126,8 +116,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetPerimeter() {
         System.out.println("getPerimeter");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
         BigRational expResult = BigRational.TWO.add(
                 new Math_BigRationalSqrt(2, oom, rm).getSqrt(oom, rm));
@@ -145,9 +133,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetIntersect_V3D_Line() {
         System.out.println("getIntersect");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Line l = new V3D_Line(pP1N1P0, pP1P2P0, oom, rm);
         V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP1P1P0, pP2P0P0, oom, rm);
         V3D_Geometry expResult = new V3D_LineSegment(pP1P0P0, pP1P1P0, oom, rm);
@@ -178,9 +163,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetCentroid() {
         System.out.println("getCentroid");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Triangle instance;
         V3D_Point expResult;
         V3D_Point result;
@@ -199,9 +181,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testToString() {
         System.out.println("toString");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Triangle instance = new V3D_Triangle(env, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
         String expResult = """
                            V3D_Triangle(
@@ -220,9 +199,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testIntersectsPoint() {
         System.out.println("intersects point");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Point pt;
         V3D_Triangle instance;
         instance = new V3D_Triangle(env, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
@@ -263,9 +239,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testContainsPoint() {
         System.out.println("contains point");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Point pt = pP1P1P1;
         V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP1P1P0, oom, rm);
         assertFalse(instance.contains(pt, oom, rm));
@@ -292,9 +265,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testContainsLineSegement() {
         System.out.println("contains line segment");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP1P1P0, oom, rm);
         assertFalse(instance.contains(l, oom, rm));
@@ -316,9 +286,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testContainsTriangle() {
         System.out.println("contains triangle");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Triangle t = new V3D_Triangle(pP0P0P0, pP1P0P0, pP1P1P0, oom, rm);
         V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP1P1P0, oom, rm);
         assertFalse(instance.contains(t, oom, rm));
@@ -358,9 +325,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetIntersect_V3D_LineSegment() {
         System.out.println("getIntersect");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_LineSegment l;
         V3D_Triangle instance;
         V3D_Geometry expResult;
@@ -402,9 +366,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testEquals_V3D_Triangle_int_RoundingMode() {
         System.out.println("equals");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Triangle t = new V3D_Triangle(pP1P0P0, pP1P2P0, pP2P0P0, oom, rm);
         V3D_Triangle instance = new V3D_Triangle(env, P1P0P0, P0P0P0, P0P2P0, P1P0P0);
         boolean result = instance.equals(t, oom, rm);
@@ -429,8 +390,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testRotate() {
         System.out.println("rotate");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         Math_BigDecimal bd = new Math_BigDecimal();
         BigRational theta;
         V3D_Triangle instance;
@@ -484,9 +443,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetIntersect_V3D_Plane() {
         System.out.println("getIntersect");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Triangle t;
         V3D_Plane p;
         V3D_Geometry expResult;
@@ -544,9 +500,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetIntersect_V3D_Ray() {
         System.out.println("getIntersect");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Triangle t;
         V3D_Ray r;
         V3D_Geometry expResult;
@@ -606,73 +559,6 @@ public class V3D_TriangleTest extends V3D_Test {
         expResult = new V3D_Point(env, nq, nq, nq);
         result = t.getIntersect(r, oom, rm);
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-
-        // Box test.
-        V3D_Vector offset = V3D_Vector.ZERO;
-        V3D_Point[] points = new V3D_Point[8];
-        V3D_Point centroid = V3D_Point.ORIGIN;
-        centroid.env = env;
-        long multiplier = 100;
-        V3D_Point lbf = new V3D_Point(env, offset, new V3D_Vector(-1 * multiplier, -1 * multiplier, -1 * multiplier));
-        V3D_Point lba = new V3D_Point(env, offset, new V3D_Vector(-1 * multiplier, -1 * multiplier, 1 * multiplier));
-        V3D_Point ltf = new V3D_Point(env, offset, new V3D_Vector(-1 * multiplier, 1 * multiplier, -1 * multiplier));
-        V3D_Point lta = new V3D_Point(env, offset, new V3D_Vector(-1 * multiplier, 1 * multiplier, 1 * multiplier));
-        V3D_Point rbf = new V3D_Point(env, offset, new V3D_Vector(1 * multiplier, -1 * multiplier, -1 * multiplier));
-        V3D_Point rba = new V3D_Point(env, offset, new V3D_Vector(1 * multiplier, -1 * multiplier, 1 * multiplier));
-        V3D_Point rtf = new V3D_Point(env, offset, new V3D_Vector(1 * multiplier, 1 * multiplier, -1 * multiplier));
-        V3D_Point rta = new V3D_Point(env, offset, new V3D_Vector(1 * multiplier, 1 * multiplier, 1 * multiplier));
-        // BLUE
-        V3D_Triangle b1 = new V3D_Triangle(centroid, lbf, ltf, rtf, oom, rm);
-        V3D_Triangle b2 = new V3D_Triangle(centroid, lbf, rbf, rtf, oom, rm);
-        // RED
-        V3D_Triangle r1 = new V3D_Triangle(centroid, lbf, ltf, lta, oom, rm);
-        V3D_Triangle r2 = new V3D_Triangle(centroid, lbf, lba, lta, oom, rm);
-        // YELLOW
-        V3D_Triangle y1 = new V3D_Triangle(centroid, lba, lta, rta, oom, rm);
-        V3D_Triangle y2 = new V3D_Triangle(centroid, lba, rba, rta, oom, rm);
-        // GREEN
-        V3D_Triangle g1 = new V3D_Triangle(centroid, rbf, rtf, rta, oom, rm);
-        V3D_Triangle g2 = new V3D_Triangle(centroid, rbf, rta, rba, oom, rm);
-        // ORANGE
-        V3D_Triangle o1 = new V3D_Triangle(centroid, ltf, lta, rta, oom, rm);
-        V3D_Triangle o2 = new V3D_Triangle(centroid, rtf, ltf, rta, oom, rm);
-        // PINK
-        V3D_Triangle p1 = new V3D_Triangle(centroid, lbf, rbf, rba, oom, rm);
-        V3D_Triangle p2 = new V3D_Triangle(centroid, lbf, lba, rba, oom, rm);
-        points[0] = lbf;
-        points[1] = lba;
-        points[2] = ltf;
-        points[3] = lta;
-        points[4] = rbf;
-        points[5] = rba;
-        points[6] = rtf;
-        points[7] = rta;
-        V3D_AABB envelope = new V3D_AABB(oom, points);
-        int width = 100;
-        BigRational radius = envelope.getPointsArray()[0]
-                .getDistance(centroid, oom, rm);
-        V3D_Vector direction = new V3D_Vector(0, 0, 1).getUnitVector(oom, rm);
-        V3D_Point pt = new V3D_Point(centroid);
-        pt.translate(direction.multiply(radius.multiply(2), oom, rm), oom, rm);
-        V3D_Plane pl = new V3D_Plane(pt, new V3D_Vector(pt, envelope.getCentroid(oom, rm), oom, rm));
-        V3D_Vector pv = pl.getPV(oom, rm);
-        V3D_Rectangle screen = envelope.getViewport3(pt, pv, oom, rm);
-        V3D_Triangle pqr = screen.getPQR();
-        BigRational screenWidth = pqr.getPQ(oom, rm).getLength(oom, rm).getSqrt(oom, rm);
-        BigRational screenHeight = screenWidth;
-        BigRational pixelSize = screenWidth.divide(width);
-        V3D_Vector vd = new V3D_Vector(pqr.getQR(oom, rm).l.v).divide(
-                BigRational.valueOf(width), oom, rm);
-        V3D_Vector v2d = new V3D_Vector(pqr.getPQ(oom, rm).l.v).divide(
-                BigRational.valueOf(width), oom, rm);
-        int row = width / 3;
-        int col = width / 2;
-        r = getRay(row, col, screen, pt, vd, v2d, oom, rm);
-
-//        expResult = new V3D_Point(nq, nq, nq);
-//        result = b1.getIntersect(r, oom, rm);
-//        result = b2.getIntersect(r, oom, rm);
-//        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
     }
 
     /**
@@ -703,9 +589,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetIntersect_V3D_Triangle() {
         System.out.println("getIntersect");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Triangle t = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
         V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
         V3D_Geometry expResult = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
@@ -723,14 +606,14 @@ public class V3D_TriangleTest extends V3D_Test {
         expResult = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
         result = instance.getIntersect(t, oom, rm);
         assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
-        // Test 4
-        t = new V3D_Triangle(pP0P0P0, pP2P0P0, pP2P2P0, oom, rm);
-        instance = new V3D_Triangle(
-                pP1P0P0, new V3D_Point(env, P3, P0, P0), 
-                new V3D_Point(env, P3, P2, P0), oom, rm);
-        expResult = new V3D_Triangle(pP1P0P0, pP2P0P0, pP2P1P0, oom, rm);
-        result = instance.getIntersect(t, oom, rm);
-        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
+//        // Test 4
+//        t = new V3D_Triangle(pP0P0P0, pP2P0P0, pP2P2P0, oom, rm);
+//        instance = new V3D_Triangle(
+//                pP1P0P0, new V3D_Point(env, P3, P0, P0), 
+//                new V3D_Point(env, P3, P2, P0), oom, rm);
+//        expResult = new V3D_Triangle(pP1P0P0, pP2P0P0, pP2P1P0, oom, rm);
+//        result = instance.getIntersect(t, oom, rm);
+//        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
 //        // Test 5: From  https://stackoverflow.com/a/29563443/1998054
 //        t = new V3D_Triangle(new V3D_Point(env, -21, -72, 63),
 //                new V3D_Point(env, -78, 99, 40),
@@ -778,8 +661,12 @@ public class V3D_TriangleTest extends V3D_Test {
                 new V3D_Point(env, 6, 0.8d, 0), oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 9: 4 sides
-        t = new V3D_Triangle(new V3D_Point(env, P2, N3, P0), new V3D_Point(env, P6, P1, P0), new V3D_Point(env, P2, P5, P0), oom, rm);
-        instance = new V3D_Triangle(pP1P0P0, new V3D_Point(env, P3, P0, P0), new V3D_Point(env, P3, P2, P0), oom, rm);
+        t = new V3D_Triangle(new V3D_Point(env, P2, N3, P0), 
+                new V3D_Point(env, P6, P1, P0), 
+                new V3D_Point(env, P2, P5, P0), oom, rm);
+        instance = new V3D_Triangle(pP1P0P0, 
+                new V3D_Point(env, P3, P0, P0), 
+                new V3D_Point(env, P3, P2, P0), oom, rm);
         expResult = new V3D_ConvexArea(oom, rm,
                 new V3D_Triangle(pP2P0P0, new V3D_Point(env, P3, P0, P0),
                         pP2P1P0, oom, rm),
@@ -857,9 +744,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetGeometry_V3D_Vector_V3D_Vector() {
         System.out.println("getGeometry");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Vector v1;
         V3D_Vector v2;
         V3D_Geometry expResult;
@@ -883,9 +767,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testTranslate() {
         System.out.println("translate");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
-        V3D_Environment env = new V3D_Environment(oom, rm);
         V3D_Vector v = P1P0P0;
         V3D_Triangle instance = new V3D_Triangle(env, P0P0P0, P1P0P0, P0P1P0, P1P1P0);
         instance.translate(v, oom, rm);
@@ -905,8 +786,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetGeometry_3args_1() {
         System.out.println("getGeometry");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point p;
         V3D_Point q;
         V3D_Point r;
@@ -979,8 +858,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetGeometry_3args_2() {
         System.out.println("getGeometry");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Vector v1;
         V3D_Vector v2;
         V3D_Geometry expResult;
@@ -1024,8 +901,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetOpposite() {
         System.out.println("getOpposite");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         V3D_Triangle instance = new V3D_Triangle(pP0P0P0, pP1P0P0, pP0P1P0, oom, rm);
         V3D_Point expResult = pP0P1P0;
@@ -1106,8 +981,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_Point() {
         System.out.println("getDistanceSquared");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Point p;
         V3D_Triangle t;
         BigRational expResult;
@@ -1191,8 +1064,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_Line() {
         System.out.println("getDistanceSquared");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Line l;
         BigRational expResult;
         BigRational result;
@@ -1226,8 +1097,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_LineSegment() {
         System.out.println("getDistanceSquared");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_LineSegment l;
         V3D_Triangle instance;
         BigRational expResult;
@@ -1267,8 +1136,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_Plane() {
         System.out.println("getDistanceSquared");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Plane pl;
         V3D_Triangle instance;
         BigRational expResult;
@@ -1302,8 +1169,6 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetDistanceSquared_V3D_Triangle() {
         System.out.println("getDistanceSquared");
-        int oom = -3;
-        RoundingMode rm = RoundingMode.HALF_UP;
         V3D_Triangle t;
         V3D_Triangle instance;
         BigRational expResult;

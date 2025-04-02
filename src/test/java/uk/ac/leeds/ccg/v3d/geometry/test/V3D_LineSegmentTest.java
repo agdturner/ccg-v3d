@@ -515,18 +515,18 @@ public class V3D_LineSegmentTest extends V3D_Test {
         V3D_LineSegment l0 = new V3D_LineSegment(pP1P0P0, pP1P1P0, oom, rm);
         V3D_Line l1 = new V3D_Line(pP0P0P0, pP0P0P1, oom, rm);
         V3D_Geometry expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        V3D_Geometry result = l0.getLineOfIntersection(l1, oom, rm);
+        V3D_Geometry result = l0.getLineOfIntersect(l1, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 2
         l1 = new V3D_Line(pP0P0P0, pP0P1P0, oom, rm);
         expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        result = l0.getLineOfIntersection(l1, oom, rm);
+        result = l0.getLineOfIntersect(l1, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 3
         l0 = new V3D_LineSegment(pP1P0P1, pP1P0P2, oom, rm);
         l1 = new V3D_Line(pN1P0P0, pN2P0P0, oom, rm);
         expResult = new V3D_LineSegment(pP1P0P0, pP1P0P1, oom, rm);
-        result = l0.getLineOfIntersection(l1, oom, rm);
+        result = l0.getLineOfIntersect(l1, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
 //        // Test 4
 //        l0 = new V3D_LineSegment(pP1P0P0, pP0P1P0, oom, rm);
@@ -547,23 +547,23 @@ public class V3D_LineSegmentTest extends V3D_Test {
         V3D_LineSegment l0 = new V3D_LineSegment(pP1P0P0, pP1P1P0, oom, rm);
         V3D_LineSegment l1 = new V3D_LineSegment(pP0P0P0, pP0P0P1, oom, rm);
         V3D_LineSegment expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        V3D_LineSegment result = l0.getLineOfIntersection(l1, oom, rm);
+        V3D_LineSegment result = l0.getLineOfIntersect(l1, oom, rm);
         assertTrue(expResult.equalsIgnoreDirection(result, oom, rm));
         // Test 2
         l1 = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        result = l0.getLineOfIntersection(l1, oom, rm);
+        result = l0.getLineOfIntersect(l1, oom, rm);
         assertNull(result);
         // Test 3
         l0 = new V3D_LineSegment(pP1P0P1, pP1P0P2, oom, rm);
         l1 = new V3D_LineSegment(pN1P0P0, pN2P0P0, oom, rm);
         expResult = new V3D_LineSegment(pN1P0P0, pP1P0P1, oom, rm);
-        result = l0.getLineOfIntersection(l1, oom, rm);
+        result = l0.getLineOfIntersect(l1, oom, rm);
         assertTrue(expResult.equalsIgnoreDirection(result, oom, rm));
         // Test 4
         l0 = new V3D_LineSegment(pP1P0P0, pP0P1P0, oom, rm);
         l1 = new V3D_LineSegment(pN1P0P1, pN1P1P0, oom, rm);
         expResult = new V3D_LineSegment(pN1P1P0, pP0P1P0, oom, rm);
-        result = l0.getLineOfIntersection(l1, oom, rm);
+        result = l0.getLineOfIntersect(l1, oom, rm);
         assertTrue(expResult.equalsIgnoreDirection(result, oom, rm));
     }
 }

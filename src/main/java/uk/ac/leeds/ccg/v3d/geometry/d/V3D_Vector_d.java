@@ -489,9 +489,9 @@ public class V3D_Vector_d implements Serializable {
      * @param v The vector to test for orthogonality with.
      * @return {@code true} if this and {@code v} are orthogonal.
      */
-    public boolean isOrthogonal(double epsilon, V3D_Vector_d v) {
+    public boolean isOrthogonal(V3D_Vector_d v, double epsilon) {
         // Special case
-        if (isScalarMultiple(epsilon, v)) {
+        if (isScalarMultiple(v, epsilon)) {
             return false;
         }
         return Math_Double.equals(getDotProduct(v), 0d, epsilon);
@@ -695,7 +695,7 @@ public class V3D_Vector_d implements Serializable {
      * @param v The vector to test if it is a scalar multiple of {@code this}.
      * @return {@code true} if {@code this} and {@code v} are scalar multiples.
      */
-    public boolean isScalarMultiple(double epsilon, V3D_Vector_d v) {
+    public boolean isScalarMultiple(V3D_Vector_d v, double epsilon) {
         if (equals(epsilon, v)) {
             return true;
         } else {

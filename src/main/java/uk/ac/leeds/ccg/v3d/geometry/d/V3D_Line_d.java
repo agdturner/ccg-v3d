@@ -94,16 +94,9 @@ public class V3D_Line_d extends V3D_Geometry_d {
             V3D_Vector_d.ZERO, V3D_Vector_d.K);
 
     /**
-     * If this line is defined by a vector, then the calculation of {@link #q}
-     * may be imprecise. If this line is defined by points, then {@link #v} may
-     * have been imprecisely calculated.
+     * Used along with {@link #offset} to define {@link #p}.
      */
-    public boolean isDefinedByVector;
-
-    /**
-     * Used to define {@link #p}.
-     */
-    protected V3D_Vector_d pv;
+    protected final V3D_Vector_d pv;
 
     /**
      * Used to store a point on the line as derived from {@link #offset} and
@@ -112,8 +105,8 @@ public class V3D_Line_d extends V3D_Geometry_d {
     protected V3D_Point_d p;
 
     /**
-     * Another point on the line that is derived from {@link #offset},
-     * {@link #pv} and {@link v}.
+     * Used to store Another point on the line that is derived from
+     * {@link #offset}, {@link #pv} and {@link v}.
      */
     protected V3D_Point_d q;
 
@@ -128,7 +121,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      */
     public V3D_Line_d(V3D_Line_d l) {
         super(l.env, l.offset);
-        this.pv = new V3D_Vector_d(l.pv);
+        pv = new V3D_Vector_d(l.pv);
         if (l.p != null) {
             this.p = new V3D_Point_d(l.p);
         }
@@ -136,7 +129,6 @@ public class V3D_Line_d extends V3D_Geometry_d {
             this.q = new V3D_Point_d(l.q);
         }
         this.v = new V3D_Vector_d(l.v);
-        this.isDefinedByVector = l.isDefinedByVector;
     }
 
     /**
@@ -151,11 +143,11 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * {@link V3D_Vector_d#ZERO}.
      *
      * @param env What {@link #env} is set to.
-     * @param p What {@link #pv} is set to.
-     * @param q Another point on the line from which {@link #v} is derived.
+     * @param pv What {@link #pv} is set to.
+     * @param v What {@link #v} is set to.
      */
-    public V3D_Line_d(V3D_Environment_d env, V3D_Vector_d p, V3D_Vector_d q) {
-        this(env, V3D_Vector_d.ZERO, p, q);
+    public V3D_Line_d(V3D_Environment_d env, V3D_Vector_d pv, V3D_Vector_d v) {
+        this(env, V3D_Vector_d.ZERO, pv, v);
     }
 
     /**
@@ -164,85 +156,49 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      * @param pv What {@link #pv} is cloned from.
-     * @param qv Used to calculate {@link q} and {@link #v} (which is calculated
-     * by taking the difference between pv and qv.
+     * @param v What {@link #v} is set to.
      */
-    public V3D_Line_d(V3D_Environment_d env, V3D_Vector_d offset, V3D_Vector_d pv,
-            V3D_Vector_d qv) {
-        super(env, offset);
-        this.pv = new V3D_Vector_d(pv);
-        if (pv.equals(qv)) {
-            throw new RuntimeException("" + pv + " and " + qv + " are the same"
-                    + " so do not define a line.");
-        }
-        q = new V3D_Point_d(env, offset, qv);
-        v = qv.subtract(pv);
-        isDefinedByVector = false;
-    }
-
-    /**
-     * {@code v} should not be the zero vector {@code <0,0,0>}. {@link #offset}
-     * is set to {@link V3D_Vector_d#ZERO}.
-     *
-     * @param env What {@link #env} is set to.
-     * @param p What {@link #pv} is cloned from.
-     * @param v The vector defining the line from {@link #pv}. What {@link #v}
-     * is cloned from.
-     * @param flag To distinguish this method from
-     * {@link #V3D_Line_d(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Vector_d, uk.ac.leeds.ccg.v3d.geometry.d.V3D_Vector_d)}
-     */
-    public V3D_Line_d(V3D_Environment_d env, V3D_Vector_d p, V3D_Vector_d v, boolean flag) {
-        this(env, V3D_Vector_d.ZERO, p, v, flag);
-    }
-
-    /**
-     * Checks to ensure v is not the zero vector {@code <0,0,0>}.
-     *
-     * @param p What {@link #pv} is set to.
-     * @param v The vector defining the line from {@link #pv}.
-     */
-    public V3D_Line_d(V3D_Point_d p, V3D_Vector_d v) {
-        this(p.env, p.offset, p.rel, v, true);
-    }
-
-    /**
-     * Checks to ensure v is not the zero vector {@code <0,0,0>}.
-     *
-     * @param env What {@link #env} is set to.
-     * @param offset What {@link #offset} is set to.
-     * @param p What {@link #pv} is set to.
-     * @param v The vector defining the line from {@link #pv}.
-     * @param flag To distinguish this from
-     * {@link #V3D_Line_d(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Vector_d, uk.ac.leeds.ccg.v3d.geometry.d.V3D_Vector_d, uk.ac.leeds.ccg.v3d.geometry.d.V3D_Vector_d)}
-     * @throws RuntimeException if {@code v.isZero()}.
-     */
-    public V3D_Line_d(V3D_Environment_d env, V3D_Vector_d offset, V3D_Vector_d p, V3D_Vector_d v, boolean flag) {
+    public V3D_Line_d(V3D_Environment_d env, V3D_Vector_d offset,
+            V3D_Vector_d pv, V3D_Vector_d v) {
         super(env, offset);
         if (v.isZero()) {
             throw new RuntimeException("Vector " + v + " is the zero vector "
                     + "which cannot be used to define a line.");
         }
-        this.pv = new V3D_Vector_d(p);
+        this.pv = new V3D_Vector_d(pv);
         this.v = new V3D_Vector_d(v);
-        isDefinedByVector = true;
+    }
+
+    /**
+     * {@code v} should not be the zero vector {@code <0,0,0>}.
+     *
+     * @param p Used to set {@link #env}, {@link #offset}, {@link #pv} and 
+     * {@link #p}.
+     * @param v The vector defining the line from {@link #pv}.
+     */
+    public V3D_Line_d(V3D_Point_d p, V3D_Vector_d v) {
+        this(p.env, p.offset, p.rel, v);
+        this.p = p;
     }
 
     /**
      * Create a new instance.
      *
-     * @param p What {@link #pv} is cloned from.
-     * @param q What {@link #v} is derived from.
+     * @param p Used to set {@link #env}, {@link #offset}, {@link #pv} and 
+     * {@link #p}.
+     * @param q What {@link #q} is set to. Used to derive {@link #v}.
      */
     public V3D_Line_d(V3D_Point_d p, V3D_Point_d q) {
         super(p.env, new V3D_Vector_d(p.offset));
-        V3D_Point_d q2 = new V3D_Point_d(q);
-        q2.setOffset(p.offset);
-        if (p.rel.equals(q2.rel)) {
+        this.q = new V3D_Point_d(q);
+        this.q.setOffset(p.offset);
+        if (p.rel.equals(this.q.rel)) {
             throw new RuntimeException("Points " + p + " and " + q
                     + " are the same and so do not define a line.");
         }
         pv = new V3D_Vector_d(p.rel);
-        v = q2.rel.subtract(pv);
+        v = this.q.rel.subtract(pv);
+        this.p = p;
     }
 
     @Override
@@ -350,12 +306,13 @@ public class V3D_Line_d extends V3D_Geometry_d {
     public boolean intersects(V3D_Point_d pt) {
         if (getP().equals(pt) || getQ().equals(pt)) {
             return true;
+        } else {
+            V3D_Vector_d dpt = new V3D_Vector_d(
+                    pt.getX() - p.getX(),
+                    pt.getY() - p.getY(),
+                    pt.getZ() - p.getZ());
+            return dpt.isScalarMultiple(v);
         }
-        V3D_Vector_d dpt = new V3D_Vector_d(
-                pt.getX() - p.getX(),
-                pt.getY() - p.getY(),
-                pt.getZ() - p.getZ());
-        return dpt.isScalarMultiple(v);
     }
 
     /**
@@ -367,12 +324,13 @@ public class V3D_Line_d extends V3D_Geometry_d {
     public boolean intersects(V3D_Point_d pt, double epsilon) {
         if (getP().equals(epsilon, pt) || getQ().equals(epsilon, pt)) {
             return true;
+        } else {
+            V3D_Vector_d dpt = new V3D_Vector_d(
+                    pt.getX() - p.getX(),
+                    pt.getY() - p.getY(),
+                    pt.getZ() - p.getZ());
+            return dpt.isScalarMultiple(v, epsilon);
         }
-        V3D_Vector_d dpt = new V3D_Vector_d(
-                pt.getX() - p.getX(),
-                pt.getY() - p.getY(),
-                pt.getZ() - p.getZ());
-        return dpt.isScalarMultiple(epsilon, v);
     }
 
     /**
@@ -493,15 +451,15 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return {@code true} If this and {@code l} are parallel.
      */
     public boolean isParallel(V3D_Line_d l, double epsilon) {
-        return v.isScalarMultiple(epsilon, l.v);
+        return v.isScalarMultiple(l.v, epsilon);
     }
 
     /**
-     * Computes and returns the intersect of {@code this} and {@code l}. This 
+     * Computes and returns the intersect of {@code this} and {@code l}. This
      * first checks if the lines are parallel. Then if parallel if coincident.
-     * Two lines are considered equal if the distance between them is less
-     * than epsilon.
-     * 
+     * Two lines are considered equal if the distance between them is less than
+     * epsilon.
+     *
      * @param l The line to get the intersection with {@code this}.
      * @param epsilon The tolerance within which vector components are
      * considered equal.
@@ -509,27 +467,27 @@ public class V3D_Line_d extends V3D_Geometry_d {
      */
     public V3D_Geometry_d getIntersect(V3D_Line_d l, double epsilon) {
         // Special case of parallel lines.
-        V3D_Point_d tp = getP();
         if (isParallel(l, epsilon)) {
-            if (l.intersects(tp, epsilon)) {
+            if (l.intersects(getP(), epsilon)) {
                 // If lines are coincident return this.
                 return this;
             } else {
-                if (this.getDistance(l, epsilon) < epsilon) {
+                if (getDistance(l, epsilon) < epsilon) {
                     return this;
+                } else {
+                    return null;
                 }
-                return null;
             }
         }
         return getIntersect0(l, epsilon);
     }
 
     /**
-     * Computes and returns the intersect of {@code this} and {@code l}. This 
+     * Computes and returns the intersect of {@code this} and {@code l}. This
      * first checks if the lines are parallel. Then if parallel if coincident.
-     * Two lines are considered equal if the distance between them is less
-     * than epsilon.
-     * 
+     * Two lines are considered equal if the distance between them is less than
+     * epsilon.
+     *
      * @param l The line to get the intersection with {@code this}.
      * @param epsilon The tolerance within which vector components are
      * considered equal.
@@ -607,7 +565,6 @@ public class V3D_Line_d extends V3D_Geometry_d {
                                 //p.getX(oom) + v.getDX(oom) * lamda = l.pv.getX(oom) + l.v.getDX(oom) * mu
                                 //p.getY(oom) + v.getDY(oom) * lamda = l.pv.getY(oom) + l.v.getDY(oom) * mu
                                 //p.getZ(oom) + v.getDZ(oom) * lamda = l.pv.getZ(oom) + l.v.getDZ(oom) * mu
-
                             } else {
                                 if (tv.dz == 0d) {
                                     z = tp.getZ();
@@ -912,7 +869,6 @@ public class V3D_Line_d extends V3D_Geometry_d {
             return null; // Should this depend on epsilon?
         }
         double mua = num / (den);
-        double mub = (a + (b * (mua))) / -d;
         V3D_Point_d pi = new V3D_Point_d(env,
                 (tp.getX() - (mua * (qp.dx))),
                 (tp.getY() - (mua * (qp.dy))),
@@ -921,11 +877,12 @@ public class V3D_Line_d extends V3D_Geometry_d {
         if (intersects(pi, epsilon) && l.intersects(pi, epsilon)) {
             return pi;
         }
+        double mub = (a + (b * (mua))) / -d;
         V3D_Point_d qi = new V3D_Point_d(env,
                 (lp.getX() + (mub * (lqlp.dx))),
                 (lp.getY() + (mub * (lqlp.dy))),
                 (lp.getZ() + (mub * (lqlp.dz))));
-        // If point qv is on both lines then return this as the intersection.
+        // If point is on both lines then return this as the intersection.
         if (intersects(qi, epsilon) && l.intersects(qi, epsilon)) {
             return qi;
         }
@@ -977,14 +934,33 @@ public class V3D_Line_d extends V3D_Geometry_d {
     public V3D_Point_d getPointOfIntersect(V3D_Point_d pt, double epsilon) {
         if (intersects(pt, epsilon)) {
             return pt;
-        }
-        V3D_Plane_d ptv = new V3D_Plane_d(pt, v);
-        V3D_Geometry_d i = ptv.getIntersect(this, epsilon);
-        if (i instanceof V3D_Line_d) {
-            return pt;
         } else {
-            return (V3D_Point_d) i;
+            return getPointOfIntersect(pt, true, epsilon);
         }
+//        V3D_Plane_d ptv = new V3D_Plane_d(pt, v);
+//        V3D_Geometry_d i = ptv.getIntersect(this, epsilon);
+//        if (i instanceof V3D_Line_d) {
+//            return pt;
+//        } else {
+//            return (V3D_Point_d) i;
+//        }
+    }
+    
+    /**
+     * Adapted from:
+     * https://math.stackexchange.com/questions/1521128/given-a-line-and-a-point-in-3d-how-to-find-the-closest-point-on-the-line
+     *
+     * @param pt The point projected onto this.
+     * @param noint A flag indicating there is no intersection.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @return A point on {@code this} which is the shortest distance from
+     * {@code pt}.
+     */
+    public V3D_Point_d getPointOfIntersect(V3D_Point_d pt, boolean noint, 
+        double epsilon) {
+        V3D_Plane_d ptv = new V3D_Plane_d(pt, v);
+        return (V3D_Point_d) ptv.getIntersect(this, epsilon);
     }
 
     /**
@@ -1005,12 +981,10 @@ public class V3D_Line_d extends V3D_Geometry_d {
      */
     public V3D_LineSegment_d getLineOfIntersect(V3D_Line_d l,
             double epsilon) {
-        if (isParallel(l, epsilon)) {
+        if (isParallel(l, epsilon)
+                || getIntersect(l, epsilon) != null) {
             return null;
-        }
-        if (getIntersect(l, epsilon) != null) {
-            return null;
-        }
+        } else {
         V3D_Point_d tp = getP();
         V3D_Point_d lp = l.getP();
         V3D_Vector_d A = new V3D_Vector_d(tp, lp);
@@ -1018,13 +992,11 @@ public class V3D_Line_d extends V3D_Geometry_d {
         V3D_Vector_d B = v.reverse();
         //V3D_Vector_d C = l.getV().reverse();
         V3D_Vector_d C = l.v.reverse();
-
         double AdB = A.getDotProduct(B);
         double AdC = A.getDotProduct(C);
         double CdB = C.getDotProduct(B);
         double BdB = B.getDotProduct(B);
         double CdC = C.getDotProduct(C);
-
         double ma = (AdC * (CdB)) - (AdB * (CdC))
                 / ((BdB * (CdC)) - (CdB * (CdB)));
         double mb = ((ma * (CdB)) + (AdC)) / (CdC);
@@ -1036,6 +1008,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
             return null;
         } else {
             return new V3D_LineSegment_d(loip, loiq);
+        }
         }
     }
 
@@ -1204,7 +1177,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
     @Override
     public void translate(V3D_Vector_d v) {
         super.translate(v);
-        //pv.translate(v);
+        pv.add(v);
         if (p != null) {
             p.translate(v);
         }
@@ -1234,73 +1207,28 @@ public class V3D_Line_d extends V3D_Geometry_d {
     }
 
     /**
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
      * @param ps The points to test for collinearity.
      * @return {@code true} iff all points are collinear with l.
      */
-    public static boolean isCollinear(V3D_Point_d... ps) {
+    public static boolean isCollinear(double epsilon, V3D_Point_d... ps) {
         V3D_Line_d l = getLine(ps);
         if (l == null) {
             return false;
+        } else {
+            return isCollinear(epsilon, l, ps);
         }
-        return isCollinear(l, ps);
-    }
-
-    /**
-     * There should be at least two different points in points. This does not
-     * check ps are collinear.
-     *
-     * @param ps Any number of points, but with two being different.
-     * @return A line defined by any two different points or null if the points
-     * are coincident.
-     */
-    public static V3D_Line_d getLine(V3D_Point_d... ps) {
-        var p0 = ps[0];
-        for (var p : ps) {
-            if (!p.equals(p0)) {
-                return new V3D_Line_d(p0, p);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param l The line to test points are collinear with.
-     * @param ps The points to test if they are collinear with l.
-     * @return {@code true} iff all points are collinear with l.
-     */
-    public static boolean isCollinear(V3D_Line_d l,
-            V3D_Point_d... ps) {
-        for (var p : ps) {
-            if (!l.intersects(p)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
      * @param epsilon The tolerance within which vector components are
      * considered equal.
-     * @param ps The points to test for collinear within epsilon tolerance.
-     * @return {@code true} iff all points are collinear with l given epsilon
-     * tolerance.
-     */
-    public static boolean isCollinear(double epsilon, V3D_Point_d... ps) {
-        V3D_Line_d l = getLine(epsilon, ps);
-        if (l == null) {
-            return false;
-        }
-        return isCollinear(epsilon, l, ps);
-    }
-
-    /**
      * @param l The line to test points are collinear with.
-     * @param epsilon The tolerance within which vector components are
-     * considered equal.
      * @param ps The points to test if they are collinear with l.
      * @return {@code true} iff all points are collinear with l.
      */
-    public static boolean isCollinear(double epsilon, V3D_Line_d l,
+    public static boolean isCollinear(double epsilon, V3D_Line_d l, 
             V3D_Point_d... ps) {
         for (var p : ps) {
             if (!l.intersects(p, epsilon)) {
@@ -1312,29 +1240,26 @@ public class V3D_Line_d extends V3D_Geometry_d {
 
     /**
      * There should be at least two different points in points. This does not
-     * check for collinearity of all the points. It returns a line defined by
-     * the first points that have the greatest distance between them.
+     * check ps are collinear.
      *
-     * @param epsilon The tolerance within which vector components are
-     * considered equal.
-     * @param points Any number of points, but with two being different.
+     * @param ps Any number of points, but with two being different.
      * @return A line defined by any two different points or null if the points
      * are coincident.
      */
-    public static V3D_Line_d getLine(double epsilon, V3D_Point_d... points) {
-        if (points.length < 2) {
+    public static V3D_Line_d getLine(V3D_Point_d... ps) {
+        if (ps.length < 2) {
             return null;
         }
         // Find the points which are furthest apart.
         double max = 0d;
         V3D_Point_d a = null;
         V3D_Point_d b = null;
-        for (int i = 0; i < points.length; i++) {
-            for (int j = i + 1; j < points.length; j++) {
-                double d2 = points[i].getDistanceSquared(points[j]);
+        for (int i = 0; i < ps.length; i++) {
+            for (int j = i + 1; j < ps.length; j++) {
+                double d2 = ps[i].getDistanceSquared(ps[j]);
                 if (d2 > max) {
-                    a = points[i];
-                    b = points[j];
+                    a = ps[i];
+                    b = ps[j];
                     max = d2;
                 }
             }

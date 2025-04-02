@@ -25,36 +25,36 @@ import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VTriangle_d;
 
 /**
- * For representing and processing triangles in 3D. A triangle has a non-zero
- * area. The corner points are {@link #pl}, {@link #q} and {@link #r}. The
- * following depicts a generic triangle {@code
- *   p                                               q
- * pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
- *     \~                   mpq                   ~/
- *      \  ~                 |                 ~  /
- *       \    ~              |              ~    /
- *        \      ~           |           ~      /
- *   -n    \        ~        |        ~        /
- *          \n         ~     |     ~          /
- *           \      -n    ~  |  ~            /
- *            \              c              /
- *             \          ~  |  ~   +n     /
- *              \      ~     |     ~      / +n
- *               \  ~        |        ~  /          +n
- *                + mrp      |      mqr +                   +n
- *             rp  \         |         /  qr      normal heading out from the page.
- *                  \        |        /
- *                   \       |       /
- *                    \      |      /
- *                     \     |     /
- *                      \    |    /
- *                       \   |   /
- *                        \  |  /
- *                         \ | /
- *                          \|/
- *                           *
- *                           r
- * }
+ * For representing and processing triangles in 3D.A triangle has a non-zero
+ area.The corner points are {@link #pl}, {@link #qv} and {@link #rv}.The
+ following depicts a generic triangle {@code
+   pv                                               qv
+ pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
+     \~                   mpq                   ~/
+      \  ~                 |                 ~  /
+       \    ~              |              ~    /
+        \      ~           |           ~      /
+   -n    \        ~        |        ~        /
+          \n         ~     |     ~          /
+           \      -n    ~  |  ~            /
+            \              c              /
+             \          ~  |  ~   +n     /
+              \      ~     |     ~      / +n
+               \  ~        |        ~  /          +n
+                + mrp      |      mqr +                   +n
+             rp  \         |         /  qr      normal heading out from the page.
+                  \        |        /
+                   \       |       /
+                    \      |      /
+                     \     |     /
+                      \    |    /
+                       \   |   /
+                        \  |  /
+                         \ | /
+                          \|/
+
+                           rv
+ }
  *
  * @author Andy Turner
  * @version 1.0
@@ -66,17 +66,17 @@ public class V3D_Triangle_d extends V3D_Area_d {
     /**
      * Defines one of the corners of the triangle.
      */
-    protected V3D_Vector_d p;
+    protected V3D_Vector_d pv;
 
     /**
      * Defines one of the corners of the triangle.
      */
-    protected V3D_Vector_d q;
+    protected V3D_Vector_d qv;
 
     /**
      * Defines one of the corners of the triangle.
      */
-    protected V3D_Vector_d r;
+    protected V3D_Vector_d rv;
 
     /**
      * For storing the line segment from {@link #getP()} to {@link #getQ()} for
@@ -140,9 +140,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     public V3D_Triangle_d(V3D_Triangle_d t) {
         super(t.env, new V3D_Vector_d(t.offset), t.pl);
-        p = new V3D_Vector_d(t.p);
-        q = new V3D_Vector_d(t.q);
-        r = new V3D_Vector_d(t.r);
+        pv = new V3D_Vector_d(t.pv);
+        qv = new V3D_Vector_d(t.qv);
+        rv = new V3D_Vector_d(t.rv);
     }
 
     /**
@@ -154,18 +154,20 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d offset,
             V3D_VTriangle_d t) {
-        this(env, offset, new V3D_Vector_d(t.pq.p), new V3D_Vector_d(t.pq.q),
+        this(env, offset, 
+                new V3D_Vector_d(t.pq.p), 
+                new V3D_Vector_d(t.pq.q),
                 new V3D_Vector_d(t.qr.q));
     }
 
     /**
-     * Creates a new triangle. {@link #offset} is set to
-     * {@link V3D_Vector_d#ZERO}.
+     * Creates a new triangle.{@link #offset} is set to
+    {@link V3D_Vector_d#ZERO}.
      *
      * @param env What {@link #env} is set to.
      * @param p What {@link #pl} is set to.
-     * @param q What {@link #q} is set to.
-     * @param r What {@link #r} is set to.
+     * @param q What {@link #qv} is set to.
+     * @param r What {@link #rv} is set to.
      */
     public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d p, V3D_Vector_d q,
             V3D_Vector_d r) {
@@ -173,52 +175,49 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * Creates a new triangle.
-     *
-     * Warning p, q and r must all be different. No checks are done for
-     * efficiency reasons.
+     * Creates a new triangle. {@code pv}, {@code qv} and {@code rv} must all be
+     * different.
      *
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
-     * @param p What {@link #p} is set to.
-     * @param q What {@link #q} is set to.
-     * @param r What {@link #r} is set to.
+     * @param pv What {@link #pv} is set to.
+     * @param qv What {@link #qv} is set to.
+     * @param rv What {@link #rv} is set to.
      */
     public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d offset,
-            V3D_Vector_d p, V3D_Vector_d q, V3D_Vector_d r) {
-        super(env, offset, new V3D_Plane_d(env, offset, p, q, r));
-        this.p = p;
-        this.q = q;
-        this.r = r;
+            V3D_Vector_d pv, V3D_Vector_d qv, V3D_Vector_d rv) {
+        super(env, offset, new V3D_Plane_d(env, offset, pv, qv, rv));
+        this.pv = pv;
+        this.qv = qv;
+        this.rv = rv;
         // Debugging code
-        if (p.equals(q) || p.equals(r) || q.equals(r)) {
-            throw new RuntimeException("p.equals(q) || p.equals(r) || q.equals(r)");
+        if (pv.equals(qv) || pv.equals(rv) || qv.equals(rv)) {
+            throw new RuntimeException("pv.equals(qv) || pv.equals(rv) "
+                    + "|| qv.equals(rv)");
         }
     }
 
     /**
-     * Creates a new triangle.
+     * Creates a new triangle assuming pv, qv and rv are different.
      *
-     * Warning p, q and r must all be different. No checks are done for
-     * efficiency reasons.
-     *
-     * @param pl What {@link #pl} is set to.
+     * @param pl What {@link #pl} is set to. This must be the plane of the
+     * triangle.
      * @param offset What {@link #offset} is set to.
-     * @param p What {@link #p} is set to.
-     * @param q What {@link #q} is set to.
-     * @param r What {@link #r} is set to.
+     * @param pv What {@link #pv} is set to.
+     * @param qv What {@link #qv} is set to.
+     * @param rv What {@link #rv} is set to.
      */
     public V3D_Triangle_d(V3D_Plane_d pl, V3D_Vector_d offset,
-            V3D_Vector_d p, V3D_Vector_d q, V3D_Vector_d r) {
+            V3D_Vector_d pv, V3D_Vector_d qv, V3D_Vector_d rv) {
         super(pl.env, offset, pl);
-        this.p = p;
-        this.q = q;
-        this.r = r;
+        this.pv = pv;
+        this.qv = qv;
+        this.rv = rv;
         // Debugging code
-        if (p.equals(q) || p.equals(r) || q.equals(r)) {
-            throw new RuntimeException("p.equals(q) || p.equals(r) || q.equals(r)");
+        if (pv.equals(qv) || pv.equals(rv) || qv.equals(rv)) {
+            throw new RuntimeException("p.equals(q) || p.equals(r) "
+                    + "|| q.equals(r)");
         }
-
     }
 
     /**
@@ -231,7 +230,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     public V3D_Triangle_d(V3D_LineSegment_d l, V3D_Vector_d r) {
         this(l.env, new V3D_Vector_d(l.offset), new V3D_Vector_d(l.l.pv),
-                new V3D_Vector_d(l.qv), new V3D_Vector_d(r));
+                l.l.pv.add(l.l.v), new V3D_Vector_d(r));
     }
 
     /**
@@ -240,46 +239,30 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param pl What {@link #pl} is set to.
      * @param ls A line segment representing one of the three edges of the
      * triangle.
-     * @param pt Defines the other point relative to l.offset that defines the
-     * triangle.
+     * @param pt The other point that defines the triangle.
      */
     public V3D_Triangle_d(V3D_Plane_d pl, V3D_LineSegment_d ls, V3D_Point_d pt) {
-        this(pl, new V3D_Vector_d(ls.offset), new V3D_Vector_d(ls.l.pv),
-                new V3D_Vector_d(ls.qv), pt.getVector().subtract(ls.offset));
+        this(pl, new V3D_Vector_d(ls.offset), 
+                new V3D_Vector_d(ls.l.pv),
+                ls.l.pv.add(ls.l.v), 
+                pt.getVector().subtract(ls.offset));
     }
 
     /**
      * Creates a new instance.
      *
      * @param p Used to initialise {@link #offset} and {@link #pl}.
-     * @param q Used to initialise {@link #q}.
-     * @param r Used to initialise {@link #r}.
+     * @param q Used to initialise {@link #qv}.
+     * @param r Used to initialise {@link #rv}.
      */
-    public V3D_Triangle_d(V3D_Point_d p, V3D_Point_d q,
-            V3D_Point_d r) {
+    public V3D_Triangle_d(V3D_Point_d p, V3D_Point_d q, V3D_Point_d r) {
         this(p.env, new V3D_Vector_d(p.offset), new V3D_Vector_d(p.rel),
-                q.getVector().subtract(p.offset), r.getVector().subtract(p.offset));
-//        super(new V3D_Vector_d(p.offset));
-//        this.p = new V3D_Vector_d(p.rel);
-//        this.q = q.getVector().subtract(p.offset);
-//        this.r = r.getVector().subtract(p.offset);
+                q.getVector().subtract(p.offset), 
+                r.getVector().subtract(p.offset));
     }
 
     /**
      * Creates a new triangle.
-     *
-     * @param ls A line segment.
-     * @param pt A point.
-     */
-    public V3D_Triangle_d(V3D_LineSegment_d ls, V3D_Point_d pt) {
-        this(ls.getP(), ls.getQ(), pt);
-    }
-
-    /**
-     * Creates a new triangle.
-     *
-     * Warning p, q and r must all be different. No checks are done for
-     * efficiency reasons.
      *
      * @param pl What {@link #pl} is set to.
      * @param p A point.
@@ -288,136 +271,74 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     public V3D_Triangle_d(V3D_Plane_d pl, V3D_Point_d p,
             V3D_Point_d q, V3D_Point_d r) {
-        this(pl, new V3D_Vector_d(p.offset), new V3D_Vector_d(p.rel),
-                q.getVector().subtract(p.offset), r.getVector().subtract(p.offset));
+        this(pl, new V3D_Vector_d(p.offset), 
+                new V3D_Vector_d(p.rel),
+                q.getVector().subtract(p.offset), 
+                r.getVector().subtract(p.offset));
     }
 
-//    /**
-//     * Creates a new instance.
-//     *
-//     * @param pt A point giving the direction of the normal vector.
-//     * @param p Used to initialise {@link #offset} and {@link #pl}.
-//     * @param q Used to initialise {@link #q}.
-//     * @param r Used to initialise {@link #r}.
-//     */
-//    public V3D_Triangle_d(V3D_Point_d pt, V3D_Point_d p, 
-//            V3D_Point_d q, V3D_Point_d r) {
-//        super(p.offset);
-//        this.p = p.rel;
-//        this.q = q.getVector().subtract(p.offset);
-//        this.r = r.getVector().subtract(p.offset);
-//    }
     /**
-     * Creates a new triangle.
-     *
-     * @param env What {@link #env} is set to.
-     * @param offset What {@link #offset} is set to.
-     * @param t The triangle to initialise this from.
-     */
-    public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d offset,
-            V3D_Triangle_d t) {
-        this(env, offset,
-                new V3D_Vector_d(t.p).add(t.offset).subtract(offset),
-                new V3D_Vector_d(t.q).add(t.offset).subtract(offset),
-                new V3D_Vector_d(t.r).add(t.offset).subtract(offset));
-    }
-
-//    /**
-//     * Return the plane that this triangle is on. The direction of the normal is
-//     * towards the observer from the clockwise orientation of
-//     * {@link #p}, {@link q}, and {@link r}.
-//     *
-//     * @return {@link #pl} if {@link pl} was defined with at least epsilon
-//     * precision.
-//     * @param epsilon Used to check vectors are not scalar multiples.
-//     */
-//    public final V3D_Plane_d getPl(double epsilon) {
-//        if (pl == null) {
-//            initPl(epsilon);
-//        } else if (epsilon < plEpsilon) {
-//            initPl(epsilon);
-//        }
-//        return pl;
-//    }
-//
-//    private void initPl(double epsilon) {
-//        pl = new V3D_Plane_d(offset, p, q, r, epsilon);
-//        plEpsilon = epsilon;
-//    }
-//    /**
-//     * @param pt The normal will point to this side of the plane.
-//     * @return {@link #pl} accurate to at least the oom precision using
-//     * RoundingMode rm.
-//     * @param epsilon Used to check vectors are not scalar multiples.
-//     */
-//    public final V3D_Plane_d getPl(V3D_Point_d pt, double epsilon) {
-//        if (pl == null) {
-//            pl = new V3D_Plane_d(pt, offset, p, q, r, epsilon);
-//        }
-//        return pl;
-//    }
-    /**
-     * @return A new point based on {@link #p} and {@link #offset}.
+     * @return A new point based on {@link #pv} and {@link #offset}.
      */
     public final V3D_Point_d getP() {
-        return new V3D_Point_d(env, offset, p);
+        return new V3D_Point_d(env, offset, pv);
     }
 
     /**
-     * @return A new point based on {@link #q} and {@link #offset}.
+     * @return A new point based on {@link #qv} and {@link #offset}.
      */
     public final V3D_Point_d getQ() {
-        return new V3D_Point_d(env, offset, q);
+        return new V3D_Point_d(env, offset, qv);
     }
 
     /**
-     * @return A new point based on {@link #r} and {@link #offset}.
+     * @return A new point based on {@link #rv} and {@link #offset}.
      */
     public final V3D_Point_d getR() {
-        return new V3D_Point_d(env, offset, r);
+        return new V3D_Point_d(env, offset, rv);
     }
 
     /**
      * For getting the line segment from {@link #getP()} to {@link #getQ()}.
      *
-     * @return Line segment from r to pv.
+     * @return Line segment from rv to pv.
      */
     public final V3D_LineSegment_d getPQ() {
         if (pq == null) {
-            pq = new V3D_LineSegment_d(env, offset, p, q);
+            pq = new V3D_LineSegment_d(env, offset, pv, qv);
         }
         return pq;
     }
 
     /**
-     * @return {@code q.subtract(p)}
+     * @return {@code qv.subtract(pv)}
      */
     public final V3D_Vector_d getPQV() {
-        return q.subtract(p);
+        return qv.subtract(pv);
     }
 
     /**
-     * @return {@code r.subtract(q)}
+     * @return {@code rv.subtract(qv)}
      */
     public final V3D_Vector_d getQRV() {
-        return r.subtract(q);
+        return rv.subtract(qv);
     }
 
     /**
-     * @return {@code p.subtract(r)}
+     * @return {@code pv.subtract(rv)}
      */
     public final V3D_Vector_d getRPV() {
-        return p.subtract(r);
+        return pv.subtract(rv);
     }
 
     /**
      * For getting the line segment from {@link #getQ()} to {@link #getR()}.
      *
-     * @return Line segment from q to r.
+     * @return Line segment from qv to rv.
      */
     public final V3D_LineSegment_d getQR() {
         if (qr == null) {
-            qr = new V3D_LineSegment_d(env, offset, q, r);
+            qr = new V3D_LineSegment_d(env, offset, qv, rv);
         }
         return qr;
     }
@@ -425,11 +346,11 @@ public class V3D_Triangle_d extends V3D_Area_d {
     /**
      * For getting the line segment from {@link #getR()} to {@link #getP()}.
      *
-     * @return Line segment from r to p.
+     * @return Line segment from rv to pv.
      */
     public final V3D_LineSegment_d getRP() {
         if (rp == null) {
-            rp = new V3D_LineSegment_d(env, offset, r, p);
+            rp = new V3D_LineSegment_d(env, offset, rv, pv);
         }
         return rp;
     }
@@ -724,7 +645,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * Get the intersection between the triangle and the ray {@code r}.
+     * Get the intersection between the triangle and the ray {@code rv}.
      *
      * @param r The ray to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -738,7 +659,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
         if (g == null) {
             return null;
         } else if (g instanceof V3D_Point_d gp) {
-//            if (r.getPl().isOnSameSide(gp, r.l.getQ(), epsilon)) {
+//            if (rv.getPl().isOnSameSide(gp, rv.l.getQ(), epsilon)) {
 //                return gp;
 //            } else {
 //                return null;
@@ -765,15 +686,15 @@ public class V3D_Triangle_d extends V3D_Area_d {
                     throw new RuntimeException();
                 }
             }
-//            if (r.intersects00(lsp, epsilon)) {
-//                if (r.intersects00(lsq, epsilon)) {
+//            if (rv.intersects00(lsp, epsilon)) {
+//                if (rv.intersects00(lsq, epsilon)) {
 //                    return ls;
 //                } else {
-//                    return V3D_LineSegment_d.getGeometry(r.l.getP(), lsp, epsilon);
+//                    return V3D_LineSegment_d.getGeometry(rv.l.getP(), lsp, epsilon);
 //                }
 //            } else {
-//                if (r.intersects00(lsq, epsilon)) {
-//                    return V3D_LineSegment_d.getGeometry(r.l.getP(), lsq, epsilon);
+//                if (rv.intersects00(lsq, epsilon)) {
+//                    return V3D_LineSegment_d.getGeometry(rv.l.getP(), lsq, epsilon);
 //                } else {
 //                    throw new RuntimeException();
 //                }
@@ -1368,9 +1289,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @return The centroid point.
      */
     public V3D_Point_d getCentroid() {
-        double dx = (p.dx + q.dx + r.dx) / 3d;
-        double dy = (p.dy + q.dy + r.dy) / 3d;
-        double dz = (p.dz + q.dz + r.dz) / 3d;
+        double dx = (pv.dx + qv.dx + rv.dx) / 3d;
+        double dy = (pv.dy + qv.dy + rv.dy) / 3d;
+        double dz = (pv.dz + qv.dz + rv.dz) / 3d;
         return new V3D_Point_d(env, offset, new V3D_Vector_d(dx, dy, dz));
     }
 
@@ -1480,9 +1401,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
             res += pad + " pl=(" + pl.toString(pad + " ") + "),\n";
         }
         res += pad + " offset=(" + this.offset.toString(pad + " ") + "),\n"
-                + pad + " p=(" + this.p.toString(pad + " ") + "),\n"
-                + pad + " q=(" + this.q.toString(pad + " ") + "),\n"
-                + pad + " r=(" + this.r.toString(pad + " ") + "))";
+                + pad + " p=(" + this.pv.toString(pad + " ") + "),\n"
+                + pad + " q=(" + this.qv.toString(pad + " ") + "),\n"
+                + pad + " r=(" + this.rv.toString(pad + " ") + "))";
         return res;
     }
 
@@ -1496,9 +1417,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
             res += pad + " pl=(" + pl.toStringSimple(pad + " ") + "),\n";
         }
         res += pad + " offset=(" + this.offset.toStringSimple("") + "),\n"
-                + pad + " p=(" + this.p.toStringSimple("") + "),\n"
-                + pad + " q=(" + this.q.toStringSimple("") + "),\n"
-                + pad + " r=(" + this.r.toStringSimple("") + "))";
+                + pad + " p=(" + this.pv.toStringSimple("") + "),\n"
+                + pad + " q=(" + this.qv.toStringSimple("") + "),\n"
+                + pad + " r=(" + this.rv.toStringSimple("") + "))";
         return res;
     }
 
@@ -1533,7 +1454,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
                     return V3D_LineSegment_d.getGeometry(r, q, epsilon);
                 } else {
                     if (V3D_Line_d.isCollinear(epsilon, p, q, r)) {
-                        //return V3D_LineSegment_d.getGeometry(p, q, r, epsilon);
+                        //return V3D_LineSegment_d.getGeometry(pv, qv, rv, epsilon);
                         V3D_LineSegment_d pq = new V3D_LineSegment_d(p, q);
                         if (pq.intersects(r, epsilon)) {
                             return pq;
@@ -1553,9 +1474,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * Useful in calculating the intersection of two triangles. If there are 3
-     * unique points then a triangle is returned. If there are 4 or more unique
-     * points, then a V3D_ConvexHullCoplanar is returned.
+     * Useful in calculating the intersection of two triangles.If there are 3
+ unique points then a triangle is returned. If there are 4 or more unique
+ points, then a V3D_ConvexHullCoplanar is returned.
      *
      * @param l1 A line segment.
      * @param l2 A line segment.
@@ -1563,7 +1484,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @return either {@code pl} or {@code new V3D_LineSegment(pl, qv)} or
-     * {@code new V3D_Triangle(pl, qv, r)}
+     * {@code new V3D_Triangle(pl, qv, rv)}
      */
     protected static V3D_FiniteGeometry_d getGeometry(
             V3D_LineSegment_d l1, V3D_LineSegment_d l2,
@@ -1610,7 +1531,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
 //     * @param epsilon The tolerance within which two vectors are regarded as
 //     * equal.
 //     * @return either {@code pl} or {@code new V3D_LineSegment(pl, qv)} or
-//     * {@code new V3D_Triangle(pl, qv, r)}
+//     * {@code new V3D_Triangle(pl, qv, rv)}
 //     */
 //    protected static V3D_FiniteGeometry_d getGeometry2(
 //            V3D_LineSegment_d l1, V3D_LineSegment_d l2, double epsilon) {
@@ -1637,8 +1558,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
 //            default:
 //                V3D_Point_d[] pts = new V3D_Point_d[points.size()];
 //                int i = 0;
-//                for (var p : points) {
-//                    pts[i] = p;
+//                for (var pv : points) {
+//                    pts[i] = pv;
 //                    i++;
 //                }
 //                V3D_Plane_d pl = new V3D_Plane_d(pts[0], pts[1], pts[2]);
@@ -2310,7 +2231,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @param ls A line segment to test for intersection.
-     * @param faces The faces to test for intersection with p.
+     * @param faces The faces to test for intersection with pv.
      * @return {@code true} if {@code this} is intersected by {@code pv}.
      */
     public static boolean intersects(double epsilon,

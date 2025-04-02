@@ -207,7 +207,7 @@ public class V3D_Line_dTest extends V3D_Test_d {
      * Test of getIntersect method, of class V3D_Line_d.
      */
     @Test
-    public void testGetIntersection_V3D_Line_d_double() {
+    public void testGetIntersect_V3D_Line_d_double() {
         System.out.println("getIntersect");
         double epsilon = 1d / 10000000d;
         V3D_Line_d l;
@@ -235,13 +235,15 @@ public class V3D_Line_dTest extends V3D_Test_d {
         assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));
         // Test 4
         l = new V3D_Line_d(pN1N1N1, pP1P1P1);
-        instance = new V3D_Line_d(env, new V3D_Vector_d(3d, 1d, 1d), new V3D_Vector_d(1d, 3d, 3d));
+        instance = new V3D_Line_d(new V3D_Point_d(env, 3d, 1d, 1d), 
+                new V3D_Point_d(env, 1d, 3d, 3d));
         expResult = pP2P2P2;
         result = instance.getIntersect(l, epsilon);
         assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));
         // Test 5
         l = new V3D_Line_d(pN1N1P0, pP1P1P0);
-        instance = new V3D_Line_d(env, new V3D_Vector_d(3d, 3d, 0d), new V3D_Vector_d(3d, 3d, -1d));
+        instance = new V3D_Line_d(new V3D_Point_d(env, 3d, 3d, 0d), 
+                new V3D_Point_d(env, 3d, 3d, -1d));
         expResult = new V3D_Point_d(env, 3d, 3d, 0d);
         result = instance.getIntersect(l, epsilon);
         assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));
@@ -290,10 +292,10 @@ public class V3D_Line_dTest extends V3D_Test_d {
         result = instance.getIntersect(l, epsilon);
         assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));
         // Test 16
-        l = new V3D_Line_d(env, P0N1P1, new V3D_Vector_d(2d, 1d, 3d));
+        l = new V3D_Line_d(pP0N1P1, new V3D_Point_d(env, 2d, 1d, 3d));
         expResult = pP1P0P2;
-        instance = new V3D_Line_d(env, new V3D_Vector_d(1d, 0d, 2d),
-                new V3D_Vector_d(1d, 1d, 3d));
+        instance = new V3D_Line_d(new V3D_Point_d(env, 1d, 0d, 2d),
+                new V3D_Point_d(env, 1d, 1d, 3d));
         result = instance.getIntersect(l, epsilon);
         assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));
         // Test 17 to 18
@@ -331,7 +333,7 @@ public class V3D_Line_dTest extends V3D_Test_d {
         result = instance.getIntersect(l, epsilon);
         assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));
         // Test 22
-        l = new V3D_Line_d(env, P0P1N1, new V3D_Vector_d(2d, 3d, 1d));
+        l = new V3D_Line_d(pP0P1N1, new V3D_Point_d(env, 2d, 3d, 1d));
         expResult = pP1P2P0;
         instance = new V3D_Line_d(pP1P2P0, pP2P2P1);
         result = instance.getIntersect(l, epsilon);
@@ -561,7 +563,8 @@ public class V3D_Line_dTest extends V3D_Test_d {
         // Test 5 https://math.stackexchange.com/a/1658288/756049
         pt = pP1P1P1;
         double third = 1d / 3d;
-        instance = new V3D_Line_d(env, new V3D_Vector_d(-2d, -4d, 5d), new V3D_Vector_d(-1d, -2d, 3d));
+        instance = new V3D_Line_d(new V3D_Point_d(env, -2d, -4d, 5d), 
+                new V3D_Point_d(env, -1d, -2d, 3d));
         V3D_Point_d p2 = new V3D_Point_d(env, third, 2d / 3d, third);
         expResult = p2.getDistance(pt);
         result = instance.getDistance(pt, epsilon);
@@ -688,8 +691,8 @@ public class V3D_Line_dTest extends V3D_Test_d {
         double result;
         // Test 1 
         // https://math.stackexchange.com/questions/2213165/find-shortest-distance-between-lines-in-3d
-        l = new V3D_Line_d(env, new V3D_Vector_d(2d, 6d, -9d), new V3D_Vector_d(3d, 4d, -4d), true);
-        instance = new V3D_Line_d(env, new V3D_Vector_d(-1d, -2d, 3d), new V3D_Vector_d(2d, -6d, 1d), true);
+        l = new V3D_Line_d(env, new V3D_Vector_d(2d, 6d, -9d), new V3D_Vector_d(3d, 4d, -4d));
+        instance = new V3D_Line_d(env, new V3D_Vector_d(-1d, -2d, 3d), new V3D_Vector_d(2d, -6d, 1d));
         expResult = 4.74020116673185d;
         result = instance.getDistance(l, epsilon);
         assertTrue(Math_Double.equals(expResult, result, epsilon));

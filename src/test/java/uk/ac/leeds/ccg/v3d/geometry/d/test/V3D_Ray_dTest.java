@@ -202,7 +202,7 @@ public class V3D_Ray_dTest extends V3D_Test_d {
         V3D_Geometry_d result;
         // Test 1-3 axis with orthoganol plane through origin.
         // Test 1
-        instance = new V3D_Ray_d(env, P0P0P0, N2P0P0, N1P0P0);
+        instance = new V3D_Ray_d(pN2P0P0, pN1P0P0);
         p = V3D_Plane_d.X0;
 //        p = new V3D_Plane_d(new V3D_Environment(),
 //            V3D_Vector.ZERO, V3D_Vector.ZERO, V3D_Vector.J, V3D_Vector.K);
@@ -211,7 +211,7 @@ public class V3D_Ray_dTest extends V3D_Test_d {
         result = instance.getIntersect(p, epsilon);
         assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result));
         // Test 2
-        instance = new V3D_Ray_d(env, P0P0P0, N1P0P0, N2P0P0);
+        instance = new V3D_Ray_d(pN1P0P0, pN2P0P0);
         p = V3D_Plane_d.X0;
         assertNull(instance.getIntersect(p, epsilon));
         
@@ -258,16 +258,16 @@ public class V3D_Ray_dTest extends V3D_Test_d {
         V3D_Geometry_d expResult;
         V3D_Geometry_d result;
         // Test 1: Collinear Pointing the same way
-        r = new V3D_Ray_d(env, P0P0P0, P0P0P0, P1P0P0);
-        instance = new V3D_Ray_d(env, P0P0P0, P1P0P0, P2P0P0);
+        r = new V3D_Ray_d(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray_d(pP1P0P0, pP2P0P0);
         result = instance.getIntersect(r, epsilon);
-        expResult = new V3D_Ray_d(env, P0P0P0, P1P0P0, P2P0P0);
+        expResult = new V3D_Ray_d(pP1P0P0, pP2P0P0);
         assertTrue(((V3D_Ray_d) expResult).equals((V3D_Ray_d) result, epsilon));
         // Test 2: Collinear Pointing the same way 
-        r = new V3D_Ray_d(env, P0P0P0, N2P0P0, N1P0P0);
-        instance = new V3D_Ray_d(env, P0P0P0, P1P0P0, P2P0P0);
+        r = new V3D_Ray_d(pN2P0P0, pN1P0P0);
+        instance = new V3D_Ray_d(pP1P0P0, pP2P0P0);
         result = instance.getIntersect(r, epsilon);
-        expResult = new V3D_Ray_d(env, P0P0P0, P1P0P0, P2P0P0);
+        expResult = new V3D_Ray_d(pP1P0P0, pP2P0P0);
         assertTrue(((V3D_Ray_d) expResult).equals((V3D_Ray_d) result, epsilon));
         /**
          * The rays may point along the same line. If they point in the same
@@ -278,34 +278,34 @@ public class V3D_Ray_dTest extends V3D_Test_d {
          * intersection is the line segment between them.
          */
         // Test 3: Collinear pointing opposite ways overlapping in a line segment.
-        r = new V3D_Ray_d(env, P0P0P0, P0P0P0, P1P0P0);
-        instance = new V3D_Ray_d(env, P0P0P0, P1P0P0, P0P0P0);
-        expResult = new V3D_LineSegment_d(env, P0P0P0, P0P0P0, P1P0P0);
+        r = new V3D_Ray_d(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray_d(pP1P0P0, pP0P0P0);
+        expResult = new V3D_LineSegment_d(pP0P0P0, pP1P0P0);
         result = instance.getIntersect(r, epsilon);
         assertTrue(((V3D_LineSegment_d) expResult).equalsIgnoreDirection(epsilon, 
                 (V3D_LineSegment_d) result));
         // Test 4: Collinear pointing opposite ways overlapping at a point.
-        r = new V3D_Ray_d(env, P0P0P0, P0P0P0, P1P0P0);
-        instance = new V3D_Ray_d(env, P0P0P0, P0P0P0, N1P0P0);
+        r = new V3D_Ray_d(pP0P0P0, pP1P0P0);
+        instance = new V3D_Ray_d(pP0P0P0, pN1P0P0);
         expResult = pP0P0P0;
         result = instance.getIntersect(r, epsilon);
         assertTrue(((V3D_Point_d) expResult).equals(epsilon, 
                 (V3D_Point_d) result));
         // Test 4: Collinear pointing opposite ways not overlapping.
-        r = new V3D_Ray_d(env, P0P0P0, P1P0P0, P2P0P0);
-        instance = new V3D_Ray_d(env, P0P0P0, P0P0P0, N1P0P0);
+        r = new V3D_Ray_d(pP1P0P0, pP2P0P0);
+        instance = new V3D_Ray_d(pP0P0P0, pN1P0P0);
         result = instance.getIntersect(r, epsilon);
         assertNull(result);
         // Test 5: Intersecting at a point.
-        r = new V3D_Ray_d(env, P0P0P0, N2P0P0, N1P0P0);
-        instance = new V3D_Ray_d(env, P0P0P0, P1P0P0, P1P1P1);
+        r = new V3D_Ray_d(pN2P0P0, pN1P0P0);
+        instance = new V3D_Ray_d(pP1P0P0, pP1P1P1);
         result = instance.getIntersect(r, epsilon);
         expResult = pP1P0P0;
         assertTrue(((V3D_Point_d) expResult).equals(epsilon, 
                 (V3D_Point_d) result));
         // Test 6: Not intersecting.
-        r = new V3D_Ray_d(env, P0P0P0, P1P0P0, P2P0P0);
-        instance = new V3D_Ray_d(env, P0P0P0, P0P0P0, P1P1P1);
+        r = new V3D_Ray_d(pP1P0P0, pP2P0P0);
+        instance = new V3D_Ray_d(pP0P0P0, pP1P1P1);
         result = instance.getIntersect(r, epsilon);
         assertNull(result);
     }

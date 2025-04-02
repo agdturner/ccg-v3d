@@ -477,132 +477,132 @@ public class V3D_Vector_dTest extends V3D_Test_d {
         double epsilon = 1 / 1000000d;
         V3D_Vector_d v = P0P0P0;
         V3D_Vector_d instance = P1P1P1;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 2
         v = P0P0P0;
         instance = P0P0P0;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 3
         v = N1N1N1;
         instance = P0P0P0;
-        assertFalse(instance.isScalarMultiple(epsilon, v));
+        assertFalse(instance.isScalarMultiple(v, epsilon));
         // Test 4
         v = N1N1N1;
         instance = P1P1P1;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 5
         v = P1P0P0;
         instance = P0P1P1;
-        assertFalse(instance.isScalarMultiple(epsilon, v));
+        assertFalse(instance.isScalarMultiple(v, epsilon));
         // Test 6
         v = new V3D_Vector_d(0d, 1d, 10000d);
         instance = new V3D_Vector_d(0d, 1d, 10000d);
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 7
         v = new V3D_Vector_d(0d, 1d, 10000d);
         instance = new V3D_Vector_d(0d, 1d, 10001d);
-        assertFalse(instance.isScalarMultiple(epsilon, v));        
+        assertFalse(instance.isScalarMultiple(v, epsilon));        
         // Test 8
         v = new V3D_Vector_d(0d, 1d, 1d);
         instance = new V3D_Vector_d(0d, 1d, 1d + (epsilon / 2.0d));
-        //assertFalse(instance.isScalarMultiple(epsilon, v));
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        //assertFalse(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 9
         v = new V3D_Vector_d(0d, 1d, 10000d);
         instance = new V3D_Vector_d(0d, 2d, 20000d);
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         
         // Test 10
         instance = P0P0N1;
         v = P0P0N2;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 11
         v = P0P0P2;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 12
         v = P0P0N2;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 13
         v = P0P0P2;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         
         // Test 14
         instance = P0N1P0;
         v = P0N2P0;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 15
         v = P0P2P0;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 16
         v = P0N2P0;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 17
         v = P0P2P0;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         
         // Test 18
         instance = N1P0P0;
         v = N2P0P0;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 19
         v = P2P0P0;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 20
         v = N2P0P0;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 21
         v = P2P0P0;
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         
         // Test 22
         instance = new V3D_Vector_d(0d, 1d, 10000d);
         v = new V3D_Vector_d(0d, 1d, 10000d);
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 23
         v = new V3D_Vector_d(0d, 1d, 10001d);
-        assertFalse(instance.isScalarMultiple(epsilon, v));  
+        assertFalse(instance.isScalarMultiple(v, epsilon));  
         // Test 24
         v = new V3D_Vector_d(0d, 1.01d, 10000d);
-        assertFalse(instance.isScalarMultiple(epsilon, v));  
+        assertFalse(instance.isScalarMultiple(v, epsilon));  
         // Test 25
         v = new V3D_Vector_d(0.01d, 1d, 10000d);
-        assertFalse(instance.isScalarMultiple(epsilon, v));  
+        assertFalse(instance.isScalarMultiple(v, epsilon));  
         
         // Test 26
         instance = new V3D_Vector_d(0d, 1d, 10000d);
         v = new V3D_Vector_d(0d, 2d, 20000d);
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 27
         instance = new V3D_Vector_d(3d, 1d, 10000d);
         v = new V3D_Vector_d(6d, 2d, 20000d);
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 28
         instance = new V3D_Vector_d(3d, 1d, 10000d);
         v = new V3D_Vector_d(-6d, -2d, -20000d);
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 29
         instance = new V3D_Vector_d(-3d, -1d, -10000d);
         v = new V3D_Vector_d(6d, 2d, 20000d);
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         // Test 30
         instance = new V3D_Vector_d(-3d, -1d, -10000d);
         v = new V3D_Vector_d(-6d, -2d, -20000d);
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         
         // Test 31
         instance = new V3D_Vector_d(-3d, 0d, -10000d);
         v = new V3D_Vector_d(+6d, 0d, -20000d);
-        assertFalse(instance.isScalarMultiple(epsilon, v));
+        assertFalse(instance.isScalarMultiple(v, epsilon));
         // Test 32
         instance = new V3D_Vector_d(-3d, 0d, -10000d);
         v = new V3D_Vector_d(-6d, 0d, -20000d);
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
         
         // Test 31
         instance = new V3D_Vector_d(0d, 1d, 1d);
         v = new V3D_Vector_d(0d, 1d, 1d + (epsilon / 2.0d));
-        //assertFalse(instance.isScalarMultiple(epsilon, v));
-        assertTrue(instance.isScalarMultiple(epsilon, v));
+        //assertFalse(instance.isScalarMultiple(v, epsilon));
+        assertTrue(instance.isScalarMultiple(v, epsilon));
     }
     
     /**

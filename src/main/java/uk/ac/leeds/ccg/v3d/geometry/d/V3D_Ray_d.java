@@ -146,7 +146,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
     public boolean equals(V3D_Ray_d r, double epsilon) {
         if (l.getP().equals(r.l.getP())) {
             if (l.v.getDirection() == r.l.v.getDirection()) {
-                return l.v.isScalarMultiple(epsilon, r.l.v);
+                return l.v.isScalarMultiple(r.l.v, epsilon);
             } else {
                 return false;
             }

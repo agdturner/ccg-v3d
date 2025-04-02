@@ -103,8 +103,8 @@ public class V3D_ConvexArea_dTest extends V3D_Test_d {
     public void testToString() {
         System.out.println("toString");
         double epsilon = 0.00000001d;
-        V3D_ConvexArea_d instance = new V3D_ConvexArea_d(epsilon, V3D_Vector_d.K,
-                pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
+        V3D_ConvexArea_d instance = new V3D_ConvexArea_d(epsilon, 
+                V3D_Vector_d.K, pP0P0P0, pP0P1P0, pP1P1P0, pP1P0P0);
         String expResult = """
                            uk.ac.leeds.ccg.v3d.geometry.d.V3D_ConvexArea_d(
                             points (
@@ -115,7 +115,7 @@ public class V3D_ConvexArea_dTest extends V3D_Test_d {
                             )
                            )""";
         String result = instance.toString();
-        //System.out.println(result);
+        System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
     }
 

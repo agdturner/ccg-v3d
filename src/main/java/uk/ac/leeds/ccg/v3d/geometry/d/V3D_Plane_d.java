@@ -157,6 +157,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param p Used to initialise {@link #p}.
      * @param q A point coplanar to pl and r, not collinear to both pl and r,
      * and not equal to pl or r.
@@ -171,6 +172,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      * @param p Used to initialise {@link #p}.
      * @param q Coplanar but not collinear to both p and r.
@@ -186,6 +188,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     /**
      * Create a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param ptv A point vector giving the direction of the normal vector.
      * @param offset What {@link #offset} is set to.
      * @param p Used to initialise {@link #p}.
@@ -193,8 +196,6 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * and not equal to pl or r.
      * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
      * and not equal to pl or qv.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      */
     public V3D_Plane_d(V3D_Environment_d env, V3D_Vector_d ptv, V3D_Vector_d offset,
             V3D_Vector_d p, V3D_Vector_d q, V3D_Vector_d r) {
@@ -236,8 +237,6 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * and not equal to pl or r.
      * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
      * and not equal to pl or qv.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      */
     public V3D_Plane_d(V3D_Point_d pt, V3D_Vector_d offset,
             V3D_Vector_d p, V3D_Vector_d q, V3D_Vector_d r) {
@@ -248,6 +247,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * Creates a new plane which is essentially the same as pl, but with the
      * offset specified.
      *
+     * @param env What {@link #env} is set to.
      * @param pl The plane to use as a template.
      * @param offset What {@link #offset} is set to.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -552,8 +552,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         @Override
         public String toString() {
             return "(" + coeffs[0] + " * x)"
-                    + " + (" + coeffs[1] + " * x)"
-                    + " + (" + coeffs[2] + " * x)"
+                    + " + (" + coeffs[1] + " * y)"
+                    + " + (" + coeffs[2] + " * z)"
                     + " + " + coeffs[3];
         }
     }
@@ -653,6 +653,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     /**
      * Plug the point into the plane equation.
      *
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
      * @param pt The point to test for intersection with.
      * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
@@ -664,10 +666,9 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     }
 
     /**
-     * @param pl The plane to test points are coplanar with.
-     * @param ps The points to test if they are coplanar with pl.
      * @param epsilon The tolerance within which vector components are regarded
      * as equal.
+     * @param ps The points to test if they are coplanar with pl.
      * @return {@code true} iff all points are coplanar with pl.
      */
     public static boolean isCoplanar(double epsilon, V3D_Point_d... ps) {
@@ -680,6 +681,9 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     }
 
     /**
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
+     * @param pl The plane to test points are coplanar with.
      * @param ps The points to test if they are coplanar with this.
      * @return {@code false} if points are coincident or collinear. {@code true}
      * iff all points are coplanar.
@@ -704,7 +708,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      */
     public static V3D_Plane_d getPlane(double epsilon,
             V3D_Point_d... points) {
-        V3D_Line_d l = V3D_Line_d.getLine(epsilon, points);
+        V3D_Line_d l = V3D_Line_d.getLine(points);
         if (l == null) {
             return null;
         }
@@ -883,7 +887,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
 //        m[0][1] = 1.0d;
 //        m[0][2] = 1.0d;
 //        m[0][3] = 1.0d;
-    ////        m[1][0] = pl.getX(oom);
+////        m[1][0] = pl.getX(oom);
 ////        m[1][1] = qv.getX(oom);
 ////        m[1][2] = r.getX(oom);
 ////        m[1][3] = lp.getX(oom);
@@ -1001,12 +1005,13 @@ public class V3D_Plane_d extends V3D_Geometry_d {
 ////                l.pl.getZ(oom)-(l.v.getDZ(oom)*(t)));
 //    }
     /**
-     * Get the intersection with l.
+     * Get the intersection between the geometry and the line {@code l}.
+     * https://stackoverflow.com/questions/5666222/3d-line-plane-intersection
      *
      * @param l The line to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return The V3D_Geometry.
+     * @return The V3D_Geometry_d.
      */
     public V3D_Geometry_d getIntersect(V3D_Line_d l, double epsilon) {
         if (isParallel(l, epsilon)) {
@@ -1021,7 +1026,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     }
 
     /**
-     * Get the intersection with l. l is assumed not to be parallel with this.
+     * Get the intersection with {@code l} which is assumed not to be parallel
+     * with this.
      *
      * @param l The line to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -1121,8 +1127,6 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * Get the intersection between the geometry and the line {@code l}.
      *
      * @param l The line to intersect with.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
      * @return The V3D_Geometry.
      */
     public V3D_Geometry_d getIntersect(V3D_Line_d l) {
@@ -1376,7 +1380,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @return {@code true} if {@code this} is parallel to {@code pl}.
      */
     public boolean isParallel(V3D_Plane_d p, double epsilon) {
-        return n.isScalarMultiple(epsilon, p.n);
+        return n.isScalarMultiple(p.n, epsilon);
     }
 
     /**
@@ -1387,7 +1391,6 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         if (n.isOrthogonal(l.v)) {
             return true;
         }
-
 //        if (n.getCrossProduct(l.v).isZero()) {
 //            return false;
 //        }
@@ -1396,17 +1399,16 @@ public class V3D_Plane_d extends V3D_Geometry_d {
 
     /**
      * @param l The line to test if it is parallel to this.
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
      * @return {@code true} if {@code this} is parallel to {@code l}.
      */
     public boolean isParallel(V3D_Line_d l, double epsilon) {
-        return n.isOrthogonal(epsilon, l.v);
+        return n.isOrthogonal(l.v, epsilon);
 //        if (n.isOrthogonal(l.v, epsilon)) {
 //            return true;
 //        }
 //        
-
-    
-
     ////        if (n.getCrossProduct(l.v).isZero()) {
 ////            return false;
 ////        }
@@ -1440,7 +1442,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      */
     public boolean equals(V3D_Plane_d pl, double epsilon) {
         //if (n.getDirection() == pl.n.getDirection()) {
-        if (n.isScalarMultiple(epsilon, pl.n)) {
+        if (n.isScalarMultiple(pl.n, epsilon)) {
 //            if (n.getDotProduct(pl.n) > 0d) {
             return equalsIgnoreOrientationNoNormalCheck(pl, epsilon);
         }
@@ -1481,7 +1483,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
     public boolean equalsIgnoreOrientation(V3D_Plane_d pl, double epsilon) {
-        if (n.isScalarMultiple(epsilon, pl.n)) {
+        if (n.isScalarMultiple(pl.n, epsilon)) {
             return equalsIgnoreOrientationNoNormalCheck(pl, epsilon);
         }
         return false;
@@ -1532,6 +1534,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * Get the distance between this and {@code pl}.
      *
      * @param pt A point.
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
      * @return The distance from {@code this} to {@code pl}.
      */
     public double getDistanceSquared(V3D_Point_d pt, double epsilon) {
@@ -1609,6 +1613,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * Get the minimum distance to {@code l}.
      *
      * @param l A line segment.
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
      * @return The minimum distance to {@code l}.
      */
     public double getDistance(V3D_LineSegment_d l, double epsilon) {
@@ -1619,6 +1625,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * Get the minimum distance squared to {@code l}.
      *
      * @param l A line segment.
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
      * @return The minimum distance to {@code l}.
      */
     public double getDistanceSquared(V3D_LineSegment_d l, double epsilon) {
@@ -1700,6 +1708,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @param b Another point. The triangle to check the points to see if they
      * are all on the same side of a line that intersects the edge of another
      * triangle.
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
      * @return {@code true} if an intersection is found and {@code false}
      * otherwise.
      */
@@ -1724,6 +1734,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @param b Another point. The triangle to check the points to see if they
      * are all on the same side of a line that intersects the edge of another
      * triangle.
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
      * @return {@code true} if an intersection is found and {@code false}
      * otherwise.
      */
@@ -1858,6 +1870,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      *
      * @param pl A plane parallel to this.
      * @param pt A point to check if it lies on or between the parallel planes.
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
      * @return true if the point is on or between the parallel planes.
      */
     public boolean isBetweenPlanes(V3D_Plane_d pl, V3D_Point_d pt,

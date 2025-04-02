@@ -121,7 +121,8 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     public V3D_ConvexArea_d(double epsilon, V3D_Vector_d n,
             List<V3D_Point_d> points) {
-        super(points.get(0).env, points.get(0).offset, new V3D_Plane_d(points.get(0), n));
+        super(points.get(0).env, points.get(0).offset, 
+                new V3D_Plane_d(points.get(0), n));
         this.points = new HashMap<>();
         triangles = new HashMap<>();
         edges = new HashMap<>();

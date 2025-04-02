@@ -402,11 +402,11 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
         return ch.intersects00(pt, oom, rm)
                 && intersects000(pt, oom, rm);
     }
-    
+
     /**
      * Identify if this is intersected by pt. It is assumed {@code pt}
      * intersects with the convex hull.
-     * 
+     *
      * @param pt The point to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -789,7 +789,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      */
     public V3D_FiniteGeometry getIntersect(V3D_Line l, int oom,
             RoundingMode rm) {
-        V3D_Geometry i = getPl(oom, rm).getIntersect(l, oom, rm);
+        V3D_Geometry i = ch.getPl(oom, rm).getIntersect(l, oom, rm);
         if (i == null) {
             return null;
         } else if (i instanceof V3D_Point ip) {
@@ -857,34 +857,36 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
         V3D_FiniteGeometry g = getIntersect(r.l, oom, rm);
         if (g == null) {
             return null;
-        }
-        if (g instanceof V3D_Point gp) {
-            if (r.isAligned(gp, oom, rm)) {
+        } else {
+            if (g instanceof V3D_Point gp) {
+                if (r.isAligned(gp, oom, rm)) {
 //                BigRational[] coeffs = this.pl.equation.coeffs;
 //                V3D_Point pt = new V3D_Point(
 //                        coeffs[0].multiply(gp.getX(oom, rm)),
 //                        coeffs[1].multiply(gp.getY(oom, rm)),
 //                        coeffs[2].multiply(gp.getZ(oom, rm)));
 //                return pt;
-                return gp;
+                    return gp;
+                } else {
+                    return null;
+                }
             } else {
-                return null;
-            }
-        }
-        V3D_LineSegment ls = (V3D_LineSegment) g;
-        V3D_Point lsp = ls.getP();
-        V3D_Point lsq = ls.getQ(oom, rm);
-        if (r.isAligned(lsp, oom, rm)) {
-            if (r.isAligned(lsq, oom, rm)) {
-                return ls;
-            } else {
-                return V3D_LineSegment.getGeometry(r.l.getP(), lsp, oom, rm);
-            }
-        } else {
-            if (r.isAligned(lsq, oom, rm)) {
-                return V3D_LineSegment.getGeometry(r.l.getP(), lsq, oom, rm);
-            } else {
-                throw new RuntimeException("Exception in triangle-linesegment intersection.");
+                V3D_LineSegment ls = (V3D_LineSegment) g;
+                V3D_Point lsp = ls.getP();
+                V3D_Point lsq = ls.getQ(oom, rm);
+                if (r.isAligned(lsp, oom, rm)) {
+                    if (r.isAligned(lsq, oom, rm)) {
+                        return ls;
+                    } else {
+                        return V3D_LineSegment.getGeometry(r.l.getP(), lsp, oom, rm);
+                    }
+                } else {
+                    if (r.isAligned(lsq, oom, rm)) {
+                        return V3D_LineSegment.getGeometry(r.l.getP(), lsq, oom, rm);
+                    } else {
+                        throw new RuntimeException();
+                    }
+                }
             }
         }
     }

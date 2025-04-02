@@ -23,36 +23,36 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of a ray - like a line, but one that starts at a point
- * continues infinitely in only one direction. The ray begins at the point of
- * {@link #l} and goes in the direction given by the vector of {@link #l}. The
- * "*" denotes a point in 3D and the ray is shown as a linear feature of "e"
- * symbols in the following depiction: {@code
- *                                     z
- *                         y           -
- *                         +          /                * pl=<x0,y0,z0>
- *                         |         /                e
- *                         |    z0 -/                e
- *                         |       /                e
- *                         |      /                e
- *                         |     /               e
- *                         |    /               e
- *                         |   /               e
- *                      y0-|  /               e
- *                         | /               e
- *                         |/         x1    e
- * - ----------------------|-----------|---e---|---- + x
- *                        /|              e   x0
- *                       / |-y1          e
- *                      /  |           e
- *                     /   |          e
- *                z1 -/    |         e
- *                   /     |        e
- *                  /      |       * v=(dx,dy,dz)
- *                 /       |      e
- *                /        |     e
- *               +         -    e
- *              z          y   e
- * }
+ * continues infinitely in only one direction.The ray begins at the point of
+ {@link #l} and goes in the direction given by the vector of {@link #l}.The
+ "*" denotes a point in 3D and the ray is shown as a linear feature of "e"
+ symbols in the following depiction: {@code
+                                     z
+                         y           -
+                         +          /                * pl=<x0,y0,z0>
+                         |         /                e
+                         |    z0 -/                e
+                         |       /                e
+                         |      /                e
+                         |     /               e
+                         |    /               e
+                         |   /               e
+                      y0-|  /               e
+                         | /               e
+                         |/         x1    e
+ - ----------------------|-----------|---e---|---- + x
+                        /|              e   x0
+                       / |-y1          e
+                      /  |           e
+                     /   |          e
+                z1 -/    |         e
+                   /     |        e
+                  /      |       * v=(dx,dy,dz)
+                 /       |      e
+                /        |     e
+               +         -    e
+              z          y   e
+ }
  *
  * @author Andy Turner
  * @version 1.0
@@ -97,13 +97,11 @@ public class V3D_Ray extends V3D_Geometry {
      * Create a new instance. {@link #offset} is set to {@link V3D_Vector#ZERO}.
      *
      * @param env What {@link #env} is set to.
-     * @param p What {@code this} is created from.
-     * @param q What {@code this} is created from.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
+     * @param pv What {@link #l.pv} is created from.
+     * @param v What {@link #l.v} is created from.
      */
-    public V3D_Ray(V3D_Environment env, V3D_Vector p, V3D_Vector q, int oom, RoundingMode rm) {
-        this(env, V3D_Vector.ZERO, p, q, oom, rm);
+    public V3D_Ray(V3D_Environment env, V3D_Vector pv, V3D_Vector v) {
+        this(env, V3D_Vector.ZERO, pv, v);
     }
 
     /**
@@ -111,15 +109,13 @@ public class V3D_Ray extends V3D_Geometry {
      *
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
-     * @param p What {@link #l} point is set to.
-     * @param q What {@link #l} vector is set from.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
+     * @param pv What {@link #l.pv} is set to.
+     * @param v What {@link #l.v} is set from.
      */
-    public V3D_Ray(V3D_Environment env, V3D_Vector offset, V3D_Vector p,
-            V3D_Vector q, int oom, RoundingMode rm) {
+    public V3D_Ray(V3D_Environment env, V3D_Vector offset, V3D_Vector pv,
+            V3D_Vector v) {
         super(env, offset);
-        l = new V3D_Line(env, offset, p, q, oom, rm);
+        l = new V3D_Line(env, offset, pv, v);
     }
 
     /**

@@ -24,38 +24,38 @@ import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 /**
  *
  * A V3D_TetrahedronDouble comprises 4 corner V3D_Point_d points that are not
- * coplanar or collinear or coincident. There are 4 V3D_Triangle_d faces defined
- * from the outside with the points arranged clockwise. Each face has a
- * V3D_Line_SegmentDouble edge equal to that of another face, but these are
- * stored independently in that the order of the points and the directions of
- * the vectors might be opposite. The points are shared between all the
- * triangles. {@code
- * pl *- - - - - - - - - - - + - - - - - - - - - - -* qv
- *     \ ~                                         /|
- *      \     ~                                   / |
- *       \         ~                             /  |
- *        \             ~                       /   |
- *         \                 ~                 /    |
- *          \                      ~          /     |
- *           \                          ~    /      |
- *            \                             / ~     |
- *             \                           /       ~s
- *              \                         /        :
- *               \                       /
- *                \                     /      :
- *                 \                   /
- *                  \                 /     :
- *                   \               /
- *                    \             /    :
- *                     \           /
- *                      \         /   :
- *                       \       /
- *                        \     /  :
- *                         \   /
- *                          \ /:
- *                           *
- *                           r
- * }
+ * coplanar or collinear or coincident.There are 4 V3D_Triangle_d faces defined
+ from the outside with the points arranged clockwise. Each face has a
+ V3D_Line_SegmentDouble edge equal to that of another face, but these are
+ stored independently in that the order of the points and the directions of
+ the vectors might be opposite. The points are shared between all the
+ triangles. {@code
+ pl *- - - - - - - - - - - + - - - - - - - - - - -* qv
+     \ ~                                         /|
+      \     ~                                   / |
+       \         ~                             /  |
+        \             ~                       /   |
+         \                 ~                 /    |
+          \                      ~          /     |
+           \                          ~    /      |
+            \                             / ~     |
+             \                           /       ~s
+              \                         /        :
+               \                       /
+                \                     /      :
+                 \                   /
+                  \                 /     :
+                   \               /
+                    \             /    :
+                     \           /
+                      \         /   :
+                       \       /
+                        \     /  :
+                         \   /
+                          \ /:
+                           *
+                           rv
+ }
  *
  * @author Andy Turner
  * @version 1.0
@@ -121,10 +121,10 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     }
 
     /**
-     * Create a new instance. {@code pl}, {@code qv}, {@code r} and {@code s}
-     * must all be different, not the zero vector and collectively they must be
-     * three dimensional. This is generally the fastest way to construct a
-     * tetrahedron.
+     * Create a new instance.{@code pl}, {@code qv}, {@code rv} and {@code s}
+ must all be different, not the zero vector and collectively they must be
+ three dimensional.This is generally the fastest way to construct a
+ tetrahedron.
      *
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
@@ -143,9 +143,9 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     }
 
     /**
-     * Create a new instance. {@code pl}, {@code qv}, {@code r} and {@code s}
-     * must all be different and not coplanar. No test is done to check these
-     * things.
+     * Create a new instance.{@code pl}, {@code qv}, {@code rv} and {@code s}
+ must all be different and not coplanar.No test is done to check these
+ things.
      *
      * @param p Used to set {@link #p} and {@link #offset}.
      * @param q Used to set {@link #q}.
@@ -173,8 +173,8 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     }
 
     /**
-     * Create a new instance. If {@code p} is coplanar with t then the
-     * tetrahedron is flat and without volume.
+     * Create a new instance.If {@code pv} is coplanar with t then the
+ tetrahedron is flat and without volume.
      *
      * @param p Used to set {@link #p} and {@link #offset}.
      * @param t Used to set {@link #q}, {@link #r} and {@link #s}.
@@ -376,7 +376,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
      * @param pt The point to test for intersection with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return {@code true} iff the geometry is intersected by {@code p}.
+     * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
     public boolean intersects(V3D_Point_d pt, double epsilon) {
         pqr = getPqr();
@@ -408,7 +408,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
      * @param r The ray for which the intersection is returned.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return The intersection of this and r.
+     * @return The intersection of this and rv.
      */
     public V3D_FiniteGeometry_d getIntersect(V3D_Ray_d r,
             double epsilon) {
@@ -517,11 +517,11 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     }
 
     /**
-     * If p, q, r and s are equal then the point is returned. If there are just
-     * two different points then a line segment is returned. If 3 points are
-     * different then a triangle is returned. If 4 points are different then if
-     * they are coplanar, a V3D_Triangle_dCoplanar is returned, otherwise a
-     * tetrahedron is returned.
+     * If p, q, r and s are equal then the point is returned.If there are just
+ two different points then a line segment is returned. If 3 points are
+ different then a triangle is returned. If 4 points are different then if
+ they are coplanar, a V3D_Triangle_dCoplanar is returned, otherwise a
+ tetrahedron is returned.
      *
      * @param p A point.
      * @param q Another possibly equal point.
@@ -530,7 +530,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @return either {@code pl} or {@code new V3D_LineSegment_d(pl, qv)} or
-     * {@code new V3D_Triangle_d(pl, qv, r)}
+     * {@code new V3D_Triangle_d(pl, qv, rv)}
      */
     public static V3D_FiniteGeometry_d getGeometry(V3D_Point_d p,
             V3D_Point_d q, V3D_Point_d r, V3D_Point_d s,
@@ -550,7 +550,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
         } else {
             if (V3D_Plane_d.isCoplanar(epsilon, p, q, r, s)) {
                 if (V3D_Line_d.isCollinear(epsilon, p, q, r, s)) {
-                    //return V3D_Line(pl, qv, r, s);
+                    //return V3D_Line(pl, qv, rv, s);
                     throw new UnsupportedOperationException("Need code to construct a line segment from 4 points!");
                 }
                 V3D_LineSegment_d pq = new V3D_LineSegment_d(p, q);
@@ -558,21 +558,21 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
                 if (pq.getIntersect(rs, epsilon) != null) {
                     return null;
 //                    return new V3D_Polygon_d(
-//                            new V3D_Triangle_d(p, q, r),
-//                            new V3D_Triangle_d(p, q, s));
+//                            new V3D_Triangle_d(pv, qv, rv),
+//                            new V3D_Triangle_d(pv, qv, s));
                 } else {
                     V3D_LineSegment_d pr = new V3D_LineSegment_d(p, r);
                     V3D_LineSegment_d qs = new V3D_LineSegment_d(q, s);
                     if (pr.getIntersect(qs, epsilon) != null) {
                         return null;
 //                        return new V3D_Polygon_d(
-//                                new V3D_Triangle_d(p, r, q),
-//                                new V3D_Triangle_d(p, r, s));
+//                                new V3D_Triangle_d(pv, rv, qv),
+//                                new V3D_Triangle_d(pv, rv, s));
                     } else {
                         return null;
 //                        return new V3D_Polygon_d(
-//                                new V3D_Triangle_d(p, q, s),
-//                                new V3D_Triangle_d(p, r, s));
+//                                new V3D_Triangle_d(pv, qv, s),
+//                                new V3D_Triangle_d(pv, rv, s));
                     }
                 }
             }
@@ -581,12 +581,12 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     }
 
     /**
-     * At least two of the points input are expected to be the same. If all
-     * points are equal then the point is returned. If there are just two
-     * different points then a line segment is returned. If 3 points are
-     * different then a triangle is returned. If 4 points are different then if
-     * they are coplanar, a V3D_Triangle_dCoplanar is returned, otherwise a
-     * tetrahedron is returned.
+     * At least two of the points input are expected to be the same.If all
+ points are equal then the point is returned. If there are just two
+ different points then a line segment is returned. If 3 points are
+ different then a triangle is returned. If 4 points are different then if
+ they are coplanar, a V3D_Triangle_dCoplanar is returned, otherwise a
+ tetrahedron is returned.
      *
      * @param p A point.
      * @param q Another possibly equal point.
@@ -596,7 +596,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @return either {@code pl} or {@code new V3D_LineSegment_d(pl, qv)} or
-     * {@code new V3D_Triangle_d(pl, qv, r)}
+     * {@code new V3D_Triangle_d(pl, qv, rv)}
      */
     protected static V3D_FiniteGeometry_d getGeometry(V3D_Point_d p,
             V3D_Point_d q, V3D_Point_d r, V3D_Point_d s,
@@ -907,10 +907,10 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     }
 
     /**
-     * Get the intersection between the geometry and the plane {@code p}. The
-     * intersection will be null, a point, a line segment, a triangle or a
-     * quadrilateral. It should be that any points of intersection are within
-     * this.
+     * Get the intersection between the geometry and the plane {@code pv}.The
+ intersection will be null, a point, a line segment, a triangle or a
+ quadrilateral. It should be that any points of intersection are within
+ this.
      *
      * @param pl The plane to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -1162,13 +1162,13 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
              * triangle.
              */
             V3D_Vector_d n = t.pl.n;
-            V3D_Plane_d lp = new V3D_Plane_d(env, offset, t.p, t.q, t.p.add(n));
+            V3D_Plane_d lp = new V3D_Plane_d(env, offset, t.pv, t.qv, t.pv.add(n));
             V3D_FiniteGeometry_d lpiil = lp.getIntersect(il, epsilon);
             if (lpiil == null) {
-                V3D_Plane_d lq = new V3D_Plane_d(env, offset, t.q, t.r, t.q.add(n));
+                V3D_Plane_d lq = new V3D_Plane_d(env, offset, t.qv, t.rv, t.qv.add(n));
                 V3D_FiniteGeometry_d lqiil = lq.getIntersect(il, epsilon);
                 if (lqiil == null) {
-                    V3D_Plane_d lr = new V3D_Plane_d(env, offset, t.r, t.p, t.r.add(n));
+                    V3D_Plane_d lr = new V3D_Plane_d(env, offset, t.rv, t.pv, t.rv.add(n));
                     V3D_FiniteGeometry_d lriil = lr.getIntersect(il, epsilon);
                     if (lriil == null) {
                         return il;
@@ -1186,7 +1186,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
                     }
                 } else if (lqiil instanceof V3D_Point_d lqiilp) {
                     // Find the other point and return the linesegment.
-                    V3D_Plane_d lr = new V3D_Plane_d(env, offset, t.r, t.p, t.r.add(n));
+                    V3D_Plane_d lr = new V3D_Plane_d(env, offset, t.rv, t.pv, t.rv.add(n));
                     V3D_FiniteGeometry_d lriil = lr.getIntersect(il, epsilon);
                     if (lriil == null) {
                         // For the points on the right side (if any)
@@ -1239,10 +1239,10 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
                 }
             } else if (lpiil instanceof V3D_Point_d lpiilp) {
                 // Find the other point and return the linesegment.
-                V3D_Plane_d lq = new V3D_Plane_d(env, offset, t.q, t.r, t.q.add(n));
+                V3D_Plane_d lq = new V3D_Plane_d(env, offset, t.qv, t.rv, t.qv.add(n));
                 V3D_FiniteGeometry_d lqiil = lq.getIntersect(il, epsilon);
                 if (lqiil == null) {
-                    V3D_Plane_d lr = new V3D_Plane_d(env, offset, t.r, t.p, t.r.add(n));
+                    V3D_Plane_d lr = new V3D_Plane_d(env, offset, t.rv, t.pv, t.rv.add(n));
                     V3D_FiniteGeometry_d lriil = lr.getIntersect(il, epsilon);
                     if (lriil == null) {
                         // Find the other point and return the line segment.
@@ -1286,7 +1286,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
                     }
                 } else if (lqiil instanceof V3D_Point_d lqiilp) {
                     // Find the other point and return the linesegment.
-                    V3D_Plane_d lr = new V3D_Plane_d(env, offset, t.r, t.p, t.r.add(n));
+                    V3D_Plane_d lr = new V3D_Plane_d(env, offset, t.rv, t.pv, t.rv.add(n));
                     V3D_FiniteGeometry_d lriil = lr.getIntersect(il, epsilon);
                     if (lriil == null) {
                         // For the points on the right side (if any)
@@ -1462,7 +1462,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     }
 
     /**
-     * Get the intersection with the rectangle {@code r}.
+     * Get the intersection with the rectangle {@code rv}.
      *
      * @param r The rectangle to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -1562,24 +1562,24 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     }
 
     /**
-     * Get the distance to {@code p}.
+     * Get the distance to {@code pv}.
      *
      * @param p A point.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return The distance squared to {@code p}.
+     * @return The distance squared to {@code pv}.
      */
     public double getDistance(V3D_Point_d p, double epsilon) {
         return Math.sqrt(getDistanceSquared(p, epsilon));
     }
 
     /**
-     * Get the distance squared to {@code p}.
+     * Get the distance squared to {@code pv}.
      *
      * @param pt A point.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return The distance squared to {@code p}.
+     * @return The distance squared to {@code pv}.
      */
     public double getDistanceSquared(V3D_Point_d pt, double epsilon) {
         if (intersects(pt, epsilon)) {
@@ -1773,24 +1773,24 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     }
 
     /**
-     * Get the minimum distance to {@code p}.
+     * Get the minimum distance to {@code pv}.
      *
      * @param p A planeDouble.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return The minimum distance squared to {@code p}.
+     * @return The minimum distance squared to {@code pv}.
      */
     public double getDistance(V3D_Plane_d p, double epsilon) {
         return Math.sqrt(getDistanceSquared(p, epsilon));
     }
 
     /**
-     * Get the minimum distance squared to {@code p}.
+     * Get the minimum distance squared to {@code pv}.
      *
      * @param p A planeDouble.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return The minimum distance squared to {@code p}.
+     * @return The minimum distance squared to {@code pv}.
      */
     public double getDistanceSquared(V3D_Plane_d p, double epsilon) {
         if (getIntersect(p, epsilon) != null) {
@@ -1835,7 +1835,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     }
 
     /**
-     * Get the minimum distance to {@code r}.
+     * Get the minimum distance to {@code rv}.
      *
      * @param r A rectangle.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -1847,7 +1847,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     }
 
     /**
-     * Get the minimum distance squared to {@code r}.
+     * Get the minimum distance squared to {@code rv}.
      *
      * @param r A rectangle.
      * @param epsilon The tolerance within which two vectors are regarded as
