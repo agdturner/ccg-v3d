@@ -125,7 +125,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
         int i1 = i0;
         p.p1 = points[i1];
         i1++;
-        if (p.p0.equals(epsilon, p.p1)) {
+        if (p.p0.equals(p.p1, epsilon)) {
             p.p1int = p.p0int;
         } else {
             this.points.put(this.points.size(), p.p0);
@@ -151,7 +151,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
         p.p0 = p.p1;
         p.p0int = p.p1int;
         p.p1 = p.points[index];
-        if (p.p0.equals(epsilon, p.p1)) {
+        if (p.p0.equals(p.p1, epsilon)) {
             p.p1int = p.p0int;
         } else {
             p.p1int = V3D_LineSegment_d.intersects(epsilon, p.p1,
@@ -528,9 +528,9 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      */
     @Override
     public boolean intersects(V3D_Ray_d r, double epsilon) {
-        if (getPoints().values().parallelStream().anyMatch(x
-                -> r.isAligned(x, epsilon))) {
-            return getIntersect(r, epsilon) != null;
+        if (ch.intersects(r, epsilon)) {
+            return !externalHoles.values().parallelStream().anyMatch(x
+                -> x.intersects(r, epsilon));
         } else {
             return false;
         }

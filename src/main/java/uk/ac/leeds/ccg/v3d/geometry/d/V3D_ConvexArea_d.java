@@ -346,7 +346,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
         for (var x : points.values()) {
             boolean found = false;
             for (int i = 0; i < c.points.size(); i++) {
-                if (x.equals(epsilon, c.points.get(i))) {
+                if (x.equals(c.points.get(i), epsilon)) {
                     found = true;
                     indexes.add(i);
                     break;
@@ -360,7 +360,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
             if (!indexes.contains(i)) {
                 boolean found = false;
                 for (var x : points.values()) {
-                    if (x.equals(epsilon, c.points.get(i))) {
+                    if (x.equals(c.points.get(i), epsilon)) {
                         found = true;
                         break;
                     }
@@ -513,7 +513,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     }
 
     /**
-     * @param r The ray to intersect with.
+     * @param r The ray known to intersect with this.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @return A point or line segment.
@@ -659,7 +659,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
                 index++;
 
                 // Debug
-                if (bpt.equals(epsilon, p1)) {
+                if (bpt.equals(p1, epsilon)) {
                     int debug = 1;
                     ab = new AB(pts, pl, epsilon);
                 }
@@ -816,23 +816,17 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     }
 
     /**
-     * If no point aligns, then returns false, otherwise the intersection is
-     * computed, so if that is needed use:
-     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Ray, int, java.math.RoundingMode)}
-     *
+     * Identify if this is intersected by {@code r}.
+     * 
      * @param r The ray to test if it intersects.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return {@code true} if l intersects this.
      */
     @Override
     public boolean intersects(V3D_Ray_d r, double epsilon) {
-        if (getPoints().values().parallelStream().anyMatch(x
-                -> r.isAligned(x, epsilon))) {
-            return getIntersect(r, epsilon) != null;
-        } else {
-            return false;
-        }
+        return triangles.values().parallelStream().anyMatch(x
+                -> x.intersects(r, epsilon));
     }
 
     /**

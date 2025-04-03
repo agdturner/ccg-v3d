@@ -1409,32 +1409,32 @@ public class V3D_Triangle_d extends V3D_Area_d {
     public boolean equals(V3D_Triangle_d t, double epsilon) {
         V3D_Point_d tp = t.getP();
         V3D_Point_d thisp = getP();
-        if (tp.equals(epsilon, thisp)) {
+        if (tp.equals(thisp, epsilon)) {
             V3D_Point_d tq = t.getQ();
             V3D_Point_d thisq = getQ();
-            if (tq.equals(epsilon, thisq)) {
-                return t.getR().equals(epsilon, getR());
-            } else if (tq.equals(epsilon, getR())) {
-                return t.getR().equals(epsilon, thisq);
+            if (tq.equals(thisq, epsilon)) {
+                return t.getR().equals(getR(), epsilon);
+            } else if (tq.equals(getR(), epsilon)) {
+                return t.getR().equals(thisq, epsilon);
             } else {
                 return false;
             }
-        } else if (tp.equals(epsilon, getQ())) {
+        } else if (tp.equals(getQ(), epsilon)) {
             V3D_Point_d tq = t.getQ();
             V3D_Point_d thisr = getR();
-            if (tq.equals(epsilon, thisr)) {
-                return t.getR().equals(epsilon, thisp);
-            } else if (tq.equals(epsilon, thisp)) {
-                return t.getR().equals(epsilon, thisr);
+            if (tq.equals(thisr, epsilon)) {
+                return t.getR().equals(thisp, epsilon);
+            } else if (tq.equals(thisp, epsilon)) {
+                return t.getR().equals(thisr, epsilon);
             } else {
                 return false;
             }
-        } else if (tp.equals(epsilon, getR())) {
+        } else if (tp.equals(getR(), epsilon)) {
             V3D_Point_d tq = t.getQ();
-            if (tq.equals(epsilon, thisp)) {
-                return t.getR().equals(epsilon, getQ());
-            } else if (tq.equals(epsilon, getQ())) {
-                return t.getR().equals(epsilon, thisp);
+            if (tq.equals(thisp, epsilon)) {
+                return t.getR().equals(getQ(), epsilon);
+            } else if (tq.equals(getQ(), epsilon)) {
+                return t.getR().equals(thisp, epsilon);
             } else {
                 return false;
             }
@@ -1688,14 +1688,14 @@ public class V3D_Triangle_d extends V3D_Area_d {
             return new V3D_ConvexArea_d(epsilon, t.pl.getN(),
                     abp, cdp, ab.getQ(), cd.getQ());
         } else {
-            if (abp.equals(epsilon, pt)) {
-                if (cdp.equals(epsilon, pt)) {
+            if (abp.equals(pt, epsilon)) {
+                if (cdp.equals(pt, epsilon)) {
                     return new V3D_Triangle_d(pt, ab.getQ(), cd.getQ());
                 } else {
                     return new V3D_Triangle_d(pt, ab.getQ(), cdp);
                 }
             } else {
-                if (cdp.equals(epsilon, pt)) {
+                if (cdp.equals(pt, epsilon)) {
                     return new V3D_Triangle_d(pt, abp, cd.getQ());
                 } else {
                     return new V3D_Triangle_d(pt, abp, cdp);

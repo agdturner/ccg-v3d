@@ -30,36 +30,36 @@ import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VTriangle;
 
 /**
  * For representing and processing triangles in 3D.A triangle has a non-zero
- area.The corner points are defined by {@link #pv}, {@link #qv} and
- {@link #rv}. The following depicts a generic triangle {@code
- p                         pq                       q
- pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
-     \~                   mpq                   ~/
-      \  ~                 |                 ~  /
-       \    ~              |              ~    /
-        \      ~           |           ~      /
-         \        ~        |        ~        /
-          \          ~     |     ~          /
-           \            ~  |  ~            /
-            \  -n  -n  -n  c  +n  +n  +n  +n  normal going out of the page.
-             \          ~  |  ~          /
-              \      ~     |     ~      /
-               \  ~        |        ~  /
-                + mrp      |      mqr +
-             rp  \         |         /  qr
-                  \        |        /
-                   \       |       /
-                    \      |      /
-                     \     |     /
-                      \    |    /
-                       \   |   /
-                        \  |  /
-                         \ | /
-                          \|/
-                           *
-                           rv
-                           r
- }
+ * area.The corner points are defined by {@link #pv}, {@link #qv} and
+ * {@link #rv}. The following depicts a generic triangle {@code
+ * p                         pq                       q
+ * pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
+ * \~                   mpq                   ~/
+ * \  ~                 |                 ~  /
+ * \    ~              |              ~    /
+ * \      ~           |           ~      /
+ * \        ~        |        ~        /
+ * \          ~     |     ~          /
+ * \            ~  |  ~            /
+ * \  -n  -n  -n  c  +n  +n  +n  +n  normal going out of the page.
+ * \          ~  |  ~          /
+ * \      ~     |     ~      /
+ * \  ~        |        ~  /
+ * + mrp      |      mqr +
+ * rp  \         |         /  qr
+ * \        |        /
+ * \       |       /
+ * \      |      /
+ * \     |     /
+ * \    |    /
+ * \   |   /
+ * \  |  /
+ * \ | /
+ * \|/
+ *
+ * rv
+ * r
+ * }
  *
  * @author Andy Turner
  * @version 2.0
@@ -346,7 +346,7 @@ public class V3D_Triangle extends V3D_Area {
                     + "|| qv.equals(rv, env.oom, env.rm)");
         }
     }
-    
+
     /**
      * Creates a new triangle.
      *
@@ -375,9 +375,9 @@ public class V3D_Triangle extends V3D_Area {
      */
     public V3D_Triangle(V3D_Plane pl, V3D_LineSegment ls, V3D_Point pt,
             int oom, RoundingMode rm) {
-        this(pl, new V3D_Vector(ls.offset), 
+        this(pl, new V3D_Vector(ls.offset),
                 new V3D_Vector(ls.l.pv),
-                ls.l.pv.add(ls.l.v, oom, rm), 
+                ls.l.pv.add(ls.l.v, oom, rm),
                 pt.getVector(oom, rm).subtract(ls.offset, oom, rm));
     }
 
@@ -393,10 +393,10 @@ public class V3D_Triangle extends V3D_Area {
     public V3D_Triangle(V3D_Point p, V3D_Point q, V3D_Point r,
             int oom, RoundingMode rm) {
         this(p.env, new V3D_Vector(p.offset), new V3D_Vector(p.rel),
-                q.getVector(oom, rm).subtract(p.offset, oom, rm), 
+                q.getVector(oom, rm).subtract(p.offset, oom, rm),
                 r.getVector(oom, rm).subtract(p.offset, oom, rm));
     }
-    
+
     /**
      * Creates a new triangle.
      *
@@ -410,10 +410,10 @@ public class V3D_Triangle extends V3D_Area {
     public V3D_Triangle(V3D_Plane pl, V3D_Point p, V3D_Point q, V3D_Point r,
             int oom, RoundingMode rm) {
         this(pl, new V3D_Vector(p.offset), new V3D_Vector(p.rel),
-                q.getVector(oom, rm).subtract(p.offset, oom, rm), 
+                q.getVector(oom, rm).subtract(p.offset, oom, rm),
                 r.getVector(oom, rm).subtract(p.offset, oom, rm));
     }
-    
+
     /**
      * Creates a new triangle.
      *
@@ -452,7 +452,7 @@ public class V3D_Triangle extends V3D_Area {
         this.qv = q.getVector(oom, rm).subtract(p.offset, oom, rm);
         this.q = new V3D_Point(q);
         this.rv = r.getVector(oom, rm).subtract(p.offset, oom, rm);
-        this.r = new V3D_Point(r);        
+        this.r = new V3D_Point(r);
         this.pl = new V3D_Plane(pt, p.offset, p.getVector(oom, rm),
                 q.getVector(oom, rm), r.getVector(oom, rm), oom, rm);
         this.normal = pl.n;
@@ -937,7 +937,7 @@ public class V3D_Triangle extends V3D_Area {
             return false;
         }
     }
-    
+
     public boolean contains00(V3D_LineSegment ls, int oom, RoundingMode rm) {
         return contains00(ls.getP(), oom, rm)
                 && contains00(ls.getQ(oom, rm), oom, rm);
@@ -976,7 +976,7 @@ public class V3D_Triangle extends V3D_Area {
         if (i == null) {
             return null;
         } else if (i instanceof V3D_Point ip) {
-            if (intersects0(ip, oom, rm)) {
+            if (intersects00(ip, oom, rm)) {
                 return ip;
             } else {
                 return null;
@@ -995,7 +995,7 @@ public class V3D_Triangle extends V3D_Area {
                     if (lrpi == null) {
                         return lqri;
                     } else {
-                        return getGeometry((V3D_Point) lqri, (V3D_Point) lrpi, 
+                        return getGeometry((V3D_Point) lqri, (V3D_Point) lrpi,
                                 oom, rm);
                     }
                 }
@@ -1012,7 +1012,7 @@ public class V3D_Triangle extends V3D_Area {
                     } else if (lrpi instanceof V3D_LineSegment) {
                         return lrpi;
                     } else {
-                        return getGeometry(lpqip, lqrip, (V3D_Point) lrpi, 
+                        return getGeometry(lpqip, lqrip, (V3D_Point) lrpi,
                                 oom, rm);
                     }
                 } else {
@@ -1034,7 +1034,7 @@ public class V3D_Triangle extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return Either a line segment or a point.
      */
-    public static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q, 
+    public static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q,
             int oom, RoundingMode rm) {
         if (p.equals(q, oom, rm)) {
             return p;
@@ -1057,8 +1057,7 @@ public class V3D_Triangle extends V3D_Area {
         V3D_FiniteGeometry g = getIntersect(r.l, oom, rm);
         if (g == null) {
             return null;
-        }
-        if (g instanceof V3D_Point gp) {
+        } else if (g instanceof V3D_Point gp) {
             if (r.isAligned(gp, oom, rm)) {
 //                BigRational[] coeffs = this.pl.equation.coeffs;
 //                V3D_Point pt = new V3D_Point(
@@ -1070,21 +1069,22 @@ public class V3D_Triangle extends V3D_Area {
             } else {
                 return null;
             }
-        }
-        V3D_LineSegment ls = (V3D_LineSegment) g;
-        V3D_Point lsp = ls.getP();
-        V3D_Point lsq = ls.getQ(oom, rm);
-        if (r.isAligned(lsp, oom, rm)) {
-            if (r.isAligned(lsq, oom, rm)) {
-                return ls;
-            } else {
-                return V3D_LineSegment.getGeometry(r.l.getP(), lsp, oom, rm);
-            }
         } else {
-            if (r.isAligned(lsq, oom, rm)) {
-                return V3D_LineSegment.getGeometry(r.l.getP(), lsq, oom, rm);
+            V3D_LineSegment ls = (V3D_LineSegment) g;
+            V3D_Point lsp = ls.getP();
+            V3D_Point lsq = ls.getQ(oom, rm);
+            if (r.isAligned(lsp, oom, rm)) {
+                if (r.isAligned(lsq, oom, rm)) {
+                    return ls;
+                } else {
+                    return V3D_LineSegment.getGeometry(r.l.getP(), lsp, oom, rm);
+                }
             } else {
-                throw new RuntimeException("Exception in triangle-linesegment intersection.");
+                if (r.isAligned(lsq, oom, rm)) {
+                    return V3D_LineSegment.getGeometry(r.l.getP(), lsq, oom, rm);
+                } else {
+                    throw new RuntimeException("Exception in triangle-linesegment intersection.");
+                }
             }
         }
     }
@@ -1981,8 +1981,8 @@ public class V3D_Triangle extends V3D_Area {
 
     /**
      * If pv, q and r are equal then the point is returned.If two of the points
- are the same, then a line segment is returned.If all points are
- different then a triangle is returned.
+     * are the same, then a line segment is returned.If all points are different
+     * then a triangle is returned.
      *
      * @param p A point.
      * @param q Another possibly equal point.
@@ -2028,8 +2028,8 @@ public class V3D_Triangle extends V3D_Area {
     /**
      * Used in intersecting two triangles to give the overall intersection.If
      * l1, l2 and l3 are equal then the line segment is returned.If there are 3
- unique points then a triangle is returned. If there are 4 or more unique
- points, then a V3D_ConvexArea is returned.
+     * unique points then a triangle is returned. If there are 4 or more unique
+     * points, then a V3D_ConvexArea is returned.
      *
      *
      * @param l1 A line segment.
@@ -2308,7 +2308,7 @@ public class V3D_Triangle extends V3D_Area {
     /**
      * Used in intersecting a triangle and a tetrahedron.If there are 3 unique
      * points then a triangle is returned.If there are 4 points, then a
- V3D_ConvexArea is returned.
+     * V3D_ConvexArea is returned.
      *
      * @param l1 A line segment.
      * @param l2 A line segment.
@@ -2427,7 +2427,7 @@ public class V3D_Triangle extends V3D_Area {
      *
      * @param l a line segment either equal to one of the edges of this - null
      * null null null null null null null null null null null null null null
-     * null null null null null null null null null null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
+     * null null null null null null null null null null null null null null null     {@link #getPQ(int, java.math.RoundingMode)},
      * {@link #getQR(int, java.math.RoundingMode)} or
      * {@link #getRP(int, java.math.RoundingMode)}.
      * @param oom The Order of Magnitude for the precision.
@@ -2940,7 +2940,7 @@ public class V3D_Triangle extends V3D_Area {
             return false;
         }
     }
-    
+
     /**
      * @param t Another triangle to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -2949,7 +2949,7 @@ public class V3D_Triangle extends V3D_Area {
      */
     @Override
     public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
-    if (getPl(oom, rm).equalsIgnoreOrientation(t.getPl(oom, rm), oom, rm)) {
+        if (getPl(oom, rm).equalsIgnoreOrientation(t.getPl(oom, rm), oom, rm)) {
             return t.intersects(getP(oom, rm), oom, rm)
                     || t.intersects(getQ(oom, rm), oom, rm)
                     || t.intersects(getR(oom, rm), oom, rm);
@@ -2963,8 +2963,8 @@ public class V3D_Triangle extends V3D_Area {
      * {@code t} are not coplanar.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-         * @return {@code true} if {@code this} intersects {@code t}.
- */
+     * @return {@code true} if {@code this} intersects {@code t}.
+     */
     public boolean intersects0(V3D_Triangle t, int oom, RoundingMode rm) {
         if (getPl(oom, rm).allOnSameSideNotOn(oom, rm, t.getP(oom, rm),
                 t.getQ(oom, rm), t.getR(oom, rm)) //&& intersects(t.getAABB(), epsilon)

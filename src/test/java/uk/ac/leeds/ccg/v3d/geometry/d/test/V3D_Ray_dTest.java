@@ -127,8 +127,8 @@ public class V3D_Ray_dTest extends V3D_Test_d {
         instance = new V3D_Ray_d(pP0P0P0, pP1P1P1);
         result = instance.getIntersect(l, epsilon);
         expResult = pP0P0P0;
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon, 
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals( 
+                (V3D_Point_d) result, epsilon));
         // Test 3
         instance = new V3D_Ray_d(pN1N1N1, pN1N1P0);
         result = instance.getIntersect(l, epsilon);
@@ -138,8 +138,8 @@ public class V3D_Ray_dTest extends V3D_Test_d {
         instance = new V3D_Ray_d(pN1N1N1, pP1P1P1);
         result = instance.getIntersect(l, epsilon);
         expResult = pP0P0P0;
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon, 
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals( 
+                (V3D_Point_d) result, epsilon));
         // Test 5
         l = new V3D_Line_d(pP0P0P0, pP1P0P0);
         instance = new V3D_Ray_d(pN1P0P0, pP1P0P0);
@@ -220,8 +220,8 @@ public class V3D_Ray_dTest extends V3D_Test_d {
         p = V3D_Plane_d.X0;
         expResult = pP0P0P0;
         result = instance.getIntersect(p, epsilon);
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon, 
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals( 
+                (V3D_Point_d) result, epsilon));
         // Test 2
         p = V3D_Plane_d.Y0;
         expResult = new V3D_Ray_d(pP0P0P0, pP1P0P0);
@@ -237,8 +237,8 @@ public class V3D_Ray_dTest extends V3D_Test_d {
         p = V3D_Plane_d.X0;
         expResult = pP0P0P0;
         result = instance.getIntersect(p, epsilon);
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon, 
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals( 
+                (V3D_Point_d) result, epsilon));
         // Test 5
         instance = new V3D_Ray_d(pN1P0P0, pN2P0P0);
         p = V3D_Plane_d.X0;
@@ -289,8 +289,8 @@ public class V3D_Ray_dTest extends V3D_Test_d {
         instance = new V3D_Ray_d(pP0P0P0, pN1P0P0);
         expResult = pP0P0P0;
         result = instance.getIntersect(r, epsilon);
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon, 
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals( 
+                (V3D_Point_d) result, epsilon));
         // Test 4: Collinear pointing opposite ways not overlapping.
         r = new V3D_Ray_d(pP1P0P0, pP2P0P0);
         instance = new V3D_Ray_d(pP0P0P0, pN1P0P0);
@@ -301,8 +301,8 @@ public class V3D_Ray_dTest extends V3D_Test_d {
         instance = new V3D_Ray_d(pP1P0P0, pP1P1P1);
         result = instance.getIntersect(r, epsilon);
         expResult = pP1P0P0;
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon, 
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals( 
+                (V3D_Point_d) result, epsilon));
         // Test 6: Not intersecting.
         r = new V3D_Ray_d(pP1P0P0, pP2P0P0);
         instance = new V3D_Ray_d(pP0P0P0, pP1P1P1);

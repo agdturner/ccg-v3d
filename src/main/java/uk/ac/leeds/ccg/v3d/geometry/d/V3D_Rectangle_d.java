@@ -616,7 +616,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
         for (var x : pts) {
             boolean found = false;
             for (var y : rpts) {
-                if (x.equals(epsilon, y)) {
+                if (x.equals(y, epsilon)) {
                     found = true;
                     break;
                 }
@@ -628,7 +628,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
         for (var x : rpts) {
             boolean found = false;
             for (var y : pts) {
-                if (x.equals(epsilon, y)) {
+                if (x.equals(y, epsilon)) {
                     found = true;
                     break;
                 }

@@ -556,10 +556,8 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     }
 
     /**
-     * If no point aligns, then returns false, otherwise the intersection is
-     * computed, so if that is needed use:
-     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Ray, int, java.math.RoundingMode)}
-     *
+     * Identify if this is intersected by r.
+     * 
      * @param r The ray to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -567,9 +565,9 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      */
     @Override
     public boolean intersects(V3D_Ray r, int oom, RoundingMode rm) {
-        if (getPoints(oom, rm).values().parallelStream().anyMatch(x
-                -> r.isAligned(x, oom, rm))) {
-            return getIntersect(r, oom, rm) != null;
+        if (ch.intersects(r, oom, rm)) {
+            return !externalHoles.values().parallelStream().anyMatch(x
+                    -> x.intersects(r, oom, rm));
         } else {
             return false;
         }

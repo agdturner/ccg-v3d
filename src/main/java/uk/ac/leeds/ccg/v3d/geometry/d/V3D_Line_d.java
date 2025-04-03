@@ -322,7 +322,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return {@code true} if pv is on the line.
      */
     public boolean intersects(V3D_Point_d pt, double epsilon) {
-        if (getP().equals(epsilon, pt) || getQ().equals(epsilon, pt)) {
+        if (getP().equals(pt, epsilon) || getQ().equals(pt, epsilon)) {
             return true;
         } else {
             V3D_Vector_d dpt = new V3D_Vector_d(
@@ -891,7 +891,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
          * not intersect. In this case pi and qi are meant to be the end points
          * of the shortest line between the two lines.
          */
-        if (pi.equals(epsilon, qi)) {
+        if (pi.equals(qi, epsilon)) {
             return pi;
         } else {
             return null;

@@ -1321,7 +1321,7 @@ public class V3D_AABB_d implements Serializable {
             double epsilon) {
         boolean unique = true;
         for (var x : pts) {
-            if (x.equals(epsilon, pt)) {
+            if (x.equals(pt, epsilon)) {
                 unique = false;
                 break;
             }

@@ -156,7 +156,7 @@ public class V3D_Rectangle_dTest extends V3D_Test_d {
         instance = new V3D_Rectangle_d(pN1P1P0, pP1P1P0, pP1N1P0, pN1N1P0);
         expResult = pP0P0P0;
         result = instance.getIntersect(l, epsilon);
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon, (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result, epsilon));
     }
 
     /**
@@ -337,7 +337,7 @@ public class V3D_Rectangle_dTest extends V3D_Test_d {
         V3D_Rectangle_d instance = new V3D_Rectangle_d(pP0P0P0, pP1P0P0, pP1P1P0, pP0P1P0);
         V3D_Point_d expResult = pP0P1P0;
         V3D_Point_d result = instance.getS();
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
     }
 
 //    /**

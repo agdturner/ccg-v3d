@@ -494,13 +494,13 @@ public class V3D_Point_dTest extends V3D_Test_d {
         double theta = Pi;
         V3D_Point_d result = instance.rotate(axis, uv, theta, epsilon);
         V3D_Point_d expResult = pP0P1P0;
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
         // Test 2
         instance = new V3D_Point_d(pP1P0P0);
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pP0P1P0;
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
         // Test 3
         V3D_Vector_d offset = new V3D_Vector_d(2, 0, 0);
         V3D_Vector_d rel = new V3D_Vector_d(1, 0, 0);
@@ -508,7 +508,7 @@ public class V3D_Point_dTest extends V3D_Test_d {
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = new V3D_Point_d(env, 0, 3, 0);
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
         // Test 4
         offset = new V3D_Vector_d(1, 0, 0);
         rel = new V3D_Vector_d(2, 0, 0);
@@ -516,7 +516,7 @@ public class V3D_Point_dTest extends V3D_Test_d {
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = new V3D_Point_d(env, 0, 3, 0);
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
 
         // Test 5
         axis = new V3D_Ray_d(env, P0P0P0, V3D_Vector_d.K);
@@ -525,19 +525,19 @@ public class V3D_Point_dTest extends V3D_Test_d {
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pN1P0P0;
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
         // Test 6
         instance = new V3D_Point_d(pP2P0P0);
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pN2P0P0;
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
         // Test 7
         instance = new V3D_Point_d(pN2P0P0);
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pP2P0P0;
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
 
         // Test 8
         axis = new V3D_Ray_d(env, P0P0P0, V3D_Vector_d.IJK);
@@ -546,18 +546,18 @@ public class V3D_Point_dTest extends V3D_Test_d {
         theta = Pi;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pP1P1P1;
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
         // Test 9
         instance = new V3D_Point_d(pP1P1P0);
         theta = 2d * Pi / 3d;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pP0P1P1;
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
         // Test 10
         theta = 4d * Pi / 3d;
         result = instance.rotate(axis, uv, theta, epsilon);
         expResult = pP1P0P1;
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
     }
 
     /**
@@ -570,11 +570,11 @@ public class V3D_Point_dTest extends V3D_Test_d {
         V3D_Vector_d offset = P0P0P1;
         double epsilon = 1 / 100000000d;
         instance.translate(offset);
-        assertTrue(instance.equals(epsilon, pP0P0P1));
+        assertTrue(instance.equals(pP0P0P1, epsilon));
         // Test 2
         offset = N2N2N2;
         instance.translate(offset);
-        assertTrue(instance.equals(epsilon, pN2N2N1));
+        assertTrue(instance.equals(pN2N2N1, epsilon));
     }
 
     /**
@@ -662,7 +662,7 @@ public class V3D_Point_dTest extends V3D_Test_d {
         boolean t = false;
         for (var x : result) {
             for (var y : expResult) {
-                if (x.equals(epsilon, y)) {
+                if (x.equals(y, epsilon)) {
                     t = true;
                     break;
                 }
@@ -672,7 +672,7 @@ public class V3D_Point_dTest extends V3D_Test_d {
         t = false;
         for (var x : expResult) {
             for (var y : result) {
-                if (x.equals(epsilon, y)) {
+                if (x.equals(y, epsilon)) {
                     t = true;
                     break;
                 }

@@ -16,7 +16,6 @@
 package uk.ac.leeds.ccg.v3d.geometry.d;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -215,7 +214,7 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
      * @return {@code true} iff {@code pv} is equal to {@code this} given the
      * epsilon.
      */
-    public boolean equals(double epsilon, V3D_Point_d p) {
+    public boolean equals(V3D_Point_d p, double epsilon) {
         if (p == null) {
             return false;
         }
@@ -244,7 +243,7 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
             return true;
         }
         for (int i = 1; i < ps.length; i++) {
-            if (!ps[0].equals(epsilon, ps[i])) {
+            if (!ps[0].equals(ps[i], epsilon)) {
                 return false;
             }
         }
@@ -465,7 +464,7 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
                 for (int j = i + 1; j < pts.size(); j++) {
                     if (!indexes.contains(j)) {
                         V3D_Point_d p2 = pts.get(j);
-                        if (p.equals(epsilon, p2)) {
+                        if (p.equals(p2, epsilon)) {
                             indexes.add(j);
                         }
                     }
@@ -494,7 +493,7 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
                 for (int j = i + 1; j < pts.size(); j++) {
                     if (!indexes.contains(j)) {
                         V3D_Point_d p2 = pts.get(j);
-                        if (p.equals(epsilon, p2)) {
+                        if (p.equals(p2, epsilon)) {
                             indexes.add(j);
                         }
                     }

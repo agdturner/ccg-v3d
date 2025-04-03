@@ -344,7 +344,7 @@ public class V3D_Tetrahedron_dTest extends V3D_Test_d {
         V3D_Point_d expResult = new V3D_Point_d(env, P0P0P0,
                 new V3D_Vector_d(0d, -1d / 2d, -1d / 2d));
         V3D_Point_d result = instance.getCentroid();
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
     }
 
     /**
@@ -475,8 +475,8 @@ public class V3D_Tetrahedron_dTest extends V3D_Test_d {
         instance = new V3D_Tetrahedron_d(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         expResult = new V3D_Point_d(env, P0P0P0, P2N2P0);
         result = instance.getIntersect(p, epsilon);
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon, 
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals( 
+                (V3D_Point_d) result, epsilon));
         // Test 4
         p = new V3D_Plane_d(V3D_Plane_d.X0);
         p.translate(N2P0P0);
@@ -635,8 +635,8 @@ public class V3D_Tetrahedron_dTest extends V3D_Test_d {
         r = new V3D_Ray_d(pN1P1P0, pP0P1P0);
         expResult = pN1P1P0;
         result = t.getIntersect(r, epsilon);
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon,
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals(
+                (V3D_Point_d) result, epsilon));
         // Test 3
         t = new V3D_Tetrahedron_d(pN2N2P0, pP2N2P0, pN2P2P0, pP0P0P2, epsilon);
         r = new V3D_Ray_d(pN1P0P1, pP0P0P1);

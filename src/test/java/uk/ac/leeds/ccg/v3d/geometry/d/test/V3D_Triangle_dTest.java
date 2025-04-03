@@ -783,7 +783,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
         // This expected result is not given in the answer on stack overflow.
         expResult = new V3D_Point_d(env, 0, 3, 0);
         result = instance.getIntersect(t, epsilon);
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon, (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result, epsilon));
         // Test 7: From https://web.mst.edu/~chaman/home/pubs/2015WimoTriangleTrianglePublished.pdf
         t = new V3D_Triangle_d(new V3D_Point_d(env, 0, 6, 0),
                 new V3D_Point_d(env, 6, 0, 0),
@@ -1000,7 +1000,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
         V3D_Triangle_d instance = new V3D_Triangle_d(pP0P0P0, pP1P0P0, pP0P1P0);
         V3D_Point_d expResult = pP0P1P0;
         V3D_Point_d result = instance.getOpposite(l, epsilon);
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
     }
 
     /**

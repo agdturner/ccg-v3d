@@ -273,7 +273,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public boolean equals(double epsilon, V3D_LineSegment_d l) {
         if (equalsIgnoreDirection(epsilon, l)) {
-            return this.l.getP().equals(epsilon, l.getP());
+            return this.l.getP().equals(l.getP(), epsilon);
         }
         return false;
     }
@@ -913,7 +913,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                 //if (ls.intersects(tp, epsilon)) {
                 if (ls.isAligned(tp, epsilon)) {
                     // Cases: 8, 9, 20, 21
-                    if (tp.equals(epsilon, lp)) {
+                    if (tp.equals(lp, epsilon)) {
                         // Cases: 8, 21
                         return tp;
                     } else {
@@ -922,7 +922,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                     }
                 } else {
                     // Case: 1, 2, 27, 28
-                    if (lp.equals(epsilon, tq)) {
+                    if (lp.equals(tq, epsilon)) {
                         // Case: 1, 28
                         return lp;
                     } else {
@@ -945,7 +945,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                         return V3D_LineSegment_d.getGeometry(lq, tp, epsilon);
                     } else {
                         // Cases: 6, 7, 22, 
-                        if (tp.equals(epsilon, lq)) {
+                        if (tp.equals(lq, epsilon)) {
                             // Cases: 7, 22
                             return tp;
                         } else {
@@ -955,7 +955,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                     }
                 } else {
                     // Cases: 13, 14, 15, 16
-                    if (tq.equals(epsilon, lq)) {
+                    if (tq.equals(lq, epsilon)) {
                         // Cases: 14, 15
                         return tq;
                     } else {
@@ -1116,7 +1116,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public static V3D_FiniteGeometry_d getGeometry(V3D_Point_d p,
             V3D_Point_d q, double epsilon) {
-        if (p.equals(epsilon, q)) {
+        if (p.equals(q, epsilon)) {
             return p;
         } else {
             return new V3D_LineSegment_d(p, q);
@@ -1136,11 +1136,11 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public static V3D_FiniteGeometry_d getGeometry(V3D_Point_d p,
             V3D_Point_d q, V3D_Point_d r, double epsilon) {
-        if (p.equals(epsilon, q)) {
+        if (p.equals(q, epsilon)) {
             return getGeometry(epsilon, p, r);
-        } else if (q.equals(epsilon, r)) {
+        } else if (q.equals(r, epsilon)) {
             return getGeometry(epsilon, p, r);
-        } else if (p.equals(epsilon, r)) {
+        } else if (p.equals(r, epsilon)) {
             return getGeometry(epsilon, p, q);
         } else {
             //V3D_LineSegment_d ls = new V3D_LineSegment_d(epsilon, p, q);

@@ -359,8 +359,8 @@ public class V3D_Line_dTest extends V3D_Test_d {
         expResult = pP0P0P0;
         epsilon = 1d / 100000000000d;
         result = instance.getIntersect(l, epsilon);
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon,
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals(
+                (V3D_Point_d) result, epsilon));
         // Test 26
         instance = new V3D_Line_d(pN1P1P1, pP1N1P1);
         l = new V3D_Line_d(pP0P2P1, pP1P1P1);
@@ -373,15 +373,15 @@ public class V3D_Line_dTest extends V3D_Test_d {
         instance = new V3D_Line_d(pN1P1P1, pP1N1N1);
         expResult = pP0P0P0;
         result = instance.getIntersect(l, epsilon);
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon,
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals(
+                (V3D_Point_d) result, epsilon));
         // Test 28
         l = new V3D_Line_d(pN1N1N1, pP1P1P1);
         instance = new V3D_Line_d(pN1P1P1, pP1N1N1);
         expResult = pP0P0P0;
         result = instance.getIntersect(l, epsilon);
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon,
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals(
+                (V3D_Point_d) result, epsilon));
         // Test 29
         l = new V3D_Line_d(new V3D_Point_d(env, -1d + (0.1d), -1d + (0.1d), -1d),
                 new V3D_Point_d(env, 1d + (0.1d), 1d + (0.1d), 1d));
@@ -389,8 +389,8 @@ public class V3D_Line_dTest extends V3D_Test_d {
                 new V3D_Point_d(env, 1d + (0.1d), -1d + (0.1d), -1d));
         expResult = new V3D_Point_d(env, 0d + (0.1d), 0d + (0.1d), 0d);
         result = instance.getIntersect(l, epsilon);
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon,
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals(
+                (V3D_Point_d) result, epsilon));
         // Test 30
         epsilon = 1d / 100000d;
         l = new V3D_Line_d(new V3D_Point_d(env, -100d, -100d, 0d),
@@ -420,8 +420,8 @@ public class V3D_Line_dTest extends V3D_Test_d {
                 new V3D_Point_d(env, 100d, -100d, epsilon));
         expResult = pP0P0P0;
         result = instance.getIntersect(l, epsilon);
-        assertTrue(((V3D_Point_d) expResult).equals(epsilon,
-                (V3D_Point_d) result));
+        assertTrue(((V3D_Point_d) expResult).equals(
+                (V3D_Point_d) result, epsilon));
         // Test 33
         epsilon = 1d / 100000d;
         l = new V3D_Line_d(new V3D_Point_d(env, -100d, -100d, 0d),
@@ -639,25 +639,25 @@ public class V3D_Line_dTest extends V3D_Test_d {
         V3D_Line_d instance = new V3D_Line_d(pP0P0P0, pP0P2P2);
         V3D_Point_d expResult = pP0P0P0;
         V3D_Point_d result = instance.getPointOfIntersect(pt, epsilon);
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
         // Test 2
          pt = pN2P0P0;
          instance = new V3D_Line_d(pP0P0P0, pP0P2P2);
          expResult = pP0P0P0;
          result = instance.getPointOfIntersect(pt, epsilon);
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
         // Test 3
          pt = pN2P2P0;
          instance = new V3D_Line_d(pP0P0P0, pP0P2P2);
          expResult = pP0P1P1;
          result = instance.getPointOfIntersect(pt, epsilon);
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
         // Test 4
          pt = pN2N2P0;
          instance = new V3D_Line_d(pP0P0P0, pP0P2P2);
          expResult = pP0N1N1;
          result = instance.getPointOfIntersect(pt, epsilon);
-        assertTrue(expResult.equals(epsilon, result));
+        assertTrue(expResult.equals(result, epsilon));
     }
 
     /**
