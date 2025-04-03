@@ -57,16 +57,16 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
 //    /**
 //     * Create a new instance that is a deep copy of the polygon.
 //     *
-//     * @param p The polygon to copy.
+//     * @param pv The polygon to copy.
 //     * @param oom The Order of Magnitude for the precision.
 //     * @param rm The RoundingMode for any rounding.
 //     */
-//    public V3D_PolygonNoInternalHoles(V3D_PolygonNoInternalHoles p, int oom,
+//    public V3D_PolygonNoInternalHoles(V3D_PolygonNoInternalHoles pv, int oom,
 //            RoundingMode rm) {
-//        this(p.getPoints(oom, rm).entrySet().stream().collect(Collectors.toMap(
+//        this(pv.getPoints(oom, rm).entrySet().stream().collect(Collectors.toMap(
 //                Map.Entry::getKey, x -> new V3D_Point(x.getValue()))),
-//                p.getConvexHull(oom, rm), p.getEdges(oom, rm), 
-//                p.getExternalHoles());
+//                pv.getConvexHull(oom, rm), pv.getEdges(oom, rm), 
+//                pv.getExternalHoles());
 //    }
     /**
      * Create a new instance that is also a convex hull.
@@ -516,7 +516,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @param p The polygon to test for containment.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} iff {@code this} contains {@code p}.
+     * @return {@code true} iff {@code this} contains {@code pv}.
      */
     public boolean contains(V3D_PolygonNoInternalHoles p, int oom, RoundingMode rm) {
         return ch.intersects(p.ch, oom, rm)
@@ -613,7 +613,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     }
 
     /**
-     * Identify if this is intersected by point {@code p}.
+     * Identify if this is intersected by point {@code pv}.
      *
      * @param r The convex hull to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
@@ -655,7 +655,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @param p The convex hull to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
-     * @return {@code true} iff this is intersected by {@code p}.
+     * @return {@code true} iff this is intersected by {@code pv}.
      */
     public boolean intersects(V3D_PolygonNoInternalHoles p, int oom,
             RoundingMode rm) {

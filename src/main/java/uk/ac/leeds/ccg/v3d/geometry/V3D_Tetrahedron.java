@@ -775,21 +775,21 @@ public class V3D_Tetrahedron extends V3D_Volume {
                 if (pq.getIntersect(rs, oom, rm) != null) {
                     throw new UnsupportedOperationException("Not supported yet.");
 //                    return new V3D_Polygon(
-//                            new V3D_Triangle(p, q, r, oom, rm),
-//                            new V3D_Triangle(p, q, s, oom, rm));
+//                            new V3D_Triangle(pv, q, r, oom, rm),
+//                            new V3D_Triangle(pv, q, s, oom, rm));
                 } else {
                     V3D_LineSegment pr = new V3D_LineSegment(p, r, oom, rm);
                     V3D_LineSegment qs = new V3D_LineSegment(q, s, oom, rm);
                     if (pr.getIntersect(qs, oom, rm) != null) {
                         throw new UnsupportedOperationException("Not supported yet.");
 //                        return new V3D_Polygon(
-//                                new V3D_Triangle(p, r, q, oom, rm),
-//                                new V3D_Triangle(p, r, s, oom, rm));
+//                                new V3D_Triangle(pv, r, q, oom, rm),
+//                                new V3D_Triangle(pv, r, s, oom, rm));
                     } else {
                         throw new UnsupportedOperationException("Not supported yet.");
 //                        return new V3D_Polygon(
-//                                new V3D_Triangle(p, q, s, oom, rm),
-//                                new V3D_Triangle(p, r, s, oom, rm));
+//                                new V3D_Triangle(pv, q, s, oom, rm),
+//                                new V3D_Triangle(pv, r, s, oom, rm));
                     }
                 }
             }

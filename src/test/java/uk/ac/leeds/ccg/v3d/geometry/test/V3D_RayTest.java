@@ -286,7 +286,7 @@ public class V3D_RayTest extends V3D_Test {
         // Test 1
         instance = new V3D_Ray(pN2P0P0, pN1P0P0, oom, rm);
         p = V3D_Plane.X0;
-//        p = new V3D_Plane(new V3D_Environment(),
+//        pv = new V3D_Plane(new V3D_Environment(),
 //            V3D_Vector.ZERO, V3D_Vector.ZERO, V3D_Vector.J, V3D_Vector.K);
         //expResult = new V3D_Point(P0P0P0);
         expResult = pP0P0P0;

@@ -158,7 +158,7 @@ public class V3D_TetrahedronTest extends V3D_Test {
 //                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
 //                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
 //                           ),
-//                           p=V3D_Vector
+//                           pv=V3D_Vector
 //                           (
 //                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
 //                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
@@ -690,11 +690,11 @@ public class V3D_TetrahedronTest extends V3D_Test {
         result = instance.getIntersect(p, oom, rm);
         assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
 //        // Test 2
-//        p = new V3D_Plane(V3D_Plane.X0);
-//        p.translate(P1P0P0, oom, rm);
+//        pv = new V3D_Plane(V3D_Plane.X0);
+//        pv.translate(P1P0P0, oom, rm);
 //        instance = new V3D_Tetrahedron(P0P0P0, N2N2P0, P2N2P0, N2P2P0, P0P0P2);
 //        expResult = new V3D_Triangle(P0P0P0, P1N2P0, P1N1P0, P1N1P1);
-//        result = instance.getIntersect(p, oom, rm);
+//        result = instance.getIntersect(pv, oom, rm);
 //        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
     }
 

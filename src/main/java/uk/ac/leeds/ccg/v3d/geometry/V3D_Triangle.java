@@ -30,8 +30,8 @@ import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VTriangle;
 
 /**
  * For representing and processing triangles in 3D.A triangle has a non-zero
- area. The corner points are defined by {@link #pv}, {@link #qv} and
- * {@link #rv}. The following depicts a generic triangle {@code
+ area.The corner points are defined by {@link #pv}, {@link #qv} and
+ {@link #rv}. The following depicts a generic triangle {@code
  p                         pq                       q
  pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
      \~                   mpq                   ~/
@@ -414,56 +414,61 @@ public class V3D_Triangle extends V3D_Area {
                 r.getVector(oom, rm).subtract(p.offset, oom, rm));
     }
     
-//    /**
-//     * Creates a new triangle.
-//     *
-//     * @param env What {@link #env} is set to.
-//     * @param offset What {@link #offset} is set to.
-//     * @param pv What {@link #pl} is set to.
-//     * @param qv What {@link #qv} is set to.
-//     * @param rv What {@link #rv} is set to.
-//     * @param normal What {@link #normal} is set to.
-//     */
-//    public V3D_Triangle(V3D_Environment env, V3D_Vector offset, V3D_Vector pv,
-//            V3D_Vector qv, V3D_Vector rv, V3D_Vector normal) {
-//        super(env, offset, null);
-//        this.pv = pv;
-//        this.qv = qv;
-//        this.rv = rv;
-//        this.normal = normal;
-//    }
-//
-//    /**
-//     * Creates a new instance.
-//     *
-//     * @param pt A point giving the direction of the normal vector.
-//     * @param p Used to initialise {@link #offset} and {@link #pl}.
-//     * @param q Used to initialise {@link #qv}.
-//     * @param r Used to initialise {@link #rv}.
-//     * @param oom The Order of Magnitude for the precision.
-//     * @param rm The RoundingMode if rounding is needed.
-//     */
-//    public V3D_Triangle(V3D_Point pt, V3D_Point p, V3D_Point q, V3D_Point r,
-//            int oom, RoundingMode rm) {
-//        super(pt.env, new V3D_Vector(p.offset), null);
-//        this.pv = new V3D_Vector(p.rel);
-//        this.qv = q.getVector(oom, rm).subtract(p.offset, oom, rm);
-//        this.rv = r.getVector(oom, rm).subtract(p.offset, oom, rm);
-//        //this.pl = new V3D_Plane(pt, p.offset, p.getVector(oom, rm),
-//        //        q.getVector(oom, rm), r.getVector(oom, rm), oom, rm);
-//    }
-//
-//    /**
-//     * Creates a new instance.
-//     *
-//     * @param ls A line segment defining two of the points.
-//     * @param pt The third point.
-//     * @param oom The Order of Magnitude for the precision.
-//     * @param rm The RoundingMode if rounding is needed.
-//     */
-//    public V3D_Triangle(V3D_LineSegment ls, V3D_Point pt, int oom, RoundingMode rm) {
-//        this(ls.getP(), ls.getQ(oom, rm), pt, oom, rm);
-//    }
+    /**
+     * Creates a new triangle.
+     *
+     * @param env What {@link #env} is set to.
+     * @param offset What {@link #offset} is set to.
+     * @param pv What {@link #pv} is set to.
+     * @param qv What {@link #qv} is set to.
+     * @param rv What {@link #rv} is set to.
+     * @param normal What {@link #normal} is set to.
+     */
+    public V3D_Triangle(V3D_Environment env, V3D_Vector offset, V3D_Vector pv,
+            V3D_Vector qv, V3D_Vector rv, V3D_Vector normal) {
+        super(env, offset, null);
+        this.pv = pv;
+        this.qv = qv;
+        this.rv = rv;
+        this.normal = normal;
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param pt A point giving the direction of the normal vector.
+     * @param p Used to initialise {@link env}, {@link #offset} and {@link #pv}
+     * and {@link p}.
+     * @param q Used to initialise {@link #qv} and {@link q}.
+     * @param r Used to initialise {@link #rv} and {@link r}.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     */
+    public V3D_Triangle(V3D_Point pt, V3D_Point p, V3D_Point q, V3D_Point r,
+            int oom, RoundingMode rm) {
+        super(p.env, new V3D_Vector(p.offset), null);
+        this.pv = new V3D_Vector(p.rel);
+        this.p = new V3D_Point(p);
+        this.qv = q.getVector(oom, rm).subtract(p.offset, oom, rm);
+        this.q = new V3D_Point(q);
+        this.rv = r.getVector(oom, rm).subtract(p.offset, oom, rm);
+        this.r = new V3D_Point(r);        
+        this.pl = new V3D_Plane(pt, p.offset, p.getVector(oom, rm),
+                q.getVector(oom, rm), r.getVector(oom, rm), oom, rm);
+        this.normal = pl.n;
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param ls A line segment defining two of the points.
+     * @param pt The third point.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     */
+    public V3D_Triangle(V3D_LineSegment ls, V3D_Point pt, int oom, RoundingMode rm) {
+        this(ls.getP(), ls.getQ(oom, rm), pt, oom, rm);
+    }
 
     @Override
     protected void initPl(int oom, RoundingMode rm) {
@@ -1020,7 +1025,7 @@ public class V3D_Triangle extends V3D_Area {
     }
 
     /**
-     * If {@code p} and {@code q} are equal, then return {@code p}, otherwise
+     * If {@code pv} and {@code q} are equal, then return {@code pv}, otherwise
      * return a line segment.
      *
      * @param p A point.
@@ -1975,8 +1980,8 @@ public class V3D_Triangle extends V3D_Area {
     }
 
     /**
-     * If p, q and r are equal then the point is returned.If two of the points
-     * are the same, then a line segment is returned.If all points are
+     * If pv, q and r are equal then the point is returned.If two of the points
+ are the same, then a line segment is returned.If all points are
  different then a triangle is returned.
      *
      * @param p A point.
@@ -3002,7 +3007,7 @@ public class V3D_Triangle extends V3D_Area {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @param ls A line segment to test for intersection.
-     * @param faces The faces to test for intersection with p.
+     * @param faces The faces to test for intersection with pv.
      * @return {@code true} if {@code this} is intersected by {@code pv}.
      */
     public static boolean intersects(int oom, RoundingMode rm,

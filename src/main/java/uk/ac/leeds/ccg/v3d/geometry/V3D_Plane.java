@@ -27,10 +27,8 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of an infinite plane.The plane is defined by the point
- {@link #p} and the normal {@link #n}. A plane be constructed in numerous ways
- including by using three points that are not collinear.
-
- The equation of the plane is:
+ {@link #pv} and the normal {@link #n}.A plane be constructed in numerous ways
+ including by using three points that are not collinear. The equation of the plane is:
  <ul>
  * <li>{@code A*(x-x0) + B*(y-y0) + C*(z-z0) = 0}</li>
  * <li>{@code A*(x) + B*(y) + C*(z) - D = 0 where D = -(A*x0 + B*y0 + C*z0)}</li>
@@ -79,9 +77,14 @@ public class V3D_Plane extends V3D_Geometry {
             V3D_Vector.K);
 
     /**
-     * The point that defines the plane.
+     * The vector that defines {@link #p} on the plane.
      */
-    protected V3D_Vector p;
+    protected V3D_Vector pv;
+
+    /**
+     * For storing a point on the plane.
+     */
+    protected V3D_Point p;
 
     /**
      * The normal vector that defines the plane. This is perpendicular to the
@@ -97,23 +100,24 @@ public class V3D_Plane extends V3D_Geometry {
     /**
      * Create a new instance.
      *
-     * @param p The plane used to create this.
+     * @param pl The plane used to create this.
      */
-    public V3D_Plane(V3D_Plane p) {
-        super(p.env, new V3D_Vector(p.offset));
-        this.p = new V3D_Vector(p.p);
-        this.n = new V3D_Vector(p.n);
+    public V3D_Plane(V3D_Plane pl) {
+        super(pl.env, new V3D_Vector(pl.offset));
+        this.pv = new V3D_Vector(pl.pv);
+        this.n = new V3D_Vector(pl.n);
     }
 
     /**
      * Create a new instance.
      *
-     * @param p Used to initialise {@link #p}.
+     * @param p Used to initialise {@link #pv}.
      * @param n The normal of the plane.
      */
     public V3D_Plane(V3D_Point p, V3D_Vector n) {
         super(p.env, new V3D_Vector(p.offset));
-        this.p = new V3D_Vector(p.rel);
+        this.pv = new V3D_Vector(p.rel);
+        this.p = new V3D_Point(p);
         this.n = new V3D_Vector(n);
     }
 
@@ -129,18 +133,20 @@ public class V3D_Plane extends V3D_Geometry {
     public V3D_Plane(V3D_LineSegment l, V3D_Vector inplane, int oom,
             RoundingMode rm) {
         super(l.env, new V3D_Vector(l.offset));
-        this.p = new V3D_Vector(l.getP().rel);
+        this.pv = new V3D_Vector(l.getP().rel);
+        this.p = new V3D_Point(l.getP());
         this.n = l.l.v.getCrossProduct(inplane, oom, rm);
     }
 
     /**
      * Create a new instance.
      *
-     * @param p Used to initialise {@link #p}.
-     * @param q A point coplanar to pl and r, not collinear to both pl and r,
-     * and not equal to pl or r.
-     * @param r A point coplanar to pl and v, not collinear to both pl and v,
- and not equal to pl or v.
+     * @param p Used to initialise {@link #env}, {@link #offset}, {@link #pv},
+     * and {@link #p}.
+     * @param q A point coplanar to p and r, not collinear or equal to either 
+     * p or r.
+     * @param r A point coplanar to p and q, not collinear or equal to either 
+     * p or q.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
@@ -150,73 +156,71 @@ public class V3D_Plane extends V3D_Geometry {
         V3D_Vector qv = q.getVector(oom, rm);
         V3D_Vector pq = qv.subtract(p.getVector(oom, rm), oom, rm);
         V3D_Vector qr = r.getVector(oom, rm).subtract(qv, oom, rm);
-        this.p = new V3D_Vector(p.rel);
+        this.pv = new V3D_Vector(p.rel);
         this.n = pq.getCrossProduct(qr, oom, rm);
     }
 
     /**
-     * Create a new instance.
+     * Create a new instance.{@code pv}, {@code qv} and {@code rv} must not 
+     * define collinear points on the plane.
      *
      * @param env What {@link #env} is set to.
-     * @param p Used to initialise {@link #p}.
-     * @param q A point coplanar to pl and r, not collinear to both pl and r,
-     * and not equal to pl or r.
-     * @param r A point coplanar to pl and v, not collinear to both pl and v,
- and not equal to pl or v.
+     * @param pv Used to initialise {@link #pv}.
+     * @param qv Defines a point on the plane.
+     * @param rv Defines a point on the plane.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_Plane(V3D_Environment env, V3D_Vector p, V3D_Vector q, V3D_Vector r, int oom,
-            RoundingMode rm) {
-        this(env, V3D_Vector.ZERO, p, q, r, oom, rm);
+    public V3D_Plane(V3D_Environment env, V3D_Vector pv, V3D_Vector qv, 
+            V3D_Vector rv, int oom, RoundingMode rm) {
+        this(env, V3D_Vector.ZERO, pv, qv, rv, oom, rm);
     }
 
     /**
-     * Create a new instance.
+     * Create a new instance.{@code pv}, {@code qv} and {@code rv} must not 
+ define collinear points on the plane.
      *
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
-     * @param p Used to initialise {@link #p}.
-     * @param q A point coplanar to pl and r, not collinear to both pl and r,
-     * and not equal to pl or r.
-     * @param r A point coplanar to pl and v, not collinear to both pl and v,
- and not equal to pl or v.
+     * @param pv Used with {@code offset} to initialise {@link #pv}.
+     * @param qv Defines a point on the plane.
+     * @param rv Defines a point on the plane.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_Plane(V3D_Environment env, V3D_Vector offset, V3D_Vector p, V3D_Vector q, V3D_Vector r, int oom,
+    public V3D_Plane(V3D_Environment env, V3D_Vector offset, V3D_Vector pv, 
+            V3D_Vector qv, V3D_Vector rv, int oom,
             RoundingMode rm) {
-        this(env, p, offset, p, q, r, oom, rm);
+        this(env, pv.add(qv.getCrossProduct(rv, oom, rm), oom, rm), offset, 
+                pv, qv, rv, oom, rm);
     }
 
     /**
-     * Create a new instance.
+     * Create a new instance.{@code pv}, {@code qv} and {@code rv} must not 
+     * define collinear points on the plane.
      *
      * @param env What {@link #env} is set to.
      * @param ptv A point vector giving the direction of the normal vector.
      * @param offset What {@link #offset} is set to.
-     * @param p Used to initialise {@link #p}.
-     * @param q A point coplanar to pl and r, not collinear to both pl and r,
-     * and not equal to pl or r.
-     * @param r A point coplanar to pl and v, not collinear to both pl and v,
- and not equal to pl or v.
+     * @param pv Used to initialise {@link #pv}.
+     * @param qv Defines a point on the plane.
+     * @param rv Defines a point on the plane.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_Plane(V3D_Environment env, V3D_Vector ptv, V3D_Vector offset, V3D_Vector p,
-            V3D_Vector q, V3D_Vector r, int oom, RoundingMode rm) {
+    public V3D_Plane(V3D_Environment env, V3D_Vector ptv, V3D_Vector offset, 
+            V3D_Vector pv, V3D_Vector qv, V3D_Vector rv, int oom, RoundingMode rm) {
         super(env, new V3D_Vector(offset));
-        V3D_Vector pq = q.subtract(p, oom, rm);
+        V3D_Vector pq = qv.subtract(pv, oom, rm);
         if (pq.equals(V3D_Vector.ZERO)) {
             throw new RuntimeException("Cannot define plane as p equals q.");
         }
-        V3D_Vector qr = r.subtract(q, oom, rm);
+        V3D_Vector qr = rv.subtract(qv, oom, rm);
         if (qr.equals(V3D_Vector.ZERO)) {
             throw new RuntimeException("Cannot define plane as q equals r.");
         }
-        this.p = new V3D_Vector(p);
+        this.pv = new V3D_Vector(pv);
         this.n = pq.getCrossProduct(qr, oom, rm);
-        
         if (this.n.isZero()) {
             int debug = 1;
             this.n = pq.reverse().getCrossProduct(qr, oom, rm);
@@ -224,7 +228,7 @@ public class V3D_Plane extends V3D_Geometry {
         
         V3D_Vector v;
         if (ptv.isZero()) {
-            v = p.add(q, oom, rm).add(r, oom, rm).reverse();
+            v = pv.add(qv, oom, rm).add(rv, oom, rm).reverse();
         } else {
             v = new V3D_Vector(ptv);
         }
@@ -243,7 +247,7 @@ public class V3D_Plane extends V3D_Geometry {
      *
      * @param pt A point giving the direction of the normal vector.
      * @param offset What {@link #offset} is set to.
-     * @param p Used to initialise {@link #p}.
+     * @param p Used to initialise {@link #pv}.
      * @param q A point coplanar to pl and r, not collinear to both pl and r,
      * and not equal to pl or r.
      * @param r A point coplanar to pl and v, not collinear to both pl and v,
@@ -269,9 +273,9 @@ public class V3D_Plane extends V3D_Geometry {
         super(pl.env, offset);
         n = pl.getN();
         if (offset.equals(pl.offset, oom, rm)) {
-            p = new V3D_Vector(pl.p);
+            pv = new V3D_Vector(pl.pv);
         } else {
-            p = pl.p.add(pl.offset, oom, rm).subtract(offset, oom, rm);
+            pv = pl.pv.add(pl.offset, oom, rm).subtract(offset, oom, rm);
         }
     }
     
@@ -309,7 +313,7 @@ public class V3D_Plane extends V3D_Geometry {
     protected String toStringFields(String pad) {
         return super.toStringFields(pad) + "\n"
                 + pad + ",\n"
-                + pad + "p=" + p.toString(pad) + "\n"
+                + pad + "p=" + pv.toString(pad) + "\n"
                 + pad + ",\n"
                 + pad + "n=" + n.toString(pad);
     }
@@ -321,7 +325,7 @@ public class V3D_Plane extends V3D_Geometry {
     @Override
     protected String toStringFieldsSimple(String pad) {
         return super.toStringFieldsSimple(pad) + ",\n"
-                + pad + "p=" + p.toStringSimple(pad) + ",\n"
+                + pad + "p=" + pv.toStringSimple(pad) + ",\n"
                 + pad + "n=" + n.toStringSimple(pad);
     }
 
@@ -333,10 +337,13 @@ public class V3D_Plane extends V3D_Geometry {
     }
     
     /**
-     * @return {@link #p} with {@link #offset} and rotations applied.
+     * @return {@link #pv} with {@link #offset} and rotations applied.
      */
     public final V3D_Point getP() {
-        return new V3D_Point(env, offset, p);
+        if (p == null) {
+            p = new V3D_Point(env, offset, pv);
+        }
+        return p;
     }
 
     /**
@@ -401,7 +408,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return A point on the plane.
      */
     public final V3D_Point getQ(V3D_Vector pv, int oom, RoundingMode rm) {
-        return new V3D_Point(env, offset, this.p.add(pv, oom, rm));
+        return new V3D_Point(env, offset, this.pv.add(pv, oom, rm));
     }
 
     /**
@@ -425,7 +432,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public final V3D_Point getR(V3D_Vector pv, int oom, RoundingMode rm) {
         V3D_Vector pvx = pv.getCrossProduct(n, oom, rm);
-        return new V3D_Point(env, offset, this.p.add(pvx, oom, rm));
+        return new V3D_Point(env, offset, this.pv.add(pvx, oom, rm));
     }
 
     /**
@@ -1974,6 +1981,9 @@ public class V3D_Plane extends V3D_Geometry {
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
         super.translate(v, oom, rm);
         this.equation = null;
+        if (p != null) {
+            p.translate(v, oom, rm);
+        }
     }
 
     @Override

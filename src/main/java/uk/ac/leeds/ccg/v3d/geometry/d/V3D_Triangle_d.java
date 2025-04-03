@@ -24,44 +24,51 @@ import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VTriangle_d;
 
+
 /**
  * For representing and processing triangles in 3D.A triangle has a non-zero
- * area.The corner points are {@link #pl}, {@link #qv} and {@link #rv}.The
- * following depicts a generic triangle {@code
- * pv                                               qv
- * pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
- * \~                   mpq                   ~/
- * \  ~                 |                 ~  /
- * \    ~              |              ~    /
- * \      ~           |           ~      /
- * -n    \        ~        |        ~        /
- * \n         ~     |     ~          /
- * \      -n    ~  |  ~            /
- * \              c              /
- * \          ~  |  ~   +n     /
- * \      ~     |     ~      / +n
- * \  ~        |        ~  /          +n
- * + mrp      |      mqr +                   +n
- * rp  \         |         /  qr      normal heading out from the page.
- * \        |        /
- * \       |       /
- * \      |      /
- * \     |     /
- * \    |    /
- * \   |   /
- * \  |  /
- * \ | /
- * \|/
- *
- * rv
- * }
+ area.The corner points are defined by {@link #pv}, {@link #qv} and
+ {@link #rv}. The following depicts a generic triangle {@code
+ p                         pq                       q
+ pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
+     \~                   mpq                   ~/
+      \  ~                 |                 ~  /
+       \    ~              |              ~    /
+        \      ~           |           ~      /
+         \        ~        |        ~        /
+          \          ~     |     ~          /
+           \            ~  |  ~            /
+            \  -n  -n  -n  c  +n  +n  +n  +n  normal going out of the page.
+             \          ~  |  ~          /
+              \      ~     |     ~      /
+               \  ~        |        ~  /
+                + mrp      |      mqr +
+             rp  \         |         /  qr
+                  \        |        /
+                   \       |       /
+                    \      |      /
+                     \     |     /
+                      \    |    /
+                       \   |   /
+                        \  |  /
+                         \ | /
+                          \|/
+                           *
+                           rv
+                           r
+ }
  *
  * @author Andy Turner
- * @version 1.0
+ * @version 2.0
  */
 public class V3D_Triangle_d extends V3D_Area_d {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * For storing the normal vector of the triangle.
+     */
+    protected V3D_Vector_d normal;
 
     /**
      * Defines one of the corners of the triangle.
@@ -307,6 +314,59 @@ public class V3D_Triangle_d extends V3D_Area_d {
         this(pl, new V3D_Vector_d(p.offset), new V3D_Vector_d(p.rel),
                 q.getVector().subtract(p.offset),
                 r.getVector().subtract(p.offset));
+    }
+    
+    /**
+     * Creates a new triangle.
+     *
+     * @param env What {@link #env} is set to.
+     * @param offset What {@link #offset} is set to.
+     * @param pv What {@link #pv} is set to.
+     * @param qv What {@link #qv} is set to.
+     * @param rv What {@link #rv} is set to.
+     * @param normal What {@link #normal} is set to.
+     */
+    public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d offset, 
+            V3D_Vector_d pv, V3D_Vector_d qv, V3D_Vector_d rv, 
+            V3D_Vector_d normal) {
+        super(env, offset, null);
+        this.pv = pv;
+        this.qv = qv;
+        this.rv = rv;
+        this.normal = normal;
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param pt A point giving the direction of the normal vector.
+     * @param p Used to initialise {@link env}, {@link #offset} and {@link #pv}
+     * and {@link p}.
+     * @param q Used to initialise {@link #qv} and {@link q}.
+     * @param r Used to initialise {@link #rv} and {@link r}.
+     */
+    public V3D_Triangle_d(V3D_Point_d pt, V3D_Point_d p, V3D_Point_d q, 
+            V3D_Point_d r) {
+        super(p.env, new V3D_Vector_d(p.offset), null);
+        this.pv = new V3D_Vector_d(p.rel);
+        this.p = new V3D_Point_d(p);
+        this.qv = q.getVector().subtract(p.offset);
+        this.q = new V3D_Point_d(q);
+        this.rv = r.getVector().subtract(p.offset);
+        this.r = new V3D_Point_d(r);        
+        this.pl = new V3D_Plane_d(pt, p.offset, p.getVector(),
+                q.getVector(), r.getVector());
+        this.normal = pl.n;
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param ls A line segment defining two of the points.
+     * @param pt The third point.
+     */
+    public V3D_Triangle_d(V3D_LineSegment_d ls, V3D_Point_d pt) {
+        this(ls.getP(), ls.getQ(), pt);
     }
 
     /**
@@ -561,7 +621,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
                 && getRPPl().isOnSameSideNotOn(pt, getQ(), epsilon);
     }
 
-    //@Override
+    @Override
     public boolean contains(V3D_LineSegment_d l, double epsilon) {
         if (getAABB().contains(l)) {
             return contains0(l, epsilon);

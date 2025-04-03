@@ -2488,16 +2488,19 @@ public class V3D_PlaneTest extends V3D_Test {
         assertTrue(expResult.equals(result));
         // Z = -1
         instance = new V3D_Plane(env, P0P0N1, P1P0N1, P0P1N1, oom, rm);
-        expResult = P0P0N1;
+        //expResult = P0P0N1;
+        expResult = P0P0P1;
         result = instance.getN();
         assertTrue(expResult.equals(result));
         // Z = 1
         instance = new V3D_Plane(env, P0P0P1, P1P0P1, P0P1P1, oom, rm);
+        //expResult = P0P0N1;
         expResult = P0P0P1;
         result = instance.getN();
         assertTrue(expResult.equals(result));
         // Z = 1
         instance = new V3D_Plane(env, P1P0P1, P0P1P1, P0P0P1, oom, rm);
+        //expResult = P0P0N1;
         expResult = P0P0P1;
         result = instance.getN();
         assertTrue(expResult.equals(result));
@@ -3450,7 +3453,7 @@ public class V3D_PlaneTest extends V3D_Test {
 //                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
 //                           )
 //                           ,
-//                           p=V3D_Vector
+//                           pv=V3D_Vector
 //                           (
 //                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
 //                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),

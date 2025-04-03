@@ -499,7 +499,7 @@ public class V3D_ConvexArea extends V3D_Area {
     }
 
     /**
-     * Get the intersection between this and the plane {@code p}.
+     * Get the intersection between this and the plane {@code pv}.
      *
      * @param p The plane to intersect with.
      * @param oom The Order of Magnitude for the precision.
@@ -1042,14 +1042,14 @@ public class V3D_ConvexArea extends V3D_Area {
     }
 
     /**
-     * Identify if this is intersected by point {@code p}. This first check if 
-     * {@code pt} intersects the Axis Aligned Bounding Box of {@code this},
-     * then checks the point is on the plane.
+     * Identify if this is intersected by point {@code pv}.This first check if 
+    {@code pt} intersects the Axis Aligned Bounding Box of {@code this},
+ then checks the point is on the plane.
      *
      * @param pt The point to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff the geometry is intersected by {@code p}.
+     * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
     @Override
     public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
@@ -1061,14 +1061,14 @@ public class V3D_ConvexArea extends V3D_Area {
     }
 
     /**
-     * Identify if this is intersected by point {@code p}. There is no check to 
-     * evaluate if {@code p} intersects the Axis Aligned Bounding Box, but there 
-     * is a check that the point intersects the plane.
+     * Identify if this is intersected by point {@code pv}.There is no check to 
+ evaluate if {@code pv} intersects the Axis Aligned Bounding Box, but there 
+ is a check that the point intersects the plane.
      *
      * @param pt The point to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff the geometry is intersected by {@code p}.
+     * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
     //@Override
     public boolean intersects0(V3D_Point pt, int oom, RoundingMode rm) {
@@ -1082,14 +1082,14 @@ public class V3D_ConvexArea extends V3D_Area {
     }
 
     /**
-     * Identify if this is intersected by point {@code p}. There is no check to 
-     * evaluate if {@code p} intersects the Axis Aligned Bounding Box or if it 
-     * intersects the plane.
+     * Identify if this is intersected by point {@code pv}.There is no check to 
+ evaluate if {@code pv} intersects the Axis Aligned Bounding Box or if it 
+ intersects the plane.
      *
      * @param p The point to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff {@code this} is intersected by {@code p}.
+     * @return {@code true} iff {@code this} is intersected by {@code pv}.
      */
     //@Override
     public boolean intersects00(V3D_Point p, int oom, RoundingMode rm) {
@@ -1098,12 +1098,12 @@ public class V3D_ConvexArea extends V3D_Area {
     }
 
     /**
-     * Identify if this is intersected by point {@code p}.
+     * Identify if this is intersected by point {@code pv}.
      *
      * @param aabb The Axis Aligned Bounding Box to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff the geometry is intersected by {@code p}.
+     * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
     @Override
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
@@ -1134,7 +1134,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param l The line to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff {@code this} is intersected by {@code p}.
+     * @return {@code true} iff {@code this} is intersected by {@code pv}.
      */
     public boolean intersects0(V3D_Line l, int oom, RoundingMode rm) {
         return triangles.values().parallelStream().anyMatch(x
@@ -1161,7 +1161,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param l The line segment to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff {@code this} is intersected by {@code p}.
+     * @return {@code true} iff {@code this} is intersected by {@code pv}.
      */
     public boolean intersects0(V3D_LineSegment l, int oom, RoundingMode rm) {
         return triangles.values().parallelStream().anyMatch(x
@@ -1275,7 +1275,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param pt A point.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return The distance squared to {@code p}.
+     * @return The distance squared to {@code pv}.
      */
     public BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
         Iterator<V3D_Triangle> ite = triangles.values().iterator();
