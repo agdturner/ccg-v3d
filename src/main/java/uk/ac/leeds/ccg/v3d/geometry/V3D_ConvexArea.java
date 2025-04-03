@@ -123,7 +123,8 @@ public class V3D_ConvexArea extends V3D_Area {
      */
     public V3D_ConvexArea(int oom, RoundingMode rm, V3D_Vector n,
             List<V3D_Point> points) {
-        super(points.get(0).env, points.get(0).offset, new V3D_Plane(points.get(0), n));
+        super(points.get(0).env, points.get(0).offset,
+                new V3D_Plane(points.get(0), n));
         this.points = new HashMap<>();
         triangles = new HashMap<>();
         edges = new HashMap<>();
@@ -388,6 +389,7 @@ public class V3D_ConvexArea extends V3D_Area {
 //            V3D_Geometry g = i.getIntersect(t, oom, rm);
 //            if (g instanceof V3D_Triangle gt) {
 //                if (!t.equals(gt, oom, rm)) {
+
     
 
     ////                    System.out.println(gt);
@@ -533,11 +535,11 @@ public class V3D_ConvexArea extends V3D_Area {
         } else {
             throw new UnsupportedOperationException();
             /**
-             * As the area is convex, there is a line segment which is 
-             * the intersection. Either the plane of an edge is parallel to the 
-             * line or intersects the line at a point. The points of the line 
-             * segment are those intersection points that are different and that 
-             * are a minimum distance apart (and are on the edge of the area).
+             * As the area is convex, there is a line segment which is the
+             * intersection. Either the plane of an edge is parallel to the line
+             * or intersects the line at a point. The points of the line segment
+             * are those intersection points that are different and that are a
+             * minimum distance apart (and are on the edge of the area).
              */
 //            V3D_FiniteGeometry lpqi = getPQ(oom, rm).getIntersect(l, oom, rm);
 //            V3D_FiniteGeometry lqri = getQR(oom, rm).getIntersect(l, oom, rm);
@@ -593,7 +595,7 @@ public class V3D_ConvexArea extends V3D_Area {
             return null;
         } else if (i instanceof V3D_Point ip) {
             if (r.isAligned(ip, oom, rm)
-                && intersects00(ip, oom, rm)) {
+                    && intersects00(ip, oom, rm)) {
                 return ip;
             } else {
                 return null;
@@ -602,7 +604,7 @@ public class V3D_ConvexArea extends V3D_Area {
             throw new UnsupportedOperationException();
         }
     }
-    
+
     /**
      * Get the intersection between the geometry and the triangle {@code t}.
      *
@@ -673,77 +675,75 @@ public class V3D_ConvexArea extends V3D_Area {
             V3D_Vector n, int index, int oom, RoundingMode rm) {
         V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(env,
                 offset, p0.rel.add(n, oom, rm)), oom, rm);
-        AB ab = new AB(pts, p0, p1, pl, oom, rm);
-        {
-            // Process ab.a
-            points.put(points.size(), p0);
-            if (!ab.a.isEmpty()) {
-                if (ab.a.size() > 1) {
-                    V3D_Point apt = ab.a.get(ab.maxaIndex);
-                    points.put(index, apt);
-                    index++;
-                    V3D_Triangle atr = new V3D_Triangle(p0, p1, apt, oom, rm);
-                    TreeSet<Integer> removeIndexes = new TreeSet<>();
-                    for (int i = 0; i < ab.a.size(); i++) {
-                        if (atr.intersects(ab.a.get(i), oom, rm)) {
-                            removeIndexes.add(i);
-                            //index--;
-                        }
-                        Iterator<Integer> ite = removeIndexes.descendingIterator();
-                        while (ite.hasNext()) {
-                            ab.a.remove(ite.next().intValue());
-                        }
-                        if (!ab.a.isEmpty()) {
-                            if (ab.a.size() > 1) {
-                                // Divide again
-                                V3D_Line l = new V3D_Line(p0, p1, oom, rm);
-                                V3D_Point proj = l.getPointOfIntersect(apt, oom, rm);
-                                compute(ab.a, proj, apt, n, index, oom, rm);
-                            } else {
-                                points.put(index, ab.a.get(0));
-                                index++;
-                            }
-                        }
-                    }
-                } else {
-                    points.put(index, ab.a.get(0));
-                    index++;
-                }
-            }
-        }
-        {
-            // Process ab.b
-            points.put(this.points.size(), p1);
-            index++;
-            if (!ab.b.isEmpty()) {
-                if (ab.b.size() > 1) {
-                    V3D_Point bpt = ab.b.get(ab.maxbIndex);
-                    points.put(index, bpt);
-                    index++;
-                    V3D_Triangle btr = new V3D_Triangle(p0, p1, bpt, oom, rm);
-                    TreeSet<Integer> removeIndexes = new TreeSet<>();
-                    for (int i = 0; i < ab.b.size(); i++) {
-                        if (btr.intersects(ab.b.get(i), oom, rm)) {
-                            removeIndexes.add(i);
-                            //index--;
-                        }
+        AB ab = new AB(pts, pl, oom, rm);
+        // Process ab.a
+        points.put(points.size(), p0);
+        if (!ab.a.isEmpty()) {
+            if (ab.a.size() == 1) {
+                points.put(index, ab.a.get(0));
+                index++;
+            } else {
+                V3D_Point apt = ab.a.get(ab.maxaIndex);
+                points.put(index, apt);
+                index++;
+                V3D_Triangle atr = new V3D_Triangle(p0, p1, apt, oom, rm);
+                TreeSet<Integer> removeIndexes = new TreeSet<>();
+                for (int i = 0; i < ab.a.size(); i++) {
+                    if (atr.intersects(ab.a.get(i), oom, rm)) {
+                        removeIndexes.add(i);
+                        //index--;
                     }
                     Iterator<Integer> ite = removeIndexes.descendingIterator();
                     while (ite.hasNext()) {
-                        ab.b.remove(ite.next().intValue());
+                        ab.a.remove(ite.next().intValue());
                     }
-                    if (!ab.b.isEmpty()) {
-                        if (ab.b.size() > 1) {
+                    if (!ab.a.isEmpty()) {
+                        if (ab.a.size() == 1) {
+                            points.put(index, ab.a.get(0));
+                            index++;
+                        } else {
                             // Divide again
                             V3D_Line l = new V3D_Line(p0, p1, oom, rm);
-                            V3D_Point proj = l.getPointOfIntersect(bpt, oom, rm);
-                            compute(ab.b, bpt, proj, n, index, oom, rm);
-                        } else {
-                            points.put(index, ab.b.get(0));
+                            V3D_Point proj = l.getPointOfIntersect(apt, oom, rm);
+                            compute(ab.a, proj, apt, n, index, oom, rm);
                         }
                     }
-                } else {
-                    points.put(index, ab.b.get(0));
+                }
+            }
+        }
+        points.put(this.points.size(), p1);
+        index++;
+        // Process ab.b
+        if (!ab.b.isEmpty()) {
+            if (ab.b.size() == 1) {
+                points.put(index, ab.b.get(0));
+                index++;
+            } else {
+                V3D_Point bpt = ab.b.get(ab.maxbIndex);
+                points.put(index, bpt);
+                index++;
+                V3D_Triangle btr = new V3D_Triangle(p0, p1, bpt, oom, rm);
+                TreeSet<Integer> removeIndexes = new TreeSet<>();
+                for (int i = 0; i < ab.b.size(); i++) {
+                    if (btr.intersects(ab.b.get(i), oom, rm)) {
+                        removeIndexes.add(i);
+                        //index--;
+                    }
+                }
+                Iterator<Integer> ite = removeIndexes.descendingIterator();
+                while (ite.hasNext()) {
+                    ab.b.remove(ite.next().intValue());
+                }
+                if (!ab.b.isEmpty()) {
+                    if (ab.b.size() == 1) {
+                        points.put(index, ab.b.get(0));
+                        index++;
+                    } else {
+                        // Divide again
+                        V3D_Line l = new V3D_Line(p0, p1, oom, rm);
+                        V3D_Point proj = l.getPointOfIntersect(bpt, oom, rm);
+                        compute(ab.b, bpt, proj, n, index, oom, rm);
+                    }
                 }
             }
         }
@@ -799,55 +799,69 @@ public class V3D_ConvexArea extends V3D_Area {
          * Create a new instance.
          *
          * @param pts The points.
-         * @param p0 One end of the line segment dividing the convex hull.
-         * @param p1 One end of the line segment dividing the convex hull.
          * @param plane The plane.
          * @param oom The Order of Magnitude for the precision.
          * @param rm The RoundingMode for any rounding.
          */
-        public AB(ArrayList<V3D_Point> pts, V3D_Point p0, V3D_Point p1,
+        public AB(ArrayList<V3D_Point> pts,
                 V3D_Plane plane, int oom, RoundingMode rm) {
-            // Find points above and below the plane.
-            // Points that are not on the plane.
-            ArrayList<V3D_Point> no = new ArrayList<>();
-            for (int i = 0; i < pts.size(); i++) {
-                V3D_Point pt = pts.get(i);
-                if (!plane.intersects(pt, oom, rm)) {
-                    no.add(pt);
-                }
-            }
-            no = V3D_Point.getUnique(no, oom, rm);
-
-            if (no.size() < 1) {
-                int debug = 1;
-            }
-
-            // Go through points that are not on the plane.
             a = new ArrayList<>();
             b = new ArrayList<>();
-            V3D_Point pt0 = no.get(0);
-            BigRational maxads = plane.getDistanceSquared(pt0, oom, rm);
-            BigRational maxbds = BigRational.ZERO;
-            a.add(pt0);
-            maxaIndex = 0;
-            maxbIndex = -1;
-            for (int i = 1; i < no.size(); i++) {
-                V3D_Point pt = no.get(i);
-                BigRational ds = plane.getDistanceSquared(pt, oom, rm);
-                if (plane.isOnSameSide(pt0, pt, oom, rm)) {
+            // Find points on, above and below the plane.
+            for (int i = 0; i < pts.size(); i++) {
+                V3D_Point pt = pts.get(i);
+                int sop = pl.getSideOfPlane(pt, oom, rm);
+                if (sop > 0) {
                     a.add(pt);
-                    if (ds.compareTo(maxads) == 1) {
-                        maxads = ds;
-                        maxaIndex = a.size() - 1;
-                    }
-                } else {
+                } else if (sop < 0) {
                     b.add(pt);
-                    if (ds.compareTo(maxbds) == 1) {
-                        maxbds = ds;
-                        maxbIndex = b.size() - 1;
+                }
+            }
+            maxaIndex = 0;
+            if (a.size() > 1) {
+                V3D_Point pt0 = a.get(0);
+                BigRational maxds = pl.getDistanceSquared(pt0, oom, rm);
+                for (int i = 1; i < a.size(); i++) {
+                    V3D_Point pt = a.get(i);
+                    BigRational ds = pl.getDistanceSquared(pt, oom, rm);
+                    if (ds.compareTo(maxds) == 1) {
+                        maxds = ds;
+                        maxaIndex = i;
                     }
                 }
             }
+            //        b = V3D_Point_d.getUnique(b, epsilon);
+            maxbIndex = 0;
+            if (b.size() > 1) {
+                V3D_Point pt0 = b.get(0);
+                BigRational maxds = pl.getDistanceSquared(pt0, oom, rm);
+                for (int i = 1; i < b.size(); i++) {
+                    V3D_Point pt = b.get(i);
+                    BigRational ds = pl.getDistanceSquared(pt, oom, rm);
+                    if (ds.compareTo(maxds) == 1) {
+                        maxds = ds;
+                        maxbIndex = i;
+                    }
+                }
+            }
+            
+//            for (int i = 1; i < no.size(); i++) {
+//                V3D_Point pt = no.get(i);
+//                BigRational ds = plane.getDistanceSquared(pt, oom, rm);
+//                if (plane.isOnSameSide(pt0, pt, oom, rm)) {
+//                    a.add(pt);
+//                    if (ds.compareTo(maxads) == 1) {
+//                        maxads = ds;
+//                        maxaIndex = a.size() - 1;
+//                    }
+//                } else {
+//                    b.add(pt);
+//                    if (ds.compareTo(maxbds) == 1) {
+//                        maxbds = ds;
+//                        maxbIndex = b.size() - 1;
+//                    }
+//                }
+//            }
         }
     }
 
@@ -1042,9 +1056,9 @@ public class V3D_ConvexArea extends V3D_Area {
     }
 
     /**
-     * Identify if this is intersected by point {@code pv}.This first check if 
-    {@code pt} intersects the Axis Aligned Bounding Box of {@code this},
- then checks the point is on the plane.
+     * Identify if this is intersected by point {@code pv}.This first check if
+     * {@code pt} intersects the Axis Aligned Bounding Box of {@code this}, then
+     * checks the point is on the plane.
      *
      * @param pt The point to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
@@ -1061,9 +1075,9 @@ public class V3D_ConvexArea extends V3D_Area {
     }
 
     /**
-     * Identify if this is intersected by point {@code pv}.There is no check to 
- evaluate if {@code pv} intersects the Axis Aligned Bounding Box, but there 
- is a check that the point intersects the plane.
+     * Identify if this is intersected by point {@code pv}.There is no check to
+     * evaluate if {@code pv} intersects the Axis Aligned Bounding Box, but
+     * there is a check that the point intersects the plane.
      *
      * @param pt The point to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
@@ -1082,9 +1096,9 @@ public class V3D_ConvexArea extends V3D_Area {
     }
 
     /**
-     * Identify if this is intersected by point {@code pv}.There is no check to 
- evaluate if {@code pv} intersects the Axis Aligned Bounding Box or if it 
- intersects the plane.
+     * Identify if this is intersected by point {@code pv}.There is no check to
+     * evaluate if {@code pv} intersects the Axis Aligned Bounding Box or if it
+     * intersects the plane.
      *
      * @param p The point to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
@@ -1170,7 +1184,7 @@ public class V3D_ConvexArea extends V3D_Area {
 
     /**
      * Identify if this is intersected by {@code r}.
-     * 
+     *
      * @param r The ray to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -1181,7 +1195,7 @@ public class V3D_ConvexArea extends V3D_Area {
         return triangles.values().parallelStream().anyMatch(x
                 -> x.intersects(r, oom, rm));
     }
-    
+
     /**
      * Identify if this is intersected by triangle {@code t}.
      *
@@ -1262,7 +1276,7 @@ public class V3D_ConvexArea extends V3D_Area {
                 || ch.triangles.values().parallelStream().anyMatch(x
                         -> intersects0(x, oom, rm));
     }
-    
+
     /**
      * Get the minimum distance squared to {@code pt}.
      *
@@ -1274,7 +1288,7 @@ public class V3D_ConvexArea extends V3D_Area {
     public BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
         Iterator<V3D_Triangle> ite = triangles.values().iterator();
         BigRational r = ite.next().getDistanceSquared(pt, oom, rm);
-        while(ite.hasNext()) {
+        while (ite.hasNext()) {
             r = BigRational.min(r, ite.next().getDistanceSquared(pt, oom, rm));
         }
         return r;

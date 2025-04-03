@@ -15,27 +15,14 @@
  */
 package uk.ac.leeds.ccg.v3d.geometry.test;
 
-import ch.obermuhlner.math.big.BigRational;
 import java.math.RoundingMode;
-import java.util.HashMap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_AABB;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Area;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_ConvexArea;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_FiniteGeometry;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Line;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Plane;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Point;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Ray;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Rectangle;
-import uk.ac.leeds.ccg.v3d.geometry.V3D_Triangle;
 import uk.ac.leeds.ccg.v3d.geometry.V3D_Vector;
 
 /**
@@ -115,7 +102,7 @@ public class V3D_ConvexAreaTest extends V3D_Test {
                             )
                            )""";
         String result = instance.toString();
-        //System.out.println(result);
+        System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
     }
 //

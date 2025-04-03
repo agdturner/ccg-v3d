@@ -167,7 +167,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
                             new V3D_PolygonNoInternalHoles(
                                     p.pts.toArray(V3D_Point[]::new),
                                     ch.pl.n, oom, rm));
-//                                    getPl(oom, rm).n, oom, rm));
+                                    //getPl(oom, rm).n, oom, rm));
                     p.pts = new ArrayList<>();
                     p.isHole = false;
                 } else {
@@ -281,13 +281,12 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
 
     @Override
     protected void initPl(int oom, RoundingMode rm) {
-        pl = ch.triangles.get(0).getPl(oom, rm);
+        pl = ch.getPl(oom, rm);
     }
 
     @Override
     protected void initPl(V3D_Point pt, int oom, RoundingMode rm) {
-        V3D_Triangle t = ch.triangles.get(0);
-        pl = new V3D_Plane(pt, offset, t.pv, t.qv, t.rv, oom, rm);
+        pl = ch.getPl(pt, oom, rm);
     }
 
     /**

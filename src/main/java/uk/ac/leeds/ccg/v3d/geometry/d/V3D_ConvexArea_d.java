@@ -658,11 +658,11 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
                 points.put(index, bpt);
                 index++;
 
-                // Debug
-                if (bpt.equals(p1, epsilon)) {
-                    int debug = 1;
-                    ab = new AB(pts, pl, epsilon);
-                }
+//                // Debug
+//                if (bpt.equals(p1, epsilon)) {
+//                    int debug = 1;
+//                    ab = new AB(pts, pl, epsilon);
+//                }
 
                 V3D_Triangle_d btr = new V3D_Triangle_d(p0, p1, bpt); // p1 and bpt might be the same!
                 TreeSet<Integer> removeIndexes = new TreeSet<>();
