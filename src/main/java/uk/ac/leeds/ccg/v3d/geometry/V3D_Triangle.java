@@ -32,8 +32,8 @@ import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VTriangle;
  * For representing and processing triangles in 3D.A triangle has a non-zero
  area. The corner points are defined by {@link #pv}, {@link #qv} and
  * {@link #rv}. The following depicts a generic triangle {@code
-                          pq
- pv *- - - - - - - - - - - + - - - - - - - - - - -* v
+ p                         pq                       q
+ pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
      \~                   mpq                   ~/
       \  ~                 |                 ~  /
        \    ~              |              ~    /
@@ -58,6 +58,7 @@ import uk.ac.leeds.ccg.v3d.geometry.light.V3D_VTriangle;
                           \|/
                            *
                            rv
+                           r
  }
  *
  * @author Andy Turner
@@ -228,7 +229,7 @@ public class V3D_Triangle extends V3D_Area {
     /**
      * Creates a new triangle.
      *
-     * @param t The triangle to clone.
+     * @param t The triangle to copy.
      */
     public V3D_Triangle(V3D_Triangle t) {
         super(t.env, new V3D_Vector(t.offset), new V3D_Plane(t.pl));
@@ -236,32 +237,32 @@ public class V3D_Triangle extends V3D_Area {
         qv = new V3D_Vector(t.qv);
         rv = new V3D_Vector(t.rv);
         if (t.p != null) {
-            p = t.p;
+            p = new V3D_Point(t.p);
             poom = t.poom;
             prm = t.prm;
         }
         if (t.q != null) {
-            q = t.q;
+            q = new V3D_Point(t.q);
             qoom = t.qoom;
             qrm = t.qrm;
         }
         if (t.r != null) {
-            r = t.r;
+            r = new V3D_Point(t.r);
             room = t.room;
             rrm = t.rrm;
         }
         if (t.pq != null) {
-            pq = t.pq;
+            pq = new V3D_LineSegment(t.pq);
             pqoom = t.pqoom;
             pqrm = t.pqrm;
         }
         if (t.qr != null) {
-            qr = t.qr;
+            qr = new V3D_LineSegment(t.qr);
             qroom = t.qroom;
             qrrm = t.qrrm;
         }
         if (t.rp != null) {
-            rp = t.rp;
+            rp = new V3D_LineSegment(t.rp);
             rpoom = t.rpoom;
             rprm = t.rprm;
         }
@@ -287,18 +288,18 @@ public class V3D_Triangle extends V3D_Area {
      * {@link V3D_Vector#ZERO}.
      *
      * @param env What {@link #env} is set to.
-     * @param p What {@link #pl} is set to.
-     * @param q What {@link #qv} is set to.
-     * @param r What {@link #rv} is set to.
+     * @param pv What {@link #pv} is set to.
+     * @param qv What {@link #qv} is set to.
+     * @param rv What {@link #rv} is set to.
      */
-    public V3D_Triangle(V3D_Environment env, V3D_Vector p, V3D_Vector q,
-            V3D_Vector r) {
-        this(env, V3D_Vector.ZERO, p, q, r);
+    public V3D_Triangle(V3D_Environment env, V3D_Vector pv, V3D_Vector qv,
+            V3D_Vector rv) {
+        this(env, V3D_Vector.ZERO, pv, qv, rv);
     }
 
     /**
-     * Creates a new triangle. pv, qv and rv must all be different according to
-     * the {@code env.oom} and {@code env.rm}.
+     * Creates a new triangle. {@code pv}, {@code qv} and {@code rv} must all be
+     * different.
      *
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
@@ -354,7 +355,7 @@ public class V3D_Triangle extends V3D_Area {
      * @param r Defines the other point relative to l.offset that defines the
      * triangle.
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
+     * @param rm The RoundingMode for any rounding.
      */
     public V3D_Triangle(V3D_LineSegment l, V3D_Vector r,
             int oom, RoundingMode rm) {
@@ -370,7 +371,7 @@ public class V3D_Triangle extends V3D_Area {
      * triangle.
      * @param pt The other point that defines the triangle.
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
+     * @param rm The RoundingMode for any rounding.
      */
     public V3D_Triangle(V3D_Plane pl, V3D_LineSegment ls, V3D_Point pt,
             int oom, RoundingMode rm) {
@@ -387,7 +388,7 @@ public class V3D_Triangle extends V3D_Area {
      * @param q Used to initialise {@link #qv}.
      * @param r Used to initialise {@link #rv}.
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
+     * @param rm The RoundingMode for any rounding.
      */
     public V3D_Triangle(V3D_Point p, V3D_Point q, V3D_Point r,
             int oom, RoundingMode rm) {
@@ -403,11 +404,12 @@ public class V3D_Triangle extends V3D_Area {
      * @param p A point.
      * @param q A point.
      * @param r A point.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      */
     public V3D_Triangle(V3D_Plane pl, V3D_Point p, V3D_Point q, V3D_Point r,
             int oom, RoundingMode rm) {
-        this(pl, new V3D_Vector(p.offset), 
-                new V3D_Vector(p.rel),
+        this(pl, new V3D_Vector(p.offset), new V3D_Vector(p.rel),
                 q.getVector(oom, rm).subtract(p.offset, oom, rm), 
                 r.getVector(oom, rm).subtract(p.offset, oom, rm));
     }
@@ -988,8 +990,8 @@ public class V3D_Triangle extends V3D_Area {
                     if (lrpi == null) {
                         return lqri;
                     } else {
-                        return getGeometry(env, ((V3D_Point) lqri).getVector(oom, rm),
-                                ((V3D_Point) lrpi).getVector(oom, rm), oom, rm);
+                        return getGeometry((V3D_Point) lqri, (V3D_Point) lrpi, 
+                                oom, rm);
                     }
                 }
             } else if (lpqi instanceof V3D_Point lpqip) {
@@ -997,17 +999,16 @@ public class V3D_Triangle extends V3D_Area {
                     if (lrpi == null) {
                         return lpqi;
                     } else {
-                        return getGeometry(env, lpqip.getVector(oom, rm),
-                                ((V3D_Point) lrpi).getVector(oom, rm), oom, rm);
+                        return getGeometry(lpqip, (V3D_Point) lrpi, oom, rm);
                     }
                 } else if (lqri instanceof V3D_Point lqrip) {
                     if (lrpi == null) {
-                        return getGeometry(env, lqrip.getVector(oom, rm),
-                                lpqip.getVector(oom, rm), oom, rm);
+                        return getGeometry(lqrip, lpqip, oom, rm);
                     } else if (lrpi instanceof V3D_LineSegment) {
                         return lrpi;
                     } else {
-                        return getGeometry(lpqip, lqrip, (V3D_Point) lrpi, oom, rm);
+                        return getGeometry(lpqip, lqrip, (V3D_Point) lrpi, 
+                                oom, rm);
                     }
                 } else {
                     return lqri;
@@ -1019,23 +1020,21 @@ public class V3D_Triangle extends V3D_Area {
     }
 
     /**
-     * If {@code v1} and {@code v2} are the same, then return a point, otherwise
-     * return a line segment.In both instance offset is set to
-     * {@link V3D_Vector#ZERO}.
+     * If {@code p} and {@code q} are equal, then return {@code p}, otherwise
+     * return a line segment.
      *
-     * @param env What {@link #env} is set to.
-     * @param v1 A vector.
-     * @param v2 A vector.
+     * @param p A point.
+     * @param q A point.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      * @return Either a line segment or a point.
      */
-    public static V3D_FiniteGeometry getGeometry(V3D_Environment env,
-            V3D_Vector v1, V3D_Vector v2, int oom, RoundingMode rm) {
-        if (v1.equals(v2)) {
-            return new V3D_Point(env, v1);
+    public static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q, 
+            int oom, RoundingMode rm) {
+        if (p.equals(q, oom, rm)) {
+            return p;
         } else {
-            return new V3D_LineSegment(env, v1, v2, oom, rm);
+            return new V3D_LineSegment(p, q, oom, rm);
         }
     }
 

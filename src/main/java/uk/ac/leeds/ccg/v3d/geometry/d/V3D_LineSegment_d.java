@@ -109,8 +109,8 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      *
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
-     * @param pv What the point of {@link #l.pv} is cloned from.
-     * @param v What {@link #l.v} is cloned from.
+     * @param pv Used to initialise {@link #l}.
+     * @param v Used to initialise {@link #l}.
      */
     public V3D_LineSegment_d(V3D_Environment_d env, V3D_Vector_d offset, 
             V3D_Vector_d pv, V3D_Vector_d v) {
@@ -121,12 +121,12 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
     /**
      * Create a new instance.
      *
-     * @param p What the point of {@link #l} is cloned from.
-     * @param q What {@link #qv} is cloned from.
+     * @param p Used to initialise {@link #l}.
+     * @param q Used to initialise {@link #l} and {@link #q}.
      */
     public V3D_LineSegment_d(V3D_Point_d p, V3D_Point_d q) {
         super(p.env, p.offset);
-        l = new V3D_Line_d(env, offset, p.rel, new V3D_Vector_d(p, q));
+        l = new V3D_Line_d(p, q);
     }
     
     /**

@@ -2746,7 +2746,7 @@ public class V3D_PlaneTest extends V3D_Test {
         assertTrue(((V3D_Line) expResult).equals((V3D_Line) result, oom, rm));
         // Test 3
         instance = V3D_Plane.Z0;
-        expResult= new V3D_Line(pP0P0P0, pP0P1P0, oom, rm);
+        expResult = new V3D_Line(pP0P0P0, pP0P1P0, oom, rm);
         //expResult= new V3D_Line(pP0P0P0, V3D_Vector.J); 
         expResult.translate(P1P0P0, oom, rm);
         result = instance.getIntersect(pl, oom, rm);
@@ -3372,8 +3372,8 @@ public class V3D_PlaneTest extends V3D_Test {
     @Test
     public void testGetDistance_V3D_LineSegment_int() {
         System.out.println("getDistance");
-        V3D_LineSegment l = new V3D_LineSegment(env, new V3D_Vector(P10, P1, P1),
-                new V3D_Vector(P100, P1, P1), oom, rm);
+        V3D_LineSegment l = new V3D_LineSegment(new V3D_Point(env, P10, P1, P1),
+                new V3D_Point(env, P100, P1, P1), oom, rm);
         V3D_Plane instance = V3D_Plane.X0;
         BigDecimal expResult = BigDecimal.TEN;
         BigDecimal result = instance.getDistance(l, oom, rm);

@@ -26,35 +26,35 @@ import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VTriangle_d;
 
 /**
  * For representing and processing triangles in 3D.A triangle has a non-zero
- area.The corner points are {@link #pl}, {@link #qv} and {@link #rv}.The
- following depicts a generic triangle {@code
-   pv                                               qv
- pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
-     \~                   mpq                   ~/
-      \  ~                 |                 ~  /
-       \    ~              |              ~    /
-        \      ~           |           ~      /
-   -n    \        ~        |        ~        /
-          \n         ~     |     ~          /
-           \      -n    ~  |  ~            /
-            \              c              /
-             \          ~  |  ~   +n     /
-              \      ~     |     ~      / +n
-               \  ~        |        ~  /          +n
-                + mrp      |      mqr +                   +n
-             rp  \         |         /  qr      normal heading out from the page.
-                  \        |        /
-                   \       |       /
-                    \      |      /
-                     \     |     /
-                      \    |    /
-                       \   |   /
-                        \  |  /
-                         \ | /
-                          \|/
-
-                           rv
- }
+ * area.The corner points are {@link #pl}, {@link #qv} and {@link #rv}.The
+ * following depicts a generic triangle {@code
+ * pv                                               qv
+ * pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
+ * \~                   mpq                   ~/
+ * \  ~                 |                 ~  /
+ * \    ~              |              ~    /
+ * \      ~           |           ~      /
+ * -n    \        ~        |        ~        /
+ * \n         ~     |     ~          /
+ * \      -n    ~  |  ~            /
+ * \              c              /
+ * \          ~  |  ~   +n     /
+ * \      ~     |     ~      / +n
+ * \  ~        |        ~  /          +n
+ * + mrp      |      mqr +                   +n
+ * rp  \         |         /  qr      normal heading out from the page.
+ * \        |        /
+ * \       |       /
+ * \      |      /
+ * \     |     /
+ * \    |    /
+ * \   |   /
+ * \  |  /
+ * \ | /
+ * \|/
+ *
+ * rv
+ * }
  *
  * @author Andy Turner
  * @version 1.0
@@ -77,6 +77,21 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * Defines one of the corners of the triangle.
      */
     protected V3D_Vector_d rv;
+
+    /**
+     * For storing a corner point of the triangle corresponding to {@link #pv}.
+     */
+    protected V3D_Point_d p;
+
+    /**
+     * For storing a corner point of the triangle corresponding to {@link #qv}.
+     */
+    protected V3D_Point_d q;
+
+    /**
+     * For storing a corner point of the triangle corresponding to {@link #rv}.
+     */
+    protected V3D_Point_d r;
 
     /**
      * For storing the line segment from {@link #getP()} to {@link #getQ()} for
@@ -136,13 +151,31 @@ public class V3D_Triangle_d extends V3D_Area_d {
     /**
      * Creates a new triangle.
      *
-     * @param t The triangle to clone.
+     * @param t The triangle to copy.
      */
     public V3D_Triangle_d(V3D_Triangle_d t) {
         super(t.env, new V3D_Vector_d(t.offset), t.pl);
         pv = new V3D_Vector_d(t.pv);
         qv = new V3D_Vector_d(t.qv);
         rv = new V3D_Vector_d(t.rv);
+        if (t.p != null) {
+            p = new V3D_Point_d(t.p);
+        }
+        if (t.q != null) {
+            q = new V3D_Point_d(t.q);
+        }
+        if (t.r != null) {
+            r = new V3D_Point_d(t.r);
+        }
+        if (t.pq != null) {
+            pq = new V3D_LineSegment_d(t.pq);
+        }
+        if (t.qr != null) {
+            qr = new V3D_LineSegment_d(t.qr);
+        }
+        if (t.rp != null) {
+            rp = new V3D_LineSegment_d(t.rp);
+        }
     }
 
     /**
@@ -154,24 +187,24 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d offset,
             V3D_VTriangle_d t) {
-        this(env, offset, 
-                new V3D_Vector_d(t.pq.p), 
+        this(env, offset,
+                new V3D_Vector_d(t.pq.p),
                 new V3D_Vector_d(t.pq.q),
                 new V3D_Vector_d(t.qr.q));
     }
 
     /**
      * Creates a new triangle.{@link #offset} is set to
-    {@link V3D_Vector_d#ZERO}.
+     * {@link V3D_Vector_d#ZERO}.
      *
      * @param env What {@link #env} is set to.
-     * @param p What {@link #pl} is set to.
-     * @param q What {@link #qv} is set to.
-     * @param r What {@link #rv} is set to.
+     * @param pv What {@link #pv} is set to.
+     * @param qv What {@link #qv} is set to.
+     * @param rv What {@link #rv} is set to.
      */
-    public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d p, V3D_Vector_d q,
-            V3D_Vector_d r) {
-        this(env, V3D_Vector_d.ZERO, p, q, r);
+    public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d pv,
+            V3D_Vector_d qv, V3D_Vector_d rv) {
+        this(env, V3D_Vector_d.ZERO, pv, qv, rv);
     }
 
     /**
@@ -242,9 +275,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param pt The other point that defines the triangle.
      */
     public V3D_Triangle_d(V3D_Plane_d pl, V3D_LineSegment_d ls, V3D_Point_d pt) {
-        this(pl, new V3D_Vector_d(ls.offset), 
+        this(pl, new V3D_Vector_d(ls.offset),
                 new V3D_Vector_d(ls.l.pv),
-                ls.l.pv.add(ls.l.v), 
+                ls.l.pv.add(ls.l.v),
                 pt.getVector().subtract(ls.offset));
     }
 
@@ -257,7 +290,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     public V3D_Triangle_d(V3D_Point_d p, V3D_Point_d q, V3D_Point_d r) {
         this(p.env, new V3D_Vector_d(p.offset), new V3D_Vector_d(p.rel),
-                q.getVector().subtract(p.offset), 
+                q.getVector().subtract(p.offset),
                 r.getVector().subtract(p.offset));
     }
 
@@ -271,9 +304,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     public V3D_Triangle_d(V3D_Plane_d pl, V3D_Point_d p,
             V3D_Point_d q, V3D_Point_d r) {
-        this(pl, new V3D_Vector_d(p.offset), 
-                new V3D_Vector_d(p.rel),
-                q.getVector().subtract(p.offset), 
+        this(pl, new V3D_Vector_d(p.offset), new V3D_Vector_d(p.rel),
+                q.getVector().subtract(p.offset),
                 r.getVector().subtract(p.offset));
     }
 
@@ -281,33 +313,66 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @return A new point based on {@link #pv} and {@link #offset}.
      */
     public final V3D_Point_d getP() {
-        return new V3D_Point_d(env, offset, pv);
+        if (p == null) {
+            p = new V3D_Point_d(env, offset, pv);
+        }
+        return p;
     }
 
     /**
      * @return A new point based on {@link #qv} and {@link #offset}.
      */
     public final V3D_Point_d getQ() {
-        return new V3D_Point_d(env, offset, qv);
+        if (q == null) {
+            q = new V3D_Point_d(env, offset, qv);
+        }
+        return q;
     }
 
     /**
      * @return A new point based on {@link #rv} and {@link #offset}.
      */
     public final V3D_Point_d getR() {
-        return new V3D_Point_d(env, offset, rv);
+        if (r == null) {
+            r = new V3D_Point_d(env, offset, rv);
+        }
+        return r;
     }
 
     /**
      * For getting the line segment from {@link #getP()} to {@link #getQ()}.
      *
-     * @return Line segment from rv to pv.
+     * @return Line segment from {@link #getP()} to {@link #getQ()}.
      */
     public final V3D_LineSegment_d getPQ() {
         if (pq == null) {
-            pq = new V3D_LineSegment_d(env, offset, pv, qv);
+            pq = new V3D_LineSegment_d(getP(), getQ());
         }
         return pq;
+    }
+
+    /**
+     * For getting the line segment from {@link #getQ()} to {@link #getR()}.
+     *
+     * @return Line segment from {@link #getQ()} to {@link #getR()}.
+     */
+    public final V3D_LineSegment_d getQR() {
+        if (qr == null) {
+            qr = new V3D_LineSegment_d(getQ(), getR());
+        }
+        return qr;
+    }
+
+    /**
+     * For getting the line segment from {@link #getR()} to {@link #getP()}.
+     *
+     * @return Line segment from {@link #getR()} to {@link #getP()}.
+     */
+    public final V3D_LineSegment_d getRP() {
+        if (rp == null) {
+            rp = new V3D_LineSegment_d(getR(), getP());
+        }
+        return rp;
     }
 
     /**
@@ -329,30 +394,6 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     public final V3D_Vector_d getRPV() {
         return pv.subtract(rv);
-    }
-
-    /**
-     * For getting the line segment from {@link #getQ()} to {@link #getR()}.
-     *
-     * @return Line segment from qv to rv.
-     */
-    public final V3D_LineSegment_d getQR() {
-        if (qr == null) {
-            qr = new V3D_LineSegment_d(env, offset, qv, rv);
-        }
-        return qr;
-    }
-
-    /**
-     * For getting the line segment from {@link #getR()} to {@link #getP()}.
-     *
-     * @return Line segment from rv to pv.
-     */
-    public final V3D_LineSegment_d getRP() {
-        if (rp == null) {
-            rp = new V3D_LineSegment_d(env, offset, rv, pv);
-        }
-        return rp;
     }
 
     /**
@@ -459,7 +500,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     //@Override
     public boolean intersects0(V3D_Point_d pt, double epsilon) {
-        if (pl.intersects(epsilon, pt)) {
+        if (getPl().intersects(epsilon, pt)) {
             return intersects00(pt, epsilon);
         } else {
             return false;
@@ -481,8 +522,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
                 && getQRPl().isOnSameSide(pt, getP(), epsilon)
                 && getRPPl().isOnSameSide(pt, getQ(), epsilon);
     }
-    
-    //@Override
+
+    @Override
     public boolean contains(V3D_Point_d pt, double epsilon) {
         if (getAABB().contains(pt)) {
             return contains0(pt, epsilon);
@@ -499,15 +540,15 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     //@Override
     public boolean contains0(V3D_Point_d pt, double epsilon) {
-        if (pl.intersects(epsilon, pt)) {
+        if (getPl().intersects(epsilon, pt)) {
             return contains00(pt, epsilon);
         } else {
             return false;
         }
     }
-    
+
     /**
-     * Check if {@code this} contains {@code pt} which is assumed to be on the 
+     * Check if {@code this} contains {@code pt} which is assumed to be on the
      * plane.
      *
      * @param pt The point to check if it is contained.
@@ -519,7 +560,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
                 && getQRPl().isOnSameSideNotOn(pt, getP(), epsilon)
                 && getRPPl().isOnSameSideNotOn(pt, getQ(), epsilon);
     }
-    
+
     //@Override
     public boolean contains(V3D_LineSegment_d l, double epsilon) {
         if (getAABB().contains(l)) {
@@ -543,9 +584,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
             return false;
         }
     }
-    
+
     /**
-     * Check if {@code this} contains {@code l} which is assumed to be on the 
+     * Check if {@code this} contains {@code l} which is assumed to be on the
      * plane.
      *
      * @param l The line segment to check if it is contained.
@@ -558,7 +599,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * Check if {@code this} contains {@code t} which is assumed to be on the 
+     * Check if {@code this} contains {@code t} which is assumed to be on the
      * plane.
      *
      * @param t The triangle to check if it is contained.
@@ -1475,8 +1516,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
 
     /**
      * Useful in calculating the intersection of two triangles.If there are 3
- unique points then a triangle is returned. If there are 4 or more unique
- points, then a V3D_ConvexHullCoplanar is returned.
+     * unique points then a triangle is returned. If there are 4 or more unique
+     * points, then a V3D_ConvexHullCoplanar is returned.
      *
      * @param l1 A line segment.
      * @param l2 A line segment.
@@ -1647,7 +1688,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param l a line segment either equal to one of the edges of this: null
      * null null null null null null null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null null null null null null null null null null     {@link #getPQ()},
+     * null null null null null null null null null null null null     {@link #getPQ()},
      * {@link #getQR()} or {@link #getRP()}.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
@@ -2186,8 +2227,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * {@code t} are not coplanar.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-         * @return {@code true} if {@code this} intersects {@code t}.
- */
+     * @return {@code true} if {@code this} intersects {@code t}.
+     */
     //@Override
     public boolean intersects0(V3D_Triangle_d t, double epsilon) {
         if (getPl().allOnSameSideNotOn(epsilon, t.getP(),
@@ -2209,8 +2250,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param a Another triangle to test for intersection.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-         * @return {@code true} if {@code this} intersects {@code a}.
-  */
+     * @return {@code true} if {@code this} intersects {@code a}.
+     */
     @Override
     public boolean intersects(V3D_Area_d a, double epsilon) {
         if (intersects(a.getAABB(), epsilon)

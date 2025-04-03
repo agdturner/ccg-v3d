@@ -101,12 +101,9 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @param env What {@link #env} is set to.
      * @param p What the point of {@link #l} is cloned from.
      * @param q What {@link #qv} is cloned from.
-     * @param oom The Order of Magnitude for the precision of the result.
-     * @param rm The RoundingMode if rounding is needed.
      */
-    public V3D_LineSegment(V3D_Environment env, V3D_Vector p, V3D_Vector q,
-            int oom, RoundingMode rm) {
-        this(env, V3D_Vector.ZERO, p, q, oom, rm);
+    public V3D_LineSegment(V3D_Environment env, V3D_Vector p, V3D_Vector q) {
+        this(env, V3D_Vector.ZERO, p, q);
     }
 
     /**
@@ -114,15 +111,13 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      *
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
-     * @param p What the point of {@link #l} is cloned from.
-     * @param v What {@link #l.v} is set to.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
+     * @param pv Used to initialise {@link #l}.
+     * @param v Used to initialise {@link #l}.
      */
-    public V3D_LineSegment(V3D_Environment env, V3D_Vector offset, V3D_Vector p,
-            V3D_Vector v, int oom, RoundingMode rm) {
+    public V3D_LineSegment(V3D_Environment env, V3D_Vector offset, V3D_Vector pv,
+            V3D_Vector v) {
         super(env, offset);
-        l = new V3D_Line(env, offset, p, v);
+        l = new V3D_Line(env, offset, pv, v);
     }
 
     /**
@@ -135,7 +130,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      */
     public V3D_LineSegment(V3D_Point p, V3D_Point q, int oom, RoundingMode rm) {
         super(p.env, p.offset);
-        l = new V3D_Line(env, offset, p.rel, new V3D_Vector(p, q, oom, rm));
+        l = new V3D_Line(p, q, oom, rm);
     }
 
     /**

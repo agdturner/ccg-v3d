@@ -195,7 +195,7 @@ public class V3D_Line extends V3D_Geometry {
      */
     public V3D_Line(V3D_Point p, V3D_Vector v) {
         this(p.env, p.offset, p.rel, v);
-        this.p = p;
+        this.p = new V3D_Point(p);
     }
 
     /**
@@ -203,12 +203,13 @@ public class V3D_Line extends V3D_Geometry {
      *
      * @param p Used to set {@link #env}, {@link #offset}, {@link #pv} and 
      * {@link #p}.
-     * @param q What {@link #q} is set to. Used to derive {@link #v}.
+     * @param q Used to set {@link #q} and derive {@link #v}.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
     public V3D_Line(V3D_Point p, V3D_Point q, int oom, RoundingMode rm) {
         super(p.env, new V3D_Vector(p.offset));
+        this.p = new V3D_Point(p);
         this.q = new V3D_Point(q);
         this.q.setOffset(p.offset, oom, rm);
         if (p.rel.equals(this.q.rel)) {
@@ -217,7 +218,6 @@ public class V3D_Line extends V3D_Geometry {
         }
         pv = new V3D_Vector(p.rel);
         v = this.q.rel.subtract(pv, oom, rm);
-        this.p = p;
     }
 
     @Override

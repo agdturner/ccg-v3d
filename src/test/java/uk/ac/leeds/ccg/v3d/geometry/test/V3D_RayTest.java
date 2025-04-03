@@ -243,7 +243,7 @@ public class V3D_RayTest extends V3D_Test {
         V3D_Geometry expResult;
         V3D_Geometry result;
         // Test 1
-        l = new V3D_LineSegment(env, P0P0P0, P0P0P0, P1P0P0, oom, rm);
+        l = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
         instance = new V3D_Ray(env, P0P0P0, P1P0P0, P2P0P0);
         result = instance.getIntersect(l, oom, rm);
         expResult = pP1P0P0;

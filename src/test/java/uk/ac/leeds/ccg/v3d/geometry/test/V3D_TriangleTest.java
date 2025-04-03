@@ -606,14 +606,14 @@ public class V3D_TriangleTest extends V3D_Test {
         expResult = new V3D_Triangle(pP0P0P0, pP0P1P0, pP1P0P0, oom, rm);
         result = instance.getIntersect(t, oom, rm);
         assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
-//        // Test 4
-//        t = new V3D_Triangle(pP0P0P0, pP2P0P0, pP2P2P0, oom, rm);
-//        instance = new V3D_Triangle(
-//                pP1P0P0, new V3D_Point(env, P3, P0, P0), 
-//                new V3D_Point(env, P3, P2, P0), oom, rm);
-//        expResult = new V3D_Triangle(pP1P0P0, pP2P0P0, pP2P1P0, oom, rm);
-//        result = instance.getIntersect(t, oom, rm);
-//        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
+        // Test 4
+        t = new V3D_Triangle(pP0P0P0, pP2P0P0, pP2P2P0, oom, rm);
+        instance = new V3D_Triangle(
+                pP1P0P0, new V3D_Point(env, P3, P0, P0), 
+                new V3D_Point(env, P3, P2, P0), oom, rm);
+        expResult = new V3D_Triangle(pP1P0P0, pP2P0P0, pP2P1P0, oom, rm);
+        result = instance.getIntersect(t, oom, rm);
+        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
 //        // Test 5: From  https://stackoverflow.com/a/29563443/1998054
 //        t = new V3D_Triangle(new V3D_Point(env, -21, -72, 63),
 //                new V3D_Point(env, -78, 99, 40),
@@ -626,7 +626,7 @@ public class V3D_TriangleTest extends V3D_Test {
 //                new V3D_Point(env, -34.630630630630634, -31.108108108108105, -5.95495495495496),
 //                new V3D_Point(env, -48.45827629341561, 10.37482888024681, -21.586983320506448), oom, rm);
 //        result = instance.getIntersect(t, oom, rm);
-//        System.out.println(result);
+//        //System.out.println(result);
 //        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 6: From https://web.mst.edu/~chaman/home/pubs/2015WimoTriangleTrianglePublished.pdf
         t = new V3D_Triangle(new V3D_Point(env, 0, 0, 0),
@@ -651,7 +651,8 @@ public class V3D_TriangleTest extends V3D_Test {
                 new V3D_Point(env, 3, 1, 0), oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
         // Test 8: From https://math.stackexchange.com/questions/1220102/how-do-i-find-the-intersection-of-two-3d-triangles
-        t = new V3D_Triangle(new V3D_Point(env, 6, 8, 3), new V3D_Point(env, 6, 8, -2),
+        t = new V3D_Triangle(new V3D_Point(env, 6, 8, 3), 
+                new V3D_Point(env, 6, 8, -2),
                 new V3D_Point(env, 6, -4, -2), oom, rm);
         instance = new V3D_Triangle(new V3D_Point(env, 0, 5, 0),
                 new V3D_Point(env, 0, 0, 0),
@@ -675,23 +676,23 @@ public class V3D_TriangleTest extends V3D_Test {
                         new V3D_Point(env, P3, P2, P0),
                         pP2P1P0, oom, rm));
         result = instance.getIntersect(t, oom, rm);
-        assertTrue(((V3D_ConvexArea) expResult).equals((V3D_ConvexArea) result, oom, rm));
-        // Test 10: 5 sides
-        t = new V3D_Triangle(pP0P0P0, new V3D_Point(env, P4, P0, P0), new V3D_Point(env, P2, N4, P0), oom, rm);
-        instance = new V3D_Triangle(pP0N2P0, pP2P0P0, new V3D_Point(env, P4, N2, P0), oom, rm);
-        BigRational N4_3 = BigRational.valueOf(-4).divide(3);
-        V3D_Point m = new V3D_Point(env, BigRational.TWO.divide(3), N4_3, P0);
-        V3D_Point n = new V3D_Point(env, BigRational.TEN.divide(3), N4_3, P0);
-        expResult = new V3D_ConvexArea(oom, rm,
-                new V3D_Triangle(pP2P0P0, m, n, oom, rm),
-                //new V3D_Triangle(m, n, pP1N2P0),
-                new V3D_Triangle(m, n, new V3D_Point(env, P3, N2, P0), oom, rm),
-                new V3D_Triangle(pP1N2P0,
-                        new V3D_Point(env, P3, N2, P0),
-                        n, oom, rm));
-        result = instance.getIntersect(t, oom, rm);
-        //System.out.println(((V3D_ConvexArea) expResult).toStringSimple());
-        //System.out.println(((V3D_ConvexArea) result).toStringSimple());
+//        assertTrue(((V3D_ConvexArea) expResult).equals((V3D_ConvexArea) result, oom, rm));
+//        // Test 10: 5 sides
+//        t = new V3D_Triangle(pP0P0P0, new V3D_Point(env, P4, P0, P0), new V3D_Point(env, P2, N4, P0), oom, rm);
+//        instance = new V3D_Triangle(pP0N2P0, pP2P0P0, new V3D_Point(env, P4, N2, P0), oom, rm);
+//        BigRational N4_3 = BigRational.valueOf(-4).divide(3);
+//        V3D_Point m = new V3D_Point(env, BigRational.TWO.divide(3), N4_3, P0);
+//        V3D_Point n = new V3D_Point(env, BigRational.TEN.divide(3), N4_3, P0);
+//        expResult = new V3D_ConvexArea(oom, rm,
+//                new V3D_Triangle(pP2P0P0, m, n, oom, rm),
+//                //new V3D_Triangle(m, n, pP1N2P0),
+//                new V3D_Triangle(m, n, new V3D_Point(env, P3, N2, P0), oom, rm),
+//                new V3D_Triangle(pP1N2P0,
+//                        new V3D_Point(env, P3, N2, P0),
+//                        n, oom, rm));
+//        result = instance.getIntersect(t, oom, rm);
+//        //System.out.println(((V3D_ConvexArea) expResult).toStringSimple());
+//        //System.out.println(((V3D_ConvexArea) result).toStringSimple());
         assertTrue(((V3D_ConvexArea) expResult).equals((V3D_ConvexArea) result, oom, rm));
 //        // Test 11: 6 sides
 //        t = new V3D_Triangle(pP0P0P0, new V3D_Point(P6, P0, P0), new V3D_Point(P3, N3, P0), oom, rm);
@@ -744,20 +745,20 @@ public class V3D_TriangleTest extends V3D_Test {
     @Test
     public void testGetGeometry_V3D_Vector_V3D_Vector() {
         System.out.println("getGeometry");
-        V3D_Vector v1;
-        V3D_Vector v2;
+        V3D_Point p;
+        V3D_Point q;
         V3D_Geometry expResult;
         V3D_Geometry result;
         // Test 1
-        v1 = P0P0P0;
-        v2 = P0P0P0;
+        p = pP0P0P0;
+        q = pP0P0P0;
         expResult = pP0P0P0;
-        result = V3D_Triangle.getGeometry(env, v1, v2, oom, rm);
+        result = V3D_Triangle.getGeometry(p, q, oom, rm);
         assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
         // Test 2
-        v2 = P1P0P0;
-        expResult = new V3D_LineSegment(env, P0P0P0, P0P0P0, P1P0P0, oom, rm);
-        result = V3D_Triangle.getGeometry(env, v1, v2, oom, rm);
+        q = pP1P0P0;
+        expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
+        result = V3D_Triangle.getGeometry(p, q, oom, rm);
         assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
     }
 
@@ -852,29 +853,6 @@ public class V3D_TriangleTest extends V3D_Test {
 ////        assertTrue(((V3D_Triangle) expResult).equals((V3D_Triangle) result, oom, rm));
 ////        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreOrientation((V3D_LineSegment) result, oom, rm));
 //    }
-    /**
-     * Test of getGeometry method, of class V3D_Triangle.
-     */
-    @Test
-    public void testGetGeometry_3args_2() {
-        System.out.println("getGeometry");
-        V3D_Vector v1;
-        V3D_Vector v2;
-        V3D_Geometry expResult;
-        V3D_Geometry result;
-        // Test 1
-        v1 = P0P0P0;
-        v2 = P0P0P0;
-        expResult = pP0P0P0;
-        result = V3D_Triangle.getGeometry(env, v1, v2, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 2
-        v1 = P0P0P0;
-        v2 = P1P0P0;
-        expResult = new V3D_LineSegment(pP1P0P0, pP0P0P0, oom, rm);
-        result = V3D_Triangle.getGeometry(env, v1, v2, oom, rm);
-        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
-    }
 
 //    /**
 //     * Test of getGeometry method, of class V3D_Triangle.

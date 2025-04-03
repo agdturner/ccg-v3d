@@ -174,11 +174,11 @@ public class V3D_Line_d extends V3D_Geometry_d {
      *
      * @param p Used to set {@link #env}, {@link #offset}, {@link #pv} and 
      * {@link #p}.
-     * @param v The vector defining the line from {@link #pv}.
+     * @param v What {@link #v} is set to.
      */
     public V3D_Line_d(V3D_Point_d p, V3D_Vector_d v) {
         this(p.env, p.offset, p.rel, v);
-        this.p = p;
+        this.p = new V3D_Point_d(p);
     }
 
     /**
@@ -186,10 +186,11 @@ public class V3D_Line_d extends V3D_Geometry_d {
      *
      * @param p Used to set {@link #env}, {@link #offset}, {@link #pv} and 
      * {@link #p}.
-     * @param q What {@link #q} is set to. Used to derive {@link #v}.
+     * @param q Used to set {@link #q} and derive {@link #v}.
      */
     public V3D_Line_d(V3D_Point_d p, V3D_Point_d q) {
         super(p.env, new V3D_Vector_d(p.offset));
+        this.p = new V3D_Point_d(p);
         this.q = new V3D_Point_d(q);
         this.q.setOffset(p.offset);
         if (p.rel.equals(this.q.rel)) {
@@ -198,7 +199,6 @@ public class V3D_Line_d extends V3D_Geometry_d {
         }
         pv = new V3D_Vector_d(p.rel);
         v = this.q.rel.subtract(pv);
-        this.p = p;
     }
 
     @Override
