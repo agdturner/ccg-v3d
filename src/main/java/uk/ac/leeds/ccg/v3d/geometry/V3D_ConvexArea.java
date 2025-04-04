@@ -674,7 +674,7 @@ public class V3D_ConvexArea extends V3D_Area {
     private void compute(ArrayList<V3D_Point> pts, V3D_Point p0, V3D_Point p1,
             V3D_Vector n, int index, int oom, RoundingMode rm) {
         V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(env,
-                offset, p0.rel.add(n, oom, rm)), oom, rm);
+                p0.offset, p0.rel.add(n, oom, rm)), oom, rm);
         AB ab = new AB(pts, pl, oom, rm);
         // Process ab.a
         points.put(points.size(), p0);
@@ -693,25 +693,25 @@ public class V3D_ConvexArea extends V3D_Area {
                         removeIndexes.add(i);
                         //index--;
                     }
-                    Iterator<Integer> ite = removeIndexes.descendingIterator();
-                    while (ite.hasNext()) {
-                        ab.a.remove(ite.next().intValue());
-                    }
-                    if (!ab.a.isEmpty()) {
-                        if (ab.a.size() == 1) {
-                            points.put(index, ab.a.get(0));
-                            index++;
-                        } else {
-                            // Divide again
-                            V3D_Line l = new V3D_Line(p0, p1, oom, rm);
-                            V3D_Point proj = l.getPointOfIntersect(apt, oom, rm);
-                            compute(ab.a, proj, apt, n, index, oom, rm);
-                        }
+                }
+                Iterator<Integer> ite = removeIndexes.descendingIterator();
+                while (ite.hasNext()) {
+                    ab.a.remove(ite.next().intValue());
+                }
+                if (!ab.a.isEmpty()) {
+                    if (ab.a.size() == 1) {
+                        points.put(index, ab.a.get(0));
+                        index++;
+                    } else {
+                        // Divide again
+                        V3D_Line l = new V3D_Line(p0, p1, oom, rm);
+                        V3D_Point proj = l.getPointOfIntersect(apt, oom, rm);
+                        compute(ab.a, proj, apt, n, index, oom, rm);
                     }
                 }
             }
         }
-        points.put(this.points.size(), p1);
+        points.put(points.size(), p1);
         index++;
         // Process ab.b
         if (!ab.b.isEmpty()) {
@@ -804,7 +804,7 @@ public class V3D_ConvexArea extends V3D_Area {
          * @param rm The RoundingMode for any rounding.
          */
         public AB(ArrayList<V3D_Point> pts,
-                V3D_Plane plane, int oom, RoundingMode rm) {
+                V3D_Plane pl, int oom, RoundingMode rm) {
             a = new ArrayList<>();
             b = new ArrayList<>();
             // Find points on, above and below the plane.
@@ -844,7 +844,7 @@ public class V3D_ConvexArea extends V3D_Area {
                     }
                 }
             }
-            
+
 //            for (int i = 1; i < no.size(); i++) {
 //                V3D_Point pt = no.get(i);
 //                BigRational ds = plane.getDistanceSquared(pt, oom, rm);

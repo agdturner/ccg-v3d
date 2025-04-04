@@ -96,13 +96,13 @@ public class V3D_ConvexAreaTest extends V3D_Test {
                            uk.ac.leeds.ccg.v3d.geometry.V3D_ConvexArea(
                             points (
                              (0, V3D_Point(offset=V3D_Vector(dx=0, dy=0, dz=0), rel=V3D_Vector(dx=0, dy=0, dz=0))),
-                             (1, V3D_Point(offset=V3D_Vector(dx=0, dy=0, dz=0), rel=V3D_Vector(dx=0, dy=1, dz=0))),
+                             (1, V3D_Point(offset=V3D_Vector(dx=0, dy=0, dz=0), rel=V3D_Vector(dx=1, dy=0, dz=0))),
                              (2, V3D_Point(offset=V3D_Vector(dx=0, dy=0, dz=0), rel=V3D_Vector(dx=1, dy=1, dz=0))),
-                             (3, V3D_Point(offset=V3D_Vector(dx=0, dy=0, dz=0), rel=V3D_Vector(dx=1, dy=0, dz=0)))
+                             (3, V3D_Point(offset=V3D_Vector(dx=0, dy=0, dz=0), rel=V3D_Vector(dx=0, dy=1, dz=0)))
                             )
                            )""";
         String result = instance.toString();
-        System.out.println(result);
+        //System.out.println(result);
         assertTrue(expResult.equalsIgnoreCase(result));
     }
 //
