@@ -504,15 +504,15 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * Intersects {@code this} with {@code l}. If they are equivalent then
-     * return {@code this}.
+     * Computes and returns the intersect of {@code this} and {@code l}. 
+     * {@code l} is assumed to be skew i.e. not parallel with {@code this}.
      *
      * @param l The line to get the intersection with {@code this}.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry getIntersect0(V3D_Line l, int oom, RoundingMode rm) {
+    public V3D_Point getIntersect0(V3D_Line l, int oom, RoundingMode rm) {
         V3D_Point tp = getP();     
         V3D_Point tq = getQ(oom, rm);
         V3D_Point lp = l.getP();

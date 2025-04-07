@@ -76,6 +76,18 @@ public class V3D_Point extends V3D_FiniteGeometry {
      */
     public V3D_Vector rel;
 
+    public BigRational x;
+    public int xoom;
+    public RoundingMode xrm;
+
+    public BigRational y;
+    public int yoom;
+    public RoundingMode yrm;
+
+    public BigRational z;
+    public int zoom;
+    public RoundingMode zrm;
+    
     /**
      * Create a new instance.
      *
@@ -273,7 +285,20 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @return The x component of {@link #rel} with {@link #offset} applied.
      */
     public BigRational getX(int oom, RoundingMode rm) {
-        return rel.getDX(oom, rm).add(offset.getDX(oom, rm));
+        //return rel.getDX(oom, rm).add(offset.getDX(oom, rm));
+        if (x == null) {
+            x = rel.getDX(oom, rm).add(offset.getDX(oom, rm));
+        } else {
+            if (oom < xoom) {
+                x = rel.getDX(oom, rm).add(offset.getDX(oom, rm));
+            } else {
+                if (!rm.equals(xoom)) {
+                    x = rel.getDX(oom, rm).add(offset.getDX(oom, rm));
+                }
+            }
+                
+        }
+        return x;
     }
 
     /**
@@ -282,7 +307,20 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @return The y component of {@link #rel} with {@link #offset} applied.
      */
     public BigRational getY(int oom, RoundingMode rm) {
-        return rel.getDY(oom, rm).add(offset.getDY(oom, rm));
+        //return rel.getDY(oom, rm).add(offset.getDY(oom, rm));
+        if (y == null) {
+            y = rel.getDY(oom, rm).add(offset.getDY(oom, rm));
+        } else {
+            if (oom < yoom) {
+                y = rel.getDY(oom, rm).add(offset.getDY(oom, rm));
+            } else {
+                if (!rm.equals(yoom)) {
+                    y = rel.getDY(oom, rm).add(offset.getDY(oom, rm));
+                }
+            }
+                
+        }
+        return y;
     }
 
     /**
@@ -291,7 +329,20 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @return The z component of {@link #rel} with {@link #offset} applied.
      */
     public BigRational getZ(int oom, RoundingMode rm) {
-        return rel.getDZ(oom, rm).add(offset.getDZ(oom, rm));
+        //return rel.getDZ(oom, rm).add(offset.getDZ(oom, rm));
+        if (z == null) {
+            z = rel.getDZ(oom, rm).add(offset.getDZ(oom, rm));
+        } else {
+            if (oom < zoom) {
+                z = rel.getDZ(oom, rm).add(offset.getDZ(oom, rm));
+            } else {
+                if (!rm.equals(zoom)) {
+                    z = rel.getDZ(oom, rm).add(offset.getDZ(oom, rm));
+                }
+            }
+                
+        }
+        return z;
     }
 
     /**

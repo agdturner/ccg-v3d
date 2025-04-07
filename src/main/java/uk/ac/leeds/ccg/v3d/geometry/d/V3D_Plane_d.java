@@ -1004,6 +1004,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
 ////                l.pl.getY(oom)-(l.v.getDY(oom)*(t)),
 ////                l.pl.getZ(oom)-(l.v.getDZ(oom)*(t)));
 //    }
+    
     /**
      * Get the intersection between the geometry and the line {@code l}.
      * https://stackoverflow.com/questions/5666222/3d-line-plane-intersection

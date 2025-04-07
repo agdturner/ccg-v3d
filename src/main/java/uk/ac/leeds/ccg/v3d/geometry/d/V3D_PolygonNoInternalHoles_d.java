@@ -400,7 +400,8 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     @Override
     public boolean contains(V3D_LineSegment_d ls, double epsilon) {
         return contains(ls.getP(), epsilon)
-                && contains(ls.getQ(), epsilon);
+                && contains(ls.getQ(), epsilon)
+                && !V3D_LineSegment_d.intersects(epsilon, ls, edges.values());
     }
 
     /**
@@ -411,10 +412,11 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * considered equal.
      * @return {@code true} iff there is containment.
      */
+    @Override
     public boolean contains(V3D_Triangle_d t, double epsilon) {
-        return contains(t.getP(), epsilon)
-                && contains(t.getQ(), epsilon)
-                && contains(t.getR(), epsilon);
+        return contains(t.getPQ(), epsilon)
+                && contains(t.getQR(), epsilon)
+                && contains(t.getRP(), epsilon);
     }
 
     /**
@@ -426,33 +428,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * @return {@code true} iff there is containment.
      */
     public boolean contains(V3D_Rectangle_d r, double epsilon) {
-        return contains(r.getP(), epsilon)
-                && contains(r.getQ(), epsilon)
-                && contains(r.getR(), epsilon)
-                && contains(r.getS(), epsilon);
-    }
-
-    /**
-     * Identify if this contains aabb.
-     *
-     * @param aabb The envelope to test for containment.
-     * @param epsilon The tolerance within which two vector components are
-     * considered equal.
-     * @return {@code true} iff there is containment.
-     */
-    public boolean contains(V3D_AABB_d aabb, double epsilon) {
-        double xmin = aabb.getXMin();
-        double xmax = aabb.getXMax();
-        double ymin = aabb.getYMin();
-        double ymax = aabb.getYMax();
-        double zmin = aabb.getZMin();
-        double zmax = aabb.getZMax();
-        return contains(new V3D_Point_d(env, xmin, ymin, zmin), epsilon)
-                && contains(new V3D_Point_d(env, xmin, ymin, zmax), epsilon)
-                && contains(new V3D_Point_d(env, xmin, ymax, zmin), epsilon)
-                && contains(new V3D_Point_d(env, xmin, ymax, zmax), epsilon)
-                && contains(new V3D_Point_d(env, xmax, ymax, zmin), epsilon)
-                && contains(new V3D_Point_d(env, xmax, ymin, zmax), epsilon);
+        return contains(r.getPQR(), epsilon) && contains(r.getRSP(), epsilon);
     }
 
     /**
@@ -464,27 +440,16 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * @return {@code true} iff there is containment.
      */
     public boolean contains(V3D_ConvexArea_d ch, double epsilon) {
-        return this.ch.intersects(ch, epsilon)
-                && ch.getPoints().values().parallelStream().allMatch(x
-                        -> contains(x, epsilon));
-    }
-
-    /**
-     * Identify if this contains the polygon.
-     *
-     * @param p The polygon to test for containment.
-     * @param epsilon The tolerance within which two vector components are
-     * considered equal.
-     * @return {@code true} iff {@code this} contains {@code p}.
-     */
-    public boolean contains(V3D_PolygonNoInternalHoles_d p, double epsilon) {
-        return ch.intersects(p.ch, epsilon)
-                && p.getPoints().values().parallelStream().allMatch(x
-                        -> contains(x, epsilon));
+        return this.ch.getEdges().values().parallelStream().allMatch(x
+                ->  !V3D_LineSegment_d.intersects(
+                        epsilon, x, ch.getEdges().values()))
+                && this.ch.getPoints().values().parallelStream()
+                        .anyMatch(x -> contains(x, epsilon));
     }
 
     /**
      * Identify if this is intersected by l.
+     * {@code return ch.intersects(l, epsilon)}
      *
      * @param l The line segment to test for intersection with.
      * @param epsilon The tolerance within which two vector components are
@@ -493,15 +458,12 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      */
     @Override
     public boolean intersects(V3D_Line_d l, double epsilon) {
-        throw new UnsupportedOperationException();
-//        return ch.intersects(l, epsilon)
-//                && (V3D_Line.intersects(epsilon, l, edges.values())
-//                || !externalHoles.values().parallelStream().anyMatch(x
-//                        -> x.contains(l, epsilon)));
+        return ch.intersects(l, epsilon);
     }
 
     /**
-     * Identify if this is intersected by l.
+     * Identify if this is intersected by l. This first checks for an 
+     * intersection with {@link #ch}.
      *
      * @param l The line segment to test for intersection with.
      * @param epsilon The tolerance within which two vector components are
@@ -511,9 +473,22 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     @Override
     public boolean intersects(V3D_LineSegment_d l, double epsilon) {
         return ch.intersects(l, epsilon)
-                && (V3D_LineSegment_d.intersects(epsilon, l, edges.values())
+                && intersects0(l, epsilon);
+    }
+    
+    /**
+     * Identify if this is intersected by l. This does not first check for an 
+     * intersection with {@link #ch}.
+     *
+     * @param l The line segment to test for intersection with.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return {@code true} iff there is an intersection.
+     */
+    public boolean intersects0(V3D_LineSegment_d l, double epsilon) {
+        return V3D_LineSegment_d.intersects(epsilon, l, edges.values())
                 || !externalHoles.values().parallelStream().anyMatch(x
-                        -> x.contains(l, epsilon)));
+                        -> x.contains(l, epsilon));
     }
 
     /**
@@ -528,12 +503,23 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      */
     @Override
     public boolean intersects(V3D_Ray_d r, double epsilon) {
-        if (ch.intersects(r, epsilon)) {
-            return !externalHoles.values().parallelStream().anyMatch(x
+        return ch.intersects(r, epsilon)
+                && intersects0(r, epsilon);
+    }
+
+    /**
+     * If no point aligns, then returns false, otherwise the intersection is
+     * computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Ray, int, java.math.RoundingMode)}
+     *
+     * @param r The ray to test if it intersects.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return {@code true} if l intersects this.
+     */
+    public boolean intersects0(V3D_Ray_d r, double epsilon) {
+        return !externalHoles.values().parallelStream().anyMatch(x
                 -> x.intersects(r, epsilon));
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -542,7 +528,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * @param t The triangle to test for intersection with.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
-     * @return {@code true} iff there is an intersection.
+     * @return {@code true} if there is an intersection.
      */
     public boolean intersects(V3D_Triangle_d t, double epsilon) {
         return ch.intersects(t, epsilon)
@@ -555,22 +541,12 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * @param t The triangle to test for intersection with.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
-     * @return {@code true} iff there is an intersection.
+     * @return {@code true} if there is an intersection.
      */
     public boolean intersects0(V3D_Triangle_d t, double epsilon) {
-        V3D_Point_d tp = t.getP();
-        V3D_Point_d tq = t.getQ();
-        V3D_Point_d tr = t.getR();
-        return (intersects(tp, epsilon)
-                || intersects(tq, epsilon)
-                || intersects(tr, epsilon))
-                || (t.getEdges().values().parallelStream().anyMatch(x
-                        -> V3D_LineSegment_d.intersects(epsilon, x,
-                        edges.values())))
-                && !(externalHoles.values().parallelStream().anyMatch(x
-                        -> x.contains(tp, epsilon)
-                && x.contains(tq, epsilon)
-                && x.contains(tr, epsilon)));
+        return (intersects(t.getPQ(), epsilon)
+                || intersects(t.getQR(), epsilon)
+                || intersects(t.getRP(), epsilon));
     }
 
     /**

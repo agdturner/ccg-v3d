@@ -740,29 +740,6 @@ public class V3D_TriangleTest extends V3D_Test {
     }
 
     /**
-     * Test of getGeometry method, of class V3D_Triangle.
-     */
-    @Test
-    public void testGetGeometry_V3D_Vector_V3D_Vector() {
-        System.out.println("getGeometry");
-        V3D_Point p;
-        V3D_Point q;
-        V3D_Geometry expResult;
-        V3D_Geometry result;
-        // Test 1
-        p = pP0P0P0;
-        q = pP0P0P0;
-        expResult = pP0P0P0;
-        result = V3D_Triangle.getGeometry(p, q, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 2
-        q = pP1P0P0;
-        expResult = new V3D_LineSegment(pP0P0P0, pP1P0P0, oom, rm);
-        result = V3D_Triangle.getGeometry(p, q, oom, rm);
-        assertTrue(((V3D_LineSegment) expResult).equalsIgnoreDirection((V3D_LineSegment) result, oom, rm));
-    }
-
-    /**
      * Test of translate method, of class V3D_Triangle.
      */
     @Test

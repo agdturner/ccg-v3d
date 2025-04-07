@@ -681,6 +681,23 @@ public class V3D_Triangle_d extends V3D_Area_d {
     public double getPerimeter() {
         return getPQ().getLength() + getQR().getLength() + getRP().getLength();
     }
+    
+    /**
+     * Get the intersection between {@code this} and {@code l}. {@code l} is 
+     * assumed to be non-coplanar.
+     * 
+     * @param l The line to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.v
+     */
+    public V3D_Point_d getIntersect0(V3D_Line_d l, double epsilon) {
+        V3D_Point_d i = pl.getIntersect0(l, epsilon);
+        if (intersects00(i, epsilon)) {
+            return i;
+        } else {
+            return null;
+        }
+    }
 
     /**
      * @param l The line to intersect with.
@@ -688,8 +705,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * equal.
      * @return A point or line segment.
      */
-    public V3D_FiniteGeometry_d getIntersect(V3D_Line_d l,
-            double epsilon) {
+    public V3D_FiniteGeometry_d getIntersect(V3D_Line_d l, double epsilon) {
         V3D_Geometry_d i = pl.getIntersect(l, epsilon);
         if (i == null) {
             return null;
@@ -744,18 +760,37 @@ public class V3D_Triangle_d extends V3D_Area_d {
             }
         }
     }
-
+    
+    /**
+     * Get the intersection between {@code this} and {@code r}. {@code r} is 
+     * assumed to be non-coplanar.
+     *
+     * @param r The ray to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The point of intersection or {@code null}.
+     */
+    public V3D_FiniteGeometry_d getIntersect0(V3D_Ray_d r, double epsilon) {
+        V3D_Point_d i = getIntersect0(r.l, epsilon);
+        if (i == null) {
+            return null;
+        } else if (r.isAligned(i, epsilon)) {
+            return i;
+        } else {
+            return null;
+        }
+    }
+    
     /**
      * Get the intersection between the triangle and the ray {@code rv}.
      *
      * @param r The ray to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return The V3D_Geometry.
+     * @return The geometry of intersection or {@code null}.
      */
     @Override
-    public V3D_FiniteGeometry_d getIntersect(V3D_Ray_d r,
-            double epsilon) {
+    public V3D_FiniteGeometry_d getIntersect(V3D_Ray_d r, double epsilon) {
         V3D_FiniteGeometry_d g = getIntersect(r.l, epsilon);
         if (g == null) {
             return null;

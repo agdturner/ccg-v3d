@@ -483,17 +483,15 @@ public class V3D_Line_d extends V3D_Geometry_d {
     }
 
     /**
-     * Computes and returns the intersect of {@code this} and {@code l}. This
-     * first checks if the lines are parallel. Then if parallel if coincident.
-     * Two lines are considered equal if the distance between them is less than
-     * epsilon.
+     * Computes and returns the intersect of {@code this} and {@code l}. 
+     * {@code l} is assumed to be skew i.e. not parallel with {@code this}.
      *
      * @param l The line to get the intersection with {@code this}.
      * @param epsilon The tolerance within which vector components are
      * considered equal.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Geometry_d getIntersect0(V3D_Line_d l, double epsilon) {
+    public V3D_Point_d getIntersect0(V3D_Line_d l, double epsilon) {
         V3D_Point_d tp = getP();
         V3D_Point_d tq = getQ();
         V3D_Point_d lp = l.getP();

@@ -425,6 +425,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff there is an intersection.
      */
+    @Override
     public boolean contains(V3D_Point pt, int oom, RoundingMode rm) {
         return intersects(pt, oom, rm)
                 && !V3D_LineSegment.intersects(oom, rm, pt, edges.values());
@@ -438,9 +439,11 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff there is an intersection.
      */
+    @Override
     public boolean contains(V3D_LineSegment ls, int oom, RoundingMode rm) {
         return contains(ls.getP(), oom, rm)
-                && contains(ls.getQ(oom, rm), oom, rm);
+                && contains(ls.getQ(oom, rm), oom, rm)
+                && !V3D_LineSegment.intersects(oom, rm, ls, edges.values());
     }
 
     /**
@@ -451,10 +454,11 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff there is containment.
      */
+    @Override
     public boolean contains(V3D_Triangle t, int oom, RoundingMode rm) {
-        return contains(t.getP(oom, rm), oom, rm)
-                && contains(t.getQ(oom, rm), oom, rm)
-                && contains(t.getR(oom, rm), oom, rm);
+        return contains(t.getPQ(oom, rm), oom, rm)
+                && contains(t.getQR(oom, rm), oom, rm)
+                && contains(t.getRP(oom, rm), oom, rm);
     }
 
     /**
@@ -466,33 +470,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @return {@code true} iff there is containment.
      */
     public boolean contains(V3D_Rectangle r, int oom, RoundingMode rm) {
-        return contains(r.getP(oom, rm), oom, rm)
-                && contains(r.getQ(oom, rm), oom, rm)
-                && contains(r.getR(oom, rm), oom, rm)
-                && contains(r.getS(oom, rm), oom, rm);
-    }
-
-    /**
-     * Identify if this contains aabb.
-     *
-     * @param aabb The envelope to test for containment.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} iff there is containment.
-     */
-    public boolean contains(V3D_AABB aabb, int oom, RoundingMode rm) {
-        BigRational xmin = aabb.getXMin(oom);
-        BigRational xmax = aabb.getXMax(oom);
-        BigRational ymin = aabb.getYMin(oom);
-        BigRational ymax = aabb.getYMax(oom);
-        BigRational zmin = aabb.getZMin(oom);
-        BigRational zmax = aabb.getZMax(oom);
-        return contains(new V3D_Point(env, xmin, ymin, zmin), oom, rm)
-                && contains(new V3D_Point(env, xmin, ymin, zmax), oom, rm)
-                && contains(new V3D_Point(env, xmin, ymax, zmin), oom, rm)
-                && contains(new V3D_Point(env, xmin, ymax, zmax), oom, rm)
-                && contains(new V3D_Point(env, xmax, ymax, zmin), oom, rm)
-                && contains(new V3D_Point(env, xmax, ymin, zmax), oom, rm);
+        return contains(r.getPQR(), oom, rm) && contains(r.getRSP(), oom, rm);
     }
 
     /**
@@ -504,54 +482,55 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @return {@code true} iff there is containment.
      */
     public boolean contains(V3D_ConvexArea ch, int oom, RoundingMode rm) {
-        return this.ch.intersects(ch, oom, rm)
-                && ch.getPoints(oom, rm).values().parallelStream().allMatch(x
-                        -> contains(x, oom, rm));
-    }
-
-    /**
-     * Identify if this contains the polygon.
-     *
-     * @param p The polygon to test for containment.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode for any rounding.
-     * @return {@code true} iff {@code this} contains {@code pv}.
-     */
-    public boolean contains(V3D_PolygonNoInternalHoles p, int oom, RoundingMode rm) {
-        return ch.intersects(p.ch, oom, rm)
-                && p.getPoints(oom, rm).values().parallelStream().allMatch(x
-                        -> contains(x, oom, rm));
+        return this.ch.getEdges(oom, rm).values().parallelStream().allMatch(x
+                ->  !V3D_LineSegment.intersects(
+                        oom, rm, x, ch.getEdges(oom, rm).values()))
+                && this.ch.getPoints(oom, rm).values().parallelStream()
+                        .anyMatch(x -> contains(x, oom, rm));
     }
 
     /**
      * Identify if this is intersected by l.
+     * {@code return ch.intersects(l, oom, rm);}
      *
      * @param l The line segment to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff there is an intersection.
      */
+    @Override
     public boolean intersects(V3D_Line l, int oom, RoundingMode rm) {
-        throw new UnsupportedOperationException();
-//        return ch.intersects(l, oom, rm)
-//                && (V3D_Line.intersects(oom, rm, l, edges.values())
-//                || !externalHoles.values().parallelStream().anyMatch(x
-//                        -> x.contains(l, oom, rm)));
+        return ch.intersects(l, oom, rm);
     }
 
     /**
-     * Identify if this is intersected by l.
+     * Identify if this is intersected by l. This first checks for an 
+     * intersection with {@link #ch}.
      *
      * @param l The line segment to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} iff there is an intersection.
      */
+    @Override
     public boolean intersects(V3D_LineSegment l, int oom, RoundingMode rm) {
         return ch.intersects(l, oom, rm)
-                && (V3D_LineSegment.intersects(oom, rm, l, edges.values())
+                && intersects0(l, oom, rm);
+    }
+
+    /**
+     * Identify if this is intersected by l. This does not first check for an 
+     * intersection with {@link #ch}.
+     *
+     * @param l The line segment to test for intersection with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} iff there is an intersection.
+     */
+    public boolean intersects0(V3D_LineSegment l, int oom, RoundingMode rm) {
+        return V3D_LineSegment.intersects(oom, rm, l, edges.values())
                 || !externalHoles.values().parallelStream().anyMatch(x
-                        -> x.contains(l, oom, rm)));
+                        -> x.contains(l, oom, rm));
     }
 
     /**
@@ -564,12 +543,22 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      */
     @Override
     public boolean intersects(V3D_Ray r, int oom, RoundingMode rm) {
-        if (ch.intersects(r, oom, rm)) {
-            return !externalHoles.values().parallelStream().anyMatch(x
+        return ch.intersects(r, oom, rm)
+            && intersects0(r, oom, rm);
+    }
+    
+    /**
+     * Identify if this is intersected by r. This does not first check for an 
+     * intersection with {@link #ch}.
+     * 
+     * @param r The ray to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if l intersects this.
+     */
+    public boolean intersects0(V3D_Ray r, int oom, RoundingMode rm) {
+        return !externalHoles.values().parallelStream().anyMatch(x
                     -> x.intersects(r, oom, rm));
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -594,19 +583,9 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @return {@code true} iff there is an intersection.
      */
     public boolean intersects0(V3D_Triangle t, int oom, RoundingMode rm) {
-        V3D_Point tp = t.getP(oom, rm);
-        V3D_Point tq = t.getQ(oom, rm);
-        V3D_Point tr = t.getR(oom, rm);
-        return (intersects(tp, oom, rm)
-                || intersects(tq, oom, rm)
-                || intersects(tr, oom, rm))
-                || (t.getEdges(oom, rm).values().parallelStream().anyMatch(x
-                        -> V3D_LineSegment.intersects(oom, rm, x,
-                        edges.values())))
-                && !(externalHoles.values().parallelStream().anyMatch(x
-                        -> x.contains(tp, oom, rm)
-                && x.contains(tq, oom, rm)
-                && x.contains(tr, oom, rm)));
+        return (intersects0(t.getPQ(oom, rm), oom, rm)
+                || intersects0(t.getQR(oom, rm), oom, rm)
+                || intersects0(t.getRP(oom, rm), oom, rm));
     }
 
     /**

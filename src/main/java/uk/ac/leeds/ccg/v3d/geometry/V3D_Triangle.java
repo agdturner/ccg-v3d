@@ -965,6 +965,25 @@ public class V3D_Triangle extends V3D_Area {
     }
 
     /**
+     * Get the intersection between {@code this} and {@code l}. {@code l} is 
+     * assumed to be non-coplanar.
+     * 
+     * @param l The line to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A point or null.
+     */
+    public V3D_Point getIntersect0(V3D_Line l, int oom,
+            RoundingMode rm) {
+        V3D_Point i = getPl(oom, rm).getIntersect0(l, oom, rm);
+        if (intersects00(i, oom, rm)) {
+            return i;
+        } else {
+            return null;
+        }
+    }
+    
+    /**
      * @param l The line to intersect with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
@@ -995,8 +1014,8 @@ public class V3D_Triangle extends V3D_Area {
                     if (lrpi == null) {
                         return lqri;
                     } else {
-                        return getGeometry((V3D_Point) lqri, (V3D_Point) lrpi,
-                                oom, rm);
+                        return V3D_LineSegment.getGeometry((V3D_Point) lqri, 
+                                (V3D_Point) lrpi, oom, rm);
                     }
                 }
             } else if (lpqi instanceof V3D_Point lpqip) {
@@ -1004,11 +1023,13 @@ public class V3D_Triangle extends V3D_Area {
                     if (lrpi == null) {
                         return lpqi;
                     } else {
-                        return getGeometry(lpqip, (V3D_Point) lrpi, oom, rm);
+                        return V3D_LineSegment.getGeometry(lpqip, 
+                                (V3D_Point) lrpi, oom, rm);
                     }
                 } else if (lqri instanceof V3D_Point lqrip) {
                     if (lrpi == null) {
-                        return getGeometry(lqrip, lpqip, oom, rm);
+                        return V3D_LineSegment.getGeometry(lqrip, lpqip, oom, 
+                                rm);
                     } else if (lrpi instanceof V3D_LineSegment) {
                         return lrpi;
                     } else {
@@ -1025,31 +1046,32 @@ public class V3D_Triangle extends V3D_Area {
     }
 
     /**
-     * If {@code pv} and {@code q} are equal, then return {@code pv}, otherwise
-     * return a line segment.
-     *
-     * @param p A point.
-     * @param q A point.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return Either a line segment or a point.
-     */
-    public static V3D_FiniteGeometry getGeometry(V3D_Point p, V3D_Point q,
-            int oom, RoundingMode rm) {
-        if (p.equals(q, oom, rm)) {
-            return p;
-        } else {
-            return new V3D_LineSegment(p, q, oom, rm);
-        }
-    }
-
-    /**
-     * Get the intersection between the geometry and the ray {@code rv}.
+     * Get the intersection between {@code this} and {@code r}. {@code r} is 
+     * assumed to be non-coplanar.
      *
      * @param r The ray to intersect with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return The V3D_Geometry.
+     * @return The point of intersection or {@code null}.
+     */
+    public V3D_Point getIntersect0(V3D_Ray r, int oom, RoundingMode rm) {
+        V3D_Point i = getIntersect0(r.l, oom, rm);
+        if (i == null) {
+            return null;
+        } else if (r.isAligned(i, oom, rm)) {
+            return i;
+        } else {
+            return null;
+        }
+    }
+        
+    /**
+     * Get the intersection between {@code this} and {@code r}.
+     *
+     * @param r The ray to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The geometry of intersection or {@code null}.
      */
     @Override
     public V3D_FiniteGeometry getIntersect(V3D_Ray r, int oom,
