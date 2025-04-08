@@ -232,9 +232,9 @@ public class V3D_ConvexArea extends V3D_Area {
             }
         }
 
-        if (this.points.size() < 3) {
-            int debug = 1;
-        }
+        //if (this.points.size() < 3) {
+        //    int debug = 1;
+        //}
 
         V3D_Point pt = this.points.get(0);
         edges.put(edges.size(), new V3D_LineSegment(pt, this.points.get(1), oom, rm));
@@ -247,9 +247,9 @@ public class V3D_ConvexArea extends V3D_Area {
         }
         edges.put(edges.size(), new V3D_LineSegment(rt, pt, oom, rm));
 
-        if (triangles.isEmpty()) {
-            int debug = 1;
-        }
+        //if (triangles.isEmpty()) {
+        //    int debug = 1;
+        //}
 
     }
 
@@ -697,9 +697,9 @@ public class V3D_ConvexArea extends V3D_Area {
      */
     private void compute(ArrayList<V3D_Point> pts, V3D_Point p0, V3D_Point p1,
             V3D_Vector n, int index, int oom, RoundingMode rm) {
-        V3D_Plane pl = new V3D_Plane(p0, p1, new V3D_Point(env,
+        V3D_Plane plane = new V3D_Plane(p0, p1, new V3D_Point(env,
                 p0.offset, p0.rel.add(n, oom, rm)), oom, rm);
-        AB ab = new AB(pts, pl, oom, rm);
+        AB ab = new AB(pts, plane, oom, rm);
         // Process ab.a
         points.put(points.size(), p0);
         if (!ab.a.isEmpty()) {
@@ -823,12 +823,12 @@ public class V3D_ConvexArea extends V3D_Area {
          * Create a new instance.
          *
          * @param pts The points.
-         * @param plane The plane.
+         * @param pl The plane.
          * @param oom The Order of Magnitude for the precision.
          * @param rm The RoundingMode for any rounding.
          */
-        public AB(ArrayList<V3D_Point> pts,
-                V3D_Plane pl, int oom, RoundingMode rm) {
+        public AB(ArrayList<V3D_Point> pts, V3D_Plane pl,
+                int oom, RoundingMode rm) {
             a = new ArrayList<>();
             b = new ArrayList<>();
             // Find points on, above and below the plane.
@@ -1221,6 +1221,21 @@ public class V3D_ConvexArea extends V3D_Area {
     }
 
     /**
+     * Identify if this is intersected by {@code r} which is assumed to be 
+     * non-coplanar.
+     *
+     * @param r The ray to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if l intersects this.
+     */
+    @Override
+    public boolean intersects0(V3D_Ray r, int oom, RoundingMode rm) {
+        return triangles.values().parallelStream().anyMatch(x
+                -> x.intersects0(r, oom, rm));
+    }
+
+    /**
      * Identify if this is intersected by triangle {@code t}.
      *
      * @param t The triangle to test for intersection with.
@@ -1228,6 +1243,7 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff {@code this} is intersected by {@code t}.
      */
+    @Override
     public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
         return t.intersects(getAABB(oom, rm), oom, rm)
                 && intersects0(t, oom, rm);
@@ -1309,7 +1325,9 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared to {@code pv}.
      */
-    public BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
+    @Override
+    public BigRational getDistanceSquared(V3D_Point pt, 
+            int oom, RoundingMode rm) {
         Iterator<V3D_Triangle> ite = triangles.values().iterator();
         BigRational r = ite.next().getDistanceSquared(pt, oom, rm);
         while (ite.hasNext()) {

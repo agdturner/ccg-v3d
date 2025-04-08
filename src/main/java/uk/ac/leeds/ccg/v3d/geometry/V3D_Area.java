@@ -228,6 +228,15 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @return {@code true} if {@code this} is intersected by {@code r}.
      */
     public abstract boolean intersects(V3D_Ray r, int oom, RoundingMode rm);
+    
+    /**
+     * @param r The ray to test for intersection which is assumed to be
+     * non-coplanar.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if {@code this} is intersected by {@code r}.
+     */
+    public abstract boolean intersects0(V3D_Ray r, int oom, RoundingMode rm);
 
     /**
      * @param t The triangle to test if it intersects.

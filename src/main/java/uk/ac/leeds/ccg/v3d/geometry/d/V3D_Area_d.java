@@ -170,6 +170,15 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
     public abstract boolean intersects(V3D_Ray_d r, double epsilon);
     
     /**
+     * @param r The ray to test for intersection which is assumed to be
+     * non-coplanar.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return {@code true} if {@code this} is intersected by {@code r}.
+     */
+    public abstract boolean intersects0(V3D_Ray_d r, double epsilon);
+    
+    /**
      * @param t The triangle to test if it intersects.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.

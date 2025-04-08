@@ -763,6 +763,28 @@ public class V3D_Rectangle_d extends V3D_Area_d {
             return false;
         }
     }
+    
+    /**
+     * If no point aligns, then returns false, otherwise the intersection is
+     * computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Ray_d, double)}
+     *
+     * @param r The ray to test if it intersects.
+     * @param epsilon The tolerance within which vector components are
+     * considered equal.
+     * @return {@code true} if l intersects this.
+     */
+    @Override
+    public boolean intersects0(V3D_Ray_d r, double epsilon) {
+        if (r.isAligned(getP(), epsilon)
+                || r.isAligned(getQ(), epsilon)
+                || r.isAligned(getR(), epsilon)
+                || r.isAligned(getS(), epsilon)) {
+            return getIntersect0(r, epsilon) != null;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * @param t A triangle to test for intersection.

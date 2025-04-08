@@ -1221,7 +1221,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     }
 
     /**
-     * Get the intersection between the geometry and the line segment {@code l}.
+     * Compute and return the intersection with {@code l}.
      *
      * @param l The line segment to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -1241,7 +1241,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     }
 
     /**
-     * Get the intersection with the line segment {@code l} which is assumed 
+     * Compute and return the intersection with {@code l} which is assumed 
      * to be not parallel to the plane.
      *
      * @param l The line segment to intersect with.

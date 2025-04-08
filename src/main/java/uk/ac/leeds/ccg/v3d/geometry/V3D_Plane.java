@@ -1102,28 +1102,42 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * Get the intersection between the geometry and the line segment {@code l}.
+     * Compute and return the intersection with {@code l}.
      *
      * @param l The line segment to intersect with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometry getIntersect(V3D_LineSegment l, int oom, RoundingMode rm) {
-        V3D_Geometry g = getIntersect(l.l, oom, rm);
-        if (g == null) {
-            return null;
-        } else if (g instanceof V3D_Line) {
-            return l;
-        } else {
-            V3D_Point pt = (V3D_Point) g;
-            if (l.getPPL().isOnSameSide(pt, l.getQ(oom, rm), oom, rm)
-                    && l.getQPL(oom, rm).isOnSameSide(pt, l.getP(), oom, rm)) {
-                return pt;
+    public V3D_FiniteGeometry getIntersect(V3D_LineSegment l, 
+            int oom, RoundingMode rm) {
+        if (isParallel(l.l, oom, rm)) {
+            if (isOnPlane(l.l, oom, rm)) {
+                return l;
+            } else {
+                return null;
             }
-//            if (l.getIntersect(pt, oom, rm)) {
-//                return pt;
-//            }
+        } else {
+            return getIntersect0(l, oom, rm);
+        }
+    }
+    
+    /**
+     * Compute and return the intersection with {@code l} which is assumed 
+     * to be not parallel to the plane.
+     *
+     * @param l The line segment to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
+     */
+    public V3D_Point getIntersect0(V3D_LineSegment l, 
+            int oom, RoundingMode rm) {
+        V3D_Point pt = getIntersect0(l.l, oom, rm);
+        if (l.getPPL().isOnSameSide(pt, l.getQ(oom, rm), oom, rm)
+                && l.getQPL(oom, rm).isOnSameSide(pt, l.getP(), oom, rm)) {
+            return pt;
+        } else {
             return null;
         }
     }

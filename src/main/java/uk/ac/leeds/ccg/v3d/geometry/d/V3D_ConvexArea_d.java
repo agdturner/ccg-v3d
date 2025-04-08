@@ -230,9 +230,9 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
             }
         }
 
-        if (this.points.size() < 3) {
-            int debug = 1;
-        }
+        //if (this.points.size() < 3) {
+        //    int debug = 1;
+        //}
 
         V3D_Point_d pt = this.points.get(0);
         edges.put(edges.size(), new V3D_LineSegment_d(pt, this.points.get(1)));
@@ -246,9 +246,9 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
         edges.put(edges.size(), new V3D_LineSegment_d(rt, pt));
         // The edges should only intersect at the ends!
 
-        if (triangles.isEmpty()) {
-            int debug = 1;
-        }
+        //if (triangles.isEmpty()) {
+        //    int debug = 1;
+        //}
     }
 
     /**
@@ -281,6 +281,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     /**
      * @return {@link #pl} initialising it first if it is null.
      */
+    @Override
     public V3D_Plane_d getPl() {
         if (pl == null) {
             pl = triangles.get(0).getPl();
@@ -531,6 +532,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * equal.
      * @return A point or line segment.
      */
+    @Override
     public V3D_FiniteGeometry_d getIntersect(V3D_Ray_d r, double epsilon) {
         V3D_Geometry_d i = triangles.get(0).pl.getIntersect(r.l, epsilon);
         if (i == null) {
@@ -555,6 +557,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * equal.
      * @return A point or line segment.
      */
+    @Override
     public V3D_Point_d getIntersect0(V3D_Ray_d r, double epsilon) {
         V3D_Point_d i = r.getIntersect0(getPl(), epsilon);
         if (i == null) {
@@ -641,9 +644,9 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     private void compute(ArrayList<V3D_Point_d> pts, V3D_Point_d p0,
             V3D_Point_d p1, V3D_Vector_d n, int index, double epsilon) {
-        V3D_Plane_d pl = new V3D_Plane_d(p0, p1, new V3D_Point_d(env,
+        V3D_Plane_d plane = new V3D_Plane_d(p0, p1, new V3D_Point_d(env,
                 p0.offset, p0.rel.add(n)));
-        AB ab = new AB(pts, pl, epsilon);
+        AB ab = new AB(pts, plane, epsilon);
         // Process ab.a
         points.put(points.size(), p0);
         if (!ab.a.isEmpty()) {
@@ -856,17 +859,18 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this is intersected by {@code r}.
+     * Identify if this is intersected by {@code r} which is assumed to be 
+     * non-coplanar.
      *
      * @param r The ray to test if it intersects.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @return {@code true} if l intersects this.
      */
-    //@Override
+    @Override
     public boolean intersects0(V3D_Ray_d r, double epsilon) {
         return triangles.values().parallelStream().anyMatch(x
-                -> x.intersects(r, epsilon));
+                -> x.intersects0(r, epsilon));
     }
 
     /**
@@ -877,6 +881,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * equal.
      * @return {@code true} if {@code this} is intersected by {@code t}.
      */
+    @Override
     public boolean intersects(V3D_Triangle_d t, double epsilon) {
         return t.intersects(getAABB(), epsilon)
                 && intersects0(t, epsilon);
@@ -892,7 +897,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     public boolean intersects0(V3D_Triangle_d t, double epsilon) {
         return triangles.values().parallelStream().anyMatch(x
-                -> x.intersects(t, epsilon));
+                -> x.intersects0(t, epsilon));
     }
 
     /**
