@@ -53,6 +53,16 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
     public RoundingMode plrm;
 
     /**
+     * For storing the points. The keys are IDs.
+     */
+    protected HashMap<Integer, V3D_Point> points;
+
+    /**
+     * For storing the edges. The keys are IDs.
+     */
+    protected HashMap<Integer, V3D_LineSegment> edges;
+
+    /**
      * Creates a new instance with offset V3D_Vector.ZERO.
      *
      * @param env What {@link #env} is set to.
@@ -66,14 +76,56 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
     }
 
     /**
-     * For storing the points.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@link pl} accurate to at least the oom precision using
+     * RoundingMode rm.
      */
-    protected HashMap<Integer, V3D_Point> points;
+    public final V3D_Plane getPl(int oom, RoundingMode rm) {
+        if (pl == null) {
+            initPl(oom, rm);
+        } else if (ploom < oom) {
+            return pl;
+        } else if (ploom == oom && plrm.equals(rm)) {
+            return pl;
+        }
+        //initPl(oom, rm);
+        return pl;
+    }
 
     /**
-     * For storing the edges.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed. For initialising
+     * {@link #pl}.
      */
-    protected HashMap<Integer, V3D_LineSegment> edges;
+    protected abstract void initPl(int oom, RoundingMode rm);
+
+    /**
+     * @param pt The normal will point to this side of the plane.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return {@link pl} accurate to at least the oom precision using
+     * RoundingMode rm.
+     */
+    public final V3D_Plane getPl(V3D_Point pt, int oom, RoundingMode rm) {
+        if (pl == null) {
+            initPl(pt, oom, rm);
+        } else if (ploom < oom) {
+            return pl;
+        } else if (ploom == oom && plrm.equals(rm)) {
+            return pl;
+        }
+        //initPl(pt, oom, rm);
+        return pl;
+    }
+
+    /**
+     * @param pt The normal will point to this side of the plane.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed. For initialising
+     * {@link #pl}.
+     */
+    protected abstract void initPl(V3D_Point pt, int oom, RoundingMode rm);
 
     /**
      * For getting the points of a shape.
@@ -192,8 +244,8 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @return {@code true} if {@code this} is intersected by {@code a}.
      */
     public boolean intersects(V3D_Area a, int oom, RoundingMode rm) {
-        return a.getPoints(oom, rm).values().parallelStream().anyMatch(x 
-            -> a.intersects(x, oom, rm));
+        return a.getPoints(oom, rm).values().parallelStream().anyMatch(x
+                -> a.intersects(x, oom, rm));
     }
 
     /**
@@ -226,7 +278,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @param as The areas to test for intersection with a.
-     * @return {@code true} if {@code this} is intersected by any areas in 
+     * @return {@code true} if {@code this} is intersected by any areas in
      * {@code as}.
      */
     public boolean intersects(int oom, RoundingMode rm, V3D_Area... as) {
@@ -237,7 +289,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @param as The areas to test for intersection with a.
-     * @return {@code true} if {@code this} is intersected by any areas in 
+     * @return {@code true} if {@code this} is intersected by any areas in
      * {@code as}.
      */
     public boolean intersects(int oom, RoundingMode rm, Collection<V3D_Area> as) {
@@ -256,7 +308,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
     //public abstract boolean contains(V3D_Point p, int oom, RoundingMode rm);
     public boolean contains(V3D_Point p, int oom, RoundingMode rm) {
         if (intersects(p, oom, rm)) {
-            return !getEdges(oom, rm).values().parallelStream().anyMatch(x 
+            return !getEdges(oom, rm).values().parallelStream().anyMatch(x
                     -> x.intersects(p, oom, rm));
         }
         return false;
@@ -297,7 +349,7 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
             return false;
         }
     }
-    
+
     /**
      * Identify if {@code this} contains {@code a}. Containment excludes the
      * edge.
@@ -314,59 +366,6 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
     }
 
     /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@link pl} accurate to at least the oom precision using
-     * RoundingMode rm.
-     */
-    public final V3D_Plane getPl(int oom, RoundingMode rm) {
-        if (pl == null) {
-            initPl(oom, rm);
-        } else if (ploom < oom) {
-            return pl;
-        } else if (ploom == oom && plrm.equals(rm)) {
-            return pl;
-        }
-        //initPl(oom, rm);
-        return pl;
-    }
-
-    /**
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed. For initialising
-     * {@link #pl}.
-     */
-    protected abstract void initPl(int oom, RoundingMode rm);
-
-    /**
-     * @param pt The normal will point to this side of the plane.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@link pl} accurate to at least the oom precision using
-     * RoundingMode rm.
-     */
-    public final V3D_Plane getPl(V3D_Point pt, int oom, RoundingMode rm) {
-        if (pl == null) {
-            initPl(pt, oom, rm);
-        } else if (ploom < oom) {
-            return pl;
-        } else if (ploom == oom && plrm.equals(rm)) {
-            return pl;
-        }
-        //initPl(pt, oom, rm);
-        return pl;
-    }
-
-    /**
-     * @param pt The normal will point to this side of the plane.
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed. For initialising
-     * {@link #pl}.
-     */
-    protected abstract void initPl(V3D_Point pt, int oom, RoundingMode rm);
-    
-    
-    /**
      * Get the minimum distance squared to {@code pt}.
      *
      * @param pt A point.
@@ -375,15 +374,27 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
      * @return The distance squared to {@code pv}.
      */
     public abstract BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm);
-    
+
     /**
-     * Get the intersection between with the ray {@code r}.
+     * Compute and return the intersection with {@code r}.
      *
      * @param r The ray to intersect with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return The V3D_Geometry.
+     * @return The intersection or {@code null}.
      */
     public abstract V3D_FiniteGeometry getIntersect(V3D_Ray r, int oom,
+            RoundingMode rm);
+
+    /**
+     * Compute and return the intersection with {@code r} which is assumed to be
+     * non-coplanar.
+     *
+     * @param r The ray to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The intersection point or {@code null}.
+     */
+    public abstract V3D_Point getIntersect0(V3D_Ray r, int oom,
             RoundingMode rm);
 }

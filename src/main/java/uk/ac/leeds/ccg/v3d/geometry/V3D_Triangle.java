@@ -2943,8 +2943,10 @@ public class V3D_Triangle extends V3D_Area {
     }
 
     /**
-     * If no point aligns, then returns false, otherwise the intersection is
-     * computed, so if that is needed use:
+     * If the ray starts outside and points away rom {@code this} then 
+     * return false, otherwise the intersection is computed and tested to see if
+     * it is {@code null}. If the intersection is needed use a method to 
+     * compute it:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Ray, int, java.math.RoundingMode)}
      *
      * @param r The ray to test if it intersects.
@@ -2958,6 +2960,28 @@ public class V3D_Triangle extends V3D_Area {
                 || r.isAligned(getQ(oom, rm), oom, rm)
                 || r.isAligned(getR(oom, rm), oom, rm)) {
             return getIntersect(r, oom, rm) != null;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * If the ray starts outside and points away rom {@code this} then 
+     * return false, otherwise the intersection is computed and tested to see if
+     * it is {@code null}. The ray is assumed to not be coplanar with 
+     * {@code this}.
+     * 
+     * @param r The ray to test if it intersects.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if l intersects this.
+     */
+    //@Override
+    public boolean intersects0(V3D_Ray r, int oom, RoundingMode rm) {
+        if (r.isAligned(getP(oom, rm), oom, rm)
+                || r.isAligned(getQ(oom, rm), oom, rm)
+                || r.isAligned(getR(oom, rm), oom, rm)) {
+            return getIntersect0(r, oom, rm) != null;
         } else {
             return false;
         }

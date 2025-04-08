@@ -183,6 +183,14 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     }
 
     @Override
+    public V3D_Plane_d getPl() {
+        if (pl == null) {
+            pl = ch.getPl();
+        }
+        return pl;
+    }
+    
+    @Override
     public double getPerimeter() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -530,6 +538,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * considered equal.
      * @return {@code true} if there is an intersection.
      */
+    @Override
     public boolean intersects(V3D_Triangle_d t, double epsilon) {
         return ch.intersects(t, epsilon)
                 && intersects0(t, epsilon);
@@ -544,9 +553,9 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * @return {@code true} if there is an intersection.
      */
     public boolean intersects0(V3D_Triangle_d t, double epsilon) {
-        return (intersects(t.getPQ(), epsilon)
+        return intersects(t.getPQ(), epsilon)
                 || intersects(t.getQR(), epsilon)
-                || intersects(t.getRP(), epsilon));
+                || intersects(t.getRP(), epsilon);
     }
 
     /**
@@ -688,6 +697,8 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     }
 
     /**
+     * Compute and return the intersection with {@code l}.
+     * 
      * @param l The line to intersect with.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
@@ -752,9 +763,31 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
 //            }
         }
     }
+    
+    /**
+     * Compute and return the the intersection with {@code l} which is 
+     * assumed to not be coplanar.
+     * 
+     * @param l The line to intersect with.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return A point or line segment.
+     */
+    public V3D_Point_d getIntersect0(V3D_Line_d l, double epsilon) {
+        V3D_Point_d i = getPl().getIntersect0(l, epsilon);
+        if (i == null) {
+            return null;
+        } else {
+            if (intersects00(i, epsilon)) {
+                return i;
+            } else {
+                return null;
+            }
+        }
+    }
 
     /**
-     * Get the intersection between the geometry and the ray {@code rv}.
+     * Compute and return the the intersection with {@code r}.
      *
      * @param r The ray to intersect with.
      * @param epsilon The tolerance within which two vector components are
@@ -797,6 +830,29 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
                     }
                 }
             }
+        }
+    }
+    
+    /**
+     * Compute and return the the intersection with {@code r} which is not 
+     * coplanar.
+     *
+     * @param r The ray to intersect with.
+     * @param epsilon The tolerance within which two vector components are
+     * considered equal.
+     * @return The V3D_Geometry.
+     */
+    @Override
+    public V3D_Point_d getIntersect0(V3D_Ray_d r, double epsilon) {
+        V3D_Point_d g = getIntersect0(r.l, epsilon);
+        if (g == null) {
+            return null;
+        } else {
+                if (r.isAligned(g, epsilon)) {
+                    return g;
+                } else {
+                    return null;
+                }
         }
     }
 }

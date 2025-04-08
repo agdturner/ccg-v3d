@@ -26,10 +26,10 @@ import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
  * {@link #p}, {@link #q}, {@link #r} and {@link #s}. The following depicts a
  * rectangle {@code
  * q  *-----* r
- * |   / |
- * |  /  |
- * | /   |
- * p *-----* s
+ *    |   / |
+ *    |  /  |
+ *    | /   |
+ * p  *-----* s
  * }
  * The angles PQR, QRS, RSP, SPQ are all 90 degrees or Pi/2 radians.
  *
@@ -235,6 +235,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      * equal.
      * @return A point or line segment.
      */
+    @Override
     public boolean intersects(V3D_Point_d pt, double epsilon) {
         if (pqr.intersects(pt, epsilon)) {
             return true;
@@ -260,7 +261,8 @@ public class V3D_Rectangle_d extends V3D_Area_d {
     /**
      * @return The plane of the rectangle from {@link #getPQR()}.
      */
-    public V3D_Plane_d getPlane() {
+    @Override
+    public V3D_Plane_d getPl() {
         return pqr.pl;
     }
 
@@ -272,7 +274,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      */
     public V3D_FiniteGeometry_d getIntersect(V3D_Line_d l,
             double epsilon) {
-        if (getPlane().getIntersect(l, epsilon) != null) {
+        if (getPl().getIntersect(l, epsilon) != null) {
             V3D_FiniteGeometry_d pqri = pqr.getIntersect(l, epsilon);
             V3D_FiniteGeometry_d rspi = rsp.getIntersect(l, epsilon);
             return join(epsilon, pqri, rspi);
@@ -320,7 +322,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      */
     public V3D_FiniteGeometry_d getIntersect(V3D_LineSegment_d l,
             double epsilon) {
-        if (getPlane().getIntersect(l, epsilon) != null) {
+        if (getPl().getIntersect(l, epsilon) != null) {
             V3D_FiniteGeometry_d pqri = pqr.getIntersect(l, epsilon);
             V3D_FiniteGeometry_d rspi = rsp.getIntersect(l, epsilon);
             return join(epsilon, pqri, rspi);
@@ -408,7 +410,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      */
     public V3D_FiniteGeometry_d getIntersect(V3D_Plane_d pl,
             double epsilon) {
-        if (getPlane().equals(pl, epsilon)) {
+        if (getPl().equals(pl, epsilon)) {
             return new V3D_Rectangle_d(this);
         }
         V3D_FiniteGeometry_d pqri = pqr.getIntersect(pl, epsilon);
@@ -435,7 +437,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      */
     public V3D_FiniteGeometry_d getIntersect(V3D_Triangle_d t,
             double epsilon) {
-        if (getPlane().equalsIgnoreOrientation(t.pl, epsilon)) {
+        if (getPl().equalsIgnoreOrientation(t.pl, epsilon)) {
             V3D_FiniteGeometry_d pqrit = pqr.getIntersectCoplanar(t, epsilon);
             V3D_FiniteGeometry_d rspit = rsp.getIntersectCoplanar(t, epsilon);
             if (pqrit == null) {
@@ -483,13 +485,14 @@ public class V3D_Rectangle_d extends V3D_Area_d {
     }
 
     /**
-     * Get the intersection between the geometry and the ray {@code r}.
+     * Compute and return the intersection with {@code r}.
      *
      * @param r The ray to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return The V3D_Geometry.
+     * @return A point, line segment or {@code null}.
      */
+    @Override
     public V3D_FiniteGeometry_d getIntersect(V3D_Ray_d r,
             double epsilon) {
         V3D_FiniteGeometry_d gpqr = pqr.getIntersect(r, epsilon);
@@ -501,6 +504,25 @@ public class V3D_Rectangle_d extends V3D_Area_d {
                 return gpqr;
             }
             return join(epsilon, gpqr, grsp);
+        }
+    }
+    
+    /**
+     * Get the intersection with {@code r} which is assumed to be non-coplanar.
+     *
+     * @param r The ray to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return A point or {@code null}.
+     */
+    @Override
+    public V3D_Point_d getIntersect0(V3D_Ray_d r,
+            double epsilon) {
+        V3D_Point_d gpqr = pqr.getIntersect0(r, epsilon);
+        if (gpqr == null) {
+            return rsp.getIntersect0(r, epsilon);
+        } else {
+            return gpqr;
         }
     }
 
@@ -560,6 +582,8 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      * Get the minimum distance to {@code pl}.
      *
      * @param pl A plane.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code p}.
      */
     public double getDistance(V3D_Plane_d pl, double epsilon) {
@@ -570,6 +594,8 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      * Get the minimum distance squared to {@code pl}.
      *
      * @param pl A plane.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The minimum distance squared to {@code p}.
      */
     public double getDistanceSquared(V3D_Plane_d pl, double epsilon) {
@@ -676,7 +702,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
                 && qr.l.isParallel(sp.l, epsilon);
     }
 
-    //@Override
+    @Override
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
         return pqr.intersects(aabb, epsilon)
                 || rsp.intersects(aabb, epsilon);
@@ -746,7 +772,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      */
     @Override
     public boolean intersects(V3D_Triangle_d t, double epsilon) {
-        if (getPlane().equalsIgnoreOrientation(t.getPl(), epsilon)) {
+        if (getPl().equalsIgnoreOrientation(t.getPl(), epsilon)) {
             return intersectsCoplanar(t, epsilon);
         } else {
             return intersects0(t, epsilon);
@@ -790,7 +816,7 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      * @return {@code true} if t intersects this.
      */
     public boolean intersects0(V3D_Rectangle_d r, double epsilon) {
-        if (getPlane().equalsIgnoreOrientation(r.getPlane(), epsilon)) {
+        if (getPl().equalsIgnoreOrientation(r.getPl(), epsilon)) {
             return r.intersectsCoplanar(pqr, epsilon)
                     || r.intersectsCoplanar(rsp, epsilon);
         } else {

@@ -167,7 +167,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
                             new V3D_PolygonNoInternalHoles(
                                     p.pts.toArray(V3D_Point[]::new),
                                     ch.pl.n, oom, rm));
-                                    //getPl(oom, rm).n, oom, rm));
+                    //getPl(oom, rm).n, oom, rm));
                     p.pts = new ArrayList<>();
                     p.isHole = false;
                 } else {
@@ -483,7 +483,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      */
     public boolean contains(V3D_ConvexArea ch, int oom, RoundingMode rm) {
         return this.ch.getEdges(oom, rm).values().parallelStream().allMatch(x
-                ->  !V3D_LineSegment.intersects(
+                -> !V3D_LineSegment.intersects(
                         oom, rm, x, ch.getEdges(oom, rm).values()))
                 && this.ch.getPoints(oom, rm).values().parallelStream()
                         .anyMatch(x -> contains(x, oom, rm));
@@ -504,7 +504,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     }
 
     /**
-     * Identify if this is intersected by l. This first checks for an 
+     * Identify if this is intersected by l. This first checks for an
      * intersection with {@link #ch}.
      *
      * @param l The line segment to test for intersection with.
@@ -519,7 +519,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     }
 
     /**
-     * Identify if this is intersected by l. This does not first check for an 
+     * Identify if this is intersected by l. This does not first check for an
      * intersection with {@link #ch}.
      *
      * @param l The line segment to test for intersection with.
@@ -535,7 +535,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
 
     /**
      * Identify if this is intersected by r.
-     * 
+     *
      * @param r The ray to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -544,13 +544,13 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     @Override
     public boolean intersects(V3D_Ray r, int oom, RoundingMode rm) {
         return ch.intersects(r, oom, rm)
-            && intersects0(r, oom, rm);
+                && intersects0(r, oom, rm);
     }
-    
+
     /**
-     * Identify if this is intersected by r. This does not first check for an 
+     * Identify if this is intersected by r. This does not first check for an
      * intersection with {@link #ch}.
-     * 
+     *
      * @param r The ray to test if it intersects.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
@@ -558,7 +558,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      */
     public boolean intersects0(V3D_Ray r, int oom, RoundingMode rm) {
         return !externalHoles.values().parallelStream().anyMatch(x
-                    -> x.intersects(r, oom, rm));
+                -> x.intersects(r, oom, rm));
     }
 
     /**
@@ -758,6 +758,8 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     }
 
     /**
+     * Compute and return the intersection with {@code l}.
+     *
      * @param l The line to intersect with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
@@ -820,7 +822,28 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     }
 
     /**
-     * Get the intersection between the geometry and the ray {@code rv}.
+     * Compute and return the the intersection with {@code l} which is assumed
+     * to not be coplanar.
+     *
+     * @param l The line to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A point or line segment.
+     */
+    public V3D_Point getIntersect0(V3D_Line l, int oom,
+            RoundingMode rm) {
+        V3D_Point i = getPl(oom, rm).getIntersect0(l, oom, rm);
+        if (i == null) {
+            return null;
+        } else if (intersects00(i, oom, rm)) {
+            return i;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Compute and return the the intersection with {@code r}.
      *
      * @param r The ray to intersect with.
      * @param oom The Order of Magnitude for the precision.
@@ -864,6 +887,28 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Compute and return the the intersection with {@code r} which is not
+     * coplanar.
+     *
+     * @param r The ray to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
+     */
+    @Override
+    public V3D_Point getIntersect0(V3D_Ray r, int oom,
+            RoundingMode rm) {
+        V3D_Point g = getIntersect0(r.l, oom, rm);
+        if (g == null) {
+            return null;
+        } else if (r.isAligned(g, oom, rm)) {
+            return g;
+        } else {
+            return null;
         }
     }
 }

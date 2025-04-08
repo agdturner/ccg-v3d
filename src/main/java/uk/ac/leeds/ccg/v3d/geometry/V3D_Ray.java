@@ -310,9 +310,8 @@ public class V3D_Ray extends V3D_Geometry {
     }
 
     /**
-     * Intersects a ray with a plane. {@code null} is returned if there is no
-     * intersection, {@code this} is returned if the ray is on the plane.
-     * Otherwise a point is returned.
+     * Compute and return the intersection with {@code pl}. {@code null} is 
+     * returned if there
      *
      * It is possible to distinguish a ray intersection with a plane (ray-plane)
      * and a plane intersection with a ray (plane-ray). In some cases the two
@@ -339,57 +338,55 @@ public class V3D_Ray extends V3D_Geometry {
         V3D_Geometry g = pl.getIntersect(l, oom, rm);
         if (g == null) {
             return null;
-        }
-        if (g instanceof V3D_Point gp) {
-            //V3D_Plane rp = new V3D_Plane(this.l.getP(), this.l.getV(oom, rm), oom, rm);
-            //V3D_Plane rp = new V3D_Plane(this.l.getP(), this.l.v);
-            //if (rp.isOnSameSide(gp, this.l.getQ(oom, rm), oom, rm)) {
+        } else if (g instanceof V3D_Point gp) {
             if (getPl().isOnSameSide(gp, this.l.getQ(oom, rm), oom, rm)) {
                 return g;
             } else {
                 return null;
             }
+        } else {
+            return this;
         }
-        return this;
-//        if (g == null) {
-//            return g;
-//        } else {
-//            if (g instanceof V3D_Point pt) {
-//                if 
-//                if (getIntersect(pt, oom, rm)) {
-//                    return pt;
-//                } else {
-//                    return null;
-//                }
-//            } else {
-//                V3D_Point pt = l.getP();
-//                V3D_Line gl = (V3D_Line) g;
-//                V3D_Point glp = gl.getP();
-//                int dir = l.getV(oom, rm).getDirection();
-//                if (getIntersect(pt, oom, rm)) {
-//                    if (pt.equals(glp, oom, rm)) {
-//                        V3D_Point glq = gl.getQ(oom, rm);
-//                        V3D_Vector ptglq = new V3D_Vector(pt, glq, oom, rm);
-//                        int dir_ptglq = ptglq.getDirection();
-//                        if (dir == dir_ptglq) {
-//                            return this;
-//                        } else {
-//                            return pt;
-//                        }
-//                    } else {
-//                        return this;
-//                    }
-//                } else {
-//                    V3D_Vector ptglp = new V3D_Vector(pt, glp, oom, rm);
-//                    int dir_ptglp = ptglp.getDirection();
-//                    if (dir == dir_ptglp) {
-//                        return this;
-//                    } else {
-//                        return null;
-//                    }
-//                }
-//            }
-//        }
+    }
+    
+    
+    /**
+     * Compute and return the intersection with {@code pl}. {@code this} is
+     * assumed to be non-coplanar with {@code pl}. {@code null} is returned if
+     * there is no intersection.
+     * 
+     * It is possible to distinguish a ray intersection with a plane (ray-plane)
+     * and a plane intersection with a ray (plane-ray). In some cases the two
+     * are the same, but due to coordinate imprecision, sometimes an
+     * intersection point cannot be found that is both on the ray and on the
+     * plane. For a ray-plane intersection we can force the point to be on the
+     * ray and either choose a point on or before the plane, or on or after the
+     * plane.
+     *
+     * For the plane-ray intersection we can force the point to be on the plane
+     * and choose the vague direction of the point from the intersection using
+     * the orientation of the ray relative to the plane (and where the ray is
+     * perpendicular to the plane, we can choose the direction relative to the
+     * orientation of the axes and origin).
+     *
+     * Support ray-plane intersection to choose on or before, or on or after?
+     *
+     * @param pl The plane to get the geometrical intersection with this.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The intersection between {@code this} and {@code pl}.
+     */
+    public V3D_Point getIntersect0(V3D_Plane pl, int oom, RoundingMode rm) {
+        V3D_Point g = pl.getIntersect0(l, oom, rm);
+        if (g == null) {
+            return null;
+        } else {
+            if (getPl().isOnSameSide(g, this.l.getQ(oom, rm), oom, rm)) {
+                return g;
+            } else {
+                return null;
+            }
+        }
     }
 
 //    /**

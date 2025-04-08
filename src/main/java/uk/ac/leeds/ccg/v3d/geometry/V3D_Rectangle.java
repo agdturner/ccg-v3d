@@ -389,6 +389,7 @@ public class V3D_Rectangle extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return The distance squared to {@code p}.
      */
+    @Override
     public BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
         BigRational d1 = pqr.getDistanceSquared(pt, oom, rm);
         BigRational d2 = rsp.getDistanceSquared(pt, oom, rm);
@@ -498,12 +499,12 @@ public class V3D_Rectangle extends V3D_Area {
     }
     
     /**
-     * Get the intersection between the geometry and the line segment {@code l}.
+     * Compute and return the intersection with {@code r}.
      *
      * @param r The ray to intersect with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return The V3D_Geometry.
+     * @return A point, line segment or {@code null}.
      */
     @Override
     public V3D_FiniteGeometry getIntersect(V3D_Ray r, int oom,
@@ -517,6 +518,25 @@ public class V3D_Rectangle extends V3D_Area {
                 return gpqr;
             }
             return join(oom, rm, gpqr, grsp);
+        }
+    }
+    
+    /**
+     * Compute and return the intersection with {@code r}.
+     *
+     * @param r The ray to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A point, line segment or {@code null}.
+     */
+    @Override
+    public V3D_Point getIntersect0(V3D_Ray r, int oom,
+            RoundingMode rm) {
+        V3D_Point gpqr = pqr.getIntersect0(r, oom, rm);
+        if (gpqr == null) {
+            return rsp.getIntersect0(r, oom, rm);
+        } else {
+            return gpqr;
         }
     }
 

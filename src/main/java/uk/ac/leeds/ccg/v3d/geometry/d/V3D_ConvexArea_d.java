@@ -121,7 +121,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     public V3D_ConvexArea_d(double epsilon, V3D_Vector_d n,
             List<V3D_Point_d> points) {
-        super(points.get(0).env, points.get(0).offset, 
+        super(points.get(0).env, points.get(0).offset,
                 new V3D_Plane_d(points.get(0), n));
         this.points = new HashMap<>();
         triangles = new HashMap<>();
@@ -278,6 +278,16 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
                 V3D_FiniteGeometry_d.getPoints(ch, t));
     }
 
+    /**
+     * @return {@link #pl} initialising it first if it is null.
+     */
+    public V3D_Plane_d getPl() {
+        if (pl == null) {
+            pl = triangles.get(0).getPl();
+        }
+        return pl;
+    }
+
     @Override
     public HashMap<Integer, V3D_Point_d> getPoints() {
         throw new UnsupportedOperationException();
@@ -385,6 +395,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
 //            V3D_Geometry g = i.getIntersect(t);
 //            if (g instanceof V3D_Triangle gt) {
 //                if (!t.equals(gt)) {
+
     
 
     ////                    System.out.println(gt);
@@ -513,6 +524,8 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     }
 
     /**
+     * Compute and return the intersection with {@code r}.
+     * 
      * @param r The ray known to intersect with this.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
@@ -531,6 +544,26 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
             }
         } else {
             throw new UnsupportedOperationException();
+        }
+    }
+
+    /**
+     * Compute and return the intersection with {@code r} which is non-coplanar.
+     *
+     * @param r The ray known to intersect with this.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return A point or line segment.
+     */
+    public V3D_Point_d getIntersect0(V3D_Ray_d r, double epsilon) {
+        V3D_Point_d i = r.getIntersect0(getPl(), epsilon);
+        if (i == null) {
+            return null;
+        } else if (r.isAligned(i, epsilon)
+                && intersects00(i, epsilon)) {
+            return i;
+        } else {
+            return null;
         }
     }
 
@@ -685,9 +718,9 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this is intersected by {@code p}. This first check if 
-     * {@code pt} intersects the Axis Aligned Bounding Box of {@code this},
-     * then checks the point is on the plane.
+     * Identify if this is intersected by {@code p}. This first check if
+     * {@code pt} intersects the Axis Aligned Bounding Box of {@code this}, then
+     * checks the point is on the plane.
      *
      * @param p The point to test for intersection with.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -704,8 +737,8 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this is intersected by {@code p}. There is no check to 
-     * evaluate if {@code p} intersects the Axis Aligned Bounding Box, but there 
+     * Identify if this is intersected by {@code p}. There is no check to
+     * evaluate if {@code p} intersects the Axis Aligned Bounding Box, but there
      * is a check that the point intersects the plane.
      *
      * @param p The point to test for intersection with.
@@ -723,8 +756,8 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this is intersected by {@code p}. There is no check to 
-     * evaluate if {@code p} intersects the Axis Aligned Bounding Box or if it 
+     * Identify if this is intersected by {@code p}. There is no check to
+     * evaluate if {@code p} intersects the Axis Aligned Bounding Box or if it
      * intersects the plane.
      *
      * @param p The point to test for intersection with.
@@ -810,7 +843,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
 
     /**
      * Identify if this is intersected by {@code r}.
-     * 
+     *
      * @param r The ray to test if it intersects.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
@@ -818,6 +851,20 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     @Override
     public boolean intersects(V3D_Ray_d r, double epsilon) {
+        return triangles.values().parallelStream().anyMatch(x
+                -> x.intersects(r, epsilon));
+    }
+
+    /**
+     * Identify if this is intersected by {@code r}.
+     *
+     * @param r The ray to test if it intersects.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if l intersects this.
+     */
+    //@Override
+    public boolean intersects0(V3D_Ray_d r, double epsilon) {
         return triangles.values().parallelStream().anyMatch(x
                 -> x.intersects(r, epsilon));
     }

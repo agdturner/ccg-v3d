@@ -582,6 +582,8 @@ public class V3D_ConvexArea extends V3D_Area {
     }
 
     /**
+     * Compute and return the intersection with {@code r}.
+     *
      * @param r The ray to intersect with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
@@ -602,6 +604,28 @@ public class V3D_ConvexArea extends V3D_Area {
             }
         } else {
             throw new UnsupportedOperationException();
+        }
+    }
+
+    /**
+     * Compute and return the intersection with {@code r} which is non-coplanar.
+     *
+     * @param r The ray to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A point or line segment.
+     */
+    @Override
+    public V3D_Point getIntersect0(V3D_Ray r, int oom,
+            RoundingMode rm) {
+        V3D_Point i = getPl(oom, rm).getIntersect0(r.l, oom, rm);
+        if (i == null) {
+            return null;
+        } else if (r.isAligned(i, oom, rm)
+                && intersects00(i, oom, rm)) {
+            return i;
+        } else {
+            return null;
         }
     }
 

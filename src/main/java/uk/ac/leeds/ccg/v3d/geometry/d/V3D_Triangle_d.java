@@ -683,12 +683,13 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
     
     /**
-     * Get the intersection between {@code this} and {@code l}. {@code l} is 
+     * Get the intersection between {@code this} and {@code l}.{@code l} is 
      * assumed to be non-coplanar.
      * 
      * @param l The line to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.v
+     * @return The point of intersection or {@code null}.
      */
     public V3D_Point_d getIntersect0(V3D_Line_d l, double epsilon) {
         V3D_Point_d i = pl.getIntersect0(l, epsilon);
@@ -770,7 +771,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * equal.
      * @return The point of intersection or {@code null}.
      */
-    public V3D_FiniteGeometry_d getIntersect0(V3D_Ray_d r, double epsilon) {
+    @Override
+    public V3D_Point_d getIntersect0(V3D_Ray_d r, double epsilon) {
         V3D_Point_d i = getIntersect0(r.l, epsilon);
         if (i == null) {
             return null;
@@ -2280,8 +2282,10 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * If no point aligns, then returns false, otherwise the intersection is
-     * computed, so if that is needed use:
+     * If the ray starts outside and points away rom {@code this} then 
+     * return false, otherwise the intersection is computed and tested to see if
+     * it is {@code null}. If the intersection is needed use a method to 
+     * compute it:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Ray_d, double)}
      *
      * @param r The ray to test if it intersects.
@@ -2295,6 +2299,28 @@ public class V3D_Triangle_d extends V3D_Area_d {
                 || r.isAligned(getQ(), epsilon)
                 || r.isAligned(getR(), epsilon)) {
             return getIntersect(r, epsilon) != null;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * If the ray starts outside and points away rom {@code this} then 
+     * return false, otherwise the intersection is computed and tested to see if
+     * it is {@code null}. The ray is assumed to not be coplanar with 
+     * {@code this}.
+     *
+     * @param r The ray to test if it intersects.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if l intersects this.
+     */
+    //@Override
+    public boolean intersects0(V3D_Ray_d r, double epsilon) {
+        if (r.isAligned(getP(), epsilon)
+                || r.isAligned(getQ(), epsilon)
+                || r.isAligned(getR(), epsilon)) {
+            return getIntersect0(r, epsilon) != null;
         } else {
             return false;
         }

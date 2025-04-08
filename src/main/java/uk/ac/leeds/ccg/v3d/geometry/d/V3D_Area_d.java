@@ -49,6 +49,16 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
     public V3D_Plane_d pl;
     
     /**
+     * For storing the points. The keys are IDs.
+     */
+    protected HashMap<Integer, V3D_Point_d> points;
+
+    /**
+     * For storing the edges. The keys are IDs.
+     */
+    protected HashMap<Integer, V3D_LineSegment_d> edges;
+    
+    /**
      * Creates a new instance with offset V3D_Vector.ZERO.
      * 
      * @param env What {@link #env} is set to.
@@ -63,24 +73,21 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
     }
     
     /**
-     * For storing the points.
+     * For getting the plane.
+     * 
+     * @return {@link #pl} initialising first if it is {@code null}. 
      */
-    protected HashMap<Integer, V3D_Point_d> points;
-
-    /**
-     * For storing the edges.
-     */
-    protected HashMap<Integer, V3D_LineSegment_d> edges;
+    public abstract V3D_Plane_d getPl();
     
     /**
-     * For getting the points of a shape.
+     * For getting the points.
      * 
-     * @return A HashMap of the points with integer identifier keys.
+     * @return {@link #points} initialising first if it is {@code null}.
      */
     public abstract HashMap<Integer, V3D_Point_d> getPoints();
     
     /**
-     * For getting the edges of a shape.
+     * For getting the edges.
      * 
      * @return A HashMap of the edges with integer identifier keys.
      */
@@ -299,13 +306,24 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
     }
     
     /**
-     * Get the intersection between the geometry and the ray {@code r}.
+     * Compute and return the intersection with {@code r}.
      *
      * @param r The ray to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return The V3D_Geometry.
+          * @return The intersection or {@code null}.
      */
     public abstract V3D_FiniteGeometry_d getIntersect(V3D_Ray_d r,
             double epsilon);
+    
+    /**
+     * Compute and return the intersection with {@code r} which is assumed to be 
+     * non-coplanar.
+     * 
+     * @param r The ray to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The intersection point or {@code null}.
+     */
+    public abstract V3D_Point_d getIntersect0(V3D_Ray_d r, double epsilon);
 }
