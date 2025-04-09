@@ -19,6 +19,7 @@ import ch.obermuhlner.math.big.BigRational;
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashSet;
 //import java.util.HashSet;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
@@ -204,6 +205,13 @@ public class V3D_AABB implements Serializable {
      * The aft geometry.
      */
     protected V3D_AABBZ a;
+
+    /**
+     * For storing a collection of {@link #l}, {@link #r}, {@link #t}, 
+     * {@link #b}, {@link #f}, {@link #a}.
+     */
+    protected HashSet<V3D_AABB2D> aabb2Ds;
+    
     /**
      * For storing all the corner points. These are in order: lbf, lba, ltf,
      * lta, rbf, rba, rtf, rta. For storing all the points. N.B {@link #lll}, {@link #llu}, {@link #lul},
@@ -551,6 +559,19 @@ public class V3D_AABB implements Serializable {
         return zMax.add(offset.getDZ(oom - 2, rm));
     }
 
+    public HashSet<V3D_AABB2D> getAABB2Ds(int oom, RoundingMode rm) {
+        if (aabb2Ds == null) {
+            aabb2Ds = new HashSet<>();
+            aabb2Ds.add(getl(oom, rm));
+            aabb2Ds.add(getr(oom, rm));
+            aabb2Ds.add(gett(oom, rm));
+            aabb2Ds.add(getb(oom, rm));
+            aabb2Ds.add(getf(oom, rm));
+            aabb2Ds.add(geta(oom, rm));
+        }
+        return aabb2Ds;
+    }
+    
     /**
      * @return {@link #llu} setting it first if it is null.
      */

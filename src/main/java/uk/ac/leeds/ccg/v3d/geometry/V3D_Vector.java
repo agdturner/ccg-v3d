@@ -48,14 +48,59 @@ public class V3D_Vector implements Serializable {
     protected final Math_BigRationalSqrt dx;
 
     /**
+     * The change in x as a BigRational.
+     */
+    protected BigRational dxbr;
+
+    /**
+     * The Order of Magnitude of the precision of {@link #dxbr}.
+     */
+    protected int dxbr_oom;
+
+    /**
+     * The RoundingMode of any rounding in the calculation of {@link #dxbr}.
+     */
+    protected RoundingMode dxbr_rm;
+
+    /**
      * The change in y.
      */
     protected final Math_BigRationalSqrt dy;
 
     /**
+     * The change in x as a BigRational.
+     */
+    protected BigRational dybr;
+
+    /**
+     * The Order of Magnitude of the precision of {@link #dybr}.
+     */
+    protected int dybr_oom;
+
+    /**
+     * The RoundingMode of any rounding in the calculation of {@link #dybr}.
+     */
+    protected RoundingMode dybr_rm;
+
+    /**
      * The change in z.
      */
     protected final Math_BigRationalSqrt dz;
+
+    /**
+     * The change in x as a BigRational.
+     */
+    protected BigRational dzbr;
+
+    /**
+     * The Order of Magnitude of the precision of {@link #dzbr}.
+     */
+    protected int dzbr_oom;
+
+    /**
+     * The RoundingMode of any rounding in the calculation of {@link #dzbr}.
+     */
+    protected RoundingMode dzbr_rm;
 
     /**
      * For storing the magnitude.
@@ -507,6 +552,8 @@ public class V3D_Vector implements Serializable {
     }
 
     /**
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return {@code true} if {@code this.equals(e.zeroVector)}
      */
     public boolean isZero(int oom, RoundingMode rm) {
@@ -515,11 +562,29 @@ public class V3D_Vector implements Serializable {
 
     /**
      * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode used in the calculation.
+     * @param rm The RoundingMode for any rounding.
      * @return The value of {@link #dx} as a BigRational.
      */
     public BigRational getDX(int oom, RoundingMode rm) {
-        return dx.getSqrt(oom, rm);
+        if (dxbr == null) {
+            dxbr_oom = oom;
+            dxbr_rm = rm;
+            dxbr = dx.getSqrt(oom, rm);
+        } else {
+            if (dxbr_oom >= oom) {
+                if (dxbr_oom == oom) { 
+                    if (!dxbr_rm.equals(rm)) {
+                        dxbr_rm = rm;
+                        dxbr = dx.getSqrt(oom, rm);
+                    }
+                } else {
+                    dxbr_oom = oom;
+                    dxbr_rm = rm;
+                    dxbr = dx.getSqrt(oom, rm);
+                }
+            }
+        }
+        return dxbr;
     }
 
     /**
@@ -528,7 +593,25 @@ public class V3D_Vector implements Serializable {
      * @return The value of {@link #dy} as a BigRational.
      */
     public BigRational getDY(int oom, RoundingMode rm) {
-        return dy.getSqrt(oom, rm);
+        if (dybr == null) {
+            dybr_oom = oom;
+            dybr_rm = rm;
+            dybr = dy.getSqrt(oom, rm);
+        } else {
+            if (dybr_oom >= oom) {
+                if (dybr_oom == oom) { 
+                    if (!dybr_rm.equals(rm)) {
+                        dybr_rm = rm;
+                        dybr = dy.getSqrt(oom, rm);
+                    }
+                } else {
+                    dybr_oom = oom;
+                    dybr_rm = rm;
+                    dybr = dy.getSqrt(oom, rm);
+                }
+            }
+        }
+        return dybr;
     }
 
     /**
@@ -537,7 +620,25 @@ public class V3D_Vector implements Serializable {
      * @return The value of {@link #dz} as a BigRational.
      */
     public BigRational getDZ(int oom, RoundingMode rm) {
-        return dz.getSqrt(oom, rm);
+        if (dzbr == null) {
+            dzbr_oom = oom;
+            dzbr_rm = rm;
+            dzbr = dz.getSqrt(oom, rm);
+        } else {
+            if (dzbr_oom >= oom) {
+                if (dzbr_oom == oom) { 
+                    if (!dzbr_rm.equals(rm)) {
+                        dzbr_rm = rm;
+                        dzbr = dz.getSqrt(oom, rm);
+                    }
+                } else {
+                    dzbr_oom = oom;
+                    dzbr_rm = rm;
+                    dzbr = dz.getSqrt(oom, rm);
+                }
+            }
+        }
+        return dzbr;
     }
 
     /**
@@ -900,7 +1001,10 @@ public class V3D_Vector implements Serializable {
      * https://math.stackexchange.com/q/535223)
      *
      * @param uv The rotation unit vector.
+     * @param bd Used for an approximation of Pi
      * @param theta The angle of rotation.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
      * @return The vector which is {@code #this} rotated using the parameters.
      */
     public V3D_Vector rotate(V3D_Vector uv, Math_BigDecimal bd,
@@ -920,6 +1024,7 @@ public class V3D_Vector implements Serializable {
      * https://math.stackexchange.com/q/535223)
      *
      * @param uv The rotation unit vector.
+     * @param bd Used for an approximation of Pi
      * @param theta The angle of rotation between 0 and 2Pi.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.

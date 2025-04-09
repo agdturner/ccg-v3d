@@ -99,7 +99,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @param p What the point of {@link #l} is cloned from.
      * @param q What {@link #qv} is cloned from.
      */
-    public V3D_LineSegment_d(V3D_Environment_d env, V3D_Vector_d p, 
+    public V3D_LineSegment_d(V3D_Environment_d env, V3D_Vector_d p,
             V3D_Vector_d q) {
         this(env, V3D_Vector_d.ZERO, p, q);
     }
@@ -112,7 +112,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @param pv Used to initialise {@link #l}.
      * @param v Used to initialise {@link #l}.
      */
-    public V3D_LineSegment_d(V3D_Environment_d env, V3D_Vector_d offset, 
+    public V3D_LineSegment_d(V3D_Environment_d env, V3D_Vector_d offset,
             V3D_Vector_d pv, V3D_Vector_d v) {
         super(env, offset);
         l = new V3D_Line_d(env, offset, pv, v);
@@ -128,7 +128,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
         super(p.env, p.offset);
         l = new V3D_Line_d(p, q);
     }
-    
+
     /**
      * Create a new instance that intersects all points.
      *
@@ -348,34 +348,49 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
     }
 
     /**
-     * @param pt A point to test for intersection.
+     * This first checks that {@code p} intersects the Axis Aligned Bounding
+     * Box.
+     *
+     * @param p A point to test for intersection.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return {@code true} if {@code this} is intersected by {@code pv}.
+     * @return {@code true} if {@code this} is intersected by {@code p}.
      */
-    public boolean intersects(V3D_Point_d pt, double epsilon) {
-        boolean ei = getAABB().intersects(pt.getAABB(), epsilon);
-        if (ei) {
-            if (l.intersects(pt, epsilon)) {
-                V3D_Point_d tp = getP();
-                double a = pt.getDistance(tp);
-                if (a == 0d) {
-                    return true;
-                }
-                V3D_Point_d tq = getQ();
-                double b = pt.getDistance(tq);
-                if (b == 0d) {
-                    return true;
-                }
-                double d = tp.getDistance(tq);
-                double apb = a + b;
-                return Math_Double.equals(apb, d, epsilon);
-//                if (apb <= d) {
-//                    return true;
-//                }
-            }
+    public boolean intersects(V3D_Point_d p, double epsilon) {
+        if (getAABB().intersects(p.getAABB(), epsilon)) {
+            return intersects0(p, epsilon);
+        } else {
+            return false;
         }
-        return false;
+    }
+
+    /**
+     * This does not first checks that {@code p} intersects the Axis Aligned
+     * Bounding Box.
+     *
+     * @param p A point to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if {@code this} is intersected by {@code p}.
+     */
+    public boolean intersects0(V3D_Point_d p, double epsilon) {
+        if (l.intersects(p, epsilon)) {
+            V3D_Point_d tp = getP();
+            double a = p.getDistance(tp);
+            if (a == 0d) {
+                return true;
+            }
+            V3D_Point_d tq = getQ();
+            double b = p.getDistance(tq);
+            if (b == 0d) {
+                return true;
+            }
+            double d = tp.getDistance(tq);
+            double apb = a + b;
+            return Math_Double.equals(apb, d, epsilon);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -386,8 +401,8 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
         /**
-         * Test for intersection with each 2D AABB part aabb and point.  
-        */
+         * Test for intersection with each 2D AABB part aabb and point.
+         */
         return aabb.intersects(l.getP())
                 || aabb.intersects(l.getQ())
                 || intersects(aabb.getl(), epsilon)
@@ -419,41 +434,41 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                     } else {
                         V3D_FiniteGeometry_d left = aabbx.getLeft();
                         if (left instanceof V3D_LineSegment_d ll) {
-                            if (intersects(ll, epsilon)) {
+                            if (intersects0(ll, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (intersects((V3D_Point_d) left, epsilon)) {
+                            if (intersects0((V3D_Point_d) left, epsilon)) {
                                 return true;
                             }
                         }
                         V3D_FiniteGeometry_d r = aabbx.getRight();
                         if (r instanceof V3D_LineSegment_d rl) {
-                            if (intersects(rl, epsilon)) {
+                            if (intersects0(rl, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (intersects((V3D_Point_d) r, epsilon)) {
+                            if (intersects0((V3D_Point_d) r, epsilon)) {
                                 return true;
                             }
                         }
                         V3D_FiniteGeometry_d t = aabbx.getTop();
                         if (t instanceof V3D_LineSegment_d tl) {
-                            if (intersects(tl, epsilon)) {
+                            if (intersects0(tl, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (intersects((V3D_Point_d) t, epsilon)) {
+                            if (intersects0((V3D_Point_d) t, epsilon)) {
                                 return true;
                             }
                         }
                         V3D_FiniteGeometry_d b = aabbx.getBottom();
                         if (b instanceof V3D_LineSegment_d bl) {
-                            if (intersects(bl, epsilon)) {
+                            if (intersects0(bl, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (intersects((V3D_Point_d) b, epsilon)) {
+                            if (intersects0((V3D_Point_d) b, epsilon)) {
                                 return true;
                             }
                         }
@@ -465,7 +480,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
             }
         }
     }
-    
+
     /**
      * @param aabby The Axis Aligned Bounding Box to test for intersection.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -487,41 +502,41 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                     } else {
                         V3D_FiniteGeometry_d left = aabby.getLeft();
                         if (left instanceof V3D_LineSegment_d ll) {
-                            if (intersects(ll, epsilon)) {
+                            if (intersects0(ll, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (intersects((V3D_Point_d) left, epsilon)) {
+                            if (intersects0((V3D_Point_d) left, epsilon)) {
                                 return true;
                             }
                         }
                         V3D_FiniteGeometry_d r = aabby.getRight();
                         if (r instanceof V3D_LineSegment_d rl) {
-                            if (intersects(rl, epsilon)) {
+                            if (intersects0(rl, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (intersects((V3D_Point_d) r, epsilon)) {
+                            if (intersects0((V3D_Point_d) r, epsilon)) {
                                 return true;
                             }
                         }
                         V3D_FiniteGeometry_d t = aabby.getTop();
                         if (t instanceof V3D_LineSegment_d tl) {
-                            if (intersects(tl, epsilon)) {
+                            if (intersects0(tl, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (intersects((V3D_Point_d) t, epsilon)) {
+                            if (intersects0((V3D_Point_d) t, epsilon)) {
                                 return true;
                             }
                         }
                         V3D_FiniteGeometry_d b = aabby.getBottom();
                         if (b instanceof V3D_LineSegment_d bl) {
-                            if (intersects(bl, epsilon)) {
+                            if (intersects0(bl, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (intersects((V3D_Point_d) b, epsilon)) {
+                            if (intersects0((V3D_Point_d) b, epsilon)) {
                                 return true;
                             }
                         }
@@ -533,7 +548,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
             }
         }
     }
-    
+
     /**
      * @param aabbz The Axis Aligned Bounding Box to test for intersection.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -541,11 +556,11 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * @return {@code true} if {@code this} is intersected by {@code aabb}.
      */
     public boolean intersects(V3D_AABBZ_d aabbz, double epsilon) {
-        V3D_Plane_d aabypl = aabbz.getZPl();
-        if (aabypl.isOnSameSideNotOn(getP(), getQ(), epsilon)) {
+        V3D_Plane_d aabzpl = aabbz.getZPl();
+        if (aabzpl.isOnSameSideNotOn(getP(), getQ(), epsilon)) {
             return false;
         } else {
-            if (aabypl.isOnPlane(l)) {
+            if (aabzpl.isOnPlane(l)) {
                 // 2D AABB interesection
                 V3D_AABBZ_d aabbz2 = new V3D_AABBZ_d(getP(), getQ());
                 if (aabbz.intersects(aabbz2)) {
@@ -555,41 +570,41 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                     } else {
                         V3D_FiniteGeometry_d left = aabbz.getLeft();
                         if (left instanceof V3D_LineSegment_d ll) {
-                            if (intersects(ll, epsilon)) {
+                            if (intersects0(ll, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (intersects((V3D_Point_d) left, epsilon)) {
+                            if (intersects0((V3D_Point_d) left, epsilon)) {
                                 return true;
                             }
                         }
                         V3D_FiniteGeometry_d r = aabbz.getRight();
                         if (r instanceof V3D_LineSegment_d rl) {
-                            if (intersects(rl, epsilon)) {
+                            if (intersects0(rl, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (intersects((V3D_Point_d) r, epsilon)) {
+                            if (intersects0((V3D_Point_d) r, epsilon)) {
                                 return true;
                             }
                         }
                         V3D_FiniteGeometry_d t = aabbz.getTop();
                         if (t instanceof V3D_LineSegment_d tl) {
-                            if (intersects(tl, epsilon)) {
+                            if (intersects0(tl, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (intersects((V3D_Point_d) t, epsilon)) {
+                            if (intersects0((V3D_Point_d) t, epsilon)) {
                                 return true;
                             }
                         }
                         V3D_FiniteGeometry_d b = aabbz.getBottom();
                         if (b instanceof V3D_LineSegment_d bl) {
-                            if (intersects(bl, epsilon)) {
+                            if (intersects0(bl, epsilon)) {
                                 return true;
                             }
                         } else {
-                            if (intersects((V3D_Point_d) b, epsilon)) {
+                            if (intersects0((V3D_Point_d) b, epsilon)) {
                                 return true;
                             }
                         }
@@ -597,7 +612,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                 }
                 return false;
             } else {
-                return aabbz.intersects(aabypl.getIntersect0(this, epsilon));
+                return aabbz.intersects(aabzpl.getIntersect0(this, epsilon));
             }
         }
     }
@@ -666,19 +681,33 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
     /**
      * If there is intersection with the Axis Aligned Bounding Box, then the
      * intersection is computed, so if that is needed use:
-     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment, int, java.math.RoundingMode) }
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegment_d, double) }
      *
-     * @param l The V3D_Line to test for intersection.
+     * @param l The line segment to test for intersection.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @return {@code true} if this getIntersect with {@code l}
      */
     public boolean intersects(V3D_LineSegment_d l, double epsilon) {
         if (getAABB().intersects(l.getAABB(), epsilon)) {
-            return getIntersect(l, epsilon) != null;
+            return getIntersect0(l, epsilon) != null;
         } else {
             return false;
         }
+    }
+    
+    /**
+     * This does not first test for intersection of Axis Aligned Bounding Boxes.
+     * The intersection is computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegment_d, double) }
+     *
+     * @param l The line segment to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    public boolean intersects0(V3D_LineSegment_d l, double epsilon) {
+        return getIntersect0(l, epsilon) != null;
     }
 
     /**
@@ -723,7 +752,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      * return {@code this}. If they overlap in a line return the part that
      * overlaps (the order of points is not defined). If they intersect at a
      * point, the point is returned. {@code null} is returned if the two line
-     * segments do not intersect. This first conducts a bounding box 
+     * segments do not intersect. This first conducts a bounding box
      * intersection test...
      *
      * @param ls The line to get intersection with this.
@@ -1027,7 +1056,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public boolean isAligned(V3D_Point_d pt, double epsilon) {
         return getPPL().isOnSameSide(pt, getQ(), epsilon)
-            && getQPL().isOnSameSide(pt, getP(), epsilon);
+                && getQPL().isOnSameSide(pt, getP(), epsilon);
     }
 
     /**
@@ -1042,7 +1071,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public boolean isAligned(V3D_LineSegment_d l, double epsilon) {
         return isAligned(l.getP(), epsilon)
-            && isAligned(l.getQ(), epsilon);
+                && isAligned(l.getQ(), epsilon);
     }
 
     /**
