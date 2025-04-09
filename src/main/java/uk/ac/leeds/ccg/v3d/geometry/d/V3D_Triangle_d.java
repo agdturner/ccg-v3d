@@ -24,39 +24,38 @@ import uk.ac.leeds.ccg.math.geometry.Math_AngleDouble;
 import uk.ac.leeds.ccg.v3d.core.d.V3D_Environment_d;
 import uk.ac.leeds.ccg.v3d.geometry.d.light.V3D_VTriangle_d;
 
-
 /**
  * For representing and processing triangles in 3D.A triangle has a non-zero
- area.The corner points are defined by {@link #pv}, {@link #qv} and
- {@link #rv}. The following depicts a generic triangle {@code
- p                         pq                       q
- pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
-     \~                   mpq                   ~/
-      \  ~                 |                 ~  /
-       \    ~              |              ~    /
-        \      ~           |           ~      /
-         \        ~        |        ~        /
-          \          ~     |     ~          /
-           \            ~  |  ~            /
-            \  -n  -n  -n  c  +n  +n  +n  +n  normal going out of the page.
-             \          ~  |  ~          /
-              \      ~     |     ~      /
-               \  ~        |        ~  /
-                + mrp      |      mqr +
-             rp  \         |         /  qr
-                  \        |        /
-                   \       |       /
-                    \      |      /
-                     \     |     /
-                      \    |    /
-                       \   |   /
-                        \  |  /
-                         \ | /
-                          \|/
-                           *
-                           rv
-                           r
- }
+ * area.The corner points are defined by {@link #pv}, {@link #qv} and
+ * {@link #rv}. The following depicts a generic triangle {@code
+ * p                         pq                       q
+ * pv *- - - - - - - - - - - + - - - - - - - - - - -* qv
+ * \~                   mpq                   ~/
+ * \  ~                 |                 ~  /
+ * \    ~              |              ~    /
+ * \      ~           |           ~      /
+ * \        ~        |        ~        /
+ * \          ~     |     ~          /
+ * \            ~  |  ~            /
+ * \  -n  -n  -n  c  +n  +n  +n  +n  normal going out of the page.
+ * \          ~  |  ~          /
+ * \      ~     |     ~      /
+ * \  ~        |        ~  /
+ * + mrp      |      mqr +
+ * rp  \         |         /  qr
+ * \        |        /
+ * \       |       /
+ * \      |      /
+ * \     |     /
+ * \    |    /
+ * \   |   /
+ * \  |  /
+ * \ | /
+ * \|/
+ *
+ * rv
+ * r
+ * }
  *
  * @author Andy Turner
  * @version 2.0
@@ -315,7 +314,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
                 q.getVector().subtract(p.offset),
                 r.getVector().subtract(p.offset));
     }
-    
+
     /**
      * Creates a new triangle.
      *
@@ -326,8 +325,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param rv What {@link #rv} is set to.
      * @param normal What {@link #normal} is set to.
      */
-    public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d offset, 
-            V3D_Vector_d pv, V3D_Vector_d qv, V3D_Vector_d rv, 
+    public V3D_Triangle_d(V3D_Environment_d env, V3D_Vector_d offset,
+            V3D_Vector_d pv, V3D_Vector_d qv, V3D_Vector_d rv,
             V3D_Vector_d normal) {
         super(env, offset, null);
         this.pv = pv;
@@ -345,7 +344,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param q Used to initialise {@link #qv} and {@link q}.
      * @param r Used to initialise {@link #rv} and {@link r}.
      */
-    public V3D_Triangle_d(V3D_Point_d pt, V3D_Point_d p, V3D_Point_d q, 
+    public V3D_Triangle_d(V3D_Point_d pt, V3D_Point_d p, V3D_Point_d q,
             V3D_Point_d r) {
         super(p.env, new V3D_Vector_d(p.offset), null);
         this.pv = new V3D_Vector_d(p.rel);
@@ -353,7 +352,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
         this.qv = q.getVector().subtract(p.offset);
         this.q = new V3D_Point_d(q);
         this.rv = r.getVector().subtract(p.offset);
-        this.r = new V3D_Point_d(r);        
+        this.r = new V3D_Point_d(r);
         this.pl = new V3D_Plane_d(pt, p.offset, p.getVector(),
                 q.getVector(), r.getVector());
         this.normal = pl.n;
@@ -522,6 +521,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
     /**
      * @return {@link #pl} initialising it first if it is null.
      */
+    @Override
     public V3D_Plane_d getPl() {
         if (pl == null) {
             pl = new V3D_Plane_d(getP(), getQ(), getR());
@@ -681,19 +681,21 @@ public class V3D_Triangle_d extends V3D_Area_d {
     public double getPerimeter() {
         return getPQ().getLength() + getQR().getLength() + getRP().getLength();
     }
-    
+
     /**
-     * Get the intersection between {@code this} and {@code l}.{@code l} is 
+     * Get the intersection between {@code this} and {@code l}. {@code l} is
      * assumed to be non-coplanar.
-     * 
+     *
      * @param l The line to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.v
      * @return The point of intersection or {@code null}.
      */
     public V3D_Point_d getIntersect0(V3D_Line_d l, double epsilon) {
-        V3D_Point_d i = pl.getIntersect0(l, epsilon);
-        if (intersects00(i, epsilon)) {
+        V3D_Point_d i = getPl().getIntersect0(l, epsilon);
+        if (i == null) {
+            return i;
+        } else if (intersects00(i, epsilon)) {
             return i;
         } else {
             return null;
@@ -761,9 +763,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
             }
         }
     }
-    
+
     /**
-     * Get the intersection between {@code this} and {@code r}. {@code r} is 
+     * Get the intersection between {@code this} and {@code r}. {@code r} is
      * assumed to be non-coplanar.
      *
      * @param r The ray to intersect with.
@@ -782,7 +784,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
             return null;
         }
     }
-    
+
     /**
      * Get the intersection between the triangle and the ray {@code rv}.
      *
@@ -870,35 +872,27 @@ public class V3D_Triangle_d extends V3D_Area_d {
                 return null;
             }
         }
-//        V3D_Point_d lsp = ls.getP();
-//        V3D_Point_d lsq = ls.getQ();
-//        if (l.intersects00(lsp, epsilon)) {
-//            if (l.intersects00(lsq, epsilon)) {
-//                return ls;
-//            } else {
-//                V3D_Plane_d lippl = ls.getPPL();
-//                V3D_Point_d lp = l.getP();
-//                if (lippl.isOnSameSide(lp, lsq, epsilon)) {
-//                    return V3D_LineSegment_d.getGeometry(lsp, lp, epsilon);
-//                } else {
-//                    return V3D_LineSegment_d.getGeometry(lsp, l.getQ(), epsilon);
-//                }
-//            }
-//        } else {
-//            if (l.intersects00(lsq, epsilon)) {
-//                V3D_Plane_d liqpl = ls.getQPL();
-//                V3D_Point_d lq = l.getQ();
-//                if (liqpl.isOnSameSide(lq, lsp, epsilon)) {
-//                    //return V3D_LineSegment_d.getGeometry(lsq, lp, epsilon);
-//                    return V3D_LineSegment_d.getGeometry(lsq, lq, epsilon);
-//                } else {
-//                    //return V3D_LineSegment_d.getGeometry(lsq, l.getQ(), epsilon);
-//                    return V3D_LineSegment_d.getGeometry(lsq, l.getP(), epsilon);
-//                }
-//            } else {
-//                return l;
-//            }
-//        }
+    }
+
+    /**
+     * Get the intersection between the geometry and the line segment {@code l}
+     * which is not coplanar.
+     * 
+     * @param l The line segment to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The V3D_Geometry.
+     */
+    public V3D_Point_d getIntersect0(V3D_LineSegment_d l,
+            double epsilon) {
+        V3D_Point_d i = getIntersect0(l.l, epsilon);
+        if (i == null) {
+            return null;
+        } else if (l.isAligned(i, epsilon)) {
+            return i;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -1785,7 +1779,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param l a line segment either equal to one of the edges of this: null
      * null null null null null null null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null null null null null null null null null null null     {@link #getPQ()},
+     * null null null null null null null null null null null null null     {@link #getPQ()},
      * {@link #getQR()} or {@link #getRP()}.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
@@ -2261,9 +2255,10 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * If there is intersection with the Axis Aligned Bounding Boxes, then the
-     * intersection is computed, so if that is needed use:
-     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment, int, java.math.RoundingMode)}
+     * First tests if there is intersection with the Axis Aligned Bounding
+     * Boxes, then computes the intersect and tests if it is {@code null}. If the
+     * intersection is wanted use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegment_d, int, java.math.RoundingMode)}
      *
      * @param l The line segment to test if it intersects.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -2282,10 +2277,31 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * If the ray starts outside and points away rom {@code this} then 
-     * return false, otherwise the intersection is computed and tested to see if
-     * it is {@code null}. If the intersection is needed use a method to 
-     * compute it:
+     * Use when {@code l} is not coplanar. First tests if there is intersection
+     * with the Axis Aligned Bounding Boxes, then computes the intersect and
+     * tests if it is null. If the intersection is wanted use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegment_d, int, java.math.RoundingMode)}
+     *
+     * @param l The line segment to test if it intersects.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if l intersects this.
+     */
+    //@Override
+    public boolean intersects0(V3D_LineSegment_d l, double epsilon) {
+        if (intersects(l.getAABB(), epsilon)
+                || l.intersects(getAABB(), epsilon)) {
+            // Compute the intersection and return true if it is not null.
+            return getIntersect0(l, epsilon) != null;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * If the ray starts outside and points away rom {@code this} then return
+     * false, otherwise the intersection is computed and tested to see if it is
+     * {@code null}. If the intersection is needed use a method to compute it:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_Ray_d, double)}
      *
      * @param r The ray to test if it intersects.
@@ -2305,10 +2321,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * If the ray starts outside and points away rom {@code this} then 
-     * return false, otherwise the intersection is computed and tested to see if
-     * it is {@code null}. The ray is assumed to not be coplanar with 
-     * {@code this}.
+     * If the ray starts outside and points away rom {@code this} then return
+     * false, otherwise the intersection is computed and tested to see if it is
+     * {@code null}. The ray is assumed to not be coplanar with {@code this}.
      *
      * @param r The ray to test if it intersects.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -2358,12 +2373,12 @@ public class V3D_Triangle_d extends V3D_Area_d {
                 ) {
             return false;
         } else {
-            return t.intersects(getPQ(), epsilon)
-                    || t.intersects(getQR(), epsilon)
-                    || t.intersects(getRP(), epsilon)
-                    || intersects(t.getPQ(), epsilon)
-                    || intersects(t.getQR(), epsilon)
-                    || intersects(t.getRP(), epsilon);
+            return t.intersects0(getPQ(), epsilon)
+                    || t.intersects0(getQR(), epsilon)
+                    || t.intersects0(getRP(), epsilon)
+                    || intersects0(t.getPQ(), epsilon)
+                    || intersects0(t.getQR(), epsilon)
+                    || intersects0(t.getRP(), epsilon);
         }
     }
 
