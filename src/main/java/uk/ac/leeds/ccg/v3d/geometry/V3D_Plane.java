@@ -27,9 +27,10 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of an infinite plane.The plane is defined by the point
- {@link #pv} and the normal {@link #n}.A plane be constructed in numerous ways
- including by using three points that are not collinear. The equation of the plane is:
- <ul>
+ * {@link #pv} and the normal {@link #n}.A plane be constructed in numerous ways
+ * including by using three points that are not collinear. The equation of the
+ * plane is:
+ * <ul>
  * <li>{@code A*(x-x0) + B*(y-y0) + C*(z-z0) = 0}</li>
  * <li>{@code A*(x) + B*(y) + C*(z) - D = 0 where D = -(A*x0 + B*y0 + C*z0)}</li>
  * </ul>
@@ -143,10 +144,10 @@ public class V3D_Plane extends V3D_Geometry {
      *
      * @param p Used to initialise {@link #env}, {@link #offset}, {@link #pv},
      * and {@link #p}.
-     * @param q A point coplanar to p and r, not collinear or equal to either 
-     * p or r.
-     * @param r A point coplanar to p and q, not collinear or equal to either 
-     * p or q.
+     * @param q A point coplanar to p and r, not collinear or equal to either p
+     * or r.
+     * @param r A point coplanar to p and q, not collinear or equal to either p
+     * or q.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
@@ -161,7 +162,7 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * Create a new instance.{@code pv}, {@code qv} and {@code rv} must not 
+     * Create a new instance.{@code pv}, {@code qv} and {@code rv} must not
      * define collinear points on the plane.
      *
      * @param env What {@link #env} is set to.
@@ -171,14 +172,14 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_Plane(V3D_Environment env, V3D_Vector pv, V3D_Vector qv, 
+    public V3D_Plane(V3D_Environment env, V3D_Vector pv, V3D_Vector qv,
             V3D_Vector rv, int oom, RoundingMode rm) {
         this(env, V3D_Vector.ZERO, pv, qv, rv, oom, rm);
     }
 
     /**
-     * Create a new instance.{@code pv}, {@code qv} and {@code rv} must not 
- define collinear points on the plane.
+     * Create a new instance.{@code pv}, {@code qv} and {@code rv} must not
+     * define collinear points on the plane.
      *
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
@@ -188,15 +189,15 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_Plane(V3D_Environment env, V3D_Vector offset, V3D_Vector pv, 
+    public V3D_Plane(V3D_Environment env, V3D_Vector offset, V3D_Vector pv,
             V3D_Vector qv, V3D_Vector rv, int oom,
             RoundingMode rm) {
-        this(env, pv.add(qv.getCrossProduct(rv, oom, rm), oom, rm), offset, 
+        this(env, pv.add(qv.getCrossProduct(rv, oom, rm), oom, rm), offset,
                 pv, qv, rv, oom, rm);
     }
 
     /**
-     * Create a new instance.{@code pv}, {@code qv} and {@code rv} must not 
+     * Create a new instance.{@code pv}, {@code qv} and {@code rv} must not
      * define collinear points on the plane.
      *
      * @param env What {@link #env} is set to.
@@ -208,7 +209,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
-    public V3D_Plane(V3D_Environment env, V3D_Vector ptv, V3D_Vector offset, 
+    public V3D_Plane(V3D_Environment env, V3D_Vector ptv, V3D_Vector offset,
             V3D_Vector pv, V3D_Vector qv, V3D_Vector rv, int oom, RoundingMode rm) {
         super(env, new V3D_Vector(offset));
         V3D_Vector pq = qv.subtract(pv, oom, rm);
@@ -225,7 +226,7 @@ public class V3D_Plane extends V3D_Geometry {
             int debug = 1;
             this.n = pq.reverse().getCrossProduct(qr, oom, rm);
         }
-        
+
         V3D_Vector v;
         if (ptv.isZero()) {
             v = pv.add(qv, oom, rm).add(rv, oom, rm).reverse();
@@ -251,7 +252,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param q A point coplanar to pl and r, not collinear to both pl and r,
      * and not equal to pl or r.
      * @param r A point coplanar to pl and v, not collinear to both pl and v,
- and not equal to pl or v.
+     * and not equal to pl or v.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
@@ -261,11 +262,11 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     /**
-     * Creates a new plane which is essentially the same as pl, but with the 
+     * Creates a new plane which is essentially the same as pl, but with the
      * offset specified.
-     * 
+     *
      * @param offset What {@link #offset} is set to.
-     * @param pl  The plane to use as a template.
+     * @param pl The plane to use as a template.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      */
@@ -278,7 +279,7 @@ public class V3D_Plane extends V3D_Geometry {
             pv = pl.pv.add(pl.offset, oom, rm).subtract(offset, oom, rm);
         }
     }
-    
+
     @Override
     public String toString() {
         //return toString("");
@@ -335,7 +336,7 @@ public class V3D_Plane extends V3D_Geometry {
     public final V3D_Vector getN() {
         return new V3D_Vector(n);
     }
-    
+
     /**
      * @return {@link #pv} with {@link #offset} and rotations applied.
      */
@@ -513,7 +514,7 @@ public class V3D_Plane extends V3D_Geometry {
             coeffs[2] = ndzsr;
             coeffs[3] = k;
         }
-        
+
         @Override
         public String toString() {
             return "(" + coeffs[0] + " * x)"
@@ -627,8 +628,6 @@ public class V3D_Plane extends V3D_Geometry {
             return new Math_Matrix_BR(m).getDeterminant().compareTo(BigRational.ZERO) == 0;
         }
     }
-    
-    
 
     /**
      * @param oom The Order of Magnitude for the precision.
@@ -654,7 +653,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @return {@code false} if points are coincident or collinear. {@code true}
      * iff all points are coplanar.
      */
-    public static boolean isCoplanar(int oom, RoundingMode rm, 
+    public static boolean isCoplanar(int oom, RoundingMode rm,
             V3D_Point... points) {
         // For the points to be in a plane at least one must not be collinear.
         if (V3D_Point.equals(oom, rm, points)) {
@@ -675,7 +674,7 @@ public class V3D_Plane extends V3D_Geometry {
      * {@code null} if there is no such plane (if the points are coincident or
      * collinear).
      */
-    public static V3D_Plane getPlane(int oom, RoundingMode rm, 
+    public static V3D_Plane getPlane(int oom, RoundingMode rm,
             V3D_Point... ps) {
         V3D_Line l = V3D_Line.getLine(oom, rm, ps);
         if (l == null) {
@@ -696,7 +695,7 @@ public class V3D_Plane extends V3D_Geometry {
             return null;
         }
     }
-    
+
 //    /**
 //     * @param l The line to test if it is on the plane.
 //     * @return {@code true} If {@code pt} is on the plane.
@@ -704,7 +703,6 @@ public class V3D_Plane extends V3D_Geometry {
 //    public boolean isOnPlane(V3D_Line l) {
 //        return getIntersect(l.getP()) && getIntersect(l.getQ());
 //    }
-
     /**
      * @param l The line to test if it is on the plane.
      * @param oom The Order of Magnitude for the precision.
@@ -715,7 +713,7 @@ public class V3D_Plane extends V3D_Geometry {
         return intersects(l.getP(), oom, rm)
                 && intersects(l.getQ(oom, rm), oom, rm);
     }
-    
+
     /**
      * Method adapted from the python code given here:
      * https://stackoverflow.com/a/18543221/1998054
@@ -857,7 +855,7 @@ public class V3D_Plane extends V3D_Geometry {
 //        m[0][1] = BigRational.ONE;
 //        m[0][2] = BigRational.ONE;
 //        m[0][3] = BigRational.ONE;
-////        m[1][0] = pl.getX(oom);
+    ////        m[1][0] = pl.getX(oom);
 ////        m[1][1] = qv.getX(oom);
 ////        m[1][2] = r.getX(oom);
 ////        m[1][3] = lp.getX(oom);
@@ -1090,11 +1088,11 @@ public class V3D_Plane extends V3D_Geometry {
                 t = BigRational.ONE;
             } else {
                 return null;
-            }        
+            }
         } else {
             t = nummdet.divide(denmdet).negate();
         }
-        V3D_Point res = new V3D_Point(env, 
+        V3D_Point res = new V3D_Point(env,
                 lp.getX(oomn6, rm).add(lv.getDX(oomn6, rm).multiply(t)),
                 lp.getY(oomn6, rm).add(lv.getDY(oomn6, rm).multiply(t)),
                 lp.getZ(oomn6, rm).add(lv.getDZ(oomn6, rm).multiply(t)));
@@ -1109,7 +1107,7 @@ public class V3D_Plane extends V3D_Geometry {
      * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometry getIntersect(V3D_LineSegment l, 
+    public V3D_FiniteGeometry getIntersect(V3D_LineSegment l,
             int oom, RoundingMode rm) {
         if (isParallel(l.l, oom, rm)) {
             if (isOnPlane(l.l, oom, rm)) {
@@ -1121,17 +1119,17 @@ public class V3D_Plane extends V3D_Geometry {
             return getIntersect0(l, oom, rm);
         }
     }
-    
+
     /**
-     * Compute and return the intersection with {@code l} which is assumed 
-     * to be not parallel to the plane.
+     * Compute and return the intersection with {@code l} which is assumed to be
+     * not parallel to the plane.
      *
      * @param l The line segment to intersect with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public V3D_Point getIntersect0(V3D_LineSegment l, 
+    public V3D_Point getIntersect0(V3D_LineSegment l,
             int oom, RoundingMode rm) {
         V3D_Point pt = getIntersect0(l.l, oom, rm);
         if (l.getPPL().isOnSameSide(pt, l.getQ(oom, rm), oom, rm)
@@ -1254,7 +1252,7 @@ public class V3D_Plane extends V3D_Geometry {
 //        if (getPQV().isScalarMultiple(v, oomN5)) {
 //        //if (pl.getPQV().isScalarMultiple(v, oomN5)) {
 //            //pi = (V3D_Point) pl.getIntersect(new V3D_Line(tq, getR(oom), oom), oom);
-////            pi = (V3D_Point) pl.getIntersection(
+        ////            pi = (V3D_Point) pl.getIntersection(
 ////                    new V3D_Line(e, tq.getVector(oomN5), getR().getVector(oomN5)), oomN5);
 ////            pi = (V3D_Point) pl.getIntersection(
 ////                    new V3D_Line(tq.getVector(oomN5), getR().getVector(oomN5)), oomN5);
@@ -1282,6 +1280,26 @@ public class V3D_Plane extends V3D_Geometry {
 //        }
         V3D_Point pi = pl.getPointOfProjectedIntersection(getP(), oom, rm);
         return new V3D_Line(pi, v);
+    }
+
+    /**
+     * Compute and return the intersection with {@code pl} which is not
+     * parallel.
+     *
+     * @param pl The plane to intersect.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return The intersection between {@code this} and {@code pl}
+     */
+    public V3D_Line getIntersect0(V3D_Plane pl, int oom, RoundingMode rm) {
+        /*
+         * 1. Calculate a projection of a point onto the plane {@code pl}.
+         * 2. Calculate the cross product of the normal vectors to get the
+         * direction of the line.
+         * Together these define the line of intersection.
+         */
+        return new V3D_Line(pl.getPointOfProjectedIntersection(getP(), oom, rm),
+                n.getCrossProduct(pl.n, oom, rm));
     }
 
 //    /**
@@ -1392,7 +1410,7 @@ public class V3D_Plane extends V3D_Geometry {
 //                // x = k + ((e(l - y) - f(z - m)) / d)   --- 1p
 //                // y = l + ((d(k - x) - f(z - l)) / e)   --- 2p
 //                // z = m + ((d(k - x) - e(y - m)) / f)   --- 3p
-////                if (n.getDX(oom).compareTo(e.P0) == 0) {
+    ////                if (n.getDX(oom).compareTo(e.P0) == 0) {
 ////                    //pl.b
 ////                } else if (n.getDY(oom).compareTo(e.P0) == 0) {
 //////                    // y = l + ((- a(x − k) - c(z − l)) / b)
@@ -1973,7 +1991,7 @@ public class V3D_Plane extends V3D_Geometry {
      */
     public BigDecimal getDistance(V3D_LineSegment l, int oom, RoundingMode rm) {
         return Math_BigRational.toBigDecimal(new Math_BigRationalSqrt(
-                getDistanceSquared(l, oom, rm), oom, rm).getSqrt(oom, rm), 
+                getDistanceSquared(l, oom, rm), oom, rm).getSqrt(oom, rm),
                 oom, rm);
     }
 
@@ -2001,7 +2019,7 @@ public class V3D_Plane extends V3D_Geometry {
     }
 
     @Override
-    public V3D_Plane rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+    public V3D_Plane rotate(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd,
             BigRational theta, int oom, RoundingMode rm) {
         theta = Math_AngleBigRational.normalise(theta, bd, oom, rm);
         if (theta.compareTo(BigRational.ZERO) == 0) {
@@ -2010,9 +2028,9 @@ public class V3D_Plane extends V3D_Geometry {
             return rotateN(ray, uv, bd, theta, oom, rm);
         }
     }
-    
+
     @Override
-    public V3D_Plane rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd, 
+    public V3D_Plane rotateN(V3D_Ray ray, V3D_Vector uv, Math_BigDecimal bd,
             BigRational theta, int oom, RoundingMode rm) {
         return new V3D_Plane(getP().rotateN(ray, uv, bd, theta, oom, rm),
                 n.rotateN(uv, bd, theta, oom, rm));
@@ -2034,24 +2052,20 @@ public class V3D_Plane extends V3D_Geometry {
     public V3D_Point getPointOfProjectedIntersection(V3D_Point pt, int oom, RoundingMode rm) {
         if (intersects(pt, oom, rm)) {
             return pt;
+        } else {
+            V3D_Line l = new V3D_Line(pt, n);
+            return (V3D_Point) getIntersect(l, oom, rm);
         }
-//        V3D_Point pt2 = new V3D_Point(pt);
-//        pt2.setOffset(offset, oom, rm);
-//        V3D_Vector nn = getN(oom, rm);
-//        V3D_Line l = new V3D_Line(pt2.rel, nn, e);
-        //V3D_Line l = new V3D_Line(pt2.rel, n, e);
-        V3D_Line l = new V3D_Line(pt, n);
-        return (V3D_Point) getIntersect(l, oom, rm);
     }
 
     /**
      * Check a and b are on the same side of this.If either are on the boundary
- then return {@code true}.
+     * then return {@code true}.
      *
      * @param a A point.
      * @param b Another point. The triangle to check the points to see if they
- are all on the same side of a line that getIntersect the edge of another
- triangle.
+     * are all on the same side of a line that getIntersect the edge of another
+     * triangle.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
      * @return {@code true} if an intersection is found and {@code false}
@@ -2125,12 +2139,12 @@ public class V3D_Plane extends V3D_Geometry {
 
     /**
      * Check a and b are on the same side of this.If either are on the boundary
- then return {@code true}.
+     * then return {@code true}.
      *
      * @param a A point.
      * @param b Another point. The triangle to check the points to see if they
- are all on the same side of a line that getIntersect the edge of another
- triangle.
+     * are all on the same side of a line that getIntersect the edge of another
+     * triangle.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
      * @return {@code true} if an intersection is found and {@code false}
@@ -2147,7 +2161,7 @@ public class V3D_Plane extends V3D_Geometry {
         }
         return aside == bside;
     }
-    
+
     /**
      * Plug the coordinates of pt into the plane equation.
      *
@@ -2165,7 +2179,7 @@ public class V3D_Plane extends V3D_Geometry {
                 .add(coeffs[2].multiply(pt.getZ(oom, rm))).add(coeffs[3]))
                 .compareTo(BigRational.ZERO);
     }
-    
+
     /**
      * Check if all points in pts are on the same side of this.
      *
@@ -2188,7 +2202,7 @@ public class V3D_Plane extends V3D_Geometry {
                 return true;
             }
             default -> {
-                for (int i = 1; i < pts.length; i ++) {
+                for (int i = 1; i < pts.length; i++) {
                     if (!isOnSameSide(pts[0], pts[i], oom, rm)) {
                         return false;
                     }
@@ -2221,7 +2235,7 @@ public class V3D_Plane extends V3D_Geometry {
                 return true;
             }
             default -> {
-                for (int i = 1; i < pts.length; i ++) {
+                for (int i = 1; i < pts.length; i++) {
                     if (!isOnSameSideNotOn(pts[0], pts[i], oom, rm)) {
                         return false;
                     }
@@ -2230,7 +2244,7 @@ public class V3D_Plane extends V3D_Geometry {
             }
         }
     }
-    
+
     /**
      *
      * @param pl A plane parallel to this.

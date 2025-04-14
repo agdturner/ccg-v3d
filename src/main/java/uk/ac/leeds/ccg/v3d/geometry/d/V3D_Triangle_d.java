@@ -683,26 +683,6 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * Get the intersection between {@code this} and {@code l}. {@code l} is
-     * assumed to be non-coplanar.
-     *
-     * @param l The line to intersect with.
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.v
-     * @return The point of intersection or {@code null}.
-     */
-    public V3D_Point_d getIntersect0(V3D_Line_d l, double epsilon) {
-        V3D_Point_d i = getPl().getIntersect0(l, epsilon);
-        if (i == null) {
-            return i;
-        } else if (intersects00(i, epsilon)) {
-            return i;
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * @param l The line to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
@@ -741,6 +721,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
                 if (lqri == null) {
                     if (lrpi == null) {
                         return lpqi;
+                    } else if (lrpi instanceof V3D_LineSegment_d) {
+                        return lrpi;
                     } else {
                         return V3D_LineSegment_d.getGeometry(lpqip,
                                 (V3D_Point_d) lrpi, epsilon);
@@ -765,20 +747,19 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * Get the intersection between {@code this} and {@code r}. {@code r} is
+     * Get the intersection between {@code this} and {@code l}. {@code l} is
      * assumed to be non-coplanar.
      *
-     * @param r The ray to intersect with.
+     * @param l The line to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
+     * equal.v
      * @return The point of intersection or {@code null}.
      */
-    @Override
-    public V3D_Point_d getIntersect0(V3D_Ray_d r, double epsilon) {
-        V3D_Point_d i = getIntersect0(r.l, epsilon);
+    public V3D_Point_d getIntersect0(V3D_Line_d l, double epsilon) {
+        V3D_Point_d i = getPl().getIntersect0(l, epsilon);
         if (i == null) {
-            return null;
-        } else if (r.isAligned(i, epsilon)) {
+            return i;
+        } else if (intersects00(i, epsilon)) {
             return i;
         } else {
             return null;
@@ -799,11 +780,6 @@ public class V3D_Triangle_d extends V3D_Area_d {
         if (g == null) {
             return null;
         } else if (g instanceof V3D_Point_d gp) {
-//            if (rv.getPl().isOnSameSide(gp, rv.l.getQ(), epsilon)) {
-//                return gp;
-//            } else {
-//                return null;
-//            }
             if (r.isAligned(gp, epsilon)) {
                 return gp;
             } else {
@@ -813,32 +789,40 @@ public class V3D_Triangle_d extends V3D_Area_d {
             V3D_LineSegment_d ls = (V3D_LineSegment_d) g;
             V3D_Point_d lsp = ls.getP();
             V3D_Point_d lsq = ls.getQ();
-            if (r.getPl().isOnSameSide(lsp, r.l.getQ(), epsilon)) {
-                if (r.getPl().isOnSameSide(lsq, r.l.getQ(), epsilon)) {
+            if (r.isAligned(lsp, epsilon)) {
+                if (r.isAligned(lsq, epsilon)) {
                     return ls;
                 } else {
                     return V3D_LineSegment_d.getGeometry(r.l.getP(), lsp, epsilon);
                 }
             } else {
-                if (r.getPl().isOnSameSide(lsq, r.l.getQ(), epsilon)) {
+                if (r.isAligned(lsq, epsilon)) {
                     return V3D_LineSegment_d.getGeometry(r.l.getP(), lsq, epsilon);
                 } else {
                     throw new RuntimeException();
                 }
             }
-//            if (rv.intersects00(lsp, epsilon)) {
-//                if (rv.intersects00(lsq, epsilon)) {
-//                    return ls;
-//                } else {
-//                    return V3D_LineSegment_d.getGeometry(rv.l.getP(), lsp, epsilon);
-//                }
-//            } else {
-//                if (rv.intersects00(lsq, epsilon)) {
-//                    return V3D_LineSegment_d.getGeometry(rv.l.getP(), lsq, epsilon);
-//                } else {
-//                    throw new RuntimeException();
-//                }
-//            }
+        }
+    }
+
+    /**
+     * Get the intersection between {@code this} and {@code r}. {@code r} is
+     * assumed to be non-coplanar.
+     *
+     * @param r The ray to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The point of intersection or {@code null}.
+     */
+    @Override
+    public V3D_Point_d getIntersect0(V3D_Ray_d r, double epsilon) {
+        V3D_Point_d i = getIntersect0(r.l, epsilon);
+        if (i == null) {
+            return null;
+        } else if (r.isAligned(i, epsilon)) {
+            return i;
+        } else {
+            return null;
         }
     }
 
@@ -2186,6 +2170,14 @@ public class V3D_Triangle_d extends V3D_Area_d {
 
     @Override
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
+        /**
+         * Test each 2D AABB part of the aabb and at least one point.
+         * For rendering things like line segments where a camera focus is the 
+         * third point and this method is used to identify if there is an 
+         * intersection with a screen or pixel, then it is best to test for 
+         * intersection with a point last (or to have another method and not 
+         * test this at all).  
+         */
         return intersects(aabb.getl(), epsilon)
                 || intersects(aabb.getr(), epsilon)
                 || intersects(aabb.gett(), epsilon)
@@ -2255,8 +2247,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
-     * First tests if there is intersection with the Axis Aligned Bounding
-     * Boxes, then computes the intersect and tests if it is {@code null}. If the
+     * Computes the intersect and tests if it is {@code null}. If the
      * intersection is wanted use:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegment_d, int, java.math.RoundingMode)}
      *
@@ -2267,18 +2258,20 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     @Override
     public boolean intersects(V3D_LineSegment_d l, double epsilon) {
-        if (intersects(l.getAABB(), epsilon)
-                || l.intersects(getAABB(), epsilon)) {
-            // Compute the intersection and return true if it is not null.
-            return getIntersect(l, epsilon) != null;
-        } else {
-            return false;
-        }
+        // Compute the intersection and return true if it is not null.
+        return getIntersect(l, epsilon) != null;
+//        Profiling revealed that checking the AABB is generally not an optimisation...
+//        if (intersects(l.getAABB(), epsilon)
+//                || l.intersects(getAABB(), epsilon)) {
+//            // Compute the intersection and return true if it is not null.
+//            return getIntersect(l, epsilon) != null;
+//        } else {
+//            return false;
+//        }
     }
 
     /**
-     * Use when {@code l} is not coplanar. First tests if there is intersection
-     * with the Axis Aligned Bounding Boxes, then computes the intersect and
+     * Use when {@code l} is not coplanar. This computes the intersect and
      * tests if it is null. If the intersection is wanted use:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.d.V3D_LineSegment_d, int, java.math.RoundingMode)}
      *
@@ -2289,13 +2282,16 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     //@Override
     public boolean intersects0(V3D_LineSegment_d l, double epsilon) {
-        if (intersects(l.getAABB(), epsilon)
-                || l.intersects(getAABB(), epsilon)) {
-            // Compute the intersection and return true if it is not null.
-            return getIntersect0(l, epsilon) != null;
-        } else {
-            return false;
-        }
+        // Compute the intersection and return true if it is not null.
+        return getIntersect0(l, epsilon) != null;
+//        Profiling revealed that checking the AABB is generally not an optimisation...
+//        if (intersects(l.getAABB(), epsilon)
+//                || l.intersects(getAABB(), epsilon)) {
+//            // Compute the intersection and return true if it is not null.
+//            return getIntersect0(l, epsilon) != null;
+//        } else {
+//            return false;
+//        }
     }
 
     /**
@@ -2390,9 +2386,12 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     @Override
     public boolean intersects(V3D_Area_d a, double epsilon) {
-        if (intersects(a.getAABB(), epsilon)
-                && a.intersects(getAABB(), epsilon)
-                && !a.pl.allOnSameSideNotOn(epsilon, getP(), getQ(),
+//        Profiling revealed that checking the AABB is generally not an optimisation...
+//        if (intersects(a.getAABB(), epsilon)
+//                && a.intersects(getAABB(), epsilon)
+//                && !a.pl.allOnSameSideNotOn(epsilon, getP(), getQ(),
+//                        getR())) {
+        if (!a.pl.allOnSameSideNotOn(epsilon, getP(), getQ(),
                         getR())) {
             return a.intersects(getPQ(), epsilon)
                     || a.intersects(getQR(), epsilon)
