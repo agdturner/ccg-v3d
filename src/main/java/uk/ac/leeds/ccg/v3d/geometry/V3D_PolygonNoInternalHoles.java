@@ -418,7 +418,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     }
 
     /**
-     * Identify if this contains pt.
+     * Identify if this contains pt which is assumed to be on the plane.
      *
      * @param pt The point to test for containment.
      * @param oom The Order of Magnitude for the precision.
@@ -427,12 +427,12 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      */
     @Override
     public boolean contains(V3D_Point pt, int oom, RoundingMode rm) {
-        return intersects(pt, oom, rm)
+        return intersects00(pt, oom, rm)
                 && !V3D_LineSegment.intersects(oom, rm, pt, edges.values());
     }
 
     /**
-     * Identify if this contains ls.
+     * Identify if this contains ls which is assumed to be on the plane.
      *
      * @param ls The line segment to test for containment.
      * @param oom The Order of Magnitude for the precision.
@@ -447,7 +447,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     }
 
     /**
-     * Identify if this contains t.
+     * Identify if this contains t which is assumed to be on the plane.
      *
      * @param t The triangle to test for containment.
      * @param oom The Order of Magnitude for the precision.
@@ -462,7 +462,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     }
 
     /**
-     * Identify if this contains r.
+     * Identify if this contains r which is assumed to be on the plane.
      *
      * @param r The rectangle to test for containment.
      * @param oom The Order of Magnitude for the precision.
@@ -474,7 +474,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     }
 
     /**
-     * Identify if this contains ch.
+     * Identify if this contains ch which is assumed to be on the plane.
      *
      * @param ch The convex hull to test for containment.
      * @param oom The Order of Magnitude for the precision.
@@ -500,7 +500,11 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      */
     @Override
     public boolean intersects(V3D_Line l, int oom, RoundingMode rm) {
-        return ch.intersects(l, oom, rm);
+        if (getPl(oom, rm).isOnPlane(l, oom, rm)) {
+            return ch.intersects(l, oom, rm);
+        } else {
+           return ch.intersects(l, oom, rm);
+        }
     }
 
     /**
@@ -544,7 +548,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
     @Override
     public boolean intersects(V3D_Ray r, int oom, RoundingMode rm) {
         return ch.intersects(r, oom, rm)
-                && intersects0(r, oom, rm);
+                && intersectsNonCoplanar(r, oom, rm);
     }
 
     /**
@@ -556,7 +560,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if l intersects this.
      */
-    public boolean intersects0(V3D_Ray r, int oom, RoundingMode rm) {
+    public boolean intersectsNonCoplanar(V3D_Ray r, int oom, RoundingMode rm) {
         return !externalHoles.values().parallelStream().anyMatch(x
                 -> x.intersects(r, oom, rm));
     }
@@ -832,7 +836,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      */
     public V3D_Point getIntersect0(V3D_Line l, int oom,
             RoundingMode rm) {
-        V3D_Point i = getPl(oom, rm).getIntersect0(l, oom, rm);
+        V3D_Point i = getPl(oom, rm).getIntersectNonParallel(l, oom, rm);
         if (i == null) {
             return null;
         } else if (intersects00(i, oom, rm)) {
@@ -900,7 +904,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @return The V3D_Geometry.
      */
     @Override
-    public V3D_Point getIntersect0(V3D_Ray r, int oom,
+    public V3D_Point getIntersectNonCoplanar(V3D_Ray r, int oom,
             RoundingMode rm) {
         V3D_Point g = getIntersect0(r.l, oom, rm);
         if (g == null) {

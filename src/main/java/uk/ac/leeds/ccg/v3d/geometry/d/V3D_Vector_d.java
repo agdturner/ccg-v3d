@@ -269,7 +269,7 @@ public class V3D_Vector_d implements Serializable {
      */
     public String toStringSimple(String pad) {
         return pad + this.getClass().getSimpleName()
-                + "(" + toStringFieldsSimple("") + ")";
+                + "(" + toStringFields("") + ")";
     }
 
     /**
@@ -277,16 +277,6 @@ public class V3D_Vector_d implements Serializable {
      * @return A description of the fields.
      */
     protected String toStringFields(String pad) {
-        return pad + "dx=" + dx + ",\n"
-                + pad + "dy=" + dy + ",\n"
-                + pad + "dz=" + dz;
-    }
-
-    /**
-     * @param pad A padding of spaces.
-     * @return A description of the fields.
-     */
-    protected String toStringFieldsSimple(String pad) {
         return pad + "dx=" + dx
                 + ", dy=" + dy
                 + ", dz=" + dz;
@@ -329,8 +319,8 @@ public class V3D_Vector_d implements Serializable {
     }
 
     /**
-     * @param points The points to test if they are coincident.
-     * @return {@code true} iff all the points are coincident.
+     * @param v The vectors to test if they are equal.
+     * @return {@code true} if all the vectors are equal.
      */
     public static boolean equals(V3D_Vector_d... v) {
         V3D_Vector_d v0 = v[0];

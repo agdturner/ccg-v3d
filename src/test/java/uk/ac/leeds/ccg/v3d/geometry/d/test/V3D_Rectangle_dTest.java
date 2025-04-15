@@ -170,19 +170,19 @@ public class V3D_Rectangle_dTest extends V3D_Test_d {
                            V3D_Rectangle_d(
                            offset=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
                            pqr=V3D_Triangle_d(
-                            pl=( V3D_Plane_d(
+                            pl=(V3D_Plane_d(
                              offset=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
-                             p=  V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
-                             n=  V3D_Vector_d(dx=0.0, dy=0.0, dz=-1.0))),
+                             pv=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
+                             n=V3D_Vector_d(dx=0.0, dy=0.0, dz=-1.0))),
                             offset=(V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0)),
                             p=(V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0)),
                             q=(V3D_Vector_d(dx=0.0, dy=1.0, dz=0.0)),
                             r=(V3D_Vector_d(dx=1.0, dy=1.0, dz=0.0))),
                            rsp=V3D_Triangle_d(
-                            pl=( V3D_Plane_d(
+                            pl=(V3D_Plane_d(
                              offset=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
-                             p=  V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
-                             n=  V3D_Vector_d(dx=0.0, dy=0.0, dz=-1.0))),
+                             pv=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
+                             n=V3D_Vector_d(dx=0.0, dy=0.0, dz=-1.0))),
                             offset=(V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0)),
                             p=(V3D_Vector_d(dx=1.0, dy=1.0, dz=0.0)),
                             q=(V3D_Vector_d(dx=1.0, dy=0.0, dz=0.0)),
@@ -400,7 +400,7 @@ public class V3D_Rectangle_dTest extends V3D_Test_d {
     }
 
     /**
-     * Test of intersects0 method, of class V3D_Rectangle_d.
+     * Test of intersectsNonCoplanar method, of class V3D_Rectangle_d.
      */
     @Test
     public void testIsIntersectedBy0() {

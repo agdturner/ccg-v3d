@@ -860,10 +860,12 @@ public class V3D_Triangle extends V3D_Area {
     }
 
     /**
+     * Checks the Axis Aligned Bounding Box.
+     *
      * @param pt The point to test for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff pt getIntersect.
+     * @return {@code true} if {@code pt} intersects {@code this}.
      */
     @Override
     public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
@@ -874,6 +876,8 @@ public class V3D_Triangle extends V3D_Area {
     }
 
     /**
+     * Does not check the Axis Aligned Bounding Box.
+     *
      * @param pt A point to check for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
@@ -881,22 +885,24 @@ public class V3D_Triangle extends V3D_Area {
      */
     public boolean intersects0(V3D_Point pt, int oom, RoundingMode rm) {
         if (getPl(oom, rm).intersects(pt, oom, rm)) {
-            return intersects00(pt, oom, rm);
+            return intersectsCoplanar(pt, oom, rm);
         } else {
             return false;
         }
     }
 
     /**
-     * @param pt A point on the plane to check for intersection.
+     * Assumes the {@code p} is on the plane.
+     *
+     * @param p A point on the plane to check for intersection.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
      * @return {@code true} iff pt getIntersect.
      */
-    public boolean intersects00(V3D_Point pt, int oom, RoundingMode rm) {
-        return getPQPl(oom, rm).isOnSameSide(pt, getR(oom, rm), oom, rm)
-                && getQRPl(oom, rm).isOnSameSide(pt, getP(oom, rm), oom, rm)
-                && getRPPl(oom, rm).isOnSameSide(pt, getQ(oom, rm), oom, rm);
+    public boolean intersectsCoplanar(V3D_Point p, int oom, RoundingMode rm) {
+        return getPQPl(oom, rm).isOnSameSide(p, getR(oom, rm), oom, rm)
+                && getQRPl(oom, rm).isOnSameSide(p, getP(oom, rm), oom, rm)
+                && getRPPl(oom, rm).isOnSameSide(p, getQ(oom, rm), oom, rm);
     }
 
     /**
@@ -976,55 +982,68 @@ public class V3D_Triangle extends V3D_Area {
         if (i == null) {
             return null;
         } else if (i instanceof V3D_Point ip) {
-            if (intersects00(ip, oom, rm)) {
+            if (intersectsCoplanar(ip, oom, rm)) {
                 return ip;
             } else {
                 return null;
             }
         } else {
-            /**
-             * Get the intersection of the line and each edge of the triangle.
-             */
-            V3D_FiniteGeometry lpqi = getPQ(oom, rm).getIntersect(l, oom, rm);
-            V3D_FiniteGeometry lqri = getQR(oom, rm).getIntersect(l, oom, rm);
-            V3D_FiniteGeometry lrpi = getRP(oom, rm).getIntersect(l, oom, rm);
-            if (lpqi == null) {
-                if (lqri == null) {
-                    return null; // This should not happen!
-                } else {
-                    if (lrpi == null) {
-                        return lqri;
-                    } else {
-                        return V3D_LineSegment.getGeometry((V3D_Point) lqri,
-                                (V3D_Point) lrpi, oom, rm);
-                    }
-                }
-            } else if (lpqi instanceof V3D_Point lpqip) {
-                if (lqri == null) {
-                    if (lrpi == null) {
-                        return lpqi;
-                    } else if (lrpi instanceof V3D_LineSegment) {
-                        return lrpi;
-                    } else {
-                        return V3D_LineSegment.getGeometry(lpqip,
-                                (V3D_Point) lrpi, oom, rm);
-                    }
-                } else if (lqri instanceof V3D_Point lqrip) {
-                    if (lrpi == null) {
-                        return V3D_LineSegment.getGeometry(lqrip, lpqip, oom,
-                                rm);
-                    } else if (lrpi instanceof V3D_LineSegment) {
-                        return lrpi;
-                    } else {
-                        return getGeometry(lpqip, lqrip, (V3D_Point) lrpi,
-                                oom, rm);
-                    }
-                } else {
+            return getIntersectCoplanar(l, oom, rm);
+        }
+    }
+
+    /**
+     * Use when {@code l} is coplanar.
+     * 
+     * @param l The line to intersect with assumed to be coplanar.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return A point or line segment.
+     */
+    public V3D_FiniteGeometry getIntersectCoplanar(V3D_Line l, int oom,
+            RoundingMode rm) {
+        /**
+         * Get the intersection of the line and each edge of the triangle.
+         */
+        V3D_FiniteGeometry lpqi = getPQ(oom, rm).getIntersect(l, oom, rm);
+        V3D_FiniteGeometry lqri = getQR(oom, rm).getIntersect(l, oom, rm);
+        V3D_FiniteGeometry lrpi = getRP(oom, rm).getIntersect(l, oom, rm);
+        if (lpqi == null) {
+            if (lqri == null) {
+                return null; // This should not happen!
+            } else {
+                if (lrpi == null) {
                     return lqri;
+                } else {
+                    return V3D_LineSegment.getGeometry((V3D_Point) lqri,
+                            (V3D_Point) lrpi, oom, rm);
+                }
+            }
+        } else if (lpqi instanceof V3D_Point lpqip) {
+            if (lqri == null) {
+                if (lrpi == null) {
+                    return lpqi;
+                } else if (lrpi instanceof V3D_LineSegment) {
+                    return lrpi;
+                } else {
+                    return V3D_LineSegment.getGeometry(lpqip,
+                            (V3D_Point) lrpi, oom, rm);
+                }
+            } else if (lqri instanceof V3D_Point lqrip) {
+                if (lrpi == null) {
+                    return V3D_LineSegment.getGeometry(lqrip, lpqip, oom,
+                            rm);
+                } else if (lrpi instanceof V3D_LineSegment) {
+                    return lrpi;
+                } else {
+                    return getGeometry(lpqip, lqrip, (V3D_Point) lrpi,
+                            oom, rm);
                 }
             } else {
-                return lpqi;
+                return lqri;
             }
+        } else {
+            return lpqi;
         }
     }
 
@@ -1037,12 +1056,12 @@ public class V3D_Triangle extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return A point or null.
      */
-    public V3D_Point getIntersect0(V3D_Line l, int oom,
+    public V3D_Point getIntersectNonCoplanar(V3D_Line l, int oom,
             RoundingMode rm) {
-        V3D_Point i = getPl(oom, rm).getIntersect0(l, oom, rm);
+        V3D_Point i = getPl(oom, rm).getIntersectNonParallel(l, oom, rm);
         if (i == null) {
             return i;
-        } else if (intersects00(i, oom, rm)) {
+        } else if (intersectsCoplanar(i, oom, rm)) {
             return i;
         } else {
             return null;
@@ -1099,8 +1118,8 @@ public class V3D_Triangle extends V3D_Area {
      * @return The point of intersection or {@code null}.
      */
     @Override
-    public V3D_Point getIntersect0(V3D_Ray r, int oom, RoundingMode rm) {
-        V3D_Point i = getIntersect0(r.l, oom, rm);
+    public V3D_Point getIntersectNonCoplanar(V3D_Ray r, int oom, RoundingMode rm) {
+        V3D_Point i = V3D_Triangle.this.getIntersectNonCoplanar(r.l, oom, rm);
         if (i == null) {
             return null;
         } else if (r.isAligned(i, oom, rm)) {
@@ -1151,9 +1170,9 @@ public class V3D_Triangle extends V3D_Area {
      * @param rm The RoundingMode if rounding is needed.
      * @return The V3D_Geometry.
      */
-    public V3D_FiniteGeometry getIntersect0(V3D_LineSegment l, int oom,
+    public V3D_FiniteGeometry getIntersectNonCoplanar(V3D_LineSegment l, int oom,
             RoundingMode rm) {
-        V3D_Point i = getIntersect0(l.l, oom, rm);
+        V3D_Point i = V3D_Triangle.this.getIntersectNonCoplanar(l.l, oom, rm);
         if (i == null) {
             return null;
         } else if (l.isAligned(i, oom, rm)) {
@@ -1334,8 +1353,6 @@ public class V3D_Triangle extends V3D_Area {
      */
     public V3D_FiniteGeometry getIntersect(V3D_Plane pl, int oom,
             RoundingMode rm) {
-        // Get intersection if this were a plane
-        //V3D_Geometry pi = pl.getIntersect(this, oom);
         V3D_Geometry pi = pl.getIntersect(getPl(oom, rm), oom, rm);
         if (pi == null) {
             return null;
@@ -1405,7 +1422,7 @@ public class V3D_Triangle extends V3D_Area {
             }
         }
     }
-    
+
     /**
      * Calculate and return the intersection between {@code this} and
      * {@code pl}. A question about how to do this:
@@ -1420,7 +1437,7 @@ public class V3D_Triangle extends V3D_Area {
             RoundingMode rm) {
         // Get intersection if this were a plane
         //V3D_Geometry pi = pl.getIntersect(this, oom);
-        V3D_Geometry pi = pl.getIntersect0(getPl(oom, rm), oom, rm);
+        V3D_Geometry pi = pl.getIntersectNonParallel(getPl(oom, rm), oom, rm);
         if (pi == null) {
             return null;
         } else if (pi instanceof V3D_Plane) {
@@ -1516,25 +1533,25 @@ public class V3D_Triangle extends V3D_Area {
                 V3D_Point pttp = t.getP(oom, rm);
                 V3D_Point pttq = t.getQ(oom, rm);
                 V3D_Point pttr = t.getR(oom, rm);
-                boolean pi = intersects00(pttp, oom, rm);
-                boolean qi = intersects00(pttq, oom, rm);
-                boolean ri = intersects00(pttr, oom, rm);
+                boolean pi = intersectsCoplanar(pttp, oom, rm);
+                boolean qi = intersectsCoplanar(pttq, oom, rm);
+                boolean ri = intersectsCoplanar(pttr, oom, rm);
                 if (pi && qi && ri) {
                     return t;
                 }
                 V3D_Point ptp = getP(oom, rm);
                 V3D_Point ptq = getQ(oom, rm);
                 V3D_Point ptr = getR(oom, rm);
-                boolean pit = t.intersects00(ptp, oom, rm);
-                boolean qit = t.intersects00(ptq, oom, rm);
-                boolean rit = t.intersects00(ptr, oom, rm);
+                boolean pit = t.intersectsCoplanar(ptp, oom, rm);
+                boolean qit = t.intersectsCoplanar(ptq, oom, rm);
+                boolean rit = t.intersectsCoplanar(ptr, oom, rm);
                 if (pit && qit && rit) {
                     return this;
                 }
-//                if (intersects0(t, oom, rm)) {
+//                if (intersectsNonCoplanar(t, oom, rm)) {
 //                    return t;
 //                }
-//                if (t.intersects0(this, oom, rm)) {
+//                if (t.intersectsNonCoplanar(this, oom, rm)) {
 //                    return this;
 //                }
                 V3D_FiniteGeometry gpq = t.getIntersect(getPQ(oom, rm), oom, rm);
@@ -1716,8 +1733,8 @@ public class V3D_Triangle extends V3D_Area {
 
 //                    V3D_Point lp = il.getP();
 //                    V3D_Point lq = il.getQ();
-//                    if (intersects0(lp, oom, rm)) {
-//                        if (intersects0(lq, oom, rm)) {
+//                    if (intersectsNonCoplanar(lp, oom, rm)) {
+//                        if (intersectsNonCoplanar(lq, oom, rm)) {
 //                            return il;
 //                        } else {
 //                            V3D_FiniteGeometry pqplil = getPQPl(oom, rm).getIntersect(il, oom, rm);
@@ -1776,7 +1793,7 @@ public class V3D_Triangle extends V3D_Area {
 //                            }
 //                        }
 //                    } else {
-//                        if (intersects0(lq, oom, rm)) {
+//                        if (intersectsNonCoplanar(lq, oom, rm)) {
 //                            V3D_FiniteGeometry pqplil = getPQPl(oom, rm).getIntersect(il, oom, rm);
 //                            V3D_FiniteGeometry qrplil = getQRPl(oom, rm).getIntersect(il, oom, rm);
 //                            V3D_FiniteGeometry rpplil = getRPPl(oom, rm).getIntersect(il, oom, rm);
@@ -2526,7 +2543,7 @@ public class V3D_Triangle extends V3D_Area {
      * @param l a line segment either equal to one of the edges of this - null
      * null null null null null null null null null null null null null null
      * null null null null null null null null null null null null null null
-     * null null null     {@link #getPQ(int, java.math.RoundingMode)},
+     * null null null null     {@link #getPQ(int, java.math.RoundingMode)},
      * {@link #getQR(int, java.math.RoundingMode)} or
      * {@link #getRP(int, java.math.RoundingMode)}.
      * @param oom The Order of Magnitude for the precision.
@@ -2569,7 +2586,7 @@ public class V3D_Triangle extends V3D_Area {
     @Override
     public BigRational getDistanceSquared(V3D_Point pt, int oom, RoundingMode rm) {
         if (getPl(oom, rm).intersects(pt, oom, rm)) {
-            //if (intersects0(pt, oom, rm)) {
+            //if (intersectsNonCoplanar(pt, oom, rm)) {
             if (intersects0(pt, oom, rm)) {
                 return BigRational.ZERO;
             } else {
@@ -2926,32 +2943,29 @@ public class V3D_Triangle extends V3D_Area {
         if (pl.isParallel(tpl, oom, rm)) {
             return pl.equals(tpl, oom, rm);
         } else {
-            return intersects0(pl, oom, rm);
-            //return getIntersect(pl, oom, rm) != null;
+            return intersectsNonParallel(pl, oom, rm);
         }
     }
-    
+
     /**
      * @param pl The plane to test for intersection with which is not parallel.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if there is an intersection.
      */
-    public boolean intersects0(V3D_Plane pl, int oom, RoundingMode rm) {
-        V3D_Line i = pl.getIntersect0(getPl(oom, rm), oom, rm);
+    public boolean intersectsNonParallel(V3D_Plane pl, int oom, RoundingMode rm) {
+        V3D_Line i = pl.getIntersectNonParallel(getPl(oom, rm), oom, rm);
         return intersects(i, oom, rm);
     }
-    
 
     @Override
     public boolean intersects(V3D_AABB aabb, int oom, RoundingMode rm) {
         /**
-         * Test each 2D AABB part of the aabb and at least one point.
-         * For rendering things like line segments where a camera focus is the 
-         * third point and this method is used to identify if there is an 
-         * intersection with a screen or pixel, then it is best to test for 
-         * intersection with a point last (or to have another method and not 
-         * test this at all).  
+         * Test each 2D AABB part of the aabb and at least one point. For
+         * rendering things like line segments where a camera focus is the third
+         * point and this method is used to identify if there is an intersection
+         * with a screen or pixel, then it is best to test for intersection with
+         * a point last (or to have another method and not test this at all).
          */
         return intersects(aabb.getl(oom, rm), oom, rm)
                 || intersects(aabb.getr(oom, rm), oom, rm)
@@ -3045,8 +3059,10 @@ public class V3D_Triangle extends V3D_Area {
 //        }
     }
 
-    /*** Use when {@code l} is not coplanar. This computes the intersect and
-     * tests if it is null. If the intersection is wanted use:
+    /**
+     * *
+     * Use when {@code l} is not coplanar. This computes the intersect and tests
+     * if it is null. If the intersection is wanted use:
      * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_LineSegment, int, java.math.RoundingMode)}
      *
      * @param l The line segment to test if it intersects.
@@ -3055,14 +3071,14 @@ public class V3D_Triangle extends V3D_Area {
      * @return {@code true} if l intersects this.
      */
     //@Override
-    public boolean intersects0(V3D_LineSegment l, int oom, RoundingMode rm) {
+    public boolean intersectsNonCoplanar(V3D_LineSegment l, int oom, RoundingMode rm) {
         // Compute the intersection and return true if it is not null.
-        return getIntersect0(l, oom, rm) != null;
+        return getIntersectNonCoplanar(l, oom, rm) != null;
 //        Profiling revealed that checking the AABB is generally not an optimisation...
 //        if (intersects(l.getAABB(oom, rm), oom, rm)
 //                || l.intersects(getAABB(oom, rm), oom, rm)) {
 //            // Compute the intersection and return true if it is not null.
-//            return getIntersect0(l, oom, rm) != null;
+//            return getIntersectNonCoplanar(l, oom, rm) != null;
 //        } else {
 //            return false;
 //        }
@@ -3100,12 +3116,12 @@ public class V3D_Triangle extends V3D_Area {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if l intersects this.
      */
-    //@Override
-    public boolean intersects0(V3D_Ray r, int oom, RoundingMode rm) {
+    @Override
+    public boolean intersectsNonCoplanar(V3D_Ray r, int oom, RoundingMode rm) {
         if (r.isAligned(getP(oom, rm), oom, rm)
                 || r.isAligned(getQ(oom, rm), oom, rm)
                 || r.isAligned(getR(oom, rm), oom, rm)) {
-            return getIntersect0(r, oom, rm) != null;
+            return V3D_Triangle.this.getIntersectNonCoplanar(r, oom, rm) != null;
         } else {
             return false;
         }
@@ -3120,16 +3136,16 @@ public class V3D_Triangle extends V3D_Area {
     @Override
     public boolean intersects(V3D_Triangle t, int oom, RoundingMode rm) {
         if (getPl(oom, rm).equalsIgnoreOrientation(t.getPl(oom, rm), oom, rm)) {
-            return t.intersects(getP(oom, rm), oom, rm)
-                    || t.intersects(getQ(oom, rm), oom, rm)
-                    || t.intersects(getR(oom, rm), oom, rm);
+            return t.intersectsCoplanar(getP(oom, rm), oom, rm)
+                    || t.intersectsCoplanar(getQ(oom, rm), oom, rm)
+                    || t.intersectsCoplanar(getR(oom, rm), oom, rm);
         } else {
-            return intersects0(t, oom, rm);
+            return intersectsNonCoplanar(t, oom, rm);
         }
     }
 
     /**
-     * Used when {@code t} is not coplanar
+     * Use when {@code t} is not coplanar.
      *
      * @param t Another triangle to test for intersection. {@code this} and
      * {@code t} are not coplanar.
@@ -3137,19 +3153,19 @@ public class V3D_Triangle extends V3D_Area {
      * @param rm The RoundingMode for any rounding.
      * @return {@code true} if {@code this} intersects {@code t}.
      */
-    public boolean intersects0(V3D_Triangle t, int oom, RoundingMode rm) {
+    public boolean intersectsNonCoplanar(V3D_Triangle t, int oom, RoundingMode rm) {
         if (getPl(oom, rm).allOnSameSideNotOn(oom, rm, t.getP(oom, rm),
                 t.getQ(oom, rm), t.getR(oom, rm)) //&& intersects(t.getAABB(), epsilon)
                 //&& t.intersects(getAABB(), epsilon)
                 ) {
             return false;
         } else {
-            return t.intersects0(getPQ(oom, rm), oom, rm)
-                    || t.intersects0(getQR(oom, rm), oom, rm)
-                    || t.intersects0(getRP(oom, rm), oom, rm)
-                    || intersects0(t.getPQ(oom, rm), oom, rm)
-                    || intersects0(t.getQR(oom, rm), oom, rm)
-                    || intersects0(t.getRP(oom, rm), oom, rm);
+            return t.intersectsNonCoplanar(getPQ(oom, rm), oom, rm)
+                    || t.intersectsNonCoplanar(getQR(oom, rm), oom, rm)
+                    || t.intersectsNonCoplanar(getRP(oom, rm), oom, rm)
+                    || V3D_Triangle.this.intersectsNonCoplanar(t.getPQ(oom, rm), oom, rm)
+                    || V3D_Triangle.this.intersectsNonCoplanar(t.getQR(oom, rm), oom, rm)
+                    || V3D_Triangle.this.intersectsNonCoplanar(t.getRP(oom, rm), oom, rm);
         }
     }
 
@@ -3167,7 +3183,7 @@ public class V3D_Triangle extends V3D_Area {
 //                && !a.getPl(oom, rm).allOnSameSide(oom, rm, getP(oom, rm),
 //                        getQ(oom, rm), getR(oom, rm))) {
         if (!a.getPl(oom, rm).allOnSameSide(oom, rm, getP(oom, rm),
-                        getQ(oom, rm), getR(oom, rm))) {
+                getQ(oom, rm), getR(oom, rm))) {
             return a.intersects(getPQ(oom, rm), oom, rm)
                     || a.intersects(getQR(oom, rm), oom, rm)
                     || a.intersects(getRP(oom, rm), oom, rm)

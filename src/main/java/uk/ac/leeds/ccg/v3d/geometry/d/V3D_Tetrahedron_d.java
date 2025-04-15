@@ -207,7 +207,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     public String toStringSimple(String pad) {
         return pad + this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
-                + toStringFieldsSimple(pad + " ") + "\n"
+                + toStringFields(pad + " ") + "\n"
                 + pad + ")";
     }
 
@@ -217,24 +217,6 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
      */
     @Override
     protected String toStringFields(String pad) {
-        String st = super.toStringFields(pad);
-        st += pad + ",\n";
-        st += pad + "p=" + p.toString(pad) + "\n";
-        st += pad + ",\n";
-        st += pad + "q=" + q.toString(pad) + "\n";
-        st += pad + ",\n";
-        st += pad + "r=" + r.toString(pad) + "\n";
-        st += pad + ",\n";
-        st += pad + "s=" + s.toString(pad);// + "\n";
-        return st;
-    }
-
-    /**
-     * @param pad A padding of spaces.
-     * @return A description of the fields.
-     */
-    @Override
-    protected String toStringFieldsSimple(String pad) {
         String st = pad + "p=" + p.toStringSimple(pad) + ",\n";
         st += pad + "q=" + q.toStringSimple(pad) + ",\n";
         st += pad + "r=" + r.toStringSimple(pad) + ",\n";
@@ -1150,7 +1132,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
         if (i == null) {
             return null;
         } else if (i instanceof V3D_Point_d ip) {
-            if (t.intersects00(ip, epsilon)) {
+            if (t.intersectsCoplanar(ip, epsilon)) {
                 //if (t.intersects(pip)) {
                 return i;
             } else {

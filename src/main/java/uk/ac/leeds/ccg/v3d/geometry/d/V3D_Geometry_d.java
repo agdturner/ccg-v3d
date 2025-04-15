@@ -69,6 +69,7 @@ public abstract class V3D_Geometry_d implements Serializable {
 
     /**
      * Creates a new instance.
+     * @param env What {@link #env} is set to.
      */
     public V3D_Geometry_d(V3D_Environment_d env) {
         this(env, V3D_Vector_d.ZERO);
@@ -77,6 +78,7 @@ public abstract class V3D_Geometry_d implements Serializable {
     /**
      * Creates a new instance.
      *
+     * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
      */
     public V3D_Geometry_d(V3D_Environment_d env, V3D_Vector_d offset) {
@@ -89,14 +91,6 @@ public abstract class V3D_Geometry_d implements Serializable {
      * @return A padded description.
      */
     protected String toStringFields(String pad) {
-        return pad + "offset=" + offset.toString(pad);
-    }
-
-    /**
-     * @param pad The padding.
-     * @return A padded description.
-     */
-    protected String toStringFieldsSimple(String pad) {
         return pad + "offset=" + offset.toStringSimple("");
     }
 

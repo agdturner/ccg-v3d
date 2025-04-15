@@ -238,7 +238,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
     public String toStringSimple(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
-                + toStringFieldsSimple(pad + " ") + "\n"
+                + toStringFields(pad + " ") + "\n"
                 + pad + ")";
     }
 
@@ -248,20 +248,8 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     @Override
     protected String toStringFields(String pad) {
-        String r = super.toStringFields(pad) + "\n"
-                + pad + ",\n";
+        String r = super.toStringFields(pad) + ",\n";
         r += pad + "l=" + l.toStringFields(pad);
-        return r;
-    }
-
-    /**
-     * @param pad A padding of spaces.
-     * @return A description of the fields.
-     */
-    @Override
-    protected String toStringFieldsSimple(String pad) {
-        String r = super.toStringFieldsSimple(pad) + ",\n";
-        r += pad + "l=" + l.toStringFieldsSimple(pad);
         return r;
     }
 
@@ -476,7 +464,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                 }
                 return false;
             } else {
-                return aabbx.intersects(aabxpl.getIntersect0(this, epsilon));
+                return aabbx.intersects(aabxpl.getIntersectNonParallel(this, epsilon));
             }
         }
     }
@@ -544,7 +532,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                 }
                 return false;
             } else {
-                return aabby.intersects(aabypl.getIntersect0(this, epsilon));
+                return aabby.intersects(aabypl.getIntersectNonParallel(this, epsilon));
             }
         }
     }
@@ -612,7 +600,7 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
                 }
                 return false;
             } else {
-                return aabbz.intersects(aabzpl.getIntersect0(this, epsilon));
+                return aabbz.intersects(aabzpl.getIntersectNonParallel(this, epsilon));
             }
         }
     }

@@ -176,7 +176,7 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
      * considered equal.
      * @return {@code true} if {@code this} is intersected by {@code r}.
      */
-    public abstract boolean intersects0(V3D_Ray_d r, double epsilon);
+    public abstract boolean intersectsNonCoplanar(V3D_Ray_d r, double epsilon);
     
     /**
      * @param t The triangle to test if it intersects.
@@ -334,5 +334,5 @@ public abstract class V3D_Area_d extends V3D_FiniteGeometry_d {
      * equal.
      * @return The intersection point or {@code null}.
      */
-    public abstract V3D_Point_d getIntersect0(V3D_Ray_d r, double epsilon);
+    public abstract V3D_Point_d getIntersectNonCoplanar(V3D_Ray_d r, double epsilon);
 }

@@ -211,16 +211,16 @@ public class V3D_ConvexArea_dTest extends V3D_Test_d {
 //    }
 //
 //    /**
-//     * Test of intersects0 method, of class V3D_ConvexArea_d.
+//     * Test of intersectsNonCoplanar method, of class V3D_ConvexArea_d.
 //     */
 //    @Test
 //    public void testIntersects0() {
-//        System.out.println("intersects0");
+//        System.out.println("intersectsNonCoplanar");
 //        V3D_Point_d pt = null;
 //        double epsilon = 0.0;
 //        V3D_ConvexArea_d instance = null;
 //        boolean expResult = false;
-//        boolean result = instance.intersects0(pt, epsilon);
+//        boolean result = instance.intersectsNonCoplanar(pt, epsilon);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");

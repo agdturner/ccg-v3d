@@ -74,9 +74,14 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             V3D_Point_d.ORIGIN, V3D_Vector_d.K);
 
     /**
+     * The vector that defines {@link #p} on the plane.
+     */
+    protected V3D_Vector_d pv;
+
+    /**
      * The point that defines the plane.
      */
-    protected V3D_Vector_d p;
+    protected V3D_Point_d p;
 
     /**
      * The normal vector that defines the plane.
@@ -91,12 +96,12 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     /**
      * Create a new instance.
      *
-     * @param p The plane used to create this.
+     * @param pl The plane used to create this.
      */
-    public V3D_Plane_d(V3D_Plane_d p) {
-        super(p.env, new V3D_Vector_d(p.offset));
-        this.p = new V3D_Vector_d(p.p);
-        this.n = new V3D_Vector_d(p.n);
+    public V3D_Plane_d(V3D_Plane_d pl) {
+        super(pl.env, new V3D_Vector_d(pl.offset));
+        this.pv = new V3D_Vector_d(pl.pv);
+        this.n = new V3D_Vector_d(pl.n);
     }
 
     /**
@@ -107,11 +112,9 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      */
     public V3D_Plane_d(V3D_Point_d p, V3D_Vector_d n) {
         super(p.env, new V3D_Vector_d(p.offset));
-        this.p = new V3D_Vector_d(p.rel);
+        this.pv = new V3D_Vector_d(p.rel);
+        this.p = new V3D_Point_d(p);
         this.n = new V3D_Vector_d(n);
-        if (n.isZero()) {
-            throw new RuntimeException("Zero Normal!");
-        }
     }
 
     /**
@@ -122,51 +125,46 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * vector of the line of l.
      */
     public V3D_Plane_d(V3D_LineSegment_d l, V3D_Vector_d inplane) {
-        this(l.getP(), l.l.v.getCrossProduct(inplane));
-//        super(new V3D_Vector_d(l.offset));
-//        p = new V3D_Vector_d(l.getP().rel);
-//        n = l.l.v.getCrossProduct(inplane);
-//        if (n.isZero()) {
-//            throw new RuntimeException("Zero Normal!");
-//        }
+        super(l.env, new V3D_Vector_d(l.offset));
+        pv = new V3D_Vector_d(l.getP().rel);
+        p = new V3D_Point_d(l.getP());
+        n = l.l.v.getCrossProduct(inplane);
     }
 
     /**
-     * Create a new instance.
+     * Create a new instance.{@code pv}, {@code qv} and {@code rv} must not
+     * define collinear.
      *
-     * @param p Used to initialise {@link #p}.
-     * @param q A point coplanar to pl and r, not collinear to both pl and r,
-     * and not equal to pl or r.
-     * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
-     * and not equal to pl or qv.
+     * @param p Used to initialise {@link #env}, {@link #offset}, {@link #pv},
+     * and {@link #p}.
+     * @param q A point coplanar to {@code p} and {@code r}, not collinear or 
+     * equal to either {@code p} or {@code r}.
+     * @param r A point coplanar to {@code p} and {@code q}, not collinear or 
+     * equal to either {@code p} or {@code q}.
      */
-    public V3D_Plane_d(V3D_Point_d p, V3D_Point_d q,
-            V3D_Point_d r) {
+    public V3D_Plane_d(V3D_Point_d p, V3D_Point_d q, V3D_Point_d r) {
         super(p.env, new V3D_Vector_d(p.offset));
         V3D_Vector_d qv = q.getVector();
         V3D_Vector_d pq = qv.subtract(p.getVector());
         V3D_Vector_d qr = r.getVector().subtract(qv);
-        //this.p = p.rel;
-        this.p = new V3D_Vector_d(p.rel);
+        this.pv = new V3D_Vector_d(p.rel);
         this.n = pq.getCrossProduct(qr);
-        if (n.isZero()) {
-            throw new RuntimeException("Zero Normal!");
-        }
     }
 
     /**
-     * Create a new instance.
+     * Create a new instance.{@code pv}, {@code qv} and {@code rv} must not
+     * define collinear.
      *
      * @param env What {@link #env} is set to.
-     * @param p Used to initialise {@link #p}.
-     * @param q A point coplanar to pl and r, not collinear to both pl and r,
-     * and not equal to pl or r.
-     * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
-     * and not equal to pl or qv.
+     * @param pv Used to initialise {@link #pv}.
+     * @param qv A vector in the plane not collinear with {@code pv} or
+     * {@code rv}.
+     * @param rv A vector in the plane not collinear with {@code pv} or 
+     * {@code qv}.
      */
-    public V3D_Plane_d(V3D_Environment_d env, V3D_Vector_d p, V3D_Vector_d q,
-            V3D_Vector_d r) {
-        this(env, V3D_Vector_d.ZERO, p, q, r);
+    public V3D_Plane_d(V3D_Environment_d env, V3D_Vector_d pv, V3D_Vector_d qv,
+            V3D_Vector_d rv) {
+        this(env, V3D_Vector_d.ZERO, pv, qv, rv);
     }
 
     /**
@@ -174,15 +172,16 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      *
      * @param env What {@link #env} is set to.
      * @param offset What {@link #offset} is set to.
-     * @param p Used to initialise {@link #p}.
-     * @param q Coplanar but not collinear to both p and r.
-     * @param r Coplanar but not collinear to both p and q.
+     * @param pv Used to initialise {@link #pv}.
+     * @param qv A vector in the plane not collinear with {@code pv} or
+     * {@code rv}.
+     * @param rv A vector in the plane not collinear with {@code pv} or 
+     * {@code qv}.
      */
-    public V3D_Plane_d(V3D_Environment_d env, V3D_Vector_d offset, V3D_Vector_d p,
-            V3D_Vector_d q, V3D_Vector_d r) {
-        //this(p, offset, p, q, r, epsilon);
-        this(env, q.subtract(p).getCrossProduct(r.subtract(q)), offset, p, q, r);
-        //this(q.subtract(p).getCrossProduct(q.subtract(r)), offset, p, q, r, epsilon);
+    public V3D_Plane_d(V3D_Environment_d env, V3D_Vector_d offset, 
+            V3D_Vector_d pv, V3D_Vector_d qv, V3D_Vector_d rv) {
+        this(env, qv.subtract(pv).getCrossProduct(rv.subtract(qv)), offset, pv, 
+                qv, rv);
     }
 
     /**
@@ -191,33 +190,31 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @param env What {@link #env} is set to.
      * @param ptv A point vector giving the direction of the normal vector.
      * @param offset What {@link #offset} is set to.
-     * @param p Used to initialise {@link #p}.
-     * @param q A point coplanar to pl and r, not collinear to both pl and r,
-     * and not equal to pl or r.
-     * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
-     * and not equal to pl or qv.
+     * @param pv Used to initialise {@link #pv}.
+     * @param qv A vector in the plane not collinear with {@code pv} or
+     * {@code rv}.
+     * @param rv A vector in the plane not collinear with {@code pv} or 
+     * {@code qv}.
      */
     public V3D_Plane_d(V3D_Environment_d env, V3D_Vector_d ptv, V3D_Vector_d offset,
-            V3D_Vector_d p, V3D_Vector_d q, V3D_Vector_d r) {
+            V3D_Vector_d pv, V3D_Vector_d qv, V3D_Vector_d rv) {
         super(env, new V3D_Vector_d(offset));
-        V3D_Vector_d pq = q.subtract(p);
+        V3D_Vector_d pq = qv.subtract(pv);
         if (pq.equals(V3D_Vector_d.ZERO)) {
             throw new RuntimeException("Cannot define plane as p equals q.");
         }
-        V3D_Vector_d qr = r.subtract(q);
+        V3D_Vector_d qr = rv.subtract(qv);
         if (qr.equals(V3D_Vector_d.ZERO)) {
             throw new RuntimeException("Cannot define plane as q equals r.");
         }
-        this.p = new V3D_Vector_d(p);
-        this.n = pq.getCrossProduct(qr);
+        this.pv = new V3D_Vector_d(pv);
+        n = pq.getCrossProduct(qr);
         if (n.isZero()) {
-            //qr.isScalarMultiple(pq, epsilon);
-            //pq.isScalarMultiple(qr, epsilon);
-            throw new RuntimeException("Points do not define a plane");
+            n = pq.reverse().getCrossProduct(qr);
         }
         V3D_Vector_d v;
         if (ptv.isZero()) {
-            v = p.add(q).add(r).reverse();
+            v = pv.add(qv).add(rv).reverse();
         } else {
             v = new V3D_Vector_d(ptv);
         }
@@ -232,15 +229,15 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      *
      * @param pt A point giving the direction of the normal vector.
      * @param offset What {@link #offset} is set to.
-     * @param p Used to initialise {@link #p}.
-     * @param q A point coplanar to pl and r, not collinear to both pl and r,
-     * and not equal to pl or r.
-     * @param r A point coplanar to pl and qv, not collinear to both pl and qv,
-     * and not equal to pl or qv.
+     * @param pv Used to initialise {@link #pv}.
+     * @param qv A vector in the plane not collinear with {@code pv} or
+     * {@code rv}.
+     * @param rv A vector in the plane not collinear with {@code pv} or 
+     * {@code qv}.
      */
     public V3D_Plane_d(V3D_Point_d pt, V3D_Vector_d offset,
-            V3D_Vector_d p, V3D_Vector_d q, V3D_Vector_d r) {
-        this(pt.env, pt.getVector(), offset, p, q, r);
+            V3D_Vector_d pv, V3D_Vector_d qv, V3D_Vector_d rv) {
+        this(pt.env, pt.getVector(), offset, pv, qv, rv);
     }
 
     /**
@@ -258,9 +255,9 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         super(env, offset);
         n = pl.getN();
         if (offset.equals(epsilon, pl.offset)) {
-            p = new V3D_Vector_d(pl.p);
+            pv = new V3D_Vector_d(pl.pv);
         } else {
-            p = pl.p.add(pl.offset).subtract(offset);
+            pv = pl.pv.add(pl.offset).subtract(offset);
         }
     }
 
@@ -286,8 +283,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @return A description of this.
      */
     public String toStringSimple(String pad) {
-        return pad + this.getClass().getSimpleName() + "(\n"
-                + toStringFieldsSimple(pad + " ") + ")";
+        return this.getClass().getSimpleName() + "(\n"
+                + toStringFields(pad + " ") + ")";
     }
 
     /**
@@ -296,22 +293,9 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      */
     @Override
     protected String toStringFields(String pad) {
-        return super.toStringFields(pad) + "\n"
-                + pad + ",\n"
-                + pad + "p=" + p.toString(pad) + "\n"
-                + pad + ",\n"
-                + pad + "n=" + n.toString(pad);
-    }
-
-    /**
-     * @param pad A padding of spaces.
-     * @return A description of the fields.
-     */
-    @Override
-    protected String toStringFieldsSimple(String pad) {
-        return super.toStringFieldsSimple(pad) + ",\n"
-                + pad + "p=" + p.toStringSimple(pad) + ",\n"
-                + pad + "n=" + n.toStringSimple(pad);
+        return super.toStringFields(pad) + ",\n"
+                + pad + "pv=" + pv.toStringSimple("") + ",\n"
+                + pad + "n=" + n.toStringSimple("");
     }
 
     /**
@@ -325,7 +309,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @return {@link #p} with {@link #offset} applied.
      */
     public final V3D_Point_d getP() {
-        return new V3D_Point_d(env, offset, p);
+        return new V3D_Point_d(env, offset, pv);
     }
 
     /**
@@ -362,12 +346,6 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         if (v.isZero()) {
             return new V3D_Vector_d(-n.dy - n.dz, n.dx, n.dx);
         }
-
-        // debugging code
-        if (v.isZero()) {
-            throw new RuntimeException();
-        }
-
         return v;
     }
 
@@ -387,7 +365,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @return A point on the plane.
      */
     public final V3D_Point_d getQ(V3D_Vector_d pv) {
-        return new V3D_Point_d(env, offset, this.p.add(pv));
+        return new V3D_Point_d(env, offset, this.pv.add(pv));
     }
 
     /**
@@ -407,7 +385,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      */
     public final V3D_Point_d getR(V3D_Vector_d pv) {
         V3D_Vector_d pvx = pv.getCrossProduct(n);
-        return new V3D_Point_d(env, offset, this.p.add(pvx));
+        return new V3D_Point_d(env, offset, this.pv.add(pvx));
     }
 
     /**
@@ -578,14 +556,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      */
     public boolean intersects(V3D_Point_d pt) {
         equation = getEquation();
-        double c = (equation.coeffs[0] * pt.getX() + equation.coeffs[1] * pt.getY()
-                + equation.coeffs[2] * pt.getZ() + equation.coeffs[3]);
-//        if (getDistance(pt) == 0d) {
-//            return c == 0d;
-//        } else {
-//            return false;
-//        }
-        return c == 0d;
+        return ((equation.coeffs[0] * pt.getX() + equation.coeffs[1] * pt.getY()
+                + equation.coeffs[2] * pt.getZ() + equation.coeffs[3]) == 0d);
     }
 
     /**
@@ -596,7 +568,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @param pt The point to test for intersection with.
      * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
-    public boolean isIntersectedByOld(V3D_Point_d pt) {
+    public boolean intersectsAlternative(V3D_Point_d pt) {
         double[][] m = new double[4][4];
         V3D_Point_d tp = getP();
         if (tp.isOrigin()) {
@@ -604,10 +576,10 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             tpt.translate(V3D_Vector_d.IJK);
             V3D_Point_d ttp = new V3D_Point_d(getP());
             ttp.translate(V3D_Vector_d.IJK);
-            V3D_Vector_d pv = getPV();
-            V3D_Point_d ttq = getQ(pv);
+            V3D_Vector_d perpv = getPV();
+            V3D_Point_d ttq = getQ(perpv);
             ttq.translate(V3D_Vector_d.IJK);
-            V3D_Point_d ttr = getR(pv);
+            V3D_Point_d ttr = getR(perpv);
             ttr.translate(V3D_Vector_d.IJK);
             m[0][0] = ttp.getX();
             m[1][0] = ttp.getY();
@@ -627,7 +599,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             m[3][3] = 1.0d;
             return new Math_Matrix_Double(m).getDeterminant() == 0d;
         } else {
-            V3D_Vector_d pv = getPV();
+            //V3D_Vector_d pv = getPV();
             V3D_Point_d tq = getQ(pv);
             V3D_Point_d tr = getR(pv);
             m[0][0] = tp.getX();
@@ -756,7 +728,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @return The intersection of the line and the plane. This is either
      * {@code null} a line or a point.
      */
-    public V3D_Geometry_d getIntersectionOption(V3D_Line_d l, double epsilon) {
+    public V3D_Geometry_d getIntersectionAlternative(V3D_Line_d l, double epsilon) {
         // Special case
         if (isParallel(l)) {
             //if (isParallel(l, epsilon)) {
@@ -785,14 +757,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
                 if (fac == 0d) {
                     return tp;
                 }
-                //fac = -dot_v3v3(p_no, w) / dot
-                //V3D_Vector u2 = l.v*(fac);
                 V3D_Vector_d u2 = l.v.multiply(fac);
-                //u = mul_v3_fl(u, fac)
-                //V3D_Point p00 = new V3D_Point(tlp);
-                //V3D_Point p00 = new V3D_Point(l.getP());
-                //V3D_Point p00 = l.getP();
-                //V3D_Point p00 = new V3D_Point(tp);
                 tlp.translate(u2);
                 tlp.translate(l.v.reverse());
                 return tlp;
@@ -810,201 +775,6 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         }
     }
 
-//    /**
-//     * If the line is parallel to the plane, then there is no intersection
-//     * unless the line is on the plane (when the line is the intersection). If
-//     * the line is not parallel to the plane, then the line and the plane
-//     * intersect at a point. In some cases that point can be represented exactly
-//     * using the coordinates available. In some cases it cannot be represented
-//     * exactly and some rounding is needed to provide a result. Rounding options
-//     * include:
-//     * <ol>
-//     * <li>Constraining so the point is a point on the line. (NB. It should be
-//     * possible to choose a point on either side of the plane.</li>
-//     * <li>Constraining to be on the plane. (NB It should be possible to choose
-//     * a point given the orientation of the line relative to the plane. If the
-//     * line is perpendicular to the plane, there is a need to have a default
-//     * based on the direction of the line and the orientation of the axes.)</li>
-//     * <li>The closest point which does not have to be on the line or on the
-//     * plane (NB. It should be possible to choose a point above or below the
-//     * plane and in an orientation given by the orientation of the line relative
-//     * to the plane. As with option 2, there is a need for a default if the line
-//     * is perpendicular to the plane).</li>
-//     * </ol>
-//     * References:
-//     * <ul>
-//     * <li>https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection</li>
-//     * <li>Weisstein, Eric W. "Line-Plane Intersection." From MathWorld--A
-//     * Wolfram Web Resource.
-//     * https://mathworld.wolfram.com/Line-PlaneIntersection.html
-//     * </li>
-//     * </ul>
-//     *
-//     * @param l The line to intersect with the plane.
-//     * @param oom The Order of Magnitude for the calculation.
-//     * @return The intersection of the line and the plane. This is either
-//     * {@code null} a line or a point.
-//     */
-//    @Override
-//    public V3D_Geometry getIntersect(V3D_Line l, int oom, RoundingMode rm) {
-//        if (this.isParallel(l, )) {
-//            if (this.isOnPlane(l, )) {
-//                return l;
-//            } else {
-//                return null;
-//            }
-//        }
-//        // Are either of the points of l on the plane.
-//        //V3D_Point lp = l.getP(oom);
-//        V3D_Point lp = l.getP();
-//        if (this.intersects(lp, )) {
-//            return lp;
-//        }
-//        V3D_Point lq = l.getQ();
-//        if (this.intersects(lq, )) {
-//            return lq;
-//        }
-//        V3D_Point tp = getP();
-//        V3D_Vector pv = getPAsVector();
-//        V3D_Point tq = getQ(pv, );
-//        V3D_Point tr = getR(pv, );
-//        // Are any of these points on the line?
-//        if (l.intersects(tp, )) {
-//            return tp;
-//        }
-//        if (l.intersects(tp, )) {
-//            return tq;
-//        }
-//        if (l.intersects(tp, )) {
-//            return tr;
-//        }
-//        
-//        int oomN6 = oom - 6;
-//        //V3D_Vector lv = l.getV(oomN6, rm);
-//        V3D_Vector lv = l.v;
-//        Math_BigRational[][] m = new Math_BigRational[4][4];
-//        m[0][0] = 1.0d;
-//        m[0][1] = 1.0d;
-//        m[0][2] = 1.0d;
-//        m[0][3] = 1.0d;
-////        m[1][0] = pl.getX(oom);
-////        m[1][1] = qv.getX(oom);
-////        m[1][2] = r.getX(oom);
-////        m[1][3] = lp.getX(oom);
-////        m[2][0] = pl.getY(oom);
-////        m[2][1] = qv.getY(oom);
-////        m[2][2] = r.getY(oom);
-////        m[2][3] = lp.getY(oom);
-////        m[3][0] = pl.getZ(oom);
-////        m[3][1] = qv.getZ(oom);
-////        m[3][2] = r.getZ(oom);
-////        m[3][3] = lp.getZ(oom);
-////        V3D_Point tp = getP();
-////        V3D_Vector pv = getPAsVector();
-////        V3D_Point tq = getQ(pv, );
-////        V3D_Point tr = getR(pv, );
-//        m[1][0] = tp.getX(oomN6, rm);
-//        m[1][1] = tq.getX(oomN6, rm);
-//        m[1][2] = tr.getX(oomN6, rm);
-//        m[1][3] = lp.getX(oomN6, rm);
-//        m[2][0] = tp.getY(oomN6, rm);
-//        m[2][1] = tq.getY(oomN6, rm);
-//        m[2][2] = tr.getY(oomN6, rm);
-//        m[2][3] = lp.getY(oomN6, rm);
-//        m[3][0] = tp.getZ(oomN6, rm);
-//        m[3][1] = tq.getZ(oomN6, rm);
-//        m[3][2] = tr.getZ(oomN6, rm);
-//        m[3][3] = lp.getZ(oomN6, rm);
-//        Math_Matrix_BR numm = new Math_Matrix_BR(m);
-//        m[0][0] = 1.0d;
-//        m[0][1] = 1.0d;
-//        m[0][2] = 1.0d;
-//        m[0][3] = Math_BigRational.ZERO;
-////        m[1][0] = pl.getX(oom);
-////        m[1][1] = qv.getX(oom);
-////        m[1][2] = r.getX(oom);
-////        m[1][3] = lv.getDX(oom);
-////        m[2][0] = pl.getY(oom);
-////        m[2][1] = qv.getY(oom);
-////        m[2][2] = r.getY(oom);
-////        m[2][3] = lv.getDY(oom);
-////        m[3][0] = pl.getZ(oom);
-////        m[3][1] = qv.getZ(oom);
-////        m[3][2] = r.getZ(oom);
-////        m[3][3] = lv.getDZ(oom);
-//        m[1][0] = tp.getX(oomN6, rm);
-//        m[1][1] = tq.getX(oomN6, rm);
-//        m[1][2] = tr.getX(oomN6, rm);
-//        m[1][3] = lv.getDX(oomN6, rm);
-//        m[2][0] = tp.getY(oomN6, rm);
-//        m[2][1] = tq.getY(oomN6, rm);
-//        m[2][2] = tr.getY(oomN6, rm);
-//        m[2][3] = lv.getDY(oomN6, rm);
-//        m[3][0] = tp.getZ(oomN6, rm);
-//        m[3][1] = tq.getZ(oomN6, rm);
-//        m[3][2] = tr.getZ(oomN6, rm);
-//        m[3][3] = lv.getDZ(oomN6, rm);
-//        Math_Matrix_BR denm = new Math_Matrix_BR(m);
-//
-//        if (denm.getDeterminant().compareTo(Math_BigRational.ZERO) == 0) {
-//            System.out.println("Determinant is zero in getIntersect");
-//            System.out.println("Plane:");
-//            System.out.println(this.toString());
-//            System.out.println("Line:");
-//            System.out.println(l.toString());
-//            return null;
-//        }
-//
-//        Math_BigRational t = numm.getDeterminant().divide(denm.getDeterminant()).negate();
-////        V3D_Point res = new V3D_Point(e,
-////                lp.getX(oomN6, rm)+(lv.getDX(oomN6, rm)*(t)),
-////                lp.getY(oomN6, rm)+(lv.getDY(oomN6, rm)*(t)),
-////                lp.getZ(oomN6, rm)+(lv.getDZ(oomN6, rm)*(t)));
-//        V3D_Point res = new V3D_Point(e,
-//                lp.getX(oomN6, rm)+(lv.getDX(oomN6, rm)*(t)),
-//                lp.getY(oomN6, rm)+(lv.getDY(oomN6, rm)*(t)),
-//                lp.getZ(oomN6, rm)+(lv.getDZ(oomN6, rm)*(t)));
-//        if (false) {
-//            // Check if res is on the line.
-//            if (!l.intersects(res, )) {
-//                System.out.println("Not on line! - l.intersects(r, )");
-//            }
-//            if (!intersects(res, )) {
-//                System.out.println("Not on plane! - !intersects(r, )");
-//                // Check side of line
-//                if (isOnSameSide(res, lp, )) {
-//                    System.out.println("isOnSameSide(res, lp, )");
-//                } else {
-//                    System.out.println("!isOnSameSide(res, lp, )");
-//                    V3D_Plane pl2 = new V3D_Plane(tp, tr, tq, );
-//                    V3D_Point p2 = (V3D_Point) pl2.getIntersectiondel(l, );
-//                    if (!res.equals(p2, )) {
-//                        System.out.println(res);
-//                        System.out.println(p2);
-//                    } else {
-//                        System.out.println(res);
-//                    }
-//                }
-//                if (isOnSameSide(res, lq, )) {
-//                    System.out.println("isOnSameSide(res, lq, )");
-//                } else {
-//                    System.out.println("!isOnSameSide(res, lq, )");
-//                }
-//            }
-//        }
-//        return res;
-//
-////        V3D_Vector d = new V3D_Vector(this.pl, l.pl, n.oom);
-////        //V3D_Vector d = new V3D_Vector(l.pl, pl, n.oom);
-////        Math_BigRational num = d.getDotProduct(this.n);
-////        Math_BigRational den = l.v.getDotProduct(this.n);
-////        Math_BigRational t = num.divide(den);
-////        return new V3D_Point(
-////                l.pl.getX(oom)-(l.v.getDX(oom)*(t)),
-////                l.pl.getY(oom)-(l.v.getDY(oom)*(t)),
-////                l.pl.getZ(oom)-(l.v.getDZ(oom)*(t)));
-//    }
-    
     /**
      * Get the intersection between the geometry and the line {@code l}.
      * https://stackoverflow.com/questions/5666222/3d-line-plane-intersection
@@ -1022,7 +792,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
                 return null;
             }
         } else {
-            return getIntersect0(l, epsilon);
+            return getIntersectNonParallel(l, epsilon);
         }
     }
 
@@ -1035,7 +805,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * equal.
      * @return The V3D_Geometry.
      */
-    public V3D_Point_d getIntersect0(V3D_Line_d l, double epsilon) {
+    public V3D_Point_d getIntersectNonParallel(V3D_Line_d l, double epsilon) {
         // Are either of the points of l on the plane.
         //V3D_Point lp = l.getP(oom);
         V3D_Point_d lp = l.getP();
@@ -1053,22 +823,10 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         m[0][1] = 1.0d;
         m[0][2] = 1.0d;
         m[0][3] = 1.0d;
-//        m[1][0] = pl.getX(oom);
-//        m[1][1] = qv.getX(oom);
-//        m[1][2] = r.getX(oom);
-//        m[1][3] = lp.getX(oom);
-//        m[2][0] = pl.getY(oom);
-//        m[2][1] = qv.getY(oom);
-//        m[2][2] = r.getY(oom);
-//        m[2][3] = lp.getY(oom);
-//        m[3][0] = pl.getZ(oom);
-//        m[3][1] = qv.getZ(oom);
-//        m[3][2] = r.getZ(oom);
-//        m[3][3] = lp.getZ(oom);
         V3D_Point_d tp = getP();
-        V3D_Vector_d pv = getPV();
-        V3D_Point_d tq = getQ(pv);
-        V3D_Point_d tr = getR(pv);
+        V3D_Vector_d perpv = getPV();
+        V3D_Point_d tq = getQ(perpv);
+        V3D_Point_d tr = getR(perpv);
         m[1][0] = tp.getX();
         m[1][1] = tq.getX();
         m[1][2] = tr.getX();
@@ -1104,15 +862,9 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         double nummdet = numm.getDeterminant();
         if (denmdet == 0d) {
             if (Math_Double.equals(nummdet, 0d, epsilon)) {
-                //if (nummdet == 0d) {
                 t = 1;
             } else {
-//                // Debug
-//                throw new RuntimeException();
-//                boolean isp = isParallel(l);
-//                boolean isp2 = isParallel(l, epsilon);
                 return null;
-//                return l;
             }
         } else {
             t = -nummdet / denmdet;
@@ -1139,7 +891,6 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             }
         }
         // Are either of the points of l on the plane.
-        //V3D_Point lp = l.getP(oom);
         V3D_Point_d lp = l.getP();
         if (intersects(lp)) {
             return lp;
@@ -1148,29 +899,16 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         if (intersects(lq)) {
             return lq;
         }
-        //V3D_Vector lv = l.getV(oomN2, rm);
         V3D_Vector_d lv = l.v;
         double[][] m = new double[4][4];
         m[0][0] = 1.0d;
         m[0][1] = 1.0d;
         m[0][2] = 1.0d;
         m[0][3] = 1.0d;
-//        m[1][0] = pl.getX(oom);
-//        m[1][1] = qv.getX(oom);
-//        m[1][2] = r.getX(oom);
-//        m[1][3] = lp.getX(oom);
-//        m[2][0] = pl.getY(oom);
-//        m[2][1] = qv.getY(oom);
-//        m[2][2] = r.getY(oom);
-//        m[2][3] = lp.getY(oom);
-//        m[3][0] = pl.getZ(oom);
-//        m[3][1] = qv.getZ(oom);
-//        m[3][2] = r.getZ(oom);
-//        m[3][3] = lp.getZ(oom);
         V3D_Point_d tp = getP();
-        V3D_Vector_d pv = getPV();
-        V3D_Point_d tq = getQ(pv);
-        V3D_Point_d tr = getR(pv);
+        V3D_Vector_d perpv = getPV();
+        V3D_Point_d tq = getQ(perpv);
+        V3D_Point_d tr = getR(perpv);
         m[1][0] = tp.getX();
         m[1][1] = tq.getX();
         m[1][2] = tr.getX();
@@ -1236,21 +974,21 @@ public class V3D_Plane_d extends V3D_Geometry_d {
                 return null;
             }
         } else {
-            return getIntersect0(l, epsilon);
+            return getIntersectNonParallel(l, epsilon);
         }
     }
 
     /**
-     * Compute and return the intersection with {@code l} which is assumed 
-     * to be not parallel to the plane.
+     * Compute and return the intersection with {@code l} which is assumed to be
+     * not parallel to the plane.
      *
      * @param l The line segment to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @return The V3D_Geometry.
      */
-    public V3D_Point_d getIntersect0(V3D_LineSegment_d l, double epsilon) {
-        V3D_Point_d pt = getIntersect0(l.l, epsilon);
+    public V3D_Point_d getIntersectNonParallel(V3D_LineSegment_d l, double epsilon) {
+        V3D_Point_d pt = getIntersectNonParallel(l.l, epsilon);
         if (l.getPPL().isOnSameSide(pt, l.getQ(), epsilon)
                 && l.getQPL().isOnSameSide(pt, l.getP(), epsilon)) {
             return pt;
@@ -1275,19 +1013,16 @@ public class V3D_Plane_d extends V3D_Geometry_d {
          * direction of the line.
          */
         V3D_Vector_d v = n.getCrossProduct(pl.n);
-
         /**
          * Check special cases.
          */
-        //if (v.isZero()) {
         if (v.isZero()) {
             // The planes are parallel.
             if (pl.intersects(getP())) {
                 // The planes are the same.
                 return this;
-            } else {
-                return null;
             }
+            return null;
         }
         V3D_Point_d pi = pl.getPointOfProjectedIntersection(getP());
         return new V3D_Line_d(pi, v);
@@ -1312,7 +1047,6 @@ public class V3D_Plane_d extends V3D_Geometry_d {
          * direction of the line.
          */
         V3D_Vector_d v = n.getCrossProduct(pl.n);
-
         /**
          * Check special cases.
          */
@@ -1322,21 +1056,31 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             if (pl.intersects(epsilon, getP())) {
                 // The planes are the same.
                 return this;
-            } else {
-                return null;
             }
+            return null;
         }
         V3D_Point_d pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
-
-        // Debugging code
-        if (pi == null) {
-            pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
-            pi = pl.getPointOfProjectedIntersection(getP(), epsilon / 10d);
-            pi = pl.getPointOfProjectedIntersection(getP(), epsilon / 100d);
-            pi = pl.getPointOfProjectedIntersection(getP(), epsilon / 1000d);
-        }
-
         return new V3D_Line_d(pi, v);
+    }
+
+    /**
+     * Compute and return the intersection with {@code pl} which is not
+     * parallel.
+     *
+     * @param pl The plane to intersect.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The intersection between {@code this} and {@code pl}
+     */
+    public V3D_Line_d getIntersectNonParallel(V3D_Plane_d pl, double epsilon) {
+        /*
+         * 1. Calculate a projection of a point onto the plane {@code pl}.
+         * 2. Calculate the cross product of the normal vectors to get the
+         * direction of the line.
+         * Together these define the intersection.
+         */
+        return new V3D_Line_d(pl.getPointOfProjectedIntersection(getP(), epsilon),
+                n.getCrossProduct(pl.n));
     }
 
     /**
@@ -1389,13 +1133,11 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @return {@code true} if {@code this} is parallel to {@code l}.
      */
     public boolean isParallel(V3D_Line_d l) {
-        if (n.isOrthogonal(l.v)) {
-            return true;
-        }
-//        if (n.getCrossProduct(l.v).isZero()) {
-//            return false;
+        return n.isOrthogonal(l.v);
+//        if (n.isOrthogonal(l.v)) {
+//            return true;
 //        }
-        return n.getDotProduct(l.v) == 0d;
+//        return n.getDotProduct(l.v) == 0d;
     }
 
     /**
@@ -1409,28 +1151,9 @@ public class V3D_Plane_d extends V3D_Geometry_d {
 //        if (n.isOrthogonal(l.v, epsilon)) {
 //            return true;
 //        }
-//        
-    ////        if (n.getCrossProduct(l.v).isZero()) {
-////            return false;
-////        }
-//        
 //        return n.getDotProduct(l.v) == 0d;
     }
 
-//    /**
-//     * @param l The line to test if it is parallel to this.
-//     * @param epsilon The tolerance within which two vectors are regarded as
-//     * equal.
-//     * @return {@code true} if {@code this} is parallel to {@code l}.
-//     */
-//    public boolean isParallel(V3D_Line_d l, double epsilon) {
-//        if (n.isOrthogonal(l.v)) {
-//        //if (n.isOrthogonal(l.v, epsilon)) {
-//            return true;
-//        }
-//        return Math_Double.equals(n.getDotProduct(l.v), 0d, epsilon);
-//        //return n.getDotProduct(l.v) == 0d;
-//    }
     /**
      * Planes are equal if their normal perpendicular vectors point in the same
      * direction, and their normals are scalar multiples, and the point of each
@@ -1442,12 +1165,9 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * @return {@code true} iff {@code this} and {@code pl} are the same.
      */
     public boolean equals(V3D_Plane_d pl, double epsilon) {
-        //if (n.getDirection() == pl.n.getDirection()) {
-        if (n.isScalarMultiple(pl.n, epsilon)) {
-//            if (n.getDotProduct(pl.n) > 0d) {
-            return equalsIgnoreOrientationNoNormalCheck(pl, epsilon);
+        if (n.getDotProduct(pl.n) > 0) {
+            return equalsIgnoreOrientation(pl, epsilon);
         }
-        //}
         return false;
     }
 
@@ -1460,15 +1180,10 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      */
     public boolean equalsIgnoreOrientation(V3D_Plane_d pl) {
         if (n.isScalarMultiple(pl.n)) {
-            return equalsIgnoreOrientationNoNormalCheck(pl);
-        }
-        return false;
-    }
-
-    private boolean equalsIgnoreOrientationNoNormalCheck(V3D_Plane_d pl) {
-        if (pl.intersects(getP())) {
-            if (intersects(pl.getP())) {
-                return true;
+            if (pl.intersects(getP())) {
+                if (intersects(pl.getP())) {
+                    return true;
+                }
             }
         }
         return false;
@@ -1485,16 +1200,10 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      */
     public boolean equalsIgnoreOrientation(V3D_Plane_d pl, double epsilon) {
         if (n.isScalarMultiple(pl.n, epsilon)) {
-            return equalsIgnoreOrientationNoNormalCheck(pl, epsilon);
-        }
-        return false;
-    }
-
-    private boolean equalsIgnoreOrientationNoNormalCheck(V3D_Plane_d pl,
-            double epsilon) {
-        if (pl.intersects(epsilon, getP())) {
-            if (intersects(epsilon, pl.getP())) {
-                return true;
+            if (pl.intersects(epsilon, getP())) {
+                if (intersects(epsilon, pl.getP())) {
+                    return true;
+                }
             }
         }
         return false;
@@ -1505,9 +1214,9 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      */
     public Math_Matrix_Double getAsMatrix() {
         V3D_Point_d tp = getP();
-        V3D_Vector_d pv = getPV();
-        V3D_Point_d tq = getQ(pv);
-        V3D_Point_d tr = getR(pv);
+        V3D_Vector_d perpv = getPV();
+        V3D_Point_d tq = getQ(perpv);
+        V3D_Point_d tr = getR(perpv);
         double[][] m = new double[3][3];
         m[0][0] = tp.getX();
         m[0][1] = tp.getY();
@@ -1640,6 +1349,9 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     public void translate(V3D_Vector_d v) {
         super.translate(v);
         this.equation = null;
+        if (p != null) {
+            p.translate(v);
+        }
     }
 
     @Override

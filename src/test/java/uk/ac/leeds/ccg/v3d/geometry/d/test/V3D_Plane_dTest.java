@@ -84,8 +84,8 @@ public class V3D_Plane_dTest extends V3D_Test_d {
         String expResult = """
                            V3D_Plane_d(
                             offset=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
-                            p= V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
-                            n= V3D_Vector_d(dx=0.0, dy=1.0, dz=-1.0))""";
+                            pv=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
+                            n=V3D_Vector_d(dx=0.0, dy=1.0, dz=-1.0))""";
         String result = instance.toString();
         //System.out.println(result);
         assertTrue(expResult.equals(result));
@@ -3212,65 +3212,15 @@ public class V3D_Plane_dTest extends V3D_Test_d {
         String expResult = """
                            V3D_Plane_d
                            (
-                            offset=V3D_Vector_d
-                            (
-                             dx=0.0,
-                             dy=0.0,
-                             dz=0.0
-                            )
-                            ,
-                            p=V3D_Vector_d
-                            (
-                             dx=0.0,
-                             dy=0.0,
-                             dz=0.0
-                            )
-                            ,
-                            n=V3D_Vector_d
-                            (
-                             dx=1.0,
-                             dy=0.0,
-                             dz=0.0
-                            )
+                            offset=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
+                            pv=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
+                            n=V3D_Vector_d(dx=1.0, dy=0.0, dz=0.0)
                            )""";
         String result = instance.toString(pad);
         //System.out.println(result);
         assertEquals(expResult, result);
     }
 
-//    /**
-//     * Test of toStringFields method, of class V3D_Plane_d.
-//     */
-//    @Test
-//    public void testToStringFields() {
-//        System.out.println("toStringFields");
-//        String pad = "";
-//        V3D_Plane_d instance = V3D_Plane_d.X0;
-//        String expResult = """
-//                           offset=V3D_Vector_d
-//                           (
-//                            dx=0.0,
-//                            dy=0.0,
-//                            dz=0.0
-//                           )
-//                           ,
-//                           p=V3D_Vector_d
-//                           (
-//                            dx=0.0,
-//                            dy=0.0,
-//                            dz=0.0
-//                           )
-//                           ,
-//                           n=V3D_Vector_d
-//                           (
-//                            dx=1.0,
-//                            dy=0.0,
-//                            dz=0.0
-//                           )""";
-//        String result = instance.toStringFields(pad);
-//        //System.out.println(result);
-//        assertEquals(expResult, result);
-//    }
     /**
      * Test of getPAsVector method, of class V3D_Plane_d.
      */

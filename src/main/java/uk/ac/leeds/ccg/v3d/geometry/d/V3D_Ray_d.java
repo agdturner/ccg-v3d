@@ -179,7 +179,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
     public String toStringSimple(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
-                + toStringFieldsSimple(pad + " ") + "\n"
+                + toStringFields(pad + " ") + "\n"
                 + pad + ")";
     }
 
@@ -190,15 +190,6 @@ public class V3D_Ray_d extends V3D_Geometry_d {
     @Override
     protected String toStringFields(String pad) {
         return pad + l.toStringFields(pad);
-    }
-
-    /**
-     * @param pad A padding of spaces.
-     * @return A description of the fields.
-     */
-    @Override
-    protected String toStringFieldsSimple(String pad) {
-        return pad + l.toStringFieldsSimple(pad);
     }
 
     /**
@@ -373,7 +364,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
      */
     public V3D_Point_d getIntersect0(V3D_Plane_d pl, double epsilon) {
         // Check if infinite line intersects.
-        V3D_Point_d g = pl.getIntersect0(l, epsilon);
+        V3D_Point_d g = pl.getIntersectNonParallel(l, epsilon);
         if (g == null) {
             return null;
         } else {

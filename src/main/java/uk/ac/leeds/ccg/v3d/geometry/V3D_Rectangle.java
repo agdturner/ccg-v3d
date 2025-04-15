@@ -530,11 +530,11 @@ public class V3D_Rectangle extends V3D_Area {
      * @return A point, line segment or {@code null}.
      */
     @Override
-    public V3D_Point getIntersect0(V3D_Ray r, int oom,
+    public V3D_Point getIntersectNonCoplanar(V3D_Ray r, int oom,
             RoundingMode rm) {
-        V3D_Point gpqr = pqr.getIntersect0(r, oom, rm);
+        V3D_Point gpqr = pqr.getIntersectNonCoplanar(r, oom, rm);
         if (gpqr == null) {
-            return rsp.getIntersect0(r, oom, rm);
+            return rsp.getIntersectNonCoplanar(r, oom, rm);
         } else {
             return gpqr;
         }
@@ -725,10 +725,10 @@ public class V3D_Rectangle extends V3D_Area {
      */
     @Override
     public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
-        if (pqr.intersects(pt, oom, rm)) {
+        if (pqr.intersects0(pt, oom, rm)) {
             return true;
         } else {
-            return rsp.intersects(pt, oom, rm);
+            return rsp.intersects0(pt, oom, rm);
         }
     }
 
@@ -805,12 +805,12 @@ public class V3D_Rectangle extends V3D_Area {
      * @return {@code true} if l intersects this.
      */
     @Override
-    public boolean intersects0(V3D_Ray r, int oom, RoundingMode rm) {
+    public boolean intersectsNonCoplanar(V3D_Ray r, int oom, RoundingMode rm) {
         if (r.isAligned(getP(oom, rm), oom, rm)
             || r.isAligned(getQ(oom, rm), oom, rm)
             || r.isAligned(getR(oom, rm), oom, rm)
             || r.isAligned(getS(oom, rm), oom, rm)) {
-            return getIntersect0(r, oom, rm) != null;
+            return getIntersectNonCoplanar(r, oom, rm) != null;
         } else {
             return false;
         }
@@ -840,12 +840,12 @@ public class V3D_Rectangle extends V3D_Area {
      * @return {@code true} if t intersects this.
      */
     public boolean intersectsCoplanar(V3D_Triangle t, int oom, RoundingMode rm) {
-        return t.intersects00(pqr.getP(oom, rm), oom, rm)
-                || t.intersects00(pqr.getQ(oom, rm), oom, rm)
-                || t.intersects00(pqr.getR(oom, rm), oom, rm)
-                || t.intersects00(rsp.getP(oom, rm), oom, rm)
-                || t.intersects00(rsp.getQ(oom, rm), oom, rm)
-                || t.intersects00(rsp.getR(oom, rm), oom, rm);
+        return t.intersectsCoplanar(pqr.getP(oom, rm), oom, rm)
+                || t.intersectsCoplanar(pqr.getQ(oom, rm), oom, rm)
+                || t.intersectsCoplanar(pqr.getR(oom, rm), oom, rm)
+                || t.intersectsCoplanar(rsp.getP(oom, rm), oom, rm)
+                || t.intersectsCoplanar(rsp.getQ(oom, rm), oom, rm)
+                || t.intersectsCoplanar(rsp.getR(oom, rm), oom, rm);
     }
 
     /**
@@ -857,8 +857,8 @@ public class V3D_Rectangle extends V3D_Area {
      * @return {@code true} if t intersects this.
      */
     public boolean intersects0(V3D_Triangle t, int oom, RoundingMode rm) {
-        return pqr.intersects0(t, oom, rm)
-                || rsp.intersects0(t, oom, rm);
+        return pqr.intersectsNonCoplanar(t, oom, rm)
+                || rsp.intersectsNonCoplanar(t, oom, rm);
     }
     
     /**

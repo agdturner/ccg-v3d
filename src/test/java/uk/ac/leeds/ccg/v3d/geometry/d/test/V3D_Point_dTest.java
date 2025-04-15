@@ -338,19 +338,7 @@ public class V3D_Point_dTest extends V3D_Test_d {
         String expResult = """
                            V3D_Point_d
                            (
-                            offset=V3D_Vector_d
-                            (
-                             dx=0.0,
-                             dy=0.0,
-                             dz=0.0
-                            )
-                            ,
-                            rel=V3D_Vector_d
-                            (
-                             dx=0.0,
-                             dy=1.0,
-                             dz=2.0
-                            )
+                            offset=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0), rel=V3D_Vector_d(dx=0.0, dy=1.0, dz=2.0)
                            )""";
         String result = instance.toString(pad);
         //System.out.println(result);

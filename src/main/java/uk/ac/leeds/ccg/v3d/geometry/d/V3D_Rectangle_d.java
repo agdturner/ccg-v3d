@@ -133,19 +133,12 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      */
     public String toStringSimple(String pad) {
         return pad + this.getClass().getSimpleName() + "("
-                + toStringFieldsSimple("") + ")";
+                + toStringFields("") + ")";
     }
 
     @Override
     protected String toStringFields(String pad) {
         return "\n" + super.toStringFields(pad) + ",\n"
-                + pad + "pqr=" + getPQR().toString(pad) + ",\n"
-                + pad + "rsp=" + getRSP().toString(pad);
-    }
-
-    @Override
-    protected String toStringFieldsSimple(String pad) {
-        return "\n" + super.toStringFieldsSimple(pad) + ",\n"
                 + pad + "pqr=" + getPQR().toStringSimple(pad) + ",\n"
                 + pad + "rsp=" + getRSP().toStringSimple(pad);
     }
@@ -516,11 +509,11 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      * @return A point or {@code null}.
      */
     @Override
-    public V3D_Point_d getIntersect0(V3D_Ray_d r,
+    public V3D_Point_d getIntersectNonCoplanar(V3D_Ray_d r,
             double epsilon) {
-        V3D_Point_d gpqr = pqr.getIntersect0(r, epsilon);
+        V3D_Point_d gpqr = pqr.getIntersectNonCoplanar(r, epsilon);
         if (gpqr == null) {
-            return rsp.getIntersect0(r, epsilon);
+            return rsp.getIntersectNonCoplanar(r, epsilon);
         } else {
             return gpqr;
         }
@@ -775,12 +768,12 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      * @return {@code true} if l intersects this.
      */
     @Override
-    public boolean intersects0(V3D_Ray_d r, double epsilon) {
+    public boolean intersectsNonCoplanar(V3D_Ray_d r, double epsilon) {
         if (r.isAligned(getP(), epsilon)
                 || r.isAligned(getQ(), epsilon)
                 || r.isAligned(getR(), epsilon)
                 || r.isAligned(getS(), epsilon)) {
-            return getIntersect0(r, epsilon) != null;
+            return getIntersectNonCoplanar(r, epsilon) != null;
         } else {
             return false;
         }
@@ -810,12 +803,12 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      * @return {@code true} if t intersects this.
      */
     public boolean intersectsCoplanar(V3D_Triangle_d t, double epsilon) {
-        return t.intersects00(pqr.getP(), epsilon)
-                || t.intersects00(pqr.getQ(), epsilon)
-                || t.intersects00(pqr.getR(), epsilon)
-                || t.intersects00(rsp.getP(), epsilon)
-                || t.intersects00(rsp.getQ(), epsilon)
-                || t.intersects00(rsp.getR(), epsilon);
+        return t.intersectsCoplanar(pqr.getP(), epsilon)
+                || t.intersectsCoplanar(pqr.getQ(), epsilon)
+                || t.intersectsCoplanar(pqr.getR(), epsilon)
+                || t.intersectsCoplanar(rsp.getP(), epsilon)
+                || t.intersectsCoplanar(rsp.getQ(), epsilon)
+                || t.intersectsCoplanar(rsp.getR(), epsilon);
     }
 
     /**
@@ -827,8 +820,8 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      * @return {@code true} if t intersects this.
      */
     public boolean intersects0(V3D_Triangle_d t, double epsilon) {
-        return pqr.intersects0(t, epsilon)
-                || rsp.intersects0(t, epsilon);
+        return pqr.intersectsNonCoplanar(t, epsilon)
+                || rsp.intersectsNonCoplanar(t, epsilon);
     }
 
     /**

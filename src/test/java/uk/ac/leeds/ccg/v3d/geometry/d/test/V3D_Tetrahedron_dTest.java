@@ -92,92 +92,15 @@ public class V3D_Tetrahedron_dTest extends V3D_Test_d {
         String expResult = """
                            V3D_Tetrahedron_d
                            (
-                            offset=V3D_Vector_d
-                            (
-                             dx=0.0,
-                             dy=0.0,
-                             dz=0.0
-                            ) ,
-                            p=V3D_Vector_d
-                            (
-                             dx=0.0,
-                             dy=0.0,
-                             dz=0.0
-                            )
-                            ,
-                            q=V3D_Vector_d
-                            (
-                             dx=1.0,
-                             dy=0.0,
-                             dz=0.0
-                            )
-                            ,
-                            r=V3D_Vector_d
-                            (
-                             dx=0.0,
-                             dy=1.0,
-                             dz=0.0
-                            )
-                            ,
-                            s=V3D_Vector_d
-                            (
-                             dx=0.0,
-                             dy=1.0,
-                             dz=1.0
-                            )
+                            p= V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
+                            q= V3D_Vector_d(dx=1.0, dy=0.0, dz=0.0),
+                            r= V3D_Vector_d(dx=0.0, dy=1.0, dz=0.0),
+                            s= V3D_Vector_d(dx=0.0, dy=1.0, dz=1.0)
                            )""";
         String result = instance.toString(pad);
         //System.out.println(result);
         assertEquals(expResult, result);
     }
-
-//    /**
-//     * Test of toStringFields method, of class V3D_Tetrahedron_d.
-//     */
-//    @Test
-//    public void testToStringFields() {
-//        System.out.println("toStringFields");
-//        String pad = "";
-//        V3D_Tetrahedron_d instance = new V3D_Tetrahedron_d(pP0P0P0, pP1P0P0,
-//                pP0P1P0, pP0P1P1);
-//        String expResult = """
-//                           offset=V3D_Vector_d
-//                           (
-//                            dx=0.0,
-//                            dy=0.0,
-//                            dz=0.0
-//                           ),
-//                           p=V3D_Vector_d
-//                           (
-//                            dx=0.0,
-//                            dy=0.0,
-//                            dz=0.0
-//                           )
-//                           ,
-//                           q=V3D_Vector_d
-//                           (
-//                            dx=1.0,
-//                            dy=0.0,
-//                            dz=0.0
-//                           )
-//                           ,
-//                           r=V3D_Vector_d
-//                           (
-//                            dx=0.0,
-//                            dy=1.0,
-//                            dz=0.0
-//                           )
-//                           ,
-//                           s=V3D_Vector_d
-//                           (
-//                            dx=0.0,
-//                            dy=1.0,
-//                            dz=1.0
-//                           )""";
-//        String result = instance.toStringFields(pad);
-//        //System.out.println(result);
-//        assertEquals(expResult, result);
-//    }
 
     /**
      * Test of getAABB method, of class V3D_Tetrahedron_d.

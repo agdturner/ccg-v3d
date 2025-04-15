@@ -457,12 +457,12 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     protected boolean isAligned(V3D_Point_d pt, double epsilon) {
         for (V3D_Triangle_d triangle : triangles.values()) {
-            if (triangle.intersects00(pt, epsilon)) {
+            if (triangle.intersectsCoplanar(pt, epsilon)) {
                 return true;
             }
         }
         return false;
-        //return triangles.parallelStream().anyMatch(t -> (t.intersects0(pt, oom)));
+        //return triangles.parallelStream().anyMatch(t -> (t.intersectsNonCoplanar(pt, oom)));
     }
 
     /**
@@ -558,7 +558,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * @return A point or line segment.
      */
     @Override
-    public V3D_Point_d getIntersect0(V3D_Ray_d r, double epsilon) {
+    public V3D_Point_d getIntersectNonCoplanar(V3D_Ray_d r, double epsilon) {
         V3D_Point_d i = r.getIntersect0(getPl(), epsilon);
         if (i == null) {
             return null;
@@ -770,7 +770,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     public boolean intersects00(V3D_Point_d p, double epsilon) {
         return triangles.values().parallelStream().anyMatch(x
-                -> x.intersects00(p, epsilon));
+                -> x.intersectsCoplanar(p, epsilon));
     }
 
     /**
@@ -837,7 +837,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * @param l The line segment to test for intersection with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
-     * @return {@code true} iff {@code this} is intersected by {@code p}.
+     * @return {@code true} iff {@code this} is intersected by {@code l}.
      */
     public boolean intersects0(V3D_LineSegment_d l, double epsilon) {
         return triangles.values().parallelStream().anyMatch(x
@@ -868,9 +868,9 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      * @return {@code true} if l intersects this.
      */
     @Override
-    public boolean intersects0(V3D_Ray_d r, double epsilon) {
+    public boolean intersectsNonCoplanar(V3D_Ray_d r, double epsilon) {
         return triangles.values().parallelStream().anyMatch(x
-                -> x.intersects0(r, epsilon));
+                -> x.intersectsNonCoplanar(r, epsilon));
     }
 
     /**
@@ -897,7 +897,7 @@ public class V3D_ConvexArea_d extends V3D_Area_d {
      */
     public boolean intersects0(V3D_Triangle_d t, double epsilon) {
         return triangles.values().parallelStream().anyMatch(x
-                -> x.intersects0(t, epsilon));
+                -> x.intersectsNonCoplanar(t, epsilon));
     }
 
     /**

@@ -303,8 +303,8 @@ public class V3D_TriangleTest extends V3D_Test {
     }
 
     /**
-     * Test of intersects0 method, of class V3D_Triangle covered by
-     * {@link #testIntersects_V3D_Point()}.
+     * Test of intersectsNonCoplanar method, of class V3D_Triangle covered by
+ {@link #testIntersects_V3D_Point()}.
      */
     @Test
     public void testIntersects0() {
@@ -313,7 +313,7 @@ public class V3D_TriangleTest extends V3D_Test {
 //        int oom = 0;
 //        V3D_Triangle instance = null;
 //        boolean expResult = false;
-//        boolean result = instance.intersects0(pt, oom);
+//        boolean result = instance.intersectsNonCoplanar(pt, oom);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");

@@ -543,6 +543,13 @@ public class V3D_Triangle_d extends V3D_Area_d {
         return edges;
     }
 
+    /**
+     * Checks the Axis Aligned Bounding Box.
+     * 
+     * @param pt
+     * @param epsilon
+     * @return {@code true} if {@code pt} intersects {@code this}.
+     */
     @Override
     public boolean intersects(V3D_Point_d pt, double epsilon) {
         if (getAABB().intersects(pt)) {
@@ -553,15 +560,16 @@ public class V3D_Triangle_d extends V3D_Area_d {
     }
 
     /**
+     * Does not check the Axis Aligned Bounding Box.
+     *
      * @param pt The point to intersect with.
      * @param epsilon The tolerance within which two vectors are regarded as
      * equal.
      * @return A point or line segment.
      */
-    //@Override
     public boolean intersects0(V3D_Point_d pt, double epsilon) {
         if (getPl().intersects(epsilon, pt)) {
-            return intersects00(pt, epsilon);
+            return intersectsCoplanar(pt, epsilon);
         } else {
             return false;
         }
@@ -577,7 +585,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @param epsilon The tolerance.
      * @return {@code true} iff pl is aligned with this.
      */
-    public boolean intersects00(V3D_Point_d pt, double epsilon) {
+    public boolean intersectsCoplanar(V3D_Point_d pt, double epsilon) {
         return getPQPl().isOnSameSide(pt, getR(), epsilon)
                 && getQRPl().isOnSameSide(pt, getP(), epsilon)
                 && getRPPl().isOnSameSide(pt, getQ(), epsilon);
@@ -693,7 +701,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
         if (i == null) {
             return null;
         } else if (i instanceof V3D_Point_d ip) {
-            if (intersects00(ip, epsilon)) {
+            if (intersectsCoplanar(ip, epsilon)) {
                 return ip;
             } else {
                 return null;
@@ -755,11 +763,11 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * equal.v
      * @return The point of intersection or {@code null}.
      */
-    public V3D_Point_d getIntersect0(V3D_Line_d l, double epsilon) {
-        V3D_Point_d i = getPl().getIntersect0(l, epsilon);
+    public V3D_Point_d getIntersectNonCoplanar(V3D_Line_d l, double epsilon) {
+        V3D_Point_d i = getPl().getIntersectNonParallel(l, epsilon);
         if (i == null) {
             return i;
-        } else if (intersects00(i, epsilon)) {
+        } else if (intersectsCoplanar(i, epsilon)) {
             return i;
         } else {
             return null;
@@ -815,8 +823,8 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @return The point of intersection or {@code null}.
      */
     @Override
-    public V3D_Point_d getIntersect0(V3D_Ray_d r, double epsilon) {
-        V3D_Point_d i = getIntersect0(r.l, epsilon);
+    public V3D_Point_d getIntersectNonCoplanar(V3D_Ray_d r, double epsilon) {
+        V3D_Point_d i = getIntersectNonCoplanar(r.l, epsilon);
         if (i == null) {
             return null;
         } else if (r.isAligned(i, epsilon)) {
@@ -867,9 +875,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * equal.
      * @return The V3D_Geometry.
      */
-    public V3D_Point_d getIntersect0(V3D_LineSegment_d l,
+    public V3D_Point_d getIntersectNonCoplanar(V3D_LineSegment_d l,
             double epsilon) {
-        V3D_Point_d i = getIntersect0(l.l, epsilon);
+        V3D_Point_d i = getIntersectNonCoplanar(l.l, epsilon);
         if (i == null) {
             return null;
         } else if (l.isAligned(i, epsilon)) {
@@ -1050,7 +1058,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     public V3D_FiniteGeometry_d getIntersect(V3D_Plane_d pl,
             double epsilon) {
-        V3D_Geometry_d pi = pl.getIntersect(this.pl, epsilon);
+        V3D_Geometry_d pi = pl.getIntersect(getPl(), epsilon);
         if (pi == null) {
             return null;
         } else if (pi instanceof V3D_Plane_d) {
@@ -1186,10 +1194,10 @@ public class V3D_Triangle_d extends V3D_Area_d {
             if (pit && qit && rit) {
                 return this;
             }
-            //                if (intersects00(t, epsilon)) {
+            //                if (intersectsCoplanar(t, epsilon)) {
 //                    return t;
 //                }
-//                if (t.intersects00(this, epsilon)) {
+//                if (t.intersectsCoplanar(this, epsilon)) {
 //                    return this;
 //                }
             V3D_FiniteGeometry_d gpq = t.getIntersect(getPQ(), epsilon);
@@ -1368,7 +1376,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
             if (i == null) {
                 return i;
             } else if (i instanceof V3D_Point_d pt) {
-                if (intersects00(pt, epsilon)) {
+                if (intersectsCoplanar(pt, epsilon)) {
                     return pt;
                 } else {
                     return null;
@@ -1379,7 +1387,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
                 if (ti == null) {
                     return ti;
                 } else if (ti instanceof V3D_Point_d pt) {
-                    if (t.intersects00(pt, epsilon)) {
+                    if (t.intersectsCoplanar(pt, epsilon)) {
                         return pt;
                     } else {
                         return null;
@@ -1517,9 +1525,9 @@ public class V3D_Triangle_d extends V3D_Area_d {
             res += pad + " pl=(" + pl.toString(pad + " ") + "),\n";
         }
         res += pad + " offset=(" + this.offset.toString(pad + " ") + "),\n"
-                + pad + " p=(" + this.pv.toString(pad + " ") + "),\n"
-                + pad + " q=(" + this.qv.toString(pad + " ") + "),\n"
-                + pad + " r=(" + this.rv.toString(pad + " ") + "))";
+                + pad + " p=(" + this.pv.toString(" ") + "),\n"
+                + pad + " q=(" + this.qv.toString(" ") + "),\n"
+                + pad + " r=(" + this.rv.toString(" ") + "))";
         return res;
     }
 
@@ -1803,15 +1811,15 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     public double getDistanceSquared(V3D_Point_d pt, double epsilon) {
         if (pl.intersects(epsilon, pt)) {
-            //if (intersects0(pt)) {
-            if (intersects00(pt, epsilon)) {
+            //if (intersectsNonCoplanar(pt)) {
+            if (intersectsCoplanar(pt, epsilon)) {
                 return 0d;
             } else {
                 return getDistanceSquaredEdge(pt, epsilon);
             }
         }
         V3D_Point_d poi = pl.getPointOfProjectedIntersection(pt, epsilon);
-        if (intersects00(poi, epsilon)) {
+        if (intersectsCoplanar(poi, epsilon)) {
             return poi.getDistanceSquared(pt);
         } else {
             return getDistanceSquaredEdge(pt, epsilon);
@@ -1894,10 +1902,10 @@ public class V3D_Triangle_d extends V3D_Area_d {
          */
         V3D_Point_d lp = l.getP();
         V3D_Point_d lq = l.getQ();
-        if (intersects00(lp, epsilon)) {
+        if (intersectsCoplanar(lp, epsilon)) {
             d2 = Math.min(d2, getDistanceSquared(lp, epsilon));
         }
-        if (intersects00(lq, epsilon)) {
+        if (intersectsCoplanar(lq, epsilon)) {
             d2 = Math.min(d2, getDistanceSquared(lq, epsilon));
         }
         return d2;
@@ -2164,9 +2172,22 @@ public class V3D_Triangle_d extends V3D_Area_d {
         if (pl.isParallel(tpl, epsilon)) {
             return pl.equals(tpl, epsilon);
         } else {
-            return getIntersect(pl, epsilon) != null;
+            return intersectsNonParallel(pl, epsilon);
         }
     }
+
+    /**
+     * @param pl The plane to test for intersection with which is not parallel.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if there is an intersection.
+     */
+    public boolean intersectsNonParallel(V3D_Plane_d pl, double epsilon) {
+        V3D_Line_d i = pl.getIntersectNonParallel(getPl(), epsilon);
+        return intersects(i, epsilon);
+    }
+            
+        //    return getIntersect(pl, epsilon) != null;
 
     @Override
     public boolean intersects(V3D_AABB_d aabb, double epsilon) {
@@ -2245,6 +2266,25 @@ public class V3D_Triangle_d extends V3D_Area_d {
             return false;
         }
     }
+    
+    /**
+     * If there is intersection with the Axis Aligned Bounding Boxes, then the
+     * intersection is computed, so if that is needed use:
+     * {@link #getIntersect(uk.ac.leeds.ccg.v3d.geometry.V3D_Line, int, java.math.RoundingMode)}.
+     *
+     * @param l The V3D_Line to test for intersection.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return {@code true} if this getIntersect with {@code l}
+     */
+    //@Override
+    public boolean intersectsNonCoplanar(V3D_Line_d l, double epsilon) {
+        if (l.intersects(getAABB(), epsilon)) {
+            return getIntersectNonCoplanar(l, epsilon) != null;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Computes the intersect and tests if it is {@code null}. If the
@@ -2281,14 +2321,14 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @return {@code true} if l intersects this.
      */
     //@Override
-    public boolean intersects0(V3D_LineSegment_d l, double epsilon) {
+    public boolean intersectsNonCoplanar(V3D_LineSegment_d l, double epsilon) {
         // Compute the intersection and return true if it is not null.
-        return getIntersect0(l, epsilon) != null;
+        return V3D_Triangle_d.this.getIntersectNonCoplanar(l, epsilon) != null;
 //        Profiling revealed that checking the AABB is generally not an optimisation...
 //        if (intersects(l.getAABB(), epsilon)
 //                || l.intersects(getAABB(), epsilon)) {
 //            // Compute the intersection and return true if it is not null.
-//            return getIntersect0(l, epsilon) != null;
+//            return getIntersectNonCoplanar(l, epsilon) != null;
 //        } else {
 //            return false;
 //        }
@@ -2327,11 +2367,11 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @return {@code true} if l intersects this.
      */
     //@Override
-    public boolean intersects0(V3D_Ray_d r, double epsilon) {
+    public boolean intersectsNonCoplanar(V3D_Ray_d r, double epsilon) {
         if (r.isAligned(getP(), epsilon)
                 || r.isAligned(getQ(), epsilon)
                 || r.isAligned(getR(), epsilon)) {
-            return getIntersect0(r, epsilon) != null;
+            return V3D_Triangle_d.this.getIntersectNonCoplanar(r, epsilon) != null;
         } else {
             return false;
         }
@@ -2346,15 +2386,17 @@ public class V3D_Triangle_d extends V3D_Area_d {
     @Override
     public boolean intersects(V3D_Triangle_d t, double epsilon) {
         if (getPl().equalsIgnoreOrientation(t.getPl(), epsilon)) {
-            return t.intersects(getP(), epsilon)
-                    || t.intersects(getQ(), epsilon)
-                    || t.intersects(getR(), epsilon);
+            return t.intersectsCoplanar(getP(), epsilon)
+                    || t.intersectsCoplanar(getQ(), epsilon)
+                    || t.intersectsCoplanar(getR(), epsilon);
         } else {
-            return intersects0(t, epsilon);
+            return intersectsNonCoplanar(t, epsilon);
         }
     }
 
     /**
+     * Use when {@code t} is not coplanar.
+     * 
      * @param t Another triangle to test for intersection. {@code this} and
      * {@code t} are not coplanar.
      * @param epsilon The tolerance within which two vectors are regarded as
@@ -2362,19 +2404,19 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @return {@code true} if {@code this} intersects {@code t}.
      */
     //@Override
-    public boolean intersects0(V3D_Triangle_d t, double epsilon) {
+    public boolean intersectsNonCoplanar(V3D_Triangle_d t, double epsilon) {
         if (getPl().allOnSameSideNotOn(epsilon, t.getP(),
                 t.getQ(), t.getR()) //&& intersects(t.getAABB(), epsilon)
                 //&& t.intersects(getAABB(), epsilon)
                 ) {
             return false;
         } else {
-            return t.intersects0(getPQ(), epsilon)
-                    || t.intersects0(getQR(), epsilon)
-                    || t.intersects0(getRP(), epsilon)
-                    || intersects0(t.getPQ(), epsilon)
-                    || intersects0(t.getQR(), epsilon)
-                    || intersects0(t.getRP(), epsilon);
+            return t.intersectsNonCoplanar(getPQ(), epsilon)
+                    || t.intersectsNonCoplanar(getQR(), epsilon)
+                    || t.intersectsNonCoplanar(getRP(), epsilon)
+                    || V3D_Triangle_d.this.intersectsNonCoplanar(t.getPQ(), epsilon)
+                    || V3D_Triangle_d.this.intersectsNonCoplanar(t.getQR(), epsilon)
+                    || V3D_Triangle_d.this.intersectsNonCoplanar(t.getRP(), epsilon);
         }
     }
 

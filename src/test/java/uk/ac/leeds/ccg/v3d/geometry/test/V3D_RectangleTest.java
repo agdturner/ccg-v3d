@@ -502,7 +502,7 @@ public class V3D_RectangleTest extends V3D_Test {
     }
 
     /**
-     * Test of intersects0 method, of class V3D_Rectangle.
+     * Test of intersectsNonCoplanar method, of class V3D_Rectangle.
      */
     @Test
     public void testIsIntersectedBy0() {

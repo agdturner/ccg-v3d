@@ -3418,7 +3418,7 @@ public class V3D_PlaneTest extends V3D_Test {
                              dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
                             )
                             ,
-                            p=V3D_Vector
+                            pv=V3D_Vector
                             (
                              dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
                              dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
@@ -3436,40 +3436,6 @@ public class V3D_PlaneTest extends V3D_Test {
         //System.out.println(result);
         assertEquals(expResult, result);
     }
-
-//    /**
-//     * Test of toStringFields method, of class V3D_Plane.
-//     */
-//    @Test
-//    public void testToStringFields() {
-//        System.out.println("toStringFields");
-//        String pad = "";
-//        V3D_Plane instance = V3D_Plane.X0;
-//        String expResult = """
-//                           offset=V3D_Vector
-//                           (
-//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
-//                           )
-//                           ,
-//                           pv=V3D_Vector
-//                           (
-//                            dx=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
-//                           )
-//                           ,
-//                           n=V3D_Vector
-//                           (
-//                            dx=Math_BigRationalSqrt(x=1, sqrtx=1, oom=0),
-//                            dy=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0),
-//                            dz=Math_BigRationalSqrt(x=0, sqrtx=0, oom=0)
-//                           )""";
-//        String result = instance.toStringFields(pad);
-//        //System.out.println(result);
-//        assertEquals(expResult, result);
-//    }
 
     /**
      * Test of getPAsVector method, of class V3D_Plane.

@@ -496,7 +496,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                 }
                 return false;
             } else {
-                return aabbx.intersects(aabxpl.getIntersect0(this, oom, rm), 
+                return aabbx.intersects(aabxpl.getIntersectNonParallel(this, oom, rm), 
                         oom, rm);
             }
         }
@@ -565,7 +565,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                 }
                 return false;
             } else {
-                return aabby.intersects(aabypl.getIntersect0(this, oom, rm), 
+                return aabby.intersects(aabypl.getIntersectNonParallel(this, oom, rm), 
                         oom, rm);
             }
         }
@@ -634,7 +634,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
                 }
                 return false;
             } else {
-                return aabbz.intersects(aabzpl.getIntersect0(this, oom, rm), 
+                return aabbz.intersects(aabzpl.getIntersectNonParallel(this, oom, rm), 
                         oom, rm);
             }
         }

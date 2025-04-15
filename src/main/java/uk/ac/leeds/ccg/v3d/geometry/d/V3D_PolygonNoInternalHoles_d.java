@@ -189,7 +189,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
         }
         return pl;
     }
-    
+
     @Override
     public double getPerimeter() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -384,7 +384,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this contains pt.
+     * Identify if this contains pt which is assumed to be on the plane.
      *
      * @param pt The point to test for containment.
      * @param epsilon The tolerance within which two vector components are
@@ -393,12 +393,12 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      */
     @Override
     public boolean contains(V3D_Point_d pt, double epsilon) {
-        return intersects(pt, epsilon)
+        return intersects00(pt, epsilon)
                 && !V3D_LineSegment_d.intersects(epsilon, pt, edges.values());
     }
 
     /**
-     * Identify if this contains ls.
+     * Identify if this contains ls which is assumed to be on the plane.
      *
      * @param ls The line segment to test for containment.
      * @param epsilon The tolerance within which two vector components are
@@ -413,7 +413,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this contains t.
+     * Identify if this contains t which is assumed to be on the plane.
      *
      * @param t The triangle to test for containment.
      * @param epsilon The tolerance within which two vector components are
@@ -428,7 +428,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this contains r.
+     * Identify if this contains r which is assumed to be on the plane.
      *
      * @param r The rectangle to test for containment.
      * @param epsilon The tolerance within which two vector components are
@@ -440,7 +440,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this contains ch.
+     * Identify if this contains ch which is assumed to be on the plane.
      *
      * @param ch The convex hull to test for containment.
      * @param epsilon The tolerance within which two vector components are
@@ -449,7 +449,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      */
     public boolean contains(V3D_ConvexArea_d ch, double epsilon) {
         return this.ch.getEdges().values().parallelStream().allMatch(x
-                ->  !V3D_LineSegment_d.intersects(
+                -> !V3D_LineSegment_d.intersects(
                         epsilon, x, ch.getEdges().values()))
                 && this.ch.getPoints().values().parallelStream()
                         .anyMatch(x -> contains(x, epsilon));
@@ -470,7 +470,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     }
 
     /**
-     * Identify if this is intersected by l. This first checks for an 
+     * Identify if this is intersected by l. This first checks for an
      * intersection with {@link #ch}.
      *
      * @param l The line segment to test for intersection with.
@@ -483,9 +483,9 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
         return ch.intersects(l, epsilon)
                 && intersects0(l, epsilon);
     }
-    
+
     /**
-     * Identify if this is intersected by l. This does not first check for an 
+     * Identify if this is intersected by l. This does not first check for an
      * intersection with {@link #ch}.
      *
      * @param l The line segment to test for intersection with.
@@ -512,7 +512,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
     @Override
     public boolean intersects(V3D_Ray_d r, double epsilon) {
         return ch.intersects(r, epsilon)
-                && intersects0(r, epsilon);
+                && intersectsNonCoplanar(r, epsilon);
     }
 
     /**
@@ -525,7 +525,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * considered equal.
      * @return {@code true} if l intersects this.
      */
-    public boolean intersects0(V3D_Ray_d r, double epsilon) {
+    public boolean intersectsNonCoplanar(V3D_Ray_d r, double epsilon) {
         return !externalHoles.values().parallelStream().anyMatch(x
                 -> x.intersects(r, epsilon));
     }
@@ -698,7 +698,7 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
 
     /**
      * Compute and return the intersection with {@code l}.
-     * 
+     *
      * @param l The line to intersect with.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
@@ -763,18 +763,18 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
 //            }
         }
     }
-    
+
     /**
-     * Compute and return the the intersection with {@code l} which is 
-     * assumed to not be coplanar.
-     * 
+     * Compute and return the the intersection with {@code l} which is assumed
+     * to not be coplanar.
+     *
      * @param l The line to intersect with.
      * @param epsilon The tolerance within which two vector components are
      * considered equal.
      * @return A point or line segment.
      */
     public V3D_Point_d getIntersect0(V3D_Line_d l, double epsilon) {
-        V3D_Point_d i = getPl().getIntersect0(l, epsilon);
+        V3D_Point_d i = getPl().getIntersectNonParallel(l, epsilon);
         if (i == null) {
             return null;
         } else {
@@ -832,9 +832,9 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
             }
         }
     }
-    
+
     /**
-     * Compute and return the the intersection with {@code r} which is not 
+     * Compute and return the the intersection with {@code r} which is not
      * coplanar.
      *
      * @param r The ray to intersect with.
@@ -843,16 +843,14 @@ public class V3D_PolygonNoInternalHoles_d extends V3D_Area_d {
      * @return The V3D_Geometry.
      */
     @Override
-    public V3D_Point_d getIntersect0(V3D_Ray_d r, double epsilon) {
+    public V3D_Point_d getIntersectNonCoplanar(V3D_Ray_d r, double epsilon) {
         V3D_Point_d g = getIntersect0(r.l, epsilon);
         if (g == null) {
             return null;
+        } else if (r.isAligned(g, epsilon)) {
+            return g;
         } else {
-                if (r.isAligned(g, epsilon)) {
-                    return g;
-                } else {
-                    return null;
-                }
+            return null;
         }
     }
 }

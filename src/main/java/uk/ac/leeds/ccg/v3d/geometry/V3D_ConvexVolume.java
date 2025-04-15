@@ -347,7 +347,7 @@ public class V3D_ConvexVolume extends V3D_Volume {
      */
     public boolean intersects0(V3D_Point pt, int oom, RoundingMode rm) {
         return getTriangles(oom, rm).parallelStream().anyMatch(x
-                -> x.intersects(pt, oom, rm));
+                -> x.intersects0(pt, oom, rm));
     }
 
     /**

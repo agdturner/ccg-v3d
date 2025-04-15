@@ -201,16 +201,16 @@ public class V3D_PolygonNoInternalHoles_dTest extends V3D_Test_d {
 //    }
 //
 //    /**
-//     * Test of intersects0 method, of class V3D_PolygonNoInternalHoles_d.
+//     * Test of intersectsNonCoplanar method, of class V3D_PolygonNoInternalHoles_d.
 //     */
 //    @Test
 //    public void testIntersects0_V3D_Point_d_double() {
-//        System.out.println("intersects0");
+//        System.out.println("intersectsNonCoplanar");
 //        V3D_Point_d pt = null;
 //        double epsilon = 0.0;
 //        V3D_PolygonNoInternalHoles_d instance = null;
 //        boolean expResult = false;
-//        boolean result = instance.intersects0(pt, epsilon);
+//        boolean result = instance.intersectsNonCoplanar(pt, epsilon);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -425,16 +425,16 @@ public class V3D_PolygonNoInternalHoles_dTest extends V3D_Test_d {
 //    }
 //
 //    /**
-//     * Test of intersects0 method, of class V3D_PolygonNoInternalHoles_d.
+//     * Test of intersectsNonCoplanar method, of class V3D_PolygonNoInternalHoles_d.
 //     */
 //    @Test
 //    public void testIntersects0_V3D_Triangle_d_double() {
-//        System.out.println("intersects0");
+//        System.out.println("intersectsNonCoplanar");
 //        V3D_Triangle_d t = null;
 //        double epsilon = 0.0;
 //        V3D_PolygonNoInternalHoles_d instance = null;
 //        boolean expResult = false;
-//        boolean result = instance.intersects0(t, epsilon);
+//        boolean result = instance.intersectsNonCoplanar(t, epsilon);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");

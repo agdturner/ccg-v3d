@@ -488,17 +488,17 @@ public class V3D_ConvexAreaTest extends V3D_Test {
 //    }
 //
 //    /**
-//     * Test of intersects0 method, of class V3D_ConvexArea.
+//     * Test of intersectsNonCoplanar method, of class V3D_ConvexArea.
 //     */
 //    @Test
 //    public void testIntersects0_3args_1() {
-//        System.out.println("intersects0");
+//        System.out.println("intersectsNonCoplanar");
 //        V3D_Point pt = null;
 //        int oom = 0;
 //        RoundingMode rm = null;
 //        V3D_ConvexArea instance = null;
 //        boolean expResult = false;
-//        boolean result = instance.intersects0(pt, oom, rm);
+//        boolean result = instance.intersectsNonCoplanar(pt, oom, rm);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -539,17 +539,17 @@ public class V3D_ConvexAreaTest extends V3D_Test {
 //    }
 //
 //    /**
-//     * Test of intersects0 method, of class V3D_ConvexArea.
+//     * Test of intersectsNonCoplanar method, of class V3D_ConvexArea.
 //     */
 //    @Test
 //    public void testIntersects0_3args_2() {
-//        System.out.println("intersects0");
+//        System.out.println("intersectsNonCoplanar");
 //        V3D_Line l = null;
 //        int oom = 0;
 //        RoundingMode rm = null;
 //        V3D_ConvexArea instance = null;
 //        boolean expResult = false;
-//        boolean result = instance.intersects0(l, oom, rm);
+//        boolean result = instance.intersectsNonCoplanar(l, oom, rm);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -573,17 +573,17 @@ public class V3D_ConvexAreaTest extends V3D_Test {
 //    }
 //
 //    /**
-//     * Test of intersects0 method, of class V3D_ConvexArea.
+//     * Test of intersectsNonCoplanar method, of class V3D_ConvexArea.
 //     */
 //    @Test
 //    public void testIntersects0_3args_3() {
-//        System.out.println("intersects0");
+//        System.out.println("intersectsNonCoplanar");
 //        V3D_LineSegment l = null;
 //        int oom = 0;
 //        RoundingMode rm = null;
 //        V3D_ConvexArea instance = null;
 //        boolean expResult = false;
-//        boolean result = instance.intersects0(l, oom, rm);
+//        boolean result = instance.intersectsNonCoplanar(l, oom, rm);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -607,17 +607,17 @@ public class V3D_ConvexAreaTest extends V3D_Test {
 //    }
 //
 //    /**
-//     * Test of intersects0 method, of class V3D_ConvexArea.
+//     * Test of intersectsNonCoplanar method, of class V3D_ConvexArea.
 //     */
 //    @Test
 //    public void testIntersects0_3args_4() {
-//        System.out.println("intersects0");
+//        System.out.println("intersectsNonCoplanar");
 //        V3D_Triangle t = null;
 //        int oom = 0;
 //        RoundingMode rm = null;
 //        V3D_ConvexArea instance = null;
 //        boolean expResult = false;
-//        boolean result = instance.intersects0(t, oom, rm);
+//        boolean result = instance.intersectsNonCoplanar(t, oom, rm);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -641,17 +641,17 @@ public class V3D_ConvexAreaTest extends V3D_Test {
 //    }
 //
 //    /**
-//     * Test of intersects0 method, of class V3D_ConvexArea.
+//     * Test of intersectsNonCoplanar method, of class V3D_ConvexArea.
 //     */
 //    @Test
 //    public void testIntersects0_3args_5() {
-//        System.out.println("intersects0");
+//        System.out.println("intersectsNonCoplanar");
 //        V3D_Rectangle r = null;
 //        int oom = 0;
 //        RoundingMode rm = null;
 //        V3D_ConvexArea instance = null;
 //        boolean expResult = false;
-//        boolean result = instance.intersects0(r, oom, rm);
+//        boolean result = instance.intersectsNonCoplanar(r, oom, rm);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
@@ -675,17 +675,17 @@ public class V3D_ConvexAreaTest extends V3D_Test {
 //    }
 //
 //    /**
-//     * Test of intersects0 method, of class V3D_ConvexArea.
+//     * Test of intersectsNonCoplanar method, of class V3D_ConvexArea.
 //     */
 //    @Test
 //    public void testIntersects0_3args_6() {
-//        System.out.println("intersects0");
+//        System.out.println("intersectsNonCoplanar");
 //        V3D_ConvexArea ch = null;
 //        int oom = 0;
 //        RoundingMode rm = null;
 //        V3D_ConvexArea instance = null;
 //        boolean expResult = false;
-//        boolean result = instance.intersects0(ch, oom, rm);
+//        boolean result = instance.intersectsNonCoplanar(ch, oom, rm);
 //        assertEquals(expResult, result);
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");

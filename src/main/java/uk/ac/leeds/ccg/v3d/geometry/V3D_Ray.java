@@ -377,7 +377,7 @@ public class V3D_Ray extends V3D_Geometry {
      * @return The intersection between {@code this} and {@code pl}.
      */
     public V3D_Point getIntersect0(V3D_Plane pl, int oom, RoundingMode rm) {
-        V3D_Point g = pl.getIntersect0(l, oom, rm);
+        V3D_Point g = pl.getIntersectNonParallel(l, oom, rm);
         if (g == null) {
             return null;
         } else {

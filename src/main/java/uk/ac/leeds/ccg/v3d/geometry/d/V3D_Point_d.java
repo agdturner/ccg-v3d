@@ -131,7 +131,7 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
      */
     public String toStringSimple(String pad) {
         return this.getClass().getSimpleName() + "("
-                + toStringFieldsSimple("") + ")";
+                + toStringFields("") + ")";
     }
 
     /**
@@ -151,18 +151,7 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
      */
     @Override
     protected String toStringFields(String pad) {
-        return super.toStringFields(pad) + "\n"
-                + pad + ",\n"
-                + pad + "rel=" + rel.toString(pad);
-    }
-
-    /**
-     * @param pad A padding of spaces.
-     * @return A description of the fields.
-     */
-    @Override
-    protected String toStringFieldsSimple(String pad) {
-        return pad + super.toStringFieldsSimple("") + ", rel=" + rel.toStringSimple("");
+        return pad + super.toStringFields("") + ", rel=" + rel.toStringSimple("");
     }
 
     /**

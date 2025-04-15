@@ -71,12 +71,12 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
         double epsilon = 1d / 10000000d;
         V3D_Point_d pt = pP0N1P0;
         V3D_Triangle_d instance = new V3D_Triangle_d(pP0P2P0, pP0N2P0, pP2P0P0);
-        assertTrue(instance.intersects00(pt, epsilon));
+        assertTrue(instance.intersectsCoplanar(pt, epsilon));
         pt = pN1P0P0;
-        assertFalse(instance.intersects00(pt, epsilon));
+        assertFalse(instance.intersectsCoplanar(pt, epsilon));
         instance = new V3D_Triangle_d(pP0P0P0, pP0P1P0, pP1P1P0);
         pt = pP0P2P2;
-        assertFalse(instance.intersects00(pt, epsilon));
+        assertFalse(instance.intersectsCoplanar(pt, epsilon));
         
     }
 
@@ -185,10 +185,10 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
         V3D_Triangle_d instance = new V3D_Triangle_d(env, P0P0P0, P1P0P0, P0P1P0, P0P0P1);
         String expResult = """
                            V3D_Triangle_d(
-                            pl=( V3D_Plane_d(
+                            pl=(V3D_Plane_d(
                              offset=V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0),
-                             p=  V3D_Vector_d(dx=1.0, dy=0.0, dz=0.0),
-                             n=  V3D_Vector_d(dx=1.0, dy=1.0, dz=1.0))),
+                             pv=V3D_Vector_d(dx=1.0, dy=0.0, dz=0.0),
+                             n=V3D_Vector_d(dx=1.0, dy=1.0, dz=1.0))),
                             offset=(V3D_Vector_d(dx=0.0, dy=0.0, dz=0.0)),
                             p=(V3D_Vector_d(dx=1.0, dy=0.0, dz=0.0)),
                             q=(V3D_Vector_d(dx=0.0, dy=1.0, dz=0.0)),

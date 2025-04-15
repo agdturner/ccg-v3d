@@ -616,9 +616,9 @@ public class V3D_ConvexArea extends V3D_Area {
      * @return A point or line segment.
      */
     @Override
-    public V3D_Point getIntersect0(V3D_Ray r, int oom,
+    public V3D_Point getIntersectNonCoplanar(V3D_Ray r, int oom,
             RoundingMode rm) {
-        V3D_Point i = getPl(oom, rm).getIntersect0(r.l, oom, rm);
+        V3D_Point i = getPl(oom, rm).getIntersectNonParallel(r.l, oom, rm);
         if (i == null) {
             return null;
         } else if (r.isAligned(i, oom, rm)
@@ -1132,7 +1132,7 @@ public class V3D_ConvexArea extends V3D_Area {
     //@Override
     public boolean intersects00(V3D_Point p, int oom, RoundingMode rm) {
         return triangles.values().parallelStream().anyMatch(x
-                -> x.intersects00(p, oom, rm));
+                -> x.intersectsCoplanar(p, oom, rm));
     }
 
     /**
@@ -1199,13 +1199,17 @@ public class V3D_ConvexArea extends V3D_Area {
      * @param l The line segment to test for intersection with.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode if rounding is needed.
-     * @return {@code true} iff {@code this} is intersected by {@code pv}.
+     * @return {@code true} if {@code this} is intersected by {@code pv}.
      */
     public boolean intersects0(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return triangles.values().parallelStream().anyMatch(x
-                -> x.intersects(l, oom, rm));
+        if (getPl(oom, rm).isOnPlane(l.l, oom, rm)) {
+            return triangles.values().parallelStream().anyMatch(x
+                    -> x.intersects(l, oom, rm));
+        } else {
+            return triangles.values().parallelStream().anyMatch(x
+                    -> x.intersectsNonCoplanar(l, oom, rm));
+        }
     }
-
     /**
      * Identify if this is intersected by {@code r}.
      *
@@ -1230,9 +1234,9 @@ public class V3D_ConvexArea extends V3D_Area {
      * @return {@code true} if l intersects this.
      */
     @Override
-    public boolean intersects0(V3D_Ray r, int oom, RoundingMode rm) {
+    public boolean intersectsNonCoplanar(V3D_Ray r, int oom, RoundingMode rm) {
         return triangles.values().parallelStream().anyMatch(x
-                -> x.intersects0(r, oom, rm));
+                -> x.intersectsNonCoplanar(r, oom, rm));
     }
 
     /**

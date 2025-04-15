@@ -225,7 +225,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
     public String toStringSimple(String pad) {
         return this.getClass().getSimpleName() + "\n"
                 + pad + "(\n"
-                + toStringFieldsSimple(pad + " ") + "\n"
+                + toStringFields(pad + " ") + "\n"
                 + pad + ")";
     }
 
@@ -235,21 +235,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      */
     @Override
     protected String toStringFields(String pad) {
-        String r = super.toStringFields(pad) + "\n"
-                + pad + ",\n";
-        r += pad + "p=" + getP().toString(pad) + "\n"
-                + pad + ",\n"
-                + pad + "v=" + v.toString(pad);
-        return r;
-    }
-
-    /**
-     * @param pad A padding of spaces.
-     * @return A description of the fields.
-     */
-    @Override
-    protected String toStringFieldsSimple(String pad) {
-        String r = super.toStringFieldsSimple(pad) + ",\n";
+        String r = super.toStringFields(pad) + ",\n";
         r += pad + "p=" + getP().toStringSimple("") + ",\n"
                 + pad + "v=" + v.toStringSimple(pad);
         return r;
@@ -257,7 +243,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
 
     /**
      * @param l The line to test if it is the same as {@code this}.
-     * @return {@code true} iff {@code l} is the same as {@code this}.
+     * @return {@code true} if {@code l} is the same as {@code this}.
      */
     public boolean equals(V3D_Line_d l) {
         return l.intersects(getP()) && l.intersects(getQ());
