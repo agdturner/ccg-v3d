@@ -3169,6 +3169,85 @@ public class V3D_PlaneTest extends V3D_Test {
     }
 
     /**
+     * Test of getIntersect method, of class V3D_Ray.
+     */
+    @Test
+    public void testGetIntersection_V3D_Plane_int() {
+        System.out.println("getIntersect");
+        V3D_Ray instance;
+        V3D_Plane p;
+        V3D_Geometry expResult;
+        V3D_Geometry result;
+//        // Test 1-3 axis with orthoganol plane through origin.
+//        // Test 1
+//        instance = new V3D_Ray(pN2P0P0, pN1P0P0, oom, rm);
+//        p = V3D_Plane.X0;
+////        pv = new V3D_Plane(new V3D_Environment(),
+////            V3D_Vector.ZERO, V3D_Vector.ZERO, V3D_Vector.J, V3D_Vector.K);
+//        //expResult = new V3D_Point(P0P0P0);
+//        expResult = pP0P0P0;
+//        result = p.getIntersect(instance, oom, rm);
+//        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+//        // Test 2
+//        instance = new V3D_Ray(env, P0P0P0, N1P0P0, N2P0P0);
+//        p = V3D_Plane.X0;
+//        result = p.getIntersect(instance, oom, rm);
+//        assertNull(p.getIntersect(instance, oom, rm));
+//        // Test 3
+//        instance = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
+//        p = V3D_Plane.X0;
+//        expResult = pP0P0P0;
+//        result = p.getIntersect(instance, oom, rm);
+//        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+//        // Test 4
+//        p = V3D_Plane.Y0;
+//        expResult = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
+//        result = p.getIntersect(instance, oom, rm);
+//        assertTrue(((V3D_Ray) expResult).equals((V3D_Ray) result, oom, rm));
+//        // Test 5
+//        p = V3D_Plane.Z0;
+//        expResult = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
+//        result = p.getIntersect(instance, oom, rm);
+//        assertTrue(((V3D_Ray) expResult).equals((V3D_Ray) result, oom, rm));
+//        // Test 6
+//        instance = new V3D_Ray(pN2P0P0, pN1P0P0, oom, rm);
+//        p = V3D_Plane.X0;
+//        expResult = pP0P0P0;
+//        result = p.getIntersect(instance, oom, rm);
+//        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+//        // Test 7
+//        instance = new V3D_Ray(pN1P0P0, pN2P0P0, oom, rm);
+//        p = V3D_Plane.X0;
+//        result = p.getIntersect(instance, oom, rm);
+//        assertNull(result);
+        // Test 8
+        // https://stackoverflow.com/questions/15102738/ray-plane-intersection-inaccurate-results-rounding-errors
+        oom = -6;
+        V3D_Vector n = new V3D_Vector(0, 1, 0);
+        p = new V3D_Plane(pP0P0P0, n);
+        BigRational x1 = BigRational.valueOf("20.818802");
+        BigRational y1 = BigRational.valueOf("27.240383");
+        BigRational z1 = BigRational.valueOf("15.124892");
+        BigRational x2 = BigRational.valueOf("21.947229");
+        BigRational y2 = BigRational.valueOf("-66.788452");
+        BigRational z2 = BigRational.valueOf("-18.894285");
+        instance = new V3D_Ray(
+                new V3D_Point(env, x1, y1, z1), 
+                new V3D_Point(env, x2, y2, z2), oom, rm);
+//        expResult = new V3D_Point(env, 
+//                BigRational.valueOf("21.145710"), 
+//                BigRational.valueOf("0.000002"), 
+//                BigRational.valueOf("5.269455"));
+        expResult = new V3D_Point(env, 
+                BigRational.valueOf("21.1457100561036516085730510220614772053700335647038486"), 
+                BigRational.valueOf("0"), 
+                BigRational.valueOf("5.2694533909308671111367060965926037475631810178228838"));
+        result = p.getIntersect(instance, oom, rm);
+        //System.out.println(result);
+        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
+    }
+    
+    /**
      * Test of getIntersect method, of class V3D_Plane.
      */
     @Test

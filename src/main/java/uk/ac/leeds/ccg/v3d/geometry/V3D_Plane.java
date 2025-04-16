@@ -874,6 +874,36 @@ public class V3D_Plane extends V3D_Geometry {
                 lp.getZ(oomn6, rm).add(lv.getDZ(oomn6, rm).multiply(t)));
         return res;
     }
+    
+    /**
+     * Compute and return the intersection with {@code r}. {@code null} is 
+     * returned if there is no intersection.
+     * See also V3D_Ray#getIntersect(V3D_Plane, int, RoundingMode).
+     *
+     * @param r The ray to intersect with.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     * @return The V3D_Geometry.
+     */
+    public V3D_Geometry getIntersect(V3D_Ray r, int oom, RoundingMode rm) {
+        V3D_Geometry g = getIntersect(r.l, oom, rm);
+        if (g == null) {
+            return null;
+        } else if (g instanceof V3D_Point gp) {
+            if (r.getPl().isOnSameSide(gp, r.l.getQ(oom, rm), oom, rm)) {
+//                // Now get the closest point on the plane as gp is on the 
+//                // ray but may not be on the plane.
+//                System.out.println(gp);
+//                System.out.println(getPointOfProjectedIntersection(gp, oom, rm));
+//                return getPointOfProjectedIntersection(gp, oom, rm);
+                return gp;
+            } else {
+                return null;
+            }
+        } else {
+            return r;
+        }
+    }
 
     /**
      * Compute and return the intersection with {@code l}.

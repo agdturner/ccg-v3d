@@ -500,7 +500,7 @@ public class V3D_Line extends V3D_Geometry {
                 }
             }
         }
-        return getIntersect0(l, oom, rm);
+        return getIntersectNonParallel(l, oom, rm);
     }
 
     /**
@@ -512,7 +512,7 @@ public class V3D_Line extends V3D_Geometry {
      * @param rm The RoundingMode for any rounding.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Point getIntersect0(V3D_Line l, int oom, RoundingMode rm) {
+    public V3D_Point getIntersectNonParallel(V3D_Line l, int oom, RoundingMode rm) {
         V3D_Point tp = getP();     
         V3D_Point tq = getQ(oom, rm);
         V3D_Point lp = l.getP();

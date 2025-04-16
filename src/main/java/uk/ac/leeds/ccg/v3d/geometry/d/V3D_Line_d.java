@@ -465,7 +465,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
                 }
             }
         }
-        return getIntersect0(l, epsilon);
+        return getIntersectNonParallel(l, epsilon);
     }
 
     /**
@@ -477,7 +477,7 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * considered equal.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_Point_d getIntersect0(V3D_Line_d l, double epsilon) {
+    public V3D_Point_d getIntersectNonParallel(V3D_Line_d l, double epsilon) {
         V3D_Point_d tp = getP();
         V3D_Point_d tq = getQ();
         V3D_Point_d lp = l.getP();

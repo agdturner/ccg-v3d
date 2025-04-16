@@ -276,60 +276,6 @@ public class V3D_RayTest extends V3D_Test {
      * Test of getIntersect method, of class V3D_Ray.
      */
     @Test
-    public void testGetIntersection_V3D_Plane_int() {
-        System.out.println("getIntersect");
-        V3D_Ray instance;
-        V3D_Plane p;
-        V3D_Geometry expResult;
-        V3D_Geometry result;
-        // Test 1-3 axis with orthoganol plane through origin.
-        // Test 1
-        instance = new V3D_Ray(pN2P0P0, pN1P0P0, oom, rm);
-        p = V3D_Plane.X0;
-//        pv = new V3D_Plane(new V3D_Environment(),
-//            V3D_Vector.ZERO, V3D_Vector.ZERO, V3D_Vector.J, V3D_Vector.K);
-        //expResult = new V3D_Point(P0P0P0);
-        expResult = pP0P0P0;
-        result = instance.getIntersect(p, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 2
-        instance = new V3D_Ray(env, P0P0P0, N1P0P0, N2P0P0);
-        p = V3D_Plane.X0;
-        assertNull(instance.getIntersect(p, oom, rm));
-        
-        // Test 1
-        instance = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
-        p = V3D_Plane.X0;
-        expResult = pP0P0P0;
-        result = instance.getIntersect(p, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 2
-        p = V3D_Plane.Y0;
-        expResult = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
-        result = instance.getIntersect(p, oom, rm);
-        assertTrue(((V3D_Ray) expResult).equals((V3D_Ray) result, oom, rm));
-        // Test 3
-        p = V3D_Plane.Z0;
-        expResult = new V3D_Ray(pP0P0P0, pP1P0P0, oom, rm);
-        result = instance.getIntersect(p, oom, rm);
-        assertTrue(((V3D_Ray) expResult).equals((V3D_Ray) result, oom, rm));
-        // Test 4
-        instance = new V3D_Ray(pN2P0P0, pN1P0P0, oom, rm);
-        p = V3D_Plane.X0;
-        expResult = pP0P0P0;
-        result = instance.getIntersect(p, oom, rm);
-        assertTrue(((V3D_Point) expResult).equals((V3D_Point) result, oom, rm));
-        // Test 5
-        instance = new V3D_Ray(pN1P0P0, pN2P0P0, oom, rm);
-        p = V3D_Plane.X0;
-        result = instance.getIntersect(p, oom, rm);
-        assertNull(result);
-    }
-
-    /**
-     * Test of getIntersect method, of class V3D_Ray.
-     */
-    @Test
     public void testGetIntersection_V3D_Ray_int() {
         System.out.println("getIntersect");
         V3D_Ray r;

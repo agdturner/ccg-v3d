@@ -2981,6 +2981,36 @@ public class V3D_Plane_dTest extends V3D_Test_d {
      * Test of getIntersect method, of class V3D_Plane_d.
      */
     @Test
+    public void testGetIntersection_V3D_Ray_d() {
+        System.out.println("getIntersect");
+        double epsilon = 1d / 10000000d;
+        V3D_Ray_d instance;
+        V3D_Plane_d p;
+        V3D_Geometry_d expResult;
+        V3D_Geometry_d result;
+        // Test 8
+        // https://stackoverflow.com/questions/15102738/ray-plane-intersection-inaccurate-results-rounding-errors
+        V3D_Vector_d n = new V3D_Vector_d(0, 1, 0);
+        p = new V3D_Plane_d(pP0P0P0, n);
+        double x1 = 20.818802d;
+        double y1 = 27.240383;
+        double z1 = 15.124892;
+        double x2 = 21.947229;
+        double y2 = -66.788452;
+        double z2 = -18.894285;
+        instance = new V3D_Ray_d(
+                new V3D_Point_d(env, x1, y1, z1), 
+                new V3D_Point_d(env, x2, y2, z2));
+        expResult = new V3D_Point_d(env, 21.145710056103653, 0d, 5.269453390930867d);
+        //expResult = new V3D_Point_d(env, 21.145710d, 0.000002d, 5.269455d);
+        result = p.getIntersect(instance, epsilon);
+        assertTrue(((V3D_Point_d) expResult).equals((V3D_Point_d) result, epsilon));
+    }
+
+    /**
+     * Test of getIntersect method, of class V3D_Plane_d.
+     */
+    @Test
     public void testGetIntersection_V3D_LineSegment_d() {
         System.out.println("getIntersect");
         double epsilon = 1d / 10000000d;

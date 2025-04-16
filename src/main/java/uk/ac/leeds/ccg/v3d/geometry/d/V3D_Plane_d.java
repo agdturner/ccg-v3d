@@ -869,11 +869,10 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         } else {
             t = -nummdet / denmdet;
         }
-        V3D_Point_d res = new V3D_Point_d(env,
+        return new V3D_Point_d(env,
                 lp.getX() + (lv.dx * (t)),
                 lp.getY() + (lv.dy * (t)),
                 lp.getZ() + (lv.dz * (t)));
-        return res;
     }
 
     /**
@@ -951,11 +950,46 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         } else {
             t = -nummdet / denmdet;
         }
-        V3D_Point_d res = new V3D_Point_d(env,
+        return new V3D_Point_d(env,
                 lp.getX() + (lv.dx * (t)),
                 lp.getY() + (lv.dy * (t)),
                 lp.getZ() + (lv.dz * (t)));
-        return res;
+    }
+    
+    /**
+     * Compute and return the intersection with {@code r}. {@code null} is 
+     * returned if there is no intersection.
+     * See also V3D_Ray_d#getIntersect(V3D_Plane_d, double).
+     *
+     * @param r The ray to intersect with.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The V3D_Geometry.
+     */
+    public V3D_Geometry_d getIntersect(V3D_Ray_d r, double epsilon) {
+        // Check if infinite line intersects.
+        V3D_Geometry_d g = getIntersect(r.l, epsilon);
+        if (g == null) {
+            return null;
+        } else {
+            if (g instanceof V3D_Point_d gp) {
+                if (r.getPl().isOnSameSide(gp, r.l.getQ(), epsilon)) {
+//                    // Get the closest point on the plane as gp is on the 
+//                    // ray but may not be on the plane?
+//                    System.out.println(gp);
+//                    System.out.println(getPointOfProjectedIntersection(gp, epsilon).toString());
+//                    System.out.println(getPointOfProjectedIntersection(gp).toString());
+//                    System.out.println(r.l.getPointOfIntersect(gp, epsilon));
+//                    System.out.println(r.l.getPointOfIntersect(gp, true, epsilon));
+//                    return getPointOfProjectedIntersection(gp, epsilon);
+                    return gp;
+                } else {
+                    return null;
+                }
+            } else {
+                return r;
+            }
+        }
     }
 
     /**

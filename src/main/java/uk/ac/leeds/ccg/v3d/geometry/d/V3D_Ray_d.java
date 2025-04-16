@@ -296,21 +296,8 @@ public class V3D_Ray_d extends V3D_Geometry_d {
     /**
      * Compute and return the intersection with {@code pl}. {@code null} is 
      * returned if there is no intersection.
+     * See also V3D_Plane_d#getIntersect(V3D_Ray_d, double).
      * 
-     * It is possible to distinguish a ray intersection with a plane (ray-plane)
-     * and a plane intersection with a ray (plane-ray). In some cases the two
-     * are the same, but due to coordinate number imprecision, sometimes an
-     * intersection point cannot be found that is both on the ray and on the
-     * plane. For a ray-plane intersection we can force the point to be on the
-     * ray and either choose a point on or before the plane, or on or after the
-     * plane.
-     *
-     * For the plane-ray intersection we can force the point to be on the plane
-     * and choose the vague direction of the point from the intersection using
-     * the orientation of the ray relative to the plane (and where the ray is
-     * perpendicular to the plane, we can choose the direction relative to the
-     * orientation of the axes and origin).
-     *
      * Support ray-plane intersection to choose on or before, or on or after?
      *
      * @param pl The plane to get the geometrical intersection with this.
@@ -325,7 +312,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
             return null;
         } else {
             if (g instanceof V3D_Point_d gp) {
-                if (getPl().isOnSameSide(gp, this.l.getQ(), epsilon)) {
+                if (getPl().isOnSameSide(gp, l.getQ(), epsilon)) {
                     return g;
                 } else {
                     return null;
