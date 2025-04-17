@@ -54,11 +54,6 @@ public class V3D_Rectangle extends V3D_Area {
      */
     protected final V3D_Triangle rsp;
 
-    /**
-     * For storing the convex hull
-     */
-    protected V3D_ConvexArea convexHull;
-
     public V3D_Rectangle(V3D_Rectangle r) {
         super(r.env, r.offset, null);
         pqr = new V3D_Triangle(r.pqr);
@@ -405,9 +400,9 @@ public class V3D_Rectangle extends V3D_Area {
      */
     @Override
     public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        super.translate(v, oom, rm);
         pqr.translate(v, oom, rm);
         rsp.translate(v, oom, rm);
-        convexHull = null;
     }
 
     @Override
@@ -680,20 +675,6 @@ public class V3D_Rectangle extends V3D_Area {
             }
         }
         return true;
-    }
-
-    /**
-     * Initialises {@link #convexHull} if it is {@code null} and returns it.
-     *
-     * @param oom The Order of Magnitude for the precision.
-     * @param rm The RoundingMode if rounding is needed.
-     * @return {@link #convexHull} initialising it if it is {@code null}.
-     */
-    public V3D_ConvexArea getConvexHull(int oom, RoundingMode rm) {
-        if (convexHull == null) {
-            convexHull = new V3D_ConvexArea(oom, rm, pqr, rsp);
-        }
-        return convexHull;
     }
 
     /**

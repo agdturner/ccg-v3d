@@ -3455,7 +3455,7 @@ public class V3D_Plane_dTest extends V3D_Test_d {
     }
 
     /**
-     * Test of getPointOfProjectedIntersection method, of class V3D_Plane_d.
+     * Test of getPointOfProjectedIntersect method, of class V3D_Plane_d.
      */
     @Test
     public void testGetPointOfProjectedIntersection() {
@@ -3469,7 +3469,7 @@ public class V3D_Plane_dTest extends V3D_Test_d {
         pt = pP1P0P0;
         instance = V3D_Plane_d.X0;
         expResult = pP0P0P0;
-        result = instance.getPointOfProjectedIntersection(pt, epsilon);
+        result = instance.getPointOfProjectedIntersect(pt, epsilon);
         assertTrue(expResult.equals(result));
     }
 

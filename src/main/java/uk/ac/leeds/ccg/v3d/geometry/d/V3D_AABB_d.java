@@ -1026,7 +1026,7 @@ public class V3D_AABB_d implements Serializable {
         double ba = 0d;
         V3D_Plane_d bpl = null;
         for (var x : ipts) {
-            V3D_Point_d pp = vpl.getPointOfProjectedIntersection(x, epsilon);
+            V3D_Point_d pp = vpl.getPointOfProjectedIntersect(x, epsilon);
             double angle = Math.abs(cv.getAngle(new V3D_Vector_d(pt, pp)));
             if (v2pl.isOnSameSide(ap, x, epsilon)) {
                 if (angle > aa) {
@@ -1055,7 +1055,7 @@ public class V3D_AABB_d implements Serializable {
         double ra = 0d;
         V3D_Plane_d rpl = null;
         for (var x : ipts) {
-            V3D_Point_d pp = v2pl.getPointOfProjectedIntersection(x, epsilon);
+            V3D_Point_d pp = v2pl.getPointOfProjectedIntersect(x, epsilon);
             double angle = Math.abs(cv.getAngle(new V3D_Vector_d(pt, pp)));
             if (vpl.isOnSameSide(lp, x, epsilon)) {
                 if (angle > la) {
@@ -1147,7 +1147,7 @@ public class V3D_AABB_d implements Serializable {
         double ba = 0d;
         V3D_Plane_d bpl = null;
         for (var x : ipts) {
-            V3D_Point_d pp = vpl.getPointOfProjectedIntersection(x, epsilon);
+            V3D_Point_d pp = vpl.getPointOfProjectedIntersect(x, epsilon);
             double angle = Math.abs(cv.getAngle(new V3D_Vector_d(pt, pp)));
             if (v2pl.isOnSameSide(ap, x, epsilon)) {
                 if (angle > aa) {
@@ -1176,7 +1176,7 @@ public class V3D_AABB_d implements Serializable {
         double ra = 0d;
         V3D_Plane_d rpl = null;
         for (var x : ipts) {
-            V3D_Point_d pp = v2pl.getPointOfProjectedIntersection(x, epsilon);
+            V3D_Point_d pp = v2pl.getPointOfProjectedIntersect(x, epsilon);
             double angle = Math.abs(cv.getAngle(new V3D_Vector_d(pt, pp)));
             if (vpl.isOnSameSide(lp, x, epsilon)) {
                 if (angle > la) {

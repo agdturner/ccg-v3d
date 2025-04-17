@@ -51,11 +51,6 @@ public class V3D_Rectangle_d extends V3D_Area_d {
     protected final V3D_Triangle_d rsp;
 
     /**
-     * For storing the convex hull
-     */
-    protected V3D_ConvexArea_d convexHull;
-
-    /**
      * Create a new instance.
      *
      * @param r The rectangle to clone.
@@ -367,9 +362,9 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      */
     @Override
     public void translate(V3D_Vector_d v) {
+        super.translate(v);
         pqr.translate(v);
         rsp.translate(v);
-        convexHull = null;
     }
 
     @Override
@@ -472,8 +467,8 @@ public class V3D_Rectangle_d extends V3D_Area_d {
      */
     public V3D_FiniteGeometry_d getIntersect0(V3D_Triangle_d t,
             double epsilon) {
-        V3D_FiniteGeometry_d pqrit = pqr.getIntersect0(t, epsilon);
-        V3D_FiniteGeometry_d rspit = rsp.getIntersect0(t, epsilon);
+        V3D_FiniteGeometry_d pqrit = pqr.getIntersectNonCoplanar(t, epsilon);
+        V3D_FiniteGeometry_d rspit = rsp.getIntersectNonCoplanar(t, epsilon);
         return join(epsilon, pqrit, rspit);
     }
 
@@ -657,21 +652,6 @@ public class V3D_Rectangle_d extends V3D_Area_d {
             }
         }
         return true;
-    }
-
-    /**
-     * Initialises {@link #convexHull} if it is {@code null} and returns it.
-     *
-     * @param epsilon The tolerance within which two vectors are regarded as
-     * equal.
-     * @return {@link #convexHull} initialising it if it is {@code null}.
-     */
-    public V3D_ConvexArea_d getConvexHull(double epsilon) {
-        if (convexHull == null) {
-            convexHull = new V3D_ConvexArea_d(epsilon, pqr,
-                    rsp);
-        }
-        return convexHull;
     }
 
     /**

@@ -215,7 +215,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
             return true;
         }
         if (l.intersects(pt, epsilon)) {
-            return getPl().isOnSameSide(pt, this.l.getQ(), epsilon);
+            return getPl().isOnSameSide(pt, l.getQ(), epsilon);
         }
         return false;
     }
@@ -267,7 +267,7 @@ public class V3D_Ray_d extends V3D_Geometry_d {
             return null;
         }
         // Calculate the intersection point
-        V3D_Point_d pt = (V3D_Point_d) ypl.getIntersect(l);
+        V3D_Point_d pt = (V3D_Point_d) ypl.getIntersect(l, epsilon);
         if (isAligned(pt, epsilon) && aabby.intersects(pt)) {
             return pt;
         }

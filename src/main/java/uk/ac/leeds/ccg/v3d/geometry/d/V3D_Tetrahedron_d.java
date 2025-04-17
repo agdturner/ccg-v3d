@@ -331,7 +331,7 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
     public double getVolume() {
         V3D_Triangle_d tpqr = getPqr();
         V3D_Point_d ts = getS();
-        double hd3 = tpqr.pl.getPointOfProjectedIntersection(ts)
+        double hd3 = tpqr.pl.getPointOfProjectedIntersect(ts)
                 .getDistance(ts) / 3d;
         return tpqr.getArea() * hd3;
     }

@@ -1083,7 +1083,7 @@ public class V3D_AABB implements Serializable {
         BigRational ba = BigRational.ZERO;
         V3D_Plane bpl = null;
         for (var x : ipts) {
-            V3D_Point pp = vpl.getPointOfProjectedIntersection(x, oom, rm);
+            V3D_Point pp = vpl.getPointOfProjectedIntersect(x, oom, rm);
             //BigRational a = v2.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
             BigRational angle = cv.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
             if (v2pl.isOnSameSide(ap, x, oom, rm)) {
@@ -1113,7 +1113,7 @@ public class V3D_AABB implements Serializable {
         BigRational ra = BigRational.ZERO;
         V3D_Plane rpl = null;
         for (var x : ipts) {
-            V3D_Point pp = v2pl.getPointOfProjectedIntersection(x, oom, rm);
+            V3D_Point pp = v2pl.getPointOfProjectedIntersect(x, oom, rm);
             //BigRational a = v.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
             BigRational angle = cv.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
             if (vpl.isOnSameSide(lp, x, oom, rm)) {
@@ -1208,7 +1208,7 @@ public class V3D_AABB implements Serializable {
         BigRational ba = BigRational.ZERO;
         V3D_Plane bpl = null;
         for (var x : ipts) {
-            V3D_Point pp = vpl.getPointOfProjectedIntersection(x, oomn4, rm);
+            V3D_Point pp = vpl.getPointOfProjectedIntersect(x, oomn4, rm);
             //BigRational a = v2.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
             BigRational angle = cv.getAngle(new V3D_Vector(pt, pp, oomn4, rm), oomn4, rm).abs();
             if (v2pl.isOnSameSide(ap, x, oomn4, rm)) {
@@ -1238,7 +1238,7 @@ public class V3D_AABB implements Serializable {
         BigRational ra = BigRational.ZERO;
         V3D_Plane rpl = null;
         for (var x : ipts) {
-            V3D_Point pp = v2pl.getPointOfProjectedIntersection(x, oomn4, rm);
+            V3D_Point pp = v2pl.getPointOfProjectedIntersect(x, oomn4, rm);
             //BigRational a = v.getAngle(new V3D_Vector(pt, pp, oom, rm), oom, rm).abs();
             BigRational angle = cv.getAngle(new V3D_Vector(pt, pp, oomn4, rm), oomn4, rm).abs();
             if (vpl.isOnSameSide(lp, x, oomn4, rm)) {

@@ -891,11 +891,11 @@ public class V3D_Plane extends V3D_Geometry {
             return null;
         } else if (g instanceof V3D_Point gp) {
             if (r.getPl().isOnSameSide(gp, r.l.getQ(oom, rm), oom, rm)) {
-//                // Now get the closest point on the plane as gp is on the 
-//                // ray but may not be on the plane.
+//                // Get closest point on the plane as gp is on the 
+//                // ray but may not be on the plane?
 //                System.out.println(gp);
-//                System.out.println(getPointOfProjectedIntersection(gp, oom, rm));
-//                return getPointOfProjectedIntersection(gp, oom, rm);
+//                System.out.println(getPointOfProjectedIntersect(gp, oom, rm));
+//                return getPointOfProjectedIntersect(gp, oom, rm);
                 return gp;
             } else {
                 return null;
@@ -975,7 +975,7 @@ public class V3D_Plane extends V3D_Geometry {
             }
             return null;
         }
-        V3D_Point pi = pl.getPointOfProjectedIntersection(getP(), oom, rm);
+        V3D_Point pi = pl.getPointOfProjectedIntersect(getP(), oom, rm);
         return new V3D_Line(pi, v);
     }
 
@@ -995,7 +995,7 @@ public class V3D_Plane extends V3D_Geometry {
          * direction of the line.
          * Together these define the intersection.
          */
-        return new V3D_Line(pl.getPointOfProjectedIntersection(getP(), oom, rm),
+        return new V3D_Line(pl.getPointOfProjectedIntersect(getP(), oom, rm),
                 n.getCrossProduct(pl.n, oom, rm));
     }
 
@@ -1282,7 +1282,7 @@ public class V3D_Plane extends V3D_Geometry {
      * {@code null} if {@code pt} is on {@code this}. The point pl on the result
      * is the point of intersection
      */
-    public V3D_Point getPointOfProjectedIntersection(V3D_Point pt, int oom, RoundingMode rm) {
+    public V3D_Point getPointOfProjectedIntersect(V3D_Point pt, int oom, RoundingMode rm) {
         if (intersects(pt, oom, rm)) {
             return pt;
         } else {

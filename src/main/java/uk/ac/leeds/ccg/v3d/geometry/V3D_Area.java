@@ -148,6 +148,29 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
             RoundingMode rm);
 
     /**
+     * Translate (move relative to the origin).
+     *
+     * @param v The vector to translate.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode if rounding is needed.
+     */
+    @Override
+    public void translate(V3D_Vector v, int oom, RoundingMode rm) {
+        super.translate(v, oom, rm);
+        if (pl != null) {
+            pl.translate(v, oom, rm);
+        }
+        if (points != null) {
+            points.values().parallelStream().forEach(x -> 
+                    x.translate(v, oom, rm));
+        }
+        if (edges != null) {
+            edges.values().parallelStream().forEach(x -> 
+                    x.translate(v, oom, rm));
+        }
+    }
+    
+    /**
      * For calculating and returning the perimeter.
      *
      * @param oom The Order of Magnitude for the precision.

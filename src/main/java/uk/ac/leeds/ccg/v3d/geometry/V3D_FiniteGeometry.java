@@ -116,6 +116,5 @@ public abstract class V3D_FiniteGeometry extends V3D_Geometry {
         if (en != null) {
             en.translate(v, oom, rm);
         }
-        //en = null;
     }
 }

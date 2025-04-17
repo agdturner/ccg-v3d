@@ -394,7 +394,7 @@ public class V3D_Tetrahedron extends V3D_Volume {
         V3D_Triangle tpqr = getPqr();
         V3D_Point ts = getS();
         BigRational hd3 = new Math_BigRationalSqrt(
-                tpqr.getPl(oomn6, rm).getPointOfProjectedIntersection(ts, oomn6, rm)
+                tpqr.getPl(oomn6, rm).getPointOfProjectedIntersect(ts, oomn6, rm)
                         .getDistanceSquared(ts, oomn6, rm), oomn6, rm)
                 .getSqrt(oomn6, rm).divide(3);
         return tpqr.getArea(oomn6 - 3, rm).multiply(hd3);

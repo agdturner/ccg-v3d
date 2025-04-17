@@ -60,16 +60,16 @@ public abstract class V3D_FiniteGeometry_d extends V3D_Geometry_d {
         super(env, offset);
     }
     
-    /**
-     * For evaluating if the geometry is intersected by the Axis Aligned 
-     * Bounding Box aabb.
-     *
-     * @param aabb The Axis Aligned Bounding Box to test for intersection.
-     * @param epsilon The tolerance within which two vector components are
-     * considered equal.
-     * @return {@code true} iff the geometry intersects aabb at the given precision.
-     */
-    //public abstract boolean isIntersectedBy(V3D_AABB_d aabb, double epsilon);
+//    /**
+//     * For evaluating if the geometry is intersected by the Axis Aligned 
+//     * Bounding Box aabb.
+//     *
+//     * @param aabb The Axis Aligned Bounding Box to test for intersection.
+//     * @param epsilon The tolerance within which two vector components are
+//     * considered equal.
+//     * @return {@code true} iff the geometry intersects aabb at the given precision.
+//     */
+//    public abstract boolean intersects(V3D_AABB_d aabb, double epsilon);
     
     /**
      * @return A copy of the points of the geometry.
@@ -99,6 +99,5 @@ public abstract class V3D_FiniteGeometry_d extends V3D_Geometry_d {
         if (en != null) {
             en.translate(v);
         }
-        //en = null;
     }
 }

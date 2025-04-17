@@ -974,14 +974,14 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         } else {
             if (g instanceof V3D_Point_d gp) {
                 if (r.getPl().isOnSameSide(gp, r.l.getQ(), epsilon)) {
-//                    // Get the closest point on the plane as gp is on the 
+//                    // Get closest point on the plane as gp is on the 
 //                    // ray but may not be on the plane?
 //                    System.out.println(gp);
-//                    System.out.println(getPointOfProjectedIntersection(gp, epsilon).toString());
-//                    System.out.println(getPointOfProjectedIntersection(gp).toString());
+//                    System.out.println(getPointOfProjectedIntersect(gp, epsilon).toString());
+//                    System.out.println(getPointOfProjectedIntersect(gp).toString());
 //                    System.out.println(r.l.getPointOfIntersect(gp, epsilon));
 //                    System.out.println(r.l.getPointOfIntersect(gp, true, epsilon));
-//                    return getPointOfProjectedIntersection(gp, epsilon);
+//                    return getPointOfProjectedIntersect(gp, epsilon);
                     return gp;
                 } else {
                     return null;
@@ -1058,7 +1058,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             }
             return null;
         }
-        V3D_Point_d pi = pl.getPointOfProjectedIntersection(getP());
+        V3D_Point_d pi = pl.getPointOfProjectedIntersect(getP());
         return new V3D_Line_d(pi, v);
     }
 
@@ -1093,7 +1093,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             }
             return null;
         }
-        V3D_Point_d pi = pl.getPointOfProjectedIntersection(getP(), epsilon);
+        V3D_Point_d pi = pl.getPointOfProjectedIntersect(getP(), epsilon);
         return new V3D_Line_d(pi, v);
     }
 
@@ -1113,7 +1113,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
          * direction of the line.
          * Together these define the intersection.
          */
-        return new V3D_Line_d(pl.getPointOfProjectedIntersection(getP(), epsilon),
+        return new V3D_Line_d(pl.getPointOfProjectedIntersect(getP(), epsilon),
                 n.getCrossProduct(pl.n));
     }
 
@@ -1417,7 +1417,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * {@code null} if {@code pt} is on {@code this}. The point pl on the result
      * is the point of intersection
      */
-    public V3D_Point_d getPointOfProjectedIntersection(V3D_Point_d pt) {
+    public V3D_Point_d getPointOfProjectedIntersect(V3D_Point_d pt) {
         if (intersects(pt)) {
             return pt;
         }
@@ -1438,7 +1438,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * {@code null} if {@code pt} is on {@code this}. The point pl on the result
      * is the point of intersection
      */
-    public V3D_Point_d getPointOfProjectedIntersection(V3D_Point_d pt,
+    public V3D_Point_d getPointOfProjectedIntersect(V3D_Point_d pt,
             double epsilon) {
         if (intersects(epsilon, pt)) {
             return pt;

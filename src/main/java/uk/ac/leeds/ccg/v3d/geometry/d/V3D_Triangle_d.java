@@ -824,7 +824,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     @Override
     public V3D_Point_d getIntersectNonCoplanar(V3D_Ray_d r, double epsilon) {
-        V3D_Point_d i = getIntersectNonCoplanar(r.l, epsilon);
+        V3D_Point_d i = V3D_Triangle_d.this.getIntersectNonCoplanar(r.l, epsilon);
         if (i == null) {
             return null;
         } else if (r.isAligned(i, epsilon)) {
@@ -877,7 +877,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      */
     public V3D_Point_d getIntersectNonCoplanar(V3D_LineSegment_d l,
             double epsilon) {
-        V3D_Point_d i = getIntersectNonCoplanar(l.l, epsilon);
+        V3D_Point_d i = V3D_Triangle_d.this.getIntersectNonCoplanar(l.l, epsilon);
         if (i == null) {
             return null;
         } else if (l.isAligned(i, epsilon)) {
@@ -1150,7 +1150,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
         if (pl.equalsIgnoreOrientation(t.pl, epsilon)) {
             return getIntersectCoplanar(t, epsilon);
         } else {
-            return getIntersect0(t, epsilon);
+            return getIntersectNonCoplanar(t, epsilon);
         }
     }
 
@@ -1194,12 +1194,6 @@ public class V3D_Triangle_d extends V3D_Area_d {
             if (pit && qit && rit) {
                 return this;
             }
-            //                if (intersectsCoplanar(t, epsilon)) {
-//                    return t;
-//                }
-//                if (t.intersectsCoplanar(this, epsilon)) {
-//                    return this;
-//                }
             V3D_FiniteGeometry_d gpq = t.getIntersect(getPQ(), epsilon);
             V3D_FiniteGeometry_d gqr = t.getIntersect(getQR(), epsilon);
             V3D_FiniteGeometry_d grp = t.getIntersect(getRP(), epsilon);
@@ -1369,7 +1363,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
      * @return The intersection between {@code t} and {@code this} or
      * {@code null} if there is no intersection.
      */
-    public V3D_FiniteGeometry_d getIntersect0(V3D_Triangle_d t, double epsilon) {
+    public V3D_FiniteGeometry_d getIntersectNonCoplanar(V3D_Triangle_d t, double epsilon) {
         if (getAABB().intersects(t.getAABB())) {
             // Triangles are not coplanar.
             V3D_FiniteGeometry_d i = getIntersect(t.pl, epsilon);
@@ -1469,9 +1463,6 @@ public class V3D_Triangle_d extends V3D_Area_d {
     @Override
     public void translate(V3D_Vector_d v) {
         super.translate(v);
-        if (en != null) {
-            en.translate(v);
-        }
         if (pq != null) {
             pq.translate(v);
         }
@@ -1480,9 +1471,6 @@ public class V3D_Triangle_d extends V3D_Area_d {
         }
         if (rp != null) {
             rp.translate(v);
-        }
-        if (pl != null) {
-            pl.translate(v);
         }
         if (pqpl != null) {
             pqpl.translate(v);
@@ -1818,7 +1806,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
                 return getDistanceSquaredEdge(pt, epsilon);
             }
         }
-        V3D_Point_d poi = pl.getPointOfProjectedIntersection(pt, epsilon);
+        V3D_Point_d poi = pl.getPointOfProjectedIntersect(pt, epsilon);
         if (intersectsCoplanar(poi, epsilon)) {
             return poi.getDistanceSquared(pt);
         } else {
@@ -2280,7 +2268,7 @@ public class V3D_Triangle_d extends V3D_Area_d {
     //@Override
     public boolean intersectsNonCoplanar(V3D_Line_d l, double epsilon) {
         if (l.intersects(getAABB(), epsilon)) {
-            return getIntersectNonCoplanar(l, epsilon) != null;
+            return V3D_Triangle_d.this.getIntersectNonCoplanar(l, epsilon) != null;
         } else {
             return false;
         }
@@ -2414,9 +2402,10 @@ public class V3D_Triangle_d extends V3D_Area_d {
             return t.intersectsNonCoplanar(getPQ(), epsilon)
                     || t.intersectsNonCoplanar(getQR(), epsilon)
                     || t.intersectsNonCoplanar(getRP(), epsilon)
-                    || V3D_Triangle_d.this.intersectsNonCoplanar(t.getPQ(), epsilon)
-                    || V3D_Triangle_d.this.intersectsNonCoplanar(t.getQR(), epsilon)
-                    || V3D_Triangle_d.this.intersectsNonCoplanar(t.getRP(), epsilon);
+                    || intersectsNonCoplanar(t.getPQ(), epsilon)
+                    || intersectsNonCoplanar(t.getQR(), epsilon)
+                    || intersectsNonCoplanar(t.getRP(), epsilon)
+                    || getIntersectNonCoplanar(t, epsilon) != null;
         }
     }
 
