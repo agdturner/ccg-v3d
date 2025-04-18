@@ -385,7 +385,8 @@ public class V3D_Plane extends V3D_Geometry {
          * https://math.stackexchange.com/questions/137362/how-to-find-perpendicular-vector-to-another-vector
          */
         V3D_Vector v = new V3D_Vector(n.dz, n.dz, n.dx.negate().add(n.dy.negate(), oom, rm));
-        if (v.isZero()) {
+        //if (v.isZero()) {
+        if (v.isZero(oom, rm)) {
             return new V3D_Vector(n.dy.negate().add(n.dz.negate(), oom, rm), n.dx, n.dx);
         }
         return v;
@@ -823,9 +824,9 @@ public class V3D_Plane extends V3D_Geometry {
         m[0][2] = BigRational.ONE;
         m[0][3] = BigRational.ONE;
         V3D_Point tp = getP();
-        V3D_Vector pv = getPV(oom, rm);
-        V3D_Point tq = getQ(pv, oom, rm);
-        V3D_Point tr = getR(pv, oom, rm);
+        V3D_Vector perpv = getPV(oom, rm);
+        V3D_Point tq = getQ(perpv, oom, rm);
+        V3D_Point tr = getR(perpv, oom, rm);
         m[1][0] = tp.getX(oomn6, rm);
         m[1][1] = tq.getX(oomn6, rm);
         m[1][2] = tr.getX(oomn6, rm);
@@ -868,11 +869,10 @@ public class V3D_Plane extends V3D_Geometry {
         } else {
             t = nummdet.divide(denmdet).negate();
         }
-        V3D_Point res = new V3D_Point(env,
+        return new V3D_Point(env,
                 lp.getX(oomn6, rm).add(lv.getDX(oomn6, rm).multiply(t)),
                 lp.getY(oomn6, rm).add(lv.getDY(oomn6, rm).multiply(t)),
                 lp.getZ(oomn6, rm).add(lv.getDZ(oomn6, rm).multiply(t)));
-        return res;
     }
     
     /**

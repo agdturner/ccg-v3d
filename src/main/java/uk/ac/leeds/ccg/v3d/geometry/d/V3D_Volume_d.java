@@ -89,9 +89,11 @@ public abstract class V3D_Volume_d extends V3D_FiniteGeometry_d {
     /**
      * For calculating and returning the perimeter.
      *
-     * @return The Perimeter.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
+     * @return The Volume.
      */
-    public abstract double getVolume();
+    public abstract double getVolume(double epsilon);
 
     /**
      * @return A copy of the points of the geometries gs.

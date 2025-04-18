@@ -326,12 +326,14 @@ public class V3D_Tetrahedron_d extends V3D_Volume_d {
      * Calculate and return the volume.
      * https://en.wikipedia.org/wiki/Tetrahedron#Volume This implementation is
      * currently a bit rough and ready.
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      */
     @Override
-    public double getVolume() {
+    public double getVolume(double epsilon) {
         V3D_Triangle_d tpqr = getPqr();
         V3D_Point_d ts = getS();
-        double hd3 = tpqr.pl.getPointOfProjectedIntersect(ts)
+        double hd3 = tpqr.pl.getPointOfProjectedIntersect(ts, epsilon)
                 .getDistance(ts) / 3d;
         return tpqr.getArea() * hd3;
     }

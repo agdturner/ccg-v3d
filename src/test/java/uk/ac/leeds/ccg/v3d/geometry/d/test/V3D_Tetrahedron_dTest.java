@@ -250,7 +250,7 @@ public class V3D_Tetrahedron_dTest extends V3D_Test_d {
         V3D_Tetrahedron_d instance = new V3D_Tetrahedron_d(pP0P0P0,
                 pP1P0P0, pP0P1P0, pP0P0P1, epsilon);
         double expResult = 1d / 6d;
-        double result = instance.getVolume();
+        double result = instance.getVolume(epsilon);
         assertTrue(Math_Double.equals(expResult, result, epsilon));
     }
 

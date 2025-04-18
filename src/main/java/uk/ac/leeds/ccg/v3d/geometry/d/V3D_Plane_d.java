@@ -315,9 +315,11 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     /**
      * Find a perpendicular vector.
      *
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
      * @return A perpendicular vector.
      */
-    public final V3D_Vector_d getPV() {
+    public final V3D_Vector_d getPV(double epsilon) {
 //        /**
 //         * Magnitude method adapted from:
 //         * https://math.stackexchange.com/questions/137362/how-to-find-perpendicular-vector-to-another-vector
@@ -343,7 +345,8 @@ public class V3D_Plane_d extends V3D_Geometry_d {
          * https://math.stackexchange.com/questions/137362/how-to-find-perpendicular-vector-to-another-vector
          */
         V3D_Vector_d v = new V3D_Vector_d(n.dz, n.dz, -n.dx - n.dy);
-        if (v.isZero()) {
+        //if (v.isZero()) {
+        if (v.isZero(epsilon)) {
             return new V3D_Vector_d(-n.dy - n.dz, n.dx, n.dx);
         }
         return v;
@@ -352,10 +355,12 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     /**
      * Get another point on the plane.
      *
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
      * @return A point on the plane.
      */
-    public final V3D_Point_d getQ() {
-        return getQ(getPV());
+    public final V3D_Point_d getQ(double epsilon) {
+        return getQ(getPV(epsilon));
     }
 
     /**
@@ -371,10 +376,12 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     /**
      * Get another point on the plane.
      *
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
      * @return A point on the plane.
      */
-    public final V3D_Point_d getR() {
-        return getR(getPV());
+    public final V3D_Point_d getR(double epsilon) {
+        return getR(getPV(epsilon));
     }
 
     /**
@@ -566,9 +573,11 @@ public class V3D_Plane_d extends V3D_Geometry_d {
      * https://math.stackexchange.com/questions/684141/check-if-a-point-is-on-a-plane-minimize-the-use-of-multiplications-and-divisio/684580#684580
      *
      * @param pt The point to test for intersection with.
+     * @param epsilon The tolerance within which vector components are regarded
+     * as equal.
      * @return {@code true} iff the geometry is intersected by {@code pv}.
      */
-    public boolean intersectsAlternative(V3D_Point_d pt) {
+    public boolean intersectsAlternative(V3D_Point_d pt, double epsilon) {
         double[][] m = new double[4][4];
         V3D_Point_d tp = getP();
         if (tp.isOrigin()) {
@@ -576,7 +585,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             tpt.translate(V3D_Vector_d.IJK);
             V3D_Point_d ttp = new V3D_Point_d(getP());
             ttp.translate(V3D_Vector_d.IJK);
-            V3D_Vector_d perpv = getPV();
+            V3D_Vector_d perpv = getPV(epsilon);
             V3D_Point_d ttq = getQ(perpv);
             ttq.translate(V3D_Vector_d.IJK);
             V3D_Point_d ttr = getR(perpv);
@@ -824,7 +833,7 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         m[0][2] = 1.0d;
         m[0][3] = 1.0d;
         V3D_Point_d tp = getP();
-        V3D_Vector_d perpv = getPV();
+        V3D_Vector_d perpv = getPV(epsilon);
         V3D_Point_d tq = getQ(perpv);
         V3D_Point_d tr = getR(perpv);
         m[1][0] = tp.getX();
@@ -862,87 +871,6 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         double nummdet = numm.getDeterminant();
         if (denmdet == 0d) {
             if (Math_Double.equals(nummdet, 0d, epsilon)) {
-                t = 1;
-            } else {
-                return null;
-            }
-        } else {
-            t = -nummdet / denmdet;
-        }
-        return new V3D_Point_d(env,
-                lp.getX() + (lv.dx * (t)),
-                lp.getY() + (lv.dy * (t)),
-                lp.getZ() + (lv.dz * (t)));
-    }
-
-    /**
-     * Get the intersection between the geometry and the line {@code l}.
-     *
-     * @param l The line to intersect with.
-     * @return The V3D_Geometry.
-     */
-    public V3D_Geometry_d getIntersect(V3D_Line_d l) {
-        if (isParallel(l)) {
-            if (isOnPlane(l)) {
-                return l;
-            } else {
-                return null;
-            }
-        }
-        // Are either of the points of l on the plane.
-        V3D_Point_d lp = l.getP();
-        if (intersects(lp)) {
-            return lp;
-        }
-        V3D_Point_d lq = l.getQ();
-        if (intersects(lq)) {
-            return lq;
-        }
-        V3D_Vector_d lv = l.v;
-        double[][] m = new double[4][4];
-        m[0][0] = 1.0d;
-        m[0][1] = 1.0d;
-        m[0][2] = 1.0d;
-        m[0][3] = 1.0d;
-        V3D_Point_d tp = getP();
-        V3D_Vector_d perpv = getPV();
-        V3D_Point_d tq = getQ(perpv);
-        V3D_Point_d tr = getR(perpv);
-        m[1][0] = tp.getX();
-        m[1][1] = tq.getX();
-        m[1][2] = tr.getX();
-        m[1][3] = lp.getX();
-        m[2][0] = tp.getY();
-        m[2][1] = tq.getY();
-        m[2][2] = tr.getY();
-        m[2][3] = lp.getY();
-        m[3][0] = tp.getZ();
-        m[3][1] = tq.getZ();
-        m[3][2] = tr.getZ();
-        m[3][3] = lp.getZ();
-        Math_Matrix_Double numm = new Math_Matrix_Double(m);
-        m[0][0] = 1.0d;
-        m[0][1] = 1.0d;
-        m[0][2] = 1.0d;
-        m[0][3] = 0d;
-        m[1][0] = tp.getX();
-        m[1][1] = tq.getX();
-        m[1][2] = tr.getX();
-        m[1][3] = lv.dx;
-        m[2][0] = tp.getY();
-        m[2][1] = tq.getY();
-        m[2][2] = tr.getY();
-        m[2][3] = lv.dy;
-        m[3][0] = tp.getZ();
-        m[3][1] = tq.getZ();
-        m[3][2] = tr.getZ();
-        m[3][3] = lv.dz;
-        Math_Matrix_Double denm = new Math_Matrix_Double(m);
-        double t;
-        double denmdet = denm.getDeterminant();
-        double nummdet = numm.getDeterminant();
-        if (denmdet == 0d) {
-            if (nummdet == 0d) {
                 t = 1;
             } else {
                 return null;
@@ -1029,37 +957,6 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         } else {
             return null;
         }
-    }
-
-    /**
-     * https://www.microsoft.com/en-us/research/publication/intersection-of-two-planes/
-     * https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/note.doc
-     * https://math.stackexchange.com/questions/291289/find-the-point-on-the-line-of-intersection-of-the-two-planes-using-lagranges-me
-     * http://tbirdal.blogspot.com/2016/10/a-better-approach-to-plane-intersection.html
-     * https://mathworld.wolfram.com/Plane-PlaneIntersection.html
-     *
-     * @param pl The plane to intersect.
-     * @return The intersection between {@code this} and {@code pl}
-     */
-    public V3D_Geometry_d getIntersect(V3D_Plane_d pl) {
-        /**
-         * Calculate the cross product of the normal vectors to get the
-         * direction of the line.
-         */
-        V3D_Vector_d v = n.getCrossProduct(pl.n);
-        /**
-         * Check special cases.
-         */
-        if (v.isZero()) {
-            // The planes are parallel.
-            if (pl.intersects(getP())) {
-                // The planes are the same.
-                return this;
-            }
-            return null;
-        }
-        V3D_Point_d pi = pl.getPointOfProjectedIntersect(getP());
-        return new V3D_Line_d(pi, v);
     }
 
     /**
@@ -1244,11 +1141,13 @@ public class V3D_Plane_d extends V3D_Geometry_d {
     }
 
     /**
+     * @param epsilon The tolerance within which two vectors are regarded as
+     * equal.
      * @return The points that define the plane as a matrix.
      */
-    public Math_Matrix_Double getAsMatrix() {
+    public Math_Matrix_Double getAsMatrix(double epsilon) {
         V3D_Point_d tp = getP();
-        V3D_Vector_d perpv = getPV();
+        V3D_Vector_d perpv = getPV(epsilon);
         V3D_Point_d tq = getQ(perpv);
         V3D_Point_d tr = getR(perpv);
         double[][] m = new double[3][3];
@@ -1404,25 +1303,6 @@ public class V3D_Plane_d extends V3D_Geometry_d {
             double theta, double epsilon) {
         return new V3D_Plane_d(getP().rotate(ray, uv, theta, epsilon),
                 n.rotate(uv, theta));
-    }
-
-    /**
-     * Compute and return the line of intersection between {@code pt} and
-     * {@code this}. See also:
-     * {@code https://stackoverflow.com/questions/23472048/projecting-3d-points-to-2d-plane}
-     *
-     * @param pt The point which when projected onto the plane using the normal
-     * to the plane forms the end of the returned line of intersection.
-     * @return The line of intersection between {@code pt} and {@code this} or
-     * {@code null} if {@code pt} is on {@code this}. The point pl on the result
-     * is the point of intersection
-     */
-    public V3D_Point_d getPointOfProjectedIntersect(V3D_Point_d pt) {
-        if (intersects(pt)) {
-            return pt;
-        }
-        V3D_Line_d l = new V3D_Line_d(pt, n);
-        return (V3D_Point_d) getIntersect(l);
     }
 
     /**

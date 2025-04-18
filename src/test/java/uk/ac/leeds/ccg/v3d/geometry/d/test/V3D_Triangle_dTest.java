@@ -687,7 +687,7 @@ public class V3D_Triangle_dTest extends V3D_Test_d {
         V3D_Point_d pt = new V3D_Point_d(centroid);
         pt.translate(direction.multiply(radius * 2d));
         V3D_Plane_d pl = new V3D_Plane_d(pt, new V3D_Vector_d(pt, envelope.getCentroid()));
-        V3D_Vector_d pv = pl.getPV();
+        V3D_Vector_d pv = pl.getPV(epsilon);
         double zoomFactor = 1.0d;
         V3D_Rectangle_d screen = envelope.getViewport3(pt, pv, zoomFactor, epsilon);
         V3D_Triangle_d pqr = screen.getPQR();
