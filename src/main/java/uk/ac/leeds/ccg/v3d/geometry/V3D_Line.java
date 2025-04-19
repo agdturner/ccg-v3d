@@ -26,52 +26,52 @@ import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
 
 /**
  * 3D representation of an infinite length line.The line passes through the
- point {@link #pv} with vector {@link #v}.The "*" denotes a point in 3D and
- the line is shown with a line of "e" symbols in the following depiction: {@code
-                                         z                e
-                            y           -                e
-                            +          /                * pv=<x0,y0,z0>
-                            |         /                e
-                            |        /                e
-                            |    z0-/                e
-                            |      /                e
-                            |     /               e
-                            |    /               e
-                            |   /               e
-                         y0-|  /               e
-                            | /               e
-                            |/         x1    e
-   x - ---------------------|-----------/---e---/---- + x
-                           /|              e   x0
-                          / |-y1          e
-                         /  |           e
-                        /   |          e
-                    z1-/    |         e
-                      /     |        e
-                     /      |       e v=(dx,dy,dz)
-                    /       |      e
-                   /        |     e
-                  +         |    e
-                 z          -   e
-                            y
- }
- <ul>
- <li>Vector Form
- <ul>
- <li>{@code (x,y,z) = (pv.getX(oom),pv.getY(oom),pv.getZ(oom)) + t(v.getDX(oom),v.getDY(oom),v.getDZ(oom))}</li>
- </ul>
- <li>Parametric Form (where t describes a particular point on the line)
- <ul>
- <li>{@code x = pv.getX(oom) + t(v.getDX(oom))}</li>
- <li>{@code y = pv.getY(oom) + t(v.getDY(oom))}</li>
- <li>{@code z = pv.getZ(oom) + t(v.getDZ(oom))}</li>
- </ul>
- <li>Symmetric Form (assume {@code v.getDX(oom)}, {@code v.getDY(oom)}, and
- {@code v.getDZ(oom)} are all nonzero)
- <ul>
- <li>{@code (x−pv.getX(oom))/v.getDX(oom) = (y−pv.getY(oom))/v.getDY(oom) = (z−pv.getZ(oom))/v.getDZ(oom)}</li>
- </ul></li>
- </ul>
+ * point {@link #pv} with vector {@link #v}.The "*" denotes a point in 3D and
+ * the line is shown with a line of "e" symbols in the following depiction: {@code
+ * z                e
+ * y           -                e
+ * +          /                * pv=<x0,y0,z0>
+ * |         /                e
+ * |        /                e
+ * |    z0-/                e
+ * |      /                e
+ * |     /               e
+ * |    /               e
+ * |   /               e
+ * y0-|  /               e
+ * | /               e
+ * |/         x1    e
+ * x - ---------------------|-----------/---e---/---- + x
+ * /|              e   x0
+ * / |-y1          e
+ * /  |           e
+ * /   |          e
+ * z1-/    |         e
+ * /     |        e
+ * /      |       e v=(dx,dy,dz)
+ * /       |      e
+ * /        |     e
+ * +         |    e
+ * z          -   e
+ * y
+ * }
+ * <ul>
+ * <li>Vector Form
+ * <ul>
+ * <li>{@code (x,y,z) = (pv.getX(oom),pv.getY(oom),pv.getZ(oom)) + t(v.getDX(oom),v.getDY(oom),v.getDZ(oom))}</li>
+ * </ul>
+ * <li>Parametric Form (where t describes a particular point on the line)
+ * <ul>
+ * <li>{@code x = pv.getX(oom) + t(v.getDX(oom))}</li>
+ * <li>{@code y = pv.getY(oom) + t(v.getDY(oom))}</li>
+ * <li>{@code z = pv.getZ(oom) + t(v.getDZ(oom))}</li>
+ * </ul>
+ * <li>Symmetric Form (assume {@code v.getDX(oom)}, {@code v.getDY(oom)}, and
+ * {@code v.getDZ(oom)} are all nonzero)
+ * <ul>
+ * <li>{@code (x−pv.getX(oom))/v.getDX(oom) = (y−pv.getY(oom))/v.getDY(oom) = (z−pv.getZ(oom))/v.getDZ(oom)}</li>
+ * </ul></li>
+ * </ul>
  *
  * @author Andy Turner
  * @version 2.0
@@ -108,9 +108,9 @@ public class V3D_Line extends V3D_Geometry {
      * {@link #pv}.
      */
     protected V3D_Point p;
-    
+
     /**
-     * Used to store Another point on the line that is derived from 
+     * Used to store Another point on the line that is derived from
      * {@link #offset}, {@link #pv} and {@link v}.
      */
     protected V3D_Point q;
@@ -120,7 +120,7 @@ public class V3D_Line extends V3D_Geometry {
      * but will change under rotation.
      */
     public V3D_Vector v;
-    
+
     /**
      * The Order of Magnitude for the calculation of v.
      */
@@ -189,7 +189,7 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * {@code v} should not be the zero vector {@code <0,0,0>}.
      *
-     * @param p Used to set {@link #env}, {@link #offset}, {@link #pv} and 
+     * @param p Used to set {@link #env}, {@link #offset}, {@link #pv} and
      * {@link #p}.
      * @param v What {@link #v} is set to.
      */
@@ -201,7 +201,7 @@ public class V3D_Line extends V3D_Geometry {
     /**
      * Create a new instance.
      *
-     * @param p Used to set {@link #env}, {@link #offset}, {@link #pv} and 
+     * @param p Used to set {@link #env}, {@link #offset}, {@link #pv} and
      * {@link #p}.
      * @param q Used to set {@link #q} and derive {@link #v}.
      * @param oom The Order of Magnitude for the precision.
@@ -367,7 +367,7 @@ public class V3D_Line extends V3D_Geometry {
                 || intersects(aabb.getf(oom, rm), oom, rm)
                 || intersects(aabb.geta(oom, rm), oom, rm);
     }
-    
+
     /**
      * @param aabbx The V3D_AABBX to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -390,12 +390,12 @@ public class V3D_Line extends V3D_Geometry {
                 V3D_Point ip = (V3D_Point) i;
                 return aabbx.getTopPlane(oom, rm).isOnSameSide(
                         aabbx.getll(oom, rm), ip, oom, rm)
-                    && aabbx.getBottomPlane(oom, rm).isOnSameSide(
-                            aabbx.getuu(oom, rm), ip, oom, rm)
-                    && aabbx.getRightPlane(oom, rm).isOnSameSide(
-                            aabbx.getll(oom, rm), ip, oom, rm)
-                    && aabbx.getLeftPlane(oom, rm).isOnSameSide(
-                            aabbx.getuu(oom, rm), ip, oom, rm);
+                        && aabbx.getBottomPlane(oom, rm).isOnSameSide(
+                                aabbx.getuu(oom, rm), ip, oom, rm)
+                        && aabbx.getRightPlane(oom, rm).isOnSameSide(
+                                aabbx.getll(oom, rm), ip, oom, rm)
+                        && aabbx.getLeftPlane(oom, rm).isOnSameSide(
+                                aabbx.getuu(oom, rm), ip, oom, rm);
             }
         }
     }
@@ -422,12 +422,12 @@ public class V3D_Line extends V3D_Geometry {
                 V3D_Point ip = (V3D_Point) i;
                 return aabby.getTopPlane(oom, rm).isOnSameSide(
                         aabby.getll(oom, rm), ip, oom, rm)
-                    && aabby.getBottomPlane(oom, rm).isOnSameSide(
-                            aabby.getuu(oom, rm), ip, oom, rm)
-                    && aabby.getRightPlane(oom, rm).isOnSameSide(
-                            aabby.getll(oom, rm), ip, oom, rm)
-                    && aabby.getLeftPlane(oom, rm).isOnSameSide(
-                            aabby.getuu(oom, rm), ip, oom, rm);
+                        && aabby.getBottomPlane(oom, rm).isOnSameSide(
+                                aabby.getuu(oom, rm), ip, oom, rm)
+                        && aabby.getRightPlane(oom, rm).isOnSameSide(
+                                aabby.getll(oom, rm), ip, oom, rm)
+                        && aabby.getLeftPlane(oom, rm).isOnSameSide(
+                                aabby.getuu(oom, rm), ip, oom, rm);
             }
         }
     }
@@ -454,12 +454,12 @@ public class V3D_Line extends V3D_Geometry {
                 V3D_Point ip = (V3D_Point) i;
                 return aabbz.getTopPlane(oom, rm).isOnSameSide(
                         aabbz.getll(oom, rm), ip, oom, rm)
-                    && aabbz.getBottomPlane(oom, rm).isOnSameSide(
-                            aabbz.getuu(oom, rm), ip, oom, rm)
-                    && aabbz.getRightPlane(oom, rm).isOnSameSide(
-                            aabbz.getll(oom, rm), ip, oom, rm)
-                    && aabbz.getLeftPlane(oom, rm).isOnSameSide(
-                            aabbz.getuu(oom, rm), ip, oom, rm);
+                        && aabbz.getBottomPlane(oom, rm).isOnSameSide(
+                                aabbz.getuu(oom, rm), ip, oom, rm)
+                        && aabbz.getRightPlane(oom, rm).isOnSameSide(
+                                aabbz.getll(oom, rm), ip, oom, rm)
+                        && aabbz.getLeftPlane(oom, rm).isOnSameSide(
+                                aabbz.getuu(oom, rm), ip, oom, rm);
             }
         }
     }
@@ -492,7 +492,7 @@ public class V3D_Line extends V3D_Geometry {
                 // If lines are coincident return this.
                 return this;
             } else {
-                if (Math_BigRational.equals(getDistance(l, oom, rm), 
+                if (Math_BigRational.equals(getDistance(l, oom, rm),
                         BigRational.ZERO, oom)) {
                     return this;
                 } else {
@@ -504,7 +504,7 @@ public class V3D_Line extends V3D_Geometry {
     }
 
     /**
-     * Computes and returns the intersect of {@code this} and {@code l}. 
+     * Computes and returns the intersect of {@code this} and {@code l}.
      * {@code l} is assumed to be skew i.e. not parallel with {@code this}.
      *
      * @param l The line to get the intersection with {@code this}.
@@ -513,7 +513,7 @@ public class V3D_Line extends V3D_Geometry {
      * @return The intersection between {@code this} and {@code l}.
      */
     public V3D_Point getIntersectNonParallel(V3D_Line l, int oom, RoundingMode rm) {
-        V3D_Point tp = getP();     
+        V3D_Point tp = getP();
         V3D_Point tq = getQ(oom, rm);
         V3D_Point lp = l.getP();
         V3D_Point lq = l.getQ(oom, rm);
@@ -558,18 +558,24 @@ public class V3D_Line extends V3D_Geometry {
                 V3D_Vector tv = v;
                 //V3D_Vector lv = l.getV(oom, rm);
                 V3D_Vector lv = l.v;
-                if (tv.dx.isZero()) {
+                //if (tv.dx.isZero()) {
+                if (tv.getDX(oom, rm).isZero()) {
                     x = tp.getX(oom, rm);
-                    if (lv.dx.isZero()) {
-                        if (tv.dy.isZero()) {
+                    //if (lv.dx.isZero()) {
+                    if (lv.getDX(oom, rm).isZero()) {
+                        //if (tv.dy.isZero()) {
+                        if (tv.getDY(oom, rm).isZero()) {
                             y = tp.getY(oom, rm);
-                            if (lv.dy.isZero()) {
+                            //if (lv.dy.isZero()) {
+                            if (lv.getDY(oom, rm).isZero()) {
                                 z = tp.getZ(oom, rm);
                             } else {
-                                if (tv.dz.isZero()) {
+                                //if (tv.dz.isZero()) {
+                                if (tv.getDZ(oom, rm).isZero()) {
                                     z = tp.getZ(oom, rm);
                                 } else {
-                                    if (lv.dz.isZero()) {
+                                    //if (lv.dz.isZero()) {
+                                    if (lv.getDZ(oom, rm).isZero()) {
                                         z = lp.getZ(oom, rm);
                                     } else {
                                         mu = (tp.getY(oom, rm).subtract(lp.getY(oom, rm))).divide(lv.getDY(oom, rm));
@@ -578,12 +584,15 @@ public class V3D_Line extends V3D_Geometry {
                                 }
                             }
                         } else {
-                            if (lv.dy.isZero()) {
+                            //if (lv.dy.isZero()) {
+                            if (lv.getDY(oom, rm).isZero()) {
                                 y = lp.getY(oom, rm);
-                                if (tv.dz.isZero()) {
+                                //if (tv.dz.isZero()) {
+                                if (tv.getDZ(oom, rm).isZero()) {
                                     z = tp.getZ(oom, rm);
                                 } else {
-                                    if (lv.dz.isZero()) {
+                                    //if (lv.dz.isZero()) {
+                                    if (lv.getDZ(oom, rm).isZero()) {
                                         z = lp.getZ(oom, rm);
                                     } else {
                                         lamda = (lp.getY(oom, rm).subtract(tp.getY(oom, rm))).divide(tv.getDY(oom, rm));
@@ -595,12 +604,14 @@ public class V3D_Line extends V3D_Geometry {
                                 //p.getY(oom) + v.getDY(oom) * lamda = l.pv.getY(oom) + l.v.getDY(oom) * mu
                                 //p.getZ(oom) + v.getDZ(oom) * lamda = l.pv.getZ(oom) + l.v.getDZ(oom) * mu
                             } else {
-                                if (tv.dz.isZero()) {
+                                //if (tv.dz.isZero()) {
+                                if (tv.getDZ(oom, rm).isZero()) {
                                     z = tp.getZ(oom, rm);
                                     mu = (tp.getZ(oom, rm).subtract(lp.getZ(oom, rm))).divide(lv.getDY(oom, rm));
                                     y = lp.getY(oom, rm).add(lv.getDY(oom, rm).multiply(mu));
                                 } else {
-                                    if (lv.dz.isZero()) {
+                                    //if (lv.dz.isZero()) {
+                                    if (lv.getDZ(oom, rm).isZero()) {
                                         z = lp.getZ(oom, rm);
                                         lamda = (lp.getZ(oom, rm).subtract(tp.getZ(oom, rm))).divide(tv.getDY(oom, rm));
                                         y = tp.getY(oom, rm).add(tv.getDY(oom, rm).multiply(lamda));
@@ -637,17 +648,21 @@ public class V3D_Line extends V3D_Geometry {
                         }
                     } else {
                         mu = (tp.getX(oom, rm).subtract(lp.getX(oom, rm))).divide(lv.getDX(oom, rm));
-                        if (tv.dy.isZero()) {
-                            if (lv.dy.isZero()) {
+                        //if (tv.dy.isZero()) {
+                        if (tv.getDY(oom, rm).isZero()) {
+                            //if (lv.dy.isZero()) {
+                            if (lv.getDY(oom, rm).isZero()) {
                                 y = tp.getY(oom, rm);
                                 z = tp.getZ(oom, rm);
                             } else {
-                                if (tv.dz.isZero()) {
+                                //if (tv.dz.isZero()) {
+                                if (tv.getDZ(oom, rm).isZero()) {
                                     y = lp.getY(oom, rm).add(lv.getDY(oom, rm).multiply(mu));
                                 } else {
                                     y = tp.getY(oom, rm).add(tv.getDY(oom, rm).multiply(mu));
                                 }
-                                if (lv.dz.isZero()) {
+                                //if (lv.dz.isZero()) {
+                                if (lv.getDZ(oom, rm).isZero()) {
                                     z = tp.getZ(oom, rm);
                                 } else {
                                     z = lp.getZ(oom, rm).add(lv.getDZ(oom, rm).multiply(mu));
@@ -656,12 +671,14 @@ public class V3D_Line extends V3D_Geometry {
                         } else {
                             lamda = ((lp.getY(oom, rm).add(lv.getDY(oom, rm).multiply(mu)))
                                     .subtract(tp.getX(oom, rm))).divide(tv.getDY(oom, rm));
-                            if (tv.dz.isZero()) {
+                            //if (tv.dz.isZero()) {
+                            if (tv.getDZ(oom, rm).isZero()) {
                                 z = tp.getZ(oom, rm);
                             } else {
                                 z = tp.getZ(oom, rm).add(tv.getDZ(oom, rm).multiply(lamda));
                             }
-                            if (lv.dy.isZero()) {
+                            //if (lv.dy.isZero()) {
+                            if (lv.getDY(oom, rm).isZero()) {
                                 y = tp.getY(oom, rm);
                             } else {
                                 y = lp.getY(oom, rm).add(lv.getDY(oom, rm).multiply(mu));
@@ -669,15 +686,19 @@ public class V3D_Line extends V3D_Geometry {
                         }
                     }
                 } else {
-                    if (lv.dx.isZero()) {
+                    //if (lv.dx.isZero()) {
+                    if (lv.getDX(oom, rm).isZero()) {
                         lamda = lp.getX(oom, rm).subtract(tp.getX(oom, rm)).divide(tv.getDX(oom, rm));
                         x = lp.getX(oom, rm);
-                        if (tv.dy.isZero()) {
+                        //if (tv.dy.isZero()) {
+                        if (tv.getDY(oom, rm).isZero()) {
                             y = tp.getY(oom, rm);
-                            if (tv.dz.isZero()) {
+                            //if (tv.dz.isZero()) {
+                            if (tv.getDZ(oom, rm).isZero()) {
                                 z = tp.getZ(oom, rm);
                             } else {
-                                if (lv.dz.isZero()) {
+                                //if (lv.dz.isZero()) {
+                                if (lv.getDZ(oom, rm).isZero()) {
                                     z = lp.getZ(oom, rm);
                                 } else {
                                     mu = tp.getY(oom, rm).subtract(lp.getY(oom, rm)).divide(lv.getDY(oom, rm));
@@ -685,13 +706,17 @@ public class V3D_Line extends V3D_Geometry {
                                 }
                             }
                         } else {
-                            if (tv.dy.isZero()) {
+                            //if (tv.dy.isZero()) {
+                            if (tv.getDY(oom, rm).isZero()) {
                                 y = tp.getY(oom, rm);
-                                if (lv.dy.isZero()) {
-                                    if (tv.dz.isZero()) {
+                                //if (lv.dy.isZero()) {
+                                if (lv.getDY(oom, rm).isZero()) {
+                                    //if (tv.dz.isZero()) {
+                                    if (tv.getDZ(oom, rm).isZero()) {
                                         z = tp.getZ(oom, rm);
                                     } else {
-                                        if (lv.dz.isZero()) {
+                                        //if (lv.dz.isZero()) {
+                                        if (lv.getDZ(oom, rm).isZero()) {
                                             z = lp.getZ(oom, rm);
                                         } else {
                                             mu = ((tp.getZ(oom, rm).add(tv.getDZ(oom, rm).multiply(lamda))).subtract(lp.getZ(oom, rm))).divide(lv.getDZ(oom, rm));
@@ -699,10 +724,12 @@ public class V3D_Line extends V3D_Geometry {
                                         }
                                     }
                                 } else {
-                                    if (tv.dz.isZero()) {
+                                    //if (tv.dz.isZero()) {
+                                    if (tv.getDZ(oom, rm).isZero()) {
                                         z = tp.getZ(oom, rm);
                                     } else {
-                                        if (lv.dz.isZero()) {
+                                        //if (lv.dz.isZero()) {
+                                        if (lv.getDZ(oom, rm).isZero()) {
                                             z = lp.getZ(oom, rm);
                                         } else {
                                             mu = (tp.getZ(oom, rm).subtract(lp.getZ(oom, rm))).divide(lv.getDZ(oom, rm));
@@ -711,12 +738,15 @@ public class V3D_Line extends V3D_Geometry {
                                     }
                                 }
                             } else {
-                                if (lv.dy.isZero()) {
+                                //if (lv.dy.isZero()) {
+                                if (lv.getDY(oom, rm).isZero()) {
                                     y = lp.getY(oom, rm);
-                                    if (tv.dz.isZero()) {
+                                    //if (tv.dz.isZero()) {
+                                    if (tv.getDZ(oom, rm).isZero()) {
                                         z = tp.getZ(oom, rm);
                                     } else {
-                                        if (lv.dz.isZero()) {
+                                        //if (lv.dz.isZero()) {
+                                        if (lv.getDZ(oom, rm).isZero()) {
                                             z = lp.getZ(oom, rm);
                                         } else {
                                             mu = ((tp.getZ(oom, rm).add(tv.getDZ(oom, rm).multiply(lamda))).subtract(lp.getZ(oom, rm))).divide(lv.getDZ(oom, rm));
@@ -725,10 +755,12 @@ public class V3D_Line extends V3D_Geometry {
                                     }
                                 } else {
                                     y = tp.getY(oom, rm).add(tv.getDY(oom, rm).multiply(lamda));
-                                    if (tv.dz.isZero()) {
+                                    //if (tv.dz.isZero()) {
+                                    if (tv.getDZ(oom, rm).isZero()) {
                                         z = tp.getZ(oom, rm);
                                     } else {
-                                        if (lv.dz.isZero()) {
+                                        //if (lv.dz.isZero()) {
+                                        if (lv.getDZ(oom, rm).isZero()) {
                                             //z = l.pv.getZ(oom);
                                             //z = l.getP().getDZ(oom, rm);
                                             z = l.pv.getDZ(oom, rm);
@@ -742,14 +774,18 @@ public class V3D_Line extends V3D_Geometry {
                         }
                     } else {
                         // v.getDX(oom) > 0 && l.v.getDX(oom) > 0
-                        if (tv.dy.isZero()) {
+                        //if (tv.dy.isZero()) {
+                        if (tv.getDY(oom, rm).isZero()) {
                             y = tp.getY(oom, rm);
-                            if (lv.dy.isZero()) {
-                                if (tv.dz.isZero()) {
+                            //if (lv.dy.isZero()) {
+                            if (lv.getDY(oom, rm).isZero()) {
+                                //if (tv.dz.isZero()) {
+                                if (tv.getDZ(oom, rm).isZero()) {
                                     z = tp.getZ(oom, rm);
                                     x = tp.getX(oom, rm);
                                 } else {
-                                    if (lv.dz.isZero()) {
+                                    //if (lv.dz.isZero()) {
+                                    if (lv.getDZ(oom, rm).isZero()) {
                                         z = lp.getZ(oom, rm);
                                         lamda = (lp.getZ(oom, rm).subtract(tp.getZ(oom, rm))).divide(tv.getDZ(oom, rm));
                                         x = tp.getX(oom, rm).add(tv.getDX(oom, rm).multiply(lamda));
@@ -791,9 +827,11 @@ public class V3D_Line extends V3D_Geometry {
                             }
                         } else {
                             // v.getDX(oom) > 0 && l.v.getDX(oom) > 0 && v.getDY(oom) > 0
-                            if (tv.dz.isZero()) {
+                            //if (tv.dz.isZero()) {
+                            if (tv.getDZ(oom, rm).isZero()) {
                                 z = tp.getZ(oom, rm);
-                                if (lv.dz.isZero()) {
+                                //if (lv.dz.isZero()) {
+                                if (lv.getDZ(oom, rm).isZero()) {
                                     // There are 2 ways to calculate lamda. One way should work! - If not try calculating mu.
 //                                    mu = ((pv.getX(oom).add(v.getDX(oom).multiply(lamda))).subtract(l.pv.getX(oom))).divide(l.v.getDX(oom));
 //                                    lamda = ((l.pv.getY(oom).subtract(pv.getY(oom))).divide(v.getDY(oom))).add(l.v.getDY(oom).multiply(mu));
@@ -826,7 +864,8 @@ public class V3D_Line extends V3D_Geometry {
                                     x = lp.getX(oom, rm).add(lv.getDX(oom, rm).multiply(mu));
                                 }
                             } else {
-                                if (lv.dz.isZero()) {
+                                //if (lv.dz.isZero()) {
+                                if (lv.getDZ(oom, rm).isZero()) {
                                     z = lp.getZ(oom, rm);
                                     lamda = (lp.getZ(oom, rm).subtract(tp.getZ(oom, rm))).divide(tv.getDZ(oom, rm));
                                     y = tp.getY(oom, rm).add(tv.getDY(oom, rm).multiply(lamda));
@@ -909,7 +948,13 @@ public class V3D_Line extends V3D_Geometry {
         if (intersects(pi, oom, rm) && l.intersects(pi, oom, rm)) {
             return pi;
         }
-        BigRational mub = a.add(b.multiply(mua)).divide(d).negate();
+        BigRational nummub = a.add(b.multiply(mua));
+        BigRational mub;
+        if (nummub.isZero()) {
+            mub = BigRational.ZERO;
+        } else {
+            mub = a.add(b.multiply(mua)).divide(d).negate();
+        }
         V3D_Point qi = new V3D_Point(env,
                 (lp.getX(oom, rm).add(mub.multiply(lqlp.getDX(oom, rm)))),
                 (lp.getY(oom, rm).add(mub.multiply(lqlp.getDY(oom, rm)))),
@@ -990,7 +1035,7 @@ public class V3D_Line extends V3D_Geometry {
         V3D_Plane ptv = new V3D_Plane(pt, v);
         return (V3D_Point) ptv.getIntersect(this, oom, rm);
     }
-    
+
     /**
      * Calculate and return the line of intersection (the shortest line) between
      * this and l.If this and l intersect then return null. If this and l are
@@ -1013,32 +1058,32 @@ public class V3D_Line extends V3D_Geometry {
                 || getIntersect(l, oom, rm) != null) {
             return null;
         } else {
-        V3D_Point tp = getP();
-        V3D_Point lp = l.getP();
-        V3D_Vector A = new V3D_Vector(tp, lp, oomn6, rm);
-        //V3D_Vector B = getV(oom, rm).reverse();
-        V3D_Vector B = v.reverse();
-        //V3D_Vector C = l.getV(oom, rm).reverse();
-        V3D_Vector C = l.v.reverse();
-        BigRational AdB = A.getDotProduct(B, oomn6, rm);
-        BigRational AdC = A.getDotProduct(C, oomn6, rm);
-        BigRational CdB = C.getDotProduct(B, oomn6, rm);
-        BigRational BdB = B.getDotProduct(B, oomn6, rm);
-        BigRational CdC = C.getDotProduct(C, oomn6, rm);
-        BigRational ma = (AdC.multiply(CdB)).subtract(AdB.multiply(CdC))
-                .divide((BdB.multiply(CdC)).subtract(CdB.multiply(CdB)));
-        BigRational mb = ((ma.multiply(CdB)).add(AdC)).divide(CdC);
-        V3D_Vector tpi = tp.getVector(oom, rm).subtract(
-                B.multiply(ma, oom, rm), oom, rm);
-        V3D_Vector lpi = lp.getVector(oom, rm).subtract(
-                C.multiply(mb, oom, rm), oom, rm);
-        V3D_Point loip = new V3D_Point(env, tpi);
-        V3D_Point loiq = new V3D_Point(env, lpi);
-        if (loip.equals(loiq, oom, rm)) {
-            return null;
-        } else {
-            return new V3D_LineSegment(loip, loiq, oom, rm);
-        }
+            V3D_Point tp = getP();
+            V3D_Point lp = l.getP();
+            V3D_Vector A = new V3D_Vector(tp, lp, oomn6, rm);
+            //V3D_Vector B = getV(oom, rm).reverse();
+            V3D_Vector B = v.reverse();
+            //V3D_Vector C = l.getV(oom, rm).reverse();
+            V3D_Vector C = l.v.reverse();
+            BigRational AdB = A.getDotProduct(B, oomn6, rm);
+            BigRational AdC = A.getDotProduct(C, oomn6, rm);
+            BigRational CdB = C.getDotProduct(B, oomn6, rm);
+            BigRational BdB = B.getDotProduct(B, oomn6, rm);
+            BigRational CdC = C.getDotProduct(C, oomn6, rm);
+            BigRational ma = (AdC.multiply(CdB)).subtract(AdB.multiply(CdC))
+                    .divide((BdB.multiply(CdC)).subtract(CdB.multiply(CdB)));
+            BigRational mb = ((ma.multiply(CdB)).add(AdC)).divide(CdC);
+            V3D_Vector tpi = tp.getVector(oom, rm).subtract(
+                    B.multiply(ma, oom, rm), oom, rm);
+            V3D_Vector lpi = lp.getVector(oom, rm).subtract(
+                    C.multiply(mb, oom, rm), oom, rm);
+            V3D_Point loip = new V3D_Point(env, tpi);
+            V3D_Point loiq = new V3D_Point(env, lpi);
+            if (loip.equals(loiq, oom, rm)) {
+                return null;
+            } else {
+                return new V3D_LineSegment(loip, loiq, oom, rm);
+            }
         }
     }
 

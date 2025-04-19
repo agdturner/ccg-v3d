@@ -861,7 +861,13 @@ public class V3D_Line_d extends V3D_Geometry_d {
         if (intersects(pi, epsilon) && l.intersects(pi, epsilon)) {
             return pi;
         }
-        double mub = (a + (b * (mua))) / -d;
+        double mubnum = (a + (b * (mua)));
+        double mub;
+        if (mubnum == 0d) {
+            mub = 0d;
+        } else {
+            mub = (a + (b * (mua))) / -d;
+        }
         V3D_Point_d qi = new V3D_Point_d(env,
                 (lp.getX() + (mub * (lqlp.dx))),
                 (lp.getY() + (mub * (lqlp.dy))),
