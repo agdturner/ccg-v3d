@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import uk.ac.leeds.ccg.math.arithmetic.Math_BigDecimal;
+import uk.ac.leeds.ccg.math.arithmetic.Math_BigRational;
 import uk.ac.leeds.ccg.math.geometry.Math_AngleBigRational;
 import uk.ac.leeds.ccg.math.number.Math_BigRationalSqrt;
 import uk.ac.leeds.ccg.v3d.core.V3D_Environment;
@@ -238,9 +239,12 @@ public class V3D_Point extends V3D_FiniteGeometry {
         if (p == null) {
             return false;
         } else {
-            return getX(oom, rm).compareTo(p.getX(oom, rm)) == 0
-                && getY(oom, rm).compareTo(p.getY(oom, rm)) == 0
-                && getZ(oom, rm).compareTo(p.getZ(oom, rm)) == 0;
+            return Math_BigRational.equals(getX(oom, rm), p.getX(oom, rm), oom)
+                    && Math_BigRational.equals(getY(oom, rm), p.getY(oom, rm), oom)
+                    && Math_BigRational.equals(getZ(oom, rm), p.getZ(oom, rm), oom);
+        //            getX(oom, rm).compareTo(p.getX(oom, rm)) == 0
+        //        && getY(oom, rm).compareTo(p.getY(oom, rm)) == 0
+        //        && getZ(oom, rm).compareTo(p.getZ(oom, rm)) == 0;
         }
     }
 
@@ -292,11 +296,10 @@ public class V3D_Point extends V3D_FiniteGeometry {
             if (oom < xoom) {
                 x = rel.getDX(oom, rm).add(offset.getDX(oom, rm));
             } else {
-                if (!rm.equals(xoom)) {
+                if (!rm.equals(xrm)) {
                     x = rel.getDX(oom, rm).add(offset.getDX(oom, rm));
                 }
             }
-                
         }
         return x;
     }
@@ -314,11 +317,10 @@ public class V3D_Point extends V3D_FiniteGeometry {
             if (oom < yoom) {
                 y = rel.getDY(oom, rm).add(offset.getDY(oom, rm));
             } else {
-                if (!rm.equals(yoom)) {
+                if (!rm.equals(yrm)) {
                     y = rel.getDY(oom, rm).add(offset.getDY(oom, rm));
                 }
             }
-                
         }
         return y;
     }
@@ -336,11 +338,10 @@ public class V3D_Point extends V3D_FiniteGeometry {
             if (oom < zoom) {
                 z = rel.getDZ(oom, rm).add(offset.getDZ(oom, rm));
             } else {
-                if (!rm.equals(zoom)) {
+                if (!rm.equals(zrm)) {
                     z = rel.getDZ(oom, rm).add(offset.getDZ(oom, rm));
                 }
             }
-                
         }
         return z;
     }
