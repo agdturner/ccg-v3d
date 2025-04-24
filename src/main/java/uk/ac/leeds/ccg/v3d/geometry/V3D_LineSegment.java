@@ -344,7 +344,8 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if {@code this} is intersected by {@code p}.
      */
     public boolean intersects(V3D_Point p, int oom, RoundingMode rm) {
-        if (getAABB(oom, rm).intersects(p.getAABB(oom, rm), oom)) {
+        //if (getAABB(oom, rm).intersects(p.getAABB(oom, rm), oom)) {
+        if (getAABB(oom, rm).intersects(p, oom, rm)) {
             return intersects0(p, oom, rm);
         } else {
             return false;
@@ -352,7 +353,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
     }
 
     /**
-     * This does not first checks that {@code p} intersects the Axis Aligned 
+     * This does not first check that {@code p} intersects the Axis Aligned 
      * Bounding Box.
      * 
      * @param p A point to test for intersection.
@@ -362,26 +363,28 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      */
     public boolean intersects0(V3D_Point p, int oom, RoundingMode rm) {
         if (l.intersects(p, oom, rm)) {
-            V3D_Point tp = getP();
-            Math_BigRationalSqrt a = p.getDistance(oom, rm, tp);
-            if (a.getX().isZero()) {
-                return true;
-            }
-            V3D_Point tq = getQ(oom, rm);
-            Math_BigRationalSqrt b = p.getDistance(oom, rm, tq);
-            if (b.getX().isZero()) {
-                return true;
-            }
-            Math_BigRationalSqrt d = tp.getDistance(oom, rm, tq);
-            Math_BigRationalSqrt apb = a.add(b, oom, rm);
-            if (apb == null) {
-                int oomt = oom - 2;
-                if (a.getSqrt(oomt, rm).add(b.getSqrt(oomt, rm)).compareTo(d.getSqrt(oomt, rm)) != 1) {
-                    return true;
-                }
-            } else {
-                return apb.equals(d, oom);
-            }
+            return getPPL().isOnSameSide(p, getQ(oom, rm), oom, rm)
+                    && getQPL(oom, rm).isOnSameSide(p, getP(), oom, rm);
+//            V3D_Point tp = getP();
+//            Math_BigRationalSqrt a = p.getDistance(oom, rm, tp);
+//            if (a.getX().isZero()) {
+//                return true;
+//            }
+//            V3D_Point tq = getQ(oom, rm);
+//            Math_BigRationalSqrt b = p.getDistance(oom, rm, tq);
+//            if (b.getX().isZero()) {
+//                return true;
+//            }
+//            Math_BigRationalSqrt d = tp.getDistance(oom, rm, tq);
+//            Math_BigRationalSqrt apb = a.add(b, oom, rm);
+//            if (apb == null) {
+//                int oomt = oom - 2;
+//                if (a.getSqrt(oomt, rm).add(b.getSqrt(oomt, rm)).compareTo(d.getSqrt(oomt, rm)) != 1) {
+//                    return true;
+//                }
+//            } else {
+//                return apb.equals(d, oom);
+//            }
         }
         return false;
     }
@@ -713,7 +716,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      */
     public boolean intersects(V3D_LineSegment l, int oom, RoundingMode rm) {
         if (getAABB(oom, rm).intersects(l.getAABB(oom, rm), oom)) {
-            return getIntersect0(l, oom, rm) != null;
+            return getIntersectCoplanar(l, oom, rm) != null;
         } else {
             return false;
         }
@@ -730,7 +733,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * @return {@code true} if this getIntersect with {@code l}
      */
     public boolean intersects0(V3D_LineSegment l, int oom, RoundingMode rm) {
-        return getIntersect0(l, oom, rm) != null;
+        return getIntersectCoplanar(l, oom, rm) != null;
     }
 
     /**
@@ -788,7 +791,7 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
         if (!getAABB(oom, rm).intersects(ls.getAABB(oom, rm), oom)) {
             return null;
         } else {
-            return getIntersect0(ls, oom, rm);
+            return getIntersectCoplanar(ls, oom, rm);
         }
     }
 
@@ -799,12 +802,12 @@ public class V3D_LineSegment extends V3D_FiniteGeometry {
      * point, the point is returned. {@code null} is returned if the two line
      * segments do not intersect.
      *
-     * @param ls The line to get intersection with this.
+     * @param ls The coplanar line segment to get intersection with this.
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode for any rounding.
      * @return The intersection between {@code this} and {@code l}.
      */
-    public V3D_FiniteGeometry getIntersect0(V3D_LineSegment ls, int oom, RoundingMode rm) {
+    public V3D_FiniteGeometry getIntersectCoplanar(V3D_LineSegment ls, int oom, RoundingMode rm) {
         // Get intersection with infinite lines.
         V3D_Geometry li = l.getIntersect(ls.l, oom, rm);
         V3D_FiniteGeometry tils = getIntersect(ls.l, oom, rm);

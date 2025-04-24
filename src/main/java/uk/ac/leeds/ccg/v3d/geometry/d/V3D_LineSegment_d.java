@@ -363,19 +363,21 @@ public class V3D_LineSegment_d extends V3D_FiniteGeometry_d {
      */
     public boolean intersects0(V3D_Point_d p, double epsilon) {
         if (l.intersects(p, epsilon)) {
-            V3D_Point_d tp = getP();
-            double a = p.getDistance(tp);
-            if (a == 0d) {
-                return true;
-            }
-            V3D_Point_d tq = getQ();
-            double b = p.getDistance(tq);
-            if (b == 0d) {
-                return true;
-            }
-            double d = tp.getDistance(tq);
-            double apb = a + b;
-            return Math_Double.equals(apb, d, epsilon);
+            return getPPL().isOnSameSide(p, getQ(), epsilon)
+                    && getQPL().isOnSameSide(p, getP(), epsilon);
+//            V3D_Point_d tp = getP();
+//            double a = p.getDistance(tp);
+//            if (a == 0d) {
+//                return true;
+//            }
+//            V3D_Point_d tq = getQ();
+//            double b = p.getDistance(tq);
+//            if (b == 0d) {
+//                return true;
+//            }
+//            double d = tp.getDistance(tq);
+//            double apb = a + b;
+//            return Math_Double.equals(apb, d, epsilon);
         } else {
             return false;
         }

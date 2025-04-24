@@ -827,21 +827,21 @@ public class V3D_Vector implements Serializable {
             return true;
         } else {
             // Special cases
-            boolean isZero = isZero(oom, rm);
             boolean visZero = v.isZero(oom, rm);
-            if (isZero) {
-                /**
-                 * Can't multiply the zero vector by a scalar to get a non-zero
-                 * vector.
-                 */
-                return visZero;
-            }
             if (visZero) {
                 /**
                  * Already tested that this is not equal to v, so the scalar is
                  * zero.
                  */
                 return true;
+            }
+            boolean isZero = isZero(oom, rm);
+            if (isZero) {
+                /**
+                 * Can't multiply the zero vector by a scalar to get a non-zero
+                 * vector.
+                 */
+                return visZero;
             }
             /**
              * General case: A little complicated as there is a need to deal

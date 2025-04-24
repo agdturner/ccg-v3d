@@ -375,17 +375,17 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @param oom The Order of Magnitude for the precision.
      * @param rm The RoundingMode.
      * @param p A point.
-     * @return The distance from {@code pv} to this.
+     * @return The distance from {@code p} to this.
      */
     public Math_BigRationalSqrt getDistance(int oom, RoundingMode rm, V3D_Point p) {
-        if (this.equals(p, oom, rm)) {
-            return Math_BigRationalSqrt.ZERO;
-        }
+        //if (this.equals(p, oom, rm)) {
+        //    return Math_BigRationalSqrt.ZERO;
+        //}
         return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm);
     }
 
     /**
-     * Get the distance between this and {@code pv}.
+     * Get the distance between this and {@code p}.
      *
      * @param p A point.
      * @param oom The Order of Magnitude for the precision.
@@ -393,10 +393,10 @@ public class V3D_Point extends V3D_FiniteGeometry {
      * @return The distance from {@code pv} to this.
      */
     public BigRational getDistance(V3D_Point p, int oom, RoundingMode rm) {
-        if (this.equals(p, oom, rm)) {
-            return BigRational.ZERO;
-        }
-        return new Math_BigRationalSqrt(getDistanceSquared(p, oom - 6, rm), oom, rm)
+        //if (this.equals(p, oom, rm)) {
+        //    return BigRational.ZERO;
+        //}
+        return new Math_BigRationalSqrt(getDistanceSquared(p, oom, rm), oom, rm)
                 .getSqrt(oom, rm);
     }
 

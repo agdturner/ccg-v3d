@@ -382,7 +382,7 @@ public class V3D_PolygonNoInternalHoles extends V3D_Area {
      * @return {@code true} iff there is an intersection.
      */
     public boolean intersects0(V3D_Point pt, int oom, RoundingMode rm) {
-        if (pl.intersects(pt, oom, rm)) {
+        if (getPl(oom, rm).intersects(pt, oom, rm)) {
             return intersects00(pt, oom, rm);
         } else {
             return false;

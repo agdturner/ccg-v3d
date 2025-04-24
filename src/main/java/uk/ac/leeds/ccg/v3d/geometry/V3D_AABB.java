@@ -834,7 +834,7 @@ public class V3D_AABB implements Serializable {
     /**
      * @param e The Axis Aligned Bounding Box to test if {@code this} is beyond.
      * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} iff {@code this} is beyond {@code e} (i.e. they do
+     * @return {@code true} if {@code this} is beyond {@code e} (i.e. they do
      * not touch or intersect).
      */
     public boolean isBeyond(V3D_AABB e, int oom) {
@@ -849,7 +849,7 @@ public class V3D_AABB implements Serializable {
     /**
      * @param e The Axis Aligned Bounding Box to test if it is contained.
      * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} iff {@code this} contains {@code e}.
+     * @return {@code true} if {@code this} contains {@code e}.
      */
     public boolean contains(V3D_AABB e, int oom) {
         return getXMax(oom).compareTo(e.getXMax(oom)) != -1
@@ -865,7 +865,7 @@ public class V3D_AABB implements Serializable {
      *
      * @param p The point to test if it is contained.
      * @param oom The Order of Magnitude for the precision.
-     * @return {@code} true iff {@code this} contains {@code p}.
+     * @return {@code} true if {@code this} contains {@code p}.
      */
     public boolean contains(V3D_Point p, int oom) {
         BigRational xu = p.getX(oom, RoundingMode.CEILING);
@@ -887,7 +887,7 @@ public class V3D_AABB implements Serializable {
      * @param y The y-coordinate of the point to test for containment.
      * @param z The z-coordinate of the point to test for containment.
      * @param oom The Order of Magnitude for the precision.
-     * @return {@code true} iff {@code this} contains the point defined by
+     * @return {@code true} if {@code this} contains the point defined by
      * {@code x}, {@code y} and {@code z}.
      */
     public boolean contains(BigRational x, BigRational y, BigRational z, int oom) {
@@ -1155,7 +1155,6 @@ public class V3D_AABB implements Serializable {
                 (V3D_Point) lpl.getIntersect(pl0, tpl, oom, rm),
                 (V3D_Point) rpl.getIntersect(pl0, tpl, oom, rm),
                 (V3D_Point) rpl.getIntersect(pl0, bpl, oom, rm), oom, rm);
-
         return rect;
     }
 

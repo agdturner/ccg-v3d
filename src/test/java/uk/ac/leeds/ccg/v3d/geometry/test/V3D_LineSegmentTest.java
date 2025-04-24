@@ -112,15 +112,18 @@ public class V3D_LineSegmentTest extends V3D_Test {
      * Test of intersects method, of class V3D_LineSegment.
      */
     @Test
-    public void testIntersectsBy_V3D_Point() {
-        System.out.println("intersects");
-        V3D_Point p = pP0P0P0;
+    public void testIntersectsPoint() {
+        System.out.println("intersects point");
         V3D_LineSegment instance = new V3D_LineSegment(pN1N1N1, pP1P1P1, oom, rm);
-        assertTrue(instance.intersects(p, oom, rm));
+        assertTrue(instance.intersects(pP0P0P0, oom, rm));
         // Test2
-        p = pP1P1P1;
         instance = new V3D_LineSegment(pN1N1N1, pP1P1P1, oom, rm);
-        assertTrue(instance.intersects(p, oom, rm));
+        assertTrue(instance.intersects(pP1P1P1, oom, rm));
+        // Test3
+        instance = new V3D_LineSegment(pP0P0P0, pP0P0P2, oom, rm);
+        assertTrue(instance.intersects(pP0P0P1, oom, rm));
+        // Test4
+        assertFalse(instance.intersects(pP0P0N1, oom, rm));
     }
 
     /**

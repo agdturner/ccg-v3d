@@ -301,9 +301,9 @@ public class V3D_Point_d extends V3D_FiniteGeometry_d {
      * @return The distance from {@code pv} to this.
      */
     public double getDistance(V3D_Point_d p) {
-        if (this.equals(p)) {
-            return 0d;
-        }
+        //if (this.equals(p)) {
+        //    return 0d;
+        //}
         return Math.sqrt(getDistanceSquared(p));
     }
 

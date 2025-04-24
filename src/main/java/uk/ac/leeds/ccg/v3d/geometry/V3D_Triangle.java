@@ -1740,22 +1740,22 @@ public class V3D_Triangle extends V3D_Area {
             RoundingMode rm) {
         if (getAABB(oom, rm).intersects(t.getAABB(oom, rm), oom)) {
             // Triangles are not coplanar.
-            V3D_FiniteGeometry i = getIntersect(t.pl, oom - 6, rm);
+            V3D_FiniteGeometry i = getIntersect(t.getPl(oom, rm), oom - 6, rm);
             if (i == null) {
                 return i;
             } else if (i instanceof V3D_Point pt) {
-                if (intersects0(pt, oom, rm)) {
+                if (intersectsCoplanar(pt, oom, rm)) {
                     return pt;
                 } else {
                     return null;
                 }
             } else {
                 V3D_LineSegment il = (V3D_LineSegment) i;
-                V3D_FiniteGeometry ti = t.getIntersect(pl, oom - 6, rm);
+                V3D_FiniteGeometry ti = t.getIntersect(getPl(oom, rm), oom - 6, rm);
                 if (ti == null) {
                     return ti;
                 } else if (ti instanceof V3D_Point pt) {
-                    if (t.intersects0(pt, oom, rm)) {
+                    if (t.intersectsCoplanar(pt, oom, rm)) {
                         return pt;
                     } else {
                         return null;

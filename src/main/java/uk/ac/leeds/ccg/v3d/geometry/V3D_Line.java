@@ -341,18 +341,33 @@ public class V3D_Line extends V3D_Geometry {
      * @return {@code true} if pv is on the line.
      */
     public boolean intersects(V3D_Point pt, int oom, RoundingMode rm) {
-        if (getP().equals(pt, oom, rm) || getQ(oom, rm).equals(pt, oom, rm)) {
-            return true;
-        } else {
+        //if (getP().equals(pt, oom, rm) || getQ(oom, rm).equals(pt, oom, rm)) {
+        //    return true;
+        //} else {
             int oomN2 = oom - 2;
             V3D_Vector dpt = new V3D_Vector(
-                    pt.getX(oomN2, rm).subtract(p.getX(oomN2, rm)),
+                    pt.getX(oomN2, rm).subtract(getP().getX(oomN2, rm)),
                     pt.getY(oomN2, rm).subtract(p.getY(oomN2, rm)),
                     pt.getZ(oomN2, rm).subtract(p.getZ(oomN2, rm)));
-            return dpt.isScalarMultiple(v, oom, rm);
-        }
+            return v.isScalarMultiple(dpt, oom, rm);
+            //return dpt.isScalarMultiple(v, oom, rm);
+        //}
     }
 
+    /**
+     * @param line A coplanar line to test for intersection.
+     * @param oom The Order of Magnitude for the precision.
+     * @param rm The RoundingMode for any rounding.
+     * @return {@code true} if pv is on the line.
+     */
+    public boolean intersectsCoplanar(V3D_Line line, int oom, RoundingMode rm) {
+        if (isParallel(line, oom, rm)) {
+            return equals(line, oom, rm);
+        } else {
+            return true;
+        }
+    }
+    
     /**
      * @param aabb The V3D_AABB to test for intersection.
      * @param oom The Order of Magnitude for the precision.
@@ -499,8 +514,9 @@ public class V3D_Line extends V3D_Geometry {
                     return null;
                 }
             }
+        } else {
+            return getIntersectNonParallel(l, oom, rm);
         }
-        return getIntersectNonParallel(l, oom, rm);
     }
 
     /**

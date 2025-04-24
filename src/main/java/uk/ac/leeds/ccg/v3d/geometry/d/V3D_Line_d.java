@@ -290,15 +290,16 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return {@code true} if pv is on the line.
      */
     public boolean intersects(V3D_Point_d pt) {
-        if (getP().equals(pt) || getQ().equals(pt)) {
-            return true;
-        } else {
+        //if (getP().equals(pt) || getQ().equals(pt)) {
+        //    return true;
+        //} else {
             V3D_Vector_d dpt = new V3D_Vector_d(
                     pt.getX() - p.getX(),
                     pt.getY() - p.getY(),
                     pt.getZ() - p.getZ());
-            return dpt.isScalarMultiple(v);
-        }
+            return v.isScalarMultiple(dpt);
+            //return dpt.isScalarMultiple(v);
+        //}
     }
 
     /**
@@ -308,15 +309,16 @@ public class V3D_Line_d extends V3D_Geometry_d {
      * @return {@code true} if pv is on the line.
      */
     public boolean intersects(V3D_Point_d pt, double epsilon) {
-        if (getP().equals(pt, epsilon) || getQ().equals(pt, epsilon)) {
-            return true;
-        } else {
+        //if (getP().equals(pt, epsilon) || getQ().equals(pt, epsilon)) {
+        //    return true;
+        //} else {
             V3D_Vector_d dpt = new V3D_Vector_d(
-                    pt.getX() - p.getX(),
+                    pt.getX() - getP().getX(),
                     pt.getY() - p.getY(),
                     pt.getZ() - p.getZ());
-            return dpt.isScalarMultiple(v, epsilon);
-        }
+            return v.isScalarMultiple(dpt, epsilon);
+            //return dpt.isScalarMultiple(v, epsilon);
+        //}
     }
 
     /**

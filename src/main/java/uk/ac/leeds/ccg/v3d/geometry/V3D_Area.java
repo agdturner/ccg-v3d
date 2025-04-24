@@ -88,8 +88,9 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
             return pl;
         } else if (ploom == oom && plrm.equals(rm)) {
             return pl;
+        } else {
+            initPl(oom, rm);
         }
-        //initPl(oom, rm);
         return pl;
     }
 
@@ -114,8 +115,9 @@ public abstract class V3D_Area extends V3D_FiniteGeometry {
             return pl;
         } else if (ploom == oom && plrm.equals(rm)) {
             return pl;
+        } else {
+            initPl(pt, oom, rm);
         }
-        //initPl(pt, oom, rm);
         return pl;
     }
 
