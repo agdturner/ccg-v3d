@@ -218,7 +218,12 @@ public class V3D_Plane_d extends V3D_Geometry_d {
         } else {
             v = new V3D_Vector_d(ptv);
         }
-        double direction = n.getDotProduct(v) / n.getDotProduct(n);
+        double direction;
+        if (n.getDotProduct(v) == 0d) {
+            direction = 0d;
+        } else {
+            direction = n.getDotProduct(v) / n.getDotProduct(n);
+        }
         if (direction < 0d) {
             n = n.reverse();
         }

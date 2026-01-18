@@ -474,12 +474,14 @@ public class V3D_Triangle extends V3D_Area {
 
     @Override
     protected void initPl(int oom, RoundingMode rm) {
-        pl = new V3D_Plane(env, offset, pv, qv, rv, oom, rm);
+        //pl = new V3D_Plane(env, offset, pv, qv, rv, oom, rm);
+        pl = new V3D_Plane(getP(oom, rm), getQ(oom, rm), getR(oom, rm), oom, rm);
     }
 
     @Override
     protected void initPl(V3D_Point pt, int oom, RoundingMode rm) {
         pl = new V3D_Plane(pt, offset, pv, qv, rv, oom, rm);
+        //pl = new V3D_Plane(pt, getP(oom, rm), getQ(oom, rm), getR(oom, rm), oom, rm);
     }
 
     /**

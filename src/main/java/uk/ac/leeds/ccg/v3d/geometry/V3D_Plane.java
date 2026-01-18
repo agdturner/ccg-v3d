@@ -237,9 +237,14 @@ public class V3D_Plane extends V3D_Geometry {
         } else {
             v = new V3D_Vector(ptv);
         }
-        int direction = (n.getDotProduct(v, oom, rm)
+        int direction;
+        if (n.getDotProduct(v, oom, rm).compareTo(BigRational.ZERO) == 0) {
+            direction = 0;
+        } else {
+            direction = (n.getDotProduct(v, oom, rm)
                 .divide(n.getDotProduct(n, oom, rm)))
                 .compareTo(BigRational.ZERO);
+        }
         if (direction == -1) {
             n = n.reverse();
         }
